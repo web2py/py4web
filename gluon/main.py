@@ -119,25 +119,33 @@ def simple_app(environ, start_response):
     ext = '.html' # FIX ME
     runner = CodeRunner()
     try:
-        runner.environment['request'] = request = Request(environ)
-        runner.environment['response'] = Response()
-        filename = 'applications/%s/controllers/%s.py' % (request.application, request.controller)
-        vars = runner.import_code(filename, request.function)
-        if isinstance(vars, dict):
-            template_path = os.path.join('applications',request.application,'templates')
-            template_filename = os.path.join(template_path,request.controller,request.function+ext)
-            vars = render(filename=template_filename, path = template_path, context = vars)
-        response_headers = [("Content-type", contenttype(ext))]        
-        start_response(status, response_headers)        
+        request = Request(environ)
+        if request.controller == 'static':
+            filename = os.path.join('applications',request.application,'static',*request._items[2:])
+            content = open(filename,'rb').read()
+            response_headers = [("Content-type", contenttype(filename))]
+            start_response(status, response_headers)
+        else:
+            runner.environment['request'] = request
+            runner.environment['response'] = Response()
+            filename = 'applications/%s/controllers/%s.py' % (request.application, request.controller)
+            content = runner.import_code(filename, request.function)
+            if isinstance(vars, dict):
+                template_path = os.path.join('applications',request.application,'templates')
+                template_filename = os.path.join(template_path,request.controller,request.function+ext)
+                content = render(filename=template_filename, path = template_path, context = content)
+            response_headers = [("Content-type", contenttype(ext))]        
+            start_response(status, response_headers)        
     except HTTP, http:
         pass
     except RestrictedError:        
         start_response('500 Internal Error', [("Content-type", "text/plain")])        
-        vars = 'some error'
+        content = 'some error'
     except:
+        import traceback
         start_response('500 Internal Error', [("Content-type", "text/plain")])        
-        vars = 'some error'
-    return [vars]
+        content = traceback.format_exc()
+    return [content] if isinstance(content, str) else content
 
 def main():
     print 'starting'
