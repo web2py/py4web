@@ -79,12 +79,12 @@ class HTTP(Exception):
         self,
         status,
         body='',
+        headers=None,
         cookies=None,
-        **headers
-    ):
+        ):
         self.status = status
         self.body = body
-        self.headers = headers
+        self.headers = headers or {}
         self.cookies2headers(cookies)
 
     def cookies2headers(self, cookies):
@@ -92,7 +92,7 @@ class HTTP(Exception):
             self.headers['Set-Cookie'] = [
                 str(cookie)[11:] for cookie in cookies.values()]
 
-    def to(self, responder, env=None):
+    def to(self, start_response, env=None):
         env = env or {}
         status = self.status
         headers = self.headers
@@ -117,15 +117,18 @@ class HTTP(Exception):
                 rheaders += [(k, str(item)) for item in v]
             elif not v is None:
                 rheaders.append((k, str(v)))
-        responder(status, rheaders)
-        if env.get('request_method', '') == 'HEAD':
+        start_response(status, rheaders)
+
+        if env.get('REQUEST_METHOD', '') == 'HEAD':
             return ['']
-        elif isinstance(body, str):
+        elif isinstance(body, bytes):
             return [body]
+        elif isinstance(body, unicode):
+            return [body.encode('utf8')]
         elif hasattr(body, '__iter__'):
             return body
         else:
-            return [str(body)]
+            return [bytes(body)]
 
     @property
     def message(self):

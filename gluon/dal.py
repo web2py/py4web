@@ -82,15 +82,15 @@ def _default_validators(db, field):
 
 from gluon.serializers import custom_json, xml
 from gluon.utils import web2py_uuid
-from gluon import sqlhtml
 
 
 DAL.serializers = {'json': custom_json, 'xml': xml}
 DAL.validators_method = _default_validators
 DAL.uuid = lambda x: web2py_uuid()
+# FIX THIS
 DAL.representers = {
-    'rows_render': sqlhtml.represent,
-    'rows_xml': sqlhtml.SQLTABLE
+    #'rows_render': sqlhtml.represent,
+    # 'rows_xml': sqlhtml.SQLTABLE 
     }
 DAL.Field = Field
 DAL.Table = Table

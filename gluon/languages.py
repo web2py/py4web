@@ -29,8 +29,8 @@ from utf8 import Utf8
 
 from gluon.fileutils import listdir
 from gluon.cfs import getcfs
-from gluon.html import XML, xmlescape
-from gluon.contrib.markmin.markmin2html import render, markmin_escape
+from gluon.tag import XML, xmlescape
+# from gluon.contrib.markmin.markmin2html import render, markmin_escape # FIX THIS
 from string import maketrans
 
 __all__ = ['translator', 'findT', 'update_all_languages']
