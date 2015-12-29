@@ -133,11 +133,7 @@ def simple_app(environ, start_response):
             runner.environment['request'] = current.request = request
             runner.environment['response'] = current.response = response
             filename = 'applications/%s/controllers/%s.py' % (request.application, request.controller)
-            try:
-                content = runner.import_code(filename, request.function)
-            except:
-                import traceback
-                print traceback.format_exc()
+            content = runner.import_code(filename, request.function)
             if isinstance(content, dict):
                 template_path = os.path.join('applications',request.application,'templates')
                 template_filename = os.path.join(template_path,request.controller,request.function+ext)
