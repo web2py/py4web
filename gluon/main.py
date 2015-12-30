@@ -22,6 +22,7 @@ from gluon.restricted_error import RestrictedError
 from gluon.languages import translator
 from gluon.request import Request
 from gluon.response import Response
+from gluon.session import Session
 from pydal.base import BaseAdapter
 
 os_path_join = os.path.join
@@ -79,6 +80,7 @@ def simple_app(environ, start_response):
             else:
                 # serve dynamic pages
                 response = Response()
+                session = Session()
                 # build context and inject variables into context (~20% slow down)
                 runner = CodeRunner(common_context.copy())
                 database_folder =  os_path_join(request_folder,'databases')
@@ -89,6 +91,7 @@ def simple_app(environ, start_response):
                                                  request.environ.get('HTTP_ACCEPT_LANGUAGE'))
                 runner.context['request'] = current.request = request
                 runner.context['response'] = current.response = response
+                runner.context['session'] = current.session = session
 
                 controllers_folder = os_path_join(request.folder,'controllers') 
                 controller_filename = os_path_join(controllers_folder,request.controller+'.py')
@@ -107,7 +110,7 @@ def simple_app(environ, start_response):
                 if isinstance(content, dict):
                     view_context.update(content)
                     template_folder = os_path_join(request.folder,'views')
-                    template_filename = os_path_join(template_folder,request.controller,func_ext)
+                    template_filename = os_path_join(template_folder,request.controller,func_ext) # FIX THIS: response.view
                     if os.path.exists(template_filename):
                         content = render(filename=template_filename, path = template_folder, context = view_context)
                     else:
@@ -120,8 +123,10 @@ def simple_app(environ, start_response):
 
                 have_databases = have_databases and response.auto_commit
                 if have_databases:
+                    session._try_store_in_db(request, response)
                     BaseAdapter.close_all_instances('commit')
                     have_databases = False
+                session._try_store_in_cookie_or_file(request, response)
 
                 raise http   
         except HTTP, http:
@@ -130,7 +135,8 @@ def simple_app(environ, start_response):
             if isinstance(err, RestrictedError):
                 ticket = err.log()
             else:
-                request.logger.error(traceback.format_exc())
+                print traceback.format_exc()
+                #request.logger.error(traceback.format_exc())
                 ticket = 'unknown'
             return  HTTP(500, ticket).to(start_response, env=environ)
     except:

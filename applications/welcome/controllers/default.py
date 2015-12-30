@@ -1,22 +1,52 @@
+# -*- coding: utf-8 -*-
+# this file is released under public domain and you can use without limitations
+
+#########################################################################
+## This is a sample controller
+## - index is the default action of any application
+## - user is required for authentication and authorization
+## - download is for downloading files uploaded in the db (does streaming)
+#########################################################################
+
 def index():
-    return dict(request=request)
+    """
+    example action using the internationalization operator T and flash
+    rendered by views/default/index.html or views/generic.html
 
-def simple():
-    return 'hello world'
+    if you need a simple wiki simply replace the two lines below with:
+    return auth.wiki()
+    """
+    response.flash = T("Hello World")
+    return dict(message=T('Welcome to web2py!'))
 
-def vars():
-    return 'request.vars='+str(request.vars)
 
-def template():
-    return dict(a=1, b=2)
+def user():
+    """
+    exposes:
+    http://..../[app]/default/user/login
+    http://..../[app]/default/user/logout
+    http://..../[app]/default/user/register
+    http://..../[app]/default/user/profile
+    http://..../[app]/default/user/retrieve_password
+    http://..../[app]/default/user/change_password
+    http://..../[app]/default/user/bulk_register
+    use @auth.requires_login()
+        @auth.requires_membership('group name')
+        @auth.requires_permission('read','table name',record_id)
+    to decorate functions that need access control
+    also notice there is http://..../[app]/appadmin/manage/auth to allow administrator to manage users
+    """
+    return dict(form=auth()) # FIX THIS
 
-def make_thing():
-    from gluon.dal import DAL, Field
-    from gluon.form import Form
-    db = DAL('sqlite://storage.db')
-    db.define_table('thing',Field('name'))
-    form = Form(db.thing, csrf=False)
-    return dict(form=form)
 
-def error():
-    1/0
+#@cache.action()
+def download():
+    """
+    allows downloading of uploaded files
+    http://..../[app]/default/download/[filename]
+    """
+    return response.download(request, db) # FIX THIS
+
+
+
+

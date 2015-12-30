@@ -32,6 +32,7 @@ from gluon.cfs import getcfs
 from gluon.tag import XML, xmlescape
 # from gluon.contrib.markmin.markmin2html import render, markmin_escape # FIX THIS
 from string import maketrans
+from gluon.contrib.markmin.markmin2html import render, markmin_escape
 
 __all__ = ['translator', 'findT', 'update_all_languages']
 

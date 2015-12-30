@@ -1,27 +1,52 @@
-<html>
-  <body>
-    <a href="/welcome/default/simple">Simple</a>
-    <a href="/welcome/default/vars?a=1">Vars</a>
-    <a href="/welcome/default/template">Template</a>
-    <a href="/welcome/default/make_thing">Form example</a>
+{{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
 
-    {{=DIV(SPAN(A('click me',_href='#')))}}
-    {{=T('welcome')}} translated
-    <table>
-      <tr><td>application</td><td>{{=request.application}}</td></tr>
-      <tr><td>controller</td><td>{{=request.controller}}</td></tr>
-      <tr><td>function</td><td>{{=request.function}}</td></tr>
-      <tr><td>uuid</td><td>{{=request.uuid}}</td></tr>
-      <tr><td>url</td><td>{{=request.url}}</td></tr>
-      <tr><td>now</td><td>{{=request.now}}</td></tr>
-      <tr><td>utcnow</td><td>{{=request.utcnow}}</td></tr>
-      <tr><td>cookies</td><td>{{=request.cookies}}</td></tr>
-      <tr><td>get_vars</td><td>{{=request.get_vars}}</td></tr>
-      <tr><td>post_vars</td><td>{{=request.post_vars}}</td></tr>
-      <tr><td>client</td><td>{{=request.client}}</td></tr>
-      <tr><td>is_ajax</td><td>{{=request.is_ajax}}</td></tr>
-      <tr><td>is_local</td><td>{{=request.is_local}}</td></tr>
-      <tr><td>is_https</td><td>{{=request.is_https}}</td></tr>
-    </table>
-  </body>
-</html>
+{{block header}}
+    <header class="container-fluid background">
+      <div class="jumbotron text-center">
+        {{if response.title:}}
+        <h1>{{=response.title}}
+          <small>{{=response.subtitle or ''}}</small></h1>
+        {{pass}}
+      </div>
+    </header>
+{{end}}
+
+{{if 'message' in globals():}}
+<h2>{{=message}}</h2>
+<p class="lead">{{=T('How did you get here?')}}</p>
+<ol>
+  <li>{{=T('You are successfully running web2py')}}</li>
+  <li>{{=XML(T('You visited the url %s', A(request.env.path_info,_href=request.env.path_info)))}}</li>
+  <li>{{=XML(T('Which called the function %s located in the file %s',
+    (A(request.function+'()',_href='#'),
+    A('web2py/applications/%s/controllers/%s.py' % (request.application, request.controller),
+    _href=URL('admin','default','peek', args=(request.application,'controllers',request.controller+'.py'))))))}}</li>
+  <li>{{=XML(T('The output of the file is a dictionary that was rendered by the view %s',
+    A('web2py/applications/%s/views/%s/index.html' % (request.application, request.controller),
+    _href=URL('admin','default','peek',args=(request.application,'views',request.controller,'index.html')))))}}</li>
+  <li>{{=T('You can modify this application and adapt it to your needs')}}</li>
+</ol>
+{{elif 'content' in globals():}}
+{{=content}}
+{{else:}}
+{{=BEAUTIFY(response._vars)}}
+{{pass}}
+
+{{block right_sidebar}}
+<div class="panel panel-info">
+  <div class="panel-heading"><h3 class="panel-title"><a class="btn-block"
+      href="{{=URL('admin','default','index')}}">
+      <i class="glyphicon glyphicon-cog"></i>
+      {{=T("admin")}}
+    </a></h3></div>
+  <div class="panel-body">
+    {{=T("Don't know what to do?")}}
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">{{=A(T("Online examples"), _href=URL('examples','default','index'))}}</li>
+    <li class="list-group-item"><a href="http://web2py.com">web2py.com</a></li>
+    <li class="list-group-item"><a href="http://web2py.com/book">{{=T('Documentation')}}</a></li>
+  </ul>
+</div>
+{{end}}
