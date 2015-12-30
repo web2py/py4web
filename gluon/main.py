@@ -9,6 +9,7 @@ import sys
 import functools
 import threading
 import datetime
+import Cookie
 
 sys.path.append('site-packages')
 sys.path.append('gluon/packages/dal')
@@ -138,16 +139,18 @@ class CodeRunner(object):
             raise RestrictedError(filename, code, output, self.environment)
 
 def simple_app(environ, start_response):
-    ext = '.html' # FIX ME
-    runner = CodeRunner()
     try:
         try:
             request = Request(environ)
             if request.controller == 'static':
+                # serve static file
                 filename = os.path.join('applications',request.application,'static',*request._items[2:])
                 stream_file_or_304_or_206(filename, environ=environ)
             else:
+                # serve dynamic pages
+                ext = '.html' # FIX ME
                 response = Response()
+                runner = CodeRunner()
                 runner.environment['request'] = current.request = request
                 runner.environment['response'] = current.response = response
                 filename = 'applications/%s/controllers/%s.py' % (request.application, request.controller)
@@ -159,6 +162,7 @@ def simple_app(environ, start_response):
                 response.headers["Content-type"] = contenttype(ext)
                 raise HTTP(200, content, headers=response.headers)
         except HTTP, http:
+            http.cookies2headers(response.cookies)
             BaseAdapter.close_all_instances('commit')
             return http.to(start_response, env=environ)
         except RestrictedError, err:       
