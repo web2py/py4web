@@ -7,6 +7,7 @@ class Response(object):
     def __init__(self):
         self.status = 200
         self.headers = {}
+        self.view = {}
         self.render = render
         self.auto_commit = True
         self.static_version = None

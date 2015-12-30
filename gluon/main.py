@@ -9,8 +9,6 @@ import sys
 import traceback
 import Cookie
 
-from gluon import dal
-
 from gluon.current import current
 from gluon.storage import Storage
 from gluon.rocket import HttpServer
@@ -25,14 +23,15 @@ from gluon.response import Response
 from gluon.session import Session
 from pydal.base import BaseAdapter
 
+# some shortcuts
 os_path_join = os.path.join
-
+os_path_exists = os.path.exists
+ 
 def failsafe(func):
-    try:
-        return func()
-    except:
-        return None
+    try: return func()
+    except: return None
 
+# class that caches and executes code in python files
 class CodeRunner(object):
 
     def __init__(self, context=None):
@@ -56,13 +55,20 @@ class CodeRunner(object):
         try:
             exec code in self.context
             if function_name:
-                return self.context[function_name](*args, **kwargs)
+                func = self.context.get(function_name)
+                if func and callable(func):
+                    return self.context[function_name](*args, **kwargs)
+                else:
+                    raise HTTP(404)
+        except HTTP, http:
+            raise http
         except Exception, error:
             etype, evalue, tb = sys.exc_info()
             output = "%s %s" % (etype, evalue)
             raise RestrictedError(filename, code, output, self.context)
 
-def simple_app(environ, start_response):
+# the main wsgi app
+def main_wsgi_app(environ, start_response):
     import gluon
     common_context = {key:getattr(gluon,key) for key in dir(gluon)}
     have_databases = False
@@ -70,36 +76,40 @@ def simple_app(environ, start_response):
         try:
             request = Request(environ)
             request_folder = request.folder            
+            # if client requested a static page
             if request.controller == 'static':
-                # serve static file 
+                
                 static_folder =  os_path_join(request_folder,'static')
                 filename = os_path_join(static_folder,*request._items[2:])
                 if not filename.startswith(static_folder+'/'): raise HTTP(404)
-                if not os.path.exists(filename): raise HTTP(404)
-                stream_file_or_304_or_206(filename, environ=environ)                
+                if not os_path_exists(filename): raise HTTP(404)
+                stream_file_or_304_or_206(filename, environ=environ) # raise HTTP 200
+            # if instead client requested a dynamic page
             else:
-                # serve dynamic pages
+                # create response and session object (session is disabled here)
                 response = Response()
                 session = Session()
-                # build context and inject variables into context (~20% slow down)
+                # build context and inject variables into context
                 runner = CodeRunner(common_context.copy())
+                # check if there is a database folder and set the folder
                 database_folder =  os_path_join(request_folder,'databases')
-                have_databases = os.path.exists(database_folder)
+                have_databases = os_path_exists(database_folder)
                 if have_databases:
-                    BaseAdapter.set_folder(os_path_join(request.folder, 'databases'))
-                runner.context['T'] = translator(os_path_join(request.folder,'languages'),
+                    BaseAdapter.set_folder(os_path_join(request_folder, 'databases'))
+                # inject request specific variables into context
+                runner.context['T'] = translator(os_path_join(request_folder,'languages'),
                                                  request.environ.get('HTTP_ACCEPT_LANGUAGE'))
                 runner.context['request'] = current.request = request
                 runner.context['response'] = current.response = response
                 runner.context['session'] = current.session = session
-
-                controllers_folder = os_path_join(request.folder,'controllers') 
+                # raise an error if the controller file is missing
+                controllers_folder = os_path_join(request_folder,'controllers') 
                 controller_filename = os_path_join(controllers_folder,request.controller+'.py')
                 if not controller_filename.startswith(controllers_folder+'/'): raise HTTP(404)
-                if not os.path.exists(controller_filename): raise HTTP(404)
-                # import models, ugly but faster than glob, stull 5-10% of tota;
-                models_folder = os_path_join(request.folder,'models')
-                if os.path.exists(models_folder):
+                if not os_path_exists(controller_filename): raise HTTP(404)
+                # import models, ugly but faster than glob
+                models_folder = os_path_join(request_folder,'models')
+                if os_path_exists(models_folder):
                     for filename in sorted(filter(lambda x: x[-3:]=='.py',os.listdir(models_folder))): 
                         runner.import_code(models_folder+os.sep+filename)
                 # run controller action
@@ -109,43 +119,62 @@ def simple_app(environ, start_response):
                 func_ext = request.function+'.'+request.extension
                 if isinstance(content, dict):
                     view_context.update(content)
-                    template_folder = os_path_join(request.folder,'views')
-                    template_filename = os_path_join(template_folder,request.controller,func_ext) # FIX THIS: response.view
-                    if os.path.exists(template_filename):
+                    template_folder = os_path_join(request_folder,'views')
+                    # maybe a response.view is specified
+                    if response.view:
+                        template_filename = os_path_join(template_folder,response.view)
+                    # or maybe not
+                    else:
+                        template_filename = os_path_join(template_folder,request.controller,func_ext)
+                    # if the view exists use it
+                    if os_path_exists(template_filename):
                         content = render(filename=template_filename, path = template_folder, context = view_context)
+                    # else but represent the context as a dict (generic views?)
                     else:
                         content = repr(view_context)
-                        
+                # set the content type
                 response.headers["Content-type"] = contenttype(func_ext)                
                 http = HTTP(response.status, content, headers=response.headers)
+                # deal with cookies
                 if hasattr(response,'_cookies'):
                     http.cookies2headers(response.cookies)
-
+                # commit databases, if any
                 have_databases = have_databases and response.auto_commit
                 if have_databases:
                     session._try_store_in_db(request, response)
                     BaseAdapter.close_all_instances('commit')
                     have_databases = False
+                # save session, if changed
                 session._try_store_in_cookie_or_file(request, response)
-
+                # done!
                 raise http   
-        except HTTP, http:
+        # if a HTTP is raised, everything is ok, return
+        except HTTP, http:            
             return http.to(start_response, env=environ)
+        # there was an error
         except Exception, err: 
+            # maybe log the ticket
             if isinstance(err, RestrictedError):
                 ticket = err.log()
+            # or maybe not
             else:
                 print traceback.format_exc()
                 #request.logger.error(traceback.format_exc())
                 ticket = 'unknown'
+            # return HTTP 500
             return  HTTP(500, ticket).to(start_response, env=environ)
+    # there was an error in handling the above error (like IOError)
     except:
-        request.logger.error(traceback.format_exc())
+        print traceback.format_exc()
+        #request.logger.error(traceback.format_exc())
+        # return HTTP 500
         return HTTP(500, 'unknown').to(start_response, env=environ)
+    # but no matter what happens if the database was not committed, rollback
+    # and close any file that may be open
     finally:
         if have_databases:
             failsafe(lambda: BaseAdapter.close_all_instances('rollback'))
 
 def main():
-    print 'starting'
-    HttpServer(simple_app, port=8888).start()
+    print 'starting...'
+    HttpServer(main_wsgi_app, port=8888).start()
