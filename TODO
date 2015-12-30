@@ -1,0 +1,9 @@
+handle request.folder
+
+backward compatibility
+
+session.connect()
+request.env
+response.*
+inject everything in environment
+use custom importer

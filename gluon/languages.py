@@ -78,9 +78,9 @@ regex_plural_file = re.compile('^plural-[a-zA-Z]{2}(-[a-zA-Z]{2})?\.py$')
 
 def is_writable():
     """ returns True if and only if the filesystem is writable """
-    from gluon.settings import global_settings
-    return not global_settings.web2py_runtime_gae
-
+    #from gluon.settings import global_settings
+    #return not global_settings.web2py_runtime_gae
+    return True # FIX ME
 
 def safe_eval(text):
     if text.strip():

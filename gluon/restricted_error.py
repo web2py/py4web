@@ -17,12 +17,10 @@ except:
 import traceback
 import types
 import os
-import logging
 
+from gluon.current import current
 from gluon.storage import Storage
 # from gluon.html import BEAUTIFY, XML
-
-logger = logging.getLogger("web2py")
 
 __all__ = ['RestrictedError', 'restricted', 'TicketStorage', 'compile2']
 
@@ -42,43 +40,44 @@ class TicketStorage(Storage):
         self.db = db
         self.tablename = tablename
 
-    def store(self, request, ticket_id, ticket_data):
+    def store(self, ticket_id, ticket_data):
         """
         Stores the ticket. It will figure out if this must be on disk or in db
         """
         if self.db:
-            self._store_in_db(request, ticket_id, ticket_data)
+            self._store_in_db(ticket_id, ticket_data)
         else:
-            self._store_on_disk(request, ticket_id, ticket_data)
+            self._store_on_disk(ticket_id, ticket_data)
 
-    def _store_in_db(self, request, ticket_id, ticket_data):
+    def _store_in_db(self, ticket_id, ticket_data):
         self.db._adapter.reconnect()
         try:
-            table = self._get_table(self.db, self.tablename, request.application)
+            table = self._get_table(self.db, self.tablename, current.request.application)
             table.insert(ticket_id=ticket_id,
                          ticket_data=pickle.dumps(ticket_data, pickle.HIGHEST_PROTOCOL),
-                         created_datetime=request.now)
+                         created_datetime=current.request.utcnow)
             self.db.commit()
             message = 'In FILE: %(layer)s\n\n%(traceback)s\n'
         except Exception:
             self.db.rollback()
             message =' Unable to store in FILE: %(layer)s\n\n%(traceback)s\n'
         self.db.close()
-        logger.error(message % ticket_data)
+        current.request.logger.error(message % ticket_data)
 
-    def _store_on_disk(self, request, ticket_id, ticket_data):
-        ef = self._error_file(request, ticket_id, 'wb')
+    def _store_on_disk(self, ticket_id, ticket_data):
+        ef = self._error_file(ticket_id, 'wb')
         try:
             pickle.dump(ticket_data, ef)
         finally:
             ef.close()
 
-    def _error_file(self, request, ticket_id, mode, app=None):
-        root = request.folder
+    def _error_file(self, ticket_id, mode, app=None):
+        root = current.request.folder
         if app:
             root = os.path.join(os.path.join(root, '..'), app)
-        errors_folder = os.path.abspath(
-            os.path.join(root, 'errors'))  # .replace('\\', '/')
+        errors_folder = os.path.abspath(os.path.join(root, 'errors'))
+        if not os.path.exists(errors_folder):
+            os.mkdir(errors_folder)
         return open(os.path.join(errors_folder, ticket_id), mode)
 
     def _get_table(self, db, tablename, app):
@@ -94,13 +93,12 @@ class TicketStorage(Storage):
 
     def load(
         self,
-        request,
         app,
         ticket_id,
     ):
         if not self.db:
             try:
-                ef = self._error_file(request, ticket_id, 'rb', app)
+                ef = self._error_file(ticket_id, 'rb', app)
             except IOError:
                 return {}
             try:
@@ -150,7 +148,7 @@ class RestrictedError(Exception):
             self.traceback = '(no error)'
             self.snapshot = {}
 
-    def log(self, request):
+    def log(self):
         """
         Logs the exception.
         """
@@ -162,20 +160,21 @@ class RestrictedError(Exception):
                 'traceback': str(self.traceback),
                 'snapshot': self.snapshot,
             }
-            ticket_storage = TicketStorage(db=request.tickets_db)
-            ticket_storage.store(request, request.uuid.split('/', 1)[1], d)
-            return request.uuid
+            ticket_storage = TicketStorage(db=None) # FIX THIS
+            uuid = current.request.uuid
+            ticket_storage.store(uuid, d)
+            return uuid
         except:
-            logger.error(self.traceback)
+            current.request.logger.error(self.traceback)
             return None
 
 
-    def load(self, request, app, ticket_id):
+    def load(self, app, ticket_id):
         """
         Loads a logged exception.
         """
-        ticket_storage = TicketStorage(db=request.tickets_db)
-        d = ticket_storage.load(request, app, ticket_id)
+        ticket_storage = TicketStorage(db=None) # FIX THIS
+        d = ticket_storage.load(app, ticket_id)
 
         self.layer = d.get('layer')
         self.code = d.get('code')

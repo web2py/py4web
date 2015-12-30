@@ -1,17 +1,17 @@
 import re
+import urllib
 from gluon.utils import web2py_uuid, simple_hash, compare
 
 regex_crlf = re.compile('\r|\n')
 
-def url_out(request, environ, application, controller, function,
+def url_out(request, application, controller, function,
             args, other, scheme, host, port, language=None):
     """Assembles and rewrites outgoing URL"""
     url = '/%s/%s/%s%s' % (application, controller, function, other)
     if host is True or (host is None and (scheme or port is not None)):
-        host = request.env.http_host
+        host = request.environ.get('HTTP_HOST')
     if not scheme or scheme is True:
-        scheme = request.env.get('wsgi_url_scheme', 'http').lower() \
-            if request else 'http'
+        scheme = 'https' if request.is_https else 'http'
     if host:
         host_port = host if not port else host.split(':', 1)[0] + ':%s' % port
         url = '%s://%s%s' % (scheme, host_port, url)
@@ -140,7 +140,7 @@ def URL(
             (f, a, c) = (a, c, f)
         elif a and c and not f:
             (c, f, a) = (a, c, f)
-        from globals import current
+        from gluon import current
         if hasattr(current, 'request'):
             r = current.request
 
@@ -148,7 +148,6 @@ def URL(
         application = r.application
         controller = r.controller
         function = r.function
-        env = r.env
         if extension is None and r.extension != 'html':
             extension = r.extension
     if a:
@@ -254,10 +253,10 @@ def URL(
     if extension:
         function += '.' + extension
 
-    if regex_crlf.search(join([application, controller, function, other])):
+    if regex_crlf.search(''.join([application, controller, function, other])):
         raise SyntaxError('CRLF Injection Detected')
 
-    url = url_out(r, env, application, controller, function,
+    url = url_out(r, application, controller, function,
                   args, other, scheme, host, port, language=language)
     return url
 

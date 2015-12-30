@@ -6,110 +6,32 @@
 
 import os
 import sys
-import functools
-import threading
-import datetime
+import traceback
 import Cookie
-import copy
-
-sys.path.append('site-packages')
-sys.path.append('gluon/packages/dal')
-
 
 from gluon import dal
 
+from gluon.current import current
 from gluon.storage import Storage
 from gluon.rocket import HttpServer
 from gluon.contenttype import contenttype
 from gluon.http import HTTP
 from gluon.template import render
 from gluon.streamer import stream_file_or_304_or_206
-from gluon.utils import reconstruct_url, web2py_uuid, get_client, get_localhosts
-from gluon.environ_parsers import parse_cookies, parse_body, parse_get_vars, parse_post_vars, parse_all_vars
 from gluon.restricted_error import RestrictedError
+from gluon.languages import translator
+from gluon.request import Request
+from gluon.response import Response
 from pydal.base import BaseAdapter
 
-current = threading.local()
+os_path_join = os.path.join
 
-def memoize_property(func):    
-    @functools.wraps(func)
-    def tmp(self):
-        aname = '_'+func.__name__
-        try:
-            value = getattr(self, aname)
-        except AttributeError:
-            value = func(self)
-            setattr(self, aname, value)
-        return value
-    return property(tmp)
+def failsafe(func):
+    try:
+        return func()
+    except:
+        return None
 
-class Request(object):
-    def __init__(self, environ):
-        self.environ = environ
-        self._items = filter(lambda x:x, self.environ['PATH_INFO'].split('/'))
-        self.application = self._items[0] if len(self._items)>0 else 'welcome'
-        self.controller = self._items[1] if len(self._items)>1 else 'default'
-        self.function = self._items[2] if len(self._items)>2 else 'index'
-        self.args = self._items[3:]
-    @memoize_property
-    def uuid(self):
-        return web2py_uuid()
-    @memoize_property
-    def url(self): 
-        return reconstruct_url(self.environ)
-    @memoize_property
-    def now(self):        
-        return datetime.datetime.now()
-    @memoize_property
-    def utcnow(self):
-        return datetime.datetime.utcnow()
-    @memoize_property
-    def body(self):
-        return parse_body(self.environ)
-    @memoize_property
-    def cookies(self):
-        return parse_cookies(self.environ)
-    @memoize_property
-    def get_vars(self):
-        return parse_get_vars(self.environ)
-    @memoize_property
-    def post_vars(self):
-        return parse_post_vars(self.environ, self.body.read())
-    @memoize_property
-    def vars(self):
-        return parse_all_vars(self.get_vars, self.post_vars)
-    @memoize_property
-    def client(self):
-        return get_client(self.environ)
-    @memoize_property
-    def method(self):
-        return self.environ['REQUEST_METHOD']
-    @memoize_property
-    def folder(self):
-        raise NotImplementedEror
-    @memoize_property
-    def is_ajax(self):
-        return self.environ.get('HTTP_X_REQUESTED_WITH','').lower() == 'xmlhttprequest'
-    @memoize_property
-    def is_local(self):
-        remote_addr = self.environ['REMOTE_ADDR']
-        return (remote_addr in get_localhosts(self.environ) and self.client == remote_addr)
-    @memoize_property
-    def is_https(self):        
-        def e(x): return self.environ.get(x,'').upper()
-        return 'HTTPS' in (e('wsgi_url_scheme'), e('HTTP_X_FORWARDED_PROTO')) or e('HTTPS')=='ON'
-
-class Response(object):
-    def __init__(self):
-        self.status = '200 OK' 
-        self.headers = {}
-    @memoize_property
-    def cookies(self):
-        return Cookie.SimpleCookie()
-    def stream(self, filename):
-        stream_file_or_304_or_206(filename, environ=current.request.environ)
-        
-    
 class CodeRunner(object):
 
     def __init__(self, context=None):
@@ -123,7 +45,8 @@ class CodeRunner(object):
             if new_mtime != mtime:
                 raise KeyError
         except KeyError:
-            code = compile(open(filename).read(), filename, 'exec')
+            with open(filename) as myfile:
+                code = compile(myfile.read(), filename, 'exec')
             cache_controllers[filename] = (new_mtime, code)
         return code
 
@@ -134,8 +57,6 @@ class CodeRunner(object):
             if function_name:
                 return self.context[function_name](*args, **kwargs)
         except Exception, error:
-            import traceback
-            print traceback.format_exc()
             etype, evalue, tb = sys.exc_info()
             output = "%s %s" % (etype, evalue)
             raise RestrictedError(filename, code, output, self.context)
@@ -143,50 +64,81 @@ class CodeRunner(object):
 def simple_app(environ, start_response):
     import gluon
     common_context = {key:getattr(gluon,key) for key in dir(gluon)}
+    have_databases = False
     try:
         try:
             request = Request(environ)
+            request_folder = request.folder            
             if request.controller == 'static':
-                # serve static file
-                filename = os.path.join('applications',request.application,'static',*request._items[2:])
-                stream_file_or_304_or_206(filename, environ=environ)
+                # serve static file 
+                static_folder =  os_path_join(request_folder,'static')
+                filename = os_path_join(static_folder,*request._items[2:])
+                if not filename.startswith(static_folder+'/'): raise HTTP(404)
+                if not os.path.exists(filename): raise HTTP(404)
+                stream_file_or_304_or_206(filename, environ=environ)                
             else:
                 # serve dynamic pages
-                ext = '.html' # FIX ME
                 response = Response()
-                runner = CodeRunner(copy.copy(common_context))
+                # build context and inject variables into context (~20% slow down)
+                runner = CodeRunner(common_context.copy())
+                database_folder =  os_path_join(request_folder,'databases')
+                have_databases = os.path.exists(database_folder)
+                if have_databases:
+                    BaseAdapter.set_folder(os_path_join(request.folder, 'databases'))
+                runner.context['T'] = translator(os_path_join(request.folder,'languages'),
+                                                 request.environ.get('HTTP_ACCEPT_LANGUAGE'))
                 runner.context['request'] = current.request = request
                 runner.context['response'] = current.response = response
+
+                controllers_folder = os_path_join(request.folder,'controllers') 
+                controller_filename = os_path_join(controllers_folder,request.controller+'.py')
+                if not controller_filename.startswith(controllers_folder+'/'): raise HTTP(404)
+                if not os.path.exists(controller_filename): raise HTTP(404)
                 # import models, ugly but faster than glob, stull 5-10% of tota;
-                path = os.path.join('applications',request.application,'models')
-                for filename in sorted(filter(lambda x: x[-3:]=='.py',os.listdir(path))): 
-                    runner.import_code(path+os.sep+filename)
-                context = copy.copy(runner.context)
-                filename = os.path.join('applications',request.application,'controllers',request.controller+'.py')
-                content = runner.import_code(filename, request.function)
+                models_folder = os_path_join(request.folder,'models')
+                if os.path.exists(models_folder):
+                    for filename in sorted(filter(lambda x: x[-3:]=='.py',os.listdir(models_folder))): 
+                        runner.import_code(models_folder+os.sep+filename)
+                # run controller action
+                view_context = runner.context.copy()
+                content = runner.import_code(controller_filename, request.function)
+                # optionally run view
+                func_ext = request.function+'.'+request.extension
                 if isinstance(content, dict):
-                    context.update(content)
-                    template_path = os.path.join('applications',request.application,'views')
-                    template_filename = os.path.join(template_path,request.controller,request.function+ext)
-                    content = render(filename=template_filename, path = template_path, context = context)
-                response.headers["Content-type"] = contenttype(ext)
-                raise HTTP(200, content, headers=response.headers)
+                    view_context.update(content)
+                    template_folder = os_path_join(request.folder,'views')
+                    template_filename = os_path_join(template_folder,request.controller,func_ext)
+                    if os.path.exists(template_filename):
+                        content = render(filename=template_filename, path = template_folder, context = view_context)
+                    else:
+                        content = repr(view_context)
+                        
+                response.headers["Content-type"] = contenttype(func_ext)                
+                http = HTTP(response.status, content, headers=response.headers)
+                if hasattr(response,'_cookies'):
+                    http.cookies2headers(response.cookies)
+
+                have_databases = have_databases and response.auto_commit
+                if have_databases:
+                    BaseAdapter.close_all_instances('commit')
+                    have_databases = False
+
+                raise http   
         except HTTP, http:
-            http.cookies2headers(response.cookies)
-            BaseAdapter.close_all_instances('commit')
             return http.to(start_response, env=environ)
-        except RestrictedError, err:       
-            BaseAdapter.close_all_instances('rollback')
-            start_response('500 Internal Error', [("Content-type", "text/plain")])        
-            content = 'some error'
-            return [content]
+        except Exception, err: 
+            if isinstance(err, RestrictedError):
+                ticket = err.log()
+            else:
+                request.logger.error(traceback.format_exc())
+                ticket = 'unknown'
+            return  HTTP(500, ticket).to(start_response, env=environ)
     except:
-        BaseAdapter.close_all_instances('rollback')
-        import traceback
-        start_response('500 Internal Error', [("Content-type", "text/plain")])        
-        content = traceback.format_exc()    
-        return [content]
-        
+        request.logger.error(traceback.format_exc())
+        return HTTP(500, 'unknown').to(start_response, env=environ)
+    finally:
+        if have_databases:
+            failsafe(lambda: BaseAdapter.close_all_instances('rollback'))
 
 def main():
     print 'starting'

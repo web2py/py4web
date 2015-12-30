@@ -18,3 +18,5 @@ def make_thing():
     form = Form(db.thing, csrf=False)
     return dict(form=form)
 
+def error():
+    1/0
