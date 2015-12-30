@@ -10,6 +10,7 @@ import functools
 import threading
 import datetime
 import Cookie
+import copy
 
 sys.path.append('site-packages')
 sys.path.append('gluon/packages/dal')
@@ -111,8 +112,8 @@ class Response(object):
     
 class CodeRunner(object):
 
-    def __init__(self, environment=None):
-        self.environment = environment or {}    
+    def __init__(self, context=None):
+        self.context = context or {}    
 
     @staticmethod
     def cached_code(filename, cache_controllers = {}):
@@ -129,17 +130,19 @@ class CodeRunner(object):
     def import_code(self, filename, function_name=None, *args, **kwargs):        
         code = self.cached_code(filename)
         try:
-            exec code in self.environment
+            exec code in self.context
             if function_name:
-                return self.environment[function_name](*args, **kwargs)
+                return self.context[function_name](*args, **kwargs)
         except Exception, error:
             import traceback
             print traceback.format_exc()
             etype, evalue, tb = sys.exc_info()
             output = "%s %s" % (etype, evalue)
-            raise RestrictedError(filename, code, output, self.environment)
+            raise RestrictedError(filename, code, output, self.context)
 
 def simple_app(environ, start_response):
+    import gluon
+    common_context = {key:getattr(gluon,key) for key in dir(gluon)}
     try:
         try:
             request = Request(environ)
@@ -151,15 +154,21 @@ def simple_app(environ, start_response):
                 # serve dynamic pages
                 ext = '.html' # FIX ME
                 response = Response()
-                runner = CodeRunner()
-                runner.environment['request'] = current.request = request
-                runner.environment['response'] = current.response = response
-                filename = 'applications/%s/controllers/%s.py' % (request.application, request.controller)
+                runner = CodeRunner(copy.copy(common_context))
+                runner.context['request'] = current.request = request
+                runner.context['response'] = current.response = response
+                # import models, ugly but faster than glob, stull 5-10% of tota;
+                path = os.path.join('applications',request.application,'models')
+                for filename in sorted(filter(lambda x: x[-3:]=='.py',os.listdir(path))): 
+                    runner.import_code(path+os.sep+filename)
+                context = copy.copy(runner.context)
+                filename = os.path.join('applications',request.application,'controllers',request.controller+'.py')
                 content = runner.import_code(filename, request.function)
                 if isinstance(content, dict):
+                    context.update(content)
                     template_path = os.path.join('applications',request.application,'views')
                     template_filename = os.path.join(template_path,request.controller,request.function+ext)
-                    content = render(filename=template_filename, path = template_path, context = content)
+                    content = render(filename=template_filename, path = template_path, context = context)
                 response.headers["Content-type"] = contenttype(ext)
                 raise HTTP(200, content, headers=response.headers)
         except HTTP, http:

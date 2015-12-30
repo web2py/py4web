@@ -252,7 +252,7 @@ class TemplateParser(object):
                  name="ParserContainer",
                  context=dict(),
                  path='views/',
-                 writer='response.write',
+                 writer='write_here',
                  lexers={},
                  delimiters=('{{', '}}'),
                  _super_nodes = [],
@@ -710,7 +710,7 @@ class TemplateParser(object):
                             # for i in range(10):
                             #   = i
                             # pass
-                            # So we can properly put a response.write() in place.
+                            # So we can properly put a write_here() in place.
                             continuation = False
                             len_parsed = 0
                             for k, token in enumerate(tokens):
@@ -805,7 +805,7 @@ def get_parsed(text):
     return str(TemplateParser(text))
 
 
-class DummyResponse():
+class Writer():
     def __init__(self):
         self.body = StringIO.StringIO()
 
@@ -845,7 +845,7 @@ def render(content="hello world",
            context={},
            lexers={},
            delimiters=('{{', '}}'),
-           writer='response.write'
+           writer='write_here'
            ):
     """
     Generic render function
@@ -868,7 +868,7 @@ def render(content="hello world",
         >>> render(content="abc'")
         "abc'"
         >>> render(content=''''a"'bc''')
-        'a"'bc'
+        '\\'a"\\'bc'
         >>> render(content='a\\nbc')
         'a\\nbc'
         >>> render(content='a"bcd"e')
@@ -888,26 +888,18 @@ def render(content="hello world",
 
     """
     # here to avoid circular Imports
-    try:
-        from globals import Response
-    except ImportError:
-        # Working standalone. Build a mock Response object.
-        Response = DummyResponse
 
-        # Add it to the context so we can use it.
-        if not 'NOESCAPE' in context:
-            context['NOESCAPE'] = NOESCAPE
+    # Add it to the context so we can use it.
+    if not 'NOESCAPE' in context:
+        context['NOESCAPE'] = NOESCAPE
 
     if isinstance(content, unicode):
         content = content.encode('utf8')
 
     # save current response class
-    if context and 'response' in context:
-        old_response_body = context['response'].body
-        context['response'].body = StringIO.StringIO()
-    else:
-        old_response_body = None
-        context['response'] = Response()
+    
+    writerobj = Writer()
+    context['write_here'] = writerobj.write
 
     # If we don't have anything to render, why bother?
     if not content and not stream and not filename:
@@ -936,11 +928,7 @@ def render(content="hello world",
         stream.close()
 
     # Returned the rendered content.
-    text = context['response'].body.getvalue()
-    if old_response_body is not None:
-        context['response'].body = old_response_body
-    return text
-
+    return writerobj.body.getvalue()
 
 if __name__ == '__main__':
     import doctest

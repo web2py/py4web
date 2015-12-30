@@ -11,14 +11,14 @@ from gluon.sanitizer import sanitize
 def xmlescape(text):
     return cgi.escape(text, True).replace("'", "&#x27;")
 
-class TAG(object):    
+class TAGGER(object):    
 
     def __init__(self, name, *children, **attributes):
         self.name = name
         self.children = list(children)
         self.attributes = attributes
         for child in self.children:
-            if isinstance(child, TAG):
+            if isinstance(child, TAGGER):
                 child.parent = self
 
     def xml(self):
@@ -32,7 +32,7 @@ class TAG(object):
         if name.endswith('/'):
             return '<%s%s/>' % (name, a)
         else:
-            b = ''.join(s.xml() if isinstance(s,TAG) else xmlescape(unicode(s))
+            b = ''.join(s.xml() if isinstance(s,TAGGER) else xmlescape(unicode(s))
                         for s in self.children)
             return '<%s%s>%s</%s>' %(name, a, b, name)
     
@@ -74,43 +74,47 @@ class METATAG(object):
     def __getattr__(self, name):
         return self(name)
 
-    def __call__(self, name):
-        return lambda *children, **attributes: TAG(name, *children, **attributes)
+    def __getitem__(self, name):
+        return lambda *children, **attributes: TAGGER(name, *children, **attributes)
 
-tag = METATAG()
-DIV = tag('div')
-SPAN = tag('span')
-LI = tag('li')
-OL = tag('ol')
-UL = tag('ul')
-A  = tag('a')
-H1 = tag('h1')
-H2 = tag('h2')
-H3 = tag('h3')
-H4 = tag('h4')
-H5 = tag('h5')
-H6 = tag('h6')
-EM = tag('em')
-TR = tag('tr')
-TD = tag('td')
-TH = tag('th')
-IMG = tag('img/')
-FORM = tag('form')
-HEAD = tag('head')
-BODY = tag('body')
-TABLE = tag('table')
-INPUT = tag('input/')
-LABEL = tag('label')
-STRONG = tag('strong')
-SELECT = tag('select')
-OPTION = tag('option')
-TEXTAREA = tag('textarea')
+TAG = METATAG()
+DIV = TAG['div']
+SPAN = TAG['span']
+LI = TAG['li']
+OL = TAG['ol']
+UL = TAG['ul']
+A  = TAG['a']
+H1 = TAG['h1']
+H2 = TAG['h2']
+H3 = TAG['h3']
+H4 = TAG['h4']
+H5 = TAG['h5']
+H6 = TAG['h6']
+EM = TAG['em']
+TR = TAG['tr']
+TD = TAG['td']
+TH = TAG['th']
+IMG = TAG['img/']
+PRE = TAG['pre']
+CODE = TAG['code']
+FORM = TAG['form']
+HEAD = TAG['head']
+BODY = TAG['body']
+TABLE = TAG['thead']
+THAED = TAG['tbody']
+TBODY = TAG['table']
+INPUT = TAG['input/']
+LABEL = TAG['label']
+STRONG = TAG['strong']
+SELECT = TAG['select']
+OPTION = TAG['option']
+TEXTAREA = TAG['textarea']
 
 # ################################################################
 # New XML Helpers
 # ################################################################
 
-class XML(TAG):
+class XML(TAGGER):
     """
     use it to wrap a string that contains XML/HTML so that it will not be
     escaped by the template
