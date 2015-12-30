@@ -14,6 +14,7 @@ import threading
 import struct
 import uuid
 import random
+import socket
 import inspect
 import time
 import os
@@ -373,3 +374,46 @@ def reconstruct_url(environ):
     if environ.get('QUERY_STRING'):
         url += '?' + environ['QUERY_STRING']
     return url
+
+regex_client = re.compile('[\w\-:]+(\.[\w\-]+)*\.?')
+
+def get_client(environ):
+    """                                                                                                      
+    Guesses the client address from the environment variables                                                
+                                                                                                             
+    First tries 'http_x_forwarded_for', secondly 'remote_addr'                                               
+    if all fails, assume '127.0.0.1' or '::1' (running locally)                                              
+    """
+    eget = environ.get
+    g = regex_client.search(eget('HTTP_X_FORWARDED_FOR', ''))
+    client = (g.group() or '').split(',')[0] if g else None
+    if client in (None, '', 'unknown'):
+        g = regex_client.search(eget('remote_addr', ''))
+        if g:
+            client = g.group()
+        elif eget('HTTP_HOST','').startswith('['):  # IPv6                                                          
+            client = '::1'
+        else:
+            client = '127.0.0.1'  # IPv4                                                                     
+    if not is_valid_ip_address(client):
+        raise HTTP(400, "Bad Request (request.client=%s)" % client)
+    return client
+
+def get_localhosts(environ):
+    local_hosts = set(['127.0.0.1', '::ffff:127.0.0.1', '::1'])
+    try:
+        fqdn = socket.getfqdn()
+        local_hosts.add(socket.gethostname())
+        local_hosts.add(fqdn)
+        local_hosts.update([
+                addrinfo[4][0] for addrinfo
+                in getipaddrinfo(fqdn)])
+        server_name = environ.get('SERVER_NAME')
+        if server_name:
+            local_hosts.add(server_name)
+            for addrinfo in getipaddrinfo(server_name):
+                local_hosts.add(addrinfo[4][0])
+    except (socket.gaierror, TypeError):
+        pass
+    return local_hosts
+

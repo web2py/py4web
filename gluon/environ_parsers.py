@@ -7,7 +7,7 @@ from gluon.http import HTTP
 from gluon.storage import Storage
 
 def parse_cookies(environ):
-    cookies = Cookie.SimleCookie() 
+    cookies = Cookie.SimpleCookie() 
     env_cookie = environ.get('HTTP_COOKIE','')
     if env_cookie:
         for single_cookie in env_cookie.split(';'):

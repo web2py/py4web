@@ -1,5 +1,5 @@
 def index():
-    return dict()
+    return dict(request=request)
 
 def simple():
     return 'hello world'
@@ -11,7 +11,7 @@ def template():
     return dict(a=1, b=2)
 
 def make_thing():
-    from gluon.dal import DAL
+    from gluon.dal import DAL, Field
     from gluon.form import Form
     db = DAL('sqlite://storage.db')
     db.define_table('thing',Field('name'))

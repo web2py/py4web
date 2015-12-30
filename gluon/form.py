@@ -1,4 +1,10 @@
-from gluon import current, URL, DAL
+try:
+    from gluon import current, URL, DAL
+except ImportError:
+    from gluon.url import URL
+    from gluon.dal import DAL
+    from gluon.main import current
+
 from gluon.tag import *
 
 def FormStyleDefault(table, vars, errors, readonly, deletable):
@@ -125,18 +131,17 @@ class Form(object):
         self.formkey = None
 
         request = current.request
-        session = current.session
         post_vars = request.post_vars
 
-        if readonly or request.env.request_method=='GET':
+        if readonly or request.method=='GET':
             if self.record:
                 self.vars = self.record
         else:
             print post_vars
             self.submitted = True            
             # check for CSRF
-            if csrf and self.formname in (session._formkeys or {}):
-                self.formkey = session._formkeys[self.formname]                
+            if csrf and self.formname in (current.session._formkeys or {}):
+                self.formkey = current.session._formkeys[self.formname]                
             # validate fields
             if not csrf or post_vars._formkey == self.formkey:
                 if not post_vars._delete:
@@ -172,9 +177,10 @@ class Form(object):
                     self.record.delete_record()
         # store key for future CSRF
         if csrf:
+            session = current.session
             if not session._formkeys:
                 session._formkeys = {}
-            if self.formname not in session._formkeys:
+            if self.formname not in current.session._formkeys:
                 session._formkeys[self.formname] = web2py_uuid()
             self.formkey = session._formkeys[self.formname]
 
