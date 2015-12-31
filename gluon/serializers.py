@@ -6,7 +6,7 @@ License: LGPLv3 (http://www.gnu.org/licenses/lgpl.html)
 import datetime
 import decimal
 from gluon.storage import Storage
-from gluon.tag import TAG
+from gluon.helpers import TAGGER
 from gluon.languages import lazyT
 
 try:
@@ -97,7 +97,7 @@ def custom_json(o):
         return str(o)
     elif isinstance(o, lazyT):
         return str(o)
-    elif isinstance(o, TAG):
+    elif isinstance(o, TAGGER):
         return str(o)
     elif isinstance(o, set):
         return list(o)

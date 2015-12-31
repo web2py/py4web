@@ -5,7 +5,7 @@ except ImportError:
     from gluon.dal import DAL
     from gluon.main import current
 
-from gluon.tag import *
+from gluon.helpers import *
 
 def FormStyleDefault(table, vars, errors, readonly, deletable):
     

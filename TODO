@@ -1,9 +1,5 @@
-handle request.folder
+backward compatibility?
+new custom importer?
 
-backward compatibility
-
-session.connect()
-request.env
-response.*
-inject everything in environment
-use custom importer
+fix stuff in services!
+removed dependencies from contrib!

@@ -1,8 +1,7 @@
 import cgi
 import copy_reg
-from gluon.storage import Storage
-from gluon.utils import web2py_uuid
-from gluon.sanitizer import sanitize
+
+__all__ = ['A', 'BEAUTIFY', 'BODY', 'CODE', 'DIV', 'EM', 'FORM', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HEAD', 'IMG', 'INPUT', 'LABEL', 'LI', 'METATAG', 'OL', 'OPTION', 'PRE', 'SELECT', 'SPAN', 'STRONG', 'TABLE', 'TAG', 'TAGGER', 'TBODY', 'TD', 'TEXTAREA', 'TH', 'THAED', 'TR', 'UL', 'XML', 'xmlescape']
 
 # ################################################################
 # New HTML Helpers
@@ -110,6 +109,7 @@ SELECT = TAG['select']
 OPTION = TAG['option']
 TEXTAREA = TAG['textarea']
 
+
 # ################################################################
 # New XML Helpers
 # ################################################################
@@ -152,6 +152,7 @@ class XML(TAGGER):
         """
 
         if sanitize:
+            from gluon.sanitizer import sanitize
             text = sanitize(text, permitted_tags, allowed_attributes)
         if isinstance(text, unicode):
             text = text.encode('utf8', 'xmlcharrefreplace')
@@ -197,5 +198,16 @@ def XML_pickle(data):
     return XML_unpickle, (marshal.dumps(str(data)),)
 copy_reg.pickle(XML, XML_pickle, XML_unpickle)
 
-if __name__=='__main__':
-    print(DIV(SPAN('this',STRONG('a test'),XML('1<2')),_id=1,_class="my class"))
+# ################################################################
+# BEAUTIFY everything
+# ################################################################
+
+def BEAUTIFY(obj): # FIX ME, dealing with very large objects
+    if isinstance(obj, TAGGER):
+        return obj
+    elif isinstance(obj, list):
+        return UL(*[LI(BEAUTIFY(item)) for item in  obj])
+    elif isinstance(obj, dict):
+        return TABLE(TBODY(*[TR(TH(XML(key)),TD(BEAUTIFY(value))) for key, value in obj.iteritems()]))
+    else:
+        return XML(obj)

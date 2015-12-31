@@ -1,7 +1,7 @@
 import cgi
 from tag import TAGGER, UL, LI, TABLE, TBODY, TR, TH, TD, DIV, XML
 
-def beautify(obj):
+def BEAUTIFY(obj):
     if isinstance(obj, TAGGER):
         return obj
     elif isinstance(obj, list):
@@ -11,6 +11,8 @@ def beautify(obj):
     else:
         return XML(obj)
 
-def 
+def menu(menu_items):
+    return UL(*[LI(A([0],_href=p[2])) for p in menu_items])
+
 print beautify({'a':[1,2,DIV('3')]})    
     
