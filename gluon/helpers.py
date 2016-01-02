@@ -25,7 +25,7 @@ class TAGGER(object):
         a = ' '.join('%s="%s"' % 
                      (k[1:], k[1:] if v is True else xmlescape(unicode(v)))
                      for k,v in self.attributes.iteritems() 
-                     if k.startswith('_') and not v in (False,None))
+                     if k.startswith('_') and not (v is False or v is None))
         if a:
             a = ' '+a
         if name.endswith('/'):
@@ -99,9 +99,9 @@ CODE = TAG['code']
 FORM = TAG['form']
 HEAD = TAG['head']
 BODY = TAG['body']
-TABLE = TAG['thead']
-THAED = TAG['tbody']
-TBODY = TAG['table']
+TABLE = TAG['table']
+THAED = TAG['thead']
+TBODY = TAG['tbody']
 INPUT = TAG['input/']
 LABEL = TAG['label']
 STRONG = TAG['strong']

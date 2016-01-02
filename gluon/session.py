@@ -118,7 +118,7 @@ class Session(Storage):
         response.session_cookie_compression_level = compression_level
         response.session_new = False
         response.session_file = None
-        response.session_storage_type = 'cookie' if cookie_key else 'd' if db else 'file'
+        response.session_storage_type = 'cookie' if cookie_key else 'db' if db else 'file'
 
         # check if there is a session_id in cookies
         try:
@@ -246,11 +246,15 @@ class Session(Storage):
                 response.cookies[response.session_id_name]['expires'] = \
                     cookie_expires.strftime(FMT)
 
-        session_pickled = pickle.dumps(self, pickle.HIGHEST_PROTOCOL)
-        response.session_hash = hashlib.md5(session_pickled).hexdigest()
+        response.session_hash = self.session_hash()
 
         if self.flash:
             (response.flash, self.flash) = (self.flash, None)
+
+    def session_hash(self):
+        session_pickled = pickle.dumps(self, pickle.HIGHEST_PROTOCOL)
+        current.response.session_pickled = session_pickled
+        return hashlib.md5(session_pickled).hexdigest()
 
     def renew(self, clear_session=False):
 
@@ -425,10 +429,7 @@ class Session(Storage):
         return True
 
     def _unchanged(self, response):
-        session_pickled = pickle.dumps(self, pickle.HIGHEST_PROTOCOL)
-        response.session_pickled = session_pickled
-        session_hash = hashlib.md5(session_pickled).hexdigest()
-        return response.session_hash == session_hash
+        return response.session_hash == self.session_hash()
 
     def _try_store_in_db(self, request, response):
         # don't save if file-based sessions,
@@ -475,8 +476,7 @@ class Session(Storage):
     def _try_store_in_file(self, request, response):
         if not self._enabled: return
         try:
-            if (not response.session_id or
-                self._unchanged(response)):
+            if (not response.session_id or self._unchanged(response)):
                 # self.save_session_id_cookie() # CHECK THIS
                 return False
             if response.session_new or not response.session_file:
@@ -499,7 +499,7 @@ class Session(Storage):
 
     def _unlock(self):
         response = current.response
-        if response and response.session_file and response.session_locked:
+        if response and getattr(response,'session_file',None) and getattr(response,'session_locked',None):
             try:
                 portalocker.unlock(response.session_file)
                 response.session_locked = False

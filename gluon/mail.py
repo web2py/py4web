@@ -6,6 +6,7 @@ import string
 import smtplib
 from email import utils, MIMEBase, MIMEMultipart, MIMEText, Encoders, Header, message_from_string, Charset
 
+from gluon.storage import Storage, Settings, Messages
 from gluon.contenttype import contenttype
 
 __all__ = ['Mail']

@@ -1,11 +1,9 @@
-try:
-    from gluon import current, URL, DAL
-except ImportError:
-    from gluon.url import URL
-    from gluon.dal import DAL
-    from gluon.main import current
-
+from gluon.url import URL
+from gluon.dal import DAL
+from gluon.storage import Storage
+from gluon.current import current
 from gluon.helpers import *
+from gluon.utils import web2py_uuid
 
 def FormStyleDefault(table, vars, errors, readonly, deletable):
     
@@ -100,13 +98,14 @@ class Form(object):
                  dbio=True,
                  keepvalues=False,
                  formname=False,
+                 hidden=None,
                  csrf=True):
 
         if isinstance(table, list):
             dbio = False
             # mimic a table from a list of fields without calling define_table
             formname = formname or 'none'
-            for field in table: field.tablename = formname
+            for field in table: field.tablename = field.tablename or formname
  
         if isinstance(record, (int, long, basestring)):
             record_id = int(str(record))
@@ -128,21 +127,22 @@ class Form(object):
         self.accepted = False
         self.cached_helper = False
         self.formname = formname or table._tablename
+        self.hidden = hidden
         self.formkey = None
 
         request = current.request
-        post_vars = request.post_vars
 
         if readonly or request.method=='GET':
             if self.record:
                 self.vars = self.record
         else:
+            post_vars = request.post_vars
             print post_vars
             self.submitted = True            
             # check for CSRF
             if csrf and self.formname in (current.session._formkeys or {}):
                 self.formkey = current.session._formkeys[self.formname]                
-            # validate fields
+            # validate fields            
             if not csrf or post_vars._formkey == self.formkey:
                 if not post_vars._delete:
                     for field in self.table:
@@ -200,6 +200,9 @@ class Form(object):
             if self.csrf:
                 cached_helper.append(INPUT(_type='hidden',_name='_formkey',
                                            _value=self.formkey))
+            for key in self.hidden or {}:
+                cached_helper.append(INPUT(_type='hidden',_name=key,
+                                           _value=self.hidden[key]))
             self.cached_helper = cached_helper
         return cached_helper
 

@@ -20,6 +20,7 @@ if not request.env.web2py_runtime_gae:
     db = DAL(myconf.take('db.uri'), pool_size=myconf.take('db.pool_size', cast=int), check_reserved=['all'])
     # make sure sessions are enabled
     session.enable()
+    print session
 else:
     ## connect to Google BigTable (optional 'google:datastore://namespace')
     db = DAL('google:datastore+ndb')
@@ -32,10 +33,10 @@ else:
 
 ## by default give a view/generic.extension to all actions from localhost
 ## none otherwise. a pattern can be 'controller/function.extension'
-response.generic_patterns = ['*'] if request.is_local else []
+#response.generic_patterns = ['*'] if request.is_local else []
 ## choose a style for forms
-response.formstyle = myconf.take('forms.formstyle')  # or 'bootstrap3_stacked' or 'bootstrap2' or other
-response.form_label_separator = myconf.take('forms.separator')
+#response.formstyle = myconf.take('forms.formstyle')  # or 'bootstrap3_stacked' or 'bootstrap2' or other
+#response.form_label_separator = myconf.take('forms.separator')
 
 
 ## (optional) optimize handling of static files
@@ -53,12 +54,9 @@ response.form_label_separator = myconf.take('forms.separator')
 ## (more options discussed in gluon/tools.py)
 #########################################################################
 
-"""
-from gluon.tools import Auth, Service, PluginManager
+from gluon.auth import Auth
 
 auth = Auth(db)
-service = Service()
-plugins = PluginManager()
 
 ## create all tables needed by auth if not custom tables
 auth.define_tables(username=False, signature=False)
@@ -73,7 +71,6 @@ mail.settings.login = myconf.take('smtp.login')
 auth.settings.registration_requires_verification = False
 auth.settings.registration_requires_approval = False
 auth.settings.reset_password_requires_verification = True
-"""
 
 #########################################################################
 ## Define your tables below (or better in another model file) for example

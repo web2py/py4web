@@ -1,10 +1,14 @@
+import cgi
 import Cookie
 import urlparse
 import tempfile
 import copy
+import json
+import cStringIO
 import shutil
 from gluon.http import HTTP
 from gluon.storage import Storage
+from gluon.fileutils import copystream
 
 def parse_cookies(environ):
     cookies = Cookie.SimpleCookie() 
@@ -20,12 +24,19 @@ def parse_cookies(environ):
     return cookies
 
 def parse_body(environ):
+    if not environ.get('CONTENT_LENGTH', None):
+        return cStringIO.StringIO()
     try:
+        size = int(environ['CONTENT_LENGTH'])
+    except ValueError:
+        raise HTTP(400, "Invalid Content-Length header")
+    try:
+        source = environ['wsgi.input']
         try:  # Android requires this
             dest = tempfile.NamedTemporaryFile()
         except NotImplementedError:  # and GAE this
             dest = tempfile.TemporaryFile()
-        shutil.copyfileobj(dest,environ['wsgi.input'])
+        copystream(source, dest, size, chunk_size = 10**5)
         return dest
     except IOError:
         raise HTTP(400, "Bad Request - HTTP body is incomplete")
@@ -47,12 +58,12 @@ def parse_post_vars(environ, body):
     post_vars. application/json is also automatically parsed                                                                                                                                                                                             
     """
     post_vars = Storage()
-    # if content-type is application/json, we must read the body                                                                                                                                                                                         
-    is_json = environ.get('content_type', '')[:16] == 'application/json'
+    # if content-type is application/json, we must read the body
+    is_json = environ.get('CONTENT_TYPE', '')[:16] == 'application/json'
 
     if is_json:
         try:
-            json_vars = sj.load(body)
+            json_vars = json.load(body)
         except:
             # incoherent request bodies can still be parsed "ad-hoc"                                                                                                                                                                                     
             json_vars = {}
@@ -65,13 +76,11 @@ def parse_post_vars(environ, body):
 
     # parse POST variables on POST, PUT, BOTH only in post_vars                                                                                                                                                                                          
     if (body and not is_json
-        and environ.request_method in ('POST', 'PUT', 'DELETE', 'BOTH')):
+        and environ.get('REQUEST_METHOD') in ('POST', 'PUT', 'DELETE', 'BOTH')):
         query_string = environ.pop('QUERY_STRING', None)
         dpost = cgi.FieldStorage(fp=body, environ=environ, keep_blank_values=1)
-        try:
-            post_vars.update(dpost)
-        except:
-            pass
+        try: post_vars.update(dpost)
+        except: pass
         if query_string is not None:
             environ['QUERY_STRING'] = query_string
         # The same detection used by FieldStorage to detect multipart POSTs                                                                                                                                                                              

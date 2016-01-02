@@ -8,6 +8,7 @@ class Response(object):
         self.status = 200
         self.headers = {}
         self.view = {}
+        self.flash = None
         self.render = render
         self.auto_commit = True
         self.static_version = None

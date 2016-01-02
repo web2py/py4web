@@ -36,6 +36,7 @@ def user():
     to decorate functions that need access control
     also notice there is http://..../[app]/appadmin/manage/auth to allow administrator to manage users
     """
+    print request.method, request.get_vars, request.post_vars
     return dict(form=auth()) # FIX THIS
 
 

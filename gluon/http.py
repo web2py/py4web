@@ -167,16 +167,16 @@ def redirect(location='', how=303, client_side=False, headers=None):
     if location:
         from gluon import current
         loc = location.replace('\r', '%0D').replace('\n', '%0A')
-        if client_side and current.request.ajax:
+        if client_side and current.request.is_ajax:
             headers['web2py-redirect-location'] = loc
             raise HTTP(200, **headers)
         else:
             headers['Location'] = loc
             raise HTTP(how,
                        'You are being redirected <a href="%s">here</a>' % loc,
-                       **headers)
+                       headers=headers)
     else:
         from gluon import current
-        if client_side and current.request.ajax:
+        if client_side and current.request.is_ajax:
             headers['web2py-component-command'] = 'window.location.reload(true)'
-            raise HTTP(200, **headers)
+            raise HTTP(200, headers=headers)

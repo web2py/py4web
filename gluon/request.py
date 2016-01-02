@@ -47,7 +47,7 @@ class Request(object):
         return parse_get_vars(self.environ)
     @memoize_property
     def post_vars(self):
-        return parse_post_vars(self.environ, self.body.read())
+        return parse_post_vars(self.environ, self.body)
     @memoize_property
     def vars(self):
         return parse_all_vars(self.get_vars, self.post_vars)

@@ -27,9 +27,9 @@ from pydal.base import BaseAdapter
 os_path_join = os.path.join
 os_path_exists = os.path.exists
  
-def failsafe(func):
+def failsafe(func, ret=None):
     try: return func()
-    except: return None
+    except Exception, err: print 'failsafe: %s' % err
 
 # class that caches and executes code in python files
 class CodeRunner(object):
@@ -75,6 +75,7 @@ def main_wsgi_app(environ, start_response):
     try:
         try:
             request = Request(environ)
+            session = response = None
             request_folder = request.folder            
             # if client requested a static page
             if request.controller == 'static':
@@ -97,11 +98,11 @@ def main_wsgi_app(environ, start_response):
                 if have_databases:
                     BaseAdapter.set_folder(os_path_join(request_folder, 'databases'))
                 # inject request specific variables into context
-                runner.context['T'] = translator(os_path_join(request_folder,'languages'),
-                                                 request.environ.get('HTTP_ACCEPT_LANGUAGE'))
                 runner.context['request'] = current.request = request
                 runner.context['response'] = current.response = response
                 runner.context['session'] = current.session = session
+                runner.context['T'] = current.T = translator(os_path_join(request_folder,'languages'),
+                                                             request.environ.get('HTTP_ACCEPT_LANGUAGE'))
                 # raise an error if the controller file is missing
                 controllers_folder = os_path_join(request_folder,'controllers') 
                 controller_filename = os_path_join(controllers_folder,request.controller+'.py')
@@ -134,10 +135,10 @@ def main_wsgi_app(environ, start_response):
                         content = repr(view_context)
                 # set the content type
                 response.headers["Content-type"] = contenttype(func_ext)                
-                http = HTTP(response.status, content, headers=response.headers)
-                # deal with cookies
-                if hasattr(response,'_cookies'):
-                    http.cookies2headers(response.cookies)
+                raise HTTP(response.status, content, headers=response.headers)
+        # if a HTTP is raised, everything is ok, return
+        except HTTP, http:       
+            if response:
                 # commit databases, if any
                 have_databases = have_databases and response.auto_commit
                 if have_databases:
@@ -146,10 +147,9 @@ def main_wsgi_app(environ, start_response):
                     have_databases = False
                 # save session, if changed
                 session._try_store_in_cookie_or_file(request, response)
-                # done!
-                raise http   
-        # if a HTTP is raised, everything is ok, return
-        except HTTP, http:            
+                # deal with cookies
+                if hasattr(response,'_cookies'):
+                    http.cookies2headers(response.cookies)
             return http.to(start_response, env=environ)
         # there was an error
         except Exception, err: 
@@ -172,8 +172,8 @@ def main_wsgi_app(environ, start_response):
     # but no matter what happens if the database was not committed, rollback
     # and close any file that may be open
     finally:
-        if have_databases:
-            failsafe(lambda: BaseAdapter.close_all_instances('rollback'))
+        failsafe(lambda: session and session._unlock())
+        failsafe(lambda: BaseAdapter.close_all_instances('rollback'))
 
 def main():
     print 'starting...'

@@ -48,10 +48,7 @@ except ImportError:
         # fallback to pure-Python module
         import gluon.contrib.simplejson as json_parser
 
-__all__ = ['Mail', 'Auth', 'Recaptcha', 'Recaptcha2', 'Crud', 'Service', 'Wiki',
-           'PluginManager', 'fetch', 'geocode', 'reverse_geocode', 'prettydate']
-
-### mind there are two loggers here (logger and crud.settings.logger)!
+__all__ = ['Auth']
 
 DEFAULT = lambda: None
 
@@ -467,9 +464,7 @@ class Auth(object):
         renew_session_onlogin=True,
         renew_session_onlogout=True,
         keep_session_onlogin=True,
-        keep_session_onlogout=False,
-        wiki=Settings(),
-    )
+        keep_session_onlogout=False)
         # ## these are messages that can be customized
     default_messages = dict(
         login_button='Log In',
@@ -777,8 +772,8 @@ class Auth(object):
             reset_password_onvalidation=[],
             reset_password_onaccept=[],
             hmac_key=hmac_key,
-            formstyle=current.response.formstyle,
-            label_separator=current.response.form_label_separator,
+            formstyle=None, #current.response.formstyle, # FIX THIS
+            label_separator=None, #current.response.form_label_separator,
             two_factor_methods = [],
             two_factor_onvalidation = [],
         )
@@ -867,6 +862,7 @@ class Auth(object):
 
         request = current.request
         args = request.args
+
         if not args:
             redirect(self.url(args='login', vars=request.vars))
         elif args[0] in self.settings.actions_disabled:
@@ -881,7 +877,7 @@ class Auth(object):
                 return getattr(self, args[0])(request.args[1])
             else:
                 return getattr(self, args[0])()
-        elif args[0] == 'cas' and not self.settings.cas_provider:
+        elif args[0] == 'cas' and not self.settings.cas_provider and len(args)>1:
             if args(1) == self.settings.cas_actions['login']:
                 return self.cas_login(version=2)
             elif args(1) == self.settings.cas_actions['validate']:
@@ -1375,8 +1371,7 @@ class Auth(object):
         """
         Logins the `user = db.auth_user(id)`
         """
-        from gluon.settings import global_settings
-        if global_settings.web2py_runtime_gae:
+        if False: # FIX THIS global_settings.web2py_runtime_gae:
             user = Row(self.table_user()._filter_fields(user, id=True))
             delattr(user, 'password')
         else:
@@ -1676,16 +1671,15 @@ class Auth(object):
 
             # do we use our own login form, or from a central source?
             if settings.login_form == self:
-                form = SQLFORM(table_user,
-                               fields=[username, passfield],
-                               hidden=dict(_next=next),
-                               showid=settings.showid,
-                               submit_button=self.messages.login_button,
-                               delete_label=self.messages.delete_label,
-                               formstyle=settings.formstyle,
-                               separator=settings.label_separator,
-                               extra_fields=extra_fields,
-                               )
+                form = Form([table_user[username],table_user[passfield]],
+                            hidden=dict(_next=next),
+                            #showid=settings.showid, # FIX THESE
+                            #submit_button=self.messages.login_button,
+                            #delete_label=self.messages.delete_label,
+                            #formstyle=settings.formstyle,
+                            #separator=settings.label_separator,
+                            #extra_fields=extra_fields,
+                            )
 
                 captcha = settings.login_captcha or \
                     (settings.login_captcha != False and settings.captcha)
@@ -1694,10 +1688,7 @@ class Auth(object):
                            settings.formstyle, 'captcha__row')
                 accepted_form = False
 
-                if form.accepts(request, session if self.csrf_prevention else None,
-                                formname='login', dbio=False,
-                                onvalidation=onvalidation,
-                                hideerror=settings.hideerror):
+                if form.accepted:
 
                     accepted_form = True
                     # check for username in db
@@ -1707,6 +1698,7 @@ class Auth(object):
                         user = table_user(email=entered_username)
                     else:
                         user = table_user(**{username: entered_username})
+                    print user
                     if user:
                         # user in db, check if registration pending or disabled
                         temp_user = user                        
@@ -1798,14 +1790,12 @@ class Auth(object):
             session.auth_two_factor_enabled = self.has_membership(user_id=user.id, role=role)
         # challenge
         if session.auth_two_factor_enabled:
-            form = SQLFORM.factory(
-                Field('authentication_code',
-                      label=self.messages.label_two_factor,
-                      required=True,
-                      comment=self.messages.two_factor_comment),
-                hidden=dict(_next=next),
-                formstyle=settings.formstyle,
-                separator=settings.label_separator
+            form = Form([Field('authentication_code',
+                          label=self.messages.label_two_factor,required=True,
+                          comment=self.messages.two_factor_comment)],
+                        hidden=dict(_next=next),
+                        #formstyle=settings.formstyle, # FIX THESE
+                        #separator=settings.label_separator
             )
             # accepted_form is used by some default web2py code later in the
             # function that handles running specified functions before redirect
@@ -1838,10 +1828,7 @@ class Auth(object):
                         else:
                             break
 
-            if form.accepts(request, session if self.csrf_prevention else None,
-                            formname='login', dbio=False,
-                            onvalidation=onvalidation,
-                            hideerror=settings.hideerror):
+            if form.accepted:
                 accepted_form = True
 
                 accepted_form = True
@@ -1934,6 +1921,7 @@ class Auth(object):
         # process authenticated users
         if user:
             user = Row(table_user._filter_fields(user, id=True))
+            print user
             # process authenticated users
             # user wants to be logged in for longer
             self.login_user(user)
@@ -2063,16 +2051,17 @@ class Auth(object):
                       label=current.T("Confirm Password"))]
         else:
             extra_fields = []
-        form = SQLFORM(table_user,
-                       fields=self.settings.register_fields,
-                       hidden=dict(_next=next),
-                       showid=self.settings.showid,
-                       submit_button=self.messages.register_button,
-                       delete_label=self.messages.delete_label,
-                       formstyle=formstyle,
-                       separator=self.settings.label_separator,
-                       extra_fields=extra_fields
-                       )
+        if self.settings.register_fields:
+            for field in table_user: field.writable = (field.name in self.settings.register_fields)
+        form = Form(table_user,
+                    hidden=dict(_next=next),
+                    # showid=self.settings.showid,
+                    # submit_button=self.messages.register_button,
+                    # delete_label=self.messages.delete_label,
+                    # formstyle=formstyle,
+                    # separator=self.settings.label_separator,
+                    # extra_fields=extra_fields
+                    )
 
         captcha = self.settings.register_captcha or self.settings.captcha
         if captcha:
@@ -2090,10 +2079,7 @@ class Auth(object):
             key = 'pending-'+key
 
         table_user.registration_key.default = key
-        if form.accepts(request, session if self.csrf_prevention else None,
-                        formname='register',
-                        onvalidation=onvalidation,
-                        hideerror=self.settings.hideerror):
+        if form.accepted:
             description = self.messages.group_description % form.vars
             if self.settings.create_user_groups:
                 group_id = self.add_group(
@@ -2213,22 +2199,19 @@ class Auth(object):
         old_requires = table_user.email.requires
         table_user.email.requires = [IS_IN_DB(self.db, table_user.email,
                                               error_message=self.messages.invalid_email)]
-        form = SQLFORM(table_user,
-                       fields=['email'],
-                       hidden=dict(_next=next),
-                       showid=self.settings.showid,
-                       submit_button=self.messages.submit_button,
-                       delete_label=self.messages.delete_label,
-                       formstyle=self.settings.formstyle,
-                       separator=self.settings.label_separator
-                       )
+        form = Form([table_user['email']],                    
+                    hidden=dict(_next=next),
+                    #showid=self.settings.showid,
+                    #submit_button=self.messages.submit_button,
+                    #delete_label=self.messages.delete_label,
+                    #  formstyle=self.settings.formstyle,
+                    #   separator=self.settings.label_separator
+                    )
         if captcha:
             addrow(form, captcha.label, captcha,
                    captcha.comment, self.settings.formstyle, 'captcha__row')
 
-        if form.accepts(request, session if self.csrf_prevention else None,
-                        formname='retrieve_username', dbio=False,
-                        onvalidation=onvalidation, hideerror=self.settings.hideerror):
+        if form.accepted:
             users = table_user._db(table_user.email == form.vars.email).select()
             if not users:
                 current.session.flash = \
@@ -2290,18 +2273,15 @@ class Auth(object):
         old_requires = table_user.email.requires
         table_user.email.requires = [IS_IN_DB(self.db, table_user.email,
                                               error_message=self.messages.invalid_email)]
-        form = SQLFORM(table_user,
-                       fields=['email'],
-                       hidden=dict(_next=next),
-                       showid=self.settings.showid,
-                       submit_button=self.messages.submit_button,
-                       delete_label=self.messages.delete_label,
-                       formstyle=self.settings.formstyle,
-                       separator=self.settings.label_separator
-                       )
-        if form.accepts(request, session if self.csrf_prevention else None,
-                        formname='retrieve_password', dbio=False,
-                        onvalidation=onvalidation, hideerror=self.settings.hideerror):
+        form = Form([table_user['email']],
+                    hidden=dict(_next=next),
+                    #   showid=self.settings.showid,
+                    #   submit_button=self.messages.submit_button,
+                    #   delete_label=self.messages.delete_label,
+                    #   formstyle=self.settings.formstyle,
+                    #   separator=self.settings.label_separator
+                    )
+        if form.accepted:
             user = table_user(email=form.vars.email)
             key = user.registration_key
             if not user:
@@ -2377,26 +2357,26 @@ class Auth(object):
             redirect(self.url('login', vars=dict(test=e)))
             redirect(next, client_side=self.settings.client_side)
         passfield = self.settings.password_field
-        form = SQLFORM.factory(
-            Field('first_name',
-                  label='First Name',
-                  required=True),
-            Field('last_name',
-                  label='Last Name',
-                  required=True),
-            Field('new_password', 'password',
-                  label=self.messages.new_password,
-                  requires=self.table_user()[passfield].requires),
-            Field('new_password2', 'password',
-                  label=self.messages.verify_password,
+        form = Form([
+                Field('first_name',
+                      label='First Name',
+                      required=True),
+                Field('last_name',
+                      label='Last Name',
+                      required=True),
+                Field('new_password', 'password',
+                      label=self.messages.new_password,
+                      requires=self.table_user()[passfield].requires),
+                Field('new_password2', 'password',
+                      label=self.messages.verify_password,
                   requires=[IS_EXPR('value==%s' % repr(request.vars.new_password),
-                                    self.messages.mismatched_password)]),
-            submit_button='Confirm Registration',
-            hidden=dict(_next=next),
-            formstyle=self.settings.formstyle,
-            separator=self.settings.label_separator
-        )
-        if form.process().accepted:
+                                    self.messages.mismatched_password)])],
+                    #submit_button='Confirm Registration',
+                    hidden=dict(_next=next),
+                    #formstyle=self.settings.formstyle,
+                    #separator=self.settings.label_separator
+                    )
+        if form.accepted:
             user.update_record(
                 **{passfield: str(form.vars.new_password),
                    'first_name': str(form.vars.first_name),
@@ -2436,13 +2416,13 @@ class Auth(object):
         if not self.settings.bulk_register_enabled:
             return HTTP(404)
 
-        form = SQLFORM.factory(
-            Field('subject', 'string', default=self.messages.bulk_invite_subject, requires=IS_NOT_EMPTY()),
-            Field('emails', 'text', requires=IS_NOT_EMPTY()),
-            Field('message', 'text', default=self.messages.bulk_invite_body, requires=IS_NOT_EMPTY()),
-            formstyle=self.settings.formstyle)
+        form = Form([
+                Field('subject', 'string', default=self.messages.bulk_invite_subject, requires=IS_NOT_EMPTY()),
+                Field('emails', 'text', requires=IS_NOT_EMPTY()),
+                Field('message', 'text', default=self.messages.bulk_invite_body, requires=IS_NOT_EMPTY()),
+                ])
 
-        if form.process().accepted:
+        if form.accepted:
             emails = re.compile('[^\s\'"@<>,;:]+\@[^\s\'"@<>,;:]+').findall(form.vars.emails)
             # send the invitations
             emails_sent = []
@@ -2470,9 +2450,9 @@ class Auth(object):
         table_token.user_id.writable = False
         table_token.user_id.default = self.user.id
         table_token.token.writable = False
-        if current.request.args(1) == 'new':
+        if current.request.args and current.request.args[1] == 'new':
             table_token.token.readable = False
-        form = SQLFORM.grid(table_token, args=['manage_tokens'])
+        # form = SQLFORM.grid(table_token, args=['manage_tokens'])  # FIX THIS - NO MORE GRID
         return form
 
     def reset_password(self,
@@ -2524,22 +2504,21 @@ class Auth(object):
             onaccept = self.settings.reset_password_onaccept
 
         passfield = self.settings.password_field
-        form = SQLFORM.factory(
-            Field('new_password', 'password',
-                  label=self.messages.new_password,
-                  requires=self.table_user()[passfield].requires),
-            Field('new_password2', 'password',
-                  label=self.messages.verify_password,
-                  requires=[IS_EXPR(
-                      'value==%s' % repr(request.vars.new_password),
-                                    self.messages.mismatched_password)]),
-            submit_button=self.messages.password_reset_button,
-            hidden=dict(_next=next),
-            formstyle=self.settings.formstyle,
-            separator=self.settings.label_separator
-        )
-        if form.accepts(request, session, onvalidation=onvalidation,
-                        hideerror=self.settings.hideerror):
+        form = Form([
+                Field('new_password', 'password',
+                      label=self.messages.new_password,
+                      requires=self.table_user()[passfield].requires),
+                Field('new_password2', 'password',
+                      label=self.messages.verify_password,
+                      requires=[IS_EXPR(
+                            'value==%s' % repr(request.vars.new_password),
+                            self.messages.mismatched_password)])],
+                    #submit_button=self.messages.password_reset_button,
+                    hidden=dict(_next=next),
+                    #formstyle=self.settings.formstyle,
+                    #separator=self.settings.label_separator
+                    )
+        if form.accepted:
             user.update_record(
                 **{passfield: str(form.vars.new_password),
                    'registration_key': '',
@@ -2594,22 +2573,18 @@ class Auth(object):
             if not self.settings.username_case_sensitive:
                 table_user.username.requires.insert(0, IS_LOWER())
 
-        form = SQLFORM(table_user,
-                       fields=[userfield],
-                       hidden=dict(_next=next),
-                       showid=self.settings.showid,
-                       submit_button=self.messages.password_reset_button,
-                       delete_label=self.messages.delete_label,
-                       formstyle=self.settings.formstyle,
-                       separator=self.settings.label_separator
-                       )
+        form = Form([table_user['userfield']],
+                    hidden=dict(_next=next),
+                    #showid=self.settings.showid,
+                    # submit_button=self.messages.password_reset_button,
+                    # delete_label=self.messages.delete_label,
+                    # formstyle=self.settings.formstyle,
+                    # separator=self.settings.label_separator
+                    )
         if captcha:
             addrow(form, captcha.label, captcha,
                    captcha.comment, self.settings.formstyle, 'captcha__row')
-        if form.accepts(request, session if self.csrf_prevention else None,
-                        formname='reset_password', dbio=False,
-                        onvalidation=onvalidation,
-                        hideerror=self.settings.hideerror):
+        if form.accepted:
             user = table_user(**{userfield:form.vars.get(userfield)})
             key = user.registration_key 
             if not user:
@@ -2694,26 +2669,22 @@ class Auth(object):
         requires = filter(lambda t: isinstance(t, CRYPT), requires)
         if requires:
             requires[0].min_length = 0
-        form = SQLFORM.factory(
-            Field('old_password', 'password', requires=requires,
-                  label=self.messages.old_password),
-            Field('new_password', 'password',
-                  label=self.messages.new_password,
-                  requires=table_user[passfield].requires),
-            Field('new_password2', 'password',
-                  label=self.messages.verify_password,
-                  requires=[IS_EXPR('value==%s' % repr(request.vars.new_password),
-                                    self.messages.mismatched_password)]),
-            submit_button=self.messages.password_change_button,
-            hidden=dict(_next=next),
-            formstyle=self.settings.formstyle,
-            separator=self.settings.label_separator
+        form = Form([
+                    Field('old_password', 'password', requires=requires,
+                          label=self.messages.old_password),
+                    Field('new_password', 'password',
+                          label=self.messages.new_password,
+                          requires=table_user[passfield].requires),
+                    Field('new_password2', 'password',
+                          label=self.messages.verify_password,
+                          requires=[IS_EXPR('value==%s' % repr(request.vars.new_password),
+                                            self.messages.mismatched_password)])],
+                    #submit_button=self.messages.password_change_button,
+                    hidden=dict(_next=next),
+                    #formstyle=self.settings.formstyle,
+                    #separator=self.settings.label_separator
         )
-        if form.accepts(request, session,
-                        formname='change_password',
-                        onvalidation=onvalidation,
-                        hideerror=self.settings.hideerror):
-
+        if form.accepted:
             current_user = s.select(limitby=(0, 1), orderby_on_limitby=False).first()
             if not form.vars['old_password'] == current_user[passfield]:
                 form.errors['old_password'] = self.messages.invalid_password
@@ -2756,23 +2727,20 @@ class Auth(object):
             onaccept = self.settings.profile_onaccept
         if log is DEFAULT:
             log = self.messages['profile_log']
-        form = SQLFORM(
-            table_user,
-            self.user.id,
-            fields=self.settings.profile_fields,
-            hidden=dict(_next=next),
-            showid=self.settings.showid,
-            submit_button=self.messages.profile_save_button,
-            delete_label=self.messages.delete_label,
-            upload=self.settings.download_url,
-            formstyle=self.settings.formstyle,
-            separator=self.settings.label_separator,
-            deletable=self.settings.allow_delete_accounts,
+        form = Form(
+                table_user,
+                self.user.id,
+                fields=self.settings.profile_fields,
+                hidden=dict(_next=next),
+                #showid=self.settings.showid,
+                #submit_button=self.messages.profile_save_button,
+                #delete_label=self.messages.delete_label,
+                #upload=self.settings.download_url,
+                #formstyle=self.settings.formstyle,
+                #separator=self.settings.label_separator,
+                deletable=self.settings.allow_delete_accounts,
             )
-        if form.accepts(request, session,
-                        formname='profile',
-                        onvalidation=onvalidation,
-                        hideerror=self.settings.hideerror):
+        if form.accapted:
             self.user.update(table_user._filter_fields(form.vars))
             session.flash = self.messages.profile_updated
             self.log_event(log, self.user)
@@ -2889,8 +2857,8 @@ class Auth(object):
                 self.run_login_onaccept()
             return None
         if requested_id is DEFAULT and not request.post_vars:
-            return SQLFORM.factory(Field('user_id', 'integer'))
-        return SQLFORM(table_user, user.id, readonly=True)
+            return Form([Field('user_id', 'integer')])
+        return Form(table_user, user.id, readonly=True)
 
     def update_groups(self):
         if not self.user:
@@ -2933,7 +2901,7 @@ class Auth(object):
         """
         You can change the view for this page to make it look as you like
         """
-        if current.request.ajax:
+        if current.request.is_ajax:
             raise HTTP(403, 'ACCESS DENIED')
         return self.messages.access_denied
 
@@ -2961,7 +2929,7 @@ class Auth(object):
 
                 if login_required:
                     if not user:
-                        if current.request.ajax:
+                        if current.request.is_ajax:
                             raise HTTP(401, self.messages.ajax_failed_authentication)
                         elif not otherwise is None:
                             if callable(otherwise):
@@ -3007,8 +2975,8 @@ class Auth(object):
             token = request.env.http_web2py_user_token or request.vars._token
             table_token = self.table_token()
             table_user = self.table_user()
-            from gluon.settings import global_settings
-            if global_settings.web2py_runtime_gae:
+            #from gluon.settings import global_settings
+            if False: # FIX THIS global_settings.web2py_runtime_gae:
                 row = table_token(token=token)
                 if row:
                     user = table_user(row.user_id)
@@ -3336,7 +3304,8 @@ class Auth(object):
 
         or::
 
-            form=SQLFORM(db.mytable,myrecord).process(onaccept=auth.archive)
+            form=Form(db.mytable,myrecord)
+            if form.accepted: auth.archive(form)
 
         crud.archive will define a new table "mytable_archive" and store
         a copy of the current record (if archive_current=True)
@@ -3403,4 +3372,4 @@ class Auth(object):
             new_record.update(fields)
         id = archive_table.insert(**new_record)
         return id
-k
+
