@@ -75,12 +75,12 @@ def main_wsgi_app(environ, start_response):
     try:
         try:
             current.request = request = Request(environ)
-            current.response = response = None
-            current.session = session = None
+            response = session = None
             request_folder = request.folder           
             # if client requested a static page
             if request.controller == 'static':
-                
+                current.response = None
+                current.session = None
                 static_folder =  os_path_join(request_folder,'static')
                 n = 3 if request.items[2].startswith('_') else 2
                 filename = os_path_join(static_folder,*request.items[n:])
@@ -89,22 +89,20 @@ def main_wsgi_app(environ, start_response):
                 stream_file_or_304_or_206(filename, environ=environ) # raise HTTP 200
             # if instead client requested a dynamic page
             else:
-                # create response and session object (session is disabled here)
-                response = Response()
-                session = Session()
                 # build context and inject variables into context
                 runner = CodeRunner(common_context.copy())
+                # inject request specific variables into context
+                runner.context['request'] = request
+                runner.context['response'] = current.response = response = Response()
+                runner.context['session'] = current.session = session = Session()
+                runner.context['T'] = current.T = translator(
+                    os_path_join(request_folder,'languages'),
+                    request.environ.get('HTTP_ACCEPT_LANGUAGE'))
                 # check if there is a database folder and set the folder
                 database_folder =  os_path_join(request_folder,'databases')
                 have_databases = os_path_exists(database_folder)
                 if have_databases:
                     BaseAdapter.set_folder(os_path_join(request_folder, 'databases'))
-                # inject request specific variables into context
-                runner.context['request'] = request
-                runner.context['response'] = current.response= response
-                runner.context['session'] = current.session = session
-                runner.context['T'] = current.T = translator(os_path_join(request_folder,'languages'),
-                                                             request.environ.get('HTTP_ACCEPT_LANGUAGE'))
                 # raise an error if the controller file is missing
                 controllers_folder = os_path_join(request_folder,'controllers') 
                 controller_filename = os_path_join(controllers_folder,request.controller+'.py')
@@ -157,7 +155,7 @@ def main_wsgi_app(environ, start_response):
         except Exception, err: 
             # maybe log the ticket
             if isinstance(err, RestrictedError):
-                ticket = err.log()
+                ticket = err.log(request)
             # or maybe not
             else:
                 print traceback.format_exc()
@@ -174,8 +172,10 @@ def main_wsgi_app(environ, start_response):
     # but no matter what happens if the database was not committed, rollback
     # and close any file that may be open
     finally:
-        failsafe(lambda: session and session._unlock())
-        failsafe(lambda: BaseAdapter.close_all_instances('rollback'))
+        if session:
+            failsafe(lambda: session and session._unlock())
+        if have_databases:
+            failsafe(lambda: BaseAdapter.close_all_instances('rollback'))
 
 def main():
     print 'starting...'
