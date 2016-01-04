@@ -1,0 +1,28 @@
+<html>
+  <body>
+    <a href="{{=URL('simple')}}">Simple</a><br/>
+    <a href="{{=URL('vars?a=1')}}">Vars</a><br/>
+    <img src="{{=URL('static','images/cat.jpg')}}" style="height:100px"/><br/>
+    Example of counter: {{=session.counter}}<br/>
+    Example of helpers: {{=DIV(SPAN(A('click me',_href='#')))}}<br/>
+    Example of T: {{=T('welcome')}}<br/>
+    Example of form: {{=form}}
+    Example of request object:
+    <table>
+      <tr><td>application</td><td>{{=request.application}}</td></tr>
+      <tr><td>controller</td><td>{{=request.controller}}</td></tr>
+      <tr><td>function</td><td>{{=request.function}}</td></tr>
+      <tr><td>uuid</td><td>{{=request.uuid}}</td></tr>
+      <tr><td>url</td><td>{{=request.url}}</td></tr>
+      <tr><td>now</td><td>{{=request.now}}</td></tr>
+      <tr><td>utcnow</td><td>{{=request.utcnow}}</td></tr>
+      <tr><td>cookies</td><td>{{=request.cookies}}</td></tr>
+      <tr><td>get_vars</td><td>{{=request.get_vars}}</td></tr>
+      <tr><td>post_vars</td><td>{{=request.post_vars}}</td></tr>
+      <tr><td>client</td><td>{{=request.client}}</td></tr>
+      <tr><td>is_ajax</td><td>{{=request.is_ajax}}</td></tr>
+      <tr><td>is_local</td><td>{{=request.is_local}}</td></tr>
+      <tr><td>is_https</td><td>{{=request.is_https}}</td></tr>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{{extend 'layout.html'}}
+
+<div class="row">
+  {{for app in apps:}}
+  <div class="col s12 m6 l4">
+    <div id="profile-card" class="card">
+      <div class="card-content iframe-wrapper">
+        <span class="card-title"><a href="{{=URL(app,'default','index')}}">{{=app}}</a></span>
+        <a class="btn-floating activator btn-move-up waves-effect waves-light darken-2 right">
+          <i class="mdi-action-account-circle"></i>
+        </a>
+        <iframe src="{{=URL(app,'default','index')}}"></iframe>
+      </div>
+      <div class="card-reveal" style="display: none; transform: translateY(0px);">
+        <span class="card-title grey-text text-darken-4">{{=app}} <i class="mdi-navigation-close right"></i></span>
+        <p><i class="mdi-action-write cyan-text text-darken-2"></i> Edit</p>
+        <p><i class="mdi-action-download cyan-text text-darken-2"></i> Download</p>
+        <p><i class="mdi-action-power-settings cyan-text text-darken-2"></i> Disable</p>
+        <p><i class="mdi-action-trash cyan-text text-darken-2"></i> Remove</p>
+      </div>
+    </div>
+  </div>
+  {{pass}}
+</div>
+
