@@ -2727,10 +2727,12 @@ class Auth(object):
             onaccept = self.settings.profile_onaccept
         if log is DEFAULT:
             log = self.messages['profile_log']
+        fields=self.settings.profile_fields
+        if fields:
+            for field in table_user: field.writable = (field.name in fields)
         form = Form(
                 table_user,
                 self.user.id,
-                fields=self.settings.profile_fields,
                 hidden=dict(_next=next),
                 #showid=self.settings.showid,
                 #submit_button=self.messages.profile_save_button,
@@ -2740,7 +2742,7 @@ class Auth(object):
                 #separator=self.settings.label_separator,
                 deletable=self.settings.allow_delete_accounts,
             )
-        if form.accapted:
+        if form.accepted:
             self.user.update(table_user._filter_fields(form.vars))
             session.flash = self.messages.profile_updated
             self.log_event(log, self.user)

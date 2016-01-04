@@ -105,7 +105,7 @@ class Form(object):
             dbio = False
             # mimic a table from a list of fields without calling define_table
             formname = formname or 'none'
-            for field in table: field.tablename = field.tablename or formname
+            for field in table: field.tablename = getattr(field,'tablename',formname)
  
         if isinstance(record, (int, long, basestring)):
             record_id = int(str(record))
@@ -148,6 +148,7 @@ class Form(object):
                     for field in self.table:
                         if field.writable:                            
                             value = post_vars.get(field.name)
+                            # FIX THIS deal with set_self_id before validate
                             (value, error) = field.validate(value)
                             if field.type == 'upload':
                                 delete = post_vars.get('_delete_'+field.name)
@@ -167,11 +168,7 @@ class Form(object):
                     if not self.errors:
                         self.accepted = True
                         if dbio:
-                            if self.record:
-                                self.record.update_record(**self.vars)
-                            else:
-                                # warning, should we really insert if record
-                                self.vars.id = self.table.insert(**self.vars)
+                            self.update_or_insert()
                 elif dbio:
                     self.deleted = True
                     self.record.delete_record()
@@ -183,6 +180,13 @@ class Form(object):
             if self.formname not in current.session._formkeys:
                 session._formkeys[self.formname] = web2py_uuid()
             self.formkey = session._formkeys[self.formname]
+    
+    def update_or_insert(self):
+        if self.record:
+            self.record.update_record(**self.vars)
+        else:
+            # warning, should we really insert if record
+            self.vars.id = self.table.insert(**self.vars)
 
     def clear():
         self.vars.clear()
@@ -214,4 +218,3 @@ class Form(object):
 
     def __str__(self):
         return self.xml().encode('utf8')
-

@@ -74,14 +74,16 @@ def main_wsgi_app(environ, start_response):
     have_databases = False
     try:
         try:
-            request = Request(environ)
-            session = response = None
-            request_folder = request.folder            
+            current.request = request = Request(environ)
+            current.response = response = None
+            current.session = session = None
+            request_folder = request.folder           
             # if client requested a static page
             if request.controller == 'static':
                 
                 static_folder =  os_path_join(request_folder,'static')
-                filename = os_path_join(static_folder,*request._items[2:])
+                n = 3 if request.items[2].startswith('_') else 2
+                filename = os_path_join(static_folder,*request.items[n:])
                 if not filename.startswith(static_folder+'/'): raise HTTP(404)
                 if not os_path_exists(filename): raise HTTP(404)
                 stream_file_or_304_or_206(filename, environ=environ) # raise HTTP 200
@@ -98,8 +100,8 @@ def main_wsgi_app(environ, start_response):
                 if have_databases:
                     BaseAdapter.set_folder(os_path_join(request_folder, 'databases'))
                 # inject request specific variables into context
-                runner.context['request'] = current.request = request
-                runner.context['response'] = current.response = response
+                runner.context['request'] = request
+                runner.context['response'] = current.response= response
                 runner.context['session'] = current.session = session
                 runner.context['T'] = current.T = translator(os_path_join(request_folder,'languages'),
                                                              request.environ.get('HTTP_ACCEPT_LANGUAGE'))

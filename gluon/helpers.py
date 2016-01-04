@@ -1,7 +1,7 @@
 import cgi
 import copy_reg
 
-__all__ = ['A', 'BEAUTIFY', 'BODY', 'CODE', 'DIV', 'EM', 'FORM', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HEAD', 'IMG', 'INPUT', 'LABEL', 'LI', 'METATAG', 'OL', 'OPTION', 'PRE', 'SELECT', 'SPAN', 'STRONG', 'TABLE', 'TAG', 'TAGGER', 'TBODY', 'TD', 'TEXTAREA', 'TH', 'THAED', 'TR', 'UL', 'XML', 'xmlescape']
+__all__ = ['A', 'BEAUTIFY', 'BODY', 'CAT', 'CODE', 'DIV', 'EM', 'FORM', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HEAD', 'IMG', 'INPUT', 'LABEL', 'LI', 'METATAG', 'OL', 'OPTION', 'PRE', 'SELECT', 'SPAN', 'STRONG', 'TABLE', 'TAG', 'TAGGER', 'TBODY', 'TD', 'TEXTAREA', 'TH', 'THAED', 'TR', 'UL', 'XML', 'xmlescape']
 
 # ################################################################
 # New HTML Helpers
@@ -53,6 +53,9 @@ class TAGGER(object):
         else:
             self.attributes[key] =  value
 
+    def insert(self, i, value):
+        self.children.insert(i,value)
+            
     def append(self, value):
         self.children.append(value)
 
@@ -75,6 +78,14 @@ class METATAG(object):
 
     def __getitem__(self, name):
         return lambda *children, **attributes: TAGGER(name, *children, **attributes)
+
+class CAT(TAGGER):
+    def __init__(self, children):
+        self.children = children
+        self.attributes = attributes
+
+    def xml(self):
+        return ''.join(s.xml() if isinstance(s,TAGGER) else xmlescape(unicode(s)) for s in self.children)
 
 TAG = METATAG()
 DIV = TAG['div']

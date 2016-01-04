@@ -9,6 +9,14 @@
 ## be redirected to HTTPS, uncomment the line below:
 # request.requires_https()
 
+from compatibility import *
+fix_request(request)
+fix_response(response)
+session.enable()
+from gluon.auth import Auth
+fix_auth(Auth)
+
+
 ## app configuration made easy. Look inside private/appconfig.ini
 from gluon.appconfig import AppConfig
 ## once in production, remove reload=True to gain full speed
@@ -18,14 +26,11 @@ myconf = AppConfig(reload=True)
 if not request.env.web2py_runtime_gae:
     ## if NOT running on Google App Engine use SQLite or other DB
     db = DAL(myconf.take('db.uri'), pool_size=myconf.take('db.pool_size', cast=int), check_reserved=['all'])
-    # make sure sessions are enabled
-    session.enable()
-    print session
 else:
     ## connect to Google BigTable (optional 'google:datastore://namespace')
     db = DAL('google:datastore+ndb')
     ## store sessions and tickets there
-    session.enabled(request, response, db=db)
+    session.connect(request, response, db=db)
     ## or store session in Memcache, Redis, etc.
     ## from gluon.contrib.memdb import MEMDB
     ## from google.appengine.api.memcache import Client
@@ -33,10 +38,10 @@ else:
 
 ## by default give a view/generic.extension to all actions from localhost
 ## none otherwise. a pattern can be 'controller/function.extension'
-#response.generic_patterns = ['*'] if request.is_local else []
+response.generic_patterns = ['*'] if request.is_local else []
 ## choose a style for forms
-#response.formstyle = myconf.take('forms.formstyle')  # or 'bootstrap3_stacked' or 'bootstrap2' or other
-#response.form_label_separator = myconf.take('forms.separator')
+response.formstyle = myconf.take('forms.formstyle')  # or 'bootstrap3_stacked' or 'bootstrap2' or other
+response.form_label_separator = myconf.take('forms.separator')
 
 
 ## (optional) optimize handling of static files
@@ -55,7 +60,6 @@ else:
 #########################################################################
 
 from gluon.auth import Auth
-
 auth = Auth(db)
 
 ## create all tables needed by auth if not custom tables

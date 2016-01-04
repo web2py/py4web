@@ -66,6 +66,10 @@ else:
         except (ImportError, ValueError):
             HAVE_PBKDF2 = False
 
+HAVE_COMPARE_DIGEST = False
+if hasattr(hmac, 'compare_digest'):
+    HAVE_COMPARE_DIGEST = True
+
 logger = logging.getLogger("web2py")
 
 
@@ -79,6 +83,8 @@ def AES_new(key, IV=None):
 
 def compare(a, b):
     """ Compares two strings and not vulnerable to timing attacks """
+    if HAVE_COMPARE_DIGEST:
+        return hmac.compare_digest(a, b)
     if len(a) != len(b):
         return False
     result = 0

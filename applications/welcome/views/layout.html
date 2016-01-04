@@ -61,20 +61,10 @@
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
           <ul class="nav navbar-nav navbar-right">
-            {{if 'auth' in globals():}}
-            {{if auth.user:}}
-            <li><a href="{{=URL('user/profile')}}">Profile</a></li>
-            <li><a href="{{=URL('user/change_password')}}">Change Password</a></li>
-            <li><a href="{{=URL('user/logout')}}">Logout</a></li>
-            {{else:}}
-            <li><a href="{{=URL('user/login')}}">Login</a></li>
-            <li><a href="{{=URL('user/register')}}">Register</a></li>
-            <li><a href="{{=URL('user/request_reset_password')}}">Lost Password</a></li>
-            {{pass}}
-            {{pass}}
+            {{='auth' in globals() and auth.navbar('Welcome',mode='dropdown') or ''}}
           </ul>
           {{if response.menu:}}
-          {{#=MENU(response.menu, _class='nav navbar-nav',li_class='dropdown',ul_class='dropdown-menu')}}
+          {{=MENU(response.menu, _class='nav navbar-nav',li_class='dropdown',ul_class='dropdown-menu')}}
           {{pass}}
         </div>
       </div>

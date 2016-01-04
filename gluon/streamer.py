@@ -68,10 +68,10 @@ def stream_file_or_304_or_206(
     fsize = stat_file[stat.ST_SIZE]
     modified = stat_file[stat.ST_MTIME]
     mtime = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime(modified))
-    headers.setdefault('Content-Type', contenttype(static_file))
-    headers.setdefault('Last-Modified', mtime)
-    headers.setdefault('Pragma', 'cache')
-    headers.setdefault('Cache-Control', 'private')
+    headers['Content-Type'] = contenttype(static_file)
+    headers['Last-Modified'] = mtime
+    headers['Pragma'] = 'cache'
+    headers['Cache-Control'] = 'private'
 
     # if this is a normal response and not a respnse to an error page
     if status == 200:
@@ -120,4 +120,5 @@ def stream_file_or_304_or_206(
         headers['Content-Length'] = fsize
         bytes = None
     wrapped = streamer(stream, chunk_size=chunk_size, bytes=bytes)
+    print static_file, headers
     raise HTTP(status, wrapped, headers=headers)

@@ -86,8 +86,6 @@ class Servers:
     def gevent(app, address, **options):
         options = options['options']
         workers = options.workers
-        from gevent import monkey
-        monkey.patch_all()
         from gevent import pywsgi
         from gevent.pool import Pool
         pywsgi.WSGIServer(address, app, spawn=workers and Pool(

@@ -21,6 +21,7 @@ import struct
 import decimal
 import unicodedata
 from cStringIO import StringIO
+from gluon.helpers import XML
 from gluon.utils import simple_hash, web2py_uuid, DIGEST_ALG_BY_SIZE
 from pydal.objects import Field, FieldVirtual, FieldMethod
 
@@ -3054,8 +3055,7 @@ class IS_STRONG(object):
             return (value, None)
         if not self.error_message:
             if self.estring:
-                return (value, '|'.join(failures))
-            from html import XML
+                return (value, '|'.join(failures))            
             return (value, XML('<br />'.join(failures)))
         else:
             return (value, translate(self.error_message))

@@ -36,8 +36,7 @@ def user():
     to decorate functions that need access control
     also notice there is http://..../[app]/appadmin/manage/auth to allow administrator to manage users
     """
-    print request.method, request.get_vars, request.post_vars
-    return dict(form=auth()) # FIX THIS
+    return dict(form=auth())
 
 
 #@cache.action()
@@ -46,8 +45,16 @@ def download():
     allows downloading of uploaded files
     http://..../[app]/default/download/[filename]
     """
-    return response.download(request, db) # FIX THIS
+    return response.download(request, db)
 
 
+def call():
+    """
+    exposes services. for example:
+    http://..../[app]/default/call/jsonrpc
+    decorate with @services.jsonrpc the functions to expose
+    supports xml, json, xmlrpc, jsonrpc, amfrpc, rss, csv
+    """
+    return service()
 
 

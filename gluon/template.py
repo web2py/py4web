@@ -897,7 +897,6 @@ def render(content="hello world",
         content = content.encode('utf8')
 
     # save current response class
-    
     writerobj = Writer()
     context['write_here'] = writerobj.write
 
@@ -910,22 +909,17 @@ def render(content="hello world",
     close_stream = False
     if not stream:
         if filename:
-            stream = open(filename, 'rb')
-            close_stream = True
-        elif content:
-            stream = StringIO.StringIO(content)
+            with open(filename, 'rb') as myfile:
+                content = myfile.read()
 
     # Execute the template.
-    code = str(TemplateParser(stream.read(
-    ), context=context, path=path, lexers=lexers, delimiters=delimiters, writer=writer))
+    code = str(TemplateParser(content, context=context, path=path, lexers=lexers, delimiters=delimiters, writer=writer))
+                              
     try:
         exec(code) in context
     except Exception:
-        # for i,line in enumerate(code.split('\n')): print i,line
+        for i,line in enumerate(code.split('\n')): print i,line
         raise
-
-    if close_stream:
-        stream.close()
 
     # Returned the rendered content.
     return writerobj.body.getvalue()
