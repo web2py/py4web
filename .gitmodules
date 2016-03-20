@@ -1,0 +1,3 @@
+[submodule "packages/dal"]
+	path = packages/dal
+	url = https://github.com/web2py/pydal.git
