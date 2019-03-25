@@ -1,0 +1,29 @@
+<html>
+  <body>
+    <h1>TODO</h1>
+    <div id="vue">
+      <table>
+        <tr v-for="item in items">
+          <td>{{item.id}}</td>
+          <td>{{item.info}}</td>
+          <td>
+            <button v-on:click="remove(item.id)">delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <textarea v-model="input"></textarea>
+          </td>
+          <td>
+            <button v-on:click="save()">save</button>
+          </td>
+        </tr>              
+      </table>
+    </div>
+  </body>
+  <script src="/[[=APP]]/static/js/sugar.min.js"></script> 
+  <script src="/[[=APP]]/static/js/axios.min.js"></script> 
+  <script src="/[[=APP]]/static/js/vue.min.js"></script> 
+  <script src="/[[=APP]]/static/js/todo.js"></script> 
+</html>
