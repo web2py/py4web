@@ -20,10 +20,12 @@
           </td>
         </tr>              
       </table>
+      Number items: {{ items.length }}
+      Session counter: [[= session.get('counter') ]]
     </div>
   </body>
-  <script src="/[[=APP]]/static/js/sugar.min.js"></script> 
-  <script src="/[[=APP]]/static/js/axios.min.js"></script> 
-  <script src="/[[=APP]]/static/js/vue.min.js"></script> 
-  <script src="/[[=APP]]/static/js/todo.js"></script> 
+  <script src="/[[=request.app_name]]/static/js/sugar.min.js"></script> 
+  <script src="/[[=request.app_name]]/static/js/axios.min.js"></script> 
+  <script src="/[[=request.app_name]]/static/js/vue.min.js"></script> 
+  <script src="/[[=request.app_name]]/static/js/todo.js"></script> 
 </html>
