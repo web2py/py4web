@@ -3,6 +3,7 @@
 ## try me
 
 ```
-python3 web3py.py applications
-open http://localhost:8000/welcome/index
+pip3 install -r requirements.txt
+python3 web3py.py applications/
+open http://localhost:8000/todo/index
 ```
