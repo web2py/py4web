@@ -1,9 +1,12 @@
+import os
 from web3py import action, request, DAL, Field, Session, Cache
 
-session = Session(secret = 'some secret')
+# define session and cache objects
+session=Session(secret = 'some secret')
 cache = Cache(size=1000)
 
-db = DAL('sqlite://storage.db')
+# define database and tables
+db = DAL('sqlite://storage.db', folder=os.path.join(os.path.dirname(__file__), 'databases'))
 db.define_table('todo', Field('info'))
 
 # example index page using session, template and vue.js
