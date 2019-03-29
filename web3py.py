@@ -28,7 +28,7 @@ except:
 import jwt # PyJWT
 import bottle
 import yatl
-from pydal import DAL, Field
+from pydal import DAL, Field, _compat
 
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'HTTP', 'Session']
 
@@ -144,7 +144,7 @@ class Session(object):
     def load(self):
         self.session_cookie_name = '%s_session' % request.app_name
         self.changed = False
-        enc_data = request.get_cookie(self.session_cookie_name)
+        enc_data = _compat.to_bytes(request.get_cookie(self.session_cookie_name))
         try:
             self.data = jwt.decode(enc_data, self.secret, algorithms=[self.algorithm])
             assert self.expiration is None or self.data['timestamp'] > time.time() - int(self.expiration)
@@ -163,7 +163,7 @@ class Session(object):
     def save(self):
         self.data['timestamp'] = time.time()
         enc_data = jwt.encode(self.data, self.secret, algorithm = self.algorithm)
-        response.set_cookie(self.session_cookie_name, enc_data.decode('utf8'))
+        response.set_cookie(self.session_cookie_name, _compat.to_native(enc_data))
 
 #########################################################################################
 # the action decorator
