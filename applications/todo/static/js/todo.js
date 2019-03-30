@@ -30,7 +30,7 @@ myapp.methods.remove = function(item_id) {
 };
 myapp.methods.save = function(item_id) { 
     axios.post(myapp.api, {info: myapp.vue.input}).then(function(res){            
-            myapp.vue.items.push({id:res.data.id, info: myapp.vue.input});
+            if (myapp.vue.input) myapp.vue.items.unshift({id:res.data.id, info: myapp.vue.input});
             myapp.vue.input='';
         });
 };

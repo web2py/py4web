@@ -18,14 +18,14 @@ def index():
 # example of GET/POST/DELETE RESTful APIs
 @action('/$app_name/api', fixtures=[db])
 def todo():
-    return dict(items=db(db.todo).select().as_list())
+    return dict(items=db(db.todo).select(orderby=~db.todo.id).as_list())
 
 @action('/$app_name/api', method='POST', fixtures=[db])
 def todo():
     return dict(id=db.todo.insert(info=request.json.get('info')))
 
 @action('/$app_name/api/<id>', method='DELETE', fixtures=[db, session])
-def todo():   
+def todo(id):   
     db(db.todo.id==id).delete()
     return dict()
 
