@@ -12,6 +12,7 @@ import importlib
 import inspect
 import json
 import linecache
+import logging
 import numbers
 import os
 import platform
@@ -40,6 +41,8 @@ import pydal
 from pydal import Field, _compat
 
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'HTTP', 'Session']
+
+TEMPLATE_500 = """<html><body style="background:white"><div style="padding-top:10%;margin:auto;color:red;font-family:helvetica;text-align:center"><a style="padding:5px 10px;border:2px solid red;color:red;text-decoration:none" href="/_error/{0}">&#x2639; Internal Error: {0}</a></div></body><html>"""
 
 render = yatl.render
 request = bottle.request
@@ -207,6 +210,7 @@ class action(object):
         self.path = path
         self.kwargs = kwargs
         self.view = kwargs.pop('view', None)
+        self.fixtures = kwargs.pop('fixtures', [])
 
     def __call__(self, function):
         frame = inspect.stack()[1]
@@ -214,19 +218,18 @@ class action(object):
         folder = os.path.dirname(os.path.normpath(module.__file__))
         app_name = os.path.split(folder)[-1]  ### FIX ME
         path = self.path.replace('/$app_name/', '/%s/' % app_name)
-        defaults = [item.default for item in inspect.signature(function).parameters.values()]
-        self.fixtures = [obj for obj in defaults if isinstance(obj, Fixture)]
         @bottle.route(path, **self.kwargs)
         @functools.wraps(function)
         def wrapper(*func_args, **func_kwargs):
-            request.app_name = app_name
             try:
+                request.app_name = app_name
                 [obj.on_request() for obj in self.fixtures]
                 output = function(*func_args, **func_kwargs)
                 if isinstance(output, dict):
-                    if self.view:
+                    view = self.view
+                    if view:
                         path = os.path.join(folder, 'templates')
-                        with open(os.path.join(path, self.view)) as stream:
+                        with open(os.path.join(path, view)) as stream:
                             context = dict(request=request)
                             context.update(yatl.helpers.__dict__)
                             context.update(output)
@@ -241,13 +244,16 @@ class action(object):
                 [obj.on_success() for obj in self.fixtures]
                 raise e
             except:
-                [obj.on_error() for obj in self.fixtures]
-                tb = traceback.format_exc()
-                output = '<html><body><pre>%s</pre></body></html>' % yatl.xmlescape(tb)
-                log_error(get_error_snapshot())
-                request.session = None
-            return output        
-        return wrapper    
+                try:                    
+                    logging.error(traceback.format_exc())
+                    ticket = log_error(get_error_snapshot())
+                    [obj.on_error() for obj in self.fixtures]                    
+                except:
+                    logging.error(traceback.format_exc())
+                    ticket = "unknown"
+                output = TEMPLATE_500.format(ticket)
+            return output       
+        return wrapper 
 
 
 #########################################################################################
@@ -315,7 +321,24 @@ def get_error_snapshot(depth=5):
     return data
 
 def log_error(error_snapshot):
-    print(dumps(error_snapshot))
+    uri = os.environ['WEB3PY_SYSTEM_DB_URI']
+    db = DAL(uri)
+    db.define_table('web3py_error',
+                    Field('uuid'),
+                    Field('method'),
+                    Field('path','string'),
+                    Field('timestamp','datetime'),
+                    Field('client_ip','string'),
+                    Field('snapshot','json'))
+    error_uuid = str(uuid.uuid4())
+    db.web3py_error.insert(
+            uuid=error_uuid,
+            method=request.method,
+            path=request.path,
+            timestamp=datetime.datetime.utcnow(),
+            client_ip=request.environ.get('REMOTE_ADDR'),
+            snapshot=error_snapshot)
+    return error_uuid
 
 #########################################################################################
 # loading/reloading logic
@@ -353,7 +376,7 @@ def get_routes():
         func = route.callback
         routes.append({'rule': route.rule,
                        'method': route.method,
-                       'filename': func.__module__.replace('.',os.sep) + '.py',
+                       'filename': func.__module__, #.replace('.',os.sep) + '.py',
                        'action': func.__name__})
     return sorted(routes, key=lambda item: item['rule'])
 
@@ -382,9 +405,11 @@ def main():
     parser.add_argument('--workers', default=0, type=int, help='number of gunicorn workers')
     parser.add_argument('--certfile', default=None, type=int, help='ssl certificate file')
     parser.add_argument('--keyfile', default=None, type=int, help='ssl key file')
+    parser.add_argument('--system_db_uri', default='sqlite:memory:', type=str, help='db uri for logging')
     action.args = args = parser.parse_args()
     args.folder = os.path.normpath(args.folder)
     os.environ['WEB3PY_APPLICATIONS'] = args.folder
+    os.environ['WEB3PY_SYSTEM_DB_URI'] = args.system_db_uri
     sys.path.append(args.folder)
     reloader = Reloader(args.folder)
     reloader.import_apps()
