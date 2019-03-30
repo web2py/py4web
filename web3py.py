@@ -1,20 +1,28 @@
+#!/usr/bin/env python
+
 from __future__ import print_function
-import re
-import os
-import sys
-import json
-import copy
-import time
-import uuid
-import types
-import numbers
-import datetime
+
 import argparse
-import inspect
-import importlib
-import functools
-import traceback
+import cgitb
 import collections
+import copy
+import datetime
+import functools
+import importlib
+import inspect
+import json
+import linecache
+import numbers
+import os
+import platform
+import pydoc
+import re
+import sys
+import threading
+import time
+import traceback
+import types
+import uuid
 
 try: 
     import gunicorn
@@ -28,7 +36,8 @@ except:
 import jwt # PyJWT
 import bottle
 import yatl
-from pydal import DAL, Field, _compat
+import pydal
+from pydal import Field, _compat
 
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'HTTP', 'Session']
 
@@ -132,38 +141,60 @@ def dumps(obj):
     return json.dumps(obj, default=objectify, sort_keys=True, indent=2)
 
 #########################################################################################
+# Generic Fixture
+#########################################################################################
+
+class Fixture(object):
+    def on_request(self): pass
+    def on_error(self): pass
+    def on_success(self): pass
+
+class DAL(pydal.DAL, Fixture):
+    def on_request(self): self._adapter.reconnect()
+    def on_error(self): self.rollback()
+    def on_success(self): self.commit()
+
+#########################################################################################
 # Session logic (uses encrypted jwt token in cookies)
 #########################################################################################
 
-class Session(object):
+class Session(Fixture):
     def __init__(self, secret, expiration=None, algorithm='HS256'):
         self.secret = secret
         self.expiration = expiration
         self.algorithm = algorithm        
-
+        self.local = threading.local()
     def load(self):
-        self.session_cookie_name = '%s_session' % request.app_name
-        self.changed = False
-        enc_data = _compat.to_bytes(request.get_cookie(self.session_cookie_name))
+        self.local.session_cookie_name = '%s_session' % request.app_name
+        enc_data = _compat.to_bytes(request.get_cookie(self.local.session_cookie_name))
+        self.local.changed = False
         try:
-            self.data = jwt.decode(enc_data, self.secret, algorithms=[self.algorithm])
-            assert self.expiration is None or self.data['timestamp'] > time.time() - int(self.expiration)
-        except:
-            print(traceback.format_exc())
-            self.data = {}
-        if not 'uuid' in self.data:
-            self['uuid'] = str(uuid.uuid4())
+            self.local.data = jwt.decode(enc_data, self.secret, algorithms=[self.algorithm])
+            assert self.expiration is None or self.local.data['timestamp'] > time.time() - int(self.expiration)
+        except Exception as e:
+            self.local.data = {}
+        if not 'uuid' in self.local.data:
+            self.local.changed = True
+            self.local.data['uuid'] = str(uuid.uuid4())
     def get(self, key, default=None):
-        return self.data.get(key, default)
+        return self.local.data.get(key, default)
     def __getitem__(self, key):
-        return self.data[key]
+        return self.local.data[key]
     def __setitem__(self, key, value):
-        self.changed = True
-        self.data[key] = value
+        self.local.changed = True
+        self.local.data[key] = value
     def save(self):
-        self.data['timestamp'] = time.time()
-        enc_data = jwt.encode(self.data, self.secret, algorithm = self.algorithm)
-        response.set_cookie(self.session_cookie_name, _compat.to_native(enc_data))
+        self.local.data['timestamp'] = time.time()        
+        enc_data = jwt.encode(self.local.data, self.secret, algorithm = self.algorithm)
+        response.set_cookie(self.local.session_cookie_name, _compat.to_native(enc_data))
+    def on_request(self):
+        self.load()
+    def on_error(self):
+        if self.local.changed:
+            self.save()
+    def on_success(self):
+        if self.local.changed:
+            self.save()
 
 #########################################################################################
 # the action decorator
@@ -184,15 +215,13 @@ class action(object):
         app_name = os.path.split(folder)[-1]  ### FIX ME
         path = self.path.replace('/$app_name/', '/%s/' % app_name)
         defaults = [item.default for item in inspect.signature(function).parameters.values()]
-        self.dbs = [db for db in defaults if hasattr(db, '_adapter')]
-        self.sessions = [session for session in defaults if isinstance(session, Session)]        
+        self.fixtures = [obj for obj in defaults if isinstance(obj, Fixture)]
         @bottle.route(path, **self.kwargs)
         @functools.wraps(function)
         def wrapper(*func_args, **func_kwargs):
             request.app_name = app_name
             try:
-                for db in self.dbs: db._adapter.reconnect()
-                for session in self.sessions: session.load()
+                [obj.on_request() for obj in self.fixtures]
                 output = function(*func_args, **func_kwargs)
                 if isinstance(output, dict):
                     if self.view:
@@ -204,18 +233,19 @@ class action(object):
                             output = yatl.render(stream.read(), path=path, context=context, delimiters='[[ ]]')
                     else:
                         output = dumps(output)
-                for db in self.dbs: db._adapter.commit()
-            except bottle.HTTPResponse as e:
-                raise e
+                [obj.on_success() for obj in self.fixtures]
             except HTTP as http:
-                for db in self.dbs: db._adapter.commit()
-                output = bottle.HTTPResponse(status=http.status, body=http.body)
+                [obj.on_success() for obj in self.fixtures]
+                raise bottle.HTTPResponse(status=http.status, body=http.body)
+            except bottle.HTTPResponse as e:
+                [obj.on_success() for obj in self.fixtures]
+                raise e
             except:
-                request.session = None
-                for db in self.dbs: db._adapter.rollback()
+                [obj.on_error() for obj in self.fixtures]
                 tb = traceback.format_exc()
                 output = '<html><body><pre>%s</pre></body></html>' % yatl.xmlescape(tb)
-            [session.save() for session in self.sessions if session.changed]
+                log_error(get_error_snapshot())
+                request.session = None
             return output        
         return wrapper    
 
@@ -243,6 +273,49 @@ if not hasattr(_ssl, 'sslwrap'):
         return context._wrap_socket(sock, server_side=server_side, ssl_sock=caller_self)
     _ssl.sslwrap = new_sslwrap
 
+#########################################################################################
+# error handling
+#########################################################################################
+
+def get_error_snapshot(depth=5):
+    """Return a dict describing a given traceback (based on cgitb.text)."""
+
+    etype, evalue, etb = sys.exc_info()
+    if isinstance(etype, type):
+        etype = etype.__name__
+
+    data = {}
+    data['timestamp'] = datetime.datetime.utcnow().isoformat()
+    data['python_version'] = sys.version
+    platform_keys = [
+        'machine', 'node', 'platform', 'processor', 'python_branch', 'python_build',
+        'python_compiler', 'python_implementation', 'python_revision', 'python_version',
+        'python_version_tuple', 'release', 'system', 'uname', 'version']
+    data['platform_info'] = {key: getattr(platform, key)() for key in platform_keys}
+    data['os_environ'] = {
+        key: pydoc.text.repr(value) for key, value in os.environ.items()}
+    data['traceback'] = traceback.format_exc()
+    data['exception_type'] = str(etype)
+    data['exception_value'] = str(evalue)
+    # loopover the stack frames
+    items = inspect.getinnerframes(etb, depth)
+    del etb # Prevent circular references that would cause memory leaks
+    data['stackframes'] = stackframes = []
+    for frame, file, lnum, func, lines, index in items:
+        file = file and os.path.abspath(file) or '?'
+        args, varargs, varkw, locals = inspect.getargvalues(frame)
+        # basic frame information
+        f = {'file': file, 'func': func, 'lnum': lnum}
+        f['code'] = lines
+        line_vars = cgitb.scanvars(lambda: linecache.getline(file, lnum), frame, locals)
+        # dump local variables (referenced in current line only)
+        f['vars'] = {key: pydoc.text.repr(value) for key, value in locals.items() if not key.startswith('__')}
+        stackframes.append(f)
+
+    return data
+
+def log_error(error_snapshot):
+    print(dumps(error_snapshot))
 
 #########################################################################################
 # loading/reloading logic
