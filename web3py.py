@@ -277,7 +277,7 @@ class action(object):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
                 for requirement in requirements:
-                    if not requirment():
+                    if not requirement():
                         bottle.abort(401)
                 return func(*args, **kwargs)
             return wrapper
@@ -302,6 +302,14 @@ class action(object):
                 return  TEMPLATE_500.format(ticket)
         return wrapper 
 
+    @staticmethod
+    def combine(*decorators):
+        def wrapper(func):
+            for decorator in reversed(decorators):
+                func = decorator(func)
+            return func
+        return wrapper
+
     def __call__(self, func):
         """builds the decorator"""
         frame = inspect.stack()[1]
@@ -313,6 +321,11 @@ class action(object):
         func = bottle.route(path, **self.kwargs)(func)
         return func
 
+def user_in(session):
+    def requirement():
+        session.on_request()
+        return session.get('user_id', None) is not None 
+    return requirement
 
 #########################################################################################
 # monkey patch ssl bug for gevent
