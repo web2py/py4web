@@ -17,12 +17,12 @@ open http://localhost:8000/todo/index
 - uses the very similar helpers to web2py (A, DIV, SPAN, etc.)
 - supports multiple apps under applications/ folder (same as web2py)
 - request, response objects are from bottle (https://bottlepy.org/docs/dev/)
-- sessions are encrypted jwt in cookies, and they should be small
+- sessions are encrypted jwt in cookies, and they must be small
 - only supports cache.memoize (in Ram but O(1) access)
 - unlike web2py, web3py is py3 only
 - unlike web2py, web3py does not use custom import or eval
 - dynamic module reloading is only partially supported
-- there is internationalizaiton yet (WIP)
+- there is no internationalizaiton yet (WIP)
 - there is no admin yet (WIP)
 - there is no appadmin yet (WIP)
 - there is no Auth logic yet (WIP)
