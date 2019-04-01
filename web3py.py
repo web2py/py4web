@@ -230,7 +230,7 @@ class Session(Fixture):
     def on_error(self):
         if self.local.changed:
             self.save()
-
+        
     def on_success(self):
         if self.local.changed:
             self.save()
