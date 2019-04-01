@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 
+# standard modules
 import argparse
 import cgitb
 import collections
@@ -25,6 +26,7 @@ import traceback
 import types
 import uuid
 
+# optional web servers for speed
 try: 
     import gunicorn
 except:
@@ -34,25 +36,24 @@ try:
 except:
     gevent = None
 
-import jwt # PyJWT
-import bottle
-import yatl
-import pydal
-from pydal import Field, _compat
+# third part modules
+import jwt    # pip import PyJWT
+import bottle # pip import bottle
+import yatl   # pip import yatl
+import pydal  # pip import pydal
+from pydal import _compat
 
-__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'HTTP', 'Session']
+__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache']
 
 TEMPLATE_500 = """<html><body style="background:white"><div style="padding-top:10%;margin:auto;color:red;font-family:helvetica;text-align:center"><a style="padding:5px 10px;border:2px solid red;color:red;text-decoration:none" href="/_error/{0}">&#x2639; Internal Error: {0}</a></div></body><html>"""
 
+HTTP = bottle.HTTPResponse
+Field = pydal.Field
 render = yatl.render
 request = bottle.request
 response = bottle.response
 redirect = bottle.redirect           
-
-class HTTP(Exception):
-    def __init__(self, status, body):
-        self.status = status
-        self.body = body
+abort = bottle.abort
 
 ########################################################################################
 # a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
@@ -140,33 +141,61 @@ def objectify(obj):
     else:
         return str(obj)
 
-def dumps(obj):
-    return json.dumps(obj, default=objectify, sort_keys=True, indent=2)
+def dumps(obj, sort_keys=True, indent=2):
+    return json.dumps(obj, default=objectify, sort_keys=sort_keys, indent=indet)
 
 #########################################################################################
-# Generic Fixture
+# Generic Fixture (database connctions, templates, sessions, and requirements are fixtures)
 #########################################################################################
 
 class Fixture(object):
-    def on_request(self): pass
-    def on_error(self): pass
-    def on_success(self): pass
+    def on_request(self): pass   # called when request arrives
+    def on_error(self): pass     # called when request errors
+    def on_success(self): pass   # called when request is successfull
+    def transform(self, output): # transforms the output, for example to apply template
+        return output
 
 class DAL(pydal.DAL, Fixture):
     def on_request(self): self._adapter.reconnect()
     def on_error(self): self.rollback()
     def on_success(self): self.commit()
 
-#########################################################################################
-# Session logic (uses encrypted jwt token in cookies)
-#########################################################################################
+class Template(Fixture):
+
+    cache = Cache(100)
+
+    def __init__(self, filename, delimiters='[[ ]]'):
+        self.filename = filename
+        self.delimiters = delimiters        
+        
+    @staticmethod
+    def read(filename):
+        with open(filename) as stream:
+            return stream.read()
+
+    def transform(self, output):
+        if not isinstance(output, dict):
+            return output
+        context = dict(request=request)
+        context.update(yatl.helpers.__dict__)
+        context.update(output)
+        app_folder = os.path.join(os.environ['WEB3PY_APPLICATIONS'], request.app_name)
+        path = os.path.join(app_folder, 'templates')
+        filename = os.path.join(path, self.filename)
+        template = Template.cache.get(filename, lambda: Template.read(filename), expiration=1, 
+                                      monitor=lambda: os.path.getmtime(filename)) 
+        output = yatl.render(template, path=path, context=context, delimiters=self.delimiters)
+        return output
+
 
 class Session(Fixture):
+
     def __init__(self, secret, expiration=None, algorithm='HS256'):
         self.secret = secret
         self.expiration = expiration
         self.algorithm = algorithm        
         self.local = threading.local()
+
     def load(self):
         self.local.session_cookie_name = '%s_session' % request.app_name
         enc_data = _compat.to_bytes(request.get_cookie(self.local.session_cookie_name))
@@ -179,22 +208,29 @@ class Session(Fixture):
         if not 'uuid' in self.local.data:
             self.local.changed = True
             self.local.data['uuid'] = str(uuid.uuid4())
+
     def get(self, key, default=None):
         return self.local.data.get(key, default)
+
     def __getitem__(self, key):
         return self.local.data[key]
+
     def __setitem__(self, key, value):
         self.local.changed = True
         self.local.data[key] = value
+
     def save(self):
         self.local.data['timestamp'] = time.time()        
         enc_data = jwt.encode(self.local.data, self.secret, algorithm = self.algorithm)
         response.set_cookie(self.local.session_cookie_name, _compat.to_native(enc_data))
+
     def on_request(self):
         self.load()
+
     def on_error(self):
         if self.local.changed:
             self.save()
+
     def on_success(self):
         if self.local.changed:
             self.save()
@@ -206,54 +242,76 @@ class Session(Fixture):
 class action(object):
     """@action(...) is a decorator for functions to be exposed as actions"""
 
+    current = threading.local()
+
     def __init__(self, path, **kwargs):
         self.path = path
         self.kwargs = kwargs
-        self.view = kwargs.pop('view', None)
-        self.fixtures = kwargs.pop('fixtures', [])
 
-    def __call__(self, function):
-        frame = inspect.stack()[1]
-        module = inspect.getmodule(frame[0])
-        folder = os.path.dirname(os.path.normpath(module.__file__))
-        app_name = os.path.split(folder)[-1]  ### FIX ME
-        path = self.path.replace('/$app_name/', '/%s/' % app_name)
-        @bottle.route(path, **self.kwargs)
-        @functools.wraps(function)
+    @staticmethod
+    def uses(*fixtures):
+        """associated fixtures to an action"""
+        print('here!', '='*80)
+        fixtures = [Template(obj) if isinstance(obj, str) else obj for obj in fixtures]
+        print(fixtures)
+        def decorator(func):
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                try:
+                    [obj.on_request() for obj in fixtures]
+                    ret = func(*args, **kwargs)
+                    for obj in fixtures:
+                        ret = obj.transform(ret)
+                    [obj.on_success() for obj in fixtures]
+                    return ret
+                except Exception:
+                    [obj.on_error() for obj in fixtures]
+                    raise
+            return wrapper
+        return decorator
+
+    @staticmethod
+    def requires(*requirements):
+        """enforces requiremets or abort(401)"""
+        def decorator(func):
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                for requirement in requirements:
+                    if not requirment():
+                        bottle.abort(401)
+                return func(*args, **kwargs)
+            return wrapper
+        return decorator
+    
+    @staticmethod
+    def catch_errors(app_name, func):
+        """catches and logs errors in an action. also sets request.app_name"""
+        @functools.wraps(func)
         def wrapper(*func_args, **func_kwargs):
             try:
                 request.app_name = app_name
-                [obj.on_request() for obj in self.fixtures]
-                output = function(*func_args, **func_kwargs)
-                if isinstance(output, dict):
-                    view = self.view
-                    if view:
-                        path = os.path.join(folder, 'templates')
-                        with open(os.path.join(path, view)) as stream:
-                            context = dict(request=request)
-                            context.update(yatl.helpers.__dict__)
-                            context.update(output)
-                            output = yatl.render(stream.read(), path=path, context=context, delimiters='[[ ]]')
-                    else:
-                        output = dumps(output)
-                [obj.on_success() for obj in self.fixtures]
-            except HTTP as http:
-                [obj.on_success() for obj in self.fixtures]
-                raise bottle.HTTPResponse(status=http.status, body=http.body)
+                return func(*func_args, **func_kwargs)
             except bottle.HTTPResponse as e:
-                [obj.on_success() for obj in self.fixtures]
                 raise e
             except:
+                logging.error(traceback.format_exc())
                 try:                    
-                    logging.error(traceback.format_exc())
                     ticket = log_error(get_error_snapshot())
-                    [obj.on_error() for obj in self.fixtures]                    
                 except:
-                    logging.error(traceback.format_exc())
                     ticket = "unknown"
-                output = TEMPLATE_500.format(ticket)
-            return output       
+                return  TEMPLATE_500.format(ticket)
         return wrapper 
+
+    def __call__(self, func):
+        """builds the decorator"""
+        frame = inspect.stack()[1]
+        module = inspect.getmodule(frame[0])
+        folder = os.path.dirname(os.path.abspath(module.__file__))
+        app_name = folder[len(os.environ['WEB3PY_APPLICATIONS'])+1:].split(os.sep)[0]
+        path = self.path.replace('/$app_name/', '/%s/' % app_name)                
+        func = action.catch_errors(app_name, func)
+        func = bottle.route(path, **self.kwargs)(func)
+        return func
 
 
 #########################################################################################
@@ -320,6 +378,7 @@ def get_error_snapshot(depth=5):
 
     return data
 
+
 def log_error(error_snapshot):
     uri = os.environ['WEB3PY_SYSTEM_DB_URI']
     db = DAL(uri)
@@ -356,7 +415,7 @@ class Reloader(object):
             path = os.path.join(self.folder, app_name)
             if os.path.isdir(path) and not path.endswith('__'):
                 try:
-                    importlib.import_module(path.replace(os.sep, '.'), self.folder)
+                    importlib.import_module(app_name)
                     Reloader.ERRORS[app_name] = None
                 except:
                     print(traceback.format_exc())
@@ -407,7 +466,7 @@ def main():
     parser.add_argument('--keyfile', default=None, type=int, help='ssl key file')
     parser.add_argument('--system_db_uri', default='sqlite:memory:', type=str, help='db uri for logging')
     action.args = args = parser.parse_args()
-    args.folder = os.path.normpath(args.folder)
+    args.folder = os.path.abspath(args.folder)
     os.environ['WEB3PY_APPLICATIONS'] = args.folder
     os.environ['WEB3PY_SYSTEM_DB_URI'] = args.system_db_uri
     sys.path.append(args.folder)
@@ -417,6 +476,7 @@ def main():
     for item in get_routes():
         print(item)
     start_server(args)
+
 
 if __name__ == '__main__':
     main()
