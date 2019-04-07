@@ -22,7 +22,7 @@ open http://localhost:8000/todo/index
 - unlike web2py, web3py is py3 only
 - unlike web2py, web3py does not use custom import or eval
 - dynamic module reloading is only partially supported
-- there is no internationalizaiton yet (WIP)
+- there is no i18n yet (WIP)
 - there is no admin yet (WIP)
 - there is no appadmin yet (WIP)
 - there is no Auth logic yet (WIP)

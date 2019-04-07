@@ -15,7 +15,7 @@ db.define_table('todo', Field('info'))
 @action.uses(session)               # action needs a session object (read/write cookies)
 def index():
     session['counter'] = session.get('counter', 0) + 1
-    session['user_id'] = 1          # store a use in session
+    session['user_id'] = 1          # store a user in session
     return dict(session=session)
 
 # example of GET/POST/DELETE RESTful APIs
