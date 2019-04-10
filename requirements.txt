@@ -4,3 +4,4 @@ pydal
 bottle
 gunicorn
 gevent
+reloader

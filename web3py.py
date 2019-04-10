@@ -43,6 +43,9 @@ import yatl   # pip import yatl
 import pydal  # pip import pydal
 from pydal import _compat
 
+import reloader
+reloader.enable()
+
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache']
 
 TEMPLATE_500 = """<html><body style="background:white"><div style="padding-top:10%;margin:auto;color:red;font-family:helvetica;text-align:center"><a style="padding:5px 10px;border:2px solid red;color:red;text-decoration:none" href="/_error/{0}">&#x2639; Internal Error: {0}</a></div></body><html>"""
@@ -251,9 +254,7 @@ class action(object):
     @staticmethod
     def uses(*fixtures):
         """associated fixtures to an action"""
-        print('here!', '='*80)
         fixtures = [Template(obj) if isinstance(obj, str) else obj for obj in fixtures]
-        print(fixtures)
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
@@ -418,24 +419,35 @@ def log_error(error_snapshot):
 
 class Reloader(object):
     
+    MODULES = {}
     ERRORS = {}
 
-    def __init__(self, folder):
-        self.folder = folder
-
     def import_apps(self):
-        for app_name in os.listdir(self.folder):
-            path = os.path.join(self.folder, app_name)
+        """import or reimport modules and exposed static files"""
+        folder = os.environ['WEB3PY_APPLICATIONS']
+        app = bottle.default_app()
+        app.routes = app.routes[:] 
+        new_apps = []
+        for app_name in os.listdir(folder):
+            path = os.path.join(folder, app_name)
             if os.path.isdir(path) and not path.endswith('__'):
                 try:
-                    importlib.import_module(app_name)
+                    module = Reloader.MODULES.get(app_name)
+                    if not module:
+                        module = importlib.import_module(app_name)
+                        Reloader.MODULES[app_name] = module
+                        new_apps.append(path)
+                    else:
+                        reloader.reload(module)
                     Reloader.ERRORS[app_name] = None
                 except:
                     print(traceback.format_exc())
-                    Reloader.ERRORS[app_name] =  traceback.format_exc()
-                @bottle.route('/%s/static/<filename:path>' % app_name)
-                def server_static(filename, path=path):
-                    return bottle.static_file(filename, root=os.path.join(path, 'static'))
+                    Reloader.ERRORS[app_name] = traceback.format_exc()
+        # expose static files
+        for path in new_apps:
+            @bottle.route('/%s/static/<filename:path>' % path.split(os.path.sep)[-1])
+            def server_static(filename, path=path):
+                return bottle.static_file(filename, root=os.path.join(path, 'static'))
 
 #########################################################################################
 # find all routes
@@ -459,7 +471,7 @@ def get_routes():
 def start_server(args):
     host, port = args.address.split(':')
     if args.workers < 1:
-        bottle.run(host=host, port=int(port), reloader=True)
+        bottle.run(host=host, port=int(port))
     else:
         if not gunicorn:
             logging.error('gunicorn not installed')
@@ -483,9 +495,8 @@ def main():
     os.environ['WEB3PY_APPLICATIONS'] = args.folder
     os.environ['WEB3PY_SYSTEM_DB_URI'] = args.system_db_uri
     sys.path.append(args.folder)
-    reloader = Reloader(args.folder)
+    reloader = Reloader()
     reloader.import_apps()
-
     for item in get_routes():
         print(item)
     start_server(args)
