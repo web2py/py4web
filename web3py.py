@@ -317,7 +317,7 @@ class action(object):
         module = inspect.getmodule(frame[0])
         folder = os.path.dirname(os.path.abspath(module.__file__))
         app_name = folder[len(os.environ['WEB3PY_APPLICATIONS'])+1:].split(os.sep)[0]
-        path = self.path.replace('/$app_name/', '/%s/' % app_name)                
+        path = self.path if self.path[:1] == '/' else '/%s/%s' % (app_name, self.path)
         func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
         return func

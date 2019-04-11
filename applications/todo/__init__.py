@@ -10,7 +10,7 @@ db = DAL('sqlite://storage.db', folder=os.path.join(os.path.dirname(__file__), '
 db.define_table('todo', Field('info'))
 
 # example index page using session, template and vue.js
-@action('/$app_name/index')         # the function below is exposed as a GET action 
+@action('index')         # the function below is exposed as a GET action 
 @action.uses('index.html')          # we use the template index.html to render it
 @action.uses(session)               # action needs a session object (read/write cookies)
 def index():
@@ -20,21 +20,21 @@ def index():
 
 # example of GET/POST/DELETE RESTful APIs
 
-@action('/$app_name/api')           # a GET API function
+@action('api')           # a GET API function
 @action.uses(session)               # we load the session
 @action.requires(user_in(session))  # then check we have a valid user in session
 @action.uses(db)                    # all before starting a db connection
 def todo():
     return dict(items=db(db.todo).select(orderby=~db.todo.id).as_list())
 
-@action('/$app_name/api', method='POST')
+@action('api', method='POST')
 @action.uses(session)
 @action.requires(user_in(session))
 @action.uses(db)
 def todo():
     return dict(id=db.todo.insert(info=request.json.get('info')))
 
-@action('/$app_name/api/<id:int>', method='DELETE')
+@action('api/<id:int>', method='DELETE')
 @action.uses(session)
 @action.requires(user_in(session))
 @action.uses(db)
@@ -43,7 +43,7 @@ def todo(id):
     return dict()
 
 # example of caching
-@action('/$app_name/uuid')
+@action('uuid')
 @cache.memoize(expiration=5)   # here we cache the result for 5 seconds
 def uuid():
     import uuid

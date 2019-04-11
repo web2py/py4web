@@ -29,3 +29,8 @@ open http://localhost:8000/todo/index
 - there are no SQLFORM/grid/smartgrid (should there be? should they be in JS only?)
 - there are not enough tests
 - it is not as good as web2py yet, but it is 10-20x faster
+
+
+## Integrations
+- https://pypi.org/project/bottle-auth/
+- https://github.com/jbardin/python-saml/blob/master/example_login.py
