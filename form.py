@@ -1,6 +1,8 @@
 import uuid
+import hmac
 from web3py import DAL, request
 from yatl.helpers import A, TEXTAREA, INPUT, TR, TD, TABLE, DIV, LABEL, FORM
+from pydal._compat import to_bytes
 
 def FormStyleDefault(table, vars, errors, readonly, deletable):
 
@@ -95,7 +97,7 @@ class Form(object):
                  keepvalues=False,
                  formname=False,
                  hidden=None,
-                 csrf=True):
+                 csrf_uuid=None):
 
         if isinstance(table, list):
             dbio = False
@@ -115,7 +117,7 @@ class Form(object):
         self.formstyle = formstyle
         self.dbio = dbio
         self.keepvalues = True if keepvalues or self.record else False
-        self.csrf = csrf
+        self.csrf_uuid = csrf_uuid and csrf_uuid
         self.vars = {}
         self.errors = {}
         self.submitted = False
@@ -132,12 +134,14 @@ class Form(object):
         else:
             post_vars = request.forms
             self.submitted = True
-            # check for CSRF
-            if csrf:
-                pass # FIXME
-            # validate fields
-            if not csrf or True: # FIEXME: post_vars._formkey == self.formkey:
-                if not post_vars._delete:
+            process = False
+            if request.method == 'POST':          
+                if csrf_uuid:
+                    a, b = post_vars['_formkey'].split('/')
+                    if b == hmac.new(to_bytes(csrf_uuid), to_bytes(a)).hexdigest():
+                        process = True
+            if process:
+                if not post_vars.get('_delete'):
                     for field in self.table:
                         if field.writable:
                             value = post_vars.get(field.name)
@@ -166,8 +170,9 @@ class Form(object):
                     self.deleted = True
                     self.record.delete_record()
         # store key for future CSRF
-        if csrf:
-            pass # FIXME
+        if csrf_uuid:
+            a = str(uuid.uuid4())
+            self.formkey = '%s/%s' % (a, hmac.new(to_bytes(csrf_uuid), to_bytes(a)).hexdigest())
 
     def update_or_insert(self):
         if self.record:
@@ -191,7 +196,7 @@ class Form(object):
                                     self.errors,
                                     self.readonly,
                                     self.deletable)
-            if self.csrf:
+            if self.formkey:
                 helper.append(INPUT(_type='hidden',_name='_formkey', _value=self.formkey))
             for key in self.hidden or {}:
                 helper.append(INPUT(_type='hidden',_name=key,
