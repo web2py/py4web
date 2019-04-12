@@ -182,6 +182,7 @@ class Template(Fixture):
         context = dict(request=request)
         context.update(yatl.helpers.__dict__)
         context.update(output)
+        context['__vars__'] = output 
         app_folder = os.path.join(os.environ['WEB3PY_APPLICATIONS'], request.app_name)
         path = os.path.join(app_folder, 'templates')
         filename = os.path.join(path, self.filename)
