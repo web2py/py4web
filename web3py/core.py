@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-
 from __future__ import print_function
 
 # standard modules
 import argparse
 import cgitb
-import collections
 import copy
 import datetime
 import functools
@@ -18,7 +16,6 @@ import numbers
 import os
 import platform
 import pydoc
-import re
 import sys
 import threading
 import time
@@ -27,13 +24,13 @@ import types
 import uuid
 
 # optional web servers for speed
-try: 
+try:
     import gunicorn
-except:
+except ImportError:
     gunicorn = None
 try:
     import gevent; gevent.monkey.patch_all()
-except:
+except ImportError:
     gevent = None
 
 # third part modules
@@ -46,7 +43,7 @@ from pydal import _compat
 import reloader
 reloader.enable()
 
-__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_id']
+__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in']
 
 TEMPLATE_500 = """<html><body style="background:white"><div style="padding-top:10%;margin:auto;color:red;font-family:helvetica;text-align:center"><a style="padding:5px 10px;border:2px solid red;color:red;text-decoration:none" href="/_error/{0}">&#x2639; Internal Error: {0}</a></div></body><html>"""
 
@@ -55,7 +52,7 @@ Field = pydal.Field
 render = yatl.render
 request = bottle.request
 response = bottle.response
-redirect = bottle.redirect           
+redirect = bottle.redirect
 abort = bottle.abort
 
 ########################################################################################
@@ -74,7 +71,7 @@ class Cache(object):
 
         cache = Cache(size=1000)
         h = cache.get(filename, lambda: hash(open(filename).read()), 60, lambda: os.path.getmtime())
-    
+
     (computes and cashes the hash of file filename but only reads the file if mtime changes and
      does not check the mtime more oftern than every 60. caches the 1000 most recent hashes)
     """
@@ -132,7 +129,7 @@ def objectify(obj):
     elif isinstance(obj, (datetime.date, datetime.datetime, datetime.time)):
         return obj.isoformat()
     elif hasattr(obj, 'to_list') and callable(obj.to_list):
-        return item.to_list()
+        return obj.to_list()
     elif hasattr(obj, '__iter__') or isinstance(obj, types.GeneratorType):
         return list(obj)
     elif hasattr(obj, 'to_dict') and callable(obj.to_dict):
@@ -145,7 +142,7 @@ def objectify(obj):
         return str(obj)
 
 def dumps(obj, sort_keys=True, indent=2):
-    return json.dumps(obj, default=objectify, sort_keys=sort_keys, indent=indet)
+    return json.dumps(obj, default=objectify, sort_keys=sort_keys, indent=indent)
 
 #########################################################################################
 # Generic Fixture (database connctions, templates, sessions, and requirements are fixtures)
@@ -169,8 +166,8 @@ class Template(Fixture):
 
     def __init__(self, filename, delimiters='[[ ]]'):
         self.filename = filename
-        self.delimiters = delimiters        
-        
+        self.delimiters = delimiters
+
     @staticmethod
     def read(filename):
         with open(filename) as stream:
@@ -182,12 +179,12 @@ class Template(Fixture):
         context = dict(request=request)
         context.update(yatl.helpers.__dict__)
         context.update(output)
-        context['__vars__'] = output 
+        context['__vars__'] = output
         app_folder = os.path.join(os.environ['WEB3PY_APPLICATIONS'], request.app_name)
         path = os.path.join(app_folder, 'templates')
         filename = os.path.join(path, self.filename)
-        template = Template.cache.get(filename, lambda: Template.read(filename), expiration=1, 
-                                      monitor=lambda: os.path.getmtime(filename)) 
+        template = Template.cache.get(filename, lambda: Template.read(filename), expiration=1,
+                                      monitor=lambda: os.path.getmtime(filename))
         output = yatl.render(template, path=path, context=context, delimiters=self.delimiters)
         return output
 
@@ -197,7 +194,7 @@ class Session(Fixture):
     def __init__(self, secret, expiration=None, algorithm='HS256'):
         self.secret = secret
         self.expiration = expiration
-        self.algorithm = algorithm        
+        self.algorithm = algorithm
         self.local = threading.local()
 
     def load(self):
@@ -207,7 +204,7 @@ class Session(Fixture):
         try:
             self.local.data = jwt.decode(enc_data, self.secret, algorithms=[self.algorithm])
             assert self.expiration is None or self.local.data['timestamp'] > time.time() - int(self.expiration)
-        except Exception as e:
+        except Exception:
             self.local.data = {}
         if not 'uuid' in self.local.data:
             self.local.changed = True
@@ -224,7 +221,7 @@ class Session(Fixture):
         self.local.data[key] = value
 
     def save(self):
-        self.local.data['timestamp'] = time.time()        
+        self.local.data['timestamp'] = time.time()
         enc_data = jwt.encode(self.local.data, self.secret, algorithm = self.algorithm)
         response.set_cookie(self.local.session_cookie_name, _compat.to_native(enc_data))
 
@@ -234,7 +231,7 @@ class Session(Fixture):
     def on_error(self):
         if self.local.changed:
             self.save()
-        
+
     def on_success(self):
         if self.local.changed:
             self.save()
@@ -284,7 +281,7 @@ class action(object):
                 return func(*args, **kwargs)
             return wrapper
         return decorator
-    
+
     @staticmethod
     def catch_errors(app_name, func):
         """catches and logs errors in an action. also sets request.app_name"""
@@ -295,14 +292,14 @@ class action(object):
                 return func(*func_args, **func_kwargs)
             except bottle.HTTPResponse as e:
                 raise e
-            except:
+            except Exception:
                 logging.error(traceback.format_exc())
-                try:                    
+                try:
                     ticket = log_error(get_error_snapshot())
-                except:
+                except Exception:
                     ticket = "unknown"
                 return  TEMPLATE_500.format(ticket)
-        return wrapper 
+        return wrapper
 
     @staticmethod
     def combine(*decorators):
@@ -318,7 +315,7 @@ class action(object):
         module = inspect.getmodule(frame[0])
         folder = os.path.dirname(os.path.abspath(module.__file__))
         app_name = folder[len(os.environ['WEB3PY_APPLICATIONS'])+1:].split(os.sep)[0]
-        path = self.path if self.path[:1] == '/' else '/%s/%s' % (app_name, self.path)
+        path = self.path if self.path[:1] == '/' else '/%s/%s' % (app_name, self.path)        
         func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
         return func
@@ -326,7 +323,7 @@ class action(object):
 def user_in(session):
     def requirement():
         session.on_request()
-        return session.get('user_id', None) is not None 
+        return session.get('user_id', None) is not None
     return requirement
 
 #########################################################################################
@@ -337,8 +334,8 @@ __ssl__ = __import__('ssl')
 _ssl = getattr(__ssl__, '_ssl') or getattr(__ssl__, '_ssl2')
 
 if not hasattr(_ssl, 'sslwrap'):
-    def new_sslwrap(sock, server_side=False, keyfile=None, certfile=None, 
-                    cert_reqs=__ssl__.CERT_NONE, ssl_version=__ssl__.PROTOCOL_SSLv23, 
+    def new_sslwrap(sock, server_side=False, keyfile=None, certfile=None,
+                    cert_reqs=__ssl__.CERT_NONE, ssl_version=__ssl__.PROTOCOL_SSLv23,
                     ca_certs=None, ciphers=None):
         context = __ssl__.SSLContext(ssl_version)
         context.verify_mode = cert_reqs or __ssl__.CERT_NONE
@@ -419,7 +416,7 @@ def log_error(error_snapshot):
 #########################################################################################
 
 class Reloader(object):
-    
+
     MODULES = {}
     ERRORS = {}
 
@@ -427,7 +424,7 @@ class Reloader(object):
         """import or reimport modules and exposed static files"""
         folder = os.environ['WEB3PY_APPLICATIONS']
         app = bottle.default_app()
-        app.routes = app.routes[:] 
+        app.routes = app.routes[:]
         new_apps = []
         for app_name in os.listdir(folder):
             path = os.path.join(folder, app_name)
@@ -461,7 +458,7 @@ def get_routes():
         func = route.callback
         routes.append({'rule': route.rule,
                        'method': route.method,
-                       'filename': func.__module__, #.replace('.',os.sep) + '.py',
+                       'module': func.__module__,
                        'action': func.__name__})
     return sorted(routes, key=lambda item: item['rule'])
 
@@ -471,7 +468,7 @@ def get_routes():
 
 def start_server(args):
     host, port = args.address.split(':')
-    if args.workers < 1:
+    if args.number_workers < 1:
         bottle.run(host=host, port=int(port))
     else:
         if not gunicorn:
@@ -480,16 +477,16 @@ def start_server(args):
             logging.error('gevent not installed')
         else:
             bottle.run(server='gunicorn', host=host, port=int(port),
-                       workers=args.workers, worker_class='gevent', reloader=True,
-                       certfile=args.certfile, keyfile=args.keyfile)
+                       workers=args.number_workers, worker_class='gevent', reloader=True,
+                       certfile=args.ssl_cert_filename, keyfile=args.ssl_key_filename)
 
-ART = """
+ART = r"""
  _______  ____________  ____  ______  __
 |  ____/ / / ____/ __ |/___ \/ __ \ \/ /
 | |     / / /_  / /_/ /___/ / /_/ /\  /
 | | /| / / __/ / __  //__  / ____/ / /
 | |/ |/ / /___/ /_/ /___/ / / ____/ /
-|__/|__/_____/_____/_____/_/ /_____/
+|___/|_/_____/_____/_____/_/ /_____/
 It is still experimental...
 """
 
@@ -498,9 +495,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('folder', help='path to the applications folder')
     parser.add_argument('--address', default='127.0.0.1:8000',help='serving address')
-    parser.add_argument('--workers', default=0, type=int, help='number of gunicorn workers')
-    parser.add_argument('--certfile', default=None, type=int, help='ssl certificate file')
-    parser.add_argument('--keyfile', default=None, type=int, help='ssl key file')
+    parser.add_argument('--number_workers', default=0, type=int, help='number of gunicorn workers')
+    parser.add_argument('--ssl_cert_filename', default=None, type=int, help='ssl certificate file')
+    parser.add_argument('--ssl_key_filename', default=None, type=int, help='ssl key file')
     parser.add_argument('--system_db_uri', default='sqlite:memory:', type=str, help='db uri for logging')
     action.args = args = parser.parse_args()
     args.folder = os.path.abspath(args.folder)

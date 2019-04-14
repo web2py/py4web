@@ -135,7 +135,7 @@ class Form(object):
             post_vars = request.forms
             self.submitted = True
             process = False
-            if request.method == 'POST':          
+            if request.method == 'POST':
                 if csrf_uuid:
                     a, b = post_vars['_formkey'].split('/')
                     if b == hmac.new(to_bytes(csrf_uuid), to_bytes(a)).hexdigest():
@@ -203,7 +203,7 @@ class Form(object):
                                     _value=self.hidden[key]))
             self.cached_helper = helper
         return self.cached_helper
- 
+
     def xml(self):
         return self.helper().xml()
 
