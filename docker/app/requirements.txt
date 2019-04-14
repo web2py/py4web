@@ -1,0 +1,8 @@
+pyjwt
+yatl
+pydal
+bottle
+gunicorn
+gevent
+reloader
+web3py
