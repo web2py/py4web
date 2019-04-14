@@ -1,8 +1,8 @@
 pyjwt
-yatl
-pydal
 bottle
 gunicorn
 gevent
 reloader
+pydal3
+yatl
 web3py

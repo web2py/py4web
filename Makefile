@@ -12,6 +12,7 @@ test:
 	make install
 	python3 -m unittest tests
 deploy:
+	rm dist/*
 	make clean
 	#http://guide.python-distribute.org/creation.html
 	python3 setup.py sdist

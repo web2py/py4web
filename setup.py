@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='web3py',
-    version='0.1.0',
+    version='0.1.1',
     url='https://github.com/web2py/web3py',
     license='BSD',
     author='Massimo Di Pierro',
@@ -30,7 +30,7 @@ setup(
     zip_safe=False,
     platforms='any',
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 1 - Planning',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
