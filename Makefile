@@ -1,5 +1,8 @@
 .PHONY: clean build install test
 clean:
+	find . -name '*.pyc' -delete
+	find . -name '*~' -delete
+	find . -name '#*' -delete
 	python3 setup.py clean
 build:
 	python3 setup.py clean
@@ -9,8 +12,7 @@ install:
 	make build
 	python3 setup.py install
 test:
-	make install
-	python3 -m unittest tests
+	python3 -m pytest -v -s web3py/tests/
 deploy:
 	rm dist/*
 	make clean
