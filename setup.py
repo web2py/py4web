@@ -19,14 +19,14 @@ setup(
     install_requires=[
         'bottle',
         'gunicorn',
-        'gevent'
-        'reloader'
-        'pydal',
+        'gevent',
+        'pydal3',
         'yatl',
+        'reloader',
         ],
     entry_points = {
-        'console_scripts': ['web2py-start=web2py.core:main'],
-        }
+        'console_scripts': ['web3py-start=web3py.core:main'],
+        },
     zip_safe=False,
     platforms='any',
     classifiers=[

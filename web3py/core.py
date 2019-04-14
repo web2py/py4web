@@ -483,7 +483,18 @@ def start_server(args):
                        workers=args.workers, worker_class='gevent', reloader=True,
                        certfile=args.certfile, keyfile=args.keyfile)
 
+ART = """
+ _______  ____________  ____  ______  __
+|  ____/ / / ____/ __ |/___ \/ __ \ \/ /
+| |     / / /_  / /_/ /___/ / /_/ /\  /
+| | /| / / __/ / __  //__  / ____/ / /
+| |/ |/ / /___/ /_/ /___/ / / ____/ /
+|__/|__/_____/_____/_____/_/ /_____/
+It is still experimental...
+"""
+
 def main():
+    print(ART)
     parser = argparse.ArgumentParser()
     parser.add_argument('folder', help='path to the applications folder')
     parser.add_argument('--address', default='127.0.0.1:8000',help='serving address')

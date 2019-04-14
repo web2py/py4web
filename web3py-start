@@ -8,5 +8,5 @@ for filename in os.listdir('site-packages'):
 
 from web3py.core import main
 
-if __name__ == '__main__':
+if __name__ == '__main__':   
     main()

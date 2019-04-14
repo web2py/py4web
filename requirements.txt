@@ -1,6 +1,6 @@
 pyjwt
 yatl
-pydal
+pydal3 # should really be pydal but pydal should be updated
 bottle
 gunicorn
 gevent

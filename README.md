@@ -4,7 +4,7 @@
 
 ```
 pip3 install -r requirements.txt
-web3py-start applications/
+./web3py-start applications/
 open http://localhost:8000/todo/index
 ```
 
