@@ -1,5 +1,6 @@
 version: "3"
 services:
+
   web:
     build: .
     ports:
@@ -10,6 +11,7 @@ services:
     tty: true
     depends_on:
       - postgres
+
   postgres:
     restart: always
     image: postgres
@@ -22,4 +24,3 @@ services:
       - "5432:5432"
     volumes:
        - ./data/postgres:/var/lib/postgresql/data
-
