@@ -4,7 +4,7 @@
 
 ```
 pip3 install -r requirements.txt
-python3 web3py.py applications/
+start.py applications/
 open http://localhost:8000/todo/index
 ```
 
@@ -30,6 +30,9 @@ open http://localhost:8000/todo/index
 - there are not enough tests
 - it is not as good as web2py yet, but it is 10-20x faster
 
+## Warning
+The code in site-packages is only there for development to make sure web3py uses the correct
+development version of pydal sinc pydal on pypi is outdated and we have unable to update it.
 
 ## Integrations
 - https://pypi.org/project/bottle-auth/

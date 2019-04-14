@@ -1,5 +1,5 @@
 from web3py import *
-from form import Form
+from web3py.form import Form
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE
 from yatl.helpers import INPUT, H1
 

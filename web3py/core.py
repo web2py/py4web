@@ -46,7 +46,7 @@ from pydal import _compat
 import reloader
 reloader.enable()
 
-__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache']
+__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_id']
 
 TEMPLATE_500 = """<html><body style="background:white"><div style="padding-top:10%;margin:auto;color:red;font-family:helvetica;text-align:center"><a style="padding:5px 10px;border:2px solid red;color:red;text-decoration:none" href="/_error/{0}">&#x2639; Internal Error: {0}</a></div></body><html>"""
 
@@ -501,7 +501,3 @@ def main():
     for item in get_routes():
         print(item)
     start_server(args)
-
-
-if __name__ == '__main__':
-    main()
