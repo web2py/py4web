@@ -29,7 +29,9 @@ try:
 except ImportError:
     gunicorn = None
 try:
-    import gevent; gevent.monkey.patch_all()
+    import gevent
+    import gevent.monkey
+    gevent.monkey.patch_all()
 except ImportError:
     gevent = None
 
