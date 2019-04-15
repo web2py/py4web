@@ -21,6 +21,7 @@ setup(
         'gunicorn',
         'gevent',
         'pydal3',
+        'pyjwt',
         'yatl',
         'reloader',
         ],
