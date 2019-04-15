@@ -1,9 +1,10 @@
+import os
 from web3py import *
 from web3py.form import Form
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE
 from yatl.helpers import INPUT, H1
 
-db = DAL('sqlite://test')
+db = DAL('sqlite://test', folder=os.path.join(os.path.dirname(__file__), 'databases'))
 db.define_table('thing', 
                 Field('name', requires=IS_NOT_EMPTY()),
                 Field('nummber','integer', requires=IS_INT_IN_RANGE(0,10)))

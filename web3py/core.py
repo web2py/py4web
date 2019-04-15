@@ -422,7 +422,8 @@ class Reloader(object):
     MODULES = {}
     ERRORS = {}
 
-    def import_apps(self):
+    @staticmethod
+    def import_apps():
         """import or reimport modules and exposed static files"""
         folder = os.environ['WEB3PY_APPLICATIONS']
         app = bottle.default_app()
@@ -448,21 +449,16 @@ class Reloader(object):
             @bottle.route('/%s/static/<filename:path>' % path.split(os.path.sep)[-1])
             def server_static(filename, path=path):
                 return bottle.static_file(filename, root=os.path.join(path, 'static'))
+        # register routes
+        routes = []
+        for route in app.routes:
+            func = route.callback
+            routes.append({'rule': route.rule,
+                           'method': route.method,
+                           'module': func.__module__,
+                           'action': func.__name__})
+        Reloader.ROUTES = sorted(routes, key=lambda item: item['rule'])
 
-#########################################################################################
-# find all routes
-#########################################################################################
-
-def get_routes():
-    app = bottle.default_app()
-    routes = []
-    for route in app.routes:
-        func = route.callback
-        routes.append({'rule': route.rule,
-                       'method': route.method,
-                       'module': func.__module__,
-                       'action': func.__name__})
-    return sorted(routes, key=lambda item: item['rule'])
 
 #########################################################################################
 # web server and reload logic
@@ -506,8 +502,7 @@ def main():
     os.environ['WEB3PY_APPLICATIONS'] = args.folder
     os.environ['WEB3PY_SYSTEM_DB_URI'] = args.system_db_uri
     sys.path.append(args.folder)
-    reloader = Reloader()
-    reloader.import_apps()
-    for item in get_routes():
+    Reloader.import_apps()
+    for item in Reloader.ROUTES:
         print(item)
     start_server(args)
