@@ -20,7 +20,7 @@ setup(
         'bottle',
         'gunicorn',
         'gevent',
-        'pydal3',
+        'pydal',
         'pyjwt',
         'yatl',
         'reloader',

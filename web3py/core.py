@@ -43,7 +43,6 @@ import pydal  # pip import pydal
 from pydal import _compat
 
 import reloader
-reloader.enable()
 
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in']
 
@@ -425,6 +424,7 @@ class Reloader(object):
     @staticmethod
     def import_apps():
         """import or reimport modules and exposed static files"""
+        reloader.enable()
         folder = os.environ['WEB3PY_APPLICATIONS']
         app = bottle.default_app()
         app.routes = app.routes[:]
@@ -444,6 +444,7 @@ class Reloader(object):
                 except:
                     print(traceback.format_exc())
                     Reloader.ERRORS[app_name] = traceback.format_exc()
+        reloader.disable()
         # expose static files
         for path in new_apps:
             @bottle.route('/%s/static/<filename:path>' % path.split(os.path.sep)[-1])
