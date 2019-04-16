@@ -316,7 +316,7 @@ class action(object):
         module = inspect.getmodule(frame[0])
         folder = os.path.dirname(os.path.abspath(module.__file__))
         app_name = folder[len(os.environ['WEB3PY_APPLICATIONS'])+1:].split(os.sep)[0]
-        path = self.path if self.path[:1] == '/' else '/%s/%s' % (app_name, self.path)        
+        path = self.path if self.path[:1] == '/' else '/%s/%s' % (app_name, self.path)
         func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
         return func
@@ -452,11 +452,15 @@ class Reloader(object):
                 return bottle.static_file(filename, root=os.path.join(path, 'static'))
         # register routes
         routes = []
+        def to_filename(module):
+            filename = module.replace('.', os.path.sep)
+            filename = os.path.join(filename, '__init__.py') if module.count('.') == 1 else filename + '.py'
+            return filename
         for route in app.routes:
             func = route.callback
             routes.append({'rule': route.rule,
                            'method': route.method,
-                           'module': func.__module__,
+                           'filename': to_filename(func.__module__),
                            'action': func.__name__})
         Reloader.ROUTES = sorted(routes, key=lambda item: item['rule'])
 
