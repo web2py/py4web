@@ -471,11 +471,11 @@ def start_server(args):
     else:
         if not gunicorn:
             logging.error('gunicorn not installed')
-        elif not gunicorn:
+        elif not gevent:
             logging.error('gevent not installed')
         else:
-            bottle.run(server='gunicorn', host=host, port=int(port),
-                       workers=args.number_workers, worker_class='gevent', reloader=True,
+            bottle.run(server='gevent', host=host, port=int(port),
+                       workers=args.number_workers, worker_class='gevent', reloader=False,
                        certfile=args.ssl_cert_filename, keyfile=args.ssl_key_filename)
 
 ART = r"""
@@ -503,6 +503,4 @@ def main():
     os.environ['WEB3PY_SYSTEM_DB_URI'] = args.system_db_uri
     sys.path.append(args.folder)
     Reloader.import_apps()
-    for item in Reloader.ROUTES:
-        print(item)
     start_server(args)
