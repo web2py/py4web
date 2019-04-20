@@ -15,13 +15,13 @@ import logging
 import numbers
 import os
 import platform
-import pydoc
 import sys
 import threading
 import time
 import traceback
 import types
 import uuid
+import http.client
 
 # optional web servers for speed
 try:
@@ -45,8 +45,6 @@ from pydal import _compat
 import reloader
 
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in']
-
-TEMPLATE_500 = """<html><body style="background:white"><div style="padding-top:10%;margin:auto;color:red;font-family:helvetica;text-align:center"><a style="padding:5px 10px;border:2px solid red;color:red;text-decoration:none" href="/_error/{0}">&#x2639; Internal Error: {0}</a></div></body><html>"""
 
 HTTP = bottle.HTTPResponse
 Field = pydal.Field
@@ -296,10 +294,11 @@ class action(object):
             except Exception:
                 logging.error(traceback.format_exc())
                 try:
-                    ticket = log_error(get_error_snapshot())
+                    ticket = ErrorStorage().log(get_error_snapshot())
                 except Exception:
+                    logging.error(traceback.format_exc())
                     ticket = "unknown"
-                return  TEMPLATE_500.format(ticket)
+                return  error_page(500, button_text=ticket, href='/_dashboard/ticket/'+ticket)
         return wrapper
 
     @staticmethod
@@ -369,8 +368,7 @@ def get_error_snapshot(depth=5):
         'python_compiler', 'python_implementation', 'python_revision', 'python_version',
         'python_version_tuple', 'release', 'system', 'uname', 'version']
     data['platform_info'] = {key: getattr(platform, key)() for key in platform_keys}
-    data['os_environ'] = {
-        key: pydoc.text.repr(value) for key, value in os.environ.items()}
+    data['os_environ'] = {key: str(value) for key, value in os.environ.items()}
     data['traceback'] = traceback.format_exc()
     data['exception_type'] = str(etype)
     data['exception_value'] = str(evalue)
@@ -386,31 +384,52 @@ def get_error_snapshot(depth=5):
         f['code'] = lines
         line_vars = cgitb.scanvars(lambda: linecache.getline(file, lnum), frame, locals)
         # dump local variables (referenced in current line only)
-        f['vars'] = {key: pydoc.text.repr(value) for key, value in locals.items() if not key.startswith('__')}
+        f['vars'] = {key: str(value) for key, value in locals.items() if not key.startswith('__')}
         stackframes.append(f)
 
     return data
 
 
-def log_error(error_snapshot):
-    uri = os.environ['WEB3PY_SYSTEM_DB_URI']
-    db = DAL(uri)
-    db.define_table('web3py_error',
-                    Field('uuid'),
-                    Field('method'),
-                    Field('path','string'),
-                    Field('timestamp','datetime'),
-                    Field('client_ip','string'),
-                    Field('snapshot','json'))
-    error_uuid = str(uuid.uuid4())
-    db.web3py_error.insert(
-            uuid=error_uuid,
-            method=request.method,
-            path=request.path,
-            timestamp=datetime.datetime.utcnow(),
-            client_ip=request.environ.get('REMOTE_ADDR'),
-            snapshot=error_snapshot)
-    return error_uuid
+class ErrorStorage(object):
+    def __init__(self):
+        uri = os.environ['WEB3PY_SERVICE_DB_URI']
+        folder = os.environ['WEB3PY_SERVICE_FOLDER']
+        self.db = DAL(uri, folder=folder)
+        self.db.define_table('web3py_error',
+                             Field('uuid'),
+                             Field('method'),
+                             Field('path','string'),
+                             Field('timestamp','datetime'),
+                             Field('client_ip','string'),
+                             Field('snapshot','json'))
+
+    def log(self, error_snapshot):
+        ticket_uuid = str(uuid.uuid4())
+        try:
+            id = self.db.web3py_error.insert(
+                uuid=ticket_uuid,
+                method=request.method,
+                path=request.path,
+                timestamp=datetime.datetime.utcnow(),
+                client_ip=request.environ.get('REMOTE_ADDR'),
+                snapshot=error_snapshot)
+            print('id=',id)
+            self.db.commit()
+            return ticket_uuid
+        except Exception:
+            self.db.rollback()
+            return 'internal-error'
+        finally:
+            self.db.close()
+
+    def get(self, ticket_uuid=None, since=None, limitby=100):
+        db = self.db
+        query = db.web3py_error.uuid==ticket_uuid if ticket_uuid else db.web3py_error.timestamp > since
+        orderby = ~db.web3py_error.timestamp
+        rows = db(query).select(orderby=orderby, limitby=(0, limitby)).as_list()
+        db.close()
+        return rows if not ticket_uuid else rows[0] if rows else None
+    
 
 #########################################################################################
 # loading/reloading logic
@@ -469,6 +488,19 @@ class Reloader(object):
 # web server and reload logic
 #########################################################################################
 
+def error_page(code, button_text=None, href='#', color=None,  message=None):
+    message = http.client.responses[code].upper() if message is None else message
+    color = {'4':'#F44336', '5': '#607D8B'}.get(str(code)[0], '#2196F3') if not color else color
+    button_text = button_text or href
+    return yatl.render('<html><head><style>body{color:white;text-align: center;background-color:{{=color}};font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>{{=code}}</h1><h2>{{=message}}</h2>{{if button_text:}}<a href="{{=href}}">{{=button_text}}</a>{{pass}}</body></html>', context=dict(code=code, message=message, button_text=button_text, href=href, color=color))
+
+@bottle.error(404)
+def _(error): return error_page(404, href='/'+request.path.split('/')[1])
+
+#########################################################################################
+# web server and reload logic
+#########################################################################################
+
 def start_server(args):
     host, port = args.address.split(':')
     if args.number_workers < 1:
@@ -501,11 +533,14 @@ def main():
     parser.add_argument('--number_workers', default=0, type=int, help='number of gunicorn workers')
     parser.add_argument('--ssl_cert_filename', default=None, type=int, help='ssl certificate file')
     parser.add_argument('--ssl_key_filename', default=None, type=int, help='ssl key file')
-    parser.add_argument('--system_db_uri', default='sqlite:memory:', type=str, help='db uri for logging')
+    parser.add_argument('--service_db_uri', default='sqlite://service.storage', type=str, help='db uri for logging')
+    parser.add_argument('--service_folder', default='/tmp/web3py', type=str, help='db uri for logging')
     action.args = args = parser.parse_args()
     args.folder = os.path.abspath(args.folder)
     os.environ['WEB3PY_APPLICATIONS'] = args.folder
-    os.environ['WEB3PY_SYSTEM_DB_URI'] = args.system_db_uri
+    os.environ['WEB3PY_SERVICE_DB_URI'] = args.service_db_uri
+    os.environ['WEB3PY_SERVICE_FOLDER'] = args.service_folder
+    if not os.path.exists(args.service_folder): os.makedirs(args.service_folder)
     sys.path.append(args.folder)
     Reloader.import_apps()
     start_server(args)

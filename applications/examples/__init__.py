@@ -10,7 +10,7 @@ db.define_table('thing',
                 Field('nummber','integer', requires=IS_INT_IN_RANGE(0,10)))
 session = Session(secret='myscret')
 
-@action('/oops')
+@action('oops')
 def oops():
     1/0
 
