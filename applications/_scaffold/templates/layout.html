@@ -3,21 +3,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/[[=request.app_name]]/static/css/bulma.css">
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-  <body>
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+  <body>    
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href="https://bulma.io">
-          <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+        <a class="navbar-item" href=".">
+          <strong>[[=request.app_name]]</strong>
         </a>
-        
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="left-navbar"
+           onclick="this.classList.toggle('is-active');document.getElementById(this.dataset.target).classList.toggle('is-active');">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
-      
-      <div id="navbarBasicExample" class="navbar-menu">
+
+      <div id="left-navbar" class="navbar-menu">
         <div class="navbar-start">
           <a class="navbar-item">Home</a>
           <a class="navbar-item">Documentation</a>
@@ -25,25 +25,30 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">Sign ip</a>
+              <a class="button is-primary">Sign up</a>
               <a class="button is-light">Log in</a>
             </div>
           </div>
         </div>
       </div>
     </nav>
-
     <section class="section">
       <div class="container">
-        <h1 class="title">Example</h1>
+        <h1 class="title">[[=request.app_name.upper()]]</h1>
       </div>
     </section>
-    [[include]]
+    <section class="section">
+      [[include]]
+    </section>
     <footer class="footer">
       <div class="content has-text-centered">
-        I was made with web3py
+        Made with web3py
       </div>
     </footer>
   </body>
   [[block scripts]]
+  <script src="[[=request.app_name]]/static/js/sugar.min.js"></script>
+  <script src="[[=request.app_name]]/static/js/axios.min.js"></script>
+  <script src="[[=request.app_name]]/static/js/vue.min.js"></script>
+  [[end]]
 </html>

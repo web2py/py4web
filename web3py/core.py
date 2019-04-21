@@ -179,7 +179,7 @@ class Template(Fixture):
         context.update(yatl.helpers.__dict__)
         context.update(output)
         context['__vars__'] = output
-        app_folder = os.path.join(os.environ['WEB3PY_APPLICATIONS'], request.app_name)
+        app_folder = os.path.join(os.environ['WEB3PY_APPLICATIONS_FOLDER'], request.app_name)
         path = os.path.join(app_folder, 'templates')
         filename = os.path.join(path, self.filename)
         template = Template.cache.get(filename, lambda: Template.read(filename), expiration=1,
@@ -314,8 +314,8 @@ class action(object):
         frame = inspect.stack()[1]
         module = inspect.getmodule(frame[0])
         folder = os.path.dirname(os.path.abspath(module.__file__))
-        app_name = folder[len(os.environ['WEB3PY_APPLICATIONS'])+1:].split(os.sep)[0]
-        path = self.path if self.path[:1] == '/' else '/%s/%s' % (app_name, self.path)
+        app_name = folder[len(os.environ['WEB3PY_APPLICATIONS_FOLDER'])+1:].split(os.sep)[0]
+        path = self.path if self.path[:1] == '/' else '/' + app_name + ('/' + self.path if self.path else '')
         func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
         return func
@@ -419,15 +419,18 @@ class ErrorStorage(object):
         except Exception:
             self.db.rollback()
             return 'internal-error'
-        finally:
-            self.db.close()
 
-    def get(self, ticket_uuid=None, since=None, limitby=100):
+    def get(self, ticket_uuid=None, since=None, until=None, limitby=100):
         db = self.db
-        query = db.web3py_error.uuid==ticket_uuid if ticket_uuid else db.web3py_error.timestamp > since
-        orderby = ~db.web3py_error.timestamp
+        if ticket_uuid: 
+            query, orderby = db.web3py_error.uuid==ticket_uuid, None
+        elif since:
+            query, orderby = db.web3py_error.timestamp >= since, db.web3py_error.timestamp
+        elif until:
+            query, orderby = db.web3py_error.timestamp < until, ~db.web3py_error.timestamp
+        else:
+            raise NotImplementedError
         rows = db(query).select(orderby=orderby, limitby=(0, limitby)).as_list()
-        db.close()
         return rows if not ticket_uuid else rows[0] if rows else None
     
 
@@ -444,7 +447,7 @@ class Reloader(object):
     def import_apps():
         """import or reimport modules and exposed static files"""
         reloader.enable()
-        folder = os.environ['WEB3PY_APPLICATIONS']
+        folder = os.environ['WEB3PY_APPLICATIONS_FOLDER']
         app = bottle.default_app()
         app.routes = app.routes[:]
         new_apps = []
@@ -491,11 +494,12 @@ class Reloader(object):
 def error_page(code, button_text=None, href='#', color=None,  message=None):
     message = http.client.responses[code].upper() if message is None else message
     color = {'4':'#F44336', '5': '#607D8B'}.get(str(code)[0], '#2196F3') if not color else color
-    button_text = button_text or href
     return yatl.render('<html><head><style>body{color:white;text-align: center;background-color:{{=color}};font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>{{=code}}</h1><h2>{{=message}}</h2>{{if button_text:}}<a href="{{=href}}">{{=button_text}}</a>{{pass}}</body></html>', context=dict(code=code, message=message, button_text=button_text, href=href, color=color))
 
 @bottle.error(404)
-def _(error): return error_page(404, href='/'+request.path.split('/')[1])
+def error404(error):
+    guess_app_name = request.path.split('/')[1]
+    return error_page(404, button_text=guess_app_name, href='/'+guess_app_name)
 
 #########################################################################################
 # web server and reload logic
@@ -528,7 +532,7 @@ It is still experimental...
 def main():
     print(ART)
     parser = argparse.ArgumentParser()
-    parser.add_argument('folder', help='path to the applications folder')
+    parser.add_argument('applications_folder', help='path to the applications folder')
     parser.add_argument('--address', default='127.0.0.1:8000',help='serving address')
     parser.add_argument('--number_workers', default=0, type=int, help='number of gunicorn workers')
     parser.add_argument('--ssl_cert_filename', default=None, type=int, help='ssl certificate file')
@@ -536,11 +540,10 @@ def main():
     parser.add_argument('--service_db_uri', default='sqlite://service.storage', type=str, help='db uri for logging')
     parser.add_argument('--service_folder', default='/tmp/web3py', type=str, help='db uri for logging')
     action.args = args = parser.parse_args()
-    args.folder = os.path.abspath(args.folder)
-    os.environ['WEB3PY_APPLICATIONS'] = args.folder
-    os.environ['WEB3PY_SERVICE_DB_URI'] = args.service_db_uri
-    os.environ['WEB3PY_SERVICE_FOLDER'] = args.service_folder
+    args.applications_folder = os.path.abspath(args.applications_folder)
+    for key in args.__dict__:
+        os.environ['WEB3PY_'+key.upper()] = str(args.__dict__[key])
     if not os.path.exists(args.service_folder): os.makedirs(args.service_folder)
-    sys.path.append(args.folder)
+    sys.path.append(args.applications_folder)
     Reloader.import_apps()
     start_server(args)

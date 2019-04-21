@@ -5,6 +5,8 @@ from web3py import __version__, action, request, response, redirect
 from web3py.core import Reloader, dumps, ErrorStorage
 from yatl.helpers import BEAUTIFY
 
+FOLDER = os.environ['WEB3PY_APPLICATIONS_FOLDER']
+
 @action('/dashboard')
 def home():
     redirect('/%s/static/index.html' % request.app_name)
@@ -32,18 +34,18 @@ def reload():
 
 @action('apps')
 def apps():
-    apps = os.listdir(os.environ['WEB3PY_APPLICATIONS'])
+    apps = os.listdir(FOLDER)
     apps = [{'name':app, 'error':Reloader.ERRORS.get(app)} 
             for app in apps 
-            if os.path.isdir(os.path.join(os.environ['WEB3PY_APPLICATIONS'], app)) and
+            if os.path.isdir(os.path.join(FOLDER, app)) and
             not app.startswith('__')]
     return {'payload': apps, 'status':'success'}
 
 @action('walk/<path:path>')
 def walk(path):
-    top = os.path.join(os.environ['WEB3PY_APPLICATIONS'], path)
+    top = os.path.join(FOLDER, path)
     if not os.path.exists(top) or not os.path.isdir(top):
-        return {'status':'error', 'message':'Folder does not exist'}
+        return {'status':'error', 'message':'folder does not exist'}
     store = {}
     for root, dirs, files in os.walk(top, topdown=False):
         store[root] = {
@@ -55,25 +57,25 @@ def walk(path):
 
 @action('load/<path:path>')
 def load(path):
-    path = os.path.join(os.environ['WEB3PY_APPLICATIONS'], path) # ADD SECURITY
+    path = os.path.join(FOLDER, path) # ADD SECURITY
     content = open(path,'rb').read().decode('utf8')
     return {'payload':content, 'status':'success'}
 
 @action('load_bytes/<path:path>')
 def load_bytes(path):
-    path = os.path.join(os.environ['WEB3PY_APPLICATIONS'], path) # ADD SECURITY 
+    path = os.path.join(FOLDER, path) # ADD SECURITY 
     return open(path,'rb').read()
 
 @action('save/<path:path>', method='POST')
 def save(path):
-    path = os.path.join(os.environ['WEB3PY_APPLICATIONS'], path) # ADD SECURITY 
+    path = os.path.join(FOLDER, path) # ADD SECURITY 
     with open(path, 'wb') as myfile:
         myfile.write(request.body.read())
     return {'status':'success'}
 
 @action('packed/<appname>')
 def packed(appname):
-    deposit = os.path.join(os.environ['WEB3PY_APPLICATIONS'], appname, '.deposit') # ADD SECURITY 
+    deposit = os.path.join(FOLDER, appname, '.deposit') # ADD SECURITY 
     if not os.path.exists(deposit):
         os.mkdir(deposit)
     name = 'app.'+appname+'.w3p'
@@ -83,7 +85,7 @@ def packed(appname):
 
 @action('delete/<path:path>', method='post')
 def delete(path):
-    fullpath = os.path.join(os.environ['WEB3PY_APPLICATIONS'], path) # ADD SECURITY 
+    fullpath = os.path.join(FOLDER, path) # ADD SECURITY 
     recursive_unlink(fullpath)
     return {'status':'success'}
 
