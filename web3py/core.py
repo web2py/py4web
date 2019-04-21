@@ -315,9 +315,11 @@ class action(object):
         module = inspect.getmodule(frame[0])
         folder = os.path.dirname(os.path.abspath(module.__file__))
         app_name = folder[len(os.environ['WEB3PY_APPLICATIONS_FOLDER'])+1:].split(os.sep)[0]
-        path = self.path if self.path[:1] == '/' else '/' + app_name + ('/' + self.path if self.path else '')
+        path = self.path if self.path[:1] == '/' else '/%s/%s' % (app_name, self.path)
         func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
+        if path.endswith('/index'): # /index is always optional
+            func = bottle.route(path[:-6], **self.kwargs)(func)
         return func
 
 def user_in(session):
@@ -440,6 +442,7 @@ class ErrorStorage(object):
 
 class Reloader(object):
 
+    ROUTES = []
     MODULES = {}
     ERRORS = {}
 
@@ -449,7 +452,8 @@ class Reloader(object):
         reloader.enable()
         folder = os.environ['WEB3PY_APPLICATIONS_FOLDER']
         app = bottle.default_app()
-        app.routes = app.routes[:]
+        app.routes.clear()
+        # app.routes = app.routes[:]
         new_apps = []
         for app_name in os.listdir(folder):
             path = os.path.join(folder, app_name)
@@ -476,7 +480,7 @@ class Reloader(object):
         routes = []
         def to_filename(module):
             filename = module.replace('.', os.path.sep)
-            filename = os.path.join(filename, '__init__.py') if module.count('.') == 1 else filename + '.py'
+            filename = os.path.join(filename, '__init__.py') if not module.count('.') else filename + '.py'
             return filename
         for route in app.routes:
             func = route.callback

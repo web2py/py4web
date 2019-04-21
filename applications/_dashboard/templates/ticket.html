@@ -1,21 +1,44 @@
 <html>
-  <style>
-    body {
-      font-family: courier;
-      background-color: #111111;
-      color: #e1e1e1;
-      font-size: 10px;
-    }
-    th {
-      font-weight: bold;
-      text-align: left;
-      vertical-align: top;
-    }
-    td {
-      white-space: pre;
-    }
-  </style>
+  <head>
+    <style>
+  body {
+    margin: 0;
+    border: 0;
+    padding: 9;
+    font-family: helvetica;
+    background-color: #111111;
+    color: #e1e1e1;
+  }
+  .ticket {
+    font-family: courier;
+    font-size: 10px;
+    overflow-x: auto;    
+  }
+  .ticket table {
+    margin-top: -1px;
+  }
+  .ticket tr {
+    border-top: 1px solid #e1e1e1;        
+    padding-left: 5px;
+  }
+  .ticket th:after {
+    content: ':'
+  }
+  .ticket th {
+    font-weight: bold;
+    text-align: left;
+    vertical-align: top;
+    padding-right: 10px;
+    border-right: 5px solid #d2d2d2;
+  }
+  .ticket td {
+    white-space: pre;
+    padding-left: 5px;    
+  }  
+    </style>
+  </head>
   <body>
-    [[=ticket_record]]
+    <h2 class="title">Error Ticket</h2>    
+    <div class="ticket">[[=ticket_record]]</div>
   </body>
 </html>

@@ -7,9 +7,9 @@ from yatl.helpers import BEAUTIFY
 
 FOLDER = os.environ['WEB3PY_APPLICATIONS_FOLDER']
 
-@action('/dashboard')
-def home():
-    redirect('/%s/static/index.html' % request.app_name)
+@action('index')
+def index():
+    return redirect('/%s/static/index.html' % request.app_name)
 
 @action('info')
 def info():
