@@ -25,13 +25,14 @@ let init = (app) => {
         selected_type: 'text',
         selected_file_link: null,
         files: {},
-        tracebacks:[],
+        tickets:[],
         modal: null
     };
     app.select_app = (appobj) => {
         app.vue.selected_app = appobj;
         app.vue.walk = [];
         axios.get('../walk/'+appobj.name).then((res)=>{app.vue.walk=res.data.payload;});
+        app.reload_tickets();
     };
     app.activate_editor = (path, payload) => {
         app.vue.files[path] = payload;
@@ -57,6 +58,10 @@ let init = (app) => {
             app.vue.selected_type = 'text';        
         app.vue.selected_file_link = '../load_bytes/'+path;
         if(app.vue.selected_type) {
+            app.modelist = ace.require("ace/ext/modelist");
+            app.editor = ace.edit("editor");
+            app.editor.setTheme("ace/theme/pastel_on_dark");
+            app.editor.$blockScrolling = Infinity;
             if(!force && path in app.vue.files) {
                 app.activate_editor(path, app.vue.files[path]);
             } else {            
@@ -146,9 +151,10 @@ let init = (app) => {
                 app.vue.routes=res.data.payload;
             });
     };
-    app.reload_errors = () => {
-        axios.get('../tracebacks/recent').then((res)=>{
-                app.vue.tracebacks=res.data.payload;
+    app.reload_tickets = () => {
+        app.vue.tickets = [];
+        axios.get('../tickets/'+app.vue.selected_app.name).then((res)=>{
+                app.vue.tickets = res.data.payload;
             });
     };
     app.methods = {
@@ -165,7 +171,7 @@ let init = (app) => {
         upload_new_app: app.upload_new_app,
         create_new_file: app.create_new_file,
         upload_new_file: app.upload_new_file,
-        reload_errors: app.reload_errors,
+        reload_tickets: app.reload_tickets,
         modal_dismiss: app.modal_dismiss        
     };   
     app.filters = {
@@ -181,15 +187,9 @@ let init = (app) => {
         app.reload_info();
         app.reload_apps();
         app.reload_routes();
-        app.reload_errors();
     };
     app.init();
     setTimeout(()=>{app.vue.loading=false;}, 1000);
-    // handle Ace edtor
-    app.modelist = ace.require("ace/ext/modelist")
-    app.editor = ace.edit("editor");
-    app.editor.setTheme("ace/theme/pastel_on_dark");
-    app.editor.$blockScrolling = Infinity;
 };    
 
 init(app);

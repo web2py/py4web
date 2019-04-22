@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import datetime
 from web3py import __version__, action, request, response, redirect
 from web3py.core import Reloader, dumps, ErrorStorage
 from yatl.helpers import BEAUTIFY
@@ -88,6 +89,11 @@ def delete(path):
     fullpath = os.path.join(FOLDER, path) # ADD SECURITY 
     recursive_unlink(fullpath)
     return {'status':'success'}
+
+@action('tickets/<app_name>')
+def tickets(app_name):
+    tickets = ErrorStorage().get(until=datetime.datetime.utcnow(), app_name=app_name)
+    return {'payload': tickets}
 
 @action('ticket/<ticket_uuid>')
 @action.uses('ticket.html')

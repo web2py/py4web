@@ -260,7 +260,7 @@ class action(object):
                     ret = func(*args, **kwargs)
                     for obj in fixtures:
                         ret = obj.transform(ret)
-                    [obj.on_success() for obj in fixtures]
+                    [obj.on_success() for obj in fixtures]                    
                     return ret
                 except Exception:
                     [obj.on_error() for obj in fixtures]
@@ -288,13 +288,17 @@ class action(object):
         def wrapper(*func_args, **func_kwargs):
             try:
                 request.app_name = app_name
-                return func(*func_args, **func_kwargs)
+                ret = func(*func_args, **func_kwargs)
+                if isinstance(ret, dict):
+                    response.headers['Content-Type'] = 'application/json'
+                    ret = dumps(ret)
+                return ret
             except bottle.HTTPResponse as e:
                 raise e
             except Exception:
                 logging.error(traceback.format_exc())
                 try:
-                    ticket = ErrorStorage().log(get_error_snapshot())
+                    ticket = ErrorStorage().log(request.app_name, get_error_snapshot())
                 except Exception:
                     logging.error(traceback.format_exc())
                     ticket = "unknown"
@@ -399,21 +403,25 @@ class ErrorStorage(object):
         self.db = DAL(uri, folder=folder)
         self.db.define_table('web3py_error',
                              Field('uuid'),
+                             Field('app_name'),
                              Field('method'),
                              Field('path','string'),
                              Field('timestamp','datetime'),
                              Field('client_ip','string'),
+                             Field('error','string'),
                              Field('snapshot','json'))
 
-    def log(self, error_snapshot):
+    def log(self, app_name, error_snapshot):
         ticket_uuid = str(uuid.uuid4())
         try:
             id = self.db.web3py_error.insert(
                 uuid=ticket_uuid,
+                app_name=app_name,
                 method=request.method,
                 path=request.path,
                 timestamp=datetime.datetime.utcnow(),
                 client_ip=request.environ.get('REMOTE_ADDR'),
+                error=error_snapshot['exception_value'],
                 snapshot=error_snapshot)
             print('id=',id)
             self.db.commit()
@@ -422,17 +430,22 @@ class ErrorStorage(object):
             self.db.rollback()
             return 'internal-error'
 
-    def get(self, ticket_uuid=None, since=None, until=None, limitby=100):
+    def get(self, ticket_uuid=None, since=None, until=None, limitby=100, app_name=None):
         db = self.db
         if ticket_uuid: 
             query, orderby = db.web3py_error.uuid==ticket_uuid, None
-        elif since:
-            query, orderby = db.web3py_error.timestamp >= since, db.web3py_error.timestamp
-        elif until:
-            query, orderby = db.web3py_error.timestamp < until, ~db.web3py_error.timestamp
+            rows = db(query).select(orderby=orderby, limitby=(0, limitby)).as_list()
         else:
-            raise NotImplementedError
-        rows = db(query).select(orderby=orderby, limitby=(0, limitby)).as_list()
+            if since:
+                query, orderby = db.web3py_error.timestamp >= since, db.web3py_error.timestamp
+            elif until:
+                query, orderby = db.web3py_error.timestamp < until, ~db.web3py_error.timestamp
+            else:
+                raise NotImplementedError
+            if app_name:
+                query &= db.web3py_error.app_name == app_name        
+            fields = [field for field in db.web3py_error if not field.type == 'json']
+            rows = db(query).select(*fields, orderby=orderby, limitby=(0, limitby)).as_list()
         return rows if not ticket_uuid else rows[0] if rows else None
     
 
