@@ -190,24 +190,47 @@ class Template(Fixture):
 
 class Session(Fixture):
 
-    def __init__(self, secret, expiration=None, algorithm='HS256'):
+    def __init__(self, secret, expiration=None, algorithm='HS256', storage=None):
+        """
+        secret is the shared key used to encrypt the session (using algorithm)
+        expiration is in seconds
+        (optional) storage must have a get(key) and set(key,value,expiration) methods
+        if not provided session is stored in jwt cookie else the jwt is stored in storage and its uuid key in cookie
+        """
         self.secret = secret
         self.expiration = expiration
         self.algorithm = algorithm
         self.local = threading.local()
+        self.storage = storage
 
     def load(self):
         self.local.session_cookie_name = '%s_session' % request.app_name
         enc_data = _compat.to_bytes(request.get_cookie(self.local.session_cookie_name))
-        self.local.changed = False
+        self.local.changed = False        
         try:
-            self.local.data = jwt.decode(enc_data, self.secret, algorithms=[self.algorithm])
-            assert self.expiration is None or self.local.data['timestamp'] > time.time() - int(self.expiration)
+            if self.storage:
+                enc_key, enc_data = self.secret + enc_data, storage.get(enc_data)
+            else:
+                enc_key = self.secret
+            self.local.data = jwt.decode(enc_data, enc_key, algorithms=[self.algorithm])
+            if self.expiration is not None and self.storage is None:
+                assert self.local.data['timestamp'] > time.time() - int(self.expiration)
         except Exception:
             self.local.data = {}
         if not 'uuid' in self.local.data:
             self.local.changed = True
             self.local.data['uuid'] = str(uuid.uuid4())
+
+    def save(self):
+        self.local.data['timestamp'] = time.time()
+        data_uuid = self.local.data['uuid']
+        if self.storage:
+            enc_data = jwt.encode(self.local.data, self.secret + data_uuid, algorithm = self.algorithm)
+            self.storage.set(data_uuid, enc_data, self.expiration)
+            enc_data = data_uuid
+        else:
+            enc_data = jwt.encode(self.local.data, self.secret, algorithm = self.algorithm)
+        response.set_cookie(self.local.session_cookie_name, _compat.to_native(enc_data))
 
     def get(self, key, default=None):
         return self.local.data.get(key, default)
@@ -219,11 +242,6 @@ class Session(Fixture):
         self.local.changed = True
         self.local.data[key] = value
 
-    def save(self):
-        self.local.data['timestamp'] = time.time()
-        enc_data = jwt.encode(self.local.data, self.secret, algorithm = self.algorithm)
-        response.set_cookie(self.local.session_cookie_name, _compat.to_native(enc_data))
-
     def on_request(self):
         self.load()
 
@@ -234,6 +252,7 @@ class Session(Fixture):
     def on_success(self):
         if self.local.changed:
             self.save()
+
 
 #########################################################################################
 # the action decorator
