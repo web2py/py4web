@@ -338,7 +338,7 @@ class action(object):
         module = inspect.getmodule(frame[0])
         folder = os.path.dirname(os.path.abspath(module.__file__))
         app_name = folder[len(os.environ['WEB3PY_APPLICATIONS_FOLDER'])+1:].split(os.sep)[0]
-        path = self.path if self.path[:1] == '/' else '/%s/%s' % (app_name, self.path)
+        path = ('/' if app_name == '_default' else '/%s/' % app_name) + self.path # the _default app has no prefix
         func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
         if path.endswith('/index'): # /index is always optional
