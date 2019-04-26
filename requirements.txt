@@ -1,5 +1,5 @@
 pyjwt
-yat
+yatl
 pydal # should really be pydal but pydal should be updated
 pluralize
 bottle
