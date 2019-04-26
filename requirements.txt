@@ -1,6 +1,7 @@
 pyjwt
-yatl
+yat
 pydal # should really be pydal but pydal should be updated
+pluralize
 bottle
 gunicorn
 gevent

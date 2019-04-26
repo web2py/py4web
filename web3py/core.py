@@ -36,15 +36,16 @@ except ImportError:
     gevent = None
 
 # third part modules
-import jwt    # pip import PyJWT
-import bottle # pip import bottle
-import yatl   # pip import yatl
-import pydal  # pip import pydal
+import jwt       # pip import PyJWT
+import bottle    # pip import bottle
+import yatl      # pip import yatl
+import pydal     # pip import pydal
+import pluralize # pip import pluralize
 from pydal import _compat
 
 import reloader
 
-__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in']
+__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator']
 
 HTTP = bottle.HTTPResponse
 Field = pydal.Field
@@ -158,6 +159,10 @@ class DAL(pydal.DAL, Fixture):
     def on_request(self): self._adapter.reconnect()
     def on_error(self): self.rollback()
     def on_success(self): self.commit()
+
+class Translator(pluralize.Translator, Fixture):
+    def on_request(self): self.select(request.headers.get('Accept-Language', 'en'))
+    def on_success(self): response.headers['Content-Language'] = self.local.tag
 
 class Template(Fixture):
 

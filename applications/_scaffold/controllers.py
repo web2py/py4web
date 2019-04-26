@@ -1,31 +1,36 @@
-from web3py import action, request, abort, redirect, Session, Cache, DAL, Field
+import os
+from web3py import action, request, abort, redirect, Session, Cache, DAL, Field, Translator
 from . import settings
 from . import models
 
 # define global objects that may or may not be used by th actions
 cache = Cache(size=1000)
 db = models.db
-session = Session(secret=settings.SESSION_SECRET_KEY)
+T = Translator(os.path.join(os.path.dirname(__file__), 'translations'))
 
-## for redis sessions ##
-# import redis
-# conn = redis.Redis(host='localhost', port=6379)
-# conn.set = lambda key, value, expire, c=conn: (c.set(key,value), c.ttl(expiration))
-# session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
+if settings.SESSION_TYPE == 'cookies':
+    session = Session(secret=settings.SESSION_SECRET_KEY)
 
-## for memcache sessions ##
-# import memcache
-# conn = memcache.Client(['127.0.0.1:11211'], debug=0)
-# session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
+elif settings.SESSION_TYPE == 'redis':
+    import redis
+    host, port = settings.REDIS_SERVER.split(':')
+    conn = redis.Redis(host=host, port=int(port))
+    conn.set = lambda key, value, expire, c=conn: (c.set(key,value), c.ttl(expiration))
+    session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
 
-## for sessions in db ##
-# from web3py.utils.dbstore import DBStore
-# session =  Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
+elif settings.SESSION_TYPE == 'memcache':
+    import memcache
+    conn = memcache.Client(settings.MEMCACHE_CLIENTS, debug=0)
+    session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
+
+elif settings.SESSION_TYPE == 'database':
+    from web3py.utils.dbstore import DBStore
+    session =  Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
 # define your actions below, here is an example of /<app_name>/index
 
-@action('index', method='GET')             # the function below is exposed as index.html
-@action.uses('generic.html', session, db)  # it uses the generic.html template, a session, and the db
+@action('index', method='GET')                # the function below is exposed as index.html
+@action.uses('generic.html', session, db, T)  # it uses the generic.html template, a session, and the db
 def index():
-    message = 'Hello World'
-    return dict(message='Welcome to %s' % request.app_name)
+    msg = T('Hello World from {name}')
+    return dict(message=msg.format(name=request.app_name))
