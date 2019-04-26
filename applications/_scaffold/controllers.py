@@ -8,21 +8,19 @@ cache = Cache(size=1000)
 db = models.db
 T = Translator(os.path.join(os.path.dirname(__file__), 'translations'))
 
+# pick the session type that suits you best
 if settings.SESSION_TYPE == 'cookies':
     session = Session(secret=settings.SESSION_SECRET_KEY)
-
 elif settings.SESSION_TYPE == 'redis':
     import redis
     host, port = settings.REDIS_SERVER.split(':')
     conn = redis.Redis(host=host, port=int(port))
     conn.set = lambda key, value, expire, c=conn: (c.set(key,value), c.ttl(expiration))
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
-
 elif settings.SESSION_TYPE == 'memcache':
     import memcache
     conn = memcache.Client(settings.MEMCACHE_CLIENTS, debug=0)
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
-
 elif settings.SESSION_TYPE == 'database':
     from web3py.utils.dbstore import DBStore
     session =  Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
@@ -34,3 +32,7 @@ elif settings.SESSION_TYPE == 'database':
 def index():
     msg = T('Hello World from {name}')
     return dict(message=msg.format(name=request.app_name))
+
+# expose translations in case a single page app needs them in JSON
+action('translations')(action.uses(T)(lambda: T.local.language))
+
