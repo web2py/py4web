@@ -238,7 +238,7 @@ class Session(Fixture):
         if not 'uuid' in self.local.data:
             self.local.changed = True
             self.local.data['uuid'] = str(uuid.uuid4())
-            self.local.data['secure'] = secure
+            self.local.data['secure'] = self.local.secure
 
     def save(self):
         self.local.data['timestamp'] = time.time()        

@@ -13,7 +13,7 @@ class TestSession(unittest.TestCase):
         session.on_success()
         cookie_name = session.local.session_cookie_name 
 
-        a,b = str(response._cookies)[len('Set-Cookie: '):].split('=')
+        a,b = str(response._cookies)[len('Set-Cookie: '):].split(';')[0].split('=', 1)
         request.cookies[a] = b
         request.cookies = response._cookies
         session.local.data.clear()
@@ -25,3 +25,5 @@ class TestSession(unittest.TestCase):
         session = Session(secret="a", expiration=10)
         session.on_request()
         self.assertEqual(session.get('key'), 'value')
+
+
