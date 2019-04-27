@@ -165,6 +165,10 @@ class Translator(pluralize.Translator, Fixture):
     def on_request(self): self.select(request.headers.get('Accept-Language', 'en'))
     def on_success(self): response.headers['Content-Language'] = self.local.tag
 
+#########################################################################################
+# The template rendered fixture
+#########################################################################################
+
 class Template(Fixture):
 
     cache = Cache(100)
@@ -194,6 +198,9 @@ class Template(Fixture):
         output = yatl.render(template, path=path, context=context, delimiters=self.delimiters)
         return output
 
+#########################################################################################
+# The session fixture
+#########################################################################################
 
 class Session(Fixture):
 
