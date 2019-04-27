@@ -204,13 +204,14 @@ class Template(Fixture):
 
 class Session(Fixture):
 
-    def __init__(self, secret, expiration=None, algorithm='HS256', storage=None, secure=False):
+    def __init__(self, secret=None, expiration=None, algorithm='HS256', storage=None, secure=False):
         """
         secret is the shared key used to encrypt the session (using algorithm)
         expiration is in seconds
         (optional) storage must have a get(key) and set(key,value,expiration) methods
         if not provided session is stored in jwt cookie else the jwt is stored in storage and its uuid key in cookie
         """
+        if not secret and not storage: raise SyntaxError("a secret or a storage must be specified")
         self.secret = secret
         self.expiration = expiration
         self.algorithm = algorithm
@@ -227,13 +228,15 @@ class Session(Fixture):
         if cookie_data:
             try:
                 if self.storage:
-                    self.local.data = json.loads(storage.get(cookie_data))
+                    json_data = self.storage.get(cookie_data)
+                    if json_data:
+                        self.local.data = json.loads(json_data)
                 else:
                     self.local.data = jwt.decode(cookie_data, self.secret, algorithms=[self.algorithm])
                 if self.expiration is not None and self.storage is None:
                     assert self.local.data['timestamp'] > time.time() - int(self.expiration)
                 assert self.local.data.get('secure') == self.local.secure
-            except (jwt.exceptions.InvalidSignatureError, AssertionError):
+            except (jwt.exceptions.InvalidSignatureError, AssertionError, ValueError):
                 pass
         if not 'uuid' in self.local.data:
             self.local.changed = True

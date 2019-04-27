@@ -5,13 +5,15 @@ class DBStore(object):
     def __init__(self, db, name='web3py_session'):
         Field = db.Field
         self.db = db
-        self.table = db.define_table(
-            name,
-            Field('rkey','string'),
-            Field('rvalue', 'text'),
-            Field('expiration','integer'),
-            Field('created_on', 'datetime'),
-            Field('expires_on', 'datetime'))
+        if not name in db.tables:
+            db.define_table(
+                name,
+                Field('rkey','string'),
+                Field('rvalue', 'text'),
+                Field('expiration','integer'),
+                Field('created_on', 'datetime'),
+                Field('expires_on', 'datetime'))
+        self.table = db[name]
 
     def get(self, key):
         db, table, now = self.db, self.table, datetime.utcnow()
