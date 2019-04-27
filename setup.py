@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='web3py',
-    version='0.1.1',
+    version='0.1.190426',
     url='https://github.com/web2py/web3py',
     license='BSD',
     author='Massimo Di Pierro',
@@ -24,6 +24,7 @@ setup(
         'pyjwt',
         'yatl',
         'reloader',
+        'pluralize',
         ],
     entry_points = {
         'console_scripts': ['web3py-start=web3py.core:main'],
