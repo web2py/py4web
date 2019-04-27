@@ -197,7 +197,7 @@ class Template(Fixture):
 
 class Session(Fixture):
 
-    def __init__(self, secret, expiration=None, algorithm='HS256', storage=None):
+    def __init__(self, secret, expiration=None, algorithm='HS256', storage=None, secure=False):
         """
         secret is the shared key used to encrypt the session (using algorithm)
         expiration is in seconds
@@ -209,11 +209,13 @@ class Session(Fixture):
         self.algorithm = algorithm
         self.local = threading.local()
         self.storage = storage
+        self.secure = secure
 
     def load(self):
-        self.local.session_cookie_name = '%s_session' % request.app_name
+        self.local.session_cookie_name = '%s_session' % request.app_name        
         cookie_data = _compat.to_bytes(request.get_cookie(self.local.session_cookie_name))
         self.local.changed = False
+        self.local.secure = request.url.startswith('https')
         self.local.data = {}
         if cookie_data:
             try:
@@ -223,11 +225,13 @@ class Session(Fixture):
                     self.local.data = jwt.decode(cookie_data, self.secret, algorithms=[self.algorithm])
                 if self.expiration is not None and self.storage is None:
                     assert self.local.data['timestamp'] > time.time() - int(self.expiration)
+                assert self.local.data.get('secure') == self.local.secure
             except (jwt.exceptions.InvalidSignatureError, AssertionError):
                 pass
         if not 'uuid' in self.local.data:
             self.local.changed = True
             self.local.data['uuid'] = str(uuid.uuid4())
+            self.local.data['secure'] = secure
 
     def save(self):
         self.local.data['timestamp'] = time.time()        
@@ -236,7 +240,7 @@ class Session(Fixture):
             self.storage.set(cookie_data, json.dumps(self.local.data), self.expiration)
         else:
             cookie_data = jwt.encode(self.local.data, self.secret, algorithm=self.algorithm)
-        response.set_cookie(self.local.session_cookie_name, _compat.to_native(cookie_data))
+        response.set_cookie(self.local.session_cookie_name, _compat.to_native(cookie_data), path='/', secure=self.local.secure)
 
     def get(self, key, default=None):
         return self.local.data.get(key, default)
