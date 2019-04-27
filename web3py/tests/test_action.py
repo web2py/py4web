@@ -9,14 +9,14 @@ import mechanize
 from web3py import action, DAL, Field, Session, Cache
 from web3py.core import bottle
 
-os.environ['WEB3PY_APPLICATIONS'] = 'applications'
+os.environ['WEB3PY_APPLICATIONS_FOLDER'] = os.path.sep.join(os.path.normpath(__file__).split(os.path.sep)[:-2])
 
 db = DAL('sqlite://storage_%s' % uuid.uuid4(), folder='/tmp/')
 db.define_table('thing', Field('name'))
 session = Session(secret='my secret')
 cache = Cache()
 
-@action('/index')
+@action('index')
 @cache.memoize(expiration=1)
 @action.uses(db, session)
 def index():
@@ -36,13 +36,13 @@ class CacheAction(unittest.TestCase):
         self.server.terminate()
 
     def test_action(self):
-        res = self.browser.open('http://127.0.0.1:8001/index')
+        res = self.browser.open('http://127.0.0.1:8001/tests/index')
         self.assertEqual(res.read(), b'ok 1 1')
 
-        res = self.browser.open('http://127.0.0.1:8001/index')
+        res = self.browser.open('http://127.0.0.1:8001/tests/index')
         self.assertEqual(res.read(), b'ok 1 1')
 
         time.sleep(2)
         
-        res = self.browser.open('http://127.0.0.1:8001/index')
+        res = self.browser.open('http://127.0.0.1:8001/tests/index')
         self.assertEqual(res.read(), b'ok 2 2')

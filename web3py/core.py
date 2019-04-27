@@ -20,6 +20,7 @@ import threading
 import time
 import traceback
 import types
+import urllib.parse
 import uuid
 import http.client
 
@@ -45,7 +46,7 @@ from pydal import _compat
 
 import reloader
 
-__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator']
+__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL']
 
 HTTP = bottle.HTTPResponse
 Field = pydal.Field
@@ -182,6 +183,7 @@ class Template(Fixture):
             return output
         context = dict(request=request)
         context.update(yatl.helpers.__dict__)
+        context.update(URL=URL)
         context.update(output)
         context['__vars__'] = output
         app_folder = os.path.join(os.environ['WEB3PY_APPLICATIONS_FOLDER'], request.app_name)
@@ -210,32 +212,31 @@ class Session(Fixture):
 
     def load(self):
         self.local.session_cookie_name = '%s_session' % request.app_name
-        enc_data = _compat.to_bytes(request.get_cookie(self.local.session_cookie_name))
-        self.local.changed = False        
-        try:
-            if self.storage:
-                enc_key, enc_data = self.secret + enc_data, storage.get(enc_data)
-            else:
-                enc_key = self.secret
-            self.local.data = jwt.decode(enc_data, enc_key, algorithms=[self.algorithm])
-            if self.expiration is not None and self.storage is None:
-                assert self.local.data['timestamp'] > time.time() - int(self.expiration)
-        except Exception:
-            self.local.data = {}
+        cookie_data = _compat.to_bytes(request.get_cookie(self.local.session_cookie_name))
+        self.local.changed = False
+        self.local.data = {}
+        if cookie_data:
+            try:
+                if self.storage:
+                    self.local.data = json.loads(storage.get(cookie_data))
+                else:
+                    self.local.data = jwt.decode(cookie_data, self.secret, algorithms=[self.algorithm])
+                if self.expiration is not None and self.storage is None:
+                    assert self.local.data['timestamp'] > time.time() - int(self.expiration)
+            except (jwt.exceptions.InvalidSignatureError, AssertionError):
+                pass
         if not 'uuid' in self.local.data:
             self.local.changed = True
             self.local.data['uuid'] = str(uuid.uuid4())
 
     def save(self):
-        self.local.data['timestamp'] = time.time()
-        data_uuid = self.local.data['uuid']
+        self.local.data['timestamp'] = time.time()        
         if self.storage:
-            enc_data = jwt.encode(self.local.data, self.secret + data_uuid, algorithm = self.algorithm)
-            self.storage.set(data_uuid, enc_data, self.expiration)
-            enc_data = data_uuid
+            cookie_data = self.local.data['uuid']
+            self.storage.set(cookie_data, json.dumps(self.local.data), self.expiration)
         else:
-            enc_data = jwt.encode(self.local.data, self.secret, algorithm = self.algorithm)
-        response.set_cookie(self.local.session_cookie_name, _compat.to_native(enc_data))
+            cookie_data = jwt.encode(self.local.data, self.secret, algorithm=self.algorithm)
+        response.set_cookie(self.local.session_cookie_name, _compat.to_native(cookie_data))
 
     def get(self, key, default=None):
         return self.local.data.get(key, default)
@@ -258,6 +259,29 @@ class Session(Fixture):
         if self.local.changed:
             self.save()
 
+#########################################################################################
+# the URL helper
+#########################################################################################
+
+def URL(*parts, vars=None, hash=None, scheme=False):
+    """ 
+    Examples:
+    URL('a','b',vars=dict(x=1),hash='y')       -> /{app_name}/a/b?x=1#y
+    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{app_name}/a/b?x=1
+    """
+    prefix = '/%s/' % request.app_name if request.app_name != '_default' else '/'
+    url = prefix + '/'.join(map(urllib.parse.quote, parts))
+    if vars:
+        url += '?' + '&'.join('%s=%s' % (k, urllib.parse.quote(str(v))) for k,v in vars.items())
+    if hash:
+        url += '#%s' % hash
+    if not scheme is False:
+        orig_scheme, _, domain = request.url.split('/')[:3]
+        scheme = orig_scheme if scheme is True else '' if scheme is None else scheme + ':'
+        url = '%s//%s/%s' % (scheme, domain, url)
+    return url
 
 #########################################################################################
 # the action decorator
@@ -347,7 +371,7 @@ class action(object):
         func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
         if path.endswith('/index'): # /index is always optional
-            func = bottle.route(path[:-6], **self.kwargs)(func)
+            func = bottle.route(path[:-6] or '/', **self.kwargs)(func)
         return func
 
 def user_in(session):
