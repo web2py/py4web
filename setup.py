@@ -1,11 +1,20 @@
 """
+The future of web2py
 """
-
+import subprocess
+import re
 from setuptools import setup
+
+def get_version():
+    regex = re.compile('__version__\s*\=\s*[\'"](?P<version>.+?)[\'"]')
+    return regex.findall(open('web3py/__init__.py').read())[0]
+
+def get_hash():
+    return subprocess.check_output(['git', 'rev-parse', 'HEAD']).strip().decode('utf8')
 
 setup(
     name='web3py',
-    version='0.1.190426',
+    version=get_version(),
     url='https://github.com/web2py/web3py',
     license='BSD',
     author='Massimo Di Pierro',
@@ -13,7 +22,7 @@ setup(
     maintainer='Massimo Di Pierro',
     maintainer_email='massimo.dipierro@gmail.com',
     description='Expeerimental web3py (a better web2py)',
-    long_description=__doc__,
+    long_description=__doc__ + ' (%s)' % get_hash(),
     packages=['web3py'],
     include_package_data=True,
     install_requires=[
