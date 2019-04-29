@@ -15,7 +15,7 @@ elif settings.SESSION_TYPE == 'redis':
     import redis
     host, port = settings.REDIS_SERVER.split(':')
     conn = redis.Redis(host=host, port=int(port))
-    conn.set = lambda key, value, expiration, cs=conn.set, ct=conn.ttl: (cs(key, value), ct(expiration))
+    conn.set = lambda key, value, expiration, cs=conn.set, ct=conn.ttl: (cs(key, value), expiration != None and ct(expiration))
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
 elif settings.SESSION_TYPE == 'memcache':
     import memcache
