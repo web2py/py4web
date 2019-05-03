@@ -240,7 +240,7 @@ class Session(Fixture):
                 pass
         if not 'uuid' in self.local.data:
             self.local.changed = True
-            self.local.data['uuid'] = str(uuid.uuid4())
+            self.local.data['uuid'] = _compat.to_native(str(uuid.uuid4()))
             self.local.data['secure'] = self.local.secure
 
     def save(self):
@@ -250,7 +250,9 @@ class Session(Fixture):
             self.storage.set(cookie_data, json.dumps(self.local.data), self.expiration)
         else:
             cookie_data = jwt.encode(self.local.data, self.secret, algorithm=self.algorithm)
-        response.set_cookie(self.local.session_cookie_name, _compat.to_native(cookie_data), path='/', secure=self.local.secure)
+        response.set_cookie(self.local.session_cookie_name, 
+                            _compat.to_native(cookie_data), path='/', secure=self.local.secure)
+
 
     def get(self, key, default=None):
         return self.local.data.get(key, default)

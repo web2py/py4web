@@ -14,11 +14,12 @@ if settings.SESSION_TYPE == 'cookies':
 elif settings.SESSION_TYPE == 'redis':
     import redis
     host, port = settings.REDIS_SERVER.split(':')
+    # for more options: https://github.com/andymccurdy/redis-py/blob/master/redis/client.py
     conn = redis.Redis(host=host, port=int(port))
-    conn.set = lambda key, value, expiration, cs=conn.set, ct=conn.ttl: (cs(key, value), expiration != None and ct(expiration))
+    conn.set = lambda k, v, e, cs=conn.set, ct=conn.ttl: (cs(k, v), e and ct(e))
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
 elif settings.SESSION_TYPE == 'memcache':
-    import memcache
+    import memcache, time
     conn = memcache.Client(settings.MEMCACHE_CLIENTS, debug=0)
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
 elif settings.SESSION_TYPE == 'database':
@@ -35,4 +36,3 @@ def index():
 
 # expose translations in case a single page app needs them in JSON
 action('translations')(action.uses(T)(lambda: T.local.language))
-

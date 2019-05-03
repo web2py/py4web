@@ -1,8 +1,9 @@
 pyjwt
 yatl
-pydal # should really be pydal but pydal should be updated
+pydal
 pluralize
 bottle
 gunicorn
 gevent
 reloader
+memcache # only for testing or for actually accessing memcache
