@@ -323,7 +323,7 @@ class action(object):
         for fixture in fixtures_in:
             # a template string is a fixture
             if isinstance(fixture, str):
-                fixtures.append(Template(obj))
+                fixtures.append(Template(fixture))
             else:
                 # fixtures may have prerequisites (dependencies)
                 for other_fixture in getattr(fixture, '__prerequisites__', []):
