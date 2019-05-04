@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/[[=request.app_name]]/static/css/bulma.css">
+    <link rel="stylesheet" href="[[=URL('static/css/bulma.css')]]">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     [[block page_head]]<!-- individual page can customize head here -->[[end]]
   </head>
@@ -10,7 +10,7 @@
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href=".">
-          <strong>[[=request.app_name]]</strong>
+          <strong>APP LOGO</strong>
         </a>
         <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="left-navbar"
            onclick="this.classList.toggle('is-active');document.getElementById(this.dataset.target).classList.toggle('is-active');">
@@ -37,7 +37,7 @@
     </nav>
     <section class="section">
       <div class="container">
-        <h1 class="title">[[=request.app_name.strip('_').title()]]</h1>
+        <h1 class="title">PAGE TILE</h1>
       </div>
     </section>
     <section class="section">
@@ -51,8 +51,8 @@
       </div>
     </footer>
   </body>
-  <script src="[[=request.app_name]]/static/js/sugar.min.js"></script>
-  <script src="[[=request.app_name]]/static/js/axios.min.js"></script>
-  <script src="[[=request.app_name]]/static/js/vue.min.js"></script>
+  <script src="[[=URL('static/js/sugar.min.js')]]"></script>
+  <script src="[[=URL('static/js/axios.min.js')]]"></script>
+  <script src="[[=URL('static/js/vue.min.js')]]"></script>
   [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>
