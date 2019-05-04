@@ -10,6 +10,7 @@ build: clean
 install: build
 	python3 setup.py install
 test: build
+	pip3 install -r requirements.txt
 	python3 -m pytest -v -s web3py/tests/
 deploy: test
 	python setup.py sdist

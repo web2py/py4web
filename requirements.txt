@@ -6,4 +6,4 @@ bottle
 gunicorn
 gevent
 reloader
-memcache # only for testing or for actually accessing memcache
+python-memcached # used for testing or for optionally actually accessing memcache

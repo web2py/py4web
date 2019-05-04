@@ -218,6 +218,10 @@ class Session(Fixture):
         self.local = threading.local()
         self.storage = storage
         self.secure = secure
+        if isinstance(storage, Session):
+            self.__prerequisites__ = [storage]
+        if hasattr(storage, '__prerequisites__'):
+            self.__prerequisites__ = storage.__prerequisites__
 
     def load(self):
         self.local.session_cookie_name = '%s_session' % request.app_name        
@@ -313,9 +317,20 @@ class action(object):
         self.kwargs = kwargs
 
     @staticmethod
-    def uses(*fixtures):
+    def uses(*fixtures_in):
         """associated fixtures to an action"""
-        fixtures = [Template(obj) if isinstance(obj, str) else obj for obj in fixtures]
+        fixtures = []
+        for fixture in fixtures_in:
+            # a template string is a fixture
+            if isinstance(fixture, str):
+                fixtures.append(Template(obj))
+            else:
+                # fixtures may have prerequisites (dependencies)
+                for other_fixture in getattr(fixture, '__prerequisites__', []):
+                    if not other_fixture in fixtures:
+                        fixtures.append(other_fixture)
+                fixtures.append(fixture)
+        
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
@@ -393,7 +408,7 @@ class action(object):
 def user_in(session):
     def requirement():
         session.on_request()
-        return session.get('user_id', None) is not None
+        return session.get('user', None) is not None
     return requirement
 
 #########################################################################################
