@@ -2,9 +2,10 @@
   <head>
     <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
   </head>
-  <body>
+  <body style="padding:5vh 10vw">
+    [[for message in messages:]]<blockquote>[[=message]]</blockquote>[[pass]]
     [[for form in forms:]]
-    <h2>Form</h2>
+    <h2>Form [[=form.form_name]]</h2>
     [[=form]]
     [[pass]]
   </body>

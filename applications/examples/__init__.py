@@ -26,12 +26,31 @@ def form_example():
 @action.uses('forms.html', session, db)
 def multiple_form_example():
     uuid = session.get('uuid')
-    form1 = Form([Field('name')], csrf_uuid=uuid, form_name='1')
-    form2 = Form([Field('name'),Field('age','integer')], csrf_uuid=uuid, form_name='2')
-    form3 = Form([Field('name'),Field('insane','boolean')], csrf_uuid=uuid, form_name='3')
-    form4 = Form([Field('name'),Field('color',requires=IS_IN_SET(['red','blue','gree']))], csrf_uuid=uuid, form_name='4')
-    form5 = Form([Field('name'),Field('favorite_thing',requires=IS_IN_DB(db, 'thing.id', 'thing.name'))], csrf_uuid=uuid, form_name='5')
-    return dict(forms=[form1, form2, form3, form4, form5])
+    name = Field('name', requires=IS_NOT_EMPTY())
+    forms = [
+        Form([Field('name', requires=IS_NOT_EMPTY())],
+             csrf_uuid=uuid, form_name='1'),
+        Form([Field('name', requires=IS_NOT_EMPTY())],
+             csrf_uuid=uuid, form_name='2', keep_values=True),
+        Form([Field('name', requires=IS_NOT_EMPTY()),
+              Field('age','integer')], 
+             csrf_uuid=uuid, form_name='3'),
+        Form([Field('name', requires=IS_NOT_EMPTY()),
+              Field('insane','boolean')], 
+             csrf_uuid=uuid, form_name='4'),
+        Form([Field('name', requires=IS_NOT_EMPTY()),
+              Field('color',requires=IS_IN_SET(['red','blue','gree']))], 
+             csrf_uuid=uuid, form_name='5'),
+        Form([Field('name', requires=IS_NOT_EMPTY()),
+              Field('favorite_thing', requires=IS_IN_DB(db, 'thing.id', 'thing.name'))], 
+             csrf_uuid=uuid, form_name='6')]
+    messages = []
+    for form in forms:
+        if form.accepted:
+            messages.append('form %s accepted with: %s ' % (form.form_name, form.vars))
+        elif form.errors:
+            messages.append('form %s has errors: %s ' % (form.form_name, form.errors))
+    return dict(forms=forms, messages=messages)
 
 # exposed as /examples/showme
 @action('showme')

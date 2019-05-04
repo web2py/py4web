@@ -469,7 +469,7 @@ def get_error_snapshot(depth=5):
         f['code'] = lines
         line_vars = cgitb.scanvars(lambda: linecache.getline(file, lnum), frame, locals)
         # dump local variables (referenced in current line only)
-        f['vars'] = {key: str(value) for key, value in locals.items() if not key.startswith('__')}
+        f['vars'] = {key: repr(value) for key, value in locals.items() if not key.startswith('__')}
         stackframes.append(f)
 
     return data
