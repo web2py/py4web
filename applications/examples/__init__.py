@@ -1,13 +1,13 @@
 import os
 from web3py import *
 from web3py.form import Form
-from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE
+from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1
 
 db = DAL('sqlite://test', folder=os.path.join(os.path.dirname(__file__), 'databases'))
 db.define_table('thing', 
                 Field('name', requires=IS_NOT_EMPTY()),
-                Field('nummber','integer', requires=IS_INT_IN_RANGE(0,10)))
+                Field('quantity','integer', requires=IS_INT_IN_RANGE(0,10)))
 session = Session(secret='myscret')
 
 @action('oops')
@@ -15,12 +15,23 @@ def oops():
     1/0
 
 # exposed as /examples/form
-@action('form', method=['GET','POST'])
-@action.uses('form.html', db, session)
+@action('dbform', method=['GET','POST'])
+@action.uses('dbform.html', db, session)
 def form_example():
     form = Form(db.thing, csrf_uuid=session.get('uuid'))
     rows = db(db.thing).select()
     return dict(form=form, rows=rows) 
+
+@action('forms', method=['GET','POST'])
+@action.uses('forms.html', session, db)
+def multiple_form_example():
+    uuid = session.get('uuid')
+    form1 = Form([Field('name')], csrf_uuid=uuid, form_name='1')
+    form2 = Form([Field('name'),Field('age','integer')], csrf_uuid=uuid, form_name='2')
+    form3 = Form([Field('name'),Field('insane','boolean')], csrf_uuid=uuid, form_name='3')
+    form4 = Form([Field('name'),Field('color',requires=IS_IN_SET(['red','blue','gree']))], csrf_uuid=uuid, form_name='4')
+    form5 = Form([Field('name'),Field('favorite_thing',requires=IS_IN_DB(db, 'thing.id', 'thing.name'))], csrf_uuid=uuid, form_name='5')
+    return dict(forms=[form1, form2, form3, form4, form5])
 
 # exposed as /examples/showme
 @action('showme')

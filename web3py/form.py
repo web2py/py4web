@@ -1,7 +1,7 @@
 import uuid
 import hmac
 from web3py import DAL, request
-from yatl.helpers import A, TEXTAREA, INPUT, TR, TD, TABLE, DIV, LABEL, FORM
+from yatl.helpers import A, TEXTAREA, INPUT, TR, TD, TABLE, DIV, LABEL, FORM, SELECT, OPTION
 from pydal._compat import to_bytes
 
 def FormStyleDefault(table, vars, errors, readonly, deletable):
@@ -82,8 +82,8 @@ class Form(object):
     - deletable: set to False to disallow deletion of record
     - formstyle: a function that renders the form using helpers (FormStyleDefault)
     - dbio: set to False to prevent any DB write
-    - keepvalues: (NOT IMPLEMENTED)
-    - formname: the optional name of this form
+    - keep_values: if set to true, it remebers the values of the previously submitted form
+    - form_name: the optional name of this form
     - csrf: set to False to disable CRSF protection
     """
 
@@ -94,16 +94,16 @@ class Form(object):
                  deletable=True,
                  formstyle=FormStyleDefault,
                  dbio=True,
-                 keepvalues=False,
-                 formname=False,
+                 keep_values=False,
+                 form_name=False,
                  hidden=None,
                  csrf_uuid=None):
 
         if isinstance(table, list):
             dbio = False
             # mimic a table from a list of fields without calling define_table
-            formname = formname or 'none'
-            for field in table: field.tablename = getattr(field,'tablename',formname)
+            form_name = form_name or 'none'
+            for field in table: field.tablename = getattr(field,'tablename',form_name)
 
         if isinstance(record, (int, str)):
             record_id = int(str(record))
@@ -116,14 +116,14 @@ class Form(object):
         self.deletable = deletable and not readonly and self.record
         self.formstyle = formstyle
         self.dbio = dbio
-        self.keepvalues = True if keepvalues or self.record else False
+        self.keep_values = True if keep_values or self.record else False
         self.csrf_uuid = csrf_uuid and csrf_uuid
         self.vars = {}
         self.errors = {}
         self.submitted = False
         self.deleted = False
         self.accepted = False
-        self.formname = formname or table._tablename
+        self.form_name = form_name or table._tablename
         self.hidden = hidden
         self.formkey = None
         self.cached_helper = None
@@ -135,11 +135,16 @@ class Form(object):
             post_vars = request.forms
             self.submitted = True
             process = False
-            if request.method == 'POST':
+            # we only a process a form if it is POST and the formkey matches (correct formname and crsf)
+            # notice we never expose the crsf uuid, we only use to sign the form uuid
+            if request.method == 'POST':                
                 if csrf_uuid:
-                    a, b = post_vars['_formkey'].split('/')
-                    if b == hmac.new(to_bytes(csrf_uuid), to_bytes(a)).hexdigest():
+                    code, signature = post_vars['_formkey'].split('/')
+                    expected = hmac.new(to_bytes(csrf_uuid), to_bytes(self.form_name+'/'+code)).hexdigest()
+                    if signature == expected:
                         process = True
+                elif post_vars.get('_formkey') == self.form_name:
+                    process = True
             if process:
                 if not post_vars.get('_delete'):
                     for field in self.table:
@@ -171,8 +176,11 @@ class Form(object):
                     self.record.delete_record()
         # store key for future CSRF
         if csrf_uuid:
-            a = str(uuid.uuid4())
-            self.formkey = '%s/%s' % (a, hmac.new(to_bytes(csrf_uuid), to_bytes(a)).hexdigest())
+            code = str(uuid.uuid4())
+            signature = hmac.new(to_bytes(csrf_uuid), to_bytes(self.form_name+'/'+code)).hexdigest()
+            self.formkey = '%s/%s' % (code, signature)
+        else:
+            self.formkey = self.form_name
 
     def update_or_insert(self):
         if self.record:
@@ -188,7 +196,7 @@ class Form(object):
             self.vars[field.name] = field.default
 
     def helper(self):
-        if self.accepted and not self.keepvalues:
+        if self.accepted and not self.keep_values:
             self.vars.clear()
         if not self.cached_helper:
             helper = self.formstyle(self.table,
