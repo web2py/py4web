@@ -7,7 +7,7 @@
     <a href="https://github.com/you"><img style="position: absolute; width:100px; top:0; right:0; border:0;" src="../static/images/forkme.png"/></a>
     <div id="target" class="my-effects">
       <div class="loading" v-if="loading"></div>
-      <div>
+      <div class="header">
         <img src="images/widget.gif" class="spinner-top"/>
         <span class="logo">[web3py] dashboard</span>
       </div>
@@ -154,11 +154,19 @@ It is still experimental...
         </div>
       </div>
       <div class="modal" v-if="modal">
-        <img align="left" v-bind:src="'images/alert-'+modal.color+'.gif'"/>
-        <div>
-          <h2>{{modal.title}}</h2>
-          <p>{{modal.message}}</p>
-          <button v-for="button in modal.buttons" v-on:click="button.onclick()">{{button.text}}</button><button v-if="!modal.buttons" v-on:click="modal_dismiss()">Dismiss</button>
+        <div class="modal-inner">
+          <!--img align="left" v-bind:src="'images/alert-'+modal.color+'.gif'"/-->
+          <div>
+            <h2>{{modal.title}}</h2>
+            <p>{{modal.message}}</p>
+            <button v-for="button in modal.buttons" v-on:click="button.onclick()">{{button.text}}</button><button v-if="!modal.buttons" v-on:click="modal_dismiss()">Dismiss</button>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="panel">
+        <div class="right">
+          Created by Massimo Di Pierro @ BSDv3 License
         </div>
       </div>
     </div>

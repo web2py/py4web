@@ -5,7 +5,7 @@
 }
 html {
    background: black;
-   color: #33BFFF;
+   color: #a1a1a1;
    font-size: 14px;
    font-family: helvetica;
 }
@@ -34,7 +34,8 @@ table {
    width: 100%;
 }
 table thead tr {
-   background-color: rgba(48,180,255,0.5);
+   background-color: #a1a1a1;
+   color: black;
 }
 td, th { 
    text-align: left;
@@ -53,15 +54,23 @@ button {
    margin-right:5px;
    margin-bottom:5px;
    font-size: 14px;
+   box-shadow: inset 0 0 0 0 #33BFFF;
+   -webkit-transition: ease 0.4s;
+   -moz-transition: ease 0.4s;
+   transition: ease 0.4s;
 }
 button.btn-app {
    width: 200px;
    padding: 4px 20px 6px 10px;  
    text-align: left;   
 }
-.my-effects a, .my-effects a:hover, .my-effects a:visited { color: #90b9b7; text-decoration:none }
+button:hover {
+   box-shadow: inset 0 0 0 50px #33BFFF;
+   color: black;
+}
+.my-effects a, .my-effects a:hover, .my-effects a:visited { color: #33BFFF; text-decoration:none }
 .my-effects a:not(.btn) {position:relative}
-.my-effects a:not(.btn):hover {color:#90b9b7}
+.my-effects a:not(.btn):hover {color:#33BFFF;}
 .my-effects a:not(.btn):hover:after {width:100%}
 .my-effects a:not(.btn):after {
   display:block;
@@ -70,7 +79,7 @@ button.btn-app {
   bottom:-1px;
   width:0;
   height:2px;
-  background-color:#90b9b7;
+  background-color:#33BFFF;
   content:"";
   transition:width 0.2s;
 }
@@ -137,6 +146,14 @@ label {
   transition: max-height .3s ease-out;
 }
 .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.5);
+}
+.modal-inner {
   position: fixed;
   top: 20vh;
   left: 20vw;
