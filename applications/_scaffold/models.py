@@ -3,9 +3,10 @@ from web3py import DAL, Field
 from . import settings
 
 ### Establish a database connection
-db = DAL(settings.DB_URI, 
-         folder=os.path.join(os.path.dirname(__file__), 'databases'),
-         pool_size=settings.DB_POOL_SIZE)
+APP_FOLDER = os.path.dirname(__file__)
+DB_FOLDER = os.path.join(APP_FOLDER, 'databases')
+
+db = DAL(settings.DB_URI, folder=DB_FOLDER, pool_size=settings.DB_POOL_SIZE)
 
 ### Define you table below
 #
