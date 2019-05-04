@@ -12,31 +12,6 @@
         <span class="logo">[web3py] dashboard</span>
       </div>
       <div class="panel accordion">
-        <input type="checkbox" id="learn">
-        <label for="learn">System</label>
-        <div>
-          <pre>
- _______  ____________  ____  ______  __
-|  ____/ / / ____/ __ |/___ \/ __ \ \/ /
-| |     / / /_  / /_/ /___/ / /_/ /\  / 
-| | /| / / __/ / __  //__  / ____/ / / 
-| |/ |/ / /___/ /_/ /___/ / / ____/ / 
-|___/|_/_____/_____/_____/_/ /_____/ 
-It is still experimental...           
-          </pre>
-          <table>
-            <thead>
-              <tr><th>Module</th><th>Version</th></tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in info">
-                <td>{{row.name}}</td><td>{{row.version}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="panel accordion">
         <input type="checkbox" id="applications">
         <label for="applications">Installed Applications</label>
         <div class="applications-inner">
@@ -153,6 +128,36 @@ It is still experimental...
           </table>
         </div>
       </div>
+      <div class="panel accordion">
+        <input type="checkbox" id="learn">
+        <label for="learn">System</label>
+        <div>
+          <pre>
+ _______  ____________  ____  ______  __
+|  ____/ / / ____/ __ |/___ \/ __ \ \/ /
+| |     / / /_  / /_/ /___/ / /_/ /\  / 
+| | /| / / __/ / __  //__  / ____/ / / 
+| |/ |/ / /___/ /_/ /___/ / / ____/ / 
+|___/|_/_____/_____/_____/_/ /_____/ 
+It is still experimental...           
+          </pre>
+          <table>
+            <thead>
+              <tr><th>Module</th><th>Version</th></tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in info">
+                <td>{{row.name}}</td><td>{{row.version}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="right">
+          Created by Massimo Di Pierro @ BSDv3 License
+        </div>
+      </div>
       <div class="modal" v-if="modal">
         <div class="modal-inner">
           <!--img align="left" v-bind:src="'images/alert-'+modal.color+'.gif'"/-->
@@ -161,12 +166,6 @@ It is still experimental...
             <p>{{modal.message}}</p>
             <button v-for="button in modal.buttons" v-on:click="button.onclick()">{{button.text}}</button><button v-if="!modal.buttons" v-on:click="modal_dismiss()">Dismiss</button>
           </div>
-        </div>
-      </div>
-      </div>
-      <div class="panel">
-        <div class="right">
-          Created by Massimo Di Pierro @ BSDv3 License
         </div>
       </div>
     </div>
