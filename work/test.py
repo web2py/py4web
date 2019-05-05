@@ -81,35 +81,45 @@ class API:
                 key_parts = key.rsplit('.')
                 if not key_parts[-1] in ('eq','ne','gt','lt','ge','le','startswith'):
                     key_parts.append('eq')
+                is_negated = key_parts[0] == 'not'
+                if is_negated:
+                    key_parts = key_parts[1:]
                 key, condition = key_parts[:-1], key_parts[-1]
                 if len(key) == 1: # example: name.eq=='Chair'
-                    queries.append(self.make_query(table[key[0]], condition, value))
+                    query = self.make_query(table[key[0]], condition, value)
+                    queries.append(query if not is_negated else ~query)
                 elif len(key) == 2: # example: color.name.eq=='red'
-                    hop1[key[0]].append((key[1], condition, value))
+                    hop1[is_negated, key[0]].append((key[1], condition, value))
                 elif len(key) == 3: # example: a.rel.desc.eq=='above'
-                    hop2[key[0], key[1]].append((key[2], condition, value))
+                    hop2[is_negated, key[0], key[1]].append((key[2], condition, value))
                 elif len(key) == 4: # example: a.rel.b.name.eq == 'Table'
-                    hop3[key[0], key[1], key[2]].append((key[3], condition, value))
+                    hop3[is_negated, key[0], key[1], key[2]].append((key[3], condition, value))
 
-        for fieldname in hop1:
+        for item in hop1:
+            is_negated, fieldname = item
             ref_table = db[table[fieldname].type.split(' ')[1]]
-            subqueries = [self.make_query(ref_table[k], c, v) for k,c,v in hop1[fieldname]]
+            subqueries = [self.make_query(ref_table[k], c, v) for k,c,v in hop1[item]]
             subquery = functools.reduce(lambda a,b: a&b, subqueries)
-            queries.append(table[fieldname].belongs(db(subquery)._select(ref_table.id)))
+            query = table[fieldname].belongs(db(subquery)._select(ref_table.id))
+            queries.append(query if not is_negated else ~query)
 
-        for linkfield, linktable in hop2:
+        for item in hop2:
+            is_negated, linkfield, linktable = item
             ref_table = db[linktable]
-            subqueries = [self.make_query(ref_table[k], c, v) for k, c, v in hop2[linkfield, linktable]]
+            subqueries = [self.make_query(ref_table[k], c, v) for k, c, v in hop2[item]]
             subquery = functools.reduce(lambda a,b: a&b, subqueries)
-            queries.append(table.id.belongs(db(subquery)._select(ref_table[linkfield])))
+            query = table.id.belongs(db(subquery)._select(ref_table[linkfield]))
+            queries.append(query if not is_negated else ~query)
 
-        for linkfield, linktable, otherfield in hop3:
+        for item in hop3:
+            is_negated, linkfield, linktable, otherfield = item
             ref_table = db[linktable]
             ref_ref_table = db[ref_table[otherfield].type.split(' ')[1]]
-            subqueries = [self.make_query(ref_ref_table[k], c, v) for k,c,v in hop3[linkfield, linktable, otherfield]]
+            subqueries = [self.make_query(ref_ref_table[k], c, v) for k,c,v in hop3[item]]
             subquery = functools.reduce(lambda a, b: a&b, subqueries)
             subquery &= ref_ref_table.id == ref_table[otherfield]
-            queries.append(table.id.belongs(db(subquery)._select(ref_table[linkfield], groupby=ref_table[linkfield])))
+            query = table.id.belongs(db(subquery)._select(ref_table[linkfield], groupby=ref_table[linkfield]))
+            queries.append(query if not is_negated else ~query)
 
         if not queries:
             queries.append(table)
@@ -261,6 +271,14 @@ def test():
                 {'name': 'Table'}
                 ]
             })
+    assert (api.search('thing[name]', {'not.color.name.eq':'red'}) ==
+            {'count': 3, 
+             'items': [
+                {'name': 'Chair'}, 
+                {'name': 'Table'},
+                {'name': 'Lamp'}
+                ]
+             })
     assert (api.search('thing[name]', {'a.rel.desc':'is above'}) ==
             {
             'count': 1, 
