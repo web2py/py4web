@@ -10,7 +10,7 @@ import re
 class API:
 
     re_table_and_fields = re.compile('\w+([\w+(,\w+)+])?')
-    re_lookups = re.compile('((\w+\!?\:)?(\w+(\[\w+(,\w+)*\])?)(\.\w+(\[\w+(,\w+)*\])?)*)')
+    re_lookups = re.compile('((\w*\!?\:)?(\w+(\[\w+(,\w+)*\])?)(\.\w+(\[\w+(,\w+)*\])?)*)')
     re_no_brackets = re.compile('\[.*?\]')
 
     def __init__(self, db):
@@ -134,20 +134,22 @@ class API:
                 if not 'id' in tfieldnames:
                     tfields.append(ref_table['id'])
                 drows = db(ref_table.id.belongs(ids)).select(*tfields).as_dict()
-                if not 'id'in tfieldnames:
+                if tfieldnames and not 'id' in tfieldnames:
                     for row in drows.values():
                         del row['id']
                 lkey, collapsed = lookup_map[key]['name'], lookup_map[key]['collapsed']
-                for row in rows:      
+                for row in rows:
+                    new_row = drows[row[key]]
                     if collapsed:
-                        row[lkey].update(drows[row[key]])
+                        del row[key]
+                        for rkey in new_row:
+                            row[lkey + '_' + rkey] = new_row[rkey]
                     else:
-                        row[lkey] = drows[row[key]]
+                        row[lkey] = new_row
 
             elif len(key) == 2:
                 lfield, key = key
                 key, tfieldnames = API.parse_table_and_fields(key)
-                print(lookup_map, key, tfieldnames)
                 ref_table = db[key]
                 ids = [row['id'] for row in rows]
                 tfields = [ref_table[tfieldname] for tfieldname in tfieldnames or ref_table.fields]
@@ -182,18 +184,20 @@ class API:
                 lrows = db(ref_table[lfield].belongs(ids)).select(*tfields, left=left)
                 drows = collections.defaultdict(list)
                 lkey = lfield + '.' + key + '.' + rfield
-                lkey, collapsed = lookup_map[key]['name'], lookup_map[key]['collapsed']
+                lkey, collapsed = lookup_map[lkey]['name'], lookup_map[lkey]['collapsed']
                 for row in lrows:
                     row = row.as_dict()
                     new_row = row[key]
-                    lfield_value = new_row[lfield]
+                    lfield_value, rfield_value = new_row[lfield], new_row[rfield]
                     if not lfield in tfieldnames:
                         del new_row[lfield]
+                    if not rfield in tfieldnames:
+                        del new_row[rfield]
                     if collapsed:
                         new_row.update(row[ref_ref_tablename])
                     else:
                         new_row[rfield] = row[ref_ref_tablename]
-                        drows[lfield_value].append(new_row)
+                    drows[lfield_value].append(new_row)
                 for row in rows:                  
                     row[lkey] = drows.get(row.id, [])
 
@@ -285,14 +289,14 @@ def test():
             {
             'count': 5, 
             'items': [
-                {'name': 'Chair', 'color': {'name': 'red'}, 'id': 1}, 
-                {'name': 'Chair', 'color': {'name': 'green'}, 'id': 2}, 
-                {'name': 'Table', 'color': {'name': 'red'}, 'id': 3}, 
-                {'name': 'Table', 'color': {'name': 'blue'}, 'id': 4}, 
-                {'name': 'Lamp', 'color': {'name': 'green'}, 'id': 5}
+                {'name': 'Chair', 'color': {'name': 'red', 'id': 1}, 'id': 1}, 
+                {'name': 'Chair', 'color': {'name': 'green', 'id': 2}, 'id': 2}, 
+                {'name': 'Table', 'color': {'name': 'red', 'id': 1}, 'id': 3}, 
+                {'name': 'Table', 'color': {'name': 'blue', 'id': 3}, 'id': 4}, 
+                {'name': 'Lamp', 'color': {'name': 'green', 'id': 2}, 'id': 5}
                 ]
             })
-    assert (api.search('thing', {'$lookup':'color[name]'}) ==
+    assert (api.search('thing', {'$lookup':'color[name]'}) == 
             {
             'count': 5, 
             'items': [
@@ -301,6 +305,17 @@ def test():
                 {'name': 'Table', 'color': {'name': 'red'}, 'id': 3}, 
                 {'name': 'Table', 'color': {'name': 'blue'}, 'id': 4}, 
                 {'name': 'Lamp', 'color': {'name': 'green'}, 'id': 5}
+                ]
+            })
+    assert (api.search('thing', {'$lookup':'color!:color[name]'}) == 
+            {
+            'count': 5, 
+            'items': [
+                {'name': 'Chair', 'color_name': 'red', 'id': 1}, 
+                {'name': 'Chair', 'color_name': 'green', 'id': 2}, 
+                {'name': 'Table', 'color_name': 'red', 'id': 3}, 
+                {'name': 'Table', 'color_name': 'blue', 'id': 4}, 
+                {'name': 'Lamp', 'color_name': 'green', 'id': 5}
                 ]
             })
     assert (api.search('thing', {'$lookup':'related:a.rel[desc]'}) ==
@@ -369,4 +384,19 @@ def test():
                  'id': 3}
                 ]
             })
+    assert (api.search('thing', {'$lookup':'color[name],related!:a.rel[desc].b[name]', '$offset': 1, '$limit':2}) ==
+            {
+            # 'count': 5, 
+            'items': [
+                {'name': 'Chair',
+                 'related': [{'name': 'Table', 'desc': 'is under'}],
+                 'color': {'name': 'green'},
+                 'id': 2},
+                {'name': 'Table',
+                 'related': [{'name': 'Table', 'desc': 'is like'}],
+                 'color': {'name': 'red'},
+                 'id': 3}
+                ]
+            })
+
 test()
