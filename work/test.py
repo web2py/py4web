@@ -4,7 +4,6 @@ import datetime
 import functools
 import re
 
-# todo check tfieldnames
 # expose template to tables
 
 __version__ = '0.1'
@@ -162,22 +161,28 @@ class API:
                 raise NotFound('Item not found')
             return {'deleted': deleted}
 
-    def table2template(self,table):
+    def table2template(self, table):
         """ converts a table into its form template """
         data = []
-        fields = self.table_policy.get('fields', table.fields)
+        fields = post_fields = put_fields = table.fields
+        if self.policy:
+            fields = self.policy.allowed_fields(table, method='GET')
+            put_fields = self.policy.allowed_fields(table, method='PUT')
+            post_fields = self.policy.allowed_fields(table, method='POST')
         for fieldname in fields:
             field = table[fieldname]
             info = {'name': field.name, 'value': '', 'prompt': field.label}
             policies = self.policies[table._tablename]
             # https://github.com/collection-json/extensions/blob/master/template-validation.md
-            info['type'] = str(field.type) # FIX THIS                                                                                  
-            if hasattr(field,'regexp_validator'):
-                info['regexp'] = field.regexp_validator
+            info['default'] = field.default() if callable(field.default) else field.default
+            info['type'] = str(field.type) # FIX THIS
+            if hasattr(field,'regexp'):
+                info['regexp'] = field.regexp
             info['required'] = field.required
-            info['post_writable'] = field.name in policies['POST'].get('fields',fields)
-            info['put_writable'] = field.name in policies['PUT'].get('fields',fields)
-            info['options'] = {} # FIX THIS                                                                                            
+            info['unique'] = field.unique
+            info['post_writable'] = field.name in post_fields
+            info['put_writable'] = field.name in put_fields
+            info['options'] = field.options                                                                            
             data.append(info)
         return {'data':data}
 
@@ -393,6 +398,7 @@ class API:
         response['items'] = rows.as_list()
         if offset == 0:
             response['count'] = db(query).count()
+            response['model'] = self.table2template(table)
         return response
 
 import unittest            
