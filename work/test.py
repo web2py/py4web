@@ -1,10 +1,103 @@
 import collections
+import copy
+import datetime
 import functools
 import re
 
-## todo: return status and errors
-## add validation
-## check policies
+# todo check tfieldnames
+
+__version__ = '0.1'
+
+class PolicyViolation(ValueError): pass
+class InvalidFormat(ValueError): pass
+class NotFound(ValueError): pass
+
+
+def error_wrapper(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        data = {}
+        try:
+            data = func(*args, **kwargs)
+            if not data.get('errors'):
+                data['status'] = 'success'
+                data['code'] = 200
+            else:
+                data['status'] = 'error'
+                data['message'] = 'Validation Errors'
+                data['code'] = 422
+        except PolicyViolation as e:
+            data['status'] = 'error'
+            data['message'] = str(e)
+            data['code'] = 401
+        except NotFound as e:
+            data['status'] = 'error'
+            data['message'] = str(e)
+            data['code'] = 404
+        except (InvalidFormat, KeyError, ValueError) as e:
+            data['status'] = 'error'
+            data['message'] = str(e)
+            data['code'] = 400
+        finally:
+            data['timestamp'] = datetime.datetime.utcnow().isoformat()
+            data['api_version'] = __version__
+        return data
+    return wrapper
+
+
+class Policy:
+
+    model = {
+        'POST': {'authorize':False, 'fields':None},
+        'PUT': {'authorize':False, 'fields':None},
+        'DELETE': {'authorize':False},
+        'GET': {'authorize':False, 'fields':None, 'query':None, 'allowed_patterns':[], 'denied_patterns':[]}
+        }
+
+    def __init__(self):
+        self.info = {}
+
+    def set(self, tablename, method, **attributes):
+        method = method.upper()
+        if not method in self.model or any(key not in self.model[method] for key in attributes):
+            raise InvalidFormat('Invalid policy format')
+        if not tablename in self.info:
+            self.info[tablename] = copy.deepcopy(self.model)
+        self.info[tablename][method].update(attributes)
+    
+    def check_if_allowed(self, method, tablename, id=None, vars=None):
+        vars = vars or {}
+        policy = self.info.get(tablename) or self.info.get('*')
+        if not policy:
+            raise PolicyViolation('No policy for this object')
+        policy = policy.get(method.upper())
+        if not policy: 
+            raise PolicyViolation('No policy for this method')
+        authorize = policy.get('authorize')
+        if authorize is False or (callable(authorize) and not authorize(tablename, id, vars)):
+            raise PolicyViolation('Not authorized')
+        for key in vars:
+            if any(fnmatch.fnmatch(key, p) for p in policy['denied_patterns']):
+                raise PolicyViolation('Pattern is not allowed')
+            allowed_patterns = policy['allowed_patterns']
+            if '**' not in allowed_patterns and not any(fnmatch.fnmatch(key, p) for p in allowed_patters):
+                raise PolicyViolation('Pattern is not explicitely allowed')
+        return
+
+    def allowed_fields(self, method, table):
+        method = method.upper()
+        policy = self.info.get(table._tablename) or self.info.get('*')
+        policy = policy[method]
+        return policy['fields'] or [f.name for f in table 
+                                    if (method=='GET' and f.readable)
+                                    or (method!='GET' and f.writable)]
+
+DENY_ALL_POLICY = Policy()
+ALLOW_ALL_POLICY = Policy()
+ALLOW_ALL_POLICY.set(tablename='*', method='GET', authorize=True, allowed_patterns=['**'])
+ALLOW_ALL_POLICY.set(tablename='*', method='POST', authorize=True)
+ALLOW_ALL_POLICY.set(tablename='*', method='PUT', authorize=True)
+ALLOW_ALL_POLICY.set(tablename='*', method='DELETE', authorize=True)
 
 
 class API:
@@ -13,24 +106,70 @@ class API:
     re_lookups = re.compile('((\w*\!?\:)?(\w+(\[\w+(,\w+)*\])?)(\.\w+(\[\w+(,\w+)*\])?)*)')
     re_no_brackets = re.compile('\[.*?\]')
 
-    def __init__(self, db):
+    def __init__(self, db, policy):
         self.db = db
+        self.policy = policy
 
-    def __call__(self, method, tname, id, get_vars, post_vars):
-        assert tname in self.db.tables
+    @error_wrapper
+    def __call__(self, method, tablename, id=None, get_vars=None, post_vars=None):
+        get_vars = get_vars or {}
+        post_vars = post_vars or {}
+        # validate incoming request
+        if not tablename in self.db.tables:
+            raise InvalidFormat('Invalid table name: %s' % tablename)        
+        self.policy.check_if_allowed(method, tablename, id, get_vars)
+        # apply rules
         if method == 'GET':
             if id:
-                vars['tname'] = id
-            return self.search(tname, get_vars) # FIX ME
+                vars['tablename'] = id
+            return self.search(tablename, get_vars)
         elif method == 'POST':
-            return self.db[tname].validate_and_insert(**post_vars) # FIX ME
+            table =  self.db[tablename]
+            invalid_fields = set(post_vars.keys()) - set(self.policy.allowed_fields('POST', table))
+            if invalid_fields:
+                raise InvalidFormat('Invalid fields: %s' % list(invalid_fields))
+            return table.validate_and_insert(**post_vars).as_dict()
         elif method == 'PUT':
             id = id or post_vars['id']
-            return self.db[tname].validate_and_update(id, **post_vars) # FIX ME
+            if not id:
+                raise InvalidFormat('No item id specified')
+            table =  self.db[tablename]
+            invalid_fields = set(post_vars.keys()) - set(self.policy.allowed_fields('PUT', table))
+            if invalid_fields:
+                raise InvalidFormat('Invalid fields: %s' % list(invalid_fields))
+            data = self.db(table.id == id).validate_and_update(**post_vars).as_dict()
+            if not data.get('updated'):
+                raise NotFound('Item not found')
+            return data
         elif method == 'DELETE':
             id = id or post_vars['id']
-            table = self.db[tname]
-            return self.db(table.id == id).delete() # FIX ME
+            if not id:
+                raise InvalidFormat('No item id specified')
+            table = self.db[tablename]
+            deleted = self.db(table.id == id).delete()
+            if not deleted:
+                raise NotFound('Item not found')
+            return {'deleted': deleted}
+
+    def table2template(self,table):
+        """ converts a table into its form template """
+        data = []
+        fields = self.table_policy.get('fields', table.fields)
+        for fieldname in fields:
+            field = table[fieldname]
+            info = {'name': field.name, 'value': '', 'prompt': field.label}
+            policies = self.policies[table._tablename]
+            # https://github.com/collection-json/extensions/blob/master/template-validation.md
+            info['type'] = str(field.type) # FIX THIS                                                                                  
+            if hasattr(field,'regexp_validator'):
+                info['regexp'] = field.regexp_validator
+            info['required'] = field.required
+            info['post_writable'] = field.name in policies['POST'].get('fields',fields)
+            info['put_writable'] = field.name in policies['PUT'].get('fields',fields)
+            info['options'] = {} # FIX THIS                                                                                            
+            data.append(info)
+        return {'data':data}
+
 
     @staticmethod
     def make_query(field, condition, value):
@@ -40,8 +179,9 @@ class API:
             'lt': lambda: field < value,
             'gt': lambda: field > value,
             'le': lambda: field <= value,
-            'ge': lambda: field >= value,
-            'startswith': lambda: field.startswith(value)
+            'ge': lambda: field >= value,            
+            'startswith': lambda: field.startswith(str(value)),
+            'in': lambda: field.belongs(value.split(',') if isinstance(value,str) else list(value)),
             }
         return expression[condition]()
 
@@ -59,6 +199,7 @@ class API:
 
         db = self.db
         tname, tfieldnames = API.parse_table_and_fields(tname)
+        if self.policy: self.policy.check_if_allowed('GET', tname)
         query = []
         offset = 0
         limit = 100
@@ -97,7 +238,8 @@ class API:
 
         for item in hop1:
             is_negated, fieldname = item
-            ref_table = db[table[fieldname].type.split(' ')[1]]
+            ref_tablename = table[fieldname].type.split(' ')[1]
+            ref_table = db[ref_tablename]
             subqueries = [self.make_query(ref_table[k], c, v) for k,c,v in hop1[item]]
             subquery = functools.reduce(lambda a,b: a&b, subqueries)
             query = table[fieldname].belongs(db(subquery)._select(ref_table.id))
@@ -114,7 +256,8 @@ class API:
         for item in hop3:
             is_negated, linkfield, linktable, otherfield = item
             ref_table = db[linktable]
-            ref_ref_table = db[ref_table[otherfield].type.split(' ')[1]]
+            ref_ref_tablename = ref_table[otherfield].type.split(' ')[1]
+            ref_ref_table = db[ref_ref_tablename]
             subqueries = [self.make_query(ref_ref_table[k], c, v) for k,c,v in hop3[item]]
             subquery = functools.reduce(lambda a, b: a&b, subqueries)
             subquery &= ref_ref_table.id == ref_table[otherfield]
@@ -138,7 +281,9 @@ class API:
 
             if len(key) == 1:
                 key, tfieldnames = API.parse_table_and_fields(key[0])
-                ref_table = db[table[key].type.split(' ')[1]]
+                ref_tablename = table[key].type.split(' ')[1]
+                ref_table = db[ref_tablename]
+                if self.policy: self.policy.check_if_allowed('GET', ref_tablename)
                 ids = [row[key] for row in rows]
                 tfields = [ref_table[tfieldname] for tfieldname in tfieldnames or ref_table.fields]
                 if not 'id' in tfieldnames:
@@ -160,6 +305,7 @@ class API:
             elif len(key) == 2:
                 lfield, key = key
                 key, tfieldnames = API.parse_table_and_fields(key)
+                if self.policy: self.policy.check_if_allowed('GET', key)
                 ref_table = db[key]
                 ids = [row['id'] for row in rows]
                 tfields = [ref_table[tfieldname] for tfieldname in tfieldnames or ref_table.fields]
@@ -180,8 +326,10 @@ class API:
                 lfield, key, rfield = key
                 key, tfieldnames = API.parse_table_and_fields(key)
                 rfield, tfieldnames2 = API.parse_table_and_fields(rfield)
+                if self.policy: self.policy.check_if_allowed('GET', key)
                 ref_table = db[key]
                 ref_ref_tablename = ref_table[rfield].type.split(' ')[1]
+                if self.policy: self.policy.check_if_allowed('GET', ref_ref_tablename)
                 ref_ref_table = db[ref_ref_tablename]
                 ids = [row['id'] for row in rows]
                 tfields = [ref_table[tfieldname] for tfieldname in tfieldnames or ref_table.fields]
@@ -219,9 +367,10 @@ class API:
             
 def test():
     from pydal import DAL, Field
-    
+    from pydal.validators import IS_NOT_IN_DB
+
     db = DAL('sqlite:memory')
-    db.define_table('color', Field('name'))
+    db.define_table('color', Field('name', requires=IS_NOT_IN_DB(db, 'color.name')))
     db.color.insert(name='red')
     db.color.insert(name='green')
     db.color.insert(name='blue')
@@ -238,7 +387,7 @@ def test():
     db.rel.insert(a=2, b=4, desc='is under')
     db.rel.insert(a=5, b=4, desc='is above')
 
-    api = API(db)
+    api = API(db, ALLOW_ALL_POLICY)
 
     assert (api.search('color', {'name.eq': 'red'}) ==
            {
@@ -416,5 +565,66 @@ def test():
                  'id': 3}
                 ]
             })
+    response = api('GET', 'color', None, {'name.eq': 'red'})
+    del response['timestamp']
+    assert (response ==
+            {'count': 1, 
+             'status': 
+             'success', 
+             'code': 200, 
+             'items': [{'id': 1, 'name': 'red'}], 
+             'api_version': __version__
+             })
+    response = api('POST','color', post_vars={'name':'magenta'})
+    del response['timestamp']
+    assert (response ==
+            {'status': 'success',
+             'errors': {},
+             'code': 200,
+             'id': 4,
+             'api_version': __version__
+             })    
+    response = api('POST','color', post_vars={'name':'magenta'})
+    del response['timestamp']
+    assert (response == 
+            {'status': 'error',
+             'errors': {'name': 'Value already in database or empty'},
+             'code': 422,
+             'message': 'Validation Errors',
+             'id': None,
+             'api_version': __version__
+             });
+    response = api('PUT','color', 4, post_vars={'name':'Magenta'})
+    del response['timestamp']
+    assert (response == 
+            {'status': 'success',
+             'updated': 1,
+             'errors': {},
+             'code': 200,
+             'api_version': '0.1'
+            })
+    response = api('DELETE', 'color', 4)
+    del response['timestamp']
+    assert (response == 
+            {'deleted': 1,
+             'status': 'success',
+             'code': 200,
+             'api_version': '0.1'
+             })
 
-test()
+    api.policy = DENY_ALL_POLICY
+    
+    response = api('GET', 'color', None, {'name.eq': 'red'})
+    del response['timestamp']
+    assert (response == 
+            {'status': 'error',
+             'message': 'No policy for this object',
+             'code': 401,
+             'api_version': __version__
+             })
+    return db
+
+if __name__ == '__main__':
+    test()
+
+
