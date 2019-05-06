@@ -5,13 +5,13 @@ import functools
 import re
 
 # todo check tfieldnames
+# expose template to tables
 
 __version__ = '0.1'
 
 class PolicyViolation(ValueError): pass
 class InvalidFormat(ValueError): pass
 class NotFound(ValueError): pass
-
 
 def error_wrapper(func):
     @functools.wraps(func)
@@ -65,8 +65,9 @@ class Policy:
             self.info[tablename] = copy.deepcopy(self.model)
         self.info[tablename][method].update(attributes)
     
-    def check_if_allowed(self, method, tablename, id=None, vars=None):
-        vars = vars or {}
+    def check_if_allowed(self, method, tablename, id=None, get_vars=None, post_vars=None):
+        get_vars = get_vars or {}
+        post_vars = post_vars or {}
         policy = self.info.get(tablename) or self.info.get('*')
         if not policy:
             raise PolicyViolation('No policy for this object')
@@ -74,9 +75,9 @@ class Policy:
         if not policy: 
             raise PolicyViolation('No policy for this method')
         authorize = policy.get('authorize')
-        if authorize is False or (callable(authorize) and not authorize(tablename, id, vars)):
+        if authorize is False or (callable(authorize) and not authorize(tablename, id, get_vars, post_vars)):
             raise PolicyViolation('Not authorized')
-        for key in vars:
+        for key in get_vars:
             if any(fnmatch.fnmatch(key, p) for p in policy['denied_patterns']):
                 raise PolicyViolation('Pattern is not allowed')
             allowed_patterns = policy['allowed_patterns']
@@ -84,13 +85,25 @@ class Policy:
                 raise PolicyViolation('Pattern is not explicitely allowed')
         return
 
-    def allowed_fields(self, method, table):
+
+    def allowed_fieldnames(self, table, method='GET'):
         method = method.upper()
         policy = self.info.get(table._tablename) or self.info.get('*')
         policy = policy[method]
-        return policy['fields'] or [f.name for f in table 
-                                    if (method=='GET' and f.readable)
-                                    or (method!='GET' and f.writable)]
+        allowed_fieldnames = policy['fields']
+        if not allowed_fieldnames:
+            allowed_fieldnames = [
+                f.name for f in table 
+                if (method == 'GET' and f.readable)
+                or (method != 'GET' and f.writable)]
+        return allowed_fieldnames
+
+    def check_fieldnames(self, table, fieldnames, method='GET'):
+        allowed_fieldnames = self.allowed_fieldnames(table, method)
+        invalid_fieldnames = set(fieldnames) - set(allowed_fieldnames)
+        if invalid_fieldnames:
+            raise InvalidFormat('Invalid fields: %s' % list(invalid_fieldnames))
+
 
 DENY_ALL_POLICY = Policy()
 ALLOW_ALL_POLICY = Policy()
@@ -112,12 +125,16 @@ class API:
 
     @error_wrapper
     def __call__(self, method, tablename, id=None, get_vars=None, post_vars=None):
+        method = method.upper()
         get_vars = get_vars or {}
         post_vars = post_vars or {}
         # validate incoming request
         if not tablename in self.db.tables:
-            raise InvalidFormat('Invalid table name: %s' % tablename)        
-        self.policy.check_if_allowed(method, tablename, id, get_vars)
+            raise InvalidFormat('Invalid table name: %s' % tablename)
+        if self.policy:
+            self.policy.check_if_allowed(method, tablename, id, get_vars, post_vars)
+            if method in ['POST', 'PUT']:
+                self.policy.check_fieldnames(self.db[tablename], post_vars.keys(), method)
         # apply rules
         if method == 'GET':
             if id:
@@ -125,18 +142,12 @@ class API:
             return self.search(tablename, get_vars)
         elif method == 'POST':
             table =  self.db[tablename]
-            invalid_fields = set(post_vars.keys()) - set(self.policy.allowed_fields('POST', table))
-            if invalid_fields:
-                raise InvalidFormat('Invalid fields: %s' % list(invalid_fields))
             return table.validate_and_insert(**post_vars).as_dict()
         elif method == 'PUT':
             id = id or post_vars['id']
             if not id:
                 raise InvalidFormat('No item id specified')
             table =  self.db[tablename]
-            invalid_fields = set(post_vars.keys()) - set(self.policy.allowed_fields('PUT', table))
-            if invalid_fields:
-                raise InvalidFormat('Invalid fields: %s' % list(invalid_fields))
             data = self.db(table.id == id).validate_and_update(**post_vars).as_dict()
             if not data.get('updated'):
                 raise NotFound('Item not found')
@@ -197,9 +208,24 @@ class API:
 
     def search(self, tname, vars):
 
+        def check_table_permission(tablename):
+            if self.policy:
+                self.policy.check_if_allowed('GET', tablename)
+
+        def filter_fieldnames(table, fieldnames):            
+            if self.policy:
+                if fieldnames:
+                    self.policy.check_fieldnames(table, fieldnames)
+                else:
+                    fieldnames = self.policy.allowed_fieldnames(table)
+            elif not fielanames:
+                fieldnames = table.fields
+            return fieldnames
+
         db = self.db
         tname, tfieldnames = API.parse_table_and_fields(tname)
-        if self.policy: self.policy.check_if_allowed('GET', tname)
+        check_table_permission(tname)
+        tfieldnames = filter_fieldnames(db[tname], tfieldnames)
         query = []
         offset = 0
         limit = 100
@@ -267,8 +293,8 @@ class API:
         if not queries:
             queries.append(table)
 
-        query = functools.reduce(lambda a, b: a&b, queries)
-        tfields = [table[tfieldname] for tfieldname in tfieldnames or table.fields] 
+        query = functools.reduce(lambda a, b: a&b, queries)        
+        tfields = [table[tfieldname] for tfieldname in tfieldnames]
         rows = db(query).select(*tfields, limitby=(offset, limit + offset))
 
         lookup_map = {}
@@ -283,9 +309,10 @@ class API:
                 key, tfieldnames = API.parse_table_and_fields(key[0])
                 ref_tablename = table[key].type.split(' ')[1]
                 ref_table = db[ref_tablename]
-                if self.policy: self.policy.check_if_allowed('GET', ref_tablename)
+                tfieldnames = filter_fieldnames(ref_table, tfieldnames)
+                check_table_permission(ref_tablename)
                 ids = [row[key] for row in rows]
-                tfields = [ref_table[tfieldname] for tfieldname in tfieldnames or ref_table.fields]
+                tfields = [ref_table[tfieldname] for tfieldname in tfieldnames]
                 if not 'id' in tfieldnames:
                     tfields.append(ref_table['id'])
                 drows = db(ref_table.id.belongs(ids)).select(*tfields).as_dict()
@@ -305,10 +332,11 @@ class API:
             elif len(key) == 2:
                 lfield, key = key
                 key, tfieldnames = API.parse_table_and_fields(key)
-                if self.policy: self.policy.check_if_allowed('GET', key)
+                check_table_permission(key)
                 ref_table = db[key]
+                tfieldnames = filter_fieldnames(ref_table, tfieldnames)
                 ids = [row['id'] for row in rows]
-                tfields = [ref_table[tfieldname] for tfieldname in tfieldnames or ref_table.fields]
+                tfields = [ref_table[tfieldname] for tfieldname in tfieldnames]
                 if not lfield in tfieldnames:
                     tfields.append(ref_table[lfield])
                 lrows = db(ref_table[lfield].belongs(ids)).select(*tfields)
@@ -326,18 +354,20 @@ class API:
                 lfield, key, rfield = key
                 key, tfieldnames = API.parse_table_and_fields(key)
                 rfield, tfieldnames2 = API.parse_table_and_fields(rfield)
-                if self.policy: self.policy.check_if_allowed('GET', key)
+                check_table_permission(key)
                 ref_table = db[key]
                 ref_ref_tablename = ref_table[rfield].type.split(' ')[1]
-                if self.policy: self.policy.check_if_allowed('GET', ref_ref_tablename)
+                check_table_permission(ref_ref_tablename)
                 ref_ref_table = db[ref_ref_tablename]
+                tfieldnames = filter_fieldnames(ref_table, tfieldnames)
+                tfieldnames2 = filter_fieldnames(ref_ref_table, tfieldnames2)
                 ids = [row['id'] for row in rows]
-                tfields = [ref_table[tfieldname] for tfieldname in tfieldnames or ref_table.fields]
+                tfields = [ref_table[tfieldname] for tfieldname in tfieldnames]
                 if not lfield in tfieldnames:
                     tfields.append(ref_table[lfield])
                 if not rfield in tfieldnames:
                     tfields.append(ref_table[rfield])
-                tfields += [ref_ref_table[tfieldname] for tfieldname in tfieldnames2 or ref_ref_table.fields]
+                tfields += [ref_ref_table[tfieldname] for tfieldname in tfieldnames2]
                 left = ref_ref_table.on(ref_table[rfield]==ref_ref_table['id'])
                 lrows = db(ref_table[lfield].belongs(ids)).select(*tfields, left=left)
                 drows = collections.defaultdict(list)
@@ -364,267 +394,285 @@ class API:
         if offset == 0:
             response['count'] = db(query).count()
         return response
-            
-def test():
-    from pydal import DAL, Field
-    from pydal.validators import IS_NOT_IN_DB
 
-    db = DAL('sqlite:memory')
-    db.define_table('color', Field('name', requires=IS_NOT_IN_DB(db, 'color.name')))
-    db.color.insert(name='red')
-    db.color.insert(name='green')
-    db.color.insert(name='blue')
-    db.define_table('thing', Field('name'), Field('color', 'reference color'))
-    db.thing.insert(name='Chair', color=1)
-    db.thing.insert(name='Chair', color=2)
-    db.thing.insert(name='Table', color=1)
-    db.thing.insert(name='Table', color=3)
-    db.thing.insert(name='Lamp', color=2)
-    db.define_table('rel', Field('a', 'reference thing'), Field('desc'), Field('b','reference thing'))
-    db.rel.insert(a=1, b=2, desc='is like')
-    db.rel.insert(a=3, b=4, desc='is like')
-    db.rel.insert(a=1, b=3, desc='is under')
-    db.rel.insert(a=2, b=4, desc='is under')
-    db.rel.insert(a=5, b=4, desc='is above')
+import unittest            
+from pydal import DAL, Field
+from pydal.validators import IS_NOT_IN_DB
 
-    api = API(db, ALLOW_ALL_POLICY)
+class TestAPI(unittest.TestCase):
 
-    assert (api.search('color', {'name.eq': 'red'}) ==
+    def setUp(self):
+        db = DAL('sqlite:memory')
+
+        db.define_table('color', Field('name', requires=IS_NOT_IN_DB(db, 'color.name')))
+        db.color.insert(name='red')
+        db.color.insert(name='green')
+        db.color.insert(name='blue')
+
+        db.define_table('thing', Field('name'), Field('color', 'reference color'))
+        db.thing.insert(name='Chair', color=1)
+        db.thing.insert(name='Chair', color=2)
+        db.thing.insert(name='Table', color=1)
+        db.thing.insert(name='Table', color=3)
+        db.thing.insert(name='Lamp', color=2)
+    
+        db.define_table('rel', Field('a', 'reference thing'), Field('desc'), Field('b','reference thing'))
+        db.rel.insert(a=1, b=2, desc='is like')
+        db.rel.insert(a=3, b=4, desc='is like')
+        db.rel.insert(a=1, b=3, desc='is under')
+        db.rel.insert(a=2, b=4, desc='is under')
+        db.rel.insert(a=5, b=4, desc='is above')
+
+        api = API(db, ALLOW_ALL_POLICY)
+
+        self.db = db
+        self.api = api
+
+    def test_search(self):
+        api = self.api
+        api.policy = ALLOW_ALL_POLICY
+        self.assertEqual(api.search('color', {'name.eq': 'red'}),
            {
             'count': 1, 
             'items': [
                 {'id': 1, 'name': 'red'}
                 ]
             })
-    assert (api.search('thing', {'name.eq':'Chair'}) == 
-           {
-            'count': 2, 
-            'items': [
-                {'name': 'Chair', 'color': 1, 'id': 1}, 
-                {'name': 'Chair', 'color': 2, 'id': 2}
-                ]
-            })
-    assert (api.search('rel[a,b]', {'desc.eq':'is like'}) ==
-            {
-            'count': 2, 
-            'items': [
-                {'b': 2, 'a': 1}, 
-                {'b': 4, 'a': 3}
-                ]
-            })
-    assert (api.search('thing[name]', {'color.name.eq':'red'}) ==
-            {
-            'count': 2, 
-            'items': [
-                {'name': 'Chair'}, 
-                {'name': 'Table'}
-                ]
-            })
-    assert (api.search('thing[name]', {'not.color.name.eq':'red'}) ==
-            {'count': 3, 
-             'items': [
-                {'name': 'Chair'}, 
-                {'name': 'Table'},
-                {'name': 'Lamp'}
-                ]
-             })
-    assert (api.search('thing[name]', {'a.rel.desc':'is above'}) ==
-            {
-            'count': 1, 
-            'items': [
-                {'name': 'Lamp'}
-                ]
-            })
-    assert (api.search('thing[name]', {'a.rel.b.name':'Table'}) ==
-            {
-            'count': 4, 
-            'items': [
-                {'name': 'Chair'}, 
-                {'name': 'Chair'}, 
-                {'name': 'Table'}, 
-                {'name': 'Lamp'}
-                ]
-            })
-    assert (api.search('thing[name]', {'a.rel.b.name':'Table', 'a.rel.desc':'is above'}) ==
-            {
-            'count': 1, 
-            'items': [
-                {'name': 'Lamp'}
-                ]
-            })
-    assert (api.search('thing', {'$lookup':'color'}) == 
-            {
-            'count': 5, 
-            'items': [
-                {'name': 'Chair', 'color': {'name': 'red', 'id': 1}, 'id': 1}, 
-                {'name': 'Chair', 'color': {'name': 'green', 'id': 2}, 'id': 2}, 
-                {'name': 'Table', 'color': {'name': 'red', 'id': 1}, 'id': 3}, 
-                {'name': 'Table', 'color': {'name': 'blue', 'id': 3}, 'id': 4}, 
-                {'name': 'Lamp', 'color': {'name': 'green', 'id': 2}, 'id': 5}
-                ]
-            })
-    assert (api.search('thing', {'$lookup':'color[name]'}) == 
-            {
-            'count': 5, 
-            'items': [
-                {'name': 'Chair', 'color': {'name': 'red'}, 'id': 1}, 
-                {'name': 'Chair', 'color': {'name': 'green'}, 'id': 2}, 
-                {'name': 'Table', 'color': {'name': 'red'}, 'id': 3}, 
-                {'name': 'Table', 'color': {'name': 'blue'}, 'id': 4}, 
-                {'name': 'Lamp', 'color': {'name': 'green'}, 'id': 5}
-                ]
-            })
-    assert (api.search('thing', {'$lookup':'color!:color[name]'}) == 
-            {
-            'count': 5, 
-            'items': [
-                {'name': 'Chair', 'color_name': 'red', 'id': 1}, 
-                {'name': 'Chair', 'color_name': 'green', 'id': 2}, 
-                {'name': 'Table', 'color_name': 'red', 'id': 3}, 
-                {'name': 'Table', 'color_name': 'blue', 'id': 4}, 
-                {'name': 'Lamp', 'color_name': 'green', 'id': 5}
-                ]
-            })
-    assert (api.search('thing', {'$lookup':'related:a.rel[desc]'}) ==
-            {
-            'count': 5,
-            'items': [
-                {'name': 'Chair', 
-                 'related': [{'desc': 'is like'}, {'desc': 'is under'}], 
-                 'color': 1, 
-                 'id': 1}, 
-                {'name': 'Chair', 
-                 'related': [{'desc': 'is under'}], 
-                 'color': 2, 
-                 'id': 2}, 
-                {'name': 'Table', 
-                 'related': [{'desc': 'is like'}],
-                 'color': 1,
-                 'id': 3}, 
-                {'name': 'Table', 
-                 'related': [], 
-                 'color': 3,
-                 'id': 4}, 
-                {'name': 'Lamp',
-                 'related': [{'desc': 'is above'}],
-                 'color': 2,
-                 'id': 5}]
-            }) 
-    assert (api.search('thing', {'$lookup':'related:a.rel[desc].b[name]'}) ==
-            {
-            'count': 5, 
-            'items': [
-                {'name': 'Chair',
-                 'related': [{'b': {'name': 'Chair'},'desc': 'is like'}, 
-                              {'b': {'name': 'Table'}, 'desc': 'is under'}],
-                 'color': 1,
-                 'id': 1}, 
-                {'name': 'Chair',
-                 'related': [{'b': {'name': 'Table'}, 'desc': 'is under'}],
-                 'color': 2,
-                 'id': 2}, 
-                {'name': 'Table',
-                 'related': [{'b': {'name': 'Table'}, 'desc': 'is like'}],
-                 'color': 1,
-                 'id': 3},
-                {'name': 'Table',
-                 'related': [],
-                 'color': 3,
-                 'id': 4}, 
-                {'name': 'Lamp',
-                 'related': [{'b': {'name': 'Table'}, 'desc': 'is above'}],
-                 'color': 2,
-                 'id': 5}
-                ]
-            }) 
-    assert (api.search('thing', {'$lookup':'color[name],related:a.rel[desc].b[name]', '$offset': 1, '$limit':2}) ==
-            {
-            # 'count': 5, 
-            'items': [
-                {'name': 'Chair',
-                 'related': [{'b': {'name': 'Table'}, 'desc': 'is under'}],
-                 'color': {'name': 'green'},
-                 'id': 2},
-                {'name': 'Table',
-                 'related': [{'b': {'name': 'Table'}, 'desc': 'is like'}],
-                 'color': {'name': 'red'},
-                 'id': 3}
-                ]
-            })
-    assert (api.search('thing', {'$lookup':'color[name],related!:a.rel[desc].b[name]', '$offset': 1, '$limit':2}) ==
-            {
-            # 'count': 5, 
-            'items': [
-                {'name': 'Chair',
-                 'related': [{'name': 'Table', 'desc': 'is under'}],
-                 'color': {'name': 'green'},
-                 'id': 2},
-                {'name': 'Table',
-                 'related': [{'name': 'Table', 'desc': 'is like'}],
-                 'color': {'name': 'red'},
-                 'id': 3}
-                ]
-            })
-    response = api('GET', 'color', None, {'name.eq': 'red'})
-    del response['timestamp']
-    assert (response ==
-            {'count': 1, 
-             'status': 
-             'success', 
-             'code': 200, 
-             'items': [{'id': 1, 'name': 'red'}], 
-             'api_version': __version__
-             })
-    response = api('POST','color', post_vars={'name':'magenta'})
-    del response['timestamp']
-    assert (response ==
-            {'status': 'success',
-             'errors': {},
-             'code': 200,
-             'id': 4,
-             'api_version': __version__
-             })    
-    response = api('POST','color', post_vars={'name':'magenta'})
-    del response['timestamp']
-    assert (response == 
-            {'status': 'error',
-             'errors': {'name': 'Value already in database or empty'},
-             'code': 422,
-             'message': 'Validation Errors',
-             'id': None,
-             'api_version': __version__
-             });
-    response = api('PUT','color', 4, post_vars={'name':'Magenta'})
-    del response['timestamp']
-    assert (response == 
-            {'status': 'success',
-             'updated': 1,
-             'errors': {},
-             'code': 200,
-             'api_version': '0.1'
-            })
-    response = api('DELETE', 'color', 4)
-    del response['timestamp']
-    assert (response == 
-            {'deleted': 1,
-             'status': 'success',
-             'code': 200,
-             'api_version': '0.1'
-             })
-
-    api.policy = DENY_ALL_POLICY
+        self.assertEqual(api.search('thing', {'name.eq':'Chair'}), 
+                         {
+                'count': 2, 
+                'items': [
+                    {'name': 'Chair', 'color': 1, 'id': 1}, 
+                    {'name': 'Chair', 'color': 2, 'id': 2}
+                    ]
+                })
+        self.assertEqual(api.search('rel[a,b]', {'desc.eq':'is like'}),
+                         {
+                'count': 2, 
+                'items': [
+                    {'b': 2, 'a': 1}, 
+                    {'b': 4, 'a': 3}
+                    ]
+                })
+        self.assertEqual(api.search('thing[name]', {'color.name.eq':'red'}),
+                         {
+                'count': 2, 
+                'items': [
+                    {'name': 'Chair'}, 
+                    {'name': 'Table'}
+                    ]
+                })
+        self.assertEqual(api.search('thing[name]', {'not.color.name.eq':'red'}),
+                         {'count': 3, 
+                          'items': [
+                    {'name': 'Chair'}, 
+                    {'name': 'Table'},
+                    {'name': 'Lamp'}
+                    ]
+                          })
+        self.assertEqual(api.search('thing[name]', {'a.rel.desc':'is above'}),
+                         {
+                'count': 1, 
+                'items': [
+                    {'name': 'Lamp'}
+                    ]
+                })
+        self.assertEqual(api.search('thing[name]', {'a.rel.b.name':'Table'}),
+                         {
+                'count': 4, 
+                'items': [
+                    {'name': 'Chair'}, 
+                    {'name': 'Chair'}, 
+                    {'name': 'Table'}, 
+                    {'name': 'Lamp'}
+                    ]
+                })
+        self.assertEqual(api.search('thing[name]', {'a.rel.b.name':'Table', 'a.rel.desc':'is above'}),
+                         {
+                'count': 1, 
+                'items': [
+                    {'name': 'Lamp'}
+                    ]
+                })
+        self.assertEqual(api.search('thing', {'$lookup':'color'}), 
+                         {
+                'count': 5, 
+                'items': [
+                    {'name': 'Chair', 'color': {'name': 'red', 'id': 1}, 'id': 1}, 
+                    {'name': 'Chair', 'color': {'name': 'green', 'id': 2}, 'id': 2}, 
+                    {'name': 'Table', 'color': {'name': 'red', 'id': 1}, 'id': 3}, 
+                    {'name': 'Table', 'color': {'name': 'blue', 'id': 3}, 'id': 4}, 
+                    {'name': 'Lamp', 'color': {'name': 'green', 'id': 2}, 'id': 5}
+                    ]
+                })
+        self.assertEqual(api.search('thing', {'$lookup':'color[name]'}), 
+                         {
+                'count': 5, 
+                'items': [
+                    {'name': 'Chair', 'color': {'name': 'red'}, 'id': 1}, 
+                    {'name': 'Chair', 'color': {'name': 'green'}, 'id': 2}, 
+                    {'name': 'Table', 'color': {'name': 'red'}, 'id': 3}, 
+                    {'name': 'Table', 'color': {'name': 'blue'}, 'id': 4}, 
+                    {'name': 'Lamp', 'color': {'name': 'green'}, 'id': 5}
+                    ]
+                })
+        self.assertEqual(api.search('thing', {'$lookup':'color!:color[name]'}), 
+                         {
+                'count': 5, 
+                'items': [
+                    {'name': 'Chair', 'color_name': 'red', 'id': 1}, 
+                    {'name': 'Chair', 'color_name': 'green', 'id': 2}, 
+                    {'name': 'Table', 'color_name': 'red', 'id': 3}, 
+                    {'name': 'Table', 'color_name': 'blue', 'id': 4}, 
+                    {'name': 'Lamp', 'color_name': 'green', 'id': 5}
+                    ]
+                })
+        self.assertEqual(api.search('thing', {'$lookup':'related:a.rel[desc]'}),
+                         {
+                'count': 5,
+                'items': [
+                    {'name': 'Chair', 
+                     'related': [{'desc': 'is like'}, {'desc': 'is under'}], 
+                     'color': 1, 
+                     'id': 1}, 
+                    {'name': 'Chair', 
+                     'related': [{'desc': 'is under'}], 
+                     'color': 2, 
+                     'id': 2}, 
+                    {'name': 'Table', 
+                     'related': [{'desc': 'is like'}],
+                     'color': 1,
+                     'id': 3}, 
+                    {'name': 'Table', 
+                     'related': [], 
+                     'color': 3,
+                     'id': 4}, 
+                    {'name': 'Lamp',
+                     'related': [{'desc': 'is above'}],
+                     'color': 2,
+                     'id': 5}]
+                }) 
+        self.assertEqual(api.search('thing', {'$lookup':'related:a.rel[desc].b[name]'}),
+                         {
+                'count': 5, 
+                'items': [
+                    {'name': 'Chair',
+                     'related': [{'b': {'name': 'Chair'},'desc': 'is like'}, 
+                                 {'b': {'name': 'Table'}, 'desc': 'is under'}],
+                     'color': 1,
+                     'id': 1}, 
+                    {'name': 'Chair',
+                     'related': [{'b': {'name': 'Table'}, 'desc': 'is under'}],
+                     'color': 2,
+                     'id': 2}, 
+                    {'name': 'Table',
+                     'related': [{'b': {'name': 'Table'}, 'desc': 'is like'}],
+                     'color': 1,
+                     'id': 3},
+                    {'name': 'Table',
+                     'related': [],
+                     'color': 3,
+                     'id': 4}, 
+                    {'name': 'Lamp',
+                     'related': [{'b': {'name': 'Table'}, 'desc': 'is above'}],
+                     'color': 2,
+                     'id': 5}
+                    ]
+                }) 
+        self.assertEqual(api.search('thing', {'$lookup':'color[name],related:a.rel[desc].b[name]', '$offset': 1, '$limit':2}),
+                         {
+                'items': [
+                    {'name': 'Chair',
+                     'related': [{'b': {'name': 'Table'}, 'desc': 'is under'}],
+                     'color': {'name': 'green'},
+                     'id': 2},
+                    {'name': 'Table',
+                     'related': [{'b': {'name': 'Table'}, 'desc': 'is like'}],
+                     'color': {'name': 'red'},
+                     'id': 3}
+                    ]
+                })
+        self.assertEqual(api.search('thing', {'$lookup':'color[name],related!:a.rel[desc].b[name]', '$offset': 1, '$limit':2}),
+                         {
+                'items': [
+                    {'name': 'Chair',
+                     'related': [{'name': 'Table', 'desc': 'is under'}],
+                     'color': {'name': 'green'},
+                     'id': 2},
+                    {'name': 'Table',
+                     'related': [{'name': 'Table', 'desc': 'is like'}],
+                     'color': {'name': 'red'},
+                     'id': 3}
+                    ]
+                })
     
-    response = api('GET', 'color', None, {'name.eq': 'red'})
-    del response['timestamp']
-    assert (response == 
-            {'status': 'error',
-             'message': 'No policy for this object',
-             'code': 401,
-             'api_version': __version__
-             })
-    return db
+    def test_REST(self):
+        
+        api = self.api
+        api.policy = ALLOW_ALL_POLICY
+
+        response = api('GET', 'color', None, {'name.eq': 'red'})
+        del response['timestamp']
+        self.assertEqual(response,
+                         {'count': 1, 
+                          'status': 
+                          'success', 
+                          'code': 200, 
+                          'items': [{'id': 1, 'name': 'red'}], 
+                          'api_version': __version__
+                          })
+        response = api('POST','color', post_vars={'name':'magenta'})
+        del response['timestamp']
+        self.assertEqual(response,
+                         {'status': 'success',
+                          'errors': {},
+                          'code': 200,
+                          'id': 4,
+                          'api_version': __version__
+                          })    
+        response = api('POST','color', post_vars={'name':'magenta'})
+        del response['timestamp']
+        self.assertEqual(response, 
+                         {'status': 'error',
+                          'errors': {'name': 'Value already in database or empty'},
+                          'code': 422,
+                          'message': 'Validation Errors',
+                          'id': None,
+                          'api_version': __version__
+                          });
+        response = api('PUT','color', 4, post_vars={'name':'Magenta'})
+        del response['timestamp']
+        self.assertEqual(response, 
+                         {'status': 'success',
+                          'updated': 1,
+                          'errors': {},
+                          'code': 200,
+                          'api_version': '0.1'
+                          })
+        response = api('DELETE', 'color', 4)
+        del response['timestamp']
+        self.assertEqual(response, 
+                         {'deleted': 1,
+                          'status': 'success',
+                          'code': 200,
+                          'api_version': '0.1'
+                          })
+
+    def test_policies(self):
+        
+        api = self.api
+        api.policy = DENY_ALL_POLICY    
+        
+        response = api('GET', 'color', None, {'name.eq': 'red'})
+        del response['timestamp']
+        self.assertEqual(response, 
+                         {'status': 'error',
+                          'message': 'No policy for this object',
+                          'code': 401,
+                          'api_version': __version__
+                          })
 
 if __name__ == '__main__':
-    test()
+    unittest.main()
 
 
