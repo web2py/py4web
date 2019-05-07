@@ -100,3 +100,25 @@ def tickets(app_name):
 def error_ticket(ticket_uuid):
     return dict(ticket_record=BEAUTIFY(ErrorStorage().get(ticket_uuid=ticket_uuid)))
 
+@action('dbapi/<app_name>/<path:path>')
+def api(app_name, path):
+    # this is not final, equires pydal 19.5
+    args = path.split('/')
+    from web3py.core import Reloader, DAL
+    from pydal.dbapi import DBAPI, ALLOW_ALL_POLICY
+    module = Reloader.MODULES[app_name]
+    def url(name): return request.url + '/' + name
+    databases = [name for name in dir(module) if isinstance(getattr(module, name), DAL)]
+    if len(args) == 1 and args[0] == 'databases':
+        return {'databases': [{'name':name, 'link': url(name)} for name in databases]}
+    elif len(args) > 1 and args[1] in databases:
+        db = getattr(module, args[1])
+        if len(args) == 2:
+            return {'tables': [{'name': name, 'link': url(name)+'?model=true'} for name in db.tables]}
+        id = args[3] if len(args) == 4 else None
+        data = DBAPI(db, ALLOW_ALL_POLICY)(request.method, args[2], id, request.query, request.json)
+    else:
+        data = {}
+    if 'code' in data:
+        response.status = data['code']
+    return data

@@ -7,7 +7,7 @@ import cgitb
 import copy
 import datetime
 import functools
-import importlib
+import importlib.machinery
 import inspect
 import json
 import linecache
@@ -549,11 +549,12 @@ class Reloader(object):
         new_apps = []
         for app_name in os.listdir(folder):
             path = os.path.join(folder, app_name)
-            if os.path.isdir(path) and not path.endswith('__'):
+            init = os.path.join(path, '__init__.py')
+            if os.path.isdir(path) and not path.endswith('__') and os.path.exists(init):
                 try:
                     module = Reloader.MODULES.get(app_name)
                     if not module:
-                        module = importlib.import_module(app_name)
+                        module = importlib.machinery.SourceFileLoader(app_name, init).load_module()
                         Reloader.MODULES[app_name] = module
                         new_apps.append(path)
                     else:

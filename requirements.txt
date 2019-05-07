@@ -1,6 +1,6 @@
+pydal >= 19.5
 pyjwt
 yatl
-pydal
 pluralize
 bottle
 gunicorn
