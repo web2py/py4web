@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/future.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+  </head>
+  <body>    
+    <div id="target" class="my-effects">
+      <div class="loading" v-if="loading"></div>
+      <div class="panel">        
+        <h2>Table {{tablename}}</h2>
+      </div>
+      <div class="panel">
+        <table>
+          <tr v-for="(filter, index) in filters">
+            <td>              
+              <input v-model="filter.value" type="text" placeholder="filter" style="width:400px"/>
+              <i v-on:click="add_filter()" class="fa fa-plus-circle"></i>
+              <i v-on:click="del_filter(filter)" class="fa fa-minus-circle"></i>
+              <button v-if="index==filters.length-1" v-on:click="search()">Search</button>
+            </td>
+          </tr>
+        </table>
+        <table>
+          <thead>
+            <tr>
+              <th v-for="field in table.model">
+                {{field.name}}
+              </th>
+              <th>References</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in table.items">
+              <td v-for="field in table.model">
+                <span v-if="field.type=='id'">[{{item[field.name]}}]</span>
+                <span v-else-if="field.type=='string'">{{item[field.name]}}</span>
+                <span v-else-if="field.type=='integer'">{{item[field.name]}}</span>
+                <span v-else-if="field.type=='float'">{{item[field.name]}}</span>
+                <span v-else-if="field.type=='date'">{{item[field.name]}}</span>
+                <span v-else-if="field.type=='time'">{{item[field.name]}}</span>
+                <span v-else-if="field.type=='datetime'">{{item[field.name].replace('T','@').substr(0,16)}}</span>
+                <span v-else-if="field.type=='boolean'">
+                  <i class="fa fa-check-square" v-if="item[field.name]===true"></i>
+                  <i class="fa fa-square" v-if="item[field.name]===false"></i>
+                </span>
+                <span v-else-if="field.type=='text'"><i class="fa fa-expand"></i></span>
+                <button v-else-if="field.type.split(' ')[0]=='reference'">Ref.[{{item[field.name]}}]</button>
+                <span v-else-if="field.type=='upload'"><i class="fa fa-download"></i></span>
+              </td>
+              <td>
+                <span v-for="name in table.model[0].referenced_by">{{name}}</span>
+              </td>
+              <td>
+                <i class="fa fa-expand"></i>
+                <i class="fa fa-edit"></i>
+                <i class="fa fa-trash"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button v-if="table.count > table.items.length" v-on:click="load_more()">Load More</button>
+      </div>
+      <div class="modal" v-if="modal">
+        <div class="modal-inner">
+          <!--img align="left" v-bind:src="'images/alert-'+modal.color+'.gif'"/-->
+          <div>
+            <h2>{{modal.title}}</h2>
+            <p>{{modal.message}}</p>
+            <button v-if="!modal.buttons" v-on:click="modal_dismiss()">Dismiss</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="js/sugar.min.js"></script>
+  <script src="js/vue.min.js"></script>
+  <script src="js/axios.min.js"></script>
+  <script src="js/mtable.js"></script>
+</html>
