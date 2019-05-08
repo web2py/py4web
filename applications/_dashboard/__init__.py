@@ -107,14 +107,18 @@ def api(app_name, path):
     from web3py.core import Reloader, DAL
     from pydal.dbapi import DBAPI, ALLOW_ALL_POLICY
     module = Reloader.MODULES[app_name]
-    def url(name): return request.url + '/' + name
+    def url(*args): return request.url + '/' + '/'.join(args)
     databases = [name for name in dir(module) if isinstance(getattr(module, name), DAL)]
     if len(args) == 1 and args[0] == 'databases':
-        return {'databases': [{'name':name, 'link': url(name)} for name in databases]}
-    elif len(args) > 1 and args[1] in databases:
+        def tables(name):
+            db = getattr(module, name)
+            return [{'name': t._tablename, 
+                     'fields': t.fields, 
+                     'link': url(name, t._tablename)+'?model=true'} 
+                    for t in getattr(module, name)]
+        return {'databases': [{'name':name, 'tables': tables(name)} for name in databases]}
+    elif len(args) > 2 and args[1] in databases:
         db = getattr(module, args[1])
-        if len(args) == 2:
-            return {'tables': [{'name': name, 'link': url(name)+'?model=true'} for name in db.tables]}
         id = args[3] if len(args) == 4 else None
         data = DBAPI(db, ALLOW_ALL_POLICY)(request.method, args[2], id, request.query, request.json)
     else:

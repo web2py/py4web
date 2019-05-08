@@ -42,6 +42,9 @@ td, th {
    vertical-align: top;
    padding: 2px 5px;
 }
+td.middle {
+   vertical-align: middle;
+}
 tbody {
    border-bottom: 1px solid #33BFFF;
 }
@@ -58,6 +61,15 @@ button {
    -webkit-transition: ease 0.4s;
    -moz-transition: ease 0.4s;
    transition: ease 0.4s;
+}
+.tag {
+   border: 1px solid #33BFFF;
+   color: #33BFFF;
+   border-radius: 5px;
+   padding: 3px 10px 3px 10px;
+   margin-right:5px;
+   margin-bottom:5px;
+   font-size: 14px;
 }
 button.btn-app {
    width: 200px;

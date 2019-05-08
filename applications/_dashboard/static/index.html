@@ -31,14 +31,14 @@
       </div>
       <div class="panel accordion" v-if="selected_app && selected_app.error">           
         <input type="checkbox" id="traceback" checked>
-        <label for="traceback">Cause of failure for: {{selected_app.name}}</label>
+        <label for="traceback">Cause of failure for {{selected_app.name}}</label>
         <div>
           <pre style="background:red;color:black;padding:5px">{{selected_app.error}}</pre>
         </div>
       </div>
       <div class="panel accordion" v-if="selected_app && !selected_app.error">
         <input type="checkbox" id="routes">
-        <label for="routes">Routes for: {{selected_app.name}}</label>
+        <label for="routes">Routes for {{selected_app.name}}</label>
         <div>
           <table v-if="routes.length">
             <thead>
@@ -69,7 +69,7 @@
       </div>
       <div class="panel accordion" v-if="selected_app">
         <input type="checkbox" id="files" checked>
-        <label for="files">Files in: {{selected_app.name}}</label>
+        <label for="files">Files in {{selected_app.name}}</label>
         <div>
           <div class="right">
             <button v-on:click="create_new_file()">Create New File</button>
@@ -94,6 +94,24 @@
           <div v-if="selected_type=='image'"><img v-bind:src="selected_file_link" class="preview"/></div>
           <div v-if="selected_type=='video'"><video v-bind:src="selected_file_link" class="preview"></video></div>
           <div v-if="selected_type=='audio'"><audio v-bind:src="selected_file_link" class="preview"></audio></div>
+        </div>
+      </div>
+      <div class="panel accordion" v-if="selected_app">
+        <input type="checkbox" id="databases" checked>
+        <label for="databases">Databases in {{selected_app.name}}</label>
+        <div>
+          <table>
+            <tbody v-for="db in databases">
+              <tr v-for="table in db.tables">
+                <td width="10%">
+                  <button v-bind:onclick="'window.open(\''+table.link+'\')'">{{db.name}}.{{table.name}}</button>
+                </td>
+                <td style="padding-top:9px">
+                  <span v-for="name in table.fields" class="tag">{{name}}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <div class="panel accordion" v-if="selected_app">
