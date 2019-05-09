@@ -5,7 +5,10 @@ let init = (app) => {
         modal: null,
         item: null,
         message: 'test',
+        app: '',
+        dbname: '',
         tablename: '',
+        base_url: '',
         order: null,
         table: {
             model:[],
@@ -27,7 +30,7 @@ let init = (app) => {
     app.methods.load_more = () => {
         let hash = window.location.hash.substr(1);
         let length = app.vue.table.items.length;
-        let url = '/_dashboard/dbapi/'+hash+'?limit=20';
+        let url = app.vue.base_url + '?limit=20';
         if (length) url+='&offset='+length; else url+='&model=true';
         let filters = app.vue.filters.filter((f)=>{return f.value.trim() != ''});
         filters = filters.filter((f)=>{return f.value.trim();}).map((f)=>{                
@@ -71,15 +74,27 @@ let init = (app) => {
     app.methods.open_edit = (item) => {};
     app.methods.trash = (item) => {
         if (window.confirm("Really delete record?")) {
-            let url = '/_dashboard/dbapi/' + app.vue.tablename + '/' + item.id;            
+            let url = app.vue.base_url + '/' + item.id;            
             app.vue.table.items = app.vue.table.items.filter((i)=>{return i.id != item.id;});
             axios.delete(url);
+            if (item==app.vue.item) app.vue.item = null;
+        }
+    };
+    app.methods.save = () => {
+        let item = app.vue.item;
+        let url = app.vue.base_url;
+        if (item.id) {
+            url += '/' + item.id;
+            axios.put(url, item);
+        } else {
+            axios.post(url);
         }
     };
     app.methods.add_filter = () => { app.vue.filters.push({value:''}); };
     app.methods.del_filter = (f) => { 
         if (app.vue.filters.length>1) app.vue.filters=app.vue.filters.filter((x)=>{return x!=f;}); 
         else app.vue.filters[0].value='';
+        app.methods.search();
     };
     app.methods.search = () => { 
         app.vue.table.items = [];
@@ -91,7 +106,11 @@ let init = (app) => {
     app.init = () => {  
         app.vue.loading = false;
         var hash = window.location.hash.substr(1);
-        app.vue.tablename = hash.split('?')[0];
+        var base = hash.split('?')[0];
+        app.vue.base_url = '/_dashboard/dbapi/' + base;
+        app.vue.app = base.split('/')[0];
+        app.vue.dbname = base.split('/')[0];
+        app.vue.tablename = base.split('/')[0];
         app.vue.load_more();
     };
     app.init();

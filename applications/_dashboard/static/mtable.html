@@ -6,8 +6,12 @@
   <body>    
     <div id="target" class="my-effects">
       <div class="loading" v-if="loading"></div>
-      <div class="panel">        
-        <h2>Table {{tablename}}</h2>
+      <div class="panel">   
+        <h2>
+          App: {{app}}
+          Database: {{dbname}}
+          Table: {{tablename}}
+        </h2>
       </div>      
       <div class="panel">
         <table>
@@ -48,7 +52,8 @@
                   <span v-else-if="field.type=='float'" class="field-float">{{item[field.name]}}</span>
                   <span v-else-if="field.type=='date'" class="field-date">{{item[field.name]}}</span>
                   <span v-else-if="field.type=='time'" class="field-time">{{item[field.name]}}</span>
-                  <span v-else-if="field.type=='datetime-local'" class="field-datetime">{{item[field.name].replace('T','@').substr(0,16)}}</span>
+                  <span v-else-if="field.type=='datetime'" class="field-datetime">{{item[field.name].replace('T','@').substr(0,16)}}</span>
+                  <span v-else-if="field.type=='password'" class="field-password">{{item[field.name].replace('T','@').substr(0,16)}}</span>
                   <span v-else-if="field.type=='boolean'" class="field-boolean">
                     <i class="fa fa-check-square" v-if="item[field.name]===true"></i>
                     <i class="fa fa-square" v-if="item[field.name]===false"></i>
