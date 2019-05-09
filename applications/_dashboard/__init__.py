@@ -100,7 +100,7 @@ def tickets(app_name):
 def error_ticket(ticket_uuid):
     return dict(ticket_record=BEAUTIFY(ErrorStorage().get(ticket_uuid=ticket_uuid)))
 
-@action('dbapi/<path:path>')
+@action('dbapi/<path:path>', method=['GET','POST','PUT','DELETE'])
 def api(path):
     # this is not final, equires pydal 19.5
     args = path.split('/')

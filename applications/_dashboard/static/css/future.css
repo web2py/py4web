@@ -9,6 +9,9 @@ html {
    font-size: 14px;
    font-family: helvetica;
 }
+.scrollx {
+   overflow: auto;
+}
 p {
    margin-bottom: 10px;
 }
@@ -33,14 +36,16 @@ iframe {
 table {
    width: 100%;
 }
-table thead tr {
-   background-color: #a1a1a1;
-   color: black;
-}
 td, th { 
    text-align: left;
    vertical-align: top;
    padding: 2px 5px;
+   white-space: nowrap;
+}
+th {
+   color: black;
+   background-color: #a1a1a1;
+   width: 1%;
 }
 td.middle {
    vertical-align: middle;
@@ -119,11 +124,19 @@ button:hover {
    top: 0;
    left: 0;
 }
-input[type=text] {
+input[type=text],
+input[type=password], 
+input[type=number],
+input[type=date], 
+input[type=time], 
+input[type=datetime-local],
+input[type=file], 
+textarea {
    background-color: black;
    border-bottom: 2px solid #33BFFF;
-   font-size: 24px;
+   font-size: 20px;
    color: #33BFFF;
+   width: 50vw;
 }
 input[type=text]:focus {
    border: 0;

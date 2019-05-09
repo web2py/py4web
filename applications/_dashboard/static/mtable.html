@@ -8,58 +8,99 @@
       <div class="loading" v-if="loading"></div>
       <div class="panel">        
         <h2>Table {{tablename}}</h2>
-      </div>
+      </div>      
       <div class="panel">
         <table>
           <tr v-for="(filter, index) in filters">
             <td>              
               <input v-model="filter.value" type="text" placeholder="filter" style="width:400px"/>
               <i v-on:click="add_filter()" class="fa fa-plus-circle"></i>
-              <i v-on:click="del_filter(filter)" class="fa fa-minus-circle"></i>
+              <i v-on:click="del_filter(filter)" class="fa fa-minus-circle"></i>              
               <button v-if="index==filters.length-1" v-on:click="search()">Search</button>
+              <button v-if="index==filters.length-1" v-on:click="open_create()">Create</button>
             </td>
           </tr>
-        </table>
-        <table>
-          <thead>
-            <tr>
-              <th v-for="field in table.model">
-                {{field.name}}
-              </th>
-              <th>References</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in table.items">
-              <td v-for="field in table.model">
-                <span v-if="field.type=='id'">[{{item[field.name]}}]</span>
-                <span v-else-if="field.type=='string'">{{item[field.name]}}</span>
-                <span v-else-if="field.type=='integer'">{{item[field.name]}}</span>
-                <span v-else-if="field.type=='float'">{{item[field.name]}}</span>
-                <span v-else-if="field.type=='date'">{{item[field.name]}}</span>
-                <span v-else-if="field.type=='time'">{{item[field.name]}}</span>
-                <span v-else-if="field.type=='datetime'">{{item[field.name].replace('T','@').substr(0,16)}}</span>
-                <span v-else-if="field.type=='boolean'">
-                  <i class="fa fa-check-square" v-if="item[field.name]===true"></i>
-                  <i class="fa fa-square" v-if="item[field.name]===false"></i>
+          <tr>
+            <td v-if="!table.count">(no items found)</td>
+            <td v-else-if="table.count==1">(one item found)</td>
+            <td v-else>({{table.count}} items found)</td>
+          </tr>
+        </table>        
+        <div v-if="table.items.length>1">
+          <table>
+            <thead>
+              <tr>
+                <th v-for="field in table.model" v-on:click="reorder(field)">
+                  {{field.label}}
+                  <i v-if="order==field.name" class="fa fa-arrow-up"></i>
+                  <i v-if="order=='~'+field.name" class="fa fa-arrow-down"></i>
+                </th>
+                <th>References</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in table.items">
+                <td v-for="field in table.model">
+                  <span v-if="field.type=='id'" class="field-id">[{{item[field.name]}}]</span>
+                  <span v-else-if="field.type=='string'" class="field-string">{{item[field.name]}}</span>
+                  <span v-else-if="field.type=='integer'" class="field-integer">{{item[field.name]}}</span>
+                  <span v-else-if="field.type=='float'" class="field-float">{{item[field.name]}}</span>
+                  <span v-else-if="field.type=='date'" class="field-date">{{item[field.name]}}</span>
+                  <span v-else-if="field.type=='time'" class="field-time">{{item[field.name]}}</span>
+                  <span v-else-if="field.type=='datetime-local'" class="field-datetime">{{item[field.name].replace('T','@').substr(0,16)}}</span>
+                  <span v-else-if="field.type=='boolean'" class="field-boolean">
+                    <i class="fa fa-check-square" v-if="item[field.name]===true"></i>
+                    <i class="fa fa-square" v-if="item[field.name]===false"></i>
+                  </span>
+                  <span v-else-if="field.type=='text'" class="field-text"><i class="fa fa-expand"></i></span>
+                  <a v-else-if="field.type.split(' ')[0]=='reference'" class="field-reference">Ref.[{{item[field.name]}}]</a>
+                  <span v-else-if="field.type=='upload'" class="field-upload"><i class="fa fa-download"></i></span>
+                </td>
+                <td>
+                  <a v-for="name in table.model[0].referenced_by" class="field-referenced"
+                     v-on:click="referenced_by(table.model[0].referenced_by, item)">{{name}}</a>
+                </td>
+                <td>
+                  <i class="fa fa-edit" v-on:click="open_edit(item)"></i>
+                  <i class="fa fa-trash" v-on:click="trash(item)"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>          
+          <button v-if="table.count > table.items.length" v-on:click="load_more()">Load More</button>
+        </div>
+        <div v-else-if="table.items.length==1">
+          <table>
+            <tr v-for="field in table.model">
+              <th>{{field.label}}</th>
+              <td>
+                <input v-if="field.type=='id'" type="text" readonly v-model="item[field.name]">
+                <input v-if="field.type=='string'" type="text" v-model="item[field.name]">
+                <span v-if="field.type=='boolean'" v-on:click="toggle(item, field.name)">
+                  <span v-if="item[field.name]===true"><i class="fa fa-check-square"></i> True</span>
+                  <span v-else-if="item[field.name]===false"><i class="fa fa-square"></i> False</span>
+                  <span v-else><i class="fa fa-square"></i> None</span>
                 </span>
-                <span v-else-if="field.type=='text'"><i class="fa fa-expand"></i></span>
-                <button v-else-if="field.type.split(' ')[0]=='reference'">Ref.[{{item[field.name]}}]</button>
-                <span v-else-if="field.type=='upload'"><i class="fa fa-download"></i></span>
-              </td>
-              <td>
-                <span v-for="name in table.model[0].referenced_by">{{name}}</span>
-              </td>
-              <td>
-                <i class="fa fa-expand"></i>
-                <i class="fa fa-edit"></i>
-                <i class="fa fa-trash"></i>
+                <input v-if="field.type=='integer'" type="number" step="1" v-model="item[field.name]">
+                <input v-if="field.type=='float'" type="number" v-model="item[field.name]">
+                <input v-if="field.type=='date'" type="date" v-model="item[field.name]">
+                <input v-if="field.type=='time'" type="time" v-model="item[field.name]">
+                <input v-if="field.type=='datetime'" type="datetime-local" v-model="item[field.name]">
+                <input v-if="field.type=='password'" type="password" v-model="item[field.name]">
+                <input v-if="field.type=='upload'" type="text" v-model="item[field.name]">
+                <textarea v-if="field.type=='text'" v-model="item[field.name]"></textarea>
               </td>
             </tr>
-          </tbody>
-        </table>
-        <button v-if="table.count > table.items.length" v-on:click="load_more()">Load More</button>
+            <tr>
+              <td></td>
+              <td>
+                <button v-on:click="save()">Save</button>
+                <button v-on:click="trash(item)">Delete</button>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
       <div class="modal" v-if="modal">
         <div class="modal-inner">

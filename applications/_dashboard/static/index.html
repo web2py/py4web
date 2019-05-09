@@ -104,7 +104,7 @@
             <tbody v-for="db in databases">
               <tr v-for="table in db.tables">
                 <td width="10%">
-                  <button v-bind:onclick="'window.open(\''+table.link+'\')'">{{db.name}}.{{table.name}}</button>
+                  <button v-bind:onclick="'window.open(\'mtable.html#'+selected_app.name+'/'+db.name+'/'+table.name+'\')'" target="mtable">{{db.name}}.{{table.name}}</button>
                 </td>
                 <td style="padding-top:9px">
                   <span v-for="name in table.fields" class="tag">{{name}}</span>
@@ -193,5 +193,5 @@ It is still experimental...
   <script src="js/axios.min.js"></script>
   <script src="js/ace/ace.js"></script>
   <script src="js/ace/ext-modelist.js" type="text/javascript" charset="utf-8"></script>
-  <script src="js/mtable.js"></script>
+  <script src="js/index.js"></script>
 </html>
