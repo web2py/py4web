@@ -21,7 +21,7 @@
         let length = this.table.items.length;
         let url = this.url + '?limit=20';
         if (length) url+='&offset='+length; else url+='&model=true';
-        let filters = self.filter.split(' and ').filter((f)=>{return f.trim() != ''});
+        let filters = self.filter.split(' and ').filter((f)=>{return f.trim() != ''});        
         filters = filters.filter((f)=>{return f.trim();}).map((f)=>{                
                 let parts = (f
                              .replace(/ equals? /,'==')

@@ -43,7 +43,7 @@
         <td></td>
         <td>
           <button v-on:click="save(item)">Save</button>
-          <button v-on:click="trash(item)">Delete</button>
+          <button v-if="item && item.id" v-on:click="trash(item)">Delete</button>
           <button v-on:click="close()">Close</button>
         </td>
       </tr>
@@ -66,24 +66,24 @@
         <tr v-for="item in table.items">
           <td v-for="field in table.model">
             <span v-if="field.type=='id'" class="field-id">[{{item[field.name]}}]</span>
-          <span v-else-if="field.type=='string'" class="field-string">{{item[field.name]}}</span>
-          <span v-else-if="field.type=='integer'" class="field-integer">{{item[field.name]}}</span>
-          <span v-else-if="field.type=='float'" class="field-float">{{item[field.name]}}</span>
-          <span v-else-if="field.type=='date'" class="field-date">{{item[field.name]}}</span>
-          <span v-else-if="field.type=='time'" class="field-time">{{item[field.name]}}</span>
-          <span v-else-if="field.type=='datetime'" class="field-datetime">{{item[field.name].replace('T','@').substr(0,16)}}</span>
-          <span v-else-if="field.type=='password'" class="field-password">{{item[field.name].replace('T','@').substr(0,16)}}</span>
-          <span v-else-if="field.type=='boolean'" class="field-boolean">
-            <i class="fa fa-check-square" v-if="item[field.name]===true"></i>
-            <i class="fa fa-square" v-if="item[field.name]===false"></i>
-          </span>
-          <span v-else-if="field.type=='text'" class="field-text"><i class="fa fa-expand"></i></span>
-          <a v-else-if="field.type.split(' ')[0]=='reference'" class="field-reference">Ref.[{{item[field.name]}}]</a>
-          <span v-else-if="field.type=='upload'" class="field-upload"><i class="fa fa-download"></i></span>
+            <span v-else-if="field.type=='string'" class="field-string">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='integer'" class="field-integer">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='float'" class="field-float">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='date'" class="field-date">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='time'" class="field-time">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='datetime'" class="field-datetime">{{(item[field.name]||'').replace('T','@').substr(0,16)}}</span>
+            <span v-else-if="field.type=='password'" class="field-password">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='boolean'" class="field-boolean">
+              <i class="fa fa-check-square" v-if="item[field.name]===true"></i>
+              <i class="fa fa-square" v-if="item[field.name]===false"></i>
+            </span>
+            <span v-else-if="field.type=='text'" class="field-text"><i class="fa fa-expand"></i></span>
+            <a v-else-if="field.type.split(' ')[0]=='reference'" class="field-reference">Ref.[{{item[field.name]}}]</a>
+            <span v-else-if="field.type=='upload'" class="field-upload"><i class="fa fa-download"></i></span>
           </td>
           <td>
-          <a v-for="name in table.model[0].referenced_by" class="field-referenced"
-             v-on:click="referenced_by(table.model[0].referenced_by, item)">{{name}}</a>
+            <a v-for="name in table.model[0].referenced_by" class="field-referenced"
+               v-on:click="referenced_by(table.model[0].referenced_by, item)">{{name}}</a>
           </td>
           <td>
             <i class="fa fa-edit" v-on:click="open_edit(item)"></i>
@@ -92,6 +92,6 @@
         </tr>
       </tbody>
     </table>          
-    <button v-if="table.count > table.items.length" v-on:click="load_more()">Load More</button>
+    <button v-if="table.count > table.items.length" v-on:click="load()">Load More</button>
   </div>
 </div>
