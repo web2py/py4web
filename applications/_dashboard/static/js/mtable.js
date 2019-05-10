@@ -1,40 +1,29 @@
-let app = {}; 
-let init = (app) => {
-    app.data = {
-        loading: true,
-        modal: null,
-        item: null,
-        message: 'test',
-        app: '',
-        dbname: '',
-        tablename: '',
-        base_url: '',
-        order: null,
-        table: {
-            model:[],
-            items:[]
-        },
-        filters: [{value: ''}]
+(function(){
+
+    var mtable = { props: ['url'], data: null, methods: {}};
+    
+    mtable.data = function() {        
+        var data = {url: this.url,
+                    item: null,
+                    order: '',
+                    filter: '',
+                    table: { model: [], items: [], count: 0}};
+        mtable.methods.load.call(data);
+        return data;
     };
-    app.modal_dismiss = () => {
-        app.vue.modal = null;
-    };
-    app.confirm = (title, color, message, callback) => {
-        var buttons = [{text: 'Yes', onclick:callback}, {text:'No', onclick: app.modal_dismiss}];
-        app.vue.modal = {title: title, color:color, message:message, buttons:buttons};
-    };
-    app.methods = {};
-    app.methods.toggle = function(obj, key) {
+    
+    mtable.methods.toggle = function(obj, key) {
         obj[key] = !obj[key];
     };
-    app.methods.load_more = () => {
-        let hash = window.location.hash.substr(1);
-        let length = app.vue.table.items.length;
-        let url = app.vue.base_url + '?limit=20';
+    
+    mtable.methods.load = function() {
+        let self = this;
+        let length = this.table.items.length;
+        let url = this.url + '?limit=20';
         if (length) url+='&offset='+length; else url+='&model=true';
-        let filters = app.vue.filters.filter((f)=>{return f.value.trim() != ''});
-        filters = filters.filter((f)=>{return f.value.trim();}).map((f)=>{                
-                let parts = (f.value
+        let filters = self.filter.split(' and ').filter((f)=>{return f.trim() != ''});
+        filters = filters.filter((f)=>{return f.trim();}).map((f)=>{                
+                let parts = (f
                              .replace(/ equals? /,'==')
                              .replace('==','.eq=')
                              .replace('!=','.ne=')
@@ -55,65 +44,76 @@ let init = (app) => {
                         parts[0].replace(/ /ig,'') +
                         '=' + parts[parts.length-1].replace(/^ /,''));
             });
-        if (filters.length) url=url+'&'+filters.join('&');
-        if (app.vue.order) url=url+'&order='+app.vue.order;
-        axios.get(url).then((res)=>{
-                if(!length) app.vue.table=res.data; 
-                else app.vue.table.items=app.vue.table.items.concat(res.data.items);
-                if(app.vue.table.items.length==1) { app.vue.item=app.vue.table.items[0]; }
+        if (filters.length) url += '&'+filters.join('&');
+        if (self.order) url += '&order='+self.order;
+        axios.get(url).then(function (res) {
+                if(!length) self.table = res.data; 
+                else self.table.items = self.table.items.concat(res.data.items);
+                if(self.table.items.length==1) { self.item=self.table.items[0]; }
             });
     };
-    app.methods.reorder = (field) => {
-        if (app.vue.order == '~' + field.name) app.vue.order = null;
-        else if (app.vue.order == field.name) app.vue.order = '~'+field.name;
-        else app.vue.order = field.name;
-        app.vue.table.items = [];
-        app.vue.load_more();
+    
+    mtable.methods.reorder = function (field) {
+        if (this.order == '~' + field.name) this.order = null;
+        else if (this.order == field.name) this.order = '~'+field.name;
+        else this.order = field.name;
+        this.table.items = [];
+        this.load();
     };
-    app.methods.open_create = () => {};
-    app.methods.open_edit = (item) => {};
-    app.methods.trash = (item) => {
+    
+    mtable.methods.open_create = function () {
+        this.item = {};
+        for(var field in this.model) this.item[field.name] = field.default||'';
+    };
+    
+    mtable.methods.open_edit = function (item) {
+        this.item = item;
+    };
+    
+    mtable.methods.trash = function (item) {
         if (window.confirm("Really delete record?")) {
-            let url = app.vue.base_url + '/' + item.id;            
-            app.vue.table.items = app.vue.table.items.filter((i)=>{return i.id != item.id;});
+            console.log(this.table.items);
+            let url = this.url + '/' + item.id;            
+            this.table.items = this.table.items.filter((i)=>{return i.id != item.id;});
             axios.delete(url);
-            if (item==app.vue.item) app.vue.item = null;
+            if (item==this.item) this.item = null;
         }
     };
-    app.methods.save = () => {
-        let item = app.vue.item;
-        let url = app.vue.base_url;
+    
+    mtable.methods.save = function (item) {
+        let url = this.url;
         if (item.id) {
             url += '/' + item.id;
             axios.put(url, item);
         } else {
             axios.post(url);
         }
+        this.item = null;
     };
-    app.methods.add_filter = () => { app.vue.filters.push({value:''}); };
-    app.methods.del_filter = (f) => { 
-        if (app.vue.filters.length>1) app.vue.filters=app.vue.filters.filter((x)=>{return x!=f;}); 
-        else app.vue.filters[0].value='';
-        app.methods.search();
+    
+    mtable.methods.close = function () {
+        this.item = null;
     };
-    app.methods.search = () => { 
-        app.vue.table.items = [];
-        app.vue.table.count = 0;
-        app.methods.load_more();
+    
+    mtable.methods.search = function () { 
+        this.item = null;
+        this.table.items = [];
+        this.table.count = 0;
+        this.load();
     };
-    app.filters = {};
-    app.vue = new Vue({el: '#target', data: app.data, methods: app.methods, filters:app.filters});
-    app.init = () => {  
-        app.vue.loading = false;
-        var hash = window.location.hash.substr(1);
-        var base = hash.split('?')[0];
-        app.vue.base_url = '/_dashboard/dbapi/' + base;
-        app.vue.app = base.split('/')[0];
-        app.vue.dbname = base.split('/')[0];
-        app.vue.tablename = base.split('/')[0];
-        app.vue.load_more();
-    };
-    app.init();
-};    
+    
+    utils.register_vue_component('mtable', 'mtable.template.html', function(template) {        
+            mtable.template = template.data;
+            return mtable;
+        });
+})();
 
-init(app);
+var app = utils.app();
+var hash = window.location.hash.substr(1);
+var base = hash.split('?')[0];
+app.data.loading = 0;
+app.data.url = '/_dashboard/dbapi/' + base;
+app.data.app = base.split('/')[0];
+app.data.dbname = base.split('/')[1];
+app.data.tablename = base.split('/')[2];
+app.start();
