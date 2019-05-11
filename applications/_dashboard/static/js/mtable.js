@@ -1,12 +1,12 @@
 (function(){
 
-    var mtable = { props: ['url'], data: null, methods: {}};
+    var mtable = { props: ['url', 'filter', 'order'], data: null, methods: {}};
     
     mtable.data = function() {        
         var data = {url: this.url,
+                    filter: this.filter || '',
+                    order: this.order ||  '',
                     item: null,
-                    order: '',
-                    filter: '',
                     table: { model: [], items: [], count: 0}};
         mtable.methods.load.call(data);
         return data;
@@ -15,12 +15,11 @@
     mtable.methods.toggle = function(obj, key) {
         obj[key] = !obj[key];
     };
-    
     mtable.methods.load = function() {
         let self = this;
         let length = this.table.items.length;
-        let url = this.url + '?limit=20';
-        if (length) url+='&offset='+length; else url+='&model=true';
+        let url = this.url + '?@limit=20';
+        if (length) url+='&@offset='+length; else url+='&@model=true';
         let filters = self.filter.split(' and ').filter((f)=>{return f.trim() != ''});        
         filters = filters.filter((f)=>{return f.trim();}).map((f)=>{                
                 let parts = (f
@@ -45,7 +44,7 @@
                         '=' + parts[parts.length-1].replace(/^ /,''));
             });
         if (filters.length) url += '&'+filters.join('&');
-        if (self.order) url += '&order='+self.order;
+        if (self.order) url += '&@order='+self.order;
         axios.get(url).then(function (res) {
                 if(!length) self.table = res.data; 
                 else self.table.items = self.table.items.concat(res.data.items);
@@ -109,11 +108,12 @@
 })();
 
 var app = utils.app();
-var hash = window.location.hash.substr(1);
-var base = hash.split('?')[0];
+var params = new URLSearchParams(window.location.search);
 app.data.loading = 0;
-app.data.url = '/_dashboard/dbapi/' + base;
-app.data.app = base.split('/')[0];
-app.data.dbname = base.split('/')[1];
-app.data.tablename = base.split('/')[2];
+app.data.app = params.get('app');
+app.data.dbname = params.get('dbname');
+app.data.tablename = params.get('tablename');
+app.data.url = '/_dashboard/dbapi/{app}/{dbname}/{tablename}'.format(app.data);
+app.data.filter = params.get('filter') || '';
+app.data.order = params.get('order') || '';
 app.start();

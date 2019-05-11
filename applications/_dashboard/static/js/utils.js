@@ -4,9 +4,8 @@ utils = {};
 
 if (!String.prototype.format) {
     // allow "bla {a} bla {b}".format({'a': 'hello', 'b': 'world'})
-    String.prototype.format = function () {
-        var args = arguments;
-        return this.replace(/\{[^}]+\}/g, function(match, k) { return args[k]; });
+    String.prototype.format = function (args) {
+        return this.replace(/\{([^}]+)\}/g, function(match, k) { return args[k]; });
     };
 }
 

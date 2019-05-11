@@ -1,4 +1,4 @@
-pydal >= 19.5
+pydal >= 19.5.9
 pyjwt
 yatl
 pluralize
