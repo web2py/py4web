@@ -1,16 +1,14 @@
 """
-This file is defines ram cache and a translator at the app level
+This file defines cache, session, and translator T object for the app
 """
 import os
 from web3py import Session, Cache, Translator
 from . import settings
-from .models import db, APP_FOLDER
-
-T_FOLDER = os.path.join(APP_FOLDER, 'translations')
+from .models import db
 
 # define global objects that may or may not be used by th actions
 cache = Cache(size=1000)
-T = Translator(T_FOLDER)
+T = Translator(settings.T_FOLDER)
 
 # pick the session type that suits you best
 if settings.SESSION_TYPE == 'cookies':

@@ -1,4 +1,3 @@
-import os
 from web3py import action, request, abort, redirect
 from .common import db, session, T, cache
 
@@ -10,5 +9,5 @@ def index():
     message = T('Hello World from {name}')
     return dict(message=message.format(name=request.app_name))
 
-# expose translations in case a single page app needs them in JSON
+# (optional) expose translations in case a single page app needs them in JSON
 action('translations')(action.uses(T)(lambda: T.local.language))
