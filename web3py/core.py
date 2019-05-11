@@ -178,9 +178,13 @@ class Template(Fixture):
         self.delimiters = delimiters
 
     @staticmethod
-    def read(filename):
-        with open(filename, encoding = 'utf8') as stream:
-            return stream.read()
+    def reader(filename):
+        """cached reader, only reads template if has changed"""
+        def raw_read():
+            with open(filename, encoding = 'utf8') as stream:
+                return stream.read()
+        return Template.cache.get(filename, raw_read, expiration=1,
+                                  monitor=lambda: os.path.getmtime(filename))
 
     def transform(self, output):
         if not isinstance(output, dict):
@@ -193,9 +197,8 @@ class Template(Fixture):
         app_folder = os.path.join(os.environ['WEB3PY_APPLICATIONS_FOLDER'], request.app_name)
         path = os.path.join(app_folder, 'templates')
         filename = os.path.join(path, self.filename)
-        template = Template.cache.get(filename, lambda: Template.read(filename), expiration=1,
-                                      monitor=lambda: os.path.getmtime(filename))
-        output = yatl.render(template, path=path, context=context, delimiters=self.delimiters)
+        output = yatl.render(Template.reader(filename), path=path, context=context, 
+                             delimiters=self.delimiters, reader=Template.reader)
         return output
 
 #########################################################################################
