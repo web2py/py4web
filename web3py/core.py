@@ -179,7 +179,7 @@ class Template(Fixture):
 
     @staticmethod
     def read(filename):
-        with open(filename) as stream:
+        with open(filename, encoding = 'utf8') as stream:
             return stream.read()
 
     def transform(self, output):
