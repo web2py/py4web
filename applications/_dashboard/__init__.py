@@ -2,15 +2,24 @@ import os
 import sys
 import time
 import datetime
-from web3py import __version__, action, request, response, redirect
+from web3py import __version__, action, request, response, redirect, Translator
 from web3py.core import Reloader, dumps, ErrorStorage
 from yatl.helpers import BEAUTIFY
 
 FOLDER = os.environ['WEB3PY_APPLICATIONS_FOLDER']
+APP_FOLDER = os.path.dirname(__file__)
+T_FOLDER = os.path.join(APP_FOLDER, 'translations')
+T = Translator(T_FOLDER)
 
 @action('index')
+@action.uses('index.html', T)
 def index():
-    return redirect('/%s/static/index.html' % request.app_name)
+    return dict(languages = dumps(T.local.language))
+
+@action('dbadmin')
+@action.uses('dbadmin.html', T)
+def dbadmin():
+    return dict(languages = dumps(T.local.language))
 
 @action('info')
 def info():

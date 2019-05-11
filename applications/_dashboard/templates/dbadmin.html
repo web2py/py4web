@@ -1,5 +1,6 @@
 <html>
   <head>
+    <base href="[[=URL('static')]]/" target="_blank">
     <link rel="stylesheet" type="text/css" href="css/future.css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   </head>
@@ -7,11 +8,11 @@
     <div id="vue" class="my-effects">
       <!--div class="loading" v-if="loading>0"></div-->
       <div class="panel">   
-        <h2>
+        <label>
           App: {{app}}
           Database: {{dbname}}
           Table: {{tablename}}
-        </h2>
+        </label>
       </div>      
       <div class="panel">
         <mtable :url="url" :filter="filter" :order="order"></mtable>
@@ -22,5 +23,7 @@
   <script src="js/vue.min.js"></script>
   <script src="js/axios.min.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/mtable.js"></script>
+  <script src="components/mtable.js"></script>
+  <script>T.languages = [[=languages]];</script>
+  <script src="js/dbadmin.js"></script>
 </html>

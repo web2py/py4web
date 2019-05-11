@@ -1,0 +1,201 @@
+<html>
+  <head>
+    <base href="[[=URL('static')]]/" target="_blank">
+    <link rel="stylesheet" type="text/css" href="css/future.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">    
+  </head>
+  <body>    
+    <a href="https://github.com/you"><img style="position: absolute; width:100px; top:0; right:0; border:0;" src="../static/images/forkme.png"/></a>
+    <div id="target" class="my-effects">
+      <div class="loading" v-if="loading"></div>
+      <div class="header">
+        <img src="images/widget.gif" class="spinner-top"/>
+        <span class="logo">[web3py] dashboard</span>
+      </div>
+      <div class="panel accordion">
+        <input type="checkbox" id="applications">
+        <label for="applications">Installed Applications</label>
+        <div class="applications-inner">
+          <div class="right">
+            <button v-on:click="create_new_app()">Create New App</button>
+            <button v-on:click="upload_new_app()">Upload New App</button>
+            <button v-on:click="reload()">Reaload Apps</button>
+          </div>
+          <div>
+            <button class="btn-app" width="300px" v-for="app in apps" v-on:click="select(app)">
+              <i v-if="!app.error" class="fa fa-cog fa-spin"></i>
+              <i v-else class="fa fa-cog red blink"></i>
+              {{app.name}}
+              <img align="right" alt="" v-bind:src="'/'+app.name+'/static/favicon.ico'"/>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="panel accordion" v-if="selected_app && selected_app.error">           
+        <input type="checkbox" id="traceback" checked>
+        <label for="traceback">Cause of failure for {{selected_app.name}}</label>
+        <div>
+          <pre style="background:red;color:black;padding:5px">{{selected_app.error}}</pre>
+        </div>
+      </div>
+      <div class="panel accordion" v-if="selected_app && !selected_app.error">
+        <input type="checkbox" id="routes">
+        <label for="routes">Routes for {{selected_app.name}}</label>
+        <div>
+          <table v-if="routes.length">
+            <thead>
+              <tr>
+                <th>Rule</th>
+                <th>Method</th>
+                <th>Filename</th>
+                <th>Action</th>
+                <th>Time(s)</th>
+                <th>Calls/s</th>
+                <th>Errors/s</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="route in routes" v-if="route.filename.startsWith(selected_app.name+'/')">
+                <td><a v-bind:href="route.rule" target="_blank"><tt>{{route.rule}}<tt></a></td>
+                <td><tt>{{route.method}}<tt></td>
+                <td><a v-on:click="select_filename(route.filename)"><tt>{{route.filename}}</tt></a></td>
+                <td><tt>{{route.action}}</tt></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <span v-else>No routes found</span>
+        </div>
+      </div>
+      <div class="panel accordion" v-if="selected_app">
+        <input type="checkbox" id="files" checked>
+        <label for="files">Files in {{selected_app.name}}</label>
+        <div>
+          <div class="right">
+            <button v-on:click="create_new_file()">Create New File</button>
+            <button v-on:click="upload_new_file()">Upload New File</button>
+            <button v-on:click="delete_selected_app()">Delete All Files</button>
+            <button v-on:click="download_selected_app()">Download App</button>
+            <button v-on:click="deploy_selected_app()">Deploy App</button>
+          </div>
+          <treefiles :f="walk" :p="selected_app.name"></treefiles>
+        </div>
+      </div>
+      <div v-show="selected_filename" class="panel accordion">        
+        <input type="checkbox" id="editor_container" checked>
+        <label for="editor_container">File: {{selected_filename}}</label>
+        <div>
+          <div class="right">
+            <button v-on:click="delete_selected_file()">Delete File</button>
+            <button v-on:click="load_file()">Reload File</button>
+            <button v-on:click="save_file()">Save File</button>
+          </div>
+          <div v-show="selected_type=='text'" id="editor"></div>
+          <div v-if="selected_type=='image'"><img v-bind:src="selected_file_link" class="preview"/></div>
+          <div v-if="selected_type=='video'"><video v-bind:src="selected_file_link" class="preview"></video></div>
+          <div v-if="selected_type=='audio'"><audio v-bind:src="selected_file_link" class="preview"></audio></div>
+        </div>
+      </div>
+      <div class="panel accordion" v-if="selected_app">
+        <input type="checkbox" id="databases" checked>
+        <label for="databases">Databases in {{selected_app.name}}</label>
+        <div>
+          <table>
+            <tbody v-for="db in databases">
+              <tr v-for="table in db.tables">
+                <td width="10%">
+                  <button v-bind:onclick="'window.open(\'[[=URL('dbadmin')]]?app='+selected_app.name+'&dbname='+db.name+'&tablename='+table.name+'\')'" target="dbadmin">{{db.name}}.{{table.name}}</button>
+                </td>
+                <td style="padding-top:9px">
+                  <span v-for="name in table.fields" class="tag">{{name}}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel accordion" v-if="selected_app">
+        <input type="checkbox" id="tickets">
+        <label for="tickets">Recent Tickets</label>
+        <div>
+          <div class="right">
+            <button v-on:click="reload_tickets()">Search By Datetime</button>
+            <button v-on:click="reload_tickets()">Update Recent Tickets</button>
+          </div>
+          <table>
+            <thead v-if="tickets.length>0">
+              <tr>
+                <td>Timestamp</td>
+                <td>Client IP</td>
+                <td>App</td>
+                <td>Method</td>
+                <td>Path</td>
+                <td>Error</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="ticket in tickets">
+                <td>{{ticket.timestamp}}</td>
+                <td>{{ticket.client_ip}}</td>
+                <td>{{ticket.app_name}}</td>
+                <td>{{ticket.method}}</td>
+                <td>{{ticket.path}}</td>
+                <td><a target="blank" v-bind:href="'/_dashboard/ticket/'+ticket.uuid">{{ticket.error}}</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel accordion">
+        <input type="checkbox" id="learn">
+        <label for="learn">System</label>
+        <div>
+          <pre>
+ _______  ____________  ____  ______  __
+|  ____/ / / ____/ __ |/___ \/ __ \ \/ /
+| |     / / /_  / /_/ /___/ / /_/ /\  / 
+| | /| / / __/ / __  //__  / ____/ / / 
+| |/ |/ / /___/ /_/ /___/ / / ____/ / 
+|___/|_/_____/_____/_____/_/ /_____/ 
+It is still experimental...           
+          </pre>
+          <table>
+            <thead>
+              <tr><th>Module</th><th>Version</th></tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in info">
+                <td>{{row.name}}</td><td>{{row.version}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="right">
+          Created by Massimo Di Pierro @ BSDv3 License
+        </div>
+      </div>
+      <div class="modal" v-if="modal">
+        <div class="modal-inner">
+          <!--img align="left" v-bind:src="'images/alert-'+modal.color+'.gif'"/-->
+          <div>
+            <h2>{{modal.title}}</h2>
+            <p>{{modal.message}}</p>
+            <button v-for="button in modal.buttons" v-on:click="button.onclick()">{{button.text}}</button><button v-if="!modal.buttons" v-on:click="modal_dismiss()">Dismiss</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="js/sugar.min.js"></script>
+  <script src="js/vue.min.js"></script>
+  <script src="js/axios.min.js"></script>
+  <script src="js/ace/ace.js"></script>
+  <script src="js/ace/ext-modelist.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/utils.js"></script>
+  <script>T.languages = [[=languages]];</script>
+  <script src="js/index.js"></script>
+</html>

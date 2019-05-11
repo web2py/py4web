@@ -641,6 +641,7 @@ def main():
     for key in args.__dict__:
         os.environ['WEB3PY_'+key.upper()] = str(args.__dict__[key])
     if not os.path.exists(args.service_folder): os.makedirs(args.service_folder)
+    print('Dashboard is at: http://%s/_dashboard' % args.address)
     sys.path.append(args.applications_folder)
     Reloader.import_apps()
     start_server(args)

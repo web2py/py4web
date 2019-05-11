@@ -20,7 +20,7 @@
         let length = this.table.items.length;
         let url = this.url + '?@limit=20';
         if (length) url+='&@offset='+length; else url+='&@model=true';
-        let filters = self.filter.split(' and ').filter((f)=>{return f.trim() != ''});        
+        let filters = self.filter.split(' and ').filter((f)=>{return f.trim() != ''});
         filters = filters.filter((f)=>{return f.trim();}).map((f)=>{                
                 let parts = (f
                              .replace(/ equals? /,'==')
@@ -101,19 +101,8 @@
         this.load();
     };
     
-    utils.register_vue_component('mtable', 'mtable.template.html', function(template) {        
+    utils.register_vue_component('mtable', 'components/mtable.html', function(template) {        
             mtable.template = template.data;
             return mtable;
         });
 })();
-
-var app = utils.app();
-var params = new URLSearchParams(window.location.search);
-app.data.loading = 0;
-app.data.app = params.get('app');
-app.data.dbname = params.get('dbname');
-app.data.tablename = params.get('tablename');
-app.data.url = '/_dashboard/dbapi/{app}/{dbname}/{tablename}'.format(app.data);
-app.data.filter = params.get('filter') || '';
-app.data.order = params.get('order') || '';
-app.start();
