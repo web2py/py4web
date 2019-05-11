@@ -53,7 +53,33 @@ utils.upload_helper = function(element_id, callback) {
     }
 };
 
-// a Vue app prototype with sane conventions
+// Internationalization helper
+// Usage:
+// T.translations = {'dog': {0: 'no cane', 1: 'un case', 2: '{n} cani', 10: 'tanti cani'}};
+// T('dog').format({n: 5}) -> "5 cani"
+var T = function(text) {
+    var obj = {
+        toString: function() { return T.format(text); },
+        format: function(args) { return T.format(text, args); }
+    };
+    return obj;
+};
+T.format = function(text, args) {
+    args = args || {};
+    translations = (T.translations||{})[text];
+    var n = ('n' in args)?args.n:1;
+    if (translations) {
+        var k = 0;
+        for (var key in translations) {                    
+            var i = parseInt(key);
+            if (i<=n) k = i; else break;
+        }
+        text = translations[k];
+    }
+    return text;
+};
+
+// a Vue app prototype
 utils.app = function() {
     self = {};
     self.element_id = 'vue';
@@ -62,6 +88,8 @@ utils.app = function() {
     self.filters = {};
     self.watch = {};
     self.pages = {};
+    // translations
+    self.methods.T = T;
     // toggles a variable
     self.methods.toggle = function(obj, key) { obj[key] = !obj[key] };
     // sets a variable
@@ -78,7 +106,8 @@ utils.app = function() {
                 }
                 self.v.loading--;
                 self.v.page = page; 
-                self.v.state = state;}); 
+                self.v.state = state;
+            }); 
     };
     // restores state when navigaing history
     self.onpopstate = function(event) {
