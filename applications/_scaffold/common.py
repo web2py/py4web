@@ -3,6 +3,7 @@ This file defines cache, session, and translator T object for the app
 """
 import os
 from web3py import Session, Cache, Translator
+from web3py.utils.auth import Auth
 from . import settings
 from .models import db
 
@@ -28,3 +29,5 @@ elif settings.SESSION_TYPE == 'database':
     from web3py.utils.dbstore import DBStore
     session =  Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
+auth = Auth(db, session, define_tables=True)
+db.commit()

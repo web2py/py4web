@@ -6,6 +6,7 @@
         var data = {url: this.url,
                     filter: this.filter || '',
                     order: this.order ||  '',
+                    errors: {},
                     item: null,
                     table: { model: [], items: [], count: 0}};
         mtable.methods.load.call(data);
@@ -61,11 +62,13 @@
     };
     
     mtable.methods.open_create = function () {
+        this.errors = {};
         this.item = {};
         for(var field in this.model) this.item[field.name] = field.default||'';
     };
     
     mtable.methods.open_edit = function (item) {
+        this.errors = {};
         this.item = item;
     };
     

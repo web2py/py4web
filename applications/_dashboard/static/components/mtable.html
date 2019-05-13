@@ -34,9 +34,10 @@
           <input v-else-if="field.type=='date'" type="date" v-model="item[field.name]">
           <input v-else-if="field.type=='time'" type="time" v-model="item[field.name]">
           <input v-else-if="field.type=='datetime'" type="datetime-local" v-model="item[field.name]">
-        <input v-else-if="field.type=='password'" type="password" v-model="item[field.name]">
-        <input v-else-if="field.type=='upload'" type="text" v-model="item[field.name]">
-        <textarea v-else-if="field.type=='text'" v-model="item[field.name]"></textarea>
+          <input v-else-if="field.type=='password'" type="password" v-model="item[field.name]">
+          <input v-else-if="field.type=='upload'" type="text" v-model="item[field.name]">
+          <textarea v-else-if="field.type=='text'" v-model="item[field.name]"></textarea>
+          <div class="error" v-if="field.name in errors">{{errors[field.name]}}</div>
         </td>
       </tr>
       <tr>

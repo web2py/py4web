@@ -1,0 +1,133 @@
+<div>
+  <div v-if="user === null && action=='register'">
+    <h2>Register</h2>
+    <div>
+      <input v-model="form.email" type="email" placeholder="email">
+      <span v-if="errors.email">{{errors.email}}</span>
+    </div>
+    <div>
+      <input v-model="form.password" type="password" placeholder="password">
+      <span v-if="errors.password">{{errors.password}}</span>
+    </div>
+    <div v-bind:class="{'error':form.password2 && form.password!=form.password2}">
+      <input v-model="form.password2" type="password" placeholder="password (again)">
+      <span v-if="errors.password2">{{errors.password2}}</span>
+    </div>
+    <div>
+      <input v-model="form.first_name" type="text" placeholder="first name">
+      <span v-if="errors.first_name">{{errors.first_name}}</span>
+    </div>
+    <div>
+      <input v-model="form.last_name" type="text" placeholder="last name">
+      <span v-if="errors.last_name">{{errors.last_name}}</span>
+    </div>
+    <div>
+      <button v-on:click="submit_register()">Register</button>
+    </div>
+    <div>
+      <button v-on:click="go('login')">Login</button>
+      <button v-on:click="go('request_reset_password')">Lost Password</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && action=='login'">
+    <h2>Login</h2>
+    <div>
+      <input v-model="form.email" type="email" placeholder="email">
+      <span v-if="errors.email">{{errors.email}}</span>
+    </div>
+    <div>
+      <input v-model="form.password" type="password" placeholder="password">
+      <span v-if="errors.password">{{errors.password}}</span>
+    </div>
+    <div>
+      <button v-on:click="submit_login()">Login</button>
+    </div>
+    <div>
+      <button v-on:click="go('register')">Register</button>
+      <button v-on:click="go('request_reset_password')">Lost Password</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && action=='request_reset_password'">
+    <h2>Request Reset Password</h2>
+    <div>
+      <input v-model="form.email" type="email" placeholder="email">
+      <span v-if="errors.email">{{errors.email}}</span>
+    </div>
+    <div>
+      <button v-on:click="submit_rquest_reset_password()">Send Request</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && action=='reset_password'">
+    <h2>Reset Password</h2>
+    <div>
+      <input v-model="form.new_password" type="password" placeholder="new password">
+      <span v-if="errors.new_password">{{errors.new_password}}</span>
+    </div>
+    <div>
+      <input v-model="form.new_password2" type="password" placeholder="new password (again)">
+      <span v-if="errors.new_password2">{{errors.new_password2}}</span>
+    </div>
+    <div>
+      <button v-on:click="submit_reset_password()">Send Request</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && action=='change_password'">
+    <h2>Change Password</h2>
+    <div>
+      <input v-model="form.old_password" type="password" placeholder="current password">
+      <span v-if="errors.old_password">{{errors.old_password}}</span>
+    </div>
+    <div>
+      <input v-model="form.new_password" type="password" placeholder="new password">
+      <span v-if="errors.new_password">{{errors.new_password}}</span>
+    </div>
+    <div>
+      <input v-model="form.new_password2" type="password" placeholder="new password (again)">
+      <span v-if="errors.new_password2">{{errors.new_password2}}</span>
+    </div>
+    <div>
+      <button v-on:click="submit_change_password()">Change Password</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && action=='change_email'">
+    <h2>Change Email</h2>
+    <div>
+      <input v-model="form.password" type="password" placeholder="password">
+      <span v-if="errors.password">{{errors.password}}</span>
+    </div>
+    <div>
+      <input v-model="form.new_email" type="email" placeholder="new email">
+      <span v-if="errors.new_email">{{errors.new_email}}</span>
+    </div>
+    <div>
+      <input v-model="form.new_email2" type="email" placeholder="new email (again)">
+      <span v-if="errors.new_email2">{{errors.new_email2}}</span>
+    </div>
+    <div>
+      <button v-on:click="submit_change_email()">Change Email</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && action=='edit_profile'">
+    <h2>Profile</h2>
+    <div>
+      <input v-model="form.first_name" type="text" placeholder="first name">
+      <span v-if="errors.first_name">{{errors.first_name}}</span>
+    </div>
+    <div>
+      <input v-model="form.last_name" type="text" placeholder="last name">
+      <span v-if="errors.last_name">{{errors.last_name}}</span>
+    </div>
+    <div>
+      <button v-on:click="submit_profile()">Save Profile</button>
+    </div>
+  </div>
+  <div>
+    <button v-on:click="go('register')">Register</button>
+    <button v-on:click="go('login')">Login</button>
+    <button v-on:click="go('request_reset_password')">Lost Password</button>
+    <button v-on:click="go('reset_password')">Reset Password</button>
+    <button v-on:click="go('change_password')">Change Password</button>
+    <button v-on:click="go('change_email')">Change Email</button>
+    <button v-on:click="go('edit_profile')">Edit Profile</button>
+  </div>
+</div>

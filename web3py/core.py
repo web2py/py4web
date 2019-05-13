@@ -48,6 +48,16 @@ import reloader
 
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL']
 
+ART = r"""
+ _______  ____________  ____  ______  __
+|  ____/ / / ____/ __ |/___ \/ __ \ \/ /
+| |     / / /_  / /_/ /___/ / /_/ /\  /
+| | /| / / __/ / __  //__  / ____/ / /
+| |/ |/ / /___/ /_/ /___/ / / ____/ /
+|___/|_/_____/_____/_____/_/ /_____/
+It is still experimental...
+"""
+
 HTTP = bottle.HTTPResponse
 Field = pydal.Field
 render = yatl.render
@@ -608,7 +618,7 @@ def error404(error):
 def start_server(args):
     host, port = args.address.split(':')
     if args.number_workers < 1:
-        bottle.run(host=host, port=int(port))
+        bottle.run(server='tornado', host=host, port=int(port))
     else:
         if not gunicorn:
             logging.error('gunicorn not installed')
@@ -619,15 +629,6 @@ def start_server(args):
                        workers=args.number_workers, worker_class='gevent', reloader=False,
                        certfile=args.ssl_cert_filename, keyfile=args.ssl_key_filename)
 
-ART = r"""
- _______  ____________  ____  ______  __
-|  ____/ / / ____/ __ |/___ \/ __ \ \/ /
-| |     / / /_  / /_/ /___/ / /_/ /\  /
-| | /| / / __/ / __  //__  / ____/ / /
-| |/ |/ / /___/ /_/ /___/ / / ____/ /
-|___/|_/_____/_____/_____/_/ /_____/
-It is still experimental...
-"""
 
 def main():
     print(ART)
