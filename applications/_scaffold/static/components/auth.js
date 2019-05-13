@@ -34,12 +34,19 @@
     };
 
     auth.methods.submit_login = function() {
-        axios.post('/_scaffold/auth/login', this.form);
+        axios.post('/_scaffold/auth/api/login', this.form).then(function(res){
+                if(res.data.errors) self.errors = res.data.errors;
+                if(res.data.redirect) window.location = res.data.redirect;
+            });
     };
     auth.methods.submit_register = function() {
+        var self = this;
         var form = utils.clone(this.form)
         delete form['password2']
-        axios.post('/_scaffold/auth/register', form);
+        axios.post('/_scaffold/auth/api/register', form).then(function(res){
+                if(res.data.errors) self.errors = res.data.errors;
+                if(res.data.redirect) window.location = res.data.redirect;
+            });
     };
     auth.methods.submit_request_reset_password = function() {
         alert('not implemented');

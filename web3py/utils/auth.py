@@ -1,6 +1,6 @@
 import uuid
-from web3py import redirect, request
-from web3py.core import Fixture
+from web3py import redirect, request, URL
+from web3py.core import Fixture, Template
 from pydal.validators import IS_EMAIL, CRYPT, IS_NOT_EMPTY, IS_NOT_IN_DB
 
 class Auth(Fixture):
@@ -15,10 +15,10 @@ class Auth(Fixture):
             db.define_table(
                 'auth_user',
                 Field('email', requires=(IS_EMAIL(), IS_NOT_IN_DB(db, 'auth_user.email')), unique=True),
-                Field('password','password', requires=CRYPT()),
+                Field('password','password', requires=CRYPT(),readable=False),
                 Field('first_name', requires=ne),
                 Field('last_name', requires=ne),
-                Field('action_token', editable=False, reabable=False),
+                Field('action_token', editable=False, readable=False),
                 *(extra_fields or []))
 
     def get_user(self):
@@ -29,37 +29,39 @@ class Auth(Fixture):
             user = db.auth_user(user['id'])
         return user
 
-    def action(self, name):
+    def action(self, path):
         method = request.method
-        if name == 'register' and method=='POST':
+        if not path.startswith('api/'):
+            return Template('auth.html').transform({'action': path})
+        elif path == 'api/register' and method=='POST':
             data = self.register(**request.json).as_dict()
             data['status'] = 'success'
-        elif name == 'login' and method=='POST':
-            user, error = self.login(**request.json)
+            data['redirect'] = URL('auth/login')
+        elif path == 'api/login' and method=='POST':
+            user, error = self.login(**request.json)            
             if user:
                 self.session['user'] = {'id': user.id}
-                user = user.as_dict()
-                status = 'success'
+                user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
+                data = {'user': user, 'ststus': 'success', 'redirect': URL('index')}
             else:
-                status = 'error'
-            data = {'user': user, 'ststus': status, 'message': error}
-        elif name == 'logout':
+                data = {'ststus': 'error', 'message': error}               
+        elif path == 'api/logout':
             self.session['user'] = None
             data = {'status': 'success'}
-        elif name == 'request_reset_password':
+        elif path == 'request_reset_password':
             self.request_reset_password(**request.json)
-        elif name == 'reset_password':
+        elif path == 'api/reset_password':
             user = self.session.get('user')
             data = {'status': 'error', 'message': 'action not implemented'}
-        elif name == 'verify_email':
+        elif path == 'api/verify_email':
             data = {'status': 'error', 'message': 'action not implemented'}
-        elif name == 'change_email':
+        elif path == 'api/change_email':
             user = self.session.get('user')
             data = {'status': 'error', 'message': 'action not implemented'}
-        elif name == 'change_password':
+        elif path == 'api/change_password':
             user = self.session.get('user')
             data = {'status': 'error', 'message': 'action not implemented'}
-        elif name == 'edit_profile':
+        elif path == 'api/edit_profile':
             user = self.session.get('user')
             data = {'status': 'error', 'message': 'action not implemented'}
         else:
@@ -79,7 +81,7 @@ class Auth(Fixture):
             return (None, 'Registration is pending')
         if (user.action_token).startswith('account-blocked'):
             return (None, 'Account is blocked')
-        if CRYPT()(password) == user.password:
+        if db.auth_user.password.requires(password)[0] == user.password:
             return (user, None)
         return None, 'Invalid password'
 

@@ -11,4 +11,4 @@ def index():
 
 # (optional) expose translations in case a single page app needs them in JSON
 action('translations')(action.uses(T)(lambda: T.local.language))
-action('auth/<name>', method=['GET','POST'])(action.uses(auth)(auth.action))
+action('auth/<path:path>', method=['GET','POST'])(action.uses(auth)(auth.action))
