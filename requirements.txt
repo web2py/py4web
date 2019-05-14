@@ -3,6 +3,7 @@ pyjwt
 yatl
 pluralize
 bottle
+tornado
 gunicorn
 gevent
 reloader
