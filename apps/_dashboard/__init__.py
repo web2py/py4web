@@ -6,7 +6,7 @@ from web3py import __version__, action, request, response, redirect, Translator
 from web3py.core import Reloader, dumps, ErrorStorage
 from yatl.helpers import BEAUTIFY
 
-FOLDER = os.environ['WEB3PY_APPLICATIONS_FOLDER']
+FOLDER = os.environ['WEB3PY_APPS_FOLDER']
 APP_FOLDER = os.path.dirname(__file__)
 T_FOLDER = os.path.join(APP_FOLDER, 'translations')
 T = Translator(T_FOLDER)

@@ -204,7 +204,7 @@ class Template(Fixture):
         context.update(URL=URL)
         context.update(output)
         context['__vars__'] = output
-        app_folder = os.path.join(os.environ['WEB3PY_APPLICATIONS_FOLDER'], request.app_name)
+        app_folder = os.path.join(os.environ['WEB3PY_APPS_FOLDER'], request.app_name)
         path = os.path.join(app_folder, 'templates')
         filename = os.path.join(path, self.filename)
         output = yatl.render(Template.reader(filename), path=path, context=context, 
@@ -410,7 +410,7 @@ class action(object):
         frame = inspect.stack()[1]
         module = inspect.getmodule(frame[0])
         folder = os.path.dirname(os.path.abspath(module.__file__))
-        app_name = folder[len(os.environ['WEB3PY_APPLICATIONS_FOLDER'])+1:].split(os.sep)[0]
+        app_name = folder[len(os.environ['WEB3PY_APPS_FOLDER'])+1:].split(os.sep)[0]
         path = ('/' if app_name == '_default' else '/%s/' % app_name) + self.path # the _default app has no prefix
         func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
@@ -555,22 +555,24 @@ class Reloader(object):
     def import_apps():
         """import or reimport modules and exposed static files"""
         reloader.enable()
-        folder = os.environ['WEB3PY_APPLICATIONS_FOLDER']
+        folder = os.environ['WEB3PY_APPS_FOLDER']
         app = bottle.default_app()
         app.routes.clear()
-        # app.routes = app.routes[:]
         new_apps = []
         for app_name in os.listdir(folder):
             path = os.path.join(folder, app_name)
             init = os.path.join(path, '__init__.py')
             if os.path.isdir(path) and not path.endswith('__') and os.path.exists(init):
+                module_name = 'apps.%s' % app_name
                 try:
                     module = Reloader.MODULES.get(app_name)
                     if not module:
-                        module = importlib.machinery.SourceFileLoader(app_name, init).load_module()
+                        print('[%s] loading...' % app_name)
+                        module = importlib.machinery.SourceFileLoader(module_name, init).load_module()
                         Reloader.MODULES[app_name] = module
                         new_apps.append(path)
                     else:
+                        print('[%s] reloading...' % app_name)
                         reloader.reload(module)
                     Reloader.ERRORS[app_name] = None
                 except:
@@ -585,8 +587,8 @@ class Reloader(object):
         # register routes
         routes = []
         def to_filename(module):
-            filename = module.replace('.', os.path.sep)
-            filename = os.path.join(filename, '__init__.py') if not module.count('.') else filename + '.py'
+            filename = os.path.join(*module.split('.')[1:])
+            filename = os.path.join(filename, '__init__.py') if not filename.count(os.sep) else filename + '.py'
             return filename
         for route in app.routes:
             func = route.callback
@@ -633,7 +635,7 @@ def start_server(args):
 def main():
     print(ART)
     parser = argparse.ArgumentParser()
-    parser.add_argument('applications_folder', help='path to the applications folder')
+    parser.add_argument('apps_folder', help='path to the applications folder')
     parser.add_argument('--address', default='127.0.0.1:8000',help='serving address')
     parser.add_argument('--number_workers', default=0, type=int, help='number of gunicorn workers')
     parser.add_argument('--ssl_cert_filename', default=None, type=int, help='ssl certificate file')
@@ -641,11 +643,10 @@ def main():
     parser.add_argument('--service_db_uri', default='sqlite://service.storage', type=str, help='db uri for logging')
     parser.add_argument('--service_folder', default='/tmp/web3py', type=str, help='db uri for logging')
     action.args = args = parser.parse_args()
-    args.applications_folder = os.path.abspath(args.applications_folder)
+    args.apps_folder = os.path.abspath(args.apps_folder)
     for key in args.__dict__:
         os.environ['WEB3PY_'+key.upper()] = str(args.__dict__[key])
     if not os.path.exists(args.service_folder): os.makedirs(args.service_folder)
     print('Dashboard is at: http://%s/_dashboard' % args.address)
-    sys.path.append(args.applications_folder)
     Reloader.import_apps()
     start_server(args)
