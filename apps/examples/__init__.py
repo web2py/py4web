@@ -1,6 +1,6 @@
 import os
 from web3py import *
-from web3py.form import Form
+from web3py.utils.form import Form
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1
 

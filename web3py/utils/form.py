@@ -1,0 +1,222 @@
+import uuid
+import hmac
+from web3py import DAL, request
+from yatl.helpers import A, TEXTAREA, INPUT, TR, TD, TABLE, DIV, LABEL, FORM, SELECT, OPTION
+from pydal._compat import to_bytes
+
+def FormStyleDefault(table, vars, errors, readonly, deletable):
+
+    form = FORM(TABLE(),_method='POST',_action='#',_enctype='multipart/form-data')
+    for field in table:
+
+        input_id = '%s_%s' % (field.tablename, field.name)
+        value = field.formatter(vars.get(field.name))
+        error = errors.get(field.name)
+        field_class = field.type.split()[0].replace(':','-')
+
+        if field.type == 'blob': # never display blobs (mistake?)
+            continue
+        elif readonly or field.type=='id':
+            if not field.readable:
+                continue
+            else:
+                control = field.represent and field.represent(value) or value or ''
+        elif not field.writable:
+            continue
+        elif field.widget:
+            control = field.widget(table, value)
+        elif field.type == 'text':
+            control = TEXTAREA(value or '', _id=input_id,_name=field.name)
+        elif field.type == 'boolean':
+            control = INPUT(_type='checkbox', _id=input_id, _name=field.name,
+                            _value='ON', _checked = value)
+        elif field.type == 'upload':
+            control = DIV(INPUT(_type='file', _id=input_id, _name=field.name))
+            if value:
+                control.append(A('download', _href=donwload_url(value)))
+                control.append(INPUT(_type='checkbox',_value='ON',
+                                     _name='_delete_'+field.name))
+                control.append('(check to remove)')
+        elif hasattr(field.requires, 'options'):
+            multiple = field.type.startswith('list:')
+            value = value if isinstance(value, list) else [value]
+            options = [OPTION(v,_value=k,_selected=(k in value))
+                       for k,v in field.requires.options()]
+            control = SELECT(*options, _id=input_id, _name=field.name,
+                              _multiple=multiple)
+        else:
+            field_type = 'password' if field.type == 'password' else 'text'
+            control = INPUT(_type=field_type, _id=input_id, _name=field.name,
+                            _value=value, _class=field_class)
+
+        form[0].append(TR(TD(LABEL(field.label,_for=input_id)),
+                          TD(control,DIV(error,_class='error') if error else ''),
+                          TD(field.comment or '')))
+
+    td = TD(INPUT(_type='submit',_value='Submit'))
+    if deletable:
+        td.append(INPUT(_type='checkbox',_value='ON',_name='_delete'))
+        td.append('(check to delete)')
+    form[0].append(TR(TD(),td,TD()))
+    return form
+
+# ################################################################
+# Form object (replaced SQLFORM)
+# ################################################################
+
+class Form(object):
+    """
+    Usage in web2py controller:
+
+       def index():
+           form = Form(db.thing, record=1)
+           if form.accepted: ...
+           elif form.errors: ...
+           else: ...
+           return dict(form=form)
+
+    Arguments:
+    - table: a DAL table or a list of fields (equivalent to old SQLFORM.factory)
+    - record: a DAL record or record id
+    - readonly: set to True to make a readonly form
+    - deletable: set to False to disallow deletion of record
+    - formstyle: a function that renders the form using helpers (FormStyleDefault)
+    - dbio: set to False to prevent any DB write
+    - keep_values: if set to true, it remebers the values of the previously submitted form
+    - form_name: the optional name of this form
+    - csrf: set to False to disable CRSF protection
+    """
+
+    def __init__(self,
+                 table,
+                 record=None,
+                 readonly=False,
+                 deletable=True,
+                 formstyle=FormStyleDefault,
+                 dbio=True,
+                 keep_values=False,
+                 form_name=False,
+                 hidden=None,
+                 csrf_uuid=None):
+
+        if isinstance(table, list):
+            dbio = False
+            # mimic a table from a list of fields without calling define_table
+            form_name = form_name or 'none'
+            for field in table: field.tablename = getattr(field,'tablename',form_name)
+
+        if isinstance(record, (int, str)):
+            record_id = int(str(record))
+            self.record = table[record_id]
+        else:
+            self.record = record
+
+        self.table = table
+        self.readonly = readonly
+        self.deletable = deletable and not readonly and self.record
+        self.formstyle = formstyle
+        self.dbio = dbio
+        self.keep_values = True if keep_values or self.record else False
+        self.csrf_uuid = csrf_uuid and csrf_uuid
+        self.vars = {}
+        self.errors = {}
+        self.submitted = False
+        self.deleted = False
+        self.accepted = False
+        self.form_name = form_name or table._tablename
+        self.hidden = hidden
+        self.formkey = None
+        self.cached_helper = None
+
+        if readonly or request.method=='GET':
+            if self.record:
+                self.vars = self.record
+        else:
+            post_vars = request.forms
+            self.submitted = True
+            process = False
+            # we only a process a form if it is POST and the formkey matches (correct formname and crsf)
+            # notice we never expose the crsf uuid, we only use to sign the form uuid
+            if request.method == 'POST':                
+                if csrf_uuid:
+                    code, signature = post_vars['_formkey'].split('/')
+                    expected = hmac.new(to_bytes(csrf_uuid), to_bytes(self.form_name+'/'+code)).hexdigest()
+                    if signature == expected:
+                        process = True
+                elif post_vars.get('_formkey') == self.form_name:
+                    process = True
+            if process:
+                if not post_vars.get('_delete'):
+                    for field in self.table:
+                        if field.writable:
+                            value = post_vars.get(field.name)
+                            # FIX THIS deal with set_self_id before validate
+                            (value, error) = field.validate(value)
+                            if field.type == 'upload':
+                                delete = post_vars.get('_delete_'+field.name)
+                                if value is not None and hasattr(value,'file'):
+                                    value = field.store(value.file,
+                                                        value.filename,
+                                                        field.uploadfolder)
+                                elif self.record and not delete:
+                                    value = self.record.get(field.name)
+                                else:
+                                    value = None
+                            self.vars[field.name] = value
+                            if error:
+                                self.errors[field.name] = error
+                    if self.record:
+                        self.vars['id'] = self.record.id
+                    if not self.errors:
+                        self.accepted = True
+                        if dbio:
+                            self.update_or_insert()
+                elif dbio:
+                    self.deleted = True
+                    self.record.delete_record()
+        # store key for future CSRF
+        if csrf_uuid:
+            code = str(uuid.uuid4())
+            signature = hmac.new(to_bytes(csrf_uuid), to_bytes(self.form_name+'/'+code)).hexdigest()
+            self.formkey = '%s/%s' % (code, signature)
+        else:
+            self.formkey = self.form_name
+
+    def update_or_insert(self):
+        if self.record:
+            self.record.update_record(**self.vars)
+        else:
+            # warning, should we really insert if record
+            self.vars['id'] = self.table.insert(**self.vars)
+
+    def clear():
+        self.vars.clear()
+        self.errors.clear()
+        for field in self.table:
+            self.vars[field.name] = field.default
+
+    def helper(self):
+        if self.accepted and not self.keep_values:
+            self.vars.clear()
+        if not self.cached_helper:
+            helper = self.formstyle(self.table,
+                                    self.vars,
+                                    self.errors,
+                                    self.readonly,
+                                    self.deletable)
+            if self.formkey:
+                helper.append(INPUT(_type='hidden',_name='_formkey', _value=self.formkey))
+            for key in self.hidden or {}:
+                helper.append(INPUT(_type='hidden',_name=key,
+                                    _value=self.hidden[key]))
+            self.cached_helper = helper
+        return self.cached_helper
+
+    def xml(self):
+        return self.helper().xml()
+
+    def __unicode__(self):
+        return self.xml()
+
+    def __str__(self):
+        return self.xml().encode('utf8')
