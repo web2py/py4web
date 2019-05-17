@@ -9,7 +9,7 @@ import mechanize
 from web3py import action, DAL, Field, Session, Cache
 from web3py.core import bottle
 
-os.environ['WEB3PY_APPLICATIONS_FOLDER'] = os.path.sep.join(os.path.normpath(__file__).split(os.path.sep)[:-2])
+os.environ['WEB3PY_APPS_FOLDER'] = os.path.sep.join(os.path.normpath(__file__).split(os.path.sep)[:-2])
 
 db = DAL('sqlite://storage_%s' % uuid.uuid4(), folder='/tmp/')
 db.define_table('thing', Field('name'))
