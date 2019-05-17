@@ -26,11 +26,13 @@ class Auth(Fixture):
     def __init__(self, db, session, 
                  define_tables=True, 
                  sender=None,
+                 base_url=None,
                  registration_requires_confirmation=True,
                  registration_requires_appoval=False):        
         self.db = db
         self.session = session
         self.sender = sender
+        self.base_url = base_url or ''
         self.registration_requires_confirmation = registration_requires_confirmation
         self.registration_requires_appoval = registration_requires_appoval
         self.__prerequisites__ = [db, session]
@@ -66,64 +68,82 @@ class Auth(Fixture):
             return True
         return self.sender.send(email, subject=subject, body=body)
 
-    def get_user(self):
+    def get_user(self, safe=True):
         user = self.session.get('user')
         if not user or not isinstance(user, dict) or not 'id' in user:
             return None
         if len(user) == 1:
             user = self.db.auth_user(user['id'])
+            if safe:
+                user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
         return user
 
+    def error(self, message, code=400):
+        return {'status': 'error', 'message': message, 'code': code}
+
     def action(self, path):
+        db = self.db
         method = request.method
         if not path.startswith('api/'):
             return Template('auth.html').transform({'action': path})
-        if method == 'POST':
-            user = self.get_user()
+        data = self.error('invalid request')
+        if method == 'GET':
+            user = self.get_user(safe=True)
             if not user:
-                if path == 'api/register':
-                    data = self.register(dict(request.json), send=True).as_dict()
-                    data['status'] = 'success'
-                    data['redirect'] = URL('auth/login')
-                elif path == 'api/login':
-                    user, error = self.login(**dict(request.json))
-                    if user:
-                        self.session['user'] = {'id': user.id}
-                        user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
-                        data = {'user': user, 'ststus': 'success', 'redirect': URL('index')}
-                    else:
-                        data = {'ststus': 'error', 'message': error}               
-                elif path == 'api/logout':
-                    self.session['user'] = None
-                    data = {'status': 'success'}
-                elif path == 'request_reset_password':
-                    if self.request_reset_password(**dict(request.json)):
-                        data = {'status': 'success'}
-                    else:
-                        data = {'status': 'error', 'message': 'invalid user'}
-                elif path == 'api/reset_password':
-                    if self.reset_password(request.json().get('token'), request.json().get('new_password')):
-                        data = {'status': 'success'}
-                    else:
-                        data = {'status': 'error', 'message': 'invalid token, request expired'}
-                elif path == 'api/verify_email':
-                    if self.verify_email(request.json().get('token')):
-                        data = {'status': 'success'}
-                    else:
-                        data = {'status': 'error', 'message': 'invalid token, request expired'}
-            else:
-                if path == 'api/change_password':
-                    if self.change_password(request.json().get('old_password'), 
-                                            request.json().get('new_password')):
-                        data = {'status': 'success'}
-                    else:
-                        data = {'status': 'error', 'message': 'invalid password'}
-                elif path == 'api/change_email':
-                    data = {'status': 'error', 'message': 'action not implemented'}
-                elif path == 'api/edit_profile':
-                    data = {'status': 'error', 'message': 'action not implemented'}
+                data = self.error('not authoried', 401)
+            if path == 'api/profile':
+                data = {'status': 'success', 'profile': user}
+        elif method == 'POST':
+            vars = dict(request.json)
+            user = self.get_user(safe=False)
+            if path == 'api/register':
+                data = self.register(vars, send=True).as_dict()
+                data['status'] = 'success'
+                data['redirect'] = URL('auth/login')
+            elif path == 'api/login':
+                user, error = self.login(**vars)
+                if user:
+                    self.session['user'] = {'id': user.id}
+                    user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
+                    data = {'user': user, 'ststus': 'success', 'redirect': URL('index')}
                 else:
-                    data = {'status': 'error', 'message': 'action not implemented'}
+                    data = self.error(error)
+            elif path == 'request_reset_password':
+                if self.request_reset_password(**vars):
+                    data = {'status': 'success'}
+                else:
+                    data = self.error('invalid user')
+            elif path == 'api/reset_password':
+                if self.reset_password(vars.get('token'), vars.get('new_password')):
+                    data = {'status': 'success'}
+                else:
+                    data = self.error('invalid token, request expired')
+            elif path == 'api/verify_email':
+                if self.verify_email(vars.get('token')):
+                    data = {'status': 'success'}
+                else:
+                    data = self.error('invalid token, request expired')            
+            elif user and path == 'api/logout':
+                self.session['user'] = None
+                data = {'status': 'success'}
+            elif user and path == 'api/unsubscribe':
+                self.session['user'] = None
+                self.gdpr_unsubscribe(user, send=True)
+                data = {'status': 'success'}
+            elif user and path == 'api/change_password':
+                if self.change_password(user, 
+                                        vars.get('old_password'), 
+                                        vars.get('new_password')):
+                    data = {'status': 'success'}
+                else:
+                    data = self.error('invalid password')
+            elif user and path in ('api/change_email', 'api/edit_profile'):
+                # TODO check password and filter non-writable fields
+                data = db(db.auth_user.id==user.id).validate_and_update(**vars).as_dict()
+                if not 'errors'in data:
+                    data.update(status='success')
+                else:
+                    data.update(status='error', message='validation errors')
         return data
 
     def register(self, fields, send=True):
@@ -147,10 +167,6 @@ class Auth(Fixture):
             return (user, None)
         return None, 'Invalid password'
 
-    def update(self, **fields):
-        email = fields['email'].lower()
-        self.db(self.db.auth_user.email == email).update(**fields)
-
     def request_reset_password(self, email, send=True):
         user = self.db(self.db.auth_user.email == email.lower()).select().first()
         if user and not user.action_token == 'account-blocked':
@@ -162,24 +178,26 @@ class Auth(Fixture):
             return token
         return None
 
-    def query_from_token(self,token):
+    def _query_from_token(self,token):
         query = self.db.auth_user.action_token == 'reset-password-request:' + token
         query |= self.db.auth_user.action_token == 'pending-registration:' + token
         return query
 
     def verify_email(self, token):
-        n = self.db(self.query_from_token(token)).update(action_token=None)
+        n = self.db(self._query_from_token(token)).update(action_token=None)
         return n>0
 
     def reset_password(self, token, new_password):
-        user = self.db(self.query_from_token(token)).select().first()
+        db = self.db
+        query = self._query_from_token(token)
+        user = db(query).select().first()
         if user:
-            if user.update_record(password=self.db.auth_user.passoword.requires(new_password)[1]):
+            data = db(db.auth_user.id==user.id).validate_and_update(password=new_password)
+            if not 'errors' in data:
                 return True
         return False
 
-    def change_password(self, old_password, new_password):
-        user = self.get_user()
+    def change_password(self, user, old_password, new_password):
         if user and self.db.auth_user.passoword.requires(old_password)[1] == user.password:
             if user.update_record(password=self.db.auth_user.passoword.requires(new_password)[1]):
                 return True
