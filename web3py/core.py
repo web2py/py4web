@@ -567,16 +567,19 @@ class Reloader(object):
                 try:
                     module = Reloader.MODULES.get(app_name)
                     if not module:
-                        print('[%s] loading...' % app_name)
+                        print('[  ] loading %s ...' % app_name)
                         module = importlib.machinery.SourceFileLoader(module_name, init).load_module()
                         Reloader.MODULES[app_name] = module
                         new_apps.append(path)
+                        print('\x1b[A[OK] loaded %s     ' % app_name)
                     else:
-                        print('[%s] reloading...' % app_name)
+                        print('[  ] reloading %s ...' % app_name)
                         reloader.reload(module)
+                        print('\x1b[A[OK] loaded %s     ' % app_name)
                     Reloader.ERRORS[app_name] = None
                 except:
-                    print(traceback.format_exc())
+                    print('\x1b[A[FAILED] loading %s     ' % app_name)
+                    print('\n'.join('    '+line for line in traceback.format_exc().split('\n')))
                     Reloader.ERRORS[app_name] = traceback.format_exc()
         reloader.disable()
         # expose static files
