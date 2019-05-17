@@ -37,3 +37,21 @@ development version of pydal sinc pydal on pypi is outdated and we have unable t
 ## Integrations
 - https://pypi.org/project/bottle-auth/
 - https://github.com/jbardin/python-saml/blob/master/example_login.py
+
+## Componts
+
+- pydal + dbapi (done)
+- yatl (done)
+- pluralize (done)
+- auth (75%)
+- mailer (done)
+- session (cookes, db, redis, memcache)
+- form (done up to downloads)
+- mtable (75%)
+- dashboard (90% done)
+- scaffold (done)
+- bus (0%)
+- tornado
+- gevent
+- gunicorn
+- bottle

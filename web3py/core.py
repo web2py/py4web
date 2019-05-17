@@ -575,7 +575,7 @@ class Reloader(object):
                     else:
                         print('[  ] reloading %s ...' % app_name)
                         reloader.reload(module)
-                        print('\x1b[A[OK] loaded %s     ' % app_name)
+                        print('\x1b[A[OK] reloaded %s     ' % app_name)
                     Reloader.ERRORS[app_name] = None
                 except:
                     print('\x1b[A[FAILED] loading %s     ' % app_name)
