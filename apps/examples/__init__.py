@@ -10,6 +10,10 @@ db.define_table('thing',
                 Field('quantity','integer', requires=IS_INT_IN_RANGE(0,10)))
 session = Session(secret='myscret')
 
+@action('do/nothing')
+def do_nothing():
+    return 'ok'
+
 @action('oops')
 def oops():
     1/0

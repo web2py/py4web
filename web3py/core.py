@@ -48,6 +48,8 @@ import reloader
 
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL']
 
+os.environ['WEB3PY_APPS_FOLDER'] = 'apps' # change from command line (default used for testing)
+
 ART = r"""
  _______  ____________  ____  ______  __
 |  ____/ / / ____/ __ |/___ \/ __ \ \/ /
@@ -623,14 +625,15 @@ def error404(error):
 def start_server(args):
     host, port = args.address.split(':')
     if args.number_workers < 1:
-        bottle.run(server='tornado', host=host, port=int(port))
+        bottle.run(server='tornado', host=host, port=int(port), reloader=False)
     else:
         if not gunicorn:
             logging.error('gunicorn not installed')
         elif not gevent:
             logging.error('gevent not installed')
         else:
-            bottle.run(server='gevent', host=host, port=int(port),
+            sys.argv[:] = sys.argv[:1] # else break gunicorn
+            bottle.run(server='gunicorn', host=host, port=int(port),
                        workers=args.number_workers, worker_class='gevent', reloader=False,
                        certfile=args.ssl_cert_filename, keyfile=args.ssl_key_filename)
 

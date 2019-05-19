@@ -109,13 +109,13 @@ def tickets(app_name):
 def error_ticket(ticket_uuid):
     return dict(ticket_record=BEAUTIFY(ErrorStorage().get(ticket_uuid=ticket_uuid)))
 
-@action('dbapi/<path:path>', method=['GET','POST','PUT','DELETE'])
+@action('rest/<path:path>', method=['GET','POST','PUT','DELETE'])
 def api(path):
     # this is not final, equires pydal 19.5
     args = path.split('/')
     app_name = args[0]
     from web3py.core import Reloader, DAL
-    from pydal.dbapi import DBAPI, ALLOW_ALL_POLICY
+    from pydal.restapi import RestAPI, ALLOW_ALL_POLICY
     module = Reloader.MODULES[app_name]
     def url(*args): return request.url + '/' + '/'.join(args)
     databases = [name for name in dir(module) if isinstance(getattr(module, name), DAL)]
@@ -130,7 +130,7 @@ def api(path):
     elif len(args) > 2 and args[1] in databases:
         db = getattr(module, args[1])
         id = args[3] if len(args) == 4 else None
-        data = DBAPI(db, ALLOW_ALL_POLICY)(request.method, args[2], id, request.query, request.json)
+        data = RestAPI(db, ALLOW_ALL_POLICY)(request.method, args[2], id, request.query, request.json)
     else:
         data = {}
     if 'code' in data:

@@ -33,7 +33,7 @@ let init = (app) => {
         app.vue.selected_app = appobj;
         app.vue.walk = [];
         axios.get('../walk/'+appobj.name).then((res)=>{app.vue.walk=res.data.payload;});
-        axios.get('../dbapi/'+appobj.name).then((res)=>{app.vue.databases=res.data.databases;});
+        axios.get('../rest/'+appobj.name).then((res)=>{app.vue.databases=res.data.databases;});
         app.reload_tickets();
     };
     app.activate_editor = (path, payload) => {
