@@ -49,7 +49,6 @@
         axios.get(url).then(function (res) {
                 if(!length) self.table = res.data; 
                 else self.table.items = self.table.items.concat(res.data.items);
-                if(self.table.items.length==1) { self.item=self.table.items[0]; }
             });
     };
     

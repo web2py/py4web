@@ -10,6 +10,8 @@ FOLDER = os.environ['WEB3PY_APPS_FOLDER']
 APP_FOLDER = os.path.dirname(__file__)
 T_FOLDER = os.path.join(APP_FOLDER, 'translations')
 T = Translator(T_FOLDER)
+error_storage = ErrorStorage()
+db = error_storage.db
 
 @action('index')
 @action.uses('index.html', T)
@@ -35,15 +37,18 @@ def info():
 
 @action('routes')
 def routes():
+    """returns current registered rounts"""
     return {'payload':Reloader.ROUTES, 'status':'success'}
 
 @action('reload')
 def reload():
+    """reloads installed apps"""
     Reloader.import_apps()
     return 'ok'
 
 @action('apps')
 def apps():
+    """returns a list of installed apps"""
     apps = os.listdir(FOLDER)
     apps = [{'name':app, 'error':Reloader.ERRORS.get(app)} 
             for app in apps 
@@ -53,6 +58,7 @@ def apps():
 
 @action('walk/<path:path>')
 def walk(path):
+    """returns a nested folder structure as a tree"""
     top = os.path.join(FOLDER, path)
     if not os.path.exists(top) or not os.path.isdir(top):
         return {'status':'error', 'message':'folder does not exist'}
@@ -67,17 +73,20 @@ def walk(path):
 
 @action('load/<path:path>')
 def load(path):
+    """loads a text file"""
     path = os.path.join(FOLDER, path) # ADD SECURITY
     content = open(path,'rb').read().decode('utf8')
     return {'payload':content, 'status':'success'}
 
 @action('load_bytes/<path:path>')
 def load_bytes(path):
+    """loads a binary file"""
     path = os.path.join(FOLDER, path) # ADD SECURITY 
     return open(path,'rb').read()
 
 @action('save/<path:path>', method='POST')
 def save(path):
+    """saves a file"""
     path = os.path.join(FOLDER, path) # ADD SECURITY 
     with open(path, 'wb') as myfile:
         myfile.write(request.body.read())
@@ -85,6 +94,7 @@ def save(path):
 
 @action('packed/<appname>')
 def packed(appname):
+    """packs an app"""
     deposit = os.path.join(FOLDER, appname, '.deposit') # ADD SECURITY 
     if not os.path.exists(deposit):
         os.mkdir(deposit)
@@ -95,13 +105,15 @@ def packed(appname):
 
 @action('delete/<path:path>', method='post')
 def delete(path):
+    """deletes a file"""
     fullpath = os.path.join(FOLDER, path) # ADD SECURITY 
     recursive_unlink(fullpath)
     return {'status':'success'}
 
-@action('tickets/<app_name>')
-def tickets(app_name):
-    tickets = ErrorStorage().get(until=datetime.datetime.utcnow(), app_name=app_name)
+@action('tickets')
+def tickets():
+    """returns most recent tickets groupped by path+error"""
+    tickets = error_storage.get()
     return {'payload': tickets}
 
 @action('ticket/<ticket_uuid>')

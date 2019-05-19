@@ -33,8 +33,7 @@ let init = (app) => {
         app.vue.selected_app = appobj;
         app.vue.walk = [];
         axios.get('../walk/'+appobj.name).then((res)=>{app.vue.walk=res.data.payload;});
-        axios.get('../rest/'+appobj.name).then((res)=>{app.vue.databases=res.data.databases;});
-        app.reload_tickets();
+        axios.get('../rest/'+appobj.name).then((res)=>{app.vue.databases=res.data.databases;});        
     };
     app.activate_editor = (path, payload) => {
         app.vue.files[path] = payload;
@@ -155,7 +154,7 @@ let init = (app) => {
     };
     app.reload_tickets = () => {
         app.vue.tickets = [];
-        axios.get('../tickets/'+app.vue.selected_app.name).then((res)=>{
+        axios.get('../tickets').then((res)=>{
                 app.vue.tickets = res.data.payload;
             });
     };
@@ -189,6 +188,7 @@ let init = (app) => {
         app.reload_info();
         app.reload_apps();
         app.reload_routes();
+        app.reload_tickets();
     };
     app.init();
     setTimeout(()=>{app.vue.loading=false;}, 1000);

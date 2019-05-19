@@ -524,22 +524,23 @@ class ErrorStorage(object):
             self.db.rollback()
             return 'internal-error'
 
-    def get(self, ticket_uuid=None, since=None, until=None, limitby=100, app_name=None):
+    def get(self, ticket_uuid=None):
         db = self.db
         if ticket_uuid: 
             query, orderby = db.web3py_error.uuid==ticket_uuid, None
-            rows = db(query).select(orderby=orderby, limitby=(0, limitby)).as_list()
+            rows = db(query).select(orderby=orderby, limitby=(0, 1)).as_list()
         else:
-            if since:
-                query, orderby = db.web3py_error.timestamp >= since, db.web3py_error.timestamp
-            elif until:
-                query, orderby = db.web3py_error.timestamp < until, ~db.web3py_error.timestamp
-            else:
-                raise NotImplementedError
-            if app_name:
-                query &= db.web3py_error.app_name == app_name        
+            orderby = ~db.web3py_error.timestamp
+            groupby = db.web3py_error.path|db.web3py_error.error
+            query = db.web3py_error.timestamp > datetime.datetime.now() - datetime.timedelta(days=7)
             fields = [field for field in db.web3py_error if not field.type == 'json']
-            rows = db(query).select(*fields, orderby=orderby, limitby=(0, limitby)).as_list()
+            fields.append(db.web3py_error.id.count())
+            list_rows = db(query).select(*fields, orderby=orderby, groupby=groupby).as_list()
+            rows = []
+            for item in list_rows:
+                row = item['web3py_error']
+                row['count'] = item['_extra'][str(db.web3py_error.id.count())]
+                rows.append(row)
         return rows if not ticket_uuid else rows[0] if rows else None
     
 

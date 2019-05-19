@@ -116,33 +116,36 @@
           </table>
         </div>
       </div>
-      <div class="panel accordion" v-if="selected_app">
+      <div class="panel accordion">
         <input type="checkbox" id="tickets">
         <label for="tickets">Recent Tickets</label>
         <div>
           <div class="right">
-            <button v-on:click="reload_tickets()">Search By Datetime</button>
-            <button v-on:click="reload_tickets()">Update Recent Tickets</button>
+            <button v-on:click="reload_tickets()">Update</button>
           </div>
-          <table>
-            <thead v-if="tickets.length>0">
+          <table v-if="tickets.length>0">
+            <thead>
               <tr>
-                <td>Timestamp</td>
+                <td>Occurrences</td>
+                <td>Most Recent</td>
                 <td>Client IP</td>
                 <td>App</td>
                 <td>Method</td>
                 <td>Path</td>
                 <td>Error</td>
+                <td></td>
               </tr>
             </thead>
             <tbody>
               <tr v-for="ticket in tickets">
+                <td>{{ticket.count}}</td>
                 <td>{{ticket.timestamp}}</td>
                 <td>{{ticket.client_ip}}</td>
                 <td>{{ticket.app_name}}</td>
                 <td>{{ticket.method}}</td>
                 <td>{{ticket.path}}</td>
                 <td><a target="blank" v-bind:href="'/_dashboard/ticket/'+ticket.uuid">{{ticket.error}}</a></td>
+                <td><a class="button" target="blank" v-bind:href="'/_dashboard/dbadmin?app=_dashboard&dbname=db&tablename=web3py_error&filter=path%3D'+ticket.path+' and error%3D'+ticket.error">Search</a></td>
               </tr>
             </tbody>
           </table>
