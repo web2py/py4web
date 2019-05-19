@@ -6,5 +6,4 @@ bottle
 tornado
 gunicorn
 gevent
-reloader
 python-memcached # used for testing or for optionally actually accessing memcache

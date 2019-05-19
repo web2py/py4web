@@ -7,6 +7,7 @@ import cgitb
 import copy
 import datetime
 import functools
+import importlib
 import importlib.machinery
 import inspect
 import json
@@ -43,8 +44,6 @@ import yatl      # pip import yatl
 import pydal     # pip import pydal
 import pluralize # pip import pluralize
 from pydal import _compat
-
-import reloader
 
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL']
 
@@ -557,7 +556,6 @@ class Reloader(object):
     @staticmethod
     def import_apps():
         """import or reimport modules and exposed static files"""
-        reloader.enable()
         folder = os.environ['WEB3PY_APPS_FOLDER']
         app = bottle.default_app()
         app.routes.clear()
@@ -572,19 +570,19 @@ class Reloader(object):
                     if not module:
                         print('[  ] loading %s ...' % app_name)
                         module = importlib.machinery.SourceFileLoader(module_name, init).load_module()
-                        Reloader.MODULES[app_name] = module
                         new_apps.append(path)
                         print('\x1b[A[OK] loaded %s     ' % app_name)
                     else:
                         print('[  ] reloading %s ...' % app_name)
-                        reloader.reload(module)
+                        names = [name for name in sys.modules if name.startswith(module_name)]
+                        for name in names:
+                            importlib.reload(sys.modules[name])
                         print('\x1b[A[OK] reloaded %s     ' % app_name)
+                    Reloader.MODULES[app_name] = module
                     Reloader.ERRORS[app_name] = None
                 except:
                     print('\x1b[A[FAILED] loading %s     ' % app_name)
-                    print('\n'.join('    '+line for line in traceback.format_exc().split('\n')))
                     Reloader.ERRORS[app_name] = traceback.format_exc()
-        reloader.disable()
         # expose static files
         for path in new_apps:
             @bottle.route('/%s/static/<filename:path>' % path.split(os.path.sep)[-1])
