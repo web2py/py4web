@@ -23,28 +23,28 @@
         <th>{{field.label}}</th>
         <td>
           <input v-if="field.type=='id'" type="text" readonly v-model="item[field.name]">
-          <input v-else-if="field.type=='string'" type="text" v-model="item[field.name]">
-          <span v-else-if="field.type=='boolean'" v-on:click="toggle(item, field.name)">
+          <input v-else-if="field.type=='string'" type="text" v-model="item[field.name]" v-bind:readonly="!editable">
+          <span v-else-if="field.type=='boolean'" v-on:click="toggle(item, field.name)" v-bind:readonly="!editable">
             <span v-if="item[field.name]===true"><i class="fa fa-check-square"></i> True</span>
             <span v-else-if="item[field.name]===false"><i class="fa fa-square"></i> False</span>
             <span v-else><i class="fa fa-square"></i> None</span>
           </span>
-          <input v-else-if="field.type=='integer'" type="number" step="1" v-model="item[field.name]">
-          <input v-else-if="field.type=='float'" type="number" v-model="item[field.name]">
-          <input v-else-if="field.type=='date'" type="date" v-model="item[field.name]">
-          <input v-else-if="field.type=='time'" type="time" v-model="item[field.name]">
-          <input v-else-if="field.type=='datetime'" type="datetime-local" v-model="item[field.name]">
-          <input v-else-if="field.type=='password'" type="password" v-model="item[field.name]">
-          <input v-else-if="field.type=='upload'" type="text" v-model="item[field.name]">
-          <textarea v-else-if="field.type=='text'" v-model="item[field.name]"></textarea>
-          <div class="error" v-if="field.name in errors">{{errors[field.name]}}</div>
+          <input v-else-if="field.type=='integer'" type="number" step="1" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='float'" type="number" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='date'" type="date" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='time'" type="time" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='datetime'" type="datetime-local" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='password'" type="password" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='upload'" type="text" v-model="item[field.name]" v-bind:readonly="!editable">
+          <textarea v-else-if="field.type=='text'" v-model="item[field.name]" v-bind:readonly="!editable"></textarea>
+          <div class="error" v-if="editable && field.name in errors">{{errors[field.name]}}</div>
         </td>
       </tr>
       <tr>
         <td></td>
         <td>
-          <button v-on:click="save(item)">Save</button>
-          <button v-if="item && item.id" v-on:click="trash(item)">Delete</button>
+          <button v-if="editable" v-on:click="save(item)">Save</button>
+          <button v-if="editable && item && item.id" v-on:click="trash(item)">Delete</button>
           <button v-on:click="close()">Close</button>
         </td>
       </tr>
@@ -88,7 +88,7 @@
           </td>
           <td>
             <i class="fa fa-edit" v-on:click="open_edit(item)"></i>
-            <i class="fa fa-trash" v-on:click="trash(item)"></i>
+            <i class="fa fa-trash" v-if="editable" v-on:click="trash(item)"></i>
           </td>
         </tr>
       </tbody>

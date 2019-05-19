@@ -1,6 +1,6 @@
 (function(){
 
-    var mtable = { props: ['url', 'filter', 'order'], data: null, methods: {}};
+    var mtable = { props: ['url', 'filter', 'order', 'editable', 'render'], data: null, methods: {}};
     
     mtable.data = function() {        
         var data = {url: this.url,
