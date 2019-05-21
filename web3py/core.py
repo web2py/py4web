@@ -503,6 +503,7 @@ class ErrorStorage(object):
                              Field('client_ip','string'),
                              Field('error','string'),
                              Field('snapshot','json'))
+        self.db.commit()
 
     def log(self, app_name, error_snapshot):
         ticket_uuid = str(uuid.uuid4())

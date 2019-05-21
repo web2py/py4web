@@ -134,13 +134,11 @@ input[type=datetime-local],
 input[type=file], 
 textarea {
    background-color: black;
+   border: 0;
    border-bottom: 2px solid #33BFFF;
    font-size: 20px;
    color: #33BFFF;
    width: 50vw;
-}
-input[type=text]:focus {
-   border: 0;
 }
 label {
    font-weight: bold;

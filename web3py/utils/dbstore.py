@@ -14,6 +14,7 @@ class DBStore(object):
                 Field('expiration','integer'),
                 Field('created_on', 'datetime'),
                 Field('expires_on', 'datetime'))
+            db.commit()
         self.table = db[name]
 
     def get(self, key):

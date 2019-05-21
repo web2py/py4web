@@ -7,8 +7,6 @@ from web3py.utils.auth import Auth
 from . import settings
 from .models import db
 
-print('in common')
-
 # define global objects that may or may not be used by th actions
 cache = Cache(size=1000)
 T = Translator(settings.T_FOLDER)

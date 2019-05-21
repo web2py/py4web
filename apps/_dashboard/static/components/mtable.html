@@ -44,7 +44,7 @@
         <td></td>
         <td>
           <button v-if="editable" v-on:click="save(item)">Save</button>
-          <button v-if="editable && item && item.id" v-on:click="trash(item)">Delete</button>
+          <button v-if="deletable && item && item.id" v-on:click="trash(item)">Delete</button>
           <button v-on:click="close()">Close</button>
         </td>
       </tr>
@@ -88,7 +88,7 @@
           </td>
           <td>
             <i class="fa fa-edit" v-on:click="open_edit(item)"></i>
-            <i class="fa fa-trash" v-if="editable" v-on:click="trash(item)"></i>
+            <i class="fa fa-trash" v-if="deletable" v-on:click="trash(item)"></i>
           </td>
         </tr>
       </tbody>
