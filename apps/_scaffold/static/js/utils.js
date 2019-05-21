@@ -1,6 +1,16 @@
+
 // ASSUMES Vue and Axios
 
 utils = {};
+
+utils.queryVariables = function() {
+    var vars={}, items=window.location.search.substring(1).split('&');
+    items.map(function(item){
+            var pair = item.split('=');
+            vars[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+        });
+    return vars;
+};
 
 if (!String.prototype.format) {
     // allow "bla {a} bla {b}".format({'a': 'hello', 'b': 'world'})

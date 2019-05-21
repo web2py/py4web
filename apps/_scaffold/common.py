@@ -29,5 +29,6 @@ elif settings.SESSION_TYPE == 'database':
     from web3py.utils.dbstore import DBStore
     session =  Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
-auth = Auth(db, session, define_tables=True)
-db.commit()
+auth = Auth(db, session)
+auth.base_url = '/_scaffold/auth/' ### FIX THIS SHOULD BE SOMEWHAT AUTOMATIC
+auth.enable(route='auth/<path:path>')

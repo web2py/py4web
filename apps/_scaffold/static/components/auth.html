@@ -1,5 +1,5 @@
 <div>
-  <div v-if="user === null && action=='register'">
+  <div v-if="user === null && page=='register'">
     <h2>Register</h2>
     <div>
       <input v-model="form.email" type="email" placeholder="email">
@@ -29,7 +29,7 @@
       <button v-on:click="go('request_reset_password')">Lost Password</button>
     </div>
   </div>
-  <div v-else-if="user === null && action=='login'">
+  <div v-else-if="user === null && page=='login'">
     <h2>Login</h2>
     <div>
       <input v-model="form.email" type="email" placeholder="email">
@@ -47,7 +47,7 @@
       <button v-on:click="go('request_reset_password')">Lost Password</button>
     </div>
   </div>
-  <div v-else-if="user === null && action=='request_reset_password'">
+  <div v-else-if="user === null && page=='request_reset_password'">
     <h2>Request Reset Password</h2>
     <div>
       <input v-model="form.email" type="email" placeholder="email">
@@ -57,7 +57,7 @@
       <button v-on:click="submit_rquest_reset_password()">Send Request</button>
     </div>
   </div>
-  <div v-else-if="user === null && action=='reset_password'">
+  <div v-else-if="user === null && page=='reset_password'">
     <h2>Reset Password</h2>
     <div>
       <input v-model="form.new_password" type="password" placeholder="new password">
@@ -71,7 +71,7 @@
       <button v-on:click="submit_reset_password()">Send Request</button>
     </div>
   </div>
-  <div v-else-if="user === null && action=='change_password'">
+  <div v-else-if="user === null && page=='change_password'">
     <h2>Change Password</h2>
     <div>
       <input v-model="form.old_password" type="password" placeholder="current password">
@@ -89,7 +89,7 @@
       <button v-on:click="submit_change_password()">Change Password</button>
     </div>
   </div>
-  <div v-else-if="user === null && action=='change_email'">
+  <div v-else-if="user === null && page=='change_email'">
     <h2>Change Email</h2>
     <div>
       <input v-model="form.password" type="password" placeholder="password">
@@ -107,7 +107,7 @@
       <button v-on:click="submit_change_email()">Change Email</button>
     </div>
   </div>
-  <div v-else-if="user === null && action=='edit_profile'">
+  <div v-else-if="user === null && page=='edit_profile'">
     <h2>Profile</h2>
     <div>
       <input v-model="form.first_name" type="text" placeholder="first name">
@@ -120,6 +120,14 @@
     <div>
       <button v-on:click="submit_profile()">Save Profile</button>
     </div>
+  </div>
+  <div v-else-if="user === null && page=='registered'">
+    <h2>Registered</h2>
+    <button v-on:click="go('login')">Go to login</button>
+  </div>
+  <div v-else-if="user === null && page=='request_send'">
+    <h2>Request sent</h2>
+    <button v-on:click="go('login')">Go to login</button>
   </div>
   <div>
     <button v-on:click="go('register')">Register</button>

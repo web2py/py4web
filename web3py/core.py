@@ -408,10 +408,7 @@ class action(object):
 
     def __call__(self, func):
         """builds the decorator"""
-        frame = inspect.stack()[1]
-        module = inspect.getmodule(frame[0])
-        folder = os.path.dirname(os.path.abspath(module.__file__))
-        app_name = folder[len(os.environ['WEB3PY_APPS_FOLDER'])+1:].split(os.sep)[0]
+        app_name = action.app_name
         path = ('/' if app_name == '_default' else '/%s/' % app_name) + self.path # the _default app has no prefix
         func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
@@ -562,6 +559,7 @@ class Reloader(object):
         app.routes.clear()
         new_apps = []
         for app_name in os.listdir(folder):
+            action.app_name = app_name
             path = os.path.join(folder, app_name)
             init = os.path.join(path, '__init__.py')
             if os.path.isdir(path) and not path.endswith('__') and os.path.exists(init):

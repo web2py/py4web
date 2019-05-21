@@ -66,16 +66,16 @@ class Auth(Fixture):
                 user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
         return user
 
-    def enable(self, base='auth/<path:path>'):
+    def enable(self, route='auth/<path:path>'):
         """this assumes the bottle framework and exposes all actions as /{app_name}/auth/{path}"""
         def responder(path):
-            return self.action(path, request.method, request.query, request.json)
-        action(base)(action.uses(self)(responder))
+            return self.action(path, request.method, request.query, request.json)        
+        action(route, method=['GET','POST'])(action.uses(self)(responder))
 
     def action(self, path, method, get_vars, post_vars):
         db = self.db
         if not path.startswith('api/'):
-            return Template('auth.html').transform({'action': path})        
+            return Template('auth.html').transform({'path': path})        
         data = {}
         if method == 'GET':
             if path == 'api/verify_email':
