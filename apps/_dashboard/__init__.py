@@ -5,6 +5,7 @@ import datetime
 from web3py import __version__, action, request, response, redirect, Translator
 from web3py.core import Reloader, dumps, ErrorStorage
 from yatl.helpers import BEAUTIFY
+from . utils import *
 
 FOLDER = os.environ['WEB3PY_APPS_FOLDER']
 APP_FOLDER = os.path.dirname(__file__)
@@ -65,29 +66,29 @@ def walk(path):
     store = {}
     for root, dirs, files in os.walk(top, topdown=False):
         store[root] = {
-            'dirs':[{'name':dir, 'content':store[os.path.join(root,dir)]} for dir in dirs if dir[0]!='.' and dir[:2]!='__'],
+            'dirs':[{'name':dir, 'content':store[os.path.join(root,dir)]} 
+                    for dir in dirs if dir[0]!='.' and dir[:2]!='__'],
             'files':[f for f in files if f[0]!='.' and f[-1]!='~' and f[-4:]!='.pyc']
-                     
             }
     return {'payload':store[top], 'status':'success'}
 
 @action('load/<path:path>')
 def load(path):
     """loads a text file"""
-    path = os.path.join(FOLDER, path) # ADD SECURITY
+    path = safe_join(FOLDER, path) or abort()
     content = open(path,'rb').read().decode('utf8')
     return {'payload':content, 'status':'success'}
 
 @action('load_bytes/<path:path>')
 def load_bytes(path):
     """loads a binary file"""
-    path = os.path.join(FOLDER, path) # ADD SECURITY 
+    path = safe_join(FOLDER, path) or abort()
     return open(path,'rb').read()
 
 @action('save/<path:path>', method='POST')
 def save(path):
     """saves a file"""
-    path = os.path.join(FOLDER, path) # ADD SECURITY 
+    path = safe_join(FOLDER, path) or abort()
     with open(path, 'wb') as myfile:
         myfile.write(request.body.read())
     return {'status':'success'}
@@ -95,18 +96,19 @@ def save(path):
 @action('packed/<appname>')
 def packed(appname):
     """packs an app"""
-    deposit = os.path.join(FOLDER, appname, '.deposit') # ADD SECURITY 
+    appname = sanitize(appname)
+    deposit = os.path.join(FOLDER, appname, '.deposit')
     if not os.path.exists(deposit):
         os.mkdir(deposit)
     name = 'app.'+appname+'.w3p'
     dest = os.path.join(deposit, name)
-    app_pack(dest, os.path.join('applications',appname))
+    app_pack(dest, os.path.join(FOLDER, appname))
     return static(os.path.abspath(dest))
 
 @action('delete/<path:path>', method='post')
 def delete(path):
     """deletes a file"""
-    fullpath = os.path.join(FOLDER, path) # ADD SECURITY 
+    fullpath = safe_join(FOLDER, path) or abort()
     recursive_unlink(fullpath)
     return {'status':'success'}
 
