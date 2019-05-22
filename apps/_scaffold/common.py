@@ -1,5 +1,6 @@
 """
 This file defines cache, session, and translator T object for the app
+These are fixtures that every app needs so probably you will not be editing this file
 """
 import os
 from web3py import Session, Cache, Translator
