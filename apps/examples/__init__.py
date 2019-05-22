@@ -8,6 +8,7 @@ db = DAL('sqlite://test', folder=os.path.join(os.path.dirname(__file__), 'databa
 db.define_table('thing', 
                 Field('name', requires=IS_NOT_EMPTY()),
                 Field('quantity','integer', requires=IS_INT_IN_RANGE(0,10)))
+db.commit()
 session = Session(secret='myscret')
 
 @action('do/nothing')
