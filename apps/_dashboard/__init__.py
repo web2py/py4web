@@ -55,6 +55,7 @@ def apps():
             for app in apps 
             if os.path.isdir(os.path.join(FOLDER, app)) and
             not app.startswith('__')]
+    apps.sort(key=lambda item: item['name'])
     return {'payload': apps, 'status':'success'}
 
 @action('walk/<path:path>')
@@ -66,9 +67,10 @@ def walk(path):
     store = {}
     for root, dirs, files in os.walk(top, topdown=False):
         store[root] = {
-            'dirs':[{'name':dir, 'content':store[os.path.join(root,dir)]} 
-                    for dir in dirs if dir[0]!='.' and dir[:2]!='__'],
-            'files':[f for f in files if f[0]!='.' and f[-1]!='~' and f[-4:]!='.pyc']
+            'dirs':list(sorted([{'name':dir, 'content':store[os.path.join(root,dir)]} 
+                                for dir in dirs if dir[0]!='.' and dir[:2]!='__'], 
+                               key=lambda item: item['name'])),
+            'files':list(sorted([f for f in files if f[0]!='.' and f[-1]!='~' and f[-4:]!='.pyc']))
             }
     return {'payload':store[top], 'status':'success'}
 
