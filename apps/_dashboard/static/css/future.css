@@ -68,13 +68,13 @@ button {
    transition: ease 0.4s;
 }
 .tag {
-   border: 1px solid #33BFFF;
-   color: #33BFFF;
+   background-color: #a1a1a1;
    border-radius: 5px;
    padding: 3px 10px 3px 10px;
    margin-right:5px;
    margin-bottom:5px;
    font-size: 14px;
+   color: black;
 }
 button.btn-app {
    width: 200px;

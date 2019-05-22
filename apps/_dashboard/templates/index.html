@@ -76,9 +76,7 @@
           <div class="right">
             <button v-on:click="create_new_file()">Create New File</button>
             <button v-on:click="upload_new_file()">Upload New File</button>
-            <button v-on:click="delete_selected_app()">Delete All Files</button>
             <button v-on:click="download_selected_app()">Download App</button>
-            <button v-on:click="deploy_selected_app()">Deploy App</button>
           </div>
           <treefiles :f="walk" :p="selected_app.name"></treefiles>
         </div>
@@ -106,7 +104,7 @@
             <tbody v-for="db in databases">
               <tr v-for="table in db.tables">
                 <td width="10%">
-                  <button v-bind:onclick="'window.open(\'[[=URL('dbadmin')]]?app='+selected_app.name+'&dbname='+db.name+'&tablename='+table.name+'\')'" target="dbadmin">{{db.name}}.{{table.name}}</button>
+                  <button style="width:100%" v-bind:onclick="'window.open(\'[[=URL('dbadmin')]]?app='+selected_app.name+'&dbname='+db.name+'&tablename='+table.name+'\')'" target="dbadmin">{{db.name}}.{{table.name}}</button>
                 </td>
                 <td style="padding-top:9px">
                   <span v-for="name in table.fields" class="tag">{{name}}</span>
@@ -121,7 +119,7 @@
         <label for="tickets">Recent Tickets</label>
         <div>
           <div class="right">
-            <button v-on:click="reload_tickets()">Update</button>
+            <button v-on:click="reload_tickets()">Reload Tickets</button>
           </div>
           <table v-if="tickets.length>0">
             <thead>
@@ -187,7 +185,55 @@ It is still experimental...
           <div>
             <h2>{{modal.title}}</h2>
             <p>{{modal.message}}</p>
-            <button v-for="button in modal.buttons" v-on:click="button.onclick()">{{button.text}}</button><button v-if="!modal.buttons" v-on:click="modal_dismiss()">Dismiss</button>
+            <div v-if="modal.form_name=='create-app'">
+              <table>
+                <tr>
+                  <td><input v-model="modal.form.type" type="radio" value="empty"></td>
+                  <td>Empty</td>
+                </tr>
+                <tr>
+                  <td><input v-model="modal.form.type" type="radio" value="scaffold"></td>
+                  <td>Scaffold (db, session, auth, etc. based on vue.js)</td>
+                </tr>
+                <tr>
+                  <td><input v-model="modal.form.type" type="radio" value="wiki"></td>
+                  <td>Wiki Example</td>
+                </tr>
+                <tr>
+                  <td><input v-model="modal.form.type" type="radio" value="blog"></td>
+                  <td>Blog Example</td>
+                </tr>
+                <tr>
+                  <td><input v-model="modal.form.type" type="radio" value="chat"></td>
+                  <td>Chat Example</td>
+                </tr>
+                <tr>
+                  <td><input v-model="modal.form.type" type="radio" value="git"></td>
+                  <td><input v-model="modal.form.source" type="text" placeholder="clone from git source"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td><input type="text" v-model="modal.form.name" placeholder="new app name"></td>
+                </tr>
+              </table>
+            </div>
+            <div v-if="modal.form_name=='upload-app'">
+              <table>
+                <tr>
+                  <td>
+                    <input type="file" v-modal="modal.form.file"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type="text" v-model="modal.form.name" placeholder="rename as">
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div style="text-align: right; padding-top:30px">
+              <button v-for="button in modal.buttons" v-on:click="button.onclick()">{{button.text}}</button><button v-if="!modal.buttons" v-on:click="modal_dismiss()">Dismiss</button>
+            </div>
           </div>
         </div>
       </div>

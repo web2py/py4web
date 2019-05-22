@@ -108,25 +108,28 @@ let init = (app) => {
         app.vue.modal = {title: title, color:color, message:message, buttons:buttons};
     };
     app.create_new_app = ()=> {
-        app.vue.modal = {title:'Create New App', color:'blue', message:'[WORK IN PROGRESS]'};
+        app.vue.modal = {
+            title:'Create New App', 
+            color:'blue', 
+            message:'',
+            form_name: 'create-app',
+            form: {type: '', name: '', source: ''},
+            buttons: [{text: 'Create', onclick: function() {alert('not implemented');}}, {text:'Close', onclick: app.modal_dismiss}]}; 
     };
     app.upload_new_app = ()=> {
-        app.vue.modal ={title:'Upload New App', color:'blue',message:'[WORK IN PROGRESS]'};
+        app.vue.modal = {
+            title:'Upload App', 
+            color:'blue', 
+            message:'',
+            form_name: 'upload-app',
+            form: {file: '', name: ''},
+            buttons: [{text: 'Upload', onclick: function() {alert('not implemented');}}, {text:'Close', onclick: app.modal_dismiss}]}; 
     };
     app.create_new_file = ()=> {
         app.vue.modal = {title:'Create New File', color:'blue', message:'[WORK IN PROGRESS]'};
     };
     app.upload_new_file = ()=> {
         app.vue.modal ={title:'Upload New File', color:'blue',message:'[WORK IN PROGRESS]'};
-    };
-    app.delete_selected_app = () => {
-        var name = app.vue.selected_app.name;
-        app.confirm("Delete All Files","blue","Do you really want to delete "+name+"?",()=>{
-                app.modal_dismiss();
-                axios.post('../delete/'+name).then(()=>{
-                        app.init();
-                    });
-            });
     };
     app.delete_selected_file = () => {
         var name = app.vue.selected_filename;
