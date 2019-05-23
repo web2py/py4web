@@ -182,6 +182,7 @@ It is still experimental...
         </div>
       </div>
       <div class="panel">
+        <button v-on:click="logout()">Logout</button>    
         <div class="right">
           Created by Massimo Di Pierro @ BSDv3 License
         </div>
@@ -252,6 +253,7 @@ It is still experimental...
   <script src="js/ace/ace.js"></script>
   <script src="js/ace/ext-modelist.js" type="text/javascript" charset="utf-8"></script>
   <script src="js/utils.js"></script>
+  <script>var USER_ID = [[=user_id or 0]]</script>
   <script>T.languages = [[=languages]];</script>
   <script src="js/index.js"></script>
 </html>

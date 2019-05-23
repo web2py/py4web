@@ -583,8 +583,9 @@ class Reloader(object):
                     Reloader.MODULES[app_name] = module
                     Reloader.ERRORS[app_name] = None
                 except:
-                    print('\x1b[A[FAILED] loading %s     ' % app_name)
-                    Reloader.ERRORS[app_name] = traceback.format_exc()
+                    tb = traceback.format_exc()
+                    print('\x1b[A[FAILED] loading %s     \n%s\n' % (app_name, tb))
+                    Reloader.ERRORS[app_name] = tb
         # expose static files
         for path in new_apps:
             @bottle.route('/%s/static/<filename:path>' % path.split(os.path.sep)[-1])

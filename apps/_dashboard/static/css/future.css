@@ -201,7 +201,7 @@ label {
 }
 .login {
   text-align: center;
-  background: rgba(0,0,0,0.1);
+  background: rgba(0,0,0,0.7);
   z-index: 110;
   position: fixed;
   top:0;

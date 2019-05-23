@@ -13,7 +13,7 @@ let app = {};
 let init = (app) => {
     app.data = {
         password: '',
-        user: null,
+        user: USER_ID,
         loading: true,
         message: 'test',
         info: [],
@@ -168,10 +168,12 @@ let init = (app) => {
                 app.vue.password = '';
                 if( res.data.user) {
                     app.vue.user = true;
-                    app.vue.loading = true;
                     app.init();
                 }
             });
+    };
+    app.logout = () => {
+        axios.post('../logout').then(()=>{window.location.reload();});        
     };
     app.methods = {
         select: app.select_app,
@@ -188,9 +190,10 @@ let init = (app) => {
         create_new_file: app.create_new_file,
         upload_new_file: app.upload_new_file,
         reload_tickets: app.reload_tickets,
-        modal_dismiss: app.modal_dismiss        ,
-        login: app.login
-    };   
+        modal_dismiss: app.modal_dismiss,
+        login: app.login,
+        logout: app.logout
+    };
     app.filters = {
         mil: (value) => { return (''+value).substring(0,6); }
     };
@@ -207,6 +210,7 @@ let init = (app) => {
         app.reload_tickets();
         setTimeout(()=>{app.vue.loading=false;}, 1000);
     };    
+    if (USER_ID) app.init();
 };    
 
 init(app);

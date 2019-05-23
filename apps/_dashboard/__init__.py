@@ -3,7 +3,7 @@ import sys
 import time
 import datetime
 from web3py import __version__, action, request, response, redirect, Translator
-from web3py.core import Reloader, dumps, ErrorStorage, Session
+from web3py.core import Reloader, dumps, ErrorStorage, Session, Fixture
 from pydal.validators import CRYPT
 from yatl.helpers import BEAUTIFY
 from . utils import *
@@ -17,11 +17,24 @@ error_storage = ErrorStorage()
 db = error_storage.db
 session = Session()
 
+class Logged(Fixture):
+
+    def __init__(self, session):
+        self.__prerequisites__ = [session]
+        self.session = session
+        
+    def on_request(self):
+        user = self.session.get('user')
+        if not user or not user.get('id'):
+            abort(403)
+
+protected = action.uses(Logged(session))
+
 if MODE in ('demo', 'full'):
     @action('index')
     @action.uses('index.html', session, T)
     def index():
-        return dict(languages = dumps(T.local.language))
+        return dict(languages = dumps(T.local.language), user_id=(session.get('user') or {}).get('id'))
 
     @action('login', method='POST')
     @action.uses(session)
@@ -29,14 +42,22 @@ if MODE in ('demo', 'full'):
         ### TODO PREVENT CSRF
         password = request.json.get('password')
         valid = password and CRYPT()(password)[0] == os.environ['WEB3PY_PASSWORD']
+        if valid: session['user'] = dict(id=1)
         return dict(user=valid)
+    
+    @action('logout', method='POST')
+    @action.uses(session)
+    def logout():
+        session['user'] = None
+        return dict()
 
     @action('dbadmin')
-    @action.uses('dbadmin.html', T)
+    @protected
     def dbadmin():
         return dict(languages = dumps(T.local.language))
 
-    @action('info')
+    @action('info') 
+    @protected
     def info():
         vars = [{'name':'python', 'version':sys.version}]
         for module in sorted(sys.modules):
@@ -49,12 +70,14 @@ if MODE in ('demo', 'full'):
         return {'status':'success', 'payload':vars}
 
     @action('routes')
+    @protected
     def routes():
         """returns current registered rounts"""
         return {'payload':Reloader.ROUTES, 'status':'success'}
     
 
     @action('apps')
+    @protected
     def apps():
         """returns a list of installed apps"""
         apps = os.listdir(FOLDER)
@@ -66,6 +89,7 @@ if MODE in ('demo', 'full'):
         return {'payload': apps, 'status':'success'}
 
     @action('walk/<path:path>')
+    @protected
     def walk(path):
         """returns a nested folder structure as a tree"""
         top = os.path.join(FOLDER, path)
@@ -82,6 +106,7 @@ if MODE in ('demo', 'full'):
         return {'payload':store[top], 'status':'success'}
 
     @action('load/<path:path>')
+    @protected
     def load(path):
         """loads a text file"""
         path = safe_join(FOLDER, path) or abort()
@@ -89,12 +114,14 @@ if MODE in ('demo', 'full'):
         return {'payload':content, 'status':'success'}
     
     @action('load_bytes/<path:path>')
+    @protected
     def load_bytes(path):
         """loads a binary file"""
         path = safe_join(FOLDER, path) or abort()
         return open(path,'rb').read()
 
     @action('packed/<appname>')
+    @protected
     def packed(appname):
         """packs an app"""
         appname = sanitize(appname)
@@ -107,6 +134,7 @@ if MODE in ('demo', 'full'):
         return static(os.path.abspath(dest))
     
     @action('tickets')
+    @protected
     def tickets():
         """returns most recent tickets groupped by path+error"""
         tickets = error_storage.get()
@@ -118,6 +146,7 @@ if MODE in ('demo', 'full'):
         return dict(ticket_record=BEAUTIFY(ErrorStorage().get(ticket_uuid=ticket_uuid)))
 
     @action('rest/<path:path>', method=['GET','POST','PUT','DELETE'])
+    @protected
     def api(path):
         # this is not final, equires pydal 19.5
         args = path.split('/')
@@ -148,12 +177,14 @@ if MODE in ('demo', 'full'):
     
 if MODE == 'full':
     @action('reload')
+    @protected
     def reload():
         """reloads installed apps"""
         Reloader.import_apps()
         return 'ok'
 
     @action('save/<path:path>', method='POST')
+    @protected
     def save(path):
         """saves a file"""
         path = safe_join(FOLDER, path) or abort()
@@ -163,6 +194,7 @@ if MODE == 'full':
 
 
     @action('delete/<path:path>', method='post')
+    @protected
     def delete(path):
         """deletes a file"""
         fullpath = safe_join(FOLDER, path) or abort()
