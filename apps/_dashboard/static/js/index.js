@@ -12,6 +12,8 @@ Vue.component('treefiles', {
 let app = {}; 
 let init = (app) => {
     app.data = {
+        password: '',
+        user: null,
         loading: true,
         message: 'test',
         info: [],
@@ -80,7 +82,7 @@ let init = (app) => {
     };
     app.reload = () => {
         app.vue.loading = true;
-        axios.get('../reload').then(()=>{setTimeout(()=>{app.init(); app.vue.loading=false;},2000);});
+        axios.get('../reload').then(app.init);
     };
     app.load_file = () => {
         var path = app.vue.selected_filename;
@@ -161,6 +163,16 @@ let init = (app) => {
                 app.vue.tickets = res.data.payload;
             });
     };
+    app.login = () => {
+        axios.post('../login',{'password': app.vue.password}).then(function(res){
+                app.vue.password = '';
+                if( res.data.user) {
+                    app.vue.user = true;
+                    app.vue.loading = true;
+                    app.init();
+                }
+            });
+    };
     app.methods = {
         select: app.select_app,
         select_filename: app.select_filename,
@@ -176,7 +188,8 @@ let init = (app) => {
         create_new_file: app.create_new_file,
         upload_new_file: app.upload_new_file,
         reload_tickets: app.reload_tickets,
-        modal_dismiss: app.modal_dismiss        
+        modal_dismiss: app.modal_dismiss        ,
+        login: app.login
     };   
     app.filters = {
         mil: (value) => { return (''+value).substring(0,6); }
@@ -192,9 +205,8 @@ let init = (app) => {
         app.reload_apps();
         app.reload_routes();
         app.reload_tickets();
-    };
-    app.init();
-    setTimeout(()=>{app.vue.loading=false;}, 1000);
+        setTimeout(()=>{app.vue.loading=false;}, 1000);
+    };    
 };    
 
 init(app);

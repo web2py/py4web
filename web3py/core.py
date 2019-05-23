@@ -15,6 +15,7 @@ import linecache
 import logging
 import numbers
 import os
+import getpass
 import platform
 import sys
 import threading
@@ -225,7 +226,9 @@ class Session(Fixture):
         (optional) storage must have a get(key) and set(key,value,expiration) methods
         if not provided session is stored in jwt cookie else the jwt is stored in storage and its uuid key in cookie
         """
-        if not secret and not storage: raise SyntaxError("a secret or a storage must be specified")
+        if not secret and not storage:
+            # when no secret specified one time sessions
+            secret = str(uuid.uuid4())
         self.secret = secret
         self.expiration = expiration
         self.algorithm = algorithm
@@ -639,15 +642,26 @@ def start_server(args):
 def main():
     print(ART)
     parser = argparse.ArgumentParser()
-    parser.add_argument('apps_folder', help='path to the applications folder')
-    parser.add_argument('--address', default='127.0.0.1:8000',help='serving address')
-    parser.add_argument('--number_workers', default=0, type=int, help='number of gunicorn workers')
-    parser.add_argument('--ssl_cert_filename', default=None, type=int, help='ssl certificate file')
-    parser.add_argument('--ssl_key_filename', default=None, type=int, help='ssl key file')
-    parser.add_argument('--service_db_uri', default='sqlite://service.storage', type=str, help='db uri for logging')
-    parser.add_argument('--service_folder', default='/tmp/web3py', type=str, help='db uri for logging')
+    parser.add_argument('apps_folder',
+                        help='path to the applications folder')
+    parser.add_argument('-a', '--address', default='127.0.0.1:8000',
+                        help='serving address')
+    parser.add_argument('-n', '--number_workers', default=0, type=int,
+                        help='number of gunicorn workers')
+    parser.add_argument('--ssl_cert_filename', default=None, type=int,
+                        help='ssl certificate file')
+    parser.add_argument('--ssl_key_filename', default=None, type=int,
+                        help='ssl key file')
+    parser.add_argument('--service_db_uri', default='sqlite://service.storage',
+                        type=str, help='db uri for logging')
+    parser.add_argument('--service_folder', default='.web3py-service', type=str,
+                        help='db uri for logging')
+    parser.add_argument('-d', '--dashboard_mode', default='full',
+                        help='dashboard mode: none, demo (readonly), full (default)')
     action.args = args = parser.parse_args()
     args.apps_folder = os.path.abspath(args.apps_folder)
+    if args.dashboard_mode != 'none':
+        args.password = pydal.validators.CRYPT()(getpass.getpass('Choose a one-time dashboad password: '))[0]
     for key in args.__dict__:
         os.environ['WEB3PY_'+key.upper()] = str(args.__dict__[key])
     if not os.path.exists(args.service_folder): os.makedirs(args.service_folder)

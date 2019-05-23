@@ -7,6 +7,13 @@
   <body>    
     <a href="https://github.com/you"><img style="position: absolute; width:100px; top:0; right:0; border:0;" src="../static/images/forkme.png"/></a>
     <div id="target" class="my-effects">
+      <div class="login" v-if="!user">
+        <h1>WEB3PY</h1>
+        <h2><i class="fa fa-lock fa-2x"></i></h2>
+        <form v-on:submit.prevent="login($event)">
+          <input v-model="password" type="password" placeholder="web3py password"/>
+        </form>
+      </div>
       <div class="loading" v-if="loading"></div>
       <div class="header">
         <img src="images/widget.gif" class="spinner-top"/>
@@ -26,7 +33,7 @@
               <i v-if="!app.error" class="fa fa-cog fa-spin"></i>
               <i v-else class="fa fa-cog red blink"></i>
               {{app.name}}
-              <img align="right" alt="" v-bind:src="'/'+app.name+'/static/favicon.ico'"/>
+              <img align="right" alt="" v-bind:src="'/'+app.name+'/static/favicon.ico'" height="18"/>
             </button>
           </div>
         </div>
