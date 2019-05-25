@@ -30,20 +30,26 @@ class Logged(Fixture):
 
 protected = action.uses(Logged(session))
 
-if MODE in ('demo', 'full'):
+if MODE in ('demo', 'readonly', 'full'):
     @action('index')
     @action.uses('index.html', session, T)
     def index():
-        return dict(languages = dumps(T.local.language), user_id=(session.get('user') or {}).get('id'))
+        return dict(languages = dumps(T.local.language), 
+                    mode = MODE,
+                    user_id=(session.get('user') or {}).get('id'))
 
     @action('login', method='POST')
     @action.uses(session)
     def login():
         ### TODO PREVENT CSRF
-        password = request.json.get('password')
-        valid = password and CRYPT()(password)[0] == os.environ['WEB3PY_PASSWORD']
-        if valid: session['user'] = dict(id=1)
-        return dict(user=valid)
+        if MODE == 'demo':
+            valid = True
+        else:
+            password = request.json.get('password')
+            valid = password and CRYPT()(password)[0] == os.environ['WEB3PY_PASSWORD']
+        if valid:
+            session['user'] = dict(id=1)
+        return dict(user=valid, mode=MODE)
     
     @action('logout', method='POST')
     @action.uses(session)

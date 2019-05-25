@@ -11,8 +11,9 @@
         <h1>WEB3PY</h1>
         <h2><i class="fa fa-lock fa-2x"></i></h2>
         <form v-on:submit.prevent="login($event)">
-          <input v-model="password" type="password" placeholder="web3py password"/>
+          <input v-model="password" type="password" placeholder="web3py password"/>          
         </form>
+        [[if mode=='demo':]]<div style="margin-top:10px">Demo mode: any password will get you in</div>[[pass]]
       </div>
       <div class="loading" v-if="loading"></div>
       <div class="header">
@@ -131,14 +132,14 @@
           <table v-if="tickets.length>0">
             <thead>
               <tr>
-                <td>Occurrences</td>
-                <td>Most Recent</td>
-                <td>Client IP</td>
-                <td>App</td>
-                <td>Method</td>
-                <td>Path</td>
-                <td>Error</td>
-                <td></td>
+                <th>Occurrences</th>
+                <th>Most Recent</th>
+                <th>Client IP</th>
+                <th>App</th>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Error</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>

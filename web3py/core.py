@@ -658,10 +658,10 @@ def main():
     parser.add_argument('--service_folder', default='.web3py-service', type=str,
                         help='db uri for logging')
     parser.add_argument('-d', '--dashboard_mode', default='full',
-                        help='dashboard mode: none, demo (readonly), full (default)')
+                        help='dashboard mode: demo, readonly, full (default), none')
     action.args = args = parser.parse_args()
     args.apps_folder = os.path.abspath(args.apps_folder)
-    if args.dashboard_mode != 'none':
+    if args.dashboard_mode not in ('demo', 'none'):
         args.password = pydal.validators.CRYPT()(getpass.getpass('Choose a one-time dashboad password: '))[0]
     for key in args.__dict__:
         os.environ['WEB3PY_'+key.upper()] = str(args.__dict__[key])
