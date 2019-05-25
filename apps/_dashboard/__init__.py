@@ -2,7 +2,7 @@ import os
 import sys
 import time
 import datetime
-from web3py import __version__, action, request, response, redirect, Translator
+from web3py import __version__, action, abort, request, response, redirect, Translator
 from web3py.core import Reloader, dumps, ErrorStorage, Session, Fixture
 from pydal.validators import CRYPT
 from yatl.helpers import BEAUTIFY
