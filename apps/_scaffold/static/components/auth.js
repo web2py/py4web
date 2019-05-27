@@ -6,7 +6,7 @@
         var parts = window.location.href.split('/');
         var data = {
             page: parts[parts.length-1],
-            next: utils.queryVariables('next'),
+            next: utils.getQuery('next'),
             form: {},
             errors: {},
             user: null

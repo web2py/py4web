@@ -25,6 +25,7 @@ import types
 import urllib.parse
 import uuid
 import http.client
+import http.cookies
 
 # optional web servers for speed
 try:
@@ -219,7 +220,8 @@ class Template(Fixture):
 
 class Session(Fixture):
 
-    def __init__(self, secret=None, expiration=None, algorithm='HS256', storage=None, secure=False):
+    def __init__(self, secret=None, expiration=None, algorithm='HS256', 
+                 storage=None, secure=False, same_site='Lax'):                 
         """
         secret is the shared key used to encrypt the session (using algorithm)
         expiration is in seconds
@@ -235,25 +237,31 @@ class Session(Fixture):
         self.local = threading.local()
         self.storage = storage
         self.secure = secure
+        self.same_site = same_site
         if isinstance(storage, Session):
             self.__prerequisites__ = [storage]
         if hasattr(storage, '__prerequisites__'):
             self.__prerequisites__ = storage.__prerequisites__
 
     def load(self):
-        self.local.session_cookie_name = '%s_session' % request.app_name        
-        cookie_data = _compat.to_bytes(request.get_cookie(self.local.session_cookie_name))
+        self.local.session_cookie_name = '%s_session' % request.app_name
+        raw_token = (request.get_cookie(self.local.session_cookie_name) or
+                     request.query.get('_session_token'))
+        if not raw_token and request.method in ('POST', 'PUT', 'DELETE'):
+            raw_token = ((request.forms and request.forms.get('_session_token')) or
+                         (request.json and request.json and request.json.get('_session_token')))
+        token_data = _compat.to_bytes(raw_token)
         self.local.changed = False
         self.local.secure = request.url.startswith('https')
         self.local.data = {}
-        if cookie_data:
+        if token_data:
             try:
                 if self.storage:
-                    json_data = self.storage.get(cookie_data)
+                    json_data = self.storage.get(token_data)
                     if json_data:
                         self.local.data = json.loads(json_data)
                 else:
-                    self.local.data = jwt.decode(cookie_data, self.secret, algorithms=[self.algorithm])
+                    self.local.data = jwt.decode(token_data, self.secret, algorithms=[self.algorithm])
                 if self.expiration is not None and self.storage is None:
                     assert self.local.data['timestamp'] > time.time() - int(self.expiration)
                 assert self.local.data.get('secure') == self.local.secure
@@ -272,8 +280,9 @@ class Session(Fixture):
         else:
             cookie_data = jwt.encode(self.local.data, self.secret, algorithm=self.algorithm)
         response.set_cookie(self.local.session_cookie_name, 
-                            _compat.to_native(cookie_data), path='/', secure=self.local.secure)
-
+                            _compat.to_native(cookie_data), path='/', 
+                            secure=self.local.secure,
+                            same_site=self.same_site)
 
     def get(self, key, default=None):
         return self.local.data.get(key, default)
@@ -351,6 +360,7 @@ class action(object):
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
+                response.set_cookie('app_name', request.app_name)
                 try:
                     [obj.on_request() for obj in fixtures]
                     ret = func(*args, **kwargs)
@@ -424,6 +434,12 @@ def user_in(session):
         session.on_request()
         return session.get('user', None) is not None
     return requirement
+
+#########################################################################################
+# monkey patch cookies
+#########################################################################################
+
+http.cookies.Morsel._reserved['same-site'] = 'SameSite'
 
 #########################################################################################
 # monkey patch ssl bug for gevent

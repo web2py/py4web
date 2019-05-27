@@ -84,7 +84,6 @@ class Form(object):
     - dbio: set to False to prevent any DB write
     - keep_values: if set to true, it remebers the values of the previously submitted form
     - form_name: the optional name of this form
-    - csrf: set to False to disable CRSF protection
     """
 
     def __init__(self,
@@ -96,8 +95,7 @@ class Form(object):
                  dbio=True,
                  keep_values=False,
                  form_name=False,
-                 hidden=None,
-                 csrf_uuid=None):
+                 hidden=None):
 
         if isinstance(table, list):
             dbio = False
@@ -117,7 +115,6 @@ class Form(object):
         self.formstyle = formstyle
         self.dbio = dbio
         self.keep_values = True if keep_values or self.record else False
-        self.csrf_uuid = csrf_uuid and csrf_uuid
         self.vars = {}
         self.errors = {}
         self.submitted = False
@@ -138,12 +135,7 @@ class Form(object):
             # we only a process a form if it is POST and the formkey matches (correct formname and crsf)
             # notice we never expose the crsf uuid, we only use to sign the form uuid
             if request.method == 'POST':                
-                if csrf_uuid:
-                    code, signature = post_vars['_formkey'].split('/')
-                    expected = hmac.new(to_bytes(csrf_uuid), to_bytes(self.form_name+'/'+code)).hexdigest()
-                    if signature == expected:
-                        process = True
-                elif post_vars.get('_formkey') == self.form_name:
+                if post_vars.get('_formkey') == self.form_name:
                     process = True
             if process:
                 if not post_vars.get('_delete'):
@@ -175,12 +167,7 @@ class Form(object):
                     self.deleted = True
                     self.record.delete_record()
         # store key for future CSRF
-        if csrf_uuid:
-            code = str(uuid.uuid4())
-            signature = hmac.new(to_bytes(csrf_uuid), to_bytes(self.form_name+'/'+code)).hexdigest()
-            self.formkey = '%s/%s' % (code, signature)
-        else:
-            self.formkey = self.form_name
+        self.formkey = self.form_name
 
     def update_or_insert(self):
         if self.record:

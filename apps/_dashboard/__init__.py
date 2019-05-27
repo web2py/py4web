@@ -41,7 +41,6 @@ if MODE in ('demo', 'readonly', 'full'):
     @action('login', method='POST')
     @action.uses(session)
     def login():
-        ### TODO PREVENT CSRF
         if MODE == 'demo':
             valid = True
         else:

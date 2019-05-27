@@ -1,14 +1,35 @@
-// ASSUMES Vue and Axios
 
-utils = {};
+// ASSUMES Vue and Axios
 
 if (!String.prototype.format) {
     // allow "bla {a} bla {b}".format({'a': 'hello', 'b': 'world'})
-    String.prototype.format = function () {
-        var args = arguments;
-        return this.replace(/\{[^}]+\}/g, function(match, k) { return args[k]; });
+    String.prototype.format = function (args) {
+        return this.replace(/\{([^}]+)\}/g, function(match, k) { return args[k]; });
     };
 }
+
+utils = {};
+
+utils.getQuery = function(source) {
+    souce = source || window.location.search.substring(1);
+    var vars={}, items=source.split('&');
+    items.map(function(item){
+            var pair = item.split('=');
+            vars[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+        });
+    return vars;
+};
+
+utils.getCookie = function(name) {
+    var cookie=RegExp(""+name+"[^;]+").exec(document.cookie);
+    if (!cookie) return null;
+    return decodeURIComponent(!!cookie ? cookie.toString().replace(/^[^=]+./,"") : "");
+};
+
+utils.getSessionToken = function() {
+    var app_name = utils.getCookie('app_name');
+    return utils.getCookie(app_name + '_session');
+};
 
 // clone any object
 utils.clone = function(data) { return JSON.parse(JSON.stringify(data)); };

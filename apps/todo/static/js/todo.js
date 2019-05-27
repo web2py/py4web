@@ -14,7 +14,9 @@ myapp.methods.remove = function(item_id) {
         });
 };
 myapp.methods.save = function(item_id) { 
-    axios.post(myapp.api, {info: myapp.v.input}).then(function(res){            
+    var data = {};
+    data.info = myapp.v.input;
+    axios.post(myapp.api, data).then(function(res){            
             if (myapp.v.input) myapp.v.items.unshift({id:res.data.id, info: myapp.v.input});
             myapp.v.input='';
         });

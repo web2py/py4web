@@ -16,6 +16,8 @@ db.define_table('thing', Field('name'))
 session = Session(secret='my secret')
 cache = Cache()
 
+action.app_name = 'tests'
+
 @action('index')
 @cache.memoize(expiration=1)
 @action.uses(db, session)
