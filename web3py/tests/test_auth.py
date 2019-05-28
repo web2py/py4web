@@ -1,6 +1,7 @@
 
 import os
 import unittest
+import bottle
 from web3py.core import Session, DAL, request
 from web3py.utils.auth import Auth
 
@@ -59,7 +60,11 @@ class TestAuth(unittest.TestCase):
             )            
 
         token = user.action_token[len('pending-registration')+1:]
-        self.assertTrue('<html>' in (self.auth.action('api/verify_email', 'GET', {'token': token}, {})))
+        try:
+            self.auth.action('verify_email', 'GET', {'token': token}, {})
+            assert False, 'email not verified'
+        except bottle.HTTPResponse:
+            pass
         user = self.db.auth_user[1]
         self.assertTrue(user.action_token == None)
 
