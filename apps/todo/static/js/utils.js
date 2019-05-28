@@ -11,7 +11,7 @@ if (!String.prototype.format) {
 utils = {};
 
 utils.getQuery = function(source) {
-    souce = source || window.location.search.substring(1);
+    source = source || window.location.search.substring(1);
     var vars={}, items=source.split('&');
     items.map(function(item){
             var pair = item.split('=');

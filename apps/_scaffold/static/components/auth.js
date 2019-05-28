@@ -6,7 +6,7 @@
         var parts = window.location.href.split('/');
         var data = {
             page: parts[parts.length-1],
-            next: utils.getQuery('next'),
+            next: utils.getQuery()['next'] || '../index',
             form: {},
             errors: {},
             user: null
@@ -30,9 +30,10 @@
         else if (page == 'change_email') 
             this.form = {password: '', new_email:'', new_email2:''};
         else if (page == 'edit_profile') 
-            this.form = {first_name:'', last_name: ''};        
-        else this.form = {};
-        this.errors = {}
+            this.form = {first_name:'', last_name: ''};
+        else 
+            this.form = {};
+        this.errors = {}        
         for(var key in this.form) this.errors[key] = null;
         this.page = page;
     };
@@ -40,7 +41,6 @@
     auth.methods.submit_login = function() {
         var self = this;
         axios.post('/_scaffold/auth/api/login', self.form).then(function(res){
-                console.log(res);
                 if(res.data.errors) self.errors = res.data.errors;
                 else if (res.data.status=='error') alert(res.data.message);
                 else window.location = self.next;

@@ -28,7 +28,7 @@ class Logged(Fixture):
         if not user or not user.get('id'):
             abort(403)
 
-protected = action.uses(Logged(session))
+session_secured = action.uses(Logged(session))
 
 if MODE in ('demo', 'readonly', 'full'):
     @action('index')
@@ -57,12 +57,12 @@ if MODE in ('demo', 'readonly', 'full'):
         return dict()
 
     @action('dbadmin')
-    @protected
+    @action.uses(Logged(session), 'dbadmin.html')
     def dbadmin():
         return dict(languages = dumps(T.local.language))
 
     @action('info') 
-    @protected
+    @session_secured
     def info():
         vars = [{'name':'python', 'version':sys.version}]
         for module in sorted(sys.modules):
@@ -75,14 +75,14 @@ if MODE in ('demo', 'readonly', 'full'):
         return {'status':'success', 'payload':vars}
 
     @action('routes')
-    @protected
+    @session_secured
     def routes():
         """returns current registered rounts"""
         return {'payload':Reloader.ROUTES, 'status':'success'}
     
 
     @action('apps')
-    @protected
+    @session_secured
     def apps():
         """returns a list of installed apps"""
         apps = os.listdir(FOLDER)
@@ -94,7 +94,7 @@ if MODE in ('demo', 'readonly', 'full'):
         return {'payload': apps, 'status':'success'}
 
     @action('walk/<path:path>')
-    @protected
+    @session_secured
     def walk(path):
         """returns a nested folder structure as a tree"""
         top = os.path.join(FOLDER, path)
@@ -111,7 +111,7 @@ if MODE in ('demo', 'readonly', 'full'):
         return {'payload':store[top], 'status':'success'}
 
     @action('load/<path:path>')
-    @protected
+    @session_secured
     def load(path):
         """loads a text file"""
         path = safe_join(FOLDER, path) or abort()
@@ -119,14 +119,14 @@ if MODE in ('demo', 'readonly', 'full'):
         return {'payload':content, 'status':'success'}
     
     @action('load_bytes/<path:path>')
-    @protected
+    @session_secured
     def load_bytes(path):
         """loads a binary file"""
         path = safe_join(FOLDER, path) or abort()
         return open(path,'rb').read()
 
     @action('packed/<appname>')
-    @protected
+    @session_secured
     def packed(appname):
         """packs an app"""
         appname = sanitize(appname)
@@ -139,7 +139,7 @@ if MODE in ('demo', 'readonly', 'full'):
         return static(os.path.abspath(dest))
     
     @action('tickets')
-    @protected
+    @session_secured
     def tickets():
         """returns most recent tickets groupped by path+error"""
         tickets = error_storage.get()
@@ -151,7 +151,7 @@ if MODE in ('demo', 'readonly', 'full'):
         return dict(ticket_record=BEAUTIFY(ErrorStorage().get(ticket_uuid=ticket_uuid)))
 
     @action('rest/<path:path>', method=['GET','POST','PUT','DELETE'])
-    @protected
+    @session_secured
     def api(path):
         # this is not final, equires pydal 19.5
         args = path.split('/')
@@ -182,14 +182,14 @@ if MODE in ('demo', 'readonly', 'full'):
     
 if MODE == 'full':
     @action('reload')
-    @protected
+    @session_secured
     def reload():
         """reloads installed apps"""
         Reloader.import_apps()
         return 'ok'
 
     @action('save/<path:path>', method='POST')
-    @protected
+    @session_secured
     def save(path):
         """saves a file"""
         path = safe_join(FOLDER, path) or abort()
@@ -199,7 +199,7 @@ if MODE == 'full':
 
 
     @action('delete/<path:path>', method='post')
-    @protected
+    @session_secured
     def delete(path):
         """deletes a file"""
         fullpath = safe_join(FOLDER, path) or abort()

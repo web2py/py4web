@@ -75,20 +75,19 @@ class Auth(Fixture):
     def action(self, path, method, get_vars, post_vars):
         db = self.db
         if not path.startswith('api/'):
+            if path == 'verify_email':
+                if self.verify_email(get_vars.get('token')):
+                    redirect(URL('auth/email_verified'))
+                else:
+                    redirect(URL('auth/token_expired'))
             return Template('auth.html').transform({'path': path})        
         data = {}
         if method == 'GET':
-            if path == 'api/verify_email':
-                if not self.verify_email(get_vars.get('token')):
-                    return Template('auth.html').transform({'action': 'email_verified'})
-                else:
-                    return Template('auth.html').transform({'action': 'token_expired'})
-            else:
-                user = self.get_user(safe=True)
-                if not user:
-                    data = self._error('not authoried', 401)
-                if path == 'api/profile':
-                    return {'user': user}
+            user = self.get_user(safe=True)
+            if not user:
+                data = self._error('not authoried', 401)
+            if path == 'api/profile':
+                return {'user': user}
         elif method == 'POST':
             vars = dict(post_vars)
             user = self.get_user(safe=False)
