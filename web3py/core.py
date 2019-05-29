@@ -675,10 +675,17 @@ def main():
                         help='db uri for logging')
     parser.add_argument('-d', '--dashboard_mode', default='full',
                         help='dashboard mode: demo, readonly, full (default), none')
+    parser.add_argument('-p', '--password_file', default=None,
+                        help='file containing the encrypted (CRYPT) password')
     action.args = args = parser.parse_args()
     args.apps_folder = os.path.abspath(args.apps_folder)
-    if args.dashboard_mode not in ('demo', 'none'):
+    # if we know where the password is stored, read it, else ask for one
+    if args.password_file:
+        with open(args.password_file) as fp:
+            args.password = fp.read().strip()
+    elif args.dashboard_mode not in ('demo', 'none'):
         args.password = pydal.validators.CRYPT()(getpass.getpass('Choose a one-time dashboad password: '))[0]
+    # store all args in evironment variables to make then available to the gunicorn processes
     for key in args.__dict__:
         os.environ['WEB3PY_'+key.upper()] = str(args.__dict__[key])
     if not os.path.exists(args.service_folder): os.makedirs(args.service_folder)

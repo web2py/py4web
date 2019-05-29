@@ -56,3 +56,10 @@ development version of pydal sinc pydal on pypi is outdated and we have unable t
 - gevent (done)
 - gunicorn (done)
 - bottle (done)
+
+## Password 
+
+```
+$ python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()(input('password:'))[0]))"
+./web3py-start -p password.txt apps
+```
