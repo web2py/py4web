@@ -5,6 +5,7 @@ These are fixtures that every app needs so probably you will not be editing this
 import os
 from web3py import Session, Cache, Translator
 from web3py.utils.auth import Auth
+from web3py.utils.tags import Tags
 from . import settings
 from .models import db
 
@@ -31,5 +32,6 @@ elif settings.SESSION_TYPE == 'database':
     session =  Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
 auth = Auth(db, session)
+groups = Tags(db.auth_user, 'groups') 
 auth.base_url = '/_scaffold/auth/' ### FIX THIS SHOULD BE SOMEWHAT AUTOMATIC
 auth.enable()
