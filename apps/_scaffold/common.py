@@ -32,4 +32,4 @@ elif settings.SESSION_TYPE == 'database':
 
 auth = Auth(db, session)
 auth.base_url = '/_scaffold/auth/' ### FIX THIS SHOULD BE SOMEWHAT AUTOMATIC
-auth.enable(route='auth/<path:path>')
+auth.enable()

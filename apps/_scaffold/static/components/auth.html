@@ -165,4 +165,12 @@
       <button class="button is-link" v-on:click="go('login')">Go to login</button>
     </div>
   </div>
+  <div v-else-if="page=='logout'">
+    <center>
+      <h2 class="subtitle">Logged out</h2>
+    </center>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="go('login')">Go to login</button>
+    </div>
+  </div>
 </div>

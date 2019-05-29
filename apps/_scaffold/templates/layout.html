@@ -21,16 +21,19 @@
         </a>
       </div>
       <div id="left-navbar" class="navbar-menu">
-        <div class="navbar-start">          
-          <a class="navbar-item">Home</a>
-          <a class="navbar-item">Documentation</a>          
+        <div class="navbar-start">       
+          <a class="navbar-item" href="[[=URL('index')]]">Home</a>
           [[block page_menu_items]]<!-- individual page can add menu items here -->[[end]]
         </div>
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
+              [[if globals().get('user'):]]
+              <a class="button is-primary" href="[[=URL('auth/logout')]]">Sign out</a>
+              [[else:]]
               <a class="button is-primary" href="[[=URL('auth/register')]]">Sign up</a>
-              <a class="button is-light" href="[[=URL('auth/login')]]">Log in</a>
+              <a class="button is-light" href="[[=URL('auth/login')]]">Sign in</a>
+              [[pass]]
             </div>
           </div>
         </div>

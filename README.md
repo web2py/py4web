@@ -38,6 +38,7 @@ development version of pydal sinc pydal on pypi is outdated and we have unable t
 ## Planned Integrations
 - https://pypi.org/project/bottle-auth/
 - https://github.com/jbardin/python-saml/blob/master/example_login.py
+- pyotp
 
 ## Componts
 

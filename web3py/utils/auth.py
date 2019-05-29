@@ -4,6 +4,25 @@ from web3py import redirect, request, URL, action
 from web3py.core import Fixture, Template
 from pydal.validators import IS_EMAIL, CRYPT, IS_NOT_EMPTY, IS_NOT_IN_DB
 
+class AuthEnforcer(Fixture):
+
+    def __init__(self, auth, condition=None):
+        self.__prerequisites__ = [auth]
+        self.auth = auth
+        self.condition = condition
+        
+    def abort_or_rediect(self, page):
+        if request.content_type == 'application/json':
+            abort(403)
+        redirect(URL(self.auth.route + page))
+
+    def on_request(self):
+        user = self.auth.session.get('user')
+        if not user or not user.get('id'):
+            self.abort_or_rediect('login')
+        if callable(self.condition) and not self.condition(user):
+            self.abort_or_rediect('not-authorized')
+
 class Auth(Fixture):
 
     messages = {
@@ -26,15 +45,14 @@ class Auth(Fixture):
     def __init__(self, db, session, 
                  define_tables=True, 
                  sender=None,
-                 base_url=None,
                  registration_requires_confirmation=True,
                  registration_requires_appoval=False):        
 
         self.__prerequisites__ = [db, session]
-        self.base_url = base_url
         self.db = db
         self.session = session
         self.sender = sender
+        self.route = None
         self.registration_requires_confirmation = registration_requires_confirmation
         self.registration_requires_appoval = registration_requires_appoval
         self._link = None # this variable is not thread safe (only for testing)
@@ -56,6 +74,17 @@ class Auth(Fixture):
                 Field('action_token', readable=False, writable=False),
                 *self.extra_auth_user_fields)
 
+    # validation fixtures
+    @property
+    def user(self):
+        """use as @action.uses(auth.user)"""
+        return AuthEnforcer(self)
+
+    def condition(self, condition):
+        """use as @action.uses(auth.condition(lambda user: True))"""
+        return AuthEnforcer(self, condition)
+
+    # utilities
     def get_user(self, safe=True):
         user = self.session.get('user')
         if not user or not isinstance(user, dict) or not 'id' in user:
@@ -66,16 +95,21 @@ class Auth(Fixture):
                 user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
         return user
 
-    def enable(self, route='auth/<path:path>'):
+    def enable(self, route='auth/'):
+        self.route = route
         """this assumes the bottle framework and exposes all actions as /{app_name}/auth/{path}"""
         def responder(path):
             return self.action(path, request.method, request.query, request.json)        
-        action(route, method=['GET','POST'])(action.uses(self)(responder))
+        action(route + '<path:path>', method=['GET','POST'])(action.uses(self)(responder))
+
+    # handle http requests
 
     def action(self, path, method, get_vars, post_vars):
         db = self.db
         if not path.startswith('api/'):
-            if path == 'verify_email':
+            if path == 'logout':
+                self.session['user'] = None
+            elif path == 'verify_email':
                 if self.verify_email(get_vars.get('token')):
                     redirect(URL('auth/email_verified'))
                 else:
@@ -137,7 +171,7 @@ class Auth(Fixture):
         fields['action_token'] = 'pending-registration:%s' % token
         res = self.db.auth_user.validate_and_insert(**fields)        
         if send and res.get('id'):        
-            self._link = link = self.base_url + 'api/verify_email?token=' + token 
+            self._link = link = URL(self.route + 'api/verify_email?token=' + token)
             self.send('verify_email', fields, link=link)
         return res
 
@@ -159,7 +193,7 @@ class Auth(Fixture):
             token = str(uuid.uuid4())
             user.update_record(action_token='reset-password-request:'+token)
             if send:
-                self._link = link = self.base_url + 'api/reset_password?token=' + token
+                self._link = link = URL(self.route + 'api/reset_password?token=' + token)
                 self.send('reset_password', user, link=link)
             return token
 
