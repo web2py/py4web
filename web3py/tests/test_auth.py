@@ -12,7 +12,8 @@ class TestAuth(unittest.TestCase):
         self.db = DAL('sqlite:memory')
         self.session = Session(secret="a", expiration=10)
         self.session.local.data = {}
-        self.auth = Auth(self.db, self.session, define_tables=True, base_url='//localhost/base/')
+        self.auth = Auth(self.db, self.session, define_tables=True)
+        self.auth.enable()
         request.app_name = '_scaffold'
 
     def test_register_invalid(self):

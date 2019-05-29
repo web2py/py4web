@@ -318,7 +318,7 @@ def URL(*parts, vars=None, hash=None, scheme=False):
     URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{app_name}/a/b?x=1
     """
     prefix = '/%s/' % request.app_name if request.app_name != '_default' else '/'
-    url = prefix + '/'.join(map(urllib.parse.quote, parts))
+    url = prefix + '/'.join(parts)
     if vars:
         url += '?' + '&'.join('%s=%s' % (k, urllib.parse.quote(str(v))) for k,v in vars.items())
     if hash:
@@ -326,7 +326,7 @@ def URL(*parts, vars=None, hash=None, scheme=False):
     if not scheme is False:
         orig_scheme, _, domain = request.url.split('/')[:3]
         scheme = orig_scheme if scheme is True else '' if scheme is None else scheme + ':'
-        url = '%s//%s/%s' % (scheme, domain, url)
+        url = '%s//%s%s' % (scheme, domain, url)
     return url
 
 #########################################################################################

@@ -23,32 +23,31 @@ def oops():
 @action('dbform', method=['GET','POST'])
 @action.uses('dbform.html', db, session)
 def form_example():
-    form = Form(db.thing, csrf_uuid=session.get('uuid'))
+    form = Form(db.thing)
     rows = db(db.thing).select()
     return dict(form=form, rows=rows) 
 
 @action('forms', method=['GET','POST'])
 @action.uses('forms.html', session, db)
 def multiple_form_example():
-    uuid = session.get('uuid')
     name = Field('name', requires=IS_NOT_EMPTY())
     forms = [
         Form([Field('name', requires=IS_NOT_EMPTY())],
-             csrf_uuid=uuid, form_name='1'),
+             form_name='1'),
         Form([Field('name', requires=IS_NOT_EMPTY())],
-             csrf_uuid=uuid, form_name='2', keep_values=True),
+             form_name='2', keep_values=True),
         Form([Field('name', requires=IS_NOT_EMPTY()),
               Field('age','integer')], 
-             csrf_uuid=uuid, form_name='3'),
+             form_name='3'),
         Form([Field('name', requires=IS_NOT_EMPTY()),
               Field('insane','boolean')], 
-             csrf_uuid=uuid, form_name='4'),
+             form_name='4'),
         Form([Field('name', requires=IS_NOT_EMPTY()),
               Field('color',requires=IS_IN_SET(['red','blue','gree']))], 
-             csrf_uuid=uuid, form_name='5'),
+             form_name='5'),
         Form([Field('name', requires=IS_NOT_EMPTY()),
               Field('favorite_thing', requires=IS_IN_DB(db, 'thing.id', 'thing.name'))], 
-             csrf_uuid=uuid, form_name='6')]
+             form_name='6')]
     messages = []
     for form in forms:
         if form.accepted:

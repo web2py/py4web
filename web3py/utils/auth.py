@@ -171,7 +171,7 @@ class Auth(Fixture):
         fields['action_token'] = 'pending-registration:%s' % token
         res = self.db.auth_user.validate_and_insert(**fields)        
         if send and res.get('id'):        
-            self._link = link = URL(self.route + 'api/verify_email?token=' + token)
+            self._link = link = URL(self.route + 'api/verify_email?token=' + token, scheme=True)
             self.send('verify_email', fields, link=link)
         return res
 
@@ -193,7 +193,7 @@ class Auth(Fixture):
             token = str(uuid.uuid4())
             user.update_record(action_token='reset-password-request:'+token)
             if send:
-                self._link = link = URL(self.route + 'api/reset_password?token=' + token)
+                self._link = link = URL(self.route + 'api/reset_password?token=' + token, scheme=True)
                 self.send('reset_password', user, link=link)
             return token
 
