@@ -5,7 +5,7 @@
 }
 html {
    background: black;
-   color: #a1a1a1;
+   color: #d1d1d1;
    font-size: 14px;
    font-family: helvetica;
 }
@@ -16,8 +16,8 @@ p {
    margin-bottom: 10px;
 }
 .logo {
-   padding: 10px;
-   font-size: 80px;
+   padding: 18px;
+   font-size: 64px;
    position: absolute;
    top: 0;
 }
@@ -44,7 +44,7 @@ td, th {
 }
 th {
    color: black;
-   background-color: #a1a1a1;
+   background-color: #d1d1d1;
    width: 1%;
 }
 td.middle {
@@ -67,8 +67,18 @@ button {
    -moz-transition: ease 0.4s;
    transition: ease 0.4s;
 }
+button.btn-app {
+   width: 200px;
+   padding: 4px 20px 6px 10px;  
+   text-align: left;   
+}
+button:hover {
+   border: 2px solid #139FDF;
+   box-shadow: inset 0 0 0 50px #33BFFF; 
+   color: black;
+}
 .tag {
-   background-color: #a1a1a1;
+   background-color: #d1d1d1;
    border-radius: 5px;
    padding: 3px 10px 3px 10px;
    margin-right:5px;
@@ -76,15 +86,7 @@ button {
    font-size: 14px;
    color: black;
 }
-button.btn-app {
-   width: 200px;
-   padding: 4px 20px 6px 10px;  
-   text-align: left;   
-}
-button:hover {
-   box-shadow: inset 0 0 0 50px #33BFFF;
-   color: black;
-}
+
 .my-effects a, .my-effects a:hover, .my-effects a:visited { color: #33BFFF; text-decoration:none }
 .my-effects a:not(.btn) {position:relative}
 .my-effects a:not(.btn):hover {color:#33BFFF;}
@@ -117,9 +119,9 @@ button:hover {
    font-size: 24px;
    font-weight: normal;
    border: 4px solid #33BFFF;
-   background-image: linear-gradient(135deg, #33BFFF 50%, #139FDF 50.5%);
+   background: linear-gradient(to right, #139FDF, #33BFFF);
    color: black;
-   padding: 0 6px;   
+   padding: 2px 6px;   
    opacity: 1.0;
    position: absolute;
    top: 0;
@@ -151,8 +153,8 @@ label {
    max-width: 400px;
 }
 .my-effects .accordion>label{cursor:pointer}
-.my-effects .accordion>input ~ label:before {content:"+ ";}
-.my-effects .accordion>input:checked ~ label:before {content:"- ";}
+.my-effects .accordion>input ~ label:before {content:"▲ "; display: inline-block; width:1.2em; font-size: 0.6em}
+.my-effects .accordion>input:checked ~ label:before {content:"▼ ";}
 .my-effects .accordion>input {display:none}
 .my-effects .accordion>input:checked ~ *:not(label) {
   padding-top: 10px;
@@ -243,7 +245,8 @@ label {
   background-position: center center;
 }
 .right {
-  float:right
+  text-align: right;
+  margin-bottom: 10px;
 }
 .fa.red {
   background-color: transparent;
@@ -265,4 +268,7 @@ label {
 }
 
 #editor {width:100%; height:100vh;}
-
+.files li, .dirs li {
+  margin: 5px;
+  font-size: 1.1em;
+}

@@ -61,24 +61,22 @@ ART = r"""
 It is still experimental...
 """
 
-HTTP = bottle.HTTPResponse
 Field = pydal.Field
 render = yatl.render
 request = bottle.request
 response = bottle.response
-redirect = bottle.redirect
 abort = bottle.abort
 
 ########################################################################################
 # a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
 #########################################################################################
 
-class Node(object):
+class Node:
 
     def __init__(self, key=None, value=None, t=None, m=None, prev=None, next=None):
         self.key, self.value, self.t, self.m, self.prev, self.next = key, value, t, m, prev, next
 
-class Cache(object):
+class Cache:
     """
     O(1) caching object that remembers the 'size' most recent values
     Example:
@@ -162,7 +160,7 @@ def dumps(obj, sort_keys=True, indent=2):
 # Generic Fixture (database connctions, templates, sessions, and requirements are fixtures)
 #########################################################################################
 
-class Fixture(object):
+class Fixture:
     def on_request(self): pass   # called when request arrives
     def on_error(self): pass     # called when request errors
     def on_success(self): pass   # called when request is successfull
@@ -279,8 +277,9 @@ class Session(Fixture):
             self.storage.set(cookie_data, json.dumps(self.local.data), self.expiration)
         else:
             cookie_data = jwt.encode(self.local.data, self.secret, algorithm=self.algorithm)
+
         response.set_cookie(self.local.session_cookie_name, 
-                            _compat.to_native(cookie_data), path='/', 
+                            _compat.to_native(cookie_data), path='/',
                             secure=self.local.secure,
                             same_site=self.same_site)
 
@@ -333,7 +332,19 @@ def URL(*parts, vars=None, hash=None, scheme=False):
 # the action decorator
 #########################################################################################
 
-class action(object):
+class HTTP(BaseException):
+    """our HTTP exception does not delete cookies and headers like bottle.HTTPResponse does
+    it is consider success, not failure"""
+    def __init__(self, status):
+        self.status = status
+    
+def redirect(location):
+    """our redirect does not delete cookies and headers like bottle.HTTPResponse does,
+    it is consider success, not failure"""
+    response.set_header('Location', location)
+    raise HTTP(303)
+
+class action:
     """@action(...) is a decorator for functions to be exposed as actions"""
 
     current = threading.local()
@@ -360,7 +371,6 @@ class action(object):
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
-                response.set_cookie('app_name', request.app_name)
                 try:
                     [obj.on_request() for obj in fixtures]
                     ret = func(*args, **kwargs)
@@ -368,6 +378,9 @@ class action(object):
                         ret = obj.transform(ret)
                     [obj.on_success() for obj in fixtures]                    
                     return ret
+                except HTTP:
+                    [obj.on_success() for obj in fixtures]
+                    raise
                 except Exception:
                     [obj.on_error() for obj in fixtures]
                     raise
@@ -399,8 +412,11 @@ class action(object):
                     response.headers['Content-Type'] = 'application/json'
                     ret = dumps(ret)
                 return ret
-            except bottle.HTTPResponse as e:
-                raise e
+            except HTTP as http:
+                response.status = http.status
+                return ''
+            except bottle.HTTPResponse:
+                raise
             except Exception:
                 logging.error(traceback.format_exc())
                 try:
@@ -505,7 +521,7 @@ def get_error_snapshot(depth=5):
     return data
 
 
-class ErrorStorage(object):
+class ErrorStorage:
     def __init__(self):
         uri = os.environ['WEB3PY_SERVICE_DB_URI']
         folder = os.environ['WEB3PY_SERVICE_FOLDER']
@@ -564,7 +580,7 @@ class ErrorStorage(object):
 # loading/reloading logic
 #########################################################################################
 
-class Reloader(object):
+class Reloader:
 
     ROUTES = []
     MODULES = {}
@@ -602,10 +618,12 @@ class Reloader(object):
                     tb = traceback.format_exc()
                     print('\x1b[A[FAILED] loading %s     \n%s\n' % (app_name, tb))
                     Reloader.ERRORS[app_name] = tb
-        # expose static files
+        # expose static files with support for static asset management
         for path in new_apps:
-            @bottle.route('/%s/static/<filename:path>' % path.split(os.path.sep)[-1])
-            def server_static(filename, path=path):
+            app_name = path.split(os.path.sep)[-1]
+            @bottle.route('/%s/static/<filename:path>' % app_name)
+            @bottle.route('/%s/static/_<version:re:\d+\.\d+\.\d+>/<filename:path>' % app_name)
+            def server_static(filename, path=path, version=None):
                 return bottle.static_file(filename, root=os.path.join(path, 'static'))
         # register routes
         routes = []

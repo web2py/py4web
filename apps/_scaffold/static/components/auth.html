@@ -32,7 +32,7 @@
   <div v-else-if="user === null && page=='login'">
     <center>
       <h2 class="subtitle">Login</h2>
-    </center>
+    </center>    
     <div class="field">
       <input class="input" v-model="form.email" type="email" placeholder="email">
       <span v-if="errors.email">{{errors.email}}</span>

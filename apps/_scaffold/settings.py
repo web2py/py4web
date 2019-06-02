@@ -18,5 +18,17 @@ SESSION_SECRET_KEY = '<my secret key>'
 MEMCACHE_CLIENTS = ['127.0.0.1:11211']
 REDIS_SERVER = 'localhost:6379'
 
+# single sign on Google (will be used if provided)
+OAUTH2GOOGLE_CLIENT_ID = None
+OAUTH2GOOGLE_CLIENT_SECRET = None
+
+# single sign on Google (will be used if provided)
+OAUTH2FACEBOOK_CLIENT_ID = None
+OAUTH2FACEBOOK_CLIENT_SECRET = None
+
 # i18n settings
 T_FOLDER = os.path.join(APP_FOLDER, 'translations')
+
+# try import private settings
+try: from . settings_private import *
+except: pass

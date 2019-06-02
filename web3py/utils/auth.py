@@ -1,8 +1,13 @@
 import hashlib
+import urllib
 import uuid
-from web3py import redirect, request, URL, action
+
+import requests
+
+from web3py import redirect, request, response, abort, URL, action
 from web3py.core import Fixture, Template
 from pydal.validators import IS_EMAIL, CRYPT, IS_NOT_EMPTY, IS_NOT_IN_DB
+
 
 class AuthEnforcer(Fixture):
 
@@ -42,13 +47,15 @@ class Auth(Fixture):
     
     extra_auth_user_fields = []
 
-    def __init__(self, db, session, 
+    def __init__(self, session, db,
                  define_tables=True, 
                  sender=None,
                  registration_requires_confirmation=True,
                  registration_requires_appoval=False):        
 
-        self.__prerequisites__ = [db, session]
+        self.__prerequisites__ = []
+        if session: self.__prerequisites__.append(session)
+        if db: self.__prerequisites__.append(db)
         self.db = db
         self.session = session
         self.sender = sender
@@ -56,8 +63,9 @@ class Auth(Fixture):
         self.registration_requires_confirmation = registration_requires_confirmation
         self.registration_requires_appoval = registration_requires_appoval
         self._link = None # this variable is not thread safe (only for testing)
-        if define_tables:
+        if db and define_tables:
             self.define_tables()
+        self.plugins = []
 
     def define_tables(self):
         db = self.db
@@ -89,13 +97,14 @@ class Auth(Fixture):
         user = self.session.get('user')
         if not user or not isinstance(user, dict) or not 'id' in user:
             return None
-        if len(user) == 1:
+        if len(user) == 1 and self.db:
             user = self.db.auth_user(user['id'])
             if safe:
                 user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
         return user
 
     def enable(self, route='auth/'):
+        self.plugin_maps = {plugin.name: plugin for plugin in self.plugins}
         self.route = route
         """this assumes the bottle framework and exposes all actions as /{app_name}/auth/{path}"""
         def responder(path):
@@ -105,16 +114,19 @@ class Auth(Fixture):
     # handle http requests
 
     def action(self, path, method, get_vars, post_vars):
-        db = self.db
         if not path.startswith('api/'):
             if path == 'logout':
                 self.session['user'] = None
-            elif path == 'verify_email':
+                # somehow call revoke for active plugin
+            elif path == 'verify_email' and self.db:
                 if self.verify_email(get_vars.get('token')):
                     redirect(URL('auth/email_verified'))
                 else:
                     redirect(URL('auth/token_expired'))
-            return Template('auth.html').transform({'path': path})        
+            elif path.startswith('sso/callback/'):
+                self._handle_sso_callback(plugin_name=path[13:], query=request.query)
+                redirect(URL('welcome'))
+            return Template('auth.html').transform({'path': path, 'plugins': self.plugins})        
         data = {}
         if method == 'GET':
             user = self.get_user(safe=True)
@@ -122,7 +134,7 @@ class Auth(Fixture):
                 data = self._error('not authoried', 401)
             if path == 'api/profile':
                 return {'user': user}
-        elif method == 'POST':
+        elif method == 'POST' and self.db:
             vars = dict(post_vars)
             user = self.get_user(safe=False)
             if path == 'api/register':
@@ -171,7 +183,7 @@ class Auth(Fixture):
         fields['action_token'] = 'pending-registration:%s' % token
         res = self.db.auth_user.validate_and_insert(**fields)        
         if send and res.get('id'):        
-            self._link = link = URL(self.route + 'api/verify_email?token=' + token, scheme=True)
+            self._link = link = URL(self.route + 'verify_email?token=' + token, scheme=True)
             self.send('verify_email', fields, link=link)
         return res
 
@@ -268,6 +280,37 @@ class Auth(Fixture):
 
     def _error(self, message, code=400):
         return {'status': 'error', 'message': message, 'code': code}
+
+    def _handle_sso_callback(self, plugin_name, query):
+        plugin = self.plugin_maps[plugin_name]
+        if not plugin:
+            abort(404)
+        data = plugin.callback(request.query)
+        if not data or 'error' in data:
+            abort(401)
+        if self.db:
+            # map returned fields into auth_user fields
+            user = {}
+            for key, value in plugin.maps.items():
+                value, parts = data, value.split('.')
+                for part in parts:
+                    value = value[int(part) if part.isdigit() else part]
+                    user[key] = value
+            # store or retrieve the user
+            db = self.db
+            sso_id = '%s:%s' % (plugin_name, user['id'])
+            row = db(db.auth_user.sso_id == sso_id).select(limitby=(0,1)).first()
+            if row:
+                data = row.as_dict()
+            else:
+                data = user
+                data['sso_id'] = sso_id
+                data['id'] = db.auth_user.insert(**db.auth_user._filter_fields(user))
+        else:
+            # WIP Allow login without DB
+            if not 'id' in data:
+                data['id'] = data.get('username') or data.get('email')
+        self.session['user'] = data
 
     # other service methods (that can be overwritten)
 

@@ -1,4 +1,7 @@
-Auth + SSO integration
+test Facebook OAuth2
+implement twitter OAuth2
+implement CAS + SAML + LDAP + PAM
+implement next on SSO and login redirects
 Fix _dashboard import/export/recreate apps
 Fix _dashboard ticket search and tiket presentation
 Add mtable support for list: types, upload/download, and autocomplete 
@@ -7,3 +10,4 @@ Message Queue examples
 
 https://github.com/valq7711/vue2pyj/tree/master/vue3pyj
 https://modulegraph.readthedocs.io/en/latest/find_modules.html
+https://jenil.github.io/bulmaswatch/lux/

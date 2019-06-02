@@ -12,6 +12,7 @@ class Tags(object):
             table._tablename + '_tag_' + name,
             Field('path'),
             Field('record_id', table))
+        db.commit()
 
     def get(self, record_id):
         tag_table = self.tag_table

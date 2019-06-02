@@ -31,7 +31,20 @@ elif settings.SESSION_TYPE == 'database':
     from web3py.utils.dbstore import DBStore
     session =  Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
-auth = Auth(db, session)
-groups = Tags(db.auth_user, 'groups') 
-auth.base_url = '/_scaffold/auth/' ### FIX THIS SHOULD BE SOMEWHAT AUTOMATIC
+auth = Auth(session, db)
+
+if auth.db:
+    groups = Tags(db.auth_user, 'groups') 
+
+if settings.OAUTH2GOOGLE_CLIENT_ID:
+    from web3py.utils.auth_plugins.oauth2google import OAuth2Google # TESTED
+    auth.plugins.append(OAuth2Google(client_id=settings.OAUTH2GOOGLE_CLIENT_ID,
+                                     client_secret=settings.OAUTH2GOOGLE_CLIENT_SECRET,
+                                     callback_url='auth/sso/callback/oauth2google'))
+if settings.OAUTH2FACEBOOK_CLIENT_ID:
+    from web3py.utils.auth_plugins.oauth2facebook import OAuth2Facebook # UNTESTED
+    auth.plugins.append(OAuth2Facebook(client_id=settings.OAUTH2FACEBOOK_CLIENT_ID,
+                                       client_secret=settings.OAUTH2FACEBOOK_CLIENT_SECRET,
+                                       callback_url='auth/sso/callback/oauth2google'))
 auth.enable()
+

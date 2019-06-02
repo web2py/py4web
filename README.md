@@ -17,7 +17,9 @@ open http://localhost:8000/todo/index
 - uses the same validators as web2py (they are in pyDAL)
 - uses the very similar helpers to web2py (A, DIV, SPAN, etc.)
 - uses https://github.com/web2py/pluralize for i18n and pluralization
-- request, response, abort, redirect are from https://bottlepy.org
+- request, response, abort are from https://bottlepy.org
+- HTTP and redirect are our own objects
+- like web2py it supports static asset management /{appname}/static/_0.0.0/{path}
 - implements sessions in cookies (jwt encrypted), db, memcache, redis and custom
 - implements a cache.memoize (Ram cache with O(1) access)
 - supports multiple apps under apps folder (same as web2py)
