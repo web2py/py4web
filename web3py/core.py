@@ -184,8 +184,9 @@ class Template(Fixture):
 
     cache = Cache(100)
 
-    def __init__(self, filename, delimiters='[[ ]]'):
+    def __init__(self, filename, path=None, delimiters='[[ ]]'):
         self.filename = filename
+        self.path = path
         self.delimiters = delimiters
 
     @staticmethod
@@ -206,7 +207,7 @@ class Template(Fixture):
         context.update(output)
         context['__vars__'] = output
         app_folder = os.path.join(os.environ['WEB3PY_APPS_FOLDER'], request.app_name)
-        path = os.path.join(app_folder, 'templates')
+        path = self.path or os.path.join(app_folder, 'templates')
         filename = os.path.join(path, self.filename)
         output = yatl.render(Template.reader(filename), path=path, context=context, 
                              delimiters=self.delimiters, reader=Template.reader)

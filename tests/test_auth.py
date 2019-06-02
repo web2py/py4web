@@ -2,7 +2,7 @@
 import os
 import unittest
 import bottle
-from web3py.core import Session, DAL, request
+from web3py.core import Session, DAL, request, HTTP
 from web3py.utils.auth import Auth
 
 class TestAuth(unittest.TestCase):
@@ -12,7 +12,7 @@ class TestAuth(unittest.TestCase):
         self.db = DAL('sqlite:memory')
         self.session = Session(secret="a", expiration=10)
         self.session.local.data = {}
-        self.auth = Auth(self.db, self.session, define_tables=True)
+        self.auth = Auth(self.session, self.db, define_tables=True)
         self.auth.enable()
         request.app_name = '_scaffold'
 
@@ -64,7 +64,7 @@ class TestAuth(unittest.TestCase):
         try:
             self.auth.action('verify_email', 'GET', {'token': token}, {})
             assert False, 'email not verified'
-        except bottle.HTTPResponse:
+        except HTTP:
             pass
         user = self.db.auth_user[1]
         self.assertTrue(user.action_token == None)
