@@ -1,25 +1,67 @@
 import urllib
 import requests
-from web3py.core import URL
+from web3py.core import URL, abort, redirect
 
 class SSO(object):
 
     name = 'undefined'
-    login_button_content = ''
-    login_button_class = ''
+    maps = {}
+
+    ### methods that must be overwritten
 
     def __init__(self, **parameters):
         self.parameters = parameters
 
     def get_login_url(self):
-        pass
+        """returns the url for login"""
+        return ''
 
-    def calback(self, query, session=None):
-        pass
+    def callback(self, get_vars):
+        return {}
+
+    ### methods that probably do not need to be overwritten
+    
+    def handle_request(self, auth, path, get_vars, post_vars):
+        if path == 'login':
+            redirect(self.get_login_url())
+        elif path == 'callback':
+            self._handle_callback(auth, get_vars)
+        else:
+            abort(404)
+
+    def _handle_callback(self, auth, get_vars):
+        data = self.callback(get_vars)
+        if not data or 'error' in data:
+            abort(401)
+        if auth.db:
+            # map returned fields into auth_user fields                                                                
+            user = {}
+            for key, value in self.maps.items():
+                value, parts = data, value.split('.')
+                for part in parts:
+                    value = value[int(part) if part.isdigit() else part]
+                    user[key] = value
+            # store or retrieve the user                                                                               
+            db = auth.db
+            sso_id = '%s:%s' % (self.name, user['id'])
+            row = db(db.auth_user.sso_id == sso_id).select(limitby=(0,1)).first()
+            if row:
+                data = row.as_dict()
+            else:
+                data = user
+                data['sso_id'] = sso_id
+                data['id'] = db.auth_user.insert(**db.auth_user._filter_fields(user))
+        else:
+            # WIP Allow login without DB                                                                  
+            if not 'id' in data:
+                data['id'] = data.get('username') or data.get('email')
+        auth.session['user'] = data
+        redirect(URL('welcome'))
 
     @staticmethod
     def _build_url(base, data):
         return base + '?' + '&'.join('%s=%s' % (k, urllib.parse.quote(v)) for k,v in data.items())
+
 
 class OAuth2(SSO):
     name = 'undefined'

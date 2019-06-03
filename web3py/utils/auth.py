@@ -65,7 +65,7 @@ class Auth(Fixture):
         self._link = None # this variable is not thread safe (only for testing)
         if db and define_tables:
             self.define_tables()
-        self.plugins = []
+        self.plugins = {}
 
     def define_tables(self):
         db = self.db
@@ -103,8 +103,10 @@ class Auth(Fixture):
                 user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
         return user
 
+    def register_plugin(self, plugin):
+        self.plugins[plugin.name] = plugin
+
     def enable(self, route='auth/'):
-        self.plugin_maps = {plugin.name: plugin for plugin in self.plugins}
         self.route = route
         """this assumes the bottle framework and exposes all actions as /{app_name}/auth/{path}"""
         def responder(path):
@@ -114,66 +116,69 @@ class Auth(Fixture):
     # handle http requests
 
     def action(self, path, method, get_vars, post_vars):
-        if not path.startswith('api/'):
-            if path == 'logout':
-                self.session['user'] = None
-                # somehow call revoke for active plugin
-            elif path == 'verify_email' and self.db:
-                if self.verify_email(get_vars.get('token')):
-                    redirect(URL('auth/email_verified'))
-                else:
-                    redirect(URL('auth/token_expired'))
-            elif path.startswith('sso/callback/'):
-                self._handle_sso_callback(plugin_name=path[13:], query=request.query)
-                redirect(URL('welcome'))
-            return Template('auth.html').transform({'path': path, 'plugins': self.plugins})        
-        data = {}
-        if method == 'GET':
-            user = self.get_user(safe=True)
-            if not user:
-                data = self._error('not authoried', 401)
-            if path == 'api/profile':
-                return {'user': user}
-        elif method == 'POST' and self.db:
-            vars = dict(post_vars)
-            user = self.get_user(safe=False)
-            if path == 'api/register':
-                data = self.register(vars, send=True).as_dict()
-            elif path == 'api/login':
-                user, error = self.login(**vars)
-                if user:
-                    self.session['user'] = {'id': user.id}
-                    user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
-                    data = {'user': user}
-                else:
-                    data = self._error(error)
-            elif path == 'api/request_reset_password':
-                if not self.request_reset_password(**vars):
-                    data = self._error('invalid user')
-            elif path == 'api/reset_password':
-                if not self.reset_password(vars.get('token'), vars.get('new_password')):
-                    data = self._error('invalid token, request expired')
-            elif user and path == 'api/logout':
-                self.session['user'] = None
-            elif user and path == 'api/unsubscribe':
-                self.session['user'] = None
-                self.gdpr_unsubscribe(user, send=True)
-            elif user and path == 'api/change_password':
-                data = self.change_password(user, vars.get('new_password'), vars.get('password'))
-            elif user and path == 'api/change_email':
-                data = self.change_email(user, vars.get('new_email'), vars.get('password'))
-            elif user and path == 'api/update_profile':
-                data = self.update_profile(user, **vars)
+        if path.startswith('plugin/'):
+            parts = path.split('/',2)
+            plugin = self.plugins.get(parts[1])
+            if plugin:
+                return plugin.handle_request(self, parts[2], request.query, request.json)
             else:
-                data = {'status': 'error', 'message': 'undefined'}
-
-        if not 'status' in data and data.get('errors'):
-            data.update(status='error', message='validation errors', code=401)
-        elif 'errors' in data and not data['errors']: 
-            del data['errors']
-        data['status'] = data.get('status', 'success') 
-        data['code'] = data.get('code', 200)        
-        return data
+                abort(404)
+        if path.startswith('api/'):
+            data = {}
+            if method == 'GET':
+                user = self.get_user(safe=True)
+                if not user:
+                    data = self._error('not authoried', 401)
+                if path == 'api/profile':
+                    return {'user': user}
+            elif method == 'POST' and self.db:
+                vars = dict(post_vars)
+                user = self.get_user(safe=False)
+                if path == 'api/register':
+                    data = self.register(vars, send=True).as_dict()
+                elif path == 'api/login':
+                    user, error = self.login(**vars)
+                    if user:
+                        self.session['user'] = {'id': user.id}
+                        user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
+                        data = {'user': user}
+                    else:
+                        data = self._error(error)
+                elif path == 'api/request_reset_password':
+                    if not self.request_reset_password(**vars):
+                        data = self._error('invalid user')
+                elif path == 'api/reset_password':
+                    if not self.reset_password(vars.get('token'), vars.get('new_password')):
+                        data = self._error('invalid token, request expired')
+                elif user and path == 'api/logout':
+                    self.session['user'] = None
+                elif user and path == 'api/unsubscribe':
+                    self.session['user'] = None
+                    self.gdpr_unsubscribe(user, send=True)
+                elif user and path == 'api/change_password':
+                    data = self.change_password(user, vars.get('new_password'), vars.get('password'))
+                elif user and path == 'api/change_email':
+                    data = self.change_email(user, vars.get('new_email'), vars.get('password'))
+                elif user and path == 'api/update_profile':
+                    data = self.update_profile(user, **vars)
+                else:
+                    data = {'status': 'error', 'message': 'undefined'}
+            if not 'status' in data and data.get('errors'):
+                data.update(status='error', message='validation errors', code=401)
+            elif 'errors' in data and not data['errors']: 
+                del data['errors']
+            data['status'] = data.get('status', 'success')
+            data['code'] = data.get('code', 200)
+            return data
+        elif path == 'logout':
+            self.session['user'] = None
+            # somehow call revoke for active plugin
+        elif path == 'verify_email' and self.db:
+            if self.verify_email(get_vars.get('token')):
+                redirect(URL('auth/email_verified'))
+            else:
+                redirect(URL('auth/token_expired'))
+        return Template('auth.html').transform({'path': path})        
 
     # methods that do not assume a user
 
@@ -280,37 +285,6 @@ class Auth(Fixture):
 
     def _error(self, message, code=400):
         return {'status': 'error', 'message': message, 'code': code}
-
-    def _handle_sso_callback(self, plugin_name, query):
-        plugin = self.plugin_maps[plugin_name]
-        if not plugin:
-            abort(404)
-        data = plugin.callback(request.query)
-        if not data or 'error' in data:
-            abort(401)
-        if self.db:
-            # map returned fields into auth_user fields
-            user = {}
-            for key, value in plugin.maps.items():
-                value, parts = data, value.split('.')
-                for part in parts:
-                    value = value[int(part) if part.isdigit() else part]
-                    user[key] = value
-            # store or retrieve the user
-            db = self.db
-            sso_id = '%s:%s' % (plugin_name, user['id'])
-            row = db(db.auth_user.sso_id == sso_id).select(limitby=(0,1)).first()
-            if row:
-                data = row.as_dict()
-            else:
-                data = user
-                data['sso_id'] = sso_id
-                data['id'] = db.auth_user.insert(**db.auth_user._filter_fields(user))
-        else:
-            # WIP Allow login without DB
-            if not 'id' in data:
-                data['id'] = data.get('username') or data.get('email')
-        self.session['user'] = data
 
     # other service methods (that can be overwritten)
 

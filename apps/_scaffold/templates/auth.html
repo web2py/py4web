@@ -2,17 +2,7 @@
 <div id="vue">
   <div class="columns">
     <div class="column is-half is-offset-one-quarter" style="border : 1px solid #e1e1e1; border-radius: 10px">
-      [[if not plugins:]]
-      <auth></auth>
-      [[else:]]
-      [[for plugin in plugins:]]
-      <div class="login_button" style="text-align:center; margin:10px;">
-        <a href="[[=plugin.get_login_url()]]" class="button is-primary" style="width:250px">
-          [[=plugin.login_button_content]]
-        </a>
-      </div>
-      [[pass]]
-      [[pass]]
+      <auth plugins="local,oauth2google,oauth2facebook"></auth>
     </div>
   </div>
 </div>

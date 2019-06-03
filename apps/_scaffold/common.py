@@ -38,13 +38,13 @@ if auth.db:
 
 if settings.OAUTH2GOOGLE_CLIENT_ID:
     from web3py.utils.auth_plugins.oauth2google import OAuth2Google # TESTED
-    auth.plugins.append(OAuth2Google(client_id=settings.OAUTH2GOOGLE_CLIENT_ID,
-                                     client_secret=settings.OAUTH2GOOGLE_CLIENT_SECRET,
-                                     callback_url='auth/sso/callback/oauth2google'))
+    auth.register_plugin(OAuth2Google(client_id=settings.OAUTH2GOOGLE_CLIENT_ID,
+                                      client_secret=settings.OAUTH2GOOGLE_CLIENT_SECRET,
+                                      callback_url='auth/plugin/oauth2google/callback'))
 if settings.OAUTH2FACEBOOK_CLIENT_ID:
     from web3py.utils.auth_plugins.oauth2facebook import OAuth2Facebook # UNTESTED
-    auth.plugins.append(OAuth2Facebook(client_id=settings.OAUTH2FACEBOOK_CLIENT_ID,
-                                       client_secret=settings.OAUTH2FACEBOOK_CLIENT_SECRET,
-                                       callback_url='auth/sso/callback/oauth2google'))
+    auth.register_plugin(OAuth2Facebook(client_id=settings.OAUTH2FACEBOOK_CLIENT_ID,
+                                        client_secret=settings.OAUTH2FACEBOOK_CLIENT_SECRET,
+                                        callback_url='auth/plugin/oauth2google/callback'))
 auth.enable()
 

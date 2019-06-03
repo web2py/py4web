@@ -1,10 +1,11 @@
 (function(){
 
-    var auth = { props: [], data: null, methods: {}};
+    var auth = { props: ['plugins'], data: null, methods: {}};
     
     auth.data = function() {        
         var parts = window.location.href.split('/');
         var data = {
+            plugins: this.plugin && this.plugins.split(','),
             page: parts[parts.length-1],
             next: utils.getQuery()['next'] || '../index',
             form: {},
