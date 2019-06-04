@@ -9,7 +9,7 @@ class OAuth2Google(OAuth2):
     default_scope='email'
     maps = {
         'email': 'emails.0.value',
-        'id': 'id',
+        'sso_id': 'id',
         'first_name': 'name.givenName',
         'last_name': 'name.familyName'
         }

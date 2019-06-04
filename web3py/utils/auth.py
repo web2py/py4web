@@ -276,6 +276,18 @@ class Auth(Fixture):
         email="%s@example.com" % token
         return db(db.auth_user.email==email).count() > 0
 
+    def get_or_register_user(self, user):
+        db = self.db
+        row = db(db.auth_user.sso_id == user['sso_id']).select(limitby=(0,1)).first()
+        if row:
+            if any(user[key] != row[key] for key in user):
+                row.update_record(**user)
+            data['id'] = row['id']
+        else:
+            data = user
+            data['id'] = db.auth_user.insert(**db.auth_user._filter_fields(user))
+        return data
+
     # private methods
 
     def _query_from_token(self,token):

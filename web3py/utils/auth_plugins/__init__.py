@@ -41,16 +41,9 @@ class SSO(object):
                 for part in parts:
                     value = value[int(part) if part.isdigit() else part]
                     user[key] = value
-            # store or retrieve the user                                                                               
-            db = auth.db
-            sso_id = '%s:%s' % (self.name, user['id'])
-            row = db(db.auth_user.sso_id == sso_id).select(limitby=(0,1)).first()
-            if row:
-                data = row.as_dict()
-            else:
-                data = user
-                data['sso_id'] = sso_id
-                data['id'] = db.auth_user.insert(**db.auth_user._filter_fields(user))
+            user['sso_id'] = '%s:%s' % (self.name, user['sso_id'])
+            # store or retrieve the user
+            data = auth.get_or_register_user(user)
         else:
             # WIP Allow login without DB                                                                  
             if not 'id' in data:
