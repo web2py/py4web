@@ -4,6 +4,10 @@
       <h2 class="subtitle">Register</h2>
     </center>
     <div class="field">
+      <input class="input" v-model="form.username" type="email" placeholder="username">
+      <span v-if="errors.username">{{errors.username}}</span>
+    </div>
+    <div class="field">
       <input class="input" v-model="form.email" type="email" placeholder="email">
       <span v-if="errors.email">{{errors.email}}</span>
     </div>
@@ -41,7 +45,7 @@
     </div>
     <div v-if="!plugins||plugins.indexOf('local')>=0">
       <div class="field">
-        <input class="input" v-model="form.email" type="email" placeholder="email">
+        <input class="input" v-model="form.email" type="email" placeholder="username or email">
         <span v-if="errors.email">{{errors.email}}</span>
       </div>
       <div class="field">

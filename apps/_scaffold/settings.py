@@ -26,6 +26,9 @@ OAUTH2GOOGLE_CLIENT_SECRET = None
 OAUTH2FACEBOOK_CLIENT_ID = None
 OAUTH2FACEBOOK_CLIENT_SECRET = None
 
+# enable PAM
+USE_PAM = False
+
 # i18n settings
 T_FOLDER = os.path.join(APP_FOLDER, 'translations')
 

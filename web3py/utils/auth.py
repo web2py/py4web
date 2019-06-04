@@ -74,6 +74,7 @@ class Auth(Fixture):
             ne = IS_NOT_EMPTY()
             db.define_table(
                 'auth_user',
+                Field('username', requires=[IS_NOT_IN_DB(db, 'auth_user.username')], unique=True),
                 Field('email', requires=(IS_EMAIL(), IS_NOT_IN_DB(db, 'auth_user.email')), unique=True),
                 Field('password','password', requires=CRYPT(), readable=False, writable=False),
                 Field('first_name', requires=ne),
@@ -137,13 +138,30 @@ class Auth(Fixture):
                 if path == 'api/register':
                     data = self.register(vars, send=True).as_dict()
                 elif path == 'api/login':
-                    user, error = self.login(**vars)
-                    if user:
-                        self.session['user'] = {'id': user.id}
-                        user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
-                        data = {'user': user}
+                    # use PAM or LDAP
+                    if 'pam' in self.plugins or 'ldap' in self.plugins:
+                        # XXXX
+                        username, password = vars.get('email'), vars.get('password')
+                        if self.plugins['pam'].check_credentials(username, password):
+                            data = {
+                                'username': username,
+                                'email': username + '@localhost',
+                                'sso_id': 'pam:' + username,
+                                }
+                            # and register the user if we have one, just in case
+                            if self.db:
+                                data = self.get_or_register_user(data)
+                        else:
+                            data = self._error('Invalid Credentials')
+                    # else use normal login
                     else:
-                        data = self._error(error)
+                        user, error = self.login(**vars)
+                        if user:
+                            self.session['user'] = {'id': user.id}
+                            user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
+                            data = {'user': user}
+                        else:
+                            data = self._error(error)
                 elif path == 'api/request_reset_password':
                     if not self.request_reset_password(**vars):
                         data = self._error('invalid user')
@@ -183,6 +201,7 @@ class Auth(Fixture):
     # methods that do not assume a user
 
     def register(self, fields, send=True):
+        fields['username'] = fields['username'].lower()
         fields['email'] = fields['email'].lower()
         token = str(uuid.uuid4())
         fields['action_token'] = 'pending-registration:%s' % token
@@ -194,7 +213,9 @@ class Auth(Fixture):
 
     def login(self, email, password):
         db = self.db
-        user = db(db.auth_user.email == email.lower()).select().first()
+        value = email.lower()
+        query = (db.auth_user.email == value) if '@' in value else (db.auth_user.username == value)
+        user = db(query).select().first()
         if not user: return (None, 'Invalid email')
         if (user.action_token or '').startswith('pending-registration:'):
             return (None, 'Registration is pending')
@@ -202,10 +223,13 @@ class Auth(Fixture):
             return (None, 'Account is blocked')
         if db.auth_user.password.requires(password)[0] == user.password:
             return (user, None)
-        return None, 'Invalid password'
+        return None, 'Invalid Credentials'
 
     def request_reset_password(self, email, send=True):
-        user = self.db(self.db.auth_user.email == email.lower()).select().first()
+        db = self.db
+        value = email.lower()
+        query = (db.auth_user.email == value) if '@' in value else (db.auth_user.username == value)
+        user = db(query).select().first()
         if user and not user.action_token == 'account-blocked':
             token = str(uuid.uuid4())
             user.update_record(action_token='reset-password-request:'+token)

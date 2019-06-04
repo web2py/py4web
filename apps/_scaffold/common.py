@@ -36,6 +36,10 @@ auth = Auth(session, db)
 if auth.db:
     groups = Tags(db.auth_user, 'groups') 
 
+if settings.USE_PAM:
+    from web3py.utils.auth_plugins.pam_plugin import PamPlugin
+    auth.register_plugin(PamPlugin())
+
 if settings.OAUTH2GOOGLE_CLIENT_ID:
     from web3py.utils.auth_plugins.oauth2google import OAuth2Google # TESTED
     auth.register_plugin(OAuth2Google(client_id=settings.OAUTH2GOOGLE_CLIENT_ID,
