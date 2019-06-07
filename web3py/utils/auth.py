@@ -74,7 +74,7 @@ class Auth(Fixture):
             ne = IS_NOT_EMPTY()
             db.define_table(
                 'auth_user',
-                Field('username', requires=[IS_NOT_IN_DB(db, 'auth_user.username')], unique=True),
+                Field('username', requires=[ne, IS_NOT_IN_DB(db, 'auth_user.username')], unique=True),
                 Field('email', requires=(IS_EMAIL(), IS_NOT_IN_DB(db, 'auth_user.email')), unique=True),
                 Field('password','password', requires=CRYPT(), readable=False, writable=False),
                 Field('first_name', requires=ne),
@@ -201,8 +201,8 @@ class Auth(Fixture):
     # methods that do not assume a user
 
     def register(self, fields, send=True):
-        fields['username'] = fields['username'].lower()
-        fields['email'] = fields['email'].lower()
+        fields['username'] = fields.get('username', '').lower()
+        fields['email'] = fields.get('email','').lower()
         token = str(uuid.uuid4())
         fields['action_token'] = 'pending-registration:%s' % token
         res = self.db.auth_user.validate_and_insert(**fields)        

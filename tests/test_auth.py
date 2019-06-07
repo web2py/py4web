@@ -23,6 +23,7 @@ class TestAuth(unittest.TestCase):
             {
                 'id': None, 
                 'errors': {
+                    'username': 'Enter a value',
                     'password': 'Too short', 
                     'first_name': 'Enter a value',
                     'last_name': 'Enter a value'
@@ -34,6 +35,7 @@ class TestAuth(unittest.TestCase):
             )
     def test_register(self):
         body = {
+            'username': 'ppallino',
             'email': 'pinco.pallino@example.com',
             'password': '123456789',
             'first_name': 'Pinco',
@@ -71,7 +73,7 @@ class TestAuth(unittest.TestCase):
 
         self.assertEqual(
             self.auth.action('api/login', 'POST', {}, body),
-            {'status': 'error', 'message': 'Invalid password', 'code': 400})
+            {'status': 'error', 'message': 'Invalid Credentials', 'code': 400})
 
         body = {
             'email': 'pinco.pallino@example.com', 
@@ -82,9 +84,29 @@ class TestAuth(unittest.TestCase):
             {
                 'user': {
                     'id': 1, 
+                    'username': 'ppallino',
                     'email': 'pinco.pallino@example.com', 
                     'first_name': 'Pinco', 
-                    'last_name': 'Pallino'
+                    'last_name': 'Pallino',
+                    }, 
+                'status': 'success', 
+                'code': 200
+                }
+            )
+
+        body = {
+            'email': 'ppallino', # can login with both email and username
+            'password': '123456789'
+            }    
+        self.assertEqual(
+            self.auth.action('api/login', 'POST', {}, body),
+            {
+                'user': {
+                    'id': 1, 
+                    'username': 'ppallino',
+                    'email': 'pinco.pallino@example.com', 
+                    'first_name': 'Pinco', 
+                    'last_name': 'Pallino',
                     }, 
                 'status': 'success', 
                 'code': 200
@@ -127,6 +149,7 @@ class TestAuth(unittest.TestCase):
             self.auth.get_user(),
             {
                 'id': 1, 
+                'username': 'ppallino',
                 'email': 'pinco.pallino@example.com', 
                 'first_name': 'Pinco', 
                 'last_name': 'Pallino'

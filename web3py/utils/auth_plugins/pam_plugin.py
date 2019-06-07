@@ -1,7 +1,7 @@
 from . pam import authenticate
 
 
-class PamPlugin():
+class PamPlugin:
 
     name = 'pam'
 
