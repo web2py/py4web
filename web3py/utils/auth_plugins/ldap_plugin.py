@@ -10,47 +10,12 @@ import ldap # python-ldap
 ldap.set_option(ldap.OPT_REFERRALS, 0)
 
 class LDAPPlugin(object):
-    def __init__(self, **args):
-        defaults = dict(
-            server='ldap',
-            port=None,
-            base_dn='ou=users,dc=domain,dc=com',
-            mode='uid',
-            secure=False,
-            self_signed_certificate=None,  # See NOTE below
-            cert_path=None,
-            cert_file=None,
-            cacert_path=None,
-            cacert_file=None,
-            key_file=None,
-            bind_dn=None,
-            bind_pw=None,
-            filterstr='objectClass=*',
-            username_attrib='uid',
-            custom_scope='subtree',
-            allowed_groups=None,
-            manage_user=False,
-            user_firstname_attrib='cn:1',
-            user_lastname_attrib='cn:2',
-            user_mail_attrib='mail',
-            manage_groups=False,
-            manage_groups_callback=[],
-            db=None,
-            group_dn=None,
-            group_name_attrib='cn',
-            group_member_attrib='memberUid',
-            group_filterstr='objectClass=*',
-            group_mapping={},
-            tls=False,
-            logger=logging)
-        for key in defauls: args[key] = args.get(key, defaults[key])
-        self.parameters = args
-        """
-        to use ldap login with MS Active Directory:
+    """
+    to use ldap login with MS Active Directory:
         
-        auth.register_plugin(LDAPPlugin(
-          mode='ad', server='my.domain.controller',
-          base_dn='ou=Users,dc=domain,dc=com'))
+          auth.register_plugin(LDAPPlugin(
+            mode='ad', server='my.domain.controller',
+            base_dn='ou=Users,dc=domain,dc=com'))
 
     to use ldap login with Notes Domino:
 
@@ -60,7 +25,7 @@ class LDAPPlugin(object):
     to use ldap login with OpenLDAP:
 
         auth.register_plugin(LDAPPlugin(
-            server='my.ldap.server', base_dn='ou=Users,dc=domain,dc=com'))
+            mode='cn', server='my.ldap.server', base_dn='ou=Users,dc=domain,dc=com'))
 
     to use ldap login with OpenLDAP and subtree search and (optionally)
     multiple DNs:
@@ -172,30 +137,49 @@ class LDAPPlugin(object):
     is "error" and can be set to error, warning, info, debug.
     """
 
-    def ldap_auth_aux(username,
-                      password,
-                      ldap_server=server,
-                      ldap_port=port,
-                      ldap_basedn=base_dn,
-                      ldap_mode=mode,
-                      ldap_binddn=bind_dn,
-                      ldap_bindpw=bind_pw,
-                      secure=secure,
-                      cert_path=cert_path,
-                      cert_file=cert_file,
-                      cacert_file=cacert_file,
-                      key_file=key_file,
-                      filterstr=filterstr,
-                      username_attrib=username_attrib,
-                      custom_scope=custom_scope,
-                      manage_user=manage_user,
-                      user_firstname_attrib=user_firstname_attrib,
-                      user_lastname_attrib=user_lastname_attrib,
-                      user_mail_attrib=user_mail_attrib,
-                      manage_groups=manage_groups,
-                      allowed_groups=allowed_groups,
-                      group_mapping=group_mapping,
-                      db=db):
+    def __init__(self, **args):
+        defaults = dict(
+            server='ldap',
+            port=None,
+            base_dn='ou=users,dc=domain,dc=com',
+            mode='uid',
+            secure=False,
+            self_signed_certificate=None,  # See NOTE below
+            cert_path=None,
+            cert_file=None,
+            cacert_path=None,
+            cacert_file=None,
+            key_file=None,
+            bind_dn=None,
+            bind_pw=None,
+            filterstr='objectClass=*',
+            username_attrib='uid',
+            custom_scope='subtree',
+            allowed_groups=None,
+            manage_user=False,
+            user_firstname_attrib='cn:1',
+            user_lastname_attrib='cn:2',
+            user_mail_attrib='mail',
+            manage_groups=False,
+            manage_groups_callback=[],
+            db=None,
+            group_dn=None,
+            group_name_attrib='cn',
+            group_member_attrib='memberUid',
+            group_filterstr='objectClass=*',
+            group_mapping={},
+            tls=False,
+            logger=logging)
+        for key in defaults: args[key] = args.get(key, defaults[key])
+        self.parameters = args
+
+        # rfc4515 syntax
+        filterstr = self.parameters.get('filterstr')
+        if filterstr[0] == '(' and filterstr[-1] == ')': 
+            self.parameters['filterstr'] = filterstr[1:-1]
+
+    def validate_credentials(self, username, password):
+        locals().update(self.parameters)
         if password == '':  # http://tools.ietf.org/html/rfc4513#section-5.1.2
             logger.warning('blank password not allowed')
             return False
@@ -222,10 +206,10 @@ class LDAPPlugin(object):
                 user_mail_attrib)
         try:
             if allowed_groups:
-                if not is_user_in_allowed_groups(username, password):
+                if not self.is_user_in_allowed_groups(username, password, allowed_groups):
                     return False
-            con = init_ldap()
-            if ldap_mode == 'ad':
+            con = self._init_ldap()
+            if mode == 'ad':
                 # Microsoft Active Directory
                 if '@' not in username:
                     domain = []
@@ -266,7 +250,7 @@ class LDAPPlugin(object):
                     con.simple_bind_s(username, password)
                 username = username_bare
 
-            if ldap_mode == 'domino':
+            if mode == 'domino':
                 # Notes Domino
                 if "@" in username:
                     username = username.split("@")[0]
@@ -277,7 +261,7 @@ class LDAPPlugin(object):
                               user_lastname_attrib: None,
                               user_mail_attrib: None}
 
-            if ldap_mode == 'cn':
+            if mode == 'cn':
                 # OpenLDAP (CN)
                 if ldap_binddn and ldap_bindpw:
                     con.simple_bind_s(ldap_binddn, ldap_bindpw)
@@ -288,7 +272,7 @@ class LDAPPlugin(object):
                                           "(objectClass=*)",
                                           [user_firstname_attrib, user_lastname_attrib, user_mail_attrib])[0][1]
 
-            if ldap_mode == 'uid':
+            if mode == 'uid':
                 # OpenLDAP (UID)
                 if ldap_binddn and ldap_bindpw:
                     con.simple_bind_s(ldap_binddn, ldap_bindpw)
@@ -302,7 +286,7 @@ class LDAPPlugin(object):
                                           "(objectClass=*)",
                                           [user_firstname_attrib, user_lastname_attrib, user_mail_attrib])[0][1]
 
-            if ldap_mode == 'company':
+            if mode == 'company':
                 # no DNs or password needed to search directory
                 dn = ""
                 pw = ""
@@ -325,7 +309,7 @@ class LDAPPlugin(object):
                 # perform the real authentication test
                 con.simple_bind_s(dn, password)
 
-            if ldap_mode == 'uid_r':
+            if mode == 'uid_r':
                 # OpenLDAP (UID) with subtree search and multiple DNs
                 if isinstance(ldap_basedn, list):
                     basedns = ldap_basedn
@@ -353,7 +337,7 @@ class LDAPPlugin(object):
                     logger.warning('User [%s] not found!' % username)
                     return False
                 result = result[0][1]
-            if ldap_mode == 'custom':
+            if mode == 'custom':
                 # OpenLDAP (username_attrs) with subtree search and
                 # multiple DNs
                 if isinstance(ldap_basedn, list):
@@ -440,9 +424,10 @@ class LDAPPlugin(object):
                     db.auth_user.insert(**update_or_insert_values)
             con.unbind()
 
-            if manage_groups:
-                if not do_manage_groups(username, password, group_mapping):
-                    return False
+            #if manage_groups:
+            #    if not do_manage_groups(username, password, group_mapping):
+            #        return False
+
             return True
         except ldap.INVALID_CREDENTIALS as e:
             return False
@@ -457,43 +442,44 @@ class LDAPPlugin(object):
             logger.debug(traceback.format_exc())
             return False
 
-    def is_user_in_allowed_groups(username,
-                                  password=None,
-                                  allowed_groups=allowed_groups):
+    def is_user_in_allowed_groups(self,
+                                  username,
+                                  password=None):
         """
         Figure out if the username is a member of an allowed group
         in ldap or not
         """
+        locals().update(self.parameters)
         #
         # Get all group name where the user is in actually in ldap
         # #########################################################
-        ldap_groups_of_the_user = get_user_groups_from_ldap(username, password)
+        self.groups = self.get_user_groups_from_ldap(username, password)
 
         # search for allowed group names
         if not isinstance(allowed_groups, list):
             allowed_groups = [allowed_groups]
         for group in allowed_groups:
-            if ldap_groups_of_the_user.count(group) > 0:
+            if group in self.groups:
                 # Match
                 return True
         # No match
         return False
 
+    """
     def do_manage_groups(username, password=None, group_mapping={}, db=db):
-        """
+        '''
         Manage user groups
 
         Get all user's group from ldap and refresh the already stored
         ones in web2py's application database or create new groups
         according to ldap.
-        """
+        '''
         logger.info('[%s] Manage user groups' % str(username))
         try:
             #
             # Get all group name where the user is in actually in ldap
             # #########################################################
-            ldap_groups_of_the_user = get_user_groups_from_ldap(
-                username, password)
+            ldap_groups_of_the_user = get_user_groups_from_ldap(username, password)
 
             if group_mapping != {}:
                 l = []
@@ -577,19 +563,13 @@ class LDAPPlugin(object):
             logger.debug(traceback.format_exc())
             return False
         return True
+    """
 
-    def init_ldap(ldap_server=server,
-                  ldap_port=port,
-                  ldap_basedn=base_dn,
-                  ldap_mode=mode,
-                  secure=secure,
-                  cert_path=cert_path,
-                  cert_file=cert_file,
-                  cacert_file=cacert_file,
-                  key_file=key_file):
+    def _init_ldap(self):
         """
         Inicialize ldap connection
         """
+        locals().update(self.parameters)
         logger.info('[%s] Initialize ldap connection' % str(ldap_server))
         if secure:
             if not ldap_port:
@@ -623,19 +603,11 @@ class LDAPPlugin(object):
             con.start_tls_s()
         return con
 
-    def get_user_groups_from_ldap(username,
-                                  password=None,
-                                  base_dn=base_dn,
-                                  ldap_binddn=bind_dn,
-                                  ldap_bindpw=bind_pw,
-                                  group_dn=group_dn,
-                                  group_name_attrib=group_name_attrib,
-                                  group_member_attrib=group_member_attrib,
-                                  group_filterstr=group_filterstr,
-                                  ldap_mode=mode):
+    def get_user_groups_from_ldap(self, username, password):
         """
         Get all group names from ldap where the user is in
         """
+        locals().update(self.parameters)
         logger.info('[%s] Get user groups from ldap' % str(username))
         #
         # Get all group name where the user is in actually in ldap
@@ -643,9 +615,9 @@ class LDAPPlugin(object):
         # Initialize ldap
         if not group_dn:
             group_dn = base_dn
-        con = init_ldap()
+        con = self._init_ldap()
         logger.debug('Username init: [%s]' % username)
-        if ldap_mode == 'ad':
+        if mode == 'ad':
             #
             # Get the AD username
             # ####################
@@ -670,12 +642,11 @@ class LDAPPlugin(object):
                 con.simple_bind_s(username, password)
                 logger.debug('Ldap username connect...')
             # We have to use the full string
-            username = \
-                con.search_ext_s(base_dn,
-                                 ldap.SCOPE_SUBTREE,
-                                 "(&(sAMAccountName=%s)(%s))" % (ldap.filter.escape_filter_chars(username_bare),
-                                                                 filterstr),
-                                 ["cn"])[0][0]
+            bare = ldap.filter.escape_filter_chars(username_bare)
+            username = con.search_ext_s(base_dn,
+                                        ldap.SCOPE_SUBTREE,
+                                        "(&(sAMAccountName=%s)(%s))" % (base, filterstr),
+                                        ["cn"])[0][0]
         else:
             if ldap_binddn:
                 # need to search directory with an bind_dn account 1st
@@ -686,7 +657,7 @@ class LDAPPlugin(object):
                 
         # if username is None, return empty list
         if username is None:
-            return list()
+            return []
         # search for groups where user is in
         filter = '(&(%s=%s)(%s))' % (ldap.filter.escape_filter_chars(group_member_attrib),
                                      ldap.filter.escape_filter_chars(username),
@@ -704,4 +675,4 @@ class LDAPPlugin(object):
 
     if filterstr[0] == '(' and filterstr[-1] == ')':  # rfc4515 syntax
         filterstr = filterstr[1:-1]  # parens added again where used
-    return ldap_auth_aux
+    return []

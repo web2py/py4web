@@ -40,6 +40,10 @@ if settings.USE_PAM:
     from web3py.utils.auth_plugins.pam_plugin import PamPlugin
     auth.register_plugin(PamPlugin())
 
+if settings.USE_LDAP:
+    from web3py.utils.auth_plugins.ldap_plugin import LDAPPlugin
+    auth.register_plugin(LDAPPlugin(**LDAP_SETTINGS))
+
 if settings.OAUTH2GOOGLE_CLIENT_ID:
     from web3py.utils.auth_plugins.oauth2google import OAuth2Google # TESTED
     auth.register_plugin(OAuth2Google(client_id=settings.OAUTH2GOOGLE_CLIENT_ID,
@@ -50,5 +54,6 @@ if settings.OAUTH2FACEBOOK_CLIENT_ID:
     auth.register_plugin(OAuth2Facebook(client_id=settings.OAUTH2FACEBOOK_CLIENT_ID,
                                         client_secret=settings.OAUTH2FACEBOOK_CLIENT_SECRET,
                                         callback_url='auth/plugin/oauth2google/callback'))
+
 auth.enable()
 
