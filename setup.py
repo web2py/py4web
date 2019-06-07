@@ -23,7 +23,7 @@ setup(
     maintainer_email='massimo.dipierro@gmail.com',
     description='Expeerimental web3py (a better web2py)',
     long_description=__doc__ + ' (%s)' % get_hash(),
-    packages=['web3py'],
+    packages=['web3py', 'web3py.utils', 'web3py.utils.auth_plugins'],
     include_package_data=True,
     install_requires=[
         'bottle',
@@ -33,6 +33,7 @@ setup(
         'pyjwt',
         'yatl',
         'reloader',
+        'tornado',
         'pluralize',
         ],
     entry_points = {
