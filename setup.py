@@ -10,7 +10,10 @@ def get_version():
     return regex.findall(open('web3py/__init__.py').read())[0]
 
 def get_hash():
-    return subprocess.check_output(['git', 'rev-parse', 'HEAD']).strip().decode('utf8')
+    try:
+        return subprocess.check_output(['git', 'rev-parse', 'HEAD']).strip().decode('utf8')
+    except:
+        return '{hash}'
 
 setup(
     name='web3py',
@@ -35,6 +38,7 @@ setup(
         'reloader',
         'tornado',
         'pluralize',
+        'requests',
         ],
     entry_points = {
         'console_scripts': ['web3py-start=web3py.core:main'],

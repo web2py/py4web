@@ -6,4 +6,5 @@ bottle
 tornado
 gunicorn
 gevent
+requests
 python-memcached # used for testing or for optionally actually accessing memcache
