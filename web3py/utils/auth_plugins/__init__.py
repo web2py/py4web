@@ -16,11 +16,6 @@ class SSO(object):
         """returns the url for login"""
         return ''
 
-    def callback(self, get_vars):
-        return {}
-
-    ### methods that probably do not need to be overwritten
-    
     def handle_request(self, auth, path, get_vars, post_vars):
         if path == 'login':
             redirect(self.get_login_url())
@@ -29,6 +24,11 @@ class SSO(object):
         else:
             abort(404)
 
+    def callback(self, get_vars):
+        return {}
+
+    ### methods that probably do not need to be overwritten
+    
     def _handle_callback(self, auth, get_vars):
         data = self.callback(get_vars)
         if not data or 'error' in data:

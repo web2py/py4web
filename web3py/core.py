@@ -594,6 +594,11 @@ class Reloader:
         app = bottle.default_app()
         app.routes.clear()
         new_apps = []
+        # if first time reload dummy top module
+        if not Reloader.MODULES:
+            path =  os.path.join(folder, '__init__.py')
+            module = importlib.machinery.SourceFileLoader('apps', path).load_module()
+        # the load all the apps as submodules
         for app_name in os.listdir(folder):
             action.app_name = app_name
             path = os.path.join(folder, app_name)
@@ -603,7 +608,7 @@ class Reloader:
                 try:
                     module = Reloader.MODULES.get(app_name)
                     if not module:
-                        print('[  ] loading %s ...' % app_name)
+                        print('[  ] loading %s ...' % app_name)                        
                         module = importlib.machinery.SourceFileLoader(module_name, init).load_module()
                         new_apps.append(path)
                         print('\x1b[A[OK] loaded %s     ' % app_name)
