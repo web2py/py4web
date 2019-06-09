@@ -219,6 +219,8 @@ class Template(Fixture):
 
 class Session(Fixture):
 
+    SECRET = None
+
     def __init__(self, secret=None, expiration=None, algorithm='HS256', 
                  storage=None, secure=False, same_site='Lax'):                 
         """
@@ -229,7 +231,7 @@ class Session(Fixture):
         """
         if not secret and not storage:
             # when no secret specified one time sessions
-            secret = str(uuid.uuid4())
+            secret = Session.SECRET = Session.SECRET or str(uuid.uuid4())
         self.secret = secret
         self.expiration = expiration
         self.algorithm = algorithm

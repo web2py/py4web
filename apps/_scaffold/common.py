@@ -9,6 +9,7 @@ from web3py.utils.tags import Tags
 from . import settings
 from .models import db
 
+
 # define global objects that may or may not be used by th actions
 cache = Cache(size=1000)
 T = Translator(settings.T_FOLDER)
@@ -33,6 +34,7 @@ elif settings.SESSION_TYPE == 'database':
 
 auth = Auth(session, db)
 
+
 if auth.db:
     groups = Tags(db.auth_user, 'groups') 
 
@@ -56,4 +58,3 @@ if settings.OAUTH2FACEBOOK_CLIENT_ID:
                                         callback_url='auth/plugin/oauth2google/callback'))
 
 auth.enable()
-

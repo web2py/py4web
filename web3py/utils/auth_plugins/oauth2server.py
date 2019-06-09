@@ -17,6 +17,7 @@ class OAuthServer(object):
             'oauth2',
             Field('registrant_id', 'reference auth_user'),
             Field('client_secret'))
+        db.commit()
 
     def register_new_client(self, registrant_id):
         client_secret = str(uuid.uuid4())
