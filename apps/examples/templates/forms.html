@@ -1,13 +1,12 @@
-<html>
-  <head>
-    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
-  </head>
-  <body style="padding:5vh 10vw">
-    [[for message in messages:]]<blockquote>[[=message]]</blockquote>[[pass]]
-    [[for form in forms:]]
-    <h2>Form [[=form.form_name]]</h2>
-    [[=form]]
-    [[pass]]
-  </body>
-  <script src="/[[=request.app_name]]/static/js/utils.js"></script>
-</html>
+[[extend 'layout.html']]
+
+[[for message in messages:]]
+<div class="notification is-danger">
+[[=message]]
+</div>
+[[pass]]
+
+[[for form in forms:]]
+<h2>Form [[=form.form_name]]</h2>
+[[=form]]
+[[pass]]

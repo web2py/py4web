@@ -1,6 +1,6 @@
 import os
 from web3py import *
-from web3py.utils.form import Form
+from web3py.utils.form import Form, FormStyleBulma
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1
 
@@ -33,21 +33,21 @@ def multiple_form_example():
     name = Field('name', requires=IS_NOT_EMPTY())
     forms = [
         Form([Field('name', requires=IS_NOT_EMPTY())],
-             form_name='1'),
+             form_name='1', formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY())],
-             form_name='2', keep_values=True),
+             form_name='2', keep_values=True, formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY()),
               Field('age','integer')], 
-             form_name='3'),
+             form_name='3', formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY()),
               Field('insane','boolean')], 
-             form_name='4'),
+             form_name='4', formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY()),
               Field('color',requires=IS_IN_SET(['red','blue','gree']))], 
-             form_name='5'),
+             form_name='5', formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY()),
               Field('favorite_thing', requires=IS_IN_DB(db, 'thing.id', 'thing.name'))], 
-             form_name='6')]
+             form_name='6', formstyle=FormStyleBulma)]
     messages = []
     for form in forms:
         if form.accepted:

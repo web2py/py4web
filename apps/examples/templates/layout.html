@@ -16,21 +16,6 @@
           <span aria-hidden="true"></span>
         </a>
       </div>
-      
-      <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-          <a class="navbar-item">Home</a>
-          <a class="navbar-item">Documentation</a>
-        </div>
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <div class="buttons">
-              <a class="button is-primary">Sign ip</a>
-              <a class="button is-light">Log in</a>
-            </div>
-          </div>
-        </div>
-      </div>
     </nav>
 
     <section class="section">
@@ -38,12 +23,19 @@
         <h1 class="title">Example</h1>
       </div>
     </section>
-    [[include]]
+    
+    <section class="section">
+      <div class="container">
+        [[include]]
+      </div>
+    </section>
     <footer class="footer">
       <div class="content has-text-centered">
         I was made with web3py
       </div>
     </footer>
   </body>
+  <script src="[[=URL('static/js/utils.js')]]"></script>
   [[block scripts]]
+  [[end]]
 </html>

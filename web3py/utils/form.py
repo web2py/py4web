@@ -1,12 +1,19 @@
 import uuid
 import hmac
 from web3py import DAL, request
-from yatl.helpers import A, TEXTAREA, INPUT, TR, TD, TABLE, DIV, LABEL, FORM, SELECT, OPTION
+from yatl.helpers import A, TEXTAREA, INPUT, TR, TD, TABLE, DIV, LABEL, FORM, SELECT, OPTION, P
 from pydal._compat import to_bytes
 
-def FormStyleDefault(table, vars, errors, readonly, deletable):
+def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
+    form = FORM(_method='POST',_action='#',_enctype='multipart/form-data')
 
-    form = FORM(TABLE(),_method='POST',_action='#',_enctype='multipart/form-data')
+    classes = classes or {}
+    class_label = classes.get('label', '')
+    class_outer = classes.get('outer', '')
+    class_inner = classes.get('inner', '')
+    class_error = classes.get('error', '')
+    class_info = classes.get('info', '')
+
     for field in table:
 
         input_id = '%s_%s' % (field.tablename, field.name)
@@ -48,17 +55,52 @@ def FormStyleDefault(table, vars, errors, readonly, deletable):
             field_type = 'password' if field.type == 'password' else 'text'
             control = INPUT(_type=field_type, _id=input_id, _name=field.name,
                             _value=value, _class=field_class)
+        
+        key = control.name.rstrip('/')
+        if key == 'input':
+            key += '[type=%s]' % (control['_type'] or 'text')
+        print(key)
+        control['_class'] = classes.get(key, '')
 
-        form[0].append(TR(TD(LABEL(field.label,_for=input_id)),
-                          TD(control,DIV(error,_class='error') if error else ''),
-                          TD(field.comment or '')))
-
-    td = TD(INPUT(_type='submit',_value='Submit'))
+        form.append(DIV(
+                LABEL(field.label, _for=input_id, _class=class_label),
+                DIV(control, _class=class_inner),
+                P(error, _class=class_error) if error else '',
+                P(field.comment or '', _class=class_info),
+                _class=class_outer))
+        
     if deletable:
-        td.append(INPUT(_type='checkbox',_value='ON',_name='_delete'))
-        td.append('(check to delete)')
-    form[0].append(TR(TD(),td,TD()))
+        form.append(DIV(DIV(INPUT(_type='checkbox',_value='ON',_name='_delete',
+                                  _class=classes.get('input[type=checkbox]')),
+                            _class=class_inner),
+                        P('check to delete',_class="help"),
+                        _class=class_outer))
+    submit = DIV(DIV(INPUT(_type='submit',_value='Submit',
+                           _class=classes.get('input[type=submit]')),
+                     _class=class_inner),
+                 _class=class_outer)
+    form.append(submit)
     return form
+    
+
+def FormStyleBulma(table, vars, errors, readonly, deletable):
+    classes = {
+        'outer': 'field',
+        'inner': 'control',
+        'label': 'label',
+        'info': 'help',
+        'error': 'help is-danger',
+        'submit': 'button',
+        'input': 'input',
+        'input[type=text]': 'input',
+        'input[type=radio]': 'input',
+        'input[type=checkbox]': 'input',
+        'input[type=submit]': 'button',
+        'select': 'select',
+        'textarea': 'textarea',
+        }
+    return FormStyleDefault(table, vars, errors, readonly, deletable, classes)
+
 
 # ################################################################
 # Form object (replaced SQLFORM)
