@@ -9,12 +9,6 @@ def get_version():
     regex = re.compile('__version__\s*\=\s*[\'"](?P<version>.+?)[\'"]')
     return regex.findall(open('web3py/__init__.py').read())[0]
 
-def get_hash():
-    try:
-        return subprocess.check_output(['git', 'rev-parse', 'HEAD']).strip().decode('utf8')
-    except:
-        return '{hash}'
-
 setup(
     name='web3py',
     version=get_version(),
@@ -25,7 +19,6 @@ setup(
     maintainer='Massimo Di Pierro',
     maintainer_email='massimo.dipierro@gmail.com',
     description='Expeerimental web3py (a better web2py)',
-    long_description=__doc__ + ' (%s)' % get_hash(),
     packages=['web3py', 'web3py.utils', 'web3py.utils.auth_plugins'],
     include_package_data=True,
     install_requires=[
