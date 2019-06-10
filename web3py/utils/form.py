@@ -27,7 +27,7 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
             if not field.readable:
                 continue
             else:
-                control = field.represent and field.represent(value) or value or ''
+                control = DIV(field.represent and field.represent(value) or value or '')
         elif not field.writable:
             continue
         elif field.widget:
