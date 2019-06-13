@@ -6,19 +6,6 @@
     <h2>Form</h2>
     [[=form]]
     <h2>Rows</h2>
-    <table>
-      <tr>
-        <th>Thing Id</th>
-        <th>Thing Name</th>
-        <th>Thing Quantity</th>
-      </tr>
-      [[for row in rows:]]
-      <tr>
-        <td>[[=row.id]]</td>
-        <td>[[=row.name]]</td>
-        <td>[[=row.quantity]]</td>
-      </tr>
-      [[pass]]
-    </table>
+    [[=rows]]
   </body>
 </html>

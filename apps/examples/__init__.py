@@ -7,7 +7,12 @@ from yatl.helpers import INPUT, H1
 db = DAL('sqlite://test', folder=os.path.join(os.path.dirname(__file__), 'databases'))
 db.define_table('thing', 
                 Field('name', requires=IS_NOT_EMPTY()),
-                Field('quantity','integer', requires=IS_INT_IN_RANGE(0,10)))
+                Field('quantity','integer', requires=IS_INT_IN_RANGE(0,10)),
+                format='%(name)s')
+db.define_table(
+    'order',
+    Field('code', requires=IS_NOT_EMPTY()),
+    Field('thing', 'reference thing'))
 db.commit()
 session = Session(secret='myscret')
 
@@ -19,13 +24,21 @@ def do_nothing():
 def oops():
     1/0
 
-# exposed as /examples/form
+# exposed as /examples/dbform
 @action('dbform', method=['GET','POST'])
 @action.uses('dbform.html', db, session)
 def form_example():
     form = Form(db.thing)
     rows = db(db.thing).select()
     return dict(form=form, rows=rows) 
+
+# exposed as /examples/dbform2                                                                             
+@action('dbform2', method=['GET','POST'])
+@action.uses('dbform.html', db, session)
+def form_example2():
+    form = Form(db.order)
+    rows = db(db.order).select()
+    return dict(form=form, rows=rows)
 
 @action('forms', method=['GET','POST'])
 @action.uses('forms.html', session, db)
