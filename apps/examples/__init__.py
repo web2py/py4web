@@ -7,12 +7,18 @@ from yatl.helpers import INPUT, H1
 db = DAL('sqlite://test', folder=os.path.join(os.path.dirname(__file__), 'databases'))
 db.define_table('thing', 
                 Field('name', requires=IS_NOT_EMPTY()),
-                Field('quantity','integer', requires=IS_INT_IN_RANGE(0,10)),
+                Field('size','integer', requires=IS_INT_IN_RANGE(0,10)),
                 format='%(name)s')
 db.define_table(
     'order',
     Field('code', requires=IS_NOT_EMPTY()),
     Field('thing', 'reference thing'))
+
+if db(db.thing).count() == 0:
+    db.thing.insert(name='pants', size=1)
+    db.thing.insert(name='shirt', size=1)
+    db.order.insert(code='123', thing=1)
+
 db.commit()
 session = Session(secret='myscret')
 
@@ -25,18 +31,18 @@ def oops():
     1/0
 
 # exposed as /examples/dbform
-@action('dbform', method=['GET','POST'])
+@action('dbform_thing/<id>', method=['GET','POST'])
 @action.uses('dbform.html', db, session)
-def form_example():
-    form = Form(db.thing)
+def form_example(id):
+    form = Form(db.thing, id)
     rows = db(db.thing).select()
     return dict(form=form, rows=rows) 
 
 # exposed as /examples/dbform2                                                                             
-@action('dbform2', method=['GET','POST'])
+@action('dbform_order/<id>', method=['GET','POST'])
 @action.uses('dbform.html', db, session)
-def form_example2():
-    form = Form(db.order)
+def form_example2(id):
+    form = Form(db.order, id)
     rows = db(db.order).select()
     return dict(form=form, rows=rows)
 

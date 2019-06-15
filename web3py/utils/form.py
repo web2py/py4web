@@ -46,7 +46,7 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
                 control.append('(check to remove)')
         elif hasattr(field.requires, 'options'):
             multiple = field.type.startswith('list:')
-            value = value if isinstance(value, list) else [value]
+            value = list(map(str, value if isinstance(value, list) else [value]))
             options = [OPTION(v,_value=k,_selected=(k in value))
                        for k,v in field.requires.options()]
             control = SELECT(*options, _id=input_id, _name=field.name,
@@ -59,7 +59,6 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
         key = control.name.rstrip('/')
         if key == 'input':
             key += '[type=%s]' % (control['_type'] or 'text')
-        print(key)
         control['_class'] = classes.get(key, '')
 
         form.append(DIV(
@@ -184,7 +183,6 @@ class Form(object):
                     for field in self.table:
                         if field.writable:
                             value = post_vars.get(field.name)
-                            # FIX THIS deal with set_self_id before validate
                             (value, error) = field.validate(value)
                             if field.type == 'upload':
                                 delete = post_vars.get('_delete_'+field.name)
