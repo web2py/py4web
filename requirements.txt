@@ -1,3 +1,4 @@
+threadsafevariable
 pydal >= 19.5.11
 pyjwt
 yatl

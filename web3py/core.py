@@ -40,11 +40,12 @@ except ImportError:
     gevent = None
 
 # third part modules
-import jwt       # pip import PyJWT
-import bottle    # pip import bottle
-import yatl      # pip import yatl
-import pydal     # pip import pydal
-import pluralize # pip import pluralize
+import jwt # this is PyJWT
+import bottle
+import yatl
+import threadsafevariable
+import pydal
+import pluralize
 from pydal import _compat
 
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL']
@@ -167,14 +168,26 @@ class Fixture:
     def transform(self, output): # transforms the output, for example to apply template
         return output
 
-class DAL(pydal.DAL, Fixture):
-    def on_request(self): self._adapter.reconnect()
-    def on_error(self): self.rollback()
-    def on_success(self): self.commit()
 
 class Translator(pluralize.Translator, Fixture):
     def on_request(self): self.select(request.headers.get('Accept-Language', 'en'))
     def on_success(self): response.headers['Content-Language'] = self.local.tag
+
+
+class DAL(pydal.DAL, Fixture):
+    def on_request(self): 
+        threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
+        self._adapter.reconnect()
+    def on_error(self): self.rollback()
+    def on_success(self): self.commit()
+
+
+# make sure some variables in pydal are thread safe
+for _ in ['readable', 'writable', 'default', 'update', 'requires']:
+    setattr(pydal.DAL.Field, _,  threadsafevariable.ThreadSafeVariable())
+
+# this global object will be used to store their state to restore it for every http request
+ICECUBE = {}
 
 #########################################################################################
 # The template rendered fixture
@@ -646,6 +659,7 @@ class Reloader:
                            'filename': to_filename(func.__module__),
                            'action': func.__name__})
         Reloader.ROUTES = sorted(routes, key=lambda item: item['rule'])
+        ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
 
 
 #########################################################################################

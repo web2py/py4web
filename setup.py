@@ -25,6 +25,7 @@ setup(
         'bottle',
         'gunicorn',
         'gevent',
+        'threadsafevariable',
         'pydal',
         'pyjwt',
         'yatl',
