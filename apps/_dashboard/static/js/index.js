@@ -81,8 +81,9 @@ let init = (app) => {
         app.vue.modal = null;
     };
     app.reload = () => {
-        app.vue.loading = true;
-        axios.get('../reload').then(app.init);
+        app.modal_dismiss();
+        app.vue.loading = true;        
+        axios.get('../reload').then(app.init);        
     };
     app.load_file = () => {
         var path = app.vue.selected_filename;

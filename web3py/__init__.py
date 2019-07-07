@@ -10,4 +10,4 @@ from . core import (
 
 __author__ = "Massimo Di Pierro <massimo.dipierro@gmail.com>"
 __license__ = "BSDv3"
-__version__ = "0.1.20190426"
+__version__ = "0.1.20190705"
