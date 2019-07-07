@@ -1,17 +1,19 @@
 <html>
   <head>
     <style>
+  * {
+    font-family: courier;
+    font-size: 12px;
+  }
   body {
     margin: 0;
     border: 0;
     padding: 9;
-    font-family: helvetica;
     background-color: #111111;
     color: #e1e1e1;
   }
+  h2.page-title { font-size: 2em }
   .ticket {
-    font-family: courier;
-    font-size: 10px;
     overflow-x: auto;    
   }
   .ticket table {
@@ -33,12 +35,25 @@
   }
   .ticket td {
     white-space: pre;
-    padding-left: 5px;    
+    padding-left: 5px;
   }  
+  .ticket-traceback {
+    background-color: red;
+    color: white;
+    padding: 5px 20px;
+    overflow-x: auto;
+  }
+  .ticket-traceback pre {
+    font-family: courier;
+    font-size: 12px;
+  }
     </style>
   </head>
   <body>
-    <h2 class="title">Error Ticket</h2>    
-    <div class="ticket">[[=ticket_record]]</div>
+    <h2 class="page-title">Error Ticket: [[=ticket.get('error')]]</h2>    
+    <div class="ticket-traceback">
+      <pre>[[=ticket.get('snapshot',{}).get('traceback')]]</pre>
+    </div>
+    <div class="ticket">[[=BEAUTIFY(ticket)]]</div>
   </body>
 </html>

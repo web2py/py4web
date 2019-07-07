@@ -716,8 +716,6 @@ def main():
                         help='ssl key file')
     parser.add_argument('--service_db_uri', default='sqlite://service.storage',
                         type=str, help='db uri for logging')
-    parser.add_argument('--service_folder', default='.web3py-service', type=str,
-                        help='db uri for logging')
     parser.add_argument('-d', '--dashboard_mode', default='full',
                         help='dashboard mode: demo, readonly, full (default), none')
     parser.add_argument('-p', '--password_file', default=None,
@@ -732,25 +730,25 @@ def main():
             args.password = fp.read().strip()
     elif args.dashboard_mode not in ('demo', 'none'):
         args.password = pydal.validators.CRYPT()(getpass.getpass('Choose a one-time dashboad password: '))[0]
+    args.service_folder = os.path.join(args.apps_folder, '.service')
     # store all args in evironment variables to make then available to the gunicorn processes
     for key in args.__dict__:
         os.environ['WEB3PY_'+key.upper()] = str(args.__dict__[key])
     # if the apps folder does not exist create it and populate it
-    if not os.path.exists(args.apps_folder):
-        if args.create or input('Create %s (y/n)? ' % args.service_folder)[:1] in 'yY':
+    if not os.path.exists(args.apps_folder):        
+        if args.create or input('Create %s (y/n)? ' % args.apps_folder)[:1] in 'yY':
             os.makedirs(args.apps_folder)
             with open(os.path.join(args.apps_folder, '__init__.py'), 'w') as fp:
                 fp.write('')
         else:
             sys.exit(0)
+    if not os.path.exists(args.service_folder):
+        os.mkdir(args.service_folder)
     # upzip the _dashboard app if old or dos not exist
     assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
-    for filename in ['web3py.app._dashboard.zip']:
+    for filename in ['web3py.app._dashboard.zip', 'web3py.app._default.zip']:
         zip_filename = os.path.join(assets_dir, filename)
         target_dir = os.path.join(args.apps_folder, filename.split('.')[-2])
-        if os.path.exists(target_dir) and os.path.getmtime(zip_filename) > os.path.getmtime(target_dir):
-            if input('There is a newer version of the dashboard. Upgrade (y/n)? ')[:1] in 'yY':
-                shutil.rmtree(target_dir)
         if not os.path.exists(target_dir):
             print('[ ] Unzipping app', filename)
             zip = zipfile.ZipFile(zip_filename, 'r')

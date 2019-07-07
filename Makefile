@@ -9,6 +9,9 @@ assets:
 	cd apps/_dashboard; \
 	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
 	zip -@ ../../web3py/assets/web3py.app._dashboard.zip
+	cd apps/_default; \
+	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
+	zip -@ ../../web3py/assets/web3py.app._default.zip
 	cd apps/_scaffold; \
 	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
 	zip -@ ../../web3py/assets/web3py.app._scaffold.zip

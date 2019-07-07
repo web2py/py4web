@@ -165,7 +165,7 @@ if MODE in ('demo', 'readonly', 'full'):
     @action('ticket/<ticket_uuid>')
     @action.uses('ticket.html')
     def error_ticket(ticket_uuid):
-        return dict(ticket_record=BEAUTIFY(ErrorStorage().get(ticket_uuid=ticket_uuid)))
+        return dict(ticket=ErrorStorage().get(ticket_uuid=ticket_uuid))
 
     @action('rest/<path:path>', method=['GET','POST','PUT','DELETE'])
     @session_secured
