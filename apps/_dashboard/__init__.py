@@ -97,7 +97,8 @@ if MODE in ('demo', 'readonly', 'full'):
         apps = [{'name':app, 'error':Reloader.ERRORS.get(app)} 
                 for app in apps 
                 if os.path.isdir(os.path.join(FOLDER, app)) and
-                not app.startswith('__')]
+                not app.startswith('__') and
+                not app.startswith('.')]                
         apps.sort(key=lambda item: item['name'])
         return {'payload': apps, 'status':'success'}
 
