@@ -17,6 +17,7 @@ import numbers
 import os
 import getpass
 import platform
+import shutil
 import sys
 import threading
 import time
@@ -26,6 +27,7 @@ import urllib.parse
 import uuid
 import http.client
 import http.cookies
+import zipfile
 
 # optional web servers for speed
 try:
@@ -364,6 +366,7 @@ class action:
     """@action(...) is a decorator for functions to be exposed as actions"""
 
     current = threading.local()
+    registered = set()
 
     def __init__(self, path, **kwargs):
         self.path = path
@@ -455,10 +458,12 @@ class action:
         """builds the decorator"""
         app_name = action.app_name
         path = ('/' if app_name == '_default' else '/%s/' % app_name) + self.path # the _default app has no prefix
-        func = action.catch_errors(app_name, func)
+        if not func in self.registered:
+            func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
         if path.endswith('/index'): # /index is always optional
             func = bottle.route(path[:-6] or '/', **self.kwargs)(func)
+        self.registered.add(func)
         return func
 
 def user_in(session):
@@ -623,16 +628,16 @@ class Reloader:
                 try:
                     module = Reloader.MODULES.get(app_name)
                     if not module:
-                        print('[  ] loading %s ...' % app_name)                        
+                        print('[ ] loading %s ...' % app_name)                        
                         module = importlib.machinery.SourceFileLoader(module_name, init).load_module()
                         new_apps.append(path)
-                        print('\x1b[A[OK] loaded %s     ' % app_name)
+                        print('\x1b[A[X] loaded %s     ' % app_name)
                     else:
-                        print('[  ] reloading %s ...' % app_name)
+                        print('[ ] reloading %s ...' % app_name)
                         names = [name for name in sys.modules if name.startswith(module_name)]
                         for name in names:
                             importlib.reload(sys.modules[name])
-                        print('\x1b[A[OK] reloaded %s     ' % app_name)
+                        print('\x1b[A[X] reloaded %s     ' % app_name)
                     Reloader.MODULES[app_name] = module
                     Reloader.ERRORS[app_name] = None
                 except:
@@ -717,6 +722,8 @@ def main():
                         help='dashboard mode: demo, readonly, full (default), none')
     parser.add_argument('-p', '--password_file', default=None,
                         help='file containing the encrypted (CRYPT) password')
+    parser.add_argument('-c', '--create', action='store_true', default=False,
+                        help='created the missing folder and apps')
     action.args = args = parser.parse_args()
     args.apps_folder = os.path.abspath(args.apps_folder)
     # if we know where the password is stored, read it, else ask for one
@@ -728,7 +735,32 @@ def main():
     # store all args in evironment variables to make then available to the gunicorn processes
     for key in args.__dict__:
         os.environ['WEB3PY_'+key.upper()] = str(args.__dict__[key])
-    if not os.path.exists(args.service_folder): os.makedirs(args.service_folder)
-    print('Dashboard is at: http://%s/_dashboard' % args.address)
+    # if the apps folder does not exist create it and populate it
+    if not os.path.exists(args.apps_folder):
+        if args.create or input('Create %s (y/n)? ' % args.service_folder)[:1] in 'yY':
+            os.makedirs(args.apps_folder)
+            with open(os.path.join(args.apps_folder, '__init__.py'), 'w') as fp:
+                fp.write('')
+        else:
+            sys.exit(0)
+    # upzip the _dashboard app if old or dos not exist
+    assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
+    for filename in ['web3py.app._dashboard.zip']:
+        zip_filename = os.path.join(assets_dir, filename)
+        target_dir = os.path.join(args.apps_folder, filename.split('.')[-2])
+        if os.path.exists(target_dir) and os.path.getmtime(zip_filename) > os.path.getmtime(target_dir):
+            if input('There is a newer version of the dashboard. Upgrade (y/n)? ')[:1] in 'yY':
+                shutil.rmtree(target_dir)
+        if not os.path.exists(target_dir):
+            print('[ ] Unzipping app', filename)
+            zip = zipfile.ZipFile(zip_filename, 'r')
+            if not os.path.exists(target_dir):
+                os.makedirs(target_dir)
+            zip.extractall(target_dir)
+            zip.close()
+            print('\x1b[A[X]')
+    # start
+    if os.path.exists(os.path.join(args.apps_folder, '_dashboard')):
+        print('Dashboard is at: http://%s/_dashboard' % args.address)
     Reloader.import_apps()
     start_server(args)

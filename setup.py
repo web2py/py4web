@@ -20,7 +20,9 @@ setup(
     maintainer_email='massimo.dipierro@gmail.com',
     description='Expeerimental web3py (a better web2py)',
     packages=['web3py', 'web3py.utils', 'web3py.utils.auth_plugins'],
-    include_package_data=True,
+    package_data = {
+        'web3py': ['assets/*'],
+        },
     install_requires=[
         'bottle',
         'gunicorn',

@@ -1,6 +1,6 @@
 import urllib
 import requests
-from web3py.core import URL, abort, redirect
+from web3py.core import URL, abort, redirect, request
 
 class SSO(object):
 
@@ -49,7 +49,7 @@ class SSO(object):
             if not 'id' in data:
                 data['id'] = data.get('username') or data.get('email')
         auth.session['user'] = data
-        redirect(URL('welcome'))
+        redirect(URL('index'))
 
     @staticmethod
     def _build_url(base, data):
@@ -72,9 +72,13 @@ class OAuth2(SSO):
                                callback_url=callback_url,
                                scope=scope or self.default_scope)
         
-    def get_login_url(self, state=None):
+    def get_login_url(self, state=None, next=None):
+        callback_url = self.parameters.get('callback_url')
+        vars = {}
+        if next:
+            vars['next'] = next
         data = dict(access_type='offline',
-                    redirect_uri=URL(self.parameters.get('callback_url'), scheme=True),
+                    redirect_uri=URL(callback_url, vars=vars, scheme=True),
                     response_type='code',
                     client_id=self.parameters.get('client_id'))
         scope=self.parameters.get('scope')

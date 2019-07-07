@@ -31,6 +31,7 @@ from . common import db, session, T, cache, auth
 
 # define your actions below, here is an example of /<app_name>/index
 
+@action('welcome')
 @action('index', method='GET')
 @action.uses('generic.html', session, db, T, auth)
 def index():

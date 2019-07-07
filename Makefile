@@ -1,11 +1,21 @@
-.PHONY: clean build install test deploy
+.PHONY: clean build assets install test deploy
 clean:
 	find . -name '*.pyc' -delete
 	find . -name '*~' -delete
 	find . -name '#*' -delete
 	rm -rf dist/*
 	python3 setup.py clean
-build: clean
+assets:
+	cd apps/_dashboard; \
+	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
+	zip -@ ../../web3py/assets/web3py.app._dashboard.zip
+	cd apps/_scaffold; \
+	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
+	zip -@ ../../web3py/assets/web3py.app._scaffold.zip
+	cd apps/_minima; \
+	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
+	zip -@ ../../web3py/assets/web3py.app._minima.zip
+build: clean assets
 	python3 setup.py build
 install: build
 	python3 setup.py install
@@ -15,3 +25,5 @@ test: build
 deploy: test
 	python setup.py sdist
 	twine upload dist/*
+run:
+	./web3py-start -p password.txt apps/

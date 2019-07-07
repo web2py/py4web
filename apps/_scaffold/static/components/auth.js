@@ -3,7 +3,7 @@
     var auth = { props: ['plugins'], data: null, methods: {}};
     
     auth.data = function() {        
-        var parts = window.location.href.split('/');
+        var parts = window.location.href.split('?')[0].split('/');
         var data = {
             plugins: this.plugin && this.plugins.split(','),
             page: parts[parts.length-1],
