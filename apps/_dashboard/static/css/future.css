@@ -137,10 +137,18 @@ input[type=file],
 textarea {
    background-color: black;
    border: 0;
-   border-bottom: 2px solid #33BFFF;
    font-size: 20px;
    color: #33BFFF;
    width: 50vw;
+}
+input[type=text],
+input[type=password], 
+input[type=number],
+input[type=date], 
+input[type=time], 
+input[type=datetime-local],
+textarea {
+   border-bottom: 2px solid #33BFFF;
 }
 label {
    font-weight: bold;

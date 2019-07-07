@@ -91,7 +91,7 @@ def sanitize(name):
     """Turns any expression/path into a valid filename. replaces / with _ and
     removes special characters.
     """
-    return re.sub('\W', '', re.sub('[\w-/.]+','_',name))
+    return re.sub('\W', '', re.sub('[/.-]+', '_', name))
 
 
 def _extractall(filename, path='.', members=None):

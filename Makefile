@@ -12,9 +12,9 @@ assets:
 	cd apps/_scaffold; \
 	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
 	zip -@ ../../web3py/assets/web3py.app._scaffold.zip
-	cd apps/_minima; \
+	cd apps/_minimal; \
 	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
-	zip -@ ../../web3py/assets/web3py.app._minima.zip
+	zip -@ ../../web3py/assets/web3py.app._minimal.zip
 build: clean assets
 	python3 setup.py build
 install: build

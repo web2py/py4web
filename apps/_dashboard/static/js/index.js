@@ -100,7 +100,8 @@ let init = (app) => {
             }); 
     };
     app.download_selected_app = () => {
-        window.open('../packed/'+app.vue.selected_app.name);
+        var url = '../packed/web3py.app.' + app.vue.selected_app.name + '.zip?' + (new Date()).getTime()
+        window.open(url, 'Download');
     };
     app.deploy_selected_app = () => {
         app.confirm('Deploy App','green','Ready to deploy',()=>{});
@@ -109,23 +110,28 @@ let init = (app) => {
         var buttons = [{text: 'Yes', onclick:callback}, {text:'No', onclick: app.modal_dismiss}];
         app.vue.modal = {title: title, color:color, message:message, buttons:buttons};
     };
-    app.create_new_app = ()=> {
-        app.vue.modal = {
-            title:'Create New App', 
-            color:'blue', 
-            message:'',
-            form_name: 'create-app',
-            form: {type: '', name: '', source: ''},
-            buttons: [{text: 'Create', onclick: function() {alert('not implemented');}}, {text:'Close', onclick: app.modal_dismiss}]}; 
+    app.process_new_app = () => {
+        var form = app.vue.modal.form;
+        console.log(form);
+        if(!form.name) alert('An app namemust be provided');
+        else if(!form.name.match(/^[\w_]+$/)) alert('Invalid file name');
+        else if(form.mode=='new' && app.vue.apps.map((a)=>{return a.name;}).indexOf(form.name)>=0) {
+            alert('Cannot create an app with this name. It already exists');
+        } else {
+            axios.post('../new_app', form).then(app.reload);
+        }
+    };
+    app.handle_upload_file = () => {
+        utils.upload_helper('upload-file', (name, data)=>{app.vue.modal.form.file=data;});
     };
     app.upload_new_app = ()=> {
         app.vue.modal = {
-            title:'Upload App', 
+            title:'Create or Upload App', 
             color:'blue', 
             message:'',
-            form_name: 'upload-app',
-            form: {file: '', name: ''},
-            buttons: [{text: 'Upload', onclick: function() {alert('not implemented');}}, {text:'Close', onclick: app.modal_dismiss}]}; 
+            form_name: 'create-app',
+            form: {type: 'scaffold', name: '', source: '', mode: 'new', file: ''},
+            buttons: [{text: 'Create', onclick: function() {app.process_new_app();}}, {text:'Close', onclick: app.modal_dismiss}]}; 
     };
     app.create_new_file = ()=> {
         app.vue.modal = {title:'Create New File', color:'blue', message:'[WORK IN PROGRESS]'};
@@ -191,6 +197,7 @@ let init = (app) => {
         upload_new_file: app.upload_new_file,
         reload_tickets: app.reload_tickets,
         modal_dismiss: app.modal_dismiss,
+        handle_upload_file: app.handle_upload_file,
         login: app.login,
         logout: app.logout
     };

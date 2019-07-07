@@ -1,4 +1,3 @@
-
 // ASSUMES Vue and Axios
 
 if (!String.prototype.format) {

@@ -25,8 +25,7 @@
         <label for="applications">Installed Applications</label>
         <div class="applications-inner">
           <div class="right">
-            <button v-on:click="create_new_app()">Create New App</button>
-            <button v-on:click="upload_new_app()">Upload New App</button>
+            <button v-on:click="upload_new_app()">Create/Upload App</button>
             <button v-on:click="reload()">Reaload Apps</button>
           </div>
           <div>
@@ -197,45 +196,31 @@ It is still experimental...
             <div v-if="modal.form_name=='create-app'">
               <table>
                 <tr>
-                  <td><input v-model="modal.form.type" type="radio" value="empty"></td>
-                  <td>Empty</td>
+                  <td></td>
+                  <td><input type="text" v-model="modal.form.name" placeholder="new app name"></td>
+                </tr>
+                <tr>
+                  <td><input v-model="modal.form.type" type="radio" value="minimal"></td>
+                  <td>Minimal</td>
                 </tr>
                 <tr>
                   <td><input v-model="modal.form.type" type="radio" value="scaffold"></td>
                   <td>Scaffold (db, session, auth, etc. based on vue.js)</td>
                 </tr>
                 <tr>
-                  <td><input v-model="modal.form.type" type="radio" value="wiki"></td>
-                  <td>Wiki Example</td>
+                  <td><input v-model="modal.form.type" type="radio" value="web"></td>
+                  <td><input v-model="modal.form.source" type="text" placeholder="clone from web (git or zip)"></td>
                 </tr>
                 <tr>
-                  <td><input v-model="modal.form.type" type="radio" value="blog"></td>
-                  <td>Blog Example</td>
-                </tr>
-                <tr>
-                  <td><input v-model="modal.form.type" type="radio" value="chat"></td>
-                  <td>Chat Example</td>
-                </tr>
-                <tr>
-                  <td><input v-model="modal.form.type" type="radio" value="git"></td>
-                  <td><input v-model="modal.form.source" type="text" placeholder="clone from git source"></td>
+                  <td><input v-model="modal.form.type" type="radio" value="upload"></td>
+                  <td>Upload: <input type="file" id="upload-file" v-on:change="handle_upload_file"/></td>
                 </tr>
                 <tr>
                   <td></td>
-                  <td><input type="text" v-model="modal.form.name" placeholder="new app name"></td>
-                </tr>
-              </table>
-            </div>
-            <div v-if="modal.form_name=='upload-app'">
-              <table>
-                <tr>
-                  <td>
-                    <input type="file" v-modal="modal.form.file"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input type="text" v-model="modal.form.name" placeholder="rename as">
+                  <td style="padding-top: 20px">
+                    <input type="radio" name="mode" v-model="modal.form.mode" value="new"/> New App
+                    <input type="radio" name="mode" v-model="modal.form.mode" value="replace"/> Replace
+                    <input type="radio" name="mode" v-model="modal.form.mode" value="overwite"/> Overwite
                   </td>
                 </tr>
               </table>

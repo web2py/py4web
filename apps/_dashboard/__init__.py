@@ -1,7 +1,15 @@
 import os
 import sys
 import time
+import shutil
 import datetime
+import zipfile
+import subprocess
+import io
+
+import requests
+
+import web3py
 from web3py import __version__, action, abort, request, response, redirect, Translator
 from web3py.core import Reloader, dumps, ErrorStorage, Session, Fixture
 from pydal.validators import CRYPT
@@ -125,19 +133,28 @@ if MODE in ('demo', 'readonly', 'full'):
         path = safe_join(FOLDER, path) or abort()
         return open(path,'rb').read()
 
-    @action('packed/<appname>')
+    @action('packed/<path:path>')
     @session_secured
-    def packed(appname):
+    def packed(path):
         """packs an app"""
+        appname = path.split('.')[-2]
         appname = sanitize(appname)
-        deposit = os.path.join(FOLDER, appname, '.deposit')
-        if not os.path.exists(deposit):
-            os.mkdir(deposit)
-        name = 'app.'+appname+'.w3p'
-        dest = os.path.join(deposit, name)
-        app_pack(dest, os.path.join(FOLDER, appname))
-        return static(os.path.abspath(dest))
-    
+        app_dir = os.path.join(FOLDER, appname)
+        store = io.BytesIO()
+        zip = zipfile.ZipFile(store, mode='w')
+        for root, dirs, files in os.walk(app_dir, topdown=False):
+            if not root.startswith('.'):
+                for name in files:
+                    if not (name.endswith('~') or name.endswith('.pyc') or name[:1] in '#.'):
+                        filename = os.path.join(root, name)
+                        short = filename[len(app_dir+os.path.sep):]
+                        print('added', filename, short)
+                        zip.write(filename, short)
+        zip.close()
+        data = store.getvalue()
+        response.headers['Content-Type'] = 'application/zip'
+        return data
+
     @action('tickets')
     @session_secured
     def tickets():
@@ -197,8 +214,7 @@ if MODE == 'full':
             myfile.write(request.body.read())
         return {'status':'success'}
 
-
-    @action('delete/<path:path>', method='post')
+    @action('delete/<path:path>', method='POST')
     @session_secured
     def delete(path):
         """deletes a file"""
@@ -206,5 +222,52 @@ if MODE == 'full':
         recursive_unlink(fullpath)
         return {'status':'success'}
 
+    @action('new_app', method='POST')
+    @session_secured
+    def new_app():
+        form = request.json
+        target_dir = safe_join(FOLDER, form['name'])
+        if os.path.exists(target_dir):
+            if form['mode'] == 'new':
+                abort(500) # already validated client side
+            elif form['mode'] == 'replace':
+                shutil.rmtree(target_dir)
+        elif form['type'] != 'web' and not form['source'].endswith('.git'):
+            os.mkdir(target_dir)
+        assets_dir = os.path.join(os.path.dirname(web3py.__file__), 'assets')
+        source = None
+        if form['type'] == 'minimal':            
+            source = os.path.join(assets_dir,'web3py.app._minimal.zip')
+        elif form['type'] == 'scaffold':
+            source = os.path.join(assets_dir,'web3py.app._scaffold.zip')
+        elif form['type'] == 'web':
+            source = form['source']
+        elif form['type'] == 'upload':
+            source_stream = io.BytesIO(base64.b64decode(form['file']))
+        else:
+            abort(500)
+        # TODO catch and report better errors below
+        if form['type'] == 'upload':
+            zip = zipfile.ZipFile(source_stream, 'r')
+            zip.extractall(target_dir)
+            zip.close()
+        elif not '://' in source:  # install from a local asset (zip) file
+            zip = zipfile.ZipFile(source, 'r')
+            zip.extractall(target_dir)
+            zip.close()
+        elif source.endswith('.zip'):  # install from the web (zip file)
+            res = requests.get(source)
+            mem_zip = io.BytesIO(res.content)
+            zipfile.ZipFile(mem_zip, 'r')
+            zip.extractall(target_dir)
+            zip.close()
+        elif source.endswith('.git'):  # clone from a git repo
+            if subprocess.call(['git', 'clone', source, form['name']]):
+                abort(500)
+        else:
+            abort(400)
+        return {'status':'success'}
+
+    
 
 
