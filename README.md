@@ -14,7 +14,7 @@ open http://localhost:8000/todo/index
 
 ```
 git clone https://github.com/web2py/web3py.git
-cd web2py 
+cd web3py 
 python3 -m pip install -r requirements.txt
 ./web3py-start apps
 open http://localhost:8000/todo/index

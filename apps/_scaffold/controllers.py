@@ -29,18 +29,10 @@ from web3py import action, request, abort, redirect, URL
 from yatl.helpers import A
 from . common import db, session, T, cache, auth
 
-# define your actions below, here is an example of /<app_name>/index
 
-@action('welcome')
 @action('index', method='GET')
-@action.uses('generic.html', session, db, T, auth)
-def index():
-    message = A('Click me', _class='button', _href=URL('welcome'))
-    return dict(message=message, user=auth.get_user())
-
-@action('welcome', method='GET')
 @action.uses('generic.html', session, db, T, auth.user)
-def index2():
+def index():
     user = auth.get_user()
     message = T('Hello {first_name}'.format(**user))
     return dict(message=message, user=user)
