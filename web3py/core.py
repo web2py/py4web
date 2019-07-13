@@ -42,7 +42,7 @@ except ImportError:
     gevent = None
 
 # third part modules
-import jwt # this is PyJWT
+import jwt  # this is PyJWT
 import bottle
 import yatl
 import threadsafevariable
@@ -52,7 +52,7 @@ from pydal import _compat
 
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL']
 
-os.environ['WEB3PY_APPS_FOLDER'] = 'apps' # change from command line (default used for testing)
+os.environ['WEB3PY_APPS_FOLDER'] = 'apps'  # change from command line (default used for testing)
 
 ART = r"""
  _______  ____________  ____  ______  __
@@ -74,10 +74,12 @@ abort = bottle.abort
 # a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
 #########################################################################################
 
+
 class Node:
 
     def __init__(self, key=None, value=None, t=None, m=None, prev=None, next=None):
         self.key, self.value, self.t, self.m, self.prev, self.next = key, value, t, m, prev, next
+
 
 class Cache:
     """
@@ -85,7 +87,8 @@ class Cache:
     Example:
 
         cache = Cache(size=1000)
-        h = cache.get(filename, lambda: hash(open(filename).read()), 60, lambda: os.path.getmtime())
+        h = cache.get(filename, lambda: hash(
+            open(filename).read()), 60, lambda: os.path.getmtime())
 
     (computes and cashes the hash of file filename but only reads the file if mtime changes and
      does not check the mtime more oftern than every 60. caches the 1000 most recent hashes)
@@ -126,7 +129,8 @@ class Cache:
         def decorator(func):
             @functools.wraps(func)
             def memoized_func(*args, **kwargs):
-                key = '%s:%s:%s:%s' % (func.__module__, func.__name__, args, kwargs)
+                key = '%s:%s:%s:%s' % (
+                    func.__module__, func.__name__, args, kwargs)
                 return self.get(key, lambda args=args, kwargs=kwargs: func(*args, **kwargs), expiration=expiration)
             return memoized_func
         return decorator
@@ -134,6 +138,7 @@ class Cache:
 #########################################################################################
 # a better json serializer
 #########################################################################################
+
 
 def objectify(obj):
     """converts the obj(ect) into a json serializable object"""
@@ -149,12 +154,13 @@ def objectify(obj):
         return list(obj)
     elif hasattr(obj, 'to_dict') and callable(obj.to_dict):
         return obj.to_dict()
-    elif hasattr(obj, '__dict__') and hasattr(obj,'__class__'):
+    elif hasattr(obj, '__dict__') and hasattr(obj, '__class__'):
         d = copy.copy(obj.__dict__)
         d['__class__'] = obj.__class__.__name__
         return d
     else:
         return str(obj)
+
 
 def dumps(obj, sort_keys=True, indent=2):
     return json.dumps(obj, default=objectify, sort_keys=sort_keys, indent=indent)
@@ -163,30 +169,44 @@ def dumps(obj, sort_keys=True, indent=2):
 # Generic Fixture (database connctions, templates, sessions, and requirements are fixtures)
 #########################################################################################
 
+
 class Fixture:
-    def on_request(self): pass   # called when request arrives
-    def on_error(self): pass     # called when request errors
-    def on_success(self): pass   # called when request is successfull
-    def transform(self, output): # transforms the output, for example to apply template
+    def on_request(self):
+        pass   # called when request arrives
+
+    def on_error(self):
+        pass     # called when request errors
+
+    def on_success(self):
+        pass   # called when request is successfull
+
+    def transform(self, output):  # transforms the output, for example to apply template
         return output
 
 
 class Translator(pluralize.Translator, Fixture):
-    def on_request(self): self.select(request.headers.get('Accept-Language', 'en'))
-    def on_success(self): response.headers['Content-Language'] = self.local.tag
+    def on_request(self):
+        self.select(request.headers.get('Accept-Language', 'en'))
+
+    def on_success(self):
+        response.headers['Content-Language'] = self.local.tag
 
 
 class DAL(pydal.DAL, Fixture):
-    def on_request(self): 
+    def on_request(self):
         threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
         self._adapter.reconnect()
-    def on_error(self): self.rollback()
-    def on_success(self): self.commit()
+
+    def on_error(self):
+        self.rollback()
+
+    def on_success(self):
+        self.commit()
 
 
 # make sure some variables in pydal are thread safe
 for _ in ['readable', 'writable', 'default', 'update', 'requires']:
-    setattr(pydal.DAL.Field, _,  threadsafevariable.ThreadSafeVariable())
+    setattr(pydal.DAL.Field, _, threadsafevariable.ThreadSafeVariable())
 
 # this global object will be used to store their state to restore it for every http request
 ICECUBE = {}
@@ -194,6 +214,7 @@ ICECUBE = {}
 #########################################################################################
 # The template rendered fixture
 #########################################################################################
+
 
 class Template(Fixture):
 
@@ -208,7 +229,7 @@ class Template(Fixture):
     def reader(filename):
         """cached reader, only reads template if has changed"""
         def raw_read():
-            with open(filename, encoding = 'utf8') as stream:
+            with open(filename, encoding='utf8') as stream:
                 return stream.read()
         return Template.cache.get(filename, raw_read, expiration=1,
                                   monitor=lambda: os.path.getmtime(filename))
@@ -221,23 +242,26 @@ class Template(Fixture):
         context.update(URL=URL)
         context.update(output)
         context['__vars__'] = output
-        app_folder = os.path.join(os.environ['WEB3PY_APPS_FOLDER'], request.app_name)
+        app_folder = os.path.join(
+            os.environ['WEB3PY_APPS_FOLDER'], request.app_name)
         path = self.path or os.path.join(app_folder, 'templates')
         filename = os.path.join(path, self.filename)
-        output = yatl.render(Template.reader(filename), path=path, context=context, 
-                             delimiters=self.delimiters, reader=Template.reader)
+        output = yatl.render(
+            Template.reader(filename), path=path, context=context,
+            delimiters=self.delimiters, reader=Template.reader)
         return output
 
 #########################################################################################
 # The session fixture
 #########################################################################################
 
+
 class Session(Fixture):
 
     SECRET = None
 
-    def __init__(self, secret=None, expiration=None, algorithm='HS256', 
-                 storage=None, secure=False, same_site='Lax'):                 
+    def __init__(self, secret=None, expiration=None, algorithm='HS256',
+                 storage=None, secure=False, same_site='Lax'):
         """
         secret is the shared key used to encrypt the session (using algorithm)
         expiration is in seconds
@@ -277,9 +301,11 @@ class Session(Fixture):
                     if json_data:
                         self.local.data = json.loads(json_data)
                 else:
-                    self.local.data = jwt.decode(token_data, self.secret, algorithms=[self.algorithm])
+                    self.local.data = jwt.decode(
+                        token_data, self.secret, algorithms=[self.algorithm])
                 if self.expiration is not None and self.storage is None:
-                    assert self.local.data['timestamp'] > time.time() - int(self.expiration)
+                    assert self.local.data[
+                        'timestamp'] > time.time() - int(self.expiration)
                 assert self.local.data.get('secure') == self.local.secure
             except (jwt.exceptions.InvalidSignatureError, AssertionError, ValueError):
                 pass
@@ -289,14 +315,16 @@ class Session(Fixture):
             self.local.data['secure'] = self.local.secure
 
     def save(self):
-        self.local.data['timestamp'] = time.time()        
+        self.local.data['timestamp'] = time.time()
         if self.storage:
             cookie_data = self.local.data['uuid']
-            self.storage.set(cookie_data, json.dumps(self.local.data), self.expiration)
+            self.storage.set(
+                cookie_data, json.dumps(self.local.data), self.expiration)
         else:
-            cookie_data = jwt.encode(self.local.data, self.secret, algorithm=self.algorithm)
+            cookie_data = jwt.encode(
+                self.local.data, self.secret, algorithm=self.algorithm)
 
-        response.set_cookie(self.local.session_cookie_name, 
+        response.set_cookie(self.local.session_cookie_name,
                             _compat.to_native(cookie_data), path='/',
                             secure=self.local.secure,
                             same_site=self.same_site)
@@ -326,8 +354,9 @@ class Session(Fixture):
 # the URL helper
 #########################################################################################
 
+
 def URL(*parts, vars=None, hash=None, scheme=False):
-    """ 
+    """
     Examples:
     URL('a','b',vars=dict(x=1),hash='y')       -> /{app_name}/a/b?x=1#y
     URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{app_name}/a/b?x=1
@@ -337,7 +366,8 @@ def URL(*parts, vars=None, hash=None, scheme=False):
     prefix = '/%s/' % request.app_name if request.app_name != '_default' else '/'
     url = prefix + '/'.join(parts)
     if vars:
-        url += '?' + '&'.join('%s=%s' % (k, urllib.parse.quote(str(v))) for k,v in vars.items())
+        url += '?' + '&'.join('%s=%s' % (
+            k, urllib.parse.quote(str(v))) for k, v in vars.items())
     if hash:
         url += '#%s' % hash
     if not scheme is False:
@@ -350,17 +380,20 @@ def URL(*parts, vars=None, hash=None, scheme=False):
 # the action decorator
 #########################################################################################
 
+
 class HTTP(BaseException):
     """our HTTP exception does not delete cookies and headers like bottle.HTTPResponse does
     it is consider success, not failure"""
     def __init__(self, status):
         self.status = status
-    
+
+
 def redirect(location):
     """our redirect does not delete cookies and headers like bottle.HTTPResponse does,
     it is consider success, not failure"""
     response.set_header('Location', location)
     raise HTTP(303)
+
 
 class action:
     """@action(...) is a decorator for functions to be exposed as actions"""
@@ -386,7 +419,7 @@ class action:
                     if not other_fixture in fixtures:
                         fixtures.append(other_fixture)
                 fixtures.append(fixture)
-        
+
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
@@ -395,7 +428,7 @@ class action:
                     ret = func(*args, **kwargs)
                     for obj in fixtures:
                         ret = obj.transform(ret)
-                    [obj.on_success() for obj in fixtures]                    
+                    [obj.on_success() for obj in fixtures]
                     return ret
                 except HTTP:
                     [obj.on_success() for obj in fixtures]
@@ -439,32 +472,27 @@ class action:
             except Exception:
                 logging.error(traceback.format_exc())
                 try:
-                    ticket = ErrorStorage().log(request.app_name, get_error_snapshot())
+                    ticket = ErrorStorage(
+                    ).log(request.app_name, get_error_snapshot())
                 except Exception:
                     logging.error(traceback.format_exc())
                     ticket = "unknown"
-                return  error_page(500, button_text=ticket, href='/_dashboard/ticket/'+ticket)
-        return wrapper
-
-    @staticmethod
-    def combine(*decorators):
-        def wrapper(func):
-            for decorator in reversed(decorators):
-                func = decorator(func)
-            return func
+                return  error_page(500, button_text=ticket, href='/_dashboard/ticket/' + ticket)
         return wrapper
 
     def __call__(self, func):
         """builds the decorator"""
         app_name = action.app_name
-        path = ('/' if app_name == '_default' else '/%s/' % app_name) + self.path # the _default app has no prefix
+        path = ('/' if app_name == '_default' else '/%s/' %
+                app_name) + self.path  # the _default app has no prefix
         if not func in self.registered:
             func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
-        if path.endswith('/index'): # /index is always optional
+        if path.endswith('/index'):  # /index is always optional
             func = bottle.route(path[:-6] or '/', **self.kwargs)(func)
         self.registered.add(func)
         return func
+
 
 def user_in(session):
     def requirement():
@@ -505,6 +533,7 @@ if not hasattr(_ssl, 'sslwrap'):
 # error handling
 #########################################################################################
 
+
 def get_error_snapshot(depth=5):
     """Return a dict describing a given traceback (based on cgitb.text)."""
 
@@ -519,14 +548,15 @@ def get_error_snapshot(depth=5):
         'machine', 'node', 'platform', 'processor', 'python_branch', 'python_build',
         'python_compiler', 'python_implementation', 'python_revision', 'python_version',
         'python_version_tuple', 'release', 'system', 'uname', 'version']
-    data['platform_info'] = {key: getattr(platform, key)() for key in platform_keys}
+    data['platform_info'] = {key: getattr(platform, key)()
+                             for key in platform_keys}
     data['os_environ'] = {key: str(value) for key, value in os.environ.items()}
     data['traceback'] = traceback.format_exc()
     data['exception_type'] = str(etype)
     data['exception_value'] = str(evalue)
     # loopover the stack frames
     items = inspect.getinnerframes(etb, depth)
-    del etb # Prevent circular references that would cause memory leaks
+    del etb  # Prevent circular references that would cause memory leaks
     data['stackframes'] = stackframes = []
     for frame, file, lnum, func, lines, index in items:
         file = file and os.path.abspath(file) or '?'
@@ -534,9 +564,12 @@ def get_error_snapshot(depth=5):
         # basic frame information
         f = {'file': file, 'func': func, 'lnum': lnum}
         f['code'] = lines
-        line_vars = cgitb.scanvars(lambda: linecache.getline(file, lnum), frame, locals)
+        line_vars = cgitb.scanvars(
+            lambda: linecache.getline(file, lnum), frame, locals)
         # dump local variables (referenced in current line only)
-        f['vars'] = {key: repr(value) for key, value in locals.items() if not key.startswith('__')}
+        f['vars'] = {key: repr(value) 
+                     for key, value in locals.items() 
+                     if not key.startswith('__')}
         stackframes.append(f)
 
     return data
@@ -551,11 +584,11 @@ class ErrorStorage:
                              Field('uuid'),
                              Field('app_name'),
                              Field('method'),
-                             Field('path','string'),
-                             Field('timestamp','datetime'),
-                             Field('client_ip','string'),
-                             Field('error','string'),
-                             Field('snapshot','json'))
+                             Field('path', 'string'),
+                             Field('timestamp', 'datetime'),
+                             Field('client_ip', 'string'),
+                             Field('error', 'string'),
+                             Field('snapshot', 'json'))
         self.db.commit()
 
     def log(self, app_name, error_snapshot):
@@ -570,7 +603,7 @@ class ErrorStorage:
                 client_ip=request.environ.get('REMOTE_ADDR'),
                 error=error_snapshot['exception_value'],
                 snapshot=error_snapshot)
-            print('id=',id)
+            print('id=', id)
             self.db.commit()
             return ticket_uuid
         except Exception:
@@ -579,23 +612,25 @@ class ErrorStorage:
 
     def get(self, ticket_uuid=None):
         db = self.db
-        if ticket_uuid: 
-            query, orderby = db.web3py_error.uuid==ticket_uuid, None
+        if ticket_uuid:
+            query, orderby = db.web3py_error.uuid == ticket_uuid, None
             rows = db(query).select(orderby=orderby, limitby=(0, 1)).as_list()
         else:
             orderby = ~db.web3py_error.timestamp
-            groupby = db.web3py_error.path|db.web3py_error.error
-            query = db.web3py_error.timestamp > datetime.datetime.now() - datetime.timedelta(days=7)
+            groupby = db.web3py_error.path | db.web3py_error.error
+            query = db.web3py_error.timestamp > datetime.datetime.now(
+            ) - datetime.timedelta(days=7)
             fields = [field for field in db.web3py_error if not field.type == 'json']
             fields.append(db.web3py_error.id.count())
-            list_rows = db(query).select(*fields, orderby=orderby, groupby=groupby).as_list()
+            list_rows = db(query).select(
+                *fields, orderby=orderby, groupby=groupby).as_list()
             rows = []
             for item in list_rows:
                 row = item['web3py_error']
                 row['count'] = item['_extra'][str(db.web3py_error.id.count())]
                 rows.append(row)
         return rows if not ticket_uuid else rows[0] if rows else None
-    
+
 
 #########################################################################################
 # loading/reloading logic
@@ -616,8 +651,9 @@ class Reloader:
         new_apps = []
         # if first time reload dummy top module
         if not Reloader.MODULES:
-            path =  os.path.join(folder, '__init__.py')
-            module = importlib.machinery.SourceFileLoader('apps', path).load_module()
+            path = os.path.join(folder, '__init__.py')
+            module = importlib.machinery.SourceFileLoader(
+                'apps', path).load_module()
         # the load all the apps as submodules
         for app_name in os.listdir(folder):
             action.app_name = app_name
@@ -628,8 +664,9 @@ class Reloader:
                 try:
                     module = Reloader.MODULES.get(app_name)
                     if not module:
-                        print('[ ] loading %s ...' % app_name)                        
-                        module = importlib.machinery.SourceFileLoader(module_name, init).load_module()
+                        print('[ ] loading %s ...' % app_name)
+                        module = importlib.machinery.SourceFileLoader(
+                            module_name, init).load_module()
                         new_apps.append(path)
                         print('\x1b[A[X] loaded %s     ' % app_name)
                     else:
@@ -642,17 +679,20 @@ class Reloader:
                     Reloader.ERRORS[app_name] = None
                 except:
                     tb = traceback.format_exc()
-                    print('\x1b[A[FAILED] loading %s     \n%s\n' % (app_name, tb))
+                    print('\x1b[A[FAILED] loading %s     \n%s\n' %
+                          (app_name, tb))
                     Reloader.ERRORS[app_name] = tb
         # expose static files with support for static asset management
         for path in new_apps:
             app_name = path.split(os.path.sep)[-1]
+
             @bottle.route('/%s/static/<filename:path>' % app_name)
             @bottle.route('/%s/static/_<version:re:\d+\.\d+\.\d+>/<filename:path>' % app_name)
             def server_static(filename, path=path, version=None):
                 return bottle.static_file(filename, root=os.path.join(path, 'static'))
         # register routes
         routes = []
+
         def to_filename(module):
             filename = os.path.join(*module.split('.')[1:])
             filename = os.path.join(filename, '__init__.py') if not filename.count(os.sep) else filename + '.py'
@@ -671,19 +711,23 @@ class Reloader:
 # web server and reload logic
 #########################################################################################
 
-def error_page(code, button_text=None, href='#', color=None,  message=None):
-    message = http.client.responses[code].upper() if message is None else message
-    color = {'4':'#F44336', '5': '#607D8B'}.get(str(code)[0], '#2196F3') if not color else color
+def error_page(code, button_text=None, href='#', color=None, message=None):
+    message = http.client.responses[code].upper(
+    ) if message is None else message
+    color = {'4': '#F44336', '5': '#607D8B'}.get(str(
+        code)[0], '#2196F3') if not color else color
     return yatl.render('<html><head><style>body{color:white;text-align: center;background-color:{{=color}};font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>{{=code}}</h1><h2>{{=message}}</h2>{{if button_text:}}<a href="{{=href}}">{{=button_text}}</a>{{pass}}</body></html>', context=dict(code=code, message=message, button_text=button_text, href=href, color=color))
+
 
 @bottle.error(404)
 def error404(error):
     guess_app_name = request.path.split('/')[1]
-    return error_page(404, button_text=guess_app_name, href='/'+guess_app_name)
+    return error_page(404, button_text=guess_app_name, href='/' + guess_app_name)
 
 #########################################################################################
 # web server and reload logic
 #########################################################################################
+
 
 def start_server(args):
     host, port = args.address.split(':')
@@ -695,7 +739,7 @@ def start_server(args):
         elif not gevent:
             logging.error('gevent not installed')
         else:
-            sys.argv[:] = sys.argv[:1] # else break gunicorn
+            sys.argv[:] = sys.argv[:1]  # else break gunicorn
             bottle.run(server='gunicorn', host=host, port=int(port),
                        workers=args.number_workers, worker_class='gevent', reloader=False,
                        certfile=args.ssl_cert_filename, keyfile=args.ssl_key_filename)
@@ -729,13 +773,14 @@ def main():
         with open(args.password_file) as fp:
             args.password = fp.read().strip()
     elif args.dashboard_mode not in ('demo', 'none'):
-        args.password = pydal.validators.CRYPT()(getpass.getpass('Choose a one-time dashboad password: '))[0]
+        args.password = pydal.validators.CRYPT(
+        )(getpass.getpass('Choose a one-time dashboad password: '))[0]
     args.service_folder = os.path.join(args.apps_folder, '.service')
     # store all args in evironment variables to make then available to the gunicorn processes
     for key in args.__dict__:
-        os.environ['WEB3PY_'+key.upper()] = str(args.__dict__[key])
+        os.environ['WEB3PY_' + key.upper()] = str(args.__dict__[key])
     # if the apps folder does not exist create it and populate it
-    if not os.path.exists(args.apps_folder):        
+    if not os.path.exists(args.apps_folder):
         if args.create or input('Create %s (y/n)? ' % args.apps_folder)[:1] in 'yY':
             os.makedirs(args.apps_folder)
             with open(os.path.join(args.apps_folder, '__init__.py'), 'w') as fp:

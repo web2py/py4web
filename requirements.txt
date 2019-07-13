@@ -1,6 +1,6 @@
 threadsafevariable
 pydal >= 19.5.11
-pyjwt
+pyjwt >= 1.6.4
 yatl
 pluralize
 bottle
