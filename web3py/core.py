@@ -261,7 +261,7 @@ class Session(Fixture):
     SECRET = None
 
     def __init__(self, secret=None, expiration=None, algorithm='HS256',
-                 storage=None, secure=False, same_site='Lax'):
+                 storage=None, same_site='Lax'):
         """
         secret is the shared key used to encrypt the session (using algorithm)
         expiration is in seconds
@@ -276,7 +276,6 @@ class Session(Fixture):
         self.algorithm = algorithm
         self.local = threading.local()
         self.storage = storage
-        self.secure = secure
         self.same_site = same_site
         if isinstance(storage, Session):
             self.__prerequisites__ = [storage]

@@ -30,6 +30,7 @@ apps/*
 !apps/_dashboard/*
 !apps/_scaffold
 !apps/_scaffold/*
+!apps/_documentation/*
 !apps/superheroes
 !apps/superheroes/*
 !apps/*/databases/README*

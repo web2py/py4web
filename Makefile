@@ -18,6 +18,9 @@ assets:
 	cd apps/_minimal; \
 	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
 	zip -@ ../../web3py/assets/web3py.app._minimal.zip
+	cd apps/_documentation; \
+	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt|mm)$$" | \
+	zip -@ ../../web3py/assets/web3py.app._documentation.zip
 build: clean assets
 	python3 setup.py build
 install: build
