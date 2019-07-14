@@ -673,6 +673,6 @@ class LDAPPlugin(object):
         logger.debug('User groups: %s' % ldap_groups_of_the_user)
         return list(ldap_groups_of_the_user)
 
-    if filterstr[0] == '(' and filterstr[-1] == ')':  # rfc4515 syntax
-        filterstr = filterstr[1:-1]  # parens added again where used
-    return []
+        if filterstr[0] == '(' and filterstr[-1] == ')':  # rfc4515 syntax
+            filterstr = filterstr[1:-1]  # parens added again where used
+        return []
