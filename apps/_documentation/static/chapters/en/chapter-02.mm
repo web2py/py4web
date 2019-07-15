@@ -2,9 +2,9 @@
 
 ### From scratch
 
-Apps can ba created uing the dashboard or directly from the filesystem. Here we are going to do it manually as the Dashbaord is descried in its own chapter.
+Apps can be created using the dashboard or directly from the filesystem. Here we are going to do it manually as the Dashboard is described in its own chapter.
 
-Keep in mind that an app is a Python module therefore it needs only a folder and a ``__init__.py`` file in that folder:
+Keep in mind that an app is a Python module; therefore it needs only a folder and a ``__init__.py`` file in that folder:
 
 ``
 mkdir apps/myapp
@@ -28,7 +28,7 @@ http://localhost:8000/myapp/static/hello.txt
 
 Notice that ``static`` is a special path for web3py and only files under the ``static`` folder are served.
 
-To created a dyamic page it you must create a function that returns the page content. Edit the ``myapp/__init__.py`` as follows:
+To created a dyamic page you must create a function that returns the page content. Edit the ``myapp/__init__.py`` as follows:
 
 ``
 import datetime
@@ -52,7 +52,7 @@ http://localhost:8000/myapp
 ``
 (notice that index is optional)
 
-Notice that unlike other frameworks we did not import or start the webserver within the ``myapp`` code. This is because web3py is already running and it may b serving multiple apps. web3py imports our code and exposes functions decorated with ``@action()``. Also notice that web3py prepends ``/myapp`` (i.e. the name of the app) to the url path declared in the action. This is because there are multiple apps and they may define conflicting routes. Prepending the name of the app remove the ambiguity. There is an exception: if you call your app ``_default`` or if you create a symlink from ``_default`` to ``myapp`` then web3py will not prepend any prefix to the routes defined inside the app.
+Unlike other frameworks we do not import or start the webserver within the ``myapp`` code. This is because web3py is already running and it may be serving multiple apps. web3py imports our code and exposes functions decorated with ``@action()``. Also notice that web3py prepends ``/myapp`` (i.e. the name of the app) to the url path declared in the action. This is because there are multiple apps and they may define conflicting routes. Prepending the name of the app remove the ambiguity. But there is an exception: if you call your app ``_default`` or if you create a symlink from ``_default`` to ``myapp`` then web3py will not prepend any prefix to the routes defined inside the app.
 
 #### On return values
 
@@ -70,7 +70,7 @@ This page will be visible at
 http://localhost:8000/myapp/colors
 ``
 
-and returns a JSON object ``{"colors": ["red", "blue", "green"]}``. Notice we chose to nam the function the same as the route. This is not rquired but it is a convention that we will often follow.
+and returns a JSON object ``{"colors": ["red", "blue", "green"]}``. Notice we chose to name the function the same as the route. This is not rquired but it is a convention that we will often follow.
 
 You can use any template language to turn your data into a string. Web3py comes with yatl and we will provide an example shortly.
 
@@ -98,7 +98,7 @@ The syntax of the patters is the same as the Bottle routes. A route wildcard can
 - ``<name:filter>`` or
 - ``<name:filter:config>``
 
-And these are possible filters (only ``:re:`` has a config.
+And these are possible filters (only ``:re:`` has a config):
 
 -  ``:int`` matches (signed) digits and converts the value to integer.
 -  ``:float`` similar to :int but for decimal numbers.
@@ -165,23 +165,23 @@ def paint():
 
 The page will now display the color name on a background of the corresponding color.
 
-The key ingredient here is the decorator ``@action.uses(...)``. The arguments of ``action.uses`` are called fixtures. You can spcify multiple fixtures in one decorator or you can have multiple decorators. Fixtures are objects that modify the behavior of the action, that may need to be initialized per request, may filter input and output of the action, and may depend on each-other (they are similar in scope to Bottle plugins but they are declared per-action and they have a dependency tree which will be explained later).
+The key ingredient here is the decorator ``@action.uses(...)``. The arguments of ``action.uses`` are called fixtures. You can specify multiple fixtures in one decorator or you can have multiple decorators. Fixtures are objects that modify the behavior of the action, that may need to be initialized per request, may filter input and output of the action, and may depend on each-other (they are similar in scope to Bottle plugins but they are declared per-action and they have a dependency tree which will be explained later).
 
-The simplest type of Fixture is a template. You spcify it by simply giving the name of the file to be used as template. That file must follow the yatl syntax and must be located in the app ``templates`` folder. The object returned by the action will be processed by the template and turned into a string.
+The simplest type of Fixture is a template. You specify it by simply giving the name of the file to be used as template. That file must follow the yatl syntax and must be located in the app ``templates`` folder. The object returned by the action will be processed by the template and turned into a string.
 
 You can easily define fixtures for other template languages but this is described later.
 Some built-in fixtures are:
 
-- the DAL object (which tells web3py obtain a database connecton from the pool at every request, and commit on success or rollback on faulre)
+- the DAL object (which tells web3py to obtain a database connecton from the pool at every request, and commit on success or rollback on failure)
 - the Session object (which tells web3py to parse the cookie and retrieve a session  at every request, and save it if changed)
-- the Translator object (which tells web3py to preocess the accept-language header and determine optimal internatonalization/pluralization ules)
+- the Translator object (which tells web3py to process the accept-language header and determine optimal internationalization/pluralization rules)
 - the Auth object (which tells web3py that the app needs access to the user info)
 
 They may depend on each other. For example the Session may need the DAL (database connection) and Auth may need both. Dependencies are handled automatically.
 
 ### From _scaffold
 
-Most of the times you do not want to start wirting code from scratch. You also want to follow some sane conventions outlined here, like not putting all your code into ``__init__.py``. Web3py provides a Scaffolding (_scaffold) app files are organized properly and many useful objects are pre-defined.
+Most of the times you do not want to start writing code from scratch. You also want to follow some sane conventions outlined here, like not putting all your code into ``__init__.py``. Web3py provides a Scaffolding (_scaffold) app where files are organized properly and many useful objects are pre-defined.
 
 Notice you will not find the scaffold app under apps, unless you downloaded web3py from source. But you can create one using the Dashboard.
 
@@ -237,12 +237,12 @@ def index():
 Notice the following:
 
 - ``request``, ``response``, ``abort`` are defined by Bottle
-- ``redirect`` and ``URL`` are similar to their web3py conterparts
+- ``redirect`` and ``URL`` are similar to their web3py counterparts
 - helpers (``A``, ``DIV``, ``SPAN``, ``IMG``, etc) must be imported from ``yatl.helpers`` and work pretty much as in web2py
 - ``db``, ``session``, ``T``, ``cache``, ``auth`` are Fixtures. They must be defined in ``common.py``.
-- ``@action.uses(auth.user)`` indicates that this action expects a valid logged-in user retrievable by ``auth.get_user()``. If that is not the case this action rediects to th login page (defined also in ``common.py`` and using the Vue.js auth.html component).
+- ``@action.uses(auth.user)`` indicates that this action expects a valid logged-in user retrievable by ``auth.get_user()``. If that is not the case this action rediects to the login page (defined also in ``common.py`` and using the Vue.js auth.html component).
 
-When you start from scaffold you may want to edit ``settings.py``, ``templates``, ``models.py`` and ``controllers.py`` but probably you d not need to change anything in ``common.py``.
+When you start from scaffold you may want to edit ``settings.py``, ``templates``, ``models.py`` and ``controllers.py`` but probably you don't need to change anything in ``common.py``.
 
 In your html you can use any JS library that you choose because web3py is agnostic to your choice of JS and CSS but with some exceptions. The ``auth.html`` which handles registration/login/etc. uses a vue.js component. Hence if you want to use that you should not remove it.
 
