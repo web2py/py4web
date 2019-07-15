@@ -1,5 +1,9 @@
 ## Installation and Startup
 
+### Supported platforms and prerequisites
+
+Web3py runs fine on Windows, MacOS and Linux. Its only prerequisite is Python 3, which must be installed in advance. 
+
 ### Installing from pip
 
 From the command line
@@ -8,6 +12,7 @@ From the command line
 python3 -m pip install --upgrade web3py
 ``:bash
 
+(if python3 does not work, try with the python command instead).
 This will install web3py and all its dependencies. Once installed you can start it with:
 
 ``
@@ -36,9 +41,9 @@ Here ``apps`` is the name of the folder where you keep your apps. If the folder 
 
 Mind that if you upgrade web3py, it will not automatically upgrade Dashboard and Default. You have to remove these apps for web3py to re-install them. This is a safety precaution, in case you made changes to those apps.
 
-Deashboard is a web based IDE. Default is an app does not nothing other then welcome the user. In general "apps/_default" can be an app or a symlink to your default app.
+Dashboard is a web based IDE. Default is an app that does not nothing other than welcome the user. In general "apps/_default" can be an app or a symlink to your default app.
 
-Notice that some apps like Dashboard and Default have a special role in web3py and therefore their actual name starts with ``_`` to avoid conflict with apps created by the you.
+Notice that some apps like Dashboard and Default have a special role in web3py and therefore their actual name starts with ``_`` to avoid conflict with apps created by you.
 
 Once web3py is installed you can access the apps at the following urls:
 
@@ -49,10 +54,10 @@ http://localhost:8000/_dashboard
 http://localhost:8000/{yourappname}/index
 ``
 
-Notice that ONLY the default app does not need a path prefix ``/_default`` is optional.
-Also notice that a trailing ``/index`` is also optional.
+Notice that ONLY the default app does not need a path prefix (``/_default`` is optional).
+Also the trailing ``/index`` is optional.
 
-### installing from source
+### Installing from source
 
 From the command line
 
@@ -68,7 +73,7 @@ Once installed you should start with
 ./web3py-start apps
 ``:bash
 
-Notice the ``./`` makes sure you are running the local web3py and not the installed one.
+Notice the ``./`` ; it forces the run of the local folder's web3py and not the installed one.
 
 ### Dashboard password
 
