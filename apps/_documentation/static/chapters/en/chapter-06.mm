@@ -1,6 +1,8 @@
 ## The RESTAPI
 
-Since version 19.5.10 PyDAL includes restful API called RestAPI. It is inspired by GraphQL but it not quite the same because it is less powerful but, in the spirit of web2py, more practical and easier to use. Like GraphSQL RestAPI allos a client to query for information using the GET method and allows to specify some details about the format of the response (which references to follow and how to denormalize the data). Unlike GraphSQL it allows the server to specify a policy and restict which queries are allowed and which one are not. The can be evaluated dynamically per request based on the user and the state of the server. As the name implied RestAPI allows all startard methods GET, POST, PUT, and DELETE. Each of them can be enabled or disabled based on the policy, for invidual tables and individual fields.
+Since version 19.5.10 PyDAL includes a restful API called RestAPI. It is inspired by GraphQL but it's not quite the same because it is less powerful but, in the spirit of web2py, more practical and easier to use.
+Like GraphSQL RestAPI allows a client to query for information using the GET method and allows to specify some details about the format of the response (which references to follow, and how to denormalize the data). Unlike GraphSQL it allows the server to specify a policy and restict which queries are allowed and which one are not. They can be evaluated dynamically per request based on the user and the state of the server.
+As the name implied RestAPI allows all stardard methods GET, POST, PUT, and DELETE. Each of them can be enabled or disabled based on the policy, for invidual tables and individual fields.
 
 In the examples below we assume an app called "superheroes" and the following model:
 
@@ -43,7 +45,7 @@ def api():
                              request.get_vars, request.post_vars)
 ``
 
-The policy is per table (or * for all tables and per method. authorize can be True (allow), False (deny) or a function with the signature (method, tablename, record_id, get_vars, post_vars) which returns True/False. For the GET policy one can specify a list of allowed query patterns (* for all). A query patter will be matched against the keys in the query string.
+The policy is per table (or * for all tables and per method. authorize can be True (allow), False (deny) or a function with the signature (method, tablename, record_id, get_vars, post_vars) which returns True/False. For the GET policy one can specify a list of allowed query patterns (* for all). A query pattern will be matched against the keys in the query string.
 
 The above action is exposed as:
 
@@ -51,7 +53,7 @@ The above action is exposed as:
 /superheroes/rest/api.json/{tablename}
 ``    
 
-In out example policy we disabled all methods but GET.
+In our example policy we disabled all methods but GET.
 
 #### RestAPI GET
 

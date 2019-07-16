@@ -2,13 +2,13 @@
 
 A fixture is defined as "a piece of equipment or furniture which is fixed in position in a building or vehicle". In our case a fixture is something attached to the action that processes an HTTP request in order to produce a response.
 
-When processing any HTTP requests there are some optional operations we may want to perform. For example parse the cookie to look for session informaion, commit a database transaction, determine the preferred language from the HTTP header and lookup proper internationalization, etc. These operations are optional. Some actions need them and some actions do not. They may also depend on each other. For example a if sessions are stored in the database and out action needs it, we may need to parse the session cookie from the header, pick up a connection from the database connection pool, and - after the action has been executed - save the session back in the database if data has changed.
+When processing any HTTP requests there are some optional operations we may want to perform. For example parse the cookie to look for session informaion, commit a database transaction, determine the preferred language from the HTTP header and lookup proper internationalization, etc. These operations are optional. Some actions need them and some actions do not. They may also depend on each other. For example, if sessions are stored in the database and out action needs it, we may need to parse the session cookie from the header, pick up a connection from the database connection pool, and - after the action has been executed - save the session back in the database if data has changed.
 
-Web3py fixtures provide a mechanism to specify what an action needs so that web3py can accomplish the required tasks (and skip non required one) in the most efficient manner. Fixtures make the code efficient and reduce the need for biolerplate code.
+Web3py fixtures provide a mechanism to specify what an action needs so that web3py can accomplish the required tasks (and skip non required ones) in the most efficient manner. Fixtures make the code efficient and reduce the need for boilerplate code.
 
 Web3py fixtures are similar to WSGI middleware and BottlePy plugin except that they apply to individual actions, not to all of them, and can depend on each other.
 
-Web3py comes with some pre-defined fixtures for actions that need sessions, database connections, internationalization, authentication, and teemplates. Their usage will be explained in this chapter. The Developer is also free to add fixtures for example to handle a third party template language or third party session logic.
+Web3py comes with some pre-defined fixtures for actions that need sessions, database connections, internationalization, authentication, and templates. Their usage will be explained in this chapter. The Developer is also free to add fixtures for example to handle a third party template language or third party session logic.
 
 ### Templates
 
@@ -56,7 +56,7 @@ By default the session object is stored in a cookie called, signed and encrypted
 
 In web3py sessions are dictionaries but they are stored using JSON (JWT specifically) therefore you should only store objects that are JSON serializable. If the object is not JSON serializable, it will be serialized using the ``__str__`` operator and some information may be lost.
 
-By default web3py sessions never expire (unless they contain login information but that is another story) but an expiration can be set. Other parameters can be specified as well:
+By default web3py sessions never expire (unless they contain login information, but that is another story) even if an expiration can be set. Other parameters can be specified as well:
 
 ``
 session = Session(secret='my secret key'.
@@ -89,7 +89,7 @@ conn.set = lambda k, v, e, cs=conn.set, ct=conn.ttl: (cs(k, v), e and ct(e))
 session = Session(storage=conn)
 ``:python
 
-Notice a storage object must have ``get`` and ``set`` methods and the ``set`` method must allow to specify an expiration. The redis connection object has a `ttl`` method to specify the expiration, hence we monkey patch the ``set`` method to have the expected signature and functionality.
+Notice: a storage object must have ``get`` and ``set`` methods and the ``set`` method must allow to specify an expiration. The redis connection object has a `ttl`` method to specify the expiration, hence we monkey patch the ``set`` method to have the expected signature and functionality.
 
 #### Session in database
 
@@ -100,9 +100,9 @@ db = DAL('sqlite:memory')
 session =  Session(storage=DBStore(db))
 ``:python
 
-Notice that a secret is not required when storing cookies in the database because in this case the cookie only contains the UUID of the session.
+A secret is not required when storing cookies in the database because in this case the cookie only contains the UUID of the session.
 
-Also notice that this is one case when the a fixture (session) requires another fixture (db). This handle automatically by web3py and the following are equivalent:
+Also this is one case when the a fixture (session) requires another fixture (db). This handle automatically by web3py and the following are equivalent:
 
 ``
 @action.uses(session)
@@ -112,7 +112,7 @@ Also notice that this is one case when the a fixture (session) requires another 
 
 #### Session anywhere
 
-You can easily store sessions in any place you want. All you need to do it provide to the ``Session`` object a ``storage`` object with a ``get`` and ``set`` methods. For example, imagine you want to store sessions on your local filesystem
+You can easily store sessions in any place you want. All you need to do is provide to the ``Session`` object a ``storage`` object with a ``get`` and ``set`` methods. For example, imagine you want to store sessions on your local filesystem
 
 ``
 import os
@@ -135,7 +135,7 @@ class FSStorage:
 session = Session(storage=FSStprage('/tmp/sessions'))
 ``:python
 
-We leave to you as an exercise to implement expiration, limit the number of files per folder by using subfolders, and implement file locking. Yet we do not recomment storing sessions on the filesystem. It is inefficient and does not scale well.
+We leave to you as an exercise to implement expiration, limit the number of files per folder by using subfolders, and implement file locking. Yet we do not recomment storing sessions on the filesystem: it is inefficient and does not scale well.
 
 
 ## Translator
@@ -152,9 +152,9 @@ T = Translator(T_FOLDER)
 def index(): return T('Hello world')
 ``:python
 
-The string 'hello world` will be translated based on the internationalization file in the spcified "translations" folder that best matches the HTTP ``accept-language`` header.
+The string 'hello world` will be translated based on the internationalization file in the specified "translations" folder that best matches the HTTP ``accept-language`` header.
 
-Here ``Translator`` is a wb3py class that extends ``pluralize.Translator`` and also implement the ``Fixture`` interface.
+Here ``Translator`` is a web3py class that extends ``pluralize.Translator`` and also implement the ``Fixture`` interface.
 
 We can easily combine multiple fixtures. Here as example we make action with a counter that counts "visits".
 
@@ -189,7 +189,7 @@ Now create the following translation file ``translations/en.json``:
 }
 ``:json
 
-When visting this site with the browser language preference set to english and reloading multiple times you will get the following messages:
+When visiting this site with the browser language preference set to english and reloading multiple times you will get the following messages:
 
 ``
 This your first time here
@@ -219,7 +219,7 @@ and set your browser preference to Italian.
 
 ### The DAL fixture
 
-We have already used the ``DAL`` fixture in the context of sessions but maybe you want direct access to the DAL object for the purpose ot accessing the databas, not just sessions.
+We have already used the ``DAL`` fixture in the context of sessions but maybe you want direct access to the DAL object for the purpose of accessing the database, not just sessions.
 
 Web3py, by default, uses the PyDAL (Python Database Abstraction Layer) which is documented in a later chapter. Here is an example:
 
@@ -240,11 +240,11 @@ def index():
     return "Your visit was stored in database"
 ``:python
 
-Notice that the database fixture defines (creates/re-creates tables) automatically when web3py starts (and every time it reloads this app) and picks a connection from the connection pool at every HTTP request. Also each call to the ``index()`` action is wrapped into a transaction and it commits ``on_success`` and rollsback ``on_error``.
+Notice that the database fixture defines (creates/re-creates tables) automatically when web3py starts (and every time it reloads this app) and picks a connection from the connection pool at every HTTP request. Also each call to the ``index()`` action is wrapped into a transaction and it commits ``on_success`` and rollback ``on_error``.
 
 ### Caveats about Fixtures
 
-Since fixtures are sgared by multiple actions you are not allowed to change their state because it would not be thread safe.
+Since fixtures are shared by multiple actions you are not allowed to change their state because it would not be thread safe.
 There is one exception to this rule. Actions can change some attributes of database fields:
 
 ``
@@ -259,7 +259,7 @@ def index():
 )
 ``:python
 
-The ``readable``, ``writable``, ``default``, ``update``, and ``require`` attributes of ``db.{table}.{field}`` are special objects of class ``ThreadSafeVariable`` defined the ``threadsafevariable`` module. These objects are very much like Python thread local objects but they are re-initialized at every request using the value specified outside of the action. This means that actions that safely change the values of these attributes.
+The ``readable``, ``writable``, ``default``, ``update``, and ``require`` attributes of ``db.{table}.{field}`` are special objects of class ``ThreadSafeVariable`` defined the ``threadsafevariable`` module. These objects are very much like Python thread local objects but they are re-initialized at every request using the value specified outside of the action. This means that actions can safely change the values of these attributes.
 
 ### Custom fixtures
 
@@ -283,7 +283,7 @@ if an action uses this fixture:
 def index(): return 'hello world'
 ``
 
-Then ``on_request()`` is guaranteed to be called before the ``index()`` function is called. The ``on_sucess()`` is guaranteed to be called if the ``index()`` function returns successfully or raises ``HTTP`` or performs a ``redrect``. The ``on_error()`` is guaranteed to be called when the ``index()`` function raises any exception other than ``HTTP``. The ``transform`` function is called to perform any desired transformation of the valute returned by the ``index()`` function.
+Then ``on_request()`` is guaranteed to be called before the ``index()`` function is called. The ``on_sucess()`` is guaranteed to be called if the ``index()`` function returns successfully or raises ``HTTP`` or performs a ``redirect``. The ``on_error()`` is guaranteed to be called when the ``index()`` function raises any exception other than ``HTTP``. The ``transform`` function is called to perform any desired transformation of the valute returned by the ``index()`` function.
 
 ### Auth and Auth.user
 
@@ -307,7 +307,7 @@ def index():
 
 The constructor of the ``Auth`` object defines the ``auth_user`` table with the following fields: username, email, password, first_name, last_name, sso_id, and action_token (the last two are mostly for internal use).
 
-``auth.enable()`` registers multiple actions including ``{appname}/auth/login`` (it requires the presence of the ``auth.html`` template and the ``auth`` vue component provided by th ``_scaffold`` app.
+``auth.enable()`` registers multiple actions including ``{appname}/auth/login`` (it requires the presence of the ``auth.html`` template and the ``auth`` value component provided by th ``_scaffold`` app.
 
 The ``auth`` object is the fixture. It manages the user information. It exposes a single method:
 
@@ -315,9 +315,9 @@ The ``auth`` object is the fixture. It manages the user information. It exposes 
 auth.get_user()
 ``
 
-which returns a python dictionary containg the information of the currently logged in user. If the user is not logged-in, it returns ``None``. The code of the example redirects to the 'auth/login' page if there is no user.
+which returns a python dictionary containing the information of the currently logged in user. If the user is not logged-in, it returns ``None``. The code of the example redirects to the 'auth/login' page if there is no user.
 
-Since this check if very common, web3py provides an additional fixture ``auth.user``:
+Since this check is very common, web3py provides an additional fixture ``auth.user``:
 
 ``
 @action('index')
@@ -327,11 +327,11 @@ def index():
     print 'Welcome %s' % user.get('first_name')
 ``:python
 
-This fixture automatically redirects to the ``auth/login`` page if not user. It depends on ``auth`` which depends on ``db`` and ``session``.
+This fixture automatically redirects to the ``auth/login`` page if not useris logged-in. It depends on ``auth``, which depends on ``db`` and ``session``.
 
 The ``Auth`` fixture is plugin based and supports multiple plugin methods. They include Oauth2 (Google, Facebook, Twitter), PAM, LDAP, and SMAL2.
 
-For eaxmple here is an example of using the Google Oauth2 plugin:
+Here is an example of using the Google Oauth2 plugin:
 
 ``
 from web3py.utils.auth_plugins.oauth2google import OAuth2Google
