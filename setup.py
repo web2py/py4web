@@ -31,7 +31,6 @@ setup(
         'pydal',
         'pyjwt',
         'yatl',
-        'reloader',
         'tornado',
         'pluralize',
         'requests',

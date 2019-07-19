@@ -50,7 +50,7 @@ import pydal
 import pluralize
 from pydal import _compat
 
-__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL']
+__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL', 'check_compatibl']
 
 os.environ['WEB3PY_APPS_FOLDER'] = 'apps'  # change from command line (default used for testing)
 
@@ -768,6 +768,7 @@ def main():
     action.args = args = parser.parse_args()
     args.apps_folder = os.path.abspath(args.apps_folder)
     # if we know where the password is stored, read it, else ask for one
+    print('assets-folder:', os.path.join(os.path.dirname(__file__), 'assets'))
     if args.password_file:
         with open(args.password_file) as fp:
             args.password = fp.read().strip()
@@ -806,3 +807,7 @@ def main():
         print('Dashboard is at: http://%s/_dashboard' % args.address)
     Reloader.import_apps()
     start_server(args)
+
+def check_compatible(version):
+    from . import __version__
+    return tuple(map(int, __version__.split('.'))) >= tuple(map(int, version.split('.')))

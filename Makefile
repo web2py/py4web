@@ -6,6 +6,7 @@ clean:
 	rm -rf dist/*
 	python3 setup.py clean
 assets:
+	rm -f web3py/assets/*
 	cd apps/_dashboard; \
 	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
 	zip -@ ../../web3py/assets/web3py.app._dashboard.zip

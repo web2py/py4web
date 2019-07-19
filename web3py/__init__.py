@@ -5,9 +5,9 @@ from . core import (
     render,                                    # yatl
     Translator,                                # from pluralize
     Session, Cache, user_in,                   # additional fixtures
-    URL)                                       # custom helper
-
+    URL,                                       # custom helper
+    check_compatible)                          # checks for version compatibility
 
 __author__ = "Massimo Di Pierro <massimo.dipierro@gmail.com>"
 __license__ = "BSDv3"
-__version__ = "0.1.20190709.1"
+__version__ = "0.1.20190718.1"
