@@ -37,13 +37,13 @@ Listening on http://127.0.0.1:8000/
 Hit Ctrl-C to quit.
 ``
 
-Here ``apps`` is the name of the folder where you keep your apps. If the folder does not exist it is created. Web3py expects to find two apps in this folder: Dashboard (_dashboard) and Default (_default). If it does not find them, it installs them.
+Here ``apps`` is the name of the folder where you keep your apps. If the folder does not exist, it is created. Web3py expects to find two apps in this folder: Dashboard (_dashboard) and Default (_default). If it does not find them, it installs them.
 
 Mind that if you upgrade web3py, it will not automatically upgrade Dashboard and Default. You have to remove these apps for web3py to re-install them. This is a safety precaution, in case you made changes to those apps.
 
 Dashboard is a web based IDE. Default is an app that does not nothing other than welcome the user. In general "apps/_default" can be an app or a symlink to your default app.
 
-Notice that some apps like Dashboard and Default have a special role in web3py and therefore their actual name starts with ``_`` to avoid conflict with apps created by you.
+Notice that some apps - like Dashboard and Default - have a special role in web3py and therefore their actual name starts with ``_`` to avoid conflicts with apps created by you.
 
 Once web3py is installed you can access the apps at the following urls:
 
@@ -67,7 +67,7 @@ cd web3py
 python3 -m pip install -r requirements.txt
 ``:bash
 
-Once installed you should start with
+Once installed, you should start with
 
 ``
 ./web3py-start apps
@@ -77,7 +77,7 @@ Notice the ``./`` ; it forces the run of the local folder's web3py and not the i
 
 ### Dashboard password
 
-Every time web3py starts it asks for a one-time password for you to access the dashboard. This is annoying. You can avoid by storying a password hashed in a file:
+Every time web3py starts, it asks for a one-time password for you to access the dashboard. This is annoying. You can avoid it by storying a password hashed in a file:
 
 ``
 python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()(input('password:'))[0]))"
