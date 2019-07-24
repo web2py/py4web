@@ -151,23 +151,23 @@ let init = (app) => {
     };
     app.reload_info = () => {
         axios.get('../info').then((res)=>{
-                app.vue.info=res.data.payload;
+                app.vue.info=res.data.payload || [];
             });
     };
     app.reload_apps = () => {
         axios.get('../apps').then((res)=>{
-                app.vue.apps=res.data.payload; app.update_selected();
+                app.vue.apps=res.data.payload || []; app.update_selected();
             });
     };
     app.reload_routes = () => {
         axios.get('../routes').then((res)=>{
-                app.vue.routes=res.data.payload;
+                app.vue.routes=res.data.payload || [];
             });
     };
     app.reload_tickets = () => {
         app.vue.tickets = [];
         axios.get('../tickets').then((res)=>{
-                app.vue.tickets = res.data.payload;
+                app.vue.tickets = res.data.payload || [];
             });
     };
     app.login = () => {
