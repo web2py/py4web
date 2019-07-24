@@ -5,4 +5,4 @@ gevent
 reloader
 pydal3
 yatl
-web3py
+py4web

@@ -1,10 +1,10 @@
-# web3py
+# py4web
 
 ## Try me (from pip)
 
 ```
-python3 -m pip install web3py
-web3py-start apps
+python3 -m pip install py4web
+py4web-start apps
 open http://localhost:8000/todo/index
 ```
 
@@ -13,14 +13,14 @@ open http://localhost:8000/todo/index
 ## Try me (from source)
 
 ```
-git clone https://github.com/web2py/web3py.git
-cd web3py 
+git clone https://github.com/web2py/py4web.git
+cd py4web 
 python3 -m pip install -r requirements.txt
-./web3py-start apps
+./py4web-start apps
 open http://localhost:8000/todo/index
 ```
 
-Notice "web3py-start" uses the pip insalled web3py, "./web3py-start" uses the local one. Do not get confused.
+Notice "py4web-start" uses the pip insalled py4web, "./py4web-start" uses the local one. Do not get confused.
 
 ## Tell me more
 
@@ -41,7 +41,7 @@ Notice "web3py-start" uses the pip insalled web3py, "./web3py-start" uses the lo
 - admin has been replaced by a _daskboard (90% done)
 - appadmin has been replaced by dbadmin (within dashboard) (90% done)
 - auth logic is implemented via a "auth" vue.js custom component (90% done)
-- SQLFORM has been replaced by web3py/utils/form.py
+- SQLFORM has been replaced by py4web/utils/form.py
 - SQLFORM.grid was been replaced by a "mtable" vue.js custom component (90% done)
 - there are not enough tests
 - it is not as stable as web2py yet
@@ -79,5 +79,5 @@ password: *****
 2) (re)use it:
 
 ```
-./web3py-start -p password.txt apps
+./py4web-start -p password.txt apps
 ```

@@ -9,23 +9,23 @@ RUN apt update && \
  apt install -y git python3-pip python-pip memcached && \
  service memcached restart
 
-RUN groupadd -r web3py && \
- useradd -m -r -g web3py web3py
+RUN groupadd -r py4web && \
+ useradd -m -r -g py4web py4web
 
-USER web3py
+USER py4web
 
-RUN rm -rf /home/web3py/web3py && \
- cd /home/web3py/ && \
- git clone https://github.com/web2py/web3py && \
- cd web3py && \
+RUN rm -rf /home/py4web/py4web && \
+ cd /home/py4web/ && \
+ git clone https://github.com/web2py/py4web && \
+ cd py4web && \
  pip3 install pytest mechanize twine && \
  pip3 install -U -r requirements.txt && \
  make test && \
  python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()('password_admin' )[0] ) )" && \
  mkdir apps/examples/databases 
 
-WORKDIR /home/web3py/web3py
+WORKDIR /home/py4web/py4web
 
 EXPOSE 8000
 
-CMD ["./web3py-start", "-p", "./password.txt", "-a", "0.0.0.0:8000", "./apps"]
+CMD ["./py4web-start", "-p", "./password.txt", "-a", "0.0.0.0:8000", "./apps"]
