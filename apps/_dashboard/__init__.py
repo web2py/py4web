@@ -9,15 +9,15 @@ import io
 
 import requests
 
-import web3py
-from web3py import __version__, action, abort, request, response, redirect, Translator
-from web3py.core import Reloader, dumps, ErrorStorage, Session, Fixture
+import py4web
+from py4web import __version__, action, abort, request, response, redirect, Translator
+from py4web.core import Reloader, dumps, ErrorStorage, Session, Fixture
 from pydal.validators import CRYPT
 from yatl.helpers import BEAUTIFY
 from . utils import *
 
-MODE = os.environ['WEB3PY_DASHBOARD_MODE']
-FOLDER = os.environ['WEB3PY_APPS_FOLDER']
+MODE = os.environ['PY4WEB_DASHBOARD_MODE']
+FOLDER = os.environ['PY4WEB_APPS_FOLDER']
 APP_FOLDER = os.path.dirname(__file__)
 T_FOLDER = os.path.join(APP_FOLDER, 'translations')
 T = Translator(T_FOLDER)
@@ -53,7 +53,7 @@ if MODE in ('demo', 'readonly', 'full'):
             valid = True
         else:
             password = request.json.get('password')
-            valid = password and CRYPT()(password)[0] == os.environ['WEB3PY_PASSWORD']
+            valid = password and CRYPT()(password)[0] == os.environ['PY4WEB_PASSWORD']
         if valid:
             session['user'] = dict(id=1)
         return dict(user=valid, mode=MODE)
@@ -174,7 +174,7 @@ if MODE in ('demo', 'readonly', 'full'):
         # this is not final, equires pydal 19.5
         args = path.split('/')
         app_name = args[0]
-        from web3py.core import Reloader, DAL
+        from py4web.core import Reloader, DAL
         from pydal.restapi import RestAPI, ALLOW_ALL_POLICY, DENY_ALL_POLICY        
         policy = ALLOW_ALL_POLICY if MODE == 'full' else DENY_ALL_POLICY
         module = Reloader.MODULES[app_name]
@@ -235,12 +235,12 @@ if MODE == 'full':
                 shutil.rmtree(target_dir)
         elif form['type'] != 'web' and not form['source'].endswith('.git'):
             os.mkdir(target_dir)
-        assets_dir = os.path.join(os.path.dirname(web3py.__file__), 'assets')
+        assets_dir = os.path.join(os.path.dirname(py4web.__file__), 'assets')
         source = None
         if form['type'] == 'minimal':            
-            source = os.path.join(assets_dir,'web3py.app._minimal.zip')
+            source = os.path.join(assets_dir,'py4web.app._minimal.zip')
         elif form['type'] == 'scaffold':
-            source = os.path.join(assets_dir,'web3py.app._scaffold.zip')
+            source = os.path.join(assets_dir,'py4web.app._scaffold.zip')
         elif form['type'] == 'web':
             source = form['source']
         elif form['type'] == 'upload':

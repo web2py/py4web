@@ -3,8 +3,8 @@ import time
 import memcache
 import subprocess
 
-from web3py import request, response, Session, DAL
-from web3py.utils.dbstore import DBStore
+from py4web import request, response, Session, DAL
+from py4web.utils.dbstore import DBStore
 
 class TestSession(unittest.TestCase):
 

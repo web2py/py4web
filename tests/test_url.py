@@ -2,7 +2,7 @@ import random
 import time
 import unittest
 
-from web3py import request, URL
+from py4web import request, URL
 
 
 class TestURL(unittest.TestCase):

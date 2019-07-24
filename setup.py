@@ -7,21 +7,21 @@ from setuptools import setup
 
 def get_version():
     regex = re.compile('__version__\s*\=\s*[\'"](?P<version>.+?)[\'"]')
-    return regex.findall(open('web3py/__init__.py').read())[0]
+    return regex.findall(open('py4web/__init__.py').read())[0]
 
 setup(
-    name='web3py',
+    name='py4web',
     version=get_version(),
-    url='https://github.com/web2py/web3py',
+    url='https://github.com/web2py/py4web',
     license='BSD',
     author='Massimo Di Pierro',
     author_email='massimo.dipierro@gmail.com',
     maintainer='Massimo Di Pierro',
     maintainer_email='massimo.dipierro@gmail.com',
-    description='Expeerimental web3py (a better web2py)',
-    packages=['web3py', 'web3py.utils', 'web3py.utils.auth_plugins'],
+    description='Experimental py4web (a better web2py)',
+    packages=['py4web', 'py4web.utils', 'py4web.utils.auth_plugins'],
     package_data = {
-        'web3py': ['assets/*'],
+        'py4web': ['assets/*'],
         },
     install_requires=[
         'bottle',
@@ -36,7 +36,7 @@ setup(
         'requests',
         ],
     entry_points = {
-        'console_scripts': ['web3py-start=web3py.core:main'],
+        'console_scripts': ['py4web-start=py4web.core:main'],
         },
     zip_safe=False,
     platforms='any',

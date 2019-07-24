@@ -1,5 +1,5 @@
 import os
-from web3py import action, request, DAL, Field, Session, Cache, user_in
+from py4web import action, request, DAL, Field, Session, Cache, user_in
 
 # define session and cache objects
 session = Session(secret='some secret')

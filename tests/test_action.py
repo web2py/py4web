@@ -6,10 +6,10 @@ import uuid
 
 import mechanize
 
-from web3py import action, DAL, Field, Session, Cache
-from web3py.core import bottle
+from py4web import action, DAL, Field, Session, Cache
+from py4web.core import bottle
 
-os.environ['WEB3PY_APPS_FOLDER'] = os.path.sep.join(os.path.normpath(__file__).split(os.path.sep)[:-2])
+os.environ['PY4WEB_APPS_FOLDER'] = os.path.sep.join(os.path.normpath(__file__).split(os.path.sep)[:-2])
 
 db = DAL('sqlite://storage_%s' % uuid.uuid4(), folder='/tmp/')
 db.define_table('thing', Field('name'))

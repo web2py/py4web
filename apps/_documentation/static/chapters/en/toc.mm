@@ -1,4 +1,4 @@
-- [What is web3py?](#chapter-00)
+- [What is py4web?](#chapter-00)
 - [Installation and Startup](#chapter-01)
 - [Creating your first app](#chapter-02)
 - [The Dashboard](#chapter-03)

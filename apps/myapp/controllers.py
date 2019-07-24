@@ -1,4 +1,4 @@
-from web3py import action, request, redirect, abort
+from py4web import action, request, redirect, abort
 from . models import db
 
 @action('helloworld') # exposes http://127.0.0.1:8000/myapp/helloworld

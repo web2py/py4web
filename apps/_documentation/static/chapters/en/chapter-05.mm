@@ -3,7 +3,7 @@
 
 ### Dependencies
 
-web3py comes with a Database Abstraction Layer (DAL), an API that maps Python objects into database objects such as queries, tables, and records. The DAL dynamically generates the SQL in real time using the specified dialect for the database back end, so that you do not have to write SQL code or learn different SQL dialects (the term SQL is used generically), and the application will be portable among different types of databases. A partial list of supported databases is show in the table below. Please check on the web3py web site and mailing list for more recent adapters. Google NoSQL is treated as a particular case in Chapter 13.
+py4web comes with a Database Abstraction Layer (DAL), an API that maps Python objects into database objects such as queries, tables, and records. The DAL dynamically generates the SQL in real time using the specified dialect for the database back end, so that you do not have to write SQL code or learn different SQL dialects (the term SQL is used generically), and the application will be portable among different types of databases. A partial list of supported databases is show in the table below. Please check on the py4web web site and mailing list for more recent adapters. Google NoSQL is treated as a particular case in Chapter 13.
 
 The Gotchas section at the end of this chapter has some more information about specific databases.
 
@@ -11,7 +11,7 @@ The Windows binary distribution works out of the box with SQLite, MSSQL, Postgre
 To use any other database back-end, run from the source distribution and install the appropriate driver for the required back end.
 ``database drivers``:inxx
 
-Once the proper driver is installed, start web3py from source, and it will find the driver. Here is a list of the drivers web3py can use:
+Once the proper driver is installed, start py4web from source, and it will find the driver. Here is a list of the drivers py4web can use:
 
 ``DAL``:inxx ``SQLite``:inxx ``MySQL``:inxx ``PostgresSQL``:inxx ``Oracle``:inxx ``MSSQL``:inxx ``FireBird``:inxx ``DB2``:inxx ``Informix``:inxx ``Sybase``:inxx ``Teradata``:inxx ``MongoDB``:inxx ``CouchDB``:inxx ``SAPDB``:inxx ``Cubrid``:inxx
 
@@ -34,11 +34,11 @@ MongoDB | pymongo ``pymongo``:cite
 IMAP | imaplib ``IMAP``:cite
 ============
 
-``sqlite3``, ``pymysql``, and ``imaplib`` ship with web3py. Support of MongoDB is experimental. The IMAP option allows to use DAL to access IMAP.
+``sqlite3``, ``pymysql``, and ``imaplib`` ship with py4web. Support of MongoDB is experimental. The IMAP option allows to use DAL to access IMAP.
 
 ### The DAL: A quick tour
 
-web3py defines the following classes that make up the DAL:
+py4web defines the following classes that make up the DAL:
 
 The **DAL** object represents a database connection. For example:
 ``sqlite``:inxx
@@ -101,7 +101,7 @@ db().select(db.table.ALL, orderby=myorder)
 
 ### Using the DAL "stand-alone"
 
-The DAL can be used in a non-web3py environment via
+The DAL can be used in a non-py4web environment via
 ``
 from pydal import DAL, Field
 ``:python
@@ -171,7 +171,7 @@ A connection with the database is established by creating an instance of the DAL
 ``
 db = DAL('sqlite://storage.sqlite', pool_size=0)
 ``:python
-``db`` is not a keyword; it is a local variable that stores the connection object ``DAL``. You are free to give it a different name. The constructor of ``DAL`` requires a single argument, the connection string. The connection string is the only web3py code that depends on a specific back-end database. Here are examples of connection strings for specific types of supported back-end databases (in all cases, we assume the database is running from localhost on its default port and is named "test"):
+``db`` is not a keyword; it is a local variable that stores the connection object ``DAL``. You are free to give it a different name. The constructor of ``DAL`` requires a single argument, the connection string. The connection string is the only py4web code that depends on a specific back-end database. Here are examples of connection strings for specific types of supported back-end databases (in all cases, we assume the database is running from localhost on its default port and is named "test"):
 
 ``ndb``:index
 
@@ -198,11 +198,11 @@ db = DAL('sqlite://storage.sqlite', pool_size=0)
 **Google/NoSQL/NDB** | ``google:datastore+ndb``
 ==================
 
-Notice that in SQLite the database consists of a single file. If it does not exist, it is created. This file is locked every time it is accessed. In the case of MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Ingres and Informix the database "test" must be created outside web3py. Once the connection is established, web3py will create, alter, and drop tables appropriately.
+Notice that in SQLite the database consists of a single file. If it does not exist, it is created. This file is locked every time it is accessed. In the case of MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Ingres and Informix the database "test" must be created outside py4web. Once the connection is established, py4web will create, alter, and drop tables appropriately.
 
 In the MySQL connection string, the ``?set_encoding=utf8mb4`` at the end sets the encoding to UTF-8 and avoids an ``Invalid utf8 character string:`` error on Unicode characters that consist of four bytes, as by default, MySQL can only handle Unicode characters that consist of one to three bytes. ``mathiasbyensbe``:cite
 
-In the Google/NoSQL case the ``+ndb`` option turns on NDB. NDB uses a Memcache buffer to read data that is accessed often. This is completely automatic and done at the datastore level, not at the web3py level.
+In the Google/NoSQL case the ``+ndb`` option turns on NDB. NDB uses a Memcache buffer to read data that is accessed often. This is completely automatic and done at the datastore level, not at the py4web level.
 
 It is also possible to set the connection string to ``None``. In this case DAL will not connect to any back-end database, but the API can still be accessed for testing.
 
@@ -214,7 +214,7 @@ db = DAL('...', do_connect=False)
 
 In this case you will be able to call ``_select``, ``_insert``, ``_update``, and ``_delete`` to generate SQL but not call ``select``, ``insert``, ``update``, and ``delete``. In most of the cases you can use ``do_connect=False`` even without having the required database drivers.
 
-Notice that by default web3py uses utf8 character encoding for databases. If you work with existing databases that behave differently, you have to change it with the optional parameter ``db_codec`` like
+Notice that by default py4web uses utf8 character encoding for databases. If you work with existing databases that behave differently, you have to change it with the optional parameter ``db_codec`` like
 
 ``
 db = DAL('...', db_codec='latin1')
@@ -227,18 +227,18 @@ Otherwise you'll get UnicodeDecodeError tickets.
 
 A common argument of the DAL constructor is the ``pool_size``; it defaults to zero.
 
-As it is rather slow to establish a new database connection for each request, web3py implements a mechanism for connection pooling. Once a connection is established and the page has been served and the transaction completed, the connection is not closed but goes into a pool. When the next http request arrives, web3py tries to recycle a connection from the pool and use that for the new transaction. If there are no available connections in the pool, a new connection is established.
+As it is rather slow to establish a new database connection for each request, py4web implements a mechanism for connection pooling. Once a connection is established and the page has been served and the transaction completed, the connection is not closed but goes into a pool. When the next http request arrives, py4web tries to recycle a connection from the pool and use that for the new transaction. If there are no available connections in the pool, a new connection is established.
 
-When web3py starts, the pool is always empty. The pool grows up to the minimum between the value of ``pool_size`` and the max number of concurrent requests. This means that if ``pool_size=10`` but our server never receives more than 5 concurrent requests, then the actual pool size will only grow to 5. If ``pool_size=0`` then connection pooling is not used.
+When py4web starts, the pool is always empty. The pool grows up to the minimum between the value of ``pool_size`` and the max number of concurrent requests. This means that if ``pool_size=10`` but our server never receives more than 5 concurrent requests, then the actual pool size will only grow to 5. If ``pool_size=0`` then connection pooling is not used.
 
-Connections in the pools are shared sequentially among threads, in the sense that they may be used by two different but not simultaneous threads. There is only one pool for each web3py process.
+Connections in the pools are shared sequentially among threads, in the sense that they may be used by two different but not simultaneous threads. There is only one pool for each py4web process.
 
 The ``pool_size`` parameter is ignored by SQLite and Google App Engine.
 Connection pooling is ignored for SQLite, since it would not yield any benefit.
 
 #### Connection failures (attempts parameter)
 
-If web3py fails to connect to the database it waits 1 second and by default tries again up to 5 times before declaring a failure. In case of connection pooling it is possible that a pooled connection that stays open but unused for some time is closed by the database end. Thanks to the retry feature web3py tries to re-establish these dropped connections.
+If py4web fails to connect to the database it waits 1 second and by default tries again up to 5 times before declaring a failure. In case of connection pooling it is possible that a pooled connection that stays open but unused for some time is closed by the database end. Thanks to the retry feature py4web tries to re-establish these dropped connections.
 The number of attempts is set via the attempts parameter.
 
 #### Lazy Tables
@@ -247,22 +247,22 @@ setting ``lazy_tables = True`` provides a major performance boost. See below: [l
 
 #### Model-less applications
 
-Using web3py's model directory for your application models is very convenient and productive. With lazy tables and conditional models, performance is usually acceptable even for large applications. Many experienced developers use this is production environments. 
+Using py4web's model directory for your application models is very convenient and productive. With lazy tables and conditional models, performance is usually acceptable even for large applications. Many experienced developers use this is production environments. 
 
 However, it is possible to define DAL tables on demand inside controller functions or modules. This may make sense when the number or complexity of table definitions overloads the use of lazy tables and conditional models.
 
-This is referred to as "model-less" development by the web3py community.
+This is referred to as "model-less" development by the py4web community.
 It means less use of the automatic execution of Python files in the model directory. 
 It does not imply abandoning the concept of models, views and controllers.
 
-Web3py's auto-execution of Python code inside the model directory does this for you:
+PY4WEB's auto-execution of Python code inside the model directory does this for you:
 
 + models are run automatically every time a request is processed
-+ models access web3py's global scope. 
++ models access py4web's global scope. 
 
-Models also make for useful interactive shell sessions when web3py is started with the -M commandline option. 
+Models also make for useful interactive shell sessions when py4web is started with the -M commandline option. 
 
-Also, remember maintainability: other web3py developers expect to find model definitions in the model directory.
+Also, remember maintainability: other py4web developers expect to find model definitions in the model directory.
 
 To use the "model-less" approach, you take responsibility for doing these two housekeeping tasks. 
 You call the table definitions when you need them, and provide necessary access to global scope via the current object (as described in [Chapter 4](../04#current_object)).
@@ -275,7 +275,7 @@ If the function to define a set of tables is called ``define_employee_tables()``
 
 #### Replicated databases
 
-The first argument of ``DAL(...)`` can be a list of URIs. In this case web3py tries to connect to each of them. The main purpose for this is to deal with multiple database servers and distribute the workload among them). Here is a typical use case:
+The first argument of ``DAL(...)`` can be a list of URIs. In this case py4web tries to connect to each of them. The main purpose for this is to deal with multiple database servers and distribute the workload among them). Here is a typical use case:
 
 ``
 db = DAL(['mysql://...1', 'mysql://...2', 'mysql://...3'])
@@ -358,7 +358,7 @@ where parameters ``sslrootcert``, ``sslcert`` and ``sslkey`` should contain the 
 #### Other DAL constructor parameters
 
 ##### Database folder location
-``folder`` sets the place where migration files will be created (see [Migrations](#table_migrations) section in this chapter for details). It is also used for SQLite databases. Automatically set within web3py. Set a path when using DAL outside web3py.
+``folder`` sets the place where migration files will be created (see [Migrations](#table_migrations) section in this chapter for details). It is also used for SQLite databases. Automatically set within py4web. Set a path when using DAL outside py4web.
 
 ##### Default migration settings
 The DAL constructor migration settings are booleans affecting defaults and global behaviour.
@@ -371,9 +371,9 @@ The DAL constructor migration settings are booleans affecting defaults and globa
 
 ``fake_migrate_all = False`` If set to True fake migrates ALL tables
 
-#### Experiment with the web3py shell
+#### Experiment with the py4web shell
 
-You can experiment with the DAL API using the web3py shell, that is available using the ``-S`` command line option (read more in [Chapter 4](../04#CommandLineOptions)).
+You can experiment with the DAL API using the py4web shell, that is available using the ``-S`` command line option (read more in [Chapter 4](../04#CommandLineOptions)).
 -------
 You need to choose an application to run the shell on, mind that database changes may be persistent. So be carefull and do NOT exitate to create a new application for doing testing instead of tampering with an existing one.
 -------
@@ -408,10 +408,10 @@ It defines, stores and returns a ``Table`` object called "person" containing a f
 
 #### ``id``: Notes about the primary key 
 
-Do not declare a field called "id", because one is created by web3py anyway. Every table has a field called "id" by default. It is an auto-increment integer field (usually starting at 1) used for cross-reference and for making every record unique, so "id" is a primary key. (Note: the id counter starting at 1 is back-end specific. For example, this does not apply to the Google App Engine NoSQL.)
+Do not declare a field called "id", because one is created by py4web anyway. Every table has a field called "id" by default. It is an auto-increment integer field (usually starting at 1) used for cross-reference and for making every record unique, so "id" is a primary key. (Note: the id counter starting at 1 is back-end specific. For example, this does not apply to the Google App Engine NoSQL.)
 
 ``named id field``:inxx
-Optionally you can define a field of ``type='id'`` and web3py will use this field as auto-increment id field. This is not recommended except when accessing legacy database tables which have a primary key under a different name.
+Optionally you can define a field of ``type='id'`` and py4web will use this field as auto-increment id field. This is not recommended except when accessing legacy database tables which have a primary key under a different name.
 With some limitation, you can also use different primary keys using the ``primarykey`` parameter.
 
 #### ``plural`` and ``singular``
@@ -419,7 +419,7 @@ With some limitation, you can also use different primary keys using the ``primar
 Smartgrid objects may need to know the singular and plural name of the table. The defaults are smart but these parameters allow you to be specific. Smartgrid is described in [[Chapter 7 ../07#SQLFORM-smartgrid]].
 
 #### ``redefine``
-Tables can be defined only once but you can force web3py to redefine an existing table:
+Tables can be defined only once but you can force py4web to redefine an existing table:
 
 ``
 db.define_table('person', Field('name'))
@@ -454,7 +454,7 @@ The format attribute will be used for two purposes:
 
 #### ``rname``: Real name
 
-``rname`` sets a database backend name for the table. This makes the web3py table name an alias, and ``rname`` is the real name used when constructing the query for the backend.
+``rname`` sets a database backend name for the table. This makes the py4web table name an alias, and ``rname`` is the real name used when constructing the query for the backend.
 To illustrate just one use, ``rname`` can be used to provide MSSQL fully qualified table names accessing tables belonging to other databases on the server: ``rname = 'db1.dbo.table1'``:python
 
 [[primarykey]]
@@ -483,7 +483,7 @@ db.define_table(..., table_class=MyTable)
 
 The name of a custom table sequence (if supported by the database). Can create a SEQUENCE (starting at 1 and incrementing by 1) or use this for legacy tables with custom sequences.
 -------
-Note that when necessary, web3py will create sequences automatically by default.
+Note that when necessary, py4web will create sequences automatically by default.
 -------
 
 #### ``trigger_name``
@@ -514,9 +514,9 @@ Note this example shows how to use ``on_define`` but it is not actually necessar
 #### Lazy Tables, a major performance boost
 ``lazy tables``:inxx
 
-web3py models are executed before controllers, so all tables are defined at every request. Not all tables are needed to handle each request, so it is possible that some of the time spent defining tables is wasted. Conditional models (see [[Chapter 4 ../04#conditional_models]]) can help, but web3py offers a big performance boost via lazy_tables. This feature means that table creation is deferred until the table is actually referenced. Enabling lazy tables is made when initialising a database via the DAL constructor.
+py4web models are executed before controllers, so all tables are defined at every request. Not all tables are needed to handle each request, so it is possible that some of the time spent defining tables is wasted. Conditional models (see [[Chapter 4 ../04#conditional_models]]) can help, but py4web offers a big performance boost via lazy_tables. This feature means that table creation is deferred until the table is actually referenced. Enabling lazy tables is made when initialising a database via the DAL constructor.
 It requires setting the lazy_tables parameter: ``DAL(..., lazy_tables=True)``:python
-This is one of the most significant response-time performance boosts in web3py.
+This is one of the most significant response-time performance boosts in py4web.
 
 #### Adding attributes to fields and tables
 
@@ -554,7 +554,7 @@ Not all of them are relevant for every field. ``length`` is relevant only for fi
 -------
 Notice that ``requires=...`` is enforced at the level of forms, ``required=True`` is enforced at the level of the DAL (insert), while ``notnull``, ``unique`` and ``ondelete`` are enforced at the level of the database. While they sometimes may seem redundant, it is important to maintain the distinction when programming with the DAL.
 -------
-- ``rname`` provides the field with a "real name", a name for the field known to the database adapter; when the field is used, it is the rname value which is sent to the database. The web3py name for the field is then effectively an alias.
+- ``rname`` provides the field with a "real name", a name for the field known to the database adapter; when the field is used, it is the rname value which is sent to the database. The py4web name for the field is then effectively an alias.
 ``ondelete``:inxx
 - ``ondelete`` translates into the "ON DELETE" SQL statement. By default it is set to "CASCADE". This tells the database that when it deletes a record, it should also delete all records that refer to it. To disable this feature, set ``ondelete`` to "NO ACTION" or "SET NULL".
 - ``notnull=True`` translates into the "NOT NULL" SQL statement. It prevents the database from inserting null values for the field.
@@ -563,14 +563,14 @@ Notice that ``requires=...`` is enforced at the level of forms, ``required=True`
 - ``uploadfolder`` sets the folder for uploaded files. By default, an uploaded file goes into the application's "uploads/" folder, that is into ``os.path.join(request.folder, 'uploads')`` (this seems not the case for MongoAdapter at present).
   For example:
   ``Field(..., uploadfolder=os.path.join(request.folder, 'static/temp'))``:python
-  will upload files to the "web3py/applications/myapp/static/temp" folder.
-- ``uploadseparate`` if set to True will upload files under different subfolders of the ''uploadfolder'' folder. This is optimized to avoid too many files under the same folder/subfolder. ATTENTION: You cannot change the value of ``uploadseparate`` from True to False without breaking links to existing uploads. web3py either uses the separate subfolders or it does not. Changing the behavior after files have been uploaded will prevent web3py from being able to retrieve those files. If this happens it is possible to move files and fix the problem but this is not described here.
+  will upload files to the "py4web/applications/myapp/static/temp" folder.
+- ``uploadseparate`` if set to True will upload files under different subfolders of the ''uploadfolder'' folder. This is optimized to avoid too many files under the same folder/subfolder. ATTENTION: You cannot change the value of ``uploadseparate`` from True to False without breaking links to existing uploads. py4web either uses the separate subfolders or it does not. Changing the behavior after files have been uploaded will prevent py4web from being able to retrieve those files. If this happens it is possible to move files and fix the problem but this is not described here.
 ``uploadfs``:inxx ``PyFileSystem``:inxx
 - ``uploadfs`` allows you specify a different file system where to upload files, including an Amazon S3 storage or a remote SFTP storage.
   -------
   You need to have PyFileSystem installed for this to work. ``uploadfs`` must point to PyFileSystem.
   -------
-- ``autodelete`` determines if the corresponding uploaded file should be deleted when the record referencing the file is deleted. For "upload" fields only. However, records deleted by the database itself due to a CASCADE operation will not trigger web3py's autodelete. The web3py Google group has workaround discussions.
+- ``autodelete`` determines if the corresponding uploaded file should be deleted when the record referencing the file is deleted. For "upload" fields only. However, records deleted by the database itself due to a CASCADE operation will not trigger py4web's autodelete. The py4web Google group has workaround discussions.
 - ``widget`` must be one of the available widget objects, including custom widgets, for example: ``SQLFORM.widgets.string.widget``. A list of available widgets will be discussed later. Each field type has a default widget.
 - ``label`` is a string (or a helper or something that can be serialized to a string) that contains the label to be used for this field in auto-generated forms.
 - ``comment``  is a string (or a helper or something that can be serialized to a string) that contains a comment associated with this field, and will be displayed to the right of the input field in the autogenerated forms.
@@ -718,11 +718,11 @@ which returns a tuple ``(value, error)``. ``error`` is ``None`` if the input pas
 
 ``migrations``:inxx
 
-``define_table`` checks whether or not the corresponding table exists. If it does not, it generates the SQL to create it and executes the SQL. If the table does exist but differs from the one being defined, it generates the SQL to alter the table and executes it. If a field has changed type but not name, it will try to convert the data (If you do not want this, you need to redefine the table twice, the first time, letting web3py drop the field by removing it, and the second time adding the newly defined field so that web3py can create it.). If the table exists and matches the current definition, it will leave it alone. In all cases it will create the ``db.person`` object that represents the table.
+``define_table`` checks whether or not the corresponding table exists. If it does not, it generates the SQL to create it and executes the SQL. If the table does exist but differs from the one being defined, it generates the SQL to alter the table and executes it. If a field has changed type but not name, it will try to convert the data (If you do not want this, you need to redefine the table twice, the first time, letting py4web drop the field by removing it, and the second time adding the newly defined field so that py4web can create it.). If the table exists and matches the current definition, it will leave it alone. In all cases it will create the ``db.person`` object that represents the table.
 
-We refer to this behavior as a "migration". web3py logs all migrations and migration attempts in the file "sql.log".
+We refer to this behavior as a "migration". py4web logs all migrations and migration attempts in the file "sql.log".
 -------
-Notice that by default web3py uses the "app/databases" folder for the log file and all other migration files it needs. You can change this setting the ``folder`` argument to DAL. To set a different log file name, for example "migrate.log" you can do ``db = DAL(..., adapter_args=dict(logfile='migrate.log'))``:python
+Notice that by default py4web uses the "app/databases" folder for the log file and all other migration files it needs. You can change this setting the ``folder`` argument to DAL. To set a different log file name, for example "migrate.log" you can do ``db = DAL(..., adapter_args=dict(logfile='migrate.log'))``:python
 -------
 
 The first argument of ``define_table`` is always the table name. The other unnamed arguments are the fields (Field). The function also takes an optional keyword argument called "migrate":
@@ -730,8 +730,8 @@ The first argument of ``define_table`` is always the table name. The other unnam
 db.define_table('person', ..., migrate='person.table')
 ``:python
 
-The value of migrate is the filename where web3py stores internal migration information for this table.
-These files are very important and should never be removed while the corresponding tables exist.  In cases where a table has been dropped and the corresponding file still exist, it can be removed manually. By default, migrate is set to True. This causes web3py to generate the filename from a hash of the connection string. If migrate is set to False, the migration is not performed, and web3py assumes that the table exists in the datastore and it contains (at least) the fields listed in ``define_table``.
+The value of migrate is the filename where py4web stores internal migration information for this table.
+These files are very important and should never be removed while the corresponding tables exist.  In cases where a table has been dropped and the corresponding file still exist, it can be removed manually. By default, migrate is set to True. This causes py4web to generate the filename from a hash of the connection string. If migrate is set to False, the migration is not performed, and py4web assumes that the table exists in the datastore and it contains (at least) the fields listed in ``define_table``.
 
 There may not be two tables in the same application with the same migrate filename.
 
@@ -743,7 +743,7 @@ db = DAL('sqlite://storage.sqlite', migrate=False)
 will set the default value of migrate to False whenever ``db.define_table`` is called without a migrate argument.
 
 ------
-Notice that web3py only migrates new columns, removed columns, and changes in column type (except in SQLite). web3py does not migrate changes in attributes such as changes in the values of ``default``, ``unique``, ``notnull``, and ``ondelete``.
+Notice that py4web only migrates new columns, removed columns, and changes in column type (except in SQLite). py4web does not migrate changes in attributes such as changes in the values of ``default``, ``unique``, ``notnull``, and ``ondelete``.
 ------
 
 Migrations can be disabled for all tables at once:
@@ -759,20 +759,20 @@ This is the recommended behavior when two apps share the same database. Only one
 
 There are two common problems with migrations and there are ways to recover from them.
 
-One problem is specific with SQLite. SQLite does not enforce column types and cannot drop columns. This means that if you have a column of type string and you remove it, it is not really removed. If you add the column again with a different type (for example datetime) you end up with a datetime column that contains strings (junk for practical purposes). web3py does not complain about this because it does not know what is in the database, until it tries to retrieve records and fails.
+One problem is specific with SQLite. SQLite does not enforce column types and cannot drop columns. This means that if you have a column of type string and you remove it, it is not really removed. If you add the column again with a different type (for example datetime) you end up with a datetime column that contains strings (junk for practical purposes). py4web does not complain about this because it does not know what is in the database, until it tries to retrieve records and fails.
 
-If web3py returns an error in some parse function when selecting records, most likely this is due to corrupted data in a column because of the above issue.
+If py4web returns an error in some parse function when selecting records, most likely this is due to corrupted data in a column because of the above issue.
 
 The solution consists in updating all records of the table and updating the values in the column in question with None.
 
-The other problem is more generic but typical with MySQL. MySQL does not allow more than one ALTER TABLE in a transaction. This means that web3py must break complex transactions into smaller ones (one ALTER TABLE at the time) and commit one piece at the time. It is therefore possible that part of a complex transaction gets committed and one part fails, leaving web3py in a corrupted state. Why would part of a transaction fail? Because, for example, it involves altering a table and converting a string column into a datetime column, web3py tries to convert the data, but the data cannot be converted. What happens to web3py? It gets confused about what exactly is the table structure actually stored in the database.
+The other problem is more generic but typical with MySQL. MySQL does not allow more than one ALTER TABLE in a transaction. This means that py4web must break complex transactions into smaller ones (one ALTER TABLE at the time) and commit one piece at the time. It is therefore possible that part of a complex transaction gets committed and one part fails, leaving py4web in a corrupted state. Why would part of a transaction fail? Because, for example, it involves altering a table and converting a string column into a datetime column, py4web tries to convert the data, but the data cannot be converted. What happens to py4web? It gets confused about what exactly is the table structure actually stored in the database.
 
 The solution consists of enabling fake migrations:
 ``
 db.define_table(...., migrate=True, fake_migrate=True)
 ``:python
 
-This will rebuild web3py metadata about the table according to the table definition. Try multiple table definitions to see which one works (the one before the failed migration and the one after the failed migration). Once successful remove the ``fake_migrate=True`` parameter.
+This will rebuild py4web metadata about the table according to the table definition. Try multiple table definitions to see which one works (the one before the failed migration and the one after the failed migration). Once successful remove the ``fake_migrate=True`` parameter.
 
 Before attempting to fix migration problems it is prudent to make a copy of "applications/yourapp/databases/*.table" files.
 
@@ -832,7 +832,7 @@ Notice you can pass a parameter to ``truncate``, for example you can tell SQLite
 The argument is in raw SQL and therefore engine specific.
 
 ``bulk_insert``:inxx
-web3py also provides a bulk_insert method
+py4web also provides a bulk_insert method
 ``
 >>> db.person.bulk_insert([{'name': 'Alex'}, {'name': 'John'}, {'name': 'Tim'}])
 [3, 4, 5]
@@ -843,7 +843,7 @@ It takes a list of dictionaries of fields to be inserted and performs multiple i
 ### ``commit`` and ``rollback``
 ``commit``:inxx
 
-The insert, truncate, delete, and update operations aren't actually committed until web3py issues the commit command. The create and drop operations may be executed immediately, depending on the database engine. Calls to web3py actions are automatically wrapped in transactions. If you executed commands via the shell, you are required to manually commit:
+The insert, truncate, delete, and update operations aren't actually committed until py4web issues the commit command. The create and drop operations may be executed immediately, depending on the database engine. Calls to py4web actions are automatically wrapped in transactions. If you executed commands via the shell, you are required to manually commit:
 
 ``
 >>> db.commit()
@@ -868,7 +868,7 @@ If you now insert again, the counter will again be set to 2, since the previous 
 2
 ``:python
 
-Code in models, views and controllers is enclosed in web3py code that looks like this (pseudo code) :
+Code in models, views and controllers is enclosed in py4web code that looks like this (pseudo code) :
 ``
 try:
     execute models, controller function and view
@@ -881,14 +881,14 @@ else:
     save cookies, sessions and return the page
 ``:python
 
-So in models, views and controllers there is no need to ever call ``commit``  or ``rollback`` explicitly in web3py unless you need more granular control.
+So in models, views and controllers there is no need to ever call ``commit``  or ``rollback`` explicitly in py4web unless you need more granular control.
 However, in modules you will need to use ``commit()``.
 
 ### Raw SQL
 
 #### Timing queries
 
-All queries are automatically timed by web3py. The variable ``db._timings`` is a list of tuples. Each tuple contains the raw SQL query as passed to the database driver and the time it took to execute in seconds. This variable can be displayed in views using the toolbar:
+All queries are automatically timed by py4web. The variable ``db._timings`` is a list of tuples. Each tuple contains the raw SQL query as passed to the database driver and the time it took to execute in seconds. This variable can be displayed in views using the toolbar:
 
 ``
 {{=response.toolbar()}}
@@ -960,7 +960,7 @@ SELECT person.id, person.name FROM person;
 ``:python
 
 -------
-web3py never generates queries using the "*" operator. web3py is always explicit when selecting fields.
+py4web never generates queries using the "*" operator. py4web is always explicit when selecting fields.
 -------
 
 ### ``drop``
@@ -988,15 +988,15 @@ Other database dialects have very similar syntaxes but may not support the optio
 [[LegacyDatabases]]
 ### Legacy databases and keyed tables
 
-web3py can connect to legacy databases under some conditions.
+py4web can connect to legacy databases under some conditions.
 
 The easiest way is when these conditions are met:
 - Each table must have a unique auto-increment integer field called "id"
 - Records must be referenced exclusively using the "id" field.
 
-When accessing an existing table, i.e., a table not created by web3py in the current application, always set ``migrate=False``.
+When accessing an existing table, i.e., a table not created by py4web in the current application, always set ``migrate=False``.
 
-If the legacy table has an auto-increment integer field but it is not called "id", web3py can still access it but the table definition must declare the auto-increment field with 'id' type (that is using ``FIeld('...', 'id')``).
+If the legacy table has an auto-increment integer field but it is not called "id", py4web can still access it but the table definition must declare the auto-increment field with 'id' type (that is using ``FIeld('...', 'id')``).
 
 ``keyed table``:inxx
 
@@ -1044,7 +1044,7 @@ DAL.distributed_transaction_commit(db_a, db_b)
 
 On failure, this function rolls back and raises an ``Exception``.
 
-In controllers, when one action returns, if you have two distinct connections and you do not call the above function, web3py commits them separately. This means there is a possibility that one of the commits succeeds and one fails. The distributed transaction prevents this from happening.
+In controllers, when one action returns, if you have two distinct connections and you do not call the above function, py4web commits them separately. This means there is a possibility that one of the commits succeeds and one fails. The distributed transaction prevents this from happening.
 
 ### More on uploads
 
@@ -1078,7 +1078,7 @@ with open(filename, 'rb') as stream:
 
 In this case the filename is obtained from the stream object if available.
 
-The ``store`` method of the upload field object takes a file stream and a filename. It uses the filename to determine the extension (type) of the file, creates a new temp name for the file (according to web3py upload mechanism) and loads the file content in this new temp file (under the uploads folder unless specified otherwise). It returns the new temp name, which is then stored in the ``image`` field of the ``db.myfile`` table.
+The ``store`` method of the upload field object takes a file stream and a filename. It uses the filename to determine the extension (type) of the file, creates a new temp name for the file (according to py4web upload mechanism) and loads the file content in this new temp file (under the uploads folder unless specified otherwise). It returns the new temp name, which is then stored in the ``image`` field of the ``db.myfile`` table.
 
 Note, if the file is to be stored in an associated blob field rather than the file system, the ``store`` method will not insert the file in the blob field (because ``store`` is called before the insert), so the file must be explicitly inserted into the blob field:
 ``
@@ -1160,7 +1160,7 @@ When you call ``db`` with a query, you define a set of records. You can store it
 ``:python
 
 Notice that no database query has been performed so far. DAL + Query simply define a set of records in this db that match the query.
-web3py determines from the query which table (or tables) are involved and, in fact, there is no need to specify that.
+py4web determines from the query which table (or tables) are involved and, in fact, there is no need to specify that.
 
 ### ``select``
 ``select``:inxx
@@ -1213,7 +1213,7 @@ The table attribute ALL allows you to specify all fields:
 3 Carl
 ``:python
 
-Notice that there is no query string passed to db. web3py understands that if you want all fields of the table person without additional information then you want all records of the table person.
+Notice that there is no query string passed to db. py4web understands that if you want all fields of the table person without additional information then you want all records of the table person.
 
 An equivalent alternative syntax is the following:
 ``
@@ -1225,7 +1225,7 @@ An equivalent alternative syntax is the following:
 3 Carl
 ``:python
 
-and web3py understands that if you ask for all records of the table person without additional information, then you want all the fields of table person.
+and py4web understands that if you ask for all records of the table person without additional information, then you want all the fields of table person.
 
 Given one row
 
@@ -1776,7 +1776,7 @@ Ken No
 #### ``update_record``
 ``update_record``:inxx
 
-web3py also allows updating a single record that is already in memory using ``update_record``
+py4web also allows updating a single record that is already in memory using ``update_record``
 
 ``
 >>> row = db(db.person.id == 2).select().first()
@@ -2053,7 +2053,7 @@ In the smart_query search string, a field can be identified by fieldname only an
 ### Computed fields
 ``compute``:inxx
 
-DAL fields may have a ``compute`` attribute. This must be a function (or lambda) that takes a Row object and returns a value for the field. When a new record is modified, including both insertions and updates, if a value for the field is not provided, web3py tries to compute from the other field values using the ``compute`` function. Here is an example:
+DAL fields may have a ``compute`` attribute. This must be a function (or lambda) that takes a Row object and returns a value for the field. When a new record is modified, including both insertions and updates, if a value for the field is not provided, py4web tries to compute from the other field values using the ``compute`` function. Here is an example:
 ``
 >>> db.define_table('item',
 ...                 Field('unit_price', 'double'),
@@ -2079,7 +2079,7 @@ Virtual fields are also computed fields (as in the previous subsection) but they
 
 #### New style virtual fields (experimental)
 
-web3py provides a new and easier way to define virtual fields and lazy virtual fields. This section is marked experimental because the APIs may still change a little from what is described here.
+py4web provides a new and easier way to define virtual fields and lazy virtual fields. This section is marked experimental because the APIs may still change a little from what is described here.
 
 Here we will consider the same example as in the previous subsection. In particular we consider the following model:
 
@@ -2138,7 +2138,7 @@ db.define_table('item',
 ``:python
 
 ------
-Mind that virtual fields do not have the same attributes as regular fields (length, default, required, etc).  They do not appear in the list of ``db.table.fields`` and in older versions of web3py they require a special approach to display in SQLFORM.grid and SQLFORM.smartgrid.  See the discussion on grids and virtual fields in [[Chapter 7 ../07#Virtual-fields-in-SQLFORM-grid-and-smartgrid]].
+Mind that virtual fields do not have the same attributes as regular fields (length, default, required, etc).  They do not appear in the list of ``db.table.fields`` and in older versions of py4web they require a special approach to display in SQLFORM.grid and SQLFORM.smartgrid.  See the discussion on grids and virtual fields in [[Chapter 7 ../07#Virtual-fields-in-SQLFORM-grid-and-smartgrid]].
 ------
 
 #### Old style virtual fields
@@ -2304,7 +2304,7 @@ Carl
 
 #### Inner joins
 
-Another way to achieve a similar result is by using a join, specifically an INNER JOIN. web3py performs joins automatically and transparently when the query links two or more tables as in the following example:
+Another way to achieve a similar result is by using a join, specifically an INNER JOIN. py4web performs joins automatically and transparently when the query links two or more tables as in the following example:
 
 ``Rows``:inxx ``inner join``:inxx ``join``:inxx
 ``
@@ -2317,7 +2317,7 @@ Alex has Chair
 Bob has Shoes
 ``:python
 
-Observe that web3py did a join, so the rows now contain two records, one from each table, linked together. Because the two records may have fields with conflicting names, you need to specify the table when extracting a field value from a row. This means that while before you could do:
+Observe that py4web did a join, so the rows now contain two records, one from each table, linked together. Because the two records may have fields with conflicting names, you need to specify the table when extracting a field value from a row. This means that while before you could do:
 ``
 row.name
 ``:python
@@ -2386,7 +2386,7 @@ Multiple left joins can be combined by passing a list or tuple of ``db.mytable.o
 
 #### Grouping and counting
 
-When doing joins, sometimes you want to group rows according to certain criteria and count them. For example, count the number of things owned by every person. web3py allows this as well. First, you need a count operator. Second, you want to join the person table with the thing table by owner. Third, you want to select all rows (person + thing), group them by person, and count them while grouping:
+When doing joins, sometimes you want to group rows according to certain criteria and count them. For example, count the number of things owned by every person. py4web allows this as well. First, you need a count operator. Second, you want to join the person table with the thing table by owner. Third, you want to select all rows (person + thing), group them by person, and count them while grouping:
 
 ``grouping``:inxx
 ``
@@ -2483,7 +2483,7 @@ A lighter alternative to many-to-many relations is tagging, you can found an exa
 ``list:string``:inxx ``list:integer``:inxx ``list:reference``:inxx
 ``contains``:inxx ``multiple``:inxx ``tags``:inxx
 
-web3py provides the following special field types:
+py4web provides the following special field types:
 
 ``
 list:string
@@ -2565,7 +2565,7 @@ While ``list:reference`` has a default validator and a default representation, `
 
 ### Other operators
 
-web3py has other operators that provide an API to access equivalent SQL operators.
+py4web has other operators that provide an API to access equivalent SQL operators.
 Let's define another table "log" to store security events, their event_time and severity, where the severity is an integer number.
 
 ``date``:inxx ``datetime``:inxx ``time``:inxx
@@ -2616,7 +2616,7 @@ which is the same as using ``ilike``
 db.mytable.myfield.ilike('value')
 ``:python
 
-web3py also provides some shortcuts:
+py4web also provides some shortcuts:
 
 ``
 db.mytable.myfield.startswith('value')
@@ -2767,7 +2767,7 @@ db(db.thing).select(distinct = db.thing.name[:3])
 
 #### Default values with ``coalesce`` and ``coalesce_zero``
 
-There are times when you need to pull a value from database but also need a default values if the value for a record is set to NULL. In SQL there is a function, ``COALESCE``, for this. web3py has an equivalent ``coalesce`` method:
+There are times when you need to pull a value from database but also need a default values if the value for a record is set to NULL. In SQL there is a function, ``COALESCE``, for this. py4web has an equivalent ``coalesce`` method:
 
 ``
 >>> db.define_table('sysuser', Field('username'), Field('fullname'))
@@ -2806,7 +2806,7 @@ SUM(COALESCE("sysuser"."points",'0'))
 ### Generating raw sql
 ``raw SQL``:inxx
 
-Sometimes you need to generate the SQL but not execute it. This is easy to do with web3py since every command that performs database IO has an equivalent command that does not, and simply returns the SQL that would have been executed. These commands have the same names and syntax as the functional ones, but they start with an underscore:
+Sometimes you need to generate the SQL but not execute it. This is easy to do with py4web since every command that performs database IO has an equivalent command that does not, and simply returns the SQL that would have been executed. These commands have the same names and syntax as the functional ones, but they start with an underscore:
 
 ``_insert``:inxx
 Here is ``_insert``
@@ -2912,11 +2912,11 @@ with open('test.csv', 'r', encoding='utf-8', newline='') as dumpfile:
     db.person.import_from_csv_file(dumpfile)
 ``:python
 
-When importing, web3py looks for the field names in the CSV header. In this example, it finds two columns: "person.id" and "person.name". It ignores the "person." prefix, and it ignores the "id" fields. Then all records are appended and assigned new ids. Both of these operations can be performed via the appadmin web interface.
+When importing, py4web looks for the field names in the CSV header. In this example, it finds two columns: "person.id" and "person.name". It ignores the "person." prefix, and it ignores the "id" fields. Then all records are appended and assigned new ids. Both of these operations can be performed via the appadmin web interface.
 
 #### CSV (all tables at once)
 
-In web3py, you can backup/restore an entire database with two commands:
+In py4web, you can backup/restore an entire database with two commands:
 
 To export:
 ``
@@ -2959,7 +2959,7 @@ END
 
 The file does not include uploaded files if these are not stored in the database. The upload files stored on filesystem must be dumped separately, a zip of the "uploads" folder may suffice in most cases.
 
-When importing, the new records will be appended to the database if it is not empty. In general the new imported records will not have the same record id as the original (saved) records but web3py will restore references so they are not broken, even if the id values may change.
+When importing, the new records will be appended to the database if it is not empty. In general the new imported records will not have the same record id as the original (saved) records but py4web will restore references so they are not broken, even if the id values may change.
 
 If a table contains a field called ``uuid``, this field will be used to identify duplicates.  Also, if an imported record has the same ``uuid`` as an existing record, the previous record will be updated.
 
@@ -2980,7 +2980,7 @@ if db(db.person).isempty():
     db.thing.insert(name='Chair', owner_id=nid)
 ``:python
 
-Each record is identified by an identifier and referenced by that id. If you have two copies of the database used by distinct web3py installations, the id is unique only within each database and not across the databases.  This is a problem when merging records from different databases.
+Each record is identified by an identifier and referenced by that id. If you have two copies of the database used by distinct py4web installations, the id is unique only within each database and not across the databases.  This is a problem when merging records from different databases.
 
 In order to make records uniquely identifiable across databases, they must:
 - have a unique id (UUID),
@@ -3179,7 +3179,7 @@ In general ``db.tablename`` and ``'reference tablename'`` are equivalent field t
 When a table has a self-reference and you have to do join, for example to select a person and its father, you need an alias for the table.
 In SQL an alias is a temporary alternate name you can use to reference a table/column into a query (or other SQL statement).
 
-With web3py you can make an alias for a table using the ``with_alias`` method. This works also for expressions, which means also for fields since ``Field`` is derived from ``Expression``.
+With py4web you can make an alias for a table using the ``with_alias`` method. This works also for expressions, which means also for fields since ``Field`` is derived from ``Expression``.
 
 Here is an example:
 ``
@@ -3206,7 +3206,7 @@ Marco Massimo Claudia
 Notice that we have chosen to make a distinction between:
 - "father_id": the field name used in the table "person";
 - "father": the alias we want to use for the table referenced by the above field; this is communicated to the database;
-- "Father": the variable used by web3py to refer to that alias.
+- "Father": the variable used by py4web to refer to that alias.
 
 The difference is subtle, and there is nothing wrong in using the same name for the three of them:
 ``
@@ -3260,9 +3260,9 @@ signature = db.Table(db, 'signature',
 db.define_table('payment', Field('amount', 'double'), signature)
 ``:python
 
-This example assumes that standard web3py authentication is enabled.
+This example assumes that standard py4web authentication is enabled.
 
-Notice that if you use ``Auth`` web3py already creates one such table for you:
+Notice that if you use ``Auth`` py4web already creates one such table for you:
 
 ``
 auth = Auth(db)
@@ -3301,7 +3301,7 @@ Another way to accomplish the same is by using a Field of type ``SQLCustomType``
 ``_before_update``:inxx ``_after_update``:inxx
 ``_before_delete``:inxx ``_after_delete``:inxx
 
-Web3py provides a mechanism to register callbacks to be called before and/or after insert, update and delete of records.
+PY4WEB provides a mechanism to register callbacks to be called before and/or after insert, update and delete of records.
 
 Each table stores six lists of callbacks:
 
@@ -3365,7 +3365,7 @@ Database schema can define relationships which trigger deletions of related reco
 #### Record versioning
 ``_enable_record_versioning``:inxx
 
-It is possible to ask web3py to save every copy of a record when the record is individually modified. There are different ways to do it and it can be done for all tables at once using the syntax:
+It is possible to ask py4web to save every copy of a record when the record is individually modified. There are different ways to do it and it can be done for all tables at once using the syntax:
 
 ``
 auth.enable_record_versioning(db)
@@ -3386,7 +3386,7 @@ db.define_table('stored_item',
 
 Notice the hidden boolean field called ``is_active`` and defaulting to True.
 
-We can tell web3py to create a new table (in the same or a different database) and store all previous versions of each record in the table, when modified.
+We can tell py4web to create a new table (in the same or a different database) and store all previous versions of each record in the table, when modified.
 
 This is done in the following way:
 ``
@@ -3402,9 +3402,9 @@ db.stored_item._enable_record_versioning(archive_db=db,
                                          is_active='is_active')
 ``:python
 
-The ``archive_db=db`` tells web3py to store the archive table in the same database as the ``stored_item`` table. The ``archive_name`` sets the name for the archive table. The archive table has the same fields as the original table ``stored_item`` except that unique fields are no longer unique (because it needs to store multiple versions) and has an extra field which name is specified by ``current_record`` and which is a reference to the current record in the ``stored_item`` table.
+The ``archive_db=db`` tells py4web to store the archive table in the same database as the ``stored_item`` table. The ``archive_name`` sets the name for the archive table. The archive table has the same fields as the original table ``stored_item`` except that unique fields are no longer unique (because it needs to store multiple versions) and has an extra field which name is specified by ``current_record`` and which is a reference to the current record in the ``stored_item`` table.
 
-When records are deleted, they are not really deleted. A deleted record is copied in the ``stored_item_archive`` table (like when it is modified) and the ``is_active`` field is set to False. By enabling record versioning web3py sets a ``common_filter`` on this table that hides all records in table ``stored_item`` where the ``is_active`` field is set to False. The ``is_active`` parameter in the ``_enable_record_versioning`` method allows to specify the name of the field used by the ``common_filter`` to determine if the field was deleted or not.
+When records are deleted, they are not really deleted. A deleted record is copied in the ``stored_item_archive`` table (like when it is modified) and the ``is_active`` field is set to False. By enabling record versioning py4web sets a ``common_filter`` on this table that hides all records in table ``stored_item`` where the ``is_active`` field is set to False. The ``is_active`` parameter in the ``_enable_record_versioning`` method allows to specify the name of the field used by the ``common_filter`` to determine if the field was deleted or not.
 
 ``common_filter``s will be discussed in next [[Common filters #Common-filters]] section..
 
@@ -3536,10 +3536,10 @@ github 207.97.227.239
 google 172.217.11.174
 ``:python
 
-``SQLCustomType`` is a field type factory. Its ``type`` argument must be one of the standard web3py types. It tells web3py how to treat the field values at the web3py level. ``native`` is the type of the field as far as the database is concerned. Allowed names depend on the database engine. ``encoder`` is an optional transformation function applied when the data is stored and ``decoder`` is the optional reverse transformation function.
+``SQLCustomType`` is a field type factory. Its ``type`` argument must be one of the standard py4web types. It tells py4web how to treat the field values at the py4web level. ``native`` is the type of the field as far as the database is concerned. Allowed names depend on the database engine. ``encoder`` is an optional transformation function applied when the data is stored and ``decoder`` is the optional reverse transformation function.
 
 -------
-This feature is marked as experimental. In practice it has been in web3py for a long time and it works but it can make the code not portable, for example when the native type is database specific.
+This feature is marked as experimental. In practice it has been in py4web for a long time and it works but it can make the code not portable, for example when the native type is database specific.
 
 It does not work on Google App Engine NoSQL.
 -------
@@ -3557,7 +3557,7 @@ i.e. import the DAL, connect and specify the folder which contains the .table fi
 
 To access the data and its attributes we still have to define all the tables we are going to access with ``db.define_table``.
 
-If we just need access to the data but not to the web3py table attributes, we get away without re-defining the tables but simply asking web3py to read the necessary info from the metadata in the .table files:
+If we just need access to the data but not to the py4web table attributes, we get away without re-defining the tables but simply asking py4web to read the necessary info from the metadata in the .table files:
 
 ``
 from gluon import DAL
@@ -3677,10 +3677,10 @@ db = DAL('postgres://username:password@localhost/mydb')
 
 Before you switch, you want to move the data and rebuild all the metadata for the new database. We assume the new database to exist but we also assume it is empty.
 
-Web3py provides a script that does this work for you:
+PY4WEB provides a script that does this work for you:
 
 ``
-cd web3py
+cd py4web
 python scripts/cpdb.py \\
    -f applications/app/databases \\
    -y 'sqlite://storage.sqlite' \\
@@ -3789,7 +3789,7 @@ class MySQLAdapter(BaseAdapter):
     # specify a driver to use
     driver = globals().get('pymysql', None)
 
-    # map web3py types into database types
+    # map py4web types into database types
     types = {
         'boolean': 'CHAR(1)',
         'string': 'VARCHAR(%(length)s)',
@@ -3891,23 +3891,23 @@ db =DAL(..., driver_args={}, adapter_args={})
 
 #### SQLite
 
-SQLite does not support dropping and altering columns. That means that web3py migrations will work up to a point. If you delete a field from a table, the column will remain in the database but will be invisible to web3py. If you decide to reinstate the column, web3py will try re-create it and fail. In this case you must set ``fake_migrate=True`` so that metadata is rebuilt without attempting to add the column again. Also, for the same reason, **SQLite** is not aware of any change of column type. If you insert a number in a string field, it will be stored as string. If you later change the model and replace the type "string" with type "integer", SQLite will continue to keep the number as a string and this may cause problem when you try to extract the data.
+SQLite does not support dropping and altering columns. That means that py4web migrations will work up to a point. If you delete a field from a table, the column will remain in the database but will be invisible to py4web. If you decide to reinstate the column, py4web will try re-create it and fail. In this case you must set ``fake_migrate=True`` so that metadata is rebuilt without attempting to add the column again. Also, for the same reason, **SQLite** is not aware of any change of column type. If you insert a number in a string field, it will be stored as string. If you later change the model and replace the type "string" with type "integer", SQLite will continue to keep the number as a string and this may cause problem when you try to extract the data.
 
-SQLite doesn't have a boolean type. web3py internally maps booleans to a 1 character string, with 'T' and 'F' representing True and False. The DAL handles this completely; the abstraction of a true boolean value works well.
-But if you are updating the SQLite table with SQL directly, be aware of the web3py implementation, and avoid using 0 and 1 values.
+SQLite doesn't have a boolean type. py4web internally maps booleans to a 1 character string, with 'T' and 'F' representing True and False. The DAL handles this completely; the abstraction of a true boolean value works well.
+But if you are updating the SQLite table with SQL directly, be aware of the py4web implementation, and avoid using 0 and 1 values.
 
 #### MySQL
 
-MySQL does not support multiple ALTER TABLE within a single transaction. This means that any migration process is broken into multiple commits. If something happens that causes a failure it is possible to break a migration (the web3py metadata are no longer in sync with the actual table structure in the database). This is unfortunate but it can be prevented (migrate one table at the time) or it can be fixed a posteriori (revert the web3py model to what corresponds to the table structure in database, set ``fake_migrate=True`` and after the metadata has been rebuilt, set ``fake_migrate=False`` and migrate the table again).
+MySQL does not support multiple ALTER TABLE within a single transaction. This means that any migration process is broken into multiple commits. If something happens that causes a failure it is possible to break a migration (the py4web metadata are no longer in sync with the actual table structure in the database). This is unfortunate but it can be prevented (migrate one table at the time) or it can be fixed a posteriori (revert the py4web model to what corresponds to the table structure in database, set ``fake_migrate=True`` and after the metadata has been rebuilt, set ``fake_migrate=False`` and migrate the table again).
 
 #### Google SQL
 
-Google SQL has the same problems as MySQL and more. In particular table metadata itself must be stored in the database in a table that is not migrated by web3py. This is because Google App Engine has a read-only file system. Web3py migrations in Google SQL combined with the MySQL issue described above can result in metadata corruption. Again, this can be prevented (by migrating the table at once and then setting migrate=False so that the metadata table is not accessed any more) or it can fixed a posteriori (by accessing the database using the Google dashboard and deleting any corrupted entry from the table called ``web3py_filesystem``.
+Google SQL has the same problems as MySQL and more. In particular table metadata itself must be stored in the database in a table that is not migrated by py4web. This is because Google App Engine has a read-only file system. PY4WEB migrations in Google SQL combined with the MySQL issue described above can result in metadata corruption. Again, this can be prevented (by migrating the table at once and then setting migrate=False so that the metadata table is not accessed any more) or it can fixed a posteriori (by accessing the database using the Google dashboard and deleting any corrupted entry from the table called ``py4web_filesystem``.
 
 #### MSSQL (Microsoft SQL Server)
 ``limitby``:inxx
 
-MSSQL < 2012 does not support the SQL OFFSET keyword. Therefore the database cannot do pagination. When doing a ``limitby=(a, b)`` web3py will fetch the first ``a + b`` rows and discard the first ``a``. This may result in a considerable overhead when compared with other database engines.
+MSSQL < 2012 does not support the SQL OFFSET keyword. Therefore the database cannot do pagination. When doing a ``limitby=(a, b)`` py4web will fetch the first ``a + b`` rows and discard the first ``a``. This may result in a considerable overhead when compared with other database engines.
 If you're using MSSQL >= 2005, the recommended prefix to use is ``mssql3://`` which provides a method to avoid the issue of fetching the entire non-paginated resultset. If you're on MSSQL >= 2012, use ``mssql4://`` that uses the ``OFFSET ... ROWS ... FETCH NEXT ... ROWS ONLY`` construct to support natively pagination without performance hits like other backends.
 The ``mssql://`` uri also enforces (for historical reasons) the use of ``text`` columns, that are superseeded in more recent versions (from 2005 onwards) by ``varchar(max)``. ``mssql3://`` and ``mssql4://`` should be used if you don't want to face some limitations of the - officially deprecated - ``text`` columns.
 
@@ -3936,14 +3936,14 @@ db(query).select(distinct=db.mytable.myfield)
 
 #### Oracle
 
-Oracle also does not support pagination. It does not support neither the OFFSET nor the LIMIT keywords. Web3py achieves pagination by translating a ``db(...).select(limitby=(a, b))`` into a complex three-way nested select (as suggested by official Oracle documentation).
+Oracle also does not support pagination. It does not support neither the OFFSET nor the LIMIT keywords. PY4WEB achieves pagination by translating a ``db(...).select(limitby=(a, b))`` into a complex three-way nested select (as suggested by official Oracle documentation).
 This works for simple select but may break for complex selects involving aliased fields and or joins.
 
 #### Google NoSQL (Datastore)
 
 Google NoSQL (Datastore) does not allow joins, left joins, aggregates, expression, OR involving more than one table, the ‘like’ operator searches in "text" fields. 
 
-Transactions are limited and not provided automatically by web3py (you need to use the Google API ``run_in_transaction`` which you can look up in the Google App Engine documentation online). 
+Transactions are limited and not provided automatically by py4web (you need to use the Google API ``run_in_transaction`` which you can look up in the Google App Engine documentation online). 
 
 Google also limits the number of records you can retrieve in each one query (1000 at the time of writing). On the Google datastore record IDs are integer but they are not sequential. 
 While on SQL the "list:string" type is mapped into a "text" type, on the Google Datastore it is mapped into a ``ListStringProperty``. Similarly "list:integer" and "list:reference" are mapped into ``ListProperty``. This makes searches for content inside these fields types more efficient on Google NoSQL than on SQL databases.

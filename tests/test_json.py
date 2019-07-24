@@ -2,7 +2,7 @@ import datetime
 import json
 import unittest
 
-from web3py.core import dumps
+from py4web.core import dumps
 
 
 class TestJson(unittest.TestCase):

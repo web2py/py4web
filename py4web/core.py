@@ -52,15 +52,15 @@ from pydal import _compat
 
 __all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL', 'check_compatibl']
 
-os.environ['WEB3PY_APPS_FOLDER'] = 'apps'  # change from command line (default used for testing)
+os.environ['PY4WEB_APPS_FOLDER'] = 'apps'  # change from command line (default used for testing)
 
 ART = r"""
- _______  ____________  ____  ______  __
-|  ____/ / / ____/ __ |/___ \/ __ \ \/ /
-| |     / / /_  / /_/ /___/ / /_/ /\  /
-| | /| / / __/ / __  //__  / ____/ / /
-| |/ |/ / /___/ /_/ /___/ / / ____/ /
-|___/|_/_____/_____/_____/_/ /_____/
+██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗ 
+██╔══██╗╚██╗ ██╔╝██║  ██║██║    ██║██╔════╝██╔══██╗
+██████╔╝ ╚████╔╝ ███████║██║ █╗ ██║█████╗  ██████╔╝
+██╔═══╝   ╚██╔╝  ╚════██║██║███╗██║██╔══╝  ██╔══██╗
+██║        ██║        ██║╚███╔███╔╝███████╗██████╔╝
+╚═╝        ╚═╝        ╚═╝ ╚══╝╚══╝ ╚══════╝╚═════╝ 
 It is still experimental...
 """
 
@@ -243,7 +243,7 @@ class Template(Fixture):
         context.update(output)
         context['__vars__'] = output
         app_folder = os.path.join(
-            os.environ['WEB3PY_APPS_FOLDER'], request.app_name)
+            os.environ['PY4WEB_APPS_FOLDER'], request.app_name)
         path = self.path or os.path.join(app_folder, 'templates')
         filename = os.path.join(path, self.filename)
         output = yatl.render(
@@ -576,10 +576,10 @@ def get_error_snapshot(depth=5):
 
 class ErrorStorage:
     def __init__(self):
-        uri = os.environ['WEB3PY_SERVICE_DB_URI']
-        folder = os.environ['WEB3PY_SERVICE_FOLDER']
+        uri = os.environ['PY4WEB_SERVICE_DB_URI']
+        folder = os.environ['PY4WEB_SERVICE_FOLDER']
         self.db = DAL(uri, folder=folder)
-        self.db.define_table('web3py_error',
+        self.db.define_table('py4web_error',
                              Field('uuid'),
                              Field('app_name'),
                              Field('method'),
@@ -593,7 +593,7 @@ class ErrorStorage:
     def log(self, app_name, error_snapshot):
         ticket_uuid = str(uuid.uuid4())
         try:
-            id = self.db.web3py_error.insert(
+            id = self.db.py4web_error.insert(
                 uuid=ticket_uuid,
                 app_name=app_name,
                 method=request.method,
@@ -612,21 +612,21 @@ class ErrorStorage:
     def get(self, ticket_uuid=None):
         db = self.db
         if ticket_uuid:
-            query, orderby = db.web3py_error.uuid == ticket_uuid, None
+            query, orderby = db.py4web_error.uuid == ticket_uuid, None
             rows = db(query).select(orderby=orderby, limitby=(0, 1)).as_list()
         else:
-            orderby = ~db.web3py_error.timestamp
-            groupby = db.web3py_error.path | db.web3py_error.error
-            query = db.web3py_error.timestamp > datetime.datetime.now(
+            orderby = ~db.py4web_error.timestamp
+            groupby = db.py4web_error.path | db.py4web_error.error
+            query = db.py4web_error.timestamp > datetime.datetime.now(
             ) - datetime.timedelta(days=7)
-            fields = [field for field in db.web3py_error if not field.type == 'json']
-            fields.append(db.web3py_error.id.count())
+            fields = [field for field in db.py4web_error if not field.type == 'json']
+            fields.append(db.py4web_error.id.count())
             list_rows = db(query).select(
                 *fields, orderby=orderby, groupby=groupby).as_list()
             rows = []
             for item in list_rows:
-                row = item['web3py_error']
-                row['count'] = item['_extra'][str(db.web3py_error.id.count())]
+                row = item['py4web_error']
+                row['count'] = item['_extra'][str(db.py4web_error.id.count())]
                 rows.append(row)
         return rows if not ticket_uuid else rows[0] if rows else None
 
@@ -644,7 +644,7 @@ class Reloader:
     @staticmethod
     def import_apps():
         """import or reimport modules and exposed static files"""
-        folder = os.environ['WEB3PY_APPS_FOLDER']
+        folder = os.environ['PY4WEB_APPS_FOLDER']
         app = bottle.default_app()
         app.routes.clear()
         new_apps = []
@@ -743,7 +743,6 @@ def start_server(args):
                        workers=args.number_workers, worker_class='gevent', reloader=False,
                        certfile=args.ssl_cert_filename, keyfile=args.ssl_key_filename)
 
-
 def main():
     print(ART)
     parser = argparse.ArgumentParser()
@@ -778,7 +777,7 @@ def main():
     args.service_folder = os.path.join(args.apps_folder, '.service')
     # store all args in evironment variables to make then available to the gunicorn processes
     for key in args.__dict__:
-        os.environ['WEB3PY_' + key.upper()] = str(args.__dict__[key])
+        os.environ['PY4WEB_' + key.upper()] = str(args.__dict__[key])
     # if the apps folder does not exist create it and populate it
     if not os.path.exists(args.apps_folder):
         if args.create or input('Create %s (y/n)? ' % args.apps_folder)[:1] in 'yY':
@@ -791,7 +790,7 @@ def main():
         os.mkdir(args.service_folder)
     # upzip the _dashboard app if old or dos not exist
     assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
-    for filename in ['web3py.app._dashboard.zip', 'web3py.app._default.zip']:
+    for filename in ['py4web.app._dashboard.zip', 'py4web.app._default.zip']:
         zip_filename = os.path.join(assets_dir, filename)
         target_dir = os.path.join(args.apps_folder, filename.split('.')[-2])
         if not os.path.exists(target_dir):

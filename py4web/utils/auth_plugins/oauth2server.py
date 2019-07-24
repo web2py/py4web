@@ -2,7 +2,7 @@ import uuid
 import hashlib
 import jwt
 
-from web3py.core import request, abort, DAL, Field
+from py4web.core import request, abort, DAL, Field
 
 class OAuthServer(object):
 

@@ -2,21 +2,21 @@
 
 ### Supported platforms and prerequisites
 
-Web3py runs fine on Windows, MacOS and Linux. Its only prerequisite is Python 3, which must be installed in advance. 
+PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is Python 3, which must be installed in advance. 
 
 ### Installing from pip
 
 From the command line
 
 ``
-python3 -m pip install --upgrade web3py
+python3 -m pip install --upgrade py4web
 ``:bash
 
 (if python3 does not work, try with the python command instead).
-This will install web3py and all its dependencies. Once installed you can start it with:
+This will install py4web and all its dependencies. Once installed you can start it with:
 
 ``
-web3py-start apps
+py4web-start apps
 ``:bash
 
 This should produce an output like:
@@ -37,15 +37,15 @@ Listening on http://127.0.0.1:8000/
 Hit Ctrl-C to quit.
 ``
 
-Here ``apps`` is the name of the folder where you keep your apps. If the folder does not exist it is created. Web3py expects to find two apps in this folder: Dashboard (_dashboard) and Default (_default). If it does not find them, it installs them.
+Here ``apps`` is the name of the folder where you keep your apps. If the folder does not exist it is created. PY4WEB expects to find two apps in this folder: Dashboard (_dashboard) and Default (_default). If it does not find them, it installs them.
 
-Mind that if you upgrade web3py, it will not automatically upgrade Dashboard and Default. You have to remove these apps for web3py to re-install them. This is a safety precaution, in case you made changes to those apps.
+Mind that if you upgrade py4web, it will not automatically upgrade Dashboard and Default. You have to remove these apps for py4web to re-install them. This is a safety precaution, in case you made changes to those apps.
 
 Dashboard is a web based IDE. Default is an app that does not nothing other than welcome the user. In general "apps/_default" can be an app or a symlink to your default app.
 
-Notice that some apps like Dashboard and Default have a special role in web3py and therefore their actual name starts with ``_`` to avoid conflict with apps created by you.
+Notice that some apps like Dashboard and Default have a special role in py4web and therefore their actual name starts with ``_`` to avoid conflict with apps created by you.
 
-Once web3py is installed you can access the apps at the following urls:
+Once py4web is installed you can access the apps at the following urls:
 
 ``
 http://localhost:8000
@@ -62,39 +62,39 @@ Also the trailing ``/index`` is optional.
 From the command line
 
 ``
-git clone https://github.com/web2py/web3py.git
-cd web3py
+git clone https://github.com/web2py/py4web.git
+cd py4web
 python3 -m pip install -r requirements.txt
 ``:bash
 
 Once installed you should start with
 
 ``
-./web3py-start apps
+./py4web-start apps
 ``:bash
 
-Notice the ``./`` ; it forces the run of the local folder's web3py and not the installed one.
+Notice the ``./`` ; it forces the run of the local folder's py4web and not the installed one.
 
 ### Dashboard password
 
-Every time web3py starts it asks for a one-time password for you to access the dashboard. This is annoying. You can avoid by storying a password hashed in a file:
+Every time py4web starts it asks for a one-time password for you to access the dashboard. This is annoying. You can avoid by storying a password hashed in a file:
 
 ``
 python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()(input('password:'))[0]))"
 ``:bash
 
-and then ask web3py to re-use that password:
+and then ask py4web to re-use that password:
 
 ``
-web3py-start -p password.txt apps
+py4web-start -p password.txt apps
 ``:bash
 
 ### Command line options
 
-web3py provides multiple command line options which can be listed with ``-h``.
+py4web provides multiple command line options which can be listed with ``-h``.
 
 ``
-usage: web3py-start [-h] [-a ADDRESS] [-n NUMBER_WORKERS]
+usage: py4web-start [-h] [-a ADDRESS] [-n NUMBER_WORKERS]
                     [--ssl_cert_filename SSL_CERT_FILENAME]
                     [--ssl_key_filename SSL_KEY_FILENAME]
                     [--service_db_uri SERVICE_DB_URI] [-d DASHBOARD_MODE]

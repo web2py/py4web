@@ -101,7 +101,7 @@ let init = (app) => {
             }); 
     };
     app.download_selected_app = () => {
-        var url = '../packed/web3py.app.' + app.vue.selected_app.name + '.zip?' + (new Date()).getTime()
+        var url = '../packed/py4web.app.' + app.vue.selected_app.name + '.zip?' + (new Date()).getTime()
         window.open(url, 'Download');
     };
     app.deploy_selected_app = () => {

@@ -2,13 +2,13 @@
 
 ``views``:inxx ``template language``:inxx ``HTML``:inxx
 
-web3py uses Python for its models, controllers, and views, although it uses a slightly modified Python syntax in the views to allow more readable code without imposing any restrictions on proper Python usage.
+py4web uses Python for its models, controllers, and views, although it uses a slightly modified Python syntax in the views to allow more readable code without imposing any restrictions on proper Python usage.
 
-web3py uses ``[[ ... ]]`` to escape Python code embedded in HTML. The advantage of using curly brackets instead of angle brackets is that it's transparent to all common HTML editors. This allows the developer to use those editors to create web3py views.
+py4web uses ``[[ ... ]]`` to escape Python code embedded in HTML. The advantage of using curly brackets instead of angle brackets is that it's transparent to all common HTML editors. This allows the developer to use those editors to create py4web views.
 
 If this line is in a model it will be applied everywhere, if in a controller only to views for the controller actions, if inside an action only to the view for that action.
 
-Since the developer is embedding Python code into HTML, the document should be indented according to HTML rules, and not Python rules. Therefore, we allow unindented Python inside the ``[[ ... ]]`` tags. Since Python normally uses indentation to delimit blocks of code, we need a different way to delimit them; this is why the web3py template language makes use of the Python keyword ``pass``.
+Since the developer is embedding Python code into HTML, the document should be indented according to HTML rules, and not Python rules. Therefore, we allow unindented Python inside the ``[[ ... ]]`` tags. Since Python normally uses indentation to delimit blocks of code, we need a different way to delimit them; this is why the py4web template language makes use of the Python keyword ``pass``.
 
 -------
 A code block starts with a line ending with a colon and ends with a line beginning with ``pass``. The keyword ``pass`` is not necessary when the end of the block is obvious from the context.
@@ -26,9 +26,9 @@ pass
 ]]
 ``:html
 
-Note that ``pass`` is a Python keyword, not a web3py keyword. Some Python editors, such as Emacs, use the keyword ``pass`` to signify the division of blocks and use it to re-indent code automatically.
+Note that ``pass`` is a Python keyword, not a py4web keyword. Some Python editors, such as Emacs, use the keyword ``pass`` to signify the division of blocks and use it to re-indent code automatically.
 
-The web3py template language does exactly the same. When it finds something like:
+The py4web template language does exactly the same. When it finds something like:
 
 ``
 <html><body>
@@ -46,7 +46,7 @@ response.write("""</body></html>""", escape=False)
 ``:python
 ``response.write`` writes to the ``response.body``.
 
-When there is an error in a web3py view, the error report shows the generated view code, not the actual view as written by the developer. This helps the developer debug the code by highlighting the actual code that is executed (which is something that can be debugged with an HTML editor or the DOM inspector of the browser).
+When there is an error in a py4web view, the error report shows the generated view code, not the actual view as written by the developer. This helps the developer debug the code by highlighting the actual code that is executed (which is something that can be debugged with an HTML editor or the DOM inspector of the browser).
 
 Also note that:
 ``
@@ -80,7 +80,7 @@ This is all done transparently. You never need to (and never should) call the ``
 
 ### Basic syntax
 
-The web3py template language supports all Python control structures. Here we provide some examples of each of them. They can be nested according to usual programming practice.
+The py4web template language supports all Python control structures. Here we provide some examples of each of them. They can be nested according to usual programming practice.
 
 #### ``for...in``
 ``for``:inxx
@@ -197,7 +197,7 @@ This example illustrates that all output generated before an exception occurs is
 #### ``def...return``
 ``def``:inxx ``return``:inxx
 
-The web3py template language allows the developer to define and implement functions that can return any Python object or a text/html string. Here we consider two examples:
+The py4web template language allows the developer to define and implement functions that can return any Python object or a text/html string. Here we consider two examples:
 ``
 [[def itemize1(link): return LI(A(link, _href="http://" + link))]]
 <ul>
@@ -224,7 +224,7 @@ Consider now the following code:
 </ul>
 ``:html
 
-It produces exactly the same output as above. In this case, the function ``itemize2`` represents a piece of HTML that is going to replace the web3py tag where the function is called. Notice that there is no '=' in front of the call to ``itemize2``, since the function does not return the text, but it writes it directly into the response.
+It produces exactly the same output as above. In this case, the function ``itemize2`` represents a piece of HTML that is going to replace the py4web tag where the function is called. Notice that there is no '=' in front of the call to ``itemize2``, since the function does not return the text, but it writes it directly into the response.
 
 There is one caveat: functions defined inside a view must terminate with a ``return`` statement, or the automatic indentation will fail.
 

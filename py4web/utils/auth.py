@@ -2,8 +2,8 @@ import hashlib
 import urllib
 import uuid
 
-from web3py import redirect, request, response, abort, URL, action
-from web3py.core import Fixture, Template
+from py4web import redirect, request, response, abort, URL, action
+from py4web.core import Fixture, Template
 from pydal.validators import IS_EMAIL, CRYPT, IS_NOT_EMPTY, IS_NOT_IN_DB
 
 

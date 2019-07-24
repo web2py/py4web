@@ -1,6 +1,6 @@
 # check compatibility
-import web3py
-assert web3py.check_compatible('0.1.20190709.1')
+import py4web
+assert py4web.check_compatible('0.1.20190709.1')
 
 # by impoting db you expose it to the _dashboard/dbadmin
 from . models import db

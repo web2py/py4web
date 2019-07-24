@@ -1,5 +1,5 @@
 import os
-from web3py import DAL, Field 
+from py4web import DAL, Field 
 
 # define database and tables
 db = DAL('sqlite://storage.db', folder=os.path.join(os.path.dirname(__file__), 'databases'))

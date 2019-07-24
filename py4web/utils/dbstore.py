@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 class DBStore(object):
 
-    def __init__(self, db, name='web3py_session'):
+    def __init__(self, db, name='py4web_session'):
         self.__prerequisites__ = [db]
         Field = db.Field
         self.db = db

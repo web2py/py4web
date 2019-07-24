@@ -2,13 +2,13 @@ import random
 import time
 import unittest
 
-import web3py
+import py4web
 
 
 class CacheTest(unittest.TestCase):
 
     def test_logic(self):
-        cache = web3py.Cache()
+        cache = py4web.Cache()
         cache.get('x', lambda: 'y')
         self.assertEqual(cache.head.next.next, cache.tail)
         self.assertEqual(cache.head.next, cache.tail.prev)
@@ -17,7 +17,7 @@ class CacheTest(unittest.TestCase):
         self.assertEqual(cache.head.next.value, 'y')
 
     def test_different_keys(self):
-        cache = web3py.Cache()
+        cache = py4web.Cache()
         results = set()
         for k in range(100):
             results.add(cache.get('a', random.random))
@@ -26,7 +26,7 @@ class CacheTest(unittest.TestCase):
         self.assertEqual(len(results), 3)
 
     def test_change_detection(self):
-        cache = web3py.Cache()
+        cache = py4web.Cache()
         results = set()
         for k in range(30):
             results.add(cache.get('a', random.random, expiration=0, monitor=lambda: int(k/10)))
@@ -34,7 +34,7 @@ class CacheTest(unittest.TestCase):
 
     def test_timing(self):
         M = N = 100000
-        cache = web3py.Cache()
+        cache = py4web.Cache()
         for k in range(M):
             cache.get(k, random.random)
         t0 = time.time()
@@ -44,7 +44,7 @@ class CacheTest(unittest.TestCase):
         self.assertTrue(cache.free == 0)
 
     def test_memoize_and_expiration(self):
-        memoize = web3py.Cache().memoize(expiration=0.1)
+        memoize = py4web.Cache().memoize(expiration=0.1)
 
         @memoize
         def f(x):

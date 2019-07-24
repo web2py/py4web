@@ -2,13 +2,13 @@
 import os
 import unittest
 import bottle
-from web3py.core import Session, DAL, request, HTTP
-from web3py.utils.auth import Auth
+from py4web.core import Session, DAL, request, HTTP
+from py4web.utils.auth import Auth
 
 class TestAuth(unittest.TestCase):
     
     def setUp(self):
-        os.environ['WEB3PY_APPS_FOLDER'] = 'apps'
+        os.environ['PY4WEB_APPS_FOLDER'] = 'apps'
         self.db = DAL('sqlite:memory')
         self.session = Session(secret="a", expiration=10)
         self.session.local.data = {}

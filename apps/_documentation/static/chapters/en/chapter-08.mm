@@ -48,7 +48,7 @@ Helpers can also be serialized into strings, equivalently, with the ``__str__`` 
 ``:python
 
 ``Document Object Model (DOM)``:inxx
-The helpers mechanism in web3py is more than a system to generate HTML without concatenating strings. It provides a server-side representation of the Document Object Model (DOM).
+The helpers mechanism in py4web is more than a system to generate HTML without concatenating strings. It provides a server-side representation of the Document Object Model (DOM).
 
 Components of helpers can be referenced via their position, and helpers act as lists with respect to their components:
 ``
@@ -135,7 +135,7 @@ Sometimes you want to render HTML stored in a variable, but the HTML may contain
 Un-escaped executable input such as this (for example, entered in the body of a comment in a blog) is unsafe, because it can be used to generate Cross Site Scripting (XSS) attacks against other visitors to the page.
 
 ``sanitize``:inxx
-The web3py ``XML`` helper can sanitize our text to prevent injections and escape all tags except those that you explicitly allow. Here is an example:
+The py4web ``XML`` helper can sanitize our text to prevent injections and escape all tags except those that you explicitly allow. Here is an example:
 ``
 >>> print XML('<script>alert("unsafe!")</script>', sanitize=True)
 &lt;script&gt;alert(&quot;unsafe!&quot;)&lt;/script&gt;
@@ -159,8 +159,8 @@ This helper is used to build links.
 
 ``
 >>> print A('<click>', XML('<b>me</b>'),
-            _href='http://www.web3py.com')
-<a href='http://www.web3py.com'>&lt;click&gt;<b>me</b></a>
+            _href='http://www.py4web.com')
+<a href='http://www.py4web.com'>&lt;click&gt;<b>me</b></a>
 ``:python
 
 #### ``BODY``
@@ -184,7 +184,7 @@ Here is a <a href="/app/default/index">link</a>, and here is some <b>bold text</
 #### ``CODE``
 ``CODE``:inxx
 
-This helper performs syntax highlighting for Python, C, C++, HTML and web3py code, and is preferable to ``PRE`` for code listings. ``CODE`` also has the ability to create links to the web3py API documentation.
+This helper performs syntax highlighting for Python, C, C++, HTML and py4web code, and is preferable to ``PRE`` for code listings. ``CODE`` also has the ability to create links to the py4web API documentation.
 
 Here is an example of highlighting sections of Python code.
 ``
@@ -229,9 +229,9 @@ These are the default arguments for the ``CODE`` helper:
 CODE("print 'hello world'", language='python', link=None, counter=1, styles={})
 ``:python
 
-Supported values for the ``language`` argument are "python", "html_plain", "c", "cpp", "web3py", and "html". The "html" language interprets [[ and ]] tags as "web3py" code, while "html_plain" doesn't.
+Supported values for the ``language`` argument are "python", "html_plain", "c", "cpp", "py4web", and "html". The "html" language interprets [[ and ]] tags as "py4web" code, while "html_plain" doesn't.
 
-If a ``link`` value is specified, for example "/examples/global/vars/", web3py API references in the code are linked to documentation at the link URL. For example "request" would be linked to "/examples/global/vars/request". In the above example, the link URL is handled by the "vars" action in the "global.py" controller that is distributed as part of the web3py "examples" application.
+If a ``link`` value is specified, for example "/examples/global/vars/", py4web API references in the code are linked to documentation at the link URL. For example "request" would be linked to "/examples/global/vars/request". In the above example, the link URL is handled by the "vars" action in the "global.py" controller that is distributed as part of the py4web "examples" application.
 
 The ``counter`` argument is used for line numbering. It can be set to any of three different values. It can be ``None`` for no line numbers, a numerical value specifying the start number, or a string. If the counter is set to a string, it is interpreted as a prompt, and there are no line numbers.
 
@@ -455,7 +455,7 @@ This should only be used as part of a ``SELECT``/``OPTION`` combination.
 <option value="a">&lt;hello&gt;<b>world</b></option>
 ``:python
 
-As in the case of ``INPUT``, web3py make a distinction between "_value" (the value of the OPTION), and "value" (the current value of the enclosing select). If they are equal, the option is "selected".
+As in the case of ``INPUT``, py4web make a distinction between "_value" (the value of the OPTION), and "value" (the current value of the enclosing select). If they are equal, the option is "selected".
 
 ``selected``:inxx
 ``
@@ -652,7 +652,7 @@ The URL helper is documented in [[Chapter 4 URL ../04#URL]]
 #### ``TAG``
 ``TAG``:inxx
 
-Sometimes you need to generate custom XML tags. web3py provides ``TAG``, a universal tag generator.
+Sometimes you need to generate custom XML tags. py4web provides ``TAG``, a universal tag generator.
 ``
 [[=TAG.name('a', 'b', _c='d')]]
 ``:html
@@ -672,11 +672,11 @@ If the TAG object is created with an empty name, it can be used to concatenate m
 
 Self-closing tags can be generated with the TAG helper. The tag name must end with a "/".
 ``
-[[=TAG['link/'](_href='http://web3py.com')]]
+[[=TAG['link/'](_href='http://py4web.com')]]
 ``:html
 generates the following XML:
 ``
-<link ref="http://web3py.com"/>
+<link ref="http://py4web.com"/>
 ``:python[lexer='xml']
 Notice that ``TAG`` is an object, and ``TAG.name`` or ``TAG['name']`` is a function that returns a temporary helper class.
 
@@ -686,7 +686,7 @@ Notice that ``TAG`` is an object, and ``TAG.name`` or ``TAG['name']`` is a funct
 The MENU helper takes a list of lists or of tuples of the form of ``response.menu`` (as described in Chapter 4) and generates a tree-like structure using unordered lists representing the menu. For example:
 ``
 >>> print MENU([['One', False, 'link1'], ['Two', False, 'link2']])
-<ul class="web3py-menu web3py-menu-vertical">
+<ul class="py4web-menu py4web-menu-vertical">
 <li><a href="link1">One</a></li>
 <li><a href="link2">Two</a></li>
 </ul>
@@ -696,7 +696,7 @@ The MENU helper takes a list of lists or of tuples of the form of ``response.men
 The first item in each list/tuple is the text to be displayed for the given menu item.
 
 The second item in each list/tuple is a boolean indicating whether that particular menu item is active
-(i.e., the currently selected item). When set to True, the ``MENU`` helper will add a "web3py-menu-active"
+(i.e., the currently selected item). When set to True, the ``MENU`` helper will add a "py4web-menu-active"
 class to the ``<li>`` for that item (you can change the name of that class via the "li_active" argument to ``MENU``).
 Another way to specify the active url is by directly passing it to ``MENU`` via its "active_url" argument.
 
@@ -706,10 +706,10 @@ The third item in each list/tuple can be an HTML helper (which could include nes
 Each menu item can have a fourth argument that is a nested submenu (and so on recursively):
 ``
 >>> print MENU([['One', False, 'link1', [['Two', False, 'link2']]]])
-<ul class="web3py-menu web3py-menu-vertical">
-<li class="web3py-menu-expand">
+<ul class="py4web-menu py4web-menu-vertical">
+<li class="py4web-menu-expand">
 <a href="link1">One</a>
-<ul class="web3py-menu-vertical">
+<ul class="py4web-menu-vertical">
 <li><a href="link2">Two</a></li>
 </ul>
 </li>
@@ -719,9 +719,9 @@ Each menu item can have a fourth argument that is a nested submenu (and so on re
 A menu item can also have an optional 5th element, which is a boolean. When false, the menu item is ignored by the MENU helper.
 
 The ``MENU`` helper takes the following optional arguments:
-- ``_class``: defaults to "web3py-menu web3py-menu-vertical" and sets the class of the outer UL elements.
-- ``ul_class``: defaults to "web3py-menu-vertical" and sets the class of the inner UL elements.
-- ``li_class``: defaults to "web3py-menu-expand" and sets the class of the inner LI elements.
+- ``_class``: defaults to "py4web-menu py4web-menu-vertical" and sets the class of the outer UL elements.
+- ``ul_class``: defaults to "py4web-menu-vertical" and sets the class of the inner UL elements.
+- ``li_class``: defaults to "py4web-menu-expand" and sets the class of the inner LI elements.
 - ``li_first``: allows to add a class to the first list element.
 - ``li_last``: allows to add a class to the last list element.
 
@@ -936,7 +936,7 @@ Views can extend and include other views in a tree-like structure.
 For example, we can think of a view "index.html" that extends "layout.html" and includes "body.html".
 At the same time,  "layout.html" may include "header.html" and "footer.html".
 
-The root of the tree is what we call a layout view.  Just like any other HTML template file, you can edit it using the web3py administrative interface. The file name "layout.html" is just a convention.
+The root of the tree is what we call a layout view.  Just like any other HTML template file, you can edit it using the py4web administrative interface. The file name "layout.html" is just a convention.
 
 Here is a minimalist page that extends the "layout.html" view and includes the "page.html" view:
 
@@ -1031,16 +1031,16 @@ The fourth tuple element is an optional sub-menu.
 We also recommend that you use:
 
 ``
-[[include 'web3py_ajax.html']]
+[[include 'py4web_ajax.html']]
 ``:html
 
-in the HTML head, since this will include the jQuery libraries and define some backward-compatible JavaScript functions for special effects and Ajax. "web3py_ajax.html" includes the ``response.meta`` tags in the view, jQuery base, the calendar datepicker, and all required CSS and JS ``response.files``.
+in the HTML head, since this will include the jQuery libraries and define some backward-compatible JavaScript functions for special effects and Ajax. "py4web_ajax.html" includes the ``response.meta`` tags in the view, jQuery base, the calendar datepicker, and all required CSS and JS ``response.files``.
 
 #### Default page layout
 
 ``Twitter Bootstrap``:inxx
 
-The "views/layout.html" that ships with the web3py scaffolding application **welcome** (stripped down of some optional parts) is quite complex but it has the following structure:
+The "views/layout.html" that ships with the py4web scaffolding application **welcome** (stripped down of some optional parts) is quite complex but it has the following structure:
 
 ``
 <!DOCTYPE html>
@@ -1051,13 +1051,13 @@ The "views/layout.html" that ships with the web3py scaffolding application **wel
   <script src="[[=URL('static', 'js/modernizr.custom.js')]]"></script>
 
   [[
-  response.files.append(URL('static', 'css/web3py.css'))
+  response.files.append(URL('static', 'css/py4web.css'))
   response.files.append(URL('static', 'css/bootstrap.min.css'))
   response.files.append(URL('static', 'css/bootstrap-responsive.min.css'))
-  response.files.append(URL('static', 'css/web3py_bootstrap.css'))
+  response.files.append(URL('static', 'css/py4web_bootstrap.css'))
   ]]
 
-  [[include 'web3py_ajax.html']]
+  [[include 'py4web_ajax.html']]
 
   [[
   # using sidebars need to know what sidebar you want to use
@@ -1144,7 +1144,7 @@ The "views/layout.html" that ships with the web3py scaffolding application **wel
   <!-- The javascript =============================================
        (Placed at the end of the document so the pages load faster) -->
   <script src="[[=URL('static', 'js/bootstrap.min.js')]]"></script>
-  <script src="[[=URL('static', 'js/web3py_bootstrap.js')]]"></script>
+  <script src="[[=URL('static', 'js/py4web_bootstrap.js')]]"></script>
   [[if response.google_analytics_id:]]
     <script src="[[=URL('static', 'js/analytics.js')]]"></script>
     <script type="text/javascript">
@@ -1160,7 +1160,7 @@ There are a few features of this default layout that make it very easy to use an
 
 - It is written in HTML5 and uses the "modernizr" ``modernizr``:cite library for backward compatibility. The actual layout includes some extra conditional statements required by IE and they are omitted for brevity.
 - It displays both ``response.title`` and ``response.subtitle`` which can be set in a model or a controller. If they are not set, it adopts the application name as title.
-- It includes the ``web3py_ajax.html`` file in the header which generated all the link and script import statements.
+- It includes the ``py4web_ajax.html`` file in the header which generated all the link and script import statements.
 - It uses a modified version of Twitter Bootstrap for flexible layouts which works on mobile devices and re-arranges columns to fit small screens.
 - It uses "analytics.js" to connect to Google Analytics.
 - The ``[[=auth.navbar(...)]]`` displays a welcome to the current user and links to the auth functions like login, logout, register, change password, etc. depending on context. ``auth.navbar`` is a helper factory and its output can be manipulated as any other helper. It is placed in an expression to check for auth definition, the expression evaluates to '' in case auth is undefined.
@@ -1186,11 +1186,11 @@ This text goes in sidebar
 #### Customizing the default layout
 ``CSS``:inxx
 
-Customizing the default layout without editing is easy because the welcome application is based on Twitter Bootstrap which is well documented and supports themes. In web3py four static files which are relevant to style:
+Customizing the default layout without editing is easy because the welcome application is based on Twitter Bootstrap which is well documented and supports themes. In py4web four static files which are relevant to style:
 
-- "css/web3py.css" contains web3py specific styles
+- "css/py4web.css" contains py4web specific styles
 - "css/bootstrap.min.css" contains the Twitter Bootstrap CSS style ``bootstrap``:cite ``Bootstrap``:inxx
-- "css/web3py_bootstrap.css" which overrides some Bootstrap styles to conform to web3py needs.
+- "css/py4web_bootstrap.css" which overrides some Bootstrap styles to conform to py4web needs.
 - "js/bootstrap.min.js" which includes the libraries for menu effects, modals, panels.
 
 To change colors and background images,
@@ -1208,13 +1208,13 @@ a { color: #349C01; }
 </style>
 ``:python[lexer='css']
 
-Of course you can also completely replace the "layout.html" and "web3py.css" files with your own.
+Of course you can also completely replace the "layout.html" and "py4web.css" files with your own.
 
 #### Mobile development
 
 Although the default layout.html is designed to be mobile-friendly, one may sometimes need to use different views when a page is visited by a mobile device.
 
-To make developing for desktop and mobile devices easier, web3py includes the ``@mobilize`` decorator. This decorator is applied to actions that should have a normal view and a mobile view. This is demonstrated here:
+To make developing for desktop and mobile devices easier, py4web includes the ``@mobilize`` decorator. This decorator is applied to actions that should have a normal view and a mobile view. This is demonstrated here:
 
 ``
 from gluon.contrib.user_agent_parser import mobilize
@@ -1224,7 +1224,7 @@ def index():
 ``:python
 
 Notice that the decorator must be imported before using it in a controller.
-When the "index" function is called from a regular browser (desktop computer), web3py will render the returned dictionary using the view "[controller]/index.html". However, when it is called by a mobile device, the dictionary will be rendered by "[controller]/index.mobile.html". Notice that mobile views have the "mobile.html" extension.
+When the "index" function is called from a regular browser (desktop computer), py4web will render the returned dictionary using the view "[controller]/index.html". However, when it is called by a mobile device, the dictionary will be rendered by "[controller]/index.mobile.html". Notice that mobile views have the "mobile.html" extension.
 
 Alternatively you can apply the following logic to make all views mobile friendly:
 

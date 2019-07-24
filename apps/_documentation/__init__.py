@@ -1,4 +1,4 @@
-from web3py import action, redirect, URL
+from py4web import action, redirect, URL
 
 @action('index')
 def index():

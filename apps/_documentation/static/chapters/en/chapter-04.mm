@@ -4,18 +4,18 @@ A fixture is defined as "a piece of equipment or furniture which is fixed in pos
 
 When processing any HTTP requests there are some optional operations we may want to perform. For example parse the cookie to look for session informaion, commit a database transaction, determine the preferred language from the HTTP header and lookup proper internationalization, etc. These operations are optional. Some actions need them and some actions do not. They may also depend on each other. For example, if sessions are stored in the database and out action needs it, we may need to parse the session cookie from the header, pick up a connection from the database connection pool, and - after the action has been executed - save the session back in the database if data has changed.
 
-Web3py fixtures provide a mechanism to specify what an action needs so that web3py can accomplish the required tasks (and skip non required ones) in the most efficient manner. Fixtures make the code efficient and reduce the need for boilerplate code.
+PY4WEB fixtures provide a mechanism to specify what an action needs so that py4web can accomplish the required tasks (and skip non required ones) in the most efficient manner. Fixtures make the code efficient and reduce the need for boilerplate code.
 
-Web3py fixtures are similar to WSGI middleware and BottlePy plugin except that they apply to individual actions, not to all of them, and can depend on each other.
+PY4WEB fixtures are similar to WSGI middleware and BottlePy plugin except that they apply to individual actions, not to all of them, and can depend on each other.
 
-Web3py comes with some pre-defined fixtures for actions that need sessions, database connections, internationalization, authentication, and templates. Their usage will be explained in this chapter. The Developer is also free to add fixtures for example to handle a third party template language or third party session logic.
+PY4WEB comes with some pre-defined fixtures for actions that need sessions, database connections, internationalization, authentication, and templates. Their usage will be explained in this chapter. The Developer is also free to add fixtures for example to handle a third party template language or third party session logic.
 
 ### Templates
 
-Web3py, by default uses the yatl template language and provide a fixture for it.
+PY4WEB, by default uses the yatl template language and provide a fixture for it.
 
 ``
-from web3py import action, Template
+from py4web import action, Template
 
 @action('index')
 @action.uses(Template('index.html', delimiters='[[ ]]')
@@ -31,14 +31,14 @@ Notice that since the use of templates is very common and since, most likely, ev
 @action.uses(Template('index.html', delimiters='[[ ]]')
 ``:python
 
-Notice that web3py template files are cache in RAM. The web3py caching object is described later.
+Notice that py4web template files are cache in RAM. The py4web caching object is described later.
 
 ### Sessions
 
 The session object is also a Fixture. Here is a typical example of usage to implement a counter.
 
 ``
-from web3py import Session
+from py4web import Session
 session = Session(secret='my secret key')
 
 @action('index')
@@ -54,9 +54,9 @@ Notice that the session object has the same interface as a Python dictionary.
 
 By default the session object is stored in a cookie called, signed and encrypted, using the provided secret. If the secret changes existing sessions are invalidated. If the user switches from HTTP to HTTPS or vice versa, the user session is invalidated. Session in cookies have a small size limit (4Kbytes after serialized and encrypted) so do not put too much into them.
 
-In web3py sessions are dictionaries but they are stored using JSON (JWT specifically) therefore you should only store objects that are JSON serializable. If the object is not JSON serializable, it will be serialized using the ``__str__`` operator and some information may be lost.
+In py4web sessions are dictionaries but they are stored using JSON (JWT specifically) therefore you should only store objects that are JSON serializable. If the object is not JSON serializable, it will be serialized using the ``__str__`` operator and some information may be lost.
 
-By default web3py sessions never expire (unless they contain login information, but that is another story) even if an expiration can be set. Other parameters can be specified as well:
+By default py4web sessions never expire (unless they contain login information, but that is another story) even if an expiration can be set. Other parameters can be specified as well:
 
 ``
 session = Session(secret='my secret key'.
@@ -94,15 +94,15 @@ Notice: a storage object must have ``get`` and ``set`` methods and the ``set`` m
 #### Session in database
 
 ``
-from web3py import Session, DAL
-from web3py.utils.dbstore import DBStore
+from py4web import Session, DAL
+from py4web.utils.dbstore import DBStore
 db = DAL('sqlite:memory')
 session =  Session(storage=DBStore(db))
 ``:python
 
 A secret is not required when storing cookies in the database because in this case the cookie only contains the UUID of the session.
 
-Also this is one case when the a fixture (session) requires another fixture (db). This handle automatically by web3py and the following are equivalent:
+Also this is one case when the a fixture (session) requires another fixture (db). This handle automatically by py4web and the following are equivalent:
 
 ``
 @action.uses(session)
@@ -143,7 +143,7 @@ We leave to you as an exercise to implement expiration, limit the number of file
 Here is an example of usage:
 
 ``
-from web3py import action, Translator
+from py4web import action, Translator
 T_FOLDER = os.path.join(os.path.dirname(__file__), 'translations')
 T = Translator(T_FOLDER)
 
@@ -154,13 +154,13 @@ def index(): return T('Hello world')
 
 The string 'hello world` will be translated based on the internationalization file in the specified "translations" folder that best matches the HTTP ``accept-language`` header.
 
-Here ``Translator`` is a web3py class that extends ``pluralize.Translator`` and also implement the ``Fixture`` interface.
+Here ``Translator`` is a py4web class that extends ``pluralize.Translator`` and also implement the ``Fixture`` interface.
 
 We can easily combine multiple fixtures. Here as example we make action with a counter that counts "visits".
 
 ``
-from web3py import action, Session, Translator, DAL
-from web3py.utils.dbstore import DBStore
+from py4web import action, Session, Translator, DAL
+from py4web.utils.dbstore import DBStore
 db = DAL('sqlite:memory')
 session =  Session(storage=DBStore(db))
 T_FOLDER = os.path.join(os.path.dirname(__file__), 'translations')
@@ -221,11 +221,11 @@ and set your browser preference to Italian.
 
 We have already used the ``DAL`` fixture in the context of sessions but maybe you want direct access to the DAL object for the purpose of accessing the database, not just sessions.
 
-Web3py, by default, uses the PyDAL (Python Database Abstraction Layer) which is documented in a later chapter. Here is an example:
+PY4WEB, by default, uses the PyDAL (Python Database Abstraction Layer) which is documented in a later chapter. Here is an example:
 
 ``
 from datetime import datetime
-from web3py import action, request, DAL
+from py4web import action, request, DAL
 
 DB_FOLDER = os.path.join(os.path.firname(__file__), 'databases')
 db = DAL('sqlite://storage.db', folder=DB_FOLDER, pool_size=1)
@@ -240,7 +240,7 @@ def index():
     return "Your visit was stored in database"
 ``:python
 
-Notice that the database fixture defines (creates/re-creates tables) automatically when web3py starts (and every time it reloads this app) and picks a connection from the connection pool at every HTTP request. Also each call to the ``index()`` action is wrapped into a transaction and it commits ``on_success`` and rollback ``on_error``.
+Notice that the database fixture defines (creates/re-creates tables) automatically when py4web starts (and every time it reloads this app) and picks a connection from the connection pool at every HTTP request. Also each call to the ``index()`` action is wrapped into a transaction and it commits ``on_success`` and rollback ``on_error``.
 
 ### Caveats about Fixtures
 
@@ -266,7 +266,7 @@ The ``readable``, ``writable``, ``default``, ``update``, and ``require`` attribu
 A fixture is an object with the the following minimal structure:
 
 ``
-from web3py import Fixture
+from py4web import Fixture
 
 class MyFixture(Fixture):
     def on_request(self): pass
@@ -290,8 +290,8 @@ Then ``on_request()`` is guaranteed to be called before the ``index()`` function
 ``auth`` and ``auth.user`` are both fixtures. They depend on ``session``. The role of access is to provide the action with authentication information. It is used as follows:
 
 ``
-from web3py include action, redirect, Session, DAL, URL
-from web3py.utils.auth import Auth
+from py4web include action, redirect, Session, DAL, URL
+from py4web.utils.auth import Auth
 
 session = Session(secret='my secret key')
 db = DAL('sqlite://storage.db', folder=DB_FOLDER, pool_size=1)
@@ -317,7 +317,7 @@ auth.get_user()
 
 which returns a python dictionary containing the information of the currently logged in user. If the user is not logged-in, it returns ``None``. The code of the example redirects to the 'auth/login' page if there is no user.
 
-Since this check is very common, web3py provides an additional fixture ``auth.user``:
+Since this check is very common, py4web provides an additional fixture ``auth.user``:
 
 ``
 @action('index')
@@ -334,22 +334,22 @@ The ``Auth`` fixture is plugin based and supports multiple plugin methods. They 
 Here is an example of using the Google Oauth2 plugin:
 
 ``
-from web3py.utils.auth_plugins.oauth2google import OAuth2Google
+from py4web.utils.auth_plugins.oauth2google import OAuth2Google
 auth.register_plugin(OAuth2Google(
     client_id='...',
     client_secret='...',
     callback_url='auth/plugin/oauth2google/callback'))
 ``:python
 
-The ``client_id`` and ``client_secret`` are provided by google. The callback url is the default option for web3py and it must be whitelisted with Google. All ``Auth`` plugins are objects. Different plugins are configured in different ways but they are registered using ``auth.register_plugin(...)``. Examples are provided in ``_scaffold/common.py``. 
+The ``client_id`` and ``client_secret`` are provided by google. The callback url is the default option for py4web and it must be whitelisted with Google. All ``Auth`` plugins are objects. Different plugins are configured in different ways but they are registered using ``auth.register_plugin(...)``. Examples are provided in ``_scaffold/common.py``. 
 
 ### Caching and Memoize
 
-web3py provides a cache in ram object that implements the Last Recently Used (LRU) Algorithm. It can be used to cache any function via a decorator:
+py4web provides a cache in ram object that implements the Last Recently Used (LRU) Algorithm. It can be used to cache any function via a decorator:
 
 ``
 import uuid
-from web3py import Cache
+from py4web import Cache
 cache = Cache(size=1000)
 
 @action('hello/<name>')
