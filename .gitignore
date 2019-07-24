@@ -30,6 +30,10 @@ apps/*
 !apps/_dashboard/*
 !apps/_scaffold
 !apps/_scaffold/*
+!apps/_minimal
+!apps/_minimal/*
+!apps/_default
+!apps/_default/*
 !apps/_documentation/*
 !apps/superheroes
 !apps/superheroes/*
