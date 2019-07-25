@@ -28,7 +28,7 @@ http://localhost:8000/myapp/static/hello.txt
 
 Notice that ``static`` is a special path for py4web and only files under the ``static`` folder are served.
 
-To create a dyamic page, you must create a function that returns the page content. Edit the ``myapp/__init__.py`` as follows:
+To create a dynamic page, you must create a function that returns the page content. Edit the ``myapp/__init__.py`` as follows:
 
 ``
 import datetime
@@ -105,7 +105,7 @@ And these are possible filters (only ``:re:`` has a config):
 -  ``:path`` matches all characters including the slash character in a non-greedy way, and may be used to match more than one path segment.
 -  ``:re[:exp]`` allows you to specify a custom regular expression in the config field. The matched value is not modified.
 
-The pattern matching the whildcard is passed to the function under the specified variable ``name``.
+The pattern matching the wildcard is passed to the function under the specified variable ``name``.
 
 Also, the action decorator takes an optional ``method`` argument that can be an HTTP method or a list of methods:
 
@@ -172,7 +172,7 @@ The simplest type of Fixture is a template. You specify it by simply giving the 
 You can easily define fixtures for other template languages. This is described later.
 Some built-in fixtures are:
 
-- the DAL object (which tells py4web to obtain a database connecton from the pool at every request, and commit on success or rollback on failure)
+- the DAL object (which tells py4web to obtain a database connection from the pool at every request, and commit on success or rollback on failure)
 - the Session object (which tells py4web to parse the cookie and retrieve a session at every request, and to save it if changed)
 - the Translator object (which tells py4web to process the accept-language header and determine optimal internationalization/pluralization rules)
 - the Auth object (which tells py4web that the app needs access to the user info)
@@ -185,11 +185,11 @@ Most of the times, you do not want to start writing code from scratch. You also 
 
 Notice you will not find the scaffold app under apps, unless you downloaded py4web from source. But you can create one using the Dashboard.
 
-Here is the tree strcture of the ``_scaffold`` app:
+Here is the tree structure of the ``_scaffold`` app:
 
 ``
 ├── README.md
-├── __init__.py          # imports verything else
+├── __init__.py          # imports everything else
 ├── common.py            # defines useful objects
 ├── controllers.py       # your actions
 ├── databases            # your sqlite databases and metadata
