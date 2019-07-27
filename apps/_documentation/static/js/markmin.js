@@ -17,12 +17,12 @@ jQuery.fn.markmin = (function(){
         var re_email = /([^\'\"\s\@\[\](){},;]+\@[^\'\"\s@\[\](){},;]+)/g;
         var re_link = /(^|[\W])(\w+:\/\/[^\'\"\s\@\[\](){},;]+)/g;
         var re_named_link = /\[(.+?)\]\((.+?)\)/g;
-        var re_h1 = /^#([^#].*)/gm;
-        var re_h2 = /^##([^#].*)/gm;
-        var re_h3 = /^###([^#].*)/gm;
-        var re_h4 = /^####([^#].*)/gm;
-        var re_h5 = /^#####([^#].*)/gm;
-        var re_h6 = /^######([^#].*)/gm;
+        var re_h1 = /^# ([^#].*)/gm;
+        var re_h2 = /^## ([^#].*)/gm;
+        var re_h3 = /^### ([^#].*)/gm;
+        var re_h4 = /^#### ([^#].*)/gm;
+        var re_h5 = /^##### ([^#].*)/gm;
+        var re_h6 = /^###### ([^#].*)/gm;
         var re_sn = /[ \t]+\n/g;
         var re_nn = /\n\s*\n/g;
         var re_strong = /\*\*([^\s*][^*]*[^\s*])\*\*/g;
@@ -98,30 +98,30 @@ jQuery.fn.markmin = (function(){
         // main business rules
         var rules = 
         [[re_latex, function(m,a) {return '\\( '+encode(a)+'\\)';}],
-         [re_image, M('<img class="mm-image" src="{1}"/>')],
-         [re_audio, M('<div class="mm-audio"><audio controls><source src="{1}"></audio></div>')],
-         [re_video, M('<div class="mm-video"><video controls><source src="{1}"></video></div>')],
-         [re_frame, M('<iframe class="mm-frame" src="{1}"></iframe>')],
+         [re_image, M('</p><img class="mm-image" src="{1}"/><p>')],
+         [re_audio, M('</p><div class="mm-audio"><audio controls><source src="{1}"></audio></div><p>')],
+         [re_video, M('</p><div class="mm-video"><video controls><source src="{1}"></video></div><p>')],
+         [re_frame, M('</p><iframe class="mm-frame" src="{1}"></iframe><p>')],
          [re_embed, M('<a class="mm-embed" href="{1}"></a>')],
          [re_email, MM('<a href="mailto:{1}">{1}</a>')],
          [re_named_link, M('<a href="{2}">{1}</a>')],
          [re_link, MM('<a href="{1}">{1}</a>')],
          [re_anchor, M('<i id="{1}"></i>')],
-         [re_h1, M('<h1>{1}</h1>')],
-         [re_h2, M('<h2>{1}</h2>')],
-         [re_h3, M('<h3>{1}</h3>')],
-         [re_h4, M('<h4>{1}</h4>')],
-         [re_h5, M('<h5>{1}</h5>')],
-         [re_h6, M('<h6>{1}</h6>')],
          [re_strong, M('<strong>{1}</strong>')],
          [re_em, M('<em>{1}</em>')],
-         [re_blockquote, M('<blockquote>{1}</blockquote>')],
-         [re_ulli, M('<ul><li>{1}</li></ul>')],
-         [re_olli, M('<ol><li>{1}</li></ol>')],
+         [re_h1, M('</p><h1>{1}</h1><p>')],
+         [re_h2, M('</p><h2>{1}</h2><p>')],
+         [re_h3, M('</p><h3>{1}</h3><p>')],
+         [re_h4, M('</p><h4>{1}</h4><p>')],
+         [re_h5, M('</p><h5>{1}</h5><p>')],
+         [re_h6, M('</p><h6>{1}</h6><p>')],
+         [re_blockquote, M('</p><blockquote>{1}</blockquote><p>')],
+         [re_ulli, M('</p><ul><li>{1}</li></ul><p>')],
+         [re_olli, M('</p><ol><li>{1}</li></ol><p>')],
          [re_ulol, M('')],
          [re_sn,'\n'],
-         [re_nn,'<br/>'],
-         [re_table, MT('<table><tr><td>{1}</td></tr></table>')]
+         [re_nn,'</p><p>'],
+         [re_table, MT('</p><table><tr><td>{1}</td></tr></table><p>')]
          ];
         // default settings for the function below
         var defaults = {sanitize:true,
@@ -161,8 +161,10 @@ jQuery.fn.markmin = (function(){
             if(settings.post_rules)
                 for(var k=0; k<settings.rules_post.length; k++) 
                     html = html.replace(settings.rules_post[k][0],settings.rules_post[k][1]);
+            // removed empty <p></p>
+            html = ('<p>'+html+'</p>').replace(/<p>\s*<\/p>/g, '');
             // put back pre formatted code and HTML
-            for(var k=code.length-1; k>=0; k--) 
+            for(var k=code.length-1; k>=0; k--)
                 html = html.replace("__MATCH:"+k+"__",code[k]);
             // display
             jQuery(this).html(html);

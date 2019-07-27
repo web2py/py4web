@@ -22,13 +22,12 @@ py4web-start apps
 This should produce an output like:
 
 ``
- _______  ____________  ____  ______  __
-|  ____/ / / ____/ __ |/___ \/ __ \ \/ /
-| |     / / /_  / /_/ /___/ / /_/ /\  /
-| | /| / / __/ / __  //__  / ____/ / /
-| |/ |/ / /___/ /_/ /___/ / / ____/ /
-|___/|_/_____/_____/_____/_/ /_____/
-
+██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗ 
+██╔══██╗╚██╗ ██╔╝██║  ██║██║    ██║██╔════╝██╔══██╗
+██████╔╝ ╚████╔╝ ███████║██║ █╗ ██║█████╗  ██████╔╝
+██╔═══╝   ╚██╔╝  ╚════██║██║███╗██║██╔══╝  ██╔══██╗
+██║        ██║        ██║╚███╔███╔╝███████╗██████╔╝
+╚═╝        ╚═╝        ╚═╝ ╚══╝╚══╝ ╚══════╝╚═════╝ 
 Dashboard is at: http://127.0.0.1:8000/_dashboard
 [X] loaded _dashboard     
 [X] loaded _default     
@@ -122,3 +121,51 @@ optional arguments:
                         file containing the encrypted (CRYPT) password
   -c, --create          created the missing folder and apps
 ``
+
+## Deployment on GCloud (aka Google App Engine)
+
+Login into the Gcloud console (https://console.cloud.google.com/) and create a new project. You will obtain a project id that looks like "{project_name}-{number}".
+
+
+In your local fil system make a new working folder and cd into it:
+
+``
+mkdir gae
+cd gae
+``:bash
+
+Copy the example files from py4web (assuming you have the source from github)
+
+``
+cp /path/to/py4web/development_tools/gcloud/* ./
+``
+
+Copy or symlink your ``apps`` folder into the gae folder, or maybe make a new apps folder contaning an emty ``__init__.py`` and symblink the individual apps you want to deploy. You should see the following files/folders:
+
+``
+Makefile
+apps
+  __init__.py
+  ... your apps ... 
+lib
+app.yaml
+main.py
+``
+
+Install the Google SDK, py4web and setup the working folder:
+
+``
+make install-gcloud-linux
+make setup
+gcloud config set {your email}
+gcloud config set {project id}
+``:bash
+(replace {your email} with your google email account and {project id} with the project id obtained from Google).
+
+Now every time you want to deploy your apps, simply do:
+
+``
+make deploy
+``:bash
+
+You may want to customize the Makefile and app.yaml to suit your needs. You should not need to edit ``main.py``.
