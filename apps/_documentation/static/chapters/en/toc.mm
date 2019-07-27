@@ -5,7 +5,7 @@
 - [Objects and Fixtures](#chapter-04)
 - [PyDAL](#chapter-05)
 - [RESTAPI](#chapter-06)
-- [yatl Temaplate Language](#chapter-07)
+- [yatl Template Language](#chapter-07)
 - [yatl Helpers](#chapter-08)
 - [Pluralize](#chapter-09)
 - [Form](#chapter-10)
