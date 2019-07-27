@@ -2,7 +2,7 @@
 
 A fixture is defined as "a piece of equipment or furniture which is fixed in position in a building or vehicle". In our case a fixture is something attached to the action that processes an HTTP request in order to produce a response.
 
-When processing any HTTP requests there are some optional operations we may want to perform. For example parse the cookie to look for session informaion, commit a database transaction, determine the preferred language from the HTTP header and lookup proper internationalization, etc. These operations are optional. Some actions need them and some actions do not. They may also depend on each other. For example, if sessions are stored in the database and out action needs it, we may need to parse the session cookie from the header, pick up a connection from the database connection pool, and - after the action has been executed - save the session back in the database if data has changed.
+When processing any HTTP requests there are some optional operations we may want to perform. For example parse the cookie to look for session information, commit a database transaction, determine the preferred language from the HTTP header and lookup proper internationalization, etc. These operations are optional. Some actions need them and some actions do not. They may also depend on each other. For example, if sessions are stored in the database and out action needs it, we may need to parse the session cookie from the header, pick up a connection from the database connection pool, and - after the action has been executed - save the session back in the database if data has changed.
 
 PY4WEB fixtures provide a mechanism to specify what an action needs so that py4web can accomplish the required tasks (and skip non required ones) in the most efficient manner. Fixtures make the code efficient and reduce the need for boilerplate code.
 
@@ -67,7 +67,7 @@ session = Session(secret='my secret key'.
 ``
 
 - Here ``algorithm`` is the algorithm to be used for the JWT token signature. 
-- ``storage`` is an paramter that allows to specify an an alternate session storage method (for example redis, or database).
+- ``storage`` is an parameter that allows to specify an an alternate session storage method (for example redis, or database).
 - ``same_site`` is an option that prevents CSRF attacks and is enabled by default. You can read more about it [here](https://www.owasp.org/index.php/SameSite).
 
 #### Session in memcache
@@ -132,7 +132,7 @@ class FSStorage:
        with open(filename, 'w') as fp:
            json.dump(value, fp)
 
-session = Session(storage=FSStprage('/tmp/sessions'))
+session = Session(storage=FSStorage('/tmp/sessions'))
 ``:python
 
 We leave to you as an exercise to implement expiration, limit the number of files per folder by using subfolders, and implement file locking. Yet we do not recomment storing sessions on the filesystem: it is inefficient and does not scale well.
@@ -227,7 +227,7 @@ PY4WEB, by default, uses the PyDAL (Python Database Abstraction Layer) which is 
 from datetime import datetime
 from py4web import action, request, DAL
 
-DB_FOLDER = os.path.join(os.path.firname(__file__), 'databases')
+DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
 db = DAL('sqlite://storage.db', folder=DB_FOLDER, pool_size=1)
 db.define_table('visit_log', Field('client_ip'), Field('timestamp', 'datetime'))
 db.commit()
@@ -283,7 +283,7 @@ if an action uses this fixture:
 def index(): return 'hello world'
 ``
 
-Then ``on_request()`` is guaranteed to be called before the ``index()`` function is called. The ``on_sucess()`` is guaranteed to be called if the ``index()`` function returns successfully or raises ``HTTP`` or performs a ``redirect``. The ``on_error()`` is guaranteed to be called when the ``index()`` function raises any exception other than ``HTTP``. The ``transform`` function is called to perform any desired transformation of the valute returned by the ``index()`` function.
+Then ``on_request()`` is guaranteed to be called before the ``index()`` function is called. The ``on_success()`` is guaranteed to be called if the ``index()`` function returns successfully or raises ``HTTP`` or performs a ``redirect``. The ``on_error()`` is guaranteed to be called when the ``index()`` function raises any exception other than ``HTTP``. The ``transform`` function is called to perform any desired transformation of the valute returned by the ``index()`` function.
 
 ### Auth and Auth.user
 
@@ -327,7 +327,7 @@ def index():
     print 'Welcome %s' % user.get('first_name')
 ``:python
 
-This fixture automatically redirects to the ``auth/login`` page if not useris logged-in. It depends on ``auth``, which depends on ``db`` and ``session``.
+This fixture automatically redirects to the ``auth/login`` page if user is not logged-in. It depends on ``auth``, which depends on ``db`` and ``session``.
 
 The ``Auth`` fixture is plugin based and supports multiple plugin methods. They include Oauth2 (Google, Facebook, Twitter), PAM, LDAP, and SMAL2.
 

@@ -1,8 +1,8 @@
 ## The RESTAPI
 
 Since version 19.5.10 PyDAL includes a restful API called RestAPI. It is inspired by GraphQL but it's not quite the same because it is less powerful but, in the spirit of web2py, more practical and easier to use.
-Like GraphSQL RestAPI allows a client to query for information using the GET method and allows to specify some details about the format of the response (which references to follow, and how to denormalize the data). Unlike GraphSQL it allows the server to specify a policy and restict which queries are allowed and which one are not. They can be evaluated dynamically per request based on the user and the state of the server.
-As the name implied RestAPI allows all stardard methods GET, POST, PUT, and DELETE. Each of them can be enabled or disabled based on the policy, for invidual tables and individual fields.
+Like GraphSQL RestAPI allows a client to query for information using the GET method and allows to specify some details about the format of the response (which references to follow, and how to denormalize the data). Unlike GraphSQL it allows the server to specify a policy and restrict which queries are allowed and which one are not. They can be evaluated dynamically per request based on the user and the state of the server.
+As the name implied RestAPI allows all stardard methods GET, POST, PUT, and DELETE. Each of them can be enabled or disabled based on the policy, for individual tables and individual fields.
 
 In the examples below we assume an app called "superheroes" and the following model:
 
@@ -69,7 +69,7 @@ The general query has the form ``{something}.eq=value`` where ``eq=`` stands for
 
 It can be a the name of a field of a table referred by the table been queried as in:
 
-**All superheroes with real indetity "Clark Kent**
+**All superheroes with real identity "Clark Kent**
 ``
 /superheroes/rest/api.json/superhero?real_identity.name.eq=Clark Kent
 ``
@@ -87,13 +87,13 @@ It can also be a field of the table referenced by a many-to-many linked table as
 
 **All superheroes with the flight power**
 ``
-/superheroes/rest/api.json/superhero?superhero.tag.superpower.desciption.eq=Flight
+/superheroes/rest/api.json/superhero?superhero.tag.superpower.description.eq=Flight
 ``
 
 The key to understand the syntax above is to break it as follows:
 
 ``
-superhero?superhero.tag.superpower.desciption.eq=Flight
+superhero?superhero.tag.superpower.description.eq=Flight
 ``
 
 and read it as:
@@ -909,7 +909,7 @@ OUTPUT:
 }
 ``
 
-Notice all RestAPI respose have the fields
+Notice all RestAPI response have the fields
 
 ``
 {
