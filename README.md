@@ -20,11 +20,11 @@ python3 -m pip install -r requirements.txt
 open http://localhost:8000/todo/index
 ```
 
-Notice "py4web-start" uses the pip insalled py4web, "./py4web-start" uses the local one. Do not get confused.
+Notice "py4web-start" uses the pip installed py4web, "./py4web-start" uses the local one. Do not get confused.
 
 ## Tell me more
 
-- this is a work in progress and not stable yet but close to be stable
+- this is a work in progress and not stable yet but close to being stable
 - python3 only
 - uses https://github.com/web2py/pydal (same DAL as web2py)
 - uses https://github.com/web2py/yatl (same as web2py but defaults to [[...]] instead of {{...}} delimiters)
@@ -33,12 +33,12 @@ Notice "py4web-start" uses the pip insalled py4web, "./py4web-start" uses the lo
 - uses https://github.com/web2py/pluralize for i18n and pluralization
 - request, response, abort are from https://bottlepy.org
 - HTTP and redirect are our own objects
-- like web2py it supports static asset management /{appname}/static/_0.0.0/{path}
+- like web2py, it supports static asset management /{appname}/static/_0.0.0/{path}
 - implements sessions in cookies (jwt encrypted), db, memcache, redis and custom
-- implements a cache.memoize (Ram cache with O(1) access)
+- implements a cache.memorize (Ram cache with O(1) access)
 - supports multiple apps under apps folder (same as web2py)
 - unlike web2py does not use a custom importer or eval
-- admin has been replaced by a _daskboard (90% done)
+- admin has been replaced by a _dashboard (90% done)
 - appadmin has been replaced by dbadmin (within dashboard) (90% done)
 - auth logic is implemented via a "auth" vue.js custom component (90% done)
 - SQLFORM has been replaced by py4web/utils/form.py
@@ -54,7 +54,7 @@ Notice "py4web-start" uses the pip insalled py4web, "./py4web-start" uses the lo
 - pluralize (done)
 - auth (WIP, 90%)
 - mailer (done)
-- session (cookes, db, redis, memcache)
+- session (cookies, db, redis, memcache)
 - form (done up to downloads)
 - mtable (WIP, 75%)
 - dashboard (90% done)
@@ -67,7 +67,7 @@ Notice "py4web-start" uses the pip insalled py4web, "./py4web-start" uses the lo
 
 ## Storing _dashboard password 
 
-If you do not want to be prompted for a dashboard passwod every time:
+If you do not want to be prompted for a dashboard password every time:
 
 1) create the password:
 
