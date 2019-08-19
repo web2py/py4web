@@ -27,7 +27,8 @@ build: clean assets
 install: build
 	python3 setup.py install
 test: build
-	pip3 install -r requirements.txt
+	python3 -m pip install -r requirements.txt
+	python3 -m pip install -r test-requirements.txt
 	python3 -m pytest -v -s tests/
 deploy: test
 	python setup.py sdist
