@@ -7,6 +7,7 @@ clean:
 	python3 setup.py clean
 assets:
 	rm -f py4web/assets/*
+	mkdir -p py4web/assets
 	cd apps/_dashboard; \
 	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
 	zip -@ ../../py4web/assets/py4web.app._dashboard.zip
