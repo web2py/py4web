@@ -1,5 +1,6 @@
-cache: pip
 dist: "bionic"
+sudo: required
+cache: pip
 language: python
 
 python:
