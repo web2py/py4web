@@ -51,7 +51,7 @@ class TestAuth(unittest.TestCase):
         user = self.db.auth_user[1]
         self.assertTrue(user.action_token.startswith('pending-registration'))
 
-        self.assertEqual(self.auth.get_user(), None)
+        self.assertEqual(self.auth.get_user(), {})
 
         body = {
             'email': 'pinco.pallino@example.com', 

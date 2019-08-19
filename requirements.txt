@@ -1,5 +1,5 @@
 threadsafevariable
-pydal >= 19.8.18
+pydal >= 20190818.1
 pyjwt >= 1.6.4
 yatl
 pluralize
