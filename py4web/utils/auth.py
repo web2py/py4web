@@ -1,3 +1,4 @@
+import datetime
 import hashlib
 import urllib
 import uuid
@@ -81,6 +82,24 @@ class Auth(Fixture):
                 Field('action_token', readable=False, writable=False),
                 *self.extra_auth_user_fields)
 
+    def signature(self):
+        """returns a list of fields for a table fignature"""
+        Field = self.db.Field
+        now = lambda: datetime.datetime.utcnow()
+        user = lambda s=self: s.get_user().get('id')
+        fields = [
+            Field('is_active', 'boolean',
+                  default=True, readable=False, writable=False),                  
+            Field('created_on', 'datetime',
+                  default=now, writable=False, readable=False),
+            Field('created_by', 'reference auth_user',
+                  default=user),
+            Field('modified_on', 'datetime',
+                  update=now, default=now, writable=False, readable=False),
+            Field('modified_by', 'reference auth_user', 
+                  default=user, update=user, writable=False, readable=False)]
+        return fields
+
     # validation fixtures
     @property
     def user(self):
@@ -95,9 +114,11 @@ class Auth(Fixture):
     def get_user(self, safe=True):
         user = self.session.get('user')
         if not user or not isinstance(user, dict) or not 'id' in user:
-            return None
+            return {}
         if len(user) == 1 and self.db:
             user = self.db.auth_user(user['id'])
+            if not user:
+                return {}
             if safe:
                 user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
         return user

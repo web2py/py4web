@@ -41,6 +41,16 @@
         </td>
       </tr>
       <tr>
+        <th>
+          Referenced By
+        </th>
+        <td>
+          <div v-for="name in table.model[0].referenced_by" class="field-referenced">
+            <a v-on:click="go_ref_by(name, item.id)">{{name}}</a>
+          </div>
+        </td>
+      </tr>
+      <tr>
         <td></td>
         <td>
           <button v-if="editable" v-on:click="save(item)">Save</button>
@@ -59,14 +69,14 @@
             <i v-if="order==field.name" class="fa fa-arrow-up"></i>
             <i v-if="order=='~'+field.name" class="fa fa-arrow-down"></i>
           </th>
-          <th>References</th>
-          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="item in table.items">
           <td v-for="field in table.model">
-            <span v-if="field.type=='id'" class="field-id">[{{item[field.name]}}]</span>
+            <a v-if="field.type=='id'" class="field-id" v-on:click="open_edit(item)"> 
+              [{{item[field.name]}}]
+            </a>
             <span v-else-if="field.type=='string'" class="field-string">{{item[field.name]}}</span>
             <span v-else-if="field.type=='integer'" class="field-integer">{{item[field.name]}}</span>
             <span v-else-if="field.type=='float'" class="field-float">{{item[field.name]}}</span>
@@ -79,16 +89,9 @@
               <i class="fa fa-square" v-if="item[field.name]===false"></i>
             </span>
             <span v-else-if="field.type=='text'" class="field-text"><i class="fa fa-expand"></i></span>
-            <a v-else-if="field.type=='reference'" class="field-reference">Ref.[{{item[field.references]}}]</a>
+            <a v-else-if="field.type=='reference'" class="field-reference"
+               v-on:click="go_ref_by(field.references,item[field.name])">[{{item[field.name]}}]</a>
             <span v-else-if="field.type=='upload'" class="field-upload"><i class="fa fa-download"></i></span>
-          </td>
-          <td>
-            <a v-for="name in table.model[0].referenced_by" class="field-referenced"
-               v-on:click="referenced_by(table.model[0].referenced_by, item)">{{name}}</a>
-          </td>
-          <td>
-            <i class="fa fa-edit" v-on:click="open_edit(item)"></i>
-            <i class="fa fa-trash" v-if="deletable" v-on:click="trash(item)"></i>
           </td>
         </tr>
       </tbody>

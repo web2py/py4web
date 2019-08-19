@@ -275,6 +275,9 @@ class Session(Fixture):
         self.expiration = expiration
         self.algorithm = algorithm
         self.local = threading.local()
+        self.local.changed = False
+        self.local.secure = None
+        self.local.data = {}
         self.storage = storage
         self.same_site = same_site
         if isinstance(storage, Session):
@@ -672,7 +675,10 @@ class Reloader:
                         print('[ ] reloading %s ...' % app_name)
                         names = [name for name in sys.modules if name.startswith(module_name)]
                         for name in names:
-                            importlib.reload(sys.modules[name])
+                            try:
+                                importlib.reload(sys.modules[name])
+                            except ModuleNotFoundError:
+                                pass
                         print('\x1b[A[X] reloaded %s     ' % app_name)
                     Reloader.MODULES[app_name] = module
                     Reloader.ERRORS[app_name] = None

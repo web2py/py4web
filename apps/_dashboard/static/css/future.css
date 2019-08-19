@@ -280,3 +280,6 @@ label {
   margin: 5px;
   font-size: 1.1em;
 }
+.field-referenced {
+  margin-right: 1em;
+}

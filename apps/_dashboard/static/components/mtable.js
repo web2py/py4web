@@ -73,7 +73,6 @@
     
     mtable.methods.trash = function (item) {
         if (window.confirm("Really delete record?")) {
-            console.log(this.table.items);
             let url = this.url + '/' + item.id;            
             this.table.items = this.table.items.filter((i)=>{return i.id != item.id;});
             axios.delete(url);
@@ -102,7 +101,24 @@
         this.table.count = 0;
         this.load();
     };
-    
+
+    mtable.methods.go_ref_by = function(tablefield, item_id) {
+        tablefield = (tablefield+'.id').split('.');
+        var tablename = tablefield[0], fieldname = tablefield[1];
+        var source = window.location.search.substring(1);
+        var vars={}, items=source.split('&');
+        items.map(function(item){
+                var pair = item.split('=');
+                vars[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+            });
+        vars['tablename'] = tablename
+        vars['filter'] = fieldname+'=='+item_id;
+        source = Object.keys(vars).map(function(key){
+                return key+'='+encodeURIComponent(vars[key]);
+            }).join('&');
+        window.location = window.location.href.split('?')[0]+'?'+source;
+    };
+
     utils.register_vue_component('mtable', 'components/mtable.html', function(template) {        
             mtable.template = template.data;
             return mtable;
