@@ -7,7 +7,7 @@ from . import settings
 # the DAL object (does not have to be called db but it is a useful convention)
 db = DAL(settings.DB_URI, folder=settings.DB_FOLDER, pool_size=settings.DB_POOL_SIZE)
 
-### Define you table below
+### Define your table below
 #
 # db.define_table('thing', Field('name'))
 #
