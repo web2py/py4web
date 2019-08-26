@@ -258,6 +258,7 @@ class Template(Fixture):
 
 class Session(Fixture):
 
+    # all apps share the same default secret if not specified. important for _dashboard reload
     SECRET = None
 
     def __init__(self, secret=None, expiration=None, algorithm='HS256',
@@ -285,7 +286,7 @@ class Session(Fixture):
         if hasattr(storage, '__prerequisites__'):
             self.__prerequisites__ = storage.__prerequisites__
 
-    def load(self):
+    def load(self):        
         self.local.session_cookie_name = '%s_session' % request.app_name
         raw_token = (request.get_cookie(self.local.session_cookie_name) or
                      request.query.get('_session_token'))
@@ -411,16 +412,24 @@ class action:
     def uses(*fixtures_in):
         """associated fixtures to an action"""
         fixtures = []
-        for fixture in fixtures_in:
+        # this can be done better but we need to make sure we expand recursively
+        # and preseve the order of dependencies
+        fixtures_to_process = list(fixtures_in)
+        while fixtures_to_process:
+            fixture = fixtures_to_process[0]
             # a template string is a fixture
             if isinstance(fixture, str):
-                fixtures.append(Template(fixture))
-            else:
-                # fixtures may have prerequisites (dependencies)
-                for other_fixture in getattr(fixture, '__prerequisites__', []):
-                    if not other_fixture in fixtures:
-                        fixtures.append(other_fixture)
-                fixtures.append(fixture)
+                fixture = Template(fixture)
+            # fixtures may have prerequisites (dependencies)
+            new_dependencies = False
+            for other_fixture in getattr(fixture, '__prerequisites__', []):
+                if not other_fixture in fixtures:
+                    fixtures_to_process.insert(0, other_fixture)
+                    new_dependencies = True
+            if not new_dependencies:
+                fixtures_to_process.pop(0)
+                if not fixture in fixtures:
+                    fixtures.append(fixture)
 
         def decorator(func):
             @functools.wraps(func)
