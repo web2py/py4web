@@ -410,26 +410,20 @@ class action:
 
     @staticmethod
     def uses(*fixtures_in):
-        """associated fixtures to an action"""
+        """find all fixtures, including dependencies, topologically sorted"""
         fixtures = []
-        # this can be done better but we need to make sure we expand recursively
-        # and preseve the order of dependencies
-        fixtures_to_process = list(fixtures_in)
-        while fixtures_to_process:
-            fixture = fixtures_to_process[0]
-            # a template string is a fixture
+        reversed_fixtures = []
+        stack = list(fixtures_in)
+        while stack:
+            fixture = stack.pop()
+            reversed_fixtures.append(fixture)
+            for other in getattr(fixture, '__prerequisites__', []):
+                stack.append(other)
+        for fixture in reversed(reversed_fixtures):
             if isinstance(fixture, str):
                 fixture = Template(fixture)
-            # fixtures may have prerequisites (dependencies)
-            new_dependencies = False
-            for other_fixture in getattr(fixture, '__prerequisites__', []):
-                if not other_fixture in fixtures:
-                    fixtures_to_process.insert(0, other_fixture)
-                    new_dependencies = True
-            if not new_dependencies:
-                fixtures_to_process.pop(0)
-                if not fixture in fixtures:
-                    fixtures.append(fixture)
+            if not fixture in fixtures:
+                fixtures.append(fixture)
 
         def decorator(func):
             @functools.wraps(func)
