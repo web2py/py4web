@@ -695,7 +695,7 @@ class Reloader:
             app_name = path.split(os.path.sep)[-1]
 
             @bottle.route('/%s/static/<filename:path>' % app_name)
-            @bottle.route('/%s/static/_<version:re:\d+\.\d+\.\d+>/<filename:path>' % app_name)
+            @bottle.route('/%s/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>' % app_name)
             def server_static(filename, path=path, version=None):
                 return bottle.static_file(filename, root=os.path.join(path, 'static'))
         # register routes

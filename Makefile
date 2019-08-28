@@ -30,7 +30,7 @@ install: build
 test: build
 	python3 -m pip install -r requirements.txt
 	python3 -m pip install -r test-requirements.txt
-	python3 -m pytest --cov=py4web -v -s tests/
+	python3 -m pytest --cov=py4web --cov-report html:cov.html -v -s tests/
 deploy: test
 	python setup.py sdist
 	twine upload dist/*
