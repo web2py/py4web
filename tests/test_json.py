@@ -1,8 +1,9 @@
 import datetime
 import json
 import unittest
+import fractions
 
-from py4web.core import dumps
+from py4web.core import dumps, objectify
 
 
 class TestJson(unittest.TestCase):
@@ -30,3 +31,10 @@ class TestJson(unittest.TestCase):
             "date": "2018-12-31"
             }
         self.assertEqual(json.loads(c), d)
+
+        self.assertEqual(objectify(1), 1)
+        self.assertEqual(objectify(fractions.Fraction(3,2)), 1.5)
+        self.assertEqual(objectify("hello"), "hello")
+
+
+        

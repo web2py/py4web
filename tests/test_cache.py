@@ -31,6 +31,9 @@ class CacheTest(unittest.TestCase):
         for k in range(30):
             results.add(cache.get('a', random.random, expiration=0, monitor=lambda: int(k/10)))
         self.assertEqual(len(results), 3)
+        time.sleep(0.02)
+        results.add(cache.get('a', random.random, expiration=0.01, monitor=lambda: 5))
+        self.assertEqual(len(results), 4)
 
     def test_timing(self):
         M = N = 100000

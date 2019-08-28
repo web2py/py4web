@@ -111,7 +111,6 @@ class Cache:
             self.free -= 1
         m = monitor and monitor()
         if node and node.t + expiration < t0:
-            m = monitor and monitor()
             if m is None or node.m != m:
                 node = None
         if node is None:
@@ -148,18 +147,15 @@ def objectify(obj):
         return float(obj)
     elif isinstance(obj, (datetime.date, datetime.datetime, datetime.time)):
         return obj.isoformat()
-    elif hasattr(obj, 'to_list') and callable(obj.to_list):
-        return obj.to_list()
+    elif isinstance(obj, str):
+        return obj
     elif hasattr(obj, '__iter__') or isinstance(obj, types.GeneratorType):
         return list(obj)
-    elif hasattr(obj, 'to_dict') and callable(obj.to_dict):
-        return obj.to_dict()
     elif hasattr(obj, '__dict__') and hasattr(obj, '__class__'):
-        d = copy.copy(obj.__dict__)
+        d = dict(obj.__dict__)
         d['__class__'] = obj.__class__.__name__
         return d
-    else:
-        return str(obj)
+    return str(obj)
 
 
 def dumps(obj, sort_keys=True, indent=2):
@@ -752,8 +748,8 @@ def start_server(args):
                        workers=args.number_workers, worker_class='gevent', reloader=False,
                        certfile=args.ssl_cert_filename, keyfile=args.ssl_key_filename)
 
-def main():
-    print(ART)
+def main_parser():
+    """Handle command line arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument('apps_folder',
                         help='path to the applications folder')
@@ -773,7 +769,16 @@ def main():
                         help='file containing the encrypted (CRYPT) password')
     parser.add_argument('-c', '--create', action='store_true', default=False,
                         help='created the missing folder and apps')
-    action.args = args = parser.parse_args()
+    return parser
+
+def main():
+    """The main entry point: starts the sever and creates folders"""
+    print(ART)
+    parser = main_parser()
+    # parse command line arguments
+    args = main_parser().parse_args()
+    # store them in the action to make them visible
+    action.args = args
     args.apps_folder = os.path.abspath(args.apps_folder)
     # if we know where the password is stored, read it, else ask for one
     print('assets-folder:', os.path.join(os.path.dirname(__file__), 'assets'))
