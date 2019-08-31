@@ -688,12 +688,14 @@ class Reloader:
                     Reloader.ERRORS[app_name] = tb
         # expose static files with support for static asset management
         for path in new_apps:
-            app_name = path.split(os.path.sep)[-1]
-
-            @bottle.route('/%s/static/<filename:path>' % app_name)
-            @bottle.route('/%s/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>' % app_name)
-            def server_static(filename, path=path, version=None):
-                return bottle.static_file(filename, root=os.path.join(path, 'static'))
+            static_folder = os.path.join(path, 'static')
+            if os.path.exists(static_folder):
+                app_name = path.split(os.path.sep)[-1]
+                prefix = '' if app_name == '_default' else ('/%s' % app_name)
+                @bottle.route(prefix + '/static/<filename:path>')
+                @bottle.route(prefix + '/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>')
+                def server_static(filename, static_folder=static_folder, version=None):
+                    return bottle.static_file(filename, root=static_folder)
         # register routes
         routes = []
 
