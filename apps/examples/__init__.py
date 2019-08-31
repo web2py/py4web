@@ -4,6 +4,12 @@ from py4web.utils.form import Form, FormStyleBulma
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1
 
+if not os.path.exists(os.path.join(os.path.dirname(__file__), 'databases')):
+    try:
+        os.makedirs(os.path.join(os.path.dirname(__file__), 'databases'))
+    except FileExistsError:
+        pass
+
 db = DAL('sqlite://test', folder=os.path.join(os.path.dirname(__file__), 'databases'))
 db.define_table('thing', 
                 Field('name', requires=IS_NOT_EMPTY()),
