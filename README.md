@@ -18,11 +18,24 @@ open http://localhost:8000/todo/index
 git clone https://github.com/web2py/py4web.git
 cd py4web 
 python3 -m pip install -r requirements.txt
-./py4web-start apps
+./py4web-start.py apps
 open http://localhost:8000/todo/index
 ```
 
-Notice "py4web-start" uses the pip installed py4web, "./py4web-start" uses the local one. Do not get confused.
+## Try me (install from source)
+
+```
+git clone https://github.com/web2py/py4web.git
+cd py4web
+make assets
+make test
+make install
+py4web-start.py apps
+open http://localhost:8000/todo/index
+```
+
+Notice "py4web-start" uses the pip installed py4web, "./py4web-start.py" uses the local one. Do not get confused.
+Also notice when installing from source the content of py4web/assets is missing and it is created by make assets.
 
 ## Tell me more
 
@@ -81,7 +94,7 @@ password: *****
 2) (re)use it:
 
 ```
-./py4web-start -p password.txt apps
+py4web-start -p password.txt apps
 ```
 
 ## Launch Arguments
@@ -94,44 +107,44 @@ password: *****
 ###     Host Name, Host Port
 Switch | Syntax | Default | Type
 -------------|-------------|--------------|-------------
- -a | `py4web-start-a ***<hostname>:<port>***` | 127.0.0.1:8000 | str
+ -a | `py4web-start -a ***<hostname>:<port>***` | 127.0.0.1:8000 | str
 |||
  --address | `py4web-start --address ***<hostname>:<port>***` | 127.0.0.1:8000 | str
 
 ###     Worker Count
 Switch | Syntax | Default | Type
 -------|--------|---------|--------
- -n | `./py4web-start -n <number of gunicorn workers>` | 0 | int
+ -n | `py4web-start -n <number of gunicorn workers>` | 0 | int
 |||
---number_workers | `./py4web-start --number_workers <number of gunicorn workers>` | 0 | int
+--number_workers | `py4web-start --number_workers <number of gunicorn workers>` | 0 | int
 
 ###  SSL Certificate File Path 
 Switch | Syntax | Default | Type
 -------------|-------------|--------------|-------------
---ssl_cert_filename | `./py4web-start --ssl_cert_filename <ssl key file>` | None | int
+--ssl_cert_filename | `py4web-start --ssl_cert_filename <ssl key file>` | None | int
 
 ###     SQL Logging Destination
 Switch | Syntax | Default | Type
 -------------|-------------|--------------|-------------
---service_db_uri | `./py4web-start --service_db_uri <db uri for logging>` | sqlite://service.storage | str
+--service_db_uri | `py4web-start --service_db_uri <db uri for logging>` | sqlite://service.storage | str
 
 ###     Dashboard Mode
 Switch | Syntax | Default | Type
 -------------|-------------|--------------|-------------
--d | `./py4web-start -d <demo, readonly, full, none>` | full | str
+-d | `py4web-start -d <demo, readonly, full, none>` | full | str
 |||
---dashboard_mode | `./py4web-start --dashboard_mode <demo, readonly, full, none>` | full | str
+--dashboard_mode | `py4web-start --dashboard_mode <demo, readonly, full, none>` | full | str
 
 ###     Fix missing files
 Switch | Syntax | Default | Type
 -------------|-------------|--------------|-------------
--c | `./py4web-start -c <create missing file(s) or folder(s)>` | False | T/F
+-c | `py4web-start -c <create missing file(s) or folder(s)>` | False | T/F
 |||
---create | `./py4web-start --create <create missing file(s) or folder(s)>` | False | T/F
+--create | `py4web-start --create <create missing file(s) or folder(s)>` | False | T/F
 
 ###     Use a Stored Password
 Switch | Syntax | Default | Type
 -------------|-------------|--------------|-------------
--p | `./py4web-start -p <your file containing the encrypted (CRYPT) password>` | None | str
+-p | `py4web-start -p <your file containing the encrypted (CRYPT) password>` | None | str
 |||
---password_file | `./py4web-start --password_file <your file containing the encrypted (CRYPT) password>` | None | str
+--password_file | `py4web-start --password_file <your file containing the encrypted (CRYPT) password>` | None | str
