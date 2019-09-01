@@ -148,3 +148,17 @@ Switch | Syntax | Default | Type
 -p | `py4web-start -p <your file containing the encrypted (CRYPT) password>` | None | str
 |||
 --password_file | `py4web-start --password_file <your file containing the encrypted (CRYPT) password>` | None | str
+
+## Contributors
+
+- [Cassio Botaro](https://github.com/cassiobotaro)
+- [Dan Carroll](https://github.com/dan-carroll)
+- [Jim Steil](https://github.com/jpsteil)
+- [John M. Wolf](https://github.com/jmwolff3)
+- [Massimo Di Pierro](https://github.com/mdipierro)
+- [Micah Beasley](https://github.com/MBfromOK)
+- [Nico Zanferrari](https://github.com/nicozanf)
+- [Pirsch](https://github.com/Pirsch)
+- [sugizo](https://github.com/sugizo)
+- [valq7711](https://github.com/valq7711)
+
