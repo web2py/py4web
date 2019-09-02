@@ -99,55 +99,43 @@ py4web-start -p password.txt apps
 
 ## Launch Arguments
 
-###     Apps Path
- Syntax | Default | Type
--------------|--------------|-------------
-`<path to apps folder>` | ./apps | str
+```
+usage: py4web-start.py [-h] [-a ADDRESS] [-n NUMBER_WORKERS]
+                       [--ssl_cert_filename SSL_CERT_FILENAME]
+                       [--ssl_key_filename SSL_KEY_FILENAME]
+                       [--service_db_uri SERVICE_DB_URI] [-d DASHBOARD_MODE]
+                       [-p PASSWORD_FILE] [-c]
+                       apps_folder
 
-###     Host Name, Host Port
-Switch | Syntax | Default | Type
--------------|-------------|--------------|-------------
- -a | `py4web-start -a ***<hostname>:<port>***` | 127.0.0.1:8000 | str
-|||
- --address | `py4web-start --address ***<hostname>:<port>***` | 127.0.0.1:8000 | str
+positional arguments:
+  apps_folder           path to the applications folder
 
-###     Worker Count
-Switch | Syntax | Default | Type
--------|--------|---------|--------
- -n | `py4web-start -n <number of gunicorn workers>` | 0 | int
-|||
---number_workers | `py4web-start --number_workers <number of gunicorn workers>` | 0 | int
+optional arguments:
+  -h, --help            show this help message and exit
+  -a ADDRESS, --address ADDRESS
+                        serving address
+  -n NUMBER_WORKERS, --number_workers NUMBER_WORKERS
+                        number of gunicorn workers
+  --ssl_cert_filename SSL_CERT_FILENAME
+                        ssl certificate file
+  --ssl_key_filename SSL_KEY_FILENAME
+                        ssl key file
+  --service_db_uri SERVICE_DB_URI
+                        db uri for logging
+  -d DASHBOARD_MODE, --dashboard_mode DASHBOARD_MODE
+                        dashboard mode: demo, readonly, full (default), none
+  -p PASSWORD_FILE, --password_file PASSWORD_FILE
+                        file containing the encrypted (CRYPT) password
+  -c, --create          created the missing folder and apps
+```
 
-###  SSL Certificate File Path 
-Switch | Syntax | Default | Type
--------------|-------------|--------------|-------------
---ssl_cert_filename | `py4web-start --ssl_cert_filename <ssl key file>` | None | int
+Example:
 
-###     SQL Logging Destination
-Switch | Syntax | Default | Type
--------------|-------------|--------------|-------------
---service_db_uri | `py4web-start --service_db_uri <db uri for logging>` | sqlite://service.storage | str
 
-###     Dashboard Mode
-Switch | Syntax | Default | Type
--------------|-------------|--------------|-------------
--d | `py4web-start -d <demo, readonly, full, none>` | full | str
-|||
---dashboard_mode | `py4web-start --dashboard_mode <demo, readonly, full, none>` | full | str
+```
+py4web-start -a 127.0.0.1:8000 -d demo apps
+```
 
-###     Fix missing files
-Switch | Syntax | Default | Type
--------------|-------------|--------------|-------------
--c | `py4web-start -c <create missing file(s) or folder(s)>` | False | T/F
-|||
---create | `py4web-start --create <create missing file(s) or folder(s)>` | False | T/F
-
-###     Use a Stored Password
-Switch | Syntax | Default | Type
--------------|-------------|--------------|-------------
--p | `py4web-start -p <your file containing the encrypted (CRYPT) password>` | None | str
-|||
---password_file | `py4web-start --password_file <your file containing the encrypted (CRYPT) password>` | None | str
 
 ## Contributors
 
