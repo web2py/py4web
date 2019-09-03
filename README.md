@@ -150,3 +150,16 @@ py4web-start -a 127.0.0.1:8000 -d demo apps
 - [sugizo](https://github.com/sugizo)
 - [valq7711](https://github.com/valq7711)
 
+## Screenshots
+
+![](https://raw.githubusercontent.com/web2py/py4web/master/apps/_documentation/static/screenshots/dashboard_login.png)
+
+![](https://raw.githubusercontent.com/web2py/py4web/master/apps/_documentation/static/screenshots/dashboard_main.png)
+
+![](https://raw.githubusercontent.com/web2py/py4web/master/apps/_documentation/static/screenshots/dashboard_edit.png)
+
+![](https://raw.githubusercontent.com/web2py/py4web/master/apps/_documentation/static/screenshots/dashboard_restapi.png)
+
+![](https://raw.githubusercontent.com/web2py/py4web/master/apps/_documentation/static/screenshots/dashboard_error.png)
+
+![](https://raw.githubusercontent.com/web2py/py4web/master/apps/_documentation/static/screenshots/dashboard_ticket.png)
