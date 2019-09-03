@@ -34,5 +34,8 @@ test: build
 deploy: test
 	python setup.py sdist
 	twine upload dist/*
-run:
-	./py4web-start -p password.txt apps/
+password.txt:
+	python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()(input('passwo\
+rd:'))[0]))"
+run: password.txt
+	./py4web-start.py -p password.txt apps/
