@@ -24,7 +24,7 @@ PY4WEB is more than a repackaging of those modules. It is a complete redesign. I
 - PY4WEB, like web2py, has a built-in ticketing system but, unlike web2py, this system is global and not per app. Tickets are no longer stored in the filesystem with the individual apps. They are stored in a single database.
 - PY4WEB, like web2py, is based on pydal but uses some new features of pydal (RESTAPI)
 - PY4WEB, like web2py, uses the yatl template language but defaults to square brackets [[...]] delimiters to avoid conflicts with model JS frameworks, such as Vue.js and angular.js. Yatl includes a subset of the web2py helpers.
-- WEB2PY, unlike web2py, uses the plularization library for internationalization. In practice, this exposes an object T very similar to web2py's T but it provides better caching and more flexible pluralization capabilities.
+- PY4WEB, unlike web2py, uses the plularization library for internationalization. In practice, this exposes an object T very similar to web2py's T but it provides better caching and more flexible pluralization capabilities.
 - PY4WEB comes with a Dashboard APP that replaces web2py's admin. This is a web IDE for uploading/managing/editing apps.
 - PY4WEB's Dashboard includes a web based database interface. This replaces the appadmin functionality of web2py.
 - PY4WEB comes with a Form object that is similar to web2py's SQLFORM but it is much simpler and faster. The syntax is the same. This has been provided in order to help users to port existing apps; but PY4WEB encourages using API based forms over postbacks.
