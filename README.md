@@ -82,19 +82,16 @@ Also notice when installing from source the content of py4web/assets is missing 
 
 ## Storing _dashboard password 
 
-If you do not want to be prompted for a dashboard password every time:
+When py4web starts it asks for a _dashboard password and stores its pdkdf2 hash 
+in password.txt, in the working folder. It will not ask again unless the file is deleted. 
+If the ``--dashboard_mode`` is ``demo`` or ``none`` it will not ask.
+If you want to store it somewhere else, you can specify a name with ``--password_file``.
 
-1) create the password:
+You can create the file yourself with:
 
 ```
 $ python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()(input('password:'))[0]))"
 password: *****
-```
-
-2) (re)use it:
-
-```
-py4web-start -p password.txt apps
 ```
 
 ## Launch Arguments
@@ -135,6 +132,17 @@ Example:
 ```
 py4web-start -a 127.0.0.1:8000 -d demo apps
 ```
+
+## WSGI
+
+py4web is a WSGI application. To obtain th WSGI app simply do:
+
+```
+from py4web.core import wsgi
+application = wsgi()
+```
+
+The wsgi function takes arguments with the same name as the command line arguments.
 
 
 ## Contributors
