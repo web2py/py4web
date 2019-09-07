@@ -5,7 +5,7 @@
 ## Try me (from pip)
 
 ```
-python3 -m pip install py4web
+python3 -m pip install -U py4web --no-cache-dir --user
 py4web-start apps
 open http://localhost:8000/todo/index
 ```
