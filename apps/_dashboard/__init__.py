@@ -16,7 +16,7 @@ from pydal.validators import CRYPT
 from yatl.helpers import BEAUTIFY
 from . utils import *
 
-MODE = os.environ['PY4WEB_DASHBOARD_MODE']
+MODE = os.environ.get('PY4WEB_DASHBOARD_MODE', 'none')
 FOLDER = os.environ['PY4WEB_APPS_FOLDER']
 APP_FOLDER = os.path.dirname(__file__)
 T_FOLDER = os.path.join(APP_FOLDER, 'translations')

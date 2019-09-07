@@ -792,7 +792,7 @@ def get_args():
                         help='dashboard mode: demo, readonly, full (default), none')
     parser.add_argument('-p', '--password_file', default='password.txt',
                         help='file containing the encrypted (CRYPT) password')
-    parser.add_argument('-c', '--create', action='store_true', default=False,
+    parser.add_argument('-c', '--create', action='store_true', default=True,
                         help='create the missing folder and apps')
     # parse command line arguments
     return parser.parse_args()
@@ -801,7 +801,7 @@ def get_args():
 def initialize(**args):
     """initialize from args"""
     for key in args:
-        os.environ['PY4WEB_' + key.upper()] = str(args[key])
+        os.environ['PY4WEB_' + key.upper()] = str(args[key])    
     apps_folder = os.environ['PY4WEB_APPS_FOLDER']
     service_folder = os.path.join(apps_folder, os.environ['PY4WEB_SERVICE_FOLDER'])
     # if the apps folder does not exist create it and populate it
