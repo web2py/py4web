@@ -52,8 +52,13 @@ if MODE in ('demo', 'readonly', 'full'):
         if MODE == 'demo':
             valid = True
         else:
+            valid = False
             password = request.json.get('password')
-            valid = password and CRYPT()(password)[0] == os.environ['PY4WEB_PASSWORD']
+            password_file = os.environ.get('PY4WEB_PASSWORD_FILE')
+            if password and password_file and os.path.exists(password_file):
+                with open(password_file, 'r') as fp:
+                    encrypted_password = fp.read().strip()
+                    valid = CRYPT()(password)[0] == encrypted_password
         if valid:
             session['user'] = dict(id=1)
         return dict(user=valid, mode=MODE)

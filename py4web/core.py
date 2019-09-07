@@ -4,7 +4,6 @@ from __future__ import print_function
 # standard modules
 import argparse
 import cgitb
-import copy
 import datetime
 import functools
 import importlib
@@ -17,7 +16,6 @@ import numbers
 import os
 import getpass
 import platform
-import shutil
 import sys
 import threading
 import time
@@ -48,11 +46,17 @@ import yatl
 import threadsafevariable
 import pydal
 import pluralize
-from pydal import _compat
+from pydal._compat import to_native, to_bytes
 
-__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL', 'check_compatibl']
+__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 
+           'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL', 
+           'check_compatible', 'wsgi']
 
-os.environ['PY4WEB_APPS_FOLDER'] = 'apps'  # change from command line (default used for testing)
+DEFAULTS = dict(
+    PY4WEB_APPS_FOLDER    = 'apps',
+    PY4WEB_SERVICE_FOLDER = '.service',
+    PY4WEB_SERVICE_DB_URI = 'sqlite://service.storage',
+)
 
 ART = r"""
 ██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗ 
@@ -69,6 +73,8 @@ render = yatl.render
 request = bottle.request
 response = bottle.response
 abort = bottle.abort
+
+os.environ.update({key: value for key, value in DEFAULTS.items() if not key in os.environ})
 
 ########################################################################################
 # a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
@@ -284,16 +290,16 @@ class Session(Fixture):
 
     def load(self):        
         self.local.session_cookie_name = '%s_session' % request.app_name
+        self.local.changed = False
+        self.local.secure = request.url.startswith('https')
+        self.local.data = {}
         raw_token = (request.get_cookie(self.local.session_cookie_name) or
                      request.query.get('_session_token'))
         if not raw_token and request.method in ('POST', 'PUT', 'DELETE'):
             raw_token = ((request.forms and request.forms.get('_session_token')) or
                          (request.json and request.json and request.json.get('_session_token')))
-        token_data = _compat.to_bytes(raw_token)
-        self.local.changed = False
-        self.local.secure = request.url.startswith('https')
-        self.local.data = {}
-        if token_data:
+        if raw_token:
+            token_data = to_bytes(raw_token)
             try:
                 if self.storage:
                     json_data = self.storage.get(token_data)
@@ -310,7 +316,7 @@ class Session(Fixture):
                 pass
         if not 'uuid' in self.local.data:
             self.local.changed = True
-            self.local.data['uuid'] = _compat.to_native(str(uuid.uuid4()))
+            self.local.data['uuid'] = str(uuid.uuid4())
             self.local.data['secure'] = self.local.secure
 
     def save(self):
@@ -324,7 +330,7 @@ class Session(Fixture):
                 self.local.data, self.secret, algorithm=self.algorithm)
 
         response.set_cookie(self.local.session_cookie_name,
-                            _compat.to_native(cookie_data), path='/',
+                            to_native(cookie_data), path='/',
                             secure=self.local.secure,
                             same_site=self.same_site)
 
@@ -559,7 +565,7 @@ def get_error_snapshot(depth=5):
     items = inspect.getinnerframes(etb, depth)
     del etb  # Prevent circular references that would cause memory leaks
     data['stackframes'] = stackframes = []
-    for frame, file, lnum, func, lines, index in items:
+    for frame, file, lnum, func, lines, idx in items:
         file = file and os.path.abspath(file) or '?'
         args, varargs, varkw, locals = inspect.getargvalues(frame)
         # basic frame information
@@ -578,8 +584,9 @@ def get_error_snapshot(depth=5):
 
 class ErrorStorage:
     def __init__(self):
+        apps_folder = os.environ['PY4WEB_APPS_FOLDER']
         uri = os.environ['PY4WEB_SERVICE_DB_URI']
-        folder = os.environ['PY4WEB_SERVICE_FOLDER']
+        folder = os.path.join(apps_folder, os.environ['PY4WEB_SERVICE_FOLDER'])
         self.db = DAL(uri, folder=folder)
         self.db.define_table('py4web_error',
                              Field('uuid'),
@@ -604,7 +611,6 @@ class ErrorStorage:
                 client_ip=request.environ.get('REMOTE_ADDR'),
                 error=error_snapshot['exception_value'],
                 snapshot=error_snapshot)
-            print('id=', id)
             self.db.commit()
             return ticket_uuid
         except Exception:
@@ -703,6 +709,7 @@ class Reloader:
             filename = os.path.join(*module.split('.')[1:])
             filename = os.path.join(filename, '__init__.py') if not filename.count(os.sep) else filename + '.py'
             return filename
+
         for route in app.routes:
             func = route.callback
             routes.append({'rule': route.rule,
@@ -750,7 +757,21 @@ def start_server(args):
                        workers=args.number_workers, worker_class='gevent', reloader=False,
                        certfile=args.ssl_cert_filename, keyfile=args.ssl_key_filename)
 
-def main_parser():
+
+def check_compatible(version):
+    """to be called by apps to check if version is compatible with requirements"""
+    from . import __version__
+    return tuple(map(int, __version__.split('.'))) >= tuple(map(int, version.split('.')))
+
+
+def wsgi(**args):
+    """initializes everything, loads apps, returns the wsgi app"""
+    initialize(**args)
+    Reloader.import_apps()
+    return bottle.default_app()
+
+
+def get_args():
     """Handle command line arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument('apps_folder',
@@ -763,66 +784,69 @@ def main_parser():
                         help='ssl certificate file')
     parser.add_argument('--ssl_key_filename', default=None, type=int,
                         help='ssl key file')
+    parser.add_argument('--service_folder', default='.service',
+                        type=str, help='where to store service information')
     parser.add_argument('--service_db_uri', default='sqlite://service.storage',
                         type=str, help='db uri for logging')
     parser.add_argument('-d', '--dashboard_mode', default='full',
                         help='dashboard mode: demo, readonly, full (default), none')
-    parser.add_argument('-p', '--password_file', default=None,
+    parser.add_argument('-p', '--password_file', default='password.txt',
                         help='file containing the encrypted (CRYPT) password')
     parser.add_argument('-c', '--create', action='store_true', default=False,
-                        help='created the missing folder and apps')
-    return parser
-
-def main():
-    """The main entry point: starts the sever and creates folders"""
-    print(ART)
-    parser = main_parser()
+                        help='create the missing folder and apps')
     # parse command line arguments
-    args = main_parser().parse_args()
-    # store them in the action to make them visible
-    action.args = args
-    args.apps_folder = os.path.abspath(args.apps_folder)
-    # if we know where the password is stored, read it, else ask for one
-    print('assets-folder:', os.path.join(os.path.dirname(__file__), 'assets'))
-    if args.password_file:
-        with open(args.password_file) as fp:
-            args.password = fp.read().strip()
-    elif args.dashboard_mode not in ('demo', 'none'):
-        args.password = pydal.validators.CRYPT(
-        )(getpass.getpass('Choose a one-time dashboad password: '))[0]
-    args.service_folder = os.path.join(args.apps_folder, '.service')
-    # store all args in evironment variables to make then available to the gunicorn processes
-    for key in args.__dict__:
-        os.environ['PY4WEB_' + key.upper()] = str(args.__dict__[key])
+    return parser.parse_args()
+
+
+def initialize(**args):
+    """initialize from args"""
+    for key in args:
+        os.environ['PY4WEB_' + key.upper()] = str(args[key])
+    apps_folder = os.environ['PY4WEB_APPS_FOLDER']
+    service_folder = os.path.join(apps_folder, os.environ['PY4WEB_SERVICE_FOLDER'])
     # if the apps folder does not exist create it and populate it
-    if not os.path.exists(args.apps_folder):
-        if args.create or input('Create %s (y/n)? ' % args.apps_folder)[:1] in 'yY':
-            os.makedirs(args.apps_folder)
-            with open(os.path.join(args.apps_folder, '__init__.py'), 'w') as fp:
+    if args.get('create'):
+        if not os.path.exists(apps_folder):
+            os.makedirs(apps_folder)
+        init_py = os.path.join(apps_folder, '__init__.py')
+        if not os.path.exists(init_py):
+            with open(init_py, 'w') as fp:
                 fp.write('')
-        else:
-            sys.exit(0)
-    if not os.path.exists(args.service_folder):
-        os.mkdir(args.service_folder)
-    # upzip the _dashboard app if old or dos not exist
-    assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
-    for filename in ['py4web.app._dashboard.zip', 'py4web.app._default.zip']:
-        zip_filename = os.path.join(assets_dir, filename)
-        target_dir = os.path.join(args.apps_folder, filename.split('.')[-2])
-        if not os.path.exists(target_dir):
-            print('[ ] Unzipping app', filename)
-            zip = zipfile.ZipFile(zip_filename, 'r')
+        if not os.path.exists(service_folder):
+            os.mkdir(service_folder)
+        # upzip the _dashboard app if old or dos not exist
+        assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
+        for filename in ['py4web.app._dashboard.zip', 'py4web.app._default.zip']:
+            zip_filename = os.path.join(assets_dir, filename)
+            target_dir = os.path.join(apps_folder, filename.split('.')[-2])
             if not os.path.exists(target_dir):
-                os.makedirs(target_dir)
-            zip.extractall(target_dir)
-            zip.close()
-            print('\x1b[A[X]')
-    # start
+                print('[ ] Unzipping app', filename)
+                zip_file = zipfile.ZipFile(zip_filename, 'r')
+                if not os.path.exists(target_dir):
+                    os.makedirs(target_dir)
+                zip_file.extractall(target_dir)
+                zip_file.close()
+                print('\x1b[A[X]')
+
+
+def main(args=None):
+    """The main entry point: starts the sever and creates folders"""
+    # store them in the action to make them visible
+    print(ART)
+    action.args = args = args or get_args()
+    # if we know where the password is stored, read it, else ask for one
+    if args.dashboard_mode not in ('demo', 'none') and not os.path.exists(args.password_file):
+        password = getpass.getpass('Choose a one-time dashboad password: ')
+        print('Storing the hashed password in file "%s"' % args.password_file)
+        with open(args.password_file, 'w') as fp:
+            fp.write(str(pydal.validators.CRYPT()(password)[0]))
+    # store all args in evironment variables to make then available to the processes
+    # and create any missing folders
+    initialize(**args.__dict__)
     if os.path.exists(os.path.join(args.apps_folder, '_dashboard')):
         print('Dashboard is at: http://%s/_dashboard' % args.address)
+    # start
     Reloader.import_apps()
-    start_server(args)
+    start_server(args)    
 
-def check_compatible(version):
-    from . import __version__
-    return tuple(map(int, __version__.split('.'))) >= tuple(map(int, version.split('.')))
+
