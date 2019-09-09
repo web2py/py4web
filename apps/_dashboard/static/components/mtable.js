@@ -119,7 +119,9 @@
         window.location = window.location.href.split('?')[0]+'?'+source;
     };
 
-    utils.register_vue_component('mtable', 'components/mtable.html', function(template) {        
+    var scripts = document.getElementsByTagName('script');
+    var src = scripts[scripts.length-1].src;
+    utils.register_vue_component('mtable', src.substr(0, src.length-3) + '.html', function(template) {        
             mtable.template = template.data;
             return mtable;
         });

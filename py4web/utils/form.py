@@ -47,8 +47,8 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
         elif hasattr(field.requires, 'options'):
             multiple = field.type.startswith('list:')
             value = list(map(str, value if isinstance(value, list) else [value]))
-            options = [OPTION(v,_value=k,_selected=(k in value))
-                       for k,v in field.requires.options()]
+            options = [OPTION(v,_value=k,_selected=(not k is None and k in value))
+                       for k, v in field.requires.options()]
             control = SELECT(*options, _id=input_id, _name=field.name,
                               _multiple=multiple)
         else:
