@@ -1,37 +1,41 @@
 <!DOCTYPE html>
 <html>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/[[=request.app_name]]/static/css/bulma.css">
-  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-  <body>
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+  <head>
+    <base href="[[=URL('static')]]/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bulma.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    [[block page_head]]<!-- individual page can customize head here -->[[end]]
+  </head>
+  <body>    
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <a class="navbar-item" href="[[=URL('index')]]">
+          <strong>Examples</strong>
+        </a>
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="left-navbar"
+           onclick="this.classList.toggle('is-active');document.getElementById(this.dataset.target).classList.toggle('is-active');">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
+      <div id="left-navbar" class="navbar-menu">
+        <div class="navbar-start">       
+          [[block page_menu_items]]<!-- individual page can add menu items here -->[[end]]
+        </div>
+      </div>
     </nav>
-
     <section class="section">
-      <div class="container">
-        <h1 class="title">Example</h1>
-      </div>
-    </section>
-    
-    <section class="section">
-      <div class="container">
-        [[include]]
-      </div>
+      <!-- begin of HTML inserted by extending template -->
+      [[include]]
+      <!-- end of HTML inserted by extending template -->
     </section>
     <footer class="footer">
       <div class="content has-text-centered">
-        I was made with py4web
+        Made with py4web
       </div>
     </footer>
-  </body>
-  <script src="[[=URL('static/js/utils.js')]]"></script>
-  [[block scripts]]
-  [[end]]
+    [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
+  </body>  
 </html>

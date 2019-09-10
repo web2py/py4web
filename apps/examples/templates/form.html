@@ -1,0 +1,13 @@
+[[extend 'layout.html']]
+
+<h2 class="title">Form Superhero Identity</h2>
+
+[[=form]]
+
+<h2 class="title">Rows</h2>
+
+<ul>
+  [[for row in rows:]]
+  <li>[[=row.id]]: [[=row.name]] ([[=row.job]])</li>
+  [[pass]]
+</ul>

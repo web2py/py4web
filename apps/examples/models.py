@@ -1,14 +1,16 @@
 import os
 from py4web import DAL, Field 
-
+from pydal.validators import IS_NOT_EMPTY, IS_NOT_IN_DB
 # define database and tables
 db = DAL('sqlite://storage.db', folder=os.path.join(os.path.dirname(__file__), 'databases'))
 
+# simple table example
 db.define_table(
     'person',
-    Field('name'),
-    Field('job'))
+    Field('name', requires=IS_NOT_IN_DB(db, 'person.name')),
+    Field('job', requires=IS_NOT_EMPTY()))
 
+# simpl reference example
 db.define_table(
     'superhero',
     Field('name'),
@@ -18,6 +20,7 @@ db.define_table(
     'superpower',
     Field('description'))
 
+# many to many example
 db.define_table(
     'tag',
     Field('superhero', 'reference superhero'),

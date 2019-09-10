@@ -5,7 +5,7 @@ from yatl.helpers import A, TEXTAREA, INPUT, TR, TD, TABLE, DIV, LABEL, FORM, SE
 from pydal._compat import to_bytes
 
 def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
-    form = FORM(_method='POST',_action='#',_enctype='multipart/form-data')
+    form = FORM(_method='POST', _action=request.path, _enctype='multipart/form-data')
 
     classes = classes or {}
     class_label = classes.get('label', '')
@@ -92,8 +92,8 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
         'submit': 'button',
         'input': 'input',
         'input[type=text]': 'input',
-        'input[type=radio]': 'input',
-        'input[type=checkbox]': 'input',
+        'input[type=radio]': 'radio',
+        'input[type=checkbox]': 'checkbox',
         'input[type=submit]': 'button',
         'select': 'select',
         'textarea': 'textarea',

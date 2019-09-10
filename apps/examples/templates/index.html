@@ -1,0 +1,36 @@
+[[extend 'layout.html']]
+
+<table class="table">
+  <tr>
+    <td>A normal page using a template</td>
+    <td><a href="[[=URL('index')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>A simple page without template</td>
+    <td><a href="[[=URL('simple_page')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>A page causing an internal error</td>
+    <td><a href="[[=URL('error')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>A page with a create form</td>
+    <td><a href="[[=URL('create_form')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>A page with an update form</td>
+    <td><a href="[[=URL('update_form/1')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>A page with an ajax powred grid</td>
+    <td><a href="[[=URL('grid')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>A page with mutiple forms</td>
+    <td><a href="[[=URL('forms')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>A page using yatl helpers</td>
+    <td><a href="[[=URL('helpers')]]">example</a></td>
+  </tr>
+</table>

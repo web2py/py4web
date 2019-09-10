@@ -1,0 +1,100 @@
+<div>
+  <table>
+    <tr>
+      <td class="control">              
+        <input class="input" v-model="filter" type="text" placeholder="filter (example id > 1)" style="width: 100%"/>
+      </td>
+      <td style="white-space: nowrap; width:10%">
+        <button v-on:click="search()" class="button">Search</button>
+        <button v-on:click="open_create()" class="button">Create</button>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="right" v-if="!table.count">(no items found)</td>
+      <td class="right" v-else-if="table.count==1">(one item found)</td>
+      <td class="right" v-else>({{table.count}} items found)</td>
+    </tr>
+  </table>        
+  <div v-if="item!=null">
+    <table class="table">
+      <tr v-for="field in table.model">
+        <th>{{field.label}}</th>
+        <td class="control">
+          <input class="input" v-if="field.type=='id'" type="text" readonly v-model="item[field.name]">
+          <input class="input" v-else-if="field.type=='string'" type="text" v-model="item[field.name]" v-bind:readonly="!editable">
+          <span v-else-if="field.type=='boolean'" v-on:click="toggle(item, field.name)" v-bind:readonly="!editable">
+            <span v-if="item[field.name]===true"><i class="fa fa-check-square"></i> True</span>
+            <span v-else-if="item[field.name]===false"><i class="fa fa-square"></i> False</span>
+            <span v-else><i class="fa fa-square"></i> None</span>
+          </span>
+          <input class="input" v-else-if="field.type=='integer'" type="number" step="1" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input class="input" v-else-if="field.type=='float'" type="number" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input class="input" v-else-if="field.type=='date'" type="date" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input class="input" v-else-if="field.type=='time'" type="time" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input class="input" v-else-if="field.type=='datetime'" type="datetime-local" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input class="input" v-else-if="field.type=='password'" type="password" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='upload'" type="text" v-model="item[field.name]" v-bind:readonly="!editable">
+          <textarea class="textarea" v-else-if="field.type=='text'" v-model="item[field.name]" v-bind:readonly="!editable"></textarea>
+          <div class="error" v-if="editable && field.name in errors">{{errors[field.name]}}</div>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Referenced By
+        </th>
+        <td>
+          <div v-for="name in table.model[0].referenced_by" class="field-referenced">
+            <a v-on:click="go_ref_by(name, item.id)">{{name}}</a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <button class="button" v-if="editable" v-on:click="save(item)">Save</button>
+          <button class="button" v-if="deletable && item && item.id" v-on:click="trash(item)">Delete</button>
+          <button class="button" v-on:click="close()">Close</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div v-else-if="table.items.length>0">
+    <table class="table">
+      <thead>
+        <tr>
+          <th v-for="field in table.model" v-on:click="reorder(field)">
+            {{field.label}}
+            <i v-if="order==field.name" class="fa fa-arrow-up"></i>
+            <i v-if="order=='~'+field.name" class="fa fa-arrow-down"></i>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in table.items">
+          <td v-for="field in table.model">
+            <a v-if="field.type=='id'" class="field-id" v-on:click="open_edit(item)"> 
+              [{{item[field.name]}}]
+            </a>
+            <span v-else-if="field.type=='string'" class="field-string">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='integer'" class="field-integer">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='float'" class="field-float">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='date'" class="field-date">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='time'" class="field-time">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='datetime'" class="field-datetime">{{(item[field.name]||'').replace('T','@').substr(0,16)}}</span>
+            <span v-else-if="field.type=='password'" class="field-password">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='boolean'" class="field-boolean">
+              <i class="fa fa-check-square" v-if="item[field.name]===true"></i>
+              <i class="fa fa-square" v-if="item[field.name]===false"></i>
+            </span>
+            <span v-else-if="field.type=='text'" class="field-text"><i class="fa fa-expand"></i></span>
+            <a v-else-if="field.type=='reference'" class="field-reference"
+               v-on:click="go_ref_by(field.references,item[field.name])">[{{item[field.name]}}]</a>
+            <span v-else-if="field.type=='upload'" class="field-upload"><i class="fa fa-download"></i></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>          
+    <button class="table" v-if="table.count > table.items.length" v-on:click="load()">Load More</button>
+  </div>
+</div>

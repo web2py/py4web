@@ -1,0 +1,14 @@
+[[extend 'layout.html']]
+
+<h2 class="title">Grid</h2>
+<div id="vue">
+  [[=grid]]
+</div>
+
+[[block page_scripts]]
+<script src="[[=URL('static/js/axios.min.js')]]"></script>
+<script src="[[=URL('static/js/vue.min.js')]]"></script>
+<script src="[[=URL('static/js/utils.js')]]"></script>
+<script src="[[=URL('static/components/mtable.js')]]"></script>
+<script>var app=utils.app(); app.start()</script>
+[[end]]

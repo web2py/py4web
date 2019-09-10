@@ -4,51 +4,45 @@ from py4web.utils.form import Form, FormStyleBulma
 from py4web.utils.grid import Grid, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1
+from . models import db
 
-db = DAL('sqlite://db.sqlite', folder=os.path.join(os.path.dirname(__file__), 'databases'))
-
-db.define_table('thing', 
-                Field('name', requires=IS_NOT_EMPTY()),
-                Field('color', requires=IS_IN_SET(('red','green','blue'))),
-                format='%(name)s')
-
-if db(db.thing).count() == 0:
-    db.thing.insert(name='table', color='red')
-    db.thing.insert(name='chair', color='green')
-    db.thing.insert(name='shoes', color='blue')
-
-db.commit()
+# create a session
 session = Session(secret='myscret')
 
 # exposes sevice necessay to access the db.thing via ajax
-grid = Grid(db.thing, policy=ALLOW_ALL_POLICY)
+grid = Grid(db.person, policy=ALLOW_ALL_POLICY)
 
-@action('do/nothing')
-def do_nothing():
+@action('index')
+@action.uses('index.html')
+def index():
+    return {}
+
+@action('simple_page')
+def simple_page():
     return 'ok'
 
-@action('oops')
-def oops():
+@action('error')
+def error():
     1/0
 
 # exposed as /examples/create_form or /examples/update_form/<id>
 @action('create_form', method=['GET','POST'])
 @action('update_form/<id>', method=['GET','POST'])
-@action.uses('dbform.html', db, session)
-def form_example(id=None):
-    form = Form(db.thing, id)
-    rows = db(db.thing).select()
+@action.uses('form.html', db, session)
+def example_form(id=None):
+    form = Form(db.person, id, deletable=False, formstyle=FormStyleBulma)
+    rows = db(db.person).select()
     return dict(form=form, rows=rows) 
 
 # exposed as /examples/grid
 @action('grid')
-@action.uses('dbgrid.html')
-def grid_example():
+@action.uses('grid.html')
+def example_grid():
     return dict(grid=grid) 
 
 @action('forms', method=['GET','POST'])
 @action.uses('forms.html', session, db)
-def multiple_form_example():
+def example_multiple_forms():
     name = Field('name', requires=IS_NOT_EMPTY())
     forms = [
         Form([Field('name', requires=IS_NOT_EMPTY())],
@@ -65,7 +59,7 @@ def multiple_form_example():
               Field('color',requires=IS_IN_SET(['red','blue','gree']))], 
              form_name='5', formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY()),
-              Field('favorite_thing', requires=IS_IN_DB(db, 'thing.id', 'thing.name'))], 
+              Field('favorite_hero', requires=IS_IN_DB(db, 'person.id', 'person.name'))], 
              form_name='6', formstyle=FormStyleBulma)]
     messages = []
     for form in forms:
@@ -76,9 +70,9 @@ def multiple_form_example():
     return dict(forms=forms, messages=messages)
 
 # exposed as /examples/showme
-@action('showme')
+@action('helpers')
 @action.uses('generic.html')
-def showme():
+def example_helpers():
     return dict(a=H1("I am a title"),
                 b=2,
                 c=dict(d=3,
