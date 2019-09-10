@@ -18,7 +18,7 @@
   </table>        
   <div v-if="item!=null">
     <table class="table">
-      <tr v-for="field in table.model">
+      <tr v-for="field in table.model" v-if="field.type!='id' || item.id">
         <th>{{field.label}}</th>
         <td class="control">
           <input class="input" v-if="field.type=='id'" type="text" readonly v-model="item[field.name]">
@@ -39,7 +39,7 @@
           <div class="error" v-if="editable && field.name in errors">{{errors[field.name]}}</div>
         </td>
       </tr>
-      <tr>
+      <tr v-if="item.id">
         <th>
           Referenced By
         </th>

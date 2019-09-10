@@ -1,10 +1,11 @@
 import uuid
 from py4web import action, request, URL
 from pydal.restapi import RestAPI, ALLOW_ALL_POLICY, DENY_ALL_POLICY        
+from yatl.helpers import DIV, XML, TAG
 
-MTABLE = '<mtable url="{url}" filter="" order="" :editable="false" :deletable="true" :render="{render}"></mtable>'
+MTABLE = '<mtable url="{url}" filter="" order="" :editable="true" :deletable="true" :render="{render}"></mtable>'
 
-class Grid():
+class Publisher():
 
     """ this is a work in progress - API subject to change """
 
@@ -24,5 +25,17 @@ class Grid():
         data = RestAPI(db, policy)(request.method, tablename, None, request.query, request.json)
         return data
     
-    def xml(self):
-        return MTABLE.format(url=URL(self.path), render={})
+    @property
+    def mtable(self):
+        return XML(MTABLE.format(url=URL(self.path), render={}))
+
+    @property
+    def grid(self):
+        return DIV(
+            self.mtable,
+            TAG.SCRIPT(_src=URL('static/js/axios.min.js')),
+            TAG.SCRIPT(_src=URL('static/js/vue.min.js')),
+            TAG.SCRIPT(_src=URL('static/js/utils.js')),
+            TAG.SCRIPT(_src=URL('static/components/mtable.js')),
+            TAG.SCRIPT('var app=utils.app(); app.start()'),
+            _id="vue")

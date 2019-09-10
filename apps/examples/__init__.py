@@ -1,7 +1,7 @@
 import os
 from py4web import *
 from py4web.utils.form import Form, FormStyleBulma
-from py4web.utils.grid import Grid, ALLOW_ALL_POLICY
+from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1
 from . models import db
@@ -10,7 +10,7 @@ from . models import db
 session = Session(secret='myscret')
 
 # exposes sevice necessay to access the db.thing via ajax
-grid = Grid(db.person, policy=ALLOW_ALL_POLICY)
+publisher = Publisher(db.person, policy=ALLOW_ALL_POLICY)
 
 @action('index')
 @action.uses('index.html')
@@ -38,7 +38,7 @@ def example_form(id=None):
 @action('grid')
 @action.uses('grid.html')
 def example_grid():
-    return dict(grid=grid) 
+    return dict(grid=publisher.grid) 
 
 @action('forms', method=['GET','POST'])
 @action.uses('forms.html', session, db)
