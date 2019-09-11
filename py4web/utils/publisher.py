@@ -9,33 +9,29 @@ class Publisher():
 
     """ this is a work in progress - API subject to change """
 
-    def __init__(self,
-                 table,                 
-                 policy=None,
-                 path='service/{uuid}/{tablename}'):
-        self.table = table
+    def __init__(self, db, policy=None, path='service/{uuid}/<tablename>'):
+        self.db = db
         self.policy = policy
-        self.path = path.format(uuid=str(uuid.uuid4()), tablename=table._tablename)
+        self.path = path.format(uuid=str(uuid.uuid4()))
         methods = ['GET', 'POST', 'PUT', 'DELETE']
-        action(self.path)(action.uses(table._db)(self.api))
+        action(self.path)(action.uses(db)(self.api))
 
-    def api(self):
+    def api(self, tablename):
         policy = self.policy
-        db, tablename = self.table._db, self.table._tablename
-        data = RestAPI(db, policy)(request.method, tablename, None, request.query, request.json)
+        data = RestAPI(self.db, policy)(request.method, tablename, None, request.query, request.json)
         return data
     
-    @property
-    def mtable(self):
-        return XML(MTABLE.format(url=URL(self.path), render={}))
+    def mtable(self, table):
+        path = self.path.replace('<tablename>', table._tablename)
+        return XML(MTABLE.format(url=URL(path), render={}))
 
-    @property
-    def grid(self):
+    def grid(self, table):
+        name = 'vue%s' % str(uuid.uuid4())[:8]
         return DIV(
-            self.mtable,
+            self.mtable(table),
             TAG.SCRIPT(_src=URL('static/js/axios.min.js')),
             TAG.SCRIPT(_src=URL('static/js/vue.min.js')),
             TAG.SCRIPT(_src=URL('static/js/utils.js')),
             TAG.SCRIPT(_src=URL('static/components/mtable.js')),
-            TAG.SCRIPT('var app=utils.app(); app.start()'),
-            _id="vue")
+            TAG.SCRIPT(XML('var app=utils.app("%s"); app.start()' % name)),
+            _id=name)

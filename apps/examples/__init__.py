@@ -10,7 +10,7 @@ from . models import db
 session = Session(secret='myscret')
 
 # exposes sevice necessay to access the db.thing via ajax
-publisher = Publisher(db.person, policy=ALLOW_ALL_POLICY)
+publisher = Publisher(db, policy=ALLOW_ALL_POLICY)
 
 @action('index')
 @action.uses('index.html')
@@ -38,7 +38,7 @@ def example_form(id=None):
 @action('grid')
 @action.uses('grid.html')
 def example_grid():
-    return dict(grid=publisher.grid) 
+    return dict(grid=publisher.grid(db.person)) 
 
 @action('forms', method=['GET','POST'])
 @action.uses('forms.html', session, db)
