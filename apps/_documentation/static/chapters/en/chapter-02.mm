@@ -237,7 +237,7 @@ def index():
 Notice the following:
 
 - ``request``, ``response``, ``abort`` are defined by Bottle
-- ``redirect`` and ``URL`` are similar to their py4web counterparts
+- ``redirect`` and ``URL`` are similar to their web2py counterparts
 - helpers (``A``, ``DIV``, ``SPAN``, ``IMG``, etc) must be imported from ``yatl.helpers`` . They work pretty much as in web2py
 - ``db``, ``session``, ``T``, ``cache``, ``auth`` are Fixtures. They must be defined in ``common.py``.
 - ``@action.uses(auth.user)`` indicates that this action expects a valid logged-in user retrievable by ``auth.get_user()``. If that is not the case, this action rediects to the login page (defined also in ``common.py`` and using the Vue.js auth.html component).
