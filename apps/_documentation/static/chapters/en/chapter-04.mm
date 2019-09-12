@@ -22,7 +22,7 @@ from py4web import action, Template
 def index() return dict()
 ``:python
 
-The Template object is a Fixture. It transforms the ``dict()`` returned by the action into a string by using the ``index.html`` template file. In a later chapter we will provide an example of how to define a custom fixture to use a different template language, for example Junja2.
+The Template object is a Fixture. It transforms the ``dict()`` returned by the action into a string by using the ``index.html`` template file. In a later chapter we will provide an example of how to define a custom fixture to use a different template language, for example Jinja2.
 
 Notice that since the use of templates is very common and since, most likely, every action uses a different template, we provide some syntactic sugar, and the two following lines are equivalent:
 
