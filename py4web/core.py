@@ -836,7 +836,7 @@ def main(args=None):
     action.args = args = args or get_args()
     # if we know where the password is stored, read it, else ask for one
     if args.dashboard_mode not in ('demo', 'none') and not os.path.exists(args.password_file):
-        password = getpass.getpass('Choose a one-time dashboad password: ')
+        password = getpass.getpass('Choose a one-time dashboard password: ')
         print('Storing the hashed password in file "%s"' % args.password_file)
         with open(args.password_file, 'w') as fp:
             fp.write(str(pydal.validators.CRYPT()(password)[0]))
