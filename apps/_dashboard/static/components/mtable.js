@@ -1,13 +1,15 @@
 (function(){
 
-    var mtable = { props: ['url', 'filter', 'order', 'editable', 'deletable', 'render'], data: null, methods: {}};
+    var mtable = { props: ['url', 'filter', 'order', 'editable', 'create', 'deletable', 'render'], data: null, methods: {}};
     
     mtable.data = function() {        
         var data = {url: this.url,
+                    busy: false,
                     filter: this.filter || '',
                     order: this.order ||  '',
                     errors: {},
                     item: null,
+                    message: '',
                     table: { model: [], items: [], count: 0}};
         mtable.methods.load.call(data);
         return data;
@@ -46,7 +48,9 @@
             });
         if (filters.length) url += '&'+filters.join('&');
         if (self.order) url += '&@order='+self.order;
+        self.busy = true;
         axios.get(url).then(function (res) {
+                self.busy = false;
                 if(!length) self.table = res.data; 
                 else self.table.items = self.table.items.concat(res.data.items);
             });
@@ -59,15 +63,20 @@
         this.table.items = [];
         this.load();
     };
-    
-    mtable.methods.open_create = function () {
+
+    mtable.methods.clear = function() {
         this.errors = {};
+        this.item = null;
+        this.message = '';
+    }
+
+    mtable.methods.open_create = function () {
         this.item = {};
         for(var field in this.model) this.item[field.name] = field.default||'';
     };
     
     mtable.methods.open_edit = function (item) {
-        this.errors = {};
+        this.item = {};
         this.item = item;
     };
     
@@ -82,21 +91,45 @@
     
     mtable.methods.save = function (item) {
         let url = this.url;
+        self.busy = true;
         if (item.id) {
             url += '/' + item.id;
-            axios.put(url, item);
+            axios.put(url, item).then(mtable.handle_response('put', this),
+                                      mtable.handle_response('put', this));
         } else {
-            axios.post(url);
+            axios.post(url, item).then(mtable.handle_response('post', this),
+                                       mtable.handle_response('post', this));
         }
-        this.item = null;
     };
-    
+
+    mtable.handle_response = function(method, data) {
+        self.busy = false;
+        return function(res) {
+            if (res.response) res = res.response; // deal with error weirdness
+            if (method == 'post') {
+                data.table.items = [];
+                console.log(data);
+                mtable.methods.load.call(data);
+            }
+            console.log('a');
+            console.log(res);
+            if (res.data.status == 'success') {
+                data.clear();
+            } else {
+                console.log('b')
+                data.errors = res.data.errors;
+                data.message = res.data.message;
+            }
+            console.log('c');
+        };
+    };
+
     mtable.methods.close = function () {
-        this.item = null;
+        this.clear();
     };
     
     mtable.methods.search = function () { 
-        this.item = null;
+        this.clear();
         this.table.items = [];
         this.table.count = 0;
         this.load();
@@ -121,7 +154,8 @@
 
     var scripts = document.getElementsByTagName('script');
     var src = scripts[scripts.length-1].src;
-    utils.register_vue_component('mtable', src.substr(0, src.length-3) + '.html', function(template) {        
+    var path = src.substr(0, src.length-3) + '.html';
+    utils.register_vue_component('mtable', path, function(template) {        
             mtable.template = template.data;
             return mtable;
         });

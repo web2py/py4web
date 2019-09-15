@@ -3,7 +3,7 @@ from py4web import action, request, response, URL
 from pydal.restapi import RestAPI, ALLOW_ALL_POLICY, DENY_ALL_POLICY        
 from yatl.helpers import DIV, XML, TAG
 
-MTABLE = '<mtable url="{url}" filter="" order="" :editable="true" :deletable="true" :render="{render}"></mtable>'
+MTABLE = '<mtable url="{url}" filter="" order="" :editable="true" :deletable="true" :create="true" :render="{render}"></mtable>'
 
 class Publisher():
 

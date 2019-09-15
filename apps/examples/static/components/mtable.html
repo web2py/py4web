@@ -2,11 +2,11 @@
   <table>
     <tr>
       <td class="control">              
-        <input class="input" v-model="filter" type="text" placeholder="filter (example id > 1)" style="width: 100%"/>
+        <input class="input" v-model="filter" type="text" placeholder="filter (example id > 1)" style="width: 100%" v-on:keyup.enter="search()"/>
       </td>
-      <td style="white-space: nowrap; width:10%">
+      <td style="white-space: nowrap; width:10%; padding-left:5px">
         <button v-on:click="search()" class="button">Search</button>
-        <button v-on:click="open_create()" class="button">Create</button>
+        <button v-if="create" v-on:click="open_create()" class="button">Create</button>
       </td>
     </tr>    
     <tr>
@@ -16,7 +16,10 @@
       <td class="right" v-else>({{table.count}} items found)</td>
     </tr>
   </table>        
-  <div v-if="item!=null">
+  <div v-if="busy" style="padding:20px; text-align:center">
+    <i class="fa fa-3x fa-spin fa-spinner"></i>
+  </div>
+  <div v-else-if="item!=null">
     <table class="table">
       <tr v-for="field in table.model" v-if="field.type!='id' || item.id">
         <th>{{field.label}}</th>
@@ -49,15 +52,12 @@
           </div>
         </td>
       </tr>
-      <tr>
-        <td></td>
-        <td>
-          <button class="button" v-if="editable" v-on:click="save(item)">Save</button>
-          <button class="button" v-if="deletable && item && item.id" v-on:click="trash(item)">Delete</button>
-          <button class="button" v-on:click="close()">Close</button>
-        </td>
-      </tr>
     </table>
+    <div style="margin-top: 10px">
+      <button class="button" v-if="editable" v-on:click="save(item)">Save</button>
+      <button class="button" v-if="deletable && item && item.id" v-on:click="trash(item)">Delete</button>
+      <button class="button" v-on:click="close()">Close</button>
+    </div>
   </div>
   <div v-else-if="table.items.length>0">
     <table class="table">
@@ -95,6 +95,6 @@
         </tr>
       </tbody>
     </table>          
-    <button class="table" v-if="table.count > table.items.length" v-on:click="load()">Load More</button>
+    <button class="button" v-if="table.count > table.items.length" v-on:click="load()">Load More</button>
   </div>
 </div>

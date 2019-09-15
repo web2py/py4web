@@ -1,9 +1,10 @@
 (function(){
 
-    var mtable = { props: ['url', 'filter', 'order', 'editable', 'deletable', 'render'], data: null, methods: {}};
+    var mtable = { props: ['url', 'filter', 'order', 'editable', 'create', 'deletable', 'render'], data: null, methods: {}};
     
     mtable.data = function() {        
         var data = {url: this.url,
+                    busy: false,
                     filter: this.filter || '',
                     order: this.order ||  '',
                     errors: {},
@@ -47,7 +48,9 @@
             });
         if (filters.length) url += '&'+filters.join('&');
         if (self.order) url += '&@order='+self.order;
+        self.busy = true;
         axios.get(url).then(function (res) {
+                self.busy = false;
                 if(!length) self.table = res.data; 
                 else self.table.items = self.table.items.concat(res.data.items);
             });
@@ -88,6 +91,7 @@
     
     mtable.methods.save = function (item) {
         let url = this.url;
+        self.busy = true;
         if (item.id) {
             url += '/' + item.id;
             axios.put(url, item).then(mtable.handle_response('put', this),
@@ -99,6 +103,7 @@
     };
 
     mtable.handle_response = function(method, data) {
+        self.busy = false;
         return function(res) {
             if (res.response) res = res.response; // deal with error weirdness
             if (method == 'post') {
