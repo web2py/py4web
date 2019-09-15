@@ -2,17 +2,17 @@
 
 A fixture is defined as "a piece of equipment or furniture which is fixed in position in a building or vehicle". In our case a fixture is something attached to the action that processes an HTTP request in order to produce a response.
 
-When processing any HTTP requests there are some optional operations we may want to perform. For example parse the cookie to look for session information, commit a database transaction, determine the preferred language from the HTTP header and lookup proper internationalization, etc. These operations are optional. Some actions need them and some actions do not. They may also depend on each other. For example, if sessions are stored in the database and out action needs it, we may need to parse the session cookie from the header, pick up a connection from the database connection pool, and - after the action has been executed - save the session back in the database if data has changed.
+When processing any HTTP requests there are some optional operations we may want to perform. For example parse the cookie to look for session information, commit a database transaction, determine the preferred language from the HTTP header and lookup proper internationalization, etc. These operations are optional. Some actions need them and some actions do not. They may also depend on each other. For example, if sessions are stored in the database and our action needs it, we may need to parse the session cookie from the header, pick up a connection from the database connection pool, and - after the action has been executed - save the session back in the database if data has changed.
 
 PY4WEB fixtures provide a mechanism to specify what an action needs so that py4web can accomplish the required tasks (and skip non required ones) in the most efficient manner. Fixtures make the code efficient and reduce the need for boilerplate code.
 
 PY4WEB fixtures are similar to WSGI middleware and BottlePy plugin except that they apply to individual actions, not to all of them, and can depend on each other.
 
-PY4WEB comes with some pre-defined fixtures for actions that need sessions, database connections, internationalization, authentication, and templates. Their usage will be explained in this chapter. The Developer is also free to add fixtures for example to handle a third party template language or third party session logic.
+PY4WEB comes with some pre-defined fixtures for actions that need sessions, database connections, internationalization, authentication, and templates. Their usage will be explained in this chapter. The Developer is also free to add fixtures, for example, to handle a third party template language or third party session logic.
 
 ### Templates
 
-PY4WEB, by default uses the yatl template language and provide a fixture for it.
+PY4WEB, by default uses the yatl template language and provides a fixture for it.
 
 ``
 from py4web import action, Template
@@ -22,7 +22,7 @@ from py4web import action, Template
 def index() return dict()
 ``:python
 
-The Template object is a Fixture. It transforms the ``dict()`` returned by the action into a string by using the ``index.html`` template file. In a later chapter we will provide an example of how to define a custom fixture to use a different template language, for example Junja2.
+The Template object is a Fixture. It transforms the ``dict()`` returned by the action into a string by using the ``index.html`` template file. In a later chapter we will provide an example of how to define a custom fixture to use a different template language, for example Jinja2.
 
 Notice that since the use of templates is very common and since, most likely, every action uses a different template, we provide some syntactic sugar, and the two following lines are equivalent:
 
@@ -31,7 +31,7 @@ Notice that since the use of templates is very common and since, most likely, ev
 @action.uses(Template('index.html', delimiters='[[ ]]')
 ``:python
 
-Notice that py4web template files are cache in RAM. The py4web caching object is described later.
+Notice that py4web template files are cached in RAM. The py4web caching object is described later.
 
 ### Sessions
 
@@ -52,7 +52,7 @@ def index():
 
 Notice that the session object has the same interface as a Python dictionary.
 
-By default the session object is stored in a cookie called, signed and encrypted, using the provided secret. If the secret changes existing sessions are invalidated. If the user switches from HTTP to HTTPS or vice versa, the user session is invalidated. Session in cookies have a small size limit (4Kbytes after serialized and encrypted) so do not put too much into them.
+By default the session object is stored in a cookie called, signed and encrypted, using the provided secret. If the secret changes existing sessions are invalidated. If the user switches from HTTP to HTTPS or vice versa, the user session is invalidated. Session in cookies have a small size limit (4Kbytes after being serialized and encrypted) so do not put too much into them.
 
 In py4web sessions are dictionaries but they are stored using JSON (JWT specifically) therefore you should only store objects that are JSON serializable. If the object is not JSON serializable, it will be serialized using the ``__str__`` operator and some information may be lost.
 
@@ -67,7 +67,7 @@ session = Session(secret='my secret key'.
 ``
 
 - Here ``algorithm`` is the algorithm to be used for the JWT token signature. 
-- ``storage`` is an parameter that allows to specify an an alternate session storage method (for example redis, or database).
+- ``storage`` is a parameter that allows to specify an alternate session storage method (for example redis, or database).
 - ``same_site`` is an option that prevents CSRF attacks and is enabled by default. You can read more about it [here](https://www.owasp.org/index.php/SameSite).
 
 #### Session in memcache
@@ -102,7 +102,7 @@ session =  Session(storage=DBStore(db))
 
 A secret is not required when storing cookies in the database because in this case the cookie only contains the UUID of the session.
 
-Also this is one case when the a fixture (session) requires another fixture (db). This handle automatically by py4web and the following are equivalent:
+Also this is one case when the a fixture (session) requires another fixture (db). This is handled automatically by py4web and the following are equivalent:
 
 ``
 @action.uses(session)
@@ -112,7 +112,7 @@ Also this is one case when the a fixture (session) requires another fixture (db)
 
 #### Session anywhere
 
-You can easily store sessions in any place you want. All you need to do is provide to the ``Session`` object a ``storage`` object with a ``get`` and ``set`` methods. For example, imagine you want to store sessions on your local filesystem
+You can easily store sessions in any place you want. All you need to do is provide to the ``Session`` object a ``storage`` object with both ``get`` and ``set`` methods. For example, imagine you want to store sessions on your local filesystem:
 
 ``
 import os
@@ -154,9 +154,9 @@ def index(): return T('Hello world')
 
 The string 'hello world` will be translated based on the internationalization file in the specified "translations" folder that best matches the HTTP ``accept-language`` header.
 
-Here ``Translator`` is a py4web class that extends ``pluralize.Translator`` and also implement the ``Fixture`` interface.
+Here ``Translator`` is a py4web class that extends ``pluralize.Translator`` and also implements the ``Fixture`` interface.
 
-We can easily combine multiple fixtures. Here as example we make action with a counter that counts "visits".
+We can easily combine multiple fixtures. Here, as example, we make action with a counter that counts "visits".
 
 ``
 from py4web import action, Session, Translator, DAL
@@ -240,7 +240,7 @@ def index():
     return "Your visit was stored in database"
 ``:python
 
-Notice that the database fixture defines (creates/re-creates tables) automatically when py4web starts (and every time it reloads this app) and picks a connection from the connection pool at every HTTP request. Also each call to the ``index()`` action is wrapped into a transaction and it commits ``on_success`` and rollback ``on_error``.
+Notice that the database fixture defines (creates/re-creates tables) automatically when py4web starts (and every time it reloads this app) and picks a connection from the connection pool at every HTTP request. Also each call to the ``index()`` action is wrapped into a transaction and it commits ``on_success`` and rolls back ``on_error``.
 
 ### Caveats about Fixtures
 
@@ -307,7 +307,7 @@ def index():
 
 The constructor of the ``Auth`` object defines the ``auth_user`` table with the following fields: username, email, password, first_name, last_name, sso_id, and action_token (the last two are mostly for internal use).
 
-``auth.enable()`` registers multiple actions including ``{appname}/auth/login`` (it requires the presence of the ``auth.html`` template and the ``auth`` value component provided by th ``_scaffold`` app.
+``auth.enable()`` registers multiple actions including ``{appname}/auth/login`` and it requires the presence of the ``auth.html`` template and the ``auth`` value component provided by the ``_scaffold`` app.
 
 The ``auth`` object is the fixture. It manages the user information. It exposes a single method:
 
@@ -358,6 +358,6 @@ def hello(name):
     return "Hello %s your code is %s" % (name, uuid.uuid4())
 ``:python
 
-It will cache (memoize) the return value of the ``hello`` function, as function of the input ``name``, for up to 60 seconds. It will store in cache up to the 1000 most recently used values. The data is always stored in Ram.
+It will cache (memoize) the return value of the ``hello`` function, as function of the input ``name``, for up to 60 seconds. It will store in cache the 1000 most recently used values. The data is always stored in ram.
 
-The Cache object is not a fixture and it should not and cannot be registered using the ``@action.uses`` object but we mention it here because some of the fixtures use this object internally. For example template files are cached in ram to avoid accessing the file system every time a template needs to be rendered.
+The Cache object is not a fixture and it should not and cannot be registered using the ``@action.uses`` object but we mention it here because some of the fixtures use this object internally. For example, template files are cached in ram to avoid accessing the file system every time a template needs to be rendered.
