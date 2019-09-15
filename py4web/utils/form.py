@@ -183,7 +183,8 @@ class Form(object):
                     for field in self.table:
                         if field.writable:
                             value = post_vars.get(field.name)
-                            (value, error) = field.validate(value)
+                            record_id = self.record and self.record.get('id')
+                            (value, error) = field.validate(value, record_id)
                             if field.type == 'upload':
                                 delete = post_vars.get('_delete_'+field.name)
                                 if value is not None and hasattr(value,'file'):

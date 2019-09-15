@@ -8,9 +8,9 @@
         <button v-on:click="search()" class="button">Search</button>
         <button v-on:click="open_create()" class="button">Create</button>
       </td>
-    </tr>
+    </tr>    
     <tr>
-      <td></td>
+      <td><div>{{message}}</div></td>
       <td class="right" v-if="!table.count">(no items found)</td>
       <td class="right" v-else-if="table.count==1">(one item found)</td>
       <td class="right" v-else>({{table.count}} items found)</td>

@@ -1,5 +1,5 @@
 import uuid
-from py4web import action, request, URL
+from py4web import action, request, response, URL
 from pydal.restapi import RestAPI, ALLOW_ALL_POLICY, DENY_ALL_POLICY        
 from yatl.helpers import DIV, XML, TAG
 
@@ -9,16 +9,22 @@ class Publisher():
 
     """ this is a work in progress - API subject to change """
 
-    def __init__(self, db, policy=None, path='service/{uuid}/<tablename>'):
+    def __init__(self, db, policy=None, auth=None,
+                 path='service/{uuid}/<tablename>'):
         self.db = db
         self.policy = policy
+        self.restapi = RestAPI(self.db, policy)
         self.path = path.format(uuid=str(uuid.uuid4()))
-        methods = ['GET', 'POST', 'PUT', 'DELETE']
-        action(self.path)(action.uses(db)(self.api))
+        args = [db, auth] if auth else [db]
+        f = action.uses(*args)(self.api)
+        f = action(self.path, method=['GET', 'POST'])(f)
+        f = action(self.path+'/<id:int>',method=['PUT','DELETE'])(f)
 
-    def api(self, tablename):
+    def api(self, tablename, id=None):
         policy = self.policy
-        data = RestAPI(self.db, policy)(request.method, tablename, None, request.query, request.json)
+        data = self.restapi(request.method, tablename, 
+                            id, request.query, request.json)
+        response.status = data['code']
         return data
     
     def mtable(self, table):
