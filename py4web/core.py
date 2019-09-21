@@ -678,7 +678,7 @@ class Reloader:
                         print('\x1b[A[X] loaded %s     ' % app_name)
                     else:
                         print('[ ] reloading %s ...' % app_name)
-                        names = [name for name in sys.modules if name.startswith(module_name)]
+                        names = [name for name in sys.modules if (name + '.').startswith(module_name + '.')]
                         for name in names:
                             try:
                                 importlib.reload(sys.modules[name])
