@@ -9,11 +9,11 @@ jQuery.fn.markmin = (function(){
         var re_lt = /</g;
         var re_table = /[=]{5,}\n([\s\S]*?)\n[=]{5,}/g;
         var re_latex = /\$\$(.*?)\$\$/g;
-        var re_image = /image\:(\w+:\/\/[^\'\"\s]+)/g;
-        var re_audio = /audio\:(\w+:\/\/[^\'\"\s]+)/g;
-        var re_video = /video\:(\w+:\/\/[^\'\"\s]+)/g;
-        var re_frame = /frame\:(\w+:\/\/[^\'\"\s]+)/g;
-        var re_embed = /embed\:(\w+:\/\/[^\'\"\s]+)/g;
+        var re_image = /image\:(\w*:\/\/[^\'\"\s]+)/g;
+        var re_audio = /audio\:(\w*:\/\/[^\'\"\s]+)/g;
+        var re_video = /video\:(\w*:\/\/[^\'\"\s]+)/g;
+        var re_frame = /frame\:(\w*:\/\/[^\'\"\s]+)/g;
+        var re_embed = /embed\:(\w*:\/\/[^\'\"\s]+)/g;
         var re_email = /([^\'\"\s\@\[\](){},;]+\@[^\'\"\s@\[\](){},;]+)/g;
         var re_link = /(^|[\W])(\w+:\/\/[^\'\"\s\@\[\](){},;]+)/g;
         var re_named_link = /\[(.+?)\]\((.+?)\)/g;
