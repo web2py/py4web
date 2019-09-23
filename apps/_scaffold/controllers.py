@@ -29,7 +29,6 @@ from py4web import action, request, abort, redirect, URL
 from yatl.helpers import A
 from . common import db, session, T, cache, auth
 
-
 @action('index', method='GET')
 @action.uses('generic.html', session, db, T, auth.user)
 def index():

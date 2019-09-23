@@ -3,12 +3,14 @@ This file defines cache, session, and translator T object for the app
 These are fixtures that every app needs so probably you will not be editing this file
 """
 import os
-from py4web import Session, Cache, Translator
+from py4web import Session, Cache, Translator, DAL, Field
 from py4web.utils.auth import Auth
 from py4web.utils.tags import Tags
 from . import settings
-from .models import db
 
+db = DAL(settings.DB_URI, 
+         folder=settings.DB_FOLDER, 
+         pool_size=settings.DB_POOL_SIZE)
 
 # define global objects that may or may not be used by th actions
 cache = Cache(size=1000)
