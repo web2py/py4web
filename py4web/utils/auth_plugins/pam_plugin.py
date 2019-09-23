@@ -5,6 +5,6 @@ class PamPlugin:
 
     name = 'pam'
 
-    def validate_credentials(self, username, password):
+    def check_credentials(self, username, password):
         return authenticate(username, password)
 

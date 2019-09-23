@@ -181,7 +181,7 @@ class LDAPPlugin(object):
         if filterstr[0] == '(' and filterstr[-1] == ')': 
             self.parameters['filterstr'] = filterstr[1:-1]
 
-    def validate_credentials(self, username, password):
+    def check_credentials(self, username, password):
         locals().update(self.parameters)
         if password == '':  # http://tools.ietf.org/html/rfc4513#section-5.1.2
             logger.warning('blank password not allowed')
