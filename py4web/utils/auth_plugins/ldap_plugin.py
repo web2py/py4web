@@ -176,6 +176,7 @@ class LDAPPlugin(object):
         for key in defaults: args[key] = args.get(key, defaults[key])
         self.parameters = args
         self.logger = args['logger']
+        del args['logger']
         # rfc4515 syntax
         filterstr = self.parameters.get('filterstr')
         if filterstr[0] == '(' and filterstr[-1] == ')': 
