@@ -312,7 +312,9 @@ class Session(Fixture):
                     assert self.local.data[
                         'timestamp'] > time.time() - int(self.expiration)
                 assert self.local.data.get('secure') == self.local.secure
-            except (jwt.exceptions.InvalidSignatureError, AssertionError, ValueError):
+            except (jwt.exceptions.InvalidSignatureError, 
+                    jwt.exceptions.DecodeError,
+                    AssertionError, ValueError):
                 pass
         if not 'uuid' in self.local.data:
             self.local.changed = True

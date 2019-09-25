@@ -175,19 +175,20 @@ class LDAPPlugin(object):
             logger=logging)
         for key in defaults: args[key] = args.get(key, defaults[key])
         self.parameters = args
-
+        self.logger = args['logger']
         # rfc4515 syntax
         filterstr = self.parameters.get('filterstr')
         if filterstr[0] == '(' and filterstr[-1] == ')': 
             self.parameters['filterstr'] = filterstr[1:-1]
 
     def check_credentials(self, username, password):
-        locals().update(self.parameters)
+        for key in self.parameters:
+            exec("%s = %r" % (key, self.parameters[key]))
         if password == '':  # http://tools.ietf.org/html/rfc4513#section-5.1.2
-            logger.warning('blank password not allowed')
+            self.logger.warning('blank password not allowed')
             return False
-        logger.debug('mode: [%s] manage_user: [%s] custom_scope: [%s]'
-                     ' manage_groups: [%s]' % (str(mode), str(manage_user), str(custom_scope), str(manage_groups)))
+        logger.debug('mode: [%s] manage_user: [%s] custom_scope: [%s] manage_groups: [%s]' % 
+                          (str(mode), str(manage_user), str(custom_scope), str(manage_groups)))
         if manage_user:
             if user_firstname_attrib.count(':') > 0:
                 (user_firstname_attrib,
@@ -331,11 +332,8 @@ class LDAPPlugin(object):
                             break
                     except ldap.LDAPError as detail:
                         (exc_type, exc_value) = sys.exc_info()[:2]
-                        logger.warning("ldap_auth: searching %s for %s resulted in %s: %s\n" % (basedn,
-                                                                                                filter,
-                                                                                                exc_type,
-                                                                                                exc_value)
-                                       )
+                        logger.warning("ldap_auth: searching %s for %s resulted in %s: %s\n" % 
+                                            (basedn, filter, exc_type, exc_value))
                 if not found:
                     logger.warning('User [%s] not found!' % username)
                     return False
@@ -366,11 +364,8 @@ class LDAPPlugin(object):
                             break
                     except ldap.LDAPError as detail:
                         (exc_type, exc_value) = sys.exc_info()[:2]
-                        logger.warning("ldap_auth: searching %s for %s resulted in %s: %s\n" % (basedn,
-                                                                                                filter,
-                                                                                                exc_type,
-                                                                                                exc_value)
-                                       )
+                        logger.warning("ldap_auth: searching %s for %s resulted in %s: %s\n" % 
+                                            (basedn, filter, exc_type, exc_value))
                 if not found:
                     logger.warning('User [%s] not found!' % username)
                     return False
@@ -452,7 +447,8 @@ class LDAPPlugin(object):
         Figure out if the username is a member of an allowed group
         in ldap or not
         """
-        locals().update(self.parameters)
+        for key in self.parameters:
+            exec("%s = %r" % (key, self.parameters[key]))
         #
         # Get all group name where the user is in actually in ldap
         # #########################################################
@@ -572,7 +568,8 @@ class LDAPPlugin(object):
         """
         Inicialize ldap connection
         """
-        locals().update(self.parameters)
+        for key in self.parameters:
+            exec("%s = %r" % (key, self.parameters[key]))
         logger.info('[%s] Initialize ldap connection' % str(ldap_server))
         if secure:
             if not ldap_port:
@@ -610,7 +607,8 @@ class LDAPPlugin(object):
         """
         Get all group names from ldap where the user is in
         """
-        locals().update(self.parameters)
+        for key in self.parameters:
+            exec("%s = %r" % (key, self.parameters[key]))
         logger.info('[%s] Get user groups from ldap' % str(username))
         #
         # Get all group name where the user is in actually in ldap
