@@ -7,9 +7,9 @@ from yatl.helpers import INPUT, H1
 from . models import db
 
 # create a session
-session = Session(secret='myscret')
+session = Session(secret='mysecret')
 
-# exposes sevice necessay to access the db.thing via ajax
+# exposes services necessary to access the db.thing via ajax
 publisher = Publisher(db, policy=ALLOW_ALL_POLICY)
 
 @action('index')
@@ -56,7 +56,7 @@ def example_multiple_forms():
               Field('insane','boolean')], 
              form_name='4', formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY()),
-              Field('color',requires=IS_IN_SET(['red','blue','gree']))], 
+              Field('color',requires=IS_IN_SET(['red','blue','green']))], 
              form_name='5', formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY()),
               Field('favorite_hero', requires=IS_IN_DB(db, 'person.id', 'person.name'))], 
