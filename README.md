@@ -50,7 +50,7 @@ Also notice when installing from source the content of py4web/assets is missing 
 - HTTP and redirect are our own objects
 - like web2py, it supports static asset management /{appname}/static/_0.0.0/{path}
 - implements sessions in cookies (jwt encrypted), db, memcache, redis and custom
-- implements a cache.memorize (Ram cache with O(1) access)
+- implements a cache.memoize (Ram cache with O(1) access) [Memoize](https://dbader.org/blog/python-memoization)
 - supports multiple apps under apps folder (same as web2py)
 - unlike web2py does not use a custom importer or eval
 - admin has been replaced by a _dashboard (90% done)
