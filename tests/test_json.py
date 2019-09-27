@@ -9,7 +9,7 @@ from py4web.core import dumps, objectify
 class TestJson(unittest.TestCase):
     
     def test_objectify(self):
-        """we check we can serialize objects, generators, and dates"""
+        """Check if we can serialize objects, generators, and dates"""
 
         class A(object):
             def __init__(self, x):
