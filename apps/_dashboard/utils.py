@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-| This file is part of the web2py Web Framework
+| This file is part of the py4web Web Framework
 | Copyrighted by Massimo Di Pierro <mdipierro@cs.depaul.edu>
 | License: LGPLv3 (http://www.gnu.org/licenses/lgpl.html)
 
@@ -120,7 +120,7 @@ def untar(file, dir):
 
 
 def pack(filename, path, filenames=None, exclude=None):
-    """Packs a web2py application.
+    """Packs a py4web application.
 
     Args:
         filename(str): path to the resulting archive
