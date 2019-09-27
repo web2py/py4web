@@ -407,6 +407,7 @@ class action:
 
     current = threading.local()
     registered = set()
+    app_name = '_default'
 
     def __init__(self, path, **kwargs):
         self.path = path
