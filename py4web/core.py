@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-# standard modules
+# Standard modules
 import argparse
 import cgitb
 import datetime
@@ -27,7 +27,7 @@ import http.client
 import http.cookies
 import zipfile
 
-# optional web servers for speed
+# Optional web servers for speed
 try:
     import gunicorn
 except ImportError:
@@ -39,7 +39,7 @@ try:
 except ImportError:
     gevent = None
 
-# third part modules
+# Third party modules
 import jwt  # this is PyJWT
 import bottle
 import yatl
@@ -65,7 +65,7 @@ ART = r"""
 ██╔═══╝   ╚██╔╝  ╚════██║██║███╗██║██╔══╝  ██╔══██╗
 ██║        ██║        ██║╚███╔███╔╝███████╗██████╔╝
 ╚═╝        ╚═╝        ╚═╝ ╚══╝╚══╝ ╚══════╝╚═════╝ 
-It is still experimental...
+Is still experimental...
 """
 
 Field = pydal.Field
@@ -77,7 +77,7 @@ abort = bottle.abort
 os.environ.update({key: value for key, value in DEFAULTS.items() if not key in os.environ})
 
 ########################################################################################
-# a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
+# Implement a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
 #########################################################################################
 
 
@@ -109,7 +109,7 @@ class Cache:
         self.mapping = {}
 
     def get(self, key, callback, expiration=3600, monitor=None):
-        """if not key stored or expired and monitor == None or monitor() value changed, returns value = callback()"""
+        """If key not stored or key has expired and monitor == None or monitor() value has changed, returns value = callback()"""
         node, t0 = self.mapping.get(key), time.time()
         if node:
             value, t, node.next.prev, node.prev.next = node.value, node.t, node.prev, node.next
@@ -141,7 +141,7 @@ class Cache:
         return decorator
 
 #########################################################################################
-# a better json serializer
+# A Better JSON Serializer
 #########################################################################################
 
 
@@ -168,19 +168,19 @@ def dumps(obj, sort_keys=True, indent=2):
     return json.dumps(obj, default=objectify, sort_keys=sort_keys, indent=indent)
 
 #########################################################################################
-# Generic Fixture (database connctions, templates, sessions, and requirements are fixtures)
+# Base Fixture (database connections, templates, sessions, and requirements are fixtures)
 #########################################################################################
 
 
 class Fixture:
     def on_request(self):
-        pass   # called when request arrives
+        pass   # called when a request arrives
 
     def on_error(self):
-        pass     # called when request errors
+        pass     # called when a request errors
 
     def on_success(self):
-        pass   # called when request is successfull
+        pass   # called when a request is successful
 
     def transform(self, output):  # transforms the output, for example to apply template
         return output
@@ -214,7 +214,7 @@ for _ in ['readable', 'writable', 'default', 'update', 'requires']:
 ICECUBE = {}
 
 #########################################################################################
-# The template rendered fixture
+# The Template Rendered Fixture
 #########################################################################################
 
 
@@ -229,7 +229,7 @@ class Template(Fixture):
 
     @staticmethod
     def reader(filename):
-        """cached reader, only reads template if has changed"""
+        """Cached file reader, only reads template if it has changed"""
         def raw_read():
             with open(filename, encoding='utf8') as stream:
                 return stream.read()
@@ -254,13 +254,13 @@ class Template(Fixture):
         return output
 
 #########################################################################################
-# The session fixture
+# The Session Fixture
 #########################################################################################
 
 
 class Session(Fixture):
 
-    # all apps share the same default secret if not specified. important for _dashboard reload
+    # All apps share the same default secret if not specified. important for _dashboard reload
     SECRET = None
 
     def __init__(self, secret=None, expiration=None, algorithm='HS256',
@@ -269,10 +269,10 @@ class Session(Fixture):
         secret is the shared key used to encrypt the session (using algorithm)
         expiration is in seconds
         (optional) storage must have a get(key) and set(key,value,expiration) methods
-        if not provided session is stored in jwt cookie else the jwt is stored in storage and its uuid key in cookie
+        if not provided session is stored in jwt cookie else the jwt is stored in storage and its uuid key is stored in the cookie
         """
         if not secret and not storage:
-            # when no secret specified one time sessions
+            # when no secret is specified: one time sessions
             secret = Session.SECRET = Session.SECRET or str(uuid.uuid4())
         self.secret = secret
         self.expiration = expiration
@@ -358,7 +358,7 @@ class Session(Fixture):
             self.save()
 
 #########################################################################################
-# the URL helper
+# The URL Helper
 #########################################################################################
 
 
@@ -384,20 +384,20 @@ def URL(*parts, vars=None, hash=None, scheme=False):
     return url
 
 #########################################################################################
-# the action decorator
+# The Action Decorator
 #########################################################################################
 
 
 class HTTP(BaseException):
-    """our HTTP exception does not delete cookies and headers like bottle.HTTPResponse does
-    it is consider success, not failure"""
+    """Our HTTP exception does not delete cookies and headers like the bottle.HTTPResponse does;
+    since it is considered a success, not a failure"""
     def __init__(self, status):
         self.status = status
 
 
 def redirect(location):
-    """our redirect does not delete cookies and headers like bottle.HTTPResponse does,
-    it is consider success, not failure"""
+    """our redirect does not delete cookies and headers like bottle.HTTPResponse does;
+    it is considered a success, not failure"""
     response.set_header('Location', location)
     raise HTTP(303)
 
@@ -415,7 +415,7 @@ class action:
 
     @staticmethod
     def uses(*fixtures_in):
-        """find all fixtures, including dependencies, topologically sorted"""
+        """Find all fixtures, including dependencies, topologically sorted"""
         fixtures = []
         reversed_fixtures = []
         stack = list(fixtures_in)
@@ -451,7 +451,7 @@ class action:
 
     @staticmethod
     def requires(*requirements):
-        """enforces requiremets or abort(401)"""
+        """Enforces requirements or calls bottle.abort(401)"""
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
@@ -464,7 +464,7 @@ class action:
 
     @staticmethod
     def catch_errors(app_name, func):
-        """catches and logs errors in an action. also sets request.app_name"""
+        """Catches and logs errors in an action; also sets request.app_name"""
         @functools.wraps(func)
         def wrapper(*func_args, **func_kwargs):
             try:
@@ -491,7 +491,7 @@ class action:
         return wrapper
 
     def __call__(self, func):
-        """builds the decorator"""
+        """Building the decorator"""
         app_name = action.app_name
         path = ('/' if app_name == '_default' else '/%s/' %
                 app_name) + self.path  # the _default app has no prefix
@@ -511,13 +511,13 @@ def user_in(session):
     return requirement
 
 #########################################################################################
-# monkey patch cookies
+# Monkey Patch: Cookies
 #########################################################################################
 
 http.cookies.Morsel._reserved['same-site'] = 'SameSite'
 
 #########################################################################################
-# monkey patch ssl bug for gevent
+# Monkey Patch: ssl bug for gevent
 #########################################################################################
 
 __ssl__ = __import__('ssl')
@@ -540,7 +540,7 @@ if not hasattr(_ssl, 'sslwrap'):
     _ssl.sslwrap = new_sslwrap
 
 #########################################################################################
-# error handling
+# Error Handling
 #########################################################################################
 
 
@@ -564,19 +564,19 @@ def get_error_snapshot(depth=5):
     data['traceback'] = traceback.format_exc()
     data['exception_type'] = str(etype)
     data['exception_value'] = str(evalue)
-    # loopover the stack frames
+    # Loopover the stack frames
     items = inspect.getinnerframes(etb, depth)
     del etb  # Prevent circular references that would cause memory leaks
     data['stackframes'] = stackframes = []
     for frame, file, lnum, func, lines, idx in items:
         file = file and os.path.abspath(file) or '?'
         args, varargs, varkw, locals = inspect.getargvalues(frame)
-        # basic frame information
+        # Basic frame information
         f = {'file': file, 'func': func, 'lnum': lnum}
         f['code'] = lines
         line_vars = cgitb.scanvars(
             lambda: linecache.getline(file, lnum), frame, locals)
-        # dump local variables (referenced in current line only)
+        # Dump local variables (referenced in current line only)
         f['vars'] = {key: repr(value) 
                      for key, value in locals.items() 
                      if not key.startswith('__')}
@@ -643,7 +643,7 @@ class ErrorStorage:
 
 
 #########################################################################################
-# loading/reloading logic
+# Loading &  Reloading Logic
 #########################################################################################
 
 class Reloader:
@@ -654,7 +654,7 @@ class Reloader:
 
     @staticmethod
     def import_apps():
-        """import or reimport modules and exposed static files"""
+        """Import or reimport modules and exposed static files"""
         folder = os.environ['PY4WEB_APPS_FOLDER']
         app = bottle.default_app()
         app.routes.clear()
@@ -664,7 +664,7 @@ class Reloader:
             path = os.path.join(folder, '__init__.py')
             module = importlib.machinery.SourceFileLoader(
                 'apps', path).load_module()
-        # the load all the apps as submodules
+        # Then load all the apps as submodules
         for app_name in os.listdir(folder):
             action.app_name = app_name
             path = os.path.join(folder, app_name)
@@ -695,7 +695,7 @@ class Reloader:
                     print('\x1b[A[FAILED] loading %s     \n%s\n' %
                           (app_name, tb))
                     Reloader.ERRORS[app_name] = tb
-        # expose static files with support for static asset management
+        # Expose static files with support for static asset management
         for path in new_apps:
             static_folder = os.path.join(path, 'static')
             if os.path.exists(static_folder):
@@ -705,7 +705,7 @@ class Reloader:
                 @bottle.route(prefix + '/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>')
                 def server_static(filename, static_folder=static_folder, version=None):
                     return bottle.static_file(filename, root=static_folder)
-        # register routes
+        # Register routes list
         routes = []
 
         def to_filename(module):
@@ -724,7 +724,7 @@ class Reloader:
 
 
 #########################################################################################
-# web server and reload logic
+# Web Server and Reload Logic: Error Handling
 #########################################################################################
 
 def error_page(code, button_text=None, href='#', color=None, message=None):
@@ -741,7 +741,7 @@ def error404(error):
     return error_page(404, button_text=guess_app_name, href='/' + guess_app_name)
 
 #########################################################################################
-# web server and reload logic
+# Web Server and Reload Logic: Operations
 #########################################################################################
 
 
@@ -762,13 +762,13 @@ def start_server(args):
 
 
 def check_compatible(version):
-    """to be called by apps to check if version is compatible with requirements"""
+    """To be called by apps to check if module version is compatible with py4web requirements"""
     from . import __version__
     return tuple(map(int, __version__.split('.'))) >= tuple(map(int, version.split('.')))
 
 
 def wsgi(**args):
-    """initializes everything, loads apps, returns the wsgi app"""
+    """Initializes everything, loads apps, returns the wsgi app"""
     initialize(**args)
     Reloader.import_apps()
     return bottle.default_app()
@@ -778,36 +778,36 @@ def get_args():
     """Handle command line arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument('apps_folder',
-                        help='path to the applications folder')
+                        help='Path to the applications folder')
     parser.add_argument('-a', '--address', default='127.0.0.1:8000',
-                        help='serving address')
+                        help='<Server Address>:<port number> or <hostname>:<port>')
     parser.add_argument('-n', '--number_workers', default=0, type=int,
-                        help='number of gunicorn workers')
+                        help='Number of gunicorn workers to utilize')
     parser.add_argument('--ssl_cert_filename', default=None, type=int,
-                        help='ssl certificate file')
+                        help='Custom ssl certificate file')
     parser.add_argument('--ssl_key_filename', default=None, type=int,
-                        help='ssl key file')
+                        help='Custom ssl key file')
     parser.add_argument('--service_folder', default='.service',
-                        type=str, help='where to store service information')
+                        type=str, help='Service Information Storage Location')
     parser.add_argument('--service_db_uri', default='sqlite://service.storage',
-                        type=str, help='db uri for logging')
+                        type=str, help='Alternative db uri for service logs')
     parser.add_argument('-d', '--dashboard_mode', default='full',
-                        help='dashboard mode: demo, readonly, full (default), none')
+                        help='Dashboard mode: demo, readonly, full (default), none')
     parser.add_argument('-p', '--password_file', default='password.txt',
-                        help='file containing the encrypted (CRYPT) password')
+                        help='File containing the encrypted (CRYPT) password')
     parser.add_argument('-c', '--create', action='store_true', default=True,
-                        help='create the missing folder and apps')
-    # parse command line arguments
+                        help='Create missing folders and apps without prompting')
+    # Parse command line arguments
     return parser.parse_args()
 
 
 def initialize(**args):
-    """initialize from args"""
+    """Initialize from args"""
     for key in args:
         os.environ['PY4WEB_' + key.upper()] = str(args[key])    
     apps_folder = os.environ['PY4WEB_APPS_FOLDER']
     service_folder = os.path.join(apps_folder, os.environ['PY4WEB_SERVICE_FOLDER'])
-    # if the apps folder does not exist create it and populate it
+    # If the apps folder does not exist create it and populate it
     if args.get('create'):
         if not os.path.exists(apps_folder):
             os.makedirs(apps_folder)
@@ -817,7 +817,7 @@ def initialize(**args):
                 fp.write('')
         if not os.path.exists(service_folder):
             os.mkdir(service_folder)
-        # upzip the _dashboard app if old or dos not exist
+        # Upzip the _dashboard app if it is old or does not exist
         assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
         for filename in ['py4web.app._dashboard.zip', 'py4web.app._default.zip']:
             zip_filename = os.path.join(assets_dir, filename)
@@ -833,17 +833,17 @@ def initialize(**args):
 
 
 def main(args=None):
-    """The main entry point: starts the sever and creates folders"""
-    # store them in the action to make them visible
+    """The main entry point: Start the server and create folders"""
+    # Store args in the action to make them visible
     print(ART)
     action.args = args = args or get_args()
-    # if we know where the password is stored, read it, else ask for one
+    # If we know where the password is stored, read it, otherwise ask for one
     if args.dashboard_mode not in ('demo', 'none') and not os.path.exists(args.password_file):
         password = getpass.getpass('Choose a one-time dashboard password: ')
         print('Storing the hashed password in file "%s"' % args.password_file)
         with open(args.password_file, 'w') as fp:
             fp.write(str(pydal.validators.CRYPT()(password)[0]))
-    # store all args in evironment variables to make then available to the processes
+    # Store all args in environment variables to make them available to the following processes
     # and create any missing folders
     initialize(**args.__dict__)
     if os.path.exists(os.path.join(args.apps_folder, '_dashboard')):
