@@ -10,7 +10,7 @@ db.define_table(
     Field('name', requires=IS_NOT_IN_DB(db, 'person.name')),
     Field('job', requires=IS_NOT_EMPTY()))
 
-# simpl reference example
+# simple reference example
 db.define_table(
     'superhero',
     Field('name'),
