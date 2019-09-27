@@ -3,7 +3,7 @@
 """
 | This file is part of the py4web Web Framework
 | Copyrighted by Massimo Di Pierro <mdipierro@cs.depaul.edu>
-| License: LGPLv3 (http://www.gnu.org/licenses/lgpl.html)
+| License: "BSDv3" (https://opensource.org/licenses/BSD-3-Clause)
 
 File operations
 ---------------
