@@ -140,53 +140,109 @@ class LDAPPlugin(object):
     is "error" and can be set to error, warning, info, debug.
     """
 
-    def __init__(self, **args):
-        defaults = dict(
-            server='ldap',
-            port=None,
-            base_dn='ou=users,dc=domain,dc=com',
-            mode='uid',
-            secure=False,
-            self_signed_certificate=None,  # See NOTE below
-            cert_path=None,
-            cert_file=None,
-            cacert_path=None,
-            cacert_file=None,
-            key_file=None,
-            bind_dn=None,
-            bind_pw=None,
-            filterstr='objectClass=*',
-            username_attrib='uid',
-            custom_scope='subtree',
-            allowed_groups=None,
-            manage_user=False,
-            user_firstname_attrib='cn:1',
-            user_lastname_attrib='cn:2',
-            user_mail_attrib='mail',
-            manage_groups=False,
-            manage_groups_callback=[],
-            db=None,
-            group_dn=None,
-            group_name_attrib='cn',
-            group_member_attrib='memberUid',
-            group_filterstr='objectClass=*',
-            group_mapping={},
-            tls=False,
-            logger=logging)
-        for key in defaults: args[key] = args.get(key, defaults[key])
-        self.parameters = args
-        self.logger = args['logger']
-        del args['logger']
+    def __init__(self, 
+                 server='ldap',
+                 port=None,
+                 base_dn='ou=users,dc=domain,dc=com',
+                 mode='uid',
+                 secure=False,
+                 self_signed_certificate=None,  # See NOTE below
+                 cert_path=None,
+                 cert_file=None,
+                 cacert_path=None,
+                 cacert_file=None,
+                 key_file=None,
+                 bind_dn=None,
+                 bind_pw=None,
+                 filterstr='objectClass=*',
+                 username_attrib='uid',
+                 custom_scope='subtree',
+                 allowed_groups=None,
+                 manage_user=False,
+                 user_firstname_attrib='cn:1',
+                 user_lastname_attrib='cn:2',
+                 user_mail_attrib='mail',
+                 manage_groups=False,
+                 manage_groups_callback=[],
+                 db=None,
+                 group_dn=None,
+                 group_name_attrib='cn',
+                 group_member_attrib='memberUid',
+                 group_filterstr='objectClass=*',
+                 group_mapping={},
+                 tls=False,
+                 logger=logging):
+
+        self.server = server
+        self.port = port
+        self.base_dn = base_dn
+        self.mode = mode
+        self.secure = secure
+        self.self_signed_certificate = self_signed_certificate
+        self.cert_path = cert_path
+        self.cert_file = cert_file
+        self.cacert_path = cacert_path
+        self.cacert_file = cacert_file
+        self.key_file = key_file
+        self.bind_dn = bind_dn
+        self.bind_pw = bind_pw
+        self.filterstr = filterstr
+        self.username_attrib = username_attrib
+        self.custom_scope = custom_scope
+        self.allowed_groups = allowed_groups
+        self.manage_user = manage_user
+        self.user_firstname_attrib = user_firstname_attrib
+        self.user_lastname_attrib = user_lastname_attrib
+        self.user_mail_attrib = user_mail_attrib
+        self.manage_groups = manage_groups
+        self.manage_groups_callback = manage_groups_callback
+        self.db = db
+        self.group_dn = db
+        self.group_name_attrib = group_name_attrib
+        self.group_member_attrib = group_member_attrib
+        self.group_filterstr = group_filterstr
+        self.group_mapping = group_mapping
+        self.tls = tls
+        self.logger = logger
         # rfc4515 syntax
-        filterstr = self.parameters.get('filterstr')
-        if filterstr[0] == '(' and filterstr[-1] == ')': 
-            self.parameters['filterstr'] = filterstr[1:-1]
+        self.filterstr = self.filterstr.lstrip('(').rstrip(')')
 
     def check_credentials(self, username, password):
-        for key in self.parameters:
-            exec("%s = %r" % (key, self.parameters[key]))
+
+        server = self.server
+        port = self.port
+        base_dn = self.base_dn
+        mode = self.mode
+        secure = self.secure
+        self_signed_certificate = self.self_signed_certificate
+        cert_path = self.cert_path
+        cert_file = self.cert_file
+        cacert_path = self.cacert_path
+        cacert_file = self.cacert_file
+        key_file = self.key_file
+        bind_dn = self.bind_dn
+        bind_pw = self.bind_pw
+        filterstr = self.filterstr
+        username_attrib = self.username_attrib
+        custom_scope = self.custom_scope
+        allowed_groups = self.allowed_groups
+        manage_user = self.manage_user
+        user_firstname_attrib = self.user_firstname_attrib
+        user_lastname_attrib = self.user_lastname_attrib
+        user_mail_attrib = self.user_mail_attrib
+        manage_groups = self.manage_groups
+        manage_groups_callback = self.manage_groups_callback
+        db = self.db
+        group_dn = self.db
+        group_name_attrib = self.group_name_attrib
+        group_member_attrib = self.group_member_attrib
+        group_filterstr = self.group_filterstr
+        group_mapping = self.group_mapping
+        tls = self.tls
+        logger = self.logger
+
         if password == '':  # http://tools.ietf.org/html/rfc4513#section-5.1.2
-            self.logger.warning('blank password not allowed')
+            logger.warning('blank password not allowed')
             return False
         logger.debug('mode: [%s] manage_user: [%s] custom_scope: [%s] manage_groups: [%s]' % 
                           (str(mode), str(manage_user), str(custom_scope), str(manage_groups)))
@@ -218,7 +274,7 @@ class LDAPPlugin(object):
                 # Microsoft Active Directory
                 if '@' not in username:
                     domain = []
-                    for x in ldap_basedn.split(','):
+                    for x in base_dn.split(','):
                         if "DC=" in x.upper():
                             domain.append(x.split('=')[-1])
                     username = "%s@%s" % (username, '.'.join(domain))
@@ -228,20 +284,20 @@ class LDAPPlugin(object):
                 # result will look like the following:
                 # ['ldap://ForestDnsZones.domain.com/DC=ForestDnsZones,
                 #    DC=domain,DC=com']
-                if ldap_binddn:
+                if bind_dn:
                     # need to search directory with an admin account 1st
-                    con.simple_bind_s(ldap_binddn, ldap_bindpw)
+                    con.simple_bind_s(bind_dn, bind_pw)
                 else:
                     # credentials should be in the form of username@domain.tld
                     con.simple_bind_s(username, password)
                 # this will throw an index error if the account is not found
-                # in the ldap_basedn
+                # in the base_dn
                 requested_attrs = ['sAMAccountName']
                 if manage_user:
                     requested_attrs.extend([user_firstname_attrib, user_lastname_attrib, user_mail_attrib])
 
                 result = con.search_ext_s(
-                    ldap_basedn, ldap.SCOPE_SUBTREE,
+                    base_dn, ldap.SCOPE_SUBTREE,
                     "(&(sAMAccountName=%s)(%s))" % (ldap.filter.escape_filter_chars(username_bare), filterstr),
                     requested_attrs)[0][1]
                 if not isinstance(result, dict):
@@ -249,7 +305,7 @@ class LDAPPlugin(object):
                     # {'sAMAccountName': [username_bare]}
                     logger.warning('User [%s] not found!' % username)
                     return False
-                if ldap_binddn:
+                if bind_dn:
                     # We know the user exists & is in the correct OU
                     # so now we just check the password
                     con.simple_bind_s(username, password)
@@ -268,9 +324,9 @@ class LDAPPlugin(object):
 
             if mode == 'cn':
                 # OpenLDAP (CN)
-                if ldap_binddn and ldap_bindpw:
-                    con.simple_bind_s(ldap_binddn, ldap_bindpw)
-                dn = "cn=" + username + "," + ldap_basedn
+                if bind_dn and bind_pw:
+                    con.simple_bind_s(bind_dn, bind_pw)
+                dn = "cn=" + username + "," + base_dn
                 con.simple_bind_s(dn, password)
                 if manage_user:
                     result = con.search_s(dn, ldap.SCOPE_BASE,
@@ -279,12 +335,12 @@ class LDAPPlugin(object):
 
             if mode == 'uid':
                 # OpenLDAP (UID)
-                if ldap_binddn and ldap_bindpw:
-                    con.simple_bind_s(ldap_binddn, ldap_bindpw)
-                    dn = "uid=" + username + "," + ldap_basedn
-                    dn = con.search_s(ldap_basedn, ldap.SCOPE_SUBTREE, "(uid=%s)" % username, [''])[0][0]
+                if bind_dn and bind_pw:
+                    con.simple_bind_s(bind_dn, bind_pw)
+                    dn = "uid=" + username + "," + base_dn
+                    dn = con.search_s(base_dn, ldap.SCOPE_SUBTREE, "(uid=%s)" % username, [''])[0][0]
                 else:
-                    dn = "uid=" + username + "," + ldap_basedn
+                    dn = "uid=" + username + "," + base_dn
                 con.simple_bind_s(dn, password)
                 if manage_user:
                     result = con.search_s(dn, ldap.SCOPE_BASE,
@@ -306,7 +362,7 @@ class LDAPPlugin(object):
                 if manage_user:
                     attrs.extend([user_firstname_attrib, user_lastname_attrib, user_mail_attrib])
                 # perform the actual search
-                company_search_result = con.search_s(ldap_basedn,
+                company_search_result = con.search_s(base_dn,
                                                      ldap.SCOPE_SUBTREE,
                                                      filter, attrs)
                 dn = company_search_result[0][0]
@@ -316,10 +372,10 @@ class LDAPPlugin(object):
 
             if mode == 'uid_r':
                 # OpenLDAP (UID) with subtree search and multiple DNs
-                if isinstance(ldap_basedn, list):
-                    basedns = ldap_basedn
+                if isinstance(base_dn, list):
+                    basedns = base_dn
                 else:
-                    basedns = [ldap_basedn]
+                    basedns = [base_dn]
                 filter = '(&(uid=%s)(%s))' % (ldap.filter.escape_filter_chars(username), filterstr)
                 found = False
                 for basedn in basedns:
@@ -342,21 +398,21 @@ class LDAPPlugin(object):
             if mode == 'custom':
                 # OpenLDAP (username_attrs) with subtree search and
                 # multiple DNs
-                if isinstance(ldap_basedn, list):
-                    basedns = ldap_basedn
+                if isinstance(base_dn, list):
+                    basedns = base_dn
                 else:
-                    basedns = [ldap_basedn]
+                    basedns = [base_dn]
                 filter = '(&(%s=%s)(%s))' % (username_attrib, ldap.filter.escape_filter_chars(username), filterstr)
                 if custom_scope == 'subtree':
-                    ldap_scope = ldap.SCOPE_SUBTREE
+                    scope = ldap.SCOPE_SUBTREE
                 elif custom_scope == 'base':
-                    ldap_scope = ldap.SCOPE_BASE
+                    scope = ldap.SCOPE_BASE
                 elif custom_scope == 'onelevel':
-                    ldap_scope = ldap.SCOPE_ONELEVEL
+                    scope = ldap.SCOPE_ONELEVEL
                 found = False
                 for basedn in basedns:
                     try:
-                        result = con.search_s(basedn, ldap_scope, filter)
+                        result = con.search_s(basedn, scope, filter)
                         if result:
                             user_dn = result[0][0]
                             # Check the password
@@ -444,12 +500,43 @@ class LDAPPlugin(object):
     def is_user_in_allowed_groups(self,
                                   username,
                                   password=None):
+
+        server = self.server
+        port = self.port
+        base_dn = self.base_dn
+        mode = self.mode
+        secure = self.secure
+        self_signed_certificate = self.self_signed_certificate
+        cert_path = self.cert_path
+        cert_file = self.cert_file
+        cacert_path = self.cacert_path
+        cacert_file = self.cacert_file
+        key_file = self.key_file
+        bind_dn = self.bind_dn
+        bind_pw = self.bind_pw
+        filterstr = self.filterstr
+        username_attrib = self.username_attrib
+        custom_scope = self.custom_scope
+        allowed_groups = self.allowed_groups
+        manage_user = self.manage_user
+        user_firstname_attrib = self.user_firstname_attrib
+        user_lastname_attrib = self.user_lastname_attrib
+        user_mail_attrib = self.user_mail_attrib
+        manage_groups = self.manage_groups
+        manage_groups_callback = self.manage_groups_callback
+        db = self.db
+        group_dn = self.db
+        group_name_attrib = self.group_name_attrib
+        group_member_attrib = self.group_member_attrib
+        group_filterstr = self.group_filterstr
+        group_mapping = self.group_mapping
+        tls = self.tls
+        logger = self.logger
+
         """
         Figure out if the username is a member of an allowed group
         in ldap or not
         """
-        for key in self.parameters:
-            exec("%s = %r" % (key, self.parameters[key]))
         #
         # Get all group name where the user is in actually in ldap
         # #########################################################
@@ -569,12 +656,43 @@ class LDAPPlugin(object):
         """
         Inicialize ldap connection
         """
-        for key in self.parameters:
-            exec("%s = %r" % (key, self.parameters[key]))
-        logger.info('[%s] Initialize ldap connection' % str(ldap_server))
+
+        server = self.server
+        port = self.port
+        base_dn = self.base_dn
+        mode = self.mode
+        secure = self.secure
+        self_signed_certificate = self.self_signed_certificate
+        cert_path = self.cert_path
+        cert_file = self.cert_file
+        cacert_path = self.cacert_path
+        cacert_file = self.cacert_file
+        key_file = self.key_file
+        bind_dn = self.bind_dn
+        bind_pw = self.bind_pw
+        filterstr = self.filterstr
+        username_attrib = self.username_attrib
+        custom_scope = self.custom_scope
+        allowed_groups = self.allowed_groups
+        manage_user = self.manage_user
+        user_firstname_attrib = self.user_firstname_attrib
+        user_lastname_attrib = self.user_lastname_attrib
+        user_mail_attrib = self.user_mail_attrib
+        manage_groups = self.manage_groups
+        manage_groups_callback = self.manage_groups_callback
+        db = self.db
+        group_dn = self.db
+        group_name_attrib = self.group_name_attrib
+        group_member_attrib = self.group_member_attrib
+        group_filterstr = self.group_filterstr
+        group_mapping = self.group_mapping
+        tls = self.tls
+        logger = self.logger
+
+        logger.info('[%s] Initialize ldap connection' % str(server))
         if secure:
-            if not ldap_port:
-                ldap_port = 636
+            if not port:
+                port = 636
 
             if self_signed_certificate:
                 # NOTE : If you have a self-signed SSL Certificate pointing over "port=686" and "secure=True" alone
@@ -594,12 +712,12 @@ class LDAPPlugin(object):
             if key_file:
                 ldap.set_option(ldap.OPT_X_TLS_KEYFILE, key_file)
                 
-            con = ldap.initialize("ldaps://" + ldap_server + ":" + str(ldap_port))
+            con = ldap.initialize("ldaps://" + server + ":" + str(port))
         else:
-            if not ldap_port:
-                ldap_port = 389
+            if not port:
+                port = 389
             con = ldap.initialize(
-                "ldap://" + ldap_server + ":" + str(ldap_port))
+                "ldap://" + server + ":" + str(port))
         if tls:
             con.start_tls_s()
         return con
@@ -608,8 +726,39 @@ class LDAPPlugin(object):
         """
         Get all group names from ldap where the user is in
         """
-        for key in self.parameters:
-            exec("%s = %r" % (key, self.parameters[key]))
+
+        server = self.server
+        port = self.port
+        base_dn = self.base_dn
+        mode = self.mode
+        secure = self.secure
+        self_signed_certificate = self.self_signed_certificate
+        cert_path = self.cert_path
+        cert_file = self.cert_file
+        cacert_path = self.cacert_path
+        cacert_file = self.cacert_file
+        key_file = self.key_file
+        bind_dn = self.bind_dn
+        bind_pw = self.bind_pw
+        filterstr = self.filterstr
+        username_attrib = self.username_attrib
+        custom_scope = self.custom_scope
+        allowed_groups = self.allowed_groups
+        manage_user = self.manage_user
+        user_firstname_attrib = self.user_firstname_attrib
+        user_lastname_attrib = self.user_lastname_attrib
+        user_mail_attrib = self.user_mail_attrib
+        manage_groups = self.manage_groups
+        manage_groups_callback = self.manage_groups_callback
+        db = self.db
+        group_dn = self.db
+        group_name_attrib = self.group_name_attrib
+        group_member_attrib = self.group_member_attrib
+        group_filterstr = self.group_filterstr
+        group_mapping = self.group_mapping
+        tls = self.tls
+        logger = self.logger
+
         logger.info('[%s] Get user groups from ldap' % str(username))
         #
         # Get all group name where the user is in actually in ldap
@@ -635,9 +784,9 @@ class LDAPPlugin(object):
             # result will look like the following:
             # ['ldap://ForestDnsZones.domain.com/DC=ForestDnsZones,
             #     DC=domain,DC=com']
-            if ldap_binddn:
+            if bind_dn:
                 # need to search directory with an admin account 1st
-                con.simple_bind_s(ldap_binddn, ldap_bindpw)
+                con.simple_bind_s(bind_dn, bind_pw)
                 logger.debug('Ldap bind connect...')
             else:
                 # credentials should be in the form of username@domain.tld
@@ -647,12 +796,12 @@ class LDAPPlugin(object):
             bare = ldap.filter.escape_filter_chars(username_bare)
             username = con.search_ext_s(base_dn,
                                         ldap.SCOPE_SUBTREE,
-                                        "(&(sAMAccountName=%s)(%s))" % (base, filterstr),
+                                        "(&(sAMAccountName=%s)(%s))" % (bare, filterstr),
                                         ["cn"])[0][0]
         else:
-            if ldap_binddn:
+            if bind_dn:
                 # need to search directory with an bind_dn account 1st
-                con.simple_bind_s(ldap_binddn, ldap_bindpw)
+                con.simple_bind_s(bind_dn, bind_pw)
             else:
                 # bind as anonymous
                 con.simple_bind_s('', '')
