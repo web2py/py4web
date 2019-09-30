@@ -91,7 +91,7 @@
     };
     auth.methods.submit_edit_profile = function() {
         var self = this;
-        axios.post('../auth/api/edit_profile', this.form).then(function(res){
+        axios.post('../auth/api/profile', this.form).then(function(res){
                 if(res.data.errors) self.errors = res.data.errors;
                 else if (res.data.status=='error') alert(res.data.message);
                 else self.go('login');

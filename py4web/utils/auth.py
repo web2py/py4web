@@ -197,7 +197,7 @@ class Auth(Fixture):
                     data = self.change_password(user, vars.get('new_password'), vars.get('password'))
                 elif user and path == 'api/change_email':
                     data = self.change_email(user, vars.get('new_email'), vars.get('password'))
-                elif user and path == 'api/update_profile':
+                elif user and path == 'api/profile':
                     data = self.update_profile(user, **vars)
                 else:
                     data = {'status': 'error', 'message': 'undefined'}
