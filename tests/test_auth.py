@@ -185,7 +185,7 @@ class TestAuth(unittest.TestCase):
             )
         body = {'first_name': 'Max', 'last_name': 'Powers', 'password': 'xyz'}
         self.assertEqual(
-            self.auth.action('api/update_profile', 'POST', {}, body),
+            self.auth.action('api/profile', 'POST', {}, body),
             {
                 'errors': {'password': 'invalid'}, 
                 'status': 'error', 
@@ -195,7 +195,7 @@ class TestAuth(unittest.TestCase):
 
         body = {'first_name': 'Max', 'last_name': 'Powers'}
         self.assertEqual(
-            self.auth.action('api/update_profile', 'POST', {}, body),
+            self.auth.action('api/profile', 'POST', {}, body),
             {
                 'updated': 1, 
                 'status': 'success', 
