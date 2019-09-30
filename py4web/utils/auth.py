@@ -61,7 +61,8 @@ class Auth(Fixture):
         self.route = None
         self.registration_requires_confirmation = registration_requires_confirmation
         self.registration_requires_appoval = registration_requires_appoval
-        self._link = None # this variable is not thread safe (only for testing)
+        # The self._link variable is not thread safe (only intended for testing)
+        self._link = None
         if db and define_tables:
             self.define_tables()
         self.plugins = {}
@@ -83,7 +84,7 @@ class Auth(Fixture):
                 *self.extra_auth_user_fields)
 
     def signature(self):
-        """returns a list of fields for a table fignature"""
+        """Returns a list of fields for a table signature"""
         Field = self.db.Field
         now = lambda: datetime.datetime.utcnow()
         user = lambda s=self: s.get_user().get('id')
@@ -100,14 +101,14 @@ class Auth(Fixture):
                   default=user, update=user, writable=False, readable=False)]
         return fields
 
-    # validation fixtures
+    # Validation fixtures
     @property
     def user(self):
-        """use as @action.uses(auth.user)"""
+        """Use as @action.uses(auth.user)"""
         return AuthEnforcer(self)
 
     def condition(self, condition):
-        """use as @action.uses(auth.condition(lambda user: True))"""
+        """Use as @action.uses(auth.condition(lambda user: True))"""
         return AuthEnforcer(self, condition)
 
     # utilities
@@ -128,12 +129,12 @@ class Auth(Fixture):
 
     def enable(self, route='auth/'):
         self.route = route
-        """this assumes the bottle framework and exposes all actions as /{app_name}/auth/{path}"""
+        """This assumes the bottle framework and exposes all actions as /{app_name}/auth/{path}"""
         def responder(path):
             return self.action(path, request.method, request.query, request.json)        
         action(route + '<path:path>', method=['GET','POST'])(action.uses(self)(responder))
 
-    # handle http requests
+    # Handle http requests
 
     def action(self, path, method, get_vars, post_vars):
         if path.startswith('plugin/'):
@@ -157,7 +158,7 @@ class Auth(Fixture):
                 if path == 'api/register':
                     data = self.register(vars, send=True).as_dict()
                 elif path == 'api/login':
-                    # use PAM or LDAP
+                    # Prioritize PAM or LDAP logins if enabled
                     if 'pam' in self.plugins or 'ldap' in self.plugins:
                         plugin_name = 'pam' if 'pam' in self.plugins else 'ldap'
                         username, password = vars.get('email'), vars.get('password')
@@ -173,7 +174,7 @@ class Auth(Fixture):
                                 data = self.get_or_register_user(data)
                         else:
                             data = self._error('Invalid Credentials')
-                    # else use normal login
+                    # Else use normal login
                     else:
                         user, error = self.login(**vars)
                         if user:
@@ -210,7 +211,7 @@ class Auth(Fixture):
             return data
         elif path == 'logout':
             self.session['user'] = None
-            # somehow call revoke for active plugin
+            # Somehow call revoke for active plugin
         elif path == 'verify_email' and self.db:
             if self.verify_email(get_vars.get('token')):
                 redirect(URL('auth/email_verified'))
@@ -218,7 +219,7 @@ class Auth(Fixture):
                 redirect(URL('auth/token_expired'))
         return Template('auth.html').transform({'path': path})        
 
-    # methods that do not assume a user
+    # Methods that do not assume a user
 
     def register(self, fields, send=True):
         fields['username'] = fields.get('username', '').lower()
@@ -269,7 +270,7 @@ class Auth(Fixture):
         if user:
             return db(db.auth_user.id==user.id).validate_and_update(password=new_password).as_dict()
 
-    # methods that assume a user
+    # Methods that assume a user
 
     def change_password(self, user, new_password, password=None, check=True):
         db = self.db
@@ -291,14 +292,16 @@ class Auth(Fixture):
 
     def gdpr_unsubscribe(self, user, send=True):
         """GDPR unsubscribe means we delete first_name, last_name,
-        replace email with hash of the actual email and notify the user
-        Essentially we lose the info about who is who
-        Yet we have the ability to verify that a given email has unsubscribed 
-        and maybe restore it if it was a mistake.
-        Despite unsubscription we retain enought info to be able to comply
-        with police audit for illecit activities.
-        I am not a lwayer but I believe this to be OK.
-        Check with your lwayr before using this feature.
+        then replace email with hash of the actual email and notify the user.
+        
+        Essentially we erase the user info yet retain the ability to verify
+        that a given email has unsubscribed and maybe restore it if requested.
+        
+        Despite unsubscription we retain enough info to be able to comply
+        with audit requests for illicit activities.
+        
+        I am not a lawyer but I believe this complies, 
+        Check with your lawyer before using this feature, no warranty expressed or implied.
         """
         user = user.as_dict()
         id = user['id']
@@ -332,7 +335,7 @@ class Auth(Fixture):
             data['id'] = db.auth_user.insert(**db.auth_user._filter_fields(user))
         return data
 
-    # private methods
+    # Private methods
 
     def _query_from_token(self,token):
         query = self.db.auth_user.action_token == 'reset-password-request:' + token
@@ -342,10 +345,10 @@ class Auth(Fixture):
     def _error(self, message, code=400):
         return {'status': 'error', 'message': message, 'code': code}
 
-    # other service methods (that can be overwritten)
+    # Other service methods (that can be overwritten)
 
     def send(self, name, user, **attrs):
-        """extend the object and override this function to send messages with
+        """Extend the object and override this function to send messages with
         twilio or onesignal or alternative method other than email"""
         message = self.messages[name]
         d = dict(user)

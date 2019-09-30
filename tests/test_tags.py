@@ -17,7 +17,7 @@ class TestTags(unittest.TestCase):
         properties.add(id2, 'material/wood')
 
         self.assertTrue(properties.get(id1), ['color/red','style/modern'])
-        self.assertTrue(properties.get(id2), ['color/gree','material/wood'])
+        self.assertTrue(properties.get(id2), ['color/green','material/wood'])
 
         rows = db(properties.find(['style/modern'])).select()
         self.assertTrue(rows.first().id, id1)

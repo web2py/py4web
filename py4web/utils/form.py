@@ -140,7 +140,7 @@ class Form(object):
 
         if isinstance(table, list):
             dbio = False
-            # mimic a table from a list of fields without calling define_table
+            # Mimic a table from a list of fields without calling define_table
             form_name = form_name or 'none'
             for field in table: field.tablename = getattr(field,'tablename',form_name)
 
@@ -173,8 +173,8 @@ class Form(object):
             post_vars = request.forms
             self.submitted = True
             process = False
-            # we only a process a form if it is POST and the formkey matches (correct formname and crsf)
-            # notice we never expose the crsf uuid, we only use to sign the form uuid
+            # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
+            # Notice: we never expose the crsf uuid, we only use to sign the form uuid
             if request.method == 'POST':                
                 if post_vars.get('_formkey') == self.form_name:
                     process = True
@@ -207,7 +207,7 @@ class Form(object):
                 elif dbio:
                     self.deleted = True
                     self.record.delete_record()
-        # store key for future CSRF
+        # Store key for future CSRF
         self.formkey = self.form_name
 
     def update_or_insert(self):

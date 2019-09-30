@@ -90,14 +90,14 @@ if MODE in ('demo', 'readonly', 'full'):
     @action('routes')
     @session_secured
     def routes():
-        """returns current registered rounts"""
+        """Returns current registered routes"""
         return {'payload':Reloader.ROUTES, 'status':'success'}
     
 
     @action('apps')
     @session_secured
     def apps():
-        """returns a list of installed apps"""
+        """Returns a list of installed apps"""
         apps = os.listdir(FOLDER)
         apps = [{'name':app, 'error':Reloader.ERRORS.get(app)} 
                 for app in apps 
@@ -110,7 +110,7 @@ if MODE in ('demo', 'readonly', 'full'):
     @action('walk/<path:path>')
     @session_secured
     def walk(path):
-        """returns a nested folder structure as a tree"""
+        """Returns a nested folder structure as a tree"""
         top = os.path.join(FOLDER, path)
         if not os.path.exists(top) or not os.path.isdir(top):
             return {'status':'error', 'message':'folder does not exist'}
@@ -127,7 +127,7 @@ if MODE in ('demo', 'readonly', 'full'):
     @action('load/<path:path>')
     @session_secured
     def load(path):
-        """loads a text file"""
+        """Loads a text file"""
         path = safe_join(FOLDER, path) or abort()
         content = open(path,'rb').read().decode('utf8')
         return {'payload':content, 'status':'success'}
@@ -135,14 +135,14 @@ if MODE in ('demo', 'readonly', 'full'):
     @action('load_bytes/<path:path>')
     @session_secured
     def load_bytes(path):
-        """loads a binary file"""
+        """Loads a binary file"""
         path = safe_join(FOLDER, path) or abort()
         return open(path,'rb').read()
 
     @action('packed/<path:path>')
     @session_secured
     def packed(path):
-        """packs an app"""
+        """Packs an app"""
         appname = path.split('.')[-2]
         appname = sanitize(appname)
         app_dir = os.path.join(FOLDER, appname)
@@ -164,7 +164,7 @@ if MODE in ('demo', 'readonly', 'full'):
     @action('tickets')
     @session_secured
     def tickets():
-        """returns most recent tickets groupped by path+error"""
+        """Returns most recent tickets grouped by path+error"""
         tickets = error_storage.get()
         return {'payload': tickets}
 
@@ -176,7 +176,7 @@ if MODE in ('demo', 'readonly', 'full'):
     @action('rest/<path:path>', method=['GET','POST','PUT','DELETE'])
     @session_secured
     def api(path):
-        # this is not final, equires pydal 19.5
+        # this is not final, requires pydal 19.5
         args = path.split('/')
         app_name = args[0]
         from py4web.core import Reloader, DAL
@@ -207,14 +207,14 @@ if MODE == 'full':
     @action('reload')
     @session_secured
     def reload():
-        """reloads installed apps"""
+        """Reloads installed apps"""
         Reloader.import_apps()
         return 'ok'
 
     @action('save/<path:path>', method='POST')
     @session_secured
     def save(path):
-        """saves a file"""
+        """Saves a file"""
         path = safe_join(FOLDER, path) or abort()
         with open(path, 'wb') as myfile:
             myfile.write(request.body.read())
@@ -223,7 +223,7 @@ if MODE == 'full':
     @action('delete/<path:path>', method='POST')
     @session_secured
     def delete(path):
-        """deletes a file"""
+        """Deletes a file"""
         fullpath = safe_join(FOLDER, path) or abort()
         recursive_unlink(fullpath)
         return {'status':'success'}
