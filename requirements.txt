@@ -1,8 +1,8 @@
 threadsafevariable
 pydal >= 20190915.2
 pyjwt >= 1.6.4
+pluralize >= 0.1.5
 yatl
-pluralize
 bottle
 tornado
 gunicorn

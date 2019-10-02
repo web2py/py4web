@@ -3,11 +3,13 @@ from py4web import *
 from py4web.utils.form import Form, FormStyleBulma
 from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
-from yatl.helpers import INPUT, H1
+from yatl.helpers import INPUT, H1, HTML, BODY, A
 from . models import db
 
 # create a session
 session = Session(secret='mysecret')
+
+T = Translator(os.path.join(os.path.dirname(__file__), 'translations'))
 
 # exposes services necessary to access the db.thing via ajax
 publisher = Publisher(db, policy=ALLOW_ALL_POLICY)
@@ -32,7 +34,7 @@ def error():
 def example_form(id=None):
     form = Form(db.person, id, deletable=False, formstyle=FormStyleBulma)
     rows = db(db.person).select()
-    return dict(form=form, rows=rows) 
+    return dict(form=form, rows=rows)
 
 # exposed as /examples/grid
 @action('grid')
@@ -40,8 +42,21 @@ def example_form(id=None):
 def example_grid():
     return dict(grid=publisher.grid(db.person)) 
 
+@action('hello')
+@action.uses(T)
+def hello():
+    return str(T("Hello World"))
+
+@action('count')
+@action('count/<number:int>')
+@action.uses(T)
+def count(number=1):
+    message = T('Cat').format(n=number)
+    link = A(T('more'), _href=URL('count/%s' % (number+1)))
+    return HTML(BODY(H1(message, " ", link))).xml()
+
 @action('forms', method=['GET','POST'])
-@action.uses('forms.html', session, db)
+@action.uses('forms.html', session, db, T)
 def example_multiple_forms():
     name = Field('name', requires=IS_NOT_EMPTY())
     forms = [
