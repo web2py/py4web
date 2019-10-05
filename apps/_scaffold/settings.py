@@ -8,6 +8,8 @@ This file is provided as an example:
 import os
 # db settings
 APP_FOLDER = os.path.dirname(__file__)
+# DB_FOLDER:    Sets the place where migration files will be created
+#               and is the store location for SQLite databases
 DB_FOLDER = os.path.join(APP_FOLDER, 'databases')
 DB_URI = 'sqlite://storage.db'
 DB_POOL_SIZE = 1
