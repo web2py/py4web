@@ -6,7 +6,7 @@
     <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
     <link rel="stylesheet" href="css/bulma.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    [[block page_head]]<!-- individual page can customize head here -->[[end]]
+    [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
   <body>    
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
@@ -24,7 +24,7 @@
       <div id="left-navbar" class="navbar-menu">
         <div class="navbar-start">       
           <a class="navbar-item" href="[[=URL('index')]]">Home</a>
-          [[block page_menu_items]]<!-- individual page can add menu items here -->[[end]]
+          [[block page_menu_items]]<!-- individual pages can add menu items here -->[[end]]
         </div>
         <div class="navbar-end">
           <div class="navbar-item">
@@ -42,11 +42,11 @@
     </nav>
     <section class="section">
       <div class="container">
-        <h1 class="title">PAGE TILE</h1>
+        <h1 class="title">PAGE TITLE</h1>
       </div>
     </section>
     <section class="section">
-      <!-- begin of HTML inserted by extending template -->
+      <!-- beginning of HTML inserted by extending template -->
       [[include]]
       <!-- end of HTML inserted by extending template -->
     </section>
