@@ -64,8 +64,8 @@
             </thead>
             <tbody>
               <tr v-for="route in routes" v-if="route.filename.startsWith(selected_app.name+'/')">
-                <td><a v-bind:href="route.rule" target="_blank"><tt>{{route.rule}}<tt></a></td>
-                <td><tt>{{route.method}}<tt></td>
+                <td><a v-bind:href="route.rule" target="_blank"><tt>{{route.rule}}</tt></a></td>
+                <td><tt>{{route.method}}</tt></td>
                 <td><a v-on:click="select_filename(route.filename)"><tt>{{route.filename}}</tt></a></td>
                 <td><tt>{{route.action}}</tt></td>
                 <td></td>
