@@ -239,16 +239,17 @@ if MODE == 'full':
             shutil.copytree(source_dir, target_dir)
 
 
-    def prepare_target_dir(form, target_dir, should_exist=False):
+    def prepare_target_dir(form, target_dir):
         """Prepares the target directory for the new app.
         If should_exist is False, leaves the directory blank."""
-        if os.path.exists(target_dir):
-            if form['mode'] == 'new':
+        if form['mode'] == 'new':
+            if os.path.exists(target_dir):
                 abort(500) # already validated client side
-            elif form['mode'] == 'replace':
+        elif form['mode'] == 'replace':
+            if os.path.exists(target_dir):
                 shutil.rmtree(target_dir)
-        elif should_exist and form['type'] != 'web' and not form['source'].endswith('.git'):
-            os.mkdir(target_dir)
+            else:
+                abort(500) # not a replacement
 
 
     @action('new_app', method='POST')
@@ -269,7 +270,7 @@ if MODE == 'full':
             prepare_target_dir(form, target_dir)
             install_by_unzip_or_treecopy(source, source_dir, target_dir)
         elif form['type'] == 'web':
-            prepare_target_dir(form, target_dir, should_exist=not form['source'].endswith('.git'))
+            prepare_target_dir(form, target_dir)
             source = form['source']
             if source.endswith('.zip'):  # install from the web (zip file)
                 res = requests.get(source)
