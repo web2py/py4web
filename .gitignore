@@ -43,3 +43,4 @@ apps/*/uploads/*
 apps/*/*.py[oc]
 packages/
 logs/
+password.txt
