@@ -105,8 +105,8 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -a ADDRESS, --address ADDRESS
-                        serving address
+  --host HOST           serving host
+  --port PORT           serving port
   -n NUMBER_WORKERS, --number_workers NUMBER_WORKERS
                         number of gunicorn workers
   --ssl_cert_filename SSL_CERT_FILENAME
