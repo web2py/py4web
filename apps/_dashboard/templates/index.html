@@ -3,16 +3,16 @@
     <base href="[[=URL('static')]]/">
     <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
     <link rel="stylesheet" type="text/css" href="css/future.css"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   </head>
-  <body>    
+  <body>
     <a href="https://github.com/web2py/py4web"><img style="position: absolute; width:100px; top:0; right:0; border:0;" src="../static/images/forkme.png"/></a>
     <div id="target" class="my-effects">
       <div class="login" v-if="!user">
         <h1>PY4WEB</h1>
         <h2><i class="fa fa-lock fa-2x"></i></h2>
         <form v-on:submit.prevent="login($event)">
-          <input v-model="password" type="password" placeholder="py4web password"/>          
+          <input v-model="password" type="password" placeholder="py4web password"/>
         </form>
         [[if mode=='demo':]]<div style="margin-top:10px">Demo mode: any password will get you in</div>[[pass]]
       </div>
@@ -39,7 +39,7 @@
           </div>
         </div>
       </div>
-      <div class="panel accordion" v-if="selected_app && selected_app.error">           
+      <div class="panel accordion" v-if="selected_app && selected_app.error">
         <input type="checkbox" id="traceback" checked>
         <label for="traceback">Cause of failure for {{selected_app.name}}</label>
         <div>
@@ -89,7 +89,7 @@
           <treefiles :f="walk" :p="selected_app.name"></treefiles>
         </div>
       </div>
-      <div v-show="selected_filename" class="panel accordion">        
+      <div v-show="selected_filename" class="panel accordion">
         <input type="checkbox" id="editor_container" checked>
         <label for="editor_container">File: {{selected_filename}}</label>
         <div>
@@ -174,7 +174,7 @@
         </div>
       </div>
       <div class="panel">
-        <button v-on:click="logout()">Logout</button>    
+        <button v-on:click="logout()">Logout</button>
         <div class="right">
           Created by Massimo Di Pierro @ BSDv3 License
         </div>
@@ -212,7 +212,6 @@
                   <td style="padding-top: 20px">
                     <input type="radio" name="mode" v-model="modal.form.mode" value="new"/> New App
                     <input type="radio" name="mode" v-model="modal.form.mode" value="replace"/> Replace
-                    <input type="radio" name="mode" v-model="modal.form.mode" value="overwite"/> Overwite
                   </td>
                 </tr>
               </table>
