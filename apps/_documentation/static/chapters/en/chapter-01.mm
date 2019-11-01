@@ -2,7 +2,7 @@
 
 ### Supported platforms and prerequisites
 
-PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is Python 3, which must be installed in advance. 
+PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is Python 3, which must be installed in advance.
 
 ### Installing from pip
 
@@ -22,15 +22,15 @@ py4web-start apps
 This should produce an output like:
 
 ``
-██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗ 
+██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗
 ██╔══██╗╚██╗ ██╔╝██║  ██║██║    ██║██╔════╝██╔══██╗
 ██████╔╝ ╚████╔╝ ███████║██║ █╗ ██║█████╗  ██████╔╝
 ██╔═══╝   ╚██╔╝  ╚════██║██║███╗██║██╔══╝  ██╔══██╗
 ██║        ██║        ██║╚███╔███╔╝███████╗██████╔╝
-╚═╝        ╚═╝        ╚═╝ ╚══╝╚══╝ ╚══════╝╚═════╝ 
+╚═╝        ╚═╝        ╚═╝ ╚══╝╚══╝ ╚══════╝╚═════╝
 Dashboard is at: http://127.0.0.1:8000/_dashboard
-[X] loaded _dashboard     
-[X] loaded _default     
+[X] loaded _dashboard
+[X] loaded _default
 Bottle v0.12.16 server starting up (using TornadoServer())...
 Listening on http://127.0.0.1:8000/
 Hit Ctrl-C to quit.
@@ -48,7 +48,7 @@ Once py4web is installed you can access the apps at the following urls:
 
 ``
 http://localhost:8000
-http://localhost:8000/_default 
+http://localhost:8000/_default
 http://localhost:8000/_dashboard
 http://localhost:8000/{yourappname}/index
 ``
@@ -105,8 +105,8 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -a ADDRESS, --address ADDRESS
-                        serving address
+  --host HOST           serving host
+  --port PORT           serving port
   -n NUMBER_WORKERS, --number_workers NUMBER_WORKERS
                         number of gunicorn workers
   --ssl_cert_filename SSL_CERT_FILENAME
@@ -146,7 +146,7 @@ Copy or symlink your ``apps`` folder into the gae folder, or maybe make a new ap
 Makefile
 apps
   __init__.py
-  ... your apps ... 
+  ... your apps ...
 lib
 app.yaml
 main.py
