@@ -745,7 +745,10 @@ def error404(error):
 
 def start_server(args):
     host, port = args.address.split(':')
-    if args.number_workers < 1:
+    if platform.system().lower() == 'windows':
+        # Tornado fail on windows
+        bottle.run(host=host, port=int(port), reloader=False)
+    elif args.number_workers < 1:
         bottle.run(server='tornado', host=host, port=int(port), reloader=False)
     else:
         if not gunicorn:
