@@ -2,7 +2,7 @@
 
 ### Supported platforms and prerequisites
 
-PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is Python 3, which must be installed in advance. 
+PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is Python 3, which must be installed in advance.
 
 ### Installing from pip
 
@@ -16,21 +16,21 @@ python3 -m pip install --upgrade py4web
 This will install py4web and all its dependencies. Once installed you can start it with:
 
 ``
-py4web-start apps
+py4web-start.py apps
 ``:bash
 
 This should produce an output like:
 
 ``
-██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗ 
+██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗
 ██╔══██╗╚██╗ ██╔╝██║  ██║██║    ██║██╔════╝██╔══██╗
 ██████╔╝ ╚████╔╝ ███████║██║ █╗ ██║█████╗  ██████╔╝
 ██╔═══╝   ╚██╔╝  ╚════██║██║███╗██║██╔══╝  ██╔══██╗
 ██║        ██║        ██║╚███╔███╔╝███████╗██████╔╝
-╚═╝        ╚═╝        ╚═╝ ╚══╝╚══╝ ╚══════╝╚═════╝ 
+╚═╝        ╚═╝        ╚═╝ ╚══╝╚══╝ ╚══════╝╚═════╝
 Dashboard is at: http://127.0.0.1:8000/_dashboard
-[X] loaded _dashboard     
-[X] loaded _default     
+[X] loaded _dashboard
+[X] loaded _default
 Bottle v0.12.16 server starting up (using TornadoServer())...
 Listening on http://127.0.0.1:8000/
 Hit Ctrl-C to quit.
@@ -48,7 +48,7 @@ Once py4web is installed you can access the apps at the following urls:
 
 ``
 http://localhost:8000
-http://localhost:8000/_default 
+http://localhost:8000/_default
 http://localhost:8000/_dashboard
 http://localhost:8000/{yourappname}/index
 ``
@@ -69,7 +69,7 @@ python3 -m pip install -r requirements.txt
 Once installed, you should start with
 
 ``
-./py4web-start apps
+./py4web-start.py apps
 ``:bash
 
 Notice the ``./`` ; it forces the run of the local folder's py4web and not the installed one.
@@ -85,7 +85,7 @@ python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(s
 and then ask py4web to re-use that password:
 
 ``
-py4web-start -p password.txt apps
+py4web-start.py -p password.txt apps
 ``:bash
 
 ### Command line options
@@ -93,20 +93,20 @@ py4web-start -p password.txt apps
 py4web provides multiple command line options which can be listed with ``-h``.
 
 ``
-usage: py4web-start [-h] [-a ADDRESS] [-n NUMBER_WORKERS]
-                    [--ssl_cert_filename SSL_CERT_FILENAME]
-                    [--ssl_key_filename SSL_KEY_FILENAME]
-                    [--service_db_uri SERVICE_DB_URI] [-d DASHBOARD_MODE]
-                    [-p PASSWORD_FILE] [-c]
-                    apps_folder
+usage: py4web-start.py [-h] [-a ADDRESS] [-n NUMBER_WORKERS]
+                       [--ssl_cert_filename SSL_CERT_FILENAME]
+                       [--ssl_key_filename SSL_KEY_FILENAME]
+                       [--service_db_uri SERVICE_DB_URI] [-d DASHBOARD_MODE]
+                       [-p PASSWORD_FILE] [-c]
+                       apps_folder
 
 positional arguments:
   apps_folder           path to the applications folder
 
 optional arguments:
   -h, --help            show this help message and exit
-  -a ADDRESS, --address ADDRESS
-                        serving address
+  --host HOST           serving host
+  --port PORT           serving port
   -n NUMBER_WORKERS, --number_workers NUMBER_WORKERS
                         number of gunicorn workers
   --ssl_cert_filename SSL_CERT_FILENAME
@@ -146,7 +146,7 @@ Copy or symlink your ``apps`` folder into the gae folder, or maybe make a new ap
 Makefile
 apps
   __init__.py
-  ... your apps ... 
+  ... your apps ...
 lib
 app.yaml
 main.py
