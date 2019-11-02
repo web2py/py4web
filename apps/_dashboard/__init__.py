@@ -1,8 +1,7 @@
+import base64
 import os
 import sys
-import time
 import shutil
-import datetime
 import zipfile
 import subprocess
 import io
@@ -30,7 +29,7 @@ class Logged(Fixture):
     def __init__(self, session):
         self.__prerequisites__ = [session]
         self.session = session
-        
+
     def on_request(self):
         user = self.session.get('user')
         if not user or not user.get('id'):
@@ -42,7 +41,7 @@ if MODE in ('demo', 'readonly', 'full'):
     @action('index')
     @action.uses('index.html', session, T)
     def index():
-        return dict(languages = dumps(T.local.language), 
+        return dict(languages = dumps(T.local.language),
                     mode = MODE,
                     user_id=(session.get('user') or {}).get('id'))
 
@@ -62,7 +61,7 @@ if MODE in ('demo', 'readonly', 'full'):
         if valid:
             session['user'] = dict(id=1)
         return dict(user=valid, mode=MODE)
-    
+
     @action('logout', method='POST')
     @action.uses(session)
     def logout():
@@ -74,7 +73,7 @@ if MODE in ('demo', 'readonly', 'full'):
     def dbadmin():
         return dict(languages = dumps(T.local.language))
 
-    @action('info') 
+    @action('info')
     @session_secured
     def info():
         vars = [{'name':'python', 'version':sys.version}]
@@ -92,18 +91,18 @@ if MODE in ('demo', 'readonly', 'full'):
     def routes():
         """Returns current registered routes"""
         return {'payload':Reloader.ROUTES, 'status':'success'}
-    
+
 
     @action('apps')
     @session_secured
     def apps():
         """Returns a list of installed apps"""
         apps = os.listdir(FOLDER)
-        apps = [{'name':app, 'error':Reloader.ERRORS.get(app)} 
-                for app in apps 
+        apps = [{'name':app, 'error':Reloader.ERRORS.get(app)}
+                for app in apps
                 if os.path.isdir(os.path.join(FOLDER, app)) and
                 not app.startswith('__') and
-                not app.startswith('.')]                
+                not app.startswith('.')]
         apps.sort(key=lambda item: item['name'])
         return {'payload': apps, 'status':'success'}
 
@@ -117,8 +116,8 @@ if MODE in ('demo', 'readonly', 'full'):
         store = {}
         for root, dirs, files in os.walk(top, topdown=False):
             store[root] = {
-                'dirs':list(sorted([{'name':dir, 'content':store[os.path.join(root,dir)]} 
-                                    for dir in dirs if dir[0]!='.' and dir[:2]!='__'], 
+                'dirs':list(sorted([{'name':dir, 'content':store[os.path.join(root,dir)]}
+                                    for dir in dirs if dir[0]!='.' and dir[:2]!='__'],
                                    key=lambda item: item['name'])),
                 'files':list(sorted([f for f in files if f[0]!='.' and f[-1]!='~' and f[-4:]!='.pyc']))
                 }
@@ -131,7 +130,7 @@ if MODE in ('demo', 'readonly', 'full'):
         path = safe_join(FOLDER, path) or abort()
         content = open(path,'rb').read().decode('utf8')
         return {'payload':content, 'status':'success'}
-    
+
     @action('load_bytes/<path:path>')
     @session_secured
     def load_bytes(path):
@@ -180,7 +179,7 @@ if MODE in ('demo', 'readonly', 'full'):
         args = path.split('/')
         app_name = args[0]
         from py4web.core import Reloader, DAL
-        from pydal.restapi import RestAPI, ALLOW_ALL_POLICY, DENY_ALL_POLICY        
+        from pydal.restapi import RestAPI, ALLOW_ALL_POLICY, DENY_ALL_POLICY
         policy = ALLOW_ALL_POLICY if MODE == 'full' else DENY_ALL_POLICY
         module = Reloader.MODULES[app_name]
         def url(*args): return request.url + '/' + '/'.join(args)
@@ -188,21 +187,21 @@ if MODE in ('demo', 'readonly', 'full'):
         if len(args) == 1:
             def tables(name):
                 db = getattr(module, name)
-                return [{'name': t._tablename, 
-                         'fields': t.fields, 
-                         'link': url(name, t._tablename)+'?model=true'} 
+                return [{'name': t._tablename,
+                         'fields': t.fields,
+                         'link': url(name, t._tablename)+'?model=true'}
                         for t in getattr(module, name)]
             return {'databases': [{'name':name, 'tables': tables(name)} for name in databases]}
         elif len(args) > 2 and args[1] in databases:
             db = getattr(module, args[1])
-            id = args[3] if len(args) == 4 else None            
+            id = args[3] if len(args) == 4 else None
             data = RestAPI(db, policy)(request.method, args[2], id, request.query, request.json)
         else:
             data = {}
         if 'code' in data:
             response.status = data['code']
         return data
-    
+
 if MODE == 'full':
     @action('reload')
     @session_secured
@@ -228,52 +227,70 @@ if MODE == 'full':
         recursive_unlink(fullpath)
         return {'status':'success'}
 
+
+    def install_by_unzip_or_treecopy(source, source_dir, target_dir):
+        """Installs an app by either unzipping it (if py4web installed from pip)
+        or by copying the directory tree (if installed from source)."""
+        if os.path.exists(source):
+            zfile = zipfile.ZipFile(source, 'r')
+            zfile.extractall(target_dir)
+            zfile.close()
+        else:
+            shutil.copytree(source_dir, target_dir)
+
+
+    def prepare_target_dir(form, target_dir):
+        """Prepares the target directory for the new app.
+        If should_exist is False, leaves the directory blank."""
+        if form['mode'] == 'new':
+            if os.path.exists(target_dir):
+                abort(500) # already validated client side
+        elif form['mode'] == 'replace':
+            if os.path.exists(target_dir):
+                shutil.rmtree(target_dir)
+            else:
+                abort(500) # not a replacement
+
+
     @action('new_app', method='POST')
     @session_secured
     def new_app():
         form = request.json
-        target_dir = safe_join(FOLDER, form['name'])
-        if os.path.exists(target_dir):
-            if form['mode'] == 'new':
-                abort(500) # already validated client side
-            elif form['mode'] == 'replace':
-                shutil.rmtree(target_dir)
-        elif form['type'] != 'web' and not form['source'].endswith('.git'):
-            os.mkdir(target_dir)
+        # Directory for zipped assets
         assets_dir = os.path.join(os.path.dirname(py4web.__file__), 'assets')
-        source = None
-        if form['type'] == 'minimal':            
+        target_dir = safe_join(FOLDER, form['name'])
+        if form['type'] == 'minimal':
             source = os.path.join(assets_dir,'py4web.app._minimal.zip')
+            source_dir = safe_join(FOLDER, '_minimal')
+            prepare_target_dir(form, target_dir)
+            install_by_unzip_or_treecopy(source, source_dir, target_dir)
         elif form['type'] == 'scaffold':
             source = os.path.join(assets_dir,'py4web.app._scaffold.zip')
+            source_dir = safe_join(FOLDER, '_scaffold')
+            prepare_target_dir(form, target_dir)
+            install_by_unzip_or_treecopy(source, source_dir, target_dir)
         elif form['type'] == 'web':
+            prepare_target_dir(form, target_dir)
             source = form['source']
+            if source.endswith('.zip'):  # install from the web (zip file)
+                res = requests.get(source)
+                mem_zip = io.BytesIO(res.content)
+                zfile = zipfile.ZipFile(mem_zip, 'r')
+                zfile.extractall(target_dir)
+                zfile.close()
+            elif source.endswith('.git'):  # clone from a git repo
+                if subprocess.call(['git', 'clone', source, form['name']]):
+                    abort(500)
         elif form['type'] == 'upload':
+            prepare_target_dir(form, target_dir)
             source_stream = io.BytesIO(base64.b64decode(form['file']))
+            zfile = zipfile.ZipFile(source_stream, 'r')
+            zfile.extractall(target_dir)
+            zfile.close()
         else:
             abort(500)
-        # TODO catch and report better errors below
-        if form['type'] == 'upload':
-            zip = zipfile.ZipFile(source_stream, 'r')
-            zip.extractall(target_dir)
-            zip.close()
-        elif not '://' in source:  # install from a local asset (zip) file
-            zip = zipfile.ZipFile(source, 'r')
-            zip.extractall(target_dir)
-            zip.close()
-        elif source.endswith('.zip'):  # install from the web (zip file)
-            res = requests.get(source)
-            mem_zip = io.BytesIO(res.content)
-            zipfile.ZipFile(mem_zip, 'r')
-            zip.extractall(target_dir)
-            zip.close()
-        elif source.endswith('.git'):  # clone from a git repo
-            if subprocess.call(['git', 'clone', source, form['name']]):
-                abort(500)
-        else:
-            abort(400)
         return {'status':'success'}
 
-    
+
 
 
