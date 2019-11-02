@@ -48,8 +48,8 @@ import pydal
 import pluralize
 from pydal._compat import to_native, to_bytes
 
-__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect', 
-           'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL', 
+__all__ = ['render', 'DAL', 'Field', 'action', 'request', 'response', 'redirect',
+           'abort', 'HTTP', 'Session', 'Cache', 'user_in', 'Translator', 'URL',
            'check_compatible', 'wsgi']
 
 DEFAULTS = dict(
@@ -288,7 +288,7 @@ class Session(Fixture):
         if hasattr(storage, '__prerequisites__'):
             self.__prerequisites__ = storage.__prerequisites__
 
-    def load(self):        
+    def load(self):
         self.local.session_cookie_name = '%s_session' % request.app_name
         self.local.changed = False
         self.local.secure = request.url.startswith('https')
@@ -575,8 +575,8 @@ def get_error_snapshot(depth=5):
         line_vars = cgitb.scanvars(
             lambda: linecache.getline(file, lnum), frame, locals)
         # Dump local variables (referenced in current line only)
-        f['vars'] = {key: repr(value) 
-                     for key, value in locals.items() 
+        f['vars'] = {key: repr(value)
+                     for key, value in locals.items()
                      if not key.startswith('__')}
         stackframes.append(f)
 
@@ -744,7 +744,7 @@ def error404(error):
 
 
 def start_server(args):
-    host, port = args.address.split(':')
+    host, port = args.host, args.port
     if args.number_workers < 1:
         bottle.run(server='tornado', host=host, port=int(port), reloader=False)
     else:
@@ -777,8 +777,10 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('apps_folder',
                         help='Path to the applications folder')
-    parser.add_argument('-a', '--address', default='127.0.0.1:8000',
-                        help='<Server Address>:<port number> or <hostname>:<port>')
+    parser.add_argument('--host', default='127.0.0.1',
+                        help='Server address (IP or hostname)')
+    parser.add_argument('--port', default='8000',
+                        help='Port number (e.g., 8000)')
     parser.add_argument('-n', '--number_workers', default=0, type=int,
                         help='Number of gunicorn workers to utilize')
     parser.add_argument('--ssl_cert_filename', default=None, type=int,
@@ -796,13 +798,14 @@ def get_args():
     parser.add_argument('-c', '--create', action='store_true', default=True,
                         help='Create missing folders and apps without prompting')
     # Parse command line arguments
-    return parser.parse_args()
+    args = parser.parse_args()
+    return args
 
 
 def initialize(**args):
     """Initialize from args"""
     for key in args:
-        os.environ['PY4WEB_' + key.upper()] = str(args[key])    
+        os.environ['PY4WEB_' + key.upper()] = str(args[key])
     apps_folder = os.environ['PY4WEB_APPS_FOLDER']
     service_folder = os.path.join(apps_folder, os.environ['PY4WEB_SERVICE_FOLDER'])
     # If the apps folder does not exist create it and populate it
@@ -845,9 +848,9 @@ def main(args=None):
     # and create any missing folders
     initialize(**args.__dict__)
     if os.path.exists(os.path.join(args.apps_folder, '_dashboard')):
-        print('Dashboard is at: http://%s/_dashboard' % args.address)
+        print('Dashboard is at: http://%s:%s/_dashboard' % (args.host, args.port))
     # start
     Reloader.import_apps()
-    start_server(args)    
+    start_server(args)
 
 
