@@ -14,7 +14,7 @@ class AuthEnforcer(Fixture):
         self.__prerequisites__ = [auth]
         self.auth = auth
         self.condition = condition
-        
+
     def abort_or_rediect(self, page):
         if request.content_type == 'application/json':
             abort(403)
@@ -43,14 +43,15 @@ class Auth(Fixture):
             'body': 'By {first_name}, you have been erased from our system'
             }
         }
-    
+
     extra_auth_user_fields = []
 
     def __init__(self, session, db,
-                 define_tables=True, 
+                 define_tables=True,
                  sender=None,
+                 use_username=True,
                  registration_requires_confirmation=True,
-                 registration_requires_appoval=False):        
+                 registration_requires_appoval=False):
 
         self.__prerequisites__ = []
         if session: self.__prerequisites__.append(session)
@@ -61,6 +62,7 @@ class Auth(Fixture):
         self.route = None
         self.registration_requires_confirmation = registration_requires_confirmation
         self.registration_requires_appoval = registration_requires_appoval
+        self.use_username = use_username # if False, uses email only
         # The self._link variable is not thread safe (only intended for testing)
         self._link = None
         if db and define_tables:
@@ -72,15 +74,20 @@ class Auth(Fixture):
         Field = db.Field
         if not 'auth_user' in db.tables:
             ne = IS_NOT_EMPTY()
-            db.define_table(
-                'auth_user',
-                Field('username', requires=[ne, IS_NOT_IN_DB(db, 'auth_user.username')], unique=True),
+            auth_fields = [
                 Field('email', requires=(IS_EMAIL(), IS_NOT_IN_DB(db, 'auth_user.email')), unique=True),
                 Field('password','password', requires=CRYPT(), readable=False, writable=False),
                 Field('first_name', requires=ne),
                 Field('last_name', requires=ne),
                 Field('sso_id', readable=False, writable=False),
                 Field('action_token', readable=False, writable=False),
+            ]
+            if self.use_username:
+                auth_fields.insert(
+                    0, Field('username', requires=[ne, IS_NOT_IN_DB(db, 'auth_user.username')], unique=True))
+            db.define_table(
+                'auth_user',
+                *auth_fields,
                 *self.extra_auth_user_fields)
 
     def signature(self):
@@ -90,14 +97,14 @@ class Auth(Fixture):
         user = lambda s=self: s.get_user().get('id')
         fields = [
             Field('is_active', 'boolean',
-                  default=True, readable=False, writable=False),                  
+                  default=True, readable=False, writable=False),
             Field('created_on', 'datetime',
                   default=now, writable=False, readable=False),
             Field('created_by', 'reference auth_user',
                   default=user),
             Field('modified_on', 'datetime',
                   update=now, default=now, writable=False, readable=False),
-            Field('modified_by', 'reference auth_user', 
+            Field('modified_by', 'reference auth_user',
                   default=user, update=user, writable=False, readable=False)]
         return fields
 
@@ -131,7 +138,7 @@ class Auth(Fixture):
         self.route = route
         """This assumes the bottle framework and exposes all actions as /{app_name}/auth/{path}"""
         def responder(path):
-            return self.action(path, request.method, request.query, request.json)        
+            return self.action(path, request.method, request.query, request.json)
         action(route + '<path:path>', method=['GET','POST'])(action.uses(self)(responder))
 
     # Handle http requests
@@ -204,7 +211,7 @@ class Auth(Fixture):
                     data = {'status': 'error', 'message': 'undefined'}
             if not 'status' in data and data.get('errors'):
                 data.update(status='error', message='validation errors', code=401)
-            elif 'errors' in data and not data['errors']: 
+            elif 'errors' in data and not data['errors']:
                 del data['errors']
             data['status'] = data.get('status', 'success')
             data['code'] = data.get('code', 200)
@@ -217,17 +224,18 @@ class Auth(Fixture):
                 redirect(URL('auth/email_verified'))
             else:
                 redirect(URL('auth/token_expired'))
-        return Template('auth.html').transform({'path': path})        
+        return Template('auth.html').transform({'path': path})
 
     # Methods that do not assume a user
 
     def register(self, fields, send=True):
-        fields['username'] = fields.get('username', '').lower()
+        if self.use_username:
+            fields['username'] = fields.get('username', '').lower()
         fields['email'] = fields.get('email','').lower()
         token = str(uuid.uuid4())
         fields['action_token'] = 'pending-registration:%s' % token
-        res = self.db.auth_user.validate_and_insert(**fields)        
-        if send and res.get('id'):        
+        res = self.db.auth_user.validate_and_insert(**fields)
+        if send and res.get('id'):
             self._link = link = URL(self.route + 'verify_email?token=' + token, scheme=True)
             self.send('verify_email', fields, link=link)
         return res
@@ -235,7 +243,10 @@ class Auth(Fixture):
     def login(self, email, password):
         db = self.db
         value = email.lower()
-        query = (db.auth_user.email == value) if '@' in value else (db.auth_user.username == value)
+        if self.use_username:
+            query = (db.auth_user.email == value) if '@' in value else (db.auth_user.username == value)
+        else:
+            query = (db.auth_user.email == value)
         user = db(query).select().first()
         if not user: return (None, 'Invalid email')
         if (user.action_token or '').startswith('pending-registration:'):
@@ -249,7 +260,10 @@ class Auth(Fixture):
     def request_reset_password(self, email, send=True):
         db = self.db
         value = email.lower()
-        query = (db.auth_user.email == value) if '@' in value else (db.auth_user.username == value)
+        if self.use_username:
+            query = (db.auth_user.email == value) if '@' in value else (db.auth_user.username == value)
+        else:
+            query = (db.auth_user.email == value)
         user = db(query).select().first()
         if user and not user.action_token == 'account-blocked':
             token = str(uuid.uuid4())
@@ -293,14 +307,14 @@ class Auth(Fixture):
     def gdpr_unsubscribe(self, user, send=True):
         """GDPR unsubscribe means we delete first_name, last_name,
         then replace email with hash of the actual email and notify the user.
-        
+
         Essentially we erase the user info yet retain the ability to verify
         that a given email has unsubscribed and maybe restore it if requested.
-        
+
         Despite unsubscription we retain enough info to be able to comply
         with audit requests for illicit activities.
-        
-        I am not a lawyer but I believe this complies, 
+
+        I am not a lawyer but I believe this complies,
         Check with your lawyer before using this feature, no warranty expressed or implied.
         """
         user = user.as_dict()
@@ -310,7 +324,7 @@ class Auth(Fixture):
         db(db.auth_user.id==id).update(
             email="%s@example.com" % token,
             password=None,
-            first_name='anonymous', 
+            first_name='anonymous',
             last_name='anonymous',
             sso_id=None,
             action_token='gdpr-unsubscribed')
@@ -355,7 +369,7 @@ class Auth(Fixture):
         d.update(**attrs)
         email = user['email']
         subject = message['subject'].format(**d)
-        body = message['body'].format(**d)        
+        body = message['body'].format(**d)
         if not self.sender:
             print('Mock send to %s subject "%s" body:\n%s\n' % (email, subject, body))
             return True
