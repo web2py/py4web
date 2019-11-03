@@ -32,7 +32,6 @@ from . common import db, session, T, cache, auth, logger
 @action('index', method='GET')
 @action.uses('generic.html', session, db, T, auth.user)
 def index():
-    logger.error('oops')
     user = auth.get_user()
     message = T('Hello {first_name}'.format(**user))
     return dict(message=message, user=user)
