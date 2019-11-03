@@ -744,9 +744,12 @@ def error404(error):
 
 
 def start_server(args):
-    host, port = args.host, args.port
-    if args.number_workers < 1:
-        bottle.run(server='tornado', host=host, port=int(port), reloader=False)
+    host, port = args.host, int(args.port)
+    if platform.system().lower() == 'windows':
+        # Tornado fail on windows
+        bottle.run(host=host, port=int(port), reloader=False)
+    elif args.number_workers < 1:
+        bottle.run(server='tornado', host=host, port=port, reloader=False)
     else:
         if not gunicorn:
             logging.error('gunicorn not installed')
@@ -754,7 +757,7 @@ def start_server(args):
             logging.error('gevent not installed')
         else:
             sys.argv[:] = sys.argv[:1]  # else break gunicorn
-            bottle.run(server='gunicorn', host=host, port=int(port),
+            bottle.run(server='gunicorn', host=host, port=port,
                        workers=args.number_workers, worker_class='gevent', reloader=False,
                        certfile=args.ssl_cert_filename, keyfile=args.ssl_key_filename)
 
