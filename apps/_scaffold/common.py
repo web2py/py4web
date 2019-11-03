@@ -3,11 +3,27 @@ This file defines cache, session, and translator T object for the app
 These are fixtures that every app needs so probably you will not be editing this file
 """
 import os
+import sys
+import logging
 from py4web import Session, Cache, Translator, DAL, Field
 from py4web.utils.auth import Auth
 from py4web.utils.tags import Tags
 from . import settings
 
+# implement custom loggers form settings.LOGGERS
+logger = logging.getLogger('py4web:' + settings.APP_NAME)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s')
+for item in settings.LOGGERS:
+    level, filename = item.split(':', 1)
+    if filename in ('stdout', 'stderr'):
+        handler = logging.StreamHandler(getattr(sys, filename))
+    else:
+        handler = logging.FileHandler(filename)
+    handler.setLevel(getattr(logging, level.upper(), 'ERROR'))
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+# connect to db
 db = DAL(settings.DB_URI, 
          folder=settings.DB_FOLDER, 
          pool_size=settings.DB_POOL_SIZE)
@@ -35,7 +51,6 @@ elif settings.SESSION_TYPE == 'database':
     session =  Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
 auth = Auth(session, db)
-
 
 if auth.db:
     groups = Tags(db.auth_user, 'groups') 
