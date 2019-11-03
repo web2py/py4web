@@ -154,9 +154,13 @@ class Auth(Fixture):
         if path.startswith('api/'):
             data = {}
             if method == 'GET':
+                # Should we use the username?
+                if path == 'api/use_username':
+                    return {'use_username': self.use_username}
+                # Otherwise, we assume the user exists.
                 user = self.get_user(safe=True)
                 if not user:
-                    data = self._error('not authoried', 401)
+                    data = self._error('not authorized', 401)
                 if path == 'api/profile':
                     return {'user': user}
             elif method == 'POST' and self.db:
