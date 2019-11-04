@@ -199,7 +199,8 @@ if MODE in ('demo', 'readonly', 'full'):
         elif len(args) > 2 and args[1] in databases:
             db = getattr(module, args[1])
             id = args[3] if len(args) == 4 else None
-            data = RestAPI(db, policy)(request.method, args[2], id, request.query, request.json)
+            data = action.uses(db)(lambda: RestAPI(db, policy)(
+                    request.method, args[2], id, request.query, request.json))()
         else:
             data = {}
         if 'code' in data:
