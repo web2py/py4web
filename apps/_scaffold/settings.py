@@ -15,6 +15,12 @@ DB_FOLDER = os.path.join(APP_FOLDER, 'databases')
 DB_URI = 'sqlite://storage.db'
 DB_POOL_SIZE = 1
 
+# email settings
+SMTP_SERVER = None
+SMTP_SENDER = 'you@example.com'
+SMTP_LOGIN = 'username:password'
+SMTP_TLS = False
+
 # session settings
 SESSION_TYPE = 'cookies'
 SESSION_SECRET_KEY = '<my secret key>'

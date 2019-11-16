@@ -6,6 +6,7 @@ import os
 import sys
 import logging
 from py4web import Session, Cache, Translator, DAL, Field
+from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
 from py4web.utils.tags import Tags
 from . import settings
@@ -51,6 +52,13 @@ elif settings.SESSION_TYPE == 'database':
     session =  Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
 auth = Auth(session, db)
+
+if settings.SMTP_SERVER:
+    auth.mailer = Mailer(
+        server=settings.SMTP_SERVER,
+        sender=settings.SMTP_SENDER,
+        login=settings.SMTP_LOGIN,
+        tls=settings.SMTP_TLS)
 
 if auth.db:
     groups = Tags(db.auth_user, 'groups') 
