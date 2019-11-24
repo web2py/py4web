@@ -122,8 +122,8 @@ class Form(object):
     - readonly: set to True to make a readonly form
     - deletable: set to False to disallow deletion of record
     - formstyle: a function that renders the form using helpers (FormStyleDefault)
-    - dbio: set to False to prevent any DB write
-    - keep_values: if set to true, it remebers the values of the previously submitted form
+    - dbio: set to False to prevent any DB writes
+    - keep_values: if set to true, it remembers the values of the previously submitted form
     - form_name: the optional name of this form
     """
 
