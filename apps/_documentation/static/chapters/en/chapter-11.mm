@@ -2,7 +2,7 @@
 
 **Warning: the API described in this chapter is new and subject to changes. Make sure you keep your code up to date**
 
-py4web comes with a an objct Auth and a system of plugins for user authentication and access control. It has the same name than the corresponding web2py one and serves the same purpose but the API and internal design is very different.
+py4web comes with a an object Auth and a system of plugins for user authentication and access control. It has the same name as the corresponding web2py one and serves the same purpose but the API and internal design is very different.
 
 To use it, first of all you need to import it, instantiate it, configure it, and enable it.
 
@@ -13,7 +13,7 @@ auth = Auth(session, db)
 auth.enable()
 ``:python
 
-The import step is obvious. The second step does not perform any opeation other than telling the Auth object which session object to use and which database to use. Auth data is stored in ``session['user']`` and, if a user is logged in, the user id is stored in session['user']['id']. The db object is used to store persistent info about the user in a table ``auth_user`` with the following fields:
+The import step is obvious. The second step does not perform any operation other than telling the Auth object which session object to use and which database to use. Auth data is stored in ``session['user']`` and, if a user is logged in, the user id is stored in session['user']['id']. The db object is used to store persistent info about the user in a table ``auth_user`` with the following fields:
 
 - username
 - email
@@ -21,7 +21,7 @@ The import step is obvious. The second step does not perform any opeation other 
 - first_name
 - last_name
 - sso_id (used for single sign on, see later)
-- action_token (used to verify email, block usrs, and otehr tasks, also see later).
+- action_token (used to verify email, block users, and other tasks, also see later).
 
 If the ``auth_user`` table does not exist it is created.
 
@@ -43,7 +43,7 @@ Those marked with a (+) require a logged in user.
 
 ## Auth UI
 
-You can create your own web UI to login users using the above APIs but py4web povides one as an example, implemented in the following files:
+You can create your own web UI to login users using the above APIs but py4web provides one as an example, implemented in the following files:
 
 - _scaffold/templates/auth.html
 - _scaffold/static/components/auth.js
@@ -67,13 +67,13 @@ The component files (js/html) define a Vue component ``<auth/>`` which is used i
 [[end]]
 ``:html
 
-You can pretty much use this file un-modified. It extends the current layout and embeds the ``<auth/>`` component into the page. It then uses ``utils.app().start();`` (py4web magic) to render the content of ``<div id="vue">...</div>`` using Vue.js. ``components/auth.js`` also automatically loads ``components/auth.html`` into the component placeholder (more py4web magic). The component is responsible for rendering the login/register/etc forms using ractive html and GETing/POSTing data to the Auth service APIs.
+You can pretty much use this file un-modified. It extends the current layout and embeds the ``<auth/>`` component into the page. It then uses ``utils.app().start();`` (py4web magic) to render the content of ``<div id="vue">...</div>`` using Vue.js. ``components/auth.js`` also automatically loads ``components/auth.html`` into the component placeholder (more py4web magic). The component is responsible for rendering the login/register/etc forms using reactive html and GETing/POSTing data to the Auth service APIs.
 
-If you need to change th style of the component you can edit "components/auth.html" to suit your needs. It is mostly HTML with some spcial Vue ``v-*`` tags.
+If you need to change the style of the component you can edit "components/auth.html" to suit your needs. It is mostly HTML with some special Vue ``v-*`` tags.
 
 ## Using Auth
 
-There two ways to use th Auth object into an action:
+There two ways to use the Auth object in an action:
 
 ``
 @action('index')
@@ -83,7 +83,7 @@ def index():
     return 'hello {first_name}'.format(**user) if user else 'not logged in'
 ``:python
 
-With ``@action.uses(auth)`` we tell py4web that this action needs to have information about the user, try parse the session for a user session.
+With ``@action.uses(auth)`` we tell py4web that this action needs to have information about the user, then try to parse the session for a user session.
 
 ``
 @action('index')
@@ -93,15 +93,15 @@ def index():
     return 'hello {first_name}'.format(**user)'
 ``:python
 
-Here ``@action.uses(auth.user)`` tells py4web that this action requires a logged in user and ahould redirect to login otherwise.
+Here ``@action.uses(auth.user)`` tells py4web that this action requires a logged in user and should redirect to login if no user is logged in.
 
 ## Auth Plugins
 
-Plugins are defined in "py4web/utils/auth_plugins" and they have a hierachical structures. Some are exclusive and some are not. For example default, LDAP, PAM, and SAML ones are exclusive (the developer has to pick one). Default, Google, Facebook, and Tritter OAuth are not exclusive (the developer can pick them all and the user gets to choose using the UI).
+Plugins are defined in "py4web/utils/auth_plugins" and they have a hierachical structures. Some are exclusive and some are not. For example, default, LDAP, PAM, and SAML are exclusive (the developer has to pick one). Default, Google, Facebook, and Twitter OAuth are not exclusive (the developer can pick them all and the user gets to choose using the UI).
 
 The ``<auth/>`` components will automatically adapt to display login forms as required by the installed plugins.
 
-**At this time we cannot guarantee that the following plugins work well. They hav been ported from web2py where the do work but they need testing**
+**At this time we cannot guarantee that the following plugins work well. They have been ported from web2py where they do work but testing is still needed**
 
 ### PAM
 
@@ -112,7 +112,7 @@ from py4web.utils.auth_plugins.pam_plugin import PamPlugin
 auth.register_plugin(PamPlugin())
 ``:python
 
-This one like all plugins must be imported and registered. Once registered the UI (components/auth) and the RESTful APIs know how to handle it. The constructor of this plugins does not require any argument but other plugins do.
+This one like all plugins must be imported and registered. Once registered the UI (components/auth) and the RESTful APIs know how to handle it. The constructor of this plugins does not require any arguments (where other plugins do).
 
 The ``auth.register_plugin(...)`` **must** come before the ``auth.enable()`` since it makes no sense to expose APIs before desired plugins are mounted.
 
@@ -154,14 +154,14 @@ The client id and client secret must be provided by Facebook.
 
 ### Tags and Permissions
 
-Py4web does not have the concept of groups as web2py does. Experience showed that while that mechanism is powerful it suffers from two problems: it is overkill for most apps, and it is not flxible enough for very complex apps. Py4web provides a general purpose tagging mechanism that allows to tag any record of any table and check for existance of tags and for records having a tag. Group membership can be thought of a type of tag that we apply to usrs. Permissions can also be tags. Developer are free to create their own logic on top of the tagging system. 
+Py4web does not have the concept of groups as web2py does. Experience showed that while that mechanism is powerful it suffers from two problems: it is overkill for most apps, and it is not flexible enough for very complex apps. Py4web provides a general purpose tagging mechanism that allows the developer to tag any record of any table, check for the existence of tags, as well as checking for records containing a tag. Group membership can be thought of a type of tag that we apply to users. Permissions can also be tags. Developer are free to create their own logic on top of the tagging system. 
 
 To use the tagging system you need to create an object to tag a table:
 ``
 groups = Tags(db.auth_user)
 ``:python
 
-Then you can apply one or more tags to records of the table and remove them:
+Then you can add one or more tags to records of the table as well as remove existing tags:
 
 ``
 groups.add(user.id, 'manager')
@@ -169,18 +169,18 @@ groups.add(user.id, ['dancer', 'teacher'])
 groups.remove(user.id, 'dancer')
 ``:python
 
-Here the use case is group based access control so you can check if a user is a member of a group:
+Here the use case is group based access control where the developer first checks if a user is a member of the ``'manager'`` group, if the user is not a manager (or no one is logged in) py4web redirects to the ``'not authorized url'``. If the user is in the correct group then py4web displays 'hello manager':
 
 ``
 @action('index')
 @action.uses(auth.user)
 def index():
     if not 'manager' in groups.get(auth.get_user()['id']):
-        rediect(URL('not_authorized'))
+        redirect(URL('not_authorized'))
     return 'hello manager'
 ``:python
 
-And you ask query the db for all records having the desired tag(s):
+Here the developer queries the db for all records having the desired tag(s):
 
 ``
 @action('find_by_tag/{group_name}')
@@ -190,7 +190,7 @@ def find(group_name):
     return {'users': users}
 ``:python
 
-We leave it to you as an excersice to create a fixture ``has_membership`` to allow the following syntax:
+We leave it to you as an exersize to create a fixture ``has_membership`` to enable the following syntax:
 
 ``
 @action('index')
@@ -199,7 +199,7 @@ def index():
     return 'hello teacher'
 ``:python
 
-**Important:** Tags are automatically hierarchical. For example, if a user has a group tag 'teacher/high-school/physics', then all the following seaches will return the user:
+**Important:** ``Tags`` are automatically hierarchical. For example, if a user has a group tag 'teacher/high-school/physics', then all the following seaches will return the user:
 
 - `` groups.find('teacher/high-school/physics')``
 - `` groups.find('teacher/high-school')``
@@ -207,7 +207,7 @@ def index():
 
 This means that slashes have a special meaning for tags. Slahes at the beginning or the end of a tag are optional. All other chars are allowed on equal footing.
 
-Notice that one table can have mutpliple associated Tags objects. The name groups here is completely arbitary but has a spacific semantic meaning. Different Tags objects are orthogonal to each other. The limit to their use is your creativity.
+Notice that one table can have multiple associated ``Tags`` objects. The name groups here is completely arbitary but has a specific semantic meaning. Different ``Tags`` objects are orthogonal to each other. The limit to their use is your creativity.
 
 For example you could create a table groups:
 
@@ -225,7 +225,7 @@ permissions = Tags(db.auth_groups)
 Then create a zapper group, give it a permission, and make a user member of the group:
 
 ``
-zap_id = db.auth_group.insert(name='zapper', desctiption='can zap database')
+zap_id = db.auth_group.insert(name='zapper', description='can zap database')
 permissions.add(zap_id, 'zap database')
 groups.add(user.id, 'zapper')
 ``:python
