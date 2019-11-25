@@ -135,7 +135,7 @@ py4web-start -a 127.0.0.1:8000 -d demo apps
 
 ## WSGI
 
-py4web is a WSGI application. To obtain th WSGI app simply do:
+py4web is a WSGI application. To obtain the WSGI app simply do:
 
 ```
 from py4web.core import wsgi
