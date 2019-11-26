@@ -97,7 +97,7 @@ password: *****
 ## Launch Arguments
 
 ```
-usage: py4web-start.py [-h] [-a ADDRESS] [-n NUMBER_WORKERS]
+usage: py4web-start.py [-h] [--host HOSTNAME] [--port PORT] [--headless] [-n NUMBER_WORKERS]
                        [--ssl_cert_filename SSL_CERT_FILENAME]
                        [--ssl_key_filename SSL_KEY_FILENAME]
                        [--service_db_uri SERVICE_DB_URI] [-d DASHBOARD_MODE]
@@ -109,8 +109,9 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -a ADDRESS, --address ADDRESS
-                        serving address
+  --host HOSTNAME       server address (IP or hostname)
+  --port PORT           server port number (e.g., 8000)
+  --headless            hide artwork for console based servers
   -n NUMBER_WORKERS, --number_workers NUMBER_WORKERS
                         number of gunicorn workers
   --ssl_cert_filename SSL_CERT_FILENAME
@@ -135,7 +136,7 @@ py4web-start -a 127.0.0.1:8000 -d demo apps
 
 ## WSGI
 
-py4web is a WSGI application. To obtain th WSGI app simply do:
+py4web is a WSGI application. To obtain the WSGI app simply do:
 
 ```
 from py4web.core import wsgi
