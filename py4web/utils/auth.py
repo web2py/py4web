@@ -10,17 +10,27 @@ from pydal.validators import IS_EMAIL, CRYPT, IS_NOT_EMPTY, IS_NOT_IN_DB
 
 class AuthEnforcer(Fixture):
 
+    """
+    Base fixtures that checks if a condition is met
+    if not redirects to a different pages or returns HTTP 403
+    """
+
     def __init__(self, auth, condition=None):
         self.__prerequisites__ = [auth]
         self.auth = auth
         self.condition = condition
-        
+
     def abort_or_rediect(self, page):
+        """
+        return HTTP 403 if content_type is applicaitons/json
+        else redirects to page"""
         if request.content_type == 'application/json':
             abort(403)
         redirect(URL(self.auth.route + page))
 
     def on_request(self):
+        """check that we have a user in the session and
+        the condition is met"""
         user = self.auth.session.get('user')
         if not user or not user.get('id'):
             self.abort_or_rediect('login')
@@ -43,14 +53,17 @@ class Auth(Fixture):
             'body': 'By {first_name}, you have been erased from our system'
             }
         }
-    
+
     extra_auth_user_fields = []
 
     def __init__(self, session, db,
-                 define_tables=True, 
+                 define_tables=True,
                  sender=None,
                  registration_requires_confirmation=True,
-                 registration_requires_appoval=False):        
+                 registration_requires_appoval=False):
+
+        """Creates and Auth object responsinble for handling
+        authentication and authorization"""
 
         self.__prerequisites__ = []
         if session: self.__prerequisites__.append(session)
@@ -68,6 +81,7 @@ class Auth(Fixture):
         self.plugins = {}
 
     def define_tables(self):
+        """Defines the auth_user table"""
         db = self.db
         Field = db.Field
         if not 'auth_user' in db.tables:
@@ -90,14 +104,14 @@ class Auth(Fixture):
         user = lambda s=self: s.get_user().get('id')
         fields = [
             Field('is_active', 'boolean',
-                  default=True, readable=False, writable=False),                  
+                  default=True, readable=False, writable=False),
             Field('created_on', 'datetime',
                   default=now, writable=False, readable=False),
             Field('created_by', 'reference auth_user',
                   default=user),
             Field('modified_on', 'datetime',
                   update=now, default=now, writable=False, readable=False),
-            Field('modified_by', 'reference auth_user', 
+            Field('modified_by', 'reference auth_user',
                   default=user, update=user, writable=False, readable=False)]
         return fields
 
@@ -113,6 +127,10 @@ class Auth(Fixture):
 
     # utilities
     def get_user(self, safe=True):
+        """extracts the user form the session.
+        returns {} if no user in the session.
+        If session contains only a user['id']
+        retrives the other readable user info from auth_user"""
         user = self.session.get('user')
         if not user or not isinstance(user, dict) or not 'id' in user:
             return {}
@@ -125,18 +143,23 @@ class Auth(Fixture):
         return user
 
     def register_plugin(self, plugin):
+        """registers an Auth plugin"""
         self.plugins[plugin.name] = plugin
 
-    def enable(self, route='auth/'):
+    def enable(self, route='auth/', uses=(), env=None):
+        """enables Auth, aka generates login/logout/register/etc pages"""
         self.route = route
-        """This assumes the bottle framework and exposes all actions as /{app_name}/auth/{path}"""
-        def responder(path):
-            return self.action(path, request.method, request.query, request.json)        
-        action(route + '<path:path>', method=['GET','POST'])(action.uses(self)(responder))
+        # This assumes the bottle framework and exposes all actions as
+        # /{app_name}/auth/{path}"""
+        def responder(path, env=env):
+            return self.action(path, request.method, request.query, request.json, env=env)
+        action(route + '<path:path>', method=['GET','POST'])(action.uses(self, *uses)(responder))
 
     # Handle http requests
 
-    def action(self, path, method, get_vars, post_vars):
+    def action(self, path, method, get_vars, post_vars, env=None):
+        """action that handles all the HTTP requests for Auth"""
+        env = env or {}
         if path.startswith('plugin/'):
             parts = path.split('/',2)
             plugin = self.plugins.get(parts[1])
@@ -204,7 +227,7 @@ class Auth(Fixture):
                     data = {'status': 'error', 'message': 'undefined'}
             if not 'status' in data and data.get('errors'):
                 data.update(status='error', message='validation errors', code=401)
-            elif 'errors' in data and not data['errors']: 
+            elif 'errors' in data and not data['errors']:
                 del data['errors']
             data['status'] = data.get('status', 'success')
             data['code'] = data.get('code', 200)
@@ -217,7 +240,8 @@ class Auth(Fixture):
                 redirect(URL('auth/email_verified'))
             else:
                 redirect(URL('auth/token_expired'))
-        return Template('auth.html').transform({'path': path})        
+        env['path'] = path
+        return Template('auth.html').transform(env)
 
     # Methods that do not assume a user
 
@@ -226,8 +250,8 @@ class Auth(Fixture):
         fields['email'] = fields.get('email','').lower()
         token = str(uuid.uuid4())
         fields['action_token'] = 'pending-registration:%s' % token
-        res = self.db.auth_user.validate_and_insert(**fields)        
-        if send and res.get('id'):        
+        res = self.db.auth_user.validate_and_insert(**fields)
+        if send and res.get('id'):
             self._link = link = URL(self.route + 'verify_email?token=' + token, scheme=True)
             self.send('verify_email', fields, link=link)
         return res
@@ -293,14 +317,14 @@ class Auth(Fixture):
     def gdpr_unsubscribe(self, user, send=True):
         """GDPR unsubscribe means we delete first_name, last_name,
         then replace email with hash of the actual email and notify the user.
-        
+
         Essentially we erase the user info yet retain the ability to verify
         that a given email has unsubscribed and maybe restore it if requested.
-        
+
         Despite unsubscription we retain enough info to be able to comply
         with audit requests for illicit activities.
-        
-        I am not a lawyer but I believe this complies, 
+
+        I am not a lawyer but I believe this complies,
         Check with your lawyer before using this feature, no warranty expressed or implied.
         """
         user = user.as_dict()
@@ -310,7 +334,7 @@ class Auth(Fixture):
         db(db.auth_user.id==id).update(
             email="%s@example.com" % token,
             password=None,
-            first_name='anonymous', 
+            first_name='anonymous',
             last_name='anonymous',
             sso_id=None,
             action_token='gdpr-unsubscribed')
@@ -355,7 +379,7 @@ class Auth(Fixture):
         d.update(**attrs)
         email = user['email']
         subject = message['subject'].format(**d)
-        body = message['body'].format(**d)        
+        body = message['body'].format(**d)
         if not self.sender:
             print('Mock send to %s subject "%s" body:\n%s\n' % (email, subject, body))
             return True

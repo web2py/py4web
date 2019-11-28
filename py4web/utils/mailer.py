@@ -173,7 +173,7 @@ class Mailer(object):
             if isinstance(payload, str):
                 if filename is None:
                     filename = os.path.basename(payload)
-                with open(payload, 'rb') as fp:                    
+                with open(payload, 'rb') as fp:
                     payload = fp.read()
             else:
                 if filename is None:
@@ -691,7 +691,7 @@ class Mailer(object):
                     xcc['bcc'] = bcc
                 if reply_to:
                     xcc['reply_to'] = reply_to
-                
+
                 attachments = attachments and [google_mail.Attachment(
                     a.my_filename,
                     a.my_payload,

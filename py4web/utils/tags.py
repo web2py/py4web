@@ -42,7 +42,7 @@ class Tags(object):
         table = self.table
         tag_table = self.tag_table
         db = tag_table._db
-        queries = []        
+        queries = []
         if not isinstance(tags, list):
             tags = [tags]
         for tag in tags:

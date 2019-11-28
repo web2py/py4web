@@ -25,8 +25,8 @@ for item in settings.LOGGERS:
     logger.addHandler(handler)
 
 # connect to db
-db = DAL(settings.DB_URI, 
-         folder=settings.DB_FOLDER, 
+db = DAL(settings.DB_URI,
+         folder=settings.DB_FOLDER,
          pool_size=settings.DB_POOL_SIZE)
 
 # define global objects that may or may not be used by th actions
@@ -61,7 +61,7 @@ if settings.SMTP_SERVER:
         tls=settings.SMTP_TLS)
 
 if auth.db:
-    groups = Tags(db.auth_user, 'groups') 
+    groups = Tags(db.auth_user, 'groups')
 
 if settings.USE_PAM:
     from py4web.utils.auth_plugins.pam_plugin import PamPlugin
@@ -82,4 +82,6 @@ if settings.OAUTH2FACEBOOK_CLIENT_ID:
                                         client_secret=settings.OAUTH2FACEBOOK_CLIENT_SECRET,
                                         callback_url='auth/plugin/oauth2google/callback'))
 
-auth.enable()
+# we enable auth, which requres sessions, T, db and we make T available to
+# the template, although we recommend client-side translations instead
+auth.enable(uses=(session, T, db), env=dict(T=T))

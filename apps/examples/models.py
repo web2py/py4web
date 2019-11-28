@@ -1,5 +1,5 @@
 import os
-from py4web import DAL, Field 
+from py4web import DAL, Field
 from pydal.validators import IS_NOT_EMPTY, IS_NOT_IN_DB
 # define database and tables
 db = DAL('sqlite://storage.db', folder=os.path.join(os.path.dirname(__file__), 'databases'))

@@ -10,8 +10,8 @@ from saml2.client import Saml2Client
 from saml2.config import Config as Saml2Config
 
 def obj2dict(obj, processed=None):
-    """                                                                        
-    converts any object into a dict, recursively                               
+    """
+    converts any object into a dict, recursively
     """
     processed = processed if not processed is None else set()
     if obj is None:
@@ -44,13 +44,13 @@ def saml2_handler(session, request, config_filename = None, entityid = None):
     binding, destination = client.pick_binding(
         "single_sign_on_service", bindings, "idpsso", entity_id=entityid)
     if request.env.request_method == 'GET':
-        binding = BINDING_HTTP_REDIRECT 
+        binding = BINDING_HTTP_REDIRECT
     elif request.env.request_method == 'POST':
         binding = BINDING_HTTP_POST
     if not request.vars.SAMLResponse:
         req_id, req = client.create_authn_request(destination, binding=BINDING_HTTP_POST)
         relay_state = web2py_uuid().replace('-','')
-        session.saml_outstanding_queries = {req_id: request.url}    
+        session.saml_outstanding_queries = {req_id: request.url}
         session.saml_req_id = req_id
         http_args = client.apply_binding(binding, str(req), destination,
                                          relay_state=relay_state)
@@ -68,7 +68,7 @@ def saml2_handler(session, request, config_filename = None, entityid = None):
             import traceback
             res['error'] = traceback.format_exc()
         return res
-    
+
 
 class Saml2Plugin:
 
@@ -100,7 +100,7 @@ class Saml2Plugin:
         http_args = client.apply_binding(binding, str(req), destination, relay_state=relay_state)
         return http_args["headers"]['Location']
 
-    def callback(self, 
+    def callback(self,
 
         session.saml_outstanding_queries = {req_id: request.url}
         session.saml_req_id = req_id
@@ -117,7 +117,7 @@ class Saml2Plugin:
         elif 'error' in d:
             current.session.flash = d['error']
             redirect(URL('default','index'))
-        elif 'response' in d:            
+        elif 'response' in d:
             # a['assertions'][0]['attribute_statement'][0]['attribute']
             # is list of
             # {'name': 'http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname', 'name_format': None, 'text': None, 'friendly_name': None, 'attribute_value': [{'text': 'CAA\\dev-mdp', 'extension_attributes': "{'{http://www.w3.org/2001/XMLSchema-instance}type': 'xs:string'}", 'extension_elements': []}], 'extension_elements': [], 'extension_attributes': '{}'}
@@ -139,7 +139,7 @@ class Saml2Plugin:
         self._SAML_change_password()
         return next
 
-    def get_user(self):        
+    def get_user(self):
         user = current.session.saml2_info
         if user:
             d = {'source': 'web2py saml2'}

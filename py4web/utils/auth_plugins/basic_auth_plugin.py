@@ -17,11 +17,10 @@ class BasicAuthPlugin:
         auth.settings.login_methods.append(basic_auth('http://server'))
         """
         key = base64.b64encode(username + ':' + password)
-        headers = {'Authorization': 'Basic ' + key}        
+        headers = {'Authorization': 'Basic ' + key}
         request = urllib2.Request(self.server, None, headers)
         try:
             urlopen(request)
             return True
         except (urllib2.URLError, urllib2.HTTPError):
             return False
-

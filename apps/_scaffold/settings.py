@@ -45,8 +45,8 @@ USE_PAM = False
 USE_LDAP = False
 LDAP_SETTING = {
     'mode': 'ad',
-    'server': 'my.domain.controller',                                                                  
-    'base_dn': 'ou=Users,dc=domain,dc=com'} 
+    'server': 'my.domain.controller',
+    'base_dn': 'ou=Users,dc=domain,dc=com'}
 
 # i18n settings
 T_FOLDER = os.path.join(APP_FOLDER, 'translations')

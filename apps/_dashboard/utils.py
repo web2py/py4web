@@ -128,7 +128,7 @@ def pack(filename, path, filenames=None, exclude=None):
         filenames(list): adds filenames to the archive
     """
     exclude = exclude or []
-    tarname = filename + '.tar'    
+    tarname = filename + '.tar'
     tar(tarname, path, r'^[\w.-]+$', filenames=filenames, exclude=exclude)
     with open(tarname, 'rb') as tarfp, gzip.open(filename, 'wb') as gzfp:
         shutil.copyfileobj(tarfp, gzfp, 4194304) # 4 MB buffer

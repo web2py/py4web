@@ -295,7 +295,3 @@ if MODE == 'full':
         else:
             abort(500)
         return {'status':'success'}
-
-
-
-
