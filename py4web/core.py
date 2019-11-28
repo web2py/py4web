@@ -784,6 +784,8 @@ def get_args():
                         help='Server address (IP or hostname)')
     parser.add_argument('--port', default='8000',
                         help='Port number (e.g., 8000)')
+    parser.add_argument('--headless', default=False, action='store_true',
+                        help='Hide artwork for console access')
     parser.add_argument('-n', '--number_workers', default=0, type=int,
                         help='Number of gunicorn workers to utilize')
     parser.add_argument('--ssl_cert_filename', default=None, type=int,
@@ -839,8 +841,15 @@ def initialize(**args):
 def main(args=None):
     """The main entry point: Start the server and create folders"""
     # Store args in the action to make them visible
-    print(ART)
     action.args = args = args or get_args()
+    if args.headless:
+        headless = True
+    else:
+        headless = False
+    if not headless:
+        print(ART)
+    else:
+        print('')  # Insert a blank line to improve readability
     # If we know where the password is stored, read it, otherwise ask for one
     if args.dashboard_mode not in ('demo', 'none') and not os.path.exists(args.password_file):
         password = getpass.getpass('Choose a one-time dashboard password: ')
