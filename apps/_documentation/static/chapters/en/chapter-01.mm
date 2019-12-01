@@ -36,13 +36,13 @@ Listening on http://127.0.0.1:8000/
 Hit Ctrl-C to quit.
 ``
 
-Here ``apps`` is the name of the folder where you keep your apps. If the folder does not exist, it is created. PY4WEB expects to find two apps in this folder: Dashboard (_dashboard) and Default (_default). If it does not find them, it installs them.
+Here ``apps`` is the name of the folder where you keep your apps. If the folder does not exist, it is created. PY4WEB expects to find two apps in this folder: **Dashboard** (_dashboard) and **Default** (_default). If it does not find them, it installs them.
 
-Mind that if you upgrade py4web, it will not automatically upgrade Dashboard and Default. You have to remove these apps for py4web to re-install them. This is a safety precaution, in case you made changes to those apps.
+Mind that if you upgrade py4web, it will not automatically upgrade **Dashboard** and **Default**. You have to remove these apps for py4web to re-install them. This is a safety precaution, in case you made changes to those apps.
 
-Dashboard is a web based IDE. Default is an app that does not nothing other than welcome the user. In general "apps/_default" can be an app or a symlink to your default app.
+**Dashboard** is a web based IDE. **Default** is an app that does not nothing other than welcome the user. In general "apps/_default" can be either an app or a symlink to your default app.
 
-Notice that some apps - like Dashboard and Default - have a special role in py4web and therefore their actual name starts with ``_`` to avoid conflicts with apps created by you.
+Notice that some apps - like **Dashboard** and **Default** - have a special role in py4web and therefore their actual name starts with ``_`` to avoid conflicts with apps created by you.
 
 Once py4web is installed you can access the apps at the following urls:
 
@@ -53,8 +53,8 @@ http://localhost:8000/_dashboard
 http://localhost:8000/{yourappname}/index
 ``
 
-Notice that ONLY the default app does not need a path prefix (``/_default`` is optional).
-Also the trailing ``/index`` is optional.
+Notice that ONLY the **Default** app does require a path prefix. In the example above ``http://localhost:8000`` and ``http://localhost:8000/_default`` are identical to py4web; all other apps require the /{appname}.
+NOTE: For all apps the trailing ``/index`` is optional.
 
 ### Installing from source
 
@@ -84,16 +84,22 @@ python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(s
 
 and then ask py4web to re-use that password:
 
-``
-py4web-start.py -p password.txt apps
-``:bash
+Pip Install:
+
+``python3 -m py4web-start -p password.txt apps``
+
+Console:
+``python3 py4web-start.py -p password.txt apps``:bash
+or
+``./py4web-start.py -p password.txt apps``:bash
 
 ### Command line options
 
 py4web provides multiple command line options which can be listed with ``-h``.
 
 ``
-usage: py4web-start.py [-h] [--host HOST] [--port PORT] [-n NUMBER_WORKERS]
+usage: py4web-start.py [-h] [--host HOSTNAME] [--port PORT] [--headless] [-n NUMBER_WORKERS]
+
                        [--ssl_cert_filename SSL_CERT_FILENAME]
                        [--ssl_key_filename SSL_KEY_FILENAME]
                        [--service_db_uri SERVICE_DB_URI] [-d DASHBOARD_MODE]
@@ -105,8 +111,9 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --host HOST           serving host
-  --port PORT           serving port
+  --host HOSTNAME       server address (IP or hostname)
+  --port PORT           server port number (e.g., 8000)
+  --headless            hide artwork for console based servers
   -n NUMBER_WORKERS, --number_workers NUMBER_WORKERS
                         number of gunicorn workers
   --ssl_cert_filename SSL_CERT_FILENAME
@@ -127,7 +134,7 @@ optional arguments:
 Login into the Gcloud console (https://console.cloud.google.com/) and create a new project. You will obtain a project id that looks like "{project_name}-{number}".
 
 
-In your local fil system make a new working folder and cd into it:
+In your local file system make a new working folder and cd into it:
 
 ``
 mkdir gae
@@ -140,7 +147,7 @@ Copy the example files from py4web (assuming you have the source from github)
 cp /path/to/py4web/development_tools/gcloud/* ./
 ``
 
-Copy or symlink your ``apps`` folder into the gae folder, or maybe make a new apps folder contaning an emty ``__init__.py`` and symblink the individual apps you want to deploy. You should see the following files/folders:
+Copy or symlink your ``apps`` folder into the gae folder, or maybe make a new apps folder containing an empty ``__init__.py`` and symlink the individual apps you want to deploy. You should see the following files/folders:
 
 ``
 Makefile

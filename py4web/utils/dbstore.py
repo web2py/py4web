@@ -31,7 +31,7 @@ class DBStore(object):
         db(table.expires_on<now).delete()
         row = db(table.rkey==key).select().first()
         expires_on = now+timedelta(expiration) if expiration else datetime(2999,12,31)
-        if row:            
+        if row:
             row.update_record(rvalue=value, expires_on=expires_on, expiration=expiration)
         else:
             table.insert(rkey=key, rvalue=value, expires_on=expires_on, expiration=expiration, ceated_on=None)

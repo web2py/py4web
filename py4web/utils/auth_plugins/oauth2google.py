@@ -13,4 +13,3 @@ class OAuth2Google(OAuth2):
         'first_name': 'name.givenName',
         'last_name': 'name.familyName'
         }
-

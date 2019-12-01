@@ -40,7 +40,7 @@ def example_form(id=None):
 @action('grid')
 @action.uses('grid.html')
 def example_grid():
-    return dict(grid=publisher.grid(db.person)) 
+    return dict(grid=publisher.grid(db.person))
 
 @action('hello')
 @action.uses(T)
@@ -65,16 +65,16 @@ def example_multiple_forms():
         Form([Field('name', requires=IS_NOT_EMPTY())],
              form_name='2', keep_values=True, formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY()),
-              Field('age','integer')], 
+              Field('age','integer')],
              form_name='3', formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY()),
-              Field('insane','boolean')], 
+              Field('insane','boolean')],
              form_name='4', formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY()),
-              Field('color',requires=IS_IN_SET(['red','blue','green']))], 
+              Field('color',requires=IS_IN_SET(['red','blue','green']))],
              form_name='5', formstyle=FormStyleBulma),
         Form([Field('name', requires=IS_NOT_EMPTY()),
-              Field('favorite_hero', requires=IS_IN_DB(db, 'person.id', 'person.name'))], 
+              Field('favorite_hero', requires=IS_IN_DB(db, 'person.id', 'person.name'))],
              form_name='6', formstyle=FormStyleBulma)]
     messages = []
     for form in forms:

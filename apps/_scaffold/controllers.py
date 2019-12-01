@@ -27,7 +27,7 @@ Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app w
 
 from py4web import action, request, abort, redirect, URL
 from yatl.helpers import A
-from . common import db, session, T, cache, auth
+from . common import db, session, T, cache, auth, logger
 
 @action('index', method='GET')
 @action.uses('generic.html', session, db, T, auth.user)

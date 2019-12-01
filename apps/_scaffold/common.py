@@ -3,13 +3,30 @@ This file defines cache, session, and translator T object for the app
 These are fixtures that every app needs so probably you will not be editing this file
 """
 import os
+import sys
+import logging
 from py4web import Session, Cache, Translator, DAL, Field
+from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
 from py4web.utils.tags import Tags
 from . import settings
 
-db = DAL(settings.DB_URI, 
-         folder=settings.DB_FOLDER, 
+# implement custom loggers form settings.LOGGERS
+logger = logging.getLogger('py4web:' + settings.APP_NAME)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s')
+for item in settings.LOGGERS:
+    level, filename = item.split(':', 1)
+    if filename in ('stdout', 'stderr'):
+        handler = logging.StreamHandler(getattr(sys, filename))
+    else:
+        handler = logging.FileHandler(filename)
+    handler.setLevel(getattr(logging, level.upper(), 'ERROR'))
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+# connect to db
+db = DAL(settings.DB_URI,
+         folder=settings.DB_FOLDER,
          pool_size=settings.DB_POOL_SIZE)
 
 # define global objects that may or may not be used by th actions
@@ -36,9 +53,15 @@ elif settings.SESSION_TYPE == 'database':
 
 auth = Auth(session, db)
 
+if settings.SMTP_SERVER:
+    auth.mailer = Mailer(
+        server=settings.SMTP_SERVER,
+        sender=settings.SMTP_SENDER,
+        login=settings.SMTP_LOGIN,
+        tls=settings.SMTP_TLS)
 
 if auth.db:
-    groups = Tags(db.auth_user, 'groups') 
+    groups = Tags(db.auth_user, 'groups')
 
 if settings.USE_PAM:
     from py4web.utils.auth_plugins.pam_plugin import PamPlugin
@@ -59,4 +82,6 @@ if settings.OAUTH2FACEBOOK_CLIENT_ID:
                                         client_secret=settings.OAUTH2FACEBOOK_CLIENT_SECRET,
                                         callback_url='auth/plugin/oauth2google/callback'))
 
-auth.enable()
+# we enable auth, which requres sessions, T, db and we make T available to
+# the template, although we recommend client-side translations instead
+auth.enable(uses=(session, T, db), env=dict(T=T))

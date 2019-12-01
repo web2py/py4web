@@ -10,17 +10,27 @@ from pydal.validators import IS_EMAIL, CRYPT, IS_NOT_EMPTY, IS_NOT_IN_DB
 
 class AuthEnforcer(Fixture):
 
+    """
+    Base fixtures that checks if a condition is met
+    if not redirects to a different pages or returns HTTP 403
+    """
+
     def __init__(self, auth, condition=None):
         self.__prerequisites__ = [auth]
         self.auth = auth
         self.condition = condition
 
     def abort_or_rediect(self, page):
+        """
+        return HTTP 403 if content_type is applicaitons/json
+        else redirects to page"""
         if request.content_type == 'application/json':
             abort(403)
         redirect(URL(self.auth.route + page))
 
     def on_request(self):
+        """check that we have a user in the session and
+        the condition is met"""
         user = self.auth.session.get('user')
         if not user or not user.get('id'):
             self.abort_or_rediect('login')
@@ -52,7 +62,8 @@ class Auth(Fixture):
                  use_username=True,
                  registration_requires_confirmation=True,
                  registration_requires_appoval=False):
-
+        """Creates and Auth object responsinble for handling
+        authentication and authorization"""
         self.__prerequisites__ = []
         if session: self.__prerequisites__.append(session)
         if db: self.__prerequisites__.append(db)
@@ -70,6 +81,7 @@ class Auth(Fixture):
         self.plugins = {}
 
     def define_tables(self):
+        """Defines the auth_user table"""
         db = self.db
         Field = db.Field
         if not 'auth_user' in db.tables:
@@ -120,6 +132,10 @@ class Auth(Fixture):
 
     # utilities
     def get_user(self, safe=True):
+        """extracts the user form the session.
+        returns {} if no user in the session.
+        If session contains only a user['id']
+        retrives the other readable user info from auth_user"""
         user = self.session.get('user')
         if not user or not isinstance(user, dict) or not 'id' in user:
             return {}
@@ -136,18 +152,22 @@ class Auth(Fixture):
         return self.get_user()
 
     def register_plugin(self, plugin):
+        """registers an Auth plugin"""
         self.plugins[plugin.name] = plugin
 
-    def enable(self, route='auth/'):
+    def enable(self, route='auth/', uses=(), env=None):
+        """enables Auth, aka generates login/logout/register/etc pages"""
         self.route = route
         """This assumes the bottle framework and exposes all actions as /{app_name}/auth/{path}"""
-        def responder(path):
-            return self.action(path, request.method, request.query, request.json)
-        action(route + '<path:path>', method=['GET','POST'])(action.uses(self)(responder))
+        def responder(path, env=env):
+            return self.action(path, request.method, request.query, request.json, env=env)
+        action(route + '<path:path>', method=['GET','POST'])(action.uses(self, *uses)(responder))
 
     # Handle http requests
 
-    def action(self, path, method, get_vars, post_vars):
+    def action(self, path, method, get_vars, post_vars, env=None):
+        """action that handles all the HTTP requests for Auth"""
+        env = env or {}
         if path.startswith('plugin/'):
             parts = path.split('/',2)
             plugin = self.plugins.get(parts[1])
@@ -232,7 +252,8 @@ class Auth(Fixture):
                 redirect(URL('auth/email_verified'))
             else:
                 redirect(URL('auth/token_expired'))
-        return Template('auth.html').transform({'path': path})
+        env['path'] = path
+        return Template('auth.html').transform(env)
 
     # Methods that do not assume a user
 

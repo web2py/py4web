@@ -15,7 +15,7 @@ class LDAPPlugin(object):
 
     """
     to use ldap login with MS Active Directory:
-        
+
           auth.register_plugin(LDAPPlugin(
             mode='ad', server='my.domain.controller',
             base_dn='ou=Users,dc=domain,dc=com'))
@@ -140,7 +140,7 @@ class LDAPPlugin(object):
     is "error" and can be set to error, warning, info, debug.
     """
 
-    def __init__(self, 
+    def __init__(self,
                  server='ldap',
                  port=None,
                  base_dn='ou=users,dc=domain,dc=com',
@@ -244,7 +244,7 @@ class LDAPPlugin(object):
         if password == '':  # http://tools.ietf.org/html/rfc4513#section-5.1.2
             logger.warning('blank password not allowed')
             return False
-        logger.debug('mode: [%s] manage_user: [%s] custom_scope: [%s] manage_groups: [%s]' % 
+        logger.debug('mode: [%s] manage_user: [%s] custom_scope: [%s] manage_groups: [%s]' %
                           (str(mode), str(manage_user), str(custom_scope), str(manage_groups)))
         if manage_user:
             if user_firstname_attrib.count(':') > 0:
@@ -389,7 +389,7 @@ class LDAPPlugin(object):
                             break
                     except ldap.LDAPError as detail:
                         (exc_type, exc_value) = sys.exc_info()[:2]
-                        logger.warning("ldap_auth: searching %s for %s resulted in %s: %s\n" % 
+                        logger.warning("ldap_auth: searching %s for %s resulted in %s: %s\n" %
                                             (basedn, filter, exc_type, exc_value))
                 if not found:
                     logger.warning('User [%s] not found!' % username)
@@ -421,7 +421,7 @@ class LDAPPlugin(object):
                             break
                     except ldap.LDAPError as detail:
                         (exc_type, exc_value) = sys.exc_info()[:2]
-                        logger.warning("ldap_auth: searching %s for %s resulted in %s: %s\n" % 
+                        logger.warning("ldap_auth: searching %s for %s resulted in %s: %s\n" %
                                             (basedn, filter, exc_type, exc_value))
                 if not found:
                     logger.warning('User [%s] not found!' % username)
@@ -703,7 +703,7 @@ class LDAPPlugin(object):
 
             if cacert_path:
                 ldap.set_option(ldap.OPT_X_TLS_CACERTDIR, cacert_path)
-                
+
             if cacert_file:
                 ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
                 ldap.set_option(ldap.OPT_X_TLS_CACERTFILE, cacert_file)
@@ -711,7 +711,7 @@ class LDAPPlugin(object):
                 ldap.set_option(ldap.OPT_X_TLS_CERTFILE, cert_file)
             if key_file:
                 ldap.set_option(ldap.OPT_X_TLS_KEYFILE, key_file)
-                
+
             con = ldap.initialize("ldaps://" + server + ":" + str(port))
         else:
             if not port:
@@ -805,7 +805,7 @@ class LDAPPlugin(object):
             else:
                 # bind as anonymous
                 con.simple_bind_s('', '')
-                
+
         # if username is None, return empty list
         if username is None:
             return []

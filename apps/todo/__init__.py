@@ -10,7 +10,7 @@ db = DAL('sqlite://storage.db', folder=os.path.join(os.path.dirname(__file__), '
 db.define_table('todo', Field('info'))
 
 # example index page using session, template and vue.js
-@action('index')         # the function below is exposed as a GET action 
+@action('index')         # the function below is exposed as a GET action
 @action.uses('index.html')          # we use the template index.html to render it
 @action.uses(session)               # action needs a session object (read/write cookies)
 def index():

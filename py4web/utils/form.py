@@ -107,7 +107,7 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
 
 class Form(object):
     """
-    Usage in web2py controller:
+    Usage in py4web controller:
 
        def index():
            form = Form(db.thing, record=1)
@@ -122,8 +122,8 @@ class Form(object):
     - readonly: set to True to make a readonly form
     - deletable: set to False to disallow deletion of record
     - formstyle: a function that renders the form using helpers (FormStyleDefault)
-    - dbio: set to False to prevent any DB write
-    - keep_values: if set to true, it remebers the values of the previously submitted form
+    - dbio: set to False to prevent any DB writes
+    - keep_values: if set to true, it remembers the values of the previously submitted form
     - form_name: the optional name of this form
     """
 
@@ -173,6 +173,7 @@ class Form(object):
             post_vars = request.forms
             self.submitted = True
             process = False
+
             # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
             # Notice: we never expose the crsf uuid, we only use to sign the form uuid
             if request.method == 'POST':

@@ -28,13 +28,13 @@ class SSO(object):
         return {}
 
     ### methods that probably do not need to be overwritten
-    
+
     def _handle_callback(self, auth, get_vars):
         data = self.callback(get_vars)
         if not data or 'error' in data:
             abort(401)
         if auth.db:
-            # map returned fields into auth_user fields                                                                
+            # map returned fields into auth_user fields
             user = {}
             for key, value in self.maps.items():
                 value, parts = data, value.split('.')
@@ -45,7 +45,7 @@ class SSO(object):
             # store or retrieve the user
             data = auth.get_or_register_user(user)
         else:
-            # WIP Allow login without DB                                                                  
+            # WIP Allow login without DB
             if not 'id' in data:
                 data['id'] = data.get('username') or data.get('email')
         auth.session['user'] = data
@@ -71,7 +71,7 @@ class OAuth2(SSO):
                                client_secret=client_secret,
                                callback_url=callback_url,
                                scope=scope or self.default_scope)
-        
+
     def get_login_url(self, state=None, next=None):
         callback_url = self.parameters.get('callback_url')
         vars = {}

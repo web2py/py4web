@@ -1,6 +1,6 @@
 import uuid
 from py4web import action, request, response, URL
-from pydal.restapi import RestAPI, ALLOW_ALL_POLICY, DENY_ALL_POLICY        
+from pydal.restapi import RestAPI, ALLOW_ALL_POLICY, DENY_ALL_POLICY
 from yatl.helpers import DIV, XML, TAG
 
 MTABLE = '<mtable url="{url}" filter="" order="" :editable="true" :deletable="true" :create="true" :render="{render}"></mtable>'
@@ -22,11 +22,11 @@ class Publisher():
 
     def api(self, tablename, id=None):
         policy = self.policy
-        data = self.restapi(request.method, tablename, 
+        data = self.restapi(request.method, tablename,
                             id, request.query, request.json)
         response.status = data['code']
         return data
-    
+
     def mtable(self, table):
         path = self.path.replace('<tablename>', table._tablename)
         return XML(MTABLE.format(url=URL(path), render={}))

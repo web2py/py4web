@@ -34,7 +34,7 @@ test: build
 push:	test
 	git push origin master
 deploy: test
-	python setup.py sdist
+	python2.7 setup.py sdist
 	twine upload dist/*
 password.txt:
 	python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()(input('passwo\

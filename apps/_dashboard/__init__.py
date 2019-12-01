@@ -5,6 +5,7 @@ import shutil
 import zipfile
 import subprocess
 import io
+import copy
 
 import requests
 
@@ -180,7 +181,10 @@ if MODE in ('demo', 'readonly', 'full'):
         app_name = args[0]
         from py4web.core import Reloader, DAL
         from pydal.restapi import RestAPI, ALLOW_ALL_POLICY, DENY_ALL_POLICY
-        policy = ALLOW_ALL_POLICY if MODE == 'full' else DENY_ALL_POLICY
+        if MODE == 'full':
+            policy = ALLOW_ALL_POLICY
+        else:
+            policy = DENY_ALL_POLICY
         module = Reloader.MODULES[app_name]
         def url(*args): return request.url + '/' + '/'.join(args)
         databases = [name for name in dir(module) if isinstance(getattr(module, name), DAL)]
@@ -195,7 +199,8 @@ if MODE in ('demo', 'readonly', 'full'):
         elif len(args) > 2 and args[1] in databases:
             db = getattr(module, args[1])
             id = args[3] if len(args) == 4 else None
-            data = RestAPI(db, policy)(request.method, args[2], id, request.query, request.json)
+            data = action.uses(db)(lambda: RestAPI(db, policy)(
+                    request.method, args[2], id, request.query, request.json))()
         else:
             data = {}
         if 'code' in data:
@@ -290,7 +295,3 @@ if MODE == 'full':
         else:
             abort(500)
         return {'status':'success'}
-
-
-
-
