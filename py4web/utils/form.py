@@ -40,7 +40,7 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
         elif field.type == 'upload':
             control = DIV(INPUT(_type='file', _id=input_id, _name=field.name))
             if value:
-                control.append(A('download', _href=donwload_url(value)))
+                control.append(A('download', _href=field.download_url(value)))
                 control.append(INPUT(_type='checkbox',_value='ON',
                                      _name='_delete_'+field.name))
                 control.append('(check to remove)')
@@ -55,7 +55,7 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
             field_type = 'password' if field.type == 'password' else 'text'
             control = INPUT(_type=field_type, _id=input_id, _name=field.name,
                             _value=value, _class=field_class)
-        
+
         key = control.name.rstrip('/')
         if key == 'input':
             key += '[type=%s]' % (control['_type'] or 'text')
@@ -67,7 +67,7 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
                 P(error, _class=class_error) if error else '',
                 P(field.comment or '', _class=class_info),
                 _class=class_outer))
-        
+
     if deletable:
         form.append(DIV(DIV(INPUT(_type='checkbox',_value='ON',_name='_delete',
                                   _class=classes.get('input[type=checkbox]')),
@@ -80,7 +80,7 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
                  _class=class_outer)
     form.append(submit)
     return form
-    
+
 
 def FormStyleBulma(table, vars, errors, readonly, deletable):
     classes = {
@@ -175,7 +175,7 @@ class Form(object):
             process = False
             # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
             # Notice: we never expose the crsf uuid, we only use to sign the form uuid
-            if request.method == 'POST':                
+            if request.method == 'POST':
                 if post_vars.get('_formkey') == self.form_name:
                     process = True
             if process:
@@ -217,7 +217,7 @@ class Form(object):
             # warning, should we really insert if record
             self.vars['id'] = self.table.insert(**self.vars)
 
-    def clear():
+    def clear(self):
         self.vars.clear()
         self.errors.clear()
         for field in self.table:
