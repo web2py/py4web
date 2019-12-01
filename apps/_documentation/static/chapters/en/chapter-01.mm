@@ -93,7 +93,7 @@ py4web-start.py -p password.txt apps
 py4web provides multiple command line options which can be listed with ``-h``.
 
 ``
-usage: py4web-start.py [-h] [-a ADDRESS] [-n NUMBER_WORKERS]
+usage: py4web-start.py [-h] [--host HOST] [--port PORT] [-n NUMBER_WORKERS]
                        [--ssl_cert_filename SSL_CERT_FILENAME]
                        [--ssl_key_filename SSL_KEY_FILENAME]
                        [--service_db_uri SERVICE_DB_URI] [-d DASHBOARD_MODE]
