@@ -136,7 +136,8 @@ class Form(object):
                  dbio=True,
                  keep_values=False,
                  form_name=False,
-                 hidden=None):
+                 hidden=None,
+                 before_validate=None):
 
         if isinstance(table, list):
             dbio = False
@@ -181,6 +182,8 @@ class Form(object):
                     process = True
             if process:
                 if not post_vars.get('_delete'):
+                    if before_validate:
+                        self.errors = before_validate(self.record, post_vars)
                     for field in self.table:
                         if field.writable:
                             value = post_vars.get(field.name)
