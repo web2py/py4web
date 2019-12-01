@@ -50,6 +50,9 @@
         <input type="checkbox" id="routes">
         <label for="routes">Routes for {{selected_app.name}}</label>
         <div>
+          <div class="right">
+            <button v-on:click="reload(selected_app.name)">Reload {{selected_app.name}}</button>
+          </div>
           <table v-if="routes.length">
             <thead>
               <tr>

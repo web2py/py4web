@@ -209,10 +209,11 @@ if MODE in ('demo', 'readonly', 'full'):
 
 if MODE == 'full':
     @action('reload')
+    @action('reload/<name>')
     @session_secured
-    def reload():
+    def reload(name=None):
         """Reloads installed apps"""
-        Reloader.import_apps()
+        Reloader.import_app(name) if name else Reloader.import_apps()
         return 'ok'
 
     @action('save/<path:path>', method='POST')

@@ -668,34 +668,7 @@ class Reloader:
         # Then load all the apps as submodules
         for app_name in os.listdir(folder):
             action.app_name = app_name
-            path = os.path.join(folder, app_name)
-            init = os.path.join(path, '__init__.py')
-            if os.path.isdir(path) and not path.endswith('__') and os.path.exists(init):
-                module_name = 'apps.%s' % app_name
-                try:
-                    module = Reloader.MODULES.get(app_name)
-                    if not module:
-                        print('[ ] loading %s ...' % app_name)
-                        module = importlib.machinery.SourceFileLoader(
-                            module_name, init).load_module()
-                        new_apps.append(path)
-                        print('\x1b[A[X] loaded %s     ' % app_name)
-                    else:
-                        print('[ ] reloading %s ...' % app_name)
-                        names = [name for name in sys.modules if (name + '.').startswith(module_name + '.')]
-                        for name in names:
-                            try:
-                                importlib.reload(sys.modules[name])
-                            except ModuleNotFoundError:
-                                pass
-                        print('\x1b[A[X] reloaded %s     ' % app_name)
-                    Reloader.MODULES[app_name] = module
-                    Reloader.ERRORS[app_name] = None
-                except:
-                    tb = traceback.format_exc()
-                    print('\x1b[A[FAILED] loading %s     \n%s\n' %
-                          (app_name, tb))
-                    Reloader.ERRORS[app_name] = tb
+            new_apps += Reloader.import_app(app_name)
         # Expose static files with support for static asset management
         for path in new_apps:
             static_folder = os.path.join(path, 'static')
@@ -722,7 +695,40 @@ class Reloader:
                            'action': func.__name__})
         Reloader.ROUTES = sorted(routes, key=lambda item: item['rule'])
         ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
-
+        
+    @staticmethod
+    def import_app(app_name):
+        folder = os.environ['PY4WEB_APPS_FOLDER']
+        path = os.path.join(folder, app_name)
+        init = os.path.join(path, '__init__.py')
+        new_apps = []
+        if os.path.isdir(path) and not path.endswith('__') and os.path.exists(init):
+            module_name = 'apps.%s' % app_name
+            try:
+                module = Reloader.MODULES.get(app_name)
+                if not module:
+                    print('[ ] loading %s ...' % app_name)
+                    module = importlib.machinery.SourceFileLoader(
+                        module_name, init).load_module()
+                    new_apps.append(path)
+                    print('\x1b[A[X] loaded %s     ' % app_name)
+                else:
+                    print('[ ] reloading %s ...' % app_name)
+                    names = [name for name in sys.modules if (name + '.').startswith(module_name + '.')]
+                    for name in names:
+                        try:
+                            importlib.reload(sys.modules[name])
+                        except ModuleNotFoundError:
+                            pass
+                    print('\x1b[A[X] reloaded %s     ' % app_name)
+                Reloader.MODULES[app_name] = module
+                Reloader.ERRORS[app_name] = None
+            except:
+                tb = traceback.format_exc()
+                print('\x1b[A[FAILED] loading %s     \n%s\n' %
+                      (app_name, tb))
+                Reloader.ERRORS[app_name] = tb
+        return new_apps
 
 #########################################################################################
 # Web Server and Reload Logic: Error Handling

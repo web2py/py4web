@@ -80,10 +80,10 @@ let init = (app) => {
     app.modal_dismiss = () => {
         app.vue.modal = null;
     };
-    app.reload = () => {
+    app.reload = (name) => {
         app.modal_dismiss();
         app.vue.loading = true;        
-        axios.get('../reload').then(app.init);        
+        axios.get(name?'../reload/'+name:'../reload').then(app.init);        
     };
     app.load_file = () => {
         var path = app.vue.selected_filename;
