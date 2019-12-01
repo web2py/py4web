@@ -131,6 +131,10 @@ class Auth(Fixture):
                 user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
         return user
 
+    @property
+    def current_user(self):
+        return self.get_user()
+
     def register_plugin(self, plugin):
         self.plugins[plugin.name] = plugin
 
