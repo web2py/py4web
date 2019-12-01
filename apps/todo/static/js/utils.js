@@ -1,4 +1,3 @@
-
 // ASSUMES Vue and Axios
 
 if (!String.prototype.format) {
@@ -101,9 +100,9 @@ T.format = function(text, args) {
 };
 
 // a Vue app prototype
-utils.app = function() {
+utils.app = function(element_id) {
     self = {};
-    self.element_id = 'vue';
+    self.element_id = element_id || 'vue';
     self.data = { loading: 0, page: null, state: null };
     self.methods = {};
     self.filters = {};
@@ -130,7 +129,7 @@ utils.app = function() {
                 self.v.state = state;
             }); 
     };
-    // restores state when navigaing history
+    // Restores state when navigating history
     self.onpopstate = function(event) {
         for(var key in event.state) self.v[key] = event.state[key];
     };

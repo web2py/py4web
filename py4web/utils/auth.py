@@ -26,7 +26,7 @@ class AuthEnforcer(Fixture):
         else redirects to page"""
         if request.content_type == 'application/json':
             abort(403)
-        redirect(URL(self.auth.route + page))
+        redirect(URL(self.auth.route, page))
 
     def on_request(self):
         """check that we have a user in the session and
@@ -249,9 +249,9 @@ class Auth(Fixture):
             # Somehow call revoke for active plugin
         elif path == 'verify_email' and self.db:
             if self.verify_email(get_vars.get('token')):
-                redirect(URL('auth/email_verified'))
+                redirect(URL('auth', 'email_verified'))
             else:
-                redirect(URL('auth/token_expired'))
+                redirect(URL('auth', 'token_expired'))
         env['path'] = path
         return Template('auth.html').transform(env)
 
@@ -265,7 +265,7 @@ class Auth(Fixture):
         fields['action_token'] = 'pending-registration:%s' % token
         res = self.db.auth_user.validate_and_insert(**fields)
         if send and res.get('id'):
-            self._link = link = URL(self.route + 'verify_email?token=' + token, scheme=True)
+            self._link = link = URL(self.route, 'verify_email', vars=dict(token=token), scheme=True)
             self.send('verify_email', fields, link=link)
         return res
 
@@ -298,7 +298,7 @@ class Auth(Fixture):
             token = str(uuid.uuid4())
             user.update_record(action_token='reset-password-request:'+token)
             if send:
-                self._link = link = URL(self.route + 'api/reset_password?token=' + token, scheme=True)
+                self._link = link = URL(self.route, 'api', 'reset_password', vars=dict(token=token), scheme=True)
                 self.send('reset_password', user, link=link)
             return token
 
