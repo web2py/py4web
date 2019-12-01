@@ -1,6 +1,7 @@
 """
 This file defines the database models
 """
+
 from . common import db, Field
 from pydal.validators import *
 

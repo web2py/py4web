@@ -40,7 +40,7 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
         elif field.type == 'upload':
             control = DIV(INPUT(_type='file', _id=input_id, _name=field.name))
             if value:
-                control.append(A('download', _href=donwload_url(value)))
+                control.append(A('download', _href=field.download_url(value)))
                 control.append(INPUT(_type='checkbox',_value='ON',
                                      _name='_delete_'+field.name))
                 control.append('(check to remove)')
@@ -173,9 +173,10 @@ class Form(object):
             post_vars = request.forms
             self.submitted = True
             process = False
-            # We only a process a form if it is a POST and the formkey matches (both the correct formname and crsf)
-            # Notice: we never expose the crsf uuid, we only use it to sign the form uuid
-            if request.method == 'POST':                
+
+            # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
+            # Notice: we never expose the crsf uuid, we only use to sign the form uuid
+            if request.method == 'POST':
                 if post_vars.get('_formkey') == self.form_name:
                     process = True
             if process:
@@ -217,7 +218,7 @@ class Form(object):
             # warning, should we really insert if record
             self.vars['id'] = self.table.insert(**self.vars)
 
-    def clear():
+    def clear(self):
         self.vars.clear()
         self.errors.clear()
         for field in self.table:

@@ -369,7 +369,7 @@ def URL(*parts, vars=None, hash=None, scheme=False):
     URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{app_name}/a/b?x=1
     """
     prefix = '/%s/' % request.app_name if request.app_name != '_default' else '/'
-    url = prefix + '/'.join(parts)
+    url = prefix + '/'.join(map(lambda x : urllib.parse.quote(str(x)), parts))
     if vars:
         url += '?' + '&'.join('%s=%s' % (
             k, urllib.parse.quote(str(v))) for k, v in vars.items())
@@ -827,15 +827,18 @@ def initialize(**args):
         assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
         for filename in ['py4web.app._dashboard.zip', 'py4web.app._default.zip']:
             zip_filename = os.path.join(assets_dir, filename)
-            target_dir = os.path.join(apps_folder, filename.split('.')[-2])
-            if not os.path.exists(target_dir):
-                print('[ ] Unzipping app', filename)
-                zip_file = zipfile.ZipFile(zip_filename, 'r')
+            # These filenames do not necessarily exist if one has
+            # downloaded from source and deleted them.
+            if os.path.exists(filename):
+                target_dir = os.path.join(apps_folder, filename.split('.')[-2])
                 if not os.path.exists(target_dir):
-                    os.makedirs(target_dir)
-                zip_file.extractall(target_dir)
-                zip_file.close()
-                print('\x1b[A[X]')
+                    print('[ ] Unzipping app', filename)
+                    zip_file = zipfile.ZipFile(zip_filename, 'r')
+                    if not os.path.exists(target_dir):
+                        os.makedirs(target_dir)
+                    zip_file.extractall(target_dir)
+                    zip_file.close()
+                    print('\x1b[A[X]')
 
 
 def main(args=None):

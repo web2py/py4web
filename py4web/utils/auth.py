@@ -59,12 +59,11 @@ class Auth(Fixture):
     def __init__(self, session, db,
                  define_tables=True,
                  sender=None,
+                 use_username=True,
                  registration_requires_confirmation=True,
                  registration_requires_appoval=False):
-
         """Creates and Auth object responsinble for handling
         authentication and authorization"""
-
         self.__prerequisites__ = []
         if session: self.__prerequisites__.append(session)
         if db: self.__prerequisites__.append(db)
@@ -74,6 +73,7 @@ class Auth(Fixture):
         self.route = None
         self.registration_requires_confirmation = registration_requires_confirmation
         self.registration_requires_appoval = registration_requires_appoval
+        self.use_username = use_username # if False, uses email only
         # The self._link variable is not thread safe (only intended for testing)
         self._link = None
         if db and define_tables:
@@ -86,15 +86,20 @@ class Auth(Fixture):
         Field = db.Field
         if not 'auth_user' in db.tables:
             ne = IS_NOT_EMPTY()
-            db.define_table(
-                'auth_user',
-                Field('username', requires=[ne, IS_NOT_IN_DB(db, 'auth_user.username')], unique=True),
+            auth_fields = [
                 Field('email', requires=(IS_EMAIL(), IS_NOT_IN_DB(db, 'auth_user.email')), unique=True),
                 Field('password','password', requires=CRYPT(), readable=False, writable=False),
                 Field('first_name', requires=ne),
                 Field('last_name', requires=ne),
                 Field('sso_id', readable=False, writable=False),
                 Field('action_token', readable=False, writable=False),
+            ]
+            if self.use_username:
+                auth_fields.insert(
+                    0, Field('username', requires=[ne, IS_NOT_IN_DB(db, 'auth_user.username')], unique=True))
+            db.define_table(
+                'auth_user',
+                *auth_fields,
                 *self.extra_auth_user_fields)
 
     def signature(self):
@@ -142,6 +147,10 @@ class Auth(Fixture):
                 user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
         return user
 
+    @property
+    def current_user(self):
+        return self.get_user()
+
     def register_plugin(self, plugin):
         """registers an Auth plugin"""
         self.plugins[plugin.name] = plugin
@@ -149,8 +158,7 @@ class Auth(Fixture):
     def enable(self, route='auth/', uses=(), env=None):
         """enables Auth, aka generates login/logout/register/etc pages"""
         self.route = route
-        # This assumes the bottle framework and exposes all actions as
-        # /{app_name}/auth/{path}"""
+        """This assumes the bottle framework and exposes all actions as /{app_name}/auth/{path}"""
         def responder(path, env=env):
             return self.action(path, request.method, request.query, request.json, env=env)
         action(route + '<path:path>', method=['GET','POST'])(action.uses(self, *uses)(responder))
@@ -170,9 +178,13 @@ class Auth(Fixture):
         if path.startswith('api/'):
             data = {}
             if method == 'GET':
+                # Should we use the username?
+                if path == 'api/use_username':
+                    return {'use_username': self.use_username}
+                # Otherwise, we assume the user exists.
                 user = self.get_user(safe=True)
                 if not user:
-                    data = self._error('not authoried', 401)
+                    data = self._error('not authorized', 401)
                 if path == 'api/profile':
                     return {'user': user}
             elif method == 'POST' and self.db:
@@ -246,7 +258,8 @@ class Auth(Fixture):
     # Methods that do not assume a user
 
     def register(self, fields, send=True):
-        fields['username'] = fields.get('username', '').lower()
+        if self.use_username:
+            fields['username'] = fields.get('username', '').lower()
         fields['email'] = fields.get('email','').lower()
         token = str(uuid.uuid4())
         fields['action_token'] = 'pending-registration:%s' % token
@@ -259,7 +272,10 @@ class Auth(Fixture):
     def login(self, email, password):
         db = self.db
         value = email.lower()
-        query = (db.auth_user.email == value) if '@' in value else (db.auth_user.username == value)
+        if self.use_username:
+            query = (db.auth_user.email == value) if '@' in value else (db.auth_user.username == value)
+        else:
+            query = (db.auth_user.email == value)
         user = db(query).select().first()
         if not user: return (None, 'Invalid email')
         if (user.action_token or '').startswith('pending-registration:'):
@@ -273,7 +289,10 @@ class Auth(Fixture):
     def request_reset_password(self, email, send=True):
         db = self.db
         value = email.lower()
-        query = (db.auth_user.email == value) if '@' in value else (db.auth_user.username == value)
+        if self.use_username:
+            query = (db.auth_user.email == value) if '@' in value else (db.auth_user.username == value)
+        else:
+            query = (db.auth_user.email == value)
         user = db(query).select().first()
         if user and not user.action_token == 'account-blocked':
             token = str(uuid.uuid4())
