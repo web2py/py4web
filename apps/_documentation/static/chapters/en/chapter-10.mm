@@ -59,18 +59,20 @@ The validation of form input can be done in two ways.  One can define `requires`
 Here is an example:
 
 ``
+from py4web import Field
+from py4web.utils.form import Form, FormStyleBulma
+from pydal.validators import IS_INT_IN_RANGE
+
 def check_nonnegative_quantity(form):
-    errors = {}
-    if form.vars['product_quantity'] < 0:
-        errors['product_quantity'] = T('The product quantity cannot be negative')
-    return errors
+    if not form.errors and form.vars['product_quantity'] % 2:
+        form.errors['product_quantity'] = T('The product quantity must be even')
 
 @action('form_example', method=['GET', 'POST'])
 @action.uses('form_example.html', session)
 def form_example():
     form = Form([
         Field('product_name'),
-        Field('product_quantity', 'integer')],
+        Field('product_quantity', 'integer', requires=IS_INT_IN_RANGE(0,100))],
         validation=check_nonnegative_quantity,
         formstyle=FormStyleBulma)
     if form.accepted:
