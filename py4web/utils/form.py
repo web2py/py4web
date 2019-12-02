@@ -200,8 +200,8 @@ class Form(object):
                             self.vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
-                    if len(self.errors) == 0 and validation:
-                        self.errors = validation(self)
+                    if validation:
+                        validation(self)
                     if self.record:
                         self.vars['id'] = self.record.id
                     if not self.errors:
