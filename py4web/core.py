@@ -371,8 +371,8 @@ def URL(*parts, vars=None, hash=None, scheme=False):
     prefix = '/%s/' % request.app_name if request.app_name != '_default' else '/'
     broken_parts = []
     for part in parts:
-        broken_parts += part.split('/')
-    url = prefix + '/'.join(map(lambda x : urllib.parse.quote(str(x)), broken_parts))
+        broken_parts += str(part).split('/')
+    url = prefix + '/'.join(map(lambda x : urllib.parse.quote(x), broken_parts))
     if vars:
         url += '?' + '&'.join('%s=%s' % (
             k, urllib.parse.quote(str(v))) for k, v in vars.items())
@@ -695,7 +695,7 @@ class Reloader:
                            'action': func.__name__})
         Reloader.ROUTES = sorted(routes, key=lambda item: item['rule'])
         ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
-        
+
     @staticmethod
     def import_app(app_name):
         folder = os.environ['PY4WEB_APPS_FOLDER']
