@@ -202,7 +202,7 @@ class Form(object):
                                 self.errors[field.name] = error
                     if validation:
                         validation(self)
-                    if self.record:
+                    if self.record and dbio:
                         self.vars['id'] = self.record.id
                     if not self.errors:
                         self.accepted = True
