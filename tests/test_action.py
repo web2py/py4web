@@ -28,10 +28,14 @@ def index():
     return 'ok %s %s' % (session['number'], db(db.thing).count())
 
 
+def run_server():
+    bottle.run(host='localhost', port=8001)
+
+
 class CacheAction(unittest.TestCase):
 
     def setUp(self):
-        self.server = multiprocessing.Process(target=lambda: bottle.run(host='localhost', port=8001))
+        self.server = multiprocessing.Process(target=run_server)
         self.server.start()
         self.browser = mechanize.Browser()
         time.sleep(1)
