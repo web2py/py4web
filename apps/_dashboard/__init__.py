@@ -285,7 +285,9 @@ if MODE == 'full':
                 zfile.extractall(target_dir)
                 zfile.close()
             elif source.endswith('.git'):  # clone from a git repo
-                if subprocess.call(['git', 'clone', source, form['name']]):
+                process = subprocess.Popen(['git', 'clone', source, form['name']], cwd=FOLDER)
+                process.communicate()
+                if process.returncode != 0:
                     abort(500)
         elif form['type'] == 'upload':
             prepare_target_dir(form, target_dir)
