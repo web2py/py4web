@@ -809,8 +809,8 @@ def get_args():
                         help='Dashboard mode: demo, readonly, full (default), none')
     parser.add_argument('-p', '--password_file', default='password.txt',
                         help='File containing the encrypted (CRYPT) password')
-    parser.add_argument('-c', '--create', action='store_true', default=True,
-                        help='Create missing folders and apps without prompting')
+    parser.add_argument('-c', '--create', action='store_true', default=False,
+                        help='Create missing system apps')
     # Parse command line arguments
     args = parser.parse_args()
     return args
@@ -823,31 +823,32 @@ def initialize(**args):
     apps_folder = os.environ['PY4WEB_APPS_FOLDER']
     service_folder = os.path.join(apps_folder, os.environ['PY4WEB_SERVICE_FOLDER'])
     # If the apps folder does not exist create it and populate it
-    if args.get('create'):
-        if not os.path.exists(apps_folder):
-            os.makedirs(apps_folder)
+    if not os.path.exists(apps_folder):
+        os.makedirs(apps_folder)
         init_py = os.path.join(apps_folder, '__init__.py')
         if not os.path.exists(init_py):
             with open(init_py, 'w') as fp:
                 fp.write('')
         if not os.path.exists(service_folder):
             os.mkdir(service_folder)
-        # Upzip the _dashboard app if it is old or does not exist
-        assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
-        for filename in ['py4web.app._dashboard.zip', 'py4web.app._default.zip']:
-            zip_filename = os.path.join(assets_dir, filename)
-            # These filenames do not necessarily exist if one has
-            # downloaded from source and deleted them.
-            if os.path.exists(filename):
-                target_dir = os.path.join(apps_folder, filename.split('.')[-2])
+        args['create'] = True
+    # Upzip the _dashboard app if it is old or does not exist
+    assets_dir = os.path.join(os.path.dirname(__file__), 'assets')
+    apps = os.listdir(assets_dir)
+    for filename in apps:
+        zip_filename = os.path.join(assets_dir, filename)
+        # These filenames do not necessarily exist if one has
+        # downloaded from source and deleted them.
+        target_dir = os.path.join(apps_folder, filename.split('.')[-2])
+        if not os.path.exists(target_dir):
+            if args.get('create'):
+                print('[ ] Unzipping app', filename)
+                zip_file = zipfile.ZipFile(zip_filename, 'r')
                 if not os.path.exists(target_dir):
-                    print('[ ] Unzipping app', filename)
-                    zip_file = zipfile.ZipFile(zip_filename, 'r')
-                    if not os.path.exists(target_dir):
-                        os.makedirs(target_dir)
-                    zip_file.extractall(target_dir)
-                    zip_file.close()
-                    print('\x1b[A[X]')
+                    os.makedirs(target_dir)
+                zip_file.extractall(target_dir)
+                zip_file.close()
+                print('\x1b[A[X]')
 
 
 def main(args=None):
