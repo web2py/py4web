@@ -2,14 +2,14 @@
 This file defines the database models
 """
 
-from .common import db, Field
+from .common import db, Field, T
 from pydal.validators import *
 
 # simple table example
 db.define_table(
     "person",
-    Field("name", requires=IS_NOT_IN_DB(db, "person.name")),
-    Field("job", requires=IS_NOT_EMPTY()),
+    Field("name", requires=IS_NOT_IN_DB(db, "person.name"), label=T('name')),
+    Field("job", requires=IS_NOT_EMPTY(), label=T('job')),
 )
 
 # simple reference example

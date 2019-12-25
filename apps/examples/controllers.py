@@ -31,7 +31,7 @@ def error():
 # exposed as /examples/create_form or /examples/update_form/<id>
 @action("create_form", method=["GET", "POST"])
 @action("update_form/<id>", method=["GET", "POST"])
-@action.uses("form.html", db, session)
+@action.uses("form.html", db, session, T)
 def example_form(id=None):
     form = Form(db.person, id, deletable=False, formstyle=FormStyleBulma)
     rows = db(db.person).select()
