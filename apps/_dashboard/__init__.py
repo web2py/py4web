@@ -238,7 +238,7 @@ if MODE in ("demo", "readonly", "full"):
         elif len(args) > 2 and args[1] in databases:
             db = getattr(module, args[1])
             id = args[3] if len(args) == 4 else None
-            data = action.uses(db)(
+            data = action.uses(db, T)(
                 lambda: RestAPI(db, policy)(
                     request.method, args[2], id, request.query, request.json
                 )
