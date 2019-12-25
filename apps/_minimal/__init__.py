@@ -1,5 +1,6 @@
 from py4web import action
 
-@action('index')
+
+@action("index")
 def index():
     return "Hello World"
