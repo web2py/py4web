@@ -8,19 +8,23 @@ from multiprocessing import Process
 from unittest.mock import patch
 from py4web.core import main
 
+
 def patched_main():
     dirpath = tempfile.mkdtemp()
-    dir = os.path.join(dirpath, 'apps')
+    dir = os.path.join(dirpath, "apps")
     testargs = ["py4web", "-d", "demo", "-c", dir]
-    with patch.object(sys, 'argv', testargs):
+    with patch.object(sys, "argv", testargs):
         main()
 
-class MainTest(unittest.TestCase):
 
+class MainTest(unittest.TestCase):
     def test_main(self):
-        class MyException(Exception): pass
+        class MyException(Exception):
+            pass
+
         def handler(signum, frame):
             raise MyException
+
         signal.signal(signal.SIGALRM, handler)
         signal.alarm(10)
         try:

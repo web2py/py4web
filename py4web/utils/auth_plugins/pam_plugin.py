@@ -1,9 +1,9 @@
-from . pam import authenticate
+from .pam import authenticate
 
 
 class PamPlugin:
 
-    name = 'pam'
+    name = "pam"
 
     def check_credentials(self, username, password):
         return authenticate(username, password)
