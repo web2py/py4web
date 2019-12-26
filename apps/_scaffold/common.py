@@ -99,10 +99,13 @@ if settings.OAUTH2FACEBOOK_CLIENT_ID:
     )
 
 if settings.USE_CELERY:
-    from celery import Celery
-    # to use from . common import scheduled and then use it accoding to celery docs
-    # examples in tasks.py
-    scheduler = Celery('apps.%s.tasks' % settings.APP_NAME, broker=settings.CELERY_BROKER)
+    try:
+        from celery import Celery
+        # to use from . common import scheduled and then use it according to celery docs
+        # examples in tasks.py
+        scheduler = Celery('apps.%s.tasks' % settings.APP_NAME, broker=settings.CELERY_BROKER)
+    except ModuleNotFoundError:
+        print("Celery module in settings but not installed or loaded")
 
 
 # we enable auth, which requres sessions, T, db and we make T available to
