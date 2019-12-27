@@ -40,7 +40,9 @@ Here ``apps`` is the name of the folder where you keep your apps. If the folder 
 
 Mind that if you upgrade py4web, it will not automatically upgrade **Dashboard** and **Default**. You have to remove these apps for py4web to re-install them. This is a safety precaution, in case you made changes to those apps.
 
-**Dashboard** is a web based IDE. **Default** is an app that does not nothing other than welcome the user. In general "apps/_default" can be either an app or a symlink to your default app.
+**Dashboard** is a web based IDE. 
+
+**Default** is an app that does not nothing other than welcome the user.
 
 Notice that some apps - like **Dashboard** and **Default** - have a special role in py4web and therefore their actual name starts with ``_`` to avoid conflicts with apps created by you.
 
@@ -48,13 +50,14 @@ Once py4web is installed you can access the apps at the following urls:
 
 ``
 http://localhost:8000
-http://localhost:8000/_default
 http://localhost:8000/_dashboard
 http://localhost:8000/{yourappname}/index
 ``
 
-Notice that ONLY the **Default** app does require a path prefix. In the example above ``http://localhost:8000`` and ``http://localhost:8000/_default`` are identical to py4web; all other apps require the /{appname}.
-NOTE: For all apps the trailing ``/index`` is optional.
+Notice that ONLY the **Default** app is special because if does not rqeuire the "{appname}/" prefix in the path, like all the other apps do.
+In general you you may want to symlink ``apps/_default`` to your default app.
+
+For all apps the trailing ``/index`` is optional.
 
 ### Installing from source
 
@@ -74,6 +77,18 @@ Once installed, you should start with
 
 Notice the ``./`` ; it forces the run of the local folder's py4web and not the installed one.
 
+### Upgrading
+
+If you installed py4web from source you can upgrade it with
+``
+python3 -m pip install -U py4web
+``:bash
+this will install the libraries but not the apps. To upgrade the built-in apps, delete them them run:
+``
+py4web-start -c apps
+``:bash
+The "-c" or "--create" option instructs py4web to re-install the missing apps.
+
 ### Dashboard password
 
 Every time py4web starts, it asks for a one-time password for you to access the dashboard. This is annoying. You can avoid it by storying a password hashed in a file:
@@ -81,17 +96,26 @@ Every time py4web starts, it asks for a one-time password for you to access the 
 ``
 python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()(input('password:'))[0]))"
 ``:bash
-
+(pydal is installed by py4web as a dependency)
 and then ask py4web to re-use that password:
 
 Pip Install:
 
-``python3 -m py4web-start -p password.txt apps``
+``
+py4web-start -p password.txt apps
+``:bash
 
 Console:
-``python3 py4web-start.py -p password.txt apps``:bash
+
+``
+py4web-start -p password.txt apps
+``:bash
+
 or
-``./py4web-start.py -p password.txt apps``:bash
+
+``
+py4web-start -p password.txt apps
+``:bash
 
 ### Command line options
 

@@ -17,6 +17,12 @@ body {
   background: inherit;
   margin: inherit;
 }
+.mm p, .mm br, .mm li, .mm ul {
+  padding-bottom: 0.5em;
+}
+.mm img, .mm pre {
+  max-width: 70vw !important;
+}
 .mm {
   line-height: 1.5em;
   text-align: justify;
