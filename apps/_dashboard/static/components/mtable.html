@@ -78,6 +78,7 @@
               [{{item[field.name]}}]
             </a>
             <span v-else-if="field.type=='string'" class="field-string">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='json'" class="field-string">(json)</span>
             <span v-else-if="field.type=='integer'" class="field-integer">{{item[field.name]}}</span>
             <span v-else-if="field.type=='float'" class="field-float">{{item[field.name]}}</span>
             <span v-else-if="field.type=='decimal'" class="field-float">{{item[field.name]}}</span>
