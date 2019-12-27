@@ -193,6 +193,8 @@ def objectify(obj):
         return obj
     elif hasattr(obj, "__iter__") or isinstance(obj, types.GeneratorType):
         return list(obj)
+    elif hasattr(obj, 'xml'):
+        return obj.xml()
     elif hasattr(obj, "__dict__") and hasattr(obj, "__class__"):
         d = dict(obj.__dict__)
         d["__class__"] = obj.__class__.__name__
@@ -234,7 +236,6 @@ class Translator(pluralize.Translator, Fixture):
 class DAL(pydal.DAL, Fixture):
     def on_request(self):
         threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
-        self._adapter.reconnect()
 
     def on_error(self):
         self.rollback()
