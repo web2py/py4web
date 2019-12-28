@@ -200,3 +200,8 @@ make deploy
 ``:bash
 
 You may want to customize the Makefile and app.yaml to suit your needs. You should not need to edit ``main.py``.
+
+## Deployment on PythonAnywhere.com
+
+Watch the video: https://youtu.be/Wxjl_vkLAEY
+The bottle_app.py script is in ``py4web/deployment_tools/pythonanywhere.com/bottle_app.py``
