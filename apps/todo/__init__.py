@@ -10,6 +10,7 @@ db = DAL(
     "sqlite://storage.db", folder=os.path.join(os.path.dirname(__file__), "databases")
 )
 db.define_table("todo", Field("info"))
+db.commit()
 
 # example index page using session, template and vue.js
 @action("index")  # the function below is exposed as a GET action
