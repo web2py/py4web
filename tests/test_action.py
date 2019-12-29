@@ -40,7 +40,7 @@ class CacheAction(unittest.TestCase):
         self.server = multiprocessing.Process(target=run_server)
         self.server.start()
         self.browser = mechanize.Browser()
-        time.sleep(1)
+        time.sleep(3)
 
     def tearDown(self):
         self.server.terminate()
