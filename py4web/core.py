@@ -1001,9 +1001,9 @@ def initialize(**args):
         if not os.path.exists(init_py):
             with open(init_py, "w") as fp:
                 fp.write("")
-        if not os.path.exists(service_folder):
-            os.mkdir(service_folder)
         args["create"] = True
+    if not os.path.exists(service_folder):
+        os.mkdir(service_folder)
     # Upzip the _dashboard app if it is old or does not exist
     assets_dir = os.path.join(os.path.dirname(__file__), "assets")
     if os.path.exists(assets_dir):
