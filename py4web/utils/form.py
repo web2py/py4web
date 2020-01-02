@@ -298,8 +298,5 @@ class Form(object):
     def xml(self):
         return self.helper().xml()
 
-    def __unicode__(self):
-        return self.xml()
-
     def __str__(self):
-        return self.xml().encode("utf8")
+        return self.xml()

@@ -1,3 +1,4 @@
+import base64
 import datetime
 import hashlib
 import urllib
@@ -6,6 +7,14 @@ import uuid
 from py4web import redirect, request, response, abort, URL, action
 from py4web.core import Fixture, Template
 from pydal.validators import IS_EMAIL, CRYPT, IS_NOT_EMPTY, IS_NOT_IN_DB
+
+
+def b16e(text):
+    return base64.b16encode(text.encode()).decode()
+
+
+def b16d(text):
+    return base64.b16decode(text.encode()).decode()
 
 
 class AuthEnforcer(Fixture):
@@ -300,8 +309,10 @@ class Auth(Fixture):
             self.session["user"] = None
             # Somehow call revoke for active plugin
         elif path == "verify_email" and self.db:
-            if self.verify_email(get_vars.get("token")):
-                redirect(URL("auth", "email_verified"))
+            token = get_vars.get("token")
+            if self.verify_email(token):
+                next = b16d(token.split("/")[1])
+                redirect(next or URL("auth", "email_verified"))
             else:
                 redirect(URL("auth", "token_expired"))
         env["path"] = path
@@ -309,11 +320,11 @@ class Auth(Fixture):
 
     # Methods that do not assume a user
 
-    def register(self, fields, send=True):
+    def register(self, fields, send=True, next=""):
         if self.use_username:
             fields["username"] = fields.get("username", "").lower()
         fields["email"] = fields.get("email", "").lower()
-        token = str(uuid.uuid4())
+        token = str(uuid.uuid4()) + "/" + b16e(next)
         fields["action_token"] = "pending-registration:%s" % token
         res = self.db.auth_user.validate_and_insert(**fields)
         if send and res.get("id"):
@@ -345,7 +356,7 @@ class Auth(Fixture):
             return (user, None)
         return None, "Invalid Credentials"
 
-    def request_reset_password(self, email, send=True):
+    def request_reset_password(self, email, send=True, next=""):
         db = self.db
         value = email.lower()
         if self.use_username:
@@ -358,15 +369,11 @@ class Auth(Fixture):
             query = db.auth_user.email == value
         user = db(query).select().first()
         if user and not user.action_token == "account-blocked":
-            token = str(uuid.uuid4())
+            token = str(uuid.uuid4()) + "/" + b16e(next)
             user.update_record(action_token="reset-password-request:" + token)
             if send:
                 self._link = link = URL(
-                    self.route,
-                    "api",
-                    "reset_password",
-                    vars=dict(token=token),
-                    scheme=True,
+                    self.route, "reset_password", vars=dict(token=token), scheme=True,
                 )
                 self.send("reset_password", user, link=link)
             return token
@@ -468,8 +475,8 @@ class Auth(Fixture):
     # Private methods
 
     def _query_from_token(self, token):
-        query = self.db.auth_user.action_token == "reset-password-request:" + token
-        query |= self.db.auth_user.action_token == "pending-registration:" + token
+        query = self.db.auth_user.action_token == "reset-password-request:%s" % token
+        query |= self.db.auth_user.action_token == "pending-registration:%s" % token
         return query
 
     def _error(self, message, code=400):

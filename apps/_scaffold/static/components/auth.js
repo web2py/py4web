@@ -67,6 +67,7 @@
     };
     auth.methods.submit_reset_password = function() {
         var self = this;
+        this.form.token = utils.getQuery()['token'];
         axios.post('../auth/api/reset_password', this.form).then(function(res){
                 if(res.data.errors) self.errors = res.data.errors;
                 else if (res.data.status=='error') alert(res.data.message);

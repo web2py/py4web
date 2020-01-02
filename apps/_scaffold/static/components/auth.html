@@ -70,7 +70,7 @@ e<div>
       <span v-if="errors.email">{{errors.email}}</span>
     </div>
     <div class="control" style="text-align:center">
-      <button class="button is-link" v-on:click="submit_rquest_reset_password()">Send Request</button>
+      <button class="button is-link" v-on:click="submit_request_reset_password()">Send Request</button>
       <button class="button" v-on:click="go('login')">Login</button>
     </div>
   </div>
@@ -155,7 +155,7 @@ e<div>
       <button class="button is-link" v-on:click="go('login')">Go to login</button>
     </div>
   </div>
-  <div v-else-if="user === null && page=='request_send'">
+  <div v-else-if="user === null && page=='request_sent'">
     <center>
       <h2 class="subtitle">Request sent</h2>
     </center>

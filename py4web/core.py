@@ -430,7 +430,7 @@ def URL(*parts, vars=None, hash=None, scheme=False):
     prefix = "/%s/" % request.app_name if request.app_name != "_default" else "/"
     broken_parts = []
     for part in parts:
-        broken_parts += str(part).split("/")
+        broken_parts += str(part).rstrip('/').split("/")
     url = prefix + "/".join(map(lambda x: urllib.parse.quote(x), broken_parts))
     if vars:
         url += "?" + "&".join(
