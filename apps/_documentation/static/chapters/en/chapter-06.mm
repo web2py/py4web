@@ -69,7 +69,7 @@ The general query has the form ``{something}.eq=value`` where ``eq=`` stands for
 
 It can be a the name of a field of a table referred by the table been queried as in:
 
-**All superheroes with real identity "Clark Kent**
+**All superheroes with real identity "Clark Kent"**
 ``
 /superheroes/rest/api.json/superhero?real_identity.name.eq=Clark Kent
 ``
@@ -148,7 +148,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?@model=true``
+``
+/superheroes/rest/api.json/superhero?@model=true
+``
 
 OUTPUT:
 ``
@@ -219,7 +221,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?@lookup=real_identity``
+``
+/superheroes/rest/api.json/superhero?@lookup=real_identity
+``
 
 OUTPUT:
 ``
@@ -262,7 +266,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?@lookup=identity:real_identity``
+``
+/superheroes/rest/api.json/superhero?@lookup=identity:real_identity
+``
 
 (denormalize the real_identity and rename it identity)
 
@@ -310,7 +316,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?@lookup=identity!:real_identity[name,job]``
+``
+/superheroes/rest/api.json/superhero?@lookup=identity!:real_identity[name,job]
+``
 
 (denormalize the real_identity [but only fields name and job], collapse the with the identity prefix)
 
@@ -346,7 +354,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?@lookup=superhero.tag``
+``
+/superheroes/rest/api.json/superhero?@lookup=superhero.tag
+``
 
 OUTPUT:
 ``
@@ -443,7 +453,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?@lookup=superhero.tag.superpower``
+``
+/superheroes/rest/api.json/superhero?@lookup=superhero.tag.superpower
+``
 
 OUTPUT:
 ``
@@ -570,7 +582,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?@lookup=powers:superhero.tag[strength].superpower[description]``
+``
+/superheroes/rest/api.json/superhero?@lookup=powers:superhero.tag[strength].superpower[description]
+``
 
 OUTPUT:
 ``
@@ -667,7 +681,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?@lookup=powers!:superhero.tag[strength].superpower[description]``
+``
+/superheroes/rest/api.json/superhero?@lookup=powers!:superhero.tag[strength].superpower[description]
+``
 
 OUTPUT:
 ``
@@ -744,7 +760,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?@lookup=powers!:superhero.tag[strength].superpower[description],identity!:real_identity[name]``
+``
+/superheroes/rest/api.json/superhero?@lookup=powers!:superhero.tag[strength].superpower[description],identity!:real_identity[name]
+``
 
 OUTPUT:
 ``
@@ -821,7 +839,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?name.eq=Superman``
+``
+/superheroes/rest/api.json/superhero?name.eq=Superman
+``
 
 OUTPUT:
 ``
@@ -842,7 +862,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?real_identity.name.eq=Clark Kent``
+``
+/superheroes/rest/api.json/superhero?real_identity.name.eq=Clark Kent
+``
 
 OUTPUT:
 ``
@@ -863,7 +885,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?not.real_identity.name.eq=Clark Kent``
+``
+/superheroes/rest/api.json/superhero?not.real_identity.name.eq=Clark Kent
+``
 
 OUTPUT:
 ``
@@ -889,7 +913,9 @@ OUTPUT:
 ``
 
 URL:
-``/superheroes/rest/api.json/superhero?superhero.tag.superpower.description=Flight``
+``
+/superheroes/rest/api.json/superhero?superhero.tag.superpower.description=Flight
+``
 
 OUTPUT:
 ``
@@ -926,7 +952,7 @@ and some optional fields:
 {
     "count": ... (total matching, not total returned, for GET)
     "items": ... (in response to a GET)
-    "errors: ... (usually validation error0
+    "errors": ... (usually validation error0
     "models": ... (usually if status != success)
     "message": ... (is if error)
 }

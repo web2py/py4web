@@ -13,7 +13,9 @@ echo '' > apps/myapp/__init__.py
 
 If you now restart py4web or press the "Reload Apps" in the Dashboard, py4web will find this module, import it, and recognize it as an app, simply because of its location. An app is not required to do anything. It could just be a container for static files or arbitrary code that other apps may want to import and access. Yet typically most apps are designed to expose static or dynamic web pages.
 
-To expose dynamic web pages you simply need to create a ``static`` subfolder, and any file in there will be automatically published:
+### Static web pages
+
+To expose static web pages you simply need to create a ``static`` subfolder, and any file in there will be automatically published:
 
 ``
 mkdir apps/myapp/static
@@ -28,7 +30,7 @@ http://localhost:8000/myapp/static/hello.txt
 
 Notice that ``static`` is a special path for py4web and only files under the ``static`` folder are served.
 
-To create a dynamic page, you must create a function that returns the page content. Edit the ``myapp/__init__.py`` as follows:
+To create a dynamic page, you must create a function that returns the page content. For example dit the ``myapp/__init__.py`` as follows:
 
 ``
 import datetime
@@ -36,7 +38,7 @@ from py4web import action
 
 @action('index')
 def page():
-    return "hello, now is %s" % datetime.datime.now()
+    return "hello, now is %s" % datetime.dateime.now()
 ``:python
 
 Restart py4web or press the Dashboard "reload apps" button, and this page will be accessible at
@@ -52,7 +54,7 @@ http://localhost:8000/myapp
 ``
 (notice that index is optional)
 
-Unlike other frameworks, we do not import or start the webserver within the ``myapp`` code. This is because py4web is already running, and it may be serving multiple apps. py4web imports our code and exposes functions decorated with ``@action()``. Also notice that py4web prepends ``/myapp`` (i.e. the name of the app) to the url path declared in the action. This is because there are multiple apps, and they may define conflicting routes. Prepending the name of the app removes the ambiguity. But there is an exception: if you call your app ``_default``, or if you create a symlink from ``_default`` to ``myapp``, then py4web will not prepend any prefix to the routes defined inside the app.
+Unlike other frameworks, we do not import or start the webserver within the ``myapp`` code. This is because py4web is already running, and it may be serving multiple apps. py4web imports our code and exposes functions decorated with ``@action()``. Also notice that py4web prepends ``/myapp`` (i.e. the name of the app) to the url path declared in the action. This is because there are multiple apps, and they may define conflicting routes. Prepending the name of the app removes the ambiguity. But there is one exception: if you call your app ``_default``, or if you create a symlink from ``_default`` to ``myapp``, then py4web will not prepend any prefix to the routes defined inside the app.
 
 #### On return values
 
@@ -125,7 +127,7 @@ from py4web import request
 @action('paint')
 def paint():
     if 'color' in request.query
-       return 'Paining in %s' % request.query.get('color')
+       return 'Painting in %s' % request.query.get('color')
     return 'You did not specify a color'
 ``:python
 
@@ -170,6 +172,7 @@ The key ingredient here is the decorator ``@action.uses(...)``. The arguments of
 The simplest type of Fixture is a template. You specify it by simply giving the name of the file to be used as template. That file must follow the yatl syntax and must be located in the ``templates`` folder of the app. The object returned by the action will be processed by the template and turned into a string.
 
 You can easily define fixtures for other template languages. This is described later.
+
 Some built-in fixtures are:
 
 - the DAL object (which tells py4web to obtain a database connection from the pool at every request, and commit on success or rollback on failure)

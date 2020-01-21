@@ -55,10 +55,6 @@ LDAP_SETTING = {
 # i18n settings
 T_FOLDER = os.path.join(APP_FOLDER, "translations")
 
-# Celery settings
-USE_CELERY = False
-CELERY_BROKER = 'redis://localhost:6379/0'
-
 # try import private settings
 try:
     from .settings_private import *

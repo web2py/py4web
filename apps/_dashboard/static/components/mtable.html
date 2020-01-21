@@ -33,6 +33,7 @@
           </span>
           <input class="input" v-else-if="field.type=='integer'" type="number" step="1" v-model="item[field.name]" v-bind:readonly="!editable">
           <input class="input" v-else-if="field.type=='float'" type="number" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input class="input" v-else-if="field.type=='decimal'" type="number" v-model="item[field.name]" v-bind:readonly="!editable">
           <input class="input" v-else-if="field.type=='date'" type="date" v-model="item[field.name]" v-bind:readonly="!editable">
           <input class="input" v-else-if="field.type=='time'" type="time" v-model="item[field.name]" v-bind:readonly="!editable">
           <input class="input" v-else-if="field.type=='datetime'" type="datetime-local" v-model="item[field.name]" v-bind:readonly="!editable">
@@ -77,8 +78,10 @@
               [{{item[field.name]}}]
             </a>
             <span v-else-if="field.type=='string'" class="field-string">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='json'" class="field-string">(json)</span>
             <span v-else-if="field.type=='integer'" class="field-integer">{{item[field.name]}}</span>
             <span v-else-if="field.type=='float'" class="field-float">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='decimal'" class="field-float">{{item[field.name]}}</span>
             <span v-else-if="field.type=='date'" class="field-date">{{item[field.name]}}</span>
             <span v-else-if="field.type=='time'" class="field-time">{{item[field.name]}}</span>
             <span v-else-if="field.type=='datetime'" class="field-datetime">{{(item[field.name]||'').replace('T','@').substr(0,16)}}</span>

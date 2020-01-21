@@ -5,9 +5,10 @@
 
 import sys
 import logging
-import ldap # python-ldap
+import ldap  # python-ldap
 
 ldap.set_option(ldap.OPT_REFERRALS, 0)
+
 
 class LDAPPlugin(object):
 
@@ -140,38 +141,40 @@ class LDAPPlugin(object):
     is "error" and can be set to error, warning, info, debug.
     """
 
-    def __init__(self,
-                 server='ldap',
-                 port=None,
-                 base_dn='ou=users,dc=domain,dc=com',
-                 mode='uid',
-                 secure=False,
-                 self_signed_certificate=None,  # See NOTE below
-                 cert_path=None,
-                 cert_file=None,
-                 cacert_path=None,
-                 cacert_file=None,
-                 key_file=None,
-                 bind_dn=None,
-                 bind_pw=None,
-                 filterstr='objectClass=*',
-                 username_attrib='uid',
-                 custom_scope='subtree',
-                 allowed_groups=None,
-                 manage_user=False,
-                 user_firstname_attrib='cn:1',
-                 user_lastname_attrib='cn:2',
-                 user_mail_attrib='mail',
-                 manage_groups=False,
-                 manage_groups_callback=[],
-                 db=None,
-                 group_dn=None,
-                 group_name_attrib='cn',
-                 group_member_attrib='memberUid',
-                 group_filterstr='objectClass=*',
-                 group_mapping={},
-                 tls=False,
-                 logger=logging):
+    def __init__(
+        self,
+        server="ldap",
+        port=None,
+        base_dn="ou=users,dc=domain,dc=com",
+        mode="uid",
+        secure=False,
+        self_signed_certificate=None,  # See NOTE below
+        cert_path=None,
+        cert_file=None,
+        cacert_path=None,
+        cacert_file=None,
+        key_file=None,
+        bind_dn=None,
+        bind_pw=None,
+        filterstr="objectClass=*",
+        username_attrib="uid",
+        custom_scope="subtree",
+        allowed_groups=None,
+        manage_user=False,
+        user_firstname_attrib="cn:1",
+        user_lastname_attrib="cn:2",
+        user_mail_attrib="mail",
+        manage_groups=False,
+        manage_groups_callback=[],
+        db=None,
+        group_dn=None,
+        group_name_attrib="cn",
+        group_member_attrib="memberUid",
+        group_filterstr="objectClass=*",
+        group_mapping={},
+        tls=False,
+        logger=logging,
+    ):
 
         self.server = server
         self.port = port
@@ -205,7 +208,7 @@ class LDAPPlugin(object):
         self.tls = tls
         self.logger = logger
         # rfc4515 syntax
-        self.filterstr = self.filterstr.lstrip('(').rstrip(')')
+        self.filterstr = self.filterstr.lstrip("(").rstrip(")")
 
     def check_credentials(self, username, password):
 
@@ -241,43 +244,49 @@ class LDAPPlugin(object):
         tls = self.tls
         logger = self.logger
 
-        if password == '':  # http://tools.ietf.org/html/rfc4513#section-5.1.2
-            logger.warning('blank password not allowed')
+        if password == "":  # http://tools.ietf.org/html/rfc4513#section-5.1.2
+            logger.warning("blank password not allowed")
             return False
-        logger.debug('mode: [%s] manage_user: [%s] custom_scope: [%s] manage_groups: [%s]' %
-                          (str(mode), str(manage_user), str(custom_scope), str(manage_groups)))
+        logger.debug(
+            "mode: [%s] manage_user: [%s] custom_scope: [%s] manage_groups: [%s]"
+            % (str(mode), str(manage_user), str(custom_scope), str(manage_groups))
+        )
         if manage_user:
-            if user_firstname_attrib.count(':') > 0:
-                (user_firstname_attrib,
-                 user_firstname_part) = user_firstname_attrib.split(':', 1)
-                user_firstname_part = (int(user_firstname_part) - 1)
+            if user_firstname_attrib.count(":") > 0:
+                (
+                    user_firstname_attrib,
+                    user_firstname_part,
+                ) = user_firstname_attrib.split(":", 1)
+                user_firstname_part = int(user_firstname_part) - 1
             else:
                 user_firstname_part = None
-            if user_lastname_attrib.count(':') > 0:
-                (user_lastname_attrib,
-                 user_lastname_part) = user_lastname_attrib.split(':', 1)
-                user_lastname_part = (int(user_lastname_part) - 1)
+            if user_lastname_attrib.count(":") > 0:
+                (user_lastname_attrib, user_lastname_part) = user_lastname_attrib.split(
+                    ":", 1
+                )
+                user_lastname_part = int(user_lastname_part) - 1
             else:
                 user_lastname_part = None
             user_firstname_attrib = ldap.filter.escape_filter_chars(
-                user_firstname_attrib)
-            user_lastname_attrib = ldap.filter.escape_filter_chars(
-                user_lastname_attrib)
-            user_mail_attrib = ldap.filter.escape_filter_chars(
-                user_mail_attrib)
+                user_firstname_attrib
+            )
+            user_lastname_attrib = ldap.filter.escape_filter_chars(user_lastname_attrib)
+            user_mail_attrib = ldap.filter.escape_filter_chars(user_mail_attrib)
         try:
             if allowed_groups:
-                if not self.is_user_in_allowed_groups(username, password, allowed_groups):
+                if not self.is_user_in_allowed_groups(
+                    username, password, allowed_groups
+                ):
                     return False
             con = self._init_ldap()
-            if mode == 'ad':
+            if mode == "ad":
                 # Microsoft Active Directory
-                if '@' not in username:
+                if "@" not in username:
                     domain = []
-                    for x in base_dn.split(','):
+                    for x in base_dn.split(","):
                         if "DC=" in x.upper():
-                            domain.append(x.split('=')[-1])
-                    username = "%s@%s" % (username, '.'.join(domain))
+                            domain.append(x.split("=")[-1])
+                    username = "%s@%s" % (username, ".".join(domain))
                 username_bare = username.split("@")[0]
                 con.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
                 # In cases where ForestDnsZones and DomainDnsZones are found,
@@ -292,18 +301,23 @@ class LDAPPlugin(object):
                     con.simple_bind_s(username, password)
                 # this will throw an index error if the account is not found
                 # in the base_dn
-                requested_attrs = ['sAMAccountName']
+                requested_attrs = ["sAMAccountName"]
                 if manage_user:
-                    requested_attrs.extend([user_firstname_attrib, user_lastname_attrib, user_mail_attrib])
+                    requested_attrs.extend(
+                        [user_firstname_attrib, user_lastname_attrib, user_mail_attrib]
+                    )
 
                 result = con.search_ext_s(
-                    base_dn, ldap.SCOPE_SUBTREE,
-                    "(&(sAMAccountName=%s)(%s))" % (ldap.filter.escape_filter_chars(username_bare), filterstr),
-                    requested_attrs)[0][1]
+                    base_dn,
+                    ldap.SCOPE_SUBTREE,
+                    "(&(sAMAccountName=%s)(%s))"
+                    % (ldap.filter.escape_filter_chars(username_bare), filterstr),
+                    requested_attrs,
+                )[0][1]
                 if not isinstance(result, dict):
                     # result should be a dict in the form
                     # {'sAMAccountName': [username_bare]}
-                    logger.warning('User [%s] not found!' % username)
+                    logger.warning("User [%s] not found!" % username)
                     return False
                 if bind_dn:
                     # We know the user exists & is in the correct OU
@@ -311,72 +325,88 @@ class LDAPPlugin(object):
                     con.simple_bind_s(username, password)
                 username = username_bare
 
-            if mode == 'domino':
+            if mode == "domino":
                 # Notes Domino
                 if "@" in username:
                     username = username.split("@")[0]
                 con.simple_bind_s(username, password)
                 if manage_user:
                     # TODO: sorry I have no clue how to query attrs in domino
-                    result = {user_firstname_attrib: username,
-                              user_lastname_attrib: None,
-                              user_mail_attrib: None}
+                    result = {
+                        user_firstname_attrib: username,
+                        user_lastname_attrib: None,
+                        user_mail_attrib: None,
+                    }
 
-            if mode == 'cn':
+            if mode == "cn":
                 # OpenLDAP (CN)
                 if bind_dn and bind_pw:
                     con.simple_bind_s(bind_dn, bind_pw)
                 dn = "cn=" + username + "," + base_dn
                 con.simple_bind_s(dn, password)
                 if manage_user:
-                    result = con.search_s(dn, ldap.SCOPE_BASE,
-                                          "(objectClass=*)",
-                                          [user_firstname_attrib, user_lastname_attrib, user_mail_attrib])[0][1]
+                    result = con.search_s(
+                        dn,
+                        ldap.SCOPE_BASE,
+                        "(objectClass=*)",
+                        [user_firstname_attrib, user_lastname_attrib, user_mail_attrib],
+                    )[0][1]
 
-            if mode == 'uid':
+            if mode == "uid":
                 # OpenLDAP (UID)
                 if bind_dn and bind_pw:
                     con.simple_bind_s(bind_dn, bind_pw)
                     dn = "uid=" + username + "," + base_dn
-                    dn = con.search_s(base_dn, ldap.SCOPE_SUBTREE, "(uid=%s)" % username, [''])[0][0]
+                    dn = con.search_s(
+                        base_dn, ldap.SCOPE_SUBTREE, "(uid=%s)" % username, [""]
+                    )[0][0]
                 else:
                     dn = "uid=" + username + "," + base_dn
                 con.simple_bind_s(dn, password)
                 if manage_user:
-                    result = con.search_s(dn, ldap.SCOPE_BASE,
-                                          "(objectClass=*)",
-                                          [user_firstname_attrib, user_lastname_attrib, user_mail_attrib])[0][1]
+                    result = con.search_s(
+                        dn,
+                        ldap.SCOPE_BASE,
+                        "(objectClass=*)",
+                        [user_firstname_attrib, user_lastname_attrib, user_mail_attrib],
+                    )[0][1]
 
-            if mode == 'company':
+            if mode == "company":
                 # no DNs or password needed to search directory
                 dn = ""
                 pw = ""
                 # bind anonymously
                 con.simple_bind_s(dn, pw)
                 # search by e-mail address
-                filter = '(&(mail=%s)(%s))' % (
-                                ldap.filter.escape_filter_chars(username),
-                                filterstr)
+                filter = "(&(mail=%s)(%s))" % (
+                    ldap.filter.escape_filter_chars(username),
+                    filterstr,
+                )
                 # find the uid
-                attrs = ['uid']
+                attrs = ["uid"]
                 if manage_user:
-                    attrs.extend([user_firstname_attrib, user_lastname_attrib, user_mail_attrib])
+                    attrs.extend(
+                        [user_firstname_attrib, user_lastname_attrib, user_mail_attrib]
+                    )
                 # perform the actual search
-                company_search_result = con.search_s(base_dn,
-                                                     ldap.SCOPE_SUBTREE,
-                                                     filter, attrs)
+                company_search_result = con.search_s(
+                    base_dn, ldap.SCOPE_SUBTREE, filter, attrs
+                )
                 dn = company_search_result[0][0]
                 result = company_search_result[0][1]
                 # perform the real authentication test
                 con.simple_bind_s(dn, password)
 
-            if mode == 'uid_r':
+            if mode == "uid_r":
                 # OpenLDAP (UID) with subtree search and multiple DNs
                 if isinstance(base_dn, list):
                     basedns = base_dn
                 else:
                     basedns = [base_dn]
-                filter = '(&(uid=%s)(%s))' % (ldap.filter.escape_filter_chars(username), filterstr)
+                filter = "(&(uid=%s)(%s))" % (
+                    ldap.filter.escape_filter_chars(username),
+                    filterstr,
+                )
                 found = False
                 for basedn in basedns:
                     try:
@@ -389,25 +419,31 @@ class LDAPPlugin(object):
                             break
                     except ldap.LDAPError as detail:
                         (exc_type, exc_value) = sys.exc_info()[:2]
-                        logger.warning("ldap_auth: searching %s for %s resulted in %s: %s\n" %
-                                            (basedn, filter, exc_type, exc_value))
+                        logger.warning(
+                            "ldap_auth: searching %s for %s resulted in %s: %s\n"
+                            % (basedn, filter, exc_type, exc_value)
+                        )
                 if not found:
-                    logger.warning('User [%s] not found!' % username)
+                    logger.warning("User [%s] not found!" % username)
                     return False
                 result = result[0][1]
-            if mode == 'custom':
+            if mode == "custom":
                 # OpenLDAP (username_attrs) with subtree search and
                 # multiple DNs
                 if isinstance(base_dn, list):
                     basedns = base_dn
                 else:
                     basedns = [base_dn]
-                filter = '(&(%s=%s)(%s))' % (username_attrib, ldap.filter.escape_filter_chars(username), filterstr)
-                if custom_scope == 'subtree':
+                filter = "(&(%s=%s)(%s))" % (
+                    username_attrib,
+                    ldap.filter.escape_filter_chars(username),
+                    filterstr,
+                )
+                if custom_scope == "subtree":
                     scope = ldap.SCOPE_SUBTREE
-                elif custom_scope == 'base':
+                elif custom_scope == "base":
                     scope = ldap.SCOPE_BASE
-                elif custom_scope == 'onelevel':
+                elif custom_scope == "onelevel":
                     scope = ldap.SCOPE_ONELEVEL
                 found = False
                 for basedn in basedns:
@@ -421,20 +457,21 @@ class LDAPPlugin(object):
                             break
                     except ldap.LDAPError as detail:
                         (exc_type, exc_value) = sys.exc_info()[:2]
-                        logger.warning("ldap_auth: searching %s for %s resulted in %s: %s\n" %
-                                            (basedn, filter, exc_type, exc_value))
+                        logger.warning(
+                            "ldap_auth: searching %s for %s resulted in %s: %s\n"
+                            % (basedn, filter, exc_type, exc_value)
+                        )
                 if not found:
-                    logger.warning('User [%s] not found!' % username)
+                    logger.warning("User [%s] not found!" % username)
                     return False
                 result = result[0][1]
             if manage_user:
-                logger.info('[%s] Manage user data' % str(username))
+                logger.info("[%s] Manage user data" % str(username))
                 try:
                     user_firstname = result[user_firstname_attrib][0]
                     if user_firstname_part is not None:
                         store_user_firstname = user_firstname.split(
-                            b' ' if isinstance(user_firstname, bytes) else ' ',
-                            1
+                            b" " if isinstance(user_firstname, bytes) else " ", 1
                         )[user_firstname_part]
                     else:
                         store_user_firstname = user_firstname
@@ -444,8 +481,7 @@ class LDAPPlugin(object):
                     user_lastname = result[user_lastname_attrib][0]
                     if user_lastname_part is not None:
                         store_user_lastname = user_lastname.split(
-                            b' ' if isinstance(user_lastname, bytes) else ' ',
-                            1
+                            b" " if isinstance(user_lastname, bytes) else " ", 1
                         )[user_lastname_part]
                     else:
                         store_user_lastname = user_lastname
@@ -455,31 +491,41 @@ class LDAPPlugin(object):
                     store_user_mail = result[user_mail_attrib][0]
                 except KeyError as e:
                     store_user_mail = None
-                update_or_insert_values = {'first_name': store_user_firstname,
-                                           'last_name': store_user_lastname,
-                                           'email': store_user_mail,
-                                           'username': username}
-                if '@' not in username:
+                update_or_insert_values = {
+                    "first_name": store_user_firstname,
+                    "last_name": store_user_lastname,
+                    "email": store_user_mail,
+                    "username": username,
+                }
+                if "@" not in username:
                     # user as username
                     # ################
-                    fields = ['first_name', 'last_name', 'email']
+                    fields = ["first_name", "last_name", "email"]
                     user_in_db = db(db.auth_user.username == username)
-                elif '@' in username:
+                elif "@" in username:
                     # user as email
                     # #############
-                    fields = ['first_name', 'last_name']
+                    fields = ["first_name", "last_name"]
                     user_in_db = db(db.auth_user.email == username)
-                    update_or_insert_values = dict(((f, update_or_insert_values[f]) for f in fields))
+                    update_or_insert_values = dict(
+                        ((f, update_or_insert_values[f]) for f in fields)
+                    )
 
                 if user_in_db.count() > 0:
-                    actual_values = user_in_db.select(*[db.auth_user[f] for f in fields]).first().as_dict()
-                    if update_or_insert_values != actual_values:  # We don't update record if values are the same
+                    actual_values = (
+                        user_in_db.select(*[db.auth_user[f] for f in fields])
+                        .first()
+                        .as_dict()
+                    )
+                    if (
+                        update_or_insert_values != actual_values
+                    ):  # We don't update record if values are the same
                         user_in_db.update(**update_or_insert_values)
                 else:
                     db.auth_user.insert(**update_or_insert_values)
             con.unbind()
 
-            #if manage_groups:
+            # if manage_groups:
             #    if not do_manage_groups(username, password, group_mapping):
             #        return False
 
@@ -488,18 +534,18 @@ class LDAPPlugin(object):
             return False
         except ldap.LDAPError as e:
             import traceback
-            logger.warning('[%s] Error in ldap processing' % str(username))
+
+            logger.warning("[%s] Error in ldap processing" % str(username))
             logger.debug(traceback.format_exc())
             return False
         except IndexError as ex:  # for AD membership test
             import traceback
-            logger.warning('[%s] Ldap result indexing error' % str(username))
+
+            logger.warning("[%s] Ldap result indexing error" % str(username))
             logger.debug(traceback.format_exc())
             return False
 
-    def is_user_in_allowed_groups(self,
-                                  username,
-                                  password=None):
+    def is_user_in_allowed_groups(self, username, password=None):
 
         server = self.server
         port = self.port
@@ -689,7 +735,7 @@ class LDAPPlugin(object):
         tls = self.tls
         logger = self.logger
 
-        logger.info('[%s] Initialize ldap connection' % str(server))
+        logger.info("[%s] Initialize ldap connection" % str(server))
         if secure:
             if not port:
                 port = 636
@@ -716,8 +762,7 @@ class LDAPPlugin(object):
         else:
             if not port:
                 port = 389
-            con = ldap.initialize(
-                "ldap://" + server + ":" + str(port))
+            con = ldap.initialize("ldap://" + server + ":" + str(port))
         if tls:
             con.start_tls_s()
         return con
@@ -759,7 +804,7 @@ class LDAPPlugin(object):
         tls = self.tls
         logger = self.logger
 
-        logger.info('[%s] Get user groups from ldap' % str(username))
+        logger.info("[%s] Get user groups from ldap" % str(username))
         #
         # Get all group name where the user is in actually in ldap
         # #########################################################
@@ -767,17 +812,17 @@ class LDAPPlugin(object):
         if not group_dn:
             group_dn = base_dn
         con = self._init_ldap()
-        logger.debug('Username init: [%s]' % username)
-        if mode == 'ad':
+        logger.debug("Username init: [%s]" % username)
+        if mode == "ad":
             #
             # Get the AD username
             # ####################
-            if '@' not in username:
+            if "@" not in username:
                 domain = []
-                for x in base_dn.split(','):
+                for x in base_dn.split(","):
                     if "DC=" in x.upper():
-                        domain.append(x.split('=')[-1])
-                username = "%s@%s" % (username, '.'.join(domain))
+                        domain.append(x.split("=")[-1])
+                username = "%s@%s" % (username, ".".join(domain))
             username_bare = username.split("@")[0]
             con.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
             # In cases where ForestDnsZones and DomainDnsZones are found,
@@ -787,33 +832,39 @@ class LDAPPlugin(object):
             if bind_dn:
                 # need to search directory with an admin account 1st
                 con.simple_bind_s(bind_dn, bind_pw)
-                logger.debug('Ldap bind connect...')
+                logger.debug("Ldap bind connect...")
             else:
                 # credentials should be in the form of username@domain.tld
                 con.simple_bind_s(username, password)
-                logger.debug('Ldap username connect...')
+                logger.debug("Ldap username connect...")
             # We have to use the full string
             bare = ldap.filter.escape_filter_chars(username_bare)
-            username = con.search_ext_s(base_dn,
-                                        ldap.SCOPE_SUBTREE,
-                                        "(&(sAMAccountName=%s)(%s))" % (bare, filterstr),
-                                        ["cn"])[0][0]
+            username = con.search_ext_s(
+                base_dn,
+                ldap.SCOPE_SUBTREE,
+                "(&(sAMAccountName=%s)(%s))" % (bare, filterstr),
+                ["cn"],
+            )[0][0]
         else:
             if bind_dn:
                 # need to search directory with an bind_dn account 1st
                 con.simple_bind_s(bind_dn, bind_pw)
             else:
                 # bind as anonymous
-                con.simple_bind_s('', '')
+                con.simple_bind_s("", "")
 
         # if username is None, return empty list
         if username is None:
             return []
         # search for groups where user is in
-        filter = '(&(%s=%s)(%s))' % (ldap.filter.escape_filter_chars(group_member_attrib),
-                                     ldap.filter.escape_filter_chars(username),
-                                     group_filterstr)
-        group_search_result = con.search_s(group_dn, ldap.SCOPE_SUBTREE, filter, [group_name_attrib])
+        filter = "(&(%s=%s)(%s))" % (
+            ldap.filter.escape_filter_chars(group_member_attrib),
+            ldap.filter.escape_filter_chars(username),
+            group_filterstr,
+        )
+        group_search_result = con.search_s(
+            group_dn, ldap.SCOPE_SUBTREE, filter, [group_name_attrib]
+        )
         ldap_groups_of_the_user = list()
         for group_row in group_search_result:
             group = group_row[1]
@@ -821,9 +872,9 @@ class LDAPPlugin(object):
                 ldap_groups_of_the_user.extend(group[group_name_attrib])
 
         con.unbind()
-        logger.debug('User groups: %s' % ldap_groups_of_the_user)
+        logger.debug("User groups: %s" % ldap_groups_of_the_user)
         return list(ldap_groups_of_the_user)
 
-        if filterstr[0] == '(' and filterstr[-1] == ')':  # rfc4515 syntax
+        if filterstr[0] == "(" and filterstr[-1] == ")":  # rfc4515 syntax
             filterstr = filterstr[1:-1]  # parens added again where used
         return []
