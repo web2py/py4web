@@ -131,6 +131,7 @@ class Auth(Fixture):
                 )
             db.define_table("auth_user", *auth_fields, *self.extra_auth_user_fields)
 
+    @property
     def signature(self):
         """Returns a list of fields for a table signature"""
         Field = self.db.Field
@@ -138,9 +139,7 @@ class Auth(Fixture):
         user = lambda s=self: s.get_user().get("id")
         fields = [
             Field("is_active", "boolean", default=True, readable=False, writable=False),
-            Field(
-                "created_on", "datetime", default=now, writable=False, readable=False
-            ),
+            Field("created_on", "datetime", default=now, writable=False, readable=False),
             Field("created_by", "reference auth_user", default=user),
             Field(
                 "modified_on",
@@ -187,6 +186,10 @@ class Auth(Fixture):
             if safe:
                 user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
         return user
+
+    @property
+    def user_id(self):
+        return self.session.get("user", {}).get('id', None)
 
     @property
     def current_user(self):

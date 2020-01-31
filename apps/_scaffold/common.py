@@ -9,6 +9,7 @@ from py4web import Session, Cache, Translator, DAL, Field
 from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
 from py4web.utils.tags import Tags
+from py4web.utils.factories import ActionFactory, ButtonFactory
 from . import settings
 
 # implement custom loggers form settings.LOGGERS
@@ -108,3 +109,7 @@ if settings.USE_CELERY:
 # we enable auth, which requres sessions, T, db and we make T available to
 # the template, although we recommend client-side translations instead
 auth.enable(uses=(session, T, db), env=dict(T=T))
+
+Button = ButtonFactory(db, session, T, auth.user)
+Unauthenticated = ActionFactory(db, session, T, auth)
+Authenticated = ActionFactory(db, session, T, auth.user)
