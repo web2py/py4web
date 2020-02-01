@@ -110,6 +110,5 @@ if settings.USE_CELERY:
 # the template, although we recommend client-side translations instead
 auth.enable(uses=(session, T, db), env=dict(T=T))
 
-Button = ButtonFactory(db, session, T, auth.user)
-Unauthenticated = ActionFactory(db, session, T, auth)
-Authenticated = ActionFactory(db, session, T, auth.user)
+unauthenticated = ActionFactory(db, session, T, auth)
+authenticated = ActionFactory(db, session, T, auth.user)

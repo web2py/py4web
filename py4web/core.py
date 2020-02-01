@@ -286,8 +286,12 @@ class Template(Fixture):
         context.update(output)
         context["__vars__"] = output
         app_folder = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], request.app_name)
-        path = self.path or os.path.join(app_folder, "templates")
+        path = self.path or os.path.join(app_folder, "templates")        
         filename = os.path.join(path, self.filename)
+        if not os.path.exists(filename):
+            generic_filename = os.path.join(path, 'generic.html')
+            if os.path.exists(generic_filename):
+                filename = generic_filename
         output = yatl.render(
             Template.reader(filename),
             path=path,

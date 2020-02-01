@@ -2,24 +2,38 @@ import os
 from functools import wraps
 from yatl.helpers import TAG
 from py4web import action, URL, request
+from py4web.core import dumps
 
 
 class ActionFactory:
+
     def __init__(self, *fixtures):
         self.fixtures = fixtures
-    def get(self, template=None, requires_login=False):
-        return self._action_maker('GET', template)
-    def post(self, template=None, requires_login=False):
-        return self._action_maker('POST', template)
-    def put(self, template=None, requires_login=False):
+
+    def get(self, path=None, template=None):
+        return self._action_maker('GET', path, template)
+
+    def post(self, path=None, template=None):
+        return self._action_maker('POST', path, template)
+
+    def put(self, path=None, template=None):
         return self._action_maker('PUT', template, requires_login)
-    def delete(self, template=None, requires_login=False):
-        return self._action_maker('DELETE', template)
-    def _action_maker(self, method, template):
-        def make_action(func, method=method, template=template):
-            path = func.__name__
-            for name in func.__code__.co_varnames[:func.__code__.co_argcount]:
-                path += '/<%s>' % name
+
+    def delete(self, path=None, template=None):
+        return self._action_maker('DELETE', path, template)
+
+    def head(self, path=None, template=None):
+        return self._action_maker('HEAD', path, template)
+
+    def __call__(self, path=None, template=None):
+        return self._action_maker(['GET','POST','PUT','DELETE'], path, template)
+
+    def _action_maker(self, method, path, template):
+        def make_action(func, path=path, method=method, template=template):
+            if not path:
+                path = func.__name__
+                for name in func.__code__.co_varnames[:func.__code__.co_argcount]:
+                    path += '/<%s>' % name
             fixtures = [f for f in self.fixtures]
             if template is None:
                 template = func.__name__ + '.html'
@@ -29,18 +43,27 @@ class ActionFactory:
             action(path)(new_func)
             return func
         return make_action
-         
+
+    def button(self, text, path=None, _class=''):
+        return ButtonFactory(text, path, _class, self.fixtures)
+
 
 class ButtonFactory:
-    def __init__(self, *fixtures):
+
+    def __init__(self, text, path, _class, fixtures):
+        self.text = text
+        self.path = path
+        self._class = _class
         self.fixtures = fixtures
-    def __call__(self, text, path, func, _class=''):
-        func = action.uses(*self.fixtures)(func)
-        action(path, method=['GET','POST'])(func)
-        def make_button(**d):
-            url = path
-            for key in d:
-                url = url.replace('<%s>' % key, str(d[key]))
-            onclick= 'axios.post("%s");this.classList.add("clicked")' % URL(url)
-            return TAG.BUTTON(text, _class=_class, _onclick=onclick)
+
+    def __call__(self, func):
+        path = self.path or  func.__name__
+        @action(path, method='POST')
+        @action.uses(*self.fixtures)
+        def tmp(func=func):
+            return func(**request.json)
+        def make_button(**data):        
+            url = URL(path)
+            onclick= 'axios.post("%s", %s);this.classList.add("clicked")' % (url, dumps(data))
+            return TAG.BUTTON(self.text, _class=self._class, _onclick=onclick)
         return make_button
