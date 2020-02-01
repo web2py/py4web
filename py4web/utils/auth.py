@@ -138,16 +138,16 @@ class Auth(Fixture):
         now = lambda: datetime.datetime.utcnow()
         user = lambda s=self: s.get_user().get("id")
         fields = [
-            Field("is_active", "boolean", default=True, readable=False, writable=False),
-            Field("created_on", "datetime", default=now, writable=False, readable=False),
-            Field("created_by", "reference auth_user", default=user),
+            Field("is_active", "boolean", default=True, readable=True, writable=False),
+            Field("created_on", "datetime", default=now, writable=False, readable=True),
+            Field("created_by", "reference auth_user", default=user, writable=False, readable=True),
             Field(
                 "modified_on",
                 "datetime",
                 update=now,
                 default=now,
                 writable=False,
-                readable=False,
+                readable=True,
             ),
             Field(
                 "modified_by",
@@ -155,7 +155,7 @@ class Auth(Fixture):
                 default=user,
                 update=user,
                 writable=False,
-                readable=False,
+                readable=True,
             ),
         ]
         return fields
