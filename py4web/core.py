@@ -515,7 +515,6 @@ class action:
                 except Exception:
                     [obj.on_error() for obj in fixtures]
                     raise
-
             return wrapper
 
         return decorator
@@ -564,7 +563,6 @@ class action:
                 return error_page(
                     500, button_text=ticket, href="/_dashboard/ticket/" + ticket
                 )
-
         return wrapper
 
     def __call__(self, func):
@@ -660,28 +658,33 @@ def get_error_snapshot(depth=5):
         "uname",
         "version",
     ]
+
     data["platform_info"] = {key: getattr(platform, key)() for key in platform_keys}
     data["os_environ"] = {key: str(value) for key, value in os.environ.items()}
     data["traceback"] = traceback.format_exc()
     data["exception_type"] = str(etype)
     data["exception_value"] = str(evalue)
+
     # Loopover the stack frames
     items = inspect.getinnerframes(etb, depth)
     del etb  # Prevent circular references that would cause memory leaks
     data["stackframes"] = stackframes = []
+
     for frame, file, lnum, func, lines, idx in items:
         file = file and os.path.abspath(file) or "?"
         args, varargs, varkw, locals = inspect.getargvalues(frame)
         # Basic frame information
         f = {"file": file, "func": func, "lnum": lnum}
         f["code"] = lines
-        line_vars = cgitb.scanvars(lambda: linecache.getline(file, lnum), frame, locals)
-        # Dump local variables (referenced in current line only)
-        f["vars"] = {
-            key: repr(value)
-            for key, value in locals.items()
-            if not key.startswith("__")
-        }
+        # FIXME: disable this for now until we understand why this goes into infinite loop
+        if False:
+            line_vars = cgitb.scanvars(lambda: linecache.getline(file, lnum), frame, locals)
+            # Dump local variables (referenced in current line only)
+            f["vars"] = {
+                key: repr(value)
+                for key, value in locals.items()
+                if not key.startswith("__")
+                }
         stackframes.append(f)
 
     return data

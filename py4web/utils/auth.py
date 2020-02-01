@@ -29,6 +29,9 @@ class AuthEnforcer(Fixture):
         self.auth = auth
         self.condition = condition
 
+    def transform(self, output):
+        return self.auth.transform(output)
+
     def abort_or_rediect(self, page):
         """
         return HTTP 403 if content_type is applicaitons/json
@@ -75,10 +78,12 @@ class Auth(Fixture):
         use_username=True,
         registration_requires_confirmation=True,
         registration_requires_appoval=False,
+        inject=True,
     ):
         """Creates and Auth object responsinble for handling
         authentication and authorization"""
         self.__prerequisites__ = []
+        self.inject = inject
         if session:
             self.__prerequisites__.append(session)
         if db:
@@ -95,6 +100,12 @@ class Auth(Fixture):
         if db and define_tables:
             self.define_tables()
         self.plugins = {}
+
+    def transform(self, output):
+        if self.inject:
+            if isinstance(output, dict) and not 'user' in output:
+                output['user'] = self.get_user()
+        return output
 
     def define_tables(self):
         """Defines the auth_user table"""
@@ -327,14 +338,18 @@ class Auth(Fixture):
         if self.use_username:
             fields["username"] = fields.get("username", "").lower()
         fields["email"] = fields.get("email", "").lower()
-        token = str(uuid.uuid4()) + "/" + b16e(next)
-        fields["action_token"] = "pending-registration:%s" % token
-        res = self.db.auth_user.validate_and_insert(**fields)
-        if send and res.get("id"):
-            self._link = link = URL(
-                self.route, "verify_email", vars=dict(token=token), scheme=True
-            )
-            self.send("verify_email", fields, link=link)
+        if self.registration_requires_confirmation:
+            token = str(uuid.uuid4()) + "/" + b16e(next)
+            fields["action_token"] = "pending-registration:%s" % token
+            res = self.db.auth_user.validate_and_insert(**fields)
+            if send and res.get("id"):
+                self._link = link = URL(
+                    self.route, "verify_email", vars=dict(token=token), scheme=True
+                    )
+                self.send("verify_email", fields, link=link)
+        else:
+            fields["action_token"] = ''
+            res = self.db.auth_user.validate_and_insert(**fields)
         return res
 
     def login(self, email, password):

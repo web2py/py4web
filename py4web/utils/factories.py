@@ -40,7 +40,7 @@ class ActionFactory:
             if template:
                 fixtures.append(template)
             new_func = action.uses(*fixtures)(func)
-            action(path)(new_func)
+            action(path, method=method)(new_func)
             return func
         return make_action
 
