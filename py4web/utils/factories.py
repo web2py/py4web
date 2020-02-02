@@ -66,4 +66,5 @@ class ButtonFactory:
             url = URL(path)
             onclick= 'axios.post("%s", %s);this.classList.add("clicked")' % (url, dumps(data))
             return TAG.BUTTON(self.text, _class=self._class, _onclick=onclick)
+        make_button.call = func
         return make_button
