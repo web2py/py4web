@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <base href="[[=URL('static')]]/">
+    <style>      
+      * {margin: 0;}
+      html {background: white; color: black; font-family: "Courier"; font-size: 10px}}
+      a { color: orange; font-weight: bold}
+      td {padding: 5px 10px; color: orange}    
+      button.clicked {background: #00d1b2;}
+      .commits { position:fixed; top:0; bottom: 0; left:0; z-index:100; width:10px; background: #111111; color: orange; overflow: auto}
+      .commits:hover { width: 300px; }
+      .kryten {margin:3%; width:94%; height:94vh; border:0}
+      iframe {width:100%; height:100vh; border:0}
+    </style>
+  </head>
+  <body>
+    <div class="commits">
+      <table>
+        [[for commit in commits:]]
+        <tr>
+          <td>[[=commit.get('code')[:8] ]]</td>
+          <td>
+            [[=button_checkout(project=project, commit=commit['code'])]]
+          </td>
+          <td>
+            <button onclick="$('.kryten').html('<iframe src=&quot;[[=URL('show',project,commit['code'])]]&quot;><iframe>')">Show</button>
+          <td>
+        </tr>
+        [[pass]]
+      </table>
+    </div>
+    <div class="kryten"></div> 
+    <script src="js/axios.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+  </body>
+</html>
