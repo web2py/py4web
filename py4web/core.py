@@ -286,8 +286,12 @@ class Template(Fixture):
         context.update(output)
         context["__vars__"] = output
         app_folder = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], request.app_name)
-        path = self.path or os.path.join(app_folder, "templates")
+        path = self.path or os.path.join(app_folder, "templates")        
         filename = os.path.join(path, self.filename)
+        if not os.path.exists(filename):
+            generic_filename = os.path.join(path, 'generic.html')
+            if os.path.exists(generic_filename):
+                filename = generic_filename
         output = yatl.render(
             Template.reader(filename),
             path=path,
@@ -422,12 +426,13 @@ class Session(Fixture):
 def URL(*parts, vars=None, hash=None, scheme=False):
     """
     Examples:
-    URL('a','b',vars=dict(x=1),hash='y')       -> /{app_name}/a/b?x=1#y
-    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{app_name}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{app_name}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name}/a/b?x=1#y
+    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name}/a/b?x=1
     """
-    prefix = "/%s/" % request.app_name if request.app_name != "_default" else "/"
+    script_name = (request.get('HTTP_X_SCRIPT_NAME', '') or request.get('SCRIPT_NAME', '')).rstrip('/')
+    prefix = script_name + ("/%s/" % request.app_name if request.app_name != "_default" else "/")
     broken_parts = []
     for part in parts:
         broken_parts += str(part).rstrip('/').split("/")
@@ -511,7 +516,6 @@ class action:
                 except Exception:
                     [obj.on_error() for obj in fixtures]
                     raise
-
             return wrapper
 
         return decorator
@@ -560,7 +564,6 @@ class action:
                 return error_page(
                     500, button_text=ticket, href="/_dashboard/ticket/" + ticket
                 )
-
         return wrapper
 
     def __call__(self, func):
@@ -656,28 +659,33 @@ def get_error_snapshot(depth=5):
         "uname",
         "version",
     ]
+
     data["platform_info"] = {key: getattr(platform, key)() for key in platform_keys}
     data["os_environ"] = {key: str(value) for key, value in os.environ.items()}
     data["traceback"] = traceback.format_exc()
     data["exception_type"] = str(etype)
     data["exception_value"] = str(evalue)
+
     # Loopover the stack frames
     items = inspect.getinnerframes(etb, depth)
     del etb  # Prevent circular references that would cause memory leaks
     data["stackframes"] = stackframes = []
+
     for frame, file, lnum, func, lines, idx in items:
         file = file and os.path.abspath(file) or "?"
         args, varargs, varkw, locals = inspect.getargvalues(frame)
         # Basic frame information
         f = {"file": file, "func": func, "lnum": lnum}
         f["code"] = lines
-        line_vars = cgitb.scanvars(lambda: linecache.getline(file, lnum), frame, locals)
-        # Dump local variables (referenced in current line only)
-        f["vars"] = {
-            key: repr(value)
-            for key, value in locals.items()
-            if not key.startswith("__")
-        }
+        # FIXME: disable this for now until we understand why this goes into infinite loop
+        if False:
+            line_vars = cgitb.scanvars(lambda: linecache.getline(file, lnum), frame, locals)
+            # Dump local variables (referenced in current line only)
+            f["vars"] = {
+                key: repr(value)
+                for key, value in locals.items()
+                if not key.startswith("__")
+                }
         stackframes.append(f)
 
     return data

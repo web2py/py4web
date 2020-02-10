@@ -35,15 +35,16 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
         error = errors.get(field.name)
         field_class = field.type.split()[0].replace(":", "-")
 
+        if not field.readable:
+            continue
+        if not readonly and not field.writable:
+            continue
         if field.type == "blob":  # never display blobs (mistake?)
             continue
-        elif readonly or field.type == "id":
-            if not field.readable:
-                continue
-            else:
-                control = DIV(field.represent and field.represent(value) or value or "")
-        elif not field.writable:
+        if field.type == "id" and value is None:
             continue
+        if readonly or field.type == "id":
+            control = DIV(field.represent and field.represent(value) or value or "")            
         elif field.widget:
             control = field.widget(table, value)
         elif field.type == "text":

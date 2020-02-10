@@ -6,7 +6,7 @@ from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1, HTML, BODY, A
 
-from .common import db, session, T, cache
+from .common import db, session, T, cache, authenticated, unauthenticated
 
 # exposes services necessary to access the db.thing via ajax
 publisher = Publisher(db, policy=ALLOW_ALL_POLICY)
@@ -119,3 +119,23 @@ def example_multiple_forms():
 @action.uses("generic.html")
 def example_helpers():
     return dict(a=H1("I am a title"), b=2, c=dict(d=3, e=4, x=INPUT(_name="test")))
+
+
+# automatic actions
+
+@unauthenticated.get() # exposed as /hello_world
+def hello_world():
+    return dict()
+
+@unauthenticated.get() # exposed as /hello_world/<msg>
+def hello_world(msg):
+    return dict(msg=msg)
+
+@unauthenticated.button("click me")
+def a_button(msg):
+    import logging
+    logging.info(msg)
+
+@unauthenticated.get()
+def show_a_button():
+    return dict(mybutton = a_button(msg="hello world"))

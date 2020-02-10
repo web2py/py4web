@@ -29,6 +29,9 @@ class AuthEnforcer(Fixture):
         self.auth = auth
         self.condition = condition
 
+    def transform(self, output):
+        return self.auth.transform(output)
+
     def abort_or_rediect(self, page):
         """
         return HTTP 403 if content_type is applicaitons/json
@@ -75,10 +78,12 @@ class Auth(Fixture):
         use_username=True,
         registration_requires_confirmation=True,
         registration_requires_appoval=False,
+        inject=True,
     ):
         """Creates and Auth object responsinble for handling
         authentication and authorization"""
         self.__prerequisites__ = []
+        self.inject = inject
         if session:
             self.__prerequisites__.append(session)
         if db:
@@ -95,6 +100,12 @@ class Auth(Fixture):
         if db and define_tables:
             self.define_tables()
         self.plugins = {}
+
+    def transform(self, output):
+        if self.inject:
+            if isinstance(output, dict) and not 'user' in output:
+                output['user'] = self.get_user()
+        return output
 
     def define_tables(self):
         """Defines the auth_user table"""
@@ -131,24 +142,22 @@ class Auth(Fixture):
                 )
             db.define_table("auth_user", *auth_fields, *self.extra_auth_user_fields)
 
+    @property
     def signature(self):
         """Returns a list of fields for a table signature"""
         Field = self.db.Field
         now = lambda: datetime.datetime.utcnow()
         user = lambda s=self: s.get_user().get("id")
         fields = [
-            Field("is_active", "boolean", default=True, readable=False, writable=False),
-            Field(
-                "created_on", "datetime", default=now, writable=False, readable=False
-            ),
-            Field("created_by", "reference auth_user", default=user),
+            Field("created_on", "datetime", default=now, writable=False, readable=True),
+            Field("created_by", "reference auth_user", default=user, writable=False, readable=True),
             Field(
                 "modified_on",
                 "datetime",
                 update=now,
                 default=now,
                 writable=False,
-                readable=False,
+                readable=True,
             ),
             Field(
                 "modified_by",
@@ -156,8 +165,9 @@ class Auth(Fixture):
                 default=user,
                 update=user,
                 writable=False,
-                readable=False,
+                readable=True,
             ),
+            Field("is_active", "boolean", default=True, readable=False, writable=False),
         ]
         return fields
 
@@ -187,6 +197,10 @@ class Auth(Fixture):
             if safe:
                 user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
         return user
+
+    @property
+    def user_id(self):
+        return self.session.get("user", {}).get('id', None)
 
     @property
     def current_user(self):
@@ -324,14 +338,18 @@ class Auth(Fixture):
         if self.use_username:
             fields["username"] = fields.get("username", "").lower()
         fields["email"] = fields.get("email", "").lower()
-        token = str(uuid.uuid4()) + "/" + b16e(next)
-        fields["action_token"] = "pending-registration:%s" % token
-        res = self.db.auth_user.validate_and_insert(**fields)
-        if send and res.get("id"):
-            self._link = link = URL(
-                self.route, "verify_email", vars=dict(token=token), scheme=True
-            )
-            self.send("verify_email", fields, link=link)
+        if self.registration_requires_confirmation:
+            token = str(uuid.uuid4()) + "/" + b16e(next)
+            fields["action_token"] = "pending-registration:%s" % token
+            res = self.db.auth_user.validate_and_insert(**fields)
+            if send and res.get("id"):
+                self._link = link = URL(
+                    self.route, "verify_email", vars=dict(token=token), scheme=True
+                    )
+                self.send("verify_email", fields, link=link)
+        else:
+            fields["action_token"] = ''
+            res = self.db.auth_user.validate_and_insert(**fields)
         return res
 
     def login(self, email, password):

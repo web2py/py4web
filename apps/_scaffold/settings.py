@@ -16,6 +16,9 @@ DB_FOLDER = os.path.join(APP_FOLDER, "databases")
 DB_URI = "sqlite://storage.db"
 DB_POOL_SIZE = 1
 
+# send email on regstration
+VERIFY_EMAIL = False
+
 # email settings
 SMTP_SERVER = None
 SMTP_SENDER = "you@example.com"
