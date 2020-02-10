@@ -18,4 +18,4 @@ from .core import (
 
 __author__ = "Massimo Di Pierro <massimo.dipierro@gmail.com>"
 __license__ = "BSDv3"
-__version__ = "0.1.20200209.2"
+__version__ = "0.1.20200210.1"

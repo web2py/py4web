@@ -1012,6 +1012,12 @@ def initialize(**args):
         args["create"] = True
     if not os.path.exists(service_folder):
         os.mkdir(service_folder)
+    session_secret_filename = os.path.join(service_folder, 'session.secret')
+    if not os.path.exists(session_secret_filename):
+        with open(session_secret_filename, 'w') as fp:
+            fp.write(str(uuid.uuid4()))
+    with open(session_secret_filename) as fp:
+        Session.SECRET = fp.read()
     # Upzip the _dashboard app if it is old or does not exist
     assets_dir = os.path.join(os.path.dirname(__file__), "assets")
     if os.path.exists(assets_dir):
