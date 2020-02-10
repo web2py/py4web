@@ -6,12 +6,13 @@ import zipfile
 import subprocess
 import io
 import copy
-
+import datetime
 import requests
 
 import py4web
 from py4web import __version__, action, abort, request, response, redirect, Translator
 from py4web.core import Reloader, dumps, ErrorStorage, Session, Fixture
+from py4web.utils.factories import ActionFactory
 from pydal.validators import CRYPT
 from yatl.helpers import BEAUTIFY
 from .utils import *
@@ -36,7 +37,7 @@ class Logged(Fixture):
         if not user or not user.get("id"):
             abort(403)
 
-
+authenticated = ActionFactory(Logged(session))
 session_secured = action.uses(Logged(session))
 
 if MODE in ("demo", "readonly", "full"):
