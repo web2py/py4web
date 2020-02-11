@@ -140,6 +140,23 @@ if MODE in ("demo", "readonly", "full"):
         apps.sort(key=lambda item: item["name"])
         return {"payload": apps, "status": "success"}
 
+    
+    @action("delete_app/<name>", method="POST")
+    @session_secured
+    def delete_app(name):
+        """Returns a list of installed apps"""
+        apps = os.listdir(FOLDER)
+        """strip some unwanted chars"""
+        name = name.replace(".","").replace("\\","").replace("/","").replace("%","").replace("\n","").replace(";","")
+        cwd = os.getcwd()
+        if name in apps:
+            shutil.rmtree(cwd+'/'+FOLDER+'/'+name)
+            return {"status": "success", "payload": "Deleted"}
+        else:
+            return {"status": "success", "payload": "App does not exist"}
+        
+    
+
     @action("walk/<path:path>")
     @session_secured
     def walk(path):

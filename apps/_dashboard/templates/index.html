@@ -84,11 +84,13 @@
       <div class="panel accordion" v-if="selected_app">
         <input type="checkbox" id="files" checked>
         <label for="files">Files in {{selected_app.name}}</label>
+
         <div>
           <div class="right">
             <button v-on:click="create_new_file()">Create New File</button>
             <button v-on:click="upload_new_file()">Upload New File</button>
             <button v-on:click="download_selected_app()">Download App</button>
+            <button v-on:click="delete_selected_app()"><i class="fa fa-trash"></i> Delete {{selected_app.name}}</button>
           </div>
           <treefiles :f="walk" :p="selected_app.name"></treefiles>
         </div>
