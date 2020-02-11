@@ -140,6 +140,21 @@ if MODE in ("demo", "readonly", "full"):
         apps.sort(key=lambda item: item["name"])
         return {"payload": apps, "status": "success"}
 
+    @action("delete_app/<name:re:\w+>", method="POST")
+    @session_secured
+    def delete_app(name):
+        """delete the app"""
+        path = os.path.join(FOLDER, name)
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
+        archive = os.path.join(FOLDER, '%s.%s.zip' % (name, timestamp))
+        if os.path.exists(path) and os.path.isdir(path):
+            # zip the folder, just in case
+            shutil.make_archive(archive, 'zip', path)
+            # then remove the app
+            shutil.rmtree(path)
+            return {"status": "success", "payload": "Deleted"}
+        return {"status": "success", "payload": "App does not exist"}
+
     @action("walk/<path:path>")
     @session_secured
     def walk(path):
