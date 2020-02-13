@@ -1,0 +1,190 @@
+e<div>
+  <div v-if="user === null && page=='register'">
+    <center>
+      <h2 class="subtitle">Register</h2>
+    </center>
+    <div class="field">
+      <input class="input" v-model="form.username" type="email" placeholder="username">
+      <span v-if="errors.username">{{errors.username}}</span>
+    </div>
+    <div class="field">
+      <input class="input" v-model="form.email" type="email" placeholder="email">
+      <span v-if="errors.email">{{errors.email}}</span>
+    </div>
+    <div class="field">
+      <input class="input" v-model="form.password" type="password" placeholder="password">
+      <span v-if="errors.password">{{errors.password}}</span>
+    </div>
+    <div class="field" v-bind:class="{'error':form.password2 && form.password!=form.password2}">
+      <input class="input" v-model="form.password2" type="password" placeholder="password (again)">
+      <span v-if="errors.password2">{{errors.password2}}</span>
+    </div>
+    <div class="field">
+      <input class="input" v-model="form.first_name" type="text" placeholder="first name">
+      <span v-if="errors.first_name">{{errors.first_name}}</span>
+    </div>
+    <div class="field">
+      <input class="input" v-model="form.last_name" type="text" placeholder="last name">
+      <span v-if="errors.last_name">{{errors.last_name}}</span>
+    </div>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="submit_register()">Register</button>
+      <button class="button" v-on:click="go('login')">Login</button>
+      <button class="button" v-on:click="go('request_reset_password')">Lost Password</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && page=='login'">
+    <center>
+      <h2 class="subtitle">Login</h2>
+    </center>    
+    <div class="control" style="text-align:center;margin:20px"> 
+      <a v-if="plugins.indexOf('oauth2google')>=0" 
+         class="button is-link" 
+         v-bind:href="'../auth/plugin/oauth2google/login?next='+next">Login with Google</a>
+      <a v-if="plugins.indexOf('oauth2facebook')>=0"
+         class="button is-link" 
+         v-bin:href="'../auth/plugin/oauth2facbook/login?next='+next">Login with Facebook</a>
+    </div>
+    <div v-if="!plugins||plugins.indexOf('local')>=0">
+      <div class="field">
+        <input class="input" v-model="form.email" type="email" placeholder="username or email">
+        <span v-if="errors.email">{{errors.email}}</span>
+      </div>
+      <div class="field">
+        <input class="input" v-model="form.password" type="password" placeholder="password">
+        <span v-if="errors.password">{{errors.password}}</span>
+      </div>
+      <div class="control" style="text-align:center">
+        <button class="button is-link" v-on:click="submit_login()">Login</button>
+        <button class="button" v-on:click="go('register')">Register</button>
+        <button class="button" v-on:click="go('request_reset_password')">Lost Password</button>
+      </div>
+    </div>
+  </div>
+  <div v-else-if="user === null && page=='request_reset_password'">
+    <center>
+      <h2 class="subtitle">Request Reset Password</h2>
+    </center>
+    <div class="field">
+      <input class="input" v-model="form.email" type="email" placeholder="email">
+      <span v-if="errors.email">{{errors.email}}</span>
+    </div>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="submit_request_reset_password()">Send Request</button>
+      <button class="button" v-on:click="go('login')">Login</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && page=='reset_password'">
+    <center>
+      <h2 class="subtitle">Reset Password</h2>
+    </center>
+    <div class="field">
+      <input class="input" v-model="form.new_password" type="password" placeholder="new password">
+      <span v-if="errors.new_password">{{errors.new_password}}</span>      
+    </div>
+    <div class="field">
+      <input class="input" v-model="form.new_password2" type="password" placeholder="new password (again)">
+      <span v-if="errors.new_password2">{{errors.new_password2}}</span>
+    </div>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="submit_reset_password()">Send Request</button>
+      <button class="button" v-on:click="go('login')">Login</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && page=='change_password'">
+    <center>
+      <h2 class="subtitle">Change Password</h2>
+    </center>
+    <div class="field">
+      <input class="input" v-model="form.old_password" type="password" placeholder="current password">
+      <span v-if="errors.old_password">{{errors.old_password}}</span>
+    </div>
+    <div class="field">
+      <input class="input" v-model="form.new_password" type="password" placeholder="new password">
+      <span v-if="errors.new_password">{{errors.new_password}}</span>
+    </div>
+    <div class="field">
+      <input class="input" v-model="form.new_password2" type="password" placeholder="new password (again)">
+      <span v-if="errors.new_password2">{{errors.new_password2}}</span>
+    </div>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="submit_change_password()">Change Password</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && page=='change_email'">
+    <center>
+      <h2 class="subtitle">Change Email</h2>
+    </center>
+    <div class="field">
+      <input class="input" v-model="form.password" type="password" placeholder="password">
+      <span v-if="errors.password">{{errors.password}}</span>
+    </div>
+    <div class="field">
+      <input class="input" v-model="form.new_email" type="email" placeholder="new email">
+      <span v-if="errors.new_email">{{errors.new_email}}</span>
+    </div>
+    <div class="field">
+      <input class="input" v-model="form.new_email2" type="email" placeholder="new email (again)">
+      <span v-if="errors.new_email2">{{errors.new_email2}}</span>
+    </div>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="submit_change_email()">Change Email</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && page=='edit_profile'">
+    <center>
+      <h2 class="subtitle">Profile</h2>
+    </center>
+    <div class="field">
+      <input class="input" v-model="form.first_name" type="text" placeholder="first name">
+      <span v-if="errors.first_name">{{errors.first_name}}</span>
+    </div>
+    <div class="field">
+      <input class="input" v-model="form.last_name" type="text" placeholder="last name">
+      <span v-if="errors.last_name">{{errors.last_name}}</span>
+    </div>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="submit_profile()">Save Profile</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && page=='registered'">
+    <center>
+      <h2 class="subtitle">Registered</h2>
+    </center>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="go('login')">Go to login</button>
+    </div>
+  </div>
+  <div v-else-if="user === null && page=='request_sent'">
+    <center>
+      <h2 class="subtitle">Request sent</h2>
+    </center>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="go('login')">Go to login</button>
+    </div>
+  </div>
+  <div v-else-if="page=='email_verified'">
+    <center>
+      <h2 class="subtitle">Email Verified</h2>
+    </center>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="go('login')">Go to login</button>
+    </div>
+  </div>
+  <div v-else-if="page=='token_expired'">
+    <center>
+      <h2 class="subtitle">Token Expired</h2>
+    </center>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="go('login')">Go to login</button>
+    </div>
+  </div>
+  <div v-else-if="page=='logout'">
+    <center>
+      <h2 class="subtitle">Logged out</h2>
+    </center>
+    <div class="control" style="text-align:center">
+      <button class="button is-link" v-on:click="go('login')">Go to login</button>
+    </div>
+  </div>
+</div>

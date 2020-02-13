@@ -37,6 +37,8 @@ apps/*
 !apps/_documentation/*
 !apps/superheroes
 !apps/superheroes/*
+!apps/myfeed
+!apps/myfeed/*
 !apps/*/databases/README*
 apps/*/databases/*
 apps/*/uploads/*

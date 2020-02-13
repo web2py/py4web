@@ -1,0 +1,13 @@
+[[extend "layout.html"]]
+<div id="vue">
+  <div class="columns">
+    <div class="column is-half is-offset-one-quarter" style="border : 1px solid #e1e1e1; border-radius: 10px">
+      <auth plugins="local,oauth2google,oauth2facebook"></auth>
+    </div>
+  </div>
+</div>
+[[block page_scripts]]
+<script src="js/utils.js"></script>
+<script src="components/auth.js"></script>
+<script>utils.app().start();</script>
+[[end]]

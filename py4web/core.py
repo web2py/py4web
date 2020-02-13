@@ -830,29 +830,29 @@ class Reloader:
                 module = Reloader.MODULES.get(app_name)
                 if not module:
                     print("[ ] loading %s ..." % app_name)
-                    module = importlib.machinery.SourceFileLoader(
-                        module_name, init
-                    ).load_module()
-                    new_apps.append(path)
-                    print("\x1b[A[X] loaded %s     " % app_name)
                 else:
                     print("[ ] reloading %s ..." % app_name)
+                    # forget the module
+                    del Reloader.MODULES[app_name]
+                    # all files/submodules
                     names = [
                         name
                         for name in sys.modules
                         if (name + ".").startswith(module_name + ".")
                     ]
                     for name in names:
-                        try:
-                            importlib.reload(sys.modules[name])
-                        except ModuleNotFoundError:
-                            pass
-                    print("\x1b[A[X] reloaded %s     " % app_name)
+                        del sys.modules[name]
+                module = importlib.machinery.SourceFileLoader(
+                    module_name, init
+                    ).load_module()
+                print("\x1b[A[X] loaded %s       " % app_name)
                 Reloader.MODULES[app_name] = module
                 Reloader.ERRORS[app_name] = None
+                if not app_name in new_apps:
+                    new_apps.append(path)
             except:
                 tb = traceback.format_exc()
-                print("\x1b[A[FAILED] loading %s     \n%s\n" % (app_name, tb))
+                print("\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb))
                 Reloader.ERRORS[app_name] = tb
         return new_apps
 
@@ -1012,6 +1012,12 @@ def initialize(**args):
         args["create"] = True
     if not os.path.exists(service_folder):
         os.mkdir(service_folder)
+    session_secret_filename = os.path.join(service_folder, 'session.secret')
+    if not os.path.exists(session_secret_filename):
+        with open(session_secret_filename, 'w') as fp:
+            fp.write(str(uuid.uuid4()))
+    with open(session_secret_filename) as fp:
+        Session.SECRET = fp.read()
     # Upzip the _dashboard app if it is old or does not exist
     assets_dir = os.path.join(os.path.dirname(__file__), "assets")
     if os.path.exists(assets_dir):
