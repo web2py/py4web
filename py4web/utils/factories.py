@@ -4,7 +4,6 @@ from yatl.helpers import TAG
 from py4web import action, URL, request
 from py4web.core import dumps
 
-
 class ActionFactory:
 
     def __init__(self, *fixtures):
