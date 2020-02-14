@@ -640,7 +640,7 @@ class Mailer(object):
                         flags = 0
                     if not encrypt:
                         flags += SMIME.PKCS7_DETACHED
-                    p7 = s._sign(msg_bio, flags=flags)
+                    p7 = s.sign(msg_bio, flags=flags)
                     msg_bio = BIO.MemoryBuffer(
                         payload_in.as_string()
                     )  # Recreate coz sign() has consumed it.
