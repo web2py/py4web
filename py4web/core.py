@@ -286,7 +286,7 @@ class Template(Fixture):
         context.update(output)
         context["__vars__"] = output
         app_folder = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], request.app_name)
-        path = self.path or os.path.join(app_folder, "templates")        
+        path = self.path or os.path.join(app_folder, "templates")
         filename = os.path.join(path, self.filename)
         if not os.path.exists(filename):
             generic_filename = os.path.join(path, 'generic.html')
@@ -423,7 +423,7 @@ class Session(Fixture):
 #########################################################################################
 
 
-def URL(*parts, vars=None, hash=None, scheme=False):
+def URL(*parts, vars=None, hash=None, scheme=False, signer=None):
     """
     Examples:
     URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name}/a/b?x=1#y
@@ -437,9 +437,13 @@ def URL(*parts, vars=None, hash=None, scheme=False):
     for part in parts:
         broken_parts += str(part).rstrip('/').split("/")
     url = prefix + "/".join(map(lambda x: urllib.parse.quote(x), broken_parts))
-    if vars:
+    # Signs the URL if required.  Copy vars into urlvars not to modify it.
+    urlvars = {k: v for k, v in vars.items()} if vars else {}
+    if signer:
+        signer.sign_vars(url, urlvars)
+    if urlvars:
         url += "?" + "&".join(
-            "%s=%s" % (k, urllib.parse.quote(str(v))) for k, v in vars.items()
+            "%s=%s" % (k, urllib.parse.quote(str(v))) for k, v in urlvars.items()
         )
     if hash:
         url += "#%s" % hash
