@@ -38,7 +38,10 @@ class AuthEnforcer(Fixture):
         else redirects to page"""
         if request.content_type == "application/json":
             abort(403)
-        redirect(URL(self.auth.route, page, vars=dict(next=request.fullpath)))
+        redirect_next = request.fullpath
+        if request.query_string:
+            redirect_next = redirect_next + "?{}".format(request.query_string)
+        redirect(URL(self.auth.route, page, vars=dict(next=redirect_next)))
 
     def on_request(self):
         """check that we have a user in the session and
