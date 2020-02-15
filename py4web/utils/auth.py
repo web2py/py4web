@@ -32,22 +32,22 @@ class AuthEnforcer(Fixture):
     def transform(self, output):
         return self.auth.transform(output)
 
-    def abort_or_rediect(self, page):
+    def abort_or_redirect(self, page):
         """
-        return HTTP 403 if content_type is applicaitons/json
+        return HTTP 403 if content_type is application/json
         else redirects to page"""
         if request.content_type == "application/json":
             abort(403)
-        redirect(URL(self.auth.route, page))
+        redirect(URL(self.auth.route, page, vars=dict(next=request.fullpath)))
 
     def on_request(self):
         """check that we have a user in the session and
         the condition is met"""
         user = self.auth.session.get("user")
         if not user or not user.get("id"):
-            self.abort_or_rediect("login")
+            self.abort_or_redirect("login")
         if callable(self.condition) and not self.condition(user):
-            self.abort_or_rediect("not-authorized")
+            self.abort_or_redirect("not-authorized")
 
 
 class Auth(Fixture):
