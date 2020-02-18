@@ -58,7 +58,7 @@ elif settings.SESSION_TYPE == "database":
 auth = Auth(session, db)
 
 if settings.SMTP_SERVER:
-    auth.mailer = Mailer(
+    auth.sender = Mailer(
         server=settings.SMTP_SERVER,
         sender=settings.SMTP_SENDER,
         login=settings.SMTP_LOGIN,

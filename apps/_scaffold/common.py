@@ -59,7 +59,7 @@ auth = Auth(session, db)
 auth.registration_requires_confirmation = settings.VERIFY_EMAIL
 
 if settings.SMTP_SERVER:
-    auth.mailer = Mailer(
+    auth.sender = Mailer(
         server=settings.SMTP_SERVER,
         sender=settings.SMTP_SENDER,
         login=settings.SMTP_LOGIN,
