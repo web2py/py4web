@@ -1,0 +1,45 @@
+[[extend "layout.html"]]
+<h1>Friends Search</h1>
+
+[[=form]]
+
+<table>
+  [[for user in users:]]
+  <tr>
+    <td>[[=user.first_name]]</td>
+    <td>[[=user.last_name]]</td>
+    <td>[[=user.username]]</td>
+    <td>[[=button_request(id=user.id)]]</td>
+  </tr>
+  [[pass]]
+</table>
+
+<h2>Requests received</h2>
+<table>
+  [[for r in requests_received:]]
+  <tr>
+    <td>[[=r.auth_user.first_name]]</td>
+    <td>[[=r.auth_user.last_name]]</td>
+    <td>[[=r.auth_user.username]]</td>
+    <td>[[=r.friend_request.status]]</td> 
+    <td>
+      [[if r.friend_request.status == 'pending':]]
+        [[=button_accept(id=r.friend_request.id)]]
+        [[=button_reject(id=r.friend_request.id)]]
+      [[pass]]
+    </td>
+  </tr>
+  [[pass]]
+</table>
+
+<h2>Requests sent</h2>
+<table>
+  [[for r in requests_sent:]]
+  <tr>
+    <td>[[=r.auth_user.first_name]]</td>
+    <td>[[=r.auth_user.last_name]]</td>
+    <td>[[=r.auth_user.username]]</td>
+    <td>[[=r.friend_request.status]]</td> 
+  </tr>
+  [[pass]]
+</table>

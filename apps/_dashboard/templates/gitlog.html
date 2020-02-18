@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <base href="[[=URL('static')]]/">
+    <style>      
+      * {margin: 0;}
+      html {background: white; color: black; font-family: "Courier"; font-size: 10px}}
+      a { color: orange; font-weight: bold}
+      td {padding: 5px 10px; color: orange}    
+      button.clicked {background: #00d1b2;}
+      .commits {
+        position:fixed; top:0; bottom: 0; left:0; z-index:100; 
+        width:10px; background: #111111; color: orange; overflow: auto
+      }
+      .commits:hover { width: 500px; }
+      .kryten {margin:3%; width:94%; height:94vh; border:0}
+      iframe {width:100%; height:100vh; border:0}
+    </style>
+  </head>
+  <body>    
+    <div class="commits">
+      <table>
+        [[for commit in commits:]]
+        <tr>
+          <td>[[=commit.get('message')[:20] ]]</td>
+          <td>
+            [[=button_checkout(project=project, commit=commit['code'])]]
+          </td>
+          <td>
+            <button class="gitshow" data-src="[[=URL('gitshow',project,commit['code'])]]">Show</button>
+          <td>
+        </tr>
+        [[pass]]
+      </table>
+    </div>
+    <div class="kryten">
+      Welcome to Kryten!
+      This is an exprimental features of py4web designed for teaching/pesentations.
+      If you mouseover to the left you will be able to see git commits for the project.
+      You will be able to checkout and/or see a commit diff.
+      The diff is displayed in an interactive manner.
+      Use the following keys to step through a single commit diff:
+      <ul>
+        <li>v (%lf;&fl;)</li>
+        <li>b (&lf;)</li>
+        <li>n (&gt;)</li>
+        <li>m (&gt;&gt;)</li>
+      </ul>
+    </div> 
+    <script src="js/axios.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script>
+      $('.gitshow').click(function(){
+        $('.kryten').html('<iframe src="'+$(this).attr('data-src')+'"></iframe>');
+      });
+    </script>
+  </body>
+</html>

@@ -5,10 +5,11 @@ These are fixtures that every app needs so probably you will not be editing this
 import os
 import sys
 import logging
-from py4web import Session, Cache, Translator, DAL, Field
+from py4web import action, redirect, abort, request, URL, Session, Cache, Translator, DAL, Field
 from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
 from py4web.utils.tags import Tags
+from py4web.utils.form import Form
 from py4web.utils.factories import ActionFactory, ButtonFactory
 from . import settings
 
@@ -28,7 +29,8 @@ for item in settings.LOGGERS:
     logger.addHandler(handler)
 
 # connect to db
-db = DAL(settings.DB_URI, folder=settings.DB_FOLDER, pool_size=settings.DB_POOL_SIZE)
+db = DAL(settings.DB_URI, folder=settings.DB_FOLDER, pool_size=settings.DB_POOL_SIZE,
+         migrate_enabled=True)
 
 # define global objects that may or may not be used by th actions
 cache = Cache(size=1000)
@@ -56,6 +58,7 @@ elif settings.SESSION_TYPE == "database":
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
 auth = Auth(session, db)
+auth.registration_requires_confirmation = settings.VERIFY_EMAIL
 
 if settings.SMTP_SERVER:
     auth.sender = Mailer(
@@ -98,13 +101,6 @@ if settings.OAUTH2FACEBOOK_CLIENT_ID:
             callback_url="auth/plugin/oauth2google/callback",
         )
     )
-
-if settings.USE_CELERY:
-    from celery import Celery
-    # to use from . common import scheduled and then use it accoding to celery docs
-    # examples in tasks.py
-    scheduler = Celery('apps.%s.tasks' % settings.APP_NAME, broker=settings.CELERY_BROKER)
-
 
 # we enable auth, which requres sessions, T, db and we make T available to
 # the template, although we recommend client-side translations instead

@@ -4,7 +4,6 @@ from yatl.helpers import TAG
 from py4web import action, URL, request
 from py4web.core import dumps
 
-
 class ActionFactory:
 
     def __init__(self, *fixtures):
@@ -17,7 +16,7 @@ class ActionFactory:
         return self._action_maker('POST', path, template)
 
     def put(self, path=None, template=None):
-        return self._action_maker('PUT', template, requires_login)
+        return self._action_maker('PUT', path, template)
 
     def delete(self, path=None, template=None):
         return self._action_maker('DELETE', path, template)
@@ -62,7 +61,7 @@ class ButtonFactory:
         @action.uses(*self.fixtures)
         def tmp(func=func):
             return func(**request.json)
-        def make_button(**data):        
+        def make_button(**data):
             url = URL(path)
             onclick= 'axios.post("%s", %s);this.classList.add("clicked")' % (url, dumps(data))
             return TAG.BUTTON(self.text, _class=self._class, _onclick=onclick)

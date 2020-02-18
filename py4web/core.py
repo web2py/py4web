@@ -286,7 +286,7 @@ class Template(Fixture):
         context.update(output)
         context["__vars__"] = output
         app_folder = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], request.app_name)
-        path = self.path or os.path.join(app_folder, "templates")        
+        path = self.path or os.path.join(app_folder, "templates")
         filename = os.path.join(path, self.filename)
         if not os.path.exists(filename):
             generic_filename = os.path.join(path, 'generic.html')
@@ -423,22 +423,27 @@ class Session(Fixture):
 #########################################################################################
 
 
-def URL(*parts, vars=None, hash=None, scheme=False):
+def URL(*parts, vars=None, hash=None, scheme=False, signer=None):
     """
     Examples:
-    URL('a','b',vars=dict(x=1),hash='y')       -> /{app_name}/a/b?x=1#y
-    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{app_name}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{app_name}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name}/a/b?x=1#y
+    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name}/a/b?x=1
     """
-    prefix = "/%s/" % request.app_name if request.app_name != "_default" else "/"
+    script_name = (request.get('HTTP_X_SCRIPT_NAME', '') or request.get('SCRIPT_NAME', '')).rstrip('/')
+    prefix = script_name + ("/%s/" % request.app_name if request.app_name != "_default" else "/")
     broken_parts = []
     for part in parts:
         broken_parts += str(part).rstrip('/').split("/")
     url = prefix + "/".join(map(lambda x: urllib.parse.quote(x), broken_parts))
-    if vars:
+    # Signs the URL if required.  Copy vars into urlvars not to modify it.
+    urlvars = {k: v for k, v in vars.items()} if vars else {}
+    if signer:
+        signer.sign_vars(url, urlvars)
+    if urlvars:
         url += "?" + "&".join(
-            "%s=%s" % (k, urllib.parse.quote(str(v))) for k, v in vars.items()
+            "%s=%s" % (k, urllib.parse.quote(str(v))) for k, v in urlvars.items()
         )
     if hash:
         url += "#%s" % hash
@@ -829,29 +834,29 @@ class Reloader:
                 module = Reloader.MODULES.get(app_name)
                 if not module:
                     print("[ ] loading %s ..." % app_name)
-                    module = importlib.machinery.SourceFileLoader(
-                        module_name, init
-                    ).load_module()
-                    new_apps.append(path)
-                    print("\x1b[A[X] loaded %s     " % app_name)
                 else:
                     print("[ ] reloading %s ..." % app_name)
+                    # forget the module
+                    del Reloader.MODULES[app_name]
+                    # all files/submodules
                     names = [
                         name
                         for name in sys.modules
                         if (name + ".").startswith(module_name + ".")
                     ]
                     for name in names:
-                        try:
-                            importlib.reload(sys.modules[name])
-                        except ModuleNotFoundError:
-                            pass
-                    print("\x1b[A[X] reloaded %s     " % app_name)
+                        del sys.modules[name]
+                module = importlib.machinery.SourceFileLoader(
+                    module_name, init
+                    ).load_module()
+                print("\x1b[A[X] loaded %s       " % app_name)
                 Reloader.MODULES[app_name] = module
                 Reloader.ERRORS[app_name] = None
+                if not app_name in new_apps:
+                    new_apps.append(path)
             except:
                 tb = traceback.format_exc()
-                print("\x1b[A[FAILED] loading %s     \n%s\n" % (app_name, tb))
+                print("\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb))
                 Reloader.ERRORS[app_name] = tb
         return new_apps
 
@@ -1011,6 +1016,12 @@ def initialize(**args):
         args["create"] = True
     if not os.path.exists(service_folder):
         os.mkdir(service_folder)
+    session_secret_filename = os.path.join(service_folder, 'session.secret')
+    if not os.path.exists(session_secret_filename):
+        with open(session_secret_filename, 'w') as fp:
+            fp.write(str(uuid.uuid4()))
+    with open(session_secret_filename) as fp:
+        Session.SECRET = fp.read()
     # Upzip the _dashboard app if it is old or does not exist
     assets_dir = os.path.join(os.path.dirname(__file__), "assets")
     if os.path.exists(assets_dir):

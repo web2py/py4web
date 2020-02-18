@@ -6,15 +6,17 @@ import zipfile
 import subprocess
 import io
 import copy
-
+import datetime
 import requests
 
 import py4web
 from py4web import __version__, action, abort, request, response, redirect, Translator
 from py4web.core import Reloader, dumps, ErrorStorage, Session, Fixture
+from py4web.utils.factories import ActionFactory
 from pydal.validators import CRYPT
 from yatl.helpers import BEAUTIFY
 from .utils import *
+from .diff2kryten import diff2kryten
 
 MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 FOLDER = os.environ["PY4WEB_APPS_FOLDER"]
@@ -26,6 +28,31 @@ db = error_storage.db
 session = Session()
 
 
+def run(command, project):
+    """for runing git commands inside an app (project)"""
+    return subprocess.check_output(command.split(), cwd=os.path.join(FOLDER, project)).decode()
+
+
+def get_commits(project):
+    """list of git commits for the project"""
+    output = run('git log', project)
+    commits = []
+    for line in output.split('\n'):
+        if line.startswith('commit '):
+            commit = {'code': line[7:], 'message': '', 'author': '', 'date': ''}
+            commits.append(commit)
+        elif line.startswith('Author: '):
+            commit['author'] = line[8:]
+        elif line.startswith('Date: '):
+            commit['date'] = datetime.datetime.strptime(line[6:].strip(), '%a %b %d %H:%M:%S %Y %z')
+        else: 
+            commit['message'] += line.strip() + '\n'
+    return commits
+
+
+def is_git_repo(project):
+    return os.path.exists(os.path.join(FOLDER, project, '.git/config'))
+
 class Logged(Fixture):
     def __init__(self, session):
         self.__prerequisites__ = [session]
@@ -36,7 +63,7 @@ class Logged(Fixture):
         if not user or not user.get("id"):
             abort(403)
 
-
+authenticated = ActionFactory(Logged(session))
 session_secured = action.uses(Logged(session))
 
 if MODE in ("demo", "readonly", "full"):
@@ -112,6 +139,21 @@ if MODE in ("demo", "readonly", "full"):
         ]
         apps.sort(key=lambda item: item["name"])
         return {"payload": apps, "status": "success"}
+
+    @action("delete_app/<name:re:\w+>", method="POST")
+    @session_secured
+    def delete_app(name):
+        """delete the app"""
+        path = os.path.join(FOLDER, name)
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
+        archive = os.path.join(FOLDER, '%s.%s.zip' % (name, timestamp))
+        if os.path.exists(path) and os.path.isdir(path):
+            # zip the folder, just in case
+            shutil.make_archive(archive, 'zip', path)
+            # then remove the app
+            shutil.rmtree(path)
+            return {"status": "success", "payload": "Deleted"}
+        return {"status": "success", "payload": "App does not exist"}
 
     @action("walk/<path:path>")
     @session_secured
@@ -341,3 +383,31 @@ if MODE == "full":
         else:
             abort(500)
         return {"status": "success"}
+
+    #
+    # Below here work in progress
+    #
+
+    @action("gitlog/<project>")
+    @action.uses(Logged(session), "gitlog.html")
+    def gitlog(project):
+        if not is_git_repo(project): return "Project is not a GIT repo"
+        run('git checkout master', project)
+        commits = get_commits(project)
+        return dict(commits=commits, 
+                    button_checkout=button_checkout, 
+                    project=project)
+
+    @authenticated.button('checkout')
+    def button_checkout(project, commit):
+        if not is_git_repo(project): raise HTTP(400)
+        run('git stash', project)
+        run('git checkout '+commit, project)
+        Reloader.import_apps()
+
+    @action("gitshow/<project>/<commit>")
+    @action.uses(Logged(session), "gitshow.html")
+    def gitshow(project, commit):
+        if not is_git_repo(project): raise HTTP(400)
+        patch = run('git show '+commit, project)
+        return diff2kryten(patch)

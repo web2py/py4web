@@ -31,7 +31,7 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
     for field in table:
 
         input_id = "%s_%s" % (field.tablename, field.name)
-        value = field.formatter(vars.get(field.name))
+        value = vars.get(field.name)
         error = errors.get(field.name)
         field_class = field.type.split()[0].replace(":", "-")
 
@@ -222,7 +222,11 @@ class Form(object):
 
         if readonly or request.method == "GET":
             if self.record:
-                self.vars = self.record
+                self.vars = {
+                    name: table[name].formatter(self.record[name])
+                    for name in table.fields
+                    if name in self.record
+                    }
         else:
             post_vars = request.forms
             self.submitted = True

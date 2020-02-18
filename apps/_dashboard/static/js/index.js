@@ -149,6 +149,15 @@ let init = (app) => {
                     });
             });
     };
+    app.delete_selected_app = () => {
+        var name = app.vue.selected_app.name;
+        app.confirm("Delete App","blue","Do you really want to delete "+name+"?",()=>{
+                app.modal_dismiss();
+                axios.post('../delete_app/'+name).then(()=>{
+                        app.init();
+                    });
+            });
+    };
     app.reload_info = () => {
         axios.get('../info').then((res)=>{
                 app.vue.info=res.data.payload || [];

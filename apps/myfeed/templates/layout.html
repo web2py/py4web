@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href="[[=URL('static')]]/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
+    <link rel="stylesheet" href="css/bulma.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    [[block page_head]]<!-- individual pages can customize header here -->[[end]]
+    <style>
+      textarea {width:100%; min-height:120px; border-radius:5px}
+      button.clicked {pointer-events: none; background: #00d1b2;}
+      button.clicked ~ button:not(.clicked) {display: none}
+      h1 { font-size: 2em; margin: 1em 0 0.5em 0 }
+      h2 { font-size: 1.6em; margin: 0.7em 0 0.3em 0 }
+      .post { background-color: #f1f1f1; border-radius: 5px; padding: 5px; margin-bottom: 10px;}
+      .post blockquote { font-style: italic; }
+      thead tr {background-color:#f1f1f1}
+      td, th {padding: 5px; text-align: left; vertical-align:top}
+      thead th {vertical-align:bottom}
+    </style>
+  </head>
+  <body>    
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href=".">
+          <strong>MyFeed (facebook clone)</strong>
+        </a>
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="left-navbar"
+           onclick="this.classList.toggle('is-active');document.getElementById(this.dataset.target).classList.toggle('is-active');">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div id="left-navbar" class="navbar-menu">
+        [[if globals().get('user'):]]
+        <div class="navbar-start">
+          <a class="navbar-item" href="[[=URL('index')]]">My Feed</a>
+          <a class="navbar-item" href="[[=URL('home', user.get('id'))]]">My Home</a>
+          <a class="navbar-item" href="[[=URL('friends')]]">My Friends</a>
+        </div>
+        [[pass]]
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              [[if globals().get('user'):]]
+              <a class="button">[[= user['username'] ]]</a>
+              <a class="button is-primary" href="[[=URL('auth/logout')]]">Sign out</a>
+              [[else:]]
+              <a class="button is-primary" href="[[=URL('auth/register')]]">Sign up</a>
+              <a class="button is-light" href="[[=URL('auth/login')]]">Sign in</a>
+              [[pass]]
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <section class="section">
+      <!-- beginning of HTML inserted by extending template -->
+      [[include]]
+      <!-- end of HTML inserted by extending template -->
+    </section>
+    <footer class="footer">
+      <div class="content has-text-centered">
+        Made with py4web
+      </div>
+    </footer>
+  </body>
+  <script src="js/sugar.min.js"></script>
+  <script src="js/axios.min.js"></script>
+  <script src="js/vue.min.js"></script>
+  [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
+</html>
