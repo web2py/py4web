@@ -26,8 +26,8 @@
         <label for="applications">Installed Applications</label>
         <div class="applications-inner">
           <div class="right">
-            <button v-on:click="upload_new_app()">Create/Upload App</button>
-            <button v-on:click="reload()">Reload Apps</button>
+            <button v-on:click="upload_new_app()"><i class="fas fa-magic"></i> Create/Upload App</button>
+            <button v-on:click="reload()"><i class="fas fa-sync-alt"></i> Reload Apps</button>
           </div>
           <div>
             <button class="btn-app" width="300px" v-for="app in apps" v-on:click="select(app)">
@@ -52,7 +52,7 @@
         <label for="routes">Routes for {{selected_app.name}}</label>
         <div>
           <div class="right">
-            <button v-on:click="reload(selected_app.name)">Reload {{selected_app.name}}</button>
+            <button v-on:click="reload(selected_app.name)"><i class="fas fa-sync-alt"></i> Reload {{selected_app.name}}</button>
           </div>
           <table v-if="routes.length">
             <thead>
@@ -87,10 +87,10 @@
 
         <div>
           <div class="right">
-            <button v-on:click="create_new_file()">Create New File</button>
-            <button v-on:click="upload_new_file()">Upload New File</button>
-            <button v-on:click="download_selected_app()">Download App</button>
-            <button v-on:click="delete_selected_app()">Delete App</button>
+            <button v-on:click="create_new_file()"><i class="fas fa-magic"></i> Create New File</button>
+            <button v-on:click="upload_new_file()"><i class="fas fa-upload"></i> Upload New File</button>
+            <button v-on:click="download_selected_app()"><i class="fas fa-download"></i> Download App</button>
+            <button v-on:click="delete_selected_app()"><i class="fas fa-trash"></i> Delete App</button>
           </div>
           <treefiles :f="walk" :p="selected_app.name"></treefiles>
         </div>
@@ -100,9 +100,9 @@
         <label for="editor_container">File: {{selected_filename}}</label>
         <div>
           <div class="right">
-            <button v-on:click="delete_selected_file()">Delete File</button>
-            <button v-on:click="load_file()">Reload File</button>
-            <button v-on:click="save_file()">Save File</button>
+            <button v-on:click="delete_selected_file()"><i class="fas fa-trash"></i> Delete File</button>
+            <button v-on:click="load_file()"><i class="fas fa-sync-alt"></i> Reload File</button>
+            <button v-on:click="save_file()"><i class="fas fa-save"></i> Save File</button>
           </div>
           <div v-show="selected_type=='text'" id="editor"></div>
           <div v-if="selected_type=='image'"><img v-bind:src="selected_file_link" class="preview"/></div>
@@ -133,7 +133,7 @@
         <label for="tickets">Recent Tickets</label>
         <div>
           <div class="right">
-            <button v-on:click="reload_tickets()">Reload Tickets</button>
+            <button v-on:click="reload_tickets()"><i class="fas fa-sync-alt"></i> Reload Tickets</button>
           </div>
           <table v-if="tickets.length>0">
             <thead>
