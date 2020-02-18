@@ -34,8 +34,8 @@
               <i v-if="!app.error" class="fa fa-cog fa-spin"></i>
               <i v-else class="fa fa-cog red blink"></i>
               {{app.name}}
-              <img v-if="app.name=='_default'" align="right" alt="" src="/static/favicon.ico" height="18"/>
-              <img v-else align="right" alt="" v-bind:src="'/'+app.name+'/static/favicon.ico'" height="18"/>
+              <img v-if="app.name=='_default'" align="right" alt=" " src="/static/favicon.ico" height="18"/>
+              <img v-else align="right" alt=" " v-bind:src="'/'+app.name+'/static/favicon.ico'" height="18"/>
             </button>
           </div>
         </div>
