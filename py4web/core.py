@@ -879,7 +879,7 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
     context=dict(
         code=code, message=message, button_text=button_text, href=href, color=color
     )
-    if not REX_APPJSON.search(request.headers['accept']):
+    if not REX_APPJSON.search(request.headers.get('accept') or ''):
         return yatl.render(
             '<html><head><style>body{color:white;text-align: center;background-color:{{=color}};font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>{{=code}}</h1><h2>{{=message}}</h2>{{if button_text:}}<a href="{{=href}}">{{=button_text}}</a>{{pass}}</body></html>',
             context=context)
