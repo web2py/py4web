@@ -881,6 +881,7 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
     )
     # if client accepts 'application/json' - return json
     if REX_APPJSON.search(request.headers.get('accept', '')):
+        response.status = code
         return json.dumps(context)
     # else - return html error-page
     return yatl.render(
