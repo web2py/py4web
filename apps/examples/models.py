@@ -15,7 +15,7 @@ db.define_table(
 # simple reference example
 db.define_table("superhero", Field("name"), Field("real_identity", "reference person"))
 
-db.define_table("superpower", Field("description"))
+db.define_table("superpower", Field("description"), format='%(description)s')
 
 # many to many example
 db.define_table(
