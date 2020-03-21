@@ -90,12 +90,12 @@
             if(field.type == "reference"){
                 if (!(field.references in this.reference_options)){
                     Vue.set(this.reference_options, field.references, []);
-                    let reference_table_url = self.url.split('/')
+                    let reference_table_url = self.url.split('/');                    
                     reference_table_url.pop()
                     reference_table_url.push(field.references)
                     reference_table_url = reference_table_url.join('/') + '?@options_list=true';
                     axios.get(reference_table_url).then(function (res) {
-                        self.reference_options[res.data.table] = res.data.items;
+                        self.reference_options[field.references] = res.data.items;
                      });
                     
                 }

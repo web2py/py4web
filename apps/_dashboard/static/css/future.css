@@ -134,6 +134,7 @@ input[type=date],
 input[type=time], 
 input[type=datetime-local],
 input[type=file], 
+select,
 textarea {
    background-color: black;
    border: 0;
@@ -147,6 +148,7 @@ input[type=number],
 input[type=date], 
 input[type=time], 
 input[type=datetime-local],
+select,
 textarea {
    border-bottom: 2px solid #33BFFF;
 }
