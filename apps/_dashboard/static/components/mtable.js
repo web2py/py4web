@@ -95,7 +95,8 @@
                     reference_table_url.push(field.references)
                     reference_table_url = reference_table_url.join('/') + '?@options_list=true';
                     axios.get(reference_table_url).then(function (res) {
-                        self.reference_options[field.references] = res.data.items;
+                        let url_components = res.config.url.split('?')[0].split('/');
+                        self.reference_options[url_components[url_components.length - 1 ]] = res.data.items;
                      });
                     
                 }
