@@ -4,8 +4,8 @@ gunicorn
 gevent
 requests
 threadsafevariable
-pyjwt >= 1.6.4
+pyjwt >= 1.7.1
 pluralize >= 0.1.5
 yatl >= 20191224.1
-pydal >= 20191227.1
+pydal >= 20200321.1
 python-memcached # used for testing or for optionally actually accessing memcache
