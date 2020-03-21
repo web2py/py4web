@@ -10,6 +10,7 @@
                     errors: {},
                     item: null,
                     message: '',
+                    reference_options: {},
                     table: { model: [], items: [], count: 0}};
         mtable.methods.load.call(data);
         return data;
@@ -71,15 +72,37 @@
     }
 
     mtable.methods.open_create = function () {
+        this.populate_reference_options();
         this.item = {};
         for(var field in this.model) this.item[field.name] = field.default||'';
     };
     
     mtable.methods.open_edit = function (item) {
+        this.populate_reference_options();
         this.item = {};
         this.item = item;
     };
-    
+
+    mtable.methods.populate_reference_options = function(){
+        let self = this;
+        for(var field of this.table.model){
+            console.log(field.name);
+            if(field.type == "reference"){
+                if (!(field.references in this.reference_options)){
+                    Vue.set(this.reference_options, field.references, []);
+                    let reference_table_url = self.url.split('/')
+                    reference_table_url.pop()
+                    reference_table_url.push(field.references)
+                    reference_table_url = reference_table_url.join('/') + '?@options_list=true';
+                    axios.get(reference_table_url).then(function (res) {
+                        self.reference_options[res.data.table] = res.data.items;
+                     });
+                    
+                }
+            }
+        }
+    }
+
     mtable.methods.trash = function (item) {
         if (window.confirm("Really delete record?")) {
             let url = this.url + '/' + item.id;            
@@ -151,6 +174,8 @@
             }).join('&');
         window.location = window.location.href.split('?')[0]+'?'+source;
     };
+
+
 
     var scripts = document.getElementsByTagName('script');
     var src = scripts[scripts.length-1].src;

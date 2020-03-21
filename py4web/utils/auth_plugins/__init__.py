@@ -32,8 +32,13 @@ class SSO(object):
 
     def _handle_callback(self, auth, get_vars):
         data = self.callback(get_vars)
-        if not data or "error" in data:
+        if not data:
             abort(401)
+        error = data.get('error')
+        if error:
+            code = error.get('code', 401)
+            msg = error.get('message', 'Unknown error')
+            abort(code, msg)
         if auth.db:
             # map returned fields into auth_user fields
             user = {}
@@ -70,13 +75,14 @@ class OAuth2(SSO):
     userinfo_url = ""
     default_scope = ""
 
-    def __init__(self, client_id, client_secret, callback_url, scope=None):
+    def __init__(self, client_id, client_secret, callback_url, scope=None, scheme=True):
         SSO.__init__(self)
         self.parameters = dict(
             client_id=client_id,
             client_secret=client_secret,
             callback_url=callback_url,
             scope=scope or self.default_scope,
+            scheme=scheme,
         )
 
     def get_login_url(self, state=None, next=None):
@@ -86,7 +92,7 @@ class OAuth2(SSO):
             vars["next"] = next
         data = dict(
             access_type="offline",
-            redirect_uri=URL(callback_url, vars=vars, scheme=True),
+            redirect_uri=URL(callback_url, vars=vars, scheme=self.parameters.get("scheme")),
             response_type="code",
             client_id=self.parameters.get("client_id"),
         )
@@ -106,7 +112,7 @@ class OAuth2(SSO):
             code=code,
             client_id=self.parameters.get("client_id"),
             client_secret=self.parameters.get("client_secret"),
-            redirect_uri=URL(self.parameters.get("callback_url"), scheme=True),
+            redirect_uri=URL(self.parameters.get("callback_url"), scheme=self.parameters.get("scheme")),
             grant_type="authorization_code",
         )
         res = requests.post(self.token_url, data=data)

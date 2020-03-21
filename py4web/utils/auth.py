@@ -5,7 +5,7 @@ import urllib
 import uuid
 
 from py4web import redirect, request, response, abort, URL, action
-from py4web.core import Fixture, Template
+from py4web.core import Fixture, Template, REX_APPJSON
 from pydal.validators import IS_EMAIL, CRYPT, IS_NOT_EMPTY, IS_NOT_IN_DB
 
 
@@ -34,9 +34,9 @@ class AuthEnforcer(Fixture):
 
     def abort_or_redirect(self, page):
         """
-        return HTTP 403 if content_type is application/json
+        return HTTP 403 if 'application/json' in HTTP_ACCEPT
         else redirects to page"""
-        if request.content_type == "application/json":
+        if REX_APPJSON.search(request.headers.get('accept', '')):
             abort(403)
         redirect_next = request.fullpath
         if request.query_string:

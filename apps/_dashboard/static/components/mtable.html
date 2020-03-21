@@ -40,6 +40,12 @@
           <input class="input" v-else-if="field.type=='password'" type="password" v-model="item[field.name]" v-bind:readonly="!editable">
           <input v-else-if="field.type=='upload'" type="text" v-model="item[field.name]" v-bind:readonly="!editable">
           <textarea class="textarea" v-else-if="field.type=='text'" v-model="item[field.name]" v-bind:readonly="!editable"></textarea>
+          <select v-else-if="field.type=='reference'" v-model="item[field.name]" v-bind:readonly="!editable">
+            <option disabled value="">Select...</option>
+            <option v-for="option in reference_options[field.references]" :key="option.value" v-bind:value="option.value">
+              {{ option.text }}
+            </option>
+          </select>
           <div class="error" v-if="editable && field.name in errors">{{errors[field.name]}}</div>
         </td>
       </tr>
