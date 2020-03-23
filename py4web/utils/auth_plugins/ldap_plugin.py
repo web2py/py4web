@@ -95,7 +95,7 @@ class LDAPPlugin(object):
     user_mail_attrib - the attribute containing the user's email address
 
 
-    If you need group control from ldap to web2py app's database feel free
+    If you need group control from ldap to py4web app's database feel free
     to set:
 
         auth.register_plugin(LDAPPlugin(
@@ -117,6 +117,7 @@ class LDAPPlugin(object):
         group_member_attrib - the attribute containing the group members name
         group_filterstr - as the filterstr but for group select
 
+    **allowed_groups still to be implemented in py4web**
     You can restrict login access to specific groups if you specify:
 
         auth.register_plugin(LDAPPlugin(
@@ -647,98 +648,68 @@ class LDAPPlugin(object):
         groups = self.groups
 
         logger.info('[%s] Manage user groups' % str(username))
-        #try:
-        #
-        # Get all group name where the user is in actually in ldap
-        # #########################################################
-        ldap_groups_of_the_user = self.get_user_groups_from_ldap(con, username)
-
-        if group_mapping != {}:
-            l = []
-            for group in ldap_groups_of_the_user:
-                if group in group_mapping:
-                    l.append(group_mapping[group])
-            ldap_groups_of_the_user = l
-            logger.info("User groups after remapping: %s" % str(l))
-
-        #
-        # Get all group name where the user is in actually in local db
-        # #############################################################
         try:
-            db_user_id = db(db.auth_user.username == username).select(db.auth_user.id).first().id
-        except:
+            #
+            # Get all group name where the user is in actually in ldap
+            # #########################################################
+            ldap_groups_of_the_user = self.get_user_groups_from_ldap(con, username)
+
+            if group_mapping != {}:
+                l = []
+                for group in ldap_groups_of_the_user:
+                    if group in group_mapping:
+                        l.append(group_mapping[group])
+                ldap_groups_of_the_user = l
+                logger.info("User groups after remapping: %s" % str(l))
+
+            #
+            # Get all group name where the user is in actually in local db
+            # #############################################################
             try:
-                db_user_id = db(db.auth_user.email == username).select(db.auth_user.id).first().id
-            except AttributeError as e:
-                #
-                # There is no user in local db
-                # We create one
-                # ##############################
+                db_user_id = db(db.auth_user.username == username).select(db.auth_user.id).first().id
+            except:
                 try:
-                    db_user_id = db.auth_user.insert(username=username, first_name=username)
+                    db_user_id = db(db.auth_user.email == username).select(db.auth_user.id).first().id
                 except AttributeError as e:
-                    db_user_id = db.auth_user.insert(email=username, first_name=username)
-        if not db_user_id:
-            logger.error(
-                'There is no username or email for %s!' % username)
-            raise
-        """
-        # if old pydal version, assume this is a relational database which can do joins
-        db_can_join = db.can_join() if hasattr(db._adapter, 'can_join') else True
-        if db_can_join:
-            db_group_search = \
-                db((db.auth_membership.user_id == db_user_id) &
-                    (db.auth_user.id == db.auth_membership.user_id) &
-                    (db.auth_group.id == db.auth_membership.group_id))
-        else:
-            # no joins on NoSQL databases, perform two queries
-            db_group_search = db(db.auth_membership.user_id == db_user_id)
-            group_ids = [x.group_id for x in db_group_search.select(db.auth_membership.group_id, distinct=True)]
-            db_group_search = db(db.auth_group.id.belongs(group_ids))
-        db_groups_of_the_user = list()
-        db_group_id = dict()
+                    #
+                    # There is no user in local db
+                    # We create one
+                    # ##############################
+                    try:
+                        db_user_id = db.auth_user.insert(username=username, first_name=username)
+                    except AttributeError as e:
+                        db_user_id = db.auth_user.insert(email=username, first_name=username)
+            if not db_user_id:
+                logger.error(
+                    'There is no username or email for %s!' % username)
+                raise
+            db_groups_of_the_user = groups.get(db_user_id)
 
-        if db_group_search.count() > 0:
-            for group in db_group_search.select(db.auth_group.id, db.auth_group.role, distinct=True):
-                db_group_id[group.role] = group.id
-                db_groups_of_the_user.append(group.role)
-        logger.debug('db groups of user %s: %s' % (username, str(db_groups_of_the_user)))
-        """
+            auth_membership_changed = False
+            #
+            # Delete user membership from groups where user is not anymore
+            # #############################################################
+            for group_to_del in db_groups_of_the_user:
+                if ldap_groups_of_the_user.count(group_to_del) == 0:
+                    groups.remove(db_user_id, group_to_del)
+                    auth_membership_changed = True
 
-        db_groups_of_the_user = groups.get(db_user_id)
+            #
+            # Create user membership in groups where user is not in already
+            # ##############################################################
+            for group_to_add in ldap_groups_of_the_user:
+                if db_groups_of_the_user.count(group_to_add) == 0:
+                    groups.add(db_user_id, group_to_add)
+                    auth_membership_changed = True
 
-        auth_membership_changed = False
-        #
-        # Delete user membership from groups where user is not anymore
-        # #############################################################
-        for group_to_del in db_groups_of_the_user:
-            if ldap_groups_of_the_user.count(group_to_del) == 0:
-                #db((db.auth_membership.user_id == db_user_id) &
-                #   (db.auth_membership.group_id == db_group_id[group_to_del])).delete()
-                groups.remove(db_user_id, group_to_del)
-                auth_membership_changed = True
-
-        #
-        # Create user membership in groups where user is not in already
-        # ##############################################################
-        for group_to_add in ldap_groups_of_the_user:
-            if db_groups_of_the_user.count(group_to_add) == 0:
-                #if db(db.auth_group.role == group_to_add).count() == 0:
-                #    gid = db.auth_group.insert(role=group_to_add, description='Generated from LDAP')
-                #else:
-                #    gid = db(db.auth_group.role == group_to_add).select(db.auth_group.id).first().id
-                #db.auth_membership.insert(user_id=db_user_id, group_id=gid)
-                groups.add(db_user_id, group_to_add)
-                auth_membership_changed = True
-
-        if auth_membership_changed:
-            for callback in manage_groups_callback:
-                callback()
-        #except:
-        #    logger.warning("[%s] Groups are not managed successfully!" % str(username))
-        #    import traceback
-        #    logger.debug(traceback.format_exc())
-        #    return False
+            if auth_membership_changed:
+                for callback in manage_groups_callback:
+                    callback()
+        except:
+            logger.warning("[%s] Groups are not managed successfully!" % str(username))
+            import traceback
+            logger.debug(traceback.format_exc())
+            return False
         return True
 
     def _init_ldap(self):
@@ -868,14 +839,6 @@ class LDAPPlugin(object):
             # result will look like the following:
             # ['ldap://ForestDnsZones.domain.com/DC=ForestDnsZones,
             #     DC=domain,DC=com']
-#            if bind_dn:
-#                # need to search directory with an admin account 1st
-#                con.simple_bind_s(bind_dn, bind_pw)
-#                logger.debug("Ldap bind connect...")
-#            else:
-#                # credentials should be in the form of username@domain.tld
-#                con.simple_bind_s(username, password)
-#                logger.debug("Ldap username connect...")
             # We have to use the full string
             bare = ldap.filter.escape_filter_chars(username_bare)
             username = con.search_ext_s(
@@ -884,15 +847,6 @@ class LDAPPlugin(object):
                 "(&(sAMAccountName=%s)(%s))" % (bare, filterstr),
                 ["cn"],
             )[0][0]
-#        else:
-#            if bind_dn:
-#                # need to search directory with an bind_dn account 1st
-#                con.simple_bind_s(bind_dn, bind_pw)
-#            else:
-#                con.simple_bind_s(username, password)
-#                print("Ldap username connect")
-                # bind as anonymous
-                #con.simple_bind_s("", "")
 
         # if username is None, return empty list
         if username is None:
@@ -913,7 +867,6 @@ class LDAPPlugin(object):
                 ldap_groups_of_the_user.append(str(group[group_name_attrib][0], encoding = 'utf-8'))
                 print(ldap_groups_of_the_user)
 
-#        con.unbind()
         logger.debug("User groups: %s" % ldap_groups_of_the_user)
         return list(ldap_groups_of_the_user)
 
