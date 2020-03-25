@@ -269,12 +269,13 @@ class Auth(Fixture):
                         if check:
                             data = {
                                 "username": username,
-                                "email": username + "@localhost",
+                                #"email": username + "@localhost",
                                 "sso_id": plugin_name + ":" + username,
                             }
                             # and register the user if we have one, just in case
                             if self.db:
                                 data = self.get_or_register_user(data)
+                                self.session["user"] = {"id": data["id"]}
                         else:
                             data = self._error("Invalid Credentials")
                     # Else use normal login

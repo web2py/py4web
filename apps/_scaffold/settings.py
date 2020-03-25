@@ -49,7 +49,7 @@ USE_PAM = False
 
 # enable LDAP
 USE_LDAP = False
-LDAP_SETTING = {
+LDAP_SETTINGS = {
     "mode": "ad",
     "server": "my.domain.controller",
     "base_dn": "ou=Users,dc=domain,dc=com",
