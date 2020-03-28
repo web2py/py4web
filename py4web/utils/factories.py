@@ -1,8 +1,9 @@
 import os
 from functools import wraps
+import jwt
 from yatl.helpers import TAG
 from py4web import action, URL, request
-from py4web.core import dumps
+from py4web.core import dumps, Session
 
 class ActionFactory:
 
@@ -60,10 +61,14 @@ class ButtonFactory:
         @action(path, method='POST')
         @action.uses(*self.fixtures)
         def tmp(func=func):
-            return func(**request.json)
+            data = jwt.decode(request.body.read(), Session.SECRET)
+            return func(**data)
+        def get_link(**data):
+            return (URL(path), jwt.encode(data, Session.SECRET).decode())
         def make_button(**data):
-            url = URL(path)
-            onclick= 'axios.post("%s", %s);this.classList.add("clicked")' % (url, dumps(data))
+            onclick= 'axios.post("%s", "%s");this.classList.add("clicked")' % \
+                get_link(**data)
             return TAG.BUTTON(self.text, _class=self._class, _onclick=onclick)
+        make_button.get_link = get_link 
         make_button.call = func
         return make_button
