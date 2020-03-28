@@ -100,6 +100,7 @@
     };
     auth.created = function() {
         var self = this;
+        self.go(self.page, true);
         window.addEventListener('popstate', function (event) {
                 self.go(event.state.page, true);
             }, false);
