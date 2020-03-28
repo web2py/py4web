@@ -57,6 +57,7 @@ elif settings.SESSION_TYPE == "database":
 
 auth = Auth(session, db)
 auth.registration_requires_confirmation = settings.VERIFY_EMAIL
+auth.registration_requires_approval = settings.REQUIRES_APPROVAL
 
 if settings.SMTP_SERVER:
     auth.sender = Mailer(
