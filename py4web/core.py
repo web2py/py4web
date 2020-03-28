@@ -17,6 +17,7 @@ import numbers
 import os
 import getpass
 import platform
+import signal
 import sys
 import threading
 import time
@@ -1048,7 +1049,11 @@ def initialize(**args):
                     zip_file.close()
                     print("\x1b[A[X]")
 
-
+def keyboardInterruptHandler(signal, frame):
+    """Catch interrupts like Ctrl-C"""
+    print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
+    sys.exit(0)
+    
 def main(args=None):
     """The main entry point: Start the server and create folders"""
     # Store args in the action to make them visible
@@ -1057,6 +1062,10 @@ def main(args=None):
         headless = True
     else:
         headless = False
+    if platform.system().lower() == "windows": # fix for ANSI on Win7, 8, 10 ...
+        from ctypes import windll
+        k=windll.kernel32
+        k.SetConsoleMode(k.GetStdHandle(-11),7)
     if not headless:
         print(ART)
     else:
@@ -1075,5 +1084,6 @@ def main(args=None):
     if os.path.exists(os.path.join(args.apps_folder, "_dashboard")):
         print("Dashboard is at: http://%s:%s/_dashboard" % (args.host, args.port))
     # start
+    signal.signal(signal.SIGINT, keyboardInterruptHandler) # Catch interrupts like Ctrl-C
     Reloader.import_apps()
     start_server(args)
