@@ -80,7 +80,7 @@ class Auth(Fixture):
         sender=None,
         use_username=True,
         registration_requires_confirmation=True,
-        registration_requires_appoval=False,
+        registration_requires_approval=False,
         inject=True,
     ):
         """Creates and Auth object responsinble for handling
@@ -96,7 +96,7 @@ class Auth(Fixture):
         self.sender = sender
         self.route = None
         self.registration_requires_confirmation = registration_requires_confirmation
-        self.registration_requires_appoval = registration_requires_appoval
+        self.registration_requires_approval = registration_requires_approval
         self.use_username = use_username  # if False, uses email only
         # The self._link variable is not thread safe (only intended for testing)
         self._link = None
@@ -269,12 +269,13 @@ class Auth(Fixture):
                         if check:
                             data = {
                                 "username": username,
-                                "email": username + "@localhost",
+                                #"email": username + "@localhost",
                                 "sso_id": plugin_name + ":" + username,
                             }
                             # and register the user if we have one, just in case
                             if self.db:
                                 data = self.get_or_register_user(data)
+                                self.session["user"] = {"id": data["id"]}
                         else:
                             data = self._error("Invalid Credentials")
                     # Else use normal login
@@ -350,6 +351,9 @@ class Auth(Fixture):
                     self.route, "verify_email", vars=dict(token=token), scheme=True
                     )
                 self.send("verify_email", fields, link=link)
+        elif self.registration_requires_approval:
+            fields["action_token"] = "pending-approval"
+            res = self.db.auth_user.validate_and_insert(**fields)
         else:
             fields["action_token"] = ''
             res = self.db.auth_user.validate_and_insert(**fields)
@@ -371,8 +375,10 @@ class Auth(Fixture):
             return (None, "Invalid email")
         if (user.action_token or "").startswith("pending-registration:"):
             return (None, "Registration is pending")
-        if (user.action_token or "").startswith("account-blocked:"):
+        if user.action_token == "account-blocked":
             return (None, "Account is blocked")
+        if user.action_token == "pending-approval":
+            return (None, "Account needs to be approved")
         if db.auth_user.password.requires(password)[0] == user.password:
             return (user, None)
         return None, "Invalid Credentials"
@@ -400,7 +406,11 @@ class Auth(Fixture):
             return token
 
     def verify_email(self, token):
-        n = self.db(self._query_from_token(token)).update(action_token=None)
+        if self.registration_requires_approval:
+            action_token = "pending-approval"
+        else:
+            action_token = None
+        n = self.db(self._query_from_token(token)).update(action_token=action_token)
         return n > 0
 
     def reset_password(self, token, new_password):

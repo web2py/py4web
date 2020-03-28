@@ -19,6 +19,9 @@ DB_POOL_SIZE = 1
 # send email on regstration
 VERIFY_EMAIL = False
 
+# account requires to be approved ?
+REQUIRES_APPROVAL = False
+
 # email settings
 SMTP_SERVER = None
 SMTP_SENDER = "you@example.com"
@@ -49,7 +52,7 @@ USE_PAM = False
 
 # enable LDAP
 USE_LDAP = False
-LDAP_SETTING = {
+LDAP_SETTINGS = {
     "mode": "ad",
     "server": "my.domain.controller",
     "base_dn": "ou=Users,dc=domain,dc=com",

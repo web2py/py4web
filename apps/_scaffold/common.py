@@ -57,6 +57,7 @@ elif settings.SESSION_TYPE == "database":
 
 auth = Auth(session, db)
 auth.registration_requires_confirmation = settings.VERIFY_EMAIL
+auth.registration_requires_approval = settings.REQUIRES_APPROVAL
 
 if settings.SMTP_SERVER:
     auth.sender = Mailer(
@@ -77,7 +78,7 @@ if settings.USE_PAM:
 if settings.USE_LDAP:
     from py4web.utils.auth_plugins.ldap_plugin import LDAPPlugin
 
-    auth.register_plugin(LDAPPlugin(**settings.LDAP_SETTINGS))
+    auth.register_plugin(LDAPPlugin(db=db, groups=groups, **settings.LDAP_SETTINGS))
 
 if settings.OAUTH2GOOGLE_CLIENT_ID:
     from py4web.utils.auth_plugins.oauth2google import OAuth2Google  # TESTED
