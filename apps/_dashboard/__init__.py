@@ -395,10 +395,10 @@ if MODE == "full":
         run('git checkout master', project)
         commits = get_commits(project)
         return dict(commits=commits, 
-                    button_checkout=button_checkout, 
+                    checkout=checkout, 
                     project=project)
 
-    @authenticated.button('checkout')
+    @authenticated.callback('checkout')
     def button_checkout(project, commit):
         if not is_git_repo(project): raise HTTP(400)
         run('git stash', project)

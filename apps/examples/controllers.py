@@ -131,11 +131,11 @@ def hello_world():
 def hello_world(msg):
     return dict(msg=msg)
 
-@unauthenticated.button("click me")
-def a_button(msg):
+@unauthenticated.callback("click me")
+def a_callback(msg):
     import logging
     logging.info(msg)
 
 @unauthenticated.get()
 def show_a_button():
-    return dict(mybutton = a_button(msg="hello world"))
+    return dict(mybutton = a_callback.button('clickme')(msg="hello world"))

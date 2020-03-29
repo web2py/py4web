@@ -9,7 +9,7 @@
     <td>[[=user.first_name]]</td>
     <td>[[=user.last_name]]</td>
     <td>[[=user.username]]</td>
-    <td>[[=button_request(id=user.id)]]</td>
+    <td>[[=request_friendship.button('Request')(id=user.id)]]</td>
   </tr>
   [[pass]]
 </table>
@@ -24,8 +24,8 @@
     <td>[[=r.friend_request.status]]</td> 
     <td>
       [[if r.friend_request.status == 'pending':]]
-        [[=button_accept(id=r.friend_request.id)]]
-        [[=button_reject(id=r.friend_request.id)]]
+        [[=accept_friendship.button('Accept')(id=r.friend_request.id)]]
+        [[=reject_friendship.button('Reject')(id=r.friend_request.id)]]
       [[pass]]
     </td>
   </tr>

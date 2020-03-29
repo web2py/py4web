@@ -23,7 +23,7 @@
         <tr>
           <td>[[=commit.get('message')[:20] ]]</td>
           <td>
-            [[=button_checkout(project=project, commit=commit['code'])]]
+            [[=checkout.button('Checkout')(project=project, commit=commit['code'])]]
           </td>
           <td>
             <button class="gitshow" data-src="[[=URL('gitshow',project,commit['code'])]]">Show</button>

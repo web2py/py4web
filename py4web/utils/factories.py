@@ -1,3 +1,4 @@
+import copy
 import os
 from functools import wraps
 import jwt
@@ -44,16 +45,14 @@ class ActionFactory:
             return func
         return make_action
 
-    def button(self, text, path=None, _class=''):
-        return ButtonFactory(text, path, _class, self.fixtures)
+    def callback(self, path=None):
+        return CallbackFactory(path, self.fixtures)
 
 
-class ButtonFactory:
+class CallbackFactory:
 
-    def __init__(self, text, path, _class, fixtures):
-        self.text = text
+    def __init__(self, path, fixtures):
         self.path = path
-        self._class = _class
         self.fixtures = fixtures
 
     def __call__(self, func):
@@ -65,10 +64,15 @@ class ButtonFactory:
             return func(**data)
         def get_link(**data):
             return (URL(path), jwt.encode(data, Session.SECRET).decode())
-        def make_button(**data):
-            onclick= 'axios.post("%s", "%s");this.classList.add("clicked")' % \
-                get_link(**data)
-            return TAG.BUTTON(self.text, _class=self._class, _onclick=onclick)
-        make_button.get_link = get_link 
-        make_button.call = func
-        return make_button
+        def button(*components, **attributes):
+            def button_maker(**data):            
+                onclick = \
+                    'axios.post("%s", "%s");this.classList.add("clicked")' % \
+                    get_link(**data)
+                new_attributes = copy.copy(attributes)
+                new_attributes['_onclick'] = onclick
+                return TAG.BUTTON(*components, **new_attributes)
+            return button_maker
+        func.get_link = get_link 
+        func.button = button
+        return func

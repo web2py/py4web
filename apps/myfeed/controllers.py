@@ -12,8 +12,8 @@ def get_requests(status=None, received=True):
                             orderby=db.auth_user.first_name+db.auth_user.last_name)
 
 # make a "like" button factory
-@authenticated.button("Like")
-def button_like(id):
+@authenticated.callback()
+def like(id):
     db.item_like.insert(item_id=id)
 
 # the "/index" page
@@ -34,7 +34,7 @@ def index():
     return dict(
         form=form,
         items=items,
-        button_like=button_like)
+        like=like)
 
 # the "/home/{user_id}" page
 @authenticated()
@@ -44,20 +44,20 @@ def home(id):
         orderby=~db.feed_item.created_on, limitby=(0,100))
     return dict(
         items=items,
-        button_like=button_like,
+        like=like,
         user=db.auth_user[id])
 
 # make a button factory to request friendship
-@authenticated.button("Request")
-def button_request(id):
+@authenticated.callback()
+def request_friendship(id):
     db.friend_request.insert(
         from_user=auth.user_id,
         to_user=id,
         status='pending')
 
 # make a button factory to accept friendship
-@authenticated.button("Acceped")
-def button_accept(id):
+@authenticated.callback()
+def accept_friendship(id):
     friend_request = db.friend_request[id]
     friend_request.update_record(status='accepted')
     # after accepting also create the reciprocal relation
@@ -67,8 +67,8 @@ def button_accept(id):
         status='accepted')
 
 # make a button factory to reject frindship
-@authenticated.button("Reject")
-def button_reject(id):
+@authenticated.callback()
+def reject_friendship(id):
     db(db.friend_request.id==id).update(status='rejected')
 
 # page "/friends" to search for new friends, see requests, accept/reject
@@ -90,6 +90,6 @@ def friends():
         requests_sent=requests_sent,
         form=form,
         users=users,
-        button_request=button_request,
-        button_accept=button_accept,
-        button_reject=button_reject)
+        request_friendship=request_friendship,
+        accept_friendship=accept_friendship,
+        reject_friendship=reject_friendship)

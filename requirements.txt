@@ -6,6 +6,6 @@ requests
 threadsafevariable
 pyjwt >= 1.7.1
 pluralize >= 0.1.5
-yatl >= 20191224.1
+yatl >= 20200329.1
 pydal >= 20200321.1
 python-memcached # used for testing or for optionally actually accessing memcache
