@@ -1058,7 +1058,9 @@ def main(args=None):
     else:
         headless = False
     if not headless:
+        from py4web import __version__
         print(ART)
+        print('Py4web: %s on Python %s\n' %  (__version__, sys.version))
     else:
         print("")  # Insert a blank line to improve readability
     # If we know where the password is stored, read it, otherwise ask for one
