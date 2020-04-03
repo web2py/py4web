@@ -38,7 +38,7 @@ from py4web import action
 
 @action('index')
 def page():
-    return "hello, now is %s" % datetime.dateime.now()
+    return "hello, now is %s" % datetime.datetime.now()
 ``:python
 
 Restart py4web or press the Dashboard "reload apps" button, and this page will be accessible at
