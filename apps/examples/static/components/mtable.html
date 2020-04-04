@@ -2,7 +2,7 @@
   <table>
     <tr>
       <td class="control">              
-        <input class="input" v-model="filter" type="text" placeholder="filter (example id > 1)" style="width: 100%" v-on:keyup.enter="search()"/>
+        <input class="input" v-model="mtFilter" type="text" placeholder="filter (example id > 1)" style="width: 100%" v-on:keyup.enter="search()"/>
       </td>
       <td style="white-space: nowrap; width:10%; padding-left:5px">
         <button v-on:click="search()" class="button">Search</button>
@@ -65,8 +65,8 @@
         <tr>
           <th v-for="field in table.model" v-on:click="reorder(field)">
             {{field.label}}
-            <i v-if="order==field.name" class="fa fa-arrow-up"></i>
-            <i v-if="order=='~'+field.name" class="fa fa-arrow-down"></i>
+            <i v-if="mtOrder==field.name" class="fa fa-arrow-up"></i>
+            <i v-if="mtOrder=='~'+field.name" class="fa fa-arrow-down"></i>
           </th>
         </tr>
       </thead>
@@ -94,7 +94,7 @@
           </td>
         </tr>
       </tbody>
-    </table>          
+    </table>
     <button class="button" v-if="table.count > table.items.length" v-on:click="load()">Load More</button>
   </div>
 </div>
