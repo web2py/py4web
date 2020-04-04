@@ -1066,7 +1066,9 @@ def main(args=None):
         k=windll.kernel32
         k.SetConsoleMode(k.GetStdHandle(-11),7)
     if not headless:
+        from py4web import __version__
         print(ART)
+        print('Py4web: %s on Python %s\n' %  (__version__, sys.version))
     else:
         print("")  # Insert a blank line to improve readability
     # If we know where the password is stored, read it, otherwise ask for one
