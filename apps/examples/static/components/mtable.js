@@ -3,10 +3,10 @@
     var mtable = { props: ['url', 'filter', 'order', 'editable', 'create', 'deletable', 'render'], data: null, methods: {}};
     
     mtable.data = function() {        
-        var data = {url: this.url,
+        var data = {mtUrl: this.url,
                     busy: false,
-                    filter: this.filter || '',
-                    order: this.order ||  '',
+                    mtFilter: this.filter || '',
+                    mtOrder: this.order ||  '',
                     errors: {},
                     item: null,
                     message: '',
@@ -21,9 +21,9 @@
     mtable.methods.load = function() {
         let self = this;
         let length = this.table.items.length;
-        let url = this.url + '?@limit=20';
+        let url = this.mtUrl + '?@limit=20';
         if (length) url+='&@offset='+length; else url+='&@model=true';
-        let filters = self.filter.split(' and ').filter((f)=>{return f.trim() != ''});
+        let filters = self.mtFilter.split(' and ').filter((f)=>{return f.trim() != ''});
         filters = filters.filter((f)=>{return f.trim();}).map((f)=>{                
                 let parts = (f
                              .replace(/ equals? /,'==')
@@ -47,7 +47,7 @@
                         '=' + parts[parts.length-1].replace(/^ /,''));
             });
         if (filters.length) url += '&'+filters.join('&');
-        if (self.order) url += '&@order='+self.order;
+        if (self.mtOrder) url += '&@order='+self.mtOrder;
         self.busy = true;
         axios.get(url).then(function (res) {
                 self.busy = false;
@@ -57,9 +57,9 @@
     };
     
     mtable.methods.reorder = function (field) {
-        if (this.order == '~' + field.name) this.order = null;
-        else if (this.order == field.name) this.order = '~'+field.name;
-        else this.order = field.name;
+        if (this.mtOrder == '~' + field.name) this.mtOrder = null;
+        else if (this.mtOrder == field.name) this.mtOrder = '~'+field.name;
+        else this.mtOrder = field.name;
         this.table.items = [];
         this.load();
     };
@@ -82,7 +82,7 @@
     
     mtable.methods.trash = function (item) {
         if (window.confirm("Really delete record?")) {
-            let url = this.url + '/' + item.id;            
+            let url = this.mtUrl + '/' + item.id;            
             this.table.items = this.table.items.filter((i)=>{return i.id != item.id;});
             axios.delete(url);
             if (item==this.item) this.item = null;
@@ -90,7 +90,7 @@
     };
     
     mtable.methods.save = function (item) {
-        let url = this.url;
+        let url = this.mtUrl;
         self.busy = true;
         if (item.id) {
             url += '/' + item.id;
