@@ -944,9 +944,7 @@ def wsgi(**args):
 def get_args():
     """Handle command line arguments"""
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-f", "--folder", default = 'apps', help="Path to the applications folder (default=apps)"
-    )
+    parser.add_argument("apps_folder", help="Path to the applications folder")
     parser.add_argument(
         "--host", default="127.0.0.1", help="Server address (IP or hostname)"
     )
@@ -1013,7 +1011,7 @@ def initialize(**args):
     """Initialize from args"""
     for key in args:
         os.environ["PY4WEB_" + key.upper()] = str(args[key])
-    apps_folder = os.environ["PY4WEB_FOLDER"]
+    apps_folder = os.environ["PY4WEB_APPS_FOLDER"]
     service_folder = os.path.join(apps_folder, os.environ["PY4WEB_SERVICE_FOLDER"])
     # If the apps folder does not exist create it and populate it
     if not os.path.exists(apps_folder):
