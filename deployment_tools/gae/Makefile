@@ -1,3 +1,8 @@
+install-gcloud-linux:
+	sudo apt-get update && sudo apt-get install google-cloud-sdk google-cloud-sdk-app-engine-python
+	gcloud init
+upgrade-gcloud:
+	gcloud components update
 setup:
 	mkdir -p lib
 	python3 -m pip install -U --no-deps -r gae-requirements.txt -t lib/

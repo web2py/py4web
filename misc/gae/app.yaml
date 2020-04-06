@@ -1,7 +1,0 @@
-runtime: python37
-
-# Handlers define how to route requests to your application.
-handlers:
-
-- url: .*  # This regex directs all routes to main.bottle
-  script: auto
