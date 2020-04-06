@@ -9,3 +9,9 @@
 ## Deployment
 
     make deploy email={email} project={project} version={version}
+    
+Or else, if you have a project already properly setup, 
+
+    gcloud app deploy
+    
+possibly with the various flags of gcloud app deploy.
