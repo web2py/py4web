@@ -1,11 +1,8 @@
 bottle >= 0.12
-tornado
-gunicorn
-gevent
 requests
 threadsafevariable
 pyjwt >= 1.7.1
 pluralize >= 0.1.5
 yatl >= 20200329.1
 pydal >= 20200404.1
-python-memcached # used for testing or for optionally actually accessing memcache
+py4web
