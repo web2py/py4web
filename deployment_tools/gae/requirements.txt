@@ -1,2 +1,8 @@
+bottle >= 0.12
+requests
+threadsafevariable
+pyjwt >= 1.7.1
+pluralize >= 0.1.5
+yatl >= 20200329.1
+pydal >= 20200404.1
 mysqlclient
-psycopg2
