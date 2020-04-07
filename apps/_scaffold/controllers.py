@@ -34,4 +34,4 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 def index():
     user = auth.get_user()
     message = T("Hello {first_name}".format(**user))
-    return dict(message=message, user=user)
+    return dict(message=message)
