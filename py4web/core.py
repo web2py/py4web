@@ -996,6 +996,13 @@ def get_args():
         help="File containing the encrypted (CRYPT) password",
     )
     parser.add_argument(
+        "-s",
+        "--shell",
+        default=False,
+        action="store_true",
+        help="Run interactive shell",
+    )
+    parser.add_argument(
         "-c",
         "--create",
         action="store_true",
@@ -1071,6 +1078,10 @@ def main(args=None):
         print('Py4web: %s on Python %s\n' %  (__version__, sys.version))
     else:
         print("")  # Insert a blank line to improve readability
+    if args.shell:  #start interactive shell if requested
+        import code, site
+        code.interact(local=dict(globals(), **locals()))
+        return
     # If we know where the password is stored, read it, otherwise ask for one
     if args.dashboard_mode not in ("demo", "none") and not os.path.exists(
         args.password_file
