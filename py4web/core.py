@@ -944,7 +944,11 @@ def wsgi(**args):
 def get_args():
     """Handle command line arguments"""
     parser = argparse.ArgumentParser()
-    parser.add_argument("apps_folder", help="Path to the applications folder")
+    parser.add_argument("-a", "--apps_folder",
+        nargs = '?',
+        default = (os.path.join(os.getcwd(), 'apps')),
+        help="Path to the applications folder (default=apps)",
+    )
     parser.add_argument(
         "--host", default="127.0.0.1", help="Server address (IP or hostname)"
     )
