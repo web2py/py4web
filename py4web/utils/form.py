@@ -276,7 +276,6 @@ class Form(object):
             self.record.update_record(**self.vars)
         else:
             # warning, should we really insert if record
-            print("Inserting:", self.vars)
             self.vars["id"] = self.table.insert(**self.vars)
 
     def clear(self):
