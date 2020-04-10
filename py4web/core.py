@@ -27,7 +27,7 @@ import uuid
 import http.client
 import http.cookies
 import zipfile
-import re 
+import re
 
 REX_APPJSON = re.compile('(^|\s|,)application/json(,|\s|$)')
 
@@ -410,6 +410,12 @@ class Session(Fixture):
     def __setitem__(self, key, value):
         self.local.changed = True
         self.local.data[key] = value
+
+    def keys(self):
+        return self.local.data.keys()
+
+    def __iter__(self):
+        return self.local.data.items()
 
     def on_request(self):
         self.load()
@@ -1061,7 +1067,7 @@ def keyboardInterruptHandler(signal, frame):
     """Catch interrupts like Ctrl-C"""
     print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
     sys.exit(0)
-    
+
 def main(args=None):
     """The main entry point: Start the server and create folders"""
     # Store args in the action to make them visible

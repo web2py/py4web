@@ -44,7 +44,7 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
         if field.type == "id" and value is None:
             continue
         if readonly or field.type == "id":
-            control = DIV(field.represent and field.represent(value) or value or "")            
+            control = DIV(field.represent and field.represent(value) or value or "")
         elif field.widget:
             control = field.widget(table, value)
         elif field.type == "text":
@@ -240,7 +240,7 @@ class Form(object):
             if process:
                 if not post_vars.get("_delete"):
                     for field in self.table:
-                        if field.writable:
+                        if field.writable and field.readable:
                             value = post_vars.get(field.name)
                             record_id = self.record and self.record.get("id")
                             (value, error) = field.validate(value, record_id)
