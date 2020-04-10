@@ -78,6 +78,8 @@ DEFAULTS = dict(
     PY4WEB_SERVICE_DB_URI="sqlite://service.storage",
 )
 
+HELPERS = {name: getattr(yatl.helpers, name) for name in yatl.helpers.__all__}
+
 ART = r"""
 ██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗
 ██╔══██╗╚██╗ ██╔╝██║  ██║██║    ██║██╔════╝██╔══██╗
@@ -284,7 +286,7 @@ class Template(Fixture):
         if not isinstance(output, dict):
             return output
         context = dict(request=request)
-        context.update(yatl.helpers.__dict__)
+        context.update(HELPERS)
         context.update(URL=URL)
         context.update(output)
         context["__vars__"] = output
