@@ -16,6 +16,7 @@ import logging
 import numbers
 import os
 import getpass
+import pathlib
 import platform
 import sys
 import threading
@@ -943,10 +944,14 @@ def wsgi(**args):
 
 def get_args():
     """Handle command line arguments"""
+    
+    #get the real running path, needed from MacOs GUI
+    running_path = pathlib.Path(__file__).resolve().parent.parent
+    
     parser = argparse.ArgumentParser()
     parser.add_argument("apps_folder",
         nargs = '?',
-        default = (os.path.join(os.getcwd(), 'apps')),
+        default = (os.path.join(running_path, 'apps')),
         help="Path to the applications folder (default=apps)",
     )
     parser.add_argument(
@@ -996,7 +1001,7 @@ def get_args():
     parser.add_argument(
         "-p",
         "--password_file",
-        default="password.txt",
+        default= (os.path.join(running_path, "password.txt")),
         help="File containing the encrypted (CRYPT) password",
     )
     parser.add_argument(
