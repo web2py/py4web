@@ -100,6 +100,14 @@ os.environ.update(
     {key: value for key, value in DEFAULTS.items() if not key in os.environ}
 )
 
+
+def module2filename(module):
+    filename = os.path.join(*module.split(".")[1:])
+    filename = (os.path.join(filename, "__init__.py")
+                if not filename.count(os.sep)
+                else filename + ".py")
+    return filename
+
 ########################################################################################
 # Implement a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
 #########################################################################################
@@ -780,66 +788,43 @@ class Reloader:
     ERRORS = {}
 
     @staticmethod
+    def clear_routes(app_name=None):
+        app = bottle.default_app()
+        routes = app.routes[:]
+        app.routes.clear()
+        app.router = bottle.Router()
+        if app_name:
+            for route in routes:
+                if route.rule[1:].split('/')[0] != app_name:
+                    app.add_route(route)
+
+    @staticmethod
     def import_apps():
         """Import or reimport modules and exposed static files"""
+        Reloader.clear_routes()
         folder = os.environ["PY4WEB_APPS_FOLDER"]
-        app = bottle.default_app()
-        app.routes.clear()
-        new_apps = []
         # if first time reload dummy top module
         if not Reloader.MODULES:
             path = os.path.join(folder, "__init__.py")
-            module = importlib.machinery.SourceFileLoader("apps", path).load_module()
+            loader = importlib.machinery.SourceFileLoader("apps", path)
+            loader.load_module()
         # Then load all the apps as submodules
         for app_name in os.listdir(folder):
-            action.app_name = app_name
-            new_apps += Reloader.import_app(app_name)
-        # Expose static files with support for static asset management
-        for path in new_apps:
-            static_folder = os.path.join(path, "static")
-            if os.path.exists(static_folder):
-                app_name = path.split(os.path.sep)[-1]
-                prefix = "" if app_name == "_default" else ("/%s" % app_name)
-
-                @bottle.route(prefix + "/static/<filename:path>")
-                @bottle.route(
-                    prefix + "/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>"
-                )
-                def server_static(filename, static_folder=static_folder, version=None):
-                    return bottle.static_file(filename, root=static_folder)
-
-        # Register routes list
-        routes = []
-
-        def to_filename(module):
-            filename = os.path.join(*module.split(".")[1:])
-            filename = (
-                os.path.join(filename, "__init__.py")
-                if not filename.count(os.sep)
-                else filename + ".py"
-            )
-            return filename
-
-        for route in app.routes:
-            func = route.callback
-            routes.append(
-                {
-                    "rule": route.rule,
-                    "method": route.method,
-                    "filename": to_filename(func.__module__),
-                    "action": func.__name__,
-                }
-            )
-        Reloader.ROUTES = sorted(routes, key=lambda item: item["rule"])
-        ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
+            Reloader.import_app(app_name, clear_before_import=False)
 
     @staticmethod
-    def import_app(app_name):
+    def import_app(app_name, clear_before_import=True):        
+        if clear_before_import:
+            Reloader.clear_routes(app_name)
         folder = os.environ["PY4WEB_APPS_FOLDER"]
         path = os.path.join(folder, app_name)
         init = os.path.join(path, "__init__.py")
-        new_apps = []
-        if os.path.isdir(path) and not path.endswith("__") and os.path.exists(init):
+
+        if (os.path.isdir(path) and 
+            not path.endswith("__") and 
+            os.path.exists(init)):
+
+            action.app_name = app_name
             module_name = "apps.%s" % app_name
             try:
                 module = Reloader.MODULES.get(app_name)
@@ -863,19 +848,46 @@ class Reloader:
                 print("\x1b[A[X] loaded %s       " % app_name)
                 Reloader.MODULES[app_name] = module
                 Reloader.ERRORS[app_name] = None
-                if not app_name in new_apps:
-                    new_apps.append(path)
             except:
                 tb = traceback.format_exc()
                 print("\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb))
                 Reloader.ERRORS[app_name] = tb
-        return new_apps
+                return None
+
+        # Expose static files with support for static asset management
+        static_folder = os.path.join(path, "static")
+
+        if os.path.exists(static_folder):
+            app_name = path.split(os.path.sep)[-1]
+            prefix = "" if app_name == "_default" else ("/%s" % app_name)
+            
+            @bottle.route(prefix + "/static/<filename:path>")
+            @bottle.route(
+                prefix + "/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>"
+                )
+            def server_static(filename, static_folder=static_folder, version=None):
+                return bottle.static_file(filename, root=static_folder)
+
+        # Register routes list
+        app = bottle.default_app()
+        routes = []        
+        for route in app.routes:
+            func = route.callback
+            routes.append(
+                {
+                    "rule": route.rule,
+                    "method": route.method,
+                    "filename": module2filename(func.__module__),
+                    "action": func.__name__
+                }
+            )
+        Reloader.ROUTES = sorted(routes, key=lambda item: item["rule"])
+        ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
 
 
 #########################################################################################
 # Web Server and Reload Logic: Error Handling
 #########################################################################################
-
 
 def error_page(code, button_text=None, href="#", color=None, message=None):
     message = http.client.responses[code].upper() if message is None else message

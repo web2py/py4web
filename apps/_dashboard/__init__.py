@@ -304,11 +304,14 @@ if MODE == "full":
 
     @action("save/<path:path>", method="POST")
     @session_secured
-    def save(path):
+    def save(path, reload_app=True):
         """Saves a file"""
+        app_name = path.split('/')[0]
         path = safe_join(FOLDER, path) or abort()
         with open(path, "wb") as myfile:
             myfile.write(request.body.read())
+        if reload_app:
+            Reloader.import_app(app_name)
         return {"status": "success"}
 
     @action("delete/<path:path>", method="POST")

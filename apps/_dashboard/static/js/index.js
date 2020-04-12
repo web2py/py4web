@@ -97,7 +97,6 @@ let init = (app) => {
         app.vue.files[path] = app.editor.getValue();
         axios.post('../save/'+path, app.vue.files[path]).then(()=>{
                 app.file_saved(); 
-                if(path.endsWith('.py')) app.reload();
             }); 
     };
     app.download_selected_app = () => {
@@ -132,7 +131,9 @@ let init = (app) => {
             message:'',
             form_name: 'create-app',
             form: {type: 'scaffold', name: '', source: '', mode: 'new', file: ''},
-            buttons: [{text: 'Create', onclick: function() {app.process_new_app();}}, {text:'Close', onclick: app.modal_dismiss}]}; 
+            buttons: [{text: 'Create', onclick: function() {app.process_new_app();}}, 
+                      {text:'Close', onclick: app.modal_dismiss}]
+        }; 
     };
     app.create_new_file = ()=> {
         app.vue.modal = {title:'Create New File', color:'blue', message:'[WORK IN PROGRESS]'};
@@ -218,7 +219,9 @@ let init = (app) => {
                        filters:app.filters});    
     app.update_selected = () => {
         if(app.vue.selected_app) 
-            app.vue.selected_app = app.vue.apps.filter((a)=>{return a.name==app.vue.selected_app.name;})[0];
+            app.vue.selected_app = app.vue.apps.filter((a) => {
+                    return a.name==app.vue.selected_app.name;
+                })[0];
     };
     app.init = () => {        
         app.reload_info();
