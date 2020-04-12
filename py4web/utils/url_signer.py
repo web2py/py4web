@@ -1,4 +1,4 @@
-import hashlib
+import hmac
 import uuid
 from py4web import request, abort
 from py4web.core import Fixture, Session
@@ -50,13 +50,13 @@ class URLSigner(object):
         else:
             key = self.session.get("_signature_key")
             if key is None:
-                key = str(uuid.uuid4())
+                key = str(uuid.uuid1())
                 self.session["_signature_key"] = key
         return key
 
     def _sign(self, url, vars):
         """Signs the URL"""
-        h = hashlib.sha256(self.salt)
+        h = hmac.new(self.salt)
         h.update(url.encode('utf8'))  # Is utf8 the right encoding?
         # Adds the variables that need to be signed.
         for key in self.variables_to_sign:

@@ -175,20 +175,22 @@ class Form(object):
     - dbio: set to False to prevent any DB writes
     - keep_values: if set to true, it remembers the values of the previously submitted form
     - form_name: the optional name of this form
+    - csrf_session: if None, no csrf token is added.  If a session, then a CSRF token is added and verified.
     """
 
     def __init__(
-        self,
-        table,
-        record=None,
-        readonly=False,
-        deletable=True,
-        formstyle=FormStyleDefault,
-        dbio=True,
-        keep_values=False,
-        form_name=False,
-        hidden=None,
-        validation=None,
+            self,
+            table,
+            record=None,
+            readonly=False,
+            deletable=True,
+            formstyle=FormStyleDefault,
+            dbio=True,
+            keep_values=False,
+            form_name=False,
+            hidden=None,
+            validation=None,
+            csrf_session=None,
     ):
 
         if isinstance(table, list):
@@ -219,14 +221,10 @@ class Form(object):
         self.hidden = hidden
         self.formkey = None
         self.cached_helper = None
+        self.csrf_session = csrf_session
 
         if readonly or request.method == "GET":
-            if self.record:
-                self.vars = {
-                    name: table[name].formatter(self.record[name])
-                    for name in table.fields
-                    if name in self.record
-                    }
+            self._read_vars_from_record(table)
         else:
             post_vars = request.forms
             self.submitted = True
@@ -235,7 +233,7 @@ class Form(object):
             # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
             # Notice: we never expose the crsf uuid, we only use to sign the form uuid
             if request.method == "POST":
-                if post_vars.get("_formkey") == self.form_name:
+                if self._verify_form(post_vars):
                     process = True
             if process:
                 if not post_vars.get("_delete"):
@@ -268,8 +266,54 @@ class Form(object):
                 elif dbio:
                     self.deleted = True
                     self.record.delete_record()
-        # Store key for future CSRF
-        self.formkey = self.form_name
+            else:
+                # This form should not be processed.  We return the same as for GET.
+                self._read_vars_from_record(table)
+        self._sign_form()
+
+
+    def _read_vars_from_record(self, table):
+        if self.record:
+            self.vars = {
+                name: table[name].formatter(self.record[name])
+                for name in table.fields
+                if name in self.record
+                }
+
+
+    def _get_key(self):
+        key = self.csrf_session.get("_form_key")
+        if key is None:
+            key = str(uuid.uuid1())
+            self.csrf_session["_form_key"] = key
+        return key.encode('utf8')
+
+
+    def _sign_form(self):
+        """Signs the form, for csrf"""
+        # Adds a form key.  First get the signing key from the session.
+        if self.csrf_session is not None:
+            salt = str(uuid.uuid4())
+            h = hmac.new(self._get_key())
+            h.update(salt.encode('utf8'))
+            self.formkey = salt + ";" + h.hexdigest()
+
+
+    def _verify_form(self, post_vars):
+        """Verifies the csrf signature and form name."""
+        if post_vars.get("_formname") != self.form_name:
+            return False
+        if not self.csrf_session:
+            return True
+        formkey = post_vars.get("_formkey")
+        try:
+            salt, u = formkey.split(";")
+            h = hmac.new(self._get_key())
+            h.update(salt.encode('utf8'))
+            return h.hexdigest() == u
+        except:
+            return False
+
 
     def update_or_insert(self):
         if self.record:
@@ -291,6 +335,10 @@ class Form(object):
             helper = self.formstyle(
                 self.table, self.vars, self.errors, self.readonly, self.deletable
             )
+            if self.form_name:
+                helper.append(
+                    INPUT(_type="hidden", _name="_formname", _value=self.form_name)
+                )
             if self.formkey:
                 helper.append(
                     INPUT(_type="hidden", _name="_formkey", _value=self.formkey)
