@@ -43,7 +43,7 @@ e<div>
          v-bind:href="'../auth/plugin/oauth2google/login?next='+next">Login with Google</a>
       <a v-if="plugins.indexOf('oauth2facebook')>=0"
          class="button is-link" 
-         v-bin:href="'../auth/plugin/oauth2facbook/login?next='+next">Login with Facebook</a>
+         v-bind:href="'../auth/plugin/oauth2facebook/login?next='+next">Login with Facebook</a>
     </div>
     <div v-if="!plugins||plugins.indexOf('local')>=0">
       <div class="field">
