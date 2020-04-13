@@ -57,7 +57,7 @@ class URLSigner(object):
     def _sign(self, url, vars):
         """Signs the URL"""
         h = hmac.new(self.salt)
-        h.update(url.encode('utf8'))  # Is utf8 the right encoding?
+        h.update(url.encode("utf8"))  # Is utf8 the right encoding?
         # Adds the variables that need to be signed.
         for key in self.variables_to_sign:
             h.update(("%s=%r" % (key, vars[key])).encode("utf8"))

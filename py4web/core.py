@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""PY4WEB - a web framework for rapid development of efficient database driven web applications"""
 
 # Standard modules
 import argparse
@@ -15,6 +16,7 @@ import logging
 import numbers
 import os
 import getpass
+import pathlib
 import platform
 import signal
 import sys
@@ -975,8 +977,12 @@ def wsgi(**args):
 
 def get_args():
     """Handle command line arguments"""
-    parser = argparse.ArgumentParser()
-    parser.add_argument("apps_folder", help="Path to the applications folder")
+    # get the real running path
+    os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parent.parent)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "apps_folder", nargs="?", default=None, help="Path to the applications folder"
+    )
     parser.add_argument(
         "--host", default="127.0.0.1", help="Server address (IP or hostname)"
     )
@@ -1024,7 +1030,7 @@ def get_args():
     parser.add_argument(
         "-p",
         "--password_file",
-        default="password.txt",
+        default=(os.path.join(os.environ["PY4WEB_PATH"], "password.txt")),
         help="File containing the encrypted (CRYPT) password",
     )
     parser.add_argument(
@@ -1050,7 +1056,11 @@ def initialize(**args):
     """Initialize from args"""
     for key in args:
         os.environ["PY4WEB_" + key.upper()] = str(args[key])
+    os.environ["PY4WEB_APPS_FOLDER"] = os.path.join(
+        os.environ["PY4WEB_PATH"], os.environ["PY4WEB_APPS_FOLDER"]
+    )
     apps_folder = os.environ["PY4WEB_APPS_FOLDER"]
+    print("apps_folder = " + apps_folder + "\n")
     service_folder = os.path.join(apps_folder, os.environ["PY4WEB_SERVICE_FOLDER"])
     # If the apps folder does not exist create it and populate it
     if not os.path.exists(apps_folder):
@@ -1098,41 +1108,61 @@ def main(args=None):
     """The main entry point: Start the server and create folders"""
     # Store args in the action to make them visible
     action.args = args = args or get_args()
-    if args.headless:
-        headless = True
-    else:
-        headless = False
+
+    # Fix for ANSI on Win7, 8, 10 ...
     if platform.system().lower() == "windows":  # fix for ANSI on Win7, 8, 10 ...
         from ctypes import windll
 
         k = windll.kernel32
         k.SetConsoleMode(k.GetStdHandle(-11), 7)
-    if not headless:
+
+    # Print a head if not headless
+    if not args.headless:
         from py4web import __version__
 
         print(ART)
         print("Py4web: %s on Python %s\n" % (__version__, sys.version))
-    else:
-        print("")  # Insert a blank line to improve readability
-    if args.shell:  # start interactive shell if requested
+
+    # Insert a blank line to improve readability
+    print("")
+
+    # Ask for apps_folder if needed
+    if not args.apps_folder:
+        print("Applications folder was not specified.")
+        while True:
+            folder = input(
+                "Please specify the relative path to the folder or press ENTER for default (apps)\napps_folder: "
+            )
+            path = os.path.join(os.environ["PY4WEB_PATH"], folder or "apps")
+            if os.path.exists(path):
+                break
+            else:
+                print("Path folder not found")
+        args.apps_folder = path
+
+    # Start interactive shell if requested
+    if args.shell:
         import code, site
 
         code.interact(local=dict(globals(), **locals()))
         return
+
     # If we know where the password is stored, read it, otherwise ask for one
     if args.dashboard_mode not in ("demo", "none") and not os.path.exists(
         args.password_file
     ):
-        password = getpass.getpass("Choose a one-time dashboard password: ")
-        print('Storing the hashed password in file "%s"' % args.password_file)
+        password = getpass.getpass("Choose a dashboard password: ")
+        print('Storing the hashed password in file "%s"\n' % args.password_file)
         with open(args.password_file, "w") as fp:
             fp.write(str(pydal.validators.CRYPT()(password)[0]))
+
     # Store all args in environment variables to make them available to the following processes
     # and create any missing folders
     initialize(**args.__dict__)
     if os.path.exists(os.path.join(args.apps_folder, "_dashboard")):
         print("Dashboard is at: http://%s:%s/_dashboard" % (args.host, args.port))
-    # start
+
+    # Start
     signal.signal(
         signal.SIGINT, keyboardInterruptHandler
     )  # Catch interrupts like Ctrl-C
