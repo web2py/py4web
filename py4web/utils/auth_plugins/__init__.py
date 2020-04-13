@@ -34,10 +34,10 @@ class SSO(object):
         data = self.callback(get_vars)
         if not data:
             abort(401)
-        error = data.get('error')
+        error = data.get("error")
         if error:
-            code = error.get('code', 401)
-            msg = error.get('message', 'Unknown error')
+            code = error.get("code", 401)
+            msg = error.get("message", "Unknown error")
             abort(code, msg)
         if auth.db:
             # map returned fields into auth_user fields
@@ -92,7 +92,9 @@ class OAuth2(SSO):
             vars["next"] = next
         data = dict(
             access_type="offline",
-            redirect_uri=URL(callback_url, vars=vars, scheme=self.parameters.get("scheme")),
+            redirect_uri=URL(
+                callback_url, vars=vars, scheme=self.parameters.get("scheme")
+            ),
             response_type="code",
             client_id=self.parameters.get("client_id"),
         )
@@ -112,7 +114,10 @@ class OAuth2(SSO):
             code=code,
             client_id=self.parameters.get("client_id"),
             client_secret=self.parameters.get("client_secret"),
-            redirect_uri=URL(self.parameters.get("callback_url"), scheme=self.parameters.get("scheme")),
+            redirect_uri=URL(
+                self.parameters.get("callback_url"),
+                scheme=self.parameters.get("scheme"),
+            ),
             grant_type="authorization_code",
         )
         res = requests.post(self.token_url, data=data)

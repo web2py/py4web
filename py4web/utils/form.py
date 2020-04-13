@@ -226,7 +226,7 @@ class Form(object):
                     name: table[name].formatter(self.record[name])
                     for name in table.fields
                     if name in self.record
-                    }
+                }
         else:
             post_vars = request.forms
             self.submitted = True

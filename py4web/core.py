@@ -29,7 +29,7 @@ import http.cookies
 import zipfile
 import re
 
-REX_APPJSON = re.compile('(^|\s|,)application/json(,|\s|$)')
+REX_APPJSON = re.compile("(^|\s|,)application/json(,|\s|$)")
 
 # Optional web servers for speed
 try:
@@ -103,10 +103,13 @@ os.environ.update(
 
 def module2filename(module):
     filename = os.path.join(*module.split(".")[1:])
-    filename = (os.path.join(filename, "__init__.py")
-                if not filename.count(os.sep)
-                else filename + ".py")
+    filename = (
+        os.path.join(filename, "__init__.py")
+        if not filename.count(os.sep)
+        else filename + ".py"
+    )
     return filename
+
 
 ########################################################################################
 # Implement a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
@@ -206,7 +209,7 @@ def objectify(obj):
         return obj
     elif hasattr(obj, "__iter__") or isinstance(obj, types.GeneratorType):
         return list(obj)
-    elif hasattr(obj, 'xml'):
+    elif hasattr(obj, "xml"):
         return obj.xml()
     elif hasattr(obj, "__dict__") and hasattr(obj, "__class__"):
         d = dict(obj.__dict__)
@@ -302,7 +305,7 @@ class Template(Fixture):
         path = self.path or os.path.join(app_folder, "templates")
         filename = os.path.join(path, self.filename)
         if not os.path.exists(filename):
-            generic_filename = os.path.join(path, 'generic.html')
+            generic_filename = os.path.join(path, "generic.html")
             if os.path.exists(generic_filename):
                 filename = generic_filename
         output = yatl.render(
@@ -450,11 +453,15 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None):
     URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name}/a/b?x=1
     URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name}/a/b?x=1
     """
-    script_name = (request.get('HTTP_X_SCRIPT_NAME', '') or request.get('SCRIPT_NAME', '')).rstrip('/')
-    prefix = script_name + ("/%s/" % request.app_name if request.app_name != "_default" else "/")
+    script_name = (
+        request.get("HTTP_X_SCRIPT_NAME", "") or request.get("SCRIPT_NAME", "")
+    ).rstrip("/")
+    prefix = script_name + (
+        "/%s/" % request.app_name if request.app_name != "_default" else "/"
+    )
     broken_parts = []
     for part in parts:
-        broken_parts += str(part).rstrip('/').split("/")
+        broken_parts += str(part).rstrip("/").split("/")
     url = prefix + "/".join(map(lambda x: urllib.parse.quote(x), broken_parts))
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
     urlvars = {k: v for k, v in vars.items()} if vars else {}
@@ -539,6 +546,7 @@ class action:
                 except Exception:
                     [obj.on_error() for obj in fixtures]
                     raise
+
             return wrapper
 
         return decorator
@@ -587,6 +595,7 @@ class action:
                 return error_page(
                     500, button_text=ticket, href="/_dashboard/ticket/" + ticket
                 )
+
         return wrapper
 
     def __call__(self, func):
@@ -702,13 +711,15 @@ def get_error_snapshot(depth=5):
         f["code"] = lines
         # FIXME: disable this for now until we understand why this goes into infinite loop
         if False:
-            line_vars = cgitb.scanvars(lambda: linecache.getline(file, lnum), frame, locals)
+            line_vars = cgitb.scanvars(
+                lambda: linecache.getline(file, lnum), frame, locals
+            )
             # Dump local variables (referenced in current line only)
             f["vars"] = {
                 key: repr(value)
                 for key, value in locals.items()
                 if not key.startswith("__")
-                }
+            }
         stackframes.append(f)
 
     return data
@@ -795,7 +806,7 @@ class Reloader:
         app.router = bottle.Router()
         if app_name:
             for route in routes:
-                if route.rule[1:].split('/')[0] != app_name:
+                if route.rule[1:].split("/")[0] != app_name:
                     app.add_route(route)
 
     @staticmethod
@@ -813,16 +824,14 @@ class Reloader:
             Reloader.import_app(app_name, clear_before_import=False)
 
     @staticmethod
-    def import_app(app_name, clear_before_import=True):        
+    def import_app(app_name, clear_before_import=True):
         if clear_before_import:
             Reloader.clear_routes(app_name)
         folder = os.environ["PY4WEB_APPS_FOLDER"]
         path = os.path.join(folder, app_name)
         init = os.path.join(path, "__init__.py")
 
-        if (os.path.isdir(path) and 
-            not path.endswith("__") and 
-            os.path.exists(init)):
+        if os.path.isdir(path) and not path.endswith("__") and os.path.exists(init):
 
             action.app_name = app_name
             module_name = "apps.%s" % app_name
@@ -844,7 +853,7 @@ class Reloader:
                         del sys.modules[name]
                 module = importlib.machinery.SourceFileLoader(
                     module_name, init
-                    ).load_module()
+                ).load_module()
                 print("\x1b[A[X] loaded %s       " % app_name)
                 Reloader.MODULES[app_name] = module
                 Reloader.ERRORS[app_name] = None
@@ -860,17 +869,17 @@ class Reloader:
         if os.path.exists(static_folder):
             app_name = path.split(os.path.sep)[-1]
             prefix = "" if app_name == "_default" else ("/%s" % app_name)
-            
+
             @bottle.route(prefix + "/static/<filename:path>")
             @bottle.route(
                 prefix + "/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>"
-                )
+            )
             def server_static(filename, static_folder=static_folder, version=None):
                 return bottle.static_file(filename, root=static_folder)
 
         # Register routes list
         app = bottle.default_app()
-        routes = []        
+        routes = []
         for route in app.routes:
             func = route.callback
             routes.append(
@@ -878,7 +887,7 @@ class Reloader:
                     "rule": route.rule,
                     "method": route.method,
                     "filename": module2filename(func.__module__),
-                    "action": func.__name__
+                    "action": func.__name__,
                 }
             )
         Reloader.ROUTES = sorted(routes, key=lambda item: item["rule"])
@@ -889,6 +898,7 @@ class Reloader:
 # Web Server and Reload Logic: Error Handling
 #########################################################################################
 
+
 def error_page(code, button_text=None, href="#", color=None, message=None):
     message = http.client.responses[code].upper() if message is None else message
     color = (
@@ -896,17 +906,19 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
         if not color
         else color
     )
-    context=dict(
+    context = dict(
         code=code, message=message, button_text=button_text, href=href, color=color
     )
     # if client accepts 'application/json' - return json
-    if REX_APPJSON.search(request.headers.get('accept', '')):
+    if REX_APPJSON.search(request.headers.get("accept", "")):
         response.status = code
         return json.dumps(context)
     # else - return html error-page
     return yatl.render(
-            '<html><head><style>body{color:white;text-align: center;background-color:{{=color}};font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>{{=code}}</h1><h2>{{=message}}</h2>{{if button_text:}}<a href="{{=href}}">{{=button_text}}</a>{{pass}}</body></html>',
-            context=context)
+        '<html><head><style>body{color:white;text-align: center;background-color:{{=color}};font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>{{=code}}</h1><h2>{{=message}}</h2>{{if button_text:}}<a href="{{=href}}">{{=button_text}}</a>{{pass}}</body></html>',
+        context=context,
+    )
+
 
 @bottle.error(404)
 def error404(error):
@@ -1050,9 +1062,9 @@ def initialize(**args):
         args["create"] = True
     if not os.path.exists(service_folder):
         os.mkdir(service_folder)
-    session_secret_filename = os.path.join(service_folder, 'session.secret')
+    session_secret_filename = os.path.join(service_folder, "session.secret")
     if not os.path.exists(session_secret_filename):
-        with open(session_secret_filename, 'w') as fp:
+        with open(session_secret_filename, "w") as fp:
             fp.write(str(uuid.uuid4()))
     with open(session_secret_filename) as fp:
         Session.SECRET = fp.read()
@@ -1075,10 +1087,12 @@ def initialize(**args):
                     zip_file.close()
                     print("\x1b[A[X]")
 
+
 def keyboardInterruptHandler(signal, frame):
     """Catch interrupts like Ctrl-C"""
     print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
     sys.exit(0)
+
 
 def main(args=None):
     """The main entry point: Start the server and create folders"""
@@ -1088,18 +1102,21 @@ def main(args=None):
         headless = True
     else:
         headless = False
-    if platform.system().lower() == "windows": # fix for ANSI on Win7, 8, 10 ...
+    if platform.system().lower() == "windows":  # fix for ANSI on Win7, 8, 10 ...
         from ctypes import windll
-        k=windll.kernel32
-        k.SetConsoleMode(k.GetStdHandle(-11),7)
+
+        k = windll.kernel32
+        k.SetConsoleMode(k.GetStdHandle(-11), 7)
     if not headless:
         from py4web import __version__
+
         print(ART)
-        print('Py4web: %s on Python %s\n' %  (__version__, sys.version))
+        print("Py4web: %s on Python %s\n" % (__version__, sys.version))
     else:
         print("")  # Insert a blank line to improve readability
-    if args.shell:  #start interactive shell if requested
+    if args.shell:  # start interactive shell if requested
         import code, site
+
         code.interact(local=dict(globals(), **locals()))
         return
     # If we know where the password is stored, read it, otherwise ask for one
@@ -1116,6 +1133,8 @@ def main(args=None):
     if os.path.exists(os.path.join(args.apps_folder, "_dashboard")):
         print("Dashboard is at: http://%s:%s/_dashboard" % (args.host, args.port))
     # start
-    signal.signal(signal.SIGINT, keyboardInterruptHandler) # Catch interrupts like Ctrl-C
+    signal.signal(
+        signal.SIGINT, keyboardInterruptHandler
+    )  # Catch interrupts like Ctrl-C
     Reloader.import_apps()
     start_server(args)

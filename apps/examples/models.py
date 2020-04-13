@@ -8,24 +8,20 @@ from pydal.validators import *
 # simple table example
 db.define_table(
     "person",
-    Field("name", requires=IS_NOT_IN_DB(db, "person.name"), label=T('name')),
-    Field("job", requires=IS_NOT_EMPTY(), label=T('job')),
-    format="%(name)s"
-    )
+    Field("name", requires=IS_NOT_IN_DB(db, "person.name"), label=T("name")),
+    Field("job", requires=IS_NOT_EMPTY(), label=T("job")),
+    format="%(name)s",
+)
 
 # simple reference example
 db.define_table(
     "superhero",
     Field("name"),
     Field("real_identity", "reference person"),
-    format="%(name)s"
-    )
+    format="%(name)s",
+)
 
-db.define_table(
-    "superpower", 
-    Field("description"),
-    format='%(description)s'
-    )
+db.define_table("superpower", Field("description"), format="%(description)s")
 
 # many to many example
 db.define_table(
@@ -33,7 +29,7 @@ db.define_table(
     Field("superhero", "reference superhero"),
     Field("superpower", "reference superpower"),
     Field("strength", "integer"),
-    )
+)
 
 if not db(db.person).count():
     db.person.insert(name="Clark Kent", job="Journalist")
@@ -56,5 +52,5 @@ if not db(db.person).count():
     db.tag.insert(superhero=3, superpower=2, strength=80)
     db.tag.insert(superhero=3, superpower=3, strength=20)
     db.tag.insert(superhero=3, superpower=4, strength=70)
-    
+
 db.commit()

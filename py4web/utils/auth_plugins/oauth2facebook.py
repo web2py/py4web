@@ -13,7 +13,7 @@ class OAuth2Facebook(OAuth2):
         "sso_id": "id",
         "first_name": "first_name",
         "last_name": "last_name",
-    } 
+    }
 
     def revoke(self, token):
         requests.delete(self.revoke_url, headers={"Authorization": token})

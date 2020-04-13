@@ -5,7 +5,18 @@ These are fixtures that every app needs so probably you will not be editing this
 import os
 import sys
 import logging
-from py4web import action, redirect, abort, request, URL, Session, Cache, Translator, DAL, Field
+from py4web import (
+    action,
+    redirect,
+    abort,
+    request,
+    URL,
+    Session,
+    Cache,
+    Translator,
+    DAL,
+    Field,
+)
 from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
 from py4web.utils.tags import Tags
@@ -29,8 +40,12 @@ for item in settings.LOGGERS:
     logger.addHandler(handler)
 
 # connect to db
-db = DAL(settings.DB_URI, folder=settings.DB_FOLDER, pool_size=settings.DB_POOL_SIZE,
-         migrate_enabled=True)
+db = DAL(
+    settings.DB_URI,
+    folder=settings.DB_FOLDER,
+    pool_size=settings.DB_POOL_SIZE,
+    migrate_enabled=True,
+)
 
 # define global objects that may or may not be used by th actions
 cache = Cache(size=1000)
