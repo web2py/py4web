@@ -1,5 +1,6 @@
 from py4web import action, redirect, URL
 
-@action('index')
+
+@action("index")
 def index():
-    redirect(URL('static/index.html'))
+    redirect(URL("static/index.html"))

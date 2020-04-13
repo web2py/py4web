@@ -11,6 +11,7 @@ from py4web.utils.tags import Tags
 
 ldap.set_option(ldap.OPT_REFERRALS, 0)
 
+
 class LDAPPlugin(object):
 
     name = "ldap"
@@ -214,7 +215,6 @@ class LDAPPlugin(object):
         self.filterstr = self.filterstr.lstrip("(").rstrip(")")
         self.groups = groups
 
-
     def check_credentials(self, username, password):
 
         server = self.server
@@ -278,7 +278,7 @@ class LDAPPlugin(object):
             user_lastname_attrib = ldap.filter.escape_filter_chars(user_lastname_attrib)
             user_mail_attrib = ldap.filter.escape_filter_chars(user_mail_attrib)
         try:
-            #if allowed_groups:
+            # if allowed_groups:
             #    if not self.is_user_in_allowed_groups(
             #        username, password, allowed_groups
             #    ):
@@ -607,13 +607,13 @@ class LDAPPlugin(object):
         return False
 
     def do_manage_groups(self, con, username, group_mapping={}):
-        '''
+        """
         Manage user groups
 
         Get all user's groups from ldap and refresh the already stored
         ones in py4web's application database or create new groups
         according to ldap.
-        '''
+        """
         server = self.server
         port = self.port
         base_dn = self.base_dn
@@ -647,7 +647,7 @@ class LDAPPlugin(object):
         logger = self.logger
         groups = self.groups
 
-        logger.info('[%s] Manage user groups' % str(username))
+        logger.info("[%s] Manage user groups" % str(username))
         try:
             #
             # Get all group name where the user is in actually in ldap
@@ -666,22 +666,35 @@ class LDAPPlugin(object):
             # Get all group name where the user is in actually in local db
             # #############################################################
             try:
-                db_user_id = db(db.auth_user.username == username).select(db.auth_user.id).first().id
+                db_user_id = (
+                    db(db.auth_user.username == username)
+                    .select(db.auth_user.id)
+                    .first()
+                    .id
+                )
             except:
                 try:
-                    db_user_id = db(db.auth_user.email == username).select(db.auth_user.id).first().id
+                    db_user_id = (
+                        db(db.auth_user.email == username)
+                        .select(db.auth_user.id)
+                        .first()
+                        .id
+                    )
                 except AttributeError as e:
                     #
                     # There is no user in local db
                     # We create one
                     # ##############################
                     try:
-                        db_user_id = db.auth_user.insert(username=username, first_name=username)
+                        db_user_id = db.auth_user.insert(
+                            username=username, first_name=username
+                        )
                     except AttributeError as e:
-                        db_user_id = db.auth_user.insert(email=username, first_name=username)
+                        db_user_id = db.auth_user.insert(
+                            email=username, first_name=username
+                        )
             if not db_user_id:
-                logger.error(
-                    'There is no username or email for %s!' % username)
+                logger.error("There is no username or email for %s!" % username)
                 raise
             db_groups_of_the_user = groups.get(db_user_id)
 
@@ -708,6 +721,7 @@ class LDAPPlugin(object):
         except:
             logger.warning("[%s] Groups are not managed successfully!" % str(username))
             import traceback
+
             logger.debug(traceback.format_exc())
             return False
         return True
@@ -864,7 +878,9 @@ class LDAPPlugin(object):
         for group_row in group_search_result:
             group = group_row[1]
             if isinstance(group, dict) and group_name_attrib in group:
-                ldap_groups_of_the_user.append(str(group[group_name_attrib][0], encoding = 'utf-8'))
+                ldap_groups_of_the_user.append(
+                    str(group[group_name_attrib][0], encoding="utf-8")
+                )
                 print(ldap_groups_of_the_user)
 
         logger.debug("User groups: %s" % ldap_groups_of_the_user)
