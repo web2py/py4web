@@ -179,18 +179,18 @@ class Form(object):
     """
 
     def __init__(
-            self,
-            table,
-            record=None,
-            readonly=False,
-            deletable=True,
-            formstyle=FormStyleDefault,
-            dbio=True,
-            keep_values=False,
-            form_name=False,
-            hidden=None,
-            validation=None,
-            csrf_session=None,
+        self,
+        table,
+        record=None,
+        readonly=False,
+        deletable=True,
+        formstyle=FormStyleDefault,
+        dbio=True,
+        keep_values=False,
+        form_name=False,
+        hidden=None,
+        validation=None,
+        csrf_session=None,
     ):
 
         if isinstance(table, list):
@@ -271,23 +271,20 @@ class Form(object):
                 self._read_vars_from_record(table)
         self._sign_form()
 
-
     def _read_vars_from_record(self, table):
         if self.record:
             self.vars = {
                 name: table[name].formatter(self.record[name])
                 for name in table.fields
                 if name in self.record
-                }
-
+            }
 
     def _get_key(self):
         key = self.csrf_session.get("_form_key")
         if key is None:
             key = str(uuid.uuid1())
             self.csrf_session["_form_key"] = key
-        return key.encode('utf8')
-
+        return key.encode("utf8")
 
     def _sign_form(self):
         """Signs the form, for csrf"""
@@ -295,9 +292,8 @@ class Form(object):
         if self.csrf_session is not None:
             salt = str(uuid.uuid4())
             h = hmac.new(self._get_key())
-            h.update(salt.encode('utf8'))
+            h.update(salt.encode("utf8"))
             self.formkey = salt + ";" + h.hexdigest()
-
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""
@@ -309,11 +305,10 @@ class Form(object):
         try:
             salt, u = formkey.split(";")
             h = hmac.new(self._get_key())
-            h.update(salt.encode('utf8'))
+            h.update(salt.encode("utf8"))
             return h.hexdigest() == u
         except:
             return False
-
 
     def update_or_insert(self):
         if self.record:
