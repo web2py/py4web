@@ -46,7 +46,7 @@
               {{ option.text }}
             </option>
           </select>
-          <textarea class="textarea" v-else-if="field.type=='json'" @input="function(event){item[field.name] = event.target.value}" v-bind:readonly="!editable">{{item[field.name]}}</textarea>
+          <textarea class="textarea" v-else-if="field.type=='json'" @input="function(event){item[field.name] = parse_and_validate_json(event)}" v-bind:readonly="!editable">{{item[field.name]}}</textarea>
           <div class="error" v-if="editable && field.name in errors">{{errors[field.name]}}</div>
         </td>
       </tr>
