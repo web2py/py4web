@@ -1,7 +1,7 @@
 import os
 import unittest
 import bottle
-from py4web.core import Session, DAL, request, HTTP
+from py4web.core import Session, DAL, request, HTTP, Field
 from py4web.utils.auth import Auth
 
 
@@ -14,6 +14,13 @@ class TestAuth(unittest.TestCase):
         self.auth = Auth(self.session, self.db, define_tables=True)
         self.auth.enable()
         request.app_name = "_scaffold"
+
+    def test_extra_fields(self):
+        self.db = DAL("sqlite:memory")
+        self.session = Session(secret="a", expiration=10)
+        self.session.local.data = {}
+        self.auth = Auth(self.session, self.db, define_tables=True, extra_fields=[Field('favorite_color')])
+        self.assertEqual(type(self.db.auth_user.favorite_color), Field)
 
     def test_register_invalid(self):
         body = {"email": "pinco.pallino@example.com"}
