@@ -346,7 +346,7 @@ class Session(Fixture):
         """
         if not secret and not storage:
             # when no secret is specified: one time sessions
-            secret = Session.SECRET = Session.SECRET or str(uuid.uuid4())
+            secret = Session.SECRET = Session.SECRET or str(uuid.uuid1())
         self.secret = secret
         self.expiration = expiration
         self.algorithm = algorithm
@@ -393,7 +393,7 @@ class Session(Fixture):
                 pass
         if not "uuid" in self.local.data:
             self.local.changed = True
-            self.local.data["uuid"] = str(uuid.uuid4())
+            self.local.data["uuid"] = str(uuid.uuid1())
             self.local.data["secure"] = self.local.secure
 
     def save(self):
