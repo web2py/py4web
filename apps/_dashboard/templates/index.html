@@ -52,6 +52,7 @@
         <label for="routes">Routes for {{selected_app.name}}</label>
         <div>
           <div class="right">
+            <button v-on:click="gitlog(selected_app.name)"><i class="fas fa-list"></i> Gitlog {{selected_app.name}}</button>
             <button v-on:click="reload(selected_app.name)"><i class="fas fa-sync-alt"></i> Reload {{selected_app.name}}</button>
           </div>
           <table v-if="routes.length">

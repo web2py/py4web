@@ -85,6 +85,9 @@ let init = (app) => {
         app.vue.loading = true;        
         axios.get(name?'../reload/'+name:'../reload').then(app.init);        
     };
+    app.gitlog = (name) => {
+        window.open('../gitlog/'+name);
+    };
     app.load_file = () => {
         var path = app.vue.selected_filename;
         app.select_filename(path, true);
@@ -198,6 +201,7 @@ let init = (app) => {
         save_file: app.save_file,
         load_file: app.load_file,
         reload: app.reload,
+        gitlog: app.gitlog,
         delete_selected_app: app.delete_selected_app,
         download_selected_app: app.download_selected_app,
         deploy_selected_app: app.deploy_selected_app,

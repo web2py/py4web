@@ -10,7 +10,7 @@ import datetime
 import requests
 
 import py4web
-from py4web import __version__, action, abort, request, response, redirect, Translator
+from py4web import __version__, action, abort, request, response, redirect, Translator, HTTP
 from py4web.core import Reloader, dumps, ErrorStorage, Session, Fixture
 from py4web.utils.factories import ActionFactory
 from pydal.validators import CRYPT
@@ -406,13 +406,13 @@ if MODE == "full":
         commits = get_commits(project)
         return dict(commits=commits, checkout=checkout, project=project)
 
-    @authenticated.callback("checkout")
-    def button_checkout(project, commit):
+    @authenticated.callback()
+    def checkout(project, commit):
         if not is_git_repo(project):
             raise HTTP(400)
         run("git stash", project)
         run("git checkout " + commit, project)
-        Reloader.import_apps()
+        Reloader.import_app(project)
 
     @action("gitshow/<project>/<commit>")
     @action.uses(Logged(session), "gitshow.html")
