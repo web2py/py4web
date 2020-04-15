@@ -99,6 +99,7 @@ class Auth(Fixture):
         self.registration_requires_approval = registration_requires_approval
         self.use_username = use_username  # if False, uses email only
         # The self._link variable is not thread safe (only intended for testing)
+        self.extra_auth_user_fields = extra_fields
         self._link = None
         if db and define_tables:
             self.define_tables()
