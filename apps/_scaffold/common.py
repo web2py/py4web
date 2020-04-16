@@ -97,15 +97,18 @@ if settings.OAUTH2FACEBOOK_CLIENT_ID:
         OAuth2Facebook(
             client_id=settings.OAUTH2FACEBOOK_CLIENT_ID,
             client_secret=settings.OAUTH2FACEBOOK_CLIENT_SECRET,
-            callback_url="auth/plugin/oauth2google/callback",
+            callback_url="auth/plugin/oauth2facebook/callback",
         )
     )
 
 if settings.USE_CELERY:
     from celery import Celery
+
     # to use from . common import scheduled and then use it accoding to celery docs
     # examples in tasks.py
-    scheduler = Celery('apps.%s.tasks' % settings.APP_NAME, broker=settings.CELERY_BROKER)
+    scheduler = Celery(
+        "apps.%s.tasks" % settings.APP_NAME, broker=settings.CELERY_BROKER
+    )
 
 
 # we enable auth, which requres sessions, T, db and we make T available to

@@ -36,7 +36,7 @@ class AuthEnforcer(Fixture):
         """
         return HTTP 403 if 'application/json' in HTTP_ACCEPT
         else redirects to page"""
-        if REX_APPJSON.search(request.headers.get('accept', '')):
+        if REX_APPJSON.search(request.headers.get("accept", "")):
             abort(403)
         redirect_next = request.fullpath
         if request.query_string:
@@ -82,6 +82,7 @@ class Auth(Fixture):
         registration_requires_confirmation=True,
         registration_requires_approval=False,
         inject=True,
+        extra_fields=[]
     ):
         """Creates and Auth object responsinble for handling
         authentication and authorization"""
@@ -100,14 +101,15 @@ class Auth(Fixture):
         self.use_username = use_username  # if False, uses email only
         # The self._link variable is not thread safe (only intended for testing)
         self._link = None
+        self.extra_auth_user_fields = extra_fields
         if db and define_tables:
             self.define_tables()
         self.plugins = {}
 
     def transform(self, output):
         if self.inject:
-            if isinstance(output, dict) and not 'user' in output:
-                output['user'] = self.get_user()
+            if isinstance(output, dict) and not "user" in output:
+                output["user"] = self.get_user()
         return output
 
     def define_tables(self):
@@ -153,7 +155,13 @@ class Auth(Fixture):
         user = lambda s=self: s.get_user().get("id")
         fields = [
             Field("created_on", "datetime", default=now, writable=False, readable=True),
-            Field("created_by", "reference auth_user", default=user, writable=False, readable=True),
+            Field(
+                "created_by",
+                "reference auth_user",
+                default=user,
+                writable=False,
+                readable=True,
+            ),
             Field(
                 "modified_on",
                 "datetime",
@@ -203,7 +211,7 @@ class Auth(Fixture):
 
     @property
     def user_id(self):
-        return self.session.get("user", {}).get('id', None)
+        return self.session.get("user", {}).get("id", None)
 
     @property
     def current_user(self):
@@ -269,7 +277,7 @@ class Auth(Fixture):
                         if check:
                             data = {
                                 "username": username,
-                                #"email": username + "@localhost",
+                                # "email": username + "@localhost",
                                 "sso_id": plugin_name + ":" + username,
                             }
                             # and register the user if we have one, just in case
@@ -349,13 +357,13 @@ class Auth(Fixture):
             if send and res.get("id"):
                 self._link = link = URL(
                     self.route, "verify_email", vars=dict(token=token), scheme=True
-                    )
+                )
                 self.send("verify_email", fields, link=link)
         elif self.registration_requires_approval:
             fields["action_token"] = "pending-approval"
             res = self.db.auth_user.validate_and_insert(**fields)
         else:
-            fields["action_token"] = ''
+            fields["action_token"] = ""
             res = self.db.auth_user.validate_and_insert(**fields)
         return res
 

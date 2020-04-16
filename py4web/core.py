@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""PY4WEB - a web framework for rapid development of efficient database driven web applications"""
 
 # Standard modules
 import argparse
@@ -15,6 +16,7 @@ import logging
 import numbers
 import os
 import getpass
+import pathlib
 import platform
 import signal
 import sys
@@ -29,7 +31,7 @@ import http.cookies
 import zipfile
 import re
 
-REX_APPJSON = re.compile('(^|\s|,)application/json(,|\s|$)')
+REX_APPJSON = re.compile("(^|\s|,)application/json(,|\s|$)")
 
 # Optional web servers for speed
 try:
@@ -99,6 +101,17 @@ abort = bottle.abort
 os.environ.update(
     {key: value for key, value in DEFAULTS.items() if not key in os.environ}
 )
+
+
+def module2filename(module):
+    filename = os.path.join(*module.split(".")[1:])
+    filename = (
+        os.path.join(filename, "__init__.py")
+        if not filename.count(os.sep)
+        else filename + ".py"
+    )
+    return filename
+
 
 ########################################################################################
 # Implement a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
@@ -198,7 +211,7 @@ def objectify(obj):
         return obj
     elif hasattr(obj, "__iter__") or isinstance(obj, types.GeneratorType):
         return list(obj)
-    elif hasattr(obj, 'xml'):
+    elif hasattr(obj, "xml"):
         return obj.xml()
     elif hasattr(obj, "__dict__") and hasattr(obj, "__class__"):
         d = dict(obj.__dict__)
@@ -294,7 +307,7 @@ class Template(Fixture):
         path = self.path or os.path.join(app_folder, "templates")
         filename = os.path.join(path, self.filename)
         if not os.path.exists(filename):
-            generic_filename = os.path.join(path, 'generic.html')
+            generic_filename = os.path.join(path, "generic.html")
             if os.path.exists(generic_filename):
                 filename = generic_filename
         output = yatl.render(
@@ -323,7 +336,7 @@ class Session(Fixture):
         expiration=None,
         algorithm="HS256",
         storage=None,
-        same_site="Lax",
+        same_site="Strict",
     ):
         """
         secret is the shared key used to encrypt the session (using algorithm)
@@ -333,7 +346,7 @@ class Session(Fixture):
         """
         if not secret and not storage:
             # when no secret is specified: one time sessions
-            secret = Session.SECRET = Session.SECRET or str(uuid.uuid4())
+            secret = Session.SECRET = Session.SECRET or str(uuid.uuid1())
         self.secret = secret
         self.expiration = expiration
         self.algorithm = algorithm
@@ -380,7 +393,7 @@ class Session(Fixture):
                 pass
         if not "uuid" in self.local.data:
             self.local.changed = True
-            self.local.data["uuid"] = str(uuid.uuid4())
+            self.local.data["uuid"] = str(uuid.uuid1())
             self.local.data["secure"] = self.local.secure
 
     def save(self):
@@ -442,11 +455,15 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None):
     URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name}/a/b?x=1
     URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name}/a/b?x=1
     """
-    script_name = (request.get('HTTP_X_SCRIPT_NAME', '') or request.get('SCRIPT_NAME', '')).rstrip('/')
-    prefix = script_name + ("/%s/" % request.app_name if request.app_name != "_default" else "/")
+    script_name = (
+        request.get("HTTP_X_SCRIPT_NAME", "") or request.get("SCRIPT_NAME", "")
+    ).rstrip("/")
+    prefix = script_name + (
+        "/%s/" % request.app_name if request.app_name != "_default" else "/"
+    )
     broken_parts = []
     for part in parts:
-        broken_parts += str(part).rstrip('/').split("/")
+        broken_parts += str(part).rstrip("/").split("/")
     url = prefix + "/".join(map(lambda x: urllib.parse.quote(x), broken_parts))
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
     urlvars = {k: v for k, v in vars.items()} if vars else {}
@@ -531,6 +548,7 @@ class action:
                 except Exception:
                     [obj.on_error() for obj in fixtures]
                     raise
+
             return wrapper
 
         return decorator
@@ -579,6 +597,7 @@ class action:
                 return error_page(
                     500, button_text=ticket, href="/_dashboard/ticket/" + ticket
                 )
+
         return wrapper
 
     def __call__(self, func):
@@ -694,13 +713,15 @@ def get_error_snapshot(depth=5):
         f["code"] = lines
         # FIXME: disable this for now until we understand why this goes into infinite loop
         if False:
-            line_vars = cgitb.scanvars(lambda: linecache.getline(file, lnum), frame, locals)
+            line_vars = cgitb.scanvars(
+                lambda: linecache.getline(file, lnum), frame, locals
+            )
             # Dump local variables (referenced in current line only)
             f["vars"] = {
                 key: repr(value)
                 for key, value in locals.items()
                 if not key.startswith("__")
-                }
+            }
         stackframes.append(f)
 
     return data
@@ -780,66 +801,41 @@ class Reloader:
     ERRORS = {}
 
     @staticmethod
+    def clear_routes(app_name=None):
+        app = bottle.default_app()
+        routes = app.routes[:]
+        app.routes.clear()
+        app.router = bottle.Router()
+        if app_name:
+            for route in routes:
+                if route.rule[1:].split("/")[0] != app_name:
+                    app.add_route(route)
+
+    @staticmethod
     def import_apps():
         """Import or reimport modules and exposed static files"""
+        Reloader.clear_routes()
         folder = os.environ["PY4WEB_APPS_FOLDER"]
-        app = bottle.default_app()
-        app.routes.clear()
-        new_apps = []
         # if first time reload dummy top module
         if not Reloader.MODULES:
             path = os.path.join(folder, "__init__.py")
-            module = importlib.machinery.SourceFileLoader("apps", path).load_module()
+            loader = importlib.machinery.SourceFileLoader("apps", path)
+            loader.load_module()
         # Then load all the apps as submodules
         for app_name in os.listdir(folder):
-            action.app_name = app_name
-            new_apps += Reloader.import_app(app_name)
-        # Expose static files with support for static asset management
-        for path in new_apps:
-            static_folder = os.path.join(path, "static")
-            if os.path.exists(static_folder):
-                app_name = path.split(os.path.sep)[-1]
-                prefix = "" if app_name == "_default" else ("/%s" % app_name)
-
-                @bottle.route(prefix + "/static/<filename:path>")
-                @bottle.route(
-                    prefix + "/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>"
-                )
-                def server_static(filename, static_folder=static_folder, version=None):
-                    return bottle.static_file(filename, root=static_folder)
-
-        # Register routes list
-        routes = []
-
-        def to_filename(module):
-            filename = os.path.join(*module.split(".")[1:])
-            filename = (
-                os.path.join(filename, "__init__.py")
-                if not filename.count(os.sep)
-                else filename + ".py"
-            )
-            return filename
-
-        for route in app.routes:
-            func = route.callback
-            routes.append(
-                {
-                    "rule": route.rule,
-                    "method": route.method,
-                    "filename": to_filename(func.__module__),
-                    "action": func.__name__,
-                }
-            )
-        Reloader.ROUTES = sorted(routes, key=lambda item: item["rule"])
-        ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
+            Reloader.import_app(app_name, clear_before_import=False)
 
     @staticmethod
-    def import_app(app_name):
+    def import_app(app_name, clear_before_import=True):
+        if clear_before_import:
+            Reloader.clear_routes(app_name)
         folder = os.environ["PY4WEB_APPS_FOLDER"]
         path = os.path.join(folder, app_name)
         init = os.path.join(path, "__init__.py")
-        new_apps = []
+
         if os.path.isdir(path) and not path.endswith("__") and os.path.exists(init):
+
+            action.app_name = app_name
             module_name = "apps.%s" % app_name
             try:
                 module = Reloader.MODULES.get(app_name)
@@ -859,17 +855,45 @@ class Reloader:
                         del sys.modules[name]
                 module = importlib.machinery.SourceFileLoader(
                     module_name, init
-                    ).load_module()
+                ).load_module()
                 print("\x1b[A[X] loaded %s       " % app_name)
                 Reloader.MODULES[app_name] = module
                 Reloader.ERRORS[app_name] = None
-                if not app_name in new_apps:
-                    new_apps.append(path)
             except:
                 tb = traceback.format_exc()
                 print("\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb))
                 Reloader.ERRORS[app_name] = tb
-        return new_apps
+                return None
+
+        # Expose static files with support for static asset management
+        static_folder = os.path.join(path, "static")
+
+        if os.path.exists(static_folder):
+            app_name = path.split(os.path.sep)[-1]
+            prefix = "" if app_name == "_default" else ("/%s" % app_name)
+
+            @bottle.route(prefix + "/static/<filename:path>")
+            @bottle.route(
+                prefix + "/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>"
+            )
+            def server_static(filename, static_folder=static_folder, version=None):
+                return bottle.static_file(filename, root=static_folder)
+
+        # Register routes list
+        app = bottle.default_app()
+        routes = []
+        for route in app.routes:
+            func = route.callback
+            routes.append(
+                {
+                    "rule": route.rule,
+                    "method": route.method,
+                    "filename": module2filename(func.__module__),
+                    "action": func.__name__,
+                }
+            )
+        Reloader.ROUTES = sorted(routes, key=lambda item: item["rule"])
+        ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
 
 
 #########################################################################################
@@ -884,17 +908,19 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
         if not color
         else color
     )
-    context=dict(
+    context = dict(
         code=code, message=message, button_text=button_text, href=href, color=color
     )
     # if client accepts 'application/json' - return json
-    if REX_APPJSON.search(request.headers.get('accept', '')):
+    if REX_APPJSON.search(request.headers.get("accept", "")):
         response.status = code
         return json.dumps(context)
     # else - return html error-page
     return yatl.render(
-            '<html><head><style>body{color:white;text-align: center;background-color:{{=color}};font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>{{=code}}</h1><h2>{{=message}}</h2>{{if button_text:}}<a href="{{=href}}">{{=button_text}}</a>{{pass}}</body></html>',
-            context=context)
+        '<html><head><style>body{color:white;text-align: center;background-color:{{=color}};font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>{{=code}}</h1><h2>{{=message}}</h2>{{if button_text:}}<a href="{{=href}}">{{=button_text}}</a>{{pass}}</body></html>',
+        context=context,
+    )
+
 
 @bottle.error(404)
 def error404(error):
@@ -951,8 +977,12 @@ def wsgi(**args):
 
 def get_args():
     """Handle command line arguments"""
-    parser = argparse.ArgumentParser()
-    parser.add_argument("apps_folder", help="Path to the applications folder")
+    # get the real running path
+    os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parent.parent)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "apps_folder", nargs="?", default=None, help="Path to the applications folder"
+    )
     parser.add_argument(
         "--host", default="127.0.0.1", help="Server address (IP or hostname)"
     )
@@ -1000,7 +1030,7 @@ def get_args():
     parser.add_argument(
         "-p",
         "--password_file",
-        default="password.txt",
+        default=(os.path.join(os.getcwd(), "password.txt")),
         help="File containing the encrypted (CRYPT) password",
     )
     parser.add_argument(
@@ -1026,7 +1056,10 @@ def initialize(**args):
     """Initialize from args"""
     for key in args:
         os.environ["PY4WEB_" + key.upper()] = str(args[key])
+    os.environ["PY4WEB_APPS_FOLDER"] = os.path.join(
+        os.getcwd(), os.environ["PY4WEB_APPS_FOLDER"])
     apps_folder = os.environ["PY4WEB_APPS_FOLDER"]
+    print("apps_folder = " + apps_folder + "\n")
     service_folder = os.path.join(apps_folder, os.environ["PY4WEB_SERVICE_FOLDER"])
     # If the apps folder does not exist create it and populate it
     if not os.path.exists(apps_folder):
@@ -1038,9 +1071,9 @@ def initialize(**args):
         args["create"] = True
     if not os.path.exists(service_folder):
         os.mkdir(service_folder)
-    session_secret_filename = os.path.join(service_folder, 'session.secret')
+    session_secret_filename = os.path.join(service_folder, "session.secret")
     if not os.path.exists(session_secret_filename):
-        with open(session_secret_filename, 'w') as fp:
+        with open(session_secret_filename, "w") as fp:
             fp.write(str(uuid.uuid4()))
     with open(session_secret_filename) as fp:
         Session.SECRET = fp.read()
@@ -1063,47 +1096,74 @@ def initialize(**args):
                     zip_file.close()
                     print("\x1b[A[X]")
 
+
 def keyboardInterruptHandler(signal, frame):
     """Catch interrupts like Ctrl-C"""
     print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
     sys.exit(0)
 
+
 def main(args=None):
     """The main entry point: Start the server and create folders"""
     # Store args in the action to make them visible
     action.args = args = args or get_args()
-    if args.headless:
-        headless = True
-    else:
-        headless = False
-    if platform.system().lower() == "windows": # fix for ANSI on Win7, 8, 10 ...
+
+    # Fix for ANSI on Win7, 8, 10 ...
+    if platform.system().lower() == "windows":  # fix for ANSI on Win7, 8, 10 ...
         from ctypes import windll
-        k=windll.kernel32
-        k.SetConsoleMode(k.GetStdHandle(-11),7)
-    if not headless:
+
+        k = windll.kernel32
+        k.SetConsoleMode(k.GetStdHandle(-11), 7)
+
+    # Print a head if not headless
+    if not args.headless:
         from py4web import __version__
+
         print(ART)
-        print('Py4web: %s on Python %s\n' %  (__version__, sys.version))
-    else:
-        print("")  # Insert a blank line to improve readability
-    if args.shell:  #start interactive shell if requested
+        print("Py4web: %s on Python %s\n" % (__version__, sys.version))
+
+    # Insert a blank line to improve readability
+    print("")
+
+    # Ask for apps_folder if needed
+    if not args.apps_folder:
+        print("Applications folder was not specified.")
+        while True:
+            folder = input(
+                "Please specify the relative path to the folder or press ENTER for default (apps)\napps_folder: "
+            )
+            path = os.path.join(os.getcwd(), folder or "apps")
+            if os.path.exists(path):
+                break
+            else:
+                print("Path folder not found")
+        args.apps_folder = path
+
+    # Start interactive shell if requested
+    if args.shell:
         import code, site
+
         code.interact(local=dict(globals(), **locals()))
         return
+
     # If we know where the password is stored, read it, otherwise ask for one
     if args.dashboard_mode not in ("demo", "none") and not os.path.exists(
         args.password_file
     ):
-        password = getpass.getpass("Choose a one-time dashboard password: ")
-        print('Storing the hashed password in file "%s"' % args.password_file)
+        password = getpass.getpass("Choose a dashboard password: ")
+        print('Storing the hashed password in file "%s"\n' % args.password_file)
         with open(args.password_file, "w") as fp:
             fp.write(str(pydal.validators.CRYPT()(password)[0]))
+
     # Store all args in environment variables to make them available to the following processes
     # and create any missing folders
     initialize(**args.__dict__)
     if os.path.exists(os.path.join(args.apps_folder, "_dashboard")):
         print("Dashboard is at: http://%s:%s/_dashboard" % (args.host, args.port))
-    # start
-    signal.signal(signal.SIGINT, keyboardInterruptHandler) # Catch interrupts like Ctrl-C
+
+    # Start
+    signal.signal(
+        signal.SIGINT, keyboardInterruptHandler
+    )  # Catch interrupts like Ctrl-C
     Reloader.import_apps()
     start_server(args)

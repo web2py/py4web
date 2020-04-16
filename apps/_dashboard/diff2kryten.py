@@ -59,61 +59,79 @@ $("html").keypress(function(e){
 });
 """
 
+
 def escape(txt):
-    return txt.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;')
+    return (
+        txt.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+
 
 def diff2kryten(data):
-    lines = data.split('\n')
+    lines = data.split("\n")
     files = {}
-    filename = ''
-    message = ''
+    filename = ""
+    message = ""
     mode = 0
     block = 0
     line_old = '<div class="line line-old" data-block="%s" data-content="%s"></div>'
     line_new = '<div class="line line-new" data-block="%s" data-content="%s"></div>'
     line_reg = '<div class="line" data-content="%s"></div>'
     for line in lines:
-        if line.startswith('---'):
+        if line.startswith("---"):
             filename_a = line[4:].strip()
-            if filename_a.startswith('a/'): filename_a = filename_a[2:]
+            if filename_a.startswith("a/"):
+                filename_a = filename_a[2:]
             mode = 1
-        elif line.startswith('+++'):
+        elif line.startswith("+++"):
             filename_b = line[4:].strip()
-            if filename_b.startswith('b/'): filename_b = filename_b[2:]
-            if filename_a == '/dev/null':
+            if filename_b.startswith("b/"):
+                filename_b = filename_b[2:]
+            if filename_a == "/dev/null":
                 filename = filename_b
-                files[filename]={'mode': 'create', 'lines':[]}
-            elif filename_b == '/dev/null':
+                files[filename] = {"mode": "create", "lines": []}
+            elif filename_b == "/dev/null":
                 filename = filename_a
-                files[filename]={'mode': 'delete', 'lines':[]}
+                files[filename] = {"mode": "delete", "lines": []}
             else:
                 filename = filename_a
-                files[filename]={'mode': 'edit', 'lines':[]}
+                files[filename] = {"mode": "edit", "lines": []}
             mode = 2
-        elif line.startswith('-'):
+        elif line.startswith("-"):
             mode, block = 3, block + 1
-            files[filename]['lines'].append(line_old % (block, escape(line[1:])))
-        elif line.startswith('+'):
+            files[filename]["lines"].append(line_old % (block, escape(line[1:])))
+        elif line.startswith("+"):
             mode, block = 3, block + 1
-            files[filename]['lines'].append(line_new % (block, escape(line[1:])))
-        elif line.startswith(' ') and mode >= 2:
-            files[filename]['lines'].append(line_reg % escape(line[1:]))
-            if mode>2: mode = 2
-        elif line.startswith(' ') and mode < 2:
-            message += escape(line.strip()) + '<br/>'
+            files[filename]["lines"].append(line_new % (block, escape(line[1:])))
+        elif line.startswith(" ") and mode >= 2:
+            files[filename]["lines"].append(line_reg % escape(line[1:]))
+            if mode > 2:
+                mode = 2
+        elif line.startswith(" ") and mode < 2:
+            message += escape(line.strip()) + "<br/>"
         else:
             pass
     div = '<div class="message">%s</div>' % message
     for filename in sorted(files):
-        mode = files[filename]['mode']
-        if mode != 'delete':
-            lines = ''.join(files[filename]['lines'])
+        mode = files[filename]["mode"]
+        if mode != "delete":
+            lines = "".join(files[filename]["lines"])
         div += '<div class="file">'
         div += '<div class="filename">%s (%s)</div>' % (filename, mode)
         div += '<div class="diff">%s</div></div>' % lines
-    return ('<html><head><style>' + css + '</style></head><body><div style="text-align:right">' + 
-            '</div>' + div + '<script src="/_dashboard/static/js/jquery.min.js"></script><script>' + 
-            (script % block)+'</script></body></html>')
+    return (
+        "<html><head><style>"
+        + css
+        + '</style></head><body><div style="text-align:right">'
+        + "</div>"
+        + div
+        + '<script src="/_dashboard/static/js/jquery.min.js"></script><script>'
+        + (script % block)
+        + "</script></body></html>"
+    )
 
-if __name__ == '__main__':
-    print(diff2kryten(open(sys.argv[1], 'r').read()))
+
+if __name__ == "__main__":
+    print(diff2kryten(open(sys.argv[1], "r").read()))

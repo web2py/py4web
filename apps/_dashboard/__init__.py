@@ -10,7 +10,7 @@ import datetime
 import requests
 
 import py4web
-from py4web import __version__, action, abort, request, response, redirect, Translator
+from py4web import __version__, action, abort, request, response, redirect, Translator, HTTP
 from py4web.core import Reloader, dumps, ErrorStorage, Session, Fixture
 from py4web.utils.factories import ActionFactory
 from pydal.validators import CRYPT
@@ -30,28 +30,33 @@ session = Session()
 
 def run(command, project):
     """for runing git commands inside an app (project)"""
-    return subprocess.check_output(command.split(), cwd=os.path.join(FOLDER, project)).decode()
+    return subprocess.check_output(
+        command.split(), cwd=os.path.join(FOLDER, project)
+    ).decode()
 
 
 def get_commits(project):
     """list of git commits for the project"""
-    output = run('git log', project)
+    output = run("git log", project)
     commits = []
-    for line in output.split('\n'):
-        if line.startswith('commit '):
-            commit = {'code': line[7:], 'message': '', 'author': '', 'date': ''}
+    for line in output.split("\n"):
+        if line.startswith("commit "):
+            commit = {"code": line[7:], "message": "", "author": "", "date": ""}
             commits.append(commit)
-        elif line.startswith('Author: '):
-            commit['author'] = line[8:]
-        elif line.startswith('Date: '):
-            commit['date'] = datetime.datetime.strptime(line[6:].strip(), '%a %b %d %H:%M:%S %Y %z')
-        else: 
-            commit['message'] += line.strip() + '\n'
+        elif line.startswith("Author: "):
+            commit["author"] = line[8:]
+        elif line.startswith("Date: "):
+            commit["date"] = datetime.datetime.strptime(
+                line[6:].strip(), "%a %b %d %H:%M:%S %Y %z"
+            )
+        else:
+            commit["message"] += line.strip() + "\n"
     return commits
 
 
 def is_git_repo(project):
-    return os.path.exists(os.path.join(FOLDER, project, '.git/config'))
+    return os.path.exists(os.path.join(FOLDER, project, ".git/config"))
+
 
 class Logged(Fixture):
     def __init__(self, session):
@@ -62,6 +67,7 @@ class Logged(Fixture):
         user = self.session.get("user")
         if not user or not user.get("id"):
             abort(403)
+
 
 authenticated = ActionFactory(Logged(session))
 session_secured = action.uses(Logged(session))
@@ -145,11 +151,11 @@ if MODE in ("demo", "readonly", "full"):
     def delete_app(name):
         """delete the app"""
         path = os.path.join(FOLDER, name)
-        timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
-        archive = os.path.join(FOLDER, '%s.%s.zip' % (name, timestamp))
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d")
+        archive = os.path.join(FOLDER, "%s.%s.zip" % (name, timestamp))
         if os.path.exists(path) and os.path.isdir(path):
             # zip the folder, just in case
-            shutil.make_archive(archive, 'zip', path)
+            shutil.make_archive(archive, "zip", path)
             # then remove the app
             shutil.rmtree(path)
             return {"status": "success", "payload": "Deleted"}
@@ -304,11 +310,14 @@ if MODE == "full":
 
     @action("save/<path:path>", method="POST")
     @session_secured
-    def save(path):
+    def save(path, reload_app=True):
         """Saves a file"""
+        app_name = path.split("/")[0]
         path = safe_join(FOLDER, path) or abort()
         with open(path, "wb") as myfile:
             myfile.write(request.body.read())
+        if reload_app:
+            Reloader.import_app(app_name)
         return {"status": "success"}
 
     @action("delete/<path:path>", method="POST")
@@ -391,23 +400,24 @@ if MODE == "full":
     @action("gitlog/<project>")
     @action.uses(Logged(session), "gitlog.html")
     def gitlog(project):
-        if not is_git_repo(project): return "Project is not a GIT repo"
-        run('git checkout master', project)
+        if not is_git_repo(project):
+            return "Project is not a GIT repo"
+        run("git checkout master", project)
         commits = get_commits(project)
-        return dict(commits=commits, 
-                    checkout=checkout, 
-                    project=project)
+        return dict(commits=commits, checkout=checkout, project=project)
 
-    @authenticated.callback('checkout')
-    def button_checkout(project, commit):
-        if not is_git_repo(project): raise HTTP(400)
-        run('git stash', project)
-        run('git checkout '+commit, project)
-        Reloader.import_apps()
+    @authenticated.callback()
+    def checkout(project, commit):
+        if not is_git_repo(project):
+            raise HTTP(400)
+        run("git stash", project)
+        run("git checkout " + commit, project)
+        Reloader.import_app(project)
 
     @action("gitshow/<project>/<commit>")
     @action.uses(Logged(session), "gitshow.html")
     def gitshow(project, commit):
-        if not is_git_repo(project): raise HTTP(400)
-        patch = run('git show '+commit, project)
+        if not is_git_repo(project):
+            raise HTTP(400)
+        patch = run("git show " + commit, project)
         return diff2kryten(patch)

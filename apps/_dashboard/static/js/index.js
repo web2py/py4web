@@ -85,6 +85,9 @@ let init = (app) => {
         app.vue.loading = true;        
         axios.get(name?'../reload/'+name:'../reload').then(app.init);        
     };
+    app.gitlog = (name) => {
+        window.open('../gitlog/'+name);
+    };
     app.load_file = () => {
         var path = app.vue.selected_filename;
         app.select_filename(path, true);
@@ -97,7 +100,6 @@ let init = (app) => {
         app.vue.files[path] = app.editor.getValue();
         axios.post('../save/'+path, app.vue.files[path]).then(()=>{
                 app.file_saved(); 
-                if(path.endsWith('.py')) app.reload();
             }); 
     };
     app.download_selected_app = () => {
@@ -132,7 +134,9 @@ let init = (app) => {
             message:'',
             form_name: 'create-app',
             form: {type: 'scaffold', name: '', source: '', mode: 'new', file: ''},
-            buttons: [{text: 'Create', onclick: function() {app.process_new_app();}}, {text:'Close', onclick: app.modal_dismiss}]}; 
+            buttons: [{text: 'Create', onclick: function() {app.process_new_app();}}, 
+                      {text:'Close', onclick: app.modal_dismiss}]
+        }; 
     };
     app.create_new_file = ()=> {
         app.vue.modal = {title:'Create New File', color:'blue', message:'[WORK IN PROGRESS]'};
@@ -197,6 +201,7 @@ let init = (app) => {
         save_file: app.save_file,
         load_file: app.load_file,
         reload: app.reload,
+        gitlog: app.gitlog,
         delete_selected_app: app.delete_selected_app,
         download_selected_app: app.download_selected_app,
         deploy_selected_app: app.deploy_selected_app,
@@ -218,7 +223,9 @@ let init = (app) => {
                        filters:app.filters});    
     app.update_selected = () => {
         if(app.vue.selected_app) 
-            app.vue.selected_app = app.vue.apps.filter((a)=>{return a.name==app.vue.selected_app.name;})[0];
+            app.vue.selected_app = app.vue.apps.filter((a) => {
+                    return a.name==app.vue.selected_app.name;
+                })[0];
     };
     app.init = () => {        
         app.reload_info();

@@ -1,4 +1,4 @@
-import hashlib
+import hmac
 import uuid
 from py4web import request, abort
 from py4web.core import Fixture, Session
@@ -10,6 +10,7 @@ class URLVerifier(Fixture):
      to action.uses() to check for the validity of signatures, and the
      sign() method can be used to sign a URL.  If an object of this class
      is passed to the URL helper, it can be used to sign a URL."""
+
     def __init__(self, url_signer):
         if url_signer.session:
             self.__prerequisites__ = [url_signer.session]
@@ -35,13 +36,12 @@ class URLSigner(object):
         salt is some salt that can be used in signing if desired.
         variables_to_sign is a list of variables to be included in the signature.
         """
-        super().__init__(
-        )  # Yes, I know that this currently doesn't do anything.
+        super().__init__()  # Yes, I know that this currently doesn't do anything.
         self.session = session
         self.key = key or Session.SECRET
         self.salt = salt
         self.variables_to_sign = variables_to_sign or []
-        assert '_signature' not in self.variables_to_sign
+        assert "_signature" not in self.variables_to_sign
 
     def _get_key(self):
         """Gets the signing key, creating it if necessary."""
@@ -50,18 +50,18 @@ class URLSigner(object):
         else:
             key = self.session.get("_signature_key")
             if key is None:
-                key = str(uuid.uuid4())
+                key = str(uuid.uuid1())
                 self.session["_signature_key"] = key
         return key
 
     def _sign(self, url, vars):
         """Signs the URL"""
-        h = hashlib.sha256(self.salt)
-        h.update(url.encode('utf8'))  # Is utf8 the right encoding?
+        h = hmac.new(self.salt)
+        h.update(url.encode("utf8"))  # Is utf8 the right encoding?
         # Adds the variables that need to be signed.
         for key in self.variables_to_sign:
-            h.update(('%s=%r' % (key, vars[key])).encode('utf8'))
-        h.update(self._get_key().encode('utf8'))
+            h.update(("%s=%r" % (key, vars[key])).encode("utf8"))
+        h.update(self._get_key().encode("utf8"))
         return h.hexdigest()
 
     def sign_vars(self, url, vars):

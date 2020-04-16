@@ -123,19 +123,24 @@ def example_helpers():
 
 # automatic actions
 
-@unauthenticated.get() # exposed as /hello_world
+
+@unauthenticated.get()  # exposed as /hello_world
 def hello_world():
     return dict()
 
-@unauthenticated.get() # exposed as /hello_world/<msg>
+
+@unauthenticated.get()  # exposed as /hello_world/<msg>
 def hello_world(msg):
     return dict(msg=msg)
+
 
 @unauthenticated.callback("click me")
 def a_callback(msg):
     import logging
+
     logging.info(msg)
+
 
 @unauthenticated.get()
 def show_a_button():
-    return dict(mybutton = a_callback.button('clickme')(msg="hello world"))
+    return dict(mybutton=a_callback.button("clickme")(msg="hello world"))
