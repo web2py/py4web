@@ -1030,7 +1030,7 @@ def get_args():
     parser.add_argument(
         "-p",
         "--password_file",
-        default=(os.path.join(os.environ["PY4WEB_PATH"], "password.txt")),
+        default=(os.path.join(os.getcwd(), "password.txt")),
         help="File containing the encrypted (CRYPT) password",
     )
     parser.add_argument(
@@ -1057,8 +1057,7 @@ def initialize(**args):
     for key in args:
         os.environ["PY4WEB_" + key.upper()] = str(args[key])
     os.environ["PY4WEB_APPS_FOLDER"] = os.path.join(
-        os.environ["PY4WEB_PATH"], os.environ["PY4WEB_APPS_FOLDER"]
-    )
+        os.getcwd(), os.environ["PY4WEB_APPS_FOLDER"])
     apps_folder = os.environ["PY4WEB_APPS_FOLDER"]
     print("apps_folder = " + apps_folder + "\n")
     service_folder = os.path.join(apps_folder, os.environ["PY4WEB_SERVICE_FOLDER"])
@@ -1133,7 +1132,7 @@ def main(args=None):
             folder = input(
                 "Please specify the relative path to the folder or press ENTER for default (apps)\napps_folder: "
             )
-            path = os.path.join(os.environ["PY4WEB_PATH"], folder or "apps")
+            path = os.path.join(os.getcwd(), folder or "apps")
             if os.path.exists(path):
                 break
             else:
