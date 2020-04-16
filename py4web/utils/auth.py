@@ -82,6 +82,7 @@ class Auth(Fixture):
         registration_requires_confirmation=True,
         registration_requires_approval=False,
         inject=True,
+        extra_fields=[]
     ):
         """Creates and Auth object responsinble for handling
         authentication and authorization"""
@@ -100,6 +101,7 @@ class Auth(Fixture):
         self.use_username = use_username  # if False, uses email only
         # The self._link variable is not thread safe (only intended for testing)
         self._link = None
+        self.extra_auth_user_fields = extra_fields
         if db and define_tables:
             self.define_tables()
         self.plugins = {}
