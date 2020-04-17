@@ -32,10 +32,30 @@ class URLVerifier(Fixture):
 class URLSigner(Fixture):
     def __init__(self, session=None, key=None, salt=b"", variables_to_sign=None):
         """
-        you can provde a key or a session to sign the URL
-        if none provided will use the global Session.SECRET
-        salt is some salt that can be used in signing if desired.
-        variables_to_sign is a list of variables to be included in the signature.
+        Signer for URLs.
+        :param session: Session.  If a session is not specified, it will use a key
+            to sign the URLs.
+        :param key: key to sign, used if no session is specified.  If neither a
+            session nor a key is specified, then Session.SECRET is used to sign.
+        :param salt: Optional salt that can be used in signing.
+        :param variables_to_sign: List of variables to be included in the signature.
+
+        The usage is as follows, typically.
+
+        # We build a URL signer.
+        url_signer = URLSigner(session)
+
+        @action('/somepath')
+        @action.uses(url_signer)
+        def somepath():
+            # This controller signs a URL. 
+            return dict(signed_url = URL('/anotherpath', signer=url_signer))
+
+        @action('/anotherpath')
+        @action.uses(url_signer.verify())
+        def anotherpath():
+            # The signature has been verified.
+            return dict()
         """
         super().__init__()
         self.session = session
