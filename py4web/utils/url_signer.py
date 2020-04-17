@@ -48,7 +48,7 @@ class URLSigner(Fixture):
         @action('/somepath')
         @action.uses(url_signer)
         def somepath():
-            # This controller signs a URL. 
+            # This controller signs a URL.
             return dict(signed_url = URL('/anotherpath', signer=url_signer))
 
         @action('/anotherpath')
