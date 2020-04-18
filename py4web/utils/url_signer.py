@@ -12,7 +12,8 @@ class URLVerifier(Fixture):
      is passed to the URL helper, it can be used to sign a URL."""
 
     def __init__(self, url_signer):
-        if url_signer.session:
+        super().__init__()
+        if url_signer.session is not None:
             self.__prerequisites__ = [url_signer.session]
         self.url_signer = url_signer
 
@@ -28,16 +29,40 @@ class URLVerifier(Fixture):
             abort(403)
 
 
-class URLSigner(object):
+class URLSigner(Fixture):
     def __init__(self, session=None, key=None, salt=b"", variables_to_sign=None):
         """
-        you can provde a key or a session to sign the URL
-        if none provided will use the global Session.SECRET
-        salt is some salt that can be used in signing if desired.
-        variables_to_sign is a list of variables to be included in the signature.
+        Signer for URLs.
+        :param session: Session.  If a session is not specified, it will use a key
+            to sign the URLs.
+        :param key: key to sign, used if no session is specified.  If neither a
+            session nor a key is specified, then Session.SECRET is used to sign.
+        :param salt: Optional salt that can be used in signing.
+        :param variables_to_sign: List of variables to be included in the signature.
+
+        The usage is as follows, typically.
+
+        # We build a URL signer.
+        url_signer = URLSigner(session)
+
+        @action('/somepath')
+        @action.uses(url_signer)
+        def somepath():
+            # This controller signs a URL.
+            return dict(signed_url = URL('/anotherpath', signer=url_signer))
+
+        @action('/anotherpath')
+        @action.uses(url_signer.verify())
+        def anotherpath():
+            # The signature has been verified.
+            return dict()
         """
-        super().__init__()  # Yes, I know that this currently doesn't do anything.
+        super().__init__()
         self.session = session
+        if session is not None:
+            # This ensures that the session will be saved with its changes
+            # (including the signing key).
+            self.__prerequisites__ = [session]
         self.key = key or Session.SECRET
         self.salt = salt
         self.variables_to_sign = variables_to_sign or []
@@ -45,7 +70,7 @@ class URLSigner(object):
 
     def _get_key(self):
         """Gets the signing key, creating it if necessary."""
-        if not self.session:
+        if self.session is None:
             key = self.key
         else:
             key = self.session.get("_signature_key")
@@ -54,19 +79,19 @@ class URLSigner(object):
                 self.session["_signature_key"] = key
         return key
 
-    def _sign(self, url, vars):
+    def _sign(self, url, variables):
         """Signs the URL"""
         h = hmac.new(self.salt)
         h.update(url.encode("utf8"))  # Is utf8 the right encoding?
         # Adds the variables that need to be signed.
         for key in self.variables_to_sign:
-            h.update(("%s=%r" % (key, vars[key])).encode("utf8"))
+            h.update(("%s=%r" % (key, variables[key])).encode("utf8"))
         h.update(self._get_key().encode("utf8"))
         return h.hexdigest()
 
-    def sign_vars(self, url, vars):
+    def sign_vars(self, url, variables):
         """Signs a URL, adding to vars (the variables of the URL) a signature."""
-        vars["_signature"] = self._sign(url, vars)
+        variables["_signature"] = self._sign(url, variables)
 
     def verify(self):
         """returns a fixture that verifies the URL and optionally the query_keys"""
