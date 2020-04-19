@@ -1,4 +1,4 @@
-import hmac
+import hashlib, hmac
 import uuid
 from py4web import request, abort
 from py4web.core import Fixture, Session
@@ -25,7 +25,7 @@ class URLVerifier(Fixture):
             abort(403)
         del request.query["_signature"]
         # Verifies the query keys.
-        if signature != self.url_signer._sign(request.fullpath, request.query):
+        if signature != self.url_signer.sign(request.fullpath, request.query):
             abort(403)
 
 
@@ -37,7 +37,8 @@ class URLSigner(Fixture):
             to sign the URLs.
         :param key: key to sign, used if no session is specified.  If neither a
             session nor a key is specified, then Session.SECRET is used to sign.
-        :param salt: Optional salt that can be used in signing.
+        :param salt: Optional salt that can be used in signing; used to create
+            signers with different behavior while sharing the same session key.
         :param variables_to_sign: List of variables to be included in the signature.
 
         The usage is as follows, typically.
@@ -77,21 +78,20 @@ class URLSigner(Fixture):
             if key is None:
                 key = str(uuid.uuid1())
                 self.session["_signature_key"] = key
-        return key
+        return key.encode("utf8")
 
-    def _sign(self, url, variables):
+    def sign(self, url, variables):
         """Signs the URL"""
-        h = hmac.new(self.salt)
-        h.update(url.encode("utf8"))  # Is utf8 the right encoding?
+        h = hmac.new(self._get_key(), msg=self.salt, digestmod=hashlib.sha256)
+        h.update(url.encode("utf8"))
         # Adds the variables that need to be signed.
         for key in self.variables_to_sign:
             h.update(("%s=%r" % (key, variables[key])).encode("utf8"))
-        h.update(self._get_key().encode("utf8"))
         return h.hexdigest()
 
     def sign_vars(self, url, variables):
         """Signs a URL, adding to vars (the variables of the URL) a signature."""
-        variables["_signature"] = self._sign(url, variables)
+        variables["_signature"] = self.sign(url, variables)
 
     def verify(self):
         """returns a fixture that verifies the URL and optionally the query_keys"""
