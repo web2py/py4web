@@ -16,7 +16,9 @@
     };
     
     auth.methods.go = function(page, no_history) {
-        var url = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/' + page;
+        var url_noqs = window.location.href.split('?')[0] ;
+        var url = url_noqs.substring(0, url_noqs.lastIndexOf('/')) + '/' + page;
+        if (page == 'login') url += '?next=' + this.next ;
         if (!no_history) history.pushState({'page': page}, null, url);
         if (page == 'register') 
             this.form = {email:'', password:'', password2:'', first_name:'', last_name: ''};
