@@ -28,8 +28,8 @@ build: clean assets
 install: build
 	python3 setup.py install
 test: build
-	python3 -m pip install -r requirements.txt --user
-	python3 -m pip install -r test-requirements.txt --user
+	python3 -m pip install -r requirements.txt
+	python3 -m pip install -r test-requirements.txt
 	python3 -m pytest --cov=py4web --cov-report html:cov.html -v -s tests/
 push:	test
 	git push origin master
