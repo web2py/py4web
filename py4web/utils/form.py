@@ -273,11 +273,16 @@ class Form(object):
 
     def _read_vars_from_record(self, table):
         if self.record:
-            self.vars = {
-                name: table[name].formatter(self.record[name])
-                for name in table.fields
-                if name in self.record
-            }
+            if isinstance(table, list):
+                # The table is just a list of fields.
+                self.vars = {field.name: self.record.get(field.name)
+                             for field in table}
+            else:
+                self.vars = {
+                    name: table[name].formatter(self.record[name])
+                    for name in table.fields
+                    if name in self.record
+                }
 
     def _get_signature(self, salt=""):
         key = self.csrf_session.get("_form_key")
