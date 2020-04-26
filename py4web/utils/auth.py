@@ -1,12 +1,21 @@
 import base64
+import calendar
 import datetime
 import hashlib
+import time
 import urllib
 import uuid
 
 from py4web import redirect, request, response, abort, URL, action
 from py4web.core import Fixture, Template, REX_APPJSON
-from pydal.validators import IS_EMAIL, CRYPT, IS_NOT_EMPTY, IS_NOT_IN_DB
+from pydal.validators import (
+    IS_EMAIL,
+    CRYPT,
+    IS_NOT_EMPTY,
+    IS_NOT_IN_DB,
+    IS_STRONG,
+    IS_MATCH,
+)
 
 
 def b16e(text):
@@ -49,6 +58,16 @@ class AuthEnforcer(Fixture):
         user = self.auth.session.get("user")
         if not user or not user.get("id"):
             self.abort_or_redirect("login")
+        activity = self.auth.session.get("recent_activity")
+        time_now = calendar.timegm(time.gmtime())
+        # enforce the optionl auth session expiration time
+        if self.auth.login_expiration_time:
+            if time_now - activity > self.auth.login_expiration_time:
+                self.abort_or_redirect("login")
+        # record the time of the latest activity for logged in user (with throttling)
+        if not activity or time_now - activity < 600:
+            self.auth.session["recent_activity"] = time_now
+        self.session["recent_timestamp"] = datetime.datetime.utcnow().isoformat()
         if callable(self.condition) and not self.condition(user):
             self.abort_or_redirect("not-authorized")
 
@@ -79,10 +98,13 @@ class Auth(Fixture):
         define_tables=True,
         sender=None,
         use_username=True,
+        use_phone_number=False,
         registration_requires_confirmation=True,
         registration_requires_approval=False,
         inject=True,
-        extra_fields=[]
+        extra_fields=[],
+        login_expiration_time=3600,  # seconds
+        password_complexity={"entropy": 50},
     ):
         """Creates and Auth object responsinble for handling
         authentication and authorization"""
@@ -99,6 +121,9 @@ class Auth(Fixture):
         self.registration_requires_confirmation = registration_requires_confirmation
         self.registration_requires_approval = registration_requires_approval
         self.use_username = use_username  # if False, uses email only
+        self.use_phone_number = use_phone_number
+        self.login_expiration_time = login_expiration_time
+        self.password_complexity = password_complexity
         # The self._link variable is not thread safe (only intended for testing)
         self._link = None
         self.extra_auth_user_fields = extra_fields
@@ -127,7 +152,7 @@ class Auth(Fixture):
                 Field(
                     "password",
                     "password",
-                    requires=CRYPT(),
+                    requires=[IS_STRONG(**self.password_complexity), CRYPT()],
                     readable=False,
                     writable=False,
                 ),
@@ -135,6 +160,13 @@ class Auth(Fixture):
                 Field("last_name", requires=ne),
                 Field("sso_id", readable=False, writable=False),
                 Field("action_token", readable=False, writable=False),
+                Field(
+                    "last_password_change",
+                    "datetime",
+                    default=None,
+                    readable=False,
+                    writable=False,
+                ),
             ]
             if self.use_username:
                 auth_fields.insert(
@@ -143,6 +175,17 @@ class Auth(Fixture):
                         "username",
                         requires=[ne, IS_NOT_IN_DB(db, "auth_user.username")],
                         unique=True,
+                    ),
+                )
+            if self.use_phone_number:
+                auth_fields.insert(
+                    2,
+                    Field(
+                        "phone_number",
+                        requires=[
+                            ne,
+                            IS_MATCH("^[+]?(\(\d+\)|\d+)(\(\d+\)|\d+|[ -])+$"),
+                        ],
                     ),
                 )
             db.define_table("auth_user", *auth_fields, *self.extra_auth_user_fields)
@@ -284,6 +327,9 @@ class Auth(Fixture):
                             if self.db:
                                 data = self.get_or_register_user(data)
                                 self.session["user"] = {"id": data["id"]}
+                                self.session["recent_activity"] = calendar.timegm(
+                                    time.gmtime()
+                                )
                         else:
                             data = self._error("Invalid Credentials")
                     # Else use normal login
@@ -436,13 +482,21 @@ class Auth(Fixture):
 
     def change_password(self, user, new_password, password=None, check=True):
         db = self.db
-        if check and not db.auth_user.password.requires(password)[0] == user.password:
-            return {"errors": {"password": "invalid"}}
-        return (
-            db(db.auth_user.id == user.id)
-            .validate_and_update(password=new_password)
-            .as_dict()
+        if check:
+            pwd, error = db.auth_user.password.requires(password)
+            if not pwd == user.password:
+                return {"errors": {"password": "invalid current password"}}
+            new_pwd, error = db.auth_user.password.requires(new_password)
+            if error:
+                return {"errors": {"password": error}}
+            if new_pwd == user.password:
+                return {
+                    "errors": {"password": "new password is the same as old password"}
+                }
+        id = db(db.auth_user.id == user.id).update(
+            password=new_pwd, last_password_change=datetime.datetie.utcnow()
         )
+        return {}
 
     def change_email(self, user, new_email, password=None, check=True):
         db = self.db
