@@ -1,5 +1,5 @@
 import uuid
-import hmac
+import hashlib, hmac
 from py4web import DAL, request
 from yatl.helpers import (
     A,
@@ -273,27 +273,31 @@ class Form(object):
 
     def _read_vars_from_record(self, table):
         if self.record:
-            self.vars = {
-                name: table[name].formatter(self.record[name])
-                for name in table.fields
-                if name in self.record
-            }
+            if isinstance(table, list):
+                # The table is just a list of fields.
+                self.vars = {field.name: self.record.get(field.name)
+                             for field in table}
+            else:
+                self.vars = {
+                    name: table[name].formatter(self.record[name])
+                    for name in table.fields
+                    if name in self.record
+                }
 
-    def _get_key(self):
+    def _get_signature(self, salt=""):
         key = self.csrf_session.get("_form_key")
         if key is None:
             key = str(uuid.uuid1())
             self.csrf_session["_form_key"] = key
-        return key.encode("utf8")
+        h = hmac.new(key.encode("utf8"), msg=salt.encode("utf8"), digestmod=hashlib.sha256)
+        return h.hexdigest()
 
     def _sign_form(self):
         """Signs the form, for csrf"""
         # Adds a form key.  First get the signing key from the session.
         if self.csrf_session is not None:
             salt = str(uuid.uuid4())
-            h = hmac.new(self._get_key())
-            h.update(salt.encode("utf8"))
-            self.formkey = salt + ";" + h.hexdigest()
+            self.formkey = salt + ";" + self._get_signature(salt)
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""
@@ -304,9 +308,7 @@ class Form(object):
         formkey = post_vars.get("_formkey")
         try:
             salt, u = formkey.split(";")
-            h = hmac.new(self._get_key())
-            h.update(salt.encode("utf8"))
-            return h.hexdigest() == u
+            return u == self._get_signature(salt=salt)
         except:
             return False
 

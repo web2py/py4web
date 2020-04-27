@@ -54,6 +54,7 @@ class TestSession(unittest.TestCase):
         self.assertEqual(session.get("key"), None)
 
     def test_session_in_memcache(self):
+        memcache_process = None
         try:
             memcache_process = subprocess.Popen(["memcached", "-p", "11211"])
             time.sleep(1)
@@ -86,5 +87,7 @@ class TestSession(unittest.TestCase):
             session.on_request()
             self.assertEqual(session.get("key"), None)
         finally:
-            if memcache_process:
+            if memcache_process is None:
+                print("memcached not availabl, test skipped")
+            elif memcache_process:
                 memcache_process.kill()
