@@ -103,6 +103,16 @@
         }
     }
 
+    mtable.methods.parse_and_validate_json = function(event){
+        try {
+            event.target.style.borderColor = "";
+            return JSON.parse(event.target.value);
+        }
+        catch{
+            event.target.style.borderColor = "#ff0000";
+        }
+    }
+
     mtable.methods.trash = function (item) {
         if (window.confirm("Really delete record?")) {
             let url = this.url + '/' + item.id;            
