@@ -17,6 +17,17 @@ from pydal.validators import (
     IS_MATCH,
 )
 
+"""
+[X] Enable and disable plugins
+[X} Enable and disable actions
+[X] Require passwords of various complexity
+[x] Force logout after x hours (WIP)
+[X] No re-use of the last n passwords
+[ ] Force new password on first login (WIP)
+[ ] Two-factor authentication for users with 'administrator' access
+[ ] Lock account after x failed login attempts.
+[ ] Force new password every x days.
+"""
 
 def b16e(text):
     return base64.b16encode(text.encode()).decode()
@@ -41,7 +52,7 @@ class AuthEnforcer(Fixture):
     def transform(self, output):
         return self.auth.transform(output)
 
-    def abort_or_redirect(self, page):
+    def abort_or_redirect(self, page, message=''):
         """
         return HTTP 403 if 'application/json' in HTTP_ACCEPT
         else redirects to page"""
@@ -50,26 +61,27 @@ class AuthEnforcer(Fixture):
         redirect_next = request.fullpath
         if request.query_string:
             redirect_next = redirect_next + "?{}".format(request.query_string)
-        redirect(URL(self.auth.route, page, vars=dict(next=redirect_next)))
+        redirect(URL(self.auth.route, page, vars=dict(next=redirect_next, flash=message)))
 
     def on_request(self):
         """check that we have a user in the session and
         the condition is met"""
         user = self.auth.session.get("user")
         if not user or not user.get("id"):
-            self.abort_or_redirect("login")
+            self.auth.session["recent_activity"] = None
+            self.abort_or_redirect("login", "User not logged in")
         activity = self.auth.session.get("recent_activity")
         time_now = calendar.timegm(time.gmtime())
         # enforce the optionl auth session expiration time
-        if self.auth.login_expiration_time:
+        if self.auth.login_expiration_time and activity:
             if time_now - activity > self.auth.login_expiration_time:
-                self.abort_or_redirect("login")
+                self.abort_or_redirect("login", "Login expired")
         # record the time of the latest activity for logged in user (with throttling)
-        if not activity or time_now - activity < 600:
+        if not activity or time_now - activity > 6:
             self.auth.session["recent_activity"] = time_now
-        self.session["recent_timestamp"] = datetime.datetime.utcnow().isoformat()
+        self.auth.session["recent_timestamp"] = datetime.datetime.utcnow().isoformat()
         if callable(self.condition) and not self.condition(user):
-            self.abort_or_redirect("not-authorized")
+            self.abort_or_redirect("not-authorized", "User not authorized")
 
 
 class Auth(Fixture):
@@ -105,6 +117,8 @@ class Auth(Fixture):
         extra_fields=[],
         login_expiration_time=3600,  # seconds
         password_complexity={"entropy": 50},
+        block_previous_password_num=None,
+        allowed_actions=['all'],
     ):
         """Creates and Auth object responsinble for handling
         authentication and authorization"""
@@ -124,6 +138,8 @@ class Auth(Fixture):
         self.use_phone_number = use_phone_number
         self.login_expiration_time = login_expiration_time
         self.password_complexity = password_complexity
+        self.block_previous_password_num = block_previous_password_num
+        self.allowed_actions = allowed_actions
         # The self._link variable is not thread safe (only intended for testing)
         self._link = None
         self.extra_auth_user_fields = extra_fields
@@ -188,6 +204,9 @@ class Auth(Fixture):
                         ],
                     ),
                 )
+            if self.block_previous_password_num is not None:
+                auth_fields.append(
+                    Field("past_passwords_hash", "list:string", writable=False, readable=False))
             db.define_table("auth_user", *auth_fields, *self.extra_auth_user_fields)
 
     @property
@@ -298,6 +317,15 @@ class Auth(Fixture):
                 # Should we use the username?
                 if path == "api/use_username":
                     return {"use_username": self.use_username}
+                if path == "api/config":
+                    fields = [dict(name=f.name, type=f.type) for f in self.db.auth_user 
+                              if f.type in ['string','bool','integer','float'] and 
+                              f.writable and f.readable]
+                    return {
+                        "allowed_actions": self.allowed_actions,
+                        "plugins": ['local'] + [key for key in self.plugins],
+                        "fields": fields,
+                        }
                 # Otherwise, we assume the user exists.
                 user = self.get_user(safe=True)
                 if not user:
@@ -327,9 +355,7 @@ class Auth(Fixture):
                             if self.db:
                                 data = self.get_or_register_user(data)
                                 self.session["user"] = {"id": data["id"]}
-                                self.session["recent_activity"] = calendar.timegm(
-                                    time.gmtime()
-                                )
+                                self.session["recent_activity"] = calendar.timegm(time.gmtime())
                         else:
                             data = self._error("Invalid Credentials")
                     # Else use normal login
@@ -337,6 +363,7 @@ class Auth(Fixture):
                         user, error = self.login(**vars)
                         if user:
                             self.session["user"] = {"id": user.id}
+                            self.session["recent_activity"] = calendar.timegm(time.gmtime())
                             user = {
                                 f.name: user[f.name]
                                 for f in self.db.auth_user
@@ -360,7 +387,7 @@ class Auth(Fixture):
                     self.gdpr_unsubscribe(user, send=True)
                 elif user and path == "api/change_password":
                     data = self.change_password(
-                        user, vars.get("new_password"), vars.get("password")
+                        user, vars.get("new_password"), vars.get("old_password")
                     )
                 elif user and path == "api/change_email":
                     data = self.change_email(
@@ -433,7 +460,7 @@ class Auth(Fixture):
             return (None, "Account is blocked")
         if user.action_token == "pending-approval":
             return (None, "Account needs to be approved")
-        if db.auth_user.password.requires(password)[0] == user.password:
+        if CRYPT()(password)[0] == user.password:
             return (user, None)
         return None, "Invalid Credentials"
 
@@ -483,18 +510,27 @@ class Auth(Fixture):
     def change_password(self, user, new_password, password=None, check=True):
         db = self.db
         if check:
-            pwd, error = db.auth_user.password.requires(password)
+            pwd = CRYPT()(password)[0]
             if not pwd == user.password:
-                return {"errors": {"password": "invalid current password"}}
-            new_pwd, error = db.auth_user.password.requires(new_password)
+                return {"errors": {"old_password": "invalid current password"}}
+            new_pwd, error = db.auth_user.password.validate(new_password)
             if error:
-                return {"errors": {"password": error}}
+                return {"errors": {"new_password": error}}
             if new_pwd == user.password:
                 return {
-                    "errors": {"password": "new password is the same as old password"}
+                    "errors": {"new_password": "new password is the same as previous password"}
                 }
+            if self.block_previous_password_num > 0:
+                past_pwds = (user.past_passwords_hash or [])[:self.block_previous_password_num]
+                if any(new_pwd == old_pwd for old_pwd in past_pwds):
+                    return {
+                        "errors": {"new_password": "new password was already used"}
+                        }
+                else:
+                    past_pwds.insert(0, pwd)
+                    db(db.auth_user.id == user.id).update(past_passwords_hash = past_pwds)
         id = db(db.auth_user.id == user.id).update(
-            password=new_pwd, last_password_change=datetime.datetie.utcnow()
+            password=new_pwd, last_password_change=datetime.datetime.utcnow()
         )
         return {}
 

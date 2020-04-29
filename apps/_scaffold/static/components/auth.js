@@ -1,11 +1,13 @@
 (function(){
 
-    var auth = { props: ['plugins'], data: null, methods: {}};
+    var auth = { data: {}, methods: {}};
     
     auth.data = function() {        
         var parts = window.location.href.split('?')[0].split('/');
         var data = {
-            plugins: this.plugin && this.plugins.split(','),
+            plugins: [],
+            allowed_actions: [],
+            fields: [],
             page: parts[parts.length-1],
             next: utils.getQuery()['next'] || '../index',
             form: {},
@@ -16,29 +18,40 @@
     };
     
     auth.methods.go = function(page, no_history) {
+        var self=this;
+        console.log(this);
+        if (['login','logout','403','404'].indexOf(page)<0 && 
+            self.allowed_actions.indexOf('all')<0 && 
+            self.allowed_actions.indexOf(page)<0) {
+            page = '404';
+        }
         var url_noqs = window.location.href.split('?')[0] ;
         var url = url_noqs.substring(0, url_noqs.lastIndexOf('/')) + '/' + page;
-        if (page == 'login') url += '?next=' + this.next ;
+        if (page == 'login') url += '?next=' + self.next ;
         if (!no_history) history.pushState({'page': page}, null, url);
-        if (page == 'register') 
-            this.form = {email:'', password:'', password2:'', first_name:'', last_name: ''};
+        if (page == '403' || page == '404') 
+            self.form = {}
+        else if (page == 'register') {
+            self.form = {username: '', email:'', password:'', password2:'', first_name:'', last_name: ''};
+            self.fields.map(function(f){ if(!(f.name in self.form)) {f._added=true; self.form[f.name]=''; } else f._added=false; });
+        }
         else if (page == 'login') 
-            this.form = {email:'', password:''};
+            self.form = {email:'', password:''};
         else if (page == 'request_reset_password') 
-            this.form = {email:''};
+            self.form = {email:''};
         else if (page == 'reset_password') 
-            this.form = {new_password:'', new_password2:''};
+            self.form = {new_password:'', new_password2:''};
         else if (page == 'change_password') 
-            this.form = {old_password:'', new_password:'', new_password2:''};
+            self.form = {old_password:'', new_password:'', new_password2:''};
         else if (page == 'change_email') 
-            this.form = {password: '', new_email:'', new_email2:''};
+            self.form = {password: '', new_email:'', new_email2:''};
         else if (page == 'edit_profile') 
-            this.form = {first_name:'', last_name: ''};
+            self.form = {first_name:'', last_name: ''};
         else 
-            this.form = {};
-        this.errors = {}        
-        for(var key in this.form) this.errors[key] = null;
-        this.page = page;
+            self.form = {};
+        self.errors = {}        
+        for(var key in self.form) self.errors[key] = null;
+        self.page = page;
     };
 
     auth.methods.submit_login = function() {
@@ -81,7 +94,7 @@
         axios.post('../auth/api/change_password', this.form).then(function(res){
                 if(res.data.errors) self.errors = res.data.errors;
                 else if (res.data.status=='error') alert(res.data.message);
-                else self.go('login');
+                else window.location = self.next;
             });        
     };
     auth.methods.submit_change_email = function() {
@@ -89,7 +102,7 @@
         axios.post('../auth/api/change_email', this.form).then(function(res){
                 if(res.data.errors) self.errors = res.data.errors;
                 else if (res.data.status=='error') alert(res.data.message);
-                else self.go('login');
+                else window.location = self.next;
             });        
     };
     auth.methods.submit_edit_profile = function() {
@@ -97,15 +110,20 @@
         axios.post('../auth/api/profile', this.form).then(function(res){
                 if(res.data.errors) self.errors = res.data.errors;
                 else if (res.data.status=='error') alert(res.data.message);
-                else self.go('login');
+                else window.location = self.next;
             });        
     };
     auth.created = function() {
         var self = this;
-        self.go(self.page, true);
         window.addEventListener('popstate', function (event) {
                 self.go(event.state.page, true);
             }, false);
+        axios.get('../auth/api/config').then(function(res){
+                self.plugins=res.data.plugins;
+                self.allowed_actions=res.data.allowed_actions;
+                self.fields=res.data.fields;
+                self.go(self.page, true);
+            });
     };
     utils.register_vue_component('auth', 'components/auth.html', function(template) {
             auth.template = template.data;
