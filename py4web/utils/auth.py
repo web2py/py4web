@@ -159,6 +159,10 @@ class Auth(Fixture):
         Field = db.Field
         if not "auth_user" in db.tables:
             ne = IS_NOT_EMPTY()
+            if self.password_complexity:
+                requires = [IS_STRONG(**self.password_complexity), CRYPT()]
+            else:
+                requires= [CRYPT()]
             auth_fields = [
                 Field(
                     "email",
@@ -168,7 +172,7 @@ class Auth(Fixture):
                 Field(
                     "password",
                     "password",
-                    requires=[IS_STRONG(**self.password_complexity), CRYPT()],
+                    requires=requires,
                     readable=False,
                     writable=False,
                 ),
@@ -520,7 +524,7 @@ class Auth(Fixture):
                 return {
                     "errors": {"new_password": "new password is the same as previous password"}
                 }
-            if self.block_previous_password_num > 0:
+            if self.block_previous_password_num:
                 past_pwds = (user.past_passwords_hash or [])[:self.block_previous_password_num]
                 if any(new_pwd == old_pwd for old_pwd in past_pwds):
                     return {
@@ -529,14 +533,14 @@ class Auth(Fixture):
                 else:
                     past_pwds.insert(0, pwd)
                     db(db.auth_user.id == user.id).update(past_passwords_hash = past_pwds)
-        id = db(db.auth_user.id == user.id).update(
+        num = db(db.auth_user.id == user.id).update(
             password=new_pwd, last_password_change=datetime.datetime.utcnow()
         )
-        return {}
+        return {'updated': num}
 
     def change_email(self, user, new_email, password=None, check=True):
         db = self.db
-        if check and not db.auth_user.password.requires(password)[0] == user.password:
+        if check and not db.auth_user.password.validate(password)[0] == user.password:
             return {"errors": {"password": "invalid"}}
         return (
             db(db.auth_user.id == user.id)
