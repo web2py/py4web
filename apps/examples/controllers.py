@@ -27,6 +27,18 @@ def simple_page():
 def error():
     1 / 0
 
+@action("session/counter")
+@action.uses(session)
+def session_counter():
+    session['counter'] = session.get('counter', 0) + 1
+    return str(session.get('counter'))
+
+@action("session/clear")
+@action.uses(session)
+def session_clear():
+    session.clear()
+    return 'done'
+
 
 # exposed as /examples/create_form or /examples/update_form/<id>
 @action("create_form", method=["GET", "POST"])

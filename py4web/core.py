@@ -430,6 +430,10 @@ class Session(Fixture):
     def __iter__(self):
         return self.local.data.items()
 
+    def clear(self):
+        self.local.changed = True
+        self.local.data.clear()
+
     def on_request(self):
         self.load()
 
