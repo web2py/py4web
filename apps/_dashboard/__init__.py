@@ -241,6 +241,7 @@ if MODE in ("demo", "readonly", "full"):
 
     @action("ticket/<ticket_uuid>")
     @action.uses("ticket.html")
+    @session_secured
     def error_ticket(ticket_uuid):
         return dict(ticket=ErrorStorage().get(ticket_uuid=ticket_uuid))
 
