@@ -360,6 +360,7 @@ class Auth(Fixture):
                                 data = self.get_or_register_user(data)
                                 self.session["user"] = {"id": data["id"]}
                                 self.session["recent_activity"] = calendar.timegm(time.gmtime())
+                                self.session["uuid"] = str(uuid.uuid1())
                         else:
                             data = self._error("Invalid Credentials")
                     # Else use normal login
@@ -368,6 +369,7 @@ class Auth(Fixture):
                         if user:
                             self.session["user"] = {"id": user.id}
                             self.session["recent_activity"] = calendar.timegm(time.gmtime())
+                            self.session["uuid"] = str(uuid.uuid1())
                             user = {
                                 f.name: user[f.name]
                                 for f in self.db.auth_user
@@ -409,7 +411,7 @@ class Auth(Fixture):
             data["code"] = data.get("code", 200)
             return data
         elif path == "logout":
-            self.session["user"] = None
+            self.session.clear()
             # Somehow call revoke for active plugin
         elif path == "verify_email" and self.db:
             token = get_vars.get("token")

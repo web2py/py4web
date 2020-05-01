@@ -18,6 +18,12 @@ def get_requests(status=None, received=True):
         orderby=db.auth_user.first_name + db.auth_user.last_name,
     )
 
+def check_liked(items):
+    query = db.item_like.created_by==auth.user_id
+    query &= db.item_like.item_id.belongs(items.as_dict().keys())
+    liked_ids = [row.item_id for row in db(query).select()]
+    for item in items:
+        item['liked'] = item.id in liked_ids
 
 # make a "like" button factory
 @authenticated.callback()
@@ -40,6 +46,7 @@ def index():
     items = db(db.feed_item.created_by.belongs(ids)).select(
         orderby=~db.feed_item.created_on, limitby=(0, 100)
     )
+    check_liked(items)
     return dict(form=form, items=items, like=like)
 
 
@@ -50,6 +57,7 @@ def home(id):
     items = db(db.feed_item.created_by == id).select(
         orderby=~db.feed_item.created_on, limitby=(0, 100)
     )
+    check_liked(items)
     return dict(items=items, like=like, user=db.auth_user[id])
 
 

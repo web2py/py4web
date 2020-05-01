@@ -394,9 +394,7 @@ class Session(Fixture):
             except Exception:
                 pass
         if not "uuid" in self.local.data:
-            self.local.changed = True
-            self.local.data["uuid"] = str(uuid.uuid1())
-            self.local.data["secure"] = self.local.secure
+            self.clear()
 
     def save(self):
         self.local.data["timestamp"] = time.time()
@@ -435,6 +433,8 @@ class Session(Fixture):
     def clear(self):
         self.local.changed = True
         self.local.data.clear()
+        self.local.data["uuid"] = str(uuid.uuid1())
+        self.local.data["secure"] = self.local.secure
 
     def on_request(self):
         self.load()
