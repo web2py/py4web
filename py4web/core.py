@@ -55,6 +55,8 @@ import pydal
 import pluralize
 from pydal._compat import to_native, to_bytes
 
+bottle.BaseRequest.MEMFILE_MAX = 16 * 1024 * 1024
+
 __all__ = [
     "render",
     "DAL",
