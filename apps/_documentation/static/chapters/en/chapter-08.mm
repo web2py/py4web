@@ -26,7 +26,7 @@ attributes = {'_id':'123', '_class':'myclass'}
 
 The following set of helpers:
 
-``A``, ``BEAUTIFY``, ``BODY``, ``CAT``, ``CODE``, ``DIV``, ``EM``, ``FORM``, ``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``, ``HEAD``, ``HTML``, ``I``, ``IMG``, ``INPUT``, ``LABEL``, ``LI``, ``LINK``, ``META``, ``METATAG``, ``OL``, ``OPTION``, ``PRE``, ``SELECT``, ``SPAN``, ``STRONG``, ``TABLE``, ``TAG``, ``TBODY``, ``TD``, ``TEXTAREA``, ``TH``, ``THAED``, ``TR``, ``UL``, ``XML``, ``sanitize``, ``xmlescape``
+``A``, ``BEAUTIFY``, ``BODY``, ``CAT``, ``CODE``, ``DIV``, ``EM``, ``FORM``, ``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``, ``HEAD``, ``HTML``, ``I``, ``IMG``, ``INPUT``, ``LABEL``, ``LI``, ``LINK``, ``META``, ``METATAG``, ``OL``, ``OPTION``, ``PRE``, ``SELECT``, ``SPAN``, ``STRONG``, ``TABLE``, ``TAG``, ``TBODY``, ``TD``, ``TEXTAREA``, ``TH``, ``THEAD``, ``TR``, ``UL``, ``XML``, ``sanitize``, ``xmlescape``
 
 can be used to build complex expressions that can then be serialized to XML``xml-w``:cite ``xml-o``:cite. For example:
 ``
@@ -243,14 +243,6 @@ CODE(..., styles={'CODE':'margin: 0;padding: 5px;border: none;'})
 
 The ``styles`` attribute must be a dictionary, and it allows two possible keys: ``CODE`` for the style of the actual code, and ``LINENUMBERS`` for the style of the left column, which contains the line numbers. Mind that these styles completely replace the default styles and are not simply added to them.
 
-#### ``COL``
-``COL``:inxx
-
-``
->>> print COL('a', 'b')
-<col>ab</col>
-``:python
-
 #### ``DIV``
 ``DIV``:inxx
 
@@ -269,15 +261,6 @@ Emphasizes its content.
 ``
 >>> print EM('<hello>', XML('<b>world</b>'), _class='test', _id=0)
 <em id="0" class="test">&lt;hello&gt;<b>world</b></em>
-``:python
-
-#### ``FIELDSET``
-``FIELDSET``:inxx
-
-This is used to create an input field together with its label.
-``
->>> print FIELDSET('Height:', INPUT(_name='height'), _class='test')
-<fieldset class="test">Height:<input name="height" /></fieldset>
 ``:python
 
 #### ``FORM``
@@ -412,16 +395,6 @@ It is used to create a LABEL tag for an INPUT field.
 ``
 >>> print LABEL('<hello>', XML('<b>world</b>'), _class='test', _id=0)
 <label id="0" class="test">&lt;hello&gt;<b>world</b></label>
-``:python
-
-#### ``LEGEND``
-``LEGEND``:inxx
-
-It is used to create a legend tag for a field in a form.
-
-``
->>> print LEGEND('Name', _for='myfield')
-<legend for="myfield">Name</legend>
 ``:python
 
 #### ``LI``
