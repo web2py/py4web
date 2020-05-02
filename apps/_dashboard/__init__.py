@@ -420,5 +420,5 @@ if MODE == "full":
     def gitshow(project, commit):
         if not is_git_repo(project):
             raise HTTP(400)
-        patch = run("git show " + commit + " -R", project)
+        patch = run("git show " + commit, project)
         return diff2kryten(patch)

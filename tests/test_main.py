@@ -6,15 +6,15 @@ import time
 import signal
 from multiprocessing import Process
 from unittest.mock import patch
-from py4web.core import main
+from py4web.core import cli
 
 
-def patched_main():
+def patched_cli():
     dirpath = tempfile.mkdtemp()
     dir = os.path.join(dirpath, "apps")
-    testargs = ["py4web", "-d", "demo", "-c", dir]
+    testargs = ["py4web", "run", "-d", "demo", "-F", dir]
     with patch.object(sys, "argv", testargs):
-        main()
+        cli()
 
 
 class MainTest(unittest.TestCase):
@@ -28,6 +28,6 @@ class MainTest(unittest.TestCase):
         signal.signal(signal.SIGALRM, handler)
         signal.alarm(10)
         try:
-            patched_main()
+            patched_cli()
         except MyException:
             pass
