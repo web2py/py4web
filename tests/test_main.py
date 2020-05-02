@@ -12,7 +12,7 @@ from py4web.core import cli
 def patched_cli():
     dirpath = tempfile.mkdtemp()
     dir = os.path.join(dirpath, "apps")
-    testargs = ["py4web", "run", "-d", "demo", "-F", dir]
+    testargs = ["py4web", "run", "-d", "demo", dir]
     with patch.object(sys, "argv", testargs):
         cli()
 

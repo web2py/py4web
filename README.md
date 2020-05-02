@@ -6,9 +6,9 @@
 
 ```
 python3 -m pip install -U py4web --no-cache-dir --user
-py4web setup -F apps
+py4web setup apps
 py4web setup set-password
-py4web run -F apps
+py4web run apps
 open http://localhost:8000/todo/index
 ```
 
@@ -20,9 +20,9 @@ open http://localhost:8000/todo/index
 git clone https://github.com/web2py/py4web.git
 cd py4web 
 python3 -m pip install -r requirements.txt
-./py4web-cli setup -F apps
-./py4web-cli setup set-password
-./py4web-cli run -F apps
+./py4web.py setup apps
+./py4web.py setup set-password
+./py4web.py run apps
 open http://localhost:8000/todo/index
 ```
 
@@ -34,7 +34,7 @@ cd py4web
 make assets
 make test
 make install
-py4web run -F apps
+py4web run apps
 open http://localhost:8000/todo/index
 ```
 

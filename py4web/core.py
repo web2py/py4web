@@ -32,7 +32,7 @@ import urllib.parse
 import uuid
 import zipfile
 
-REX_APPJSON = re.compile("(^|\s|,)application/json(,|\s|$)")
+REX_APPJSON = re.compile(r"(^|\s|,)application/json(,|\s|$)")
 
 import click
 
@@ -1060,14 +1060,14 @@ def cli():
 
 
 @cli.command()
+@click.argument('apps_folder', default='apps')
 @click.option('-Y', '--yes', is_flag=True, default=False, help='No prompt, assume yes to questions')
-@click.option('-F', '--apps_folder', default='apps', help='Location of the apps')
 def setup(**args):
     install_args(args, reinstall_apps=True)
 
 
 @cli.command()
-@click.option('-F', '--apps_folder', default='apps', help='Location of the apps')
+@click.argument('apps_folder', default='apps')
 def shell(**args):
     install_args(args)
     fix_ansi_on_windows()
@@ -1084,8 +1084,8 @@ def set_password(password, password_file):
 
 
 @cli.command()
+@click.argument('apps_folder', default='apps')
 @click.option('-Y', '--yes', is_flag=True, default=False, help='No prompt, assume yes to questions')
-@click.option('-F', '--apps_folder', default='apps', help='Location of the apps')
 @click.option('-H', '--host', default='127.0.0.1', help='Host name')
 @click.option('-P', '--port', default=8000, type=int, help='Port number')
 @click.option('-p', '--password_file', default='password.txt', help='File for the encrypted password')

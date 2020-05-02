@@ -204,7 +204,7 @@ class Auth(Fixture):
                         "phone_number",
                         requires=[
                             ne,
-                            IS_MATCH("^[+]?(\(\d+\)|\d+)(\(\d+\)|\d+|[ -])+$"),
+                            IS_MATCH(r"^[+]?(\(\d+\)|\d+)(\(\d+\)|\d+|[ -])+$"),
                         ],
                     ),
                 )

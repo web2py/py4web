@@ -16,9 +16,9 @@ python3 -m pip install --upgrade py4web
 This will install py4web and all its dependencies. Once installed you can start it with:
 
 ``
-py4web setup -F apps
+py4web setup apps
 py4web set-password
-py4web run -F apps
+py4web run apps
 ``:bash
 
 This should produce an output like:
@@ -74,9 +74,9 @@ python3 -m pip install -r requirements.txt
 Once installed, you should start with
 
 ``
-./py4web-cli setup -F apps
-./py4web-cli set-password
-./py4web-cli run -F apps
+./py4web.py setup apps
+./py4web.py set-password
+./py4web.py run apps
 ``:bash
 
 Notice the ``./`` ; it forces the run of the local folder's py4web and not the installed one.
@@ -89,7 +89,7 @@ python3 -m pip install -U py4web
 ``:bash
 this will install the libraries but not the apps. To upgrade the built-in apps, delete them them run:
 ``
-py4web setup -F apps
+py4web setup apps
 ``:bash
 
 ### Dashboard password
@@ -105,7 +105,7 @@ and then ask py4web to re-use that password:
 Pip Install:
 
 ``
-py4webt run -p password.txt -F apps
+py4webt run -p password.txt apps
 ``:bash
 
 ### Command line options
