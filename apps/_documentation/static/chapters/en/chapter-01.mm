@@ -16,7 +16,9 @@ python3 -m pip install --upgrade py4web
 This will install py4web and all its dependencies. Once installed you can start it with:
 
 ``
-py4web-start.py apps
+py4web setup -F apps
+py4web set-password
+py4web run -F apps
 ``:bash
 
 This should produce an output like:
@@ -72,7 +74,9 @@ python3 -m pip install -r requirements.txt
 Once installed, you should start with
 
 ``
-./py4web-start.py apps
+./py4web-cli setup -F apps
+./py4web-cli set-password
+./py4web-cli run -F apps
 ``:bash
 
 Notice the ``./`` ; it forces the run of the local folder's py4web and not the installed one.
@@ -85,16 +89,15 @@ python3 -m pip install -U py4web
 ``:bash
 this will install the libraries but not the apps. To upgrade the built-in apps, delete them them run:
 ``
-py4web-start -c apps
+py4web setup -F apps
 ``:bash
-The "-c" or "--create" option instructs py4web to re-install the missing apps.
 
 ### Dashboard password
 
 Every time py4web starts, it asks for a one-time password for you to access the dashboard. This is annoying. You can avoid it by storying a password hashed in a file:
 
 ``
-python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()(input('password:'))[0]))"
+py4web set-password
 ``:bash
 (pydal is installed by py4web as a dependency)
 and then ask py4web to re-use that password:
@@ -102,56 +105,12 @@ and then ask py4web to re-use that password:
 Pip Install:
 
 ``
-py4web-start -p password.txt apps
-``:bash
-
-Console:
-
-``
-py4web-start -p password.txt apps
-``:bash
-
-or
-
-``
-py4web-start -p password.txt apps
+py4webt run -p password.txt -F apps
 ``:bash
 
 ### Command line options
 
-py4web provides multiple command line options which can be listed with ``-h``.
-
-``
-usage: py4web-start.py [-h] [--host HOSTNAME] [--port PORT] [--headless] [-n NUMBER_WORKERS]
-
-                       [--ssl_cert_filename SSL_CERT_FILENAME]
-                       [--ssl_key_filename SSL_KEY_FILENAME]
-                       [--service_db_uri SERVICE_DB_URI] [-d DASHBOARD_MODE]
-                       [-p PASSWORD_FILE] [-c]
-                       apps_folder
-
-positional arguments:
-  apps_folder           path to the applications folder
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --host HOSTNAME       server address (IP or hostname)
-  --port PORT           server port number (e.g., 8000)
-  --headless            hide artwork for console based servers
-  -n NUMBER_WORKERS, --number_workers NUMBER_WORKERS
-                        number of gunicorn workers
-  --ssl_cert_filename SSL_CERT_FILENAME
-                        ssl certificate file
-  --ssl_key_filename SSL_KEY_FILENAME
-                        ssl key file
-  --service_db_uri SERVICE_DB_URI
-                        db uri for logging
-  -d DASHBOARD_MODE, --dashboard_mode DASHBOARD_MODE
-                        dashboard mode: demo, readonly, full (default), none
-  -p PASSWORD_FILE, --password_file PASSWORD_FILE
-                        file containing the encrypted (CRYPT) password
-  -c, --create          created the missing folder and apps
-``
+py4web provides multiple command line options which can be listed with ``--help``.
 
 ## Deployment on GCloud (aka Google App Engine)
 

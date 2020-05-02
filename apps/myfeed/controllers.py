@@ -11,7 +11,7 @@ def get_requests(status=None, received=True):
     query = db.friend_request[to_user] == auth.user_id
     query &= db.friend_request[from_user] == db.auth_user.id
     if status:
-        query = db.friend_request.status == status
+        query &= db.friend_request.status == status
     return db(query).select(
         db.auth_user.ALL,
         db.friend_request.ALL,
