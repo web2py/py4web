@@ -95,7 +95,7 @@ class URLSigner(Fixture):
             "info": self.signing_info() if self.signing_info is not None else "",
             "vars": {v: repr(variables.get(v)) for v in self.variables_to_sign},
         }
-        key =self._get_key() + "." + json.dumps(additional_key)
+        key = self._get_key() + "." + json.dumps(additional_key)
         print("Key:", key)
         return key
 
