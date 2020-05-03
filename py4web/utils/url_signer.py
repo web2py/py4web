@@ -1,4 +1,6 @@
-import hashlib, hmac
+import json
+import jwt
+import time
 import uuid
 from py4web import request, abort
 from py4web.core import Fixture, Session
@@ -20,26 +22,31 @@ class URLVerifier(Fixture):
     def on_request(self):
         """Checks the request's signature"""
         # extra and remove the signature from the query
-        signature = request.query.get("_signature")
-        if signature is None:
+        token = request.query.get("_signature")
+        if token is None:
             abort(403)
-        del request.query["_signature"]
-        # Verifies the query keys.
-        if signature != self.url_signer.sign(request.fullpath, request.query):
+        try:
+            key = self.url_signer.get_url_key(request.fullpath, request.query)
+            jwt.decode(token, key, algorithms=['HS256'])
+        except:
             abort(403)
 
 
 class URLSigner(Fixture):
-    def __init__(self, session=None, key=None, salt=b"", variables_to_sign=None):
+    def __init__(self, session=None, key=None, variables_to_sign=None,
+                 signing_info=None, lifespan=None):
         """
         Signer for URLs.
         :param session: Session.  If a session is not specified, it will use a key
             to sign the URLs.
         :param key: key to sign, used if no session is specified.  If neither a
             session nor a key is specified, then Session.SECRET is used to sign.
-        :param salt: Optional salt that can be used in signing; used to create
-            signers with different behavior while sharing the same session key.
         :param variables_to_sign: List of variables to be included in the signature.
+        :param signing_info: A function that, when called, returns an additional
+            string that is passed into the signing algorithm.  One can e.g. include
+            the user id among the things that should not change by doing:
+            signing_info = lambda : str(self.session.get("user", {}).get("id", ""))
+        :param lifespan: Lifespan of the signature, in seconds.
 
         The usage is as follows, typically.
 
@@ -65,8 +72,9 @@ class URLSigner(Fixture):
             # (including the signing key).
             self.__prerequisites__ = [session]
         self.key = key or Session.SECRET
-        self.salt = salt
         self.variables_to_sign = variables_to_sign or []
+        self.signing_info = signing_info
+        self.lifespan = lifespan
         assert "_signature" not in self.variables_to_sign
 
     def _get_key(self):
@@ -78,16 +86,28 @@ class URLSigner(Fixture):
             if key is None:
                 key = str(uuid.uuid1())
                 self.session["_signature_key"] = key
-        return key.encode("utf8")
+        return key
+
+    def get_url_key(self, url, variables):
+        # The key consists of the key, and of the URL parameters.
+        additional_key = {
+            "url": url,
+            "info": self.signing_info() if self.signing_info is not None else "",
+            "vars": {v: repr(variables.get(v)) for v in self.variables_to_sign},
+        }
+        key =self._get_key() + "." + json.dumps(additional_key)
+        print("Key:", key)
+        return key
 
     def sign(self, url, variables):
         """Signs the URL"""
-        h = hmac.new(self._get_key(), msg=self.salt, digestmod=hashlib.sha256)
-        h.update(url.encode("utf8"))
-        # Adds the variables that need to be signed.
-        for key in self.variables_to_sign:
-            h.update(("%s=%r" % (key, variables[key])).encode("utf8"))
-        return h.hexdigest()
+        # The payload consists of a timestamp, and of additonal parameters.
+        payload = {"ts": str(time.time())}
+        if self.lifespan is not None:
+            payload["exp"] = time.time() + self.lifespan
+        print("Payload:", payload)
+        key = self.get_url_key(url, variables)
+        return jwt.encode(payload, key,  algorithm='HS256').decode('utf-8')
 
     def sign_vars(self, url, variables):
         """Signs a URL, adding to vars (the variables of the URL) a signature."""
