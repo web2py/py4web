@@ -25,6 +25,7 @@ setup(
     package_data={"py4web": ["assets/*"],},
     install_requires=[
         "bottle",
+        "click",
         "gunicorn",
         "gevent",
         "threadsafevariable",
