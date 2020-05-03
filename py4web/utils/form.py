@@ -1,6 +1,8 @@
+import json
+import jwt
+import time
 import uuid
-import hashlib, hmac
-from py4web import DAL, request
+from py4web import request
 from yatl.helpers import (
     A,
     TEXTAREA,
@@ -15,7 +17,6 @@ from yatl.helpers import (
     OPTION,
     P,
 )
-from pydal._compat import to_bytes
 
 
 def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
@@ -167,15 +168,21 @@ class Form(object):
            return dict(form=form)
 
     Arguments:
-    - table: a DAL table or a list of fields (equivalent to old SQLFORM.factory)
-    - record: a DAL record or record id
-    - readonly: set to True to make a readonly form
-    - deletable: set to False to disallow deletion of record
-    - formstyle: a function that renders the form using helpers (FormStyleDefault)
-    - dbio: set to False to prevent any DB writes
-    - keep_values: if set to true, it remembers the values of the previously submitted form
-    - form_name: the optional name of this form
-    - csrf_session: if None, no csrf token is added.  If a session, then a CSRF token is added and verified.
+    :param table: a DAL table or a list of fields (equivalent to old SQLFORM.factory)
+    :param record: a DAL record or record id
+    :param readonly: set to True to make a readonly form
+    :param deletable: set to False to disallow deletion of record
+    :param formstyle: a function that renders the form using helpers (FormStyleDefault)
+    :param dbio: set to False to prevent any DB writes
+    :param keep_values: if set to true, it remembers the values of the previously submitted form
+    :param form_name: the optional name of this form
+    :param csrf_session: if None, no csrf token is added.  If a session, then a CSRF token is added and verified.
+    :param lifespan: lifespan of CSRF token in seconds, to limit form validity.
+    :param signing_info: information that should not change between when the CSRF token is signed and
+        verified.  This information is not leaked to the form.  For instance, if you wish to verify
+        that the identity of the logged in user has not changed, you can do as below.
+        signing_info = session.get("user", {}).get("id", "")
+        The content of the field should be convertible to a string via json.
     """
 
     def __init__(
@@ -187,10 +194,12 @@ class Form(object):
         formstyle=FormStyleDefault,
         dbio=True,
         keep_values=False,
-        form_name=False,
+        form_name=None,
         hidden=None,
         validation=None,
         csrf_session=None,
+        lifespan=None,
+        signing_info=None
     ):
 
         if isinstance(table, list):
@@ -222,6 +231,8 @@ class Form(object):
         self.formkey = None
         self.cached_helper = None
         self.csrf_session = csrf_session
+        self.lifespan = lifespan
+        self.signing_info = signing_info
 
         if readonly or request.method == "GET":
             self._read_vars_from_record(table)
@@ -284,20 +295,24 @@ class Form(object):
                     if name in self.record
                 }
 
-    def _get_signature(self, salt=""):
+    def _get_key(self):
         key = self.csrf_session.get("_form_key")
         if key is None:
             key = str(uuid.uuid1())
             self.csrf_session["_form_key"] = key
-        h = hmac.new(key.encode("utf8"), msg=salt.encode("utf8"), digestmod=hashlib.sha256)
-        return h.hexdigest()
+        additional_info = {
+            "signing_info": self.signing_info,
+            "form_name": self.form_name,
+        }
+        return key + "." + json.dumps(additional_info)
 
     def _sign_form(self):
         """Signs the form, for csrf"""
         # Adds a form key.  First get the signing key from the session.
-        if self.csrf_session is not None:
-            salt = str(uuid.uuid4())
-            self.formkey = salt + ";" + self._get_signature(salt)
+        payload = {"ts": str(time.time())}
+        if self.lifespan is not None:
+            payload["exp"] = time.time() + self.lifespan
+        self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256").decode('utf-8')
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""
@@ -305,10 +320,10 @@ class Form(object):
             return False
         if not self.csrf_session:
             return True
-        formkey = post_vars.get("_formkey")
+        token = post_vars.get("_formkey")
         try:
-            salt, u = formkey.split(";")
-            return u == self._get_signature(salt=salt)
+            jwt.decode(token, self._get_key(), algorithms=["HS256"])
+            return True
         except:
             return False
 
