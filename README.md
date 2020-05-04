@@ -38,7 +38,7 @@ py4web run apps
 open http://localhost:8000/todo/index
 ```
 
-Notice "py4web-start" uses the pip installed py4web, "./py4web-start.py" uses the local one. Do not get confused.
+Notice "py4web" uses the pip installed py4web, "./py4web.py" uses the local one. Do not get confused.
 Also notice when installing from source the content of py4web/assets is missing and it is created by make assets.
 
 ## Tell me more
