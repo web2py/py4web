@@ -2,7 +2,7 @@ import json
 import jwt
 import time
 import uuid
-from py4web import request
+from py4web import request, Session
 from yatl.helpers import (
     A,
     TEXTAREA,
@@ -296,10 +296,13 @@ class Form(object):
                 }
 
     def _get_key(self):
-        key = self.csrf_session.get("_form_key")
-        if key is None:
-            key = str(uuid.uuid1())
-            self.csrf_session["_form_key"] = key
+        if self.csrf_session is not None:
+            key = self.csrf_session.get("_form_key")
+            if key is None:
+                key = str(uuid.uuid1())
+                self.csrf_session["_form_key"] = key
+        else:
+            key = Session.SECRET
         additional_info = {
             "signing_info": self.signing_info,
             "form_name": self.form_name,
@@ -309,11 +312,10 @@ class Form(object):
     def _sign_form(self):
         """Signs the form, for csrf"""
         # Adds a form key.  First get the signing key from the session.
-        if self.csrf_session is not None:
-            payload = {"ts": str(time.time())}
-            if self.lifespan is not None:
-                payload["exp"] = time.time() + self.lifespan
-            self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256").decode('utf-8')
+        payload = {"ts": str(time.time())}
+        if self.lifespan is not None:
+            payload["exp"] = time.time() + self.lifespan
+        self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256").decode('utf-8')
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""
