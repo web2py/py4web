@@ -1,6 +1,6 @@
 import fnmatch
 import ipaddress
-from py4web.core import Fixture, request, HTTP
+from py4web.core import Fixture, request, response, HTTP
 
 
 def listify(item):
@@ -68,3 +68,32 @@ class CheckHeaders(Fixture):
         referer = request.environ.get('HTTP_REFERER')
         if referer and not self.split(referer) == self.split(request.url):
             raise HTTP(400)
+
+class AllowCors(Fixture):
+    """
+    Sets the CORS headers:
+    Access-Control-Allow-Origin
+    Access-Control-Allow-Headers
+    Access-Control-Allow-Methods
+    Access-Control-Expose-Headers
+    Access-Control-Request-Headers
+    """
+
+    def __init__(self, origin='*', headers=['*'], methods=['*'], exposed_headers=[], request_headers=[]):
+        self.origin = origin
+        self.headers = ', '.join(headers)
+        self.methods = ', '.join(methods)
+        self.exposed_headers = ', '.join(exposed_headers)
+        self.request_headers = ', '.join(request_headers)
+
+    def on_request(self):
+        if self.origin:
+            response.headers["Access-Control-Allow-Origin"] = self.origin
+        if self.headers:
+            response.headers["Access-Control-Allow-Headers"] = self.headers
+        if self.methods:
+            response.headers["Access-Control-Allow-Methods"] = self.methods
+        if self.exposed_headers:
+            response.headers["Access-Control-Expose-Headers"] = self.exposed_headers
+        if self.request_headers:
+            response.headers["Access-Control-Request-Headers"] = self.request_headers
