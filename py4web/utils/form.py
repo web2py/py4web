@@ -309,10 +309,11 @@ class Form(object):
     def _sign_form(self):
         """Signs the form, for csrf"""
         # Adds a form key.  First get the signing key from the session.
-        payload = {"ts": str(time.time())}
-        if self.lifespan is not None:
-            payload["exp"] = time.time() + self.lifespan
-        self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256").decode('utf-8')
+        if self.csrf_session is not None:
+            payload = {"ts": str(time.time())}
+            if self.lifespan is not None:
+                payload["exp"] = time.time() + self.lifespan
+            self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256").decode('utf-8')
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""
