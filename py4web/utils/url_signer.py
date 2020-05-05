@@ -28,6 +28,8 @@ class URLVerifier(Fixture):
         try:
             key = self.url_signer.get_url_key(request.fullpath, request.query)
             jwt.decode(token, key, algorithms=['HS256'])
+            # We remove the signature, not to pollute the request.
+            del request.query["_signature"]
         except:
             abort(403)
 
@@ -96,7 +98,6 @@ class URLSigner(Fixture):
             "vars": {v: repr(variables.get(v)) for v in self.variables_to_sign},
         }
         key = self._get_key() + "." + json.dumps(additional_key)
-        print("Key:", key)
         return key
 
     def sign(self, url, variables):
@@ -105,7 +106,6 @@ class URLSigner(Fixture):
         payload = {"ts": str(time.time())}
         if self.lifespan is not None:
             payload["exp"] = time.time() + self.lifespan
-        print("Payload:", payload)
         key = self.get_url_key(url, variables)
         return jwt.encode(payload, key,  algorithm='HS256').decode('utf-8')
 
