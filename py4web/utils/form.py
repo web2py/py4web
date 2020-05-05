@@ -2,7 +2,7 @@ import json
 import jwt
 import time
 import uuid
-from py4web import request
+from py4web import request, Session
 from yatl.helpers import (
     A,
     TEXTAREA,
@@ -296,10 +296,13 @@ class Form(object):
                 }
 
     def _get_key(self):
-        key = self.csrf_session.get("_form_key")
-        if key is None:
-            key = str(uuid.uuid1())
-            self.csrf_session["_form_key"] = key
+        if self.csrf_session is not None:
+            key = self.csrf_session.get("_form_key")
+            if key is None:
+                key = str(uuid.uuid1())
+                self.csrf_session["_form_key"] = key
+        else:
+            key = Session.SECRET
         additional_info = {
             "signing_info": self.signing_info,
             "form_name": self.form_name,

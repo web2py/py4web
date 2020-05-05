@@ -18,6 +18,7 @@ DB_POOL_SIZE = 1
 
 # send email on regstration
 VERIFY_EMAIL = False
+PASSWORD_COMPLEXITY = None
 
 # email settings
 SMTP_SERVER = None
