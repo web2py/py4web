@@ -457,19 +457,22 @@ class Session(Fixture):
 #########################################################################################
 
 
-def URL(*parts, vars=None, hash=None, scheme=False, signer=None):
+def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=True):
     """
     Examples:
     URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name}/a/b?x=1#y
     URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name}/a/b?x=1
     URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name}/a/b?x=1
     URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
     """
     script_name = (
         request.get("HTTP_X_SCRIPT_NAME", "") or request.get("SCRIPT_NAME", "")
     ).rstrip("/")
     prefix = script_name + (
-        "/%s/" % request.app_name if request.app_name != "_default" else "/"
+        "/%s/" % request.app_name
+        if (request.app_name != "_default" and use_appname)
+        else "/"
     )
     broken_parts = []
     for part in parts:
