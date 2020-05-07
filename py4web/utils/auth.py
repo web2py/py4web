@@ -49,8 +49,8 @@ class AuthEnforcer(Fixture):
         self.auth = auth
         self.condition = condition
 
-    def transform(self, output):
-        return self.auth.transform(output)
+    def transform(self, output, shared_data):
+        return self.auth.transform(output, shared_data)
 
     def abort_or_redirect(self, page, message=''):
         """
@@ -147,10 +147,10 @@ class Auth(Fixture):
             self.define_tables()
         self.plugins = {}
 
-    def transform(self, output):
+    def transform(self, output, shared_data):
         if self.inject:
-            if isinstance(output, dict) and not "user" in output:
-                output["user"] = self.get_user()
+            template_context = shared_data.get('template_context')
+            template_context["user"] = self.get_user()
         return output
 
     def define_tables(self):

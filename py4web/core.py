@@ -245,7 +245,7 @@ class Fixture:
     def on_success(self):
         pass  # called when a request is successful
 
-    def transform(self, output):  # transforms the output, for example to apply template
+    def transform(self, output, shared_data=None):  # transforms the output, for example to apply template
         return output
 
 
@@ -301,12 +301,14 @@ class Template(Fixture):
             filename, raw_read, expiration=1, monitor=lambda: os.path.getmtime(filename)
         )
 
-    def transform(self, output):
+    def transform(self, output, shared_data=None):
         if not isinstance(output, dict):
             return output
         context = dict(request=request)
         context.update(HELPERS)
         context.update(URL=URL)
+        if shared_data:
+            context.update(shared_data.get('template_context', {}))
         context.update(output)
         context["__vars__"] = output
         app_folder = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], request.app_name)
@@ -545,11 +547,13 @@ class action:
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
+                # data shared by all fixtures in the piplined for each request
+                shared_data = {'template_context': {}}
                 try:
                     [obj.on_request() for obj in fixtures]
                     ret = func(*args, **kwargs)
                     for obj in fixtures:
-                        ret = obj.transform(ret)
+                        ret = obj.transform(ret, shared_data)
                     [obj.on_success() for obj in fixtures]
                     return ret
                 except HTTP:
