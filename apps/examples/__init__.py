@@ -13,3 +13,8 @@ from . import controllers
 __version__ = "0.0.0"
 __author__ = "you <you@example.com>"
 __license__ = "anything you want"
+
+
+def test(x=10):
+    """to call this funciton from shell: py4web call apps.examples.test --args '{"x": 100}'"""
+    print("x = %r" % x)

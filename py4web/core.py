@@ -1076,11 +1076,22 @@ def setup(**args):
 
 @cli.command()
 @click.argument('apps_folder', default='apps')
-def shell(**args):
-    install_args(args)
+def shell(apps_folder):
+    install_args(dict(apps_folder=apps_folder))
     fix_ansi_on_windows()
     code.interact(local=dict(globals(), **locals()))
 
+
+@cli.command()
+@click.argument('func')
+@click.option('--args', default='{}')
+def call(func, args):
+    args = json.loads(args)
+    install_args(dict(apps_folder=func.split('.')[0]))
+    path, name = func.rsplit('.', 1)
+    env = {}
+    exec('from %s import %s' % (path, name), {}, env)
+    env[name](**args)
 
 @cli.command()
 @click.option('--password', prompt=True, confirmation_prompt=True, hide_input=True)
