@@ -1062,6 +1062,10 @@ def keyboardInterruptHandler(signal, frame):
 def cli():
     pass
 
+@cli.command()
+def version():
+    from . import __version__
+    click.echo(__version__)
 
 @cli.command()
 @click.argument('apps_folder', default='apps')

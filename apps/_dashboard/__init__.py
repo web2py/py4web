@@ -72,6 +72,10 @@ class Logged(Fixture):
 authenticated = ActionFactory(Logged(session))
 session_secured = action.uses(Logged(session))
 
+@action('version')
+def version():
+    return __version__
+
 if MODE in ("demo", "readonly", "full"):
 
     @action("index")
