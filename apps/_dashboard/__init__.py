@@ -243,6 +243,11 @@ if MODE in ("demo", "readonly", "full"):
         tickets = error_storage.get()
         return {"payload": tickets}
 
+    @action("clear")
+    @session_secured
+    def clear_tickets():
+        error_storage.clear()
+
     @action("ticket/<ticket_uuid>")
     @action.uses("ticket.html")
     @session_secured
