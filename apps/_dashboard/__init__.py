@@ -293,10 +293,10 @@ if MODE in ("demo", "readonly", "full"):
             }
         elif len(args) > 2 and args[1] in databases:
             db = getattr(module, args[1])
-            id = args[3] if len(args) == 4 else None           
+            id = args[3] if len(args) == 4 else None
             policy = Policy()
             for table in db:
-                policy.set(table._tablename, 'GET', authorize=True, 
+                policy.set(table._tablename, 'GET', authorize=True,
                            allowed_patterns=["**"], allow_lookup=True,
                            fields=table.fields)
                 policy.set(table._tablename,'PUT', authorize=True, fields=table.fields)
@@ -435,5 +435,9 @@ if MODE == "full":
     def gitshow(project, commit):
         if not is_git_repo(project):
             raise HTTP(400)
-        patch = run("git show " + commit, project)
+        flag = request.params.get('showfull')
+        opt = ""
+        if flag == "true":
+            opt = " -U9999"
+        patch = run("git show " + commit + opt, project)
         return diff2kryten(patch)
