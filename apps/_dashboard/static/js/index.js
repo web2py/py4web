@@ -183,6 +183,10 @@ let init = (app) => {
                 app.vue.tickets = res.data.payload || [];
             });
     };
+    app.clear_tickets = () => {
+        app.vue.tickets = [];
+        axios.get('../clear').then(app.reload_tickets());
+    };
     app.login = () => {
         axios.post('../login',{'password': app.vue.password}).then(function(res){
                 app.vue.password = '';
@@ -211,6 +215,7 @@ let init = (app) => {
         create_new_file: app.create_new_file,
         upload_new_file: app.upload_new_file,
         reload_tickets: app.reload_tickets,
+        clear_tickets: app.clear_tickets,
         modal_dismiss: app.modal_dismiss,
         handle_upload_file: app.handle_upload_file,
         login: app.login,

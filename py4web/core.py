@@ -804,6 +804,11 @@ class ErrorStorage:
                 rows.append(row)
         return rows if not ticket_uuid else rows[0] if rows else None
 
+    def clear(self):
+        db = self.db
+        db(db.py4web_error).delete()
+        self.db.commit()
+
 
 #########################################################################################
 # Loading &  Reloading Logic

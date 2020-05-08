@@ -137,6 +137,7 @@
         <div style="max-width:100vw">
           <div class="right">
             <button v-on:click="reload_tickets()"><i class="fas fa-sync-alt"></i> Reload Tickets</button>
+            <button v-on:click="clear_tickets()"><i class="fas fa-trash"></i> Clear Tickets</button>
           </div>
           <div style="overflow-x: auto">
             <table v-if="tickets.length>0">
