@@ -1091,14 +1091,16 @@ def shell(apps_folder):
 
 
 @cli.command()
+@click.argument('apps_folder')
 @click.argument('func')
 @click.option('--args', default='{}')
-def call(func, args):
+def call(apps_folder, func, args):
     args = json.loads(args)
-    install_args(dict(apps_folder=func.split('.')[0]))
-    path, name = func.rsplit('.', 1)
+    install_args(dict(apps_folder=apps_folder))
+    module, name = ('apps.' + func).rsplit('.', 1)
     env = {}
-    exec('from %s import %s' % (path, name), {}, env)
+    os.chdir(apps_folder)
+    exec('from %s import %s' % (module, name), {}, env)
     env[name](**args)
 
 @cli.command()

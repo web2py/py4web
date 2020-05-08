@@ -16,5 +16,5 @@ __license__ = "anything you want"
 
 
 def test(x=10):
-    """to call this funciton from shell: py4web call apps.examples.test --args '{"x": 100}'"""
+    """to call this funciton from shell: py4web call apps examples.test --args '{"x": 100}'"""
     print("x = %r" % x)
