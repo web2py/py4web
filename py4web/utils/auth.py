@@ -29,6 +29,7 @@ from pydal.validators import (
 [ ] Force new password every x days.
 """
 
+
 def b16e(text):
     return base64.b16encode(text.encode()).decode()
 
@@ -61,7 +62,14 @@ class AuthEnforcer(Fixture):
         redirect_next = request.fullpath
         if request.query_string:
             redirect_next = redirect_next + "?{}".format(request.query_string)
-        redirect(URL(self.auth.route, page, vars=dict(next=redirect_next, flash=message)))
+        redirect(
+            URL(
+                self.auth.route,
+                page,
+                vars=dict(next=redirect_next, flash=message),
+                use_appname=self.auth.use_appname_in_redirects,
+            )
+        )
 
     def on_request(self):
         """check that we have a user in the session and
@@ -119,6 +127,7 @@ class Auth(Fixture):
         password_complexity={"entropy": 50},
         block_previous_password_num=None,
         allowed_actions=['all'],
+        use_appname_in_redirects=True,
     ):
         """Creates and Auth object responsinble for handling
         authentication and authorization"""
@@ -140,6 +149,7 @@ class Auth(Fixture):
         self.password_complexity = password_complexity
         self.block_previous_password_num = block_previous_password_num
         self.allowed_actions = allowed_actions
+        self.use_appname_in_redirects = use_appname_in_redirects
         # The self._link variable is not thread safe (only intended for testing)
         self._link = None
         self.extra_auth_user_fields = extra_fields
@@ -162,7 +172,7 @@ class Auth(Fixture):
             if self.password_complexity:
                 requires = [IS_STRONG(**self.password_complexity), CRYPT()]
             else:
-                requires= [CRYPT()]
+                requires = [CRYPT()]
             auth_fields = [
                 Field(
                     "email",
@@ -322,14 +332,18 @@ class Auth(Fixture):
                 if path == "api/use_username":
                     return {"use_username": self.use_username}
                 if path == "api/config":
-                    fields = [dict(name=f.name, type=f.type) for f in self.db.auth_user 
-                              if f.type in ['string','bool','integer','float'] and 
-                              f.writable and f.readable]
+                    fields = [
+                        dict(name=f.name, type=f.type)
+                        for f in self.db.auth_user
+                        if f.type in ["string", "bool", "integer", "float"]
+                        and f.writable
+                        and f.readable
+                    ]
                     return {
                         "allowed_actions": self.allowed_actions,
                         "plugins": ['local'] + [key for key in self.plugins],
                         "fields": fields,
-                        }
+                    }
                 # Otherwise, we assume the user exists.
                 user = self.get_user(safe=True)
                 if not user:
@@ -417,9 +431,22 @@ class Auth(Fixture):
             token = get_vars.get("token")
             if self.verify_email(token):
                 next = b16d(token.split("/")[1])
-                redirect(next or URL("auth", "email_verified"))
+                redirect(
+                    next
+                    or URL(
+                        "auth",
+                        "email_verified",
+                        use_appname=self.use_appname_in_redirects,
+                    )
+                )
             else:
-                redirect(URL("auth", "token_expired"))
+                redirect(
+                    URL(
+                        "auth",
+                        "token_expired",
+                        use_appname=self.use_appname_in_redirects,
+                    )
+                )
         env["path"] = path
         return Template("auth.html").transform(env)
 
@@ -435,7 +462,11 @@ class Auth(Fixture):
             res = self.db.auth_user.validate_and_insert(**fields)
             if send and res.get("id"):
                 self._link = link = URL(
-                    self.route, "verify_email", vars=dict(token=token), scheme=True
+                    self.route,
+                    "verify_email",
+                    vars=dict(token=token),
+                    scheme=True,
+                    use_appname=self.use_appname_in_redirects,
                 )
                 self.send("verify_email", fields, link=link)
         elif self.registration_requires_approval:
@@ -487,7 +518,11 @@ class Auth(Fixture):
             user.update_record(action_token="reset-password-request:" + token)
             if send:
                 self._link = link = URL(
-                    self.route, "reset_password", vars=dict(token=token), scheme=True,
+                    self.route,
+                    "reset_password",
+                    vars=dict(token=token),
+                    scheme=True,
+                    use_appname=self.use_appname_in_redirects,
                 )
                 self.send("reset_password", user, link=link)
             return token
@@ -524,17 +559,17 @@ class Auth(Fixture):
                 return {"errors": {"new_password": error}}
             if new_pwd == user.password:
                 return {
-                    "errors": {"new_password": "new password is the same as previous password"}
+                    "errors": {
+                        "new_password": "new password is the same as previous password"
+                    }
                 }
             if self.block_previous_password_num:
-                past_pwds = (user.past_passwords_hash or [])[:self.block_previous_password_num]
+                past_pwds = (user.past_passwords_hash or [])[: self.block_previous_password_num]
                 if any(new_pwd == old_pwd for old_pwd in past_pwds):
-                    return {
-                        "errors": {"new_password": "new password was already used"}
-                        }
+                    return {"errors": {"new_password": "new password was already used"}}
                 else:
                     past_pwds.insert(0, pwd)
-                    db(db.auth_user.id == user.id).update(past_passwords_hash = past_pwds)
+                    db(db.auth_user.id == user.id).update(past_passwords_hash=past_pwds)
         num = db(db.auth_user.id == user.id).update(
             password=new_pwd, last_password_change=datetime.datetime.utcnow()
         )
