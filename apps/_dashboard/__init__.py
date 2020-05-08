@@ -431,9 +431,8 @@ if MODE == "full":
         if not is_git_repo(project):
             raise HTTP(400)
         flag = request.params.get('showfull')
-
+        opt = ""
         if flag == "true":
-            patch = run("git show " + commit + " -U9999", project)
-        else:
-            patch = run("git show " + commit, project)
+            opt = " -U9999"
+        patch = run("git show " + commit + opt, project)
         return diff2kryten(patch)
