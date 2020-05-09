@@ -1,0 +1,19 @@
+[[extend 'layout.html']]
+
+[[block page_head]]
+<link rel="stylesheet" href="[[=URL('static/components/vueform/vueform.css')]]">
+[[end]]
+
+<div id="vue">
+  [[=form]]
+</div>
+
+[[block page_scripts]]
+<script src="[[=URL('static/components/vueform/vueform.js')]]"></script>
+<script>
+  var app = new Vue({
+      el: "#vue",
+      data: {},
+  });
+</script>
+[[end]]

@@ -1,0 +1,19 @@
+[[extend 'layout.html']]
+
+[[block page_head]]
+<link rel="stylesheet" href="[[=URL('static/components/starrater/starrater.css')]]">
+[[end]]
+
+<div id="vue">
+  [[=stars]]
+</div>
+
+[[block page_scripts]]
+<script src="[[=URL('static/components/starrater/starrater.js')]]"></script>
+<script>
+  var app = new Vue({
+      el: "#vue",
+      data: {},
+  });
+</script>
+[[end]]
