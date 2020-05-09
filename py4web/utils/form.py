@@ -16,11 +16,19 @@ from yatl.helpers import (
     SELECT,
     OPTION,
     P,
+    XML,
 )
 
 
 def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
     form = FORM(_method="POST", _action=request.path, _enctype="multipart/form-data")
+    controls = dict(
+        widgets=dict(),
+        hidden_widgets=dict(),
+        errors=dict(),
+        begin=XML(form.xml().split("</form>")[0]),
+        end=XML("</form>"),
+    )
 
     classes = classes or {}
     class_label = classes.get("label", "")
@@ -91,6 +99,10 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
             key += "[type=%s]" % (control["_type"] or "text")
         control["_class"] = classes.get(key, "")
 
+        controls["widgets"][field.name] = control
+        if error:
+            controls["errors"][field.name] = error
+
         form.append(
             DIV(
                 LABEL(field.label, _for=input_id, _class=class_label),
@@ -102,34 +114,25 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
         )
 
     if deletable:
+        controls["delete"] = INPUT(
+            _type="checkbox",
+            _value="ON",
+            _name="_delete",
+            _class=classes.get("input[type=checkbox]"),
+        )
         form.append(
             DIV(
-                DIV(
-                    INPUT(
-                        _type="checkbox",
-                        _value="ON",
-                        _name="_delete",
-                        _class=classes.get("input[type=checkbox]"),
-                    ),
-                    _class=class_inner,
-                ),
+                DIV(controls["delete"], _class=class_inner,),
                 P("check to delete", _class="help"),
                 _class=class_outer,
             )
         )
-    submit = DIV(
-        DIV(
-            INPUT(
-                _type="submit",
-                _value="Submit",
-                _class=classes.get("input[type=submit]"),
-            ),
-            _class=class_inner,
-        ),
-        _class=class_outer,
+    controls["submit"] = INPUT(
+        _type="submit", _value="Submit", _class=classes.get("input[type=submit]"),
     )
+    submit = DIV(DIV(controls["submit"], _class=class_inner,), _class=class_outer,)
     form.append(submit)
-    return form
+    return dict(form=form, controls=controls)
 
 
 def FormStyleBulma(table, vars, errors, readonly, deletable):
@@ -199,7 +202,7 @@ class Form(object):
         validation=None,
         csrf_session=None,
         lifespan=None,
-        signing_info=None
+        signing_info=None,
     ):
 
         if isinstance(table, list):
@@ -286,8 +289,7 @@ class Form(object):
         if self.record:
             if isinstance(table, list):
                 # The table is just a list of fields.
-                self.vars = {field.name: self.record.get(field.name)
-                             for field in table}
+                self.vars = {field.name: self.record.get(field.name) for field in table}
             else:
                 self.vars = {
                     name: table[name].formatter(self.record[name])
@@ -315,7 +317,9 @@ class Form(object):
         payload = {"ts": str(time.time())}
         if self.lifespan is not None:
             payload["exp"] = time.time() + self.lifespan
-        self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256").decode('utf-8')
+        self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256").decode(
+            "utf-8"
+        )
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""
@@ -351,20 +355,29 @@ class Form(object):
                 self.table, self.vars, self.errors, self.readonly, self.deletable
             )
             if self.form_name:
-                helper.append(
-                    INPUT(_type="hidden", _name="_formname", _value=self.form_name)
+                helper["controls"]["hidden_widgets"]["formname"] = INPUT(
+                    _type="hidden", _name="_formname", _value=self.form_name
                 )
+                helper["form"].append(helper["controls"]["hidden_widgets"]["formname"])
             if self.formkey:
-                helper.append(
-                    INPUT(_type="hidden", _name="_formkey", _value=self.formkey)
+                helper["controls"]["hidden_widgets"]["formkey"] = INPUT(
+                    _type="hidden", _name="_formkey", _value=self.formkey
                 )
+                helper["form"].append(helper["controls"]["hidden_widgets"]["formkey"])
             for key in self.hidden or {}:
-                helper.append(INPUT(_type="hidden", _name=key, _value=self.hidden[key]))
+                helper["controls"]["hidden_widgets"][key] = INPUT(
+                    _type="hidden", _name=key, _value=self.hidden[key]
+                )
+                helper["form"].append(helper["controls"]["hidden_widgets"][key])
             self.cached_helper = helper
         return self.cached_helper
 
+    @property
+    def custom(self):
+        return self.helper()["controls"]
+
     def xml(self):
-        return self.helper().xml()
+        return self.helper()["form"].xml()
 
     def __str__(self):
         return self.xml()

@@ -50,6 +50,15 @@ def example_form(id=None):
     return dict(form=form, rows=rows)
 
 
+# exposed as /examples/custom_form
+@action("custom_form", method=["GET", "POST"])
+@action.uses("custom_form.html", db, session, T)
+def custom_form(id=None):
+    form = Form(db.person, id, deletable=False, formstyle=FormStyleBulma)
+    rows = db(db.person).select()
+    return dict(form=form, rows=rows)
+
+
 # exposed as /examples/grid
 @action("grid")
 @action.uses("grid.html")

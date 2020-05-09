@@ -1,0 +1,40 @@
+[[extend 'layout.html']]
+
+<h2 class="title">Form Superhero Identity (Custom) </h2>
+[[= form.custom['begin'] ]]
+  <div class="columns is-bordered">
+    <div class="column">
+      <label>Name:</label>
+      [[= form.custom['widgets']['name'] ]]
+      <span style="color:#ff0000">[[= form.custom['errors']['name'] if 'name' in form.custom['errors'] else '']]</span>
+    </div>
+    <div class="column">
+      <label>Job:</label>
+      [[= form.custom['widgets']['job'] ]]
+      <span style="color:#ff0000">[[= form.custom['errors']['job'] if 'job' in form.custom['errors'] else '']]</span>
+    </div>
+    <div class="column">
+      <label>Resume:</label>
+      [[= form.custom['widgets']['resume'] ]]
+      <span style="color:#ff0000">[[= form.custom['errors']['resume'] if 'resume' in form.custom['errors'] else '']]</span>
+    </div>
+    <div class="column">
+      <div class="buttons is-centered">
+        [[ form.custom['submit']['_class'] = 'button is-info is-large' ]]
+        [[= form.custom['submit'] ]]
+      </div>
+    </div>
+  </div>
+  [[ for hidden_widget in form.custom['hidden_widgets'].keys(): ]]
+  [[= form.custom['hidden_widgets'][hidden_widget] ]]
+  [[ pass ]]
+[[= form.custom['end'] ]]
+
+
+<h2 class="title">Rows</h2>
+
+<ul>
+  [[for row in rows:]]
+  <li>[[=row.id]]: [[=row.name]] ([[=row.job]])</li>
+  [[pass]]
+</ul>
