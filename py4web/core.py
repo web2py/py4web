@@ -1057,7 +1057,7 @@ def wsgi(**args):
 def fix_ansi_on_windows():
     if platform.system().lower() == "windows":  # fix for ANSI on Win7, 8, 10 ...
         from ctypes import windll
-        windll.kernel32.SetConsoleMode(k.GetStdHandle(-11), 7)
+        windll.kernel32.SetConsoleMode(windll.kernel32.GetStdHandle(-11), 7)
 
 
 def keyboardInterruptHandler(signal, frame):
