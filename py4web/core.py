@@ -23,6 +23,7 @@ import pathlib
 import platform
 import re
 import signal
+import site
 import sys
 import threading
 import time
