@@ -1,0 +1,19 @@
+<div class="vueform">
+    <div v-for="field in fields" class="field">
+      <label for="field.name" class="label">{{field.label}}:</label>
+      <div class="field" v-on:input="mark_field(field._idx)" v-on:focusout="validate_field(field._idx)" v-on:mouseout="validate_field(field._idx)">
+        <input v-if="field.type!='textarea'"
+               :type="field.type" :placeholder="field.placeholder"
+               v-model="field.value" :readonly="readonly"
+               :class="{checkbox: field.type === 'checkbox', input: field.type !== 'checkbox'}">
+        <textarea v-if="field.type=='textarea'" class="textarea" v-model="field.value"
+                  :placeholder="field.placeholder"></textarea>
+        <p v-if="field.error" class="error">{{field.error}}</p>
+        <p v-if="field.comment" class="comment">{{field.comment}}</p>
+      </div>
+    </div>
+  </table>
+  <div class="submission">
+    <button v-on:click="submit" class="button">Submit</button>
+  </div>
+</div>

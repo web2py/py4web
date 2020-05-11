@@ -1,0 +1,37 @@
+<div class="section">
+  <div v-if="rows.length > 0" class="grid">
+    <table class="table is-striped is-fullwidth">
+      <tr v-for="row in rows">
+        <template v-if="row.is_header">
+          <!-- Header row -->
+          <th v-for="cell in row.cells" :class="cell.el_class">{{cell.text}}</th>
+        </template>
+        <template v-else>
+          <!-- Non-header row -->
+          <td v-for="cell in row.cells"  :class="cell.el_class">
+            <button v-if="cell.is_button" class="button">
+              <a v-if="cell.url" :href="cell.url">{{cell.text}}</a>
+              <span v-else>{{cell.text}}</span>
+            </button>
+            <template v-else>
+              <a v-if="cell.url" :href="cell.url">{{cell.text}}</a>
+              <span v-else>{{cell.text}}</span>
+            </template>
+          </td>
+        </template>
+      </tr>
+    </table>
+    <div class="pagination is-pulled-right">
+      <span :class="{disabled: !has_previous}" v-on:click="incpage(-1)">
+        <i class="fa fa-chevron-left"></i>
+      </span>
+      <span class="grid_page_number">{{page}}</span>
+      <span :class="{disabled: !has_more}" v-on:click="incpage(1)">
+        <i class="fa fa-chevron-right"></i>
+      </span>
+    </div>
+  </div>
+  <div v-else>
+    No results.
+  </div>
+</div>
