@@ -3,10 +3,10 @@ import sys
 css = """
 html {background-color: white; font-family: helvetica}
 .file { font-family: courier; white-space: pre; font-size: 18px; margin-bottom: 10px;}
-.file .diff {background: #111111; color: #f1f1f1; padding: 10px; marging: 10px;}
-.file .filename { background: #f1f1f1; color: #111111; padding: 10px; marging: 10px;} 
-.line.line-old { color: #ffbbbb }
-.line.line-new { color: #bbbbff }
+.file .diff { background:#2b2b2b; padding: 10px; marging: 10px;}
+.file .filename { background: #f1f1f1; color: #111111; padding: 10px; marging: 10px;}
+.line.line-old { color: #ffbbbb; font-weight:bold;}
+.line.line-new { color: #bbbbff; font-weight:bold; }
 .line:hover {background: #333333; color: yellow;}
 .message {padding: 10px; font-size: 20px; }
 """
@@ -30,12 +30,12 @@ function draw(){
 setInterval(draw, 50);
 $("html").keypress(function(e){
   if(e.key=="n") {
-    $('.line-old[data-block="'+block+'"]').hide();                                                                                      
-    $('.line-new[data-block="'+block+'"]').show();  
+    $('.line-old[data-block="'+block+'"]').hide();
+    $('.line-new[data-block="'+block+'"]').show();
     $('.line-new[data-block="'+block+'"]').each(function(){$(this).text($(this).attr('data-content'));});
     if($('.line[data-block="'+(block+1)+'"]').length==0) return;
-    block=block+1;  
-    $('.line-old[data-block="'+block+'"]').hide();                                                                                    
+    block=block+1;
+    $('.line-old[data-block="'+block+'"]').hide();
     $('.line-new[data-block="'+block+'"]').show();
     $('.line-new[data-block="'+block+'"]').text('');
     $('.line-new[data-block="'+block+'"]').closest('.file').find('.diff').show();
@@ -43,7 +43,7 @@ $("html").keypress(function(e){
     $('.line-old[data-block="'+block+'"]').show();
     $('.line-new[data-block="'+block+'"]').hide();
     block=Math.max(0, block-1);
-    $('.line-old[data-block="'+block+'"]').hide();                                                                                      
+    $('.line-old[data-block="'+block+'"]').hide();
     $('.line-new[data-block="'+block+'"]').show();
     $('.line-new[data-block="'+block+'"]').text(function(){$(this).text($(this).attr('data-content'));});
     $('.line-new[data-block="'+block+'"]').closest('.file').find('.diff').show();
@@ -120,14 +120,20 @@ def diff2kryten(data):
             lines = "".join(files[filename]["lines"])
         div += '<div class="file">'
         div += '<div class="filename">%s (%s)</div>' % (filename, mode)
-        div += '<div class="diff">%s</div></div>' % lines
+        div += '<div class="diff"><pre><code>%s</code></pre></div></div>' % lines
     return (
-        "<html><head><style>"
+        "<html><head>"
+        + '''<link rel="stylesheet"
+          href="/_dashboard/static/css/darcula.min.css">'''
+        + "<style>"
         + css
         + '</style></head><body><div style="text-align:right">'
         + "</div>"
         + div
-        + '<script src="/_dashboard/static/js/jquery.min.js"></script><script>'
+        + '<script src="/_dashboard/static/js/jquery.min.js"></script>'
+        + '<script src="/_dashboard/static/js/highlight.min.js"></script>'
+        + '<script>hljs.initHighlightingOnLoad();</script>'
+        + '<script>'
         + (script % block)
         + "</script></body></html>"
     )
