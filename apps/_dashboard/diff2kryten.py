@@ -1,5 +1,13 @@
 import sys
 
+
+
+# Note, when changing the Highlight.js css,
+# the background color of .file .diff should match the
+# background in the .hljs class in gitlog.min.css
+# otherwise there will be a large gap between
+# the file name and the
+
 css = """
 html {background-color: white; font-family: helvetica}
 .file { font-family: courier; white-space: pre; font-size: 18px; margin-bottom: 10px;}
@@ -12,6 +20,7 @@ html {background-color: white; font-family: helvetica}
 """
 
 script = """
+hljs.initHighlightingOnLoad();
 $('.line:not(.line-new)').each(function(){$(this).text($(this).attr('data-content'));});
 $('.line-new').hide();
 $('.diff').hide();
@@ -124,7 +133,7 @@ def diff2kryten(data):
     return (
         "<html><head>"
         + '''<link rel="stylesheet"
-          href="/_dashboard/static/css/darcula.min.css">'''
+          href="/_dashboard/static/css/gitlog.min.css">'''
         + "<style>"
         + css
         + '</style></head><body><div style="text-align:right">'
@@ -132,7 +141,6 @@ def diff2kryten(data):
         + div
         + '<script src="/_dashboard/static/js/jquery.min.js"></script>'
         + '<script src="/_dashboard/static/js/highlight.min.js"></script>'
-        + '<script>hljs.initHighlightingOnLoad();</script>'
         + '<script>'
         + (script % block)
         + "</script></body></html>"
