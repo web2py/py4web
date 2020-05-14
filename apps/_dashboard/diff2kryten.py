@@ -77,6 +77,20 @@ def escape(txt):
         .replace('"', "&quot;")
     )
 
+# specify which language we want to render as for highlight.js
+# based on the name of the file
+def getFileType(name):
+
+    if ".py" in name:
+        return 'class="language-kotlin"'
+    if ".js" in name:
+        return 'class="language-coffeescript"'
+    if ".html" in name:
+        return 'class="language-html"'
+    if ".css" in name:
+        return 'class="language-css"'
+    return ""
+
 
 def diff2kryten(data):
     lines = data.split("\n")
@@ -129,7 +143,7 @@ def diff2kryten(data):
             lines = "".join(files[filename]["lines"])
         div += '<div class="file">'
         div += '<div class="filename">%s (%s)</div>' % (filename, mode)
-        div += '<div class="diff"><pre><code>%s</code></pre></div></div>' % lines
+        div += '<div class="diff"><pre><code %s>%s</code></pre></div></div>' % (getFileType(filename),lines)
     return (
         "<html><head>"
         + '''<link rel="stylesheet"
