@@ -1,0 +1,7 @@
+.pagination .grid_page_number {
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+}
+span.disabled {
+    color: lightgray;
+}

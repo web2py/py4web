@@ -55,7 +55,7 @@ elif settings.SESSION_TYPE == "database":
 
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
-auth = Auth(session, db)
+auth = Auth(session, db, use_phone_number=True)
 
 if settings.SMTP_SERVER:
     auth.sender = Mailer(

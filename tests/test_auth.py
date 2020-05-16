@@ -11,7 +11,7 @@ class TestAuth(unittest.TestCase):
         self.db = DAL("sqlite:memory")
         self.session = Session(secret="a", expiration=10)
         self.session.local.data = {}
-        self.auth = Auth(self.session, self.db, define_tables=True)
+        self.auth = Auth(self.session, self.db, define_tables=True, password_complexity=None)
         self.auth.enable()
         request.app_name = "_scaffold"
 
@@ -152,13 +152,13 @@ class TestAuth(unittest.TestCase):
         self.assertEqual(
             self.auth.action("api/change_password", "POST", {}, body),
             {
-                "errors": {"password": "invalid"},
+                'errors': {'old_password': 'invalid current password'},
                 "status": "error",
                 "message": "validation errors",
                 "code": 401,
             },
         )
-        body = {"password": "987654321", "new_password": "432187659"}
+        body = {"old_password": "987654321", "new_password": "432187659"}
         self.assertEqual(
             self.auth.action("api/change_password", "POST", {}, body),
             {"updated": 1, "status": "success", "code": 200},

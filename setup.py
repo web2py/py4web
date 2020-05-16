@@ -25,6 +25,7 @@ setup(
     package_data={"py4web": ["assets/*"],},
     install_requires=[
         "bottle",
+        "click",
         "gunicorn",
         "gevent",
         "threadsafevariable",
@@ -35,7 +36,7 @@ setup(
         "pluralize",
         "requests",
     ],
-    entry_points={"console_scripts": ["py4web-start=py4web.core:main"],},
+    entry_points={"console_scripts": ["py4web=py4web.core:cli"],},
     zip_safe=False,
     platforms="any",
     classifiers=[

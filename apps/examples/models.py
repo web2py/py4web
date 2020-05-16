@@ -1,8 +1,9 @@
 """
 This file defines the database models
 """
+import datetime
 
-from .common import db, Field, T
+from .common import db, Field, T, auth
 from pydal.validators import *
 
 # simple table example
@@ -68,5 +69,31 @@ if not db(db.person).count():
     db.tag.insert(superhero=3, superpower=2, strength=80)
     db.tag.insert(superhero=3, superpower=3, strength=20)
     db.tag.insert(superhero=3, superpower=4, strength=70)
+
+# Used for examples of forms.
+def get_user_email():
+    return None if auth.current_user is None else auth.current_user.get("email")
+
+def get_time():
+    return datetime.datetime.utcnow()
+
+db.define_table(
+    'product',
+    Field('product_name'),
+    Field('product_quantity', 'integer',
+          requires=IS_INT_IN_RANGE(0, None),
+          default=0),
+    Field('product_cost', 'float',
+          requires=IS_FLOAT_IN_RANGE(0, None), default=0.),
+    Field('mail_order', 'boolean'),
+    Field('created_by', default=get_user_email),
+    Field('creation_date', 'datetime', default=get_time)
+)
+
+# We do not want these fields to appear in forms by default.
+db.product.id.readable = False
+db.product.created_by.readable = False
+db.product.creation_date.readable = False
+
 
 db.commit()
