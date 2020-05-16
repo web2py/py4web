@@ -1,6 +1,8 @@
+import json
+import jwt
+import time
 import uuid
-import hashlib, hmac
-from py4web import DAL, request
+from py4web import request, Session
 from yatl.helpers import (
     A,
     TEXTAREA,
@@ -14,12 +16,19 @@ from yatl.helpers import (
     SELECT,
     OPTION,
     P,
+    XML,
 )
-from pydal._compat import to_bytes
 
 
 def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
     form = FORM(_method="POST", _action=request.path, _enctype="multipart/form-data")
+    controls = dict(
+        widgets=dict(),
+        hidden_widgets=dict(),
+        errors=dict(),
+        begin=XML(form.xml().split("</form>")[0]),
+        end=XML("</form>"),
+    )
 
     classes = classes or {}
     class_label = classes.get("label", "")
@@ -90,6 +99,10 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
             key += "[type=%s]" % (control["_type"] or "text")
         control["_class"] = classes.get(key, "")
 
+        controls["widgets"][field.name] = control
+        if error:
+            controls["errors"][field.name] = error
+
         form.append(
             DIV(
                 LABEL(field.label, _for=input_id, _class=class_label),
@@ -101,34 +114,25 @@ def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
         )
 
     if deletable:
+        controls["delete"] = INPUT(
+            _type="checkbox",
+            _value="ON",
+            _name="_delete",
+            _class=classes.get("input[type=checkbox]"),
+        )
         form.append(
             DIV(
-                DIV(
-                    INPUT(
-                        _type="checkbox",
-                        _value="ON",
-                        _name="_delete",
-                        _class=classes.get("input[type=checkbox]"),
-                    ),
-                    _class=class_inner,
-                ),
+                DIV(controls["delete"], _class=class_inner,),
                 P("check to delete", _class="help"),
                 _class=class_outer,
             )
         )
-    submit = DIV(
-        DIV(
-            INPUT(
-                _type="submit",
-                _value="Submit",
-                _class=classes.get("input[type=submit]"),
-            ),
-            _class=class_inner,
-        ),
-        _class=class_outer,
+    controls["submit"] = INPUT(
+        _type="submit", _value="Submit", _class=classes.get("input[type=submit]"),
     )
+    submit = DIV(DIV(controls["submit"], _class=class_inner,), _class=class_outer,)
     form.append(submit)
-    return form
+    return dict(form=form, controls=controls)
 
 
 def FormStyleBulma(table, vars, errors, readonly, deletable):
@@ -167,15 +171,21 @@ class Form(object):
            return dict(form=form)
 
     Arguments:
-    - table: a DAL table or a list of fields (equivalent to old SQLFORM.factory)
-    - record: a DAL record or record id
-    - readonly: set to True to make a readonly form
-    - deletable: set to False to disallow deletion of record
-    - formstyle: a function that renders the form using helpers (FormStyleDefault)
-    - dbio: set to False to prevent any DB writes
-    - keep_values: if set to true, it remembers the values of the previously submitted form
-    - form_name: the optional name of this form
-    - csrf_session: if None, no csrf token is added.  If a session, then a CSRF token is added and verified.
+    :param table: a DAL table or a list of fields (equivalent to old SQLFORM.factory)
+    :param record: a DAL record or record id
+    :param readonly: set to True to make a readonly form
+    :param deletable: set to False to disallow deletion of record
+    :param formstyle: a function that renders the form using helpers (FormStyleDefault)
+    :param dbio: set to False to prevent any DB writes
+    :param keep_values: if set to true, it remembers the values of the previously submitted form
+    :param form_name: the optional name of this form
+    :param csrf_session: if None, no csrf token is added.  If a session, then a CSRF token is added and verified.
+    :param lifespan: lifespan of CSRF token in seconds, to limit form validity.
+    :param signing_info: information that should not change between when the CSRF token is signed and
+        verified.  This information is not leaked to the form.  For instance, if you wish to verify
+        that the identity of the logged in user has not changed, you can do as below.
+        signing_info = session.get("user", {}).get("id", "")
+        The content of the field should be convertible to a string via json.
     """
 
     def __init__(
@@ -187,10 +197,12 @@ class Form(object):
         formstyle=FormStyleDefault,
         dbio=True,
         keep_values=False,
-        form_name=False,
+        form_name=None,
         hidden=None,
         validation=None,
         csrf_session=None,
+        lifespan=None,
+        signing_info=None,
     ):
 
         if isinstance(table, list):
@@ -222,6 +234,8 @@ class Form(object):
         self.formkey = None
         self.cached_helper = None
         self.csrf_session = csrf_session
+        self.lifespan = lifespan
+        self.signing_info = signing_info
 
         if readonly or request.method == "GET":
             self._read_vars_from_record(table)
@@ -275,8 +289,7 @@ class Form(object):
         if self.record:
             if isinstance(table, list):
                 # The table is just a list of fields.
-                self.vars = {field.name: self.record.get(field.name)
-                             for field in table}
+                self.vars = {field.name: self.record.get(field.name) for field in table}
             else:
                 self.vars = {
                     name: table[name].formatter(self.record[name])
@@ -284,20 +297,29 @@ class Form(object):
                     if name in self.record
                 }
 
-    def _get_signature(self, salt=""):
-        key = self.csrf_session.get("_form_key")
-        if key is None:
-            key = str(uuid.uuid1())
-            self.csrf_session["_form_key"] = key
-        h = hmac.new(key.encode("utf8"), msg=salt.encode("utf8"), digestmod=hashlib.sha256)
-        return h.hexdigest()
+    def _get_key(self):
+        if self.csrf_session is not None:
+            key = self.csrf_session.get("_form_key")
+            if key is None:
+                key = str(uuid.uuid1())
+                self.csrf_session["_form_key"] = key
+        else:
+            key = Session.SECRET
+        additional_info = {
+            "signing_info": self.signing_info,
+            "form_name": self.form_name,
+        }
+        return key + "." + json.dumps(additional_info)
 
     def _sign_form(self):
         """Signs the form, for csrf"""
         # Adds a form key.  First get the signing key from the session.
-        if self.csrf_session is not None:
-            salt = str(uuid.uuid4())
-            self.formkey = salt + ";" + self._get_signature(salt)
+        payload = {"ts": str(time.time())}
+        if self.lifespan is not None:
+            payload["exp"] = time.time() + self.lifespan
+        self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256").decode(
+            "utf-8"
+        )
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""
@@ -305,10 +327,10 @@ class Form(object):
             return False
         if not self.csrf_session:
             return True
-        formkey = post_vars.get("_formkey")
+        token = post_vars.get("_formkey")
         try:
-            salt, u = formkey.split(";")
-            return u == self._get_signature(salt=salt)
+            jwt.decode(token, self._get_key(), algorithms=["HS256"])
+            return True
         except:
             return False
 
@@ -333,20 +355,29 @@ class Form(object):
                 self.table, self.vars, self.errors, self.readonly, self.deletable
             )
             if self.form_name:
-                helper.append(
-                    INPUT(_type="hidden", _name="_formname", _value=self.form_name)
+                helper["controls"]["hidden_widgets"]["formname"] = INPUT(
+                    _type="hidden", _name="_formname", _value=self.form_name
                 )
+                helper["form"].append(helper["controls"]["hidden_widgets"]["formname"])
             if self.formkey:
-                helper.append(
-                    INPUT(_type="hidden", _name="_formkey", _value=self.formkey)
+                helper["controls"]["hidden_widgets"]["formkey"] = INPUT(
+                    _type="hidden", _name="_formkey", _value=self.formkey
                 )
+                helper["form"].append(helper["controls"]["hidden_widgets"]["formkey"])
             for key in self.hidden or {}:
-                helper.append(INPUT(_type="hidden", _name=key, _value=self.hidden[key]))
+                helper["controls"]["hidden_widgets"][key] = INPUT(
+                    _type="hidden", _name=key, _value=self.hidden[key]
+                )
+                helper["form"].append(helper["controls"]["hidden_widgets"][key])
             self.cached_helper = helper
         return self.cached_helper
 
+    @property
+    def custom(self):
+        return self.helper()["controls"]
+
     def xml(self):
-        return self.helper().xml()
+        return self.helper()["form"].xml()
 
     def __str__(self):
         return self.xml()

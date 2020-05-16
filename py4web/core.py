@@ -5,12 +5,15 @@
 # Standard modules
 import argparse
 import cgitb
+import code
 import datetime
 import functools
 import importlib
 import importlib.machinery
 import inspect
 import json
+import http.client
+import http.cookies
 import linecache
 import logging
 import numbers
@@ -18,7 +21,9 @@ import os
 import getpass
 import pathlib
 import platform
+import re
 import signal
+import site
 import sys
 import threading
 import time
@@ -26,12 +31,11 @@ import traceback
 import types
 import urllib.parse
 import uuid
-import http.client
-import http.cookies
 import zipfile
-import re
 
-REX_APPJSON = re.compile("(^|\s|,)application/json(,|\s|$)")
+REX_APPJSON = re.compile(r"(^|\s|,)application/json(,|\s|$)")
+
+import click
 
 # Optional web servers for speed
 try:
@@ -54,6 +58,8 @@ import threadsafevariable
 import pydal
 import pluralize
 from pydal._compat import to_native, to_bytes
+
+bottle.BaseRequest.MEMFILE_MAX = 16 * 1024 * 1024
 
 __all__ = [
     "render",
@@ -101,6 +107,7 @@ abort = bottle.abort
 os.environ.update(
     {key: value for key, value in DEFAULTS.items() if not key in os.environ}
 )
+os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parent.parent)
 
 
 def module2filename(module):
@@ -239,7 +246,7 @@ class Fixture:
     def on_success(self):
         pass  # called when a request is successful
 
-    def transform(self, output):  # transforms the output, for example to apply template
+    def transform(self, output, shared_data=None):  # transforms the output, for example to apply template
         return output
 
 
@@ -295,12 +302,14 @@ class Template(Fixture):
             filename, raw_read, expiration=1, monitor=lambda: os.path.getmtime(filename)
         )
 
-    def transform(self, output):
+    def transform(self, output, shared_data=None):
         if not isinstance(output, dict):
             return output
         context = dict(request=request)
         context.update(HELPERS)
         context.update(URL=URL)
+        if shared_data:
+            context.update(shared_data.get('template_context', {}))
         context.update(output)
         context["__vars__"] = output
         app_folder = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], request.app_name)
@@ -392,9 +401,7 @@ class Session(Fixture):
             except Exception:
                 pass
         if not "uuid" in self.local.data:
-            self.local.changed = True
-            self.local.data["uuid"] = str(uuid.uuid1())
-            self.local.data["secure"] = self.local.secure
+            self.clear()
 
     def save(self):
         self.local.data["timestamp"] = time.time()
@@ -430,6 +437,12 @@ class Session(Fixture):
     def __iter__(self):
         return self.local.data.items()
 
+    def clear(self):
+        self.local.changed = True
+        self.local.data.clear()
+        self.local.data["uuid"] = str(uuid.uuid1())
+        self.local.data["secure"] = self.local.secure
+
     def on_request(self):
         self.load()
 
@@ -447,19 +460,22 @@ class Session(Fixture):
 #########################################################################################
 
 
-def URL(*parts, vars=None, hash=None, scheme=False, signer=None):
+def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=True):
     """
     Examples:
     URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name}/a/b?x=1#y
     URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name}/a/b?x=1
     URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name}/a/b?x=1
     URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
     """
     script_name = (
         request.get("HTTP_X_SCRIPT_NAME", "") or request.get("SCRIPT_NAME", "")
     ).rstrip("/")
     prefix = script_name + (
-        "/%s/" % request.app_name if request.app_name != "_default" else "/"
+        "/%s/" % request.app_name
+        if (request.app_name != "_default" and use_appname)
+        else "/"
     )
     broken_parts = []
     for part in parts:
@@ -535,11 +551,13 @@ class action:
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
+                # data shared by all fixtures in the piplined for each request
+                shared_data = {'template_context': {}}
                 try:
                     [obj.on_request() for obj in fixtures]
                     ret = func(*args, **kwargs)
                     for obj in fixtures:
-                        ret = obj.transform(ret)
+                        ret = obj.transform(ret, shared_data)
                     [obj.on_success() for obj in fixtures]
                     return ret
                 except HTTP:
@@ -729,9 +747,8 @@ def get_error_snapshot(depth=5):
 
 class ErrorStorage:
     def __init__(self):
-        apps_folder = os.environ["PY4WEB_APPS_FOLDER"]
         uri = os.environ["PY4WEB_SERVICE_DB_URI"]
-        folder = os.path.join(apps_folder, os.environ["PY4WEB_SERVICE_FOLDER"])
+        folder = os.environ["PY4WEB_SERVICE_FOLDER"]
         self.db = DAL(uri, folder=folder)
         self.db.define_table(
             "py4web_error",
@@ -788,6 +805,11 @@ class ErrorStorage:
                 rows.append(row)
         return rows if not ticket_uuid else rows[0] if rows else None
 
+    def clear(self):
+        db = self.db
+        db(db.py4web_error).delete()
+        self.db.commit()
+
 
 #########################################################################################
 # Loading &  Reloading Logic
@@ -840,9 +862,9 @@ class Reloader:
             try:
                 module = Reloader.MODULES.get(app_name)
                 if not module:
-                    print("[ ] loading %s ..." % app_name)
+                    click.echo("[ ] loading %s ..." % app_name)
                 else:
-                    print("[ ] reloading %s ..." % app_name)
+                    click.echo("[ ] reloading %s ..." % app_name)
                     # forget the module
                     del Reloader.MODULES[app_name]
                     # all files/submodules
@@ -856,12 +878,12 @@ class Reloader:
                 module = importlib.machinery.SourceFileLoader(
                     module_name, init
                 ).load_module()
-                print("\x1b[A[X] loaded %s       " % app_name)
+                click.echo("\x1b[A[X] loaded %s       " % app_name, color='green')
                 Reloader.MODULES[app_name] = module
                 Reloader.ERRORS[app_name] = None
             except:
                 tb = traceback.format_exc()
-                print("\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb))
+                click.echo("\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb), color='red')
                 Reloader.ERRORS[app_name] = tb
                 return None
 
@@ -934,11 +956,11 @@ def error404(error):
 
 
 def start_server(args):
-    host, port = args.host, int(args.port)
+    host, port = args['host'], int(args['port'])
     if platform.system().lower() == "windows":
         # Tornado fail on windows
         bottle.run(host=host, port=int(port), reloader=False)
-    elif args.number_workers < 1:
+    elif args['number_workers'] < 1:
         bottle.run(server="tornado", host=host, port=port, reloader=False)
     else:
         if not gunicorn:
@@ -951,7 +973,7 @@ def start_server(args):
                 server="gunicorn",
                 host=host,
                 port=port,
-                workers=args.number_workers,
+                workers=args['number_workers'],
                 worker_class="gevent",
                 reloader=False,
                 certfile=args.ssl_cert_filename,
@@ -968,202 +990,163 @@ def check_compatible(version):
     )
 
 
+#########################################################################################
+# WSGI Adapter
+#########################################################################################
+
+def install_args(args, reinstall_apps=False):
+    args['service_folder'] = os.path.join(args['apps_folder'], DEFAULTS['PY4WEB_SERVICE_FOLDER'])
+    args['service_db_uri'] = DEFAULTS['PY4WEB_SERVICE_DB_URI']
+    for key in args:
+        os.environ["PY4WEB_" + key.upper()] = str(args[key])
+    apps_folder = args['apps_folder']
+    yes = args.get('yes', 'N')
+    # If the apps folder does not exist create it and populate it
+    if not os.path.exists(apps_folder):        
+        if yes or click.confirm('Create missing folder %s?' % apps_folder):
+            os.makedirs(apps_folder)
+            init_py = os.path.join(apps_folder, "__init__.py")
+            if not os.path.exists(init_py):
+                with open(init_py, "w") as fp:
+                    fp.write("")
+
+    # Upzip the _dashboard app if it is old or does not exist
+    if reinstall_apps:
+        assets_dir = os.path.join(os.path.dirname(__file__), "assets")
+        if os.path.exists(assets_dir):
+            apps = os.listdir(assets_dir)
+            for filename in apps:
+                zip_filename = os.path.join(assets_dir, filename)
+                # These filenames do not necessarily exist if one has
+                # downloaded from source and deleted them.
+                app_name = filename.split(".")[-2]
+                target_dir = os.path.join(apps_folder, app_name)
+                if not os.path.exists(target_dir):
+                    if yes or click.confirm('Create app %s?' % app_name):
+                        click.echo("[ ] Unzipping app %s" % filename)
+                        zip_file = zipfile.ZipFile(zip_filename, "r")
+                        if not os.path.exists(target_dir):
+                            os.makedirs(target_dir)
+                            zip_file.extractall(target_dir)
+                            zip_file.close()
+                            click.echo("\x1b[A[X]")
+
+    if not os.path.exists(args['service_folder']):
+        os.mkdir(args['service_folder'])
+    session_secret_filename = os.path.join(args['service_folder'], "session.secret")
+    if not os.path.exists(session_secret_filename):
+        with open(session_secret_filename, "w") as fp:
+            fp.write(str(uuid.uuid4()))
+
+    session_secret_filename = os.path.join(args['service_folder'], "session.secret")
+    with open(session_secret_filename) as fp:
+        Session.SECRET = fp.read()
+
+
 def wsgi(**args):
     """Initializes everything, loads apps, returns the wsgi app"""
-    initialize(**args)
+    install_args(args)
     Reloader.import_apps()
     return bottle.default_app()
 
 
-def get_args():
-    """Handle command line arguments"""
-    # get the real running path
-    os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parent.parent)
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "apps_folder", nargs="?", default=None, help="Path to the applications folder"
-    )
-    parser.add_argument(
-        "--host", default="127.0.0.1", help="Server address (IP or hostname)"
-    )
-    parser.add_argument("--port", default="8000", help="Port number (e.g., 8000)")
-    parser.add_argument(
-        "--headless",
-        default=False,
-        action="store_true",
-        help="Hide artwork for console access",
-    )
-    parser.add_argument(
-        "-n",
-        "--number_workers",
-        default=0,
-        type=int,
-        help="Number of gunicorn workers to utilize",
-    )
-    parser.add_argument(
-        "--ssl_cert_filename",
-        default=None,
-        type=int,
-        help="Custom ssl certificate file",
-    )
-    parser.add_argument(
-        "--ssl_key_filename", default=None, type=int, help="Custom ssl key file"
-    )
-    parser.add_argument(
-        "--service_folder",
-        default=".service",
-        type=str,
-        help="Service Information Storage Location",
-    )
-    parser.add_argument(
-        "--service_db_uri",
-        default="sqlite://service.storage",
-        type=str,
-        help="Alternative db uri for service logs",
-    )
-    parser.add_argument(
-        "-d",
-        "--dashboard_mode",
-        default="full",
-        help="Dashboard mode: demo, readonly, full (default), none",
-    )
-    parser.add_argument(
-        "-p",
-        "--password_file",
-        default=(os.path.join(os.getcwd(), "password.txt")),
-        help="File containing the encrypted (CRYPT) password",
-    )
-    parser.add_argument(
-        "-s",
-        "--shell",
-        default=False,
-        action="store_true",
-        help="Run interactive shell",
-    )
-    parser.add_argument(
-        "-c",
-        "--create",
-        action="store_true",
-        default=False,
-        help="Create missing system apps",
-    )
-    # Parse command line arguments
-    args = parser.parse_args()
-    return args
+#########################################################################################
+# CLI
+#########################################################################################
 
 
-def initialize(**args):
-    """Initialize from args"""
-    for key in args:
-        os.environ["PY4WEB_" + key.upper()] = str(args[key])
-    os.environ["PY4WEB_APPS_FOLDER"] = os.path.join(
-        os.getcwd(), os.environ["PY4WEB_APPS_FOLDER"])
-    apps_folder = os.environ["PY4WEB_APPS_FOLDER"]
-    print("apps_folder = " + apps_folder + "\n")
-    service_folder = os.path.join(apps_folder, os.environ["PY4WEB_SERVICE_FOLDER"])
-    # If the apps folder does not exist create it and populate it
-    if not os.path.exists(apps_folder):
-        os.makedirs(apps_folder)
-        init_py = os.path.join(apps_folder, "__init__.py")
-        if not os.path.exists(init_py):
-            with open(init_py, "w") as fp:
-                fp.write("")
-        args["create"] = True
-    if not os.path.exists(service_folder):
-        os.mkdir(service_folder)
-    session_secret_filename = os.path.join(service_folder, "session.secret")
-    if not os.path.exists(session_secret_filename):
-        with open(session_secret_filename, "w") as fp:
-            fp.write(str(uuid.uuid4()))
-    with open(session_secret_filename) as fp:
-        Session.SECRET = fp.read()
-    # Upzip the _dashboard app if it is old or does not exist
-    assets_dir = os.path.join(os.path.dirname(__file__), "assets")
-    if os.path.exists(assets_dir):
-        apps = os.listdir(assets_dir)
-        for filename in apps:
-            zip_filename = os.path.join(assets_dir, filename)
-            # These filenames do not necessarily exist if one has
-            # downloaded from source and deleted them.
-            target_dir = os.path.join(apps_folder, filename.split(".")[-2])
-            if not os.path.exists(target_dir):
-                if args.get("create"):
-                    print("[ ] Unzipping app", filename)
-                    zip_file = zipfile.ZipFile(zip_filename, "r")
-                    if not os.path.exists(target_dir):
-                        os.makedirs(target_dir)
-                    zip_file.extractall(target_dir)
-                    zip_file.close()
-                    print("\x1b[A[X]")
+def fix_ansi_on_windows():
+    if platform.system().lower() == "windows":  # fix for ANSI on Win7, 8, 10 ...
+        from ctypes import windll
+        windll.kernel32.SetConsoleMode(windll.kernel32.GetStdHandle(-11), 7)
 
 
 def keyboardInterruptHandler(signal, frame):
     """Catch interrupts like Ctrl-C"""
-    print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
+    click.echo("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
     sys.exit(0)
 
 
-def main(args=None):
-    """The main entry point: Start the server and create folders"""
-    # Store args in the action to make them visible
-    action.args = args = args or get_args()
+@click.group()
+def cli():
+    pass
 
-    # Fix for ANSI on Win7, 8, 10 ...
-    if platform.system().lower() == "windows":  # fix for ANSI on Win7, 8, 10 ...
-        from ctypes import windll
+@cli.command()
+def version():
+    from . import __version__
+    click.echo(__version__)
 
-        k = windll.kernel32
-        k.SetConsoleMode(k.GetStdHandle(-11), 7)
+@cli.command()
+@click.argument('apps_folder', default='apps')
+@click.option('-Y', '--yes', is_flag=True, default=False, help='No prompt, assume yes to questions')
+def setup(**args):
+    install_args(args, reinstall_apps=True)
 
-    # Print a head if not headless
-    if not args.headless:
-        from py4web import __version__
 
-        print(ART)
-        print("Py4web: %s on Python %s\n" % (__version__, sys.version))
+@cli.command()
+@click.argument('apps_folder', default='apps')
+def shell(apps_folder):
+    install_args(dict(apps_folder=apps_folder))
+    fix_ansi_on_windows()
+    code.interact(local=dict(globals(), **locals()))
 
-    # Insert a blank line to improve readability
-    print("")
 
-    # Ask for apps_folder if needed
-    if not args.apps_folder:
-        print("Applications folder was not specified.")
-        while True:
-            folder = input(
-                "Please specify the relative path to the folder or press ENTER for default (apps)\napps_folder: "
-            )
-            path = os.path.join(os.getcwd(), folder or "apps")
-            if os.path.exists(path):
-                break
-            else:
-                print("Path folder not found")
-        args.apps_folder = path
+@cli.command()
+@click.argument('apps_folder')
+@click.argument('func')
+@click.option('--args', default='{}')
+def call(apps_folder, func, args):
+    args = json.loads(args)
+    install_args(dict(apps_folder=apps_folder))
+    module, name = ('apps.' + func).rsplit('.', 1)
+    env = {}
+    if not apps_folder in sys.path:
+        sys.path.insert(0, apps_folder)
+    exec('from %s import %s' % (module, name), {}, env)
+    env[name](**args)
 
-    # Start interactive shell if requested
-    if args.shell:
-        import code, site
+@cli.command()
+@click.option('--password', prompt=True, confirmation_prompt=True, hide_input=True)
+@click.option('-p', '--password_file', default='password.txt', help='File for the encrypted password')
+def set_password(password, password_file):
+    click.echo('Storing the hashed password in file "%s"\n' % password_file)
+    with open(password_file, "w") as fp:
+        fp.write(str(pydal.validators.CRYPT()(password)[0]))
 
-        code.interact(local=dict(globals(), **locals()))
-        return
+
+@cli.command()
+@click.argument('apps_folder', default='apps')
+@click.option('-Y', '--yes', is_flag=True, default=False, help='No prompt, assume yes to questions')
+@click.option('-H', '--host', default='127.0.0.1', help='Host name')
+@click.option('-P', '--port', default=8000, type=int, help='Port number')
+@click.option('-p', '--password_file', default='password.txt', help='File for the encrypted password')
+@click.option('-w', '--number_workers', default=0, type=int, help='Number of workers')
+@click.option('-d', '--dashboard_mode',  default='full', help='Dashboard mode: demo, readonly, full (default), none')
+@click.option('--ssl_cert', help='SSL certificate file for HTTPS')
+@click.option('--ssl_key', help='SSL key file for HTTPS')
+def run(**args):
+    install_args(args)
+    apps_folder = args['apps_folder']    
+    yes = args['yes']
+    
+    from py4web import __version__
+    click.echo(ART, color='blue')
+    click.echo("Py4web: %s on Python %s\n\n" % (__version__, sys.version))
 
     # If we know where the password is stored, read it, otherwise ask for one
-    if args.dashboard_mode not in ("demo", "none") and not os.path.exists(
-        args.password_file
-    ):
-        password = getpass.getpass("Choose a dashboard password: ")
-        print('Storing the hashed password in file "%s"\n' % args.password_file)
-        with open(args.password_file, "w") as fp:
-            fp.write(str(pydal.validators.CRYPT()(password)[0]))
+    if os.path.exists(os.path.join(apps_folder, "_dashboard")):
+        if args['dashboard_mode'] not in ("demo", "none") and not os.path.exists(args['password_file']):
+            click.echo('You have not set a dashboard password. Run "py4web set_password" to do so.')
+        else:
+            click.echo("Dashboard is at: http://%s:%s/_dashboard" % (args['host'], args['port']))
 
-    # Store all args in environment variables to make them available to the following processes
-    # and create any missing folders
-    initialize(**args.__dict__)
-    if os.path.exists(os.path.join(args.apps_folder, "_dashboard")):
-        print("Dashboard is at: http://%s:%s/_dashboard" % (args.host, args.port))
+    # Catch interrupts like Ctrl-C
+    signal.signal(signal.SIGINT, keyboardInterruptHandler)
 
     # Start
-    signal.signal(
-        signal.SIGINT, keyboardInterruptHandler
-    )  # Catch interrupts like Ctrl-C
     Reloader.import_apps()
     start_server(args)
+
+
+if __name__ == '__main__':
+    cli()

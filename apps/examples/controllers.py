@@ -27,12 +27,33 @@ def simple_page():
 def error():
     1 / 0
 
+@action("session/counter")
+@action.uses(session)
+def session_counter():
+    session['counter'] = session.get('counter', 0) + 1
+    return str(session.get('counter'))
+
+@action("session/clear")
+@action.uses(session)
+def session_clear():
+    session.clear()
+    return 'done'
+
 
 # exposed as /examples/create_form or /examples/update_form/<id>
 @action("create_form", method=["GET", "POST"])
 @action("update_form/<id>", method=["GET", "POST"])
 @action.uses("form.html", db, session, T)
 def example_form(id=None):
+    form = Form(db.person, id, deletable=False, formstyle=FormStyleBulma)
+    rows = db(db.person).select()
+    return dict(form=form, rows=rows)
+
+
+# exposed as /examples/custom_form
+@action("custom_form", method=["GET", "POST"])
+@action.uses("custom_form.html", db, session, T)
+def custom_form(id=None):
     form = Form(db.person, id, deletable=False, formstyle=FormStyleBulma)
     rows = db(db.person).select()
     return dict(form=form, rows=rows)

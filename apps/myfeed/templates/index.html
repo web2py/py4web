@@ -12,6 +12,6 @@
   </a>
   on [[=item.created_on]] says
   <blockquote>[[=item.body]]</blockquote>
-  [[=like.button('Like')(id=item.id)]]
+  [[=like.button('Like', _class=("clicked" if item.liked else ""))(id=item.id)]]
 </div>
 [[pass]]

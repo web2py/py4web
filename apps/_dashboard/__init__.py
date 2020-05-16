@@ -72,6 +72,10 @@ class Logged(Fixture):
 authenticated = ActionFactory(Logged(session))
 session_secured = action.uses(Logged(session))
 
+@action('version')
+def version():
+    return __version__
+
 if MODE in ("demo", "readonly", "full"):
 
     @action("index")
@@ -239,8 +243,14 @@ if MODE in ("demo", "readonly", "full"):
         tickets = error_storage.get()
         return {"payload": tickets}
 
+    @action("clear")
+    @session_secured
+    def clear_tickets():
+        error_storage.clear()
+
     @action("ticket/<ticket_uuid>")
     @action.uses("ticket.html")
+    @session_secured
     def error_ticket(ticket_uuid):
         return dict(ticket=ErrorStorage().get(ticket_uuid=ticket_uuid))
 
@@ -251,12 +261,10 @@ if MODE in ("demo", "readonly", "full"):
         args = path.split("/")
         app_name = args[0]
         from py4web.core import Reloader, DAL
-        from pydal.restapi import RestAPI, ALLOW_ALL_POLICY, DENY_ALL_POLICY
+        from pydal.restapi import RestAPI, Policy
 
-        if MODE == "full":
-            policy = ALLOW_ALL_POLICY
-        else:
-            policy = DENY_ALL_POLICY
+        if MODE != "full":
+            raise HTTP(403)
         module = Reloader.MODULES[app_name]
 
         def url(*args):
@@ -286,6 +294,14 @@ if MODE in ("demo", "readonly", "full"):
         elif len(args) > 2 and args[1] in databases:
             db = getattr(module, args[1])
             id = args[3] if len(args) == 4 else None
+            policy = Policy()
+            for table in db:
+                policy.set(table._tablename, 'GET', authorize=True,
+                           allowed_patterns=["**"], allow_lookup=True,
+                           fields=table.fields)
+                policy.set(table._tablename,'PUT', authorize=True, fields=table.fields)
+                policy.set(table._tablename,'POST', authorize=True, fields=table.fields)
+                policy.set(table._tablename,'DELETE', authorize=True)
             data = action.uses(db, T)(
                 lambda: RestAPI(db, policy)(
                     request.method, args[2], id, request.query, request.json
@@ -419,5 +435,9 @@ if MODE == "full":
     def gitshow(project, commit):
         if not is_git_repo(project):
             raise HTTP(400)
-        patch = run("git show " + commit, project)
+        flag = request.params.get('showfull')
+        opt = ""
+        if flag == "true":
+            opt = " -U9999"
+        patch = run("git show " + commit + opt, project)
         return diff2kryten(patch)

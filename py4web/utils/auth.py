@@ -1,12 +1,33 @@
 import base64
+import calendar
 import datetime
 import hashlib
+import time
 import urllib
 import uuid
 
 from py4web import redirect, request, response, abort, URL, action
 from py4web.core import Fixture, Template, REX_APPJSON
-from pydal.validators import IS_EMAIL, CRYPT, IS_NOT_EMPTY, IS_NOT_IN_DB
+from pydal.validators import (
+    IS_EMAIL,
+    CRYPT,
+    IS_NOT_EMPTY,
+    IS_NOT_IN_DB,
+    IS_STRONG,
+    IS_MATCH,
+)
+
+"""
+[X] Enable and disable plugins
+[X} Enable and disable actions
+[X] Require passwords of various complexity
+[x] Force logout after x hours (WIP)
+[X] No re-use of the last n passwords
+[ ] Force new password on first login (WIP)
+[ ] Two-factor authentication for users with 'administrator' access
+[ ] Lock account after x failed login attempts.
+[ ] Force new password every x days.
+"""
 
 
 def b16e(text):
@@ -29,10 +50,10 @@ class AuthEnforcer(Fixture):
         self.auth = auth
         self.condition = condition
 
-    def transform(self, output):
-        return self.auth.transform(output)
+    def transform(self, output, shared_data):
+        return self.auth.transform(output, shared_data)
 
-    def abort_or_redirect(self, page):
+    def abort_or_redirect(self, page, message=''):
         """
         return HTTP 403 if 'application/json' in HTTP_ACCEPT
         else redirects to page"""
@@ -41,16 +62,34 @@ class AuthEnforcer(Fixture):
         redirect_next = request.fullpath
         if request.query_string:
             redirect_next = redirect_next + "?{}".format(request.query_string)
-        redirect(URL(self.auth.route, page, vars=dict(next=redirect_next)))
+        redirect(
+            URL(
+                self.auth.route,
+                page,
+                vars=dict(next=redirect_next, flash=message),
+                use_appname=self.auth.use_appname_in_redirects,
+            )
+        )
 
     def on_request(self):
         """check that we have a user in the session and
         the condition is met"""
         user = self.auth.session.get("user")
         if not user or not user.get("id"):
-            self.abort_or_redirect("login")
+            self.auth.session["recent_activity"] = None
+            self.abort_or_redirect("login", "User not logged in")
+        activity = self.auth.session.get("recent_activity")
+        time_now = calendar.timegm(time.gmtime())
+        # enforce the optionl auth session expiration time
+        if self.auth.login_expiration_time and activity:
+            if time_now - activity > self.auth.login_expiration_time:
+                self.abort_or_redirect("login", "Login expired")
+        # record the time of the latest activity for logged in user (with throttling)
+        if not activity or time_now - activity > 6:
+            self.auth.session["recent_activity"] = time_now
+        self.auth.session["recent_timestamp"] = datetime.datetime.utcnow().isoformat()
         if callable(self.condition) and not self.condition(user):
-            self.abort_or_redirect("not-authorized")
+            self.abort_or_redirect("not-authorized", "User not authorized")
 
 
 class Auth(Fixture):
@@ -79,10 +118,16 @@ class Auth(Fixture):
         define_tables=True,
         sender=None,
         use_username=True,
+        use_phone_number=False,
         registration_requires_confirmation=True,
         registration_requires_approval=False,
         inject=True,
-        extra_fields=[]
+        extra_fields=[],
+        login_expiration_time=3600,  # seconds
+        password_complexity={"entropy": 50},
+        block_previous_password_num=None,
+        allowed_actions=['all'],
+        use_appname_in_redirects=True,
     ):
         """Creates and Auth object responsinble for handling
         authentication and authorization"""
@@ -99,6 +144,12 @@ class Auth(Fixture):
         self.registration_requires_confirmation = registration_requires_confirmation
         self.registration_requires_approval = registration_requires_approval
         self.use_username = use_username  # if False, uses email only
+        self.use_phone_number = use_phone_number
+        self.login_expiration_time = login_expiration_time
+        self.password_complexity = password_complexity
+        self.block_previous_password_num = block_previous_password_num
+        self.allowed_actions = allowed_actions
+        self.use_appname_in_redirects = use_appname_in_redirects
         # The self._link variable is not thread safe (only intended for testing)
         self._link = None
         self.extra_auth_user_fields = extra_fields
@@ -106,10 +157,10 @@ class Auth(Fixture):
             self.define_tables()
         self.plugins = {}
 
-    def transform(self, output):
+    def transform(self, output, shared_data):
         if self.inject:
-            if isinstance(output, dict) and not "user" in output:
-                output["user"] = self.get_user()
+            template_context = shared_data.get('template_context')
+            template_context["user"] = self.get_user()
         return output
 
     def define_tables(self):
@@ -118,6 +169,10 @@ class Auth(Fixture):
         Field = db.Field
         if not "auth_user" in db.tables:
             ne = IS_NOT_EMPTY()
+            if self.password_complexity:
+                requires = [IS_STRONG(**self.password_complexity), CRYPT()]
+            else:
+                requires = [CRYPT()]
             auth_fields = [
                 Field(
                     "email",
@@ -127,7 +182,7 @@ class Auth(Fixture):
                 Field(
                     "password",
                     "password",
-                    requires=CRYPT(),
+                    requires=requires,
                     readable=False,
                     writable=False,
                 ),
@@ -135,6 +190,13 @@ class Auth(Fixture):
                 Field("last_name", requires=ne),
                 Field("sso_id", readable=False, writable=False),
                 Field("action_token", readable=False, writable=False),
+                Field(
+                    "last_password_change",
+                    "datetime",
+                    default=None,
+                    readable=False,
+                    writable=False,
+                ),
             ]
             if self.use_username:
                 auth_fields.insert(
@@ -145,6 +207,20 @@ class Auth(Fixture):
                         unique=True,
                     ),
                 )
+            if self.use_phone_number:
+                auth_fields.insert(
+                    2,
+                    Field(
+                        "phone_number",
+                        requires=[
+                            ne,
+                            IS_MATCH(r"^[+]?(\(\d+\)|\d+)(\(\d+\)|\d+|[ -])+$"),
+                        ],
+                    ),
+                )
+            if self.block_previous_password_num is not None:
+                auth_fields.append(
+                    Field("past_passwords_hash", "list:string", writable=False, readable=False))
             db.define_table("auth_user", *auth_fields, *self.extra_auth_user_fields)
 
     @property
@@ -258,6 +334,19 @@ class Auth(Fixture):
                 # Should we use the username?
                 if path == "api/use_username":
                     return {"use_username": self.use_username}
+                if path == "api/config":
+                    fields = [
+                        dict(name=f.name, type=f.type)
+                        for f in self.db.auth_user
+                        if f.type in ["string", "bool", "integer", "float"]
+                        and f.writable
+                        and f.readable
+                    ]
+                    return {
+                        "allowed_actions": self.allowed_actions,
+                        "plugins": ['local'] + [key for key in self.plugins],
+                        "fields": fields,
+                    }
                 # Otherwise, we assume the user exists.
                 user = self.get_user(safe=True)
                 if not user:
@@ -287,6 +376,8 @@ class Auth(Fixture):
                             if self.db:
                                 data = self.get_or_register_user(data)
                                 self.session["user"] = {"id": data["id"]}
+                                self.session["recent_activity"] = calendar.timegm(time.gmtime())
+                                self.session["uuid"] = str(uuid.uuid1())
                         else:
                             data = self._error("Invalid Credentials")
                     # Else use normal login
@@ -294,6 +385,8 @@ class Auth(Fixture):
                         user, error = self.login(**vars)
                         if user:
                             self.session["user"] = {"id": user.id}
+                            self.session["recent_activity"] = calendar.timegm(time.gmtime())
+                            self.session["uuid"] = str(uuid.uuid1())
                             user = {
                                 f.name: user[f.name]
                                 for f in self.db.auth_user
@@ -317,7 +410,7 @@ class Auth(Fixture):
                     self.gdpr_unsubscribe(user, send=True)
                 elif user and path == "api/change_password":
                     data = self.change_password(
-                        user, vars.get("new_password"), vars.get("password")
+                        user, vars.get("new_password"), vars.get("old_password")
                     )
                 elif user and path == "api/change_email":
                     data = self.change_email(
@@ -335,15 +428,28 @@ class Auth(Fixture):
             data["code"] = data.get("code", 200)
             return data
         elif path == "logout":
-            self.session["user"] = None
+            self.session.clear()
             # Somehow call revoke for active plugin
         elif path == "verify_email" and self.db:
             token = get_vars.get("token")
             if self.verify_email(token):
                 next = b16d(token.split("/")[1])
-                redirect(next or URL("auth", "email_verified"))
+                redirect(
+                    next
+                    or URL(
+                        "auth",
+                        "email_verified",
+                        use_appname=self.use_appname_in_redirects,
+                    )
+                )
             else:
-                redirect(URL("auth", "token_expired"))
+                redirect(
+                    URL(
+                        "auth",
+                        "token_expired",
+                        use_appname=self.use_appname_in_redirects,
+                    )
+                )
         env["path"] = path
         return Template("auth.html").transform(env)
 
@@ -359,7 +465,11 @@ class Auth(Fixture):
             res = self.db.auth_user.validate_and_insert(**fields)
             if send and res.get("id"):
                 self._link = link = URL(
-                    self.route, "verify_email", vars=dict(token=token), scheme=True
+                    self.route,
+                    "verify_email",
+                    vars=dict(token=token),
+                    scheme=True,
+                    use_appname=self.use_appname_in_redirects,
                 )
                 self.send("verify_email", fields, link=link)
         elif self.registration_requires_approval:
@@ -390,7 +500,7 @@ class Auth(Fixture):
             return (None, "Account is blocked")
         if user.action_token == "pending-approval":
             return (None, "Account needs to be approved")
-        if db.auth_user.password.requires(password)[0] == user.password:
+        if CRYPT()(password)[0] == user.password:
             return (user, None)
         return None, "Invalid Credentials"
 
@@ -411,7 +521,11 @@ class Auth(Fixture):
             user.update_record(action_token="reset-password-request:" + token)
             if send:
                 self._link = link = URL(
-                    self.route, "reset_password", vars=dict(token=token), scheme=True,
+                    self.route,
+                    "reset_password",
+                    vars=dict(token=token),
+                    scheme=True,
+                    use_appname=self.use_appname_in_redirects,
                 )
                 self.send("reset_password", user, link=link)
             return token
@@ -439,17 +553,34 @@ class Auth(Fixture):
 
     def change_password(self, user, new_password, password=None, check=True):
         db = self.db
-        if check and not db.auth_user.password.requires(password)[0] == user.password:
-            return {"errors": {"password": "invalid"}}
-        return (
-            db(db.auth_user.id == user.id)
-            .validate_and_update(password=new_password)
-            .as_dict()
+        if check:
+            pwd = CRYPT()(password)[0]
+            if not pwd == user.password:
+                return {"errors": {"old_password": "invalid current password"}}
+            new_pwd, error = db.auth_user.password.validate(new_password)
+            if error:
+                return {"errors": {"new_password": error}}
+            if new_pwd == user.password:
+                return {
+                    "errors": {
+                        "new_password": "new password is the same as previous password"
+                    }
+                }
+            if self.block_previous_password_num:
+                past_pwds = (user.past_passwords_hash or [])[: self.block_previous_password_num]
+                if any(new_pwd == old_pwd for old_pwd in past_pwds):
+                    return {"errors": {"new_password": "new password was already used"}}
+                else:
+                    past_pwds.insert(0, pwd)
+                    db(db.auth_user.id == user.id).update(past_passwords_hash=past_pwds)
+        num = db(db.auth_user.id == user.id).update(
+            password=new_pwd, last_password_change=datetime.datetime.utcnow()
         )
+        return {'updated': num}
 
     def change_email(self, user, new_email, password=None, check=True):
         db = self.db
-        if check and not db.auth_user.password.requires(password)[0] == user.password:
+        if check and not db.auth_user.password.validate(password)[0] == user.password:
             return {"errors": {"password": "invalid"}}
         return (
             db(db.auth_user.id == user.id)

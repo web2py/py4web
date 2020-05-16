@@ -133,6 +133,7 @@ then
     echo "creading missing folder"
     echo "======================================="
     mkdir -p /home/www-data/py4web
+    py4web setup /home/www-data/py4web/apps
     chown -R www-data:www-data /home/www-data/py4web/apps
 fi
 
@@ -201,8 +202,8 @@ NAME=py4web
 DESC="py4web process"
 PIDFILE="/var/run/${NAME}.pid"
 LOGFILE="/var/log/${NAME}.log"
-DAEMON="/usr/local/bin/py4web-start"
-DAEMON_OPTS="--headless --password_file /home/www-data/py4web/password.txt /home/www-data/py4web/apps"
+DAEMON="/usr/local/bin/py4web"
+DAEMON_OPTS="--password_file /home/www-data/py4web/password.txt /home/www-data/py4web/apps"
 START_OPTS="--start --background --make-pidfile --pidfile ${PIDFILE} --exec ${DAEMON} -- ${DAEMON_OPTS}"
 STOP_OPTS="--stop --pidfile ${PIDFILE}"
 
@@ -237,5 +238,6 @@ esac
 exit 0
 ' > /etc/init.d/py4web
 
+py4web set-password --password_file=/home/www-data/py4web/password.txt
 /etc/init.d/py4web restart
 /etc/init.d/nginx restart

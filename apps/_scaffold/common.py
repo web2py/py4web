@@ -55,9 +55,15 @@ elif settings.SESSION_TYPE == "database":
 
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
-auth = Auth(session, db)
+auth = Auth(session, db, define_tables=False)
+auth.use_username = True
 auth.registration_requires_confirmation = settings.VERIFY_EMAIL
 auth.registration_requires_approval = settings.REQUIRES_APPROVAL
+auth.allowed_actions = ['all']
+auth.login_expiration_time = 3600
+auth.password_complexity = {"entropy": 50}
+auth.block_previous_password_num = 3
+auth.define_tables()
 
 if settings.SMTP_SERVER:
     auth.sender = Mailer(

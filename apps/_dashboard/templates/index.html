@@ -114,54 +114,59 @@
       <div class="panel accordion" v-if="selected_app">
         <input type="checkbox" id="databases" checked>
         <label for="databases">Databases in {{selected_app.name}}</label>
-        <div>
-          <table>
-            <tbody v-for="db in databases">
-              <tr v-for="table in db.tables">
-                <td width="10%">
-                  <button style="width:100%" v-bind:onclick="'window.open(\'[[=URL('dbadmin')]]?app='+selected_app.name+'&dbname='+db.name+'&tablename='+table.name+'\')'" target="dbadmin">{{db.name}}.{{table.name}}</button>
-                </td>
-                <td style="padding-top:9px">
-                  <span v-for="name in table.fields" class="tag">{{name}}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div style="max-width:100vw">
+          <div style="overflow-x:auto">
+            <table>
+              <tbody v-for="db in databases">
+                <tr v-for="table in db.tables">
+                  <td width="10%">
+                    <button style="width:100%" v-bind:onclick="'window.open(\'[[=URL('dbadmin')]]?app='+selected_app.name+'&dbname='+db.name+'&tablename='+table.name+'\')'" target="dbadmin">{{db.name}}.{{table.name}}</button>
+                  </td>
+                  <td style="padding-top:9px">
+                    <span v-for="name in table.fields" class="tag">{{name}}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="panel accordion">
         <input type="checkbox" id="tickets">
         <label for="tickets">Recent Tickets</label>
-        <div>
+        <div style="max-width:100vw">
           <div class="right">
             <button v-on:click="reload_tickets()"><i class="fas fa-sync-alt"></i> Reload Tickets</button>
+            <button v-on:click="clear_tickets()"><i class="fas fa-trash"></i> Clear Tickets</button>
           </div>
-          <table v-if="tickets.length>0">
-            <thead>
-              <tr>
-                <th>Occurrences</th>
-                <th>Most Recent</th>
-                <th>Client IP</th>
-                <th>App</th>
-                <th>Method</th>
-                <th>Path</th>
-                <th>Error</th>
-                <th></th>
+          <div style="overflow-x: auto">
+            <table v-if="tickets.length>0">
+              <thead>
+                <tr>
+                  <th>Occurrences</th>
+                  <th>Most Recent</th>
+                  <th>Client IP</th>
+                  <th>App</th>
+                  <th>Method</th>
+                  <th>Path</th>
+                  <th>Error</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="ticket in tickets">
+                  <td>{{ticket.count}}</td>
+                  <td>{{ticket.timestamp}}</td>
+                  <td>{{ticket.client_ip}}</td>
+                  <td>{{ticket.app_name}}</td>
+                  <td>{{ticket.method}}</td>
+                  <td>{{ticket.path}}</td>
+                  <td><a target="blank" v-bind:href="'/_dashboard/ticket/'+ticket.uuid">{{ticket.error}}</a></td>
+                  <td><a class="button" target="blank" v-bind:href="'/_dashboard/dbadmin?app=_dashboard&dbname=db&tablename=py4web_error&filter=path%3D'+ticket.path+' and error%3D'+ticket.error">Search</a></td>
               </tr>
-            </thead>
-            <tbody>
-              <tr v-for="ticket in tickets">
-                <td>{{ticket.count}}</td>
-                <td>{{ticket.timestamp}}</td>
-                <td>{{ticket.client_ip}}</td>
-                <td>{{ticket.app_name}}</td>
-                <td>{{ticket.method}}</td>
-                <td>{{ticket.path}}</td>
-                <td><a target="blank" v-bind:href="'/_dashboard/ticket/'+ticket.uuid">{{ticket.error}}</a></td>
-                <td><a class="button" target="blank" v-bind:href="'/_dashboard/dbadmin?app=_dashboard&dbname=db&tablename=py4web_error&filter=path%3D'+ticket.path+' and error%3D'+ticket.error">Search</a></td>
-              </tr>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="panel accordion">
