@@ -963,9 +963,9 @@ def watch_folder_event_loop(apps_folder):
 async def watch_folder(apps_folder):
     click.echo('watching python file changes in: %s' % apps_folder)
     async for changes in awatch(os.path.join(apps_folder)):
-        for app in set(map(lambda p: p.relative_to(apps_folder).parts[0],
-                        filter(lambda p: p.suffix == '.py',
-                                map(lambda pair: pathlib.Path(pair[1]), changes)))):
+        for app in set([p.relative_to(apps_folder).parts[0]
+                for p in [pathlib.Path(pair[1]) for pair in changes]
+                if p.suffix == '.py']):
             Reloader.import_app(app)
 
 def start_server(args):
