@@ -23,19 +23,19 @@
         <tr>
           <td id="result" class="linelength">Show Full File?</td>
           <td>
-            <input type="checkbox" id="showFull">
+            <input type="checkbox" id="showFull" checked>
           </td>
         </tr>
         <tr height=20px></tr>
 
         [[for commit in commits:]]
         <tr>
-          <td>[[=commit.get('message')[:20] ]]</td>
+          <td>[[=commit.get('message') ]]</td>
           <td>
             [[=checkout.button('Checkout')(project=project, commit=commit['code'])]]
           </td>
           <td>
-            <button class="gitshow" data-src="[[=URL('gitshow',project,commit['code'])]]">Show</button>
+            <button class="gitshow" id="[[=commit.get('code')[:20] ]]" data-src="[[=URL('gitshow',project,commit['code'])]]">Show</button>
           <td>
         </tr>
         [[pass]]
@@ -59,7 +59,7 @@
     <script src="js/jquery.min.js"></script>
     <script>
       $('.gitshow').click(function(){
-        checkFull()
+        checkFull($(this).attr('id'));
         $('.kryten').html('<iframe src="'+$(this).attr('data-src')+'"></iframe>');
       });
     </script>
@@ -67,10 +67,10 @@
 
     <!-- A script to allow for selecting between two attributes based on checkbox -->
     <script>
-      function checkFull() {
+      function checkFull(id) {
 
         // Gets the data-src attribute in the gitshow button and the value of the checkbox
-        let str = $( ".gitshow" ).attr( "data-src");
+        let str = $( "#" + id ).attr( "data-src");
         let checked = $("#showFull").prop("checked");
 
         // If we want the full file to be shown
@@ -78,7 +78,7 @@
         if(checked) {
           if(str.includes("?showfull=true")) return;
           if(str.includes("?showfull=false")) {
-            $( ".gitshow" ).attr( "data-src", str.replace("?showfull=false", "?showfull=true"));
+            $( "#" + id ).attr( "data-src", str.replace("?showfull=false", "?showfull=true"));
           }
         }
 
@@ -88,18 +88,18 @@
         else {
           if(str.includes("?showfull=false")) return;
           if(str.includes("?showfull=true")) {
-            $( ".gitshow" ).attr( "data-src", str.replace("?showfull=true", "?showfull=false"));
+            $( "#" + id ).attr( "data-src", str.replace("?showfull=true", "?showfull=false"));
           }
         }
 
         // If ?showfull isn't in the URL at all, add it based on
         // the checkbox status
         if(!str.includes("?showfull=")) {
-            $( ".gitshow" ).attr( "data-src", function( i, val ) {
+            $( "#" + id ).attr( "data-src", function( i, val ) {
               return val + (checked ? "?showfull=true" : "?showfull=false");
             });
           }
-          console.log($( ".gitshow" ).attr( "data-src"));
+          console.log($( "#" + id ).attr( "data-src"));
       }
     </script>
   </body>

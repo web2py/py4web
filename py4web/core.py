@@ -1100,7 +1100,8 @@ def call(apps_folder, func, args):
     install_args(dict(apps_folder=apps_folder))
     module, name = ('apps.' + func).rsplit('.', 1)
     env = {}
-    os.chdir(apps_folder)
+    if not apps_folder in sys.path:
+        sys.path.insert(0, apps_folder)
     exec('from %s import %s' % (module, name), {}, env)
     env[name](**args)
 
