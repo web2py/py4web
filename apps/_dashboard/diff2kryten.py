@@ -21,8 +21,9 @@ html {background-color: white; font-family: helvetica}
 
 script = """
 hljs.initHighlightingOnLoad();
-$('.line:not(.line-new)').each(function(){$(this).text($(this).attr('data-content'));});
+$('.line:not(.line-new)').each(function(){$(this).text($(this).attr('data-content') + "\\n")});
 $('.line-new').hide();
+$('.hide-newline').hide();
 $('.diff').hide();
 $('.file .filename').click(function(){$(this).closest('.file').find('.diff').slideToggle();});
 var block = 0;
@@ -41,28 +42,34 @@ $("html").keypress(function(e){
   if(e.key=="n") {
     $('.line-old[data-block="'+block+'"]').hide();
     $('.line-new[data-block="'+block+'"]').show();
+    $('.hide-newline[data-block="'+block+'"]').show();
     $('.line-new[data-block="'+block+'"]').each(function(){$(this).text($(this).attr('data-content'));});
     if($('.line[data-block="'+(block+1)+'"]').length==0) return;
     block=block+1;
     $('.line-old[data-block="'+block+'"]').hide();
     $('.line-new[data-block="'+block+'"]').show();
+    $('.hide-newline[data-block="'+block+'"]').show();
     $('.line-new[data-block="'+block+'"]').text('');
     $('.line-new[data-block="'+block+'"]').closest('.file').find('.diff').show();
   } else if (e.key=='b') {
     $('.line-old[data-block="'+block+'"]').show();
     $('.line-new[data-block="'+block+'"]').hide();
+    $('.hide-newline[data-block="'+block+'"]').hide();
     block=Math.max(0, block-1);
     $('.line-old[data-block="'+block+'"]').hide();
     $('.line-new[data-block="'+block+'"]').show();
-    $('.line-new[data-block="'+block+'"]').text(function(){$(this).text($(this).attr('data-content'));});
+    $('.hide-newline[data-block="'+block+'"]').show();
+    $('.line-new[data-block="'+block+'"]').text(function(){$(this).text($(this).attr('data-content') );});
     $('.line-new[data-block="'+block+'"]').closest('.file').find('.diff').show();
   } else if (e.key=='v') {
     block=0;
     $('.line-old').show();
+    $('.hide-newline').hide();
     $('.line-new').hide().each(function(){$(this).text('');});
   } else if (e.key=='m') {
     block=%i;
     $('.line-old').hide();
+    $('.hide-newline').show();
     $('.line-new').show().each(function(){$(this).text($(this).attr('data-content'));});
   }
 });
@@ -77,6 +84,21 @@ def escape(txt):
         .replace('"', "&quot;")
     )
 
+# specify which language we want to render as for highlight.js
+# based on the name of the file
+def getFileType(name):
+
+    if name.lower().endswith('py'):
+        return 'class="language-python"'
+    if name.lower().endswith('js'):
+        return 'class="language-javascript"'
+    if name.lower().endswith('html'):
+        return 'class="language-html"'
+    if name.lower().endswith('css'):
+        return 'class="language-css"'
+    return ""
+
+
 
 def diff2kryten(data):
     lines = data.split("\n")
@@ -85,9 +107,9 @@ def diff2kryten(data):
     message = ""
     mode = 0
     block = 0
-    line_old = '<div class="line line-old" data-block="%s" data-content="%s"></div>'
-    line_new = '<div class="line line-new" data-block="%s" data-content="%s"></div>'
-    line_reg = '<div class="line" data-content="%s"></div>'
+    line_old = '<span class="line line-old" data-block="%s" data-content="%s"></span>'
+    line_new = '<span class="line line-new" data-block="%s" data-content="%s"></span><span class="hide-newline" data-block="%s">\n</span>'
+    line_reg = '<span class="line" data-content="%s"></span>'
     for line in lines:
         if line.startswith("---"):
             filename_a = line[4:].strip()
@@ -113,7 +135,7 @@ def diff2kryten(data):
             files[filename]["lines"].append(line_old % (block, escape(line[1:])))
         elif line.startswith("+"):
             mode, block = 3, block + 1
-            files[filename]["lines"].append(line_new % (block, escape(line[1:])))
+            files[filename]["lines"].append(line_new % (block, escape(line[1:]), block))
         elif line.startswith(" ") and mode >= 2:
             files[filename]["lines"].append(line_reg % escape(line[1:]))
             if mode > 2:
@@ -129,7 +151,7 @@ def diff2kryten(data):
             lines = "".join(files[filename]["lines"])
         div += '<div class="file">'
         div += '<div class="filename">%s (%s)</div>' % (filename, mode)
-        div += '<div class="diff"><pre><code>%s</code></pre></div></div>' % lines
+        div += '<div class="diff"><pre><code %s>%s</code></pre></div></div>' % (getFileType(filename),lines)
     return (
         "<html><head>"
         + '''<link rel="stylesheet"

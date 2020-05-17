@@ -23,14 +23,14 @@
         <tr>
           <td id="result" class="linelength">Show Full File?</td>
           <td>
-            <input type="checkbox" id="showFull">
+            <input type="checkbox" id="showFull" checked>
           </td>
         </tr>
         <tr height=20px></tr>
 
         [[for commit in commits:]]
         <tr>
-          <td>[[=commit.get('message')[:20] ]]</td>
+          <td>[[=commit.get('message') ]]</td>
           <td>
             [[=checkout.button('Checkout')(project=project, commit=commit['code'])]]
           </td>
@@ -59,7 +59,7 @@
     <script src="js/jquery.min.js"></script>
     <script>
       $('.gitshow').click(function(){
-        checkFull($(this).attr('id'))
+        checkFull($(this).attr('id'));
         $('.kryten').html('<iframe src="'+$(this).attr('data-src')+'"></iframe>');
       });
     </script>
