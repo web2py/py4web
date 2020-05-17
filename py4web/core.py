@@ -826,7 +826,8 @@ class Reloader:
     def clear_routes(app_name=None):
         app = bottle.default_app()
         routes = app.routes[:]
-        app.reset() # clear all routes in right way including cached values
+        app.reset()
+        app.routes.clear()
         app.router = bottle.Router()
         if app_name:
             for route in routes:
