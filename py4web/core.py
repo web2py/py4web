@@ -826,7 +826,7 @@ class Reloader:
     def clear_routes(app_name=None):
         app = bottle.default_app()
         routes = app.routes[:]
-        app.routes.clear()
+        app.reset() # clear all routes in right way including cached values
         app.router = bottle.Router()
         if app_name:
             for route in routes:
@@ -865,6 +865,8 @@ class Reloader:
                     click.echo("[ ] loading %s ..." % app_name)
                 else:
                     click.echo("[ ] reloading %s ..." % app_name)
+                    if hasattr(module, 'on_unload'):
+                        module.on_unload() # should call db.close() at least
                     # forget the module
                     del Reloader.MODULES[app_name]
                     # all files/submodules
