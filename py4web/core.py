@@ -32,6 +32,8 @@ import types
 import urllib.parse
 import uuid
 import zipfile
+import asyncio
+from watchgod import awatch
 
 REX_APPJSON = re.compile(r"(^|\s|,)application/json(,|\s|$)")
 
@@ -954,13 +956,32 @@ def error404(error):
 # Web Server and Reload Logic: Operations
 #########################################################################################
 
+def watch_folder_event_loop(apps_folder):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(watch_folder(apps_folder))
+
+async def watch_folder(apps_folder):
+    click.echo('watching python file changes in: %s' % apps_folder)
+    async for changes in awatch(os.path.join(apps_folder)):
+        for app in set([p.relative_to(apps_folder).parts[0]
+                for p in [pathlib.Path(pair[1]) for pair in changes]
+                if p.suffix == '.py']):
+            Reloader.import_app(app)
 
 def start_server(args):
-    host, port = args['host'], int(args['port'])
+    host, port, apps_folder, watch = args['host'], int(args['port']), args['apps_folder'], args['watch']
+
     if platform.system().lower() == "windows":
+        if watch:
+            # default wsgi server block the main thread so we open a new thread for the file watcher
+            threading.Thread(target=watch_folder_event_loop, args=(apps_folder,)).start()
         # Tornado fail on windows
         bottle.run(host=host, port=int(port), reloader=False)
     elif args['number_workers'] < 1:
+        if watch:
+            # tornado delegate to asyncio so we add a future into the event loop
+            asyncio.ensure_future(watch_folder(apps_folder))
         bottle.run(server="tornado", host=host, port=port, reloader=False)
     else:
         if not gunicorn:
@@ -968,6 +989,9 @@ def start_server(args):
         elif not gevent:
             logging.error("gevent not installed")
         else:
+            if watch:
+                click.echo('--watch option has no effect in multi-process environment \n')
+
             sys.argv[:] = sys.argv[:1]  # else break gunicorn
             bottle.run(
                 server="gunicorn",
@@ -1060,7 +1084,6 @@ def fix_ansi_on_windows():
         from ctypes import windll
         windll.kernel32.SetConsoleMode(windll.kernel32.GetStdHandle(-11), 7)
 
-
 def keyboardInterruptHandler(signal, frame):
     """Catch interrupts like Ctrl-C"""
     click.echo("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
@@ -1113,7 +1136,6 @@ def set_password(password, password_file):
     with open(password_file, "w") as fp:
         fp.write(str(pydal.validators.CRYPT()(password)[0]))
 
-
 @cli.command()
 @click.argument('apps_folder', default='apps')
 @click.option('-Y', '--yes', is_flag=True, default=False, help='No prompt, assume yes to questions')
@@ -1122,6 +1144,7 @@ def set_password(password, password_file):
 @click.option('-p', '--password_file', default='password.txt', help='File for the encrypted password')
 @click.option('-w', '--number_workers', default=0, type=int, help='Number of workers')
 @click.option('-d', '--dashboard_mode',  default='full', help='Dashboard mode: demo, readonly, full (default), none')
+@click.option('--watch', is_flag=True, default=False, help='Watch python changes and reload apps automatically')
 @click.option('--ssl_cert', help='SSL certificate file for HTTPS')
 @click.option('--ssl_key', help='SSL key file for HTTPS')
 def run(**args):
@@ -1146,7 +1169,6 @@ def run(**args):
     # Start
     Reloader.import_apps()
     start_server(args)
-
 
 if __name__ == '__main__':
     cli()
