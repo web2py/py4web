@@ -88,13 +88,13 @@ def escape(txt):
 # based on the name of the file
 def getFileType(name):
 
-    if name.lower().endswith('py'):
+    if name.lower().endswith('.py'):
         return 'class="language-python"'
-    if name.lower().endswith('js'):
+    if name.lower().endswith('.js'):
         return 'class="language-javascript"'
-    if name.lower().endswith('html'):
+    if name.lower().endswith('.html'):
         return 'class="language-html"'
-    if name.lower().endswith('css'):
+    if name.lower().endswith('.css'):
         return 'class="language-css"'
     return ""
 

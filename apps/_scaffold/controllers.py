@@ -30,7 +30,9 @@ from yatl.helpers import A
 from .common import db, session, T, cache, auth, logger, authenticated, unauthenticated
 
 
-@authenticated()
+@unauthenticated()
+@action('index')
+@action.uses(auth, 'index.html')
 def index():
     user = auth.get_user()
     message = T("Hello {first_name}".format(**user))
