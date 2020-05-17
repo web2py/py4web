@@ -50,6 +50,13 @@ try:
 except ImportError:
     gevent = None
 
+try:
+    from enum import Enum
+except:
+    # for python < 3.4
+    class Enum:
+        pass
+
 # Third party modules
 import jwt  # this is PyJWT
 import bottle
@@ -220,6 +227,8 @@ def objectify(obj):
         return list(obj)
     elif hasattr(obj, "xml"):
         return obj.xml()
+    elif isinstance(obj, Enum):  # Enum class handled specially to address self reference in __dict__
+        return dict(name=obj.name, value=obj.value, __class__=obj.__class__.__name__)
     elif hasattr(obj, "__dict__") and hasattr(obj, "__class__"):
         d = dict(obj.__dict__)
         d["__class__"] = obj.__class__.__name__
