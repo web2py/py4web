@@ -8,48 +8,56 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
-  <body>    
+  <body>
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href=".">
+        <a class="navbar-item" href="[[=URL('index')]]">
           <strong>APP LOGO</strong>
         </a>
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="left-navbar"
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="the-navbar-menu"
            onclick="this.classList.toggle('is-active');document.getElementById(this.dataset.target).classList.toggle('is-active');">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
-      <div id="left-navbar" class="navbar-menu">
-        <div class="navbar-start">       
-          <a class="navbar-item" href="[[=URL('index')]]">Home</a>
+      <div id="the-navbar-menu" class="navbar-menu">
+        <div class="navbar-start">
           [[block page_menu_items]]<!-- individual pages can add menu items here -->[[end]]
         </div>
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
               [[if globals().get('user'):]]
-              <a class="button is-primary" href="[[=URL('auth/logout')]]">Sign out</a>
+                <div class="navbar-item has-dropdown is-hoverable">
+                  <a class="navbar-link is-primary">
+                    [[=globals().get('user').get('email')]]
+                  </a>
+                  <div class="navbar-dropdown">
+                    <a class="navbar-item" href="[[=URL('auth/logout')]]">
+                      Logout
+                    </a>
+                    <!-- <a class="navbar-item" href="[[=URL('user/profile')]]">
+                      Profile
+                    </a> -->
+                  </div>
+                </div>
               [[else:]]
-              <a class="button is-primary" href="[[=URL('auth/register')]]">Sign up</a>
-              <a class="button is-light" href="[[=URL('auth/login')]]">Sign in</a>
+                <a class="button is-primary" href="[[=URL('auth/register')]]">
+                  Sign up
+                </a>
+                <a class="button is-primary"href="[[=URL('auth/login')]]">
+                  Log in
+                </a>
               [[pass]]
             </div>
           </div>
         </div>
       </div>
     </nav>
-    <section class="section">
-      <div class="container">
-        <h1 class="title">PAGE TITLE</h1>
-      </div>
-    </section>
-    <section class="section">
       <!-- beginning of HTML inserted by extending template -->
       [[include]]
       <!-- end of HTML inserted by extending template -->
-    </section>
     <footer class="footer">
       <div class="content has-text-centered">
         Made with py4web
