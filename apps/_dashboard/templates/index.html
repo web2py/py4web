@@ -234,6 +234,25 @@
           </div>
         </div>
       </div>
+      <div class="modal" v-if="modal">
+        <div class="modal-inner">
+          <div>
+            <h2>{{modal.title}}{{selected_app.name}}</h2>
+            <p>{{modal.message}}</p>
+            <div v-if="modal.form_name=='create-file'">
+              <table>
+                <tr>
+                  <td></td>
+                  <td><input type="text" v-model="modal.form.name" placeholder=somefile.html></td>
+                </tr>
+              </table>
+            </div>
+            <div style="text-align: right; padding-top:30px">
+              <button v-for="button in modal.buttons" v-on:click="button.onclick()">{{button.text}}</button><button v-if="!modal.buttons" v-on:click="modal_dismiss()">Dismiss</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
   <script src="js/sugar.min.js"></script>
