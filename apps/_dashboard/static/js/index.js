@@ -124,6 +124,15 @@ let init = (app) => {
             axios.post('../new_app', form).then(app.reload);
         }
     };
+    app.process_new_file = () => {
+        var form = app.vue.modal.form;
+        console.log(form);
+        if(!form.name) alert('An file name must be provided');
+        else {
+            /*reload entire page needed to see the new file listed*/
+            axios.post('../new_file', form).then(location.reload());
+        }
+    }; 
     app.handle_upload_file = () => {
         utils.upload_helper('upload-file', (name, data)=>{app.vue.modal.form.file=data;});
     };
@@ -139,7 +148,16 @@ let init = (app) => {
         }; 
     };
     app.create_new_file = ()=> {
-        app.vue.modal = {title:'Create New File', color:'blue', message:'[WORK IN PROGRESS]'};
+        var app_name = app.vue.selected_app.name;
+        app.vue.modal = {
+            title:'Create a new file under ', 
+            color:'green', 
+            message:'Ex: somedir/some_file.py',
+            form_name: 'create-file',
+            form: {'app': app_name},
+            buttons: [{text: 'Create', onclick: function() {app.process_new_file();}}, 
+                      {text:'Close', onclick: app.modal_dismiss}]
+        }; 
     };
     app.upload_new_file = ()=> {
         app.vue.modal ={title:'Upload New File', color:'blue',message:'[WORK IN PROGRESS]'};
