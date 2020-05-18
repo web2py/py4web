@@ -8,6 +8,6 @@ threadsafevariable
 pyjwt >= 1.7.1
 pluralize >= 0.1.5
 yatl >= 20200430.1
-pydal >= 1.20200506.2
+pydal >= 20200517.1
 python-memcached # used for testing or for optionally actually accessing memcache
 watchgod >= 0.6
