@@ -17,6 +17,7 @@ from pydal.validators import CRYPT
 from yatl.helpers import BEAUTIFY
 from .utils import *
 from .diff2kryten import diff2kryten
+from pathlib import Path
 
 MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 FOLDER = os.environ["PY4WEB_APPS_FOLDER"]
@@ -164,7 +165,41 @@ if MODE in ("demo", "readonly", "full"):
             shutil.rmtree(path)
             return {"status": "success", "payload": "Deleted"}
         return {"status": "success", "payload": "App does not exist"}
+    
+    @action("new_file", method="POST")
+    @session_secured
+    def new_file():
+        """asign an sanitize inputs"""
+        path = os.path.join(FOLDER)
+        form = request.json
+        file_name = str(XML(form["name"].replace("..", ""), sanitize=True)) #removed '..' (double point) to avoid path traversal
+        app_name = str(XML(form["app"], sanitize=True))
+        
+        """check if app exist"""
+        apps = os.listdir(path)
+        if app_name not in apps:
+            return {"status": "success", "payload": "App does not exist"}
 
+        """parse subfolders if any and new file"""
+        file_list = file_name.split('/')
+        n_items = len(file_list)
+        f_path = '/'.join(file_list[:(n_items-1)])
+        final_path = path+'/'+app_name+'/'+f_path
+
+
+        """Create subfolders if not exist"""
+        Path(final_path).mkdir(parents=True, exist_ok=True)
+
+        """Create a new file"""
+        f = open(final_path+'/'+file_list[n_items-1], 'w')
+        if file_list[n_items-1].endswith(".html"):
+            f.write('[[extend "layout.html"]]')
+        elif file_list[n_items-1].endswith(".py"):
+            f.write('# -*- coding: utf-8 -*-')
+        f.close() 
+
+        return {"status": "success"}
+    
     @action("walk/<path:path>")
     @session_secured
     def walk(path):
