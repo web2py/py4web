@@ -25,11 +25,13 @@ session, db, T, auth, and tempates are examples of Fixtures.
 Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app will result in undefined behavior
 """
 
+import datetime
 import uuid
 
 from py4web import action, request, abort, redirect, URL, Field
 from py4web.utils.form import Form, FormStyleBulma
 from py4web.utils.url_signer import URLSigner
+from pydal.validators import *
 
 from yatl.helpers import A
 from .common import db, session, T, cache, auth
@@ -66,8 +68,19 @@ def fileuploader():
 # -----------------------------
 # Custom vue form.
 
-vue_form = VueForm('custom_form', session,
-                   [Field('name'), Field('read', 'boolean')])
+def get_time():
+    return datetime.datetime.utcnow()
+
+vue_form = VueForm('test_form', session,
+                       [Field('name', default="Luca"),
+                        Field('last_name', default="Smith", writable=False),
+                        Field('read', 'boolean', default=True),
+                        Field('animal', requires=IS_IN_SET(['cat', 'dog', 'bird']),
+                              default='dog', writable=False),
+                        Field('choice', requires=IS_IN_SET({'c': 'cat', 'd': 'dog', 'b': 'bird'}),
+                              default='d'),
+                        Field('arrival_time', 'datetime', default=get_time),
+                        ], readonly=False)
 
 @action('vue_form', method=['GET'])
 @action.uses(vue_form, "vueform.html")
