@@ -164,7 +164,28 @@ if MODE in ("demo", "readonly", "full"):
             shutil.rmtree(path)
             return {"status": "success", "payload": "Deleted"}
         return {"status": "success", "payload": "App does not exist"}
-
+    
+    @action("new_file/<name:re:\w+>/<file_name:path>", method="POST")
+    @session_secured
+    def new_file(name, file_name):
+        """asign an sanitize inputs"""
+        path = os.path.join(FOLDER, name)
+        form = request.json
+        if not os.path.exists(path):
+            return {"status": "success", "payload": "App does not exist"}
+        full_path = os.path.join(path, file_name)
+        if os.path.exists(full_path):
+            return {"status": "success", "payload": "File already exists"}
+        parent = os.path.dirname(full_path)
+        if not os.path.exists(parent):
+            os.makedirs(parent)
+        with open(full_path, 'w') as fp:
+            if full_path.endswith(".html"):
+                fp.write('[[extend "layout.html"]]\nHello World!')
+            elif full_path.endswith(".py"):
+                fp.write('# -*- coding: utf-8 -*-')
+        return {"status": "success"}
+    
     @action("walk/<path:path>")
     @session_secured
     def walk(path):
