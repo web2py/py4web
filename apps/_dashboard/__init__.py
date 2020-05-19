@@ -17,7 +17,6 @@ from pydal.validators import CRYPT
 from yatl.helpers import BEAUTIFY
 from .utils import *
 from .diff2kryten import diff2kryten
-from pathlib import Path
 
 MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 FOLDER = os.environ["PY4WEB_APPS_FOLDER"]
@@ -166,38 +165,25 @@ if MODE in ("demo", "readonly", "full"):
             return {"status": "success", "payload": "Deleted"}
         return {"status": "success", "payload": "App does not exist"}
     
-    @action("new_file", method="POST")
+    @action("new_file/<name:re:\w+>/<file_name:path>", method="POST")
     @session_secured
-    def new_file():
+    def new_file(name, file_name):
         """asign an sanitize inputs"""
-        path = os.path.join(FOLDER)
+        path = os.path.join(FOLDER, name)
         form = request.json
-        file_name = str(XML(form["name"].replace("..", ""), sanitize=True)) #removed '..' (double point) to avoid path traversal
-        app_name = str(XML(form["app"], sanitize=True))
-        
-        """check if app exist"""
-        apps = os.listdir(path)
-        if app_name not in apps:
+        if not os.path.exists(path):
             return {"status": "success", "payload": "App does not exist"}
-
-        """parse subfolders if any and new file"""
-        file_list = file_name.split('/')
-        n_items = len(file_list)
-        f_path = '/'.join(file_list[:(n_items-1)])
-        final_path = path+'/'+app_name+'/'+f_path
-
-
-        """Create subfolders if not exist"""
-        Path(final_path).mkdir(parents=True, exist_ok=True)
-
-        """Create a new file"""
-        f = open(final_path+'/'+file_list[n_items-1], 'w')
-        if file_list[n_items-1].endswith(".html"):
-            f.write('[[extend "layout.html"]]')
-        elif file_list[n_items-1].endswith(".py"):
-            f.write('# -*- coding: utf-8 -*-')
-        f.close() 
-
+        full_path = os.path.join(path, file_name)
+        if os.path.exists(full_path):
+            return {"status": "success", "payload": "File already exists"}
+        parent = os.path.dirname(full_path)
+        if not os.path.exists(parent):
+            os.makedirs(parent)
+        with open(full_path, 'w') as fp:
+            if full_path.endswith(".html"):
+                fp.write('[[extend "layout.html"]]\nHello World!')
+            elif full_path.endswith(".py"):
+                fp.write('# -*- coding: utf-8 -*-')
         return {"status": "success"}
     
     @action("walk/<path:path>")
