@@ -174,6 +174,8 @@ if MODE in ("demo", "readonly", "full"):
         if not os.path.exists(path):
             return {"status": "success", "payload": "App does not exist"}
         full_path = os.path.join(path, file_name)
+        if not full_path.startswith(path+os.sep):
+            return {"status": "success", "payload": "Invalid path"}
         if os.path.exists(full_path):
             return {"status": "success", "payload": "File already exists"}
         parent = os.path.dirname(full_path)
@@ -462,3 +464,4 @@ if MODE == "full":
             opt = " -U9999"
         patch = run("git show " + commit + opt, project)
         return diff2kryten(patch)
+
