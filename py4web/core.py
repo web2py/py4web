@@ -272,6 +272,7 @@ class Translator(pluralize.Translator, Fixture):
 class DAL(pydal.DAL, Fixture):
     def on_request(self):
         threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
+        self._aliased_tables.clear() # should we do tha same on_error/on_success?
 
     def on_error(self):
         self.rollback()
