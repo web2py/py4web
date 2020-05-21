@@ -481,7 +481,8 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=Tru
     URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
     """
     script_name = (
-        request.get("HTTP_X_SCRIPT_NAME", "") or request.get("SCRIPT_NAME", "")
+        request.environ.get("HTTP_X_SCRIPT_NAME", "") or 
+        request.environ.get("SCRIPT_NAME", "")
     ).rstrip("/")
     prefix = script_name + (
         "/%s/" % request.app_name
@@ -502,10 +503,13 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=Tru
         )
     if hash:
         url += "#%s" % hash
-    if not scheme is False:
-        orig_scheme, _, domain = request.url.split("/")[:3]
+    if not scheme is False:        
+        original_url = request.environ.get('HTTP_ORIGIN') or request.url
+        orig_scheme, _, domain = original_url.split("/")[:3]
         scheme = (
-            orig_scheme if scheme is True else "" if scheme is None else scheme + ":"
+            orig_scheme if scheme is True 
+            else "" if scheme is None 
+            else scheme + ":"
         )
         url = "%s//%s%s" % (scheme, domain, url)
     return url
