@@ -282,6 +282,7 @@ class DAL(pydal.DAL, Fixture):
 
 
 # make sure some variables in pydal are thread safe
+setattr(pydal.DAL, "_aliased_tables", threadsafevariable.ThreadSafeVariable())
 for _ in ["readable", "writable", "default", "update", "requires"]:
     setattr(pydal.DAL.Field, _, threadsafevariable.ThreadSafeVariable())
 
