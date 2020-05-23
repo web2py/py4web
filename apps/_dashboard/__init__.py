@@ -56,7 +56,7 @@ def get_commits(project):
 
 
 def get_branches(project):
-    """list of git commits for the project"""
+    """dictionary of git local branches for the project"""
     output = run("git branch", project)
     branches = {"current" : "", "other" : []}
     for line in output.split("\n"):
