@@ -5,6 +5,13 @@
       * {margin: 0;}
       html {background: white; color: black; font-family: "Courier"; font-size: 10px}}
       a { color: orange; font-weight: bold}
+      a.button {
+          -webkit-appearance: button;
+          -moz-appearance: button;
+          appearance: button;
+          color: initial;
+          text-decoration: none;
+      }
       td {padding: 5px 10px; color: orange}
       td.linelength { padding: 5px 10px; color: #f1f1f1; font-weight: bold}
       button.clicked {background: #00d1b2;}
@@ -21,9 +28,28 @@
     <div class="commits">
       <table>
         <tr>
-          <td id="result" class="linelength">Show Full File?</td>
+          <td class="linelength">Show Full File?</td>
           <td>
             <input type="checkbox" id="showFull" checked>
+          </td>
+        </tr>
+        <tr>
+          <td class="linelength">Select Branch
+
+          (Currently: [[ =branches.get("current")[:20] ]])
+          </td>
+          <td>
+            <select name="branches" id="branches">
+                    <option value="[[=URL('swapbranch', project, branches.get('current')[:20])]]"> [[ =branches.get("current") ]]</option>
+                    [[for branch in branches.get("other"):]]
+                    <option value="[[=URL('swapbranch', project, branch[:20])]]">[[=branch[:20] ]]</option>
+                    [[pass]]
+              </select>
+          </td>
+          <td>
+            <a class="button" id="swapbranch" href="[[=URL('swapbranch', project, branches.get('current')[:20])]]">
+              Go
+            </a>
           </td>
         </tr>
         <tr height=20px></tr>
@@ -102,5 +128,13 @@
           console.log($( "#" + id ).attr( "data-src"));
       }
     </script>
+    <script>
+       $("#branches").click(function(){
+          var conceptName = $('#branches').val();
+          $("#swapbranch").attr("href", conceptName);
+        });
+    </script>
+
+
   </body>
 </html>
