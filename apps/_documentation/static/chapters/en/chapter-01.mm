@@ -111,7 +111,7 @@ py4webt run -p password.txt apps
 ### Command line options
 
 py4web provides multiple command line options which can be listed with ``--help``.
-``
+
 ``
 py4web --help
 Usage: py4web.py [OPTIONS] COMMAND [ARGS]...
