@@ -997,7 +997,7 @@ def watch(apps_folder, server = 'default', mode = 'sync'):
     
     if server == 'default':
         # default wsgi server block the main thread so we open a new thread for the file watcher
-        threading.Thread(target=watch_folder_event_loop, args=(apps_folder,)).start()
+        threading.Thread(target=watch_folder_event_loop, args=(apps_folder,), daemon=True).start()
     elif server == 'tornado':    
         # tornado delegate to asyncio so we add a future into the event loop
         asyncio.ensure_future(watch_folder(apps_folder))            
@@ -1017,9 +1017,6 @@ def start_server(args):
     run = lambda: 0 # main run
     
     if platform.system().lower() == "windows":
-        if watch:
-            # default wsgi server block the main thread so we open a new thread for the file watcher
-            threading.Thread(target=watch_folder_event_loop, args=(apps_folder,), daemon=True).start()
         # Tornado fail on windows
         server = 'default'
         run = lambda : bottle.run(host=host, port=int(port), reloader=False)
