@@ -20,119 +20,158 @@ from yatl.helpers import (
 )
 
 
-def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
-    form = FORM(_method="POST", _action=request.path, _enctype="multipart/form-data")
-    controls = dict(
-        widgets=dict(),
-        hidden_widgets=dict(),
-        errors=dict(),
-        begin=XML(form.xml().split("</form>")[0]),
-        end=XML("</form>"),
-    )
+class FormStyleFactory:
+    def __init__(self):
+        self.classes = {
+            "outer": "",
+            "inner": "",
+            "label": "",
+            "info": "",
+            "error": "error",
+            "submit": "",
+            "input": "",
+            "input[type=text]": "",
+            "input[type=date]": "",
+            "input[type=time]": "",
+            "input[type=datetime]": "",
+            "input[type=radio]": "",
+            "input[type=checkbox]": "",
+            "input[type=submit]": "",
+            "select": "",
+            "textarea": "",
+        }
 
-    classes = classes or {}
-    class_label = classes.get("label", "")
-    class_outer = classes.get("outer", "")
-    class_inner = classes.get("inner", "")
-    class_error = classes.get("error", "")
-    class_info = classes.get("info", "")
+    def produce(self, table, vars, errors, readonly, deletable, classes=None):
+        self.classes.update(classes or {})
+        form = FORM(
+            _method="POST", _action=request.path, _enctype="multipart/form-data"
+        )
+        controls = dict(
+            widgets=dict(),
+            hidden_widgets=dict(),
+            errors=dict(),
+            begin=XML(form.xml().split("</form>")[0]),
+            end=XML("</form>"),
+        )
+        class_label = self.classes["label"]
+        class_outer = self.classes["outer"]
+        class_inner = self.classes["inner"]
+        class_error = self.classes["error"]
+        class_info = self.classes["info"]
 
-    for field in table:
+        for field in table:
 
-        input_id = "%s_%s" % (field.tablename, field.name)
-        value = vars.get(field.name)
-        error = errors.get(field.name)
-        field_class = field.type.split()[0].replace(":", "-")
+            input_id = "%s_%s" % (field.tablename, field.name)
+            value = vars.get(field.name)
+            error = errors.get(field.name)
+            field_class = field.type.split()[0].replace(":", "-")
 
-        if not field.readable:
-            continue
-        if not readonly and not field.writable:
-            continue
-        if field.type == "blob":  # never display blobs (mistake?)
-            continue
-        if field.type == "id" and value is None:
-            continue
-        if readonly or field.type == "id":
-            control = DIV(field.represent and field.represent(value) or value or "")
-        elif field.widget:
-            control = field.widget(table, value)
-        elif field.type == "text":
-            control = TEXTAREA(value or "", _id=input_id, _name=field.name)
-        elif field.type == "boolean":
-            control = INPUT(
-                _type="checkbox",
-                _id=input_id,
-                _name=field.name,
-                _value="ON",
-                _checked=value,
-            )
-        elif field.type == "upload":
-            control = DIV(INPUT(_type="file", _id=input_id, _name=field.name))
-            if value:
-                control.append(A("download", _href=field.download_url(value)))
-                control.append(
-                    INPUT(_type="checkbox", _value="ON", _name="_delete_" + field.name)
+            if not field.readable:
+                continue
+            if not readonly and not field.writable:
+                continue
+            if field.type == "blob":  # never display blobs (mistake?)
+                continue
+            if field.type == "id" and value is None:
+                continue
+            if readonly or field.type == "id":
+                control = DIV(field.represent and field.represent(value) or value or "")
+            elif field.widget:
+                control = field.widget(table, value)
+            elif field.type == "text":
+                control = TEXTAREA(value or "", _id=input_id, _name=field.name)
+            elif field.type == "date":
+                control = INPUT(
+                    _value=value, _type="date", _id=input_id, _name=field.name
                 )
-                control.append("(check to remove)")
-        elif hasattr(field.requires, "options"):
-            multiple = field.type.startswith("list:")
-            value = list(map(str, value if isinstance(value, list) else [value]))
-            options = [
-                OPTION(v, _value=k, _selected=(not k is None and k in value))
-                for k, v in field.requires.options()
-            ]
-            control = SELECT(
-                *options, _id=input_id, _name=field.name, _multiple=multiple
-            )
-        else:
-            field_type = "password" if field.type == "password" else "text"
-            control = INPUT(
-                _type=field_type,
-                _id=input_id,
-                _name=field.name,
-                _value=value,
-                _class=field_class,
+            elif field.type == "datetime":
+                control = INPUT(
+                    _value=value, _type="datetime", _id=input_id, _name=field.name
+                )
+            elif field.type == "time":
+                control = INPUT(
+                    _value=value, _type="time", _id=input_id, _name=field.name
+                )
+            elif field.type == "boolean":
+                control = INPUT(
+                    _type="checkbox",
+                    _id=input_id,
+                    _name=field.name,
+                    _value="ON",
+                    _checked=value,
+                )
+            elif field.type == "upload":
+                control = DIV(INPUT(_type="file", _id=input_id, _name=field.name))
+                if value:
+                    control.append(A("download", _href=field.download_url(value)))
+                    control.append(
+                        INPUT(
+                            _type="checkbox", _value="ON", _name="_delete_" + field.name
+                        )
+                    )
+                    control.append("(check to remove)")
+            elif hasattr(field.requires, "options"):
+                multiple = field.type.startswith("list:")
+                value = list(map(str, value if isinstance(value, list) else [value]))
+                options = [
+                    OPTION(v, _value=k, _selected=(not k is None and k in value))
+                    for k, v in field.requires.options()
+                ]
+                control = SELECT(
+                    *options, _id=input_id, _name=field.name, _multiple=multiple
+                )
+            else:
+                field_type = "password" if field.type == "password" else "text"
+                control = INPUT(
+                    _type=field_type,
+                    _id=input_id,
+                    _name=field.name,
+                    _value=value,
+                    _class=field_class,
+                )
+
+            key = control.name.rstrip("/")
+            if key == "input":
+                key += "[type=%s]" % (control["_type"] or "text")
+            control["_class"] = classes[key]
+
+            controls["widgets"][field.name] = control
+            if error:
+                controls["errors"][field.name] = error
+
+            form.append(
+                DIV(
+                    LABEL(field.label, _for=input_id, _class=class_label),
+                    DIV(control, _class=class_inner),
+                    P(error, _class=class_error) if error else "",
+                    P(field.comment or "", _class=class_info),
+                    _class=class_outer,
+                )
             )
 
-        key = control.name.rstrip("/")
-        if key == "input":
-            key += "[type=%s]" % (control["_type"] or "text")
-        control["_class"] = classes.get(key, "")
-
-        controls["widgets"][field.name] = control
-        if error:
-            controls["errors"][field.name] = error
-
-        form.append(
-            DIV(
-                LABEL(field.label, _for=input_id, _class=class_label),
-                DIV(control, _class=class_inner),
-                P(error, _class=class_error) if error else "",
-                P(field.comment or "", _class=class_info),
-                _class=class_outer,
+        if deletable:
+            controls["delete"] = INPUT(
+                _type="checkbox",
+                _value="ON",
+                _name="_delete",
+                _class=classes["input[type=checkbox]"],
             )
+            form.append(
+                DIV(
+                    DIV(controls["delete"], _class=class_inner,),
+                    P("check to delete", _class="help"),
+                    _class=class_outer,
+                )
+            )
+        controls["submit"] = INPUT(
+            _type="submit", _value="Submit", _class=classes["input[type=submit]"],
         )
+        submit = DIV(DIV(controls["submit"], _class=class_inner,), _class=class_outer,)
+        form.append(submit)
+        return dict(form=form, controls=controls)
 
-    if deletable:
-        controls["delete"] = INPUT(
-            _type="checkbox",
-            _value="ON",
-            _name="_delete",
-            _class=classes.get("input[type=checkbox]"),
-        )
-        form.append(
-            DIV(
-                DIV(controls["delete"], _class=class_inner,),
-                P("check to delete", _class="help"),
-                _class=class_outer,
-            )
-        )
-    controls["submit"] = INPUT(
-        _type="submit", _value="Submit", _class=classes.get("input[type=submit]"),
-    )
-    submit = DIV(DIV(controls["submit"], _class=class_inner,), _class=class_outer,)
-    form.append(submit)
-    return dict(form=form, controls=controls)
+
+FormStyleDefault = FormStyleFactory().produce
 
 
 def FormStyleBulma(table, vars, errors, readonly, deletable):
@@ -145,6 +184,9 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
         "submit": "button",
         "input": "input",
         "input[type=text]": "input",
+        "input[type=date]": "input",
+        "input[type=time]": "input",
+        "input[type=datetime]": "input",
         "input[type=radio]": "radio",
         "input[type=checkbox]": "checkbox",
         "input[type=submit]": "button",
