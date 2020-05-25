@@ -197,6 +197,14 @@
           <div>
             <h2>{{modal.title}}</h2>
             <p>{{modal.message}}</p>
+            <div v-if="modal.form_name=='create-file'">
+              <table>
+                <tr>
+                  <td></td>
+                  <td><input type="text" v-model="modal.form.filename" placeholder="path/somefile.html"></td>
+                </tr>
+              </table>
+            </div>    
             <div v-if="modal.form_name=='create-app'">
               <table>
                 <tr>
@@ -234,6 +242,7 @@
           </div>
         </div>
       </div>
+      
     </div>
   </body>
   <script src="js/sugar.min.js"></script>

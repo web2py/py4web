@@ -257,6 +257,7 @@ class Form(object):
                             record_id = self.record and self.record.get("id")
                             (value, error) = field.validate(value, record_id)
                             if field.type == "upload":
+                                value = request.files.get(field.name)
                                 delete = post_vars.get("_delete_" + field.name)
                                 if value is not None and hasattr(value, "file"):
                                     value = field.store(

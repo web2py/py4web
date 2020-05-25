@@ -32,6 +32,8 @@ import types
 import urllib.parse
 import uuid
 import zipfile
+import asyncio
+from watchgod import awatch
 
 REX_APPJSON = re.compile(r"(^|\s|,)application/json(,|\s|$)")
 
@@ -49,6 +51,13 @@ try:
     gevent.monkey.patch_all()
 except ImportError:
     gevent = None
+
+try:
+    from enum import Enum
+except:
+    # for python < 3.4
+    class Enum:
+        pass
 
 # Third party modules
 import jwt  # this is PyJWT
@@ -220,6 +229,8 @@ def objectify(obj):
         return list(obj)
     elif hasattr(obj, "xml"):
         return obj.xml()
+    elif isinstance(obj, Enum):  # Enum class handled specially to address self reference in __dict__
+        return dict(name=obj.name, value=obj.value, __class__=obj.__class__.__name__)
     elif hasattr(obj, "__dict__") and hasattr(obj, "__class__"):
         d = dict(obj.__dict__)
         d["__class__"] = obj.__class__.__name__
@@ -823,6 +834,16 @@ class Reloader:
     ERRORS = {}
 
     @staticmethod
+    def install_reloader_hook():
+        # used by watcher
+        def hook(*a, **k):
+            app_name = request.path.split('/')[1]
+            if app_name in DIRTY_APPS:
+                Reloader.import_app(app_name)
+                del DIRTY_APPS[app_name]
+        bottle.default_app().add_hook('before_request', hook)
+
+    @staticmethod
     def clear_routes(app_name=None):
         app = bottle.default_app()
         routes = app.routes[:]
@@ -954,32 +975,79 @@ def error404(error):
 # Web Server and Reload Logic: Operations
 #########################################################################################
 
+DIRTY_APPS = dict() #  apps that need to be reloaded (lazy watching)
+
+def watch(apps_folder, server = 'default', mode = 'sync'):
+            
+    def watch_folder_event_loop(apps_folder):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(watch_folder(apps_folder))
+
+    async def watch_folder(apps_folder):
+        click.echo('watching (%s-mode) python file changes in: %s' % (mode, apps_folder))
+        async for changes in awatch(os.path.join(apps_folder)):
+            for app in set([p.relative_to(apps_folder).parts[0]
+                    for p in [pathlib.Path(pair[1]) for pair in changes]
+                    if p.suffix == '.py']):
+                if mode == 'lazy':
+                    DIRTY_APPS[app] = True
+                else:
+                    Reloader.import_app(app)
+    
+    if server == 'default':
+        # default wsgi server block the main thread so we open a new thread for the file watcher
+        threading.Thread(target=watch_folder_event_loop, args=(apps_folder,)).start()
+    elif server == 'tornado':    
+        # tornado delegate to asyncio so we add a future into the event loop
+        asyncio.ensure_future(watch_folder(apps_folder))            
+    elif server == 'gunicorn':  
+        # supposedly number_workers > 1
+        click.echo('--watch option has no effect in multi-process environment \n')
+        return
+        
+    if mode == 'lazy':
+        Reloader.install_reloader_hook()
 
 def start_server(args):
-    host, port = args['host'], int(args['port'])
+    host, port, apps_folder = args['host'], int(args['port']), args['apps_folder']
+    number_workers = args['number_workers']
+    
+    server = None # need for watcher
+    run = lambda: 0 # main run
+    
     if platform.system().lower() == "windows":
+        if watch:
+            # default wsgi server block the main thread so we open a new thread for the file watcher
+            threading.Thread(target=watch_folder_event_loop, args=(apps_folder,), daemon=True).start()
         # Tornado fail on windows
-        bottle.run(host=host, port=int(port), reloader=False)
-    elif args['number_workers'] < 1:
-        bottle.run(server="tornado", host=host, port=port, reloader=False)
+        server = 'default'
+        run = lambda : bottle.run(host=host, port=int(port), reloader=False)
+    elif number_workers < 1:
+        server = 'tornado'
+        run = lambda : bottle.run(server="tornado", host=host, port=port, reloader=False)
     else:
         if not gunicorn:
             logging.error("gunicorn not installed")
         elif not gevent:
             logging.error("gevent not installed")
         else:
+            server = 'gunicorn'
             sys.argv[:] = sys.argv[:1]  # else break gunicorn
-            bottle.run(
+            run = lambda : bottle.run(
                 server="gunicorn",
                 host=host,
                 port=port,
-                workers=args['number_workers'],
+                workers=number_workers,
                 worker_class="gevent",
                 reloader=False,
                 certfile=args.ssl_cert_filename,
                 keyfile=args.ssl_key_filename,
             )
-
+            
+    if args['watch'] != 'off': 
+        watch(apps_folder, server, args['watch'])
+    run()
 
 def check_compatible(version):
     """To be called by apps to check if module version is compatible with py4web requirements"""
@@ -1060,7 +1128,6 @@ def fix_ansi_on_windows():
         from ctypes import windll
         windll.kernel32.SetConsoleMode(windll.kernel32.GetStdHandle(-11), 7)
 
-
 def keyboardInterruptHandler(signal, frame):
     """Catch interrupts like Ctrl-C"""
     click.echo("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
@@ -1113,7 +1180,6 @@ def set_password(password, password_file):
     with open(password_file, "w") as fp:
         fp.write(str(pydal.validators.CRYPT()(password)[0]))
 
-
 @cli.command()
 @click.argument('apps_folder', default='apps')
 @click.option('-Y', '--yes', is_flag=True, default=False, help='No prompt, assume yes to questions')
@@ -1122,6 +1188,7 @@ def set_password(password, password_file):
 @click.option('-p', '--password_file', default='password.txt', help='File for the encrypted password')
 @click.option('-w', '--number_workers', default=0, type=int, help='Number of workers')
 @click.option('-d', '--dashboard_mode',  default='full', help='Dashboard mode: demo, readonly, full (default), none')
+@click.option('--watch',  default='off',type=click.Choice(['off', 'sync', 'lazy']), help='Watch python changes and reload apps automatically, modes: off (default), sync, lazy')
 @click.option('--ssl_cert', help='SSL certificate file for HTTPS')
 @click.option('--ssl_key', help='SSL key file for HTTPS')
 def run(**args):
@@ -1146,7 +1213,6 @@ def run(**args):
     # Start
     Reloader.import_apps()
     start_server(args)
-
 
 if __name__ == '__main__':
     cli()

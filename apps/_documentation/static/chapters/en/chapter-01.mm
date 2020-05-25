@@ -112,6 +112,57 @@ py4webt run -p password.txt apps
 
 py4web provides multiple command line options which can be listed with ``--help``.
 
+``
+py4web --help
+Usage: py4web.py [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  call
+  run
+  set-password
+  setup
+  shell
+  version
+``
+
+run-command options:
+
+``
+py4web run --help
+Usage: py4web.py run [OPTIONS] [APPS_FOLDER]
+
+Options:
+  -Y, --yes                     No prompt, assume yes to questions
+  -H, --host TEXT               Host name
+  -P, --port INTEGER            Port number
+  -p, --password_file TEXT      File for the encrypted password
+  -w, --number_workers INTEGER  Number of workers
+  -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
+                                (default), none
+
+  --watch [off|sync|lazy]       Watch python changes and reload apps
+                                automatically, modes: off (default), sync,
+                                lazy
+
+  --ssl_cert TEXT               SSL certificate file for HTTPS
+  --ssl_key TEXT                SSL key file for HTTPS
+  --help                        Show this message and exit.
+
+``
+
+#### Autoreload on files changes
+
+If you want py4web to automatically reload an application upon any changes to files of that application, you can:
+
+-  for immediate reloading (sync-mode):
+`` py4web run --watch=sync `` 
+ 
+-  for reloading on any first incoming request to the application has been changed (lazy-mode):
+`` py4web run --watch=lazy `` 
+
 ## Deployment on GCloud (aka Google App Engine)
 
 Login into the Gcloud console (https://console.cloud.google.com/) and create a new project. You will obtain a project id that looks like "{project_name}-{number}".
