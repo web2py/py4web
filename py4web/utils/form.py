@@ -33,10 +33,12 @@ class FormStyleFactory:
             "input[type=text]": "",
             "input[type=date]": "",
             "input[type=time]": "",
-            "input[type=datetime]": "",
+            "input[type=datetime-local]": "",
             "input[type=radio]": "",
             "input[type=checkbox]": "",
             "input[type=submit]": "",
+            "input[type=password]": "",
+            "input[type=file]": "",
             "select": "",
             "textarea": "",
         }
@@ -85,8 +87,10 @@ class FormStyleFactory:
                     _value=value, _type="date", _id=input_id, _name=field.name
                 )
             elif field.type == "datetime":
+                if isinstance(value, str):
+                    value = value.replace(' ', 'T')
                 control = INPUT(
-                    _value=value, _type="datetime", _id=input_id, _name=field.name
+                    _value=value, _type="datetime-local", _id=input_id, _name=field.name
                 )
             elif field.type == "time":
                 control = INPUT(
@@ -133,7 +137,7 @@ class FormStyleFactory:
             key = control.name.rstrip("/")
             if key == "input":
                 key += "[type=%s]" % (control["_type"] or "text")
-            control["_class"] = classes[key]
+            control["_class"] = self.classes.get(key, '')
 
             controls["widgets"][field.name] = control
             if error:
@@ -154,7 +158,7 @@ class FormStyleFactory:
                 _type="checkbox",
                 _value="ON",
                 _name="_delete",
-                _class=classes["input[type=checkbox]"],
+                _class=self.classes["input[type=checkbox]"],
             )
             form.append(
                 DIV(
@@ -164,7 +168,7 @@ class FormStyleFactory:
                 )
             )
         controls["submit"] = INPUT(
-            _type="submit", _value="Submit", _class=classes["input[type=submit]"],
+            _type="submit", _value="Submit", _class=self.classes["input[type=submit]"],
         )
         submit = DIV(DIV(controls["submit"], _class=class_inner,), _class=class_outer,)
         form.append(submit)
@@ -186,10 +190,12 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
         "input[type=text]": "input",
         "input[type=date]": "input",
         "input[type=time]": "input",
-        "input[type=datetime]": "input",
+        "input[type=datetime-local]": "input",
         "input[type=radio]": "radio",
         "input[type=checkbox]": "checkbox",
         "input[type=submit]": "button",
+        "input[type=password]": "password",
+        "input[type=file]": "file",
         "select": "select",
         "textarea": "textarea",
     }

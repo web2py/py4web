@@ -35,6 +35,7 @@ setup(
         "tornado",
         "pluralize",
         "requests",
+        "watchgod",
     ],
     entry_points={"console_scripts": ["py4web=py4web.core:cli"],},
     zip_safe=False,
