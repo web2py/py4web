@@ -10,7 +10,7 @@ import datetime
 import requests
 
 import py4web
-from py4web import __version__, action, abort, request, response, redirect, Translator, HTTP
+from py4web import __version__, action, abort, request, response, redirect, Translator, HTTP, URL
 from py4web.core import Reloader, dumps, ErrorStorage, Session, Fixture
 from py4web.utils.factories import ActionFactory
 from pydal.validators import CRYPT
@@ -52,6 +52,19 @@ def get_commits(project):
         else:
             commit["message"] += line.strip() + "\n"
     return commits
+
+
+
+def get_branches(project):
+    """dictionary of git local branches for the project"""
+    output = run("git branch", project)
+    branches = {"current" : "", "other" : []}
+    for line in output.split("\n"):
+        if line.startswith("* "):
+            branches["current"] = line[2: ]
+        elif not line == "":
+            branches["other"].append(line[2:])
+    return branches
 
 
 def is_git_repo(project):
@@ -164,7 +177,7 @@ if MODE in ("demo", "readonly", "full"):
             shutil.rmtree(path)
             return {"status": "success", "payload": "Deleted"}
         return {"status": "success", "payload": "App does not exist"}
-    
+
     @action("new_file/<name:re:\w+>/<file_name:path>", method="POST")
     @session_secured
     def new_file(name, file_name):
@@ -174,6 +187,8 @@ if MODE in ("demo", "readonly", "full"):
         if not os.path.exists(path):
             return {"status": "success", "payload": "App does not exist"}
         full_path = os.path.join(path, file_name)
+        if not full_path.startswith(path+os.sep):
+            return {"status": "success", "payload": "Invalid path"}
         if os.path.exists(full_path):
             return {"status": "success", "payload": "File already exists"}
         parent = os.path.dirname(full_path)
@@ -185,7 +200,7 @@ if MODE in ("demo", "readonly", "full"):
             elif full_path.endswith(".py"):
                 fp.write('# -*- coding: utf-8 -*-')
         return {"status": "success"}
-    
+
     @action("walk/<path:path>")
     @session_secured
     def walk(path):
@@ -439,9 +454,9 @@ if MODE == "full":
     def gitlog(project):
         if not is_git_repo(project):
             return "Project is not a GIT repo"
-        run("git checkout master", project)
+        branches = get_branches(project)
         commits = get_commits(project)
-        return dict(commits=commits, checkout=checkout, project=project)
+        return dict(commits=commits, checkout=checkout, project=project, branches=branches)
 
     @authenticated.callback()
     def checkout(project, commit):
@@ -450,6 +465,18 @@ if MODE == "full":
         run("git stash", project)
         run("git checkout " + commit, project)
         Reloader.import_app(project)
+
+    @action("swapbranch/<project>/<branch>")
+    @action.uses(Logged(session))
+    def swapbranch(project, branch):
+        if not is_git_repo(project):
+            raise HTTP(400)
+        # swap branches then go back to gitlog so new commits load
+        checkout(project,branch)
+        redirect(URL('gitlog', project))
+        return diff2kryten(patch)
+
+
 
     @action("gitshow/<project>/<commit>")
     @action.uses(Logged(session), "gitshow.html")
