@@ -80,6 +80,8 @@ vue_form = VueForm('test_form', session,
                         Field('choice', requires=IS_IN_SET({'c': 'cat', 'd': 'dog', 'b': 'bird'}),
                               default='d'),
                         Field('arrival_time', 'datetime', default=get_time),
+                        Field('date_of_birth', 'date'),
+                        Field('narrative', 'text'),
                         ], readonly=False)
 
 @action('vue_form', method=['GET'])
