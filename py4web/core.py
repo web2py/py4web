@@ -884,6 +884,15 @@ class Reloader:
 
             action.app_name = app_name
             module_name = "apps.%s" % app_name
+            def clear_modules():
+                # all files/submodules
+                names = [
+                    name
+                    for name in sys.modules
+                    if (name + ".").startswith(module_name + ".")
+                ]
+                for name in names:
+                    del sys.modules[name]
             try:
                 module = Reloader.MODULES.get(app_name)
                 if not module:
@@ -892,14 +901,7 @@ class Reloader:
                     click.echo("[ ] reloading %s ..." % app_name)
                     # forget the module
                     del Reloader.MODULES[app_name]
-                    # all files/submodules
-                    names = [
-                        name
-                        for name in sys.modules
-                        if (name + ".").startswith(module_name + ".")
-                    ]
-                    for name in names:
-                        del sys.modules[name]
+                    clear_modules()
                 module = importlib.machinery.SourceFileLoader(
                     module_name, init
                 ).load_module()
@@ -910,6 +912,8 @@ class Reloader:
                 tb = traceback.format_exc()
                 click.echo("\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb), color='red')
                 Reloader.ERRORS[app_name] = tb
+                # clear all files/submodules if the loading fails
+                clear_modules()
                 return None
 
         # Expose static files with support for static asset management
