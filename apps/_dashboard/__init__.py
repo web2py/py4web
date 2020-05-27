@@ -60,6 +60,12 @@ def get_branches(project):
     output = run("git branch", project)
     branches = {"current" : "", "other" : []}
     for line in output.split("\n"):
+
+        # until able to figure out how to send branches like py4web/test-branch
+        # those branches must be checked out manually through the users git tool
+        # of choice
+        if "/" in line:
+            continue
         if line.startswith("* "):
             branches["current"] = line[2: ]
         elif not line == "":

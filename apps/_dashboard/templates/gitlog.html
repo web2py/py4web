@@ -9,17 +9,18 @@
           -webkit-appearance: button;
           -moz-appearance: button;
           appearance: button;
-          color: initial;
+          color: white;
           text-decoration: none;
       }
       td {padding: 5px 10px; color: orange}
       td.linelength { padding: 5px 10px; color: #f1f1f1; font-weight: bold}
+      #branch_text {  color: #21aadb; font-weight: bold}
       button.clicked {background: #00d1b2;}
       .commits {
         position:fixed; top:0; bottom: 0; left:0; z-index:100;
-        width:10px; background: #111111; color: orange; overflow: auto
+        width:10px; background: #111111; color: orange; overflow: hidden
       }
-      .commits:hover { width: 500px; }
+      .commits:hover { width: 500px; overflow: auto; }
       .kryten {margin:3%; width:94%; height:94vh; border:0}
       iframe {width:100%; height:100vh; border:0}
     </style>
@@ -28,27 +29,34 @@
     <div class="commits">
       <table>
         <tr>
-          <td class="linelength">Show Full File?</td>
+          <td class="linelength">
+            Show Full File?
+          </td>
           <td>
             <input type="checkbox" id="showFull" checked>
           </td>
         </tr>
         <tr>
-          <td class="linelength">Select Branch
-
-          (Currently: [[ =branches.get("current")[:20] ]])
+          <td class="linelength" id="branch_text">
+            Current Branch: [[ =branches.get("current")[:20] ]]
           </td>
           <td>
             <select name="branches" id="branches">
-                    <option value="[[=URL('swapbranch', project, branches.get('current')[:20])]]"> [[ =branches.get("current") ]]</option>
-                    [[for branch in branches.get("other"):]]
-                    <option value="[[=URL('swapbranch', project, branch[:20])]]">[[=branch[:20] ]]</option>
-                    [[pass]]
+              <option id="[[ =branches.get('current')[:25] ]]" value="[[=URL('swapbranch', project, branches.get('current'))]]">
+                [[ =branches.get("current")[:10] ]]
+              </option>
+
+              [[for branch in branches.get("other"):]]
+              <option id="[[ =branch[:25] ]]" value="[[=URL('swapbranch', project, branch)]]">
+                [[=branch[:10] ]]
+              </option>
+              [[pass]]
               </select>
           </td>
           <td>
-            <a class="button" id="swapbranch" href="[[=URL('swapbranch', project, branches.get('current')[:20])]]">
-              Go
+            <form method="GET" id="swapbranch" action="[[=URL('swapbranch', project, branches.get('current'))]]">
+              <input type="submit" value="Go">
+            </form>
             </a>
           </td>
         </tr>
@@ -56,12 +64,16 @@
 
         [[for commit in commits:]]
         <tr>
-          <td>[[=commit.get('message') ]]</td>
+          <td>
+            [[=commit.get('message')[:60] ]]
+          </td>
           <td>
             [[=checkout.button('Checkout')(project=project, commit=commit['code'])]]
           </td>
           <td>
-            <button class="gitshow" id="[[=commit.get('code')[:20] ]]" data-src="[[=URL('gitshow',project,commit['code'])]]">Show</button>
+            <button class="gitshow" id="[[=commit.get('code')[:20] ]]" data-src="[[=URL('gitshow',project,commit['code'])]]">
+              Show
+            </button>
           <td>
         </tr>
         [[pass]]
@@ -131,7 +143,8 @@
     <script>
        $("#branches").click(function(){
           var conceptName = $('#branches').val();
-          $("#swapbranch").attr("href", conceptName);
+          $('#branch_text').text("Selected Branch: " + $('#branches').children(":selected").attr("id"));
+          $("#swapbranch").attr("action", conceptName);
         });
     </script>
 
