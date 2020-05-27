@@ -60,12 +60,6 @@ def get_branches(project):
     output = run("git branch", project)
     branches = {"current" : "", "other" : []}
     for line in output.split("\n"):
-
-        # until able to figure out how to send branches like py4web/test-branch
-        # those branches must be checked out manually through the users git tool
-        # of choice
-        if "/" in line:
-            continue
         if line.startswith("* "):
             branches["current"] = line[2: ]
         elif not line == "":
@@ -472,11 +466,13 @@ if MODE == "full":
         run("git checkout " + commit, project)
         Reloader.import_app(project)
 
-    @action("swapbranch/<project>/<branch>")
+    @action("swapbranch/<project>" , method="POST")
     @action.uses(Logged(session))
-    def swapbranch(project, branch):
+    def swapbranch(project):
         if not is_git_repo(project):
             raise HTTP(400)
+
+        branch = request.forms.get("branches") if request.forms.get("branches") else "master"
         # swap branches then go back to gitlog so new commits load
         checkout(project,branch)
         redirect(URL('gitlog', project))

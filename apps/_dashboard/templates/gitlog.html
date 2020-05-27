@@ -20,6 +20,7 @@
   </head>
   <body>
     <div class="commits">
+      <form method="POST" id="my_form" action="[[=URL('swapbranch', project)]]"></form>
       <table>
         <tr>
           <td class="linelength">
@@ -34,23 +35,19 @@
             Current Branch: [[ =branches.get("current")[:20] ]]
           </td>
           <td>
-            <select name="branches" id="branches">
-              <option id="[[ =branches.get('current')[:25] ]]" value="[[=URL('swapbranch', project, branches.get('current'))]]">
-                [[ =branches.get("current")[:10] ]]
-              </option>
-
-              [[for branch in branches.get("other"):]]
-              <option id="[[ =branch[:25] ]]" value="[[=URL('swapbranch', project, branch)]]">
-                [[=branch[:10] ]]
-              </option>
-              [[pass]]
+              <select name="branches" id="branches" form="my_form">
+                <option value="[[=branches.get('current')]]">
+                  [[ =branches.get("current")[:10] ]]
+                </option>
+                [[for branch in branches.get("other"):]]
+                <option value="[[=branch]]">
+                  [[=branch[:10] ]]
+                </option>
+                [[pass]]
               </select>
           </td>
           <td>
-            <form method="GET" id="swapbranch" action="[[=URL('swapbranch', project, branches.get('current'))]]">
-              <input type="submit" value="Go">
-            </form>
-            </a>
+            <input type="submit" value="Go" form="my_form">
           </td>
         </tr>
         <tr height=20px></tr>
@@ -136,8 +133,7 @@
     <script>
        $("#branches").click(function(){
           var conceptName = $('#branches').val();
-          $('#branch_text').text("Selected Branch: " + $('#branches').children(":selected").attr("id"));
-          $("#swapbranch").attr("action", conceptName);
+          $('#branch_text').text("Selected Branch: " + conceptName);
         });
     </script>
 
