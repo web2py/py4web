@@ -1154,8 +1154,9 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '-help', '--help'])
 def cli():
     pass
 
-@cli.command(help='Show versions and exit')
+@cli.command()
 def version():
+    """Show versions and exit"""
     from . import __version__
     click.echo('\npython -> ' + sys.version)
     click.echo('system -> ' + platform.platform())
@@ -1166,26 +1167,29 @@ def version():
         except:
             pass
 
-@cli.command(help='Setup new apps folder or reinstall it')
-@click.argument('apps_folder')
+@cli.command()
+@click.argument('apps_folder', default='apps')
 @click.option('-Y', '--yes', is_flag=True, default=False, help='No prompt, assume yes to questions', show_default=True)
 def setup(**args):
+    """Setup new apps folder or reinstall it"""
     install_args(args, reinstall_apps=True)
 
 
-@cli.command(help='Open a python shell with apps_folder added to the path')
+@cli.command()
 @click.argument('apps_folder', default='apps', type=click.Path(exists=True))
 def shell(apps_folder):
+    """Open a python shell with apps_folder added to the path"""
     install_args(dict(apps_folder=apps_folder))
     fix_ansi_on_windows()
     code.interact(local=dict(globals(), **locals()))
 
 
-@cli.command(help='Call a function inside apps_folder')
+@cli.command()
 @click.argument('apps_folder', type=click.Path(exists=True))
 @click.argument('function')
 @click.option('--args', default='{}', help = 'Arguments passed to the program/function', show_default=True)
 def call(apps_folder, function, args):
+    """Call a function inside apps_folder"""
     args = json.loads(args)
     install_args(dict(apps_folder=apps_folder))
     module, name = ('apps.' + function).rsplit('.', 1)
@@ -1195,15 +1199,16 @@ def call(apps_folder, function, args):
     exec('from %s import %s' % (module, name), {}, env)
     env[name](**args)
 
-@cli.command(help="Set administrator's password for the Dashboard")
+@cli.command()
 @click.option('--password', prompt=True, confirmation_prompt=True, hide_input=True, help = 'Password value (asked if missing)')
 @click.option('-p', '--password_file', default='password.txt', help='File for the encrypted password', show_default=True)
 def set_password(password, password_file):
+    """Set administrator's password for the Dashboard"""
     click.echo('Storing the hashed password in file "%s"\n' % password_file)
     with open(password_file, "w") as fp:
         fp.write(str(pydal.validators.CRYPT()(password)[0]))
 
-@cli.command(help='Run all the applications on apps_folder')
+@cli.command()
 @click.argument('apps_folder', default='apps', type=click.Path(exists=True))
 @click.option('-Y', '--yes', is_flag=True, default=False, help='No prompt, assume yes to questions', show_default=True)
 @click.option('-H', '--host', default='127.0.0.1', help='Host name', show_default=True)
@@ -1211,11 +1216,12 @@ def set_password(password, password_file):
 @click.option('-p', '--password_file', default='password.txt', help='File for the encrypted password', show_default=True)
 @click.option('-w', '--number_workers', default=0, type=int, help='Number of workers', show_default=True)
 @click.option('-d', '--dashboard_mode',  default='full', help='Dashboard mode: demo, readonly, full (default), none', show_default=True)
-@click.option('--watch', is_flag=True, default=False, help='Watch python changes and reload apps automatically', show_default=True)
+@click.option('--watch',  default='off',type=click.Choice(['off', 'sync', 'lazy']), help='Watch python changes and reload apps automatically, modes: off (default), sync, lazy')
 @click.option('--nogui', is_flag=True, default=False, help='No Graphical User Interface', show_default=True)
 @click.option('--ssl_cert', type=click.Path(exists=True), help='SSL certificate file for HTTPS')
 @click.option('--ssl_key', type=click.Path(exists=True), help='SSL key file for HTTPS')
 def run(**args):
+    """Run all the applications on apps_folder"""
     install_args(args)
     apps_folder = args['apps_folder']    
     yes = args['yes']
