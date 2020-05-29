@@ -1176,7 +1176,7 @@ def setup(**args):
 
 
 @cli.command()
-@click.argument('apps_folder', default='apps', type=click.Path(exists=True))
+@click.argument('apps_folder', default='apps')
 def shell(apps_folder):
     """Open a python shell with apps_folder added to the path"""
     install_args(dict(apps_folder=apps_folder))
@@ -1185,7 +1185,7 @@ def shell(apps_folder):
 
 
 @cli.command()
-@click.argument('apps_folder', type=click.Path(exists=True))
+@click.argument('apps_folder')
 @click.argument('function')
 @click.option('--args', default='{}', help = 'Arguments passed to the program/function', show_default=True)
 def call(apps_folder, function, args):
@@ -1209,7 +1209,7 @@ def set_password(password, password_file):
         fp.write(str(pydal.validators.CRYPT()(password)[0]))
 
 @cli.command()
-@click.argument('apps_folder', default='apps', type=click.Path(exists=True))
+@click.argument('apps_folder', default='apps')
 @click.option('-Y', '--yes', is_flag=True, default=False, help='No prompt, assume yes to questions', show_default=True)
 @click.option('-H', '--host', default='127.0.0.1', help='Host name', show_default=True)
 @click.option('-P', '--port', default=8000, type=int, help='Port number', show_default=True)
