@@ -481,7 +481,8 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=Tru
     URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
     """
     script_name = (
-        request.get("HTTP_X_SCRIPT_NAME", "") or request.get("SCRIPT_NAME", "")
+        request.environ.get("HTTP_X_SCRIPT_NAME", "") or 
+        request.environ.get("SCRIPT_NAME", "")
     ).rstrip("/")
     prefix = script_name + (
         "/%s/" % request.app_name
@@ -502,10 +503,13 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=Tru
         )
     if hash:
         url += "#%s" % hash
-    if not scheme is False:
-        orig_scheme, _, domain = request.url.split("/")[:3]
+    if not scheme is False:        
+        original_url = request.environ.get('HTTP_ORIGIN') or request.url
+        orig_scheme, _, domain = original_url.split("/")[:3]
         scheme = (
-            orig_scheme if scheme is True else "" if scheme is None else scheme + ":"
+            orig_scheme if scheme is True 
+            else "" if scheme is None 
+            else scheme + ":"
         )
         url = "%s//%s%s" % (scheme, domain, url)
     return url
@@ -834,6 +838,16 @@ class Reloader:
     ERRORS = {}
 
     @staticmethod
+    def install_reloader_hook():
+        # used by watcher
+        def hook(*a, **k):
+            app_name = request.path.split('/')[1]
+            if app_name in DIRTY_APPS:
+                Reloader.import_app(app_name)
+                del DIRTY_APPS[app_name]
+        bottle.default_app().add_hook('before_request', hook)
+
+    @staticmethod
     def clear_routes(app_name=None):
         app = bottle.default_app()
         routes = app.routes[:]
@@ -870,6 +884,15 @@ class Reloader:
 
             action.app_name = app_name
             module_name = "apps.%s" % app_name
+            def clear_modules():
+                # all files/submodules
+                names = [
+                    name
+                    for name in sys.modules
+                    if (name + ".").startswith(module_name + ".")
+                ]
+                for name in names:
+                    del sys.modules[name]
             try:
                 module = Reloader.MODULES.get(app_name)
                 if not module:
@@ -878,14 +901,7 @@ class Reloader:
                     click.echo("[ ] reloading %s ..." % app_name)
                     # forget the module
                     del Reloader.MODULES[app_name]
-                    # all files/submodules
-                    names = [
-                        name
-                        for name in sys.modules
-                        if (name + ".").startswith(module_name + ".")
-                    ]
-                    for name in names:
-                        del sys.modules[name]
+                    clear_modules()
                 module = importlib.machinery.SourceFileLoader(
                     module_name, init
                 ).load_module()
@@ -896,6 +912,8 @@ class Reloader:
                 tb = traceback.format_exc()
                 click.echo("\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb), color='red')
                 Reloader.ERRORS[app_name] = tb
+                # clear all files/submodules if the loading fails
+                clear_modules()
                 return None
 
         # Expose static files with support for static asset management
@@ -965,54 +983,76 @@ def error404(error):
 # Web Server and Reload Logic: Operations
 #########################################################################################
 
-def watch_folder_event_loop(apps_folder):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(watch_folder(apps_folder))
+DIRTY_APPS = dict() #  apps that need to be reloaded (lazy watching)
 
-async def watch_folder(apps_folder):
-    click.echo('watching python file changes in: %s' % apps_folder)
-    async for changes in awatch(os.path.join(apps_folder)):
-        for app in set([p.relative_to(apps_folder).parts[0]
-                for p in [pathlib.Path(pair[1]) for pair in changes]
-                if p.suffix == '.py']):
-            Reloader.import_app(app)
+def watch(apps_folder, server = 'default', mode = 'sync'):
+            
+    def watch_folder_event_loop(apps_folder):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(watch_folder(apps_folder))
+
+    async def watch_folder(apps_folder):
+        click.echo('watching (%s-mode) python file changes in: %s' % (mode, apps_folder))
+        async for changes in awatch(os.path.join(apps_folder)):
+            for app in set([p.relative_to(apps_folder).parts[0]
+                    for p in [pathlib.Path(pair[1]) for pair in changes]
+                    if p.suffix == '.py']):
+                if mode == 'lazy':
+                    DIRTY_APPS[app] = True
+                else:
+                    Reloader.import_app(app)
+    
+    if server == 'default':
+        # default wsgi server block the main thread so we open a new thread for the file watcher
+        threading.Thread(target=watch_folder_event_loop, args=(apps_folder,), daemon=True).start()
+    elif server == 'tornado':    
+        # tornado delegate to asyncio so we add a future into the event loop
+        asyncio.ensure_future(watch_folder(apps_folder))            
+    elif server == 'gunicorn':  
+        # supposedly number_workers > 1
+        click.echo('--watch option has no effect in multi-process environment \n')
+        return
+        
+    if mode == 'lazy':
+        Reloader.install_reloader_hook()
 
 def start_server(args):
-    host, port, apps_folder, watch = args['host'], int(args['port']), args['apps_folder'], args['watch']
-
+    host, port, apps_folder = args['host'], int(args['port']), args['apps_folder']
+    number_workers = args['number_workers']
+    
+    server = None # need for watcher
+    run = lambda: 0 # main run
+    
     if platform.system().lower() == "windows":
-        if watch:
-            # default wsgi server block the main thread so we open a new thread for the file watcher
-            threading.Thread(target=watch_folder_event_loop, args=(apps_folder,)).start()
         # Tornado fail on windows
-        bottle.run(host=host, port=int(port), reloader=False)
-    elif args['number_workers'] < 1:
-        if watch:
-            # tornado delegate to asyncio so we add a future into the event loop
-            asyncio.ensure_future(watch_folder(apps_folder))
-        bottle.run(server="tornado", host=host, port=port, reloader=False)
+        server = 'default'
+        run = lambda : bottle.run(host=host, port=int(port), reloader=False)
+    elif number_workers < 1:
+        server = 'tornado'
+        run = lambda : bottle.run(server="tornado", host=host, port=port, reloader=False)
     else:
         if not gunicorn:
             logging.error("gunicorn not installed")
         elif not gevent:
             logging.error("gevent not installed")
         else:
-            if watch:
-                click.echo('--watch option has no effect in multi-process environment \n')
-
+            server = 'gunicorn'
             sys.argv[:] = sys.argv[:1]  # else break gunicorn
-            bottle.run(
+            run = lambda : bottle.run(
                 server="gunicorn",
                 host=host,
                 port=port,
-                workers=args['number_workers'],
+                workers=number_workers,
                 worker_class="gevent",
                 reloader=False,
                 certfile=args.ssl_cert_filename,
                 keyfile=args.ssl_key_filename,
             )
-
+            
+    if args['watch'] != 'off': 
+        watch(apps_folder, server, args['watch'])
+    run()
 
 def check_compatible(version):
     """To be called by apps to check if module version is compatible with py4web requirements"""
@@ -1153,7 +1193,7 @@ def set_password(password, password_file):
 @click.option('-p', '--password_file', default='password.txt', help='File for the encrypted password')
 @click.option('-w', '--number_workers', default=0, type=int, help='Number of workers')
 @click.option('-d', '--dashboard_mode',  default='full', help='Dashboard mode: demo, readonly, full (default), none')
-@click.option('--watch', is_flag=True, default=False, help='Watch python changes and reload apps automatically')
+@click.option('--watch',  default='off',type=click.Choice(['off', 'sync', 'lazy']), help='Watch python changes and reload apps automatically, modes: off (default), sync, lazy')
 @click.option('--ssl_cert', help='SSL certificate file for HTTPS')
 @click.option('--ssl_key', help='SSL key file for HTTPS')
 def run(**args):

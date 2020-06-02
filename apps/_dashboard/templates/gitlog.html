@@ -7,35 +7,63 @@
       a { color: orange; font-weight: bold}
       td {padding: 5px 10px; color: orange}
       td.linelength { padding: 5px 10px; color: #f1f1f1; font-weight: bold}
+      #branch_text {  color: #21aadb; font-weight: bold}
       button.clicked {background: #00d1b2;}
       .commits {
         position:fixed; top:0; bottom: 0; left:0; z-index:100;
-        width:10px; background: #111111; color: orange; overflow: auto
+        width:10px; background: #111111; color: orange; overflow: hidden
       }
-      .commits:hover { width: 500px; }
+      .commits:hover { width: 500px; overflow: auto; }
       .kryten {margin:3%; width:94%; height:94vh; border:0}
       iframe {width:100%; height:100vh; border:0}
     </style>
   </head>
   <body>
     <div class="commits">
+      <form method="POST" id="my_form" action="[[=URL('swapbranch', project)]]"></form>
       <table>
         <tr>
-          <td id="result" class="linelength">Show Full File?</td>
+          <td class="linelength">
+            Show Full File?
+          </td>
           <td>
             <input type="checkbox" id="showFull" checked>
+          </td>
+        </tr>
+        <tr>
+          <td class="linelength" id="branch_text">
+            Current Branch: [[ =branches.get("current")[:20] ]]
+          </td>
+          <td>
+              <select name="branches" id="branches" form="my_form">
+                <option value="[[=branches.get('current')]]">
+                  [[ =branches.get("current")[:10] ]]
+                </option>
+                [[for branch in branches.get("other"):]]
+                <option value="[[=branch]]">
+                  [[=branch[:10] ]]
+                </option>
+                [[pass]]
+              </select>
+          </td>
+          <td>
+            <input type="submit" value="Go" form="my_form">
           </td>
         </tr>
         <tr height=20px></tr>
 
         [[for commit in commits:]]
         <tr>
-          <td>[[=commit.get('message') ]]</td>
+          <td>
+            [[=commit.get('message')[:60] ]]
+          </td>
           <td>
             [[=checkout.button('Checkout')(project=project, commit=commit['code'])]]
           </td>
           <td>
-            <button class="gitshow" id="[[=commit.get('code')[:20] ]]" data-src="[[=URL('gitshow',project,commit['code'])]]">Show</button>
+            <button class="gitshow" id="[[=commit.get('code')[:20] ]]" data-src="[[=URL('gitshow',project,commit['code'])]]">
+              Show
+            </button>
           <td>
         </tr>
         [[pass]]
@@ -102,5 +130,13 @@
           console.log($( "#" + id ).attr( "data-src"));
       }
     </script>
+    <script>
+       $("#branches").click(function(){
+          var conceptName = $('#branches').val();
+          $('#branch_text').text("Selected Branch: " + conceptName);
+        });
+    </script>
+
+
   </body>
 </html>
