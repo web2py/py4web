@@ -492,10 +492,14 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=Tru
     broken_parts = []
     for part in parts:
         broken_parts += str(part).rstrip("/").split("/")
-    if ( static_version or (use_appname and static_version != "") ) \
-    and broken_parts and broken_parts[0] == 'static':
-        app_module = "apps.%s" % request.app_name
-        static_version = static_version or getattr(sys.modules[app_module], "__static_version__", None)
+    if static_version != "" and broken_parts and broken_parts[0] == 'static':
+        if not static_version: # try to retrieve from __init__.py
+            app_module = (
+                "apps.%s" % request.app_name 
+                if use_appname
+                else "apps"
+            )
+            static_version = getattr(sys.modules[app_module], "__static_version__", None)
         if static_version:
             broken_parts.insert(1, "_"+static_version)       
 
