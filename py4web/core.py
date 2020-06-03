@@ -501,7 +501,7 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=Tru
             )
             static_version = getattr(sys.modules[app_module], "__static_version__", None)
         if static_version:
-            broken_parts.insert(1, "_"+static_version)       
+            broken_parts.insert(1, "_"+static_version)
 
     url = prefix + "/".join(map(lambda x: urllib.parse.quote(x), broken_parts))
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
