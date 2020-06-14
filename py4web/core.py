@@ -471,7 +471,7 @@ class Session(Fixture):
 #########################################################################################
 
 
-def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=True):
+def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=True, static_version=None):
     """
     Examples:
     URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name}/a/b?x=1#y
@@ -492,6 +492,17 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=Tru
     broken_parts = []
     for part in parts:
         broken_parts += str(part).rstrip("/").split("/")
+    if static_version != "" and broken_parts and broken_parts[0] == 'static':
+        if not static_version: # try to retrieve from __init__.py
+            app_module = (
+                "apps.%s" % request.app_name 
+                if use_appname
+                else "apps"
+            )
+            static_version = getattr(sys.modules[app_module], "__static_version__", None)
+        if static_version:
+            broken_parts.insert(1, "_"+static_version)
+
     url = prefix + "/".join(map(lambda x: urllib.parse.quote(x), broken_parts))
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
     urlvars = {k: v for k, v in vars.items()} if vars else {}
