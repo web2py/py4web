@@ -471,7 +471,7 @@ class Session(Fixture):
 #########################################################################################
 
 
-def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=True):
+def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=True, static_version=None):
     """
     Examples:
     URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name}/a/b?x=1#y
@@ -481,7 +481,7 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=Tru
     URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
     """
     script_name = (
-        request.environ.get("HTTP_X_SCRIPT_NAME", "") or 
+        request.environ.get("HTTP_X_SCRIPT_NAME", "") or
         request.environ.get("SCRIPT_NAME", "")
     ).rstrip("/")
     prefix = script_name + (
@@ -492,6 +492,17 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=Tru
     broken_parts = []
     for part in parts:
         broken_parts += str(part).rstrip("/").split("/")
+    if static_version != "" and broken_parts and broken_parts[0] == 'static':
+        if not static_version: # try to retrieve from __init__.py
+            app_module = (
+                "apps.%s" % request.app_name 
+                if use_appname
+                else "apps"
+            )
+            static_version = getattr(sys.modules[app_module], "__static_version__", None)
+        if static_version:
+            broken_parts.insert(1, "_"+static_version)
+
     url = prefix + "/".join(map(lambda x: urllib.parse.quote(x), broken_parts))
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
     urlvars = {k: v for k, v in vars.items()} if vars else {}
@@ -503,12 +514,12 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=Tru
         )
     if hash:
         url += "#%s" % hash
-    if not scheme is False:        
+    if not scheme is False:
         original_url = request.environ.get('HTTP_ORIGIN') or request.url
         orig_scheme, _, domain = original_url.split("/")[:3]
         scheme = (
-            orig_scheme if scheme is True 
-            else "" if scheme is None 
+            orig_scheme if scheme is True
+            else "" if scheme is None
             else scheme + ":"
         )
         url = "%s//%s%s" % (scheme, domain, url)
@@ -910,6 +921,7 @@ class Reloader:
                 Reloader.ERRORS[app_name] = None
             except:
                 tb = traceback.format_exc()
+                print(tb)
                 click.echo("\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb), color='red')
                 Reloader.ERRORS[app_name] = tb
                 # clear all files/submodules if the loading fails
@@ -986,7 +998,7 @@ def error404(error):
 DIRTY_APPS = dict() #  apps that need to be reloaded (lazy watching)
 
 def watch(apps_folder, server = 'default', mode = 'sync'):
-            
+
     def watch_folder_event_loop(apps_folder):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -1002,28 +1014,28 @@ def watch(apps_folder, server = 'default', mode = 'sync'):
                     DIRTY_APPS[app] = True
                 else:
                     Reloader.import_app(app)
-    
+
     if server == 'default':
         # default wsgi server block the main thread so we open a new thread for the file watcher
         threading.Thread(target=watch_folder_event_loop, args=(apps_folder,), daemon=True).start()
-    elif server == 'tornado':    
+    elif server == 'tornado':
         # tornado delegate to asyncio so we add a future into the event loop
-        asyncio.ensure_future(watch_folder(apps_folder))            
-    elif server == 'gunicorn':  
+        asyncio.ensure_future(watch_folder(apps_folder))
+    elif server == 'gunicorn':
         # supposedly number_workers > 1
         click.echo('--watch option has no effect in multi-process environment \n')
         return
-        
+
     if mode == 'lazy':
         Reloader.install_reloader_hook()
 
 def start_server(args):
     host, port, apps_folder = args['host'], int(args['port']), args['apps_folder']
     number_workers = args['number_workers']
-    
+
     server = None # need for watcher
     run = lambda: 0 # main run
-    
+
     if platform.system().lower() == "windows":
         # Tornado fail on windows
         server = 'default'
@@ -1049,8 +1061,8 @@ def start_server(args):
                 certfile=args.ssl_cert_filename,
                 keyfile=args.ssl_key_filename,
             )
-            
-    if args['watch'] != 'off': 
+
+    if args['watch'] != 'off':
         watch(apps_folder, server, args['watch'])
     run()
 
@@ -1075,7 +1087,7 @@ def install_args(args, reinstall_apps=False):
     apps_folder = args['apps_folder']
     yes = args.get('yes', 'N')
     # If the apps folder does not exist create it and populate it
-    if not os.path.exists(apps_folder):        
+    if not os.path.exists(apps_folder):
         if yes or click.confirm('Create missing folder %s?' % apps_folder):
             os.makedirs(apps_folder)
             init_py = os.path.join(apps_folder, "__init__.py")
@@ -1198,9 +1210,9 @@ def set_password(password, password_file):
 @click.option('--ssl_key', help='SSL key file for HTTPS')
 def run(**args):
     install_args(args)
-    apps_folder = args['apps_folder']    
+    apps_folder = args['apps_folder']
     yes = args['yes']
-    
+
     from py4web import __version__
     click.echo(ART, color='blue')
     click.echo("Py4web: %s on Python %s\n\n" % (__version__, sys.version))

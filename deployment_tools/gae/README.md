@@ -6,7 +6,9 @@ make setup
 mkdir apps
 touch apps/__init__.py
 # symlink the apps that you want to deploy to GAE, for example:
-ln -s ../../apps/_default apps/_default
+cd apps
+ln -s ../../../apps/_default .
+cd ..
 ```
 
 Then, you can either do:
