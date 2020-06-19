@@ -22,7 +22,10 @@ class Grid(Fixture):
 
     def __call__(self):
         """This method returns the element that can be included in the page."""
-        return XML(Grid.GRID.format(url=URL(self.url, signer=self.signer)))
+        return XML(Grid.GRID.format(url=self.url()))
+
+    def url(self):
+        return URL(self.url, signer=self.signer)
 
     def api(self):
         """The API must return the data to fill the table.

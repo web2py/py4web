@@ -22,7 +22,10 @@ class FileUpload(Fixture):
         """This method returns the element that can be included in the page.
         @param id: id of the file uploaded.  This can be useful if there are
         multiple instances of this form on the page."""
-        return XML(FileUpload.FILE_UPLOAD.format(url=URL(self.url, id, signer=self.signer)))
+        return XML(FileUpload.FILE_UPLOAD.format(url=self.url(id=id)))
+
+    def url(self, id=None):
+        return URL(self.url, id, signer=self.signer)
 
     def api(self, id=None):
         """This API receives the file upload and does something with it.

@@ -24,8 +24,8 @@ class VueForm(Fixture):
     }
 
     def __init__(self, url, session, fields_or_table,
-                 readonly=False, redirect_url=None,
-                 signer=None, db=None, auth=None, url_params=None):
+                 redirect_url=None, readonly=False, signer=None,
+                 db=None, auth=None, url_params=None):
         """fields_or_table is a list of Fields from DAL, or a table.
         If a table is passed, the fields that are marked writable
         (or readable, if readonly=True) are included.
@@ -35,14 +35,14 @@ class VueForm(Fixture):
         @param url: url used for form GET/POST
         @param session: session, used to validate access and sign.
         @param fields_or_table: list of Field for a database table, or table itself.
+        @param redirect_url: redirect URL after success.
         @param readonly: If true, the form is readonly.
-        @param redirect_url: redirect URL used after successful submission.
         @param signer: signer for URLs, or else, a new signer is created.
         @param db: database.  Used by implementation.
         @param auth: auth.  Used by implementation.
         @param url_params: parameters for AJAX URLs.
         """
-        self.url = url + '/form'
+        self.url_form = url + '/form'
         self.url_check = url + '/check'
         self.redirect_url = redirect_url
         self.db = db
@@ -61,9 +61,9 @@ class VueForm(Fixture):
         # Iterators by default are a very lame idea indeed.
         args = list(filter(None, [session, db, auth, self.signer.verify()]))
         f = action.uses(*args)(self.get)
-        action('/'.join([self.url] + url_params), method=["GET"])(f)
+        action('/'.join([self.url_form] + url_params), method=["GET"])(f)
         f = action.uses(*args)(self.post)
-        action('/'.join([self.url] + url_params), method=["POST"])(f)
+        action('/'.join([self.url_form] + url_params), method=["POST"])(f)
         f = action.uses(*args)(self.validate_field)
         action('/'.join([self.url_check] + url_params), method=["POST"])(f)
         # Stores the parameters that are necessary for creating the form.
@@ -147,12 +147,18 @@ class VueForm(Fixture):
             response.append(f)
         return dict(fields=list(fields.values()), readonly=self.readonly)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self):
         """This method returns the element that can be included in the page.
         The *args and **kwargs are used when subclassing, to allow for forms
-        that are 'custom built' for some need."""
-        return XML(VueForm.FORM.format(url=URL(self.url, signer=self.signer),
-                                       check_url=URL(self.url_check, signer=self.signer)))
+        that are 'custom built' for some need.
+        """
+        return XML(VueForm.FORM.format(url=self.url(), check_url=self.check_url()))
+
+    def url(self):
+        return URL(self.url_form, signer=self.signer)
+
+    def check_url(self):
+        return URL(self.url_check, signer=self.signer)
 
     def _validate_one_field(self, f_name, f_value, record_id=None):
         """Validates one field, returning the error if any, else None.
@@ -253,8 +259,13 @@ class TableForm(VueForm):
         """This method returns the element that can be included in the page.
         @param id: if an id is specified, the form is an update form for the
         specified record id."""
-        return XML(VueForm.FORM.format(url=URL(self.url, id, signer=self.signer),
-                                       check_url=URL(self.url_check, id, signer=self.signer)))
+        return XML(VueForm.FORM.format(url=self.url(id), check_url=self.check_url(id)))
+
+    def url(self, id):
+        return URL(self.url_form, id, signer=self.signer)
+
+    def check_url(self, id):
+        return URL(self.url_check, id, signer=self.signer)
 
     def _get_values(self, id):
         """The function must return the data to fill the form.
@@ -263,7 +274,7 @@ class TableForm(VueForm):
         """
         values = {}
         if id != 'None':
-            row = self.db(self.dbtable.id == int(id)).select().first()
+            row = self.db(self.dbtable.id == id).select().first()
             if row is not None:
                 for f in self.fields.values():
                     ff = f['field']
@@ -274,9 +285,8 @@ class TableForm(VueForm):
         """Returns the info necessary to dispay the form: a list of fields,
         filled with values."""
         # Gets the values from the fields.
-        fields = self._get_fields_for_web()
-        # Note that I have to transform id into an integer.
-        values = self._get_values(id)
+        values = self._get_values(int(id))
+        fields = self._get_fields_for_web(values)
         response = []
         for n, f in fields.items():
             f['value'] = values.get(n)

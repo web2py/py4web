@@ -58,7 +58,7 @@ def vuegrid():
 # -----------------------------
 # File uploader.
 
-file_uploader = FileUpload('upload_api', session)
+file_uploader = FileUpload('/upload_api', session)
 
 @action('file_uploader', method=['GET'])
 @action.uses(file_uploader, 'file_uploader.html')
@@ -82,32 +82,32 @@ vue_form = VueForm('test_form', session,
                         Field('arrival_time', 'datetime', default=get_time),
                         Field('date_of_birth', 'date'),
                         Field('narrative', 'text'),
-                        ], readonly=False)
+                        ], readonly=False, redirect_url='index')
 
 @action('vue_form', method=['GET'])
 @action.uses(vue_form, "vueform.html")
 def vueform():
-    return dict(form=vue_form(redirect_url=URL('index')))
+    return dict(form=vue_form())
 
 # -----------------------------
 # Insertion form.
 
-insert_form = InsertForm('insert_product', session, db.product)
+insert_form = InsertForm('insert_product', session, db.product, redirect_url='index')
 
 @action('insert_form', method=['GET'])
 @action.uses(insert_form, 'vueform.html')
 def insertform():
-    return dict(form=insert_form(redirect_url=URL('index')))
+    return dict(form=insert_form())
 
 # -----------------------------
 # Update form.
-update_form = TableForm('update_product', session, db.product)
+update_form = TableForm('update_product', session, db.product, redirect_url='index')
 
 @action('update_form', method=['GET'])
 @action.uses(update_form, 'vueform.html')
 def updateform():
     # For simplicity, we update the record 1.
-    return dict(form=update_form(id=1, redirect_url=URL('index')))
+    return dict(form=update_form(id=1))
 
 # -----------------------------
 # Star rater.
