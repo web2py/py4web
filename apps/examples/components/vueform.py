@@ -23,7 +23,7 @@ class VueForm(Fixture):
         'string': 'text',
     }
 
-    def __init__(self, url, session, fields_or_table,
+    def __init__(self, path, session, fields_or_table,
                  redirect_url=None, readonly=False, signer=None,
                  db=None, auth=None, url_params=None,
                  validate=None):
@@ -33,7 +33,7 @@ class VueForm(Fixture):
         session is used to sign the URLs.
         The other parameters are optional, and are used only
         if they will be needed to process the get and post metods.
-        @param url: url used for form GET/POST
+        @param path: path used for form GET/POST
         @param session: session, used to validate access and sign.
         @param fields_or_table: list of Field for a database table, or table itself.
         @param redirect_url: redirect URL after success.
@@ -46,8 +46,8 @@ class VueForm(Fixture):
             fields, and performs any desired extra validation.  If an error is
             set, then the form is not acted upon, and the error is shown to the user.
         """
-        self.url_form = url + '/form'
-        self.url_check = url + '/check'
+        self.path_form = path + '/form'
+        self.path_check = path + '/check'
         self.redirect_url = redirect_url
         self.db = db
         self.__prerequisites__ = [session]
@@ -66,11 +66,11 @@ class VueForm(Fixture):
         # Iterators by default are a very lame idea indeed.
         args = list(filter(None, [session, db, auth, self.signer.verify()]))
         f = action.uses(*args)(self.get)
-        action('/'.join([self.url_form] + url_params), method=["GET"])(f)
+        action('/'.join([self.path_form] + url_params), method=["GET"])(f)
         f = action.uses(*args)(self.post)
-        action('/'.join([self.url_form] + url_params), method=["POST"])(f)
+        action('/'.join([self.path_form] + url_params), method=["POST"])(f)
         f = action.uses(*args)(self.validate_field)
-        action('/'.join([self.url_check] + url_params), method=["POST"])(f)
+        action('/'.join([self.path_check] + url_params), method=["POST"])(f)
         # Stores the parameters that are necessary for creating the form.
         # Generates the list of field descriptions.
         self.readonly = readonly
@@ -160,10 +160,10 @@ class VueForm(Fixture):
         return XML(VueForm.FORM.format(url=self.url(), check_url=self.check_url()))
 
     def url(self):
-        return URL(self.url_form, signer=self.signer)
+        return URL(self.path_form, signer=self.signer)
 
     def check_url(self):
-        return URL(self.url_check, signer=self.signer)
+        return URL(self.path_check, signer=self.signer)
 
     def _validate_one_field(self, f_name, f_value, record_id=None):
         """Validates one field, returning the error if any, else None.
@@ -210,7 +210,7 @@ class VueForm(Fixture):
 class InsertForm(VueForm):
     """This subclass of VueForm generates a form to insert a record in a table."""
 
-    def __init__(self, url, session, dbtable, validate=None,
+    def __init__(self, path, session, dbtable, validate=None,
                  redirect_url=None, auth=None):
         """fields_or_table is a list of Fields from DAL, or a table.
         If a table is passed, the fields that are marked writable
@@ -228,7 +228,7 @@ class InsertForm(VueForm):
             set, then the form is not acted upon, and the error is shown to the user.
 
         """
-        super().__init__(url, session, dbtable, validate=validate,
+        super().__init__(path, session, dbtable, validate=validate,
                          db=dbtable._db, redirect_url=redirect_url, auth=auth)
         # We need to store the db table so we can perform the inserts later.
         self.dbtable = dbtable
@@ -251,7 +251,7 @@ class TableForm(VueForm):
     """This subclass of VueForm generates a form to insert or edit
     a record in a table."""
 
-    def __init__(self, url, session, dbtable, validate=None, redirect_url=None, auth=None):
+    def __init__(self, path, session, dbtable, validate=None, redirect_url=None, auth=None):
         """fields_or_table is a list of Fields from DAL, or a table.
         If a table is passed, the fields that are marked writable
         (or readable, if readonly=True) are included.
@@ -267,7 +267,7 @@ class TableForm(VueForm):
             fields, and performs any desired extra validation.  If an error is
             set, then the form is not acted upon, and the error is shown to the user.
         """
-        super().__init__(url, session, dbtable, db=dbtable._db, validate=validate,
+        super().__init__(path, session, dbtable, db=dbtable._db, validate=validate,
                          redirect_url=redirect_url, url_params=["<id>"], auth=auth)
         # We need to store the db table so we can perform the inserts later.
         self.dbtable = dbtable
@@ -279,10 +279,10 @@ class TableForm(VueForm):
         return XML(VueForm.FORM.format(url=self.url(id), check_url=self.check_url(id)))
 
     def url(self, id):
-        return URL(self.url_form, id, signer=self.signer)
+        return URL(self.path_form, id, signer=self.signer)
 
     def check_url(self, id):
-        return URL(self.url_check, id, signer=self.signer)
+        return URL(self.path_check, id, signer=self.signer)
 
     def _get_values(self, id):
         """The function must return the data to fill the form.

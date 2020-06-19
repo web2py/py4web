@@ -58,7 +58,7 @@ def vuegrid():
 # -----------------------------
 # File uploader.
 
-file_uploader = FileUpload('/upload_api', session)
+file_uploader = FileUpload('upload_api', session)
 
 @action('file_uploader', method=['GET'])
 @action.uses(file_uploader, 'file_uploader.html')

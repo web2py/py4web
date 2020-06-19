@@ -9,8 +9,16 @@ class Grid(Fixture):
 
     GRID = '<grid url="{url}"></grid>'
 
-    def __init__(self, url, session, signer=None, db=None, auth=None):
-        self.url = url
+    def __init__(self, path, session, signer=None, db=None, auth=None):
+        """
+        Displays a grid.
+        :param path: Path where the grid is loaded via AJAX.
+        :param session: used by the signer.
+        :param signer: singer for URLs.
+        :param db: specify a db if you need it added as widget.
+        :param auth: specify auth if you need it added as widget.
+        """
+        self.path = path
         self.signer = signer or URLSigner(session)
         # Creates an action (an entry point for URL calls),
         # mapped to the api method, that can be used to request pages
@@ -18,14 +26,14 @@ class Grid(Fixture):
         self.__prerequisites__ = [session]
         args = list(filter(None, [session, db, auth, self.signer.verify()]))
         f = action.uses(*args)(self.api)
-        action(self.url, method=["GET"])(f)
+        action(self.path, method=["GET"])(f)
 
     def __call__(self):
         """This method returns the element that can be included in the page."""
         return XML(Grid.GRID.format(url=self.url()))
 
     def url(self):
-        return URL(self.url, signer=self.signer)
+        return URL(self.path, signer=self.signer)
 
     def api(self):
         """The API must return the data to fill the table.
