@@ -11,6 +11,7 @@
             server_url: this.url,
             has_previous: false,
             has_more: false,
+            search_placeholder: '',
             page: 1,
             rows: [],
         };
@@ -33,6 +34,7 @@
                 self.page = res.data.page;
                 self.has_more = res.data.has_more;
                 self.has_previous = self.page > 1;
+                self.search_placeholder = res.data.search_placeholder,
                 self.rows = res.data.rows;
                 grid.enumerate(self.rows);
             })

@@ -9,7 +9,9 @@ class Grid(Fixture):
 
     GRID = '<grid url="{url}"></grid>'
 
-    def __init__(self, path, session, signer=None, db=None, auth=None):
+    def __init__(self, path, session,
+                 search_placeholder=None,
+                 signer=None, db=None, auth=None):
         """
         Displays a grid.
         :param path: Path where the grid is loaded via AJAX.
@@ -19,6 +21,7 @@ class Grid(Fixture):
         :param auth: specify auth if you need it added as widget.
         """
         self.path = path
+        self.search_placeholder = search_placeholder
         self.signer = signer or URLSigner(session)
         # Creates an action (an entry point for URL calls),
         # mapped to the api method, that can be used to request pages
@@ -39,6 +42,7 @@ class Grid(Fixture):
         """The API must return the data to fill the table.
         The data is a dictionary, containing:
             - page: <integer>
+            - search_placeholder: <string>
             - has_more: <boolean>
             - rows: <list of rows (see below)>
         A row is a dictionary, containing:
@@ -68,6 +72,7 @@ class Grid(Fixture):
             dict(text="Bird", url=URL('bird/owl'), is_button=True)])
         return dict(
             page=int(page),
+            search_placeholder=self.search_placeholder,
             has_more=True,
             rows = [row0, row1, row2, row3]
         )
