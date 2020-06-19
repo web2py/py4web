@@ -1,12 +1,20 @@
 <div class="section">
   <div v-if="rows.length > 0" class="grid">
     <div class="level">
-      <div class="field">
-        <p class="control has-icons-right">
+      <div class="field has-addons">
+        <div class="control is-expanded">
           <input class="input" type="text" :placeholder="search_placeholder">
-          <span class="icon is-small is-right">
+        </div>
+        <div class="control">
+          <button class="button has-text-grey">
+            <i class="fa fa-times-circle"></i>
+          </button>
+        </div>
+        <div class="control">
+          <button class="button is-link">
             <i class="fa fa-search"></i>
-          </span>
+          </button>
+        </div>
     </div>
     <table class="table is-striped is-fullwidth">
       <tr v-for="row in rows">
