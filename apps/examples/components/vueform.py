@@ -25,7 +25,8 @@ class VueForm(Fixture):
 
     def __init__(self, url, session, fields_or_table,
                  redirect_url=None, readonly=False, signer=None,
-                 db=None, auth=None, url_params=None):
+                 db=None, auth=None, url_params=None,
+                 validate=None):
         """fields_or_table is a list of Fields from DAL, or a table.
         If a table is passed, the fields that are marked writable
         (or readable, if readonly=True) are included.
@@ -41,6 +42,9 @@ class VueForm(Fixture):
         @param db: database.  Used by implementation.
         @param auth: auth.  Used by implementation.
         @param url_params: parameters for AJAX URLs.
+        @param validate: A function that takes as arguments the dictionary of
+            fields, and performs any desired extra validation.  If an error is
+            set, then the form is not acted upon, and the error is shown to the user.
         """
         self.url_form = url + '/form'
         self.url_check = url + '/check'
@@ -48,6 +52,7 @@ class VueForm(Fixture):
         self.db = db
         self.__prerequisites__ = [session]
         self.signer = signer or URLSigner(session)
+        self.validate = validate
         # Creates entry points for giving the blank form, and processing form submissions.
         # There are three entry points:
         # - Form setup GET: This gets how the form is set up, including the types of the fields.
@@ -184,17 +189,19 @@ class VueForm(Fixture):
 
     def validate_form(self, record_id=None):
         """Validates an entire form, setting the error field in each """
+        # First performs the normal valuation.
         for f_name, f_value in request.json.items():
             self._validate_one_field(f_name, f_value, record_id=record_id)
+        # If an additional validation function is specified, uses it.
+        if self.validate is not None:
+            self.validate(self.fields)
+        return not any([ff['error'] for ff in self.fields.values()])
 
     def post(self):
         """Processes the form submission. The return value is the same as for get.
         This function should be over-ridden.
         """
-        self.validate_form()
-        for ff in self.fields.values():
-            print(ff)
-        if any([ff['error'] for ff in self.fields.values()]):
+        if not self.validate_form():
             return self.get()
         else:
             return dict(redirect_url=URL(self.redirect_url))
@@ -203,7 +210,8 @@ class VueForm(Fixture):
 class InsertForm(VueForm):
     """This subclass of VueForm generates a form to insert a record in a table."""
 
-    def __init__(self, url, session, dbtable, redirect_url=None, auth=None):
+    def __init__(self, url, session, dbtable, validate=None,
+                 redirect_url=None, auth=None):
         """fields_or_table is a list of Fields from DAL, or a table.
         If a table is passed, the fields that are marked writable
         (or readable, if readonly=True) are included.
@@ -215,17 +223,23 @@ class InsertForm(VueForm):
             is committed.
         @param dbtable: database table into which to do the insertions.
         @param redirect_url: redirect URL used after successful submission.
+        @param validate: A function that takes as arguments the dictionary of
+            fields, and performs any desired extra validation.  If an error is
+            set, then the form is not acted upon, and the error is shown to the user.
+
         """
-        super().__init__(url, session, dbtable, db=dbtable._db, redirect_url=redirect_url, auth=auth)
+        super().__init__(url, session, dbtable, validate=validate,
+                         db=dbtable._db, redirect_url=redirect_url, auth=auth)
         # We need to store the db table so we can perform the inserts later.
         self.dbtable = dbtable
 
 
     def post(self):
-        self.validate_form()
-        if any([f['error'] for f in self.fields.values()]):
+        if not self.validate_form():
             # Returns the values with the errors.
-            return dict(fields=list(self._get_fields_for_web().values()), readonly=self.readonly)
+            values = {n: f['validated_value'] for n, f in self.fields.items()}
+            fs = self._get_fields_for_web(values)
+            return dict(fields=list(fs.values()), readonly=self.readonly)
         # Performs the insertion.
         d = {n: f['validated_value'] for n, f in self.fields.items()}
         self.dbtable.insert(**d)
@@ -237,7 +251,7 @@ class TableForm(VueForm):
     """This subclass of VueForm generates a form to insert or edit
     a record in a table."""
 
-    def __init__(self, url, session, dbtable, redirect_url=None, auth=None):
+    def __init__(self, url, session, dbtable, validate=None, redirect_url=None, auth=None):
         """fields_or_table is a list of Fields from DAL, or a table.
         If a table is passed, the fields that are marked writable
         (or readable, if readonly=True) are included.
@@ -249,9 +263,12 @@ class TableForm(VueForm):
             is committed.
         @param dbtable: database table into which to do the insertions.
         @param redirect_url: redirect URL used after successful submission.
+        @param validate: A function that takes as arguments the dictionary of
+            fields, and performs any desired extra validation.  If an error is
+            set, then the form is not acted upon, and the error is shown to the user.
         """
-        super().__init__(url, session, dbtable, db=dbtable._db, redirect_url=redirect_url,
-                         url_params=["<id>"], auth=auth)
+        super().__init__(url, session, dbtable, db=dbtable._db, validate=validate,
+                         redirect_url=redirect_url, url_params=["<id>"], auth=auth)
         # We need to store the db table so we can perform the inserts later.
         self.dbtable = dbtable
 
@@ -295,8 +312,7 @@ class TableForm(VueForm):
 
 
     def post(self, id):
-        self.validate_form(record_id=id)
-        if any([f['error'] for f in self.fields.values()]):
+        if not self.validate_form(record_id=id):
             # Returns the values with the errors.
             return dict(fields=list(self._get_fields_for_web().values()), readonly=self.readonly)
         d = {n: f['validated_value'] for n, f in self.fields.items()}
