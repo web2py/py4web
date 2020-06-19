@@ -314,7 +314,9 @@ class TableForm(VueForm):
     def post(self, id):
         if not self.validate_form(record_id=id):
             # Returns the values with the errors.
-            return dict(fields=list(self._get_fields_for_web().values()), readonly=self.readonly)
+            values = {n: f['validated_value'] for n, f in self.fields.items()}
+            fs = self._get_fields_for_web(values)
+            return dict(fields=list(fs.values()), readonly=self.readonly)
         d = {n: f['validated_value'] for n, f in self.fields.items()}
         # We do not want to overwrite the record id.
         if 'id' in d:
@@ -327,6 +329,3 @@ class TableForm(VueForm):
             self.db(self.dbtable.id == int(id)).update(**d)
         # Redirects to the desired URL.
         return dict(redirect_url=URL(self.redirect_url))
-
-## Take care of READONLY
-## Take care of boolean fields.

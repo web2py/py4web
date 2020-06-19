@@ -92,11 +92,11 @@ def vueform():
 # -----------------------------
 # Insertion form.
 
-
 def not_too_expensive(fields):
     """Validation function that checks that the total price is low enough."""
-    if fields['product_quantity']['validated_value'] * fields['product_cost']['validated_value'] > 1000000:
-        err = "Please insert only products that cost less than a million."
+    if (fields['product_quantity']['validated_value'] *
+        fields['product_cost']['validated_value']) > 1000000:
+        err = "Please insert only products with total value of less than a million."
         fields['product_quantity']['error'] = err
         fields['product_cost']['error'] = err
 
@@ -110,7 +110,8 @@ def insertform():
 
 # -----------------------------
 # Update form.
-update_form = TableForm('update_product', session, db.product, redirect_url='index')
+update_form = TableForm('update_product', session, db.product,
+                        validate=not_too_expensive, redirect_url='index')
 
 @action('update_form', method=['GET'])
 @action.uses(update_form, 'vueform.html')
