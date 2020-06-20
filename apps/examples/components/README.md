@@ -81,22 +81,82 @@ and finally the loading of the js portion of the component, followed by the crea
 ### Creating the component in Vue 
 
 Another way of using the component is to create it from Vue. 
-The controller might contain the following code, to display a list of post:
+In this case, the top-level Vue is passed the callback URLs of each component it will need to create, and it creates the components using these callbacks. 
 
+For a concrete example, suppose we need to display a list of posts, each with its own star-rater. 
+We want the list of posts to be created in Vue, and we provide, for each post, both its content, and the callback URL to be used in creating the star rater for the post. 
 
- 
-For instance, if one has a list of one can write: 
+This can be done as follows. 
+First, let us create a star rater, and let us create a controller that just returns the callback URL for Vue to load further data: 
 
-    <div v-for="post in posts">
-        <p>{{=post.content}}</p>
-        <starrater url="
+    star_rater = StarRater('star_rater', session)
+
+    @action('star_rater_vue', method=['GET'])
+    @action.uses(star_rater, 'star_rater_vue.html')
+    def star_rater_vue():
+        return dict(get_posts_url=URL('star_rater_get_posts'))
+
+The template for this conroller contains the Vue code:
+
+    [[extend 'layout.html']]
+
+    [[block page_head]]
+    <link rel="stylesheet" href="components/starrater/starrater.css">
+    [[end]]
+    
+    <div id="vue">
+      <div class="section">
+      <div v-for="post in posts" class="box">
+        <p>{{post.content}}</p>
+        <starrater :url="post.url">
+      </div>
     </div>
+    
+    [[block page_scripts]]
+    <script>
+      // URL for loading the posts.
+      let get_posts_url = "[[=XML(get_posts_url)]]";
+    </script>
+    <script src="components/starrater/starrater.js"></script>
+    <script src="js/star_rater_vue.js"></script>
+    [[end]]
+    
+Notice how each star rater is created via `<starrater :url="post.url">`, using the callback URL of the post. 
+The list of posts is loaded from the following controller: 
 
-### Component methods
+    @action('star_rater_get_posts', method=['GET'])
+    def star_rater_get_posts():
+        posts = [
+            {"id": 1, "content": "Hello there"},
+            {"id": 2, "content": "I love you"},
+            {"id": 3, "content": "Do you love me too?"},
+        ]
+        for p in posts:
+            # Creates the callback URL for each rater.
+            p["url"] = star_rater.url(p["id"])
+        return dict(posts=posts)
+
+Note how the callback URL is created via 
+
+    star_rater.url(p["id"])
+    
+using the `url` method of `star_rater`. 
+The posts are loaded via this Vue code, in `star_rater_vue.js`:
+
+    ...
+    app.init = () => {
+        axios.get(get_posts_url).then((result) => {
+            app.vue.posts = result.data.posts;
+        })
+    };
+    ...
+    
+
+## Component methods
 
 A component object in Python, generally, will have the following methods.
 
-#### Initializer
+### Initializer
 
 The intializer generally takes a path to which the AJAX callbacks will be 
 directed.  When multiple callbacks are necessary, the component generally 
@@ -106,7 +166,7 @@ them at `path/callback1` and `path/callback2`.
 The component will often sign these paths using the `URLSigner` as a protection
 from CSRF attacks before passing them to the Javascript. 
 
-#### `__call__()`
+### `__call__()`
 
 The `__call__()` method is used to create the (extended) HTML tag that is inserted
 in the template.  The `__call__()` method accepts as parameters any information 
@@ -118,37 +178,12 @@ that is known only in a controller, and not statically, such as:
  
 and so forth. 
 
+### `url()`
 
+The `url()` method is used to return the callback URL, so that it can be passed to the front end. 
+This is used when it is desired to create the components from Vue: one can pass to Vue the list of callback URLs to be used for each component instance, and Vue can create the components with the correct callback URLs.  See the starrater example above. 
 
-### Using a component in a template
-
-The template would then be similar to the following: 
-
-    [[extend 'layout.html']]
-    
-    [[block page_head]]
-    <link rel="stylesheet" href="components/my_component/my_component.css">
-    [[end]]
-    
-    <div id="vue">
-      [[=my_component]]
-    </div>
-    
-    [[block page_scripts]]
-    <script src="components/my_component/my_component.js"></script>
-    <script>
-      var app = new Vue({
-          el: "#vue",
-          data: {},
-      });
-    </script>
-    [[end]]
-
-This loads the Javascript and CSS necessary, and then creates a top-level Vue 
-object.  The Vue component is instantiated in it.  Of course, any number of 
-Vue components can be instantiated in this fashion inside a single container. 
-
-### Specializing a component behavior
+## Specializing a component behavior
 
 In most components, it is necessary to specialize the behavior, deciding 
 how the callbacks should be handled. 
