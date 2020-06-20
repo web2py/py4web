@@ -5,17 +5,17 @@
         <div class="control is-expanded">
           <div class="field has-addons">
             <div class="control is-expanded">
-              <input class="input" type="text" :placeholder="search_placeholder">
+              <input class="input" type="text" v-model="search_text" @keydown="search_enter" :placeholder="search_placeholder">
             </div>
             <div class="control">
-              <button class="button has-text-grey">
+              <button class="button has-text-grey" @click="clear_search">
                 <i class="fa fa-times-circle"></i>
               </button>
             </div>
           </div>
         </div>
         <div class="control">
-          <button class="button is-info">
+          <button class="button is-info" @click="do_search">
             <i class="fa fa-search"></i>
           </button>
         </div>

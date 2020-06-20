@@ -12,6 +12,7 @@
             has_previous: false,
             has_more: false,
             search_placeholder: '',
+            search_text: '',
             page: 1,
             rows: [],
         };
@@ -25,12 +26,34 @@
         a.map(function(e) {e._idx = k++;});
     };
 
+    grid.methods.do_search = function () {
+        let self = this;
+        self.page = 1; // Restart from page 1 for every search.
+        self.load();
+    };
+
+    grid.methods.clear_search = function () {
+        let self = this;
+        self.search_text = "";
+        self.page = 1;
+        self.load();
+    };
+
+    grid.methods.search_enter = function (e) {
+        let self = this;
+        if (e.keyCode === 13) {
+            self.do_search();
+            e.target.blur();
+        }
+    }
+
     grid.methods.load = function () {
         // In use, self will correspond to the data of the table,
         // as this is called via grid.methods.load
         let self = this;
-        axios.get(self.server_url, {params: {page: self.page}})
-            .then(function(res) {
+        axios.get(self.server_url,
+            {params: {page: self.page, q: self.search_text}}
+            ).then(function(res) {
                 self.page = res.data.page;
                 self.has_more = res.data.has_more;
                 self.has_previous = self.page > 1;
@@ -41,10 +64,11 @@
     };
 
     grid.methods.incpage = function (inc) {
+        let self = this;
         i = parseInt(inc);
-        if ((i > 0 && this.has_more) || (i < 0 && this.has_previous)) {
-            this.page += parseInt(inc);
-            this.load();
+        if ((i > 0 && self.has_more) || (i < 0 && self.has_previous)) {
+            self.page += parseInt(inc);
+            self.load();
         }
     };
 

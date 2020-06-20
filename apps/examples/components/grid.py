@@ -58,6 +58,7 @@ class Grid(Fixture):
         over-ride the api method to provide your own input for the table.
         """
         page = request.query.get('page') or 1
+        q = request.query.get("q", "") # Query string
         row0 = dict(
             is_header=True,
             cells=[dict(text="Animal"), dict(text="N. paws"), dict(text="Class")])
