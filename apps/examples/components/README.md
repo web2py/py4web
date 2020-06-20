@@ -199,5 +199,3 @@ instance to store the new rating in the database.
 This specialization should be generally achieved by _subclassing_ the 
 component class `MyComponent`, over-riding the simple methods in the 
 callback with methods that implement the desired behavior. 
-
-## 
