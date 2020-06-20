@@ -8,8 +8,6 @@ input forms, and more.
 
 ## Structure of components
 
-### Component files
-
 A component `my_component` consists of the following files: 
 
 * A Python file `components/my_component.py`, containing the back-end code. 
@@ -20,7 +18,7 @@ A component `my_component` consists of the following files:
     * `/static/components/my_component/my_component.js`: the Javascript for the Vue component
     * `/static/components/my_component/my_component.css`: the CSS (if any) for the component.
     
-### Instantiating a component    
+## Instantiating a component    
     
 Internally, the Python file will define a class, for instance `MyComponent`.  
 In the controller code, one instantiates the class into an object, often specifying
@@ -32,6 +30,8 @@ For example, one can instantiate a component via:
 where `mycomp` is the path used for the component AJAX callbacks, and `session` is an 
 example of an additional parameter that the component might need. 
 
+### Instantiating a component in a template
+
 Once the component is thus defined, it can be used in a controller, for example via:
 
     @action('mypage')
@@ -39,15 +39,58 @@ Once the component is thus defined, it can be used in a controller, for example 
     def mypage():
         c = my_component(id=1)
         return dict(my_component=my_component)
-        
+
 In the above code, the `my_component(id=1)` call creates the HTML/XML
 for a Vue component that can be included in the template, such as 
 
-    <my_component id="1" callback_path="mycomp?_signature=386ef34"></my_component>
+    <my_component id="1" url="mycomp?_signature=386ef34"></my_component>
     
 where the `id` is an example of a parameter that is passed to the Vue object, 
-and the `callback_path` is the path we have specified, endowed with a signature
+and the `url` is the path we have specified, endowed with a signature
 to prevent CSRF attacks. 
+      
+In the template, there will be code such as: 
+
+    [[extend 'layout.html']]
+
+then linking any styleshees required by the component, as in: 
+    
+    [[block page_head]]
+    <link rel="stylesheet" href="[[=URL('static/components/my_component/my_component.css')]]">
+    [[end]]
+
+then a vue element containing our component, 
+    
+    <div id="vue">
+      [[=my_component]]
+    </div>
+    
+and finally the loading of the js portion of the component, followed by the creation of an empty top-level Vue instance to which the components are attached: 
+
+    [[block page_scripts]]
+    <script src="[[=URL('static/components/my_component/my_component.js')]]"></script>
+    <script>
+      var app = new Vue({
+          el: "#vue",
+          data: {},
+      });
+    </script>
+    [[end]]
+
+
+### Creating the component in Vue 
+
+Another way of using the component is to create it from Vue. 
+The controller might contain the following code, to display a list of post:
+
+
+ 
+For instance, if one has a list of one can write: 
+
+    <div v-for="post in posts">
+        <p>{{=post.content}}</p>
+        <starrater url="
+    </div>
 
 ### Component methods
 

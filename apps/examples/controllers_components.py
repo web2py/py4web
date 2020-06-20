@@ -130,4 +130,22 @@ def starrater():
     # This performs a star rating of item 1.
     return dict(stars=star_rater(id=1))
 
+# ------------------------------
+# Star rater, instantiated from Vue.
 
+@action('star_rater_vue', method=['GET'])
+@action.uses(star_rater, 'star_rater_vue.html')
+def star_rater_vue():
+    return dict(get_posts_url=URL('star_rater_get_posts'))
+
+@action('star_rater_get_posts', method=['GET'])
+def star_rater_get_posts():
+    posts = [
+        {"id": 1, "content": "Hello there"},
+        {"id": 2, "content": "I love you"},
+        {"id": 3, "content": "Do you love me too?"},
+    ]
+    for p in posts:
+        # Creates the callback URL for each rater.
+        p["url"] = star_rater.url(p["id"])
+    return dict(posts=posts)
