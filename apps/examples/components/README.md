@@ -38,7 +38,7 @@ Once the component is thus defined, it can be used in a controller, for example 
     @action.uses(session)
     def mypage():
         c = my_component(id=1)
-        return dict(my_component=my_component)
+        return dict(my_component=c)
 
 In the above code, the `my_component(id=1)` call creates the HTML/XML
 for a Vue component that can be included in the template, such as 
