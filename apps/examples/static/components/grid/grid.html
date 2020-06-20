@@ -27,7 +27,7 @@
       <tr v-for="row in rows">
         <template v-if="row.is_header">
           <!-- Header row -->
-          <th v-for="cell in row.cells" :class="{'has-text-link': cell.sortable}" @click="do_sort(cell._idx)">
+          <th v-for="cell in row.cells" :class="{'clickable': cell.sortable, 'has-text-link': cell.sortable}" @click="do_sort(cell._idx)">
             <i v-if="cell.sortable && cell.sort > 0" class="fa fa-sort-asc"></i>
             <i v-if="cell.sortable && cell.sort < 0" class="fa fa-sort-desc"></i>
             <i v-if="cell.sortable && cell.sort === 0" class="fa fa-sort"></i>
