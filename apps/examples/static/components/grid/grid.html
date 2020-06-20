@@ -1,5 +1,6 @@
 <div class="section">
   <div v-if="rows.length > 0" class="grid">
+    <!-- Search bar -->
     <div class="level">
       <div class="field is-grouped">
         <div class="control is-expanded">
@@ -21,11 +22,17 @@
         </div>
       </div>
     </div>
+    <!-- Table -->
     <table class="table is-striped is-fullwidth">
       <tr v-for="row in rows">
         <template v-if="row.is_header">
           <!-- Header row -->
-          <th v-for="cell in row.cells" :class="cell.el_class">{{cell.text}}</th>
+          <th v-for="cell in row.cells" :class="{'has-text-link': cell.sortable}" @click="do_sort(cell._idx)">
+            <i v-if="cell.sortable && cell.sort > 0" class="fa fa-sort-asc"></i>
+            <i v-if="cell.sortable && cell.sort < 0" class="fa fa-sort-desc"></i>
+            <i v-if="cell.sortable && cell.sort === 0" class="fa fa-sort"></i>
+            {{cell.text}}
+          </th>
         </template>
         <template v-else>
           <!-- Non-header row -->
@@ -43,11 +50,11 @@
       </tr>
     </table>
     <div class="pagination is-pulled-right">
-      <span :class="{disabled: !has_previous}" v-on:click="incpage(-1)">
+      <span :class="{disabled: !has_previous}" @click="incpage(-1)">
         <i class="fa fa-chevron-left"></i>
       </span>
       <span class="grid_page_number">{{page}}</span>
-      <span :class="{disabled: !has_more}" v-on:click="incpage(1)">
+      <span :class="{disabled: !has_more}" @click="incpage(1)">
         <i class="fa fa-chevron-right"></i>
       </span>
     </div>

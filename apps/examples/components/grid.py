@@ -1,3 +1,5 @@
+import json
+
 from py4web import action, URL, request
 from yatl.helpers import XML
 from py4web.utils.url_signer import URLSigner
@@ -52,6 +54,8 @@ class Grid(Fixture):
             - text: <text>
             - url: <text> or None
             - is_button: <boolean>
+            - sortable: <boolean> (valid only of the row is a header)
+            - sort: <int> (+1 for sort up, -1 for sort down, 0 for no sort)
             - el_class: <text> or None (class of element, if needed)
         All the fields except text are optional.
         This is a sample implementation only, to test code.  You should
@@ -59,9 +63,21 @@ class Grid(Fixture):
         """
         page = request.query.get('page') or 1
         q = request.query.get("q", "") # Query string
-        row0 = dict(
+        sort_order = request.query.get("sort_order") or None
+        header = dict(
             is_header=True,
-            cells=[dict(text="Animal"), dict(text="N. paws"), dict(text="Class")])
+            cells=[dict(text="Animal", sortable=True),
+                   dict(text="N. paws", sortable=True),
+                   dict(text="Class")])
+        # Copies the sort_order into the header, to reflect that the request has been
+        # satisfied.  Note that we are doing server-side sorting, as the set of
+        # results can be very large and the web UI may have only a small set of the results.
+        # The reason why sort order is repeated in the answer is that the server might
+        # want to be able to communicate to the web UI what sort order has truly been
+        # used when producing the table.
+        if sort_order is not None:
+            for hc, so in zip(header["cells"], json.loads(sort_order)):
+                hc["sort"] = so
         row1 = dict(cells=[
             dict(text="Cat"), dict(text="4"),
             dict(text="Mammal", url=URL('mammals/cat'), is_button=True)])
@@ -75,5 +91,5 @@ class Grid(Fixture):
             page=int(page),
             search_placeholder=self.search_placeholder,
             has_more=True,
-            rows = [row0, row1, row2, row3]
+            rows = [header, row1, row2, row3]
         )
