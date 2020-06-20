@@ -5,3 +5,6 @@
 span.disabled {
     color: lightgray;
 }
+th.clickable {
+    cursor: pointer;
+}
