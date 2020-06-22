@@ -130,7 +130,7 @@ py4web run -H 127.0.0.1 -P 8000 -d demo apps
 
 Note:
 
-By default the host will be set to localhost or 127.0.0.1 and the port will be 8000. So the command above can be shortened to:
+By default the host will be set to 127.0.0.1 (localhost) and the port will be 8000. So the command above can be shortened to:
 
 ```
 py4web run -d demo apps
