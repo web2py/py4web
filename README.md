@@ -105,8 +105,8 @@ Usage: py4web.py run [OPTIONS] [APPS_FOLDER]
 
 Options:
   -Y, --yes                     No prompt, assume yes to questions
-  -H, --host TEXT               Host name
-  -P, --port INTEGER            Port number
+  -H, --host TEXT               Host name (default 127.0.0.1)
+  -P, --port INTEGER            Port number (default 8000)
   -p, --password_file TEXT      File for the encrypted password
   -w, --number_workers INTEGER  Number of workers
   -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
@@ -128,9 +128,7 @@ Example:
 py4web run -H 127.0.0.1 -P 8000 -d demo apps
 ```
 
-Note:
-
-By default the host will be set to 127.0.0.1 (localhost) and the port will be 8000. So the command above can be shortened to:
+Note that since the default (as specified above) for the host and port are 127.0.0.1 and 8000 respectively, the above command can be shortened to:
 
 ```
 py4web run -d demo apps
