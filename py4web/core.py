@@ -1035,7 +1035,6 @@ def start_server(args):
 
     server = None # need for watcher
     run = lambda: 0 # main run
-
     if platform.system().lower() == "windows":
         # Tornado fail on windows
         server = 'default'
@@ -1058,8 +1057,8 @@ def start_server(args):
                 workers=number_workers,
                 worker_class="gevent",
                 reloader=False,
-                certfile=args.ssl_cert_filename,
-                keyfile=args.ssl_key_filename,
+                certfile=args['ssl_cert'],
+                keyfile=args['ssl_key'],
             )
 
     if args['watch'] != 'off':
