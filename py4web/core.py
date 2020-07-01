@@ -495,7 +495,7 @@ def URL(*parts, vars=None, hash=None, scheme=False, signer=None, use_appname=Tru
     if static_version != "" and broken_parts and broken_parts[0] == 'static':
         if not static_version: # try to retrieve from __init__.py
             app_module = (
-                "apps.%s" % request.app_name 
+                "apps.%s" % request.app_name
                 if use_appname
                 else "apps"
             )
@@ -1035,7 +1035,6 @@ def start_server(args):
 
     server = None # need for watcher
     run = lambda: 0 # main run
-
     if platform.system().lower() == "windows":
         # Tornado fail on windows
         server = 'default'
@@ -1058,8 +1057,8 @@ def start_server(args):
                 workers=number_workers,
                 worker_class="gevent",
                 reloader=False,
-                certfile=args.ssl_cert_filename,
-                keyfile=args.ssl_key_filename,
+                certfile=args['ssl_cert'],
+                keyfile=args['ssl_key'],
             )
 
     if args['watch'] != 'off':
@@ -1200,8 +1199,8 @@ def set_password(password, password_file):
 @cli.command()
 @click.argument('apps_folder', default='apps')
 @click.option('-Y', '--yes', is_flag=True, default=False, help='No prompt, assume yes to questions')
-@click.option('-H', '--host', default='127.0.0.1', help='Host name')
-@click.option('-P', '--port', default=8000, type=int, help='Port number')
+@click.option('-H', '--host', default='127.0.0.1', help='Host name (default 127.0.0.1)')
+@click.option('-P', '--port', default=8000, type=int, help='Port number (default 8000)')
 @click.option('-p', '--password_file', default='password.txt', help='File for the encrypted password')
 @click.option('-w', '--number_workers', default=0, type=int, help='Number of workers')
 @click.option('-d', '--dashboard_mode',  default='full', help='Dashboard mode: demo, readonly, full (default), none')
