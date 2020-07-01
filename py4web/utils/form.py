@@ -75,6 +75,7 @@ class FormStyleFactory:
             if field.type == "blob":  # never display blobs (mistake?)
                 continue
             if field.type == "id" and value is None:
+                field.writable = False
                 continue
             if readonly or field.type == "id":
                 control = DIV(field.represent and field.represent(value) or value or "")
