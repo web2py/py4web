@@ -667,3 +667,51 @@ class Auth(Fixture):
             print('Mock send to %s subject "%s" body:\n%s\n' % (email, subject, body))
             return True
         return self.sender.send(email, subject=subject, body=body)
+
+    def enable_record_versioning(
+        self,
+        tables,
+        archive_db=None,
+        archive_names='%(tablename)s_archive',
+        current_record='current_record',
+        current_record_label=None):
+        """
+        Used to enable full record versioning (including auth tables)::
+
+            auth = Auth(db)
+            auth.define_tables()
+            # define our own tables
+            db.define_table(
+                'mything',
+                Field('name'),
+                auth.signature())
+            auth.enable_record_versioning(tables=db)
+
+        tables can be the db (all table) or a list of tables.
+        only tables with modified_by and modified_on fiels (as created
+        by auth.signature) will have versioning. Old record versions will be
+        in table 'mything_archive' automatically defined.
+        when you enable enable_record_versioning, records are never
+        deleted but marked with is_active=False.
+
+        enable_record_versioning enables a common_filter for
+        every table that filters out records with is_active = False
+
+        Note:
+            If you use auth.enable_record_versioning,
+            do not use auth.archive or you will end up with duplicates.
+            auth.archive does explicitly what enable_record_versioning
+            does automatically.
+        """
+        current_record_label = current_record_label or \
+            current_record.replace('_', ' ').title()
+        for table in tables:
+            fieldnames = table.fields()
+            if ('id' in fieldnames and 
+                'modified_on' in fieldnames and 
+                current_record not in fieldnames):
+                table._enable_record_versioning(
+                    archive_db = archive_db,
+                    archive_name = archive_names,
+                    current_record = current_record,
+                    current_record_label = current_record_label)
