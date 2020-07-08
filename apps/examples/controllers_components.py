@@ -25,11 +25,13 @@ session, db, T, auth, and tempates are examples of Fixtures.
 Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app will result in undefined behavior
 """
 
+import datetime
 import uuid
 
 from py4web import action, request, abort, redirect, URL, Field
 from py4web.utils.form import Form, FormStyleBulma
 from py4web.utils.url_signer import URLSigner
+from pydal.validators import *
 
 from yatl.helpers import A
 from .common import db, session, T, cache, auth
@@ -66,33 +68,56 @@ def fileuploader():
 # -----------------------------
 # Custom vue form.
 
-vue_form = VueForm('custom_form', session,
-                   [Field('name'), Field('read', 'boolean')])
+def get_time():
+    return datetime.datetime.utcnow()
+
+vue_form = VueForm('test_form', session,
+                       [Field('name', default="Luca"),
+                        Field('last_name', default="Smith", writable=False),
+                        Field('read', 'boolean', default=True),
+                        Field('animal', requires=IS_IN_SET(['cat', 'dog', 'bird']),
+                              default='dog', writable=False),
+                        Field('choice', requires=IS_IN_SET({'c': 'cat', 'd': 'dog', 'b': 'bird'}),
+                              default='d'),
+                        Field('arrival_time', 'datetime', default=get_time),
+                        Field('date_of_birth', 'date'),
+                        Field('narrative', 'text'),
+                        ], readonly=False, redirect_url='index')
 
 @action('vue_form', method=['GET'])
 @action.uses(vue_form, "vueform.html")
 def vueform():
-    return dict(form=vue_form(redirect_url=URL('index')))
+    return dict(form=vue_form())
 
 # -----------------------------
 # Insertion form.
 
-insert_form = InsertForm('insert_product', session, db.product)
+def not_too_expensive(fields):
+    """Validation function that checks that the total price is low enough."""
+    if (fields['product_quantity']['validated_value'] *
+        fields['product_cost']['validated_value']) > 1000000:
+        err = "Please insert only products with total value of less than a million."
+        fields['product_quantity']['error'] = err
+        fields['product_cost']['error'] = err
+
+insert_form = InsertForm('insert_product', session, db.product,
+                         validate=not_too_expensive, redirect_url='index')
 
 @action('insert_form', method=['GET'])
 @action.uses(insert_form, 'vueform.html')
 def insertform():
-    return dict(form=insert_form(redirect_url=URL('index')))
+    return dict(form=insert_form())
 
 # -----------------------------
 # Update form.
-update_form = TableForm('update_product', session, db.product)
+update_form = TableForm('update_product', session, db.product,
+                        validate=not_too_expensive, redirect_url='index')
 
 @action('update_form', method=['GET'])
 @action.uses(update_form, 'vueform.html')
 def updateform():
     # For simplicity, we update the record 1.
-    return dict(form=update_form(id=1, redirect_url=URL('index')))
+    return dict(form=update_form(id=1))
 
 # -----------------------------
 # Star rater.
@@ -105,4 +130,22 @@ def starrater():
     # This performs a star rating of item 1.
     return dict(stars=star_rater(id=1))
 
+# ------------------------------
+# Star rater, instantiated from Vue.
 
+@action('star_rater_vue', method=['GET'])
+@action.uses(star_rater, 'star_rater_vue.html')
+def star_rater_vue():
+    return dict(get_posts_url=URL('star_rater_get_posts'))
+
+@action('star_rater_get_posts', method=['GET'])
+def star_rater_get_posts():
+    posts = [
+        {"id": 1, "content": "Hello there"},
+        {"id": 2, "content": "I love you"},
+        {"id": 3, "content": "Do you love me too?"},
+    ]
+    for p in posts:
+        # Creates the callback URL for each rater.
+        p["url"] = star_rater.url(p["id"])
+    return dict(posts=posts)
