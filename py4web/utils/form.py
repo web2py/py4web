@@ -64,7 +64,7 @@ class FormStyleFactory:
         for field in table:
 
             input_id = "%s_%s" % (field.tablename, field.name)
-            value = vars.get(field.name)
+            value = vars.get(field.name, field.default)
             error = errors.get(field.name)
             field_class = field.type.split()[0].replace(":", "-")
 
