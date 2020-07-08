@@ -35,7 +35,7 @@ import zipfile
 import asyncio
 from watchgod import awatch
 
-REX_APPJSON = re.compile(r"(^|\s|,)application/json(,|\s|$)")
+REGEX_APPJSON = r"(^|\s|,)application/json(,|\s|$)"
 
 import click
 
@@ -990,7 +990,7 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
         code=code, message=message, button_text=button_text, href=href, color=color
     )
     # if client accepts 'application/json' - return json
-    if REX_APPJSON.search(request.headers.get("accept", "")):
+    if re.search(REGEX_APPJSON, request.headers.get("accept", "")):
         response.status = code
         return json.dumps(context)
     # else - return html error-page

@@ -2,12 +2,13 @@ import base64
 import calendar
 import datetime
 import hashlib
+import re
 import time
 import urllib
 import uuid
 
 from py4web import redirect, request, response, abort, URL, action
-from py4web.core import Fixture, Template, REX_APPJSON
+from py4web.core import Fixture, Template, REGEX_APPJSON
 from pydal.validators import (
     IS_EMAIL,
     CRYPT,
@@ -57,7 +58,7 @@ class AuthEnforcer(Fixture):
         """
         return HTTP 403 if 'application/json' in HTTP_ACCEPT
         else redirects to page"""
-        if REX_APPJSON.search(request.headers.get("accept", "")):
+        if re.search(REGEX_APPJSON, request.headers.get("accept", "")):
             abort(403)
         redirect_next = request.fullpath
         if request.query_string:
