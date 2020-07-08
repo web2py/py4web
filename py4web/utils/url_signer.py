@@ -27,7 +27,7 @@ class URLVerifier(Fixture):
             abort(403)
         try:
             key = self.url_signer.get_url_key(request.fullpath, request.query)
-            jwt.decode(token, key, algorithms=['HS256'])
+            jwt.decode(token, key, algorithms=["HS256"])
             # We remove the signature, not to pollute the request.
             del request.query["_signature"]
         except:
@@ -35,8 +35,14 @@ class URLVerifier(Fixture):
 
 
 class URLSigner(Fixture):
-    def __init__(self, session=None, key=None, variables_to_sign=None,
-                 signing_info=None, lifespan=None):
+    def __init__(
+        self,
+        session=None,
+        key=None,
+        variables_to_sign=None,
+        signing_info=None,
+        lifespan=None,
+    ):
         """
         Signer for URLs.
         :param session: Session.  If a session is not specified, it will use a key
@@ -107,7 +113,7 @@ class URLSigner(Fixture):
         if self.lifespan is not None:
             payload["exp"] = time.time() + self.lifespan
         key = self.get_url_key(url, variables)
-        return jwt.encode(payload, key,  algorithm='HS256').decode('utf-8')
+        return jwt.encode(payload, key, algorithm="HS256").decode("utf-8")
 
     def sign_vars(self, url, variables):
         """Signs a URL, adding to vars (the variables of the URL) a signature."""

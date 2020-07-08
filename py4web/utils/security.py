@@ -9,11 +9,13 @@ def listify(item):
         item = [item]
     return item
 
+
 def match_ip(ip, networks):
     """checks s an ip ('127.0.0.1') is a list of networks (['127.0.0.1/16'])"""
     ip = ipaddress.ip_address(ip)
-    print('networks', networks)
+    print("networks", networks)
     return any(ip in ipaddress.ip_network(network) for network in networks)
+
 
 class CheckHeaders(Fixture):
 
@@ -27,22 +29,24 @@ class CheckHeaders(Fixture):
     - ip address is in the blocked_networks (example ['127.0.0.1/16'])
     """
 
-    def __init__(self,
-                 protocol=None,
-                 same_protocol=True,
-                 same_domain=True,
-                 same_app=True,
-                 allowed_networks=None,
-                 blocked_networks=None):
-        self.protocol = protocol                 
+    def __init__(
+        self,
+        protocol=None,
+        same_protocol=True,
+        same_domain=True,
+        same_app=True,
+        allowed_networks=None,
+        blocked_networks=None,
+    ):
+        self.protocol = protocol
         self.same_protocol = same_protocol
         self.same_domain = same_domain or same_app
         self.same_app = same_app
         self.allowed_networks = listify(allowed_networks)
         self.blocked_networks = listify(blocked_networks)
- 
+
     def split(self, url):
-        parts = url.split('/')
+        parts = url.split("/")
         checked_parts = []
         if self.same_protocol:
             checked_parts.append(parts[0])
@@ -52,22 +56,23 @@ class CheckHeaders(Fixture):
             checked_parts.append(parts[3])
         return checked_parts
 
-    def on_request(self):        
-        print(request.environ['REMOTE_ADDR'])
-        if self.protocol and not request.url.startswith(self.protocol+'://'):
-            raise HTTP(400)            
+    def on_request(self):
+        print(request.environ["REMOTE_ADDR"])
+        if self.protocol and not request.url.startswith(self.protocol + "://"):
+            raise HTTP(400)
 
         if self.blocked_networks is not None:
-            if match_ip(request.environ['REMOTE_ADDR'], self.blocked_networks):
+            if match_ip(request.environ["REMOTE_ADDR"], self.blocked_networks):
                 raise HTTP(400)
 
         if self.allowed_networks is not None:
-            if not match_ip(request.environ['REMOTE_ADDR'], self.allowed_networks):
-                raise HTTP(400) 
+            if not match_ip(request.environ["REMOTE_ADDR"], self.allowed_networks):
+                raise HTTP(400)
 
-        referer = request.environ.get('HTTP_REFERER')
+        referer = request.environ.get("HTTP_REFERER")
         if referer and not self.split(referer) == self.split(request.url):
             raise HTTP(400)
+
 
 class AllowCors(Fixture):
     """
@@ -79,12 +84,19 @@ class AllowCors(Fixture):
     Access-Control-Request-Headers
     """
 
-    def __init__(self, origin='*', headers=['*'], methods=['*'], exposed_headers=[], request_headers=[]):
+    def __init__(
+        self,
+        origin="*",
+        headers=["*"],
+        methods=["*"],
+        exposed_headers=[],
+        request_headers=[],
+    ):
         self.origin = origin
-        self.headers = ', '.join(headers)
-        self.methods = ', '.join(methods)
-        self.exposed_headers = ', '.join(exposed_headers)
-        self.request_headers = ', '.join(request_headers)
+        self.headers = ", ".join(headers)
+        self.methods = ", ".join(methods)
+        self.exposed_headers = ", ".join(exposed_headers)
+        self.request_headers = ", ".join(request_headers)
 
     def on_request(self):
         if self.origin:

@@ -53,7 +53,7 @@ class AuthEnforcer(Fixture):
     def transform(self, output, shared_data):
         return self.auth.transform(output, shared_data)
 
-    def abort_or_redirect(self, page, message=''):
+    def abort_or_redirect(self, page, message=""):
         """
         return HTTP 403 if 'application/json' in HTTP_ACCEPT
         else redirects to page"""
@@ -126,7 +126,7 @@ class Auth(Fixture):
         login_expiration_time=3600,  # seconds
         password_complexity={"entropy": 50},
         block_previous_password_num=None,
-        allowed_actions=['all'],
+        allowed_actions=["all"],
         use_appname_in_redirects=True,
     ):
         """Creates and Auth object responsinble for handling
@@ -159,7 +159,7 @@ class Auth(Fixture):
 
     def transform(self, output, shared_data):
         if self.inject:
-            template_context = shared_data.get('template_context')
+            template_context = shared_data.get("template_context")
             template_context["user"] = self.get_user()
         return output
 
@@ -220,7 +220,13 @@ class Auth(Fixture):
                 )
             if self.block_previous_password_num is not None:
                 auth_fields.append(
-                    Field("past_passwords_hash", "list:string", writable=False, readable=False))
+                    Field(
+                        "past_passwords_hash",
+                        "list:string",
+                        writable=False,
+                        readable=False,
+                    )
+                )
             db.define_table("auth_user", *auth_fields, *self.extra_auth_user_fields)
 
     @property
@@ -341,7 +347,7 @@ class Auth(Fixture):
                     ]
                     return {
                         "allowed_actions": self.allowed_actions,
-                        "plugins": ['local'] + [key for key in self.plugins],
+                        "plugins": ["local"] + [key for key in self.plugins],
                         "fields": fields,
                     }
                 # Otherwise, we assume the user exists.
@@ -373,7 +379,9 @@ class Auth(Fixture):
                             if self.db:
                                 data = self.get_or_register_user(data)
                                 self.session["user"] = {"id": data["id"]}
-                                self.session["recent_activity"] = calendar.timegm(time.gmtime())
+                                self.session["recent_activity"] = calendar.timegm(
+                                    time.gmtime()
+                                )
                                 self.session["uuid"] = str(uuid.uuid1())
                         else:
                             data = self._error("Invalid Credentials")
@@ -382,7 +390,9 @@ class Auth(Fixture):
                         user, error = self.login(**vars)
                         if user:
                             self.session["user"] = {"id": user.id}
-                            self.session["recent_activity"] = calendar.timegm(time.gmtime())
+                            self.session["recent_activity"] = calendar.timegm(
+                                time.gmtime()
+                            )
                             self.session["uuid"] = str(uuid.uuid1())
                             user = {
                                 f.name: user[f.name]
@@ -564,7 +574,9 @@ class Auth(Fixture):
                     }
                 }
             if self.block_previous_password_num:
-                past_pwds = (user.past_passwords_hash or [])[: self.block_previous_password_num]
+                past_pwds = (user.past_passwords_hash or [])[
+                    : self.block_previous_password_num
+                ]
                 if any(new_pwd == old_pwd for old_pwd in past_pwds):
                     return {"errors": {"new_password": "new password was already used"}}
                 else:
@@ -573,7 +585,7 @@ class Auth(Fixture):
         num = db(db.auth_user.id == user.id).update(
             password=new_pwd, last_password_change=datetime.datetime.utcnow()
         )
-        return {'updated': num}
+        return {"updated": num}
 
     def change_email(self, user, new_email, password=None, check=True):
         db = self.db
@@ -672,9 +684,10 @@ class Auth(Fixture):
         self,
         tables,
         archive_db=None,
-        archive_names='%(tablename)s_archive',
-        current_record='current_record',
-        current_record_label=None):
+        archive_names="%(tablename)s_archive",
+        current_record="current_record",
+        current_record_label=None,
+    ):
         """
         Used to enable full record versioning (including auth tables)::
 
@@ -703,15 +716,19 @@ class Auth(Fixture):
             auth.archive does explicitly what enable_record_versioning
             does automatically.
         """
-        current_record_label = current_record_label or \
-            current_record.replace('_', ' ').title()
+        current_record_label = (
+            current_record_label or current_record.replace("_", " ").title()
+        )
         for table in tables:
             fieldnames = table.fields()
-            if ('id' in fieldnames and 
-                'modified_on' in fieldnames and 
-                current_record not in fieldnames):
+            if (
+                "id" in fieldnames
+                and "modified_on" in fieldnames
+                and current_record not in fieldnames
+            ):
                 table._enable_record_versioning(
-                    archive_db = archive_db,
-                    archive_name = archive_names,
-                    current_record = current_record,
-                    current_record_label = current_record_label)
+                    archive_db=archive_db,
+                    archive_name=archive_names,
+                    current_record=current_record,
+                    current_record_label=current_record_label,
+                )

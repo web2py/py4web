@@ -89,7 +89,7 @@ class FormStyleFactory:
                 )
             elif field.type == "datetime":
                 if isinstance(value, str):
-                    value = value.replace(' ', 'T')
+                    value = value.replace(" ", "T")
                 control = INPUT(
                     _value=value, _type="datetime-local", _id=input_id, _name=field.name
                 )
@@ -138,7 +138,7 @@ class FormStyleFactory:
             key = control.name.rstrip("/")
             if key == "input":
                 key += "[type=%s]" % (control["_type"] or "text")
-            control["_class"] = self.classes.get(key, '')
+            control["_class"] = self.classes.get(key, "")
 
             controls["widgets"][field.name] = control
             if error:
