@@ -287,9 +287,10 @@ class Form(object):
         self.signing_info = signing_info
 
         if readonly or request.method == "GET":
-            self._read_vars_from_record(table)
+            if self.record:
+                self.vars = self._read_vars_from_record(table)
         else:
-            post_vars = request.forms
+            post_vars = self.vars = request.forms
             self.submitted = True
             process = False
 
@@ -300,11 +301,14 @@ class Form(object):
                     process = True
             if process:
                 if not post_vars.get("_delete"):
+                    validated_vars = {}
                     for field in self.table:
                         if field.writable and field.readable:
-                            value = post_vars.get(field.name)
+                            original_value = post_vars.get(field.name)
                             record_id = self.record and self.record.get("id")
-                            (value, error) = field.validate(value, record_id)
+                            (value, error) = field.validate(original_value, record_id)
+                            if field.type == 'password' and record_id and value is None:
+                                continue
                             if field.type == "upload":
                                 value = request.files.get(field.name)
                                 delete = post_vars.get("_delete_" + field.name)
@@ -316,7 +320,7 @@ class Form(object):
                                     value = self.record.get(field.name)
                                 else:
                                     value = None
-                            self.vars[field.name] = value
+                            validated_vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
                     if validation:
@@ -326,25 +330,24 @@ class Form(object):
                     if not self.errors:
                         self.accepted = True
                         if dbio:
-                            self.update_or_insert()
+                            self.update_or_insert(validated_vars)
                 elif dbio:
                     self.deleted = True
                     self.record.delete_record()
-            else:
+            elif self.record:
                 # This form should not be processed.  We return the same as for GET.
-                self._read_vars_from_record(table)
+                self.vars = self._read_vars_from_record(table)
         self._sign_form()
 
     def _read_vars_from_record(self, table):
-        if self.record:
-            if isinstance(table, list):
-                # The table is just a list of fields.
-                self.vars = {field.name: self.record.get(field.name) for field in table}
-            else:
-                self.vars = {
-                    name: table[name].formatter(self.record[name])
-                    for name in table.fields
-                    if name in self.record
+        if isinstance(table, list):
+            # The table is just a list of fields.
+            return {field.name: self.record.get(field.name) for field in table}
+        else:
+            return {
+                name: table[name].formatter(self.record[name])
+                for name in table.fields
+                if name in self.record
                 }
 
     def _get_key(self):
@@ -384,22 +387,23 @@ class Form(object):
         except:
             return False
 
-    def update_or_insert(self):
+    def update_or_insert(self, validated_vars):
         if self.record:
-            self.record.update_record(**self.vars)
+            self.record.update_record(**validated_vars)
         else:
             # warning, should we really insert if record
-            self.vars["id"] = self.table.insert(**self.vars)
+            self.vars["id"] = self.table.insert(**validated_vars)
 
     def clear(self):
-        self.vars.clear()
         self.errors.clear()
-        for field in self.table:
-            self.vars[field.name] = field.default
+        if not self.record and not self.keep_values:
+            self.vars.clear()
+            for field in self.table:
+                self.vars[field.name] = field.default
 
     def helper(self):
-        if self.accepted and not self.keep_values:
-            self.vars.clear()
+        if self.accepted:
+            self.clear()
         if not self.cached_helper:
             helper = self.formstyle(
                 self.table, self.vars, self.errors, self.readonly, self.deletable
