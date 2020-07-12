@@ -2,7 +2,7 @@ import math
 import urllib.parse
 
 from pydal.restapi import RestAPI, Policy
-from yatl.helpers import TABLE, TR, TH, TD, DIV, A, I, SPAN, INPUT, SCRIPT
+from yatl.helpers import TABLE, TR, TH, TD, DIV, A, I, SPAN, INPUT, SCRIPT, UL, LI
 
 from py4web import request, HTTP
 from py4web.utils.form import Form
@@ -29,7 +29,7 @@ class Grid:
        grid.renderers['name'] = lambda name: SPAN(name, _class='name')
        return dict(form=grid.make())
     """
-    
+
     def __init__(
         self,
         table,
@@ -75,34 +75,30 @@ class Grid:
                 raise HTTP(404)
             record = db(query)(table.id == id).select().first() if id else None
             form = Form(table, record, deletable=self.deletable, **self.form_attributes)
+            form.action = (
+                request.url.split("?")[0] + "?" + urllib.parse.urlencode(request.query)
+            )
+            del request.query["id"]
             if form.deleted:
                 message = T("Record deleted")
             elif form.accepted:
                 message = T("Record created") if not id else T("Record Saved")
             else:
-                query = dict(request.query)
-                query["id"] = id
-                form.action = (
-                    request.url.split("?")[0] + "?" + urllib.parse.urlencode(query)
-                )
                 return DIV(self.header(id), form, _class="py4web-grid")
         else:
             message = ""
+        id = None
         data = self.restapi("GET", self.table._tablename, None, request.query)
         items = data.get("items", [])
-        count = data.get("count") or self.db(self.query).count()
+        count = data.get("count") or self.db(self.query or table.id > 0).count()
         table = TABLE(_class="table")
-        if items:
-            table.append(TR(*[TH(self.sortlink(key)) for key in items[0].keys()]))
-            table.append(TR(*[TH(self.filterlink(key)) for key in items[0].keys()]))
-            for item in items:
-                table.append(
-                    TR(*[TD(self.render(key, value)) for key, value in item.items()])
-                )
-        else:
-            fields = self.fields
-            table.append(TR(*[TH(self.sortlink(key)) for key in self.fields]))
-            table.append(TR(*[TH(self.filterlink(key)) for key in self.fields]))
+        fields = items[0].keys() if items else self.fields
+        table.append(TR(*[TH(self.sortlink(key)) for key in fields]))
+        table.append(TR(*[TH(self.filterlink(key)) for key in fields]))
+        for item in items:
+            table.append(
+                TR(*[TD(self.render(key, value)) for key, value in item.items()])
+            )
         header = self.header(id, message)
         footer = self.footer(
             count, safeint(request.query.get("@offset", 0)), len(items)
@@ -111,6 +107,16 @@ class Grid:
 
     def render(self, key, value):
         """renders a value"""
+        print(key, value, type(value))
+        if isinstance(value, list):
+            return UL(*[LI(self.render(key, item)) for item in value])
+        if isinstance(value, dict):
+            return TABLE(
+                *[
+                    TR(TH(k, ":"), TD(self.render(key + "." + k, v)))
+                    for k, v in value.items()
+                ]
+            )
         return self.renderers.get(key, lambda value: value)(value)
 
     def idlink(self, id):
@@ -120,9 +126,24 @@ class Grid:
         url = request.url.split("?")[0] + "?" + urllib.parse.urlencode(query)
         return A(id, _class="button", _href=url)
 
+    def is_simple_field(self, key):
+        FIELD_TYPES = [
+            "string",
+            "integer",
+            "float",
+            "bool",
+            "decimal",
+            "time",
+            "date",
+            "datetime",
+        ]
+        return key in self.table.fields and self.table[key].type in FIELD_TYPES
+
     def sortlink(self, key):
         """returns the link to sort by key"""
         label = self.labels.get(key, key)
+        if not self.is_simple_field(key):
+            return label
         order = request.query.get("@order")
         if order == key:
             new_order, caret = "~" + key, "▼"
@@ -134,6 +155,8 @@ class Grid:
 
     def filterlink(self, key):
         """creates an input to filter by key"""
+        if not self.is_simple_field(key):
+            return ""
         return INPUT(_id="py4web-grid-filter-" + key, _class="py4web-grid-filter")
 
     def url(self, page, order=None):
