@@ -3,6 +3,7 @@ import jwt
 import time
 import uuid
 from py4web import request, Session
+from pydal.validators import Validator
 from yatl.helpers import (
     A,
     TEXTAREA,
@@ -18,6 +19,19 @@ from yatl.helpers import (
     P,
     XML,
 )
+
+def get_options(validators):
+    options = None
+    if validators:
+        if not isinstance(validators, (list, tuple)):
+            validators = [validators]
+        for item in validators:
+            if hasattr(item, 'options'):
+                options = item.options
+                break
+        if callable(options):
+            options = options()
+    return options
 
 
 class FormStyleFactory:
@@ -115,16 +129,16 @@ class FormStyleFactory:
                         )
                     )
                     control.append("(check to remove)")
-            elif hasattr(field.requires, "options"):
+            elif get_options(field.requires) is not None:
                 multiple = field.type.startswith("list:")
                 value = list(map(str, value if isinstance(value, list) else [value]))
-                options = [
+                option_tags = [
                     OPTION(v, _value=k, _selected=(not k is None and k in value))
-                    for k, v in field.requires.options()
-                ]
+                    for k, v in get_options(field.requires)
+                    ]
                 control = SELECT(
-                    *options, _id=input_id, _name=field.name, _multiple=multiple
-                )
+                    *option_tags, _id=input_id, _name=field.name, _multiple=multiple
+                     )
             else:
                 field_type = "password" if field.type == "password" else "text"
                 control = INPUT(
