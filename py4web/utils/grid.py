@@ -16,6 +16,40 @@ def safeint(s):
     except ValueError:
         return None
 
+class GuessingRenderers:
+    @staticmethod
+    def hide_null(key, value, rec):
+        if value is None:
+            return ''
+    @staticmethod
+    def boolean_renderer(key, value, rec):
+        if value is True:
+            return INPUT(_type='checkbox',_readonly=True,_checked=True)
+    @staticmethod
+    def link_renderer(key, value, rec):
+        if isinstance(value, str) and (value.startswith('http://') or value.startswith('https://')):
+            return A('link',_href=value,_title=value)
+    @staticmethod
+    def list_renderer(key, value, rec):
+        if isinstance(value, list):
+            return UL(*[LI(rec(key, item, rec)) for item in value])
+    @staticmethod
+    def dict_renderer(key, value, rec):
+        if isinstance(value, dict):
+            return TABLE(
+                *[
+                    TR(TH(k, ":"), TD(rec(key + "." + k, v, rec)))
+                    for k, v in value.items()
+                ]
+            )
+    @staticmethod
+    def html_renderer(key, value, rec):
+        if isinstance(value, str) and value[:1] == '<' and value.rstrip()[-1] == '>':
+            return DIV(XML(value,sanitize=True), _style="height:50px;overflow:auto")
+    @staticmethod
+    def large_text_renderer(key, value, rec):
+        if isinstance(value, str) and len(value)>14:
+            return SPAN(value[:10]+'...', _title=value)
 
 class Grid:
 
@@ -61,6 +95,14 @@ class Grid:
         self.restapi = RestAPI(self.db, self.policy)
         self.labels = {}
         self.renderers = {"id": self.idlink}
+        self.guessing_renderers = [
+            GuessingRenderers.hide_null,
+            GuessingRenderers.boolean_renderer,
+            GuessingRenderers.link_renderer,
+            GuessingRenderers.list_renderer,
+            GuessingRenderers.dict_renderer,
+            GuessingRenderers.html_renderer,
+            GuessingRenderers.large_text_renderer]
         self.form_attributes = {}
         self.T = lambda value: value
         self.denormalize = {}
@@ -117,15 +159,10 @@ class Grid:
         """renders a value"""
         if key in self.renderers:
             return self.renderers[key](value)
-        if isinstance(value, list):
-            return UL(*[LI(self.render(key, item)) for item in value])
-        if isinstance(value, dict):
-            return TABLE(
-                *[
-                    TR(TH(k, ":"), TD(self.render(key + "." + k, v)))
-                    for k, v in value.items()
-                ]
-            )
+        for guess in self.guessing_renderers:
+            rendered = guess(key, value, self.render)
+            if rendered is not None:
+                return rendered
         return value
 
     def idlink(self, id):
