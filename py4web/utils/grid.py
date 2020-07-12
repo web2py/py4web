@@ -174,10 +174,11 @@ class Grid:
 
     def is_simple_field(self, key):
         FIELD_TYPES = [
+            'id',
             "string",
             "integer",
             "float",
-            "bool",
+            "boolean",
             "decimal",
             "time",
             "date",
