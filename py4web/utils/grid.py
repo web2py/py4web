@@ -63,6 +63,7 @@ class Grid:
         self.renderers = {"id": self.idlink}
         self.form_attributes = {}
         self.T = lambda value: value
+        self.denormalize = {}
 
     def make(self):
         """makes the grid, must be called inside an action"""
@@ -87,6 +88,13 @@ class Grid:
                 return DIV(self.header(id), form, _class="py4web-grid")
         else:
             message = ""
+
+        if self.denormalize:
+            lookup = []
+            for k, fs in self.denormalize.items():
+                lookup.append('%s!:%s[%s]' % (k, k, ','.join(fs)))
+            request.query['@lookup'] = ','.join(lookup)
+
         id = None
         data = self.restapi("GET", self.table._tablename, None, request.query)
         items = data.get("items", [])
@@ -107,7 +115,8 @@ class Grid:
 
     def render(self, key, value):
         """renders a value"""
-        print(key, value, type(value))
+        if key in self.renderers:
+            return self.renderers[key](value)
         if isinstance(value, list):
             return UL(*[LI(self.render(key, item)) for item in value])
         if isinstance(value, dict):
@@ -117,7 +126,7 @@ class Grid:
                     for k, v in value.items()
                 ]
             )
-        return self.renderers.get(key, lambda value: value)(value)
+        return value
 
     def idlink(self, id):
         """returns the link to edit an id"""
