@@ -60,7 +60,7 @@ class FormStyleFactory:
     def produce(self, table, vars, errors, readonly, deletable, classes=None):
         self.classes.update(classes or {})
         form = FORM(
-            _method="POST", _action=request.path, _enctype="multipart/form-data"
+            _method="POST", _action=request.url, _enctype="multipart/form-data"
         )
         controls = dict(
             widgets=dict(),
@@ -167,7 +167,8 @@ class FormStyleFactory:
                     _class=class_outer,
                 )
             )
-
+            if 'id' in vars:
+                form.append(INPUT(_name='id',_value=vars['id'],_hidden=True))
         if deletable:
             controls["delete"] = INPUT(
                 _type="checkbox",
@@ -299,6 +300,7 @@ class Form(object):
         self.csrf_session = csrf_session
         self.lifespan = lifespan
         self.signing_info = signing_info
+        self.action = None
 
         if readonly or request.method == "GET":
             if self.record:
@@ -422,6 +424,8 @@ class Form(object):
             helper = self.formstyle(
                 self.table, self.vars, self.errors, self.readonly, self.deletable
             )
+            if self.action:
+                helper['_action'] = self.action
             if self.form_name:
                 helper["controls"]["hidden_widgets"]["formname"] = INPUT(
                     _type="hidden", _name="_formname", _value=self.form_name
