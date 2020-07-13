@@ -142,7 +142,7 @@ class Grid:
         items = data.get("items", [])
         count = data.get("count") or self.db(self.query or table.id > 0).count()
         table = TABLE(_class="table")
-        fields = items[0].keys() if items else self.fields
+        fields = items[0].keys() if items else [f.rsplit('.',1)[0] for f in request.query if f[:1]!='@']
         table.append(TR(*[TH(self.sortlink(key)) for key in fields]))
         table.append(TR(*[TH(self.filterlink(key)) for key in fields]))
         for item in items:
@@ -184,7 +184,15 @@ class Grid:
             "date",
             "datetime",
         ]
-        return key in self.table.fields and self.table[key].type in FIELD_TYPES
+        if not '.' in key:
+            return key in self.table.fields and self.table[key].type in FIELD_TYPES
+        elif key.count('.') == 1:
+            fieldname1, fieldname2 = key.split('.')
+            field1 = self.table[fieldname1]
+            tablename2 = field1.type.split(' ')[1].split('.')[0]
+            field2 = self.db[tablename2][fieldname2]
+            return field2.type in FIELD_TYPES
+        return False
 
     def sortlink(self, key):
         """returns the link to sort by key"""
@@ -265,19 +273,20 @@ class Grid:
     var url = window.location.href;
     for (var i=0;i<filters.length;i++) {
        var name = filters[i].id.substr("py4web-grid-filter-".length);
-       var matches = url.match(new RegExp("\\b" + name + "\\.\\w+=[^&]+", "gi"));
+       var matches = url.match(new RegExp("\\b" + name.replace('.','\\.') + "\\.\\w+=[^&]+", "gi"));
        if (matches && matches.length>0) {
           var parts = matches[0].split('=');
-          console.log(parts[0].split('.')[1]);
-          var op = {'lt':'<', 'le':'<=', 'eq':'', 'ge':'>=', 'gt':'>', 'ne':'!='}[parts[0].split('.')[1]]||'';
+          var subparts = parts[0].split('.');
+          var op = {'lt':'<', 'le':'<=', 'eq':'', 'ge':'>=', 'gt':'>', 'ne':'!='}[subparts[subparts.length-1]]||'';
           filters[i].value = op + decodeURIComponent(parts[1]);
        }
-       filters[i].onkeyup = (function(elem, name){return function(event){ 
+       filters[i].onkeyup = filters[i].onblur = 
+         (function(elem, name){return function(event){ 
          if(event.keyCode==13) {
            var value;
            var url = window.location.href;
            url = url.replace(new RegExp("\\b@offset=[^&]+", "gi"), "");
-           url = url.replace(new RegExp("\\b" + name + "\\.\\w+=[^&]+", "gi"), "");
+           url = url.replace(new RegExp("\\b" + name.replace('.','\\.') + "\\.\\w+=[^&]+", "gi"), "");
            if(elem.value.substr(0,2) == '!=') {op='ne'; value=elem.value.substr(2);}
            else if(elem.value.substr(0,2) == '<=') {op='le'; value=elem.value.substr(2);}
            else if(elem.value.substr(0,2) == '>=') {op='ge'; value=elem.value.substr(2);}
