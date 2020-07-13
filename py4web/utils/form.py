@@ -316,12 +316,12 @@ class Form(object):
                 if self._verify_form(post_vars):
                     process = True
             if process:
+                record_id = self.record and self.record.get("id")
                 if not post_vars.get("_delete"):
                     validated_vars = {}
                     for field in self.table:
-                        if field.writable and field.readable:
+                        if field.writable and field.readable and field.type != 'id':
                             original_value = post_vars.get(field.name)
-                            record_id = self.record and self.record.get("id")
                             (value, error) = field.validate(original_value, record_id)
                             if field.type == 'password' and record_id and value is None:
                                 continue
