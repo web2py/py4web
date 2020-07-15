@@ -14,11 +14,6 @@
       <span style="color:#ff0000">[[= form.custom['errors']['job'] if 'job' in form.custom['errors'] else '']]</span>
     </div>
     <div class="column">
-      <label>Resume:</label>
-      [[= form.custom['widgets']['resume'] ]]
-      <span style="color:#ff0000">[[= form.custom['errors']['resume'] if 'resume' in form.custom['errors'] else '']]</span>
-    </div>
-    <div class="column">
       <div class="buttons is-centered">
         [[ form.custom['submit']['_class'] = 'button is-info is-large' ]]
         [[= form.custom['submit'] ]]

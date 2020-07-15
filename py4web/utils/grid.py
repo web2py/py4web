@@ -32,13 +32,13 @@ class GuessingRenderers:
     @staticmethod
     def list_renderer(key, value, rec):
         if isinstance(value, list):
-            return UL(*[LI(rec(key, item, rec)) for item in value])
+            return UL(*[LI(rec(key, item)) for item in value])
     @staticmethod
     def dict_renderer(key, value, rec):
         if isinstance(value, dict):
             return TABLE(
                 *[
-                    TR(TH(k, ":"), TD(rec(key + "." + k, v, rec)))
+                    TR(TH(k, ":"), TD(rec(key + "." + k, v)))
                     for k, v in value.items()
                 ]
             )
@@ -107,6 +107,9 @@ class Grid:
         self.T = lambda value: value
         self.denormalize = {}
 
+    def xml(self):
+        return self.make().xml()
+
     def make(self):
         """makes the grid, must be called inside an action"""
 
@@ -136,11 +139,11 @@ class Grid:
             for k, fs in self.denormalize.items():
                 lookup.append('%s!:%s[%s]' % (k, k, ','.join(fs)))
             request.query['@lookup'] = ','.join(lookup)
-
+        request.query['@count'] = 'true'
         id = None
         data = self.restapi("GET", self.table._tablename, None, request.query)
         items = data.get("items", [])
-        count = data.get("count") or self.db(self.query or table.id > 0).count()
+        count = data.get("count", 0)
         table = TABLE(_class="table")
         fields = items[0].keys() if items else [f.rsplit('.',1)[0] for f in request.query if f[:1]!='@']
         table.append(TR(*[TH(self.sortlink(key)) for key in fields]))
@@ -172,32 +175,38 @@ class Grid:
         url = request.url.split("?")[0] + "?" + urllib.parse.urlencode(query)
         return A(id, _class="button", _href=url)
 
-    def is_simple_field(self, key):
-        FIELD_TYPES = [
-            'id',
-            "string",
-            "integer",
-            "float",
-            "boolean",
-            "decimal",
-            "time",
-            "date",
-            "datetime",
-        ]
+    FIELD_TYPES = [
+        'id',
+        "string",
+        "integer",
+        "float",
+        "boolean",
+        "decimal",
+        "time",
+        "date",
+        "datetime",
+    ]
+
+    def is_searchable(self, key):
         if not '.' in key:
-            return key in self.table.fields and self.table[key].type in FIELD_TYPES
+            return key in self.table.fields and self.table[key].type in self.FIELD_TYPES
         elif key.count('.') == 1:
             fieldname1, fieldname2 = key.split('.')
             field1 = self.table[fieldname1]
             tablename2 = field1.type.split(' ')[1].split('.')[0]
             field2 = self.db[tablename2][fieldname2]
-            return field2.type in FIELD_TYPES
+            return field2.type in self.FIELD_TYPES
+        return False
+
+    def is_sortable(self, key):
+        if not '.' in key:
+            return key in self.table.fields and self.table[key].type in self.FIELD_TYPES
         return False
 
     def sortlink(self, key):
         """returns the link to sort by key"""
         label = self.labels.get(key, key)
-        if not self.is_simple_field(key):
+        if not self.is_sortable(key):
             return label
         order = request.query.get("@order")
         if order == key:
@@ -210,7 +219,7 @@ class Grid:
 
     def filterlink(self, key):
         """creates an input to filter by key"""
-        if not self.is_simple_field(key):
+        if not self.is_searchable(key):
             return ""
         return INPUT(_id="py4web-grid-filter-" + key, _class="py4web-grid-filter")
 
