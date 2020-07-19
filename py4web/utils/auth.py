@@ -698,7 +698,7 @@ class Auth(Fixture):
             db.define_table(
                 'mything',
                 Field('name'),
-                auth.signature())
+                auth.signature)
             auth.enable_record_versioning(tables=db)
 
         tables can be the db (all table) or a list of tables.
