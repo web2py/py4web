@@ -2,6 +2,7 @@ import os
 from py4web import action, request, abort, redirect, URL, Field
 from yatl.helpers import A
 from py4web.utils.form import Form, FormStyleBulma
+from py4web.utils.grid import Grid
 from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1, HTML, BODY, A
@@ -58,11 +59,22 @@ def custom_form(id=None):
     rows = db(db.person).select()
     return dict(form=form, rows=rows)
 
+# exposed as /examples/htmlgrid
+@action("html_grid", method=["GET", "POST"])
+@action.uses("js_grid.html")
+def example_html_grid():
+    grid=Grid(db.superhero)
+    grid.policy.set('person')
+    grid.policy.set('superpower')
+    grid.policy.set('tag')
+    grid.denormalize['real_identity'] = ['name']
+    grid.denormalize['superhero.tag.superpower'] = ['description']
+    return dict(grid=grid)
 
-# exposed as /examples/grid
-@action("grid")
-@action.uses("grid.html")
-def example_grid():
+# exposed as /examples/ajaxgrid
+@action("ajax_grid")
+@action.uses("ajax_grid.html")
+def example_ajax_grid():
     return dict(grid=publisher.grid(db.person))
 
 

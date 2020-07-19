@@ -1,8 +1,10 @@
 bottle >= 0.12
+click
 requests
+PyJWT>=1.7.1
 threadsafevariable
-pyjwt >= 1.7.1
 pluralize >= 0.1.5
-yatl >= 20200329.1
-pydal >= 20200404.1
+yatl >= 20200430.1
+pydal >= 20200531.3
+watchgod >= 0.6
 mysqlclient

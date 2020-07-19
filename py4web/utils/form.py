@@ -3,6 +3,7 @@ import jwt
 import time
 import uuid
 from py4web import request, Session
+from pydal.validators import Validator
 from yatl.helpers import (
     A,
     TEXTAREA,
@@ -19,120 +20,178 @@ from yatl.helpers import (
     XML,
 )
 
+def get_options(validators):
+    options = None
+    if validators:
+        if not isinstance(validators, (list, tuple)):
+            validators = [validators]
+        for item in validators:
+            if hasattr(item, 'options'):
+                options = item.options
+                break
+        if callable(options):
+            options = options()
+    return options
 
-def FormStyleDefault(table, vars, errors, readonly, deletable, classes=None):
-    form = FORM(_method="POST", _action=request.path, _enctype="multipart/form-data")
-    controls = dict(
-        widgets=dict(),
-        hidden_widgets=dict(),
-        errors=dict(),
-        begin=XML(form.xml().split("</form>")[0]),
-        end=XML("</form>"),
-    )
 
-    classes = classes or {}
-    class_label = classes.get("label", "")
-    class_outer = classes.get("outer", "")
-    class_inner = classes.get("inner", "")
-    class_error = classes.get("error", "")
-    class_info = classes.get("info", "")
+class FormStyleFactory:
+    def __init__(self):
+        self.classes = {
+            "outer": "",
+            "inner": "",
+            "label": "",
+            "info": "",
+            "error": "error",
+            "submit": "",
+            "input": "",
+            "input[type=text]": "",
+            "input[type=date]": "",
+            "input[type=time]": "",
+            "input[type=datetime-local]": "",
+            "input[type=radio]": "",
+            "input[type=checkbox]": "",
+            "input[type=submit]": "",
+            "input[type=password]": "",
+            "input[type=file]": "",
+            "select": "",
+            "textarea": "",
+        }
 
-    for field in table:
+    def produce(self, table, vars, errors, readonly, deletable, classes=None):
+        self.classes.update(classes or {})
+        form = FORM(
+            _method="POST", _action=request.url, _enctype="multipart/form-data"
+        )
+        controls = dict(
+            widgets=dict(),
+            hidden_widgets=dict(),
+            errors=dict(),
+            begin=XML(form.xml().split("</form>")[0]),
+            end=XML("</form>"),
+        )
+        class_label = self.classes["label"]
+        class_outer = self.classes["outer"]
+        class_inner = self.classes["inner"]
+        class_error = self.classes["error"]
+        class_info = self.classes["info"]
 
-        input_id = "%s_%s" % (field.tablename, field.name)
-        value = vars.get(field.name)
-        error = errors.get(field.name)
-        field_class = field.type.split()[0].replace(":", "-")
+        for field in table:
 
-        if not field.readable:
-            continue
-        if not readonly and not field.writable:
-            continue
-        if field.type == "blob":  # never display blobs (mistake?)
-            continue
-        if field.type == "id" and value is None:
-            continue
-        if readonly or field.type == "id":
-            control = DIV(field.represent and field.represent(value) or value or "")
-        elif field.widget:
-            control = field.widget(table, value)
-        elif field.type == "text":
-            control = TEXTAREA(value or "", _id=input_id, _name=field.name)
-        elif field.type == "boolean":
-            control = INPUT(
-                _type="checkbox",
-                _id=input_id,
-                _name=field.name,
-                _value="ON",
-                _checked=value,
-            )
-        elif field.type == "upload":
-            control = DIV(INPUT(_type="file", _id=input_id, _name=field.name))
-            if value:
-                control.append(A("download", _href=field.download_url(value)))
-                control.append(
-                    INPUT(_type="checkbox", _value="ON", _name="_delete_" + field.name)
+            input_id = "%s_%s" % (field.tablename, field.name)
+            value = vars.get(field.name, field.default)
+            error = errors.get(field.name)
+            field_class = field.type.split()[0].replace(":", "-")
+
+            if not field.readable:
+                continue
+            if not readonly and not field.writable:
+                continue
+            if field.type == "blob":  # never display blobs (mistake?)
+                continue
+            if field.type == "id" and value is None:
+                field.writable = False
+                continue
+            if readonly or field.type == "id":
+                control = DIV(field.represent and field.represent(value) or value or "")
+            elif field.widget:
+                control = field.widget(table, value)
+            elif field.type == "text":
+                control = TEXTAREA(value or "", _id=input_id, _name=field.name)
+            elif field.type == "date":
+                control = INPUT(
+                    _value=value, _type="date", _id=input_id, _name=field.name
                 )
-                control.append("(check to remove)")
-        elif hasattr(field.requires, "options"):
-            multiple = field.type.startswith("list:")
-            value = list(map(str, value if isinstance(value, list) else [value]))
-            options = [
-                OPTION(v, _value=k, _selected=(not k is None and k in value))
-                for k, v in field.requires.options()
-            ]
-            control = SELECT(
-                *options, _id=input_id, _name=field.name, _multiple=multiple
-            )
-        else:
-            field_type = "password" if field.type == "password" else "text"
-            control = INPUT(
-                _type=field_type,
-                _id=input_id,
-                _name=field.name,
-                _value=value,
-                _class=field_class,
-            )
+            elif field.type == "datetime":
+                if isinstance(value, str):
+                    value = value.replace(" ", "T")
+                control = INPUT(
+                    _value=value, _type="datetime-local", _id=input_id, _name=field.name
+                )
+            elif field.type == "time":
+                control = INPUT(
+                    _value=value, _type="time", _id=input_id, _name=field.name
+                )
+            elif field.type == "boolean":
+                control = INPUT(
+                    _type="checkbox",
+                    _id=input_id,
+                    _name=field.name,
+                    _value="ON",
+                    _checked=value,
+                )
+            elif field.type == "upload":
+                control = DIV(INPUT(_type="file", _id=input_id, _name=field.name))
+                if value:
+                    control.append(A("download", _href=field.download_url(value)))
+                    control.append(
+                        INPUT(
+                            _type="checkbox", _value="ON", _name="_delete_" + field.name
+                        )
+                    )
+                    control.append("(check to remove)")
+            elif get_options(field.requires) is not None:
+                multiple = field.type.startswith("list:")
+                value = list(map(str, value if isinstance(value, list) else [value]))
+                option_tags = [
+                    OPTION(v, _value=k, _selected=(not k is None and k in value))
+                    for k, v in get_options(field.requires)
+                    ]
+                control = SELECT(
+                    *option_tags, _id=input_id, _name=field.name, _multiple=multiple
+                     )
+            else:
+                field_type = "password" if field.type == "password" else "text"
+                control = INPUT(
+                    _type=field_type,
+                    _id=input_id,
+                    _name=field.name,
+                    _value=value,
+                    _class=field_class,
+                )
 
-        key = control.name.rstrip("/")
-        if key == "input":
-            key += "[type=%s]" % (control["_type"] or "text")
-        control["_class"] = classes.get(key, "")
+            key = control.name.rstrip("/")
+            if key == "input":
+                key += "[type=%s]" % (control["_type"] or "text")
+            control["_class"] = self.classes.get(key, "")
 
-        controls["widgets"][field.name] = control
-        if error:
-            controls["errors"][field.name] = error
+            controls["widgets"][field.name] = control
+            if error:
+                controls["errors"][field.name] = error
 
-        form.append(
-            DIV(
-                LABEL(field.label, _for=input_id, _class=class_label),
-                DIV(control, _class=class_inner),
-                P(error, _class=class_error) if error else "",
-                P(field.comment or "", _class=class_info),
-                _class=class_outer,
+            form.append(
+                DIV(
+                    LABEL(field.label, _for=input_id, _class=class_label),
+                    DIV(control, _class=class_inner),
+                    P(error, _class=class_error) if error else "",
+                    P(field.comment or "", _class=class_info),
+                    _class=class_outer,
+                )
             )
+            if 'id' in vars:
+                form.append(INPUT(_name='id',_value=vars['id'],_hidden=True))
+        if deletable:
+            controls["delete"] = INPUT(
+                _type="checkbox",
+                _value="ON",
+                _name="_delete",
+                _class=self.classes["input[type=checkbox]"],
+            )
+            form.append(
+                DIV(
+                    DIV(controls["delete"], _class=class_inner,),
+                    P("check to delete", _class="help"),
+                    _class=class_outer,
+                )
+            )
+        controls["submit"] = INPUT(
+            _type="submit", _value="Submit", _class=self.classes["input[type=submit]"],
         )
+        submit = DIV(DIV(controls["submit"], _class=class_inner,), _class=class_outer,)
+        form.append(submit)
+        return dict(form=form, controls=controls)
 
-    if deletable:
-        controls["delete"] = INPUT(
-            _type="checkbox",
-            _value="ON",
-            _name="_delete",
-            _class=classes.get("input[type=checkbox]"),
-        )
-        form.append(
-            DIV(
-                DIV(controls["delete"], _class=class_inner,),
-                P("check to delete", _class="help"),
-                _class=class_outer,
-            )
-        )
-    controls["submit"] = INPUT(
-        _type="submit", _value="Submit", _class=classes.get("input[type=submit]"),
-    )
-    submit = DIV(DIV(controls["submit"], _class=class_inner,), _class=class_outer,)
-    form.append(submit)
-    return dict(form=form, controls=controls)
+
+FormStyleDefault = FormStyleFactory().produce
 
 
 def FormStyleBulma(table, vars, errors, readonly, deletable):
@@ -145,9 +204,14 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
         "submit": "button",
         "input": "input",
         "input[type=text]": "input",
+        "input[type=date]": "input",
+        "input[type=time]": "input",
+        "input[type=datetime-local]": "input",
         "input[type=radio]": "radio",
         "input[type=checkbox]": "checkbox",
         "input[type=submit]": "button",
+        "input[type=password]": "password",
+        "input[type=file]": "file",
         "select": "select",
         "textarea": "textarea",
     }
@@ -236,11 +300,13 @@ class Form(object):
         self.csrf_session = csrf_session
         self.lifespan = lifespan
         self.signing_info = signing_info
+        self.action = None
 
         if readonly or request.method == "GET":
-            self._read_vars_from_record(table)
+            if self.record:
+                self.vars = self._read_vars_from_record(table)
         else:
-            post_vars = request.forms
+            post_vars = self.vars = request.forms
             self.submitted = True
             process = False
 
@@ -250,12 +316,15 @@ class Form(object):
                 if self._verify_form(post_vars):
                     process = True
             if process:
+                record_id = self.record and self.record.get("id")
                 if not post_vars.get("_delete"):
+                    validated_vars = {}
                     for field in self.table:
-                        if field.writable and field.readable:
-                            value = post_vars.get(field.name)
-                            record_id = self.record and self.record.get("id")
-                            (value, error) = field.validate(value, record_id)
+                        if field.writable and field.readable and field.type != 'id':
+                            original_value = post_vars.get(field.name)
+                            (value, error) = field.validate(original_value, record_id)
+                            if field.type == 'password' and record_id and value is None:
+                                continue
                             if field.type == "upload":
                                 value = request.files.get(field.name)
                                 delete = post_vars.get("_delete_" + field.name)
@@ -267,7 +336,7 @@ class Form(object):
                                     value = self.record.get(field.name)
                                 else:
                                     value = None
-                            self.vars[field.name] = value
+                            validated_vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
                     if validation:
@@ -277,25 +346,24 @@ class Form(object):
                     if not self.errors:
                         self.accepted = True
                         if dbio:
-                            self.update_or_insert()
+                            self.update_or_insert(validated_vars)
                 elif dbio:
                     self.deleted = True
                     self.record.delete_record()
-            else:
+            elif self.record:
                 # This form should not be processed.  We return the same as for GET.
-                self._read_vars_from_record(table)
+                self.vars = self._read_vars_from_record(table)
         self._sign_form()
 
     def _read_vars_from_record(self, table):
-        if self.record:
-            if isinstance(table, list):
-                # The table is just a list of fields.
-                self.vars = {field.name: self.record.get(field.name) for field in table}
-            else:
-                self.vars = {
-                    name: table[name].formatter(self.record[name])
-                    for name in table.fields
-                    if name in self.record
+        if isinstance(table, list):
+            # The table is just a list of fields.
+            return {field.name: self.record.get(field.name) for field in table}
+        else:
+            return {
+                name: table[name].formatter(self.record[name])
+                for name in table.fields
+                if name in self.record
                 }
 
     def _get_key(self):
@@ -335,26 +403,29 @@ class Form(object):
         except:
             return False
 
-    def update_or_insert(self):
+    def update_or_insert(self, validated_vars):
         if self.record:
-            self.record.update_record(**self.vars)
+            self.record.update_record(**validated_vars)
         else:
             # warning, should we really insert if record
-            self.vars["id"] = self.table.insert(**self.vars)
+            self.vars["id"] = self.table.insert(**validated_vars)
 
     def clear(self):
-        self.vars.clear()
         self.errors.clear()
-        for field in self.table:
-            self.vars[field.name] = field.default
+        if not self.record and not self.keep_values:
+            self.vars.clear()
+            for field in self.table:
+                self.vars[field.name] = field.default
 
     def helper(self):
-        if self.accepted and not self.keep_values:
-            self.vars.clear()
+        if self.accepted:
+            self.clear()
         if not self.cached_helper:
             helper = self.formstyle(
                 self.table, self.vars, self.errors, self.readonly, self.deletable
             )
+            if self.action:
+                helper['_action'] = self.action
             if self.form_name:
                 helper["controls"]["hidden_widgets"]["formname"] = INPUT(
                     _type="hidden", _name="_formname", _value=self.form_name
