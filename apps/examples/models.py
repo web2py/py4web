@@ -11,7 +11,6 @@ db.define_table(
     "person",
     Field("name", requires=IS_NOT_IN_DB(db, "person.name"), label=T("name")),
     Field("job", requires=IS_NOT_EMPTY(), label=T("job")),
-    Field("resume", "json", label=T('resume'), default=[]),
     format="%(name)s",
 )
 
@@ -37,18 +36,6 @@ if not db(db.person).count():
     db.person.insert(
         name="Clark Kent",
         job="Journalist",
-        resume=[
-            {
-                "start_date": "2019-12-20",
-                "end_date": "2020-01-20",
-                "company": "Save The World Srl",
-            },
-            {
-                "start_date": "2020-02-01",
-                "end_date": "2020-03-15",
-                "company": "SuperHeroes Services Srl",
-            },
-        ],
     )
     db.person.insert(name="Peter Park", job="Photographer")
     db.person.insert(name="Bruce Wayne", job="CEO")

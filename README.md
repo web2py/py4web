@@ -18,7 +18,7 @@ open http://localhost:8000/todo/index
 
 ```
 git clone https://github.com/web2py/py4web.git
-cd py4web 
+cd py4web
 python3 -m pip install -r requirements.txt
 ./py4web.py setup apps
 ./py4web.py set-password
@@ -84,10 +84,10 @@ Also notice when installing from source the content of py4web/assets is missing 
 - gunicorn (done)
 - bottle (done)
 
-## Storing _dashboard password 
+## Storing _dashboard password
 
-When py4web starts it asks for a _dashboard password and stores its pdkdf2 hash 
-in password.txt, in the working folder. It will not ask again unless the file is deleted. 
+When py4web starts it asks for a _dashboard password and stores its pdkdf2 hash
+in password.txt, in the working folder. It will not ask again unless the file is deleted.
 If the ``--dashboard_mode`` is ``demo`` or ``none`` it will not ask.
 If you want to store it somewhere else, you can specify a name with ``--password_file``.
 
@@ -101,41 +101,37 @@ password: *****
 ## Launch Arguments
 
 ```
-usage: py4web-start.py [-h] [--host HOSTNAME] [--port PORT] [--headless] [-n NUMBER_WORKERS]
-                       [--ssl_cert_filename SSL_CERT_FILENAME]
-                       [--ssl_key_filename SSL_KEY_FILENAME]
-                       [--service_db_uri SERVICE_DB_URI] [-d DASHBOARD_MODE]
-                       [-p PASSWORD_FILE] [-c]
-                       apps_folder
+Usage: py4web.py run [OPTIONS] [APPS_FOLDER]
 
-positional arguments:
-  apps_folder           path to the applications folder
+Options:
+  -Y, --yes                     No prompt, assume yes to questions
+  -H, --host TEXT               Host name (default 127.0.0.1)
+  -P, --port INTEGER            Port number (default 8000)
+  -p, --password_file TEXT      File for the encrypted password
+  -w, --number_workers INTEGER  Number of workers
+  -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
+                                (default), none
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --host HOSTNAME       server address (IP or hostname)
-  --port PORT           server port number (e.g., 8000)
-  --headless            hide artwork for console based servers
-  -n NUMBER_WORKERS, --number_workers NUMBER_WORKERS
-                        number of gunicorn workers
-  --ssl_cert_filename SSL_CERT_FILENAME
-                        ssl certificate file
-  --ssl_key_filename SSL_KEY_FILENAME
-                        ssl key file
-  --service_db_uri SERVICE_DB_URI
-                        db uri for logging
-  -d DASHBOARD_MODE, --dashboard_mode DASHBOARD_MODE
-                        dashboard mode: demo, readonly, full (default), none
-  -p PASSWORD_FILE, --password_file PASSWORD_FILE
-                        file containing the encrypted (CRYPT) password
-  -c, --create          created the missing folder and apps
+  --watch [off|sync|lazy]       Watch python changes and reload apps
+                                automatically, modes: off (default), sync,
+                                lazy
+
+  --ssl_cert TEXT               SSL certificate file for HTTPS
+  --ssl_key TEXT                SSL key file for HTTPS
+  --help                        Show this message and exit.
 ```
 
 Example:
 
 
 ```
-py4web-start -a 127.0.0.1:8000 -d demo apps
+py4web run -H 127.0.0.1 -P 8000 -d demo apps
+```
+
+Note that since the default (as specified above) for the host and port are 127.0.0.1 and 8000 respectively, the above command can be shortened to:
+
+```
+py4web run -d demo apps
 ```
 
 ## WSGI

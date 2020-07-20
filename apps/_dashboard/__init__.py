@@ -466,11 +466,13 @@ if MODE == "full":
         run("git checkout " + commit, project)
         Reloader.import_app(project)
 
-    @action("swapbranch/<project>/<branch>")
+    @action("swapbranch/<project>" , method="POST")
     @action.uses(Logged(session))
-    def swapbranch(project, branch):
+    def swapbranch(project):
         if not is_git_repo(project):
             raise HTTP(400)
+
+        branch = request.forms.get("branches") if request.forms.get("branches") else "master"
         # swap branches then go back to gitlog so new commits load
         checkout(project,branch)
         redirect(URL('gitlog', project))
