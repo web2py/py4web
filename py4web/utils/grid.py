@@ -5,7 +5,7 @@ from pydal.restapi import RestAPI, Policy
 from yatl.helpers import TABLE, TR, TH, TD, DIV, A, I, SPAN, INPUT, SCRIPT, UL, LI
 
 from py4web import request, HTTP
-from py4web.utils.form import Form
+from py4web.utils.form import Form, FormStyleBulma
 
 
 def safeint(s):
@@ -120,7 +120,7 @@ class Grid:
             if (id == 0 and not self.create) or (id > 0 and not self.editable):
                 raise HTTP(404)
             record = db(query)(table.id == id).select().first() if id else None
-            form = Form(table, record, deletable=self.deletable, **self.form_attributes)
+            form = Form(table, record, deletable=self.deletable, formstyle=FormStyleBulma, **self.form_attributes)
             form.action = (
                 request.url.split("?")[0] + "?" + urllib.parse.urlencode(request.query)
             )
