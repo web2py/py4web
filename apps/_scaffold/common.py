@@ -23,8 +23,8 @@ for item in settings.LOGGERS:
         handler = logging.StreamHandler(getattr(sys, filename))
     else:
         handler = logging.FileHandler(filename)
-    handler.setLevel(getattr(logging, level.upper(), "ERROR"))
     handler.setFormatter(formatter)
+    logger.setLevel(getattr(logging, level.upper(), "DEBUG"))
     logger.addHandler(handler)
 
 # connect to db
