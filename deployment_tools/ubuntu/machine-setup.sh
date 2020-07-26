@@ -203,7 +203,7 @@ DESC="py4web process"
 PIDFILE="/var/run/${NAME}.pid"
 LOGFILE="/var/log/${NAME}.log"
 DAEMON="/usr/local/bin/py4web"
-DAEMON_OPTS="--password_file /home/www-data/py4web/password.txt /home/www-data/py4web/apps"
+DAEMON_OPTS="run --password_file /home/www-data/py4web/password.txt /home/www-data/py4web/apps"
 START_OPTS="--start --background --make-pidfile --pidfile ${PIDFILE} --exec ${DAEMON} -- ${DAEMON_OPTS}"
 STOP_OPTS="--stop --pidfile ${PIDFILE}"
 
