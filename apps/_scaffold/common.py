@@ -28,7 +28,11 @@ for item in settings.LOGGERS:
     logger.addHandler(handler)
 
 # connect to db
-db = DAL(settings.DB_URI, folder=settings.DB_FOLDER, pool_size=settings.DB_POOL_SIZE)
+db = DAL(settings.DB_URI,
+         folder=settings.DB_FOLDER, 
+         pool_size=settings.DB_POOL_SIZE,
+         migrate = settings.DB_MIGRATE,
+         fake_migrate= settings.DB_FAKE_MIGRATE)
 
 # define global objects that may or may not be used by th actions
 cache = Cache(size=1000)
@@ -71,7 +75,7 @@ if settings.SMTP_SERVER:
         sender=settings.SMTP_SENDER,
         login=settings.SMTP_LOGIN,
         tls=settings.SMTP_TLS,
-    )
+        ssl=settings.SMTP_SSL)
 
 if auth.db:
     groups = Tags(db.auth_user, "groups")
