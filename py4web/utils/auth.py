@@ -378,12 +378,8 @@ class Auth(Fixture):
                             }
                             # and register the user if we have one, just in case
                             if self.db:
-                                data = self.get_or_register_user(data)
-                                self.session["user"] = {"id": data["id"]}
-                                self.session["recent_activity"] = calendar.timegm(
-                                    time.gmtime()
-                                )
-                                self.session["uuid"] = str(uuid.uuid1())
+                                user = self.get_or_register_user(data)
+                                self.store_user_in_session(user['id'])
                         else:
                             data = self._error("Invalid Credentials")
                     # Else use normal login
@@ -460,6 +456,11 @@ class Auth(Fixture):
                 )
         env["path"] = path
         return Template("auth.html").transform(env)
+
+    def store_user_in_session(user_id):
+        self.session["user"] = {"id": user_id}
+        self.session["recent_activity"] = calendar.timegm(time.gmtime())
+        self.session["uuid"] = str(uuid.uuid1())
 
     # Methods that do not assume a user
 

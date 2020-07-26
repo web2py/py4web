@@ -36,8 +36,11 @@ class SSO(object):
             abort(401)
         error = data.get("error")
         if error:
-            code = error.get("code", 401)
-            msg = error.get("message", "Unknown error")
+            if instance(error, str):
+                code, msg = 401, error
+            else:
+                code = error.get("code", 401)
+                msg = error.get("message", "Unknown error")
             abort(code, msg)
         if auth.db:
             # map returned fields into auth_user fields
@@ -48,13 +51,15 @@ class SSO(object):
                     value = value[int(part) if part.isdigit() else part]
                     user[key] = value
             user["sso_id"] = "%s:%s" % (self.name, user["sso_id"])
-            # store or retrieve the user
+            if not 'username' in user:
+                user['username'] = user['sso_id']
+            # store or retrieve the user            
             data = auth.get_or_register_user(user)
         else:
             # WIP Allow login without DB
             if not "id" in data:
                 data["id"] = data.get("username") or data.get("email")
-        auth.session["user"] = data
+        auth.store_user_in_session(data['id'])
         redirect(URL("index"))
 
     @staticmethod
