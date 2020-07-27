@@ -139,7 +139,9 @@ class Grid:
             for k, fs in self.denormalize.items():
                 lookup.append('%s!:%s[%s]' % (k, k, ','.join(fs)))
             request.query['@lookup'] = ','.join(lookup)
+        offset = safeint(request.query.get("@offset", 0))
         request.query['@count'] = 'true'
+        request.query['@limit'] = offset + self.limit
         id = None
         data = self.restapi("GET", self.table._tablename, None, request.query)
         items = data.get("items", [])
@@ -153,9 +155,7 @@ class Grid:
                 TR(*[TD(self.render(key, value)) for key, value in item.items()])
             )
         header = self.header(id, message)
-        footer = self.footer(
-            count, safeint(request.query.get("@offset", 0)), len(items)
-        )
+        footer = self.footer(count, offset, len(items))
         return DIV(header, table, footer, _class="py4web-grid")
 
     def render(self, key, value):
