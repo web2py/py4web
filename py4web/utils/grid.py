@@ -245,12 +245,12 @@ class Grid:
                     _href=request.url.split("?")[0] + "?id=0",
                 )
             )
-        elif (self.create and id is 0) or (self.editable and id and id > 0):
+        elif (self.create and id == 0) or (self.editable and id and id > 0):
             query = dict(request.query)
             query.pop("id", None)
             url = request.url.split("?")[0] + "?" + urllib.parse.urlencode(query)
             div.append(A(T("Back"), _class="button", _href=url))
-            div.append(T("New Record") if id is 0 else T("Edit Record"))
+            div.append(T("New Record") if id == 0 else T("Edit Record"))
         return div
 
     def footer(self, count, offset, len_items):
