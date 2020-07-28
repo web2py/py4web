@@ -457,7 +457,7 @@ class Auth(Fixture):
         env["path"] = path
         return Template("auth.html").transform(env)
 
-    def store_user_in_session(user_id):
+    def store_user_in_session(self, user_id):
         self.session["user"] = {"id": user_id}
         self.session["recent_activity"] = calendar.timegm(time.gmtime())
         self.session["uuid"] = str(uuid.uuid1())
