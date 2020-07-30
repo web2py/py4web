@@ -123,7 +123,10 @@ class OAuth2(SSO):
 
     def callback(self, query):
         code = query.get("code")
+        statecheck=query.get("state")
         if not code:
+            return False
+        if statecheck != passedstate:
             return False
         data = dict(
             code=code,
