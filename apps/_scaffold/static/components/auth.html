@@ -69,6 +69,9 @@ e<div>
       <a v-if="plugins.indexOf('oauth2facebook')>=0"
          class="button is-link" 
          v-bind:href="'../auth/plugin/oauth2facebook/login?next='+next">Login with Facebook</a>
+      <a v-if="plugins.indexOf('oauth2okta')>=0"
+         class="button is-link" 
+         v-bind:href="'../auth/plugin/oauth2okta/login?next='+next">Login with Okta</a>
     </div>
     <div v-if="!plugins||plugins.indexOf('local')>=0">
       <div class="field">

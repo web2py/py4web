@@ -361,7 +361,7 @@ class Session(Fixture):
         expiration=None,
         algorithm="HS256",
         storage=None,
-        same_site="Strict",
+        same_site="Lax",
     ):
         """
         secret is the shared key used to encrypt the session (using algorithm)
