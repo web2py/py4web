@@ -29,7 +29,7 @@ for item in settings.LOGGERS:
 
 # connect to db
 db = DAL(settings.DB_URI,
-         folder=settings.DB_FOLDER, 
+         folder=settings.DB_FOLDER,
          pool_size=settings.DB_POOL_SIZE,
          migrate = settings.DB_MIGRATE,
          fake_migrate= settings.DB_FAKE_MIGRATE)
@@ -47,7 +47,7 @@ elif settings.SESSION_TYPE == "redis":
     host, port = settings.REDIS_SERVER.split(":")
     # for more options: https://github.com/andymccurdy/redis-py/blob/master/redis/client.py
     conn = redis.Redis(host=host, port=int(port))
-    conn.set = lambda k, v, e, cs=conn.set, ct=conn.ttl: cs(k, v, ct(k)) if ct(k) >= 0 else cs(k, v, e) 
+    conn.set = lambda k, v, e, cs=conn.set, ct=conn.ttl: cs(k, v, ct(k)) if ct(k) >= 0 else cs(k, v, e)
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
 elif settings.SESSION_TYPE == "memcache":
     import memcache, time
@@ -110,6 +110,18 @@ if settings.OAUTH2FACEBOOK_CLIENT_ID:
             callback_url="auth/plugin/oauth2facebook/callback",
         )
     )
+
+if settings.OAUTH2OKTA_CLIENT_ID:
+    from py4web.utils.auth_plugins.oauth2okta import OAuth2Okta  # TESTED
+
+    auth.register_plugin(
+        OAuth2Okta(
+            client_id=settings.OAUTH2OKTA_CLIENT_ID,
+            client_secret=settings.OAUTH2OKTA_CLIENT_SECRET,
+            callback_url="auth/plugin/oauth2okta/callback",
+        )
+    )
+
 
 if settings.USE_CELERY:
     from celery import Celery
