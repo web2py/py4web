@@ -383,7 +383,7 @@ class Auth(Fixture):
                             # and register the user if we have one, just in case
                             if self.db:
                                 user = self.get_or_register_user(data)
-                                self.store_user_in_session(user['id'])
+                                self.store_user_in_session(user["id"])
                         else:
                             data = self._error("Invalid Credentials")
                     # Else use normal login
@@ -564,7 +564,9 @@ class Auth(Fixture):
 
     # Methods that assume a user
 
-    def change_password(self, user, new_password, old_password=None, check=True, check_old_psawword=True):
+    def change_password(
+        self, user, new_password, old_password=None, check=True, check_old_psawword=True
+    ):
         db = self.db
         if check:
             if check_old_psawword:
@@ -742,12 +744,12 @@ class Auth(Fixture):
 
     def form(self, action_name, **attr):
         # FIXME: check allowed_actions
-        if not hasattr(self, '_forms'):
+        if not hasattr(self, "_forms"):
             self._forms = AuthForms(self)
         return getattr(self._forms, action_name)(**attr)
 
-class AuthForms:
 
+class AuthForms:
     def __init__(self, auth):
         self.auth = auth
 
@@ -757,77 +759,97 @@ class AuthForms:
         user = None
         if form.submitted:
             res = self.auth.register(form.vars)
-            form.accepted = not res.get('errors')
-            form.errors = res.get('errors')
+            form.accepted = not res.get("errors")
+            form.errors = res.get("errors")
+        self._postprocessng("register", form, user)
         return form
 
     def login(self):
-        form = Form([Field('username'), Field('password', type='password')])
+        form = Form([Field("username"), Field("password", type="password")])
         user = None
         if form.submitted:
-            user, error = self.auth.login(form.vars.get('username'),
-                                          form.vars.get('password'))
+            user, error = self.auth.login(
+                form.vars.get("username"), form.vars.get("password")
+            )
             form.accepted = not error
-            form.errors['username'] = error
+            form.errors["username"] = error
             if user:
-                self.auth.store_user_in_session(user['id'])
+                self.auth.store_user_in_session(user["id"])
         self._postprocessng("login", form, user)
         return form
 
     def reset_password(self):
-        form = Form([Field('password', type='password')])
+        form = Form([Field("password", type="password")])
         user = None
-        token = request.query.get('token')
+        token = request.query.get("token")
         if token:
             query = self._query_from_token(token)
             user = db(query).select().first()
             if not user:
                 raise HTTP(404)
         user = self.auth.db.auth_user(self.auth.user_id)
-        form = Form([Field('new_password', type='password', requires=self.auth.db.auth_user.password.requires),
-                     Field('new_password_again', type='password', requires=IS_NOT_EMPTY())])
+        form = Form(
+            [
+                Field(
+                    "new_password",
+                    type="password",
+                    requires=self.auth.db.auth_user.password.requires,
+                ),
+                Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
+            ]
+        )
         if form.submitted:
-            new_password = form.post_vars.get('new_password')
-            if form.post_vars['new_password_again'] != new_password:
-                form.errors['new_password_again'] = 'Passwords do not match'
+            new_password = form.post_vars.get("new_password")
+            if form.post_vars["new_password_again"] != new_password:
+                form.errors["new_password_again"] = "Passwords do not match"
                 form.accepted = False
             else:
-                res = change_password(user, new_password, check=True, check_old_psawword=False)
-            form.errors = re.get('errors', {})
-            form.accepted = not res.get('errors')
-        self._postprocessng("profile", form, user) 
+                res = change_password(
+                    user, new_password, check=True, check_old_psawword=False
+                )
+            form.errors = re.get("errors", {})
+            form.accepted = not res.get("errors")
+        self._postprocessng("profile", form, user)
         return form
 
     def change_password(self):
-        self._check_logged('change_password')
+        self._check_logged("change_password")
         user = self.auth.db.auth_user(self.auth.user_id)
-        form = Form([Field('old_password', type='password', requires=IS_NOT_EMPTY()),
-                     Field('new_password', type='password', requires=self.auth.db.auth_user.password.requires),
-                     Field('new_password_again', type='password', requires=IS_NOT_EMPTY())])
+        form = Form(
+            [
+                Field("old_password", type="password", requires=IS_NOT_EMPTY()),
+                Field(
+                    "new_password",
+                    type="password",
+                    requires=self.auth.db.auth_user.password.requires,
+                ),
+                Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
+            ]
+        )
         if form.submitted:
-            old_password = form.post_vars.get('new_password')
-            new_password = form.post_vars.get('new_password')
-            if form.post_vars['new_password_again'] != new_password:
-                form.errors['new_password_again'] = 'Passwords do not match'
+            old_password = form.post_vars.get("new_password")
+            new_password = form.post_vars.get("new_password")
+            if form.post_vars["new_password_again"] != new_password:
+                form.errors["new_password_again"] = "Passwords do not match"
                 form.accepted = False
             else:
                 res = change_password(user, new_password, old_password, check=True)
-            form.errors = re.get('errors', {})
-            form.accepted = not res.get('errors')
-        self._postprocessng("profile", form, user) 
+            form.errors = re.get("errors", {})
+            form.accepted = not res.get("errors")
+        self._postprocessng("profile", form, user)
         return form
 
     def profile(self):
-        self._check_logged('profile')
+        self._check_logged("profile")
         user = self.auth.db.auth_user(self.auth.user_id)
         form = Form(self.auth.db.auth_user, user)
-        self._postprocessng("profile", form, user) 
+        self._postprocessng("profile", form, user)
         return form
 
     def _check_logged(self, action):
         if not self.auth.is_logged_in:
-            redirect(URL('index'))
+            redirect(URL("index"))
 
     def _postprocessng(self, action, form, user):
         if form.accepted:
-            redirect(URL('index'))
+            redirect(URL("index"))
