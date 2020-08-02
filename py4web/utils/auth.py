@@ -7,8 +7,10 @@ import time
 import urllib
 import uuid
 
-from py4web import redirect, request, response, abort, URL, action
+from py4web import redirect, request, response, abort, URL, action, Field
 from py4web.core import Fixture, Template, REGEX_APPJSON
+from py4web.utils.form import Form
+
 from pydal.validators import (
     IS_EMAIL,
     CRYPT,
@@ -167,7 +169,6 @@ class Auth(Fixture):
     def define_tables(self):
         """Defines the auth_user table"""
         db = self.db
-        Field = db.Field
         if not "auth_user" in db.tables:
             ne = IS_NOT_EMPTY()
             if self.password_complexity:
@@ -233,7 +234,6 @@ class Auth(Fixture):
     @property
     def signature(self):
         """Returns a list of fields for a table signature"""
-        Field = self.db.Field
         now = lambda: datetime.datetime.utcnow()
         user = lambda s=self: s.get_user().get("id")
         fields = [
@@ -291,6 +291,10 @@ class Auth(Fixture):
             if safe:
                 user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
         return user
+
+    @property
+    def is_logged_in(self):
+        return self.session.get("user", {}).get("id", None) != None
 
     @property
     def user_id(self):
@@ -560,12 +564,13 @@ class Auth(Fixture):
 
     # Methods that assume a user
 
-    def change_password(self, user, new_password, password=None, check=True):
+    def change_password(self, user, new_password, old_password=None, check=True, check_old_psawword=True):
         db = self.db
         if check:
-            pwd = CRYPT()(password)[0]
-            if not pwd == user.password:
-                return {"errors": {"old_password": "invalid current password"}}
+            if check_old_psawword:
+                pwd = CRYPT()(old_password)[0]
+                if not pwd == user.password:
+                    return {"errors": {"old_password": "invalid current password"}}
             new_pwd, error = db.auth_user.password.validate(new_password)
             if error:
                 return {"errors": {"new_password": error}}
@@ -734,3 +739,91 @@ class Auth(Fixture):
                     current_record=current_record,
                     current_record_label=current_record_label,
                 )
+
+    def form(self, action_name, **attr):
+        # FIXME: check allowed_actions
+        if not hasattr(self, '_forms'):
+            self._forms = AuthForms(self)
+        return getattr(self._forms, action_name)(**attr)
+
+class AuthForms:
+
+    def __init__(self, auth):
+        self.auth = auth
+
+    def register(self):
+        form = Form(self.auth.db.auth_user, dbio=False)
+        user = None
+        if form.submitted:
+            res = self.auth.register(form.post_vars)
+            form.accepted = not res.get('errors')
+            form.errors = res.get('errors')
+        self._postprocessng("profile", form, user)  
+        return form
+
+    def login(self):
+        form = Form([Field('username'), Field('password', type='password')])
+        user = None
+        if form.submitted:
+            user, error = self.auth.login(email, password)
+            form.accepted = not error
+            if user:
+                self.auth.store_user_in_session(user['id'])
+        self._postprocessng("profile", form, user) 
+        return form
+
+    def reset_password(self):
+        form = Form([Field('password', type='password')])
+        user = None
+        token = request.query.get('token')
+        if token:
+            query = self._query_from_token(token)
+            user = db(query).select().first()
+            if not user:
+                raise HTTP(404)
+        user = self.auth.db.auth_user(self.auth.user_id)
+        form = Form([Field('new_password', type='password', requires=self.auth.db.auth_user.password.requires),
+                     Field('new_password_again', type='password', requires=IS_NOT_EMPTY())])
+        if form.submitted:
+            new_password = form.post_vars.get('new_password')
+            if form.post_vars['new_password_again'] != new_password:
+                form.errors['new_password_again'] = 'Passwords do not match'
+                form.accepted = False
+            else:
+                res = change_password(user, new_password, check=True, check_old_psawword=False)
+            form.errors = re.get('errors', {})
+            form.accepted = not res.get('errors')
+        self._postprocessng("profile", form, user) 
+        return form
+
+    def change_password(self):
+        self._check_logged('change_password')
+        user = self.auth.db.auth_user(self.auth.user_id)
+        form = Form([Field('old_password', type='password', requires=IS_NOT_EMPTY()),
+                     Field('new_password', type='password', requires=self.auth.db.auth_user.password.requires),
+                     Field('new_password_again', type='password', requires=IS_NOT_EMPTY())])
+        if form.submitted:
+            old_password = form.post_vars.get('new_password')
+            new_password = form.post_vars.get('new_password')
+            if form.post_vars['new_password_again'] != new_password:
+                form.errors['new_password_again'] = 'Passwords do not match'
+                form.accepted = False
+            else:
+                res = change_password(user, new_password, old_password, check=True)
+            form.errors = re.get('errors', {})
+            form.accepted = not res.get('errors')
+        self._postprocessng("profile", form, user) 
+        return form
+
+    def profile(self):
+        self._check_logged('profile')
+        user = self.auth.db.auth_user(self.auth.user_id)
+        form = Form(self.auth.db.auth_user, user)
+        self._postprocessng("profile", form, user) 
+        return form
+
+    def _check_logged(self, action):
+        pass
+
+    def _postprocessng(self, action, form, user):
+        pass

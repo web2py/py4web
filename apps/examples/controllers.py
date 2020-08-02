@@ -7,7 +7,7 @@ from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1, HTML, BODY, A
 
-from .common import db, session, T, cache, authenticated, unauthenticated
+from .common import db, session, T, cache, authenticated, unauthenticated, auth
 
 # exposes services necessary to access the db.thing via ajax
 publisher = Publisher(db, policy=ALLOW_ALL_POLICY)
@@ -177,3 +177,25 @@ def a_callback(msg):
 @unauthenticated.get()
 def show_a_button():
     return dict(mybutton=a_callback.button("clickme")(msg="hello world"))
+
+@action("auth_forms", method=["GET", "POST"])
+@action.uses("auth_forms.html", db, session, T, auth)
+def auth_forms():
+    return dict(
+        register_form = auth.form('register'),
+        login_form = auth.form('login'),
+        change_password_form = auth.form('change_password'),
+        reset_password_form = auth.form('reset_password'),
+        profile_form = auth.form('profile'))
+
+@action("auth_form/<name>", method=["GET", "POST"])
+@action.uses("auth_form.html", db, session, T, auth)
+def auth_form(name):
+    form = auth.form(name)
+    if form.submitted:
+        pass
+    elif form.accepted:
+        pass
+    elif form.errors:
+        pass
+    return dict(form = auth.form(name))
