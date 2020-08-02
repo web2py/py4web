@@ -82,7 +82,7 @@ class FormStyleFactory:
             error = errors.get(field.name)
             field_class = field.type.split()[0].replace(":", "-")
 
-            if not field.readable:
+            if not field.readable and not field.writable:
                 continue
             if not readonly and not field.writable:
                 continue

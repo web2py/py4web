@@ -752,24 +752,26 @@ class AuthForms:
         self.auth = auth
 
     def register(self):
+        self.auth.db.auth_user.password.writable = True
         form = Form(self.auth.db.auth_user, dbio=False)
         user = None
         if form.submitted:
-            res = self.auth.register(form.post_vars)
+            res = self.auth.register(form.vars)
             form.accepted = not res.get('errors')
             form.errors = res.get('errors')
-        self._postprocessng("profile", form, user)  
         return form
 
     def login(self):
         form = Form([Field('username'), Field('password', type='password')])
         user = None
         if form.submitted:
-            user, error = self.auth.login(email, password)
+            user, error = self.auth.login(form.vars.get('username'),
+                                          form.vars.get('password'))
             form.accepted = not error
+            form.errors['username'] = error
             if user:
                 self.auth.store_user_in_session(user['id'])
-        self._postprocessng("profile", form, user) 
+        self._postprocessng("login", form, user)
         return form
 
     def reset_password(self):
@@ -823,7 +825,9 @@ class AuthForms:
         return form
 
     def _check_logged(self, action):
-        pass
+        if not self.auth.is_logged_in:
+            redirect(URL('index'))
 
     def _postprocessng(self, action, form, user):
-        pass
+        if form.accepted:
+            redirect(URL('index'))
