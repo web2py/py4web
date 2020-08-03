@@ -192,11 +192,9 @@ utils.app = function (element_id) {
 // traps a form submission
 utils.trap_form = function (action, element_id) {
     Q('#' + element_id + ' form').forEach(function (form) {
-        console.log('form found',form,'trapping');
         if (form.classList.contains('py4web_notrap')) return;
         var target = form.dataset['py4web_target'] || element_id;
         form.dataset['py4web_target'] = target;
-        console.log('target is',target);
         var url = form.action;
         if (url === '' || url === '#' || url === void 0) url = action;
         var clickable = 'input[type=submit], input[type=image], button[type=submit], button:not([type])';        
@@ -223,7 +221,6 @@ utils.load_and_trap = function (method, url, form_data, target) {
     };
     var onerror = function(res) {
         alert('ajax error');
-        console.log(res);
     };
     axios[method](url, form_data).then(onsuccess, onerror);
 };
