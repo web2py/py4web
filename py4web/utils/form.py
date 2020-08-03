@@ -63,6 +63,7 @@ class FormStyleFactory:
             _method="POST", _action=request.url, _enctype="multipart/form-data"
         )
         controls = dict(
+            labels=dict(),
             widgets=dict(),
             hidden_widgets=dict(),
             errors=dict(),
@@ -154,6 +155,7 @@ class FormStyleFactory:
                 key += "[type=%s]" % (control["_type"] or "text")
             control["_class"] = self.classes.get(key, "")
 
+            controls["labels"][field.name] = field.label
             controls["widgets"][field.name] = control
             if error:
                 controls["errors"][field.name] = error
