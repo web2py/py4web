@@ -66,7 +66,8 @@ class SSO(object):
             # WIP Allow login without DB
             if not "id" in data:
                 data["id"] = data.get("username") or data.get("email")
-        auth.store_user_in_session(data['id'])
+        user_id=data.get("id")
+        auth.store_user_in_session(user_id)
         redirect(URL("index"))
 
     @staticmethod
