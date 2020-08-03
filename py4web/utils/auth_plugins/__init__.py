@@ -3,6 +3,7 @@ import calendar
 import time
 import uuid
 import json
+import random
 import jwt
 import requests
 from py4web.core import URL, abort, redirect, request
@@ -145,7 +146,7 @@ class OAuth2(SSO):
         # but lets take the userinfo directly extracted from the token
         #res = requests.get(self.userinfo_url, headers=headers)
         res=jwt.decode(token, verify=False)
-        data = res.json()
+        data = res
         return data
 
     def revoke(self, token):
