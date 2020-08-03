@@ -5,7 +5,7 @@ from py4web.utils.form import Form, FormStyleBulma
 from py4web.utils.grid import Grid
 from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
-from yatl.helpers import INPUT, H1, HTML, BODY, A
+from yatl.helpers import INPUT, H1, HTML, BODY, A, DIV
 
 from .common import db, session, T, cache, authenticated, unauthenticated, auth
 
@@ -181,12 +181,15 @@ def show_a_button():
 @action("auth_forms", method=["GET", "POST"])
 @action.uses("auth_forms.html", db, session, T, auth)
 def auth_forms():
+    disabled = False
+    # this is experimntal, we must disabld forms that rquired a logged in user
+    if not auth.is_logged_in: disabled = 'disabled'
     return dict(
         register_form = auth.form('register'),
         login_form = auth.form('login'),
-        change_password_form = auth.form('change_password'),
         reset_password_form = auth.form('reset_password'),
-        profile_form = auth.form('profile'))
+        change_password_form = disabled or auth.form('change_password'),
+        profile_form = disabled or auth.form('profile'))
 
 @action("auth_form/<name>", method=["GET", "POST"])
 @action.uses("auth_form.html", db, session, T, auth)
@@ -199,3 +202,16 @@ def auth_form(name):
     elif form.errors:
         pass
     return dict(form = auth.form(name))
+
+# a py4web component is a action that returns a part of a page, not a full page
+# it can use templates but they should not extend a layout
+@action("mycomponent", method=["GET", "POST"])
+def mycomponent():
+    form = Form([Field('your_name')])
+    return DIV('Hello ' + request.forms['your_name'] if form.accepted else form).xml()
+
+# a py4web component loader is a page that loads page parts via ajax
+@action("component_loader")
+@action.uses("component_loader.html")
+def component_loader():
+    return dict()
