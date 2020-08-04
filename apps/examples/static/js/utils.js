@@ -244,7 +244,7 @@ utils.handle_flash = function() {
             var id = 'notification-{0}'.format([element.dataset.counter]);
             element.dataset.counter = parseInt(element.dataset.counter) + 1;
             var node = document.createElement("div");
-            node.innerHTML = '<div class="notification"><button class="delete"></button>{2}</div>'.format([event.detail.message]);
+            node.innerHTML = '<div class="notification"><button class="delete"></button>{0}</div>'.format([event.detail.message]);
             node = Q('.notification', node)[0];
             if (event.detail.class) node.classList.add(event.detail.class);
             element.appendChild(node);
