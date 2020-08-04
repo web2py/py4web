@@ -7,7 +7,7 @@ if (!String.prototype.format) {
     };
 }
 
-window.Q = function(sel) { return document.querySelectorAll(sel); };
+window.Q = function(sel, el) { return (el||document).querySelectorAll(sel); };
 
 utils = {};
 
@@ -225,6 +225,37 @@ utils.load_and_trap = function (method, url, form_data, target) {
     axios[method](url, form_data).then(onsuccess, onerror);
 };
 
-Q('py4web-component').forEach(function(element) {
-    utils.load_and_trap('GET', element.attributes.url.value, null, element.attributes.id.value);
-});
+utils.handle_components = function() {
+    Q('py4web-component').forEach(function(element) {
+        utils.load_and_trap('GET', element.attributes.url.value, null, element.attributes.id.value);
+    });    
+};
+
+utils.handle_flash = function() {
+    var element = Q('#py4web-flash')[0];
+    element.dataset.counter = 0;
+    var make_delete_handler = function(node) {
+        return function(event) {
+            node.parentNode.removeChild(node);
+        };
+    };
+    var make_handler = function(element) {
+        return function (event) { 
+            var id = 'notification-{0}'.format([element.dataset.counter]);
+            element.dataset.counter = parseInt(element.dataset.counter) + 1;
+            var node = document.createElement("div");
+            node.innerHTML = '<div class="notification"><button class="delete"></button>{2}</div>'.format([event.detail.message]);
+            node = Q('.notification', node)[0];
+            if (event.detail.class) node.classList.add(event.detail.class);
+            element.appendChild(node);
+            Q('.delete',node)[0].onclick = make_delete_handler(node);
+        };
+    };
+    if (element) {
+        element.addEventListener('flash', make_handler(element), false);
+        utils.flash = function(detail) {element.dispatchEvent(new CustomEvent('flash', {detail: detail}));};
+    }
+};
+
+utils.handle_components();
+utils.handle_flash();

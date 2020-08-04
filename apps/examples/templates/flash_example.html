@@ -1,0 +1,5 @@
+[[extend 'layout.html']]
+
+<button onclick="utils.flash({message: 'you clicked the button', class:'is-warning'})">Click me</button>
+<br/>or type something below<br/>
+<input onchange="utils.flash({message: this.value, class: 'is-success'});this.value='';"/>

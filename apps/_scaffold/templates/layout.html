@@ -55,9 +55,10 @@
         </div>
       </div>
     </nav>
-      <!-- beginning of HTML inserted by extending template -->
-      [[include]]
-      <!-- end of HTML inserted by extending template -->
+    <div class="container" id="py4web-flash"></div>
+    <!-- beginning of HTML inserted by extending template -->
+    [[include]]
+    <!-- end of HTML inserted by extending template -->
     <footer class="footer">
       <div class="content has-text-centered">
         Made with py4web
@@ -67,5 +68,7 @@
   <script src="js/sugar.min.js"></script>
   <script src="js/axios.min.js"></script>
   <script src="js/vue.min.js"></script>
+  <script src="js/utils.js"></script>
+  [[if globals().get('flash'):]]<script>utils.flash([[=XML(flash)]]);</script>[[pass]]
   [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>

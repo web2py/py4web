@@ -40,6 +40,10 @@ def session_clear():
     session.clear()
     return 'done'
 
+@action("flash_example")
+@action.uses('flash_example.html')
+def flash_example():
+    return dict(flash={"message": "hello", "class": "is-danger"})
 
 # exposed as /examples/create_form or /examples/update_form/<id>
 @action("create_form", method=["GET", "POST"])
