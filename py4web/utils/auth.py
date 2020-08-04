@@ -7,7 +7,7 @@ import time
 import urllib
 import uuid
 
-from py4web import redirect, request, response, abort, URL, action, Field
+from py4web import redirect, request, response, abort, URL, action, Field, HTTP
 from py4web.core import Fixture, Template, REGEX_APPJSON
 from py4web.utils.form import Form
 
@@ -565,11 +565,11 @@ class Auth(Fixture):
     # Methods that assume a user
 
     def change_password(
-        self, user, new_password, old_password=None, check=True, check_old_psawword=True
+        self, user, new_password, old_password=None, check=True, check_old_password=True
     ):
         db = self.db
         if check:
-            if check_old_psawword:
+            if check_old_password:
                 pwd = CRYPT()(old_password)[0]
                 if not pwd == user.password:
                     return {"errors": {"old_password": "invalid current password"}}
@@ -783,8 +783,8 @@ class AuthForms:
         user = None
         token = request.query.get("token")
         if token:
-            query = self._query_from_token(token)
-            user = db(query).select().first()
+            query = self.auth._query_from_token(token)
+            user = self.auth.db(query).select().first()
             if not user:
                 raise HTTP(404)
         user = self.auth.db.auth_user(self.auth.user_id)
@@ -804,8 +804,8 @@ class AuthForms:
                 form.errors["new_password_again"] = "Passwords do not match"
                 form.accepted = False
             else:
-                res = change_password(
-                    user, new_password, check=True, check_old_psawword=False
+                res = self.auth.change_password(
+                    user, new_password, check=True, check_old_password=False
                 )
             form.errors = re.get("errors", {})
             form.accepted = not res.get("errors")
@@ -833,7 +833,7 @@ class AuthForms:
                 form.errors["new_password_again"] = "Passwords do not match"
                 form.accepted = False
             else:
-                res = change_password(user, new_password, old_password, check=True)
+                res = self.auth.change_password(user, new_password, old_password, check=True)
             form.errors = re.get("errors", {})
             form.accepted = not res.get("errors")
         self._postprocessng("profile", form, user)
