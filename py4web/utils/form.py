@@ -65,6 +65,7 @@ class FormStyleFactory:
         controls = dict(
             labels=dict(),
             widgets=dict(),
+            comments=dict(),
             hidden_widgets=dict(),
             errors=dict(),
             begin=XML(form.xml().split("</form>")[0]),
@@ -157,6 +158,7 @@ class FormStyleFactory:
 
             controls["labels"][field.name] = field.label
             controls["widgets"][field.name] = control
+            controls["comments"][field.name] = field.comment if field.comment else ''
             if error:
                 controls["errors"][field.name] = error
 
