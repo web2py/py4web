@@ -1061,18 +1061,18 @@ def try_app_watch_tasks():
             del APP_WATCH["tasks"][handler]
 
 
-def watch(apps_path, server="default", mode="sync"):
-    def watch_folder_event_loop(apps_path):
+def watch(apps_folder, server="default", mode="sync"):
+    def watch_folder_event_loop(apps_folder):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        loop.run_until_complete(watch_folder(apps_path))
+        loop.run_until_complete(watch_folder(apps_folder))
 
-    async def watch_folder(apps_path):
-        click.echo("watching (%s-mode) python file changes in: %s" % (mode, apps_path))
-        async for changes in awatch(os.path.join(apps_path)):
+    async def watch_folder(apps_folder):
+        click.echo("watching (%s-mode) python file changes in: %s" % (mode, apps_folder))
+        async for changes in awatch(os.path.join(apps_folder)):
             apps = []
             for subpath in [pathlib.Path(pair[1]) for pair in changes]:
-                name = subpath.relative_to(apps_path).parts[0]
+                name = subpath.relative_to(apps_folder).parts[0]
                 if subpath.suffix == ".py":
                     apps.append(name)
                 ## manage `app_watch_handler` decorators
@@ -1095,11 +1095,11 @@ def watch(apps_path, server="default", mode="sync"):
     if server == "default":
         # default wsgi server block the main thread so we open a new thread for the file watcher
         threading.Thread(
-            target=watch_folder_event_loop, args=(apps_path,), daemon=True
+            target=watch_folder_event_loop, args=(apps_folder,), daemon=True
         ).start()
     elif server == "tornado":
         # tornado delegate to asyncio so we add a future into the event loop
-        asyncio.ensure_future(watch_folder(apps_path))
+        asyncio.ensure_future(watch_folder(apps_folder))
     elif server == "gunicorn":
         # supposedly number_workers > 1
         click.echo("--watch option has no effect in multi-process environment \n")
