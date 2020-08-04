@@ -1024,9 +1024,8 @@ Paths to files must be relative to app, w/o app name(folder).
 
 @app_watch_handler(["static/sass/all.sass", "static/sass/main.sass"])
 def sass_compile(changed_files):
-    print(changed_files); # abspaths of files that changed
+    print(changed_files); # paths of files that changed, for info
     sass.compile()
-    raise(Exception("Error: something went wrong")) # in terminal output
 """
 def app_watch_handler(watched_app_subpaths):
     invoker = pathlib.Path(stack()[1].filename)
