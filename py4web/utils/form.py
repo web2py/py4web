@@ -442,7 +442,12 @@ class Form(object):
                     _type="hidden", _name=key, _value=self.hidden[key]
                 )
                 helper["form"].append(helper["controls"]["hidden_widgets"][key])
+
+            helper["controls"]["begin"] = XML(''.join(str(helper["controls"]["begin"]) +
+                                      str(helper["controls"]["hidden_widgets"][hidden_field])
+                                      for hidden_field in helper["controls"]["hidden_widgets"]))
             self.cached_helper = helper
+
         return self.cached_helper
 
     @property
