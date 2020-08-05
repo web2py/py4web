@@ -5,7 +5,7 @@ These are fixtures that every app needs so probably you will not be editing this
 import os
 import sys
 import logging
-from py4web import Session, Cache, Translator, DAL, Field
+from py4web import Session, Cache, Translator, Flash, DAL, Field
 from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
 from py4web.utils.tags import Tags
@@ -23,16 +23,23 @@ for item in settings.LOGGERS:
         handler = logging.StreamHandler(getattr(sys, filename))
     else:
         handler = logging.FileHandler(filename)
-    handler.setLevel(getattr(logging, level.upper(), "ERROR"))
     handler.setFormatter(formatter)
+    logger.setLevel(getattr(logging, level.upper(), "DEBUG"))
     logger.addHandler(handler)
 
 # connect to db
-db = DAL(settings.DB_URI, folder=settings.DB_FOLDER, pool_size=settings.DB_POOL_SIZE)
+db = DAL(
+    settings.DB_URI,
+    folder=settings.DB_FOLDER,
+    pool_size=settings.DB_POOL_SIZE,
+    migrate=settings.DB_MIGRATE,
+    fake_migrate=settings.DB_FAKE_MIGRATE,
+)
 
 # define global objects that may or may not be used by th actions
 cache = Cache(size=1000)
 T = Translator(settings.T_FOLDER)
+flash = Flash()
 
 # pick the session type that suits you best
 if settings.SESSION_TYPE == "cookies":
@@ -43,7 +50,11 @@ elif settings.SESSION_TYPE == "redis":
     host, port = settings.REDIS_SERVER.split(":")
     # for more options: https://github.com/andymccurdy/redis-py/blob/master/redis/client.py
     conn = redis.Redis(host=host, port=int(port))
-    conn.set = lambda k, v, e, cs=conn.set, ct=conn.ttl: cs(k, v, ct(k)) if ct(k) >= 0 else cs(k, v, e) 
+    conn.set = (
+        lambda k, v, e, cs=conn.set, ct=conn.ttl: cs(k, v, ct(k))
+        if ct(k) >= 0
+        else cs(k, v, e)
+    )
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
 elif settings.SESSION_TYPE == "memcache":
     import memcache, time
@@ -55,7 +66,15 @@ elif settings.SESSION_TYPE == "database":
 
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
-auth = Auth(session, db, use_phone_number=True)
+auth = Auth(session, db, define_tables=False)
+auth.use_username = True
+auth.registration_requires_confirmation = settings.VERIFY_EMAIL
+auth.registration_requires_approval = settings.REQUIRES_APPROVAL
+auth.allowed_actions = ["all"]
+auth.login_expiration_time = 3600
+auth.password_complexity = {"entropy": 50}
+auth.block_previous_password_num = 3
+auth.define_tables()
 
 if settings.SMTP_SERVER:
     auth.sender = Mailer(
@@ -63,6 +82,7 @@ if settings.SMTP_SERVER:
         sender=settings.SMTP_SENDER,
         login=settings.SMTP_LOGIN,
         tls=settings.SMTP_TLS,
+        ssl=settings.SMTP_SSL,
     )
 
 if auth.db:
@@ -76,7 +96,7 @@ if settings.USE_PAM:
 if settings.USE_LDAP:
     from py4web.utils.auth_plugins.ldap_plugin import LDAPPlugin
 
-    auth.register_plugin(LDAPPlugin(**settings.LDAP_SETTINGS))
+    auth.register_plugin(LDAPPlugin(db=db, groups=groups, **settings.LDAP_SETTINGS))
 
 if settings.OAUTH2GOOGLE_CLIENT_ID:
     from py4web.utils.auth_plugins.oauth2google import OAuth2Google  # TESTED
@@ -95,9 +115,21 @@ if settings.OAUTH2FACEBOOK_CLIENT_ID:
         OAuth2Facebook(
             client_id=settings.OAUTH2FACEBOOK_CLIENT_ID,
             client_secret=settings.OAUTH2FACEBOOK_CLIENT_SECRET,
-            callback_url="auth/plugin/oauth2google/callback",
+            callback_url="auth/plugin/oauth2facebook/callback",
         )
     )
+
+if settings.OAUTH2OKTA_CLIENT_ID:
+    from py4web.utils.auth_plugins.oauth2okta import OAuth2Okta  # TESTED
+
+    auth.register_plugin(
+        OAuth2Okta(
+            client_id=settings.OAUTH2OKTA_CLIENT_ID,
+            client_secret=settings.OAUTH2OKTA_CLIENT_SECRET,
+            callback_url="auth/plugin/oauth2okta/callback",
+        )
+    )
+
 
 if settings.USE_CELERY:
     from celery import Celery
@@ -113,5 +145,5 @@ if settings.USE_CELERY:
 # the template, although we recommend client-side translations instead
 auth.enable(uses=(session, T, db), env=dict(T=T))
 
-unauthenticated = ActionFactory(db, session, T, auth)
-authenticated = ActionFactory(db, session, T, auth.user)
+unauthenticated = ActionFactory(db, session, T, flash, auth)
+authenticated = ActionFactory(db, session, T, flash, auth.user)

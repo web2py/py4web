@@ -833,7 +833,9 @@ class AuthForms:
                 form.errors["new_password_again"] = "Passwords do not match"
                 form.accepted = False
             else:
-                res = self.auth.change_password(user, new_password, old_password, check=True)
+                res = self.auth.change_password(
+                    user, new_password, old_password, check=True
+                )
             form.errors = re.get("errors", {})
             form.accepted = not res.get("errors")
         self._postprocessng("profile", form, user)

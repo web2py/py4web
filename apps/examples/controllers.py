@@ -7,7 +7,7 @@ from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1, HTML, BODY, A, DIV
 
-from .common import db, session, T, cache, authenticated, unauthenticated, auth
+from .common import db, session, T, flash, cache, authenticated, unauthenticated, auth
 
 # exposes services necessary to access the db.thing via ajax
 publisher = Publisher(db, policy=ALLOW_ALL_POLICY)
@@ -28,22 +28,39 @@ def simple_page():
 def error():
     1 / 0
 
+
 @action("session/counter")
 @action.uses(session)
 def session_counter():
-    session['counter'] = session.get('counter', 0) + 1
-    return str(session.get('counter'))
+    session["counter"] = session.get("counter", 0) + 1
+    return str(session.get("counter"))
+
 
 @action("session/clear")
 @action.uses(session)
 def session_clear():
     session.clear()
-    return 'done'
+    return "done"
+
 
 @action("flash_example")
-@action.uses('flash_example.html')
-def flash_example():
+@action.uses("flash_example.html")
+def flash_example_naive():
     return dict(flash={"message": "hello", "class": "is-danger"})
+
+
+@action("flash_example_fixture")
+@action.uses(flash)
+def flash_example_fixture():
+    flash.set("you have been redirected")
+    redirect("flash_next")
+
+
+@action("flash_next")
+@action.uses(flash, "flash_example_next.html")
+def flash_example_next():
+    return dict()
+
 
 # exposed as /examples/create_form or /examples/update_form/<id>
 @action("create_form", method=["GET", "POST"])
@@ -63,17 +80,19 @@ def custom_form(id=None):
     rows = db(db.person).select()
     return dict(form=form, rows=rows)
 
+
 # exposed as /examples/htmlgrid
 @action("html_grid", method=["GET", "POST"])
 @action.uses("js_grid.html")
 def example_html_grid():
-    grid=Grid(db.superhero)
-    grid.policy.set('person')
-    grid.policy.set('superpower')
-    grid.policy.set('tag')
-    grid.denormalize['real_identity'] = ['name']
-    grid.denormalize['superhero.tag.superpower'] = ['description']
+    grid = Grid(db.superhero)
+    grid.policy.set("person")
+    grid.policy.set("superpower")
+    grid.policy.set("tag")
+    grid.denormalize["real_identity"] = ["name"]
+    grid.denormalize["superhero.tag.superpower"] = ["description"]
     return dict(grid=grid)
+
 
 # exposed as /examples/ajaxgrid
 @action("ajax_grid")
@@ -182,18 +201,22 @@ def a_callback(msg):
 def show_a_button():
     return dict(mybutton=a_callback.button("clickme")(msg="hello world"))
 
+
 @action("auth_forms", method=["GET", "POST"])
 @action.uses("auth_forms.html", db, session, T, auth)
 def auth_forms():
     disabled = False
     # this is experimntal, we must disabld forms that rquired a logged in user
-    if not auth.is_logged_in: disabled = 'disabled'
+    if not auth.is_logged_in:
+        disabled = "disabled"
     return dict(
-        register_form = auth.form('register'),
-        login_form = auth.form('login'),
-        reset_password_form = auth.form('reset_password'),
-        change_password_form = disabled or auth.form('change_password'),
-        profile_form = disabled or auth.form('profile'))
+        register_form=auth.form("register"),
+        login_form=auth.form("login"),
+        reset_password_form=auth.form("reset_password"),
+        change_password_form=disabled or auth.form("change_password"),
+        profile_form=disabled or auth.form("profile"),
+    )
+
 
 @action("auth_form/<name>", method=["GET", "POST"])
 @action.uses("auth_form.html", db, session, T, auth)
@@ -205,14 +228,16 @@ def auth_form(name):
         pass
     elif form.errors:
         pass
-    return dict(form = auth.form(name))
+    return dict(form=auth.form(name))
+
 
 # a py4web component is a action that returns a part of a page, not a full page
 # it can use templates but they should not extend a layout
 @action("mycomponent", method=["GET", "POST"])
 def mycomponent():
-    form = Form([Field('your_name')])
-    return DIV('Hello ' + request.forms['your_name'] if form.accepted else form).xml()
+    form = Form([Field("your_name")])
+    return DIV("Hello " + request.forms["your_name"] if form.accepted else form).xml()
+
 
 # a py4web component loader is a page that loads page parts via ajax
 @action("component_loader")

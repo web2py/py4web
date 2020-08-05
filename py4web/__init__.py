@@ -11,6 +11,7 @@ from .core import (
     Translator,  # from pluralize
     Session,
     Cache,
+    Flash,
     user_in,  # additional fixtures
     URL,  # custom helper
     check_compatible,

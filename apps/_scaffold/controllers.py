@@ -31,9 +31,9 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 
 
 @unauthenticated()
-@action('index')
-@action.uses(auth, 'index.html')
+@action("index")
+@action.uses(auth, "index.html")
 def index():
     user = auth.get_user()
-    message = T("Hello {first_name}".format(**user) if user else 'Hello')
+    message = T("Hello {first_name}".format(**user) if user else "Hello")
     return dict(message=message, flash="Hello world")

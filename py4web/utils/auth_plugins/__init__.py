@@ -9,7 +9,8 @@ import string
 import requests
 from py4web.core import URL, abort, redirect, request
 
-passedstate=""
+passedstate = ""
+
 
 class SSO(object):
 
@@ -59,15 +60,15 @@ class SSO(object):
                     value = value[int(part) if part.isdigit() else part]
                     user[key] = value
             user["sso_id"] = "%s:%s" % (self.name, user["sso_id"])
-            if not 'username' in user:
-                user['username'] = user['sso_id']
+            if not "username" in user:
+                user["username"] = user["sso_id"]
             # store or retrieve the user
             data = auth.get_or_register_user(user)
         else:
             # WIP Allow login without DB
             if not "id" in data:
                 data["id"] = data.get("username") or data.get("email")
-        user_id=data.get("id")
+        user_id = data.get("id")
         auth.store_user_in_session(user_id)
         redirect(URL("index"))
 
@@ -99,8 +100,12 @@ class OAuth2(SSO):
             scheme=scheme,
         )
 
-    def state_generator(self, size=18, chars=string.ascii_uppercase + string.digits+string.ascii_lowercase):
-        return ''.join(random.choice(chars) for _ in range(size))
+    def state_generator(
+        self,
+        size=18,
+        chars=string.ascii_uppercase + string.digits + string.ascii_lowercase,
+    ):
+        return "".join(random.choice(chars) for _ in range(size))
 
     def get_login_url(self, state=None, next=None):
         callback_url = self.parameters.get("callback_url")
@@ -116,7 +121,7 @@ class OAuth2(SSO):
             client_id=self.parameters.get("client_id"),
         )
         scope = self.parameters.get("scope")
-        state=self.state_generator()
+        state = self.state_generator()
         if scope:
             data["scope"] = scope
             data["include_granted_scopes"] = "true"
@@ -126,7 +131,7 @@ class OAuth2(SSO):
 
     def callback(self, query):
         code = query.get("code")
-        statecheck=query.get("state")
+        statecheck = query.get("state")
         if not code:
             return False
         if statecheck != passedstate:
@@ -146,8 +151,8 @@ class OAuth2(SSO):
         headers = {"Authorization": "Bearer %s" % token}
         # Lets not get the  user attributes via the userinfo endpoint
         # but lets take the userinfo directly extracted from the token
-        #res = requests.get(self.userinfo_url, headers=headers)
-        res=jwt.decode(token, verify=False)
+        # res = requests.get(self.userinfo_url, headers=headers)
+        res = jwt.decode(token, verify=False)
         data = res
         return data
 

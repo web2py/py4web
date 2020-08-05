@@ -5,15 +5,16 @@ from yatl.helpers import XML
 from py4web.utils.url_signer import URLSigner
 from py4web.core import Fixture
 
+
 class Grid(Fixture):
     """This is a prototype class for building paginable grids (tables)
     with content provided server-side."""
 
     GRID = '<grid url="{url}"></grid>'
 
-    def __init__(self, path, session,
-                 search_placeholder=None,
-                 signer=None, db=None, auth=None):
+    def __init__(
+        self, path, session, search_placeholder=None, signer=None, db=None, auth=None
+    ):
         """
         Displays a grid.
         :param path: Path where the grid is loaded via AJAX.
@@ -61,14 +62,17 @@ class Grid(Fixture):
         This is a sample implementation only, to test code.  You should
         over-ride the api method to provide your own input for the table.
         """
-        page = request.query.get('page') or 1
-        q = request.query.get("q", "") # Query string
+        page = request.query.get("page") or 1
+        q = request.query.get("q", "")  # Query string
         sort_order = request.query.get("sort_order") or None
         header = dict(
             is_header=True,
-            cells=[dict(text="Animal", sortable=True),
-                   dict(text="N. paws", sortable=True),
-                   dict(text="Class")])
+            cells=[
+                dict(text="Animal", sortable=True),
+                dict(text="N. paws", sortable=True),
+                dict(text="Class"),
+            ],
+        )
         # Copies the sort_order into the header, to reflect that the request has been
         # satisfied.  Note that we are doing server-side sorting, as the set of
         # results can be very large and the web UI may have only a small set of the results.
@@ -78,18 +82,30 @@ class Grid(Fixture):
         if sort_order is not None:
             for hc, so in zip(header["cells"], json.loads(sort_order)):
                 hc["sort"] = so
-        row1 = dict(cells=[
-            dict(text="Cat"), dict(text="4"),
-            dict(text="Mammal", url=URL('mammals/cat'), is_button=True)])
-        row2 = dict(cells=[
-            dict(text="Dog"), dict(text="4"),
-            dict(text="Mammal", url=URL('mammals/dog'), is_button=True)])
-        row3 = dict(cells=[
-            dict(text="Owl"), dict(text="2"),
-            dict(text="Bird", url=URL('bird/owl'), is_button=True)])
+        row1 = dict(
+            cells=[
+                dict(text="Cat"),
+                dict(text="4"),
+                dict(text="Mammal", url=URL("mammals/cat"), is_button=True),
+            ]
+        )
+        row2 = dict(
+            cells=[
+                dict(text="Dog"),
+                dict(text="4"),
+                dict(text="Mammal", url=URL("mammals/dog"), is_button=True),
+            ]
+        )
+        row3 = dict(
+            cells=[
+                dict(text="Owl"),
+                dict(text="2"),
+                dict(text="Bird", url=URL("bird/owl"), is_button=True),
+            ]
+        )
         return dict(
             page=int(page),
             search_placeholder=self.search_placeholder,
             has_more=True,
-            rows = [header, row1, row2, row3]
+            rows=[header, row1, row2, row3],
         )
