@@ -19,15 +19,20 @@ def index():
     return {}
 
 
-@action("simple_page")
-def simple_page():
+@action("page_without_template")
+def page_without_template():
     return "ok"
 
 
-@action("error")
+@action("page_with_template")
+@action.uses("page_with_template.html")
+def page_with_template():
+    return {"message": "Hello World"}
+
+
+@action("page_with_error")
 def error():
     1 / 0
-
 
 @action("session/counter")
 @action.uses(session)
