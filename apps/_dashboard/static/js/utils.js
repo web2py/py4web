@@ -216,8 +216,10 @@ utils.load_and_trap = function (method, url, form_data, target) {
     /* if target is not there, fill it with something that there isn't in the page*/
     if (target === void 0 || target === '') target = 'py4web_none';
     var onsuccess = function(res) {
-        Q('#'+target)[0].innerHTML = res.data;
+        Q('#'+target)[0].innerHTML = res.data;        
         utils.trap_form(url, target);
+        var flash = res.headers['py4web-flash']
+        if (flash) utils.flash(JSON.parse(flash));
     };
     var onerror = function(res) {
         alert('ajax error');

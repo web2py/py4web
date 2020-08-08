@@ -52,7 +52,7 @@ def flash_example_naive():
 @action("flash_example_fixture")
 @action.uses(flash)
 def flash_example_fixture():
-    flash.set("you have been redirected")
+    flash.set("you have been redirected <test!>", sanitize=True)
     redirect("flash_next")
 
 
@@ -193,7 +193,6 @@ def hello_world(msg):
 @unauthenticated.callback("click me")
 def a_callback(msg):
     import logging
-
     logging.info(msg)
 
 
@@ -233,14 +232,16 @@ def auth_form(name):
 
 # a py4web component is a action that returns a part of a page, not a full page
 # it can use templates but they should not extend a layout
-@action("mycomponent", method=["GET", "POST"])
+@action("mycomponent.load", method=["GET", "POST"])
+@action.uses(flash)
 def mycomponent():
+    flash.set('Welcome')
     form = Form([Field("your_name")])
     return DIV("Hello " + request.forms["your_name"] if form.accepted else form).xml()
 
 
 # a py4web component loader is a page that loads page parts via ajax
 @action("component_loader")
-@action.uses("component_loader.html")
+@action.uses(flash, "component_loader.html")
 def component_loader():
     return dict()

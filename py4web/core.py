@@ -329,14 +329,19 @@ class Flash(Fixture):
             response.set_cookie("py4web-flash", json.dumps(Flash.local.flash))
             Flash.local.flash = None
 
-    def set(self, message, class_=""):
+    def set(self, message, class_="", sanitize=True):
         # we set a flash message
+        if sanitize:
+            message = yatl.sanitizer.xmlescape(message)
         Flash.local.flash = {"message": message, "class": class_}
 
     def transform(self, data, shared_data=None):
         # if we have a valid flash message, we inject it in the response dict
-        if Flash.local.flash and isinstance(data, dict):
-            data["flash"] = Flash.local.flash
+        if Flash.local.flash:
+            if isinstance(data, dict):
+                data["flash"] = Flash.local.flash
+            else:
+                response.headers["py4web-flash"] = json.dumps(Flash.local.flash)    
         return data
 
 
