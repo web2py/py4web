@@ -1,5 +1,5 @@
 import os
-from py4web import action, request, abort, redirect, URL, Field
+from py4web import action, request, abort, redirect, URL, Field, HTTP
 from yatl.helpers import A
 from py4web.utils.form import Form, FormStyleBulma
 from py4web.utils.grid import Grid
@@ -31,21 +31,53 @@ def page_with_template():
 
 
 @action("page_with_error")
-def error():
+def page_with_errorr():
     1 / 0
 
+@action("page_with_raise")
+def page_with_raise():
+    raise HTTP(400)
+
+
+@action("page_with_redirect")
+def page_with_redirect():
+    redirect(URL('target'))
+
+
+@action("target")
+def target():
+    return "tagret"
+
+
+@action("page_with_parameters/<x>/<y>/<z>")
+def page_with_parameters(x,y,z):
+    return repr({"x": x, "y": y, "z": z})
+
+
+@action("page_with_query")
+def page_with_query():
+    return repr(dict(request.query))
+
+@action("page_with_postback", method=['GET', 'POST'])
+def page_with_postback():
+    return ('<html><body><pre>%s</pre>' +
+            '<form method="POST" action="%s" enctype="multipart/form-data">' +
+            '<input type="hidden" name="data" value="dummy"/>' +
+            '<button>Click</button></form></body></html') % (
+            dict(request.forms), URL('page_with_postback'))
+
 @action("session/counter")
-@action.uses(session)
+@action.uses(session, 'session_counter.html')
 def session_counter():
     session["counter"] = session.get("counter", 0) + 1
-    return str(session.get("counter"))
+    return {"counter": session.get("counter")}
 
 
 @action("session/clear")
 @action.uses(session)
 def session_clear():
     session.clear()
-    return "done"
+    redirect(URL('session/counter'))
 
 
 @action("flash_example")

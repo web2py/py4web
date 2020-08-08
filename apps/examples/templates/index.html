@@ -6,16 +6,40 @@
     <th colspan="2" class="is-info">Basic Examples</th>
   </tr>
   <tr>
-    <td>A normal page using a template</td>
-    <td><a class="button" href="[[=URL('index')]]">example</a></td>
+    <td>A normal page without template</td>
+    <td><a class="button" href="[[=URL('page_without_template')]]">example</a></td>
   </tr>
   <tr>
-    <td>A simple page without template</td>
-    <td><a class="button" href="[[=URL('simple_page')]]">example</a></td>
+    <td>A normal page with template</td>
+    <td><a class="button" href="[[=URL('page_with_template')]]">example</a></td>
   </tr>
   <tr>
     <td>A page causing an internal error</td>
-    <td><a class="button" href="[[=URL('error')]]">example</a></td>
+    <td><a class="button" href="[[=URL('page_with_error')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>A missing page</td>
+    <td><a class="button" href="[[=URL('missing_page')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>Page which raises HTTP</td>
+    <td><a class="button" href="[[=URL('page_with_raise')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>Page with a redirect</td>
+    <td><a class="button" href="[[=URL('page_with_redirect')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>Page with parameters</td>
+    <td><a class="button" href="[[=URL('page_with_parameters/a/b/c')]]">example</a></td>
+  </tr>
+  <tr>
+    <td>Page with query string</td>
+    <td><a class="button" href="[[=URL('page_with_query', vars=dict(a='b'))]]">example</a></td>
+  </tr>
+  <tr>
+    <td>Page with a postback</td>
+    <td><a class="button" href="[[=URL('page_with_postback')]]">example</a></td>
   </tr>
   <tr>
     <th colspan="2" class="is-info">Fixtues: Flash</th>
@@ -27,6 +51,13 @@
   <tr>
     <td>A page with a flash (with redirect and fixture)</td>
     <td><a class="button" href="[[=URL('flash_example_fixture')]]">example</a></td>
+  </tr>
+  <tr>
+    <th colspan="2" class="is-info">Fixtues: Session</th>
+  </tr>  
+  <tr>
+    <td>A page with a counter</td>
+    <td><a class="button" href="[[=URL('session/counter')]]">example</a></td>
   </tr>
   <tr>
     <th colspan="2" class="is-info">Helpers</th>
