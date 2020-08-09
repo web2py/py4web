@@ -83,7 +83,7 @@ def session_clear():
 @action("flash_example")
 @action.uses("flash_example.html")
 def flash_example_naive():
-    return dict(flash={"message": "hello", "class": "is-danger"})
+    return dict(flash={"message": "hello", "class": "error"})
 
 
 @action("flash_example_fixture")
