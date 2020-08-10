@@ -9,11 +9,11 @@
  Grid:
    row, col, c25, c33, c50, c66, c75
  Colors:
-   black, white, normal, success, warning, error, info, transparent
+   black, white, default, success, warning, error, info, transparent
  Effects:
    accordion, modal
  Utils:
-   full, padded, close
+   full, padded, notification, close
 
  License: MIT
  *****************************************************/
@@ -143,7 +143,7 @@ tbody tr {
 }
 
 td, th {
-  padding: 5px;
+  padding: 4px 8px;
   text-align: left;
   vertical-align:top
 }
@@ -208,10 +208,6 @@ input[type='color']:focus, input[type='date']:focus, input[type='datetime']:focu
 
 select {
   background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 8" width="30"><path fill="%23d1d1d1" d="M0,0l6,8l6-8"/></svg>') center right no-repeat;
-}
-
-select:focus {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 8" width="30"><path fill="%239b4dca" d="M0,0l6,8l6-8"/></svg>');
 }
 
 select[multiple] {
@@ -290,7 +286,7 @@ body > div {
 .transparent{background-color:transparent;color:#111}
 .default{background-color:#0074d9;color:white}
 .success{background-color:#2ecc40;color:white}
-.warning{background-color:#ffdc00;color:white}
+.warning{background-color:#ffdc00;color:#111}
 .error{background-color:#cc1f00;color:white}
 .info{background-color:#f1f1f1;color:#111}
 .white{background-color:white;color:#111}
@@ -300,9 +296,12 @@ body > div {
  navigation and nested menu
  ****************************************************/
 
-nav{
+nav {
   position:relative;
-  padding: 0 1.5em
+  padding: 0 1.5em;
+  display: table;
+  width: 100vw;
+  height: 40px;
 }
 
 nav ul {
@@ -311,22 +310,49 @@ nav ul {
   padding:0
 }
 
+nav > input[type=checkbox], nav > label {
+  display: none;
+}
+
 @media (min-width:600px) {
-  nav > ul {
-    display: inline-table
+  nav > * {
+    display: table-cell;
+    vertical-align: middle;
+  } 
+  nav > ul:last-child {
+    float:right;
   }
-   nav > ul ~ ul {
-    float:right
-  }
-   nav > ul > li {
+  nav > ul > li {
     padding: 1.5em 0.5em
   }
 }
 
 @media (max-width:600px) {
-  nav > ul > li {
+  nav > ul {
+    display: table-column;
+    vertical-align: middle;
+  } 
+  nav > label {
+    position: absolute;
     display: inline-block;
-     padding: 0.5em 0.2em
+    top: 5px;
+    right: 20px;
+    font-size: 2em;
+  }
+  nav > a {
+    display: inline-block;
+    padding-top: 8px !important;
+  }  
+  nav > ul {
+    display: block;
+  }    
+  nav > input[type=checkbox]:not(:checked) ~ ul {
+    display: none;
+  }    
+  nav > ul > li {
+    display: block;
+    text-align: center;
+    padding: 0.5em 0.2em;
   }
 }
 
@@ -349,7 +375,7 @@ nav.black ul ul a {
   color: black
 }
 
-nav.black a {
+nav.black a, nav.black > label {
   color: white
 }
 
@@ -469,10 +495,11 @@ nav>li>ul>li:first-child:before{
  ****************************************************/
 
 .notification {
-  margin: 20px auto 0 auto;
+  margin: 20px 25px 0 25px;
   padding: 20px 50px 20px 20px;
   position: relative;
   border-radius: 5px;
+  color: black;
 }
 
 .notification .close {
@@ -488,4 +515,3 @@ nav>li>ul>li:first-child:before{
 .fill {
   width: 100%;
 }
-
