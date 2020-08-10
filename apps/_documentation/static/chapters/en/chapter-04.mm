@@ -15,12 +15,16 @@ PY4WEB comes with some pre-defined fixtures for actions that need sessions, data
 PY4WEB, by default uses the yatl template language and provides a fixture for it.
 
 ``
-from py4web import action, Template
+from py4web import action
+from py4web.core import Template
 
 @action('index')
-@action.uses(Template('index.html', delimiters='[[ ]]')
-def index() return dict()
+@action.uses(Template('index.html', delimiters='[[ ]]'))
+def index(): 
+    return dict(message="Hello world")
 ``:python
+
+Note: This example assumes that you created the application from the scaffolding app, so that the template index.html is already created for you.
 
 The Template object is a Fixture. It transforms the ``dict()`` returned by the action into a string by using the ``index.html`` template file. In a later chapter we will provide an example of how to define a custom fixture to use a different template language, for example Jinja2.
 
@@ -38,7 +42,7 @@ Notice that py4web template files are cached in RAM. The py4web caching object i
 The session object is also a Fixture. Here is a typical example of usage to implement a counter.
 
 ``
-from py4web import Session
+from py4web import Session, action
 session = Session(secret='my secret key')
 
 @action('index')
@@ -59,7 +63,7 @@ In py4web sessions are dictionaries but they are stored using JSON (JWT specific
 By default py4web sessions never expire (unless they contain login information, but that is another story) even if an expiration can be set. Other parameters can be specified as well:
 
 ``
-session = Session(secret='my secret key'.
+session = Session(secret='my secret key',
                   expiration=3600,
                   algorithm='HS256',
                   storage=None,
@@ -161,6 +165,7 @@ We can easily combine multiple fixtures. Here, as example, we make action with a
 ``
 from py4web import action, Session, Translator, DAL
 from py4web.utils.dbstore import DBStore
+import os
 db = DAL('sqlite:memory')
 session =  Session(storage=DBStore(db))
 T_FOLDER = os.path.join(os.path.dirname(__file__), 'translations')
@@ -170,9 +175,9 @@ T = Translator(T_FOLDER)
 @action.uses(session, T)
 def index():
     counter = session.get('counter', -1)
-    counter +- 1
+    counter += 1
     session['counter'] = counter
-    return T("You have been here {n} times").format(n=counter)
+    return str(T("You have been here {n} times").format(n=counter))
 ``:python
 
 Now create the following translation file ``translations/en.json``:
@@ -221,11 +226,12 @@ and set your browser preference to Italian.
 
 We have already used the ``DAL`` fixture in the context of sessions but maybe you want direct access to the DAL object for the purpose of accessing the database, not just sessions.
 
-PY4WEB, by default, uses the PyDAL (Python Database Abstraction Layer) which is documented in a later chapter. Here is an example:
+PY4WEB, by default, uses the PyDAL (Python Database Abstraction Layer) which is documented in a later chapter. Here is an example, please remember to create the ``databases`` folder under your project in case it doesn't exist:
 
 ``
 from datetime import datetime
-from py4web import action, request, DAL
+from py4web import action, request, DAL, Field
+import os
 
 DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
 db = DAL('sqlite://storage.db', folder=DB_FOLDER, pool_size=1)
@@ -236,7 +242,7 @@ db.commit()
 @action.uses(db)
 def index():
     client_ip = request.environ.get('REMOTE_ADDR')
-    db.visit_log.insert(client_ip=client_id, timestamp=datetime.utcnow())
+    db.visit_log.insert(client_ip=client_ip, timestamp=datetime.utcnow())
     return "Your visit was stored in database"
 ``:python
 
@@ -248,6 +254,8 @@ Since fixtures are shared by multiple actions you are not allowed to change thei
 There is one exception to this rule. Actions can change some attributes of database fields:
 
 ``
+from py4web import Field
+from py4web.utils.form import Form
 db.define_table('thing', Field('name', writable=False))
 
 @action('index')
@@ -258,6 +266,9 @@ def index():
     return dict(form=form)
 )
 ``:python
+
+Note thas this code will only be able to display a form, to process it after submit, additional code needs to be added, as we will see later on.
+This example is assuming that you created the application from the scaffolding app, so that a generic.html is already created for you.
 
 The ``readable``, ``writable``, ``default``, ``update``, and ``require`` attributes of ``db.{table}.{field}`` are special objects of class ``ThreadSafeVariable`` defined the ``threadsafevariable`` module. These objects are very much like Python thread local objects but they are re-initialized at every request using the value specified outside of the action. This means that actions can safely change the values of these attributes.
 
