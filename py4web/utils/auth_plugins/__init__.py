@@ -122,6 +122,8 @@ class OAuth2(SSO):
         )
         scope = self.parameters.get("scope")
         state = self.state_generator()
+        global passedstate
+        passedstate=state
         if scope:
             data["scope"] = scope
             data["include_granted_scopes"] = "true"
