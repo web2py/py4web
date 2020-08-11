@@ -1,19 +1,20 @@
 /*****************************************************
- no.css version 2020-08-08.1
+ no.css version 2020-08-09.1
  
  Designed to style pages without need for custom classes.
- headers, paragraphs, buttons, tables, forms, nav menus are styled automatically.
- The only custom classes are color names and grid row/col sizes.
- It also implements pure CSS accordions and modals.
+ headers, paragraphs, buttons, tables, forms, 
+ nav menus, alerts, and dialogs are styled automatically.
+ The only custom classes are color names, grid column sizes,
+ and a few convenience ones.
 
  Grid:
-   row, col, c25, c33, c50, c66, c75
+   columns, col, c25, c33, c50, c66, c75
  Colors:
-   black, white, normal, success, warning, error, info, transparent
+   black, white, default, success, warning, error, info, transparent
  Effects:
-   accordion, modal
+   accordion, close
  Utils:
-   full, padded, close
+   fill, padded
 
  License: MIT
  *****************************************************/
@@ -143,7 +144,7 @@ tbody tr {
 }
 
 td, th {
-  padding: 5px;
+  padding: 4px 8px;
   text-align: left;
   vertical-align:top
 }
@@ -163,7 +164,7 @@ thead th {
  buttons
  ****************************************************/
 
-.button, button, input[type='button'], input[type='reset'], input[type='submit'] {
+[role="button"], button, input[type='button'], input[type='reset'], input[type='submit'] {
   background-color: #0074d9;
   border-radius: 5px;
   color: #fff;
@@ -180,7 +181,7 @@ thead th {
   min-width: 100px;
 }
 
-.button:focus, .button:hover, button:focus, button:hover, input[type='button']:focus, input[type='button']:hover, input[type='reset']:focus, input[type='reset']:hover, input[type='submit']:focus, input[type='submit']:hover {
+[role="button"]:focus, [role="button"]:hover, button:focus, button:hover, input[type='button']:focus, input[type='button']:hover, input[type='reset']:focus, input[type='reset']:hover, input[type='submit']:focus, input[type='submit']:hover {
    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
@@ -208,10 +209,6 @@ input[type='color']:focus, input[type='date']:focus, input[type='datetime']:focu
 
 select {
   background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 8" width="30"><path fill="%23d1d1d1" d="M0,0l6,8l6-8"/></svg>') center right no-repeat;
-}
-
-select:focus {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 8" width="30"><path fill="%239b4dca" d="M0,0l6,8l6-8"/></svg>');
 }
 
 select[multiple] {
@@ -247,12 +244,12 @@ body > div {
   margin-right: auto;
 }
 
-.row {
+.columns {
   display: table;
   width: 100%;
 }
 
-.row .row {
+.columns .columns {
   margin: 0 -1.5em;
 }
 
@@ -277,7 +274,7 @@ body > div {
   }
 }
 
-.row:after {
+.columns:after {
   content: "";
   clear: both;
   display: table;
@@ -290,7 +287,7 @@ body > div {
 .transparent{background-color:transparent;color:#111}
 .default{background-color:#0074d9;color:white}
 .success{background-color:#2ecc40;color:white}
-.warning{background-color:#ffdc00;color:white}
+.warning{background-color:#ffdc00;color:#111}
 .error{background-color:#cc1f00;color:white}
 .info{background-color:#f1f1f1;color:#111}
 .white{background-color:white;color:#111}
@@ -300,9 +297,12 @@ body > div {
  navigation and nested menu
  ****************************************************/
 
-nav{
+nav {
   position:relative;
-  padding: 0 1.5em
+  padding: 0 1.5em;
+  display: table;
+  width: 100vw;
+  height: 40px;
 }
 
 nav ul {
@@ -311,22 +311,49 @@ nav ul {
   padding:0
 }
 
+nav > input[type=checkbox], nav > label {
+  display: none;
+}
+
 @media (min-width:600px) {
-  nav > ul {
-    display: inline-table
+  nav > * {
+    display: table-cell;
+    vertical-align: middle;
+  } 
+  nav > ul:last-child {
+    float:right;
   }
-   nav > ul ~ ul {
-    float:right
-  }
-   nav > ul > li {
+  nav > ul > li {
     padding: 1.5em 0.5em
   }
 }
 
 @media (max-width:600px) {
-  nav > ul > li {
+  nav > ul {
+    display: table-column;
+    vertical-align: middle;
+  } 
+  nav > label {
+    position: absolute;
     display: inline-block;
-     padding: 0.5em 0.2em
+    top: 5px;
+    right: 20px;
+    font-size: 2em;
+  }
+  nav > a {
+    display: inline-block;
+    padding-top: 8px !important;
+  }  
+  nav > ul {
+    display: block;
+  }    
+  nav > input[type=checkbox]:not(:checked) ~ ul {
+    display: none;
+  }    
+  nav > ul > li {
+    display: block;
+    text-align: center;
+    padding: 0.5em 0.2em;
   }
 }
 
@@ -349,7 +376,7 @@ nav.black ul ul a {
   color: black
 }
 
-nav.black a {
+nav.black a, nav.black > label {
   color: white
 }
 
@@ -416,7 +443,7 @@ nav>li>ul>li:first-child:before{
  modal
  ****************************************************/
 
-.modal {
+[role="dialog"] > div {
   position:fixed;
   z-index:9999;
   top:0;
@@ -429,17 +456,14 @@ nav>li>ul>li:first-child:before{
   visibility:hidden;
   opacity:0;
 }
+[role="dialog"] > input[type=checkbox] { display: none !important; }
+input[type=checkbox]:checked ~ div {visibility:visible; opacity:1}
+[role="dialog"] > div > *:not(.close) {width: 66%; margin-left:auto; margin-right:auto; border-radius: 5px;}
+[role="dialog"] > div > .close, [role="alert"] > .close {
+  background: url('data:image/svg+xml;utf8,<svg fill="%23000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M 12 2 C 6.4889971 2 2 6.4889971 2 12 C 2 17.511003 6.4889971 22 12 22 C 17.511003 22 22 17.511003 22 12 C 22 6.4889971 17.511003 2 12 2 z M 12 4 C 16.430123 4 20 7.5698774 20 12 C 20 16.430123 16.430123 20 12 20 C 7.5698774 20 4 16.430123 4 12 C 4 7.5698774 7.5698774 4 12 4 z M 8.7070312 7.2929688 L 7.2929688 8.7070312 L 10.585938 12 L 7.2929688 15.292969 L 8.7070312 16.707031 L 12 13.414062 L 15.292969 16.707031 L 16.707031 15.292969 L 13.414062 12 L 16.707031 8.7070312 L 15.292969 7.2929688 L 12 10.585938 L 8.7070312 7.2929688 z"/></svg>') center right no-repeat;
+  width:24px; height:24px; cursor: pointer; position:absolute; top:15px; right:15px;
+}
 
-.modal:target {visibility:visible; opacity:1}
-.modal div {width: 66%; margin-left:auto; margin-right:auto; border-radius: 5px;}
-.modal .close:not(.button) {
-  position:absolute; top:10px; right:30px; font-size:20px;
-  transition:all 200ms; text-align:center; width:24px; height:24px; 
-  border-radius:100px; background: white; color: black;
-}
-.modal .close:not(.button):after, .notification .close:not(.button):after {
-  content: '✖';
-}
 /****************************************************
  accordion
  ****************************************************/
@@ -468,17 +492,18 @@ nav>li>ul>li:first-child:before{
  convenience
  ****************************************************/
 
-.notification {
-  margin: 20px auto 0 auto;
+[role="alert"] {
+  margin: 20px 25px 0 25px;
   padding: 20px 50px 20px 20px;
   position: relative;
   border-radius: 5px;
+  color: black;
 }
 
-.notification .close {
+[role="alert"] > .close {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 10px;
+  right: 10px;
 }
 
 .padded {
@@ -488,4 +513,3 @@ nav>li>ul>li:first-child:before{
 .fill {
   width: 100%;
 }
-

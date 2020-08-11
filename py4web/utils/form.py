@@ -42,7 +42,7 @@ class FormStyleFactory:
             "inner": "",
             "label": "",
             "info": "",
-            "error": "error",
+            "error": "py4web-validation-error",
             "submit": "",
             "input": "",
             "input[type=text]": "",
@@ -201,7 +201,7 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
         "inner": "control",
         "label": "label",
         "info": "help",
-        "error": "help is-danger",
+        "error": "help is-danger py4web-validation-error",
         "submit": "button",
         "input": "input",
         "input[type=text]": "input",
@@ -442,7 +442,12 @@ class Form(object):
                     _type="hidden", _name=key, _value=self.hidden[key]
                 )
                 helper["form"].append(helper["controls"]["hidden_widgets"][key])
+
+            helper["controls"]["begin"] = XML(''.join(str(helper["controls"]["begin"]) +
+                                      str(helper["controls"]["hidden_widgets"][hidden_field])
+                                      for hidden_field in helper["controls"]["hidden_widgets"]))
             self.cached_helper = helper
+
         return self.cached_helper
 
     @property
