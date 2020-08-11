@@ -16,7 +16,7 @@ DB_FOLDER = os.path.join(APP_FOLDER, "databases")
 DB_URI = "sqlite://storage.db"
 DB_POOL_SIZE = 1
 DB_MIGRATE = True
-DB_FAKE_MIGRATE = False # maybe?
+DB_FAKE_MIGRATE = False  # maybe?
 
 # send email on regstration
 VERIFY_EMAIL = False

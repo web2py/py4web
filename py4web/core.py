@@ -83,6 +83,7 @@ __all__ = [
     "HTTP",
     "Session",
     "Cache",
+    "Flash",
     "user_in",
     "Translator",
     "URL",
@@ -257,7 +258,7 @@ class Fixture:
     def on_error(self):
         pass  # called when a request errors
 
-    def on_success(self):
+    def on_success(self, status):
         pass  # called when a request is successful
 
     def transform(
@@ -270,7 +271,7 @@ class Translator(pluralize.Translator, Fixture):
     def on_request(self):
         self.select(request.headers.get("Accept-Language", "en"))
 
-    def on_success(self):
+    def on_success(self, status):
         response.headers["Content-Language"] = self.local.tag
 
 
@@ -281,7 +282,7 @@ class DAL(pydal.DAL, Fixture):
     def on_error(self):
         self.rollback()
 
-    def on_success(self):
+    def on_success(self, status):
         self.commit()
 
 
@@ -291,6 +292,58 @@ for _ in ["readable", "writable", "default", "update", "requires"]:
 
 # this global object will be used to store their state to restore it for every http request
 ICECUBE = {}
+
+#########################################################################################
+# Flash Fixture
+#########################################################################################
+
+
+class Flash(Fixture):
+    """
+    flash = Flash(session)
+    
+    #acton('index.html')
+    @action.uses(flash)
+    def index():
+        flash.set('hello', class_='important')        
+        return dict()
+
+    Flash messages are added to the dict and, upon redirect, carry forward
+    Also notice all Flash objects share the same threading local so act as singletons
+    """
+
+    local = threading.local()
+
+    def on_request(self):
+        # when a new request arrives we look for a flash message in the cookie
+        flash = request.get_cookie("py4web-flash")
+        if flash:
+            Flash.local.flash = json.loads(flash)
+            response.delete_cookie("py4web-flash")
+        else:
+            Flash.local.flash = None
+
+    def on_success(self, status):
+        # if we redirect and have a flash message we move it to the session
+        if status == 303 and Flash.local.flash:
+            response.set_cookie("py4web-flash", json.dumps(Flash.local.flash))
+            Flash.local.flash = None
+
+    def set(self, message, class_="", sanitize=True):
+        # we set a flash message
+        if sanitize:
+            message = yatl.sanitizer.xmlescape(message)
+        Flash.local.flash = {"message": message, "class": class_}
+
+    def transform(self, data, shared_data=None):
+        # if we have a valid flash message, we inject it in the response dict
+        if Flash.local.flash:
+            if isinstance(data, dict):
+                data["flash"] = Flash.local.flash
+            else:
+                response.headers["py4web-flash"] = json.dumps(Flash.local.flash)    
+        return data
+
 
 #########################################################################################
 # The Template Rendered Fixture
@@ -443,6 +496,11 @@ class Session(Fixture):
     def __getitem__(self, key):
         return self.local.data[key]
 
+    def __delitem__(self, key):
+        if key in self.local.data:
+            self.local.changed = True
+            del self.local.data[key]
+
     def __setitem__(self, key, value):
         self.local.changed = True
         self.local.data[key] = value
@@ -466,7 +524,7 @@ class Session(Fixture):
         if self.local.changed:
             self.save()
 
-    def on_success(self):
+    def on_success(self, status):
         if self.local.changed:
             self.save()
 
@@ -593,10 +651,10 @@ class action:
                     ret = func(*args, **kwargs)
                     for obj in fixtures:
                         ret = obj.transform(ret, shared_data)
-                    [obj.on_success() for obj in fixtures]
+                    [obj.on_success(200) for obj in fixtures]
                     return ret
-                except HTTP:
-                    [obj.on_success() for obj in fixtures]
+                except HTTP as http:
+                    [obj.on_success(http.status) for obj in fixtures]
                     raise
                 except Exception:
                     [obj.on_error() for obj in fixtures]

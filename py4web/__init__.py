@@ -11,6 +11,7 @@ from .core import (
     Translator,  # from pluralize
     Session,
     Cache,
+    Flash,
     user_in,  # additional fixtures
     URL,  # custom helper
     check_compatible,
@@ -18,4 +19,4 @@ from .core import (
 
 __author__ = "Massimo Di Pierro <massimo.dipierro@gmail.com>"
 __license__ = "BSDv3"
-__version__ = "1.20200731.1"
+__version__ = "1.20200810.1"

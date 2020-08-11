@@ -4,43 +4,60 @@
     <base href="[[=URL('static')]]/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
-    <link rel="stylesheet" href="css/bulma.css">
-    <link rel="stylesheet" href="[[=URL('static', 'font-awesome-4.7.0/css/font-awesome.css')]]">
-    [[block page_head]]<!-- individual pages can customize head here -->[[end]]
+    <link rel="stylesheet" href="css/no.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <style>.py4web-validation-error{margin-top:-16px; font-size:0.8em;color:red}</style>
+    [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
   <body>
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="[[=URL('index')]]">
-          <strong>Examples</strong>
-        </a>
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="left-navbar"
-           onclick="this.classList.toggle('is-active');document.getElementById(this.dataset.target).classList.toggle('is-active');">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-      <div id="left-navbar" class="navbar-menu">
-        <div class="navbar-start">
-          [[block page_menu_items]]<!-- individual pages can add menu items here -->[[end]]
-        </div>
-      </div>
-    </nav>
-    <section class="section">
-      <!-- beginning of HTML inserted by extending template -->
-      [[include]]
-      <!-- end of HTML inserted by extending template -->
-    </section>
-    <footer class="footer">
-      <div class="content has-text-centered">
+    <header>
+      <nav class="black">
+        <a href="[[=URL('index')]]"><b>py4web examples</b></a>
+        <label for="hamburger">☰</label>
+        <input type="checkbox" id="hamburger">
+        <ul>
+          [[block page_menu_items]][[end]]
+        </ul>
+        <ul>
+          [[if globals().get('user'):]]
+          <li>
+            <a class="navbar-link is-primary">
+              [[=globals().get('user',{}).get('email')]]
+            </a>
+            <ul>
+              <li><a href="[[=URL('auth/logout')]]">Logout</a></li>
+            </ul>
+          </li>
+          [[else:]]
+          <li>
+            Login
+            <ul>
+              <li><a href="[[=URL('auth/register')]]">Sign up</a></li>
+              <li><a href="[[=URL('auth/login')]]">Log in</a></li>
+            </ul>
+          </li>
+          [[pass]]
+        </ul>
+      </nav>
+      <div class="padded" id="py4web-flash"></div>
+    </header>
+    <!-- beginning of HTML inserted by extending template -->
+    <div>
+      <main class="padded">
+        [[include]]
+      </main>
+    </div>
+    <!-- end of HTML inserted by extending template -->
+    <footer class="black padded">
+      <p>
         Made with py4web
-      </div>
+      </p>
     </footer>
-    <script src="js/sugar.min.js"></script>
-    <script src="js/axios.min.js"></script>
-    <script src="js/vue.js"></script>
-    <script src="js/utils.js"></script>
-    [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
   </body>
+  <script src="js/sugar.min.js"></script>
+  <script src="js/axios.min.js"></script>
+  <script src="js/vue.min.js"></script>
+  <script src="js/utils.js"></script>
+  [[if globals().get('flash'):]]<script>utils.flash([[=XML(flash)]]);</script>[[pass]]
+  [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>

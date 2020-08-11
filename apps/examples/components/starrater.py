@@ -3,6 +3,7 @@ from yatl.helpers import XML
 from py4web.utils.url_signer import URLSigner
 from py4web.core import Fixture
 
+
 class StarRater(Fixture):
 
     STARRATER = '<starrater url="{url}"></starrater>'
@@ -45,5 +46,5 @@ class StarRater(Fixture):
     def set_stars(self, id=None):
         """Sets the number of stars."""
         # This is a test implementation that should be over-ridden.
-        print("Number of stars set to:", id, int(request.json['num_stars']))
+        print("Number of stars set to:", id, int(request.json["num_stars"]))
         return "ok"

@@ -7,7 +7,7 @@ if (!String.prototype.format) {
     };
 }
 
-window.Q = function(sel) { return document.querySelectorAll(sel); };
+window.Q = function(sel, el) { return (el||document).querySelectorAll(sel); };
 
 utils = {};
 
@@ -216,8 +216,10 @@ utils.load_and_trap = function (method, url, form_data, target) {
     /* if target is not there, fill it with something that there isn't in the page*/
     if (target === void 0 || target === '') target = 'py4web_none';
     var onsuccess = function(res) {
-        Q('#'+target)[0].innerHTML = res.data;
+        Q('#'+target)[0].innerHTML = res.data;        
         utils.trap_form(url, target);
+        var flash = res.headers['py4web-flash']
+        if (flash) utils.flash(JSON.parse(flash));
     };
     var onerror = function(res) {
         alert('ajax error');
@@ -225,6 +227,37 @@ utils.load_and_trap = function (method, url, form_data, target) {
     axios[method](url, form_data).then(onsuccess, onerror);
 };
 
-Q('py4web-component').forEach(function(element) {
-    utils.load_and_trap('GET', element.attributes.url.value, null, element.attributes.id.value);
-});
+utils.handle_components = function() {
+    Q('py4web-component').forEach(function(element) {
+        utils.load_and_trap('GET', element.attributes.url.value, null, element.attributes.id.value);
+    });    
+};
+
+utils.handle_flash = function() {
+    var element = Q('#py4web-flash')[0];
+    element.dataset.counter = 0;
+    var make_delete_handler = function(node) {
+        return function(event) {
+            node.parentNode.removeChild(node);
+        };
+    };
+    var make_handler = function(element) {
+        return function (event) { 
+            var id = 'notification-{0}'.format([element.dataset.counter]);
+            element.dataset.counter = parseInt(element.dataset.counter) + 1;
+            var node = document.createElement("div");
+            node.innerHTML = '<div role="alert"><span class="close"></span>{0}</div>'.format([event.detail.message]);
+            node = Q('[role="alert"]', node)[0];
+            node.classList.add(event.detail.class||'info');
+            element.appendChild(node);
+            Q('[role="alert"] .close',node)[0].onclick = make_delete_handler(node);
+        };
+    };
+    if (element) {
+        element.addEventListener('flash', make_handler(element), false);
+        utils.flash = function(detail) {element.dispatchEvent(new CustomEvent('flash', {detail: detail}));};
+    }
+};
+
+utils.handle_components();
+utils.handle_flash();

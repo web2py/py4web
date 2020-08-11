@@ -20,13 +20,14 @@ from yatl.helpers import (
     XML,
 )
 
+
 def get_options(validators):
     options = None
     if validators:
         if not isinstance(validators, (list, tuple)):
             validators = [validators]
         for item in validators:
-            if hasattr(item, 'options'):
+            if hasattr(item, "options"):
                 options = item.options
                 break
         if callable(options):
@@ -41,7 +42,7 @@ class FormStyleFactory:
             "inner": "",
             "label": "",
             "info": "",
-            "error": "error",
+            "error": "py4web-validation-error",
             "submit": "",
             "input": "",
             "input[type=text]": "",
@@ -59,10 +60,9 @@ class FormStyleFactory:
 
     def produce(self, table, vars, errors, readonly, deletable, classes=None):
         self.classes.update(classes or {})
-        form = FORM(
-            _method="POST", _action=request.url, _enctype="multipart/form-data"
-        )
+        form = FORM(_method="POST", _action=request.url, _enctype="multipart/form-data")
         controls = dict(
+            labels=dict(),
             widgets=dict(),
             hidden_widgets=dict(),
             errors=dict(),
@@ -135,10 +135,10 @@ class FormStyleFactory:
                 option_tags = [
                     OPTION(v, _value=k, _selected=(not k is None and k in value))
                     for k, v in get_options(field.requires)
-                    ]
+                ]
                 control = SELECT(
                     *option_tags, _id=input_id, _name=field.name, _multiple=multiple
-                     )
+                )
             else:
                 field_type = "password" if field.type == "password" else "text"
                 control = INPUT(
@@ -154,6 +154,7 @@ class FormStyleFactory:
                 key += "[type=%s]" % (control["_type"] or "text")
             control["_class"] = self.classes.get(key, "")
 
+            controls["labels"][field.name] = field.label
             controls["widgets"][field.name] = control
             if error:
                 controls["errors"][field.name] = error
@@ -167,8 +168,8 @@ class FormStyleFactory:
                     _class=class_outer,
                 )
             )
-            if 'id' in vars:
-                form.append(INPUT(_name='id',_value=vars['id'],_hidden=True))
+            if "id" in vars:
+                form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
         if deletable:
             controls["delete"] = INPUT(
                 _type="checkbox",
@@ -200,7 +201,7 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
         "inner": "control",
         "label": "label",
         "info": "help",
-        "error": "help is-danger",
+        "error": "help is-danger py4web-validation-error",
         "submit": "button",
         "input": "input",
         "input[type=text]": "input",
@@ -320,10 +321,10 @@ class Form(object):
                 if not post_vars.get("_delete"):
                     validated_vars = {}
                     for field in self.table:
-                        if field.writable and field.readable and field.type != 'id':
+                        if field.writable and field.readable and field.type != "id":
                             original_value = post_vars.get(field.name)
                             (value, error) = field.validate(original_value, record_id)
-                            if field.type == 'password' and record_id and value is None:
+                            if field.type == "password" and record_id and value is None:
                                 continue
                             if field.type == "upload":
                                 value = request.files.get(field.name)
@@ -364,7 +365,7 @@ class Form(object):
                 name: table[name].formatter(self.record[name])
                 for name in table.fields
                 if name in self.record
-                }
+            }
 
     def _get_key(self):
         if self.csrf_session is not None:
@@ -425,7 +426,7 @@ class Form(object):
                 self.table, self.vars, self.errors, self.readonly, self.deletable
             )
             if self.action:
-                helper['_action'] = self.action
+                helper["_action"] = self.action
             if self.form_name:
                 helper["controls"]["hidden_widgets"]["formname"] = INPUT(
                     _type="hidden", _name="_formname", _value=self.form_name
@@ -441,7 +442,12 @@ class Form(object):
                     _type="hidden", _name=key, _value=self.hidden[key]
                 )
                 helper["form"].append(helper["controls"]["hidden_widgets"][key])
+
+            helper["controls"]["begin"] = XML(''.join(str(helper["controls"]["begin"]) +
+                                      str(helper["controls"]["hidden_widgets"][hidden_field])
+                                      for hidden_field in helper["controls"]["hidden_widgets"]))
             self.cached_helper = helper
+
         return self.cached_helper
 
     @property
