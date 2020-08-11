@@ -6,40 +6,46 @@
     <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
     <link rel="stylesheet" href="css/no.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    <style>.help{margin-top:-16px; font-size:0.8em;} .is-danger{color:red}</style>
+    <style>.py4web-validation-error{margin-top:-16px; font-size:0.8em;color:red}</style>
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
   <body>
-    <nav class="black">
-      <ul>
-        <li><a href="[[=URL('index')]]"><b>py4web examples</b></a></li>
-        [[block page_menu_items]][[end]]
-      </ul>
-      <ul>
-        [[if globals().get('user'):]]
-        <li>
-          <a class="navbar-link is-primary">
-            [[=globals().get('user',{}).get('email')]]
-          </a>
-          <ul>
-            <li><a href="[[=URL('auth/logout')]]">Logout</a></li>
-          </ul>
-        </li>
-        [[else:]]
-        <li>
-          Login
-          <ul>
-            <li><a href="[[=URL('auth/register')]]">Sign up</a></li>
-            <li><a href="[[=URL('auth/login')]]">Log in</a></li>
-          </ul>
-        </li>
-        [[pass]]
-      </ul>
-    </nav>
-    <div style="margin: 20px" id="py4web-flash"></div>
+    <header>
+      <nav class="black">
+        <a href="[[=URL('index')]]"><b>py4web examples</b></a>
+        <label for="hamburger">☰</label>
+        <input type="checkbox" id="hamburger">
+        <ul>
+          [[block page_menu_items]][[end]]
+        </ul>
+        <ul>
+          [[if globals().get('user'):]]
+          <li>
+            <a class="navbar-link is-primary">
+              [[=globals().get('user',{}).get('email')]]
+            </a>
+            <ul>
+              <li><a href="[[=URL('auth/logout')]]">Logout</a></li>
+            </ul>
+          </li>
+          [[else:]]
+          <li>
+            Login
+            <ul>
+              <li><a href="[[=URL('auth/register')]]">Sign up</a></li>
+              <li><a href="[[=URL('auth/login')]]">Log in</a></li>
+            </ul>
+          </li>
+          [[pass]]
+        </ul>
+      </nav>
+      <div class="padded" id="py4web-flash"></div>
+    </header>
     <!-- beginning of HTML inserted by extending template -->
-    <div style="margin: 20px">
-    [[include]]
+    <div>
+      <main class="padded">
+        [[include]]
+      </main>
     </div>
     <!-- end of HTML inserted by extending template -->
     <footer class="black padded">

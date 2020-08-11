@@ -246,11 +246,11 @@ utils.handle_flash = function() {
             var id = 'notification-{0}'.format([element.dataset.counter]);
             element.dataset.counter = parseInt(element.dataset.counter) + 1;
             var node = document.createElement("div");
-            node.innerHTML = '<div class="notification"><span class="close"></span>{0}</div>'.format([event.detail.message]);
-            node = Q('.notification', node)[0];
+            node.innerHTML = '<div role="alert"><span class="close"></span>{0}</div>'.format([event.detail.message]);
+            node = Q('[role="alert"]', node)[0];
             node.classList.add(event.detail.class||'info');
             element.appendChild(node);
-            Q('.notification .close',node)[0].onclick = make_delete_handler(node);
+            Q('[role="alert"] .close',node)[0].onclick = make_delete_handler(node);
         };
     };
     if (element) {
