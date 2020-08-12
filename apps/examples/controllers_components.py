@@ -55,6 +55,13 @@ def vuegrid():
     # We need to instantiate our grid component.
     return dict(grid=vue_grid())
 
+@action('vuegrid_bulma', method=['GET'])
+@action.uses(vue_grid, 'vuegrid_bulma.html')
+def vuegrid_bulma():
+    """This page generates a sample grid."""
+    # We need to instantiate our grid component.
+    return dict(grid=vue_grid())
+
 # -----------------------------
 # File uploader.
 
@@ -89,6 +96,11 @@ vue_form = VueForm('test_form', session,
 def vueform():
     return dict(form=vue_form())
 
+@action('vue_form_bulma', method=['GET'])
+@action.uses(vue_form, "vueform_bulma.html")
+def vueform_bulma():
+    return dict(form=vue_form())
+
 # -----------------------------
 # Insertion form.
 
@@ -108,6 +120,11 @@ insert_form = InsertForm('insert_product', session, db.product,
 def insertform():
     return dict(form=insert_form())
 
+@action('insert_form_bulma', method=['GET'])
+@action.uses(insert_form, 'vueform_bulma.html')
+def insertform_bulma():
+    return dict(form=insert_form())
+
 # -----------------------------
 # Update form.
 update_form = TableForm('update_product', session, db.product,
@@ -116,6 +133,12 @@ update_form = TableForm('update_product', session, db.product,
 @action('update_form', method=['GET'])
 @action.uses(update_form, 'vueform.html')
 def updateform():
+    # For simplicity, we update the record 1.
+    return dict(form=update_form(id=1))
+
+@action('update_form_bulma', method=['GET'])
+@action.uses(update_form, 'vueform_bulma.html')
+def updateform_bulma():
     # For simplicity, we update the record 1.
     return dict(form=update_form(id=1))
 
@@ -136,6 +159,11 @@ def starrater():
 @action('star_rater_vue', method=['GET'])
 @action.uses(star_rater, 'star_rater_vue.html')
 def star_rater_vue():
+    return dict(get_posts_url=URL('star_rater_get_posts'))
+
+@action('star_rater_vue_bulma', method=['GET'])
+@action.uses(star_rater, 'star_rater_vue_bulma.html')
+def star_rater_vue_bulma():
     return dict(get_posts_url=URL('star_rater_get_posts'))
 
 @action('star_rater_get_posts', method=['GET'])
