@@ -3,6 +3,7 @@ import jwt
 import time
 import uuid
 from py4web import request, Session
+from pydal.validators import Validator
 from yatl.helpers import (
     A,
     TEXTAREA,
@@ -20,6 +21,20 @@ from yatl.helpers import (
 )
 
 
+def get_options(validators):
+    options = None
+    if validators:
+        if not isinstance(validators, (list, tuple)):
+            validators = [validators]
+        for item in validators:
+            if hasattr(item, "options"):
+                options = item.options
+                break
+        if callable(options):
+            options = options()
+    return options
+
+
 class FormStyleFactory:
     def __init__(self):
         self.classes = {
@@ -27,7 +42,7 @@ class FormStyleFactory:
             "inner": "",
             "label": "",
             "info": "",
-            "error": "error",
+            "error": "py4web-validation-error",
             "submit": "",
             "input": "",
             "input[type=text]": "",
@@ -45,10 +60,9 @@ class FormStyleFactory:
 
     def produce(self, table, vars, errors, readonly, deletable, classes=None):
         self.classes.update(classes or {})
-        form = FORM(
-            _method="POST", _action=request.path, _enctype="multipart/form-data"
-        )
+        form = FORM(_method="POST", _action=request.url, _enctype="multipart/form-data")
         controls = dict(
+            labels=dict(),
             widgets=dict(),
             hidden_widgets=dict(),
             errors=dict(),
@@ -64,17 +78,18 @@ class FormStyleFactory:
         for field in table:
 
             input_id = "%s_%s" % (field.tablename, field.name)
-            value = vars.get(field.name)
+            value = vars.get(field.name, field.default)
             error = errors.get(field.name)
             field_class = field.type.split()[0].replace(":", "-")
 
-            if not field.readable:
+            if not field.readable and not field.writable:
                 continue
             if not readonly and not field.writable:
                 continue
             if field.type == "blob":  # never display blobs (mistake?)
                 continue
             if field.type == "id" and value is None:
+                field.writable = False
                 continue
             if readonly or field.type == "id":
                 control = DIV(field.represent and field.represent(value) or value or "")
@@ -88,7 +103,7 @@ class FormStyleFactory:
                 )
             elif field.type == "datetime":
                 if isinstance(value, str):
-                    value = value.replace(' ', 'T')
+                    value = value.replace(" ", "T")
                 control = INPUT(
                     _value=value, _type="datetime-local", _id=input_id, _name=field.name
                 )
@@ -114,15 +129,15 @@ class FormStyleFactory:
                         )
                     )
                     control.append("(check to remove)")
-            elif hasattr(field.requires, "options"):
+            elif get_options(field.requires) is not None:
                 multiple = field.type.startswith("list:")
                 value = list(map(str, value if isinstance(value, list) else [value]))
-                options = [
+                option_tags = [
                     OPTION(v, _value=k, _selected=(not k is None and k in value))
-                    for k, v in field.requires.options()
+                    for k, v in get_options(field.requires)
                 ]
                 control = SELECT(
-                    *options, _id=input_id, _name=field.name, _multiple=multiple
+                    *option_tags, _id=input_id, _name=field.name, _multiple=multiple
                 )
             else:
                 field_type = "password" if field.type == "password" else "text"
@@ -137,8 +152,9 @@ class FormStyleFactory:
             key = control.name.rstrip("/")
             if key == "input":
                 key += "[type=%s]" % (control["_type"] or "text")
-            control["_class"] = self.classes.get(key, '')
+            control["_class"] = self.classes.get(key, "")
 
+            controls["labels"][field.name] = field.label
             controls["widgets"][field.name] = control
             if error:
                 controls["errors"][field.name] = error
@@ -152,7 +168,8 @@ class FormStyleFactory:
                     _class=class_outer,
                 )
             )
-
+            if "id" in vars:
+                form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
         if deletable:
             controls["delete"] = INPUT(
                 _type="checkbox",
@@ -184,7 +201,7 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
         "inner": "control",
         "label": "label",
         "info": "help",
-        "error": "help is-danger",
+        "error": "help is-danger py4web-validation-error",
         "submit": "button",
         "input": "input",
         "input[type=text]": "input",
@@ -284,11 +301,13 @@ class Form(object):
         self.csrf_session = csrf_session
         self.lifespan = lifespan
         self.signing_info = signing_info
+        self.action = None
 
         if readonly or request.method == "GET":
-            self._read_vars_from_record(table)
+            if self.record:
+                self.vars = self._read_vars_from_record(table)
         else:
-            post_vars = request.forms
+            post_vars = self.vars = request.forms
             self.submitted = True
             process = False
 
@@ -298,12 +317,15 @@ class Form(object):
                 if self._verify_form(post_vars):
                     process = True
             if process:
+                record_id = self.record and self.record.get("id")
                 if not post_vars.get("_delete"):
+                    validated_vars = {}
                     for field in self.table:
-                        if field.writable and field.readable:
-                            value = post_vars.get(field.name)
-                            record_id = self.record and self.record.get("id")
-                            (value, error) = field.validate(value, record_id)
+                        if field.writable and field.readable and field.type != "id":
+                            original_value = post_vars.get(field.name)
+                            (value, error) = field.validate(original_value, record_id)
+                            if field.type == "password" and record_id and value is None:
+                                continue
                             if field.type == "upload":
                                 value = request.files.get(field.name)
                                 delete = post_vars.get("_delete_" + field.name)
@@ -315,7 +337,7 @@ class Form(object):
                                     value = self.record.get(field.name)
                                 else:
                                     value = None
-                            self.vars[field.name] = value
+                            validated_vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
                     if validation:
@@ -325,26 +347,25 @@ class Form(object):
                     if not self.errors:
                         self.accepted = True
                         if dbio:
-                            self.update_or_insert()
+                            self.update_or_insert(validated_vars)
                 elif dbio:
                     self.deleted = True
                     self.record.delete_record()
-            else:
+            elif self.record:
                 # This form should not be processed.  We return the same as for GET.
-                self._read_vars_from_record(table)
+                self.vars = self._read_vars_from_record(table)
         self._sign_form()
 
     def _read_vars_from_record(self, table):
-        if self.record:
-            if isinstance(table, list):
-                # The table is just a list of fields.
-                self.vars = {field.name: self.record.get(field.name) for field in table}
-            else:
-                self.vars = {
-                    name: table[name].formatter(self.record[name])
-                    for name in table.fields
-                    if name in self.record
-                }
+        if isinstance(table, list):
+            # The table is just a list of fields.
+            return {field.name: self.record.get(field.name) for field in table}
+        else:
+            return {
+                name: table[name].formatter(self.record[name])
+                for name in table.fields
+                if name in self.record
+            }
 
     def _get_key(self):
         if self.csrf_session is not None:
@@ -383,26 +404,29 @@ class Form(object):
         except:
             return False
 
-    def update_or_insert(self):
+    def update_or_insert(self, validated_vars):
         if self.record:
-            self.record.update_record(**self.vars)
+            self.record.update_record(**validated_vars)
         else:
             # warning, should we really insert if record
-            self.vars["id"] = self.table.insert(**self.vars)
+            self.vars["id"] = self.table.insert(**validated_vars)
 
     def clear(self):
-        self.vars.clear()
         self.errors.clear()
-        for field in self.table:
-            self.vars[field.name] = field.default
+        if not self.record and not self.keep_values:
+            self.vars.clear()
+            for field in self.table:
+                self.vars[field.name] = field.default
 
     def helper(self):
-        if self.accepted and not self.keep_values:
-            self.vars.clear()
+        if self.accepted:
+            self.clear()
         if not self.cached_helper:
             helper = self.formstyle(
                 self.table, self.vars, self.errors, self.readonly, self.deletable
             )
+            if self.action:
+                helper["_action"] = self.action
             if self.form_name:
                 helper["controls"]["hidden_widgets"]["formname"] = INPUT(
                     _type="hidden", _name="_formname", _value=self.form_name
@@ -418,7 +442,12 @@ class Form(object):
                     _type="hidden", _name=key, _value=self.hidden[key]
                 )
                 helper["form"].append(helper["controls"]["hidden_widgets"][key])
+
+            helper["controls"]["begin"] = XML(''.join(str(helper["controls"]["begin"]) +
+                                      str(helper["controls"]["hidden_widgets"][hidden_field])
+                                      for hidden_field in helper["controls"]["hidden_widgets"]))
             self.cached_helper = helper
+
         return self.cached_helper
 
     @property

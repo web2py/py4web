@@ -1,7 +1,6 @@
 import sys
 
 
-
 # Note, when changing the Highlight.js css,
 # the background color of .file .diff should match the
 # background in the .hljs class in gitlog.min.css
@@ -84,20 +83,20 @@ def escape(txt):
         .replace('"', "&quot;")
     )
 
+
 # specify which language we want to render as for highlight.js
 # based on the name of the file
 def getFileType(name):
 
-    if name.lower().endswith('.py'):
+    if name.lower().endswith(".py"):
         return 'class="language-python"'
-    if name.lower().endswith('.js'):
+    if name.lower().endswith(".js"):
         return 'class="language-javascript"'
-    if name.lower().endswith('.html'):
+    if name.lower().endswith(".html"):
         return 'class="language-html"'
-    if name.lower().endswith('.css'):
+    if name.lower().endswith(".css"):
         return 'class="language-css"'
     return ""
-
 
 
 def diff2kryten(data):
@@ -151,11 +150,14 @@ def diff2kryten(data):
             lines = "".join(files[filename]["lines"])
         div += '<div class="file">'
         div += '<div class="filename">%s (%s)</div>' % (filename, mode)
-        div += '<div class="diff"><pre><code %s>%s</code></pre></div></div>' % (getFileType(filename),lines)
+        div += '<div class="diff"><pre><code %s>%s</code></pre></div></div>' % (
+            getFileType(filename),
+            lines,
+        )
     return (
         "<html><head>"
-        + '''<link rel="stylesheet"
-          href="/_dashboard/static/css/gitlog.min.css">'''
+        + """<link rel="stylesheet"
+          href="/_dashboard/static/css/gitlog.min.css">"""
         + "<style>"
         + css
         + '</style></head><body><div style="text-align:right">'
@@ -163,7 +165,7 @@ def diff2kryten(data):
         + div
         + '<script src="/_dashboard/static/js/jquery.min.js"></script>'
         + '<script src="/_dashboard/static/js/highlight.min.js"></script>'
-        + '<script>'
+        + "<script>"
         + (script % block)
         + "</script></body></html>"
     )

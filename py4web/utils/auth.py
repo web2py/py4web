@@ -2,12 +2,15 @@ import base64
 import calendar
 import datetime
 import hashlib
+import re
 import time
 import urllib
 import uuid
 
-from py4web import redirect, request, response, abort, URL, action
-from py4web.core import Fixture, Template, REX_APPJSON
+from py4web import redirect, request, response, abort, URL, action, Field, HTTP
+from py4web.core import Fixture, Template, REGEX_APPJSON
+from py4web.utils.form import Form
+
 from pydal.validators import (
     IS_EMAIL,
     CRYPT,
@@ -53,11 +56,11 @@ class AuthEnforcer(Fixture):
     def transform(self, output, shared_data):
         return self.auth.transform(output, shared_data)
 
-    def abort_or_redirect(self, page, message=''):
+    def abort_or_redirect(self, page, message=""):
         """
         return HTTP 403 if 'application/json' in HTTP_ACCEPT
         else redirects to page"""
-        if REX_APPJSON.search(request.headers.get("accept", "")):
+        if re.search(REGEX_APPJSON, request.headers.get("accept", "")):
             abort(403)
         redirect_next = request.fullpath
         if request.query_string:
@@ -126,7 +129,7 @@ class Auth(Fixture):
         login_expiration_time=3600,  # seconds
         password_complexity={"entropy": 50},
         block_previous_password_num=None,
-        allowed_actions=['all'],
+        allowed_actions=["all"],
         use_appname_in_redirects=True,
     ):
         """Creates and Auth object responsinble for handling
@@ -159,14 +162,13 @@ class Auth(Fixture):
 
     def transform(self, output, shared_data):
         if self.inject:
-            template_context = shared_data.get('template_context')
+            template_context = shared_data.get("template_context")
             template_context["user"] = self.get_user()
         return output
 
     def define_tables(self):
         """Defines the auth_user table"""
         db = self.db
-        Field = db.Field
         if not "auth_user" in db.tables:
             ne = IS_NOT_EMPTY()
             if self.password_complexity:
@@ -220,13 +222,18 @@ class Auth(Fixture):
                 )
             if self.block_previous_password_num is not None:
                 auth_fields.append(
-                    Field("past_passwords_hash", "list:string", writable=False, readable=False))
+                    Field(
+                        "past_passwords_hash",
+                        "list:string",
+                        writable=False,
+                        readable=False,
+                    )
+                )
             db.define_table("auth_user", *auth_fields, *self.extra_auth_user_fields)
 
     @property
     def signature(self):
         """Returns a list of fields for a table signature"""
-        Field = self.db.Field
         now = lambda: datetime.datetime.utcnow()
         user = lambda s=self: s.get_user().get("id")
         fields = [
@@ -286,6 +293,10 @@ class Auth(Fixture):
         return user
 
     @property
+    def is_logged_in(self):
+        return self.session.get("user", {}).get("id", None) != None
+
+    @property
     def user_id(self):
         return self.session.get("user", {}).get("id", None)
 
@@ -341,7 +352,7 @@ class Auth(Fixture):
                     ]
                     return {
                         "allowed_actions": self.allowed_actions,
-                        "plugins": ['local'] + [key for key in self.plugins],
+                        "plugins": ["local"] + [key for key in self.plugins],
                         "fields": fields,
                     }
                 # Otherwise, we assume the user exists.
@@ -371,10 +382,8 @@ class Auth(Fixture):
                             }
                             # and register the user if we have one, just in case
                             if self.db:
-                                data = self.get_or_register_user(data)
-                                self.session["user"] = {"id": data["id"]}
-                                self.session["recent_activity"] = calendar.timegm(time.gmtime())
-                                self.session["uuid"] = str(uuid.uuid1())
+                                user = self.get_or_register_user(data)
+                                self.store_user_in_session(user["id"])
                         else:
                             data = self._error("Invalid Credentials")
                     # Else use normal login
@@ -382,7 +391,9 @@ class Auth(Fixture):
                         user, error = self.login(**vars)
                         if user:
                             self.session["user"] = {"id": user.id}
-                            self.session["recent_activity"] = calendar.timegm(time.gmtime())
+                            self.session["recent_activity"] = calendar.timegm(
+                                time.gmtime()
+                            )
                             self.session["uuid"] = str(uuid.uuid1())
                             user = {
                                 f.name: user[f.name]
@@ -449,6 +460,11 @@ class Auth(Fixture):
                 )
         env["path"] = path
         return Template("auth.html").transform(env)
+
+    def store_user_in_session(self, user_id):
+        self.session["user"] = {"id": user_id}
+        self.session["recent_activity"] = calendar.timegm(time.gmtime())
+        self.session["uuid"] = str(uuid.uuid1())
 
     # Methods that do not assume a user
 
@@ -548,12 +564,15 @@ class Auth(Fixture):
 
     # Methods that assume a user
 
-    def change_password(self, user, new_password, password=None, check=True):
+    def change_password(
+        self, user, new_password, old_password=None, check=True, check_old_password=True
+    ):
         db = self.db
         if check:
-            pwd = CRYPT()(password)[0]
-            if not pwd == user.password:
-                return {"errors": {"old_password": "invalid current password"}}
+            if check_old_password:
+                pwd = CRYPT()(old_password)[0]
+                if not pwd == user.password:
+                    return {"errors": {"old_password": "invalid current password"}}
             new_pwd, error = db.auth_user.password.validate(new_password)
             if error:
                 return {"errors": {"new_password": error}}
@@ -564,7 +583,9 @@ class Auth(Fixture):
                     }
                 }
             if self.block_previous_password_num:
-                past_pwds = (user.past_passwords_hash or [])[: self.block_previous_password_num]
+                past_pwds = (user.past_passwords_hash or [])[
+                    : self.block_previous_password_num
+                ]
                 if any(new_pwd == old_pwd for old_pwd in past_pwds):
                     return {"errors": {"new_password": "new password was already used"}}
                 else:
@@ -573,7 +594,7 @@ class Auth(Fixture):
         num = db(db.auth_user.id == user.id).update(
             password=new_pwd, last_password_change=datetime.datetime.utcnow()
         )
-        return {'updated': num}
+        return {"updated": num}
 
     def change_email(self, user, new_email, password=None, check=True):
         db = self.db
@@ -667,3 +688,170 @@ class Auth(Fixture):
             print('Mock send to %s subject "%s" body:\n%s\n' % (email, subject, body))
             return True
         return self.sender.send(email, subject=subject, body=body)
+
+    def enable_record_versioning(
+        self,
+        tables,
+        archive_db=None,
+        archive_names="%(tablename)s_archive",
+        current_record="current_record",
+        current_record_label=None,
+    ):
+        """
+        Used to enable full record versioning (including auth tables)::
+
+            auth = Auth(db)
+            auth.define_tables()
+            # define our own tables
+            db.define_table(
+                'mything',
+                Field('name'),
+                auth.signature)
+            auth.enable_record_versioning(tables=db)
+
+        tables can be the db (all table) or a list of tables.
+        only tables with modified_by and modified_on fiels (as created
+        by auth.signature) will have versioning. Old record versions will be
+        in table 'mything_archive' automatically defined.
+        when you enable enable_record_versioning, records are never
+        deleted but marked with is_active=False.
+
+        enable_record_versioning enables a common_filter for
+        every table that filters out records with is_active = False
+
+        Note:
+            If you use auth.enable_record_versioning,
+            do not use auth.archive or you will end up with duplicates.
+            auth.archive does explicitly what enable_record_versioning
+            does automatically.
+        """
+        current_record_label = (
+            current_record_label or current_record.replace("_", " ").title()
+        )
+        for table in tables:
+            fieldnames = table.fields()
+            if (
+                "id" in fieldnames
+                and "modified_on" in fieldnames
+                and current_record not in fieldnames
+            ):
+                table._enable_record_versioning(
+                    archive_db=archive_db,
+                    archive_name=archive_names,
+                    current_record=current_record,
+                    current_record_label=current_record_label,
+                )
+
+    def form(self, action_name, **attr):
+        # FIXME: check allowed_actions
+        if not hasattr(self, "_forms"):
+            self._forms = AuthForms(self)
+        return getattr(self._forms, action_name)(**attr)
+
+
+class AuthForms:
+    def __init__(self, auth):
+        self.auth = auth
+
+    def register(self):
+        self.auth.db.auth_user.password.writable = True
+        form = Form(self.auth.db.auth_user, dbio=False)
+        user = None
+        if form.submitted:
+            res = self.auth.register(form.vars)
+            form.accepted = not res.get("errors")
+            form.errors = res.get("errors")
+        self._postprocessng("register", form, user)
+        return form
+
+    def login(self):
+        form = Form([Field("username"), Field("password", type="password")])
+        user = None
+        if form.submitted:
+            user, error = self.auth.login(
+                form.vars.get("username"), form.vars.get("password")
+            )
+            form.accepted = not error
+            form.errors["username"] = error
+            if user:
+                self.auth.store_user_in_session(user["id"])
+        self._postprocessng("login", form, user)
+        return form
+
+    def reset_password(self):
+        form = Form([Field("password", type="password")])
+        user = None
+        token = request.query.get("token")
+        if token:
+            query = self.auth._query_from_token(token)
+            user = self.auth.db(query).select().first()
+            if not user:
+                raise HTTP(404)
+        user = self.auth.db.auth_user(self.auth.user_id)
+        form = Form(
+            [
+                Field(
+                    "new_password",
+                    type="password",
+                    requires=self.auth.db.auth_user.password.requires,
+                ),
+                Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
+            ]
+        )
+        if form.submitted:
+            new_password = form.post_vars.get("new_password")
+            if form.post_vars["new_password_again"] != new_password:
+                form.errors["new_password_again"] = "Passwords do not match"
+                form.accepted = False
+            else:
+                res = self.auth.change_password(
+                    user, new_password, check=True, check_old_password=False
+                )
+            form.errors = re.get("errors", {})
+            form.accepted = not res.get("errors")
+        self._postprocessng("profile", form, user)
+        return form
+
+    def change_password(self):
+        self._check_logged("change_password")
+        user = self.auth.db.auth_user(self.auth.user_id)
+        form = Form(
+            [
+                Field("old_password", type="password", requires=IS_NOT_EMPTY()),
+                Field(
+                    "new_password",
+                    type="password",
+                    requires=self.auth.db.auth_user.password.requires,
+                ),
+                Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
+            ]
+        )
+        if form.submitted:
+            old_password = form.post_vars.get("new_password")
+            new_password = form.post_vars.get("new_password")
+            if form.post_vars["new_password_again"] != new_password:
+                form.errors["new_password_again"] = "Passwords do not match"
+                form.accepted = False
+            else:
+                res = self.auth.change_password(
+                    user, new_password, old_password, check=True
+                )
+            form.errors = re.get("errors", {})
+            form.accepted = not res.get("errors")
+        self._postprocessng("profile", form, user)
+        return form
+
+    def profile(self):
+        self._check_logged("profile")
+        user = self.auth.db.auth_user(self.auth.user_id)
+        form = Form(self.auth.db.auth_user, user)
+        self._postprocessng("profile", form, user)
+        return form
+
+    def _check_logged(self, action):
+        if not self.auth.is_logged_in:
+            redirect(URL("index"))
+
+    def _postprocessng(self, action, form, user):
+        if form.accepted:
+            redirect(URL("index"))

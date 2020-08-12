@@ -13,7 +13,7 @@ class TestSession(unittest.TestCase):
         session = Session(secret="a", expiration=10)
         session.on_request()
         session["key"] = "value"
-        session.on_success()
+        session.on_success(200)
         cookie_name = session.local.session_cookie_name
 
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
@@ -36,7 +36,7 @@ class TestSession(unittest.TestCase):
         request.cookies.clear()
         session.on_request()
         session["key"] = "value"
-        session.on_success()
+        session.on_success(200)
         cookie_name = session.local.session_cookie_name
 
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
@@ -64,7 +64,7 @@ class TestSession(unittest.TestCase):
             request.cookies.clear()
             session.on_request()
             session["key"] = "value"
-            session.on_success()
+            session.on_success(200)
             cookie_name = session.local.session_cookie_name
 
             a, b = (
