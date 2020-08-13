@@ -48,7 +48,6 @@ signed_url = URLSigner(session)
 
 vue_grid = Grid("grid_api", session)
 
-
 @action("vuegrid", method=["GET"])
 @action.uses(vue_grid, "vuegrid.html")
 def vuegrid():

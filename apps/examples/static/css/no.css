@@ -1,8 +1,8 @@
 /*****************************************************
  no.css version 2020-08-09.1
- 
+
  Designed to style pages without need for custom classes.
- headers, paragraphs, buttons, tables, forms, 
+ headers, paragraphs, buttons, tables, forms,
  nav menus, alerts, and dialogs are styled automatically.
  The only custom classes are color names, grid column sizes,
  and a few convenience ones.
@@ -189,7 +189,7 @@ thead th {
  forms
  ****************************************************/
 
-input[type='color'], input[type='date'], input[type='datetime'], input[type='datetime-local'], input[type='email'], input[type='month'], input[type='number'], input[type='password'], input[type='search'], input[type='tel'], input[type='text'], input[type='url'], input[type='week'], input:not([type]), textarea, select {
+input[type='color'], input[type='date'], [type='time'], input[type='datetime'], input[type='datetime-local'], input[type='email'], input[type='month'], input[type='number'], input[type='password'], input[type='search'], input[type='tel'], input[type='text'], input[type='url'], input[type='week'], input:not([type]), textarea, select {
   -webkit-appearance: none;
   background-color: transparent;
   border: 0.1rem solid #d1d1d1;
@@ -202,7 +202,7 @@ input[type='color'], input[type='date'], input[type='datetime'], input[type='dat
   width: 90%;
 }
 
-input[type='color']:focus, input[type='date']:focus, input[type='datetime']:focus, input[type='datetime-local']:focus, input[type='email']:focus, input[type='month']:focus, input[type='number']:focus, input[type='password']:focus, input[type='search']:focus, input[type='tel']:focus, input[type='text']:focus, input[type='url']:focus, input[type='week']:focus, input:not([type]):focus, textarea:focus, select:focus {
+input[type='color']:focus, input[type='date']:focus, input[type='time']:focus, input[type='datetime']:focus, input[type='datetime-local']:focus, input[type='email']:focus, input[type='month']:focus, input[type='number']:focus, input[type='password']:focus, input[type='search']:focus, input[type='tel']:focus, input[type='text']:focus, input[type='url']:focus, input[type='week']:focus, input:not([type]):focus, textarea:focus, select:focus {
   border-color: #0074d9;
   outline: 0;
 }
@@ -319,7 +319,7 @@ nav > input[type=checkbox], nav > label {
   nav > * {
     display: table-cell;
     vertical-align: middle;
-  } 
+  }
   nav > ul:last-child {
     float:right;
   }
@@ -332,7 +332,7 @@ nav > input[type=checkbox], nav > label {
   nav > ul {
     display: table-column;
     vertical-align: middle;
-  } 
+  }
   nav > label {
     position: absolute;
     display: inline-block;
@@ -343,13 +343,13 @@ nav > input[type=checkbox], nav > label {
   nav > a {
     display: inline-block;
     padding-top: 8px !important;
-  }  
+  }
   nav > ul {
     display: block;
-  }    
+  }
   nav > input[type=checkbox]:not(:checked) ~ ul {
     display: none;
-  }    
+  }
   nav > ul > li {
     display: block;
     text-align: center;
@@ -419,7 +419,7 @@ nav ul ul a {
 nav ul ul ul {
   top:0;
   left:80%;
-  z-index:1100 
+  z-index:1100
 }
 
 nav li:hover > ul {

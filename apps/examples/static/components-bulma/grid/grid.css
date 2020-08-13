@@ -8,3 +8,7 @@ span.disabled {
 th.clickable {
     cursor: pointer;
 }
+
+input.search {
+    width: 100%;
+}
