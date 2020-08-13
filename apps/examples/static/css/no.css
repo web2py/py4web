@@ -199,7 +199,7 @@ input[type='color'], input[type='date'], [type='time'], input[type='datetime'], 
   font-family: monospace;
   font-size: 1.2em;
   padding: .5em 1.0em .5em;
-  width: 90%;
+  width: 100%;
 }
 
 input[type='color']:focus, input[type='date']:focus, input[type='time']:focus, input[type='datetime']:focus, input[type='datetime-local']:focus, input[type='email']:focus, input[type='month']:focus, input[type='number']:focus, input[type='password']:focus, input[type='search']:focus, input[type='tel']:focus, input[type='text']:focus, input[type='url']:focus, input[type='week']:focus, input:not([type]):focus, textarea:focus, select:focus {
