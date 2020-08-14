@@ -245,9 +245,10 @@ The number of attempts is set via the attempts parameter.
 
 setting ``lazy_tables = True`` provides a major performance boost. See below: [lazy tables](#lazy_tables)
 
+[[model_less_applications]]
 #### Model-less applications
 
-Using py4web's model directory for your application models is very convenient and productive. With lazy tables and conditional models, performance is usually acceptable even for large applications. Many experienced developers use this is production environments. 
+Using py4web's model directory for your application models is very convenient and productive. With lazy tables and conditional models, performance is usually acceptable even for large applications. Many experienced developers use this in production environments. 
 
 However, it is possible to define DAL tables on demand inside controller functions or modules. This may make sense when the number or complexity of table definitions overloads the use of lazy tables and conditional models.
 
@@ -265,13 +266,13 @@ Models also make for useful interactive shell sessions when py4web is started wi
 Also, remember maintainability: other py4web developers expect to find model definitions in the model directory.
 
 To use the "model-less" approach, you take responsibility for doing these two housekeeping tasks. 
-You call the table definitions when you need them, and provide necessary access to global scope via the current object (as described in [Chapter 4](../04#current_object)).
+You call the table definitions when you need them, and provide necessary access passed as parameter.
 
 For example, a typical model-less application may leave the definitions of the database connection objects in the model file, but define the tables on demand per controller function.
 
 The typical case is to move the table definitions to a module file (a Python file saved in the modules directory).
 
-If the function to define a set of tables is called ``define_employee_tables()`` in a module called "table_setup.py", your controller that wants to refer to the tables related to employee records in order to make an SQLFORM needs to call the ``define_employee_tables()`` function before accessing any tables. The ``define_employee_tables()`` function needs to access the database connection object in order to define tables. This is why you need to correctly use the ``current`` object in the module file containing ``define_employee_tables()`` (as mentioned above).
+If the function to define a set of tables is called ``define_employee_tables()`` in a module called "table_setup.py", your controller that wants to refer to the tables related to employee records in order to make an SQLFORM needs to call the ``define_employee_tables()`` function before accessing any tables. The ``define_employee_tables()`` function needs to access the database connection object in order to define tables. You need to pass the db object to the ``define_employee_tables()`` (as mentioned above).
 
 #### Replicated databases
 
@@ -283,8 +284,7 @@ db = DAL(['mysql://...1', 'mysql://...2', 'mysql://...3'])
 
 In this case the DAL tries to connect to the first and, on failure, it
 will try the second and the third. This can also be used to distribute load
-in a database master-slave configuration. We will talk more about this
-in [Chapter 13](../13#Using-replicated-databases) in the context of scalability.
+in a database master-slave configuration.
 
 #### Reserved keywords
 ``reserved Keywords``:inxx
@@ -373,7 +373,7 @@ The DAL constructor migration settings are booleans affecting defaults and globa
 
 #### Experiment with the py4web shell
 
-You can experiment with the DAL API using the py4web shell, that is available using the ``-S`` command line option (read more in [Chapter 4](../04#CommandLineOptions)).
+You can experiment with the DAL API using the py4web shell, that is available using the ``shell`` command (read more in [Chapter 1](#chapter-01#command_line_options)).
 -------
 You need to choose an application to run the shell on, mind that database changes may be persistent. So be carefull and do NOT exitate to create a new application for doing testing instead of tampering with an existing one.
 -------
@@ -416,7 +416,7 @@ With some limitation, you can also use different primary keys using the ``primar
 
 #### ``plural`` and ``singular``
 
-Smartgrid objects may need to know the singular and plural name of the table. The defaults are smart but these parameters allow you to be specific. Smartgrid is described in [[Chapter 7 ../07#SQLFORM-smartgrid]].
+As pydal is a general DAL, it includes plural and singular attributes to refer to the table names so that external elements can use the proper name for a table. A use case is in web2py with Smartgrid objects with references to external tables.
 
 #### ``redefine``
 Tables can be defined only once but you can force py4web to redefine an existing table:
@@ -449,8 +449,7 @@ db.define_table('person', Field('name'),
 
 The format attribute will be used for two purposes:
 - To represent referenced records in select/option drop-downs.
-- To set the ``db.othertable.otherfield.represent`` attribute for all fields referencing this table. This means that SQLTABLE will not show references by id but will use the format preferred representation instead.
-  (Look at [[Serializing Rows in views #sqltable]] section in this chapter to learn more about SQLTABLE.)
+- To set the ``db.othertable.otherfield.represent`` attribute for all fields referencing this table. This means that the ``Form`` constructor will not show references by id but will use the preferred format  representation instead.
 
 #### ``rname``: Real name
 
@@ -461,11 +460,11 @@ To illustrate just one use, ``rname`` can be used to provide MSSQL fully qualifi
 #### ``primarykey``: Support for legacy tables
 
 ``primarykey`` helps support legacy tables with existing primary keys, even multi-part.
-See [[Legacy databases and keyed tables #LegacyDatabases]] section in this chapter.
+See [Legacy databases and keyed tables](#LegacyDatabases) section in this chapter.
 
 #### ``migrate``, ``fake_migrate``
 
-``migrate`` sets migration options for the table. Refer to [[Migrations #table_migrations]] section in this chapter for details.
+``migrate`` sets migration options for the table. Refer to [Migrations](#table_migrations) section in this chapter for details.
 
 #### ``table_class``
 
@@ -514,7 +513,7 @@ Note this example shows how to use ``on_define`` but it is not actually necessar
 #### Lazy Tables, a major performance boost
 ``lazy tables``:inxx
 
-py4web models are executed before controllers, so all tables are defined at every request. Not all tables are needed to handle each request, so it is possible that some of the time spent defining tables is wasted. Conditional models (see [[Chapter 4 ../04#conditional_models]]) can help, but py4web offers a big performance boost via lazy_tables. This feature means that table creation is deferred until the table is actually referenced. Enabling lazy tables is made when initialising a database via the DAL constructor.
+py4web models are executed before controllers, so all tables are defined at every request. Not all tables are needed to handle each request, so it is possible that some of the time spent defining tables is wasted. Conditional models (see [Model-less applications](#model_less_applications)) can help, but py4web offers a big performance boost via lazy_tables. This feature means that table creation is deferred until the table is actually referenced. Enabling lazy tables is made when initialising a database via the DAL constructor.
 It requires setting the lazy_tables parameter: ``DAL(..., lazy_tables=True)``:python
 This is one of the most significant response-time performance boosts in py4web.
 
@@ -548,12 +547,14 @@ where DEFAULT is a special value used to allow the value None for a parameter.
 Not all of them are relevant for every field. ``length`` is relevant only for fields of type "string". ``uploadfield``, ``authorize``, and ``autodelete`` are relevant only for fields of type "upload". ``ondelete`` is relevant only for fields of type "reference" and "upload".
 
 - ``length`` sets the maximum length of a "string", "password" or "upload" field.  If ``length`` is not specified a default value is used but the default value is not guaranteed to be backward compatible. ''To avoid unwanted migrations on upgrades, we recommend that you always specify the length for string, password and upload fields.''
-- ``default`` sets the default value for the field. The default value is used when performing an insert if a value is not explicitly specified. It is also used to pre-populate forms built from the table using SQLFORM. Note, rather than being a fixed value, the default can instead be a function (including a lambda function) that returns a value of the appropriate type for the field. In that case, the function is called once for each record inserted, even when multiple records are inserted in a single transaction.
+- ``default`` sets the default value for the field. The default value is used when performing an insert if a value is not explicitly specified. It is also used to pre-populate forms built from the table using ``Form``. Note, rather than being a fixed value, the default can instead be a function (including a lambda function) that returns a value of the appropriate type for the field. In that case, the function is called once for each record inserted, even when multiple records are inserted in a single transaction.
 - ``required`` tells the DAL that no insert should be allowed on this table if a value for this field is not explicitly specified.
-- ``requires`` is a validator or a list of validators. This is not used by the DAL, but it is used by SQLFORM. The default validators for the given types are shown in the next section.
--------
-Notice that ``requires=...`` is enforced at the level of forms, ``required=True`` is enforced at the level of the DAL (insert), while ``notnull``, ``unique`` and ``ondelete`` are enforced at the level of the database. While they sometimes may seem redundant, it is important to maintain the distinction when programming with the DAL.
--------
+- ``requires`` is a validator or a list of validators. This is not used by the DAL, but it is used by ``Form``. The default validators for the given types are shown in the next section.
+
+------
+Notice that while ``requires=...`` is enforced at the level of forms, ``required=True`` is enforced at the level of the DAL (insert). In addition, ``notnull``, ``unique`` and ``ondelete`` are enforced at the level of the database. While they sometimes may seem redundant, it is important to maintain the distinction when programming with the DAL.
+------
+
 - ``rname`` provides the field with a "real name", a name for the field known to the database adapter; when the field is used, it is the rname value which is sent to the database. The py4web name for the field is then effectively an alias.
 ``ondelete``:inxx
 - ``ondelete`` translates into the "ON DELETE" SQL statement. By default it is set to "CASCADE". This tells the database that when it deletes a record, it should also delete all records that refer to it. To disable this feature, set ``ondelete`` to "NO ACTION" or "SET NULL".
@@ -567,9 +568,9 @@ Notice that ``requires=...`` is enforced at the level of forms, ``required=True`
 - ``uploadseparate`` if set to True will upload files under different subfolders of the ''uploadfolder'' folder. This is optimized to avoid too many files under the same folder/subfolder. ATTENTION: You cannot change the value of ``uploadseparate`` from True to False without breaking links to existing uploads. py4web either uses the separate subfolders or it does not. Changing the behavior after files have been uploaded will prevent py4web from being able to retrieve those files. If this happens it is possible to move files and fix the problem but this is not described here.
 ``uploadfs``:inxx ``PyFileSystem``:inxx
 - ``uploadfs`` allows you specify a different file system where to upload files, including an Amazon S3 storage or a remote SFTP storage.
-  -------
-  You need to have PyFileSystem installed for this to work. ``uploadfs`` must point to PyFileSystem.
-  -------
+-------
+You need to have PyFileSystem installed for this to work. ``uploadfs`` must point to PyFileSystem.
+-------
 - ``autodelete`` determines if the corresponding uploaded file should be deleted when the record referencing the file is deleted. For "upload" fields only. However, records deleted by the database itself due to a CASCADE operation will not trigger py4web's autodelete. The py4web Google group has workaround discussions.
 - ``widget`` must be one of the available widget objects, including custom widgets, for example: ``SQLFORM.widgets.string.widget``. A list of available widgets will be discussed later. Each field type has a default widget.
 - ``label`` is a string (or a helper or something that can be serialized to a string) that contains the label to be used for this field in auto-generated forms.
@@ -583,12 +584,12 @@ Notice that ``requires=...`` is enforced at the level of forms, ``required=True`
 - ``authorize`` can be used to require access control on the corresponding field, for "upload" fields only. It will be discussed more in detail in the context of Authentication and Authorization.
 - ``represent`` can be None or can point to a function that takes a field value and returns an alternate representation for the field value. 
   Examples:
-  ``
+``
 db.mytable.name.represent = lambda name, row: name.capitalize()
 db.mytable.other_id.represent = lambda oid, row: row.myfield
 db.mytable.some_uploadfield.represent = lambda val, row: A('get it', _href=URL('download', args=val))
 ``:python
-- ``filter_in`` and ``filter_out`` can be set to callables for further processing of field's value. ``filter_in`` is passed the field's value to be written to the database before an insert or update while ``filter_out`` is passed the value retrieved from the database before field assignment. The value returned by the callable is then used. See [[filter_in and filter_out #filter_in-and-filter_out]] section in this chapter.
+- ``filter_in`` and ``filter_out`` can be set to callables for further processing of field's value. ``filter_in`` is passed the field's value to be written to the database before an insert or update while ``filter_out`` is passed the value retrieved from the database before field assignment. The value returned by the callable is then used. See [filter_in and filter_out](#filter_in_filter_out) section in this chapter.
 - ``custom_qualifier`` is a custom SQL qualifier for the field to be used at table creation time (cannot use for field of type "id", "reference", or "big-reference").
 
 
@@ -1026,10 +1027,9 @@ For simplicity, we recommend, if possible, creating a database view that has an 
 ### Distributed transaction
 ``distributed transactions``:inxx
 
-------
-At the time of writing this feature is only supported
-by PostgreSQL, MySQL and Firebird, since they expose API for two-phase commits.
-------
+-----
+At the time of writing this feature is only supported by PostgreSQL, MySQL and Firebird, since they expose API for two-phase commits.
+-----
 
 Assuming you have two (or more) connections to distinct PostgreSQL databases, for example:
 ``
@@ -1063,7 +1063,7 @@ This can be obtained using a file-like object referencing the default file as th
 Field('image', 'upload', default=dict(data='<file_content>', filename='<file_name>'))
 ``:python
 
-Normally an insert is handled automatically via a SQLFORM or a crud form (which is a SQLFORM) but occasionally you already have the file on the filesystem and want to upload it programmatically. This can be done in this way:
+Normally an insert is handled automatically via a ``Form`` but occasionally you already have the file on the filesystem and want to upload it programmatically. This can be done in this way:
 ``
 with open(filename, 'rb') as stream:
     db.myfile.insert(image=db.myfile.image.store(stream, filename))
@@ -1104,8 +1104,7 @@ While in general the call:
 ``:python
 retrieves the original file name (filename) and a file-like object ready to access uploaded file data (stream).
 -------
-Notice that the stream returned by ``retrieve`` is a real file object in the case that uploaded files are stored on filesystem.
-In that case remember to close the file when you have done calling ``stream.close()``.
+Notice that the stream returned by ``retrieve`` is a real file object in the case that uploaded files are stored on filesystem. In that case remember to close the file when you are done, calling ``stream.close()``.
 -------
 
 Here is an example of safe usage of ``retrieve``:
@@ -1439,85 +1438,7 @@ db(db.thing.owner_id == person.id)
 
 i.e. the Set of ``thing``s referenced by the current ``person``. This syntax breaks down if the referencing table has multiple references to the referenced table. In this case one needs to be more explicit and use a full Query.
 
-[[sqltable]]
-#### Serializing ``Rows`` in views
 
-Given the following action containing a query
-``SQLTABLE``:inxx
-
-``
-def index():
-    return dict(rows = db(query).select())
-``:python
-
-The result of a select can be displayed in a view with the following syntax:
-``
-{{extend 'layout.html'}}
-<h1>Records</h1>
-{{=rows}}
-``:python[lexer='html+jinja']
-
-Which is equivalent to:
-``
-{{extend 'layout.html'}}
-<h1>Records</h1>
-{{=SQLTABLE(rows)}}
-``:python[lexer='html+jinja']
-
-``SQLTABLE`` converts the rows into an HTML table with a header containing the column names and one row per record. The rows are marked as alternating class "even" and class "odd". Under the hood, Rows is first converted into a SQLTABLE object (not to be confused with Table) and then serialized. The values extracted from the database are also formatted by the validators associated to the field and then escaped.
-
-Yet it is possible and sometimes convenient to call SQLTABLE explicitly.
-
-The SQLTABLE constructor takes the following optional arguments:
-
-- ``linkto`` lambda function or an action to be used to link reference fields (default to None).
-If you assign it a string with the name of an action, it will generate a link to that function passing it, as args, the name of the table and the id of each record (in this order). Example:
-``
-linkto = 'pointed_function' # generates something like <a href="pointed_function/table_name/id_value">
-``:python
-If you want a different link to be generated, you can specify a lambda, wich will receive as parameters, the value of the id, the type of the object (e.g. table), and the name of the object. For example, if you want to receive the args in reverse order:
-``
-linkto = lambda id, type, name: URL(f='pointed_function', args=[id, name])
-``:python
-- ``upload`` the URL or the download action to allow downloading of uploaded files (default to None)
-- ``headers`` a dictionary mapping field names to their labels to be used as headers (default to ``{}``). It can also be an instruction. Currently we support ``headers='fieldname:capitalize'``.
-- ``truncate`` the number of characters for truncating long values in the table (default is 16)
-- ``columns`` the list of fieldnames to be shown as columns (in tablename.fieldname format).
-   Those not listed are not displayed (defaults to all).
-- ``**attributes`` generic helper attributes to be passed to the most external TABLE object.
-
-Here is an example:
-``
-{{extend 'layout.html'}}
-<h1>Records</h1>
-{{=SQLTABLE(rows,
-            headers='fieldname:capitalize',
-            truncate=100,
-            upload=URL('download'))
-}}
-``:python[lexer='html+jinja']
-
-``SQLFORM.grid``:inxx ``SQLFORM.smartgrid``:inxx
-
-------
-``SQLTABLE`` is useful but there are times when one needs more. ``SQLFORM.grid`` is an extension of SQLTABLE that creates a table with search features and pagination, as well as ability to open detailed records, create, edit and delete records. ``SQLFORM.smartgrid`` is a further generalization that allows all of the above but also creates buttons to access referencing records.
-------
-
-Here is an example of usage of ``SQLFORM.grid``:
-
-``
-def index():
-    return dict(grid=SQLFORM.grid(query))
-``:python
-
-and the corresponding view:
-
-``
-{{extend 'layout.html'}}
-{{=grid}}
-``:python[lexer='jinja']
-
-For working with multiple rows, ``SQLFORM.grid`` and ``SQLFORM.smartgrid`` are preferred to ``SQLTABLE`` because they are more powerful. Please see [[Chapter 7 ../07#SQLFORM-grid-and-SQLFORM-smartgrid]].
 
 [[orderby]] [[limitby]] [[distinct]]
 #### ``orderby``, ``groupby``, ``limitby``, ``distinct``, ``having``, ``orderby_on_limitby``, ``join``, ``left``, ``cache``
@@ -2031,25 +1952,6 @@ num = db(query).update(field='value')
 
 except that it calls the validators for the fields before performing the update. Notice that it only works if query involves a single table. The number of updated records can be found in ``ret.updated`` and errors will be in ``ret.errors``.
 
-#### ``smart_query`` (experimental)
-
-There are times when you need to parse a query using natural language such as
-
-``
-name contains m and age greater than 18
-``:python[lexer=None]
-
-The DAL provides a method to parse this type of queries:
-
-``
-search = 'name contains m and age greater than 18'
-rows = db.smart_query([db.person], search).select()
-``:python
-
-The first argument must be a list of tables or fields that should be allowed in the search. It raises a ``RuntimeError`` if the search string is invalid. This functionality can be used to build RESTful interfaces (see chapter 10) and it is used internally by the ``SQLFORM.grid`` and ``SQLFORM.smartgrid``.
-
-In the smart_query search string, a field can be identified by fieldname only and or by tablename.fieldname. Strings may be delimited by double quotes if they contain spaces.
-
 ### Computed fields
 ``compute``:inxx
 
@@ -2476,7 +2378,42 @@ Alex
 Curt
 ``:python
 
-A lighter alternative to many-to-many relations is tagging, you can found an example of this in the next section. Tagging is also discussed in the context of the [[IS_IN_DB ../07#IS_IN_DB-and-Tagging]] and [[IS_IN_SET ../07#IS_IN_SET-and-Tagging]] validators on chapter 7. Tagging works even on database backends that do not support JOINs like the Google App Engine NoSQL.
+A lighter alternative to many-to-many relations is tagging, you can found an example of this in the next section. Tagging works even on database backends that do not support JOINs like the Google App Engine NoSQL.
+
+### Tagging records
+
+Tags allows to add or find properties attached to records in your database. 
+
+``
+from pydal import DAL, Field
+from py4web.utils.tags import Tags
+
+db = DAL("sqlite:memory")
+db.define_table("thing", Field("name"))
+properties = Tags(db.thing)
+id1 = db.thing.insert(name="chair")
+id2 = db.thing.insert(name="table")
+properties.add(id1, "color/red")
+properties.add(id1, "style/modern")
+properties.add(id2, "color/green")
+properties.add(id2, "material/wood")
+
+self.assertTrue(properties.get(id1), ["color/red", "style/modern"])
+self.assertTrue(properties.get(id2), ["color/green", "material/wood"])
+
+rows = db(properties.find(["style/modern"])).select()
+self.assertTrue(rows.first().id, id1)
+
+rows = db(properties.find(["material/wood"])).select()
+self.assertTrue(rows.first().id, id1)
+
+rows = db(properties.find(["color"])).select()
+self.assertTrue(len(rows), 2)
+``:python
+
+It is internally implemented as a table with name: <table_name>_tags_<path>, which in this example would be db.thing_tags_default, because no path was specified on the Tags(table, path="default") constructor
+
+The ``find`` method is doing a search by ``startswith`` of the path passed as parameter. Then find(["color"]) would return id1 and id2 because both records have tags starting with "color"
 
 [[list_types]]
 ### ``list:<type>`` and ``contains``
@@ -2557,7 +2494,7 @@ requires = IS_IN_DB(db, db.tag._id, db.tag._format, multiple=True)
 
 that produces a ``SELECT/OPTION`` multiple drop-box in forms.
 
-Also notice that this field gets a default ``represent`` attribute which represents the list of references as a comma-separated list of formatted references. This is used in read forms and ``SQLTABLE``s.
+Also notice that this field gets a default ``represent`` attribute which represents the list of references as a comma-separated list of formatted references. This is used in read ``forms``.
 
 -----
 While ``list:reference`` has a default validator and a default representation, ``list:integer`` and ``list:string`` do not. So these two need an ``IS_IN_SET`` or an ``IS_IN_DB`` validator if you want to use them in forms.
@@ -2874,10 +2811,11 @@ with open('test.csv', 'wb') as dumpfile:
     dumpfile.write(str(db(db.person).select()))
 ``:python
 
--------
-Notice that converting a ``Rows`` object into a string using Python 2 produces an utf8 encoded binary string. To obtain a different encoding you have to ask for it explicitly, for example with:
-``unicode(str(db(db.person).select()), 'utf8').encode(...)``:python
--------
+------
+Notice that converting a ``Rows`` object into a string using Python 2 produces an utf8 encoded binary string. To obtain a different encoding you have to ask for it explicitly, for example with:  
+
+``unicode(str(db(db.person).select()), 'utf8').encode(...)``:pythonn
+------
 
 Or in Python 3:
 ``
@@ -3031,6 +2969,8 @@ def export():
 Create a controller action to import a saved copy of the other database and sync records:
 
 ``
+from yatl.helpers import FORM, INPUT
+
 def import_and_sync():
     form = FORM(INPUT(_type='file', _name='data'), INPUT(_type='submit'))
     if form.process().accepted:
@@ -3079,7 +3019,7 @@ Rows objects also have an ``xml`` method (like helpers) that serializes it to XM
 ``:python[lexer='html']
 
 ``XML``:inxx ``Rows custom tags``:inxx
-If you need to serialize the Rows in any other XML format with custom tags, you can easily do that using the universal ``TAG`` helper (described in [[Chapter 5 ../05#TAG]]) and the Python syntax ``*<iterable>`` allowed in function calls:
+If you need to serialize the Rows in any other XML format with custom tags, you can easily do that using the universal ``TAG`` helper (described in [Chapter 8](#chapter-08#TAGs) and the Python syntax ``*<iterable>`` allowed in function calls:
 
 ``
 >>> rows = db(db.person).select()
@@ -3271,6 +3211,7 @@ db.define_table('payment', Field('amount', 'double'), auth.signature)
 
 When using table inheritance, if you want the inheriting table to inherit validators, be sure to define the validators of the parent table before defining the inheriting table.
 
+[[filter_in_filter_out]]
 #### ``filter_in`` and ``filter_out``
 ``filter_in``:inxx ``filter_out``:inxx
 
@@ -3293,7 +3234,7 @@ Imagine for example that you want to store a serializable Python data structure 
 ['hello', 'world', 1, {'2': 3}]
 ``:python
 
-Another way to accomplish the same is by using a Field of type ``SQLCustomType``, as discussed in next [[Custom ``Field`` types #Custom-Field-types]] section.
+Another way to accomplish the same is by using a Field of type ``SQLCustomType``, as discussed in next [Custom ``Field`` types](#Custom_Field_Types) section.
 
 #### callbacks on record insert, delete and update
 
@@ -3371,7 +3312,7 @@ It is possible to ask py4web to save every copy of a record when the record is i
 auth.enable_record_versioning(db)
 ``:python
 
-this requires ``Auth`` and it is discussed in [[Chapter 9 ../09#Record-versioning]].
+this requires ``Auth``.
 It can also be done for each individual table as discussed below.
 
 Consider the following table:
@@ -3406,7 +3347,7 @@ The ``archive_db=db`` tells py4web to store the archive table in the same databa
 
 When records are deleted, they are not really deleted. A deleted record is copied in the ``stored_item_archive`` table (like when it is modified) and the ``is_active`` field is set to False. By enabling record versioning py4web sets a ``common_filter`` on this table that hides all records in table ``stored_item`` where the ``is_active`` field is set to False. The ``is_active`` parameter in the ``_enable_record_versioning`` method allows to specify the name of the field used by the ``common_filter`` to determine if the field was deleted or not.
 
-``common_filter``s will be discussed in next [[Common filters #Common-filters]] section..
+``common_filter``s will be discussed in next [Common filters](#common_filters) section.
 
 #### Common fields and multi-tenancy
 ``common fields``:inxx ``multi tenancy``:inxx
@@ -3453,6 +3394,7 @@ You can turn off multi tenancy filters using ``ignore_common_filters=True`` at `
 db(query, ignore_common_filters=True)
 ``:python
 
+[[common_filters]]
 #### Common filters
 
 A common filter is a generalization of the above multi-tenancy idea.
@@ -3489,6 +3431,7 @@ db(query, ignore_common_filters=True)
 Note that common_filters are ignored by the appadmin interface.
 -------
 
+[[Custom_Field_Types]]
 #### Custom ``Field`` types
 ``SQLCustomType``:inxx
 
