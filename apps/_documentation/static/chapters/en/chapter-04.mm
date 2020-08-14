@@ -148,12 +148,14 @@ Here is an example of usage:
 
 ``
 from py4web import action, Translator
+import os
+
 T_FOLDER = os.path.join(os.path.dirname(__file__), 'translations')
 T = Translator(T_FOLDER)
 
 @action('index')
 @action.uses(T)
-def index(): return T('Hello world')
+def index(): return str(T('Hello world'))
 ``:python
 
 The string 'hello world` will be translated based on the internationalization file in the specified "translations" folder that best matches the HTTP ``accept-language`` header.
@@ -254,8 +256,12 @@ Since fixtures are shared by multiple actions you are not allowed to change thei
 There is one exception to this rule. Actions can change some attributes of database fields:
 
 ``
-from py4web import Field
+from py4web import Field, action, request, DAL, Field
 from py4web.utils.form import Form
+import os
+
+DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
+db = DAL('sqlite://storage.db', folder=DB_FOLDER, pool_size=1)
 db.define_table('thing', Field('name', writable=False))
 
 @action('index')
@@ -274,7 +280,7 @@ The ``readable``, ``writable``, ``default``, ``update``, and ``require`` attribu
 
 ### Custom fixtures
 
-A fixture is an object with the the following minimal structure:
+A fixture is an object with the following minimal structure:
 
 ``
 from py4web import Fixture
@@ -301,10 +307,12 @@ Then ``on_request()`` is guaranteed to be called before the ``index()`` function
 ``auth`` and ``auth.user`` are both fixtures. They depend on ``session``. The role of access is to provide the action with authentication information. It is used as follows:
 
 ``
-from py4web include action, redirect, Session, DAL, URL
+from py4web import action, redirect, Session, DAL, URL
 from py4web.utils.auth import Auth
+import os
 
 session = Session(secret='my secret key')
+DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
 db = DAL('sqlite://storage.db', folder=DB_FOLDER, pool_size=1)
 auth = Auth(session, db)
 auth.enable()
@@ -313,7 +321,7 @@ auth.enable()
 @action.uses(auth)
 def index():
     user = auth.get_user() or redirect(URL('auth/login'))
-    print 'Welcome %s' % user.get('first_name')
+    return 'Welcome %s' % user.get('first_name')
 ``:python
 
 The constructor of the ``Auth`` object defines the ``auth_user`` table with the following fields: username, email, password, first_name, last_name, sso_id, and action_token (the last two are mostly for internal use).
@@ -335,7 +343,7 @@ Since this check is very common, py4web provides an additional fixture ``auth.us
 @action.uses(auth.user)
 def index():
     user = auth.get_user()
-    print 'Welcome %s' % user.get('first_name')
+    return 'Welcome %s' % user.get('first_name')
 ``:python
 
 This fixture automatically redirects to the ``auth/login`` page if user is not logged-in. It depends on ``auth``, which depends on ``db`` and ``session``.
@@ -360,7 +368,7 @@ py4web provides a cache in ram object that implements the Last Recently Used (LR
 
 ``
 import uuid
-from py4web import Cache
+from py4web import Cache, action
 cache = Cache(size=1000)
 
 @action('hello/<name>')

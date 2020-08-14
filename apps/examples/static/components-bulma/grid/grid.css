@@ -8,6 +8,7 @@ span.disabled {
 th.clickable {
     cursor: pointer;
 }
-.grid td:last-child {
-    width:1px
+
+input.search {
+    width: 100%;
 }
