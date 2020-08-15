@@ -289,9 +289,10 @@ class DAL(pydal.DAL, Fixture):
 
 # make sure some variables in pydal are thread safe
 def thread_safe_pydal_patch():
+    Field = pydal.DAL.Field
     tsafe_attrs = ["readable", "writable", "default", "update", "requires"]
     for a in tsafe_attrs:
-        setattr(pydal.DAL.Field, a, threadsafevariable.ThreadSafeVariable())
+        setattr(Field, a, threadsafevariable.ThreadSafeVariable())
 
     # hack "copy.copy" behavior, since it makes a shallow copy,
     # but ThreadSafe-attributes (see above) are class-level, so:
@@ -306,7 +307,11 @@ def thread_safe_pydal_patch():
         for a in tsafe_attrs:
             setattr(clone, a, getattr(self, a))
         return clone
-    setattr(Field, '__copy__',field_copy)
+
+    # to avoid possible future problems
+    if Field.__copy__:
+        raise RuntimeError("code fix required!")
+    setattr(Field, '__copy__', field_copy)
 thread_safe_pydal_patch()
 
 # this global object will be used to store their state to restore it for every http request
