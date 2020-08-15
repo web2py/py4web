@@ -309,7 +309,7 @@ def thread_safe_pydal_patch():
         return clone
 
     # to avoid possible future problems
-    if Field.__copy__:
+    if hasattr(Field, "__copy__"):
         raise RuntimeError("code fix required!")
     setattr(Field, '__copy__', field_copy)
 thread_safe_pydal_patch()
