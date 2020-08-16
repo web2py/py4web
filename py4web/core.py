@@ -6,6 +6,7 @@
 import argparse
 import cgitb
 import code
+import copy
 import datetime
 import functools
 import importlib
@@ -287,8 +288,31 @@ class DAL(pydal.DAL, Fixture):
 
 
 # make sure some variables in pydal are thread safe
-for _ in ["readable", "writable", "default", "update", "requires"]:
-    setattr(pydal.DAL.Field, _, threadsafevariable.ThreadSafeVariable())
+def thread_safe_pydal_patch():
+    Field = pydal.DAL.Field
+    tsafe_attrs = ["readable", "writable", "default", "update", "requires"]
+    for a in tsafe_attrs:
+        setattr(Field, a, threadsafevariable.ThreadSafeVariable())
+
+    # hack "copy.copy" behavior, since it makes a shallow copy,
+    # but ThreadSafe-attributes (see above) are class-level, so:
+    # no copy -> no attr in ICECUBE for the fresh one -> gevent-error on try to access to any of ThreadSafe-attributes
+    def field_copy(self):
+        # to prevent infinite recursion
+        # temporarily set __copy__ to None
+        me = self.__class__.__copy__
+        self.__class__.__copy__ = None
+        clone = copy.copy(self)
+        self.__class__.__copy__ = me
+        for a in tsafe_attrs:
+            setattr(clone, a, getattr(self, a))
+        return clone
+
+    # to avoid possible future problems
+    if hasattr(Field, "__copy__"):
+        raise RuntimeError("code fix required!")
+    setattr(Field, '__copy__', field_copy)
+thread_safe_pydal_patch()
 
 # this global object will be used to store their state to restore it for every http request
 ICECUBE = {}
