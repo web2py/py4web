@@ -10,6 +10,46 @@ PY4WEB fixtures are similar to WSGI middleware and BottlePy plugin except that t
 
 PY4WEB comes with some pre-defined fixtures for actions that need sessions, database connections, internationalization, authentication, and templates. Their usage will be explained in this chapter. The Developer is also free to add fixtures, for example, to handle a third party template language or third party session logic.
 
+### Important about Fixtures
+
+In the examples below we will explain how to apply individual fixtures.
+In practice fixtures can be applied in groups. For example:
+
+``
+preferred = action.uses(Session, Auth, T, Flash)
+``
+
+Then you can apply all of the at once with:
+
+``
+@action('index.html')
+@preferred
+def index():
+    return dict()
+``
+
+The ``_scaffold`` application, in ``common.py`` defines two special conveninence decorators:
+
+``
+@unauthenticated
+def index():
+    return dict()
+
+@authenticated
+def index():
+    return dict()
+``
+
+They apply all of the decorators below, use a template with the same name as the function (.html),
+and also register a route with the name of action followed the number of arguments of the action
+separated by a slash (/). 
+
+@unauthenticated does not require the user to be logged in.
+@authenticated required the user to be logged in.
+
+If can be combined with (and precede) other ``@action.uses(...)`` but they should not be combined with
+``@action(...)`` because they perform that function automatically.
+
 ### Templates
 
 PY4WEB, by default uses the yatl template language and provides a fixture for it.
