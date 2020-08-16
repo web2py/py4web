@@ -311,7 +311,9 @@ def thread_safe_pydal_patch():
     # to avoid possible future problems
     if hasattr(Field, "__copy__"):
         raise RuntimeError("code fix required!")
-    setattr(Field, '__copy__', field_copy)
+    setattr(Field, "__copy__", field_copy)
+
+
 thread_safe_pydal_patch()
 
 # this global object will be used to store their state to restore it for every http request
@@ -365,7 +367,7 @@ class Flash(Fixture):
             if isinstance(data, dict):
                 data["flash"] = Flash.local.flash
             else:
-                response.headers["py4web-flash"] = json.dumps(Flash.local.flash)    
+                response.headers["py4web-flash"] = json.dumps(Flash.local.flash)
         return data
 
 
@@ -1109,6 +1111,8 @@ def sass_compile(changed_files):
     print(changed_files); # paths of files that changed, for info
     sass.compile()
 """
+
+
 def app_watch_handler(watched_app_subpaths):
     invoker = pathlib.Path(stack()[1].filename)
     apps_path = pathlib.Path(os.environ["PY4WEB_APPS_FOLDER"])
@@ -1149,7 +1153,9 @@ def watch(apps_folder, server="default", mode="sync"):
         loop.run_until_complete(watch_folder(apps_folder))
 
     async def watch_folder(apps_folder):
-        click.echo("watching (%s-mode) python file changes in: %s" % (mode, apps_folder))
+        click.echo(
+            "watching (%s-mode) python file changes in: %s" % (mode, apps_folder)
+        )
         async for changes in awatch(os.path.join(apps_folder)):
             apps = []
             for subpath in [pathlib.Path(pair[1]) for pair in changes]:

@@ -84,8 +84,10 @@ class FormStyleFactory:
             value = vars.get(field.name, field.default)
             error = errors.get(field.name)
             field_class = field.type.split()[0].replace(":", "-")
-            placeholder = field._placeholder if '_placeholder' in field.__dict__ else None
-            title = field._title if '_title' in field.__dict__ else None
+            placeholder = (
+                field._placeholder if "_placeholder" in field.__dict__ else None
+            )
+            title = field._title if "_title" in field.__dict__ else None
 
             if not field.readable and not field.writable:
                 continue
@@ -101,24 +103,41 @@ class FormStyleFactory:
             elif field.widget:
                 control = field.widget(table, value)
             elif field.type == "text":
-                control = TEXTAREA(value or "", _id=input_id, _name=field.name,
-                                  _placeholder=placeholder, _title=title)
+                control = TEXTAREA(
+                    value or "",
+                    _id=input_id,
+                    _name=field.name,
+                    _placeholder=placeholder,
+                    _title=title,
+                )
             elif field.type == "date":
                 control = INPUT(
-                    _value=value, _type="date", _id=input_id, _name=field.name,
-                    _placeholder=placeholder, _title=title
+                    _value=value,
+                    _type="date",
+                    _id=input_id,
+                    _name=field.name,
+                    _placeholder=placeholder,
+                    _title=title,
                 )
             elif field.type == "datetime":
                 if isinstance(value, str):
                     value = value.replace(" ", "T")
                 control = INPUT(
-                    _value=value, _type="datetime-local", _id=input_id, _name=field.name,
-                    _placeholder=placeholder, _title=title
+                    _value=value,
+                    _type="datetime-local",
+                    _id=input_id,
+                    _name=field.name,
+                    _placeholder=placeholder,
+                    _title=title,
                 )
             elif field.type == "time":
                 control = INPUT(
-                    _value=value, _type="time", _id=input_id, _name=field.name,
-                    _placeholder=placeholder, _title=title
+                    _value=value,
+                    _type="time",
+                    _id=input_id,
+                    _name=field.name,
+                    _placeholder=placeholder,
+                    _title=title,
                 )
             elif field.type == "boolean":
                 control = INPUT(
@@ -135,8 +154,10 @@ class FormStyleFactory:
                     control.append(A("download", _href=field.download_url(value)))
                     control.append(
                         INPUT(
-                            _type="checkbox", _value="ON", _name="_delete_" + field.name,
-                            _title=title
+                            _type="checkbox",
+                            _value="ON",
+                            _name="_delete_" + field.name,
+                            _title=title,
                         )
                     )
                     control.append("(check to remove)")
@@ -148,7 +169,10 @@ class FormStyleFactory:
                     for k, v in get_options(field.requires)
                 ]
                 control = SELECT(
-                    *option_tags, _id=input_id, _name=field.name, _multiple=multiple, 
+                    *option_tags,
+                    _id=input_id,
+                    _name=field.name,
+                    _multiple=multiple,
                     _title=title
                 )
             else:
@@ -160,7 +184,7 @@ class FormStyleFactory:
                     _value=value,
                     _class=field_class,
                     _placeholder=placeholder,
-                    _title=title
+                    _title=title,
                 )
 
             key = control.name.rstrip("/")
@@ -460,9 +484,13 @@ class Form(object):
                 )
                 helper["form"].append(helper["controls"]["hidden_widgets"][key])
 
-            helper["controls"]["begin"] = XML(''.join(str(helper["controls"]["begin"]) +
-                                      str(helper["controls"]["hidden_widgets"][hidden_field])
-                                      for hidden_field in helper["controls"]["hidden_widgets"]))
+            helper["controls"]["begin"] = XML(
+                "".join(
+                    str(helper["controls"]["begin"])
+                    + str(helper["controls"]["hidden_widgets"][hidden_field])
+                    for hidden_field in helper["controls"]["hidden_widgets"]
+                )
+            )
             self.cached_helper = helper
 
         return self.cached_helper

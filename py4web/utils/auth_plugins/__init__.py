@@ -12,7 +12,7 @@ from py4web.core import URL, abort, redirect, request
 
 class SSO(object):
 
-    name = 'undefined'
+    name = "undefined"
     maps = {}
 
     ### methods that must be overwritten
@@ -22,12 +22,12 @@ class SSO(object):
 
     def get_login_url(self):
         """returns the url for login"""
-        return ''
+        return ""
 
     def handle_request(self, auth, path, get_vars, post_vars):
-        if path == 'login':
+        if path == "login":
             redirect(self.get_login_url())
-        elif path == 'callback':
+        elif path == "callback":
             self._handle_callback(auth, get_vars)
         else:
             abort(404)
@@ -41,54 +41,62 @@ class SSO(object):
         data = self.callback(get_vars)
         if not data:
             abort(401)
-        error = data.get('error')
+        error = data.get("error")
         if error:
             if instance(error, str):
                 code, msg = 401, error
             else:
-                code = error.get('code', 401)
-                msg = error.get('message', 'Unknown error')
+                code = error.get("code", 401)
+                msg = error.get("message", "Unknown error")
             abort(code, msg)
         if auth.db:
             # map returned fields into auth_user fields
             user = {}
             for key, value in self.maps.items():
-                value, parts = data, value.split('.')
+                value, parts = data, value.split(".")
                 for part in parts:
                     value = value[int(part) if part.isdigit() else part]
                     user[key] = value
-            user['sso_id'] = '%s:%s' % (self.name, user['sso_id'])
-            if not 'username' in user:
-                user['username'] = user['sso_id']
+            user["sso_id"] = "%s:%s" % (self.name, user["sso_id"])
+            if not "username" in user:
+                user["username"] = user["sso_id"]
             # store or retrieve the user
             data = auth.get_or_register_user(user)
         else:
             # WIP Allow login without DB
-            if not 'id' in data:
-                data['id'] = data.get('username') or data.get('email')
-        user_id = data.get('id')
+            if not "id" in data:
+                data["id"] = data.get("username") or data.get("email")
+        user_id = data.get("id")
         auth.store_user_in_session(user_id)
-        redirect(URL('index'))
+        redirect(URL("index"))
 
     @staticmethod
     def _build_url(base, data):
         return (
             base
-            + '?'
-            + '&'.join('%s=%s' % (k, urllib.parse.quote(v)) for k, v in data.items())
+            + "?"
+            + "&".join("%s=%s" % (k, urllib.parse.quote(v)) for k, v in data.items())
         )
 
 
 class OAuth2(SSO):
-    name = 'undefined'
-    login_button_content = ''
-    login_button_class = ''
-    login_url = ''
-    token_url = ''
-    userinfo_url = ''
-    default_scope = ''
+    name = "undefined"
+    login_button_content = ""
+    login_button_class = ""
+    login_url = ""
+    token_url = ""
+    userinfo_url = ""
+    default_scope = ""
 
-    def __init__(self, client_id, client_secret, callback_url, scope=None, scheme=True, passed_state=''):
+    def __init__(
+        self,
+        client_id,
+        client_secret,
+        callback_url,
+        scope=None,
+        scheme=True,
+        passed_state="",
+    ):
         SSO.__init__(self)
         self.parameters = dict(
             client_id=client_id,
@@ -96,7 +104,7 @@ class OAuth2(SSO):
             callback_url=callback_url,
             scope=scope or self.default_scope,
             scheme=scheme,
-            passed_state = passed_state,
+            passed_state=passed_state,
         )
 
     def state_generator(
@@ -104,50 +112,50 @@ class OAuth2(SSO):
         size=18,
         chars=string.ascii_uppercase + string.digits + string.ascii_lowercase,
     ):
-        return ''.join(random.choice(chars) for _ in range(size))
+        return "".join(random.choice(chars) for _ in range(size))
 
     def get_login_url(self, state=None, next=None):
-        callback_url = self.parameters.get('callback_url')
+        callback_url = self.parameters.get("callback_url")
         vars = {}
         if next:
-            vars['next'] = next
+            vars["next"] = next
         data = dict(
-            access_type='offline',
+            access_type="offline",
             redirect_uri=URL(
-                callback_url, vars=vars, scheme=self.parameters.get('scheme')
+                callback_url, vars=vars, scheme=self.parameters.get("scheme")
             ),
-            response_type='code',
-            client_id=self.parameters.get('client_id'),
+            response_type="code",
+            client_id=self.parameters.get("client_id"),
         )
-        scope = self.parameters.get('scope')
+        scope = self.parameters.get("scope")
         state = self.state_generator()
         if scope:
-            data['scope'] = scope
-            data['include_granted_scopes'] = 'true'
+            data["scope"] = scope
+            data["include_granted_scopes"] = "true"
         if state:
-            data['state'] = state
+            data["state"] = state
         return self._build_url(self.login_url, data)
 
     def callback(self, query):
-        code = query.get('code')
-        statecheck = query.get('state')
+        code = query.get("code")
+        statecheck = query.get("state")
         if not code:
             return False
-        if statecheck != self.parameters.get('passed_state')
+        if statecheck != self.parameters.get("passed_state"):
             return False
         data = dict(
             code=code,
-            client_id=self.parameters.get('client_id'),
-            client_secret=self.parameters.get('client_secret'),
+            client_id=self.parameters.get("client_id"),
+            client_secret=self.parameters.get("client_secret"),
             redirect_uri=URL(
-                self.parameters.get('callback_url'),
-                scheme=self.parameters.get('scheme'),
+                self.parameters.get("callback_url"),
+                scheme=self.parameters.get("scheme"),
             ),
-            grant_type='authorization_code',
+            grant_type="authorization_code",
         )
         res = requests.post(self.token_url, data=data)
-        token = res.json().get('access_token')
-        headers = {'Authorization': 'Bearer %s' % token}
+        token = res.json().get("access_token")
+        headers = {"Authorization": "Bearer %s" % token}
         # Lets not get the  user attributes via the userinfo endpoint
         # but lets take the userinfo directly extracted from the token
         # res = requests.get(self.userinfo_url, headers=headers)
