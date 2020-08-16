@@ -923,6 +923,8 @@ class Reloader:
             if app_name in DIRTY_APPS:
                 Reloader.import_app(app_name)
                 del DIRTY_APPS[app_name]
+            ## APP_WATCH tasks, if used by any app
+            try_app_watch_tasks()
 
         bottle.default_app().add_hook("before_request", hook)
 
@@ -1070,6 +1072,51 @@ def error404(error):
 
 DIRTY_APPS = dict()  #  apps that need to be reloaded (lazy watching)
 
+from inspect import stack
+from collections import OrderedDict
+
+APP_WATCH = {"files": dict(), "handlers": OrderedDict(), "tasks": dict()}
+
+""" Decorator that binds a func as an watchdog handler of non-".py" files.
+Paths to files must be relative to app, w/o app name(folder).
+
+@app_watch_handler(["static/sass/all.sass", "static/sass/main.sass"])
+def sass_compile(changed_files):
+    print(changed_files); # paths of files that changed, for info
+    sass.compile()
+"""
+def app_watch_handler(watched_app_subpaths):
+    invoker = pathlib.Path(stack()[1].filename)
+    apps_path = pathlib.Path(os.environ["PY4WEB_APPS_FOLDER"])
+    app = invoker.relative_to(os.environ["PY4WEB_APPS_FOLDER"]).parts[0]
+
+    def decorator(func):
+        handler = "{}.{}".format(func.__module__, func.__name__)
+        APP_WATCH["handlers"][handler] = func
+        for subpath in watched_app_subpaths:
+            app_path = apps_path.joinpath(app, subpath).as_posix()
+            if not app_path in APP_WATCH["files"]:
+                APP_WATCH["files"][app_path] = []
+            APP_WATCH["files"][app_path].append(handler)
+        return func
+
+    return decorator
+
+
+def try_app_watch_tasks():
+    if APP_WATCH["tasks"]:
+        tried_tasks = []
+        for handler in APP_WATCH["tasks"]:
+            changed_files_dict = APP_WATCH["tasks"][handler]
+            try:
+                APP_WATCH["handlers"][handler](changed_files_dict.keys())
+                tried_tasks.append(handler)
+            except Exception as e:
+                logging.error(traceback.format_exc())
+        ## remove executed tasks from register
+        for handler in tried_tasks:
+            del APP_WATCH["tasks"][handler]
+
 
 def watch(apps_folder, server="default", mode="sync"):
     def watch_folder_event_loop(apps_folder):
@@ -1078,21 +1125,29 @@ def watch(apps_folder, server="default", mode="sync"):
         loop.run_until_complete(watch_folder(apps_folder))
 
     async def watch_folder(apps_folder):
-        click.echo(
-            "watching (%s-mode) python file changes in: %s" % (mode, apps_folder)
-        )
+        click.echo("watching (%s-mode) python file changes in: %s" % (mode, apps_folder))
         async for changes in awatch(os.path.join(apps_folder)):
-            for app in set(
-                [
-                    p.relative_to(apps_folder).parts[0]
-                    for p in [pathlib.Path(pair[1]) for pair in changes]
-                    if p.suffix == ".py"
-                ]
-            ):
+            apps = []
+            for subpath in [pathlib.Path(pair[1]) for pair in changes]:
+                name = subpath.relative_to(apps_folder).parts[0]
+                if subpath.suffix == ".py":
+                    apps.append(name)
+                ## manage `app_watch_handler` decorators
+                elif subpath.as_posix() in APP_WATCH["files"]:
+                    handlers = APP_WATCH["files"][subpath.as_posix()]
+                    for handler in handlers:
+                        if not handler in APP_WATCH["tasks"]:
+                            APP_WATCH["tasks"][handler] = {}
+                        APP_WATCH["tasks"][handler][subpath.as_posix()] = True
+
+            for name in apps:
                 if mode == "lazy":
-                    DIRTY_APPS[app] = True
+                    DIRTY_APPS[name] = True
                 else:
-                    Reloader.import_app(app)
+                    Reloader.import_app(name)
+            ## in "lazy" mode it's done in bottle's "before_request" hook
+            if not mode == "lazy":
+                try_app_watch_tasks()
 
     if server == "default":
         # default wsgi server block the main thread so we open a new thread for the file watcher
