@@ -1393,6 +1393,7 @@ def shell(apps_folder):
     show_default=True,
 )
 def call(apps_folder, func, args):
+    """Call a function inside apps_folder"""
     args = json.loads(args)
     install_args(dict(apps_folder=apps_folder))
     module, name = ("apps." + func).rsplit(".", 1)
