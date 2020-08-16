@@ -103,6 +103,7 @@ Note that more elaborate entries will introduce HTML character entities, but the
 <div data-options="{&quot;mode&quot;:&quot;calbox&quot;, &quot;useNewStyle&quot;:true}">text</div>
 ``:python
 
+[[TAGs]]
 You can also dynamically create special TAGs:
 
 ``

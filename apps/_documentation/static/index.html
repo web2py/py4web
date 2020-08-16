@@ -53,20 +53,41 @@
     <script src="js/markmin.js"></script>
     <script>
     var chapters = {};
-    var display = function(target, chapter) {
-         jQuery(target).markmin(chapters[chapter]);
-         Prism.highlightAll();
+    var display = function(target, chapter, anchor) {
+      jQuery(target).markmin(chapters[chapter]);
+      Prism.highlightAll();
+      if (anchor != "") {
+        jQuery('html, body').animate({
+          scrollTop: jQuery("#" + anchor).offset().top
+        }, 2000);
+      }
     };
+    
     var go = function(target, chapter) {
-       chapter = chapter || window.location.hash.substr(1) || 'chapter-00';
-       if(chapter in chapters) {
-         display(target, chapter);
-       } else {
-         jQuery.get('chapters/en/'+chapter+'.mm').done(function(data){
-           chapters[chapter] = data;
-           display(target, chapter);
-         });
-       }
+      if(typeof chapter === "undefined") {
+        chapter = window.location.hash.substr(1)
+        if (chapter != "") {
+          chapter_elements = chapter.split("#");
+          anchor = "";
+          if (chapter_elements.length > 1) {
+            chapter = chapter_elements[0];
+            anchor = chapter_elements[1];
+          }
+        }
+        else {
+          chapter = 'chapter-00'
+          anchor = "";
+        }
+      }      
+
+      if(chapter in chapters) {
+        display(target, chapter, anchor);
+      } else {
+        jQuery.get('chapters/en/'+chapter+'.mm').done(function(data){
+          chapters[chapter] = data;
+          display(target, chapter, anchor);
+        });
+      }
     };
     go('.page');
     go('.toc','toc');

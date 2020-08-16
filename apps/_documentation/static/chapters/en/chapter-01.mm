@@ -108,6 +108,7 @@ Pip Install:
 py4webt run -p password.txt apps
 ``:bash
 
+[[command_line_options]]
 ### Command line options
 
 py4web provides multiple command line options which can be listed with ``--help``.
