@@ -1041,6 +1041,8 @@ class Reloader:
                 prefix + "/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>"
             )
             def server_static(filename, static_folder=static_folder, version=None):
+                response.headers.setdefault('Pragma', 'cache')
+                response.headers.setdefault('Cache-Control', 'private')
                 return bottle.static_file(filename, root=static_folder)
 
         # Register routes list
