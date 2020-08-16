@@ -2,51 +2,38 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/bulma.css">
+    <link href="css/no.css" rel="stylesheet">
     <link href="css/prism.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   </head>
   <body>    
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="index.html">
-          <strong>PY4WEB DOCS</strong>
-        </a>
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="left-navbar"
-           onclick="this.classList.toggle('is-active');document.getElementById(this.dataset.target).classList.toggle('is-active');">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-      <div id="left-navbar" class="navbar-menu">
-        <div class="navbar-start">       
+    <nav role="navigation" aria-label="main navigation">
+      <a class="navbar-item" href="index.html">
+        <strong>PY4WEB DOCS</strong>
+      </a>
+      <ul>
+        <li>
           <a class="navbar-item" href="https://py4web.com">Home</a>
+        </li>
+        <li>
           <a class="navbar-item" href="/_dashboard">Dashboard</a>
-        </div>
-      </div>
+        </li>
+        </ul>
     </nav>
-    <section class="section">
-      <div class="columns">
-        <div class="column is-one-quarter">
-          <div class="padded">
-            <h2>Table of Content</h2>
-            <div class="toc"></div>
-          </div>
+    <div>
+      <section class="columns">
+        <div class="c25">
+          <h6>Table of Content</h6>
+          <div class="toc"></div>
         </div>
-        <div class="column is-light">
-          <div class="padded">
-            <div class="page mm"></div>
-          </div>
+        <div class="c75 page mm">
         </div>
       </div>      
     </section>
-    <footer class="footer">
-      <div class="content has-text-centered">
-        Made with py4web, about py4web, for py4web users. BSDv3 License.
-      </div>
+    <footer>
+      <p>Made with py4web, about py4web, for py4web users. BSDv3 License.</p>
     </footer>
     <script src="js/jquery.js"></script>
     <script src="js/prism.js"></script>

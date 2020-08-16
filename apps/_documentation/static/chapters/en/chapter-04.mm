@@ -224,6 +224,55 @@ Now try create a file called ``translations/it.json`` which contains:
 
 and set your browser preference to Italian.
 
+### The Flash fixture
+
+It is common to want to display "alerts" to the suers. Here we refer to them as flash messeges.
+There is a little more to it than just displaying a message to the view because flash messages can have state that must be preserved after redirection. Also they can be generated both server side and client side, there can be only one at the time, they may have a type, and they should be dismissible.
+
+The Flash helper handles the server side of them. Here is an example:
+
+``
+from py4web import Flash
+
+flash = Flash()
+
+@action('index')
+@action.uses(Flash)
+def index():
+    flash.set("Hello World", _class="info", sanitize=True)
+    return dict()
+``
+
+and in the template:
+
+``
+...
+<div id="py4web-flash"></div>
+...
+<script src="js/utils.js"></script>
+[[if globals().get('flash'):]]<script>utils.flash([[=XML(flash)]]);</script>[[pass]]
+``
+
+By setting the value of the message in the flash helper, a flash variable is returned by the action
+and this trigger the JS in the template to inject the message in the ``#py4web-flash`` DIV which you
+can position at your convenience. Also the optional class is applied to the injected HTML.
+
+If a page is redirected after a flash is set, the flash is remembered. This is achieved by asking the
+browser to keep the message temporarily in a one-time cookie. After redirection the message is sent
+back by the browser to the server and the server sets it again automatically before returning content,
+unless it overwritte by another set.
+
+The client can also set/add flash messages by calling:
+
+``
+utils.flash({'message': 'hello world', 'class': 'info'});
+``
+
+py4web defaults to an alert class called ``default`` and most CSS frameworks define classes for
+alerts called ``success``, ``error``, ``warning``, ``default``, and ``info``. Yet,
+there is nothing in py4web that hardcodes those names. You can use your own class names.
+
+
 ### The DAL fixture
 
 We have already used the ``DAL`` fixture in the context of sessions but maybe you want direct access to the DAL object for the purpose of accessing the database, not just sessions.

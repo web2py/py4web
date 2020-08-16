@@ -30,6 +30,10 @@ http://localhost:8000/myapp/static/hello.txt
 
 Notice that ``static`` is a special path for py4web and only files under the ``static`` folder are served.
 
+Important: internally py4web uses the bottle ``static_file`` method for serving static files, which means it supports streaming, partial content, range requests, and if-modified-since. This is all handled automatically based on the http request headers.
+
+### Dynamic Web Pages
+
 To create a dynamic page, you must create a function that returns the page content. For example dit the ``myapp/__init__.py`` as follows:
 
 ``
