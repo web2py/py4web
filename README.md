@@ -7,7 +7,7 @@
 ```
 python3 -m pip install -U py4web --no-cache-dir --user
 py4web setup apps
-py4web set_password
+py4web set-password
 py4web run apps
 open http://localhost:8000/todo/index
 ```
