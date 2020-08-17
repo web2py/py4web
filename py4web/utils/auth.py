@@ -159,6 +159,7 @@ class Auth(Fixture):
         if db and define_tables:
             self.define_tables()
         self.plugins = {}
+        self.api = self.make_api()
 
     def transform(self, output, shared_data):
         if self.inject:
@@ -322,11 +323,173 @@ class Auth(Fixture):
             action.uses(self, *uses)(responder)
         )
 
-    # Handle http requests
+    def make_api(self):
+        '''
+        return routes:dict like:
+        {'profile':
+            {
+                'GET': get_profile_handler,
+                'POST': post_profile_handler
+            }
+            , ...
+        }
+        '''
 
+        routes = dict() # return-value
+
+        # decorator-mounter for api-handlers
+        def mount(method, user = None):
+            '''
+            user = 'public' | 'private' # used in self.get_user(safe = user == 'public')
+            usage:
+                @mount('GET')
+                def config(*a, **v):
+                    ...
+                @mount(['GET', 'POST'], user = 'private')
+                def some(method, user, *a, **v):
+                    ...
+            '''
+            pass_method = False
+            if isinstance(method, str):
+                method = [method]
+            else:
+                pass_method = True
+            if user and user not in ['public', 'private']:
+                raise ValueError('got invalid `user` arg: {}'.format(user))
+            def mounter(f):
+                def wrapper(method, *a, **v):
+                    args = []
+                    if pass_method:
+                        args.append(method)
+                    if user:
+                        user_data = self.get_user(safe = user == 'public')
+                        if not user_data:
+                            return self._error("not authorized", 401)
+                        args.append(user_data)
+                    args.extend(a)
+                    return f(*args, **v)
+                cbs = routes.get(f.__name__, dict())
+                for m in method:
+                    cbs[m] = lambda *a, **v: wrapper(m, *a, **v)
+                routes[f.__name__] = cbs
+                return f
+            return mounter
+
+        # all api-handlers placed in make_routes
+        def make_routes():
+            @mount('GET')
+            def use_username(*a, **v): # *a, **v - non-meaning args - required to perform unified calls
+                return {"use_username": self.use_username}
+
+            @mount('GET')
+            def config(*a, **v):
+                fields = [
+                    dict(name=f.name, type=f.type)
+                    for f in self.db.auth_user
+                    if f.type in ["string", "bool", "integer", "float"]
+                    and f.writable
+                    and f.readable
+                ]
+                return {
+                    "allowed_actions": self.allowed_actions,
+                    "plugins": ["local"] + [key for key in self.plugins],
+                    "fields": fields,
+                }
+
+            @mount('GET', user = 'public')
+            def profile(user, *a, **v):
+                return {"user": user}
+
+            @mount('POST')
+            def register(vars, *a, **v):
+                return self.register(vars, send=True).as_dict()
+
+            @mount('POST')
+            def login(vars, *a, **v):
+                # Prioritize PAM or LDAP logins if enabled
+                if "pam" in self.plugins or "ldap" in self.plugins:
+                    plugin_name = "pam" if "pam" in self.plugins else "ldap"
+                    username, password = vars.get("email"), vars.get("password")
+                    check = self.plugins[plugin_name].check_credentials(
+                        username, password
+                    )
+                    if check:
+                        data = {
+                            "username": username,
+                            # "email": username + "@localhost",
+                            "sso_id": plugin_name + ":" + username,
+                        }
+                        # and register the user if we have one, just in case
+                        if self.db:
+                            user = self.get_or_register_user(data)
+                            self.store_user_in_session(user["id"])
+                        #else: if we're here - check is OK, but user is not in the session - is it right?
+                    else:
+                        data = self._error("Invalid Credentials")
+                # Else use normal login
+                else:
+                    user, error = self.login(**vars)
+                    if user:
+                        self.session["user"] = {"id": user.id}
+                        self.session["recent_activity"] = calendar.timegm(
+                            time.gmtime()
+                        )
+                        self.session["uuid"] = str(uuid.uuid1())
+                        user = {
+                            f.name: user[f.name]
+                            for f in self.db.auth_user
+                            if f.readable
+                        }
+                        data = {"user": user}
+                    else:
+                        data = self._error(error)
+                return data
+
+            @mount('POST')
+            def request_reset_password(vars, *a, **v):
+                if not self.request_reset_password(**vars):
+                    return self._error("invalid user")
+
+            @mount('POST')
+            def reset_password(vars, *a, **v):
+                if not self.reset_password(
+                    vars.get("token"), vars.get("new_password")
+                ):
+                    return self._error("invalid token, request expired")
+
+            @mount('POST', user= 'public')
+            def logout(user, *a, **v):
+                self.session["user"] = None
+
+            @mount('POST', user= 'private')
+            def unsubscribe(user, *a, **v):
+                self.session["user"] = None
+                self.gdpr_unsubscribe(user, send=True)
+
+            @mount('POST', user= 'private')
+            def change_password(user, vars, *a, **v):
+                return self.change_password(
+                    user, vars.get("new_password"), vars.get("old_password")
+                )
+
+            @mount('POST', user= 'private')
+            def change_email(user, vars, *a, **v):
+                return self.change_email(
+                    user, vars.get("new_email"), vars.get("password")
+                )
+
+            @mount('POST', user= 'private')
+            def profile(user, vars, *a, **v):
+                return self.update_profile(user, **vars)
+
+        make_routes()
+        return routes
+
+    # Handle http requests
     def action(self, path, method, get_vars, post_vars, env=None):
         """action that handles all the HTTP requests for Auth"""
         env = env or {}
+        # plugin/
         if path.startswith("plugin/"):
             parts = path.split("/", 2)
             plugin = self.plugins.get(parts[1])
@@ -336,98 +499,19 @@ class Auth(Fixture):
                 )
             else:
                 abort(404)
-        if path.startswith("api/"):
-            data = {}
-            if method == "GET":
-                # Should we use the username?
-                if path == "api/use_username":
-                    return {"use_username": self.use_username}
-                if path == "api/config":
-                    fields = [
-                        dict(name=f.name, type=f.type)
-                        for f in self.db.auth_user
-                        if f.type in ["string", "bool", "integer", "float"]
-                        and f.writable
-                        and f.readable
-                    ]
-                    return {
-                        "allowed_actions": self.allowed_actions,
-                        "plugins": ["local"] + [key for key in self.plugins],
-                        "fields": fields,
-                    }
-                # Otherwise, we assume the user exists.
-                user = self.get_user(safe=True)
-                if not user:
-                    data = self._error("not authorized", 401)
-                if path == "api/profile":
-                    return {"user": user}
-            elif method == "POST" and self.db:
-                vars = dict(post_vars)
-                user = self.get_user(safe=False)
-                if path == "api/register":
-                    data = self.register(vars, send=True).as_dict()
-                elif path == "api/login":
-                    # Prioritize PAM or LDAP logins if enabled
-                    if "pam" in self.plugins or "ldap" in self.plugins:
-                        plugin_name = "pam" if "pam" in self.plugins else "ldap"
-                        username, password = vars.get("email"), vars.get("password")
-                        check = self.plugins[plugin_name].check_credentials(
-                            username, password
-                        )
-                        if check:
-                            data = {
-                                "username": username,
-                                # "email": username + "@localhost",
-                                "sso_id": plugin_name + ":" + username,
-                            }
-                            # and register the user if we have one, just in case
-                            if self.db:
-                                user = self.get_or_register_user(data)
-                                self.store_user_in_session(user["id"])
-                        else:
-                            data = self._error("Invalid Credentials")
-                    # Else use normal login
-                    else:
-                        user, error = self.login(**vars)
-                        if user:
-                            self.session["user"] = {"id": user.id}
-                            self.session["recent_activity"] = calendar.timegm(
-                                time.gmtime()
-                            )
-                            self.session["uuid"] = str(uuid.uuid1())
-                            user = {
-                                f.name: user[f.name]
-                                for f in self.db.auth_user
-                                if f.readable
-                            }
-                            data = {"user": user}
-                        else:
-                            data = self._error(error)
-                elif path == "api/request_reset_password":
-                    if not self.request_reset_password(**vars):
-                        data = self._error("invalid user")
-                elif path == "api/reset_password":
-                    if not self.reset_password(
-                        vars.get("token"), vars.get("new_password")
-                    ):
-                        data = self._error("invalid token, request expired")
-                elif user and path == "api/logout":
-                    self.session["user"] = None
-                elif user and path == "api/unsubscribe":
-                    self.session["user"] = None
-                    self.gdpr_unsubscribe(user, send=True)
-                elif user and path == "api/change_password":
-                    data = self.change_password(
-                        user, vars.get("new_password"), vars.get("old_password")
-                    )
-                elif user and path == "api/change_email":
-                    data = self.change_email(
-                        user, vars.get("new_email"), vars.get("password")
-                    )
-                elif user and path == "api/profile":
-                    data = self.update_profile(user, **vars)
-                else:
-                    data = {"status": "error", "message": "undefined"}
+        # api/
+        elif path.startswith("api/"):
+            vars = dict(post_vars or {})
+            api_name = path[4:]
+            api = self.api.get(api_name)
+            cb = api and api.get(method)
+            if not api:
+                data = self._error('undefined', 401)
+            elif not cb:
+                data = self._error('method not allowed', 405)
+            else: # route is OK
+                data = cb(vars) or {}
+
             if not "status" in data and data.get("errors"):
                 data.update(status="error", message="validation errors", code=401)
             elif "errors" in data and not data["errors"]:
@@ -435,9 +519,11 @@ class Auth(Fixture):
             data["status"] = data.get("status", "success")
             data["code"] = data.get("code", 200)
             return data
+        # logout/
         elif path == "logout":
-            self.session.clear()
+            self.session.clear() # why in case of api/logout: self.session["user"] = None?
             # Somehow call revoke for active plugin
+        # verify_email/
         elif path == "verify_email" and self.db:
             token = get_vars.get("token")
             if self.verify_email(token):
@@ -458,6 +544,7 @@ class Auth(Fixture):
                         use_appname=self.use_appname_in_redirects,
                     )
                 )
+        # else:  - abort(404)???
         env["path"] = path
         return Template("auth.html").transform(env)
 
