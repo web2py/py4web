@@ -38,6 +38,6 @@ deploy: test
 	twine upload dist/*
 setup:
 	./py4web.py setup apps
-	./py4web.py set-password
+	./py4web.py set_password
 run:
 	./py4web.py run -p password.txt apps
