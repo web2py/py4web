@@ -1404,7 +1404,7 @@ def call(apps_folder, func, args):
     env[name](**args)
 
 
-@cli.command()
+@cli.command(name='set_password')
 @click.option(
     "--password",
     prompt=True,
