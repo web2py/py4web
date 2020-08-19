@@ -406,10 +406,13 @@ class Auth(Fixture):
 
             @mount('POST')
             def login(vars, *a, **v):
+                username, password = vars.get("email"), vars.get("password")
+                if not all(isinstance(_, str) for _ in [username, password]):
+                    return self._error("Invalid Credentials")
+
                 # Prioritize PAM or LDAP logins if enabled
                 if "pam" in self.plugins or "ldap" in self.plugins:
                     plugin_name = "pam" if "pam" in self.plugins else "ldap"
-                    username, password = vars.get("email"), vars.get("password")
                     check = self.plugins[plugin_name].check_credentials(
                         username, password
                     )
@@ -428,7 +431,7 @@ class Auth(Fixture):
                         data = self._error("Invalid Credentials")
                 # Else use normal login
                 else:
-                    user, error = self.login(**vars)
+                    user, error = self.login(username, password)
                     if user:
                         self.session["user"] = {"id": user.id}
                         self.session["recent_activity"] = calendar.timegm(
