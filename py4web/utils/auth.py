@@ -459,7 +459,7 @@ class Auth(Fixture):
 
             @mount('POST', user= 'public')
             def logout(user, *a, **v):
-                self.session["user"] = None
+                self.session.clear()
 
             @mount('POST', user= 'private')
             def unsubscribe(user, *a, **v):
@@ -521,7 +521,7 @@ class Auth(Fixture):
             return data
         # logout/
         elif path == "logout":
-            self.session.clear() # why in case of api/logout: self.session["user"] = None?
+            self.session.clear()
             # Somehow call revoke for active plugin
         # verify_email/
         elif path == "verify_email" and self.db:
