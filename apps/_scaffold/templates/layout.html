@@ -58,6 +58,6 @@
   <script src="js/axios.min.js"></script>
   <script src="js/vue.min.js"></script>
   <script src="js/utils.js"></script>
-  [[if globals().get('flash'):]]<script>utils.flash([[=XML(flash)]]);</script>[[pass]]
+  [[if globals().get('flash'):]]<script>utils.flash([[=XML("\"%s\"" % flash) if isinstance(flash, str) else XML(flash)]]);</script>[[pass]]
   [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>
