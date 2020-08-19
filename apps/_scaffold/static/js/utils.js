@@ -245,10 +245,13 @@ utils.handle_flash = function() {
         return function (event) { 
             var id = 'notification-{0}'.format([element.dataset.counter]);
             element.dataset.counter = parseInt(element.dataset.counter) + 1;
+            // event.detail can be a string, but we need hash like {message: ..., class: ...}
+            var e_detail = event.detail; // event.detail is readonly!
+            if (typeof e_detail == "string"){e_detail = {message: e_detail}}
             var node = document.createElement("div");
-            node.innerHTML = '<div role="alert"><span class="close"></span>{0}</div>'.format([event.detail.message]);
+            node.innerHTML = '<div role="alert"><span class="close"></span>{0}</div>'.format([e_detail.message]);
             node = Q('[role="alert"]', node)[0];
-            node.classList.add(event.detail.class||'info');
+            node.classList.add(e_detail.class||'info');
             element.appendChild(node);
             Q('[role="alert"] .close',node)[0].onclick = make_delete_handler(node);
         };
