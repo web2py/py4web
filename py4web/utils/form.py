@@ -17,6 +17,7 @@ from yatl.helpers import (
     SELECT,
     OPTION,
     P,
+    SPAN,
     XML,
 )
 
@@ -200,15 +201,28 @@ class FormStyleFactory:
             if error:
                 controls["errors"][field.name] = error
 
-            form.append(
-                DIV(
-                    LABEL(field.label, _for=input_id, _class=class_label),
-                    DIV(control, _class=class_inner),
-                    P(error, _class=class_error) if error else "",
-                    P(field.comment or "", _class=class_info),
-                    _class=class_outer,
+            if field.type == 'boolean':
+                form.append(
+                    DIV(
+                        SPAN(control, _class=class_inner),
+                        LABEL(' ' + field.label, _for=input_id, _class=class_label,
+                              _style="display: inline !important"),
+                        P(error, _class=class_error) if error else "",
+                        P(field.comment or "", _class=class_info),
+                        _class=class_outer,
+                    )
                 )
-            )
+            else:
+                form.append(
+                    DIV(
+                        LABEL(field.label, _for=input_id, _class=class_label),
+                        DIV(control, _class=class_inner),
+                        P(error, _class=class_error) if error else "",
+                        P(field.comment or "", _class=class_info),
+                        _class=class_outer,
+                    )
+                )
+            
             if "id" in vars:
                 form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
         if deletable:
@@ -220,8 +234,8 @@ class FormStyleFactory:
             )
             form.append(
                 DIV(
-                    DIV(controls["delete"], _class=class_inner,),
-                    P("check to delete", _class="help"),
+                    SPAN(controls["delete"], _class=class_inner, _stye="vertical-align: middle;"),
+                    P(" check to delete", _class="help", _style="display: inline !important"),
                     _class=class_outer,
                 )
             )
