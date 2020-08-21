@@ -30,6 +30,10 @@ http://localhost:8000/myapp/static/hello.txt
 
 Notice that ``static`` is a special path for py4web and only files under the ``static`` folder are served.
 
+Important: internally py4web uses the bottle ``static_file`` method for serving static files, which means it supports streaming, partial content, range requests, and if-modified-since. This is all handled automatically based on the http request headers.
+
+### Dynamic Web Pages
+
 To create a dynamic page, you must create a function that returns the page content. For example dit the ``myapp/__init__.py`` as follows:
 
 ``
@@ -249,7 +253,47 @@ When you start from scaffold, you may want to edit ``settings.py``, ``templates`
 
 In your html, you can use any JS library that you want because py4web is agnostic to your choice of JS and CSS, but with some exceptions. The ``auth.html`` which handles registration/login/etc. uses a vue.js component. Hence if you want to use that, you should not remove it.
 
+### App Watchdog
+
+Py4web facilitates a development server's setup that automatically reloads an app when its Python source files change. Any other files inside an app can be watched by setting a handler function using **``@app_watch_handler``** decorator.
+
+``
+py4web run apps --watch [sync|lazy]
+``
+
+Watch SASS files and compile them when edited:
+``
+from py4web.core import app_watch_handler
+import sass # https://github.com/sass/libsass-python
+
+@app_watch_handler(
+    ["static_dev/sass/all.sass",
+     "static_dev/sass/main.sass",
+     "static_dev/sass/overrides.sass"])
+def sass_compile(changed_files):
+    print(changed_files) # for info, files that changed, from a list of watched files above
+    ## ...
+    compiled_css = sass.compile(filename=filep, include_paths=includes, output_style="compressed")
+    dest = os.path.join(app, "static/css/all.css")
+    with open(dest, "w") as file:
+        file.write(compiled)
+``:python
 
 
+Validate javascript syntax when edited:
+``
+import esprima # Python implementation of Esprima from Node.js
 
+@app_watch_handler(
+    ["static/js/index.js",
+     "static/js/utils.js",
+     "static/js/dbadmin.js"])
+def validate_js(changed_files):
+    for cf in changed_files:
+        print("JS syntax validation: ", cf)
+        with open(os.path.abspath(cf)) as code:
+            esprima.parseModule(code.read())
+``:python
 
+Filepaths passed to **``@app_watch_handler``** decorator must be relative to an app. Python files("*.py") in a list passed to the decorator are ignored since they are watched by default.
+Handler function's parameter is a list of filepaths that were changed. All exceptions inside handlers are printed in terminal.

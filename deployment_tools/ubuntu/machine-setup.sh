@@ -238,6 +238,6 @@ esac
 exit 0
 ' > /etc/init.d/py4web
 
-py4web set-password --password_file=/home/www-data/py4web/password.txt
+py4web set_password --password_file=/home/www-data/py4web/password.txt
 /etc/init.d/py4web restart
 /etc/init.d/nginx restart
