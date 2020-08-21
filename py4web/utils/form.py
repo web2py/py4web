@@ -368,7 +368,8 @@ class Form(object):
             if self.record:
                 self.vars = self._read_vars_from_record(table)
         else:
-            post_vars = self.vars = request.forms
+            original_value = post_vars.getall(field.name)
+            original_value = original_value[0] if len(original_value) == 1 else original_value
             self.submitted = True
             process = False
 
