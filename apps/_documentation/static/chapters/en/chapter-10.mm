@@ -37,6 +37,13 @@ Here is a simple example of a custom form not using database access.
 We declare an endpoint `/form_example`, which will be used both for the GET and for the POST of the form:
 
 ``
+from py4web import Session, redirect, URL
+from py4web.utils.dbstore import DBStore
+from py4web.utils.form import Form, FormStyleBulma
+
+db = DAL('sqlite:memory')
+session =  Session(storage=DBStore(db))
+
 @action('form_example', method=['GET', 'POST'])
 @action.uses('form_example.html', session)
 def form_example():

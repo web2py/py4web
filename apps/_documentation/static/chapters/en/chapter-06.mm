@@ -110,7 +110,7 @@ select records of table **superhero** referred by field **superhero** of table *
 
 The query allows additional modifiers for example
 ``
-@offest=10
+@offset=10
 @limit=10
 @order=name
 @model=true

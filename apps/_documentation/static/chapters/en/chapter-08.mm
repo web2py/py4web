@@ -267,7 +267,7 @@ Emphasizes its content.
 #### ``FORM``
 ``FORM``:inxx
 
-This is one of the most important helpers. In its simple form, it just makes a ``<form>...</form>`` tag, but because helpers are objects and have knowledge of what they contain, they can process submitted forms (for example, perform validation of the fields). This will be discussed in detail in Chapter 7.
+This is one of the most important helpers. In its simple form, it just makes a ``<form>...</form>`` tag, but because helpers are objects and have knowledge of what they contain, they can process submitted forms (for example, perform validation of the fields). This will be discussed in detail in [Chapter 10](#chapter-10).
 ``
 >>> print FORM(INPUT(_type='submit'), _action='', _method='post')
 <form enctype="multipart/form-data" action="" method="post">
@@ -657,7 +657,7 @@ Notice that ``TAG`` is an object, and ``TAG.name`` or ``TAG['name']`` is a funct
 #### ``MENU``
 ``MENU``:inxx
 
-The MENU helper takes a list of lists or of tuples of the form of ``response.menu`` (as described in Chapter 4) and generates a tree-like structure using unordered lists representing the menu. For example:
+The MENU helper takes a list of lists or of tuples of the form of ``response.menu`` and generates a tree-like structure using unordered lists representing the menu. For example:
 ``
 >>> print MENU([['One', False, 'link1'], ['Two', False, 'link2']])
 <ul class="py4web-menu py4web-menu-vertical">
