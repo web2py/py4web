@@ -89,20 +89,26 @@ class FormStyleFactory:
                 field._placeholder if "_placeholder" in field.__dict__ else None
             )
             title = field._title if "_title" in field.__dict__ else None
-
+            # only diplay field if readable or writable
             if not field.readable and not field.writable:
                 continue
-            if not readonly and not field.writable:
+            # if this is a readonly form and the field is not readable, than do not show
+            if readonly and not field.readable:
                 continue
+            # ignore blob fields
             if field.type == "blob":  # never display blobs (mistake?)
                 continue
+            # ignore fields of type id its value is equal to None
             if field.type == "id" and value is None:
                 field.writable = False
                 continue
+            # if the form is readonly or this is an id type field, display it as readonly
             if readonly or field.type == "id":
                 control = DIV(field.represent and field.represent(value) or value or "")
+            # if we have a widget for the field use it
             elif field.widget:
                 control = field.widget(table, value)
+            # else pick the proper default widget
             elif field.type == "text":
                 control = TEXTAREA(
                     value or "",
