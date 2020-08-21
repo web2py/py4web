@@ -277,10 +277,8 @@ h3,
 h4,
 h5,
 h6 {
-/*
   font-size: 100%;
   font-weight: normal;
-*/
 }
 
 ul {
@@ -363,14 +361,12 @@ textarea {
   font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
-/*
 code,
 pre {
   -moz-osx-font-smoothing: auto;
   -webkit-font-smoothing: auto;
   font-family: monospace;
 }
-*/
 
 body {
   color: #4a4a4a;
@@ -393,7 +389,6 @@ a:hover {
   color: #363636;
 }
 
-/*
 code {
   background-color: whitesmoke;
   color: #ff3860;
@@ -401,7 +396,6 @@ code {
   font-weight: normal;
   padding: 0.25em 0.5em 0.25em;
 }
-*/
 
 hr {
   background-color: whitesmoke;
@@ -450,14 +444,12 @@ pre {
   word-wrap: normal;
 }
 
-/*
 pre code {
   background-color: transparent;
   color: currentColor;
   font-size: 1em;
   padding: 0;
 }
-*/
 
 table td,
 table th {
@@ -5106,7 +5098,7 @@ fieldset[disabled] .select select:hover {
   overflow-y: hidden;
   max-width: 100%;
 }
-/*
+
 .tags {
   align-items: center;
   display: flex;
@@ -5330,7 +5322,6 @@ fieldset[disabled] .select select:hover {
 a.tag:hover {
   text-decoration: underline;
 }
-*/
 
 .title,
 .subtitle {
@@ -5471,7 +5462,6 @@ a.tag:hover {
   max-width: 100%;
 }
 
-/*
 .number {
   align-items: center;
   background-color: whitesmoke;
@@ -5486,7 +5476,6 @@ a.tag:hover {
   text-align: center;
   vertical-align: top;
 }
-*/
 
 .breadcrumb {
   font-size: 1rem;

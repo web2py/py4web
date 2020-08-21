@@ -17,7 +17,7 @@ This will install py4web and all its dependencies. Once installed you can start 
 
 ``
 py4web setup apps
-py4web set-password
+py4web set_password
 py4web run apps
 ``:bash
 
@@ -75,7 +75,7 @@ Once installed, you should start with
 
 ``
 ./py4web.py setup apps
-./py4web.py set-password
+./py4web.py set_password
 ./py4web.py run apps
 ``:bash
 
@@ -97,7 +97,7 @@ py4web setup apps
 Every time py4web starts, it asks for a one-time password for you to access the dashboard. This is annoying. You can avoid it by storying a password hashed in a file:
 
 ``
-py4web set-password
+py4web set_password
 ``:bash
 (pydal is installed by py4web as a dependency)
 and then ask py4web to re-use that password:
@@ -123,7 +123,7 @@ Options:
 Commands:
   call
   run
-  set-password
+  set_password
   setup
   shell
   version

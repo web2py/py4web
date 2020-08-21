@@ -9,8 +9,6 @@ import string
 import requests
 from py4web.core import URL, abort, redirect, request
 
-passedstate = ""
-
 
 class SSO(object):
 
@@ -90,7 +88,15 @@ class OAuth2(SSO):
     userinfo_url = ""
     default_scope = ""
 
-    def __init__(self, client_id, client_secret, callback_url, scope=None, scheme=True):
+    def __init__(
+        self,
+        client_id,
+        client_secret,
+        callback_url,
+        scope=None,
+        scheme=True,
+        passed_state="",
+    ):
         SSO.__init__(self)
         self.parameters = dict(
             client_id=client_id,
@@ -98,6 +104,7 @@ class OAuth2(SSO):
             callback_url=callback_url,
             scope=scope or self.default_scope,
             scheme=scheme,
+            passed_state=passed_state,
         )
 
     def state_generator(
@@ -134,7 +141,7 @@ class OAuth2(SSO):
         statecheck = query.get("state")
         if not code:
             return False
-        if statecheck != passedstate:
+        if statecheck != self.parameters.get("passed_state"):
             return False
         data = dict(
             code=code,

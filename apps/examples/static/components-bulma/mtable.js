@@ -3,14 +3,13 @@
     var mtable = { props: ['url', 'filter', 'order', 'editable', 'create', 'deletable', 'render'], data: null, methods: {}};
     
     mtable.data = function() {        
-        var data = {url: this.url,
+        var data = {mtUrl: this.url,
                     busy: false,
-                    filter: this.filter || '',
-                    order: this.order ||  '',
+                    mtFilter: this.filter || '',
+                    mtOrder: this.order ||  '',
                     errors: {},
                     item: null,
                     message: '',
-                    reference_options: {},
                     table: { model: [], items: [], count: 0}};
         mtable.methods.load.call(data);
         return data;
@@ -22,9 +21,9 @@
     mtable.methods.load = function() {
         let self = this;
         let length = this.table.items.length;
-        let url = this.url + '?@limit=20';
+        let url = this.mtUrl + '?@limit=20';
         if (length) url+='&@offset='+length; else url+='&@model=true';
-        let filters = self.filter.split(' and ').filter((f)=>{return f.trim() != ''});
+        let filters = self.mtFilter.split(' and ').filter((f)=>{return f.trim() != ''});
         filters = filters.filter((f)=>{return f.trim();}).map((f)=>{                
                 let parts = (f
                              .replace(/ equals? /,'==')
@@ -48,7 +47,7 @@
                         '=' + parts[parts.length-1].replace(/^ /,''));
             });
         if (filters.length) url += '&'+filters.join('&');
-        if (self.order) url += '&@order='+self.order;
+        if (self.mtOrder) url += '&@order='+self.mtOrder;
         self.busy = true;
         axios.get(url).then(function (res) {
                 self.busy = false;
@@ -58,9 +57,9 @@
     };
     
     mtable.methods.reorder = function (field) {
-        if (this.order == '~' + field.name) this.order = null;
-        else if (this.order == field.name) this.order = '~'+field.name;
-        else this.order = field.name;
+        if (this.mtOrder == '~' + field.name) this.mtOrder = null;
+        else if (this.mtOrder == field.name) this.mtOrder = '~'+field.name;
+        else this.mtOrder = field.name;
         this.table.items = [];
         this.load();
     };
@@ -72,51 +71,18 @@
     }
 
     mtable.methods.open_create = function () {
-        this.populate_reference_options();
         this.item = {};
         for(var field in this.model) this.item[field.name] = field.default||'';
     };
     
     mtable.methods.open_edit = function (item) {
-        this.populate_reference_options();
         this.item = {};
         this.item = item;
     };
-
-    mtable.methods.populate_reference_options = function(){
-        let self = this;
-        for(var field of this.table.model){
-            console.log(field.name);
-            if(field.type == "reference"){
-                if (!(field.references in this.reference_options)){
-                    Vue.set(this.reference_options, field.references, []);
-                    let reference_table_url = self.url.split('/');                    
-                    reference_table_url.pop()
-                    reference_table_url.push(field.references)
-                    reference_table_url = reference_table_url.join('/') + '?@options_list=true';
-                    axios.get(reference_table_url).then(function (res) {
-                        let url_components = res.config.url.split('?')[0].split('/');
-                        self.reference_options[url_components[url_components.length - 1 ]] = res.data.items;
-                     });
-                    
-                }
-            }
-        }
-    }
-
-    mtable.methods.parse_and_validate_json = function(event){
-        try {
-            event.target.style.borderColor = "";
-            return JSON.parse(event.target.value);
-        }
-        catch{
-            event.target.style.borderColor = "#ff0000";
-        }
-    }
-
+    
     mtable.methods.trash = function (item) {
         if (window.confirm("Really delete record?")) {
-            let url = this.url + '/' + item.id;            
+            let url = this.mtUrl + '/' + item.id;            
             this.table.items = this.table.items.filter((i)=>{return i.id != item.id;});
             axios.delete(url);
             if (item==this.item) this.item = null;
@@ -124,7 +90,7 @@
     };
     
     mtable.methods.save = function (item) {
-        let url = this.url;
+        let url = this.mtUrl;
         self.busy = true;
         if (item.id) {
             url += '/' + item.id;
@@ -185,8 +151,6 @@
             }).join('&');
         window.location = window.location.href.split('?')[0]+'?'+source;
     };
-
-
 
     var scripts = document.getElementsByTagName('script');
     var src = scripts[scripts.length-1].src;

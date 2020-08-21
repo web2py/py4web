@@ -17,6 +17,7 @@ from yatl.helpers import (
     SELECT,
     OPTION,
     P,
+    SPAN,
     XML,
 )
 
@@ -64,7 +65,10 @@ class FormStyleFactory:
         controls = dict(
             labels=dict(),
             widgets=dict(),
+            comments=dict(),
             hidden_widgets=dict(),
+            placeholders=dict(),
+            titles=dict(),
             errors=dict(),
             begin=XML(form.xml().split("</form>")[0]),
             end=XML("</form>"),
@@ -81,35 +85,66 @@ class FormStyleFactory:
             value = vars.get(field.name, field.default)
             error = errors.get(field.name)
             field_class = field.type.split()[0].replace(":", "-")
-
+            placeholder = (
+                field._placeholder if "_placeholder" in field.__dict__ else None
+            )
+            title = field._title if "_title" in field.__dict__ else None
+            # only diplay field if readable or writable
             if not field.readable and not field.writable:
                 continue
-            if not readonly and not field.writable:
+            # if this is a readonly form and the field is not readable, than do not show
+            if readonly and not field.readable:
                 continue
+            # ignore blob fields
             if field.type == "blob":  # never display blobs (mistake?)
                 continue
+            # ignore fields of type id its value is equal to None
             if field.type == "id" and value is None:
                 field.writable = False
                 continue
+            # if the form is readonly or this is an id type field, display it as readonly
             if readonly or field.type == "id":
                 control = DIV(field.represent and field.represent(value) or value or "")
+            # if we have a widget for the field use it
             elif field.widget:
                 control = field.widget(table, value)
+            # else pick the proper default widget
             elif field.type == "text":
-                control = TEXTAREA(value or "", _id=input_id, _name=field.name)
+                control = TEXTAREA(
+                    value or "",
+                    _id=input_id,
+                    _name=field.name,
+                    _placeholder=placeholder,
+                    _title=title,
+                )
             elif field.type == "date":
                 control = INPUT(
-                    _value=value, _type="date", _id=input_id, _name=field.name
+                    _value=value,
+                    _type="date",
+                    _id=input_id,
+                    _name=field.name,
+                    _placeholder=placeholder,
+                    _title=title,
                 )
             elif field.type == "datetime":
                 if isinstance(value, str):
                     value = value.replace(" ", "T")
                 control = INPUT(
-                    _value=value, _type="datetime-local", _id=input_id, _name=field.name
+                    _value=value,
+                    _type="datetime-local",
+                    _id=input_id,
+                    _name=field.name,
+                    _placeholder=placeholder,
+                    _title=title,
                 )
             elif field.type == "time":
                 control = INPUT(
-                    _value=value, _type="time", _id=input_id, _name=field.name
+                    _value=value,
+                    _type="time",
+                    _id=input_id,
+                    _name=field.name,
+                    _placeholder=placeholder,
+                    _title=title,
                 )
             elif field.type == "boolean":
                 control = INPUT(
@@ -118,6 +153,7 @@ class FormStyleFactory:
                     _name=field.name,
                     _value="ON",
                     _checked=value,
+                    _title=title,
                 )
             elif field.type == "upload":
                 control = DIV(INPUT(_type="file", _id=input_id, _name=field.name))
@@ -125,7 +161,10 @@ class FormStyleFactory:
                     control.append(A("download", _href=field.download_url(value)))
                     control.append(
                         INPUT(
-                            _type="checkbox", _value="ON", _name="_delete_" + field.name
+                            _type="checkbox",
+                            _value="ON",
+                            _name="_delete_" + field.name,
+                            _title=title,
                         )
                     )
                     control.append("(check to remove)")
@@ -137,7 +176,11 @@ class FormStyleFactory:
                     for k, v in get_options(field.requires)
                 ]
                 control = SELECT(
-                    *option_tags, _id=input_id, _name=field.name, _multiple=multiple
+                    *option_tags,
+                    _id=input_id,
+                    _name=field.name,
+                    _multiple=multiple,
+                    _title=title
                 )
             else:
                 field_type = "password" if field.type == "password" else "text"
@@ -147,6 +190,8 @@ class FormStyleFactory:
                     _name=field.name,
                     _value=value,
                     _class=field_class,
+                    _placeholder=placeholder,
+                    _title=title,
                 )
 
             key = control.name.rstrip("/")
@@ -156,18 +201,34 @@ class FormStyleFactory:
 
             controls["labels"][field.name] = field.label
             controls["widgets"][field.name] = control
+            controls["comments"][field.name] = field.comment if field.comment else ""
+            controls["titles"][field.name] = title
+            controls["placeholders"][field.name] = placeholder
             if error:
                 controls["errors"][field.name] = error
 
-            form.append(
-                DIV(
-                    LABEL(field.label, _for=input_id, _class=class_label),
-                    DIV(control, _class=class_inner),
-                    P(error, _class=class_error) if error else "",
-                    P(field.comment or "", _class=class_info),
-                    _class=class_outer,
+            if field.type == 'boolean':
+                form.append(
+                    DIV(
+                        SPAN(control, _class=class_inner),
+                        LABEL(' ' + field.label, _for=input_id, _class=class_label,
+                              _style="display: inline !important"),
+                        P(error, _class=class_error) if error else "",
+                        P(field.comment or "", _class=class_info),
+                        _class=class_outer,
+                    )
                 )
-            )
+            else:
+                form.append(
+                    DIV(
+                        LABEL(field.label, _for=input_id, _class=class_label),
+                        DIV(control, _class=class_inner),
+                        P(error, _class=class_error) if error else "",
+                        P(field.comment or "", _class=class_info),
+                        _class=class_outer,
+                    )
+                )
+            
             if "id" in vars:
                 form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
         if deletable:
@@ -179,8 +240,8 @@ class FormStyleFactory:
             )
             form.append(
                 DIV(
-                    DIV(controls["delete"], _class=class_inner,),
-                    P("check to delete", _class="help"),
+                    SPAN(controls["delete"], _class=class_inner, _stye="vertical-align: middle;"),
+                    P(" check to delete", _class="help", _style="display: inline !important"),
                     _class=class_outer,
                 )
             )
@@ -443,9 +504,13 @@ class Form(object):
                 )
                 helper["form"].append(helper["controls"]["hidden_widgets"][key])
 
-            helper["controls"]["begin"] = XML(''.join(str(helper["controls"]["begin"]) +
-                                      str(helper["controls"]["hidden_widgets"][hidden_field])
-                                      for hidden_field in helper["controls"]["hidden_widgets"]))
+            helper["controls"]["begin"] = XML(
+                "".join(
+                    str(helper["controls"]["begin"])
+                    + str(helper["controls"]["hidden_widgets"][hidden_field])
+                    for hidden_field in helper["controls"]["hidden_widgets"]
+                )
+            )
             self.cached_helper = helper
 
         return self.cached_helper

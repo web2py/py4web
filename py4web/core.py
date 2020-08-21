@@ -6,6 +6,7 @@
 import argparse
 import cgitb
 import code
+import copy
 import datetime
 import functools
 import importlib
@@ -35,10 +36,6 @@ import zipfile
 import asyncio
 from watchgod import awatch
 
-REGEX_APPJSON = r"(^|\s|,)application/json(,|\s|$)"
-
-import click
-
 # Optional web servers for speed
 try:
     import gunicorn
@@ -61,13 +58,14 @@ except:
 
 
 # Third party modules
-import jwt  # this is PyJWT
+import click
 import bottle
+import jwt  # this is PyJWT
 import yatl
-import threadsafevariable
 import pydal
 import pluralize
 from pydal._compat import to_native, to_bytes
+import threadsafevariable
 
 bottle.BaseRequest.MEMFILE_MAX = 16 * 1024 * 1024
 
@@ -90,6 +88,10 @@ __all__ = [
     "check_compatible",
     "wsgi",
 ]
+
+PY4WEB_CMD = "py4web"
+
+REGEX_APPJSON = r"(^|\s|,)application/json(,|\s|$)"
 
 DEFAULTS = dict(
     PY4WEB_APPS_FOLDER="apps",
@@ -276,7 +278,12 @@ class Translator(pluralize.Translator, Fixture):
 
 
 class DAL(pydal.DAL, Fixture):
+
+    reconnect_on_request = True
+
     def on_request(self):
+        if self.reconnect_on_request:
+            self._adapter.reconnect()
         threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
 
     def on_error(self):
@@ -287,8 +294,33 @@ class DAL(pydal.DAL, Fixture):
 
 
 # make sure some variables in pydal are thread safe
-for _ in ["readable", "writable", "default", "update", "requires"]:
-    setattr(pydal.DAL.Field, _, threadsafevariable.ThreadSafeVariable())
+def thread_safe_pydal_patch():
+    Field = pydal.DAL.Field
+    tsafe_attrs = ["readable", "writable", "default", "update", "requires"]
+    for a in tsafe_attrs:
+        setattr(Field, a, threadsafevariable.ThreadSafeVariable())
+
+    # hack "copy.copy" behavior, since it makes a shallow copy,
+    # but ThreadSafe-attributes (see above) are class-level, so:
+    # no copy -> no attr in ICECUBE for the fresh one -> gevent-error on try to access to any of ThreadSafe-attributes
+    def field_copy(self):
+        # to prevent infinite recursion
+        # temporarily set __copy__ to None
+        me = self.__class__.__copy__
+        self.__class__.__copy__ = None
+        clone = copy.copy(self)
+        self.__class__.__copy__ = me
+        for a in tsafe_attrs:
+            setattr(clone, a, getattr(self, a))
+        return clone
+
+    # to avoid possible future problems
+    if hasattr(Field, "__copy__"):
+        raise RuntimeError("code fix required!")
+    setattr(Field, "__copy__", field_copy)
+
+
+thread_safe_pydal_patch()
 
 # this global object will be used to store their state to restore it for every http request
 ICECUBE = {}
@@ -341,7 +373,7 @@ class Flash(Fixture):
             if isinstance(data, dict):
                 data["flash"] = Flash.local.flash
             else:
-                response.headers["py4web-flash"] = json.dumps(Flash.local.flash)    
+                response.headers["py4web-flash"] = json.dumps(Flash.local.flash)
         return data
 
 
@@ -923,6 +955,8 @@ class Reloader:
             if app_name in DIRTY_APPS:
                 Reloader.import_app(app_name)
                 del DIRTY_APPS[app_name]
+            ## APP_WATCH tasks, if used by any app
+            try_app_watch_tasks()
 
         bottle.default_app().add_hook("before_request", hook)
 
@@ -1013,6 +1047,8 @@ class Reloader:
                 prefix + "/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>"
             )
             def server_static(filename, static_folder=static_folder, version=None):
+                response.headers.setdefault("Pragma", "cache")
+                response.headers.setdefault("Cache-Control", "private")
                 return bottle.static_file(filename, root=static_folder)
 
         # Register routes list
@@ -1070,6 +1106,53 @@ def error404(error):
 
 DIRTY_APPS = dict()  #  apps that need to be reloaded (lazy watching)
 
+from inspect import stack
+from collections import OrderedDict
+
+APP_WATCH = {"files": dict(), "handlers": OrderedDict(), "tasks": dict()}
+
+""" Decorator that binds a func as an watchdog handler of non-".py" files.
+Paths to files must be relative to app, w/o app name(folder).
+
+@app_watch_handler(["static/sass/all.sass", "static/sass/main.sass"])
+def sass_compile(changed_files):
+    print(changed_files); # paths of files that changed, for info
+    sass.compile()
+"""
+
+
+def app_watch_handler(watched_app_subpaths):
+    invoker = pathlib.Path(stack()[1].filename)
+    apps_path = pathlib.Path(os.environ["PY4WEB_APPS_FOLDER"])
+    app = invoker.relative_to(os.environ["PY4WEB_APPS_FOLDER"]).parts[0]
+
+    def decorator(func):
+        handler = "{}.{}".format(func.__module__, func.__name__)
+        APP_WATCH["handlers"][handler] = func
+        for subpath in watched_app_subpaths:
+            app_path = apps_path.joinpath(app, subpath).as_posix()
+            if not app_path in APP_WATCH["files"]:
+                APP_WATCH["files"][app_path] = []
+            APP_WATCH["files"][app_path].append(handler)
+        return func
+
+    return decorator
+
+
+def try_app_watch_tasks():
+    if APP_WATCH["tasks"]:
+        tried_tasks = []
+        for handler in APP_WATCH["tasks"]:
+            changed_files_dict = APP_WATCH["tasks"][handler]
+            try:
+                APP_WATCH["handlers"][handler](changed_files_dict.keys())
+                tried_tasks.append(handler)
+            except Exception as e:
+                logging.error(traceback.format_exc())
+        ## remove executed tasks from register
+        for handler in tried_tasks:
+            del APP_WATCH["tasks"][handler]
+
 
 def watch(apps_folder, server="default", mode="sync"):
     def watch_folder_event_loop(apps_folder):
@@ -1082,17 +1165,27 @@ def watch(apps_folder, server="default", mode="sync"):
             "watching (%s-mode) python file changes in: %s" % (mode, apps_folder)
         )
         async for changes in awatch(os.path.join(apps_folder)):
-            for app in set(
-                [
-                    p.relative_to(apps_folder).parts[0]
-                    for p in [pathlib.Path(pair[1]) for pair in changes]
-                    if p.suffix == ".py"
-                ]
-            ):
+            apps = []
+            for subpath in [pathlib.Path(pair[1]) for pair in changes]:
+                name = subpath.relative_to(apps_folder).parts[0]
+                if subpath.suffix == ".py":
+                    apps.append(name)
+                ## manage `app_watch_handler` decorators
+                elif subpath.as_posix() in APP_WATCH["files"]:
+                    handlers = APP_WATCH["files"][subpath.as_posix()]
+                    for handler in handlers:
+                        if not handler in APP_WATCH["tasks"]:
+                            APP_WATCH["tasks"][handler] = {}
+                        APP_WATCH["tasks"][handler][subpath.as_posix()] = True
+
+            for name in apps:
                 if mode == "lazy":
-                    DIRTY_APPS[app] = True
+                    DIRTY_APPS[name] = True
                 else:
-                    Reloader.import_app(app)
+                    Reloader.import_app(name)
+            ## in "lazy" mode it's done in bottle's "before_request" hook
+            if not mode == "lazy":
+                try_app_watch_tasks()
 
     if server == "default":
         # default wsgi server block the main thread so we open a new thread for the file watcher
@@ -1179,6 +1272,9 @@ def install_args(args, reinstall_apps=False):
             if not os.path.exists(init_py):
                 with open(init_py, "w") as fp:
                     fp.write("")
+        else:
+            click.echo("Command aborted")
+            sys.exit(0)
 
     # Upzip the _dashboard app if it is old or does not exist
     if reinstall_apps:
@@ -1240,16 +1336,32 @@ def keyboardInterruptHandler(signal, frame):
     sys.exit(0)
 
 
-@click.group()
+@click.group(
+    context_settings=dict(help_option_names=["-h", "-help", "--help"]),
+    help=__doc__
+    + '\n\nType "'
+    + PY4WEB_CMD
+    + ' COMMAND -h" for available options on commands',
+)
 def cli():
     pass
 
 
 @cli.command()
-def version():
+@click.option(
+    "-a", "--all", is_flag=True, default=False, help="List version of all modules"
+)
+def version(all):
+    """Show versions and exit"""
     from . import __version__
 
-    click.echo(__version__)
+    click.echo("py4web: %s" % __version__)
+    if all:
+        click.echo("system: %s" % platform.platform())
+        click.echo("python: %s" % sys.version.replace('\n',' '))
+        for name in sorted(sys.modules):
+            if hasattr(sys.modules[name], '__version__'):
+                click.echo("%s: %s" % (name, sys.modules[name].__version__))
 
 
 @cli.command()
@@ -1260,14 +1372,17 @@ def version():
     is_flag=True,
     default=False,
     help="No prompt, assume yes to questions",
+    show_default=True,
 )
 def setup(**args):
+    """Setup new apps folder or reinstall it"""
     install_args(args, reinstall_apps=True)
 
 
 @cli.command()
 @click.argument("apps_folder", default="apps")
 def shell(apps_folder):
+    """Open a python shell with apps_folder added to the path"""
     install_args(dict(apps_folder=apps_folder))
     fix_ansi_on_windows()
     code.interact(local=dict(globals(), **locals()))
@@ -1276,8 +1391,14 @@ def shell(apps_folder):
 @cli.command()
 @click.argument("apps_folder")
 @click.argument("func")
-@click.option("--args", default="{}")
+@click.option(
+    "--args",
+    default="{}",
+    help="Arguments passed to the program/function",
+    show_default=True,
+)
 def call(apps_folder, func, args):
+    """Call a function inside apps_folder"""
     args = json.loads(args)
     install_args(dict(apps_folder=apps_folder))
     module, name = ("apps." + func).rsplit(".", 1)
@@ -1288,15 +1409,23 @@ def call(apps_folder, func, args):
     env[name](**args)
 
 
-@cli.command()
-@click.option("--password", prompt=True, confirmation_prompt=True, hide_input=True)
+@cli.command(name='set_password')
+@click.option(
+    "--password",
+    prompt=True,
+    confirmation_prompt=True,
+    hide_input=True,
+    help="Password value (asked if missing)",
+)
 @click.option(
     "-p",
     "--password_file",
     default="password.txt",
     help="File for the encrypted password",
+    show_default=True,
 )
 def set_password(password, password_file):
+    """Set administrator's password for the Dashboard"""
     click.echo('Storing the hashed password in file "%s"\n' % password_file)
     with open(password_file, "w") as fp:
         fp.write(str(pydal.validators.CRYPT()(password)[0]))
@@ -1310,21 +1439,33 @@ def set_password(password, password_file):
     is_flag=True,
     default=False,
     help="No prompt, assume yes to questions",
+    show_default=True,
 )
-@click.option("-H", "--host", default="127.0.0.1", help="Host name (default 127.0.0.1)")
-@click.option("-P", "--port", default=8000, type=int, help="Port number (default 8000)")
+@click.option("-H", "--host", default="127.0.0.1", help="Host name", show_default=True)
+@click.option(
+    "-P", "--port", default=8000, type=int, help="Port number", show_default=True
+)
 @click.option(
     "-p",
     "--password_file",
     default="password.txt",
     help="File for the encrypted password",
+    show_default=True,
 )
-@click.option("-w", "--number_workers", default=0, type=int, help="Number of workers")
+@click.option(
+    "-w",
+    "--number_workers",
+    default=0,
+    type=int,
+    help="Number of workers",
+    show_default=True,
+)
 @click.option(
     "-d",
     "--dashboard_mode",
     default="full",
     help="Dashboard mode: demo, readonly, full (default), none",
+    show_default=True,
 )
 @click.option(
     "--watch",
@@ -1332,9 +1473,12 @@ def set_password(password, password_file):
     type=click.Choice(["off", "sync", "lazy"]),
     help="Watch python changes and reload apps automatically, modes: off (default), sync, lazy",
 )
-@click.option("--ssl_cert", help="SSL certificate file for HTTPS")
-@click.option("--ssl_key", help="SSL key file for HTTPS")
+@click.option(
+    "--ssl_cert", type=click.Path(exists=True), help="SSL certificate file for HTTPS"
+)
+@click.option("--ssl_key", type=click.Path(exists=True), help="SSL key file for HTTPS")
 def run(**args):
+    """Run all the applications on apps_folder"""
     install_args(args)
     apps_folder = args["apps_folder"]
     yes = args["yes"]
