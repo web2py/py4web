@@ -1474,13 +1474,6 @@ def set_password(password, password_file):
     help="Watch python changes and reload apps automatically, modes: off (default), sync, lazy",
 )
 @click.option(
-    "--nogui",
-    is_flag=True,
-    default=False,
-    help="No Graphical User Interface",
-    show_default=True,
-)
-@click.option(
     "--ssl_cert", type=click.Path(exists=True), help="SSL certificate file for HTTPS"
 )
 @click.option("--ssl_key", type=click.Path(exists=True), help="SSL key file for HTTPS")
@@ -1508,8 +1501,6 @@ def run(**args):
                 "Dashboard is at: http://%s:%s/_dashboard"
                 % (args["host"], args["port"])
             )
-    if not args["nogui"]:
-        click.launch("http://%s:%s" % (args["host"], args["port"]))
 
     # Catch interrupts like Ctrl-C
     signal.signal(signal.SIGINT, keyboardInterruptHandler)
