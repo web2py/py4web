@@ -278,7 +278,12 @@ class Translator(pluralize.Translator, Fixture):
 
 
 class DAL(pydal.DAL, Fixture):
+
+    reconnect_on_request = True
+
     def on_request(self):
+        if self.reconnect_on_request:
+            self._adapter.reconnect()
         threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
 
     def on_error(self):
