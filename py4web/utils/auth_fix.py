@@ -323,20 +323,21 @@ class Auth(Fixture):
             action.uses(self, *uses)(responder)
         )
 
+
     def make_api(self):
         '''
-        return routes:dict like:
-        {'profile':
+        return routes:dict like: 
+        {'profile': 
             {
-                'GET': get_profile_handler,
+                'GET': get_profile_handler, 
                 'POST': post_profile_handler
             }
             , ...
         }
         '''
-
+        
         routes = dict() # return-value
-
+        
         # decorator-mounter for api-handlers
         def mount(method, user = None):
             '''
@@ -374,14 +375,14 @@ class Auth(Fixture):
                 routes[f.__name__] = cbs
                 return f
             return mounter
-
+        
         # all api-handlers placed in make_routes
         def make_routes():
             @mount('GET')
             def use_username(*a, **v): # *a, **v - non-meaning args - required to perform unified calls
                 return {"use_username": self.use_username}
-
-            @mount('GET')
+                
+            @mount('GET')    
             def config(*a, **v):
                 fields = [
                     dict(name=f.name, type=f.type)
@@ -395,24 +396,21 @@ class Auth(Fixture):
                     "plugins": ["local"] + [key for key in self.plugins],
                     "fields": fields,
                 }
-
-            @mount('GET', user = 'public')
+                
+            @mount('GET', user = 'public')    
             def profile(user, *a, **v):
                 return {"user": user}
-
-            @mount('POST')
+                
+            @mount('POST')        
             def register(vars, *a, **v):
-                return self.register(vars, send=True).as_dict()
-
-            @mount('POST')
+                return self.register(vars, send=True).as_dict()    
+                
+            @mount('POST')        
             def login(vars, *a, **v):
-                username, password = vars.get("email"), vars.get("password")
-                if not all(isinstance(_, str) for _ in [username, password]):
-                    return self._error("Invalid Credentials")
-
                 # Prioritize PAM or LDAP logins if enabled
                 if "pam" in self.plugins or "ldap" in self.plugins:
                     plugin_name = "pam" if "pam" in self.plugins else "ldap"
+                    username, password = vars.get("email"), vars.get("password")
                     check = self.plugins[plugin_name].check_credentials(
                         username, password
                     )
@@ -426,12 +424,12 @@ class Auth(Fixture):
                         if self.db:
                             user = self.get_or_register_user(data)
                             self.store_user_in_session(user["id"])
-                        #else: if we're here - check is OK, but user is not in the session - is it right?
+                        #else: if we here - check is OK, but user is not in the session - is it right?
                     else:
                         data = self._error("Invalid Credentials")
                 # Else use normal login
                 else:
-                    user, error = self.login(username, password)
+                    user, error = self.login(**vars)
                     if user:
                         self.session["user"] = {"id": user.id}
                         self.session["recent_activity"] = calendar.timegm(
@@ -447,47 +445,47 @@ class Auth(Fixture):
                     else:
                         data = self._error(error)
                 return data
-
-            @mount('POST')
+                
+            @mount('POST')        
             def request_reset_password(vars, *a, **v):
                 if not self.request_reset_password(**vars):
                     return self._error("invalid user")
-
-            @mount('POST')
+                    
+            @mount('POST')                
             def reset_password(vars, *a, **v):
                 if not self.reset_password(
                     vars.get("token"), vars.get("new_password")
                 ):
                     return self._error("invalid token, request expired")
-
+            
             @mount('POST', user= 'public')
             def logout(user, *a, **v):
-                self.session.clear()
-
+                self.session["user"] = None
+                
             @mount('POST', user= 'private')
             def unsubscribe(user, *a, **v):
                 self.session["user"] = None
                 self.gdpr_unsubscribe(user, send=True)
-
+                
             @mount('POST', user= 'private')
             def change_password(user, vars, *a, **v):
                 return self.change_password(
                     user, vars.get("new_password"), vars.get("old_password")
                 )
-
+                
             @mount('POST', user= 'private')
             def change_email(user, vars, *a, **v):
                 return self.change_email(
                     user, vars.get("new_email"), vars.get("password")
                 )
-
+                
             @mount('POST', user= 'private')
             def profile(user, vars, *a, **v):
                 return self.update_profile(user, **vars)
-
+    
         make_routes()
         return routes
-
+        
     # Handle http requests
     def action(self, path, method, get_vars, post_vars, env=None):
         """action that handles all the HTTP requests for Auth"""
@@ -512,21 +510,21 @@ class Auth(Fixture):
                 data = self._error('undefined', 401)
             elif not cb:
                 data = self._error('method not allowed', 405)
-            else: # route is OK
+            else: # success    
                 data = cb(vars) or {}
-
+                
             if not "status" in data and data.get("errors"):
                 data.update(status="error", message="validation errors", code=401)
             elif "errors" in data and not data["errors"]:
                 del data["errors"]
             data["status"] = data.get("status", "success")
-            response.status = data["code"] = data.get("code", 200)
+            data["code"] = data.get("code", 200)
             return data
-        # logout/
+        # logout/    
         elif path == "logout":
             self.session.clear()
             # Somehow call revoke for active plugin
-        # verify_email/
+        # verify_email/        
         elif path == "verify_email" and self.db:
             token = get_vars.get("token")
             if self.verify_email(token):
