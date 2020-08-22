@@ -368,8 +368,7 @@ class Form(object):
             if self.record:
                 self.vars = self._read_vars_from_record(table)
         else:
-            original_value = post_vars.getall(field.name)
-            original_value = original_value[0] if len(original_value) == 1 else original_value
+            post_vars = self.vars = request.forms
             self.submitted = True
             process = False
 
@@ -384,7 +383,9 @@ class Form(object):
                     validated_vars = {}
                     for field in self.table:
                         if field.writable and field.readable and field.type != "id":
-                            original_value = post_vars.get(field.name)
+                            original_value = post_vars.getall(field.name)
+                            if isinstance(original_value, list) and len(original_value) == 1:
+                                original_value = original_value[0]
                             (value, error) = field.validate(original_value, record_id)
                             if field.type == "password" and record_id and value is None:
                                 continue
