@@ -156,17 +156,6 @@ Listening on http://127.0.0.1:8000/
 Hit Ctrl-C to quit.
 ``
 
-
-If available, a web browser is automatically launched with the default home page:
-
-``
-http://localhost:8000
-``
-
-If a you get a blank or an error web page, just try to refresh it (the browser is often a bit quicker to start than py4web). You can 
-avoid the browser automatic launch with the --nogui option.
-
-
 Generally ``apps`` is the name of the folder where you keep all your apps, and can be explicitly set wit the '''run''' command. If 
 that folder does not exist, it is created. 
 PY4WEB expects to find at least two apps in this folder: **Dashboard** (_dashboard) and **Default** (_default). If it does not find 
@@ -259,8 +248,6 @@ Options:
   --watch [off|sync|lazy]       Watch python changes and reload apps
                                 automatically, modes: off (default), sync,
                                 lazy
-
-  --nogui                       No Graphical User Interface  [default: False]
   --ssl_cert PATH               SSL certificate file for HTTPS
   --ssl_key PATH                SSL key file for HTTPS
   -help, -h, --help             Show this message and exit.
