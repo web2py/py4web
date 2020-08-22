@@ -2414,6 +2414,7 @@ self.assertTrue(len(rows), 2)
 It is internally implemented as a table with name: <table_name>_tags_<path>, which in this example would be db.thing_tags_default, because no path was specified on the Tags(table, path="default") constructor
 
 The ``find`` method is doing a search by ``startswith`` of the path passed as parameter. Then find(["color"]) would return id1 and id2 because both records have tags starting with "color"
+You can find some examples of record's tagging in [chapter 11](#chapter-11#tags_and_permissions), as py4web uses tags as a flexible mechanism to manage permissions.
 
 [[list_types]]
 ### ``list:<type>`` and ``contains``

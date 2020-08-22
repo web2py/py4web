@@ -103,7 +103,7 @@ class FormStyleFactory:
                 field.writable = False
                 continue
             # if the form is readonly or this is an id type field, display it as readonly
-            if readonly or field.type == "id":
+            if readonly or not field.writable or field.type == "id":
                 control = DIV(field.represent and field.represent(value) or value or "")
             # if we have a widget for the field use it
             elif field.widget:
@@ -368,7 +368,8 @@ class Form(object):
             if self.record:
                 self.vars = self._read_vars_from_record(table)
         else:
-            post_vars = self.vars = request.forms
+            original_value = post_vars.getall(field.name)
+            original_value = original_value[0] if len(original_value) == 1 else original_value
             self.submitted = True
             process = False
 
