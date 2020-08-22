@@ -103,7 +103,7 @@ class FormStyleFactory:
                 field.writable = False
                 continue
             # if the form is readonly or this is an id type field, display it as readonly
-            if readonly or field.type == "id":
+            if readonly or not field.writable or field.type == "id":
                 control = DIV(field.represent and field.represent(value) or value or "")
             # if we have a widget for the field use it
             elif field.widget:
