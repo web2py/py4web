@@ -387,6 +387,7 @@ class Form(object):
                             if isinstance(original_value, list) and len(original_value) == 1:
                                 original_value = original_value[0]
                             if field.type.startswith('list:'):
+                                print(repr(original_value))
                                 original_value = json.loads(original_value or '[]')
                             (value, error) = field.validate(original_value, record_id)
                             if field.type == "password" and record_id and value is None:
