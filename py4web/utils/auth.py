@@ -520,7 +520,7 @@ class Auth(Fixture):
             elif "errors" in data and not data["errors"]:
                 del data["errors"]
             data["status"] = data.get("status", "success")
-            data["code"] = data.get("code", 200)
+            response.status = data["code"] = data.get("code", 200)
             return data
         # logout/
         elif path == "logout":
