@@ -117,6 +117,11 @@ def custom_form(id=None):
     rows = db(db.person).select()
     return dict(form=form, rows=rows)
 
+@action("tagsinput_form", method=["GET", "POST"])
+@action.uses("tagsinput_form.html", session)
+def tagsinput_form():
+    form = Form([Field('colors', 'list:string')], keep_values=True)
+    return dict(form=form)
 
 # exposed as /examples/htmlgrid
 @action("html_grid", method=["GET", "POST"])

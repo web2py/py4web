@@ -1,0 +1,29 @@
+[[extend 'layout.html']]
+
+<style>
+ul.tags-list {
+  padding-left: 0;
+}
+ul.tags-list li {
+  display: inline-block;
+  border-radius:5px;
+  background-color: #d1d1d1;
+  color: white;
+  padding: 2px 5px 2px 5px;
+  line-height: 1.2em;
+  margin: 2px;
+}
+ul.tags-list li.selected {
+  background-color: #0074d9;
+}
+</style>
+
+<h2 class="title">Tagsinput Example</h2>
+
+[[=form]]
+
+[[block page_scripts]]
+<script>
+  utils.tagsinput('[name="colors"]', {tags:['red','green','blue'], freetext:true});
+</script>
+[[end]]

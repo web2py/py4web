@@ -189,6 +189,51 @@ utils.app = function (element_id) {
     return self;
 };
 
+// render a JSON field with tagsinput
+utils.tagsinput = function(selector, options) {
+    if (!options.freetext) options.freetext = true;
+    if (!options.transform) options.transform = function(x) {return x.toLowerCase();}
+    if (!options.tags) options.tags = [];
+    var tags = options.tags;
+    var elem = Q(selector)[0];
+    if(!elem) { console.log('utils.tagsinput: element '+selector+' not found'); return; }
+    elem.type = "hidden";
+    var repl = document.createElement('ul');
+    repl.classList.add('tags-list')
+    var inp = document.createElement('input');
+    elem.parentNode.insertBefore(repl, elem);
+    if (options.freetext) elem.parentNode.insertBefore(inp, elem);
+    var keys = eval('('+(elem.value||'[]')+')');
+    keys.map(function(x) { if(tags.indexOf(x)<0) tags.push(x); });
+    var fill = function(elem, repl) {
+      repl.innerHTML = '';
+      tags.forEach(function(x){
+        console.log(x);
+        var item = document.createElement('li');
+        item.innerHTML = x;
+        if (keys.indexOf(x)>=0) item.classList.add('selected');
+        repl.appendChild(item);
+        item.onclick = function(evt){
+          console.log('clicked');
+          if(keys.indexOf(x)<0) keys.push(x); else keys = keys.filter(function(y){ return x!=y; });
+          elem.value = JSON.stringify(keys);
+          item.classList.toggle('selected');          
+        };
+      });
+    };
+    inp.onchange = function(evt) {
+      inp.value.split(',').map(function(x){ 
+        x = options.transform(x.trim());
+        if (x && tags.indexOf(x)<0) tags.push(x); 
+        if (x && keys.indexOf(x)<0) keys.push(x); 
+      });
+      inp.value = '';
+      elem.value = JSON.stringify(keys);
+      fill(elem, repl);
+    };
+    fill(elem, repl);
+};
+
 // traps a form submission
 utils.trap_form = function (action, element_id) {
     Q('#' + element_id + ' form').forEach(function (form) {
