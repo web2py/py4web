@@ -202,6 +202,8 @@ utils.tagsinput = function(selector, options) {
     if (options.labels === undefined) options.labels = {};
     // placeholder for the freetext field
     if (options.placeholder === undefined) options.placeholder = "";
+    // autocomplete list attribute https://www.w3schools.com/tags/tag_datalist.asp
+    if (options.autocomplete_list === undefined) options.autocomplete_list = null;
     var tags = options.tags;
     var elem = Q(selector)[0];
     if(!elem) { console.log('utils.tagsinput: element '+selector+' not found'); return; }
@@ -233,6 +235,7 @@ utils.tagsinput = function(selector, options) {
       elem.parentNode.insertBefore(inp, elem);
       inp.classList = elem.classList;
       inp.placeholder = options.placeholder;
+      inp.setAttribute('list',  options.autocomplete_list);
       inp.onchange = function(evt) {
         inp.value.split(',').map(function(x){ 
           x = options.transform(x.trim());

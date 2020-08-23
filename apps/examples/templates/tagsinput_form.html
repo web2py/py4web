@@ -14,6 +14,7 @@ ul.tags-list li {
   margin: 2px;
   cursor: pointer;
   opacity: 0.2;
+  text-transform: capitalize;
 }
 ul.tags-list li.selected {
   opacity: 1.0;
@@ -23,9 +24,11 @@ ul.tags-list li[data-value=green] { background-color: green; }
 ul.tags-list li[data-value=blue] { background-color: blue; }
 </style>
 
-<h2 class="title">Tagsinput Example</h2>
+<h2>Tagsinput Examples</h2>
 
-[[=form]]
+<h3>With freetext, predefined tags, custom colors</h3>
+
+<input name="color"/>
 
 <i>
 You can enter new tags comma separted.
@@ -34,8 +37,39 @@ Press [tab] to add tags.
 Look at the page source for how to customize tags.
 </i>
 
+<h3>With autocomplete</h3>
+
+<input name="browsers"/>
+
+<!-- list of options for browser autocomplete -->
+<datalist id="browsers-list">
+  <option value="Edge">
+  <option value="Firefox">
+  <option value="Chrome">
+  <option value="Opera">
+  <option value="Safari">
+</datalist>
+
+<h3>With serverside Form</h3>
+
+[[=form]]
+
 [[block page_scripts]]
 <script>
+  // enable the first tagsinput
+  utils.tagsinput('[name=color]', {
+    tags:['red','green','blue'],            // always display these tags
+    freetext: true,                         // allow typing custom tags 
+    placeholder:'add tags, comma separated' // text in the textfree input
+  });
+
+  // enable the second tagsinpu8t
+  utils.tagsinput('[name=browsers]', {
+    autocomplete_list: 'browsers-list',
+    placeholder: 'type the name of a browser',
+  });
+
+  // enable the first tagsinput
   utils.tagsinput('[name=colors]', {
     tags:['red','green','blue'],            // always display these tags
     freetext: true,                         // allow typing custom tags 
