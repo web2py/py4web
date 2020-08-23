@@ -1,3 +1,4 @@
+"user strict";
 // ASSUMES Vue and Axios
 
 if (!String.prototype.format) {
@@ -191,18 +192,23 @@ utils.app = function (element_id) {
 
 // render a JSON field with tagsinput
 utils.tagsinput = function(selector, options) {
-    if (!options.freetext) options.freetext = true;
-    if (!options.transform) options.transform = function(x) {return x.toLowerCase();}
-    if (!options.tags) options.tags = [];
+    // preferred set of tags
+    if (options.tags === undefined) options.tags = [];
+    // set to false to only allow selecting one of the specified tags
+    if (options.freetext === undefined) options.freetext = true;
+    // how to transform typed tags to convert to actual tags
+    if (options.transform === undefined) options.transform = function(x) {return x.toLowerCase();}
+    // how to display tags
+    if (options.labels === undefined) options.labels = {};
+    // placeholder for the freetext field
+    if (options.placeholder === undefined) options.placeholder = "";
     var tags = options.tags;
     var elem = Q(selector)[0];
     if(!elem) { console.log('utils.tagsinput: element '+selector+' not found'); return; }
     elem.type = "hidden";
     var repl = document.createElement('ul');
     repl.classList.add('tags-list')
-    var inp = document.createElement('input');
     elem.parentNode.insertBefore(repl, elem);
-    if (options.freetext) elem.parentNode.insertBefore(inp, elem);
     var keys = eval('('+(elem.value||'[]')+')');
     keys.map(function(x) { if(tags.indexOf(x)<0) tags.push(x); });
     var fill = function(elem, repl) {
@@ -210,7 +216,8 @@ utils.tagsinput = function(selector, options) {
       tags.forEach(function(x){
         console.log(x);
         var item = document.createElement('li');
-        item.innerHTML = x;
+        item.innerHTML = options.labels[x] || x;
+        item.dataset.value = x;
         if (keys.indexOf(x)>=0) item.classList.add('selected');
         repl.appendChild(item);
         item.onclick = function(evt){
@@ -221,16 +228,22 @@ utils.tagsinput = function(selector, options) {
         };
       });
     };
-    inp.onchange = function(evt) {
-      inp.value.split(',').map(function(x){ 
-        x = options.transform(x.trim());
-        if (x && tags.indexOf(x)<0) tags.push(x); 
-        if (x && keys.indexOf(x)<0) keys.push(x); 
-      });
-      inp.value = '';
-      elem.value = JSON.stringify(keys);
-      fill(elem, repl);
-    };
+    if (options.freetext) {
+      var inp = document.createElement('input');
+      elem.parentNode.insertBefore(inp, elem);
+      inp.classList = elem.classList;
+      inp.placeholder = options.placeholder;
+      inp.onchange = function(evt) {
+        inp.value.split(',').map(function(x){ 
+          x = options.transform(x.trim());
+          if (x && tags.indexOf(x)<0) tags.push(x); 
+          if (x && keys.indexOf(x)<0) keys.push(x); 
+        });
+        inp.value = '';
+        elem.value = JSON.stringify(keys);
+        fill(elem, repl);
+      };
+    }
     fill(elem, repl);
 };
 
