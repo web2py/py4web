@@ -156,10 +156,15 @@ if settings.OAUTH2OKTA_CLIENT_ID:
 # files uploaded and reference by Field(type='upload')
 # #######################################################
 if settings.UPLOAD_PATH:
-    @action('download/<filename>')                                                                               
+    @action('download/<filename>')                                                   
     @action.uses(db)                                                                                           
     def download(filename):
         return downloader(db, settings.UPLOAD_PATH, filename) 
+    # To take advtange of this in Form(s)
+    # for every field of type upload you MUST specify:
+    #
+    # field.upload_path = settings.UPLOAD_PATH
+    # field.download_url = lambda filename: URL('download/%s' % filename)
 
 # #######################################################
 # Optionally configure celery
