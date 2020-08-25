@@ -212,8 +212,8 @@ Q.app = function (element_id) {
     return self;
 };
 
-// Renders a JSON field with tagsinput
-Q.tagsinput = function(selector, options) {
+// Renders a JSON field with tags_input
+Q.tags_input = function(selector, options) {
     // preferred set of tags
     if (options.tags === undefined) options.tags = [];
     // set to false to only allow selecting one of the specified tags
@@ -228,7 +228,7 @@ Q.tagsinput = function(selector, options) {
     if (options.autocomplete_list === undefined) options.autocomplete_list = null;
     var tags = options.tags;
     var elem = Q(selector)[0];
-    if(!elem) { console.log('Q.tagsinput: element '+selector+' not found'); return; }
+    if(!elem) { console.log('Q.tags_input: element '+selector+' not found'); return; }
     elem.type = "hidden";
     var repl = document.createElement('ul');
     repl.classList.add('tags-list')

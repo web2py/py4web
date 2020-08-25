@@ -56,21 +56,21 @@ Look at the page source for how to customize tags.
 
 [[block page_scripts]]
 <script>
-  // enable the first tagsinput
-  Q.tagsinput('[name=color]', {
+  // enable the first tags_input
+  Q.tags_input('[name=color]', {
     tags:['red','green','blue'],            // always display these tags
     freetext: true,                         // allow typing custom tags 
     placeholder:'add tags, comma separated' // text in the textfree input
   });
 
   // enable the second tagsinpu8t
-  Q.tagsinput('[name=browsers]', {
+  Q.tags_input('[name=browsers]', {
     autocomplete_list: 'browsers-list',
     placeholder: 'type the name of a browser',
   });
 
-  // enable the first tagsinput
-  Q.tagsinput('[name=colors]', {
+  // enable the first tags_input
+  Q.tags_input('[name=colors]', {
     tags:['red','green','blue'],            // always display these tags
     freetext: true,                         // allow typing custom tags 
     placeholder:'add tags, comma separated' // text in the textfree input
