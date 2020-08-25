@@ -445,13 +445,13 @@ class Form(object):
                             validated_vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
+                    self.vars.update(validated_vars)
                     if validation:
                         validation(self)
                     if self.record and dbio:
                         self.vars["id"] = self.record.id
                     if not self.errors:
                         self.accepted = True
-                        self.vars.update(validated_vars)
                         if dbio:
                             self.update_or_insert(validated_vars)
                 elif dbio:
