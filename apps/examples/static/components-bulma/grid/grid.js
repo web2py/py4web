@@ -111,7 +111,7 @@
         }
     };
 
-    utils.register_vue_component('grid', 'components-bulma/grid/grid.html', function(template) {
+    Q.register_vue_component('grid', 'components-bulma/grid/grid.html', function(template) {
             grid.template = template.data;
             return grid;
         });

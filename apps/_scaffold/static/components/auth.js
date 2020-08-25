@@ -9,7 +9,7 @@
             allowed_actions: [],
             fields: [],
             page: parts[parts.length-1],
-            next: utils.getQuery()['next'] || '../index',
+            next: Q.get_query()['next'] || '../index',
             form: {},
             errors: {},
             user: null
@@ -69,7 +69,7 @@
     };
     auth.methods.submit_register = function() {
         var self = this;
-        var form = utils.clone(this.form)
+        var form = Q.clone(this.form)
         delete form['password2']
         axios.post('../auth/api/register', form)
             .then(function(res) {self.go('registered')})
@@ -84,7 +84,7 @@
     };
     auth.methods.submit_reset_password = function() {
         var self = this;
-        this.form.token = utils.getQuery()['token'];
+        this.form.token = Q.get_query()['token'];
         axios.post('../auth/api/reset_password', this.form)
             .then(function(res) {self.go('login')})
             .catch(self.on_api_error.bind(self));
@@ -119,7 +119,7 @@
                 self.go(self.page, true);
             });
     };
-    utils.register_vue_component('auth', 'components/auth.html', function(template) {
+    Q.register_vue_component('auth', 'components/auth.html', function(template) {
             auth.template = template.data;
             return auth;
         });

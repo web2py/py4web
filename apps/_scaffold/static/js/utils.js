@@ -14,7 +14,7 @@ window.Q = function(sel, el) { return (el||document).querySelectorAll(sel); };
 utils = {};
 
 // Given a url retuns an object with parsed query string
-utils.getQuery = function (source) {
+Q.get_query = function (source) {
     source = source || window.location.search.substring(1);
     var vars = {}, items = source.split('&');
     items.map(function (item) {
@@ -25,7 +25,7 @@ utils.getQuery = function (source) {
 };
 
 // a wrapper for fetch return a promise
-utils.ajax = function(method, url, data, headers) {
+Q.ajax = function(method, url, data, headers) {
     var options = {method: method,
                    referrerPolicy: 'no-referrer', 
                    headers: {'Content-type': 'application/json'}}
@@ -42,23 +42,23 @@ utils.ajax = function(method, url, data, headers) {
 }
 
 // Gets a cookie value
-utils.getCookie = function (name) {
+Q.get_cookie = function (name) {
     var cookie = RegExp("" + name + "[^;]+").exec(document.cookie);
     if (!cookie) return null;
     return decodeURIComponent(!!cookie ? cookie.toString().replace(/^[^=]+./, "") : "");
 };
 
 // Gets a session token (py4web specific)
-utils.getSessionToken = function () {
-    var app_name = utils.getCookie('app_name');
-    return utils.getCookie(app_name + '_session');
+Q.get_session_token = function () {
+    var app_name = Q.get_cookie('app_name');
+    return Q.get_cookie(app_name + '_session');
 };
 
 // Clone any object
-utils.clone = function (data) { return JSON.parse(JSON.stringify(data)); };
+Q.clone = function (data) { return JSON.parse(JSON.stringify(data)); };
 
 // Load data from localstorage
-utils.retrieve = function (key) {
+Q.retrieve = function (key) {
     try {
         return JSON.parse(window.localStorage.getItem(key));
     } catch (e) {
@@ -67,19 +67,19 @@ utils.retrieve = function (key) {
 };
 
 // Save data to localstorage
-utils.store = function (key, value) {
+Q.store = function (key, value) {
     window.localStorage.setItem(key, JSON.stringify(value));
 };
 
 // Load components lazily: https://vuejs.org/v2/guide/components.html#Async-Components
-utils.register_vue_component = function (name, src, onload) {
+Q.register_vue_component = function (name, src, onload) {
     Vue.component(name, function (resolve, reject) {
-            utils.ajax('GET', src).then(function(res){resolve(onload(res));});
+            Q.ajax('GET', src).then(function(res){resolve(onload(res));});
         });
 };
 
 // Passes binary data to callback on drop of file in element_id
-utils.upload_helper = function (element_id, callback) {
+Q.upload_helper = function (element_id, callback) {
     // function from http://jsfiddle.net/eliseosoto/JHQnk/
     var element = document.getElementById(element_id);
     if (element) {
@@ -126,7 +126,7 @@ T.format = function (text, args) {
 };
 
 // Originally inspired by  David Walsh (https://davidwalsh.name/javascript-debounce-function)
-utils.debounce = (func, wait) => {
+Q.debounce = (func, wait) => {
     let timeout;
     return function executedFunction(...args) {
         const later = () => {
@@ -139,7 +139,7 @@ utils.debounce = (func, wait) => {
 };
 
 // https://levelup.gitconnected.com/throttle-in-javascript-improve-your-applications-performance-984a4e020a3f
-utils.throttle = (callback, delay) => {
+Q.throttle = (callback, delay) => {
     let throttleTimeout = null;
     let storedEvent = null;
     const throttledEventHandler = event => {
@@ -160,7 +160,7 @@ utils.throttle = (callback, delay) => {
 };
 
 // A Vue app prototype
-utils.app = function (element_id) {
+Q.app = function (element_id) {
     self = {};
     self.element_id = element_id || 'vue';
     self.data = { loading: 0, page: null, state: null };
@@ -213,7 +213,7 @@ utils.app = function (element_id) {
 };
 
 // Renders a JSON field with tagsinput
-utils.tagsinput = function(selector, options) {
+Q.tagsinput = function(selector, options) {
     // preferred set of tags
     if (options.tags === undefined) options.tags = [];
     // set to false to only allow selecting one of the specified tags
@@ -228,7 +228,7 @@ utils.tagsinput = function(selector, options) {
     if (options.autocomplete_list === undefined) options.autocomplete_list = null;
     var tags = options.tags;
     var elem = Q(selector)[0];
-    if(!elem) { console.log('utils.tagsinput: element '+selector+' not found'); return; }
+    if(!elem) { console.log('Q.tagsinput: element '+selector+' not found'); return; }
     elem.type = "hidden";
     var repl = document.createElement('ul');
     repl.classList.add('tags-list')
@@ -273,7 +273,7 @@ utils.tagsinput = function(selector, options) {
 };
 
 // Password strenght calculator
-utils.score_password = function(text) {
+Q.score_password = function(text) {
     var score = -10, counters = {};
     text.split('').map(function(c){counters[c]=(counters[c]||0)+1; score += 5/counters[c];});
     [/\d/, /[a-z]/, /[A-Z]/, /\W/].map(function(re){ score += re.test(text)?10:0; });
@@ -281,14 +281,14 @@ utils.score_password = function(text) {
 };
 
 // Apply the strength calculator to some input field
-utils.score_input = function(selector, reference) {
+Q.score_input = function(selector, reference) {
     var elem = Q(selector)[0];
     reference = reference || 100;
     if (elem) {
         elem.style.backgroundPosition = 'center right';
         elem.style.backgroundRepeat = 'no-repeat';
         elem.onkeyup = elem.onchange = function(evt) {
-            var score = utils.score_password(elem.value.trim());
+            var score = Q.score_password(elem.value.trim());
             var r = Math.round(255*Math.max(0,Math.min(2-2*score/reference,1)));
             var g = Math.round(255*Math.max(0,Math.min(2*score/reference,1)));
             elem.style.backgroundImage = (score==0)?"":("url('"+'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="30"><circle cx="5" cy="5" r="3" stroke-width="0" fill="rgb('+r+','+g+',0)"/></svg>'+"')");
@@ -297,7 +297,7 @@ utils.score_input = function(selector, reference) {
 };
 
 // Traps a form submission
-utils.trap_form = function (action, element_id) {
+Q.trap_form = function (action, element_id) {
     Q('#' + element_id + ' form:not(.no-form-trap)').forEach(function (form) {
         var target = form.dataset['component_target'] || element_id;
         form.dataset['component_target'] = target;
@@ -311,39 +311,39 @@ utils.trap_form = function (action, element_id) {
                     element.disabled = true;
                 });
                 var form_data = new FormData(form); // Allows file uploads.
-                utils.load_and_trap('POST', url, form_data, target);            };
+                Q.load_and_trap('POST', url, form_data, target);            };
         });
     });
 };
 
 // loads a component via ajax and traps its forms
-utils.load_and_trap = function (method, url, form_data, target) {
+Q.load_and_trap = function (method, url, form_data, target) {
     method = (method || 'GET').toLowerCase();
     /* if target is not there, fill it with something that there isn't in the page*/
     if (target === void 0 || target === '') target = 'none';
     var onsuccess = function(res) {
         if (res.redirected) window.location = res.url;
         Q('#'+target)[0].innerHTML = res.data;
-        utils.trap_form(url, target);
+        Q.trap_form(url, target);
         console.log(res.headers);
         var flash = res.headers.get('component-flash');
-        if (flash) utils.flash(JSON.parse(flash));
+        if (flash) Q.flash(JSON.parse(flash));
     };
     var onerror = function(res) {
         alert('ajax error');
     };
-    utils.ajax(method, url, form_data).then(onsuccess).catch(onerror);
+    Q.ajax(method, url, form_data).then(onsuccess).catch(onerror);
 };
 
 // Loads all ajax components
-utils.handle_components = function() {
+Q.handle_components = function() {
     Q('ajax-component').forEach(function(element) {
-        utils.load_and_trap('GET', element.attributes.url.value, null, element.attributes.id.value);
+        Q.load_and_trap('GET', element.attributes.url.value, null, element.attributes.id.value);
     });    
 };
 
 // Displays flash messages
-utils.handle_flash = function() {
+Q.handle_flash = function() {
     var element = Q('flash-alerts')[0];
     var make_delete_handler = function(node) {
         return function(event) {
@@ -362,9 +362,9 @@ utils.handle_flash = function() {
     };
     if (element) {
         element.addEventListener('flash', make_handler(element), false);
-        utils.flash = function(detail) {element.dispatchEvent(new CustomEvent('flash', {detail: detail}));};
+        Q.flash = function(detail) {element.dispatchEvent(new CustomEvent('flash', {detail: detail}));};
     }
 };
 
-utils.handle_components();
-utils.handle_flash();
+Q.handle_components();
+Q.handle_flash();

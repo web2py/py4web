@@ -38,7 +38,7 @@
         }
     };
 
-    utils.register_vue_component('fileupload', 'components/fileupload/fileupload.html', function(template) {
+    Q.register_vue_component('fileupload', 'components/fileupload/fileupload.html', function(template) {
             uploader.template = template.data;
             return uploader;
         });

@@ -47,7 +47,7 @@
             })
     };
 
-    utils.register_vue_component('starrater', 'components-bulma/starrater/starrater.html',
+    Q.register_vue_component('starrater', 'components-bulma/starrater/starrater.html',
         function(template) {
             starrater.template = template.data;
             return starrater;

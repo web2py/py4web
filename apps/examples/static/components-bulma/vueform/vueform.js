@@ -124,7 +124,7 @@
         }
     };
 
-    utils.register_vue_component('vueform', 'components-bulma/vueform/vueform.html',
+    Q.register_vue_component('vueform', 'components-bulma/vueform/vueform.html',
         function(template) {
             form.template = template.data;
             return form;

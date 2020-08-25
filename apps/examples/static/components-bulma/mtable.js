@@ -155,7 +155,7 @@
     var scripts = document.getElementsByTagName('script');
     var src = scripts[scripts.length-1].src;
     var path = src.substr(0, src.length-3) + '.html';
-    utils.register_vue_component('mtable', path, function(template) {        
+    Q.register_vue_component('mtable', path, function(template) {        
             mtable.template = template.data;
             return mtable;
         });
