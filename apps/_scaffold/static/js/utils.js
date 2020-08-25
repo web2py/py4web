@@ -10,8 +10,10 @@ if (!String.prototype.format) {
 // Similar to jQuery $ but lighter
 window.Q = function(sel, el) { return (el||document).querySelectorAll(sel); };
 
-// Container for all the other methods
-utils = {};
+// Clone any object
+Q.clone = function (data) { return JSON.parse(JSON.stringify(data)); };
+
+Q.eval = function(text) { return eval('('+text+')'); };
 
 // Given a url retuns an object with parsed query string
 Q.get_query = function (source) {
@@ -54,9 +56,6 @@ Q.get_session_token = function () {
     return Q.get_cookie(app_name + '_session');
 };
 
-// Clone any object
-Q.clone = function (data) { return JSON.parse(JSON.stringify(data)); };
-
 // Load data from localstorage
 Q.retrieve = function (key) {
     try {
@@ -78,12 +77,12 @@ Q.register_vue_component = function (name, src, onload) {
         });
 };
 
-// Passes binary data to callback on drop of file in element_id
-Q.upload_helper = function (element_id, callback) {
+// Passes binary data to callback on drop of file in elem_id
+Q.upload_helper = function (elem_id, callback) {
     // function from http://jsfiddle.net/eliseosoto/JHQnk/
-    var element = document.getElementById(element_id);
-    if (element) {
-        var files = element.files;
+    var elem = document.getelemById(elem_id);
+    if (elem) {
+        var files = elem.files;
         var reader = new FileReader();
         if (files && files[0]) {
             reader.onload = function (event) {
@@ -160,9 +159,9 @@ Q.throttle = (callback, delay) => {
 };
 
 // A Vue app prototype
-Q.app = function (element_id) {
+Q.app = function (elem_id) {
     self = {};
-    self.element_id = element_id || 'vue';
+    self.elem_id = elem_id || 'vue';
     self.data = { loading: 0, page: null, state: null };
     self.methods = {};
     self.filters = {};
@@ -196,7 +195,7 @@ Q.app = function (element_id) {
     self.start = function (base) {
         self.base = base = base || window.location.href;;
         self.v = new Vue({
-            el: '#' + self.element_id,
+            el: '#' + self.elem_id,
             data: self.data,
             methods: self.methods,
             watch: self.watch,
@@ -213,7 +212,10 @@ Q.app = function (element_id) {
 };
 
 // Renders a JSON field with tags_input
-Q.tags_input = function(selector, options) {
+Q.tags_input = function(elem, options) {
+    if (typeof elem === typeof '') elem = Q(elem)[0];
+    if (!options)
+        options = Q.eval(elem.dataset.options||'{}');
     // preferred set of tags
     if (options.tags === undefined) options.tags = [];
     // set to false to only allow selecting one of the specified tags
@@ -227,13 +229,12 @@ Q.tags_input = function(selector, options) {
     // autocomplete list attribute https://www.w3schools.com/tags/tag_datalist.asp
     if (options.autocomplete_list === undefined) options.autocomplete_list = null;
     var tags = options.tags;
-    var elem = Q(selector)[0];
-    if(!elem) { console.log('Q.tags_input: element '+selector+' not found'); return; }
+    if(!elem) { console.log('Q.tags_input: elem '+selector+' not found'); return; }
     elem.type = "hidden";
     var repl = document.createElement('ul');
     repl.classList.add('tags-list')
     elem.parentNode.insertBefore(repl, elem);
-    var keys = eval('('+(elem.value||'[]')+')');
+    var keys = Q.eval(elem.value||'[]');
     keys.map(function(x) { if(tags.indexOf(x)<0) tags.push(x); });
     var fill = function(elem, repl) {
       repl.innerHTML = '';
@@ -281,34 +282,32 @@ Q.score_password = function(text) {
 };
 
 // Apply the strength calculator to some input field
-Q.score_input = function(selector, reference) {
-    var elem = Q(selector)[0];
+Q.score_input = function(elem, reference) {
+    if (typeof elem === typeof '') elem = Q(elem)[0];
     reference = reference || 100;
-    if (elem) {
-        elem.style.backgroundPosition = 'center right';
-        elem.style.backgroundRepeat = 'no-repeat';
-        elem.onkeyup = elem.onchange = function(evt) {
-            var score = Q.score_password(elem.value.trim());
-            var r = Math.round(255*Math.max(0,Math.min(2-2*score/reference,1)));
-            var g = Math.round(255*Math.max(0,Math.min(2*score/reference,1)));
-            elem.style.backgroundImage = (score==0)?"":("url('"+'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="30"><circle cx="5" cy="5" r="3" stroke-width="0" fill="rgb('+r+','+g+',0)"/></svg>'+"')");
-        };
-    }
+    elem.style.backgroundPosition = 'center right';
+    elem.style.backgroundRepeat = 'no-repeat';
+    elem.onkeyup = elem.onchange = function(evt) {
+      var score = Q.score_password(elem.value.trim());
+      var r = Math.round(255*Math.max(0,Math.min(2-2*score/reference,1)));
+      var g = Math.round(255*Math.max(0,Math.min(2*score/reference,1)));
+      elem.style.backgroundImage = (score==0)?"":("url('"+'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="30"><circle cx="5" cy="5" r="3" stroke-width="0" fill="rgb('+r+','+g+',0)"/></svg>'+"')");
+    };
 };
 
 // Traps a form submission
-Q.trap_form = function (action, element_id) {
-    Q('#' + element_id + ' form:not(.no-form-trap)').forEach(function (form) {
-        var target = form.dataset['component_target'] || element_id;
+Q.trap_form = function (action, elem_id) {
+    Q('#' + elem_id + ' form:not(.no-form-trap)').forEach(function (form) {
+        var target = form.dataset['component_target'] || elem_id;
         form.dataset['component_target'] = target;
         var url = form.action;
         if (url === '' || url === '#' || url === void 0) url = action;
         var clickable = 'input[type=submit], input[type=image], button[type=submit], button:not([type])';        
-        form.querySelectorAll(clickable).forEach(function (element) {
-            element.onclick = function(event) {
+        form.querySelectorAll(clickable).forEach(function (elem) {
+            elem.onclick = function(event) {
                 event.preventDefault();
-                form.querySelectorAll(clickable).forEach(function(element) {
-                    element.disabled = true;
+                form.querySelectorAll(clickable).forEach(function(elem) {
+                    elem.disabled = true;
                 });
                 var form_data = new FormData(form); // Allows file uploads.
                 Q.load_and_trap('POST', url, form_data, target);            };
@@ -337,34 +336,38 @@ Q.load_and_trap = function (method, url, form_data, target) {
 
 // Loads all ajax components
 Q.handle_components = function() {
-    Q('ajax-component').forEach(function(element) {
-        Q.load_and_trap('GET', element.attributes.url.value, null, element.attributes.id.value);
+    Q('ajax-component').forEach(function(elem) {
+        Q.load_and_trap('GET', elem.attributes.url.value, null, elem.attributes.id.value);
     });    
 };
 
 // Displays flash messages
 Q.handle_flash = function() {
-    var element = Q('flash-alerts')[0];
+    var elem = Q('flash-alerts')[0];
     var make_delete_handler = function(node) {
         return function(event) {
             node.parentNode.removeChild(node);
         };
     };
-    var make_handler = function(element) {
+    var make_handler = function(elem) {
         return function (event) { 
             var node = document.createElement("div");
             node.innerHTML = '<div role="alert"><span class="close"></span>{0}</div>'.format([event.detail.message]);
             node = Q('[role="alert"]', node)[0];
             node.classList.add(event.detail.class||'info');
-            element.appendChild(node);
+            elem.appendChild(node);
             Q('[role="alert"] .close',node)[0].onclick = make_delete_handler(node);
         };
     };
-    if (element) {
-        element.addEventListener('flash', make_handler(element), false);
-        Q.flash = function(detail) {element.dispatchEvent(new CustomEvent('flash', {detail: detail}));};
-    }
+    if (elem) {
+        elem.addEventListener('flash', make_handler(elem), false);
+        Q.flash = function(detail) {elem.dispatchEvent(new CustomEvent('flash', {detail: detail}));};
+        console.log(elem.dataset.alert);
+        if (elem.dataset.alert) Q.flash(Q.eval(elem.dataset.alert));
+    }    
 };
 
 Q.handle_components();
 Q.handle_flash();
+Q('input[type=text].type-list-string').forEach(function(elem){Q.tags_input(elem);});
+Q('input[name=password],input[name=new_password]').forEach(Q.score_input);

@@ -52,6 +52,8 @@ Look at the page source for how to customize tags.
 
 <h3>With serverside Form</h3>
 
+Form fields of type-list-string have automatic tags!
+
 [[=form]]
 
 [[block page_scripts]]
@@ -67,13 +69,6 @@ Look at the page source for how to customize tags.
   Q.tags_input('[name=browsers]', {
     autocomplete_list: 'browsers-list',
     placeholder: 'type the name of a browser',
-  });
-
-  // enable the first tags_input
-  Q.tags_input('[name=colors]', {
-    tags:['red','green','blue'],            // always display these tags
-    freetext: true,                         // allow typing custom tags 
-    placeholder:'add tags, comma separated' // text in the textfree input
   });
 </script>
 [[end]]

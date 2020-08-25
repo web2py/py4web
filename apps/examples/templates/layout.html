@@ -11,13 +11,18 @@
   </head>
   <body>
     <header>
+      <!-- Navigation bar -->
       <nav class="black">
-        <a href="[[=URL('index')]]"><b>py4web examples</b></a>
+        <!-- Logo -->
+        <a href="[[=URL('index')]]">
+          <b>py4web <script>document.write(window.location.href.split('/')[3]);</script></b>
+        </a>
+        <!-- Do not touch this -->
         <label for="hamburger">☰</label>
         <input type="checkbox" id="hamburger">
-        <ul>
-          [[block page_menu_items]][[end]]
-        </ul>
+        <!-- Left menu ul/li -->
+        [[block page_left_menu]][[end]]
+        <!-- Right menu ul/li -->
         <ul>
           [[if globals().get('user'):]]
           <li>
@@ -39,11 +44,13 @@
           [[pass]]
         </ul>
       </nav>
-      <flash-alerts class="padded"></flash-alerts>
+      <!-- Flash alert messages, first optional one in data-alert -->
+      <flash-alerts class="padded" data-alert="[[=globals().get('flash','')]]"></flash-alerts>
     </header>
     <!-- beginning of HTML inserted by extending template -->
     <div>
       <main class="padded">
+        <!-- contect injected by extending page -->
         [[include]]
       </main>
     </div>
@@ -54,10 +61,11 @@
       </p>
     </footer>
   </body>
-  <script src="js/sugar.min.js"></script>
-  <script src="js/axios.min.js"></script>
-  <script src="js/vue.min.js"></script>
+  <!-- You've gotta have utils.js -->
   <script src="js/utils.js"></script>
-  [[if globals().get('flash'):]]<script>Q.flash([[=XML(flash)]]);</script>[[pass]]
+  <!-- Your other favorite JS libs -->
+  <script src="js/vue.min.js"></script>
+  <script src="js/axios.min.js"></script>
+  <script src="js/sugar.min.js"></script>
   [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>

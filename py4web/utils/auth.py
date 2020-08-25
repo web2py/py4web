@@ -855,11 +855,11 @@ class AuthForms:
         return form
 
     def login(self):
-        form = Form([Field("username"), Field("password", type="password")])
+        form = Form([Field("username"), Field("login_password", type="password")])
         user = None
         if form.submitted:
             user, error = self.auth.login(
-                form.vars.get("username"), form.vars.get("password")
+                form.vars.get("username"), form.vars.get("login_password")
             )
             form.accepted = not error
             form.errors["username"] = error
@@ -869,7 +869,6 @@ class AuthForms:
         return form
 
     def reset_password(self):
-        form = Form([Field("password", type="password")])
         user = None
         token = request.query.get("token")
         if token:
