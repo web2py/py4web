@@ -5,27 +5,26 @@
 
 FROM ubuntu:latest
 
-RUN apt update && \
- apt install -y git python3-pip python-pip memcached && \
- service memcached restart
+ARG user=py4web
+ARG password=none
 
-RUN groupadd -r py4web && \
- useradd -m -r -g py4web py4web
+RUN apt update && apt install -y git python3 python3-pip memcached
 
-USER py4web
+RUN service memcached restart
 
-RUN rm -rf /home/py4web/py4web && \
- cd /home/py4web/ && \
- git clone https://github.com/web2py/py4web && \
- cd py4web && \
- pip3 install pytest mechanize twine && \
- pip3 install -U -r requirements.txt && \
- make test && \
- python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()('password_admin' )[0] ) )" && \
- mkdir apps/examples/databases 
+RUN groupadd -r $user && useradd -m -r -g $user $user
 
-WORKDIR /home/py4web/py4web
+RUN python3 -m pip install -U py4web
+
+USER $user
+
+RUN cd /home/$user/ && py4web setup --yes apps
+
+RUN cd /home/$user/ && \
+    if [ "$password" = "none" ]; then echo "no admin"; else py4web set_password < "$password"; fi
 
 EXPOSE 8000
 
-CMD ["./py4web-start", "-p", "./password.txt", "-a", "0.0.0.0:8000", "./apps"]
+WORKDIR /home/$user/
+
+CMD py4web run --password_file password.txt --host 0.0.0.0 --port 8000 apps
