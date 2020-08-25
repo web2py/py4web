@@ -1,17 +1,19 @@
 "user strict";
-// ASSUMES Vue and Axios
 
+// Allows "bla {a} bla {b}".format({'a': 'hello', 'b': 'world'})
 if (!String.prototype.format) {
-    // allow "bla {a} bla {b}".format({'a': 'hello', 'b': 'world'})
     String.prototype.format = function (args) {
         return this.replace(/\{([^}]+)\}/g, function (match, k) { return args[k]; });
     };
 }
 
+// Similar to jQuery $ but lighter
 window.Q = function(sel, el) { return (el||document).querySelectorAll(sel); };
 
+// Container for all the other methods
 utils = {};
 
+// Given a url retuns an object with parsed query string
 utils.getQuery = function (source) {
     source = source || window.location.search.substring(1);
     var vars = {}, items = source.split('&');
@@ -22,21 +24,40 @@ utils.getQuery = function (source) {
     return vars;
 };
 
+// a wrapper for fetch return a promise
+utils.api = function(method, url, data, headers) {
+    var options = {method: method,
+                   referrerPolicy: 'no-referrer', 
+                   headers: {'Content-type': 'application/json'}}
+    if (data) options.body = JSON.stringify(data);
+    if (headers) for(var name in headers) options.headers[name] = headers[name];
+    return new Promise(function(resolve, reject) {
+            fetch(url, options).then(function(res){
+                    res.text().then(function(body){
+                            res.data = body;
+                            res.json = function(){return JSON.parse(body);};
+                            resolve(res);
+                        }, reject);}).catch(reject);
+    });
+}
+
+// Gets a cookie value
 utils.getCookie = function (name) {
     var cookie = RegExp("" + name + "[^;]+").exec(document.cookie);
     if (!cookie) return null;
     return decodeURIComponent(!!cookie ? cookie.toString().replace(/^[^=]+./, "") : "");
 };
 
+// Gets a session token (py4web specific)
 utils.getSessionToken = function () {
     var app_name = utils.getCookie('app_name');
     return utils.getCookie(app_name + '_session');
 };
 
-// clone any object
+// Clone any object
 utils.clone = function (data) { return JSON.parse(JSON.stringify(data)); };
 
-// load data from localstorage
+// Load data from localstorage
 utils.retrieve = function (key) {
     try {
         return JSON.parse(window.localStorage.getItem(key));
@@ -45,19 +66,19 @@ utils.retrieve = function (key) {
     }
 };
 
-// save data to localstorage
+// Save data to localstorage
 utils.store = function (key, value) {
     window.localStorage.setItem(key, JSON.stringify(value));
 };
 
-// load components lazily: https://vuejs.org/v2/guide/components.html#Async-Components
+// Load components lazily: https://vuejs.org/v2/guide/components.html#Async-Components
 utils.register_vue_component = function (name, src, onload) {
     Vue.component(name, function (resolve, reject) {
-        axios.get(src).then(function (data) { resolve(onload(data)); });
-    });
+            utils.api('GET', src).then(function(res){resolve(onload(res));});
+        });
 };
 
-// passes binary data to callback on drop of file in element_id
+// Passes binary data to callback on drop of file in element_id
 utils.upload_helper = function (element_id, callback) {
     // function from http://jsfiddle.net/eliseosoto/JHQnk/
     var element = document.getElementById(element_id);
@@ -88,6 +109,7 @@ var T = function (text) {
     return obj;
 };
 
+// Adds a convenience format method to the client-side translator object
 T.format = function (text, args) {
     args = args || {};
     translations = (T.translations || {})[text];
@@ -137,7 +159,7 @@ utils.throttle = (callback, delay) => {
     return throttledEventHandler;
 };
 
-// a Vue app prototype
+// A Vue app prototype
 utils.app = function (element_id) {
     self = {};
     self.element_id = element_id || 'vue';
@@ -190,7 +212,7 @@ utils.app = function (element_id) {
     return self;
 };
 
-// render a JSON field with tagsinput
+// Renders a JSON field with tagsinput
 utils.tagsinput = function(selector, options) {
     // preferred set of tags
     if (options.tags === undefined) options.tags = [];
@@ -250,7 +272,7 @@ utils.tagsinput = function(selector, options) {
     fill(elem, repl);
 };
 
-// password strenght calculator
+// Password strenght calculator
 utils.score_password = function(text) {
     var score = -10, counters = {};
     text.split('').map(function(c){counters[c]=(counters[c]||0)+1; score += 5/counters[c];});
@@ -258,7 +280,7 @@ utils.score_password = function(text) {
     return Math.round(Math.max(0, score));
 };
 
-// apply the strength calculator to some input field
+// Apply the strength calculator to some input field
 utils.score_input = function(selector, reference) {
     var elem = Q(selector)[0];
     reference = reference || 100;
@@ -274,12 +296,11 @@ utils.score_input = function(selector, reference) {
     }
 };
 
-// traps a form submission
+// Traps a form submission
 utils.trap_form = function (action, element_id) {
-    Q('#' + element_id + ' form').forEach(function (form) {
-        if (form.classList.contains('py4web_notrap')) return;
-        var target = form.dataset['py4web_target'] || element_id;
-        form.dataset['py4web_target'] = target;
+    Q('#' + element_id + ' form:not(.no-form-trap)').forEach(function (form) {
+        var target = form.dataset['component_target'] || element_id;
+        form.dataset['component_target'] = target;
         var url = form.action;
         if (url === '' || url === '#' || url === void 0) url = action;
         var clickable = 'input[type=submit], input[type=image], button[type=submit], button:not([type])';        
@@ -299,27 +320,31 @@ utils.trap_form = function (action, element_id) {
 utils.load_and_trap = function (method, url, form_data, target) {
     method = (method || 'GET').toLowerCase();
     /* if target is not there, fill it with something that there isn't in the page*/
-    if (target === void 0 || target === '') target = 'py4web_none';
+    if (target === void 0 || target === '') target = 'none';
     var onsuccess = function(res) {
-        Q('#'+target)[0].innerHTML = res.data;        
+        if (res.redirected) window.location = res.url;
+        Q('#'+target)[0].innerHTML = res.data;
         utils.trap_form(url, target);
-        var flash = res.headers['py4web-flash']
+        console.log(res.headers);
+        var flash = res.headers.get('component-flash');
         if (flash) utils.flash(JSON.parse(flash));
     };
     var onerror = function(res) {
         alert('ajax error');
     };
-    axios[method](url, form_data).then(onsuccess, onerror);
+    utils.api(method, url, form_data).then(onsuccess).catch(onerror);
 };
 
+// Loads all ajax components
 utils.handle_components = function() {
-    Q('py4web-component').forEach(function(element) {
+    Q('ajax-component').forEach(function(element) {
         utils.load_and_trap('GET', element.attributes.url.value, null, element.attributes.id.value);
     });    
 };
 
+// Displays flash messages
 utils.handle_flash = function() {
-    var element = Q('#py4web-flash')[0];
+    var element = Q('flash-alerts')[0];
     element.dataset.counter = 0;
     var make_delete_handler = function(node) {
         return function(event) {
