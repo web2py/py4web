@@ -250,6 +250,30 @@ utils.tagsinput = function(selector, options) {
     fill(elem, repl);
 };
 
+// password strenght calculator
+utils.score_password = function(text) {
+    var score = -10, counters = {};
+    text.split('').map(function(c){counters[c]=(counters[c]||0)+1; score += 5/counters[c];});
+    [/\d/, /[a-z]/, /[A-Z]/, /\W/].map(function(re){ score += re.test(text)?10:0; });
+    return Math.round(Math.max(0, score));
+};
+
+// apply the strength calculator to some input field
+utils.score_input = function(selector, reference) {
+    var elem = Q(selector)[0];
+    reference = reference || 100;
+    if (elem) {
+        elem.style.backgroundPosition = 'center right';
+        elem.style.backgroundRepeat = 'no-repeat';
+        elem.onkeyup = elem.onchange = function(evt) {
+            var score = utils.score_password(elem.value.trim());
+            var r = Math.round(255*Math.max(0,Math.min(2-2*score/reference,1)));
+            var g = Math.round(255*Math.max(0,Math.min(2*score/reference,1)));
+            elem.style.backgroundImage = (score==0)?"":("url('"+'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="30"><circle cx="5" cy="5" r="3" stroke-width="0" fill="rgb('+r+','+g+',0)"/></svg>'+"')");
+        };
+    }
+};
+
 // traps a form submission
 utils.trap_form = function (action, element_id) {
     Q('#' + element_id + ' form').forEach(function (form) {
