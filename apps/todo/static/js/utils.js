@@ -25,7 +25,7 @@ utils.getQuery = function (source) {
 };
 
 // a wrapper for fetch return a promise
-utils.api = function(method, url, data, headers) {
+utils.ajax = function(method, url, data, headers) {
     var options = {method: method,
                    referrerPolicy: 'no-referrer', 
                    headers: {'Content-type': 'application/json'}}
@@ -74,7 +74,7 @@ utils.store = function (key, value) {
 // Load components lazily: https://vuejs.org/v2/guide/components.html#Async-Components
 utils.register_vue_component = function (name, src, onload) {
     Vue.component(name, function (resolve, reject) {
-            utils.api('GET', src).then(function(res){resolve(onload(res));});
+            utils.ajax('GET', src).then(function(res){resolve(onload(res));});
         });
 };
 
@@ -332,7 +332,7 @@ utils.load_and_trap = function (method, url, form_data, target) {
     var onerror = function(res) {
         alert('ajax error');
     };
-    utils.api(method, url, form_data).then(onsuccess).catch(onerror);
+    utils.ajax(method, url, form_data).then(onsuccess).catch(onerror);
 };
 
 // Loads all ajax components
