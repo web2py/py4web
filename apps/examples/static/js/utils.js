@@ -53,8 +53,8 @@ utils.store = function (key, value) {
 // load components lazily: https://vuejs.org/v2/guide/components.html#Async-Components
 utils.register_vue_component = function (name, src, onload) {
     Vue.component(name, function (resolve, reject) {
-        axios.get(src).then(function (data) { resolve(onload(data)); });
-    });
+            utils.api('GET', src).then(function (res) { resolve(onload(res.text())); });
+        });
 };
 
 // passes binary data to callback on drop of file in element_id
@@ -216,14 +216,12 @@ utils.tagsinput = function(selector, options) {
     var fill = function(elem, repl) {
       repl.innerHTML = '';
       tags.forEach(function(x){
-        console.log(x);
         var item = document.createElement('li');
         item.innerHTML = options.labels[x] || x;
         item.dataset.value = x;
         if (keys.indexOf(x)>=0) item.classList.add('selected');
         repl.appendChild(item);
         item.onclick = function(evt){
-          console.log('clicked');
           if(keys.indexOf(x)<0) keys.push(x); else keys = keys.filter(function(y){ return x!=y; });
           elem.value = JSON.stringify(keys);
           item.classList.toggle('selected');          
@@ -250,6 +248,30 @@ utils.tagsinput = function(selector, options) {
     fill(elem, repl);
 };
 
+// password strenght calculator
+
+utils.score_password = function(text) {
+    var score = -10, counters = {};
+    text.split('').map(function(c){counters[c]=(counters[c]||0)+1; score += 5/counters[c];});
+    [/\d/, /[a-z]/, /[A-Z]/, /\W/].map(function(re){ score += re.test(text)?10:0; });
+    return Math.round(Math.max(0, score));
+};
+
+utils.score_input = function(selector, reference) {
+    var elem = Q(selector)[0];
+    reference = reference || 100;
+    if (elem) {
+        elem.style.backgroundPosition = 'center right';
+        elem.style.backgroundRepeat = 'no-repeat';
+        elem.onkeyup = elem.onchange = function(evt) { 
+            var score = utils.score_password(elem.value.trim());
+            var r = Math.round(255*Math.max(0,Math.min(2-2*score/reference,1)));
+            var g = Math.round(255*Math.max(0,Math.min(2*score/reference,1)));
+            elem.style.backgroundImage = (score==0)?"":("url('"+'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="30"><circle cx="5" cy="5" r="3" stroke-width="0" fill="rgb('+r+','+g+',0)"/></svg>'+"')");
+        };
+    }
+};
+
 // traps a form submission
 utils.trap_form = function (action, element_id) {
     Q('#' + element_id + ' form').forEach(function (form) {
@@ -271,13 +293,24 @@ utils.trap_form = function (action, element_id) {
     });
 };
 
-// loads a component via ajax and traps its forms
+// Wrapper to the latest fetch API in JS
+utils.api = function(method, url, data, headers) {
+    console.log(data, url, method);
+    var options = { method: method, 
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: 'same-origin'};
+    if (data) options.body = JSON.stringify(data);
+    if (headers) for(var name in headers) options.headers[name] = headers[name];
+    return fetch(url, options);
+}
+
+// Loads a component via ajax and traps its forms
 utils.load_and_trap = function (method, url, form_data, target) {
     method = (method || 'GET').toLowerCase();
     /* if target is not there, fill it with something that there isn't in the page*/
     if (target === void 0 || target === '') target = 'py4web_none';
     var onsuccess = function(res) {
-        Q('#'+target)[0].innerHTML = res.data;        
+        Q('#'+target)[0].innerHTML = JSON.stringify(res);
         utils.trap_form(url, target);
         var flash = res.headers['py4web-flash']
         if (flash) utils.flash(JSON.parse(flash));
@@ -285,7 +318,7 @@ utils.load_and_trap = function (method, url, form_data, target) {
     var onerror = function(res) {
         alert('ajax error');
     };
-    axios[method](url, form_data).then(onsuccess, onerror);
+    utils.api(method, url, form_data).then(onsuccess).catch(onerror);
 };
 
 utils.handle_components = function() {
