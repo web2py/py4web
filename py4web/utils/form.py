@@ -295,7 +295,7 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
     return FormStyleDefault(table, vars, errors, readonly, deletable, classes)
 
 
-def FormStyleBootStrap(table, vars, errors, readonly, deletable):
+def FormStyleBootStrap4(table, vars, errors, readonly, deletable):
     classes = {
         "outer": "form-group",
         "inner": "",
