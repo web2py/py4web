@@ -345,7 +345,6 @@ utils.handle_components = function() {
 // Displays flash messages
 utils.handle_flash = function() {
     var element = Q('flash-alerts')[0];
-    element.dataset.counter = 0;
     var make_delete_handler = function(node) {
         return function(event) {
             node.parentNode.removeChild(node);
@@ -353,8 +352,6 @@ utils.handle_flash = function() {
     };
     var make_handler = function(element) {
         return function (event) { 
-            var id = 'notification-{0}'.format([element.dataset.counter]);
-            element.dataset.counter = parseInt(element.dataset.counter) + 1;
             var node = document.createElement("div");
             node.innerHTML = '<div role="alert"><span class="close"></span>{0}</div>'.format([event.detail.message]);
             node = Q('[role="alert"]', node)[0];
