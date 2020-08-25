@@ -2,6 +2,7 @@ import json
 import jwt
 import time
 import uuid
+import copy
 from py4web import request, Session
 from pydal.validators import Validator
 from yatl.helpers import (
@@ -405,7 +406,8 @@ class Form(object):
             if self.record:
                 self.vars = self._read_vars_from_record(table)
         else:
-            post_vars = self.vars = request.forms
+            post_vars = request.forms
+            self.vars = copy.deepcopy(request.forms)
             self.submitted = True
             process = False
 
