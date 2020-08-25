@@ -2,6 +2,7 @@ import json
 import jwt
 import time
 import uuid
+import copy
 from py4web import request, Session
 from pydal.validators import Validator
 from yatl.helpers import (
@@ -61,7 +62,8 @@ class FormStyleFactory:
 
     def produce(self, table, vars, errors, readonly, deletable, classes=None):
         self.classes.update(classes or {})
-        form = FORM(_method="POST", _action=request.url, _enctype="multipart/form-data")
+        form = FORM(_method="POST", _action=request.url,
+                    _enctype="multipart/form-data")
         controls = dict(
             labels=dict(),
             widgets=dict(),
@@ -104,7 +106,8 @@ class FormStyleFactory:
                 continue
             # if the form is readonly or this is an id type field, display it as readonly
             if readonly or not field.writable or field.type == "id":
-                control = DIV(field.represent and field.represent(value) or value or "")
+                control = DIV(field.represent and field.represent(
+                    value) or value or "")
             # if we have a widget for the field use it
             elif field.widget:
                 control = field.widget(table, value)
@@ -156,10 +159,13 @@ class FormStyleFactory:
                     _title=title,
                 )
             elif field.type == "upload":
-                control = DIV(INPUT(_type="file", _id=input_id, _name=field.name))
+                control = DIV()
                 if value:
-                    control.append(A("download", _href=field.download_url(value)))
-                    control.append(
+                    download_div = DIV()
+                    download_div.append(LABEL("Currently:  ",))
+                    download_div.append(
+                        A(" download ", _href=field.download_url(value)))
+                    download_div.append(
                         INPUT(
                             _type="checkbox",
                             _value="ON",
@@ -167,12 +173,18 @@ class FormStyleFactory:
                             _title=title,
                         )
                     )
-                    control.append("(check to remove)")
+                    download_div.append(" (check to remove)")
+                    control.append(download_div)
+                control.append(LABEL("Change: "))
+                control.append(
+                    INPUT(_type="file", _id=input_id, _name=field.name))
             elif get_options(field.requires) is not None:
                 multiple = field.type.startswith("list:")
-                value = list(map(str, value if isinstance(value, list) else [value]))
+                value = list(
+                    map(str, value if isinstance(value, list) else [value]))
                 option_tags = [
-                    OPTION(v, _value=k, _selected=(not k is None and k in value))
+                    OPTION(v, _value=k, _selected=(
+                        not k is None and k in value))
                     for k, v in get_options(field.requires)
                 ]
                 control = SELECT(
@@ -228,7 +240,7 @@ class FormStyleFactory:
                         _class=class_outer,
                     )
                 )
-            
+
             if "id" in vars:
                 form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
         if deletable:
@@ -240,15 +252,18 @@ class FormStyleFactory:
             )
             form.append(
                 DIV(
-                    SPAN(controls["delete"], _class=class_inner, _stye="vertical-align: middle;"),
-                    P(" check to delete", _class="help", _style="display: inline !important"),
+                    SPAN(controls["delete"], _class=class_inner,
+                         _stye="vertical-align: middle;"),
+                    P(" check to delete", _class="help",
+                      _style="display: inline !important"),
                     _class=class_outer,
                 )
             )
         controls["submit"] = INPUT(
             _type="submit", _value="Submit", _class=self.classes["input[type=submit]"],
         )
-        submit = DIV(DIV(controls["submit"], _class=class_inner,), _class=class_outer,)
+        submit = DIV(
+            DIV(controls["submit"], _class=class_inner,), _class=class_outer,)
         form.append(submit)
         return dict(form=form, controls=controls)
 
@@ -279,6 +294,29 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
     }
     return FormStyleDefault(table, vars, errors, readonly, deletable, classes)
 
+
+def FormStyleBootStrap4(table, vars, errors, readonly, deletable):
+    classes = {
+        "outer": "form-group",
+        "inner": "",
+        "label": "h4",
+        "info": "form-text",
+        "error": "form-text text-danger py4web-validation-error",
+        "submit": "btn btn-outline-info",
+        "input": "form-control",
+        "input[type=text]": "form-control",
+        "input[type=date]": "form-control",
+        "input[type=time]": "form-control",
+        "input[type=datetime-local]": "form-control",
+        "input[type=radio]": "form-check-input",
+        "input[type=checkbox]": "form-check-input",
+        "input[type=submit]": "btn btn-outline-info",
+        "input[type=password]": "form-control",
+        "input[type=file]": "form-control-file",
+        "select": "form-control",
+        "textarea": "form-control",
+    }
+    return FormStyleDefault(table, vars, errors, readonly, deletable, classes)
 
 # ################################################################
 # Form object (replaced SQLFORM)
@@ -368,7 +406,8 @@ class Form(object):
             if self.record:
                 self.vars = self._read_vars_from_record(table)
         else:
-            post_vars = self.vars = request.forms
+            post_vars = request.forms
+            self.vars = copy.deepcopy(request.forms)
             self.submitted = True
             process = False
 
@@ -388,8 +427,10 @@ class Form(object):
                                 original_value = original_value[0]
                             if field.type.startswith('list:'):
                                 print(repr(original_value))
-                                original_value = json.loads(original_value or '[]')
-                            (value, error) = field.validate(original_value, record_id)
+                                original_value = json.loads(
+                                    original_value or '[]')
+                            (value, error) = field.validate(
+                                original_value, record_id)
                             if field.type == "password" and record_id and value is None:
                                 continue
                             if field.type == "upload":
@@ -406,6 +447,7 @@ class Form(object):
                             validated_vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
+                    self.vars.update(validated_vars)
                     if validation:
                         validation(self)
                     if self.record and dbio:
@@ -497,17 +539,20 @@ class Form(object):
                 helper["controls"]["hidden_widgets"]["formname"] = INPUT(
                     _type="hidden", _name="_formname", _value=self.form_name
                 )
-                helper["form"].append(helper["controls"]["hidden_widgets"]["formname"])
+                helper["form"].append(
+                    helper["controls"]["hidden_widgets"]["formname"])
             if self.formkey:
                 helper["controls"]["hidden_widgets"]["formkey"] = INPUT(
                     _type="hidden", _name="_formkey", _value=self.formkey
                 )
-                helper["form"].append(helper["controls"]["hidden_widgets"]["formkey"])
+                helper["form"].append(
+                    helper["controls"]["hidden_widgets"]["formkey"])
             for key in self.hidden or {}:
                 helper["controls"]["hidden_widgets"][key] = INPUT(
                     _type="hidden", _name=key, _value=self.hidden[key]
                 )
-                helper["form"].append(helper["controls"]["hidden_widgets"][key])
+                helper["form"].append(
+                    helper["controls"]["hidden_widgets"][key])
 
             helper["controls"]["begin"] = XML(
                 "".join(
