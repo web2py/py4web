@@ -86,7 +86,7 @@ class FormStyleFactory:
             input_id = "%s_%s" % (field.tablename, field.name)
             value = vars.get(field.name, field.default)
             error = errors.get(field.name)
-            field_class = field.type.split()[0].replace(":", "-")
+            field_class = 'type-' + field.type.split()[0].replace(":", "-")
             placeholder = (
                 field._placeholder if "_placeholder" in field.__dict__ else None
             )
@@ -196,6 +196,8 @@ class FormStyleFactory:
                 )
             else:
                 field_type = "password" if field.type == "password" else "text"
+                if field.type.startswith('list:'):
+                    value = json.dumps(value or [])                        
                 control = INPUT(
                     _type=field_type,
                     _id=input_id,
@@ -209,8 +211,7 @@ class FormStyleFactory:
             key = control.name.rstrip("/")
             if key == "input":
                 key += "[type=%s]" % (control["_type"] or "text")
-            control["_class"] = self.classes.get(key, "")
-
+            control["_class"] = (control["_class"] + ' ' + self.classes.get(key, "")).strip()
             controls["labels"][field.name] = field.label
             controls["widgets"][field.name] = control
             controls["comments"][field.name] = field.comment if field.comment else ""
