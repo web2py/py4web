@@ -211,7 +211,8 @@ class FormStyleFactory:
             key = control.name.rstrip("/")
             if key == "input":
                 key += "[type=%s]" % (control["_type"] or "text")
-            control["_class"] = (control["_class"] + ' ' + self.classes.get(key, "")).strip()
+            control["_class"] = (
+                (control["_class"] if "_class" in control else "") + " " + self.classes.get(key, "")).strip()
             controls["labels"][field.name] = field.label
             controls["widgets"][field.name] = control
             controls["comments"][field.name] = field.comment if field.comment else ""
