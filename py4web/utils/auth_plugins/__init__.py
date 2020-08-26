@@ -43,7 +43,7 @@ class SSO(object):
             abort(401)
         error = data.get("error")
         if error:
-            if instance(error, str):
+            if isinstance(error, str):
                 code, msg = 401, error
             else:
                 code = error.get("code", 401)
@@ -95,7 +95,7 @@ class OAuth2(SSO):
         callback_url,
         scope=None,
         scheme=True,
-        passed_state="",
+        passed_state=None,
     ):
         SSO.__init__(self)
         self.parameters = dict(
@@ -141,7 +141,8 @@ class OAuth2(SSO):
         statecheck = query.get("state")
         if not code:
             return False
-        if statecheck != self.parameters.get("passed_state"):
+        passed_state = self.parameters.get("passed_state")
+        if passed_state is not None and statecheck != passed_state:
             return False
         data = dict(
             code=code,
@@ -154,7 +155,9 @@ class OAuth2(SSO):
             grant_type="authorization_code",
         )
         res = requests.post(self.token_url, data=data)
-        token = res.json().get("access_token")
+        output = res.json()
+        token = output.get("id_token")
+        # TODO: do something with this header
         headers = {"Authorization": "Bearer %s" % token}
         # Lets not get the  user attributes via the userinfo endpoint
         # but lets take the userinfo directly extracted from the token
