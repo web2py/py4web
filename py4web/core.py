@@ -89,7 +89,7 @@ __all__ = [
     "wsgi",
 ]
 
-PY4WEB_CMD = "py4web"
+PY4WEB_CMD = sys.argv[0]
 
 REGEX_APPJSON = r"(^|\s|,)application/json(,|\s|$)"
 
@@ -300,7 +300,7 @@ def thread_safe_pydal_patch():
     for a in tsafe_attrs:
         setattr(Field, a, threadsafevariable.ThreadSafeVariable())
 
-    # hack "copy.copy" behavior, since it makes a shallow copy,
+    # hack 'copy.copy' behavior, since it makes a shallow copy,
     # but ThreadSafe-attributes (see above) are class-level, so:
     # no copy -> no attr in ICECUBE for the fresh one -> gevent-error on try to access to any of ThreadSafe-attributes
     def field_copy(self):
@@ -745,15 +745,15 @@ class action:
 
     def __call__(self, func):
         """Building the decorator"""
+        trailing = "<:re:/?>"
         app_name = action.app_name
-        path = (
-            "/" if app_name == "_default" else "/%s/" % app_name
-        ) + self.path  # the _default app has no prefix
+        base_path = "" if app_name == "_default" else "/%s" % app_name
+        path = (base_path + "/" + self.path).rstrip("/")
         if not func in self.registered:
             func = action.catch_errors(app_name, func)
-        func = bottle.route(path, **self.kwargs)(func)
+        func = bottle.route(path + trailing, **self.kwargs)(func)
         if path.endswith("/index"):  # /index is always optional
-            func = bottle.route(path[:-6] or "/", **self.kwargs)(func)
+            func = bottle.route(path[:-6] + trailing, **self.kwargs)(func)
         self.registered.add(func)
         return func
 
@@ -1089,8 +1089,9 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
         return json.dumps(context)
     # else - return html error-page
     return yatl.render(
-        '<html><head><style>body{color:white;text-align: center;background-color:{{=color}};font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>{{=code}}</h1><h2>{{=message}}</h2>{{if button_text:}}<a href="{{=href}}">{{=button_text}}</a>{{pass}}</body></html>',
+        '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>',
         context=context,
+        delimiters="[[ ]]",
     )
 
 
@@ -1111,10 +1112,10 @@ from collections import OrderedDict
 
 APP_WATCH = {"files": dict(), "handlers": OrderedDict(), "tasks": dict()}
 
-""" Decorator that binds a func as an watchdog handler of non-".py" files.
+""" Decorator that binds a func as an watchdog handler of non-'.py' files.
 Paths to files must be relative to app, w/o app name(folder).
 
-@app_watch_handler(["static/sass/all.sass", "static/sass/main.sass"])
+@app_watch_handler(['static/sass/all.sass', 'static/sass/main.sass'])
 def sass_compile(changed_files):
     print(changed_files); # paths of files that changed, for info
     sass.compile()
@@ -1183,7 +1184,7 @@ def watch(apps_folder, server="default", mode="sync"):
                     DIRTY_APPS[name] = True
                 else:
                     Reloader.import_app(name)
-            ## in "lazy" mode it's done in bottle's "before_request" hook
+            ## in 'lazy' mode it's done in bottle's 'before_request' hook
             if not mode == "lazy":
                 try_app_watch_tasks()
 
@@ -1338,10 +1339,8 @@ def keyboardInterruptHandler(signal, frame):
 
 @click.group(
     context_settings=dict(help_option_names=["-h", "-help", "--help"]),
-    help=__doc__
-    + '\n\nType "'
-    + PY4WEB_CMD
-    + ' COMMAND -h" for available options on commands',
+    help='%s\n\nType "%s COMMAND -h" for available options on commands'
+    % (__doc__, PY4WEB_CMD),
 )
 def cli():
     pass
@@ -1358,9 +1357,9 @@ def version(all):
     click.echo("py4web: %s" % __version__)
     if all:
         click.echo("system: %s" % platform.platform())
-        click.echo("python: %s" % sys.version.replace('\n',' '))
+        click.echo("python: %s" % sys.version.replace("\n", " "))
         for name in sorted(sys.modules):
-            if hasattr(sys.modules[name], '__version__'):
+            if hasattr(sys.modules[name], "__version__"):
                 click.echo("%s: %s" % (name, sys.modules[name].__version__))
 
 
@@ -1409,7 +1408,7 @@ def call(apps_folder, func, args):
     env[name](**args)
 
 
-@cli.command(name='set_password')
+@cli.command(name="set_password")
 @click.option(
     "--password",
     prompt=True,
@@ -1494,7 +1493,8 @@ def run(**args):
             args["password_file"]
         ):
             click.echo(
-                'You have not set a dashboard password. Run "py4web set_password" to do so.'
+                'You have not set a dashboard password. Run "%s set_password" to do so.'
+                % PY4WEB_CMD
             )
         else:
             click.echo(
