@@ -565,7 +565,6 @@ class Session(Fixture):
 # The URL Helper
 #########################################################################################
 
-
 def URL(
     *parts,
     vars=None,
@@ -573,7 +572,7 @@ def URL(
     scheme=False,
     signer=None,
     use_appname=True,
-    static_version=None
+    static_version=None,
 ):
     """
     Examples:
