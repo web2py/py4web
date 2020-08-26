@@ -12,7 +12,7 @@
  Colors:
    black, white, default, success, warning, error, info, transparent
  Effects:
-   accordion, close
+   accordion, close, tags-list
  Utils:
    fill, padded
 
@@ -513,4 +513,25 @@ input[type=checkbox]:checked ~ div {visibility:visible; opacity:1}
 
 .fill {
   width: 100%;
+}
+
+ul.tags-list {
+  padding-left: 0;
+}
+
+ul.tags-list li {
+  display: inline-block;
+  border-radius: 100px;
+  background-color: #111111;
+  color: white;
+  padding: 0.3em 0.8em 0.2em 0.8em;
+  line-height: 1.2em;
+  margin: 2px;
+  cursor: pointer;
+  opacity: 0.2;
+  text-transform: capitalize;
+}
+
+ul.tags-list li[data-selected=true] {
+  opacity: 1.0;
 }

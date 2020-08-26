@@ -243,13 +243,12 @@ Q.tags_input = function(elem, options) {
         var item = document.createElement('li');
         item.innerHTML = options.labels[x] || x;
         item.dataset.value = x;
-        if (keys.indexOf(x)>=0) item.classList.add('selected');
+        item.dataset.selected = keys.indexOf(x)>=0;
         repl.appendChild(item);
         item.onclick = function(evt){
-          console.log('clicked');
-          if(keys.indexOf(x)<0) keys.push(x); else keys = keys.filter(function(y){ return x!=y; });
+          if(item.dataset.selected=='false') keys.push(x); else keys = keys.filter(function(y){ return x!=y; });
+          item.dataset.selected = keys.indexOf(x)>=0;          
           elem.value = JSON.stringify(keys);
-          item.classList.toggle('selected');          
         };
       });
     };
