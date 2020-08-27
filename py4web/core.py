@@ -1055,9 +1055,13 @@ class Reloader:
         routes = []
         for route in app.routes:
             func = route.callback
+            rule = route.rule
+            # remove optional trailing / from rule
+            if rule.endswith('<:re:/?>'):
+                rule = rule[:-8]
             routes.append(
                 {
-                    "rule": route.rule,
+                    "rule": rule,
                     "method": route.method,
                     "filename": module2filename(func.__module__),
                     "action": func.__name__,
@@ -1065,7 +1069,6 @@ class Reloader:
             )
         Reloader.ROUTES = sorted(routes, key=lambda item: item["rule"])
         ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
-
 
 #########################################################################################
 # Web Server and Reload Logic: Error Handling
