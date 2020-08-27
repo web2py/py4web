@@ -93,9 +93,14 @@ class FormStyleFactory:
             # only diplay field if readable or writable
             if not field.readable and not field.writable:
                 continue
-            # if this is a readonly form and the field is not readable, than do not show
-            if readonly and not field.readable:
-                continue
+            # if this is a reaonly field only show readable fields
+            if readonly:
+                if not field.readable:
+                    continue
+            # if this is an create form (unkown id) then only show writable fields
+            elif not vars.get('id'):
+                if not field.writable:
+                    continue
             # ignore blob fields
             if field.type == "blob":  # never display blobs (mistake?)
                 continue
@@ -244,7 +249,7 @@ class FormStyleFactory:
                     )
                 )
 
-            if "id" in vars:
+            if vars.get('id'):
                 form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
         if deletable:
             controls["delete"] = INPUT(
@@ -438,7 +443,6 @@ class Form(object):
                             ):
                                 original_value = original_value[0]
                             if field.type.startswith("list:"):
-                                print(repr(original_value))
                                 original_value = json.loads(original_value or "[]")
                             (value, error) = field.validate(original_value, record_id)
                             if field.type == "password" and record_id and value is None:
