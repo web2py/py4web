@@ -1,5 +1,6 @@
 import copy
 import os
+import json
 from functools import wraps
 import jwt
 from yatl.helpers import TAG
@@ -61,7 +62,7 @@ class CallbackFactory:
         @action(path, method="POST")
         @action.uses(*self.fixtures)
         def tmp(func=func):
-            data = jwt.decode(request.body.read(), Session.SECRET)
+            data = jwt.decode(json.loads(request.body.read()), Session.SECRET)
             return func(**data)
 
         def get_link(**data):
@@ -70,7 +71,7 @@ class CallbackFactory:
         def button(*components, **attributes):
             def button_maker(**data):
                 onclick = (
-                    'axios.post("%s", "%s");this.classList.add("clicked")'
+                    'Q.ajax("POST", "%s", "%s").then(function(res){if(res.data)Q.eval(res.data);});this.classList.add("clicked")'
                     % get_link(**data)
                 )
                 new_attributes = copy.copy(attributes)
