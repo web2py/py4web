@@ -41,3 +41,12 @@ setup:
 	./py4web.py set_password
 run:
 	./py4web.py run -p password.txt apps
+upgrade-utils:
+	find apps -name "utils.js" -exec cp apps/_dashboard/static/js/utils.js {} \;
+upgrade-axios:
+	curl https://unpkg.com/axios/dist/axios.min.js > apps/_dashboard/static/js/axios.min.js
+	find apps -name "axios.min.js" -exec cp apps/_dashboard/static/js/axios.min.js {} \;
+upgrade-vue:
+	curl https://unpkg.com/vue/dist/vue.min.js > apps/_dashboard/static/js/vue.min.js
+	find apps -name "vue.min.js" -exec cp apps/_dashboard/static/js/vue.min.js {} \;
+
