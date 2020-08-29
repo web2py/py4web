@@ -118,7 +118,7 @@ running .py files directly it's not usual and you'll need an explicit python3/py
 
 ### Upgrading
 
-If you installed py4web from source (globally) or from pip you can upgrade it with
+If you installed py4web from pip you can simple upgrade it with
 ``
 python3 -m pip install --upgrade py4web
 ``:bash
@@ -134,8 +134,8 @@ py4web setup apps
 
 in order to re-install them. This is a safety precaution, in case you made changes to those apps.
 
-If you installed py4web from binaries or from source (locally), you just need to backup any personal py4web work, delete the old installation folder and re-install 
-it again.
+If you installed py4web in any other way, you must upgrade it manually. First you have to make a backup of any personal py4web work youve done, then delete the old installation 
+folder and re-install the framework again.
 
 ### First run
 
