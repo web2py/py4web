@@ -565,6 +565,7 @@ class Session(Fixture):
 # The URL Helper
 #########################################################################################
 
+
 def URL(
     *parts,
     vars=None,
@@ -1057,7 +1058,7 @@ class Reloader:
             func = route.callback
             rule = route.rule
             # remove optional trailing / from rule
-            if rule.endswith('<:re:/?>'):
+            if rule.endswith("<:re:/?>"):
                 rule = rule[:-8]
             routes.append(
                 {
@@ -1069,6 +1070,7 @@ class Reloader:
             )
         Reloader.ROUTES = sorted(routes, key=lambda item: item["rule"])
         ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
+
 
 #########################################################################################
 # Web Server and Reload Logic: Error Handling
@@ -1157,7 +1159,7 @@ def try_app_watch_tasks():
             del APP_WATCH["tasks"][handler]
 
 
-def watch(apps_folder, server="default", mode="sync"):
+def watch(apps_folder, mode="sync"):
     def watch_folder_event_loop(apps_folder):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -1190,7 +1192,7 @@ def watch(apps_folder, server="default", mode="sync"):
             if not mode == "lazy":
                 try_app_watch_tasks()
 
-    if server == "default":
+    if server == "waitress":
         # default wsgi server block the main thread so we open a new thread for the file watcher
         threading.Thread(
             target=watch_folder_event_loop, args=(apps_folder,), daemon=True
@@ -1201,6 +1203,9 @@ def watch(apps_folder, server="default", mode="sync"):
     elif server == "gunicorn":
         # supposedly number_workers > 1
         click.echo("--watch option has no effect in multi-process environment \n")
+        return
+    else:
+        # should never happen
         return
 
     if mode == "lazy":
@@ -1214,9 +1219,11 @@ def start_server(args):
     server = None  # need for watcher
     run = lambda: 0  # main run
     if platform.system().lower() == "windows":
-        # Tornado fail on windows
-        server = "default"
-        run = lambda: bottle.run(server='waitress', host=host, port=int(port), reloader=False)
+        # None of the other servers work on windows
+        server = "waitress"
+        run = lambda: bottle.run(
+            server="waitress", host=host, port=int(port), reloader=False
+        )
     elif number_workers < 1:
         server = "tornado"
         run = lambda: bottle.run(server="tornado", host=host, port=port, reloader=False)
