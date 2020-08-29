@@ -1216,7 +1216,7 @@ def start_server(args):
     if platform.system().lower() == "windows":
         # Tornado fail on windows
         server = "default"
-        run = lambda: bottle.run(host=host, port=int(port), reloader=False)
+        run = lambda: bottle.run(server='waitress', host=host, port=int(port), reloader=False)
     elif number_workers < 1:
         server = "tornado"
         run = lambda: bottle.run(server="tornado", host=host, port=port, reloader=False)
