@@ -12,7 +12,8 @@
             next: Q.get_query()['next'] || '../index',
             form: {},
             errors: {},
-            user: null
+            user: null,
+            use_username: true
         };
         return data;
     };
@@ -116,6 +117,7 @@
                 self.plugins=res.data.plugins;
                 self.allowed_actions=res.data.allowed_actions;
                 self.fields=res.data.fields;
+                self.use_username=res.data.use_username; 
                 self.go(self.page, true);
             });
     };

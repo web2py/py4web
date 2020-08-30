@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
     <link rel="stylesheet" href="css/no.css">
-    <link rel="stylesheet" href="[[=URL('static', 'font-awesome-4.7.0/css/font-awesome.css')]]">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>.py4web-validation-error{margin-top:-16px; font-size:0.8em;color:red}</style>
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
@@ -30,6 +30,8 @@
               [[=globals().get('user',{}).get('email')]]
             </a>
             <ul>
+              <li><a href="[[=URL('auth/profile')]]">Edit Profile</a></li>
+              <li><a href="[[=URL('auth/change_password')]]">Change Password</a></li>
               <li><a href="[[=URL('auth/logout')]]">Logout</a></li>
             </ul>
           </li>
@@ -63,9 +65,5 @@
   </body>
   <!-- You've gotta have utils.js -->
   <script src="js/utils.js"></script>
-  <!-- Your other favorite JS libs -->
-  <script src="js/vue.min.js"></script>
-  <script src="js/axios.min.js"></script>
-  <script src="js/sugar.min.js"></script>
   [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>
