@@ -5,9 +5,21 @@
 ## What is py4web?
 PY4WEB is a web framework for rapid development of efficient database driven web applications. It is an evolution of the popular web2py framework but much faster and slicker. The official documentation is on https://py4web.com/_documentation
 
-## Simple installation
 
-Using ''pip'' is the standard installation procedure for py4web on Windows, MacOS and Linux. Its only prerequisite is Python 3.6+.
+## Installation
+
+PY4WEB runs fine on Windows, MacOS and Linux. There are four installation procedures (see the official documentation for details) but only two of them are summarized here.
+
+Using ''binaries'' is the **simplest way** for starting py4web, but only for Windows and MacOS. This is meant especially for newbies or students, because it does not require Python pre-installed on your system nor administrative rights. You just need to download the latest Windows or MacOS ZIP file from [this external repository](https://github.com/nicozanf/py4web-pyinstaller). Unzip it on a local folder and open a command line there. Finally run
+
+
+```
+py4web-start set_password
+py4web-start run apps
+```
+
+
+Using ''pip'' is the **standard installation procedure** for py4web on Windows, MacOS and Linux. Its only prerequisite is Python 3.6+.
 
 ```
 python3 -m pip install --upgrade py4web --no-cache-dir --user
