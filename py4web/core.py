@@ -351,7 +351,7 @@ class Flash(Fixture):
         flash = request.get_cookie("py4web-flash")
         if flash:
             Flash.local.flash = json.loads(flash)
-            response.delete_cookie("py4web-flash")
+            response.delete_cookie("py4web-flash")            
         else:
             Flash.local.flash = None
 
@@ -373,7 +373,7 @@ class Flash(Fixture):
             if isinstance(data, dict):
                 data["flash"] = Flash.local.flash
             else:
-                response.headers["py4web-flash"] = json.dumps(Flash.local.flash)
+                response.headers["component-flash"] = json.dumps(Flash.local.flash)
         return data
 
 

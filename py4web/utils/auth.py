@@ -1,5 +1,6 @@
 import base64
 import calendar
+import copy
 import datetime
 import hashlib
 import re
@@ -8,8 +9,9 @@ import urllib
 import uuid
 
 from py4web import redirect, request, response, abort, URL, action, Field, HTTP
-from py4web.core import Fixture, Template, REGEX_APPJSON
+from py4web.core import Fixture, Template, Flash, REGEX_APPJSON
 from py4web.utils.form import Form
+from yatl.helpers import INPUT, A
 
 from pydal.validators import (
     IS_EMAIL,
@@ -65,14 +67,15 @@ class AuthEnforcer(Fixture):
         redirect_next = request.fullpath
         if request.query_string:
             redirect_next = redirect_next + "?{}".format(request.query_string)
+        self.auth.flash.set(message)
         redirect(
             URL(
                 self.auth.route,
                 page,
-                vars=dict(next=redirect_next, flash=message),
+                vars=dict(next=redirect_next),
                 use_appname=self.auth.use_appname_in_redirects,
             )
-        )
+    )
 
     def on_request(self):
         """check that we have a user in the session and
@@ -111,6 +114,9 @@ class Auth(Fixture):
             "body": "By {first_name}, you have been erased from our system",
         },
     }
+
+    onsuccess = {}
+    next = {}    
 
     extra_auth_user_fields = []
 
@@ -160,6 +166,9 @@ class Auth(Fixture):
             self.define_tables()
         self.plugins = {}
         self.api = self.make_api()
+        self.onsuccess = copy.deepcopy(Auth.onsuccess)
+        self.next = copy.deepcopy(Auth.next)
+        self.flash = Flash()
 
     def transform(self, output, shared_data):
         if self.inject:
@@ -313,15 +322,18 @@ class Auth(Fixture):
         """enables Auth, aka generates login/logout/register/etc pages"""
         self.route = route
         """This assumes the bottle framework and exposes all actions as /{app_name}/auth/{path}"""
-
+        
+        @action(route + "api/<path:path>", method=["GET", "POST"])
+        @action.uses(self, *uses)
         def responder(path, env=env):
-            return self.action(
-                path, request.method, request.query, request.json, env=env
-            )
+            return self.api_action_handler(path, request.method, request.query, request.json, env=copy.copy(env))
 
-        action(route + "<path:path>", method=["GET", "POST"])(
-            action.uses(self, *uses)(responder)
-        )
+        @action(route + "<path:path>", method=["GET", "POST"])
+        @action.uses(self.flash, 'auth.html')
+        @action.uses(self, *uses)
+        def responder(path, env=env):
+            return self.action_handler(path, request.method, request.query, request.json, env=copy.copy(env))
+
 
     def make_api(self):
         '''
@@ -488,11 +500,15 @@ class Auth(Fixture):
         make_routes()
         return routes
 
-    # Handle http requests
-    def action(self, path, method, get_vars, post_vars, env=None):
+    # Handle api http requests
+    def action_handler(self, path, method, get_vars, post_vars, env=None):
         """action that handles all the HTTP requests for Auth"""
-        env = env or {}
-        # plugin/
+        if env is None:
+            env = {}
+        env["path"] = path
+        env['user'] = self.get_user()
+        env['form'] = ''
+        # handle http://.../auth/plugin/...
         if path.startswith("plugin/"):
             parts = path.split("/", 2)
             plugin = self.plugins.get(parts[1])
@@ -502,35 +518,17 @@ class Auth(Fixture):
                 )
             else:
                 abort(404)
-        # api/
-        elif path.startswith("api/"):
-            vars = dict(post_vars or {})
-            api_name = path[4:]
-            api = self.api.get(api_name)
-            cb = api and api.get(method)
-            if not api:
-                data = self._error('undefined', 401)
-            elif not cb:
-                data = self._error('method not allowed', 405)
-            else: # route is OK
-                data = cb(vars) or {}
-
-            if not "status" in data and data.get("errors"):
-                data.update(status="error", message="validation errors", code=401)
-            elif "errors" in data and not data["errors"]:
-                del data["errors"]
-            data["status"] = data.get("status", "success")
-            response.status = data["code"] = data.get("code", 200)
-            return data
-        # logout/
+        # handle http://.../auth/logout
         elif path == "logout":
             self.session.clear()
+            self.flash.set("User Signed Out")
             # Somehow call revoke for active plugin
-        # verify_email/
+        # handle http://.../auth/verify_email
         elif path == "verify_email" and self.db:
             token = get_vars.get("token")
             if self.verify_email(token):
                 next = b16d(token.split("/")[1])
+                self.flash.set("Email Verified")
                 redirect(
                     next
                     or URL(
@@ -540,16 +538,41 @@ class Auth(Fixture):
                     )
                 )
             else:
+                self.flash.set("Token Expired")
                 redirect(
                     URL(
                         "auth",
                         "token_expired",
                         use_appname=self.use_appname_in_redirects,
                     )
-                )
-        # else:  - abort(404)???
-        env["path"] = path
-        return Template("auth.html").transform(env)
+                )                
+        # handle http://.../auth/{other} using AuthForms
+        else:            
+            env["form"] = self.form(path)
+        return env
+
+    # Handle api http requests
+    def api_action_handler(self, api_name, method, get_vars, post_vars, env=None):
+        """action that handles all the HTTP requests for Auth"""
+        if env is None:
+            env = {}
+        vars = dict(post_vars or {})
+        api = self.api.get(api_name)
+        cb = api and api.get(method)
+        if not api:
+            data = self._error('undefined', 401)
+        elif not cb:
+            data = self._error('method not allowed', 405)
+        else: # route is OK
+            data = cb(vars) or {}
+
+        if not "status" in data and data.get("errors"):
+            data.update(status="error", message="validation errors", code=401)
+        elif "errors" in data and not data["errors"]:
+            del data["errors"]
+        data["status"] = data.get("status", "success")
+        response.status = data["code"] = data.get("code", 200)
+        return data
 
     def store_user_in_session(self, user_id):
         self.session["user"] = {"id": user_id}
@@ -833,9 +856,10 @@ class Auth(Fixture):
                 )
 
     def form(self, action_name, **attr):
-        # FIXME: check allowed_actions
         if not hasattr(self, "_forms"):
             self._forms = AuthForms(self)
+        if not hasattr(self._forms, action_name):
+            raise HTTP(404)
         return getattr(self._forms, action_name)(**attr)
 
 
@@ -845,17 +869,26 @@ class AuthForms:
 
     def register(self):
         self.auth.db.auth_user.password.writable = True
-        form = Form(self.auth.db.auth_user, dbio=False)
+        fields = [field for field in self.auth.db.auth_user if field.writable]
+        for k, field in enumerate(fields):
+            if field.type == 'password':
+                fields.insert(k+1, Field('password_again', 'password'))
+                break
+        form = Form(fields, submit_value="Sign Up")
         user = None
         if form.submitted:
             res = self.auth.register(form.vars)
             form.accepted = not res.get("errors")
             form.errors = res.get("errors")
-        self._postprocessng("register", form, user)
+            if not form.errors:
+                self.auth.flash.set("User Rgistered")
+                self._postprocessing("register", form, user)
         return form
 
     def login(self):
-        form = Form([Field("username"), Field("login_password", type="password")])
+        form = Form(
+            [Field("username"), Field("login_password", type="password")],
+            submit_value="Sign In")
         user = None
         if form.submitted:
             user, error = self.auth.login(
@@ -865,7 +898,17 @@ class AuthForms:
             form.errors["username"] = error
             if user:
                 self.auth.store_user_in_session(user["id"])
-        self._postprocessng("login", form, user)
+                self._postprocessing("login", form, user)
+        return form
+
+    def request_reset_password(self):
+        form = Form([Field('email', label='Username of Email')],
+            submit_value = 'Request')
+        if form.submitted:
+            email = form.vars.get('email')
+            self.auth.request_reset_password(email, send=True, next="")
+            self.auth.flash.set("Password reset link sent")
+            self._postprocessing("request_reset_password", form, None)
         return form
 
     def reset_password(self):
@@ -876,7 +919,7 @@ class AuthForms:
             user = self.auth.db(query).select().first()
             if not user:
                 raise HTTP(404)
-        user = self.auth.db.auth_user(self.auth.user_id)
+        user = self.auth.db.auth_user(self.auth.user_id)        
         form = Form(
             [
                 Field(
@@ -887,18 +930,9 @@ class AuthForms:
                 Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
             ]
         )
-        if form.submitted:
-            new_password = form.post_vars.get("new_password")
-            if form.post_vars["new_password_again"] != new_password:
-                form.errors["new_password_again"] = "Passwords do not match"
-                form.accepted = False
-            else:
-                res = self.auth.change_password(
-                    user, new_password, check=True, check_old_password=False
-                )
-            form.errors = re.get("errors", {})
-            form.accepted = not res.get("errors")
-        self._postprocessng("profile", form, user)
+        self._process_change_password_form(form, user)
+        if form.accepted:
+            self._postprocessing("reset_password", form, user)
         return form
 
     def change_password(self):
@@ -915,32 +949,56 @@ class AuthForms:
                 Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
             ]
         )
+        self._process_change_password_form(form, user)
+        if form.accepted:
+            self._postprocessing("change_password", form, user)
+        return form
+
+    def _process_change_password_form(self, form, user):
         if form.submitted:
-            old_password = form.post_vars.get("new_password")
-            new_password = form.post_vars.get("new_password")
-            if form.post_vars["new_password_again"] != new_password:
+            old_password = request.forms.get("old_password")
+            new_password = request.forms.get("new_password")
+            new_password_again = request.forms.get("new_password_again")
+            if new_password_again != new_password:
                 form.errors["new_password_again"] = "Passwords do not match"
+                form.vars.clear()
                 form.accepted = False
             else:
                 res = self.auth.change_password(
                     user, new_password, old_password, check=True
                 )
-            form.errors = re.get("errors", {})
-            form.accepted = not res.get("errors")
-        self._postprocessng("profile", form, user)
-        return form
+                form.errors = res.get("errors", {})
+                form.accepted = not form.errors
+                if form.accepted:
+                    self.auth.flash.set("Password changed")
+                else:
+                    form.vars.clear()
 
     def profile(self):
         self._check_logged("profile")
         user = self.auth.db.auth_user(self.auth.user_id)
+        if 'username' in self.auth.db.auth_user.fields:
+            self.auth.db.auth_user.username.writable = False
+        else:
+            self.auth.db.auth_user.email.writable = False
         form = Form(self.auth.db.auth_user, user)
-        self._postprocessng("profile", form, user)
+        if form.accepted:
+            self.auth.flash.set("Profile saved")
+            self._postprocessing("profile", form, user)            
         return form
+
+    def email_verified(self):
+        self.auth.flash.set("Email Verified")
+        return A('Home', _href=URL('index'),_role="button")
+
+    def token_expired(self):
+        self.auth.flash.set("Token Expired")
+        return A('Home', _href=URL('index'),_role="button")
 
     def _check_logged(self, action):
         if not self.auth.is_logged_in:
             redirect(URL("index"))
 
-    def _postprocessng(self, action, form, user):
-        if form.accepted:
-            redirect(URL("index"))
+    def _postprocessing(self, action, form, user):
+        if not form or form.accepted:
+            redirect(self.auth.next.get(action) or URL("index"))

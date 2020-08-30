@@ -1,13 +1,15 @@
 [[extend "layout.html"]]
-<div id="vue">
-  <center>
-    <div style="width:80%; border:1px solid #e1e1e1; border-radius:10px">
-      <auth plugins="local,oauth2google,oauth2facebook,oauth2okta"></auth>
-    </div>
-  </center>
+<style>
+  .auth-container {
+    max-width: 80%;
+    min-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #e1e1e1;
+    border-radius: 10px;
+    padding: 20px;
+  }
+</style>
+<div class="auth-container">
+  [[=form]]
 </div>
-[[block page_scripts]]
-<script src="js/utils.js"></script>
-<script src="components/auth.js"></script>
-<script>Q.app().start();</script>
-[[end]]

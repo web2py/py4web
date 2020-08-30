@@ -207,6 +207,7 @@ class FormStyleFactory:
                     _class=field_class,
                     _placeholder=placeholder,
                     _title=title,
+                    _autocomplete="off" if field_type=='password' else 'on',
                 )
 
             key = control.name.rstrip("/")
@@ -381,6 +382,7 @@ class Form(object):
         csrf_session=None,
         lifespan=None,
         signing_info=None,
+        submit_value="Submit",
     ):
 
         if isinstance(table, list):
@@ -414,6 +416,7 @@ class Form(object):
         self.csrf_session = csrf_session
         self.lifespan = lifespan
         self.signing_info = signing_info
+        self.submit_value = submit_value
         self.action = None
 
         if readonly or request.method == "GET":
@@ -549,6 +552,8 @@ class Form(object):
             )
             if self.action:
                 helper["_action"] = self.action
+            if self.submit_value:
+                helper["controls"]["submit"]["_value"] = self.submit_value
             if self.form_name:
                 helper["controls"]["hidden_widgets"]["formname"] = INPUT(
                     _type="hidden", _name="_formname", _value=self.form_name

@@ -22,7 +22,7 @@ DB_FAKE_MIGRATE = False  # maybe?
 UPLOAD_PATH = os.path.join(APP_FOLDER, "uploads")
 
 # send email on regstration
-VERIFY_EMAIL = False
+VERIFY_EMAIL = True
 
 # account requires to be approved ?
 REQUIRES_APPROVAL = False

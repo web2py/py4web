@@ -33,6 +33,5 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 @unauthenticated("index", "index.html")
 def index():
     user = auth.get_user()
-    flash.set("Hello world")
     message = T("Hello {first_name}".format(**user) if user else "Hello")
     return dict(message=message)
