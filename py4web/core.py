@@ -1159,7 +1159,7 @@ def try_app_watch_tasks():
             del APP_WATCH["tasks"][handler]
 
 
-def watch(apps_folder, mode="sync"):
+def watch(apps_folder, server_config, mode="sync"):
     def watch_folder_event_loop(apps_folder):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -1192,15 +1192,15 @@ def watch(apps_folder, mode="sync"):
             if not mode == "lazy":
                 try_app_watch_tasks()
 
-    if server == "waitress":
+    if server_config == "windows":
         # default wsgi server block the main thread so we open a new thread for the file watcher
         threading.Thread(
             target=watch_folder_event_loop, args=(apps_folder,), daemon=True
         ).start()
-    elif server == "tornado":
+    elif server_config == "tornado":
         # tornado delegate to asyncio so we add a future into the event loop
         asyncio.ensure_future(watch_folder(apps_folder))
-    elif server == "gunicorn":
+    elif server_config == "gunicorn+gevent":
         # supposedly number_workers > 1
         click.echo("--watch option has no effect in multi-process environment \n")
         return
@@ -1215,40 +1215,36 @@ def watch(apps_folder, mode="sync"):
 def start_server(args):
     host, port, apps_folder = args["host"], int(args["port"]), args["apps_folder"]
     number_workers = args["number_workers"]
-
-    server = None  # need for watcher
-    run = lambda: 0  # main run
+    server = None
+    params = dict(server='gevent',
+                  host=host,
+                  port=port,
+                  reloader=False,
+                  certfile=args["ssl_cert"],
+                  keyfile=args["ssl_key"])
     if platform.system().lower() == "windows":
-        # None of the other servers work on windows
-        server = "waitress"
-        run = lambda: bottle.run(
-            server="waitress", host=host, port=int(port), reloader=False
-        )
+        if not gevent:
+            logging.error("gevent not installed")
+            return
+        server_config = "windows"
+        params['server'] = "gevent"
     elif number_workers < 1:
-        server = "tornado"
-        run = lambda: bottle.run(server="tornado", host=host, port=port, reloader=False)
+        server_config = "tornado"
+        params['server'] = "tornado"
     else:
         if not gunicorn:
             logging.error("gunicorn not installed")
-        elif not gevent:
+            return
+        if not gevent:
             logging.error("gevent not installed")
-        else:
-            server = "gunicorn"
-            sys.argv[:] = sys.argv[:1]  # else break gunicorn
-            run = lambda: bottle.run(
-                server="gunicorn",
-                host=host,
-                port=port,
-                workers=number_workers,
-                worker_class="gevent",
-                reloader=False,
-                certfile=args["ssl_cert"],
-                keyfile=args["ssl_key"],
-            )
+            return
+        server_config = "gunicorn+gevent"
+        params.update(server="gunicorn", workers=number_workers, worker_class="gevent")
+        sys.argv[:] = sys.argv[:1]  # else break gunicorn
 
     if args["watch"] != "off":
-        watch(apps_folder, server, args["watch"])
-    run()
+        watch(apps_folder, server_config, args["watch"])
+    bottle.run(**params)
 
 
 def check_compatible(version):
