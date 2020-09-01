@@ -1220,8 +1220,10 @@ def start_server(args):
                   host=host,
                   port=port,
                   reloader=False,
-                  certfile=args["ssl_cert"],
-                  keyfile=args["ssl_key"])
+                 )
+    if  args["ssl_cert"] is not None:
+        params['certfile'] = args["ssl_cert"]
+        params['keyfile'] = args["ssl_key"]
     if platform.system().lower() == "windows":
         if not gevent:
             logging.error("gevent not installed")
