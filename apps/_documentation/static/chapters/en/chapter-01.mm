@@ -58,7 +58,8 @@ py4web set_password
 py4web run apps
 ``:bash
 
-If the command py4web is not accepted, it means it's not in the system's path. It could happens, especially on Windows if you type 
+If the command py4web is not accepted, it means it's not in the system's path. 
+On Windows, a special py4web.exe file (pointing to py4web.py) will be created by ''pip'' on the system's path, but not if you type 
 the ''--user'' option by mistake.
 
 
@@ -76,7 +77,7 @@ make install
 py4web run apps
 ``:bash
 
-Also notice that when installing in this way the content of py4web/assets folder  is missing at first but it is manually created later 
+Also notice that when installing in this way the content of py4web/assets folder is missing at first but it is manually created later 
 with the 'make assets' command.
 
 ### Installing from source (locally)
@@ -89,7 +90,7 @@ From the command line, go to a given working folder and then run
 ``
 git clone https://github.com/web2py/py4web.git
 cd py4web
-python3 -m pip install -r requirements.txt
+python3 -m pip install  --upgrade -r requirements.txt
 ``:bash
 
 Once installed, you should always start it from there with
@@ -134,7 +135,7 @@ py4web setup apps
 
 in order to re-install them. This is a safety precaution, in case you made changes to those apps.
 
-If you installed py4web in any other way, you must upgrade it manually. First you have to make a backup of any personal py4web work youve done, then delete the old installation 
+If you installed py4web in any other way, you must upgrade it manually. First you have to make a backup of any personal py4web work you've done, then delete the old installation 
 folder and re-install the framework again.
 
 ### First run
