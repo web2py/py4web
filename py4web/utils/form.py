@@ -3,7 +3,7 @@ import jwt
 import time
 import uuid
 import copy
-from py4web import request, Session
+from py4web import request, response
 from pydal.validators import Validator
 from yatl.helpers import (
     A,
@@ -496,7 +496,10 @@ class Form(object):
                 key = str(uuid.uuid1())
                 self.csrf_session["_form_key"] = key
         else:
-            key = Session.SECRET
+            key = request.get_cookie("_form_key")
+            if key is None:
+                key = str(uuid.uuid1())
+                response.set_cookie("_form_key", key)
         additional_info = {
             "signing_info": self.signing_info,
             "form_name": self.form_name,
