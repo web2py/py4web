@@ -28,28 +28,6 @@ def index():
     return dict()
 ``
 
-The ``_scaffold`` application, in ``common.py`` defines two special conveninence decorators:
-
-``
-@unauthenticated
-def index():
-    return dict()
-
-@authenticated
-def index():
-    return dict()
-``
-
-They apply all of the decorators below, use a template with the same name as the function (.html),
-and also register a route with the name of action followed the number of arguments of the action
-separated by a slash (/). 
-
-@unauthenticated does not require the user to be logged in.
-@authenticated required the user to be logged in.
-
-If can be combined with (and precede) other ``@action.uses(...)`` but they should not be combined with
-``@action(...)`` because they perform that function automatically.
-
 ### Templates
 
 PY4WEB, by default uses the yatl template language and provides a fixture for it.
@@ -469,3 +447,31 @@ def hello(name):
 It will cache (memoize) the return value of the ``hello`` function, as function of the input ``name``, for up to 60 seconds. It will store in cache the 1000 most recently used values. The data is always stored in ram.
 
 The Cache object is not a fixture and it should not and cannot be registered using the ``@action.uses`` object but we mention it here because some of the fixtures use this object internally. For example, template files are cached in ram to avoid accessing the file system every time a template needs to be rendered.
+
+### Convenience Decorators
+
+The ``_scaffold`` application, in ``common.py`` defines two special conveninence decorators:
+
+``
+@unauthenticated
+def index():
+    return dict()
+```
+
+and
+
+```
+@authenticated
+def index():
+    return dict()
+``
+
+They apply all of the decorators below, use a template with the same name as the function (.html),
+and also register a route with the name of action followed the number of arguments of the action
+separated by a slash (/). 
+
+@unauthenticated does not require the user to be logged in.
+@authenticated required the user to be logged in.
+
+If can be combined with (and precede) other ``@action.uses(...)`` but they should not be combined with
+``@action(...)`` because they perform that function automatically.

@@ -1216,23 +1216,19 @@ def start_server(args):
     host, port, apps_folder = args["host"], int(args["port"]), args["apps_folder"]
     number_workers = args["number_workers"]
     server = None
-    params = dict(server='gevent',
-                  host=host,
-                  port=port,
-                  reloader=False,
-                 )
-    if  args["ssl_cert"] is not None:
-        params['certfile'] = args["ssl_cert"]
-        params['keyfile'] = args["ssl_key"]
+    params = dict(server="gevent", host=host, port=port, reloader=False,)
+    if args["ssl_cert"] is not None:
+        params["certfile"] = args["ssl_cert"]
+        params["keyfile"] = args["ssl_key"]
     if platform.system().lower() == "windows":
         if not gevent:
             logging.error("gevent not installed")
             return
         server_config = "windows"
-        params['server'] = "gevent"
+        params["server"] = "gevent"
     elif number_workers < 1:
         server_config = "tornado"
-        params['server'] = "tornado"
+        params["server"] = "tornado"
     else:
         if not gunicorn:
             logging.error("gunicorn not installed")
@@ -1312,7 +1308,6 @@ def install_args(args, reinstall_apps=False):
         with open(session_secret_filename, "w") as fp:
             fp.write(str(uuid.uuid4()))
 
-    session_secret_filename = os.path.join(args["service_folder"], "session.secret")
     with open(session_secret_filename) as fp:
         Session.SECRET = fp.read()
 
