@@ -1,32 +1,35 @@
 import base64
-import os
-import sys
-import shutil
-import zipfile
-import subprocess
-import io
 import copy
 import datetime
+import io
+import os
+import shutil
+import subprocess
+import sys
+import uuid
+import zipfile
+
 import requests
+from pydal.validators import CRYPT
+from yatl.helpers import BEAUTIFY
 
 import py4web
 from py4web import (
-    __version__,
-    action,
-    abort,
-    request,
-    response,
-    redirect,
-    Translator,
     HTTP,
     URL,
+    Translator,
+    __version__,
+    abort,
+    action,
+    redirect,
+    request,
+    response,
 )
-from py4web.core import Reloader, dumps, ErrorStorage, Session, Fixture
+from py4web.core import ErrorStorage, Fixture, Reloader, Session, dumps
 from py4web.utils.factories import ActionFactory
-from pydal.validators import CRYPT
-from yatl.helpers import BEAUTIFY
-from .utils import *
+
 from .diff2kryten import diff2kryten
+from .utils import *
 
 MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 FOLDER = os.environ["PY4WEB_APPS_FOLDER"]
@@ -461,6 +464,13 @@ if MODE == "full":
             zfile.close()
         else:
             abort(500)
+        settings = os.path.join(target_dir, "settings.py")
+        if os.path.exists(settings):
+            with open(settings) as fp:
+                data = fp.read()
+            data = data.replace("<session-secret-key>", str(uuid.uuid4()))
+            with open(settings, "w") as fp:
+                fp.write(data)
         return {"status": "success"}
 
     #

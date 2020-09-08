@@ -437,7 +437,9 @@ class Template(Fixture):
 
 class Session(Fixture):
 
-    # All apps share the same default secret if not specified. important for _dashboard reload
+    # All apps share the same default secret if not specified.
+    # important for _dashboard reload
+    # the actual value is loaded from a file
     SECRET = None
 
     def __init__(
@@ -454,10 +456,8 @@ class Session(Fixture):
         (optional) storage must have a get(key) and set(key,value,expiration) methods
         if not provided session is stored in jwt cookie else the jwt is stored in storage and its uuid key is stored in the cookie
         """
-        if not secret and not storage:
-            # when no secret is specified: one time sessions
-            secret = Session.SECRET = Session.SECRET or str(uuid.uuid1())
-        self.secret = secret
+        assert Session.SECRET, "Missing Session.SECRET"
+        self.secret = secret or Session.SECRET
         self.expiration = expiration
         self.algorithm = algorithm
         self.local = threading.local()
