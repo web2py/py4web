@@ -98,7 +98,7 @@ class FormStyleFactory:
                 if not field.readable:
                     continue
             # if this is an create form (unkown id) then only show writable fields
-            elif not vars.get('id'):
+            elif not vars.get("id"):
                 if not field.writable:
                     continue
             # ignore blob fields
@@ -207,7 +207,7 @@ class FormStyleFactory:
                     _class=field_class,
                     _placeholder=placeholder,
                     _title=title,
-                    _autocomplete="off" if field_type=='password' else 'on',
+                    _autocomplete="off" if field_type == "password" else "on",
                 )
 
             key = control.name.rstrip("/")
@@ -250,7 +250,7 @@ class FormStyleFactory:
                     )
                 )
 
-            if vars.get('id'):
+            if vars.get("id"):
                 form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
         if deletable:
             controls["delete"] = INPUT(
@@ -418,6 +418,7 @@ class Form(object):
         self.signing_info = signing_info
         self.submit_value = submit_value
         self.action = None
+        self.sidecar = []
 
         if readonly or request.method == "GET":
             if self.record:
@@ -553,6 +554,8 @@ class Form(object):
             helper = self.formstyle(
                 self.table, self.vars, self.errors, self.readonly, self.deletable
             )
+            for item in self.sidecar:
+                helper["form"][-1][-1].append(item)
             if self.action:
                 helper["_action"] = self.action
             if self.submit_value:
@@ -572,7 +575,6 @@ class Form(object):
                     _type="hidden", _name=key, _value=self.hidden[key]
                 )
                 helper["form"].append(helper["controls"]["hidden_widgets"][key])
-
             helper["controls"]["begin"] = XML(
                 "".join(
                     str(helper["controls"]["begin"])

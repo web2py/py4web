@@ -413,7 +413,7 @@ class Auth(Fixture):
         user = db(query).select().first()
         if user:
             return (
-                db(db.auth_user.id == user.get('id'))
+                db(db.auth_user.id == user.get("id"))
                 .validate_and_update(password=new_password)
                 .as_dict()
             )
@@ -427,7 +427,7 @@ class Auth(Fixture):
         if check:
             if check_old_password:
                 pwd = CRYPT()(old_password)[0]
-                if not (pwd and pwd == user.get('password')):
+                if not (pwd and pwd == user.get("password")):
                     return {"errors": {"old_password": "invalid current password"}}
             new_pwd, error = db.auth_user.password.validate(new_password)
             if error:
@@ -446,18 +446,22 @@ class Auth(Fixture):
                     return {"errors": {"new_password": "new password was already used"}}
                 else:
                     past_pwds.insert(0, pwd)
-                    db(db.auth_user.id == user.get('id')).update(past_passwords_hash=past_pwds)
-        num = db(db.auth_user.id == user.get('id')).update(
+                    db(db.auth_user.id == user.get("id")).update(
+                        past_passwords_hash=past_pwds
+                    )
+        num = db(db.auth_user.id == user.get("id")).update(
             password=new_pwd, last_password_change=datetime.datetime.utcnow()
         )
         return {"updated": num}
 
     def change_email(self, user, new_email, password=None, check=True):
         db = self.db
-        if check and not db.auth_user.password.validate(password)[0] == user.get('password'):
+        if check and not db.auth_user.password.validate(password)[0] == user.get(
+            "password"
+        ):
             return {"errors": {"password": "invalid"}}
         return (
-            db(db.auth_user.id == user.get('id'))
+            db(db.auth_user.id == user.get("id"))
             .validate_and_update(email=new_email)
             .as_dict()
         )
@@ -471,7 +475,11 @@ class Auth(Fixture):
         }
         if errors:
             return {"errors": errors}
-        return db(db.auth_user.id == user.get('id')).validate_and_update(**fields).as_dict()
+        return (
+            db(db.auth_user.id == user.get("id"))
+            .validate_and_update(**fields)
+            .as_dict()
+        )
 
     def gdpr_unsubscribe(self, user, send=True):
         """GDPR unsubscribe means we delete first_name, last_name,
@@ -619,6 +627,7 @@ class Auth(Fixture):
         for api_name in AuthAPI.private_api:
             if allowed(api_name):
                 api_factory = getattr(AuthAPI, api_name)
+
                 @action(route + "/api/" + api_name, method=["GET", "POST"])
                 @action.uses(auth.user)
                 def _(auth=auth, api_factory=api_factory):
@@ -650,6 +659,7 @@ class Auth(Fixture):
         for form_name in AuthForms.private_forms:
             if allowed(form_name):
                 form_factory = dummy if spa else getattr(AuthForms, form_name)
+
                 @action(route + "/" + form_name, method=["GET", "POST"])
                 @action.uses(route + ".html")
                 @action.uses(auth.user, self.flash, *uses)
@@ -661,6 +671,7 @@ class Auth(Fixture):
         for form_name in AuthForms.no_forms:
             if allowed(form_name):
                 form_factory = getattr(AuthForms, form_name)
+
                 @action(route + "/" + form_name)
                 @action.uses(route + ".html")
                 @action.uses(auth, self.flash, *uses)
@@ -751,7 +762,7 @@ class AuthAPI:
         else:
             user, error = auth.login(username, password)
             if user:
-                auth.session["user"] = {"id": user.get('id')}
+                auth.session["user"] = {"id": user.get("id")}
                 auth.session["recent_activity"] = calendar.timegm(time.gmtime())
                 auth.session["uuid"] = str(uuid.uuid1())
                 user = {f.name: user[f.name] for f in auth.db.auth_user if f.readable}
@@ -791,7 +802,7 @@ class AuthAPI:
     @api_wrapper
     def change_password(auth):
         return auth.change_password(
-            auth.get_user(safe=False), # refactor make faster
+            auth.get_user(safe=False),  # refactor make faster
             request.json.get("new_password"),
             request.json.get("old_password"),
         )
@@ -800,7 +811,9 @@ class AuthAPI:
     @api_wrapper
     def change_email(auth):
         return auth.change_email(
-            auth.get_user(safe=False), request.json.get("new_email"), request.json.get("password")
+            auth.get_user(safe=False),
+            request.json.get("new_email"),
+            request.json.get("password"),
         )
 
     @staticmethod
@@ -835,10 +848,18 @@ class AuthForms:
             if not form.errors:
                 auth.flash.set("User Rgistered")
                 AuthForms._postprocessing(auth, "register", form, user)
-        bottom_buttons = []
-        bottom_buttons.append(A('Sign In', _href='../auth/login', _class="info", _role="button"))
-        bottom_buttons.append(A('Lost Password', _href='../auth/request_reset_password',_class="info", _role="button"))
-        return DIV(form, DIV(*bottom_buttons))
+        form.sidecar.append(
+            A("Sign In", _href="../auth/login", _class="info", _role="button")
+        )
+        form.sidecar.append(
+            A(
+                "Lost Password",
+                _href="../auth/request_reset_password",
+                _class="info",
+                _role="button",
+            )
+        )
+        return form
 
     @staticmethod
     def login(auth):
@@ -857,15 +878,24 @@ class AuthForms:
                 auth.store_user_in_session(user["id"])
                 AuthForms._postprocessing(auth, "login", form, user)
         top_buttons = []
-        next = request.query.get('next')
-        for name in auth.plugins:
-            url = '../auth/plugin/' + name + '/login'
-            if next: url = url + '?next=' + next;
-            top_buttons.append(A(name + ' Login', _href=url, _role="button"))
-        bottom_buttons = []
-        bottom_buttons.append(A('Sign Up', _href='../auth/register', _class="info", _role="button"))
-        bottom_buttons.append(A('Lost Password', _href='../auth/request_reset_password', _class="info", _role="button"))
-        return DIV(DIV(*top_buttons), form, DIV(*bottom_buttons))
+        next = request.query.get("next")
+        for name, plugin in auth.plugins.items():
+            url = "../auth/plugin/" + name + "/login"
+            if next:
+                url = url + "?next=" + next
+            top_buttons.append(A(plugin.name + " Login", _href=url, _role="button"))
+        form.sidecar.append(
+            A("Sign Up", _href="../auth/register", _class="info", _role="button")
+        )
+        form.sidecar.append(
+            A(
+                "Lost Password",
+                _href="../auth/request_reset_password",
+                _class="info",
+                _role="button",
+            )
+        )
+        return DIV(DIV(*top_buttons), form)
 
     @staticmethod
     def request_reset_password(auth):
@@ -875,10 +905,13 @@ class AuthForms:
             auth.request_reset_password(email, send=True, next="")
             auth.flash.set("Password reset link sent")
             AuthForms._postprocessing(auth, "request_reset_password", form, None)
-        bottom_buttons = []
-        bottom_buttons.append(A('Sign In', _href='../auth/login', _class="info", _role="button"))
-        bottom_buttons.append(A('Sign Up', _href='../auth/register', _class="info", _role="button"))
-        return DIV(form, DIV(*bottom_buttons))
+        form.sidecar.append(
+            A("Sign In", _href="../auth/login", _class="info", _role="button")
+        )
+        form.sidecar.append(
+            A("Sign Up", _href="../auth/register", _class="info", _role="button")
+        )
+        return form
 
     @staticmethod
     def reset_password(auth):
