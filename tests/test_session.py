@@ -1,3 +1,4 @@
+import io
 import unittest
 import time
 import memcache
@@ -8,6 +9,9 @@ from py4web.utils.dbstore import DBStore
 
 
 class TestSession(unittest.TestCase):
+    def setUp(self):
+        request.environ['wsgi.input'] = io.StringIO()
+
     def test_session(self):
         request.app_name = "myapp"
         session = Session(secret="a", expiration=10)

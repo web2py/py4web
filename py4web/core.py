@@ -459,7 +459,7 @@ class Session(Fixture):
         (optional) storage must have a get(key) and set(key,value,expiration) methods
         if not provided session is stored in jwt cookie else the jwt is stored in storage and its uuid key is stored in the cookie
         """
-        assert Session.SECRET, "Missing Session.SECRET"
+        # assert Session.SECRET, "Missing Session.SECRET"
         self.secret = secret or Session.SECRET
         self.expiration = expiration
         self.algorithm = algorithm

@@ -413,7 +413,7 @@ class Auth(Fixture):
         user = db(query).select().first()
         if user:
             return (
-                db(db.auth_user.id == user.id)
+                db(db.auth_user.id == user.get('id'))
                 .validate_and_update(password=new_password)
                 .as_dict()
             )
@@ -427,7 +427,7 @@ class Auth(Fixture):
         if check:
             if check_old_password:
                 pwd = CRYPT()(old_password)[0]
-                if not pwd == user.password:
+                if not (pwd and pwd == user.get('password')):
                     return {"errors": {"old_password": "invalid current password"}}
             new_pwd, error = db.auth_user.password.validate(new_password)
             if error:
@@ -446,18 +446,18 @@ class Auth(Fixture):
                     return {"errors": {"new_password": "new password was already used"}}
                 else:
                     past_pwds.insert(0, pwd)
-                    db(db.auth_user.id == user.id).update(past_passwords_hash=past_pwds)
-        num = db(db.auth_user.id == user.id).update(
+                    db(db.auth_user.id == user.get('id')).update(past_passwords_hash=past_pwds)
+        num = db(db.auth_user.id == user.get('id')).update(
             password=new_pwd, last_password_change=datetime.datetime.utcnow()
         )
         return {"updated": num}
 
     def change_email(self, user, new_email, password=None, check=True):
         db = self.db
-        if check and not db.auth_user.password.validate(password)[0] == user.password:
+        if check and not db.auth_user.password.validate(password)[0] == user.get('password'):
             return {"errors": {"password": "invalid"}}
         return (
-            db(db.auth_user.id == user.id)
+            db(db.auth_user.id == user.get('id'))
             .validate_and_update(email=new_email)
             .as_dict()
         )
@@ -471,7 +471,7 @@ class Auth(Fixture):
         }
         if errors:
             return {"errors": errors}
-        return db(db.auth_user.id == user.id).validate_and_update(**fields).as_dict()
+        return db(db.auth_user.id == user.get('id')).validate_and_update(**fields).as_dict()
 
     def gdpr_unsubscribe(self, user, send=True):
         """GDPR unsubscribe means we delete first_name, last_name,
@@ -751,7 +751,7 @@ class AuthAPI:
         else:
             user, error = auth.login(username, password)
             if user:
-                auth.session["user"] = {"id": user.id}
+                auth.session["user"] = {"id": user.get('id')}
                 auth.session["recent_activity"] = calendar.timegm(time.gmtime())
                 auth.session["uuid"] = str(uuid.uuid1())
                 user = {f.name: user[f.name] for f in auth.db.auth_user if f.readable}
@@ -791,7 +791,7 @@ class AuthAPI:
     @api_wrapper
     def change_password(auth):
         return auth.change_password(
-            auth.get_user(),
+            auth.get_user(safe=False), # refactor make faster
             request.json.get("new_password"),
             request.json.get("old_password"),
         )
@@ -800,7 +800,7 @@ class AuthAPI:
     @api_wrapper
     def change_email(auth):
         return auth.change_email(
-            auth.get_user(), request.json.get("new_email"), request.json.get("password")
+            auth.get_user(safe=False), request.json.get("new_email"), request.json.get("password")
         )
 
     @staticmethod
