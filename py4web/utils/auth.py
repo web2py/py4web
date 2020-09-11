@@ -10,7 +10,7 @@ import uuid
 
 from py4web import redirect, request, response, abort, URL, action, Field, HTTP
 from py4web.core import Fixture, Template, Flash, REGEX_APPJSON
-from py4web.utils.form import Form
+from py4web.utils.form import Form, FormStyleDefault
 from yatl.helpers import INPUT, A, DIV
 
 from pydal.validators import (
@@ -137,6 +137,7 @@ class Auth(Fixture):
         block_previous_password_num=None,
         allowed_actions=["all"],
         use_appname_in_redirects=True,
+        formstyle=FormStyleDefault,
     ):
         """Creates and Auth object responsinble for handling
         authentication and authorization"""
@@ -168,6 +169,7 @@ class Auth(Fixture):
         self.onsuccess = copy.deepcopy(Auth.onsuccess)
         self.next = copy.deepcopy(Auth.next)
         self.flash = Flash()
+        self.formstyle = formstyle
 
     def transform(self, output, shared_data):
         if self.inject:
@@ -842,17 +844,19 @@ class AuthForms:
 
     @staticmethod
     def login(auth):
+        username_email = 'username' if auth.use_username else 'email'
         form = Form(
-            [Field("username"), Field("login_password", type="password")],
+            [Field(username_email), Field("login_password", type="password")],
             submit_value="Sign In",
+            formstyle=auth.formstyle,
         )
         user = None
         if form.submitted:
             user, error = auth.login(
-                form.vars.get("username"), form.vars.get("login_password")
+                form.vars.get(username_email), form.vars.get("login_password")
             )
             form.accepted = not error
-            form.errors["username"] = error
+            form.errors[username_email] = error
             if user:
                 auth.store_user_in_session(user["id"])
                 AuthForms._postprocessing(auth, "login", form, user)
@@ -863,13 +867,18 @@ class AuthForms:
             if next: url = url + '?next=' + next;
             top_buttons.append(A(name + ' Login', _href=url, _role="button"))
         bottom_buttons = []
-        bottom_buttons.append(A('Sign Up', _href='../auth/register', _class="info", _role="button"))
-        bottom_buttons.append(A('Lost Password', _href='../auth/request_reset_password', _class="info", _role="button"))
+        if "register" in auth.allowed_actions or "all" in auth.allowed_actions:
+            bottom_buttons.append(A('Sign Up', _href='../auth/register', _class="info", _role="button"))
+        if "request_reset_password" in auth.allowed_actions or "all" in auth.allowed_actions:
+            bottom_buttons.append(A('Lost Password', _href='../auth/request_reset_password', 
+                                    _class="info", _role="button"))
         return DIV(DIV(*top_buttons), form, DIV(*bottom_buttons))
 
     @staticmethod
     def request_reset_password(auth):
-        form = Form([Field("email", label="Username of Email")], submit_value="Request")
+        form = Form([Field("email", label="Username of Email")], submit_value="Request",
+                   formstyle=auth.formstyle
+                   )
         if form.submitted:
             email = form.vars.get("email")
             auth.request_reset_password(email, send=True, next="")
@@ -898,7 +907,8 @@ class AuthForms:
                     requires=auth.db.auth_user.password.requires,
                 ),
                 Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
-            ]
+            ],
+            formstyle=auth.formstyle,
         )
         AuthForms._process_change_password_form(auth, form, user)
         if form.accepted:
@@ -917,7 +927,8 @@ class AuthForms:
                     requires=auth.db.auth_user.password.requires,
                 ),
                 Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
-            ]
+            ],
+            formstyle=auth.formstyle,
         )
         AuthForms._process_change_password_form(auth, form, user)
         if form.accepted:
@@ -950,7 +961,8 @@ class AuthForms:
             auth.db.auth_user.username.writable = False
         else:
             auth.db.auth_user.email.writable = False
-        form = Form(auth.db.auth_user, user)
+        form = Form(auth.db.auth_user, user,
+                   formstyle=auth.formstyle)
         if form.accepted:
             auth.flash.set("Profile saved")
             AuthForms._postprocessing(auth, "profile", form, user)
