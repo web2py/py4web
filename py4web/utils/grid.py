@@ -16,40 +16,47 @@ def safeint(s):
     except ValueError:
         return None
 
+
 class GuessingRenderers:
     @staticmethod
     def hide_null(key, value, rec):
         if value is None:
-            return ''
+            return ""
+
     @staticmethod
     def boolean_renderer(key, value, rec):
         if value is True:
-            return INPUT(_type='checkbox',_readonly=True,_checked=True)
+            return INPUT(_type="checkbox", _readonly=True, _checked=True)
+
     @staticmethod
     def link_renderer(key, value, rec):
-        if isinstance(value, str) and (value.startswith('http://') or value.startswith('https://')):
-            return A('link',_href=value,_title=value)
+        if isinstance(value, str) and (
+            value.startswith("http://") or value.startswith("https://")
+        ):
+            return A("link", _href=value, _title=value)
+
     @staticmethod
     def list_renderer(key, value, rec):
         if isinstance(value, list):
             return UL(*[LI(rec(key, item)) for item in value])
+
     @staticmethod
     def dict_renderer(key, value, rec):
         if isinstance(value, dict):
             return TABLE(
-                *[
-                    TR(TH(k, ":"), TD(rec(key + "." + k, v)))
-                    for k, v in value.items()
-                ]
+                *[TR(TH(k, ":"), TD(rec(key + "." + k, v))) for k, v in value.items()]
             )
+
     @staticmethod
     def html_renderer(key, value, rec):
-        if isinstance(value, str) and value[:1] == '<' and value.rstrip()[-1] == '>':
-            return DIV(XML(value,sanitize=True), _style="height:50px;overflow:auto")
+        if isinstance(value, str) and value[:1] == "<" and value.rstrip()[-1] == ">":
+            return DIV(XML(value, sanitize=True), _style="height:50px;overflow:auto")
+
     @staticmethod
     def large_text_renderer(key, value, rec):
-        if isinstance(value, str) and len(value)>14:
-            return SPAN(value[:10]+'...', _title=value)
+        if isinstance(value, str) and len(value) > 14:
+            return SPAN(value[:10] + "...", _title=value)
+
 
 class Grid:
 
@@ -102,7 +109,8 @@ class Grid:
             GuessingRenderers.list_renderer,
             GuessingRenderers.dict_renderer,
             GuessingRenderers.html_renderer,
-            GuessingRenderers.large_text_renderer]
+            GuessingRenderers.large_text_renderer,
+        ]
         self.form_attributes = {}
         self.T = lambda value: value
         self.denormalize = {}
@@ -137,17 +145,21 @@ class Grid:
         if self.denormalize:
             lookup = []
             for k, fs in self.denormalize.items():
-                lookup.append('%s!:%s[%s]' % (k, k, ','.join(fs)))
-            request.query['@lookup'] = ','.join(lookup)
+                lookup.append("%s!:%s[%s]" % (k, k, ",".join(fs)))
+            request.query["@lookup"] = ",".join(lookup)
         offset = safeint(request.query.get("@offset", 0))
-        request.query['@count'] = 'true'
-        request.query['@limit'] = offset + self.limit
+        request.query["@count"] = "true"
+        request.query["@limit"] = offset + self.limit
         id = None
         data = self.restapi("GET", self.table._tablename, None, request.query)
         items = data.get("items", [])
         count = data.get("count", 0)
         table = TABLE(_class="table")
-        fields = items[0].keys() if items else [f.rsplit('.',1)[0] for f in request.query if f[:1]!='@']
+        fields = (
+            items[0].keys()
+            if items
+            else [f.rsplit(".", 1)[0] for f in request.query if f[:1] != "@"]
+        )
         table.append(TR(*[TH(self.sortlink(key)) for key in fields]))
         table.append(TR(*[TH(self.filterlink(key)) for key in fields]))
         for item in items:
@@ -176,7 +188,7 @@ class Grid:
         return A(id, _class="button", _href=url)
 
     FIELD_TYPES = [
-        'id',
+        "id",
         "string",
         "integer",
         "float",
@@ -188,18 +200,18 @@ class Grid:
     ]
 
     def is_searchable(self, key):
-        if not '.' in key:
+        if not "." in key:
             return key in self.table.fields and self.table[key].type in self.FIELD_TYPES
-        elif key.count('.') == 1:
-            fieldname1, fieldname2 = key.split('.')
+        elif key.count(".") == 1:
+            fieldname1, fieldname2 = key.split(".")
             field1 = self.table[fieldname1]
-            tablename2 = field1.type.split(' ')[1].split('.')[0]
+            tablename2 = field1.type.split(" ")[1].split(".")[0]
             field2 = self.db[tablename2][fieldname2]
             return field2.type in self.FIELD_TYPES
         return False
 
     def is_sortable(self, key):
-        if not '.' in key:
+        if not "." in key:
             return key in self.table.fields and self.table[key].type in self.FIELD_TYPES
         return False
 

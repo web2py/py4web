@@ -97,7 +97,7 @@ Here ``@action.uses(auth.user)`` tells py4web that this action requires a logged
 
 ## Auth Plugins
 
-Plugins are defined in "py4web/utils/auth_plugins" and they have a hierachical structures. Some are exclusive and some are not. For example, default, LDAP, PAM, and SAML are exclusive (the developer has to pick one). Default, Google, Facebook, and Twitter OAuth are not exclusive (the developer can pick them all and the user gets to choose using the UI).
+Plugins are defined in "py4web/utils/auth_plugins" and they have a hierachical structure. Some are exclusive and some are not. For example, default, LDAP, PAM, and SAML are exclusive (the developer has to pick one). Default, Google, Facebook, and Twitter OAuth are not exclusive (the developer can pick them all and the user gets to choose using the UI).
 
 The ``<auth/>`` components will automatically adapt to display login forms as required by the installed plugins.
 
@@ -152,6 +152,7 @@ auth.register_plugin(OAuth2Facebook(
 
 The client id and client secret must be provided by Facebook.
 
+[[tags_and_permissions]]
 ### Tags and Permissions
 
 Py4web does not have the concept of groups as web2py does. Experience showed that while that mechanism is powerful it suffers from two problems: it is overkill for most apps, and it is not flexible enough for very complex apps. Py4web provides a general purpose tagging mechanism that allows the developer to tag any record of any table, check for the existence of tags, as well as checking for records containing a tag. Group membership can be thought of a type of tag that we apply to users. Permissions can also be tags. Developer are free to create their own logic on top of the tagging system.
@@ -190,7 +191,7 @@ def find(group_name):
     return {'users': users}
 ``:python
 
-We leave it to you as an exersize to create a fixture ``has_membership`` to enable the following syntax:
+We leave it to you as an exercise to create a fixture ``has_membership`` to enable the following syntax:
 
 ``
 @action('index')

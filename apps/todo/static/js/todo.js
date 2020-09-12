@@ -1,5 +1,5 @@
 // initialize the app
-var myapp = utils.app();
+var myapp = Q.app();
 // data exposed to the view
 myapp.api = '/' + window.location.href.split('/')[3] + '/api';
 myapp.data.items = [];

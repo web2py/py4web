@@ -1,4 +1,4 @@
-var app = utils.app();
+var app = Q.app();
 var params = new URLSearchParams(window.location.search);
 app.data.loading = 0;
 app.data.app = params.get('app');

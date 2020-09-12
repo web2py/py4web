@@ -8,3 +8,6 @@ span.disabled {
 th.clickable {
     cursor: pointer;
 }
+.grid td:last-child {
+    width:1px
+}
