@@ -2,7 +2,7 @@ import os
 import unittest
 import bottle
 from py4web.core import Session, DAL, request, HTTP, Field, request
-from py4web.utils.auth import Auth, AuthAPI, AuthForms
+from py4web.utils.auth import Auth, AuthAPI, DefaultAuthForms
 
 
 class TestAuth(unittest.TestCase):
@@ -20,10 +20,11 @@ class TestAuth(unittest.TestCase):
         request.environ['REQUEST_METHOD'] = method
         request.environ['bottle.request.query'] = query
         request.environ['bottle.request.json'] = data
+        # we break a symmetry below. should fix in auth.py
         if name.startswith('api/'):
             return getattr(AuthAPI, name[4:])(self.auth)
         else:
-            return getattr(AuthForms, name)(self.auth)
+            return getattr(self.auth.form_source, name)()
 
     def test_extra_fields(self):
         self.db = DAL("sqlite:memory")
