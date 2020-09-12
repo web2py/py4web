@@ -503,7 +503,7 @@ class Form(object):
             key = request.get_cookie("_form_key")
             if key is None:
                 key = str(uuid.uuid1())
-                response.set_cookie("_form_key", key)
+                response.set_cookie("_form_key", key, same_site="Strict")
         additional_info = {
             "signing_info": self.signing_info,
             "form_name": self.form_name,
