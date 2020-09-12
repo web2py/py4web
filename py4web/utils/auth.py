@@ -11,6 +11,7 @@ import uuid
 from py4web import redirect, request, response, abort, URL, action, Field, HTTP
 from py4web.core import Fixture, Template, Flash, REGEX_APPJSON
 from py4web.utils.form import Form, FormStyleDefault
+from py4web.utils.param import Param
 from yatl.helpers import INPUT, A, DIV
 
 from pydal.validators import (
@@ -73,7 +74,7 @@ class AuthEnforcer(Fixture):
                 self.auth.route,
                 page,
                 vars=dict(next=redirect_next),
-                use_appname=self.auth.use_appname_in_redirects,
+                use_appname=self.auth.param.use_appname_in_redirects,
             )
         )
 
@@ -87,8 +88,8 @@ class AuthEnforcer(Fixture):
         activity = self.auth.session.get("recent_activity")
         time_now = calendar.timegm(time.gmtime())
         # enforce the optionl auth session expiration time
-        if self.auth.login_expiration_time and activity:
-            if time_now - activity > self.auth.login_expiration_time:
+        if self.auth.param.login_expiration_time and activity:
+            if time_now - activity > self.auth.param.login_expiration_time:
                 self.abort_or_redirect("login", "Login expired")
         # record the time of the latest activity for logged in user (with throttling)
         if not activity or time_now - activity > 6:
@@ -138,6 +139,18 @@ class Auth(Fixture):
         allowed_actions=["all"],
         use_appname_in_redirects=True,
     ):
+
+        self.param = Param(
+            registration_requires_confirmation=registration_requires_confirmation,
+            registration_requires_approval=registration_requires_approval,
+            login_expiration_time=login_expiration_time,  # seconds
+            password_complexity=password_complexity,
+            block_previous_password_num=block_previous_password_num,
+            allowed_actions=allowed_actions,
+            use_appname_in_redirects=use_appname_in_redirects,
+            formstyle=FormStyleDefault,
+        )
+
         """Creates and Auth object responsinble for handling
         authentication and authorization"""
         self.__prerequisites__ = []
@@ -150,15 +163,8 @@ class Auth(Fixture):
         self.session = session
         self.sender = sender
         self.route = None
-        self.registration_requires_confirmation = registration_requires_confirmation
-        self.registration_requires_approval = registration_requires_approval
         self.use_username = use_username  # if False, uses email only
         self.use_phone_number = use_phone_number
-        self.login_expiration_time = login_expiration_time
-        self.password_complexity = password_complexity
-        self.block_previous_password_num = block_previous_password_num
-        self.allowed_actions = allowed_actions
-        self.use_appname_in_redirects = use_appname_in_redirects
         # The self._link variable is not thread safe (only intended for testing)
         self._link = None
         self.extra_auth_user_fields = extra_fields
@@ -181,8 +187,8 @@ class Auth(Fixture):
         db = self.db
         if not "auth_user" in db.tables:
             ne = IS_NOT_EMPTY()
-            if self.password_complexity:
-                requires = [IS_STRONG(**self.password_complexity), CRYPT()]
+            if self.param.password_complexity:
+                requires = [IS_STRONG(**self.param.password_complexity), CRYPT()]
             else:
                 requires = [CRYPT()]
             auth_fields = [
@@ -230,7 +236,7 @@ class Auth(Fixture):
                         ],
                     ),
                 )
-            if self.block_previous_password_num is not None:
+            if self.param.block_previous_password_num is not None:
                 auth_fields.append(
                     Field(
                         "past_passwords_hash",
@@ -329,7 +335,7 @@ class Auth(Fixture):
         if self.use_username:
             fields["username"] = fields.get("username", "").lower()
         fields["email"] = fields.get("email", "").lower()
-        if self.registration_requires_confirmation:
+        if self.param.registration_requires_confirmation:
             token = str(uuid.uuid4()) + "/" + b16e(next)
             fields["action_token"] = "pending-registration:%s" % token
             res = self.db.auth_user.validate_and_insert(**fields)
@@ -339,10 +345,10 @@ class Auth(Fixture):
                     "verify_email",
                     vars=dict(token=token),
                     scheme=True,
-                    use_appname=self.use_appname_in_redirects,
+                    use_appname=self.param.use_appname_in_redirects,
                 )
                 self.send("verify_email", fields, link=link)
-        elif self.registration_requires_approval:
+        elif self.param.registration_requires_approval:
             fields["action_token"] = "pending-approval"
             res = self.db.auth_user.validate_and_insert(**fields)
         else:
@@ -395,13 +401,13 @@ class Auth(Fixture):
                     "reset_password",
                     vars=dict(token=token),
                     scheme=True,
-                    use_appname=self.use_appname_in_redirects,
+                    use_appname=self.param.use_appname_in_redirects,
                 )
                 self.send("reset_password", user, link=link)
             return token
 
     def verify_email(self, token):
-        if self.registration_requires_approval:
+        if self.param.registration_requires_approval:
             action_token = "pending-approval"
         else:
             action_token = None
@@ -439,9 +445,9 @@ class Auth(Fixture):
                         "new_password": "new password is the same as previous password"
                     }
                 }
-            if self.block_previous_password_num:
+            if self.param.block_previous_password_num:
                 past_pwds = (user.past_passwords_hash or [])[
-                    : self.block_previous_password_num
+                    : self.param.block_previous_password_num
                 ]
                 if any(new_pwd == old_pwd for old_pwd in past_pwds):
                     return {"errors": {"new_password": "new password was already used"}}
@@ -613,7 +619,7 @@ class Auth(Fixture):
         auth = self
 
         def allowed(name):
-            return set(self.allowed_actions) & set(["all", name])
+            return set(self.param.allowed_actions) & set(["all", name])
 
         # This exposes all actions as /{app_name}/{route}/api/{name}
         for api_name in AuthAPI.public_api:
@@ -678,10 +684,10 @@ class Auth(Fixture):
                     return dict(form=form_factory(), path=path, user=auth.get_user())
 
     def form(self, name, **attr):
-        form_factory = hasattr(ActionForms, name)
-        if not action_fectory:
+        form_factory = hasattr(self.form_source, name)
+        if not form_factory:
             raise HTTP(404)
-        return action_factory(self)
+        return form_factory(self)
 
 
 def api_wrapper(func):
@@ -720,7 +726,7 @@ class AuthAPI:
             and f.readable
         ]
         return {
-            "allowed_actions": auth.allowed_actions,
+            "allowed_actions": auth.param.allowed_actions,
             "plugins": ["local"] + [key for key in auth.plugins],
             "fields": fields,
             "use_username": auth.use_username,
@@ -827,10 +833,13 @@ class DefaultAuthForms:
     public_forms = ["register", "login", "request_reset_password", "reset_password"]
     private_forms = ["profile", "change_password"]  # change_email, unsubscribe
     no_forms = ["logout", "verify_email"]
-    formstyle = FormStyleDefault
 
     def __init__(self, auth):
         self.auth = auth
+
+    @property
+    def formstyle(self):
+        return self.auth.param.formstyle
 
     def register(self):
         self.auth.db.auth_user.password.writable = True
@@ -842,16 +851,16 @@ class DefaultAuthForms:
         form = Form(fields, submit_value="Sign Up", formstyle=self.formstyle)
         user = None
         if form.submitted:
-            res = auth.register(form.vars)
+            res = self.auth.register(form.vars)
             form.accepted = not res.get("errors")
             form.errors = res.get("errors")
             if not form.errors:
-                auth.flash.set("User Rgistered")
+                self.auth.flash.set("User Rgistered")
                 self._postprocessing("register", form, user)
-        form.sidecar.append(
+        form.param.sidecar.append(
             A("Sign In", _href="../auth/login", _class="info", _role="button")
         )
-        form.sidecar.append(
+        form.param.sidecar.append(
             A(
                 "Lost Password",
                 _href="../auth/request_reset_password",
@@ -884,10 +893,10 @@ class DefaultAuthForms:
             if next:
                 url = url + "?next=" + next
             top_buttons.append(A(plugin.name + " Login", _href=url, _role="button"))
-        form.sidecar.append(
+        form.param.sidecar.append(
             A("Sign Up", _href="../auth/register", _class="info", _role="button")
         )
-        form.sidecar.append(
+        form.param.sidecar.append(
             A(
                 "Lost Password",
                 _href="../auth/request_reset_password",
@@ -908,10 +917,10 @@ class DefaultAuthForms:
             self.auth.request_reset_password(email, send=True, next="")
             self.auth.flash.set("Password reset link sent")
             self._postprocessing("request_reset_password", form, None)
-        form.sidecar.append(
+        form.param.sidecar.append(
             A("Sign In", _href="../auth/login", _class="info", _role="button")
         )
-        form.sidecar.append(
+        form.param.sidecar.append(
             A("Sign Up", _href="../auth/register", _class="info", _role="button")
         )
         return form

@@ -7,5 +7,5 @@ class Param:
         getattr(self, key)
         self.__dict__[key] = value
 
-    __getitem__ = __getattr__
-    __setitem__ = __setitem__
+    __getitem__ = getattr
+    __setitem__ = setattr
