@@ -10,7 +10,7 @@ import uuid
 
 from py4web import redirect, request, response, abort, URL, action, Field, HTTP
 from py4web.core import Fixture, Template, Flash, REGEX_APPJSON
-from py4web.utils.form import Form
+from py4web.utils.form import Form, FormStyleDefault
 from yatl.helpers import INPUT, A, DIV
 
 from pydal.validators import (
@@ -167,6 +167,7 @@ class Auth(Fixture):
         self.plugins = {}
         self.onsuccess = copy.deepcopy(Auth.onsuccess)
         self.next = copy.deepcopy(Auth.next)
+        self.form_source = DefaultAuthForms(self)
         self.flash = Flash()
 
     def transform(self, output, shared_data):
@@ -646,39 +647,35 @@ class Auth(Fixture):
         def dummy():
             return None
 
-        for form_name in AuthForms.public_forms:
+        for form_name in self.form_source.public_forms:
             if allowed(form_name):
-                form_factory = dummy if spa else getattr(AuthForms, form_name)
+                form_factory = dummy if spa else getattr(self.form_source, form_name)
 
                 @action(route + "/" + form_name, method=["GET", "POST"])
                 @action.uses(route + ".html")
                 @action.uses(auth, self.flash, *uses)
-                def _(auth=auth, form_factory=form_factory, path=form_name):
-                    return dict(form=form_factory(auth), path=path)
+                def _(form_factory=form_factory, path=form_name):
+                    return dict(form=form_factory(), path=path)
 
-        for form_name in AuthForms.private_forms:
+        for form_name in self.form_source.private_forms:
             if allowed(form_name):
-                form_factory = dummy if spa else getattr(AuthForms, form_name)
+                form_factory = dummy if spa else getattr(self.form_source, form_name)
 
                 @action(route + "/" + form_name, method=["GET", "POST"])
                 @action.uses(route + ".html")
                 @action.uses(auth.user, self.flash, *uses)
-                def _(auth=auth, form_factory=form_factory, path=form_name):
-                    return dict(
-                        form=form_factory(auth), path=path, user=auth.get_user()
-                    )
+                def _(auth, form_factory=form_factory, path=form_name):
+                    return dict(form=form_factory(), path=path, user=auth.get_user())
 
-        for form_name in AuthForms.no_forms:
+        for form_name in self.form_source.no_forms:
             if allowed(form_name):
-                form_factory = getattr(AuthForms, form_name)
+                form_factory = getattr(self.form_source, form_name)
 
                 @action(route + "/" + form_name)
                 @action.uses(route + ".html")
                 @action.uses(auth, self.flash, *uses)
                 def _(auth=auth, form_factory=form_factory, path=form_name):
-                    return dict(
-                        form=form_factory(auth), path=path, user=auth.get_user()
-                    )
+                    return dict(form=form_factory(), path=path, user=auth.get_user())
 
     def form(self, name, **attr):
         form_factory = hasattr(ActionForms, name)
@@ -825,21 +822,24 @@ class AuthAPI:
             return auth.update_profile(auth.get_user(), **request.json)
 
 
-class AuthForms:
+class DefaultAuthForms:
 
     public_forms = ["register", "login", "request_reset_password", "reset_password"]
     private_forms = ["profile", "change_password"]  # change_email, unsubscribe
     no_forms = ["logout", "verify_email"]
+    formstyle = FormStyleDefault
 
-    @staticmethod
-    def register(auth):
-        auth.db.auth_user.password.writable = True
-        fields = [field for field in auth.db.auth_user if field.writable]
+    def __init__(self, auth):
+        self.auth = auth
+
+    def register(self):
+        self.auth.db.auth_user.password.writable = True
+        fields = [field for field in self.auth.db.auth_user if field.writable]
         for k, field in enumerate(fields):
             if field.type == "password":
                 fields.insert(k + 1, Field("password_again", "password"))
                 break
-        form = Form(fields, submit_value="Sign Up")
+        form = Form(fields, submit_value="Sign Up", formstyle=self.formstyle)
         user = None
         if form.submitted:
             res = auth.register(form.vars)
@@ -847,7 +847,7 @@ class AuthForms:
             form.errors = res.get("errors")
             if not form.errors:
                 auth.flash.set("User Rgistered")
-                AuthForms._postprocessing(auth, "register", form, user)
+                self._postprocessing("register", form, user)
         form.sidecar.append(
             A("Sign In", _href="../auth/login", _class="info", _role="button")
         )
@@ -861,25 +861,25 @@ class AuthForms:
         )
         return form
 
-    @staticmethod
-    def login(auth):
+    def login(self):
         form = Form(
             [Field("username"), Field("login_password", type="password")],
             submit_value="Sign In",
+            formstyle=self.formstyle,
         )
         user = None
         if form.submitted:
-            user, error = auth.login(
+            user, error = self.auth.login(
                 form.vars.get("username"), form.vars.get("login_password")
             )
             form.accepted = not error
             form.errors["username"] = error
             if user:
-                auth.store_user_in_session(user["id"])
-                AuthForms._postprocessing(auth, "login", form, user)
+                self.auth.store_user_in_session(user["id"])
+                self._postprocessing("login", form, user)
         top_buttons = []
         next = request.query.get("next")
-        for name, plugin in auth.plugins.items():
+        for name, plugin in self.auth.plugins.items():
             url = "../auth/plugin/" + name + "/login"
             if next:
                 url = url + "?next=" + next
@@ -897,14 +897,17 @@ class AuthForms:
         )
         return DIV(DIV(*top_buttons), form)
 
-    @staticmethod
-    def request_reset_password(auth):
-        form = Form([Field("email", label="Username of Email")], submit_value="Request")
+    def request_reset_password(self):
+        form = Form(
+            [Field("email", label="Username of Email")],
+            submit_value="Request",
+            formstyle=self.formstyle,
+        )
         if form.submitted:
             email = form.vars.get("email")
-            auth.request_reset_password(email, send=True, next="")
-            auth.flash.set("Password reset link sent")
-            AuthForms._postprocessing(auth, "request_reset_password", form, None)
+            self.auth.request_reset_password(email, send=True, next="")
+            self.auth.flash.set("Password reset link sent")
+            self._postprocessing("request_reset_password", form, None)
         form.sidecar.append(
             A("Sign In", _href="../auth/login", _class="info", _role="button")
         )
@@ -913,52 +916,51 @@ class AuthForms:
         )
         return form
 
-    @staticmethod
-    def reset_password(auth):
+    def reset_password(self):
         user = None
         token = request.query.get("token")
         if token:
-            query = auth._query_from_token(token)
-            user = auth.db(query).select().first()
+            query = self.auth._query_from_token(token)
+            user = self.auth.db(query).select().first()
             if not user:
                 raise HTTP(404)
-        user = auth.db.auth_user(auth.user_id)
+        user = self.auth.db.auth_user(self.auth.user_id)
         form = Form(
             [
                 Field(
                     "new_password",
                     type="password",
-                    requires=auth.db.auth_user.password.requires,
+                    requires=self.auth.db.auth_user.password.requires,
                 ),
                 Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
-            ]
+            ],
+            formstyle=self.formstyle,
         )
-        AuthForms._process_change_password_form(auth, form, user)
+        self._process_change_password_form(form, user)
         if form.accepted:
-            AuthForms._postprocessing(auth, "reset_password", form, user)
+            self._postprocessing("reset_password", form, user)
         return form
 
-    @staticmethod
-    def change_password(auth):
-        user = auth.db.auth_user(auth.user_id)
+    def change_password(self):
+        user = self.auth.db.auth_user(self.auth.user_id)
         form = Form(
             [
                 Field("old_password", type="password", requires=IS_NOT_EMPTY()),
                 Field(
                     "new_password",
                     type="password",
-                    requires=auth.db.auth_user.password.requires,
+                    requires=self.auth.db.auth_user.password.requires,
                 ),
                 Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
-            ]
+            ],
+            formstyle=self.formstyle,
         )
-        AuthForms._process_change_password_form(auth, form, user)
+        self._process_change_password_form(form, user)
         if form.accepted:
-            AuthForms._postprocessing(auth, "change_password", form, user)
+            self._postprocessing("change_password", form, user)
         return form
 
-    @staticmethod
-    def _process_change_password_form(auth, form, user):
+    def _process_change_password_form(self, form, user):
         if form.submitted:
             old_password = request.forms.get("old_password")
             new_password = request.forms.get("new_password")
@@ -968,42 +970,40 @@ class AuthForms:
                 form.vars.clear()
                 form.accepted = False
             else:
-                res = auth.change_password(user, new_password, old_password, check=True)
+                res = self.auth.change_password(
+                    user, new_password, old_password, check=True
+                )
                 form.errors = res.get("errors", {})
                 form.accepted = not form.errors
                 if form.accepted:
-                    auth.flash.set("Password changed")
+                    self.auth.flash.set("Password changed")
                 else:
                     form.vars.clear()
 
-    @staticmethod
-    def profile(auth):
-        user = auth.db.auth_user(auth.user_id)
-        if "username" in auth.db.auth_user.fields:
-            auth.db.auth_user.username.writable = False
+    def profile(self):
+        user = self.auth.db.auth_user(self.auth.user_id)
+        if "username" in self.auth.db.auth_user.fields:
+            self.auth.db.auth_user.username.writable = False
         else:
-            auth.db.auth_user.email.writable = False
-        form = Form(auth.db.auth_user, user)
+            self.auth.db.auth_user.email.writable = False
+        form = Form(self.auth.db.auth_user, user, formstyle=self.formstyle)
         if form.accepted:
-            auth.flash.set("Profile saved")
-            AuthForms._postprocessing(auth, "profile", form, user)
+            self.auth.flash.set("Profile saved")
+            self._postprocessing("profile", form, user)
         return form
 
-    @staticmethod
-    def logout(auth):
-        auth.session.clear()
-        auth.flash.set("User logout")
-        AuthForms._postprocessing(auth, "logout")
+    def logout(self):
+        self.auth.session.clear()
+        self.auth.flash.set("User logout")
+        self._postprocessing("logout")
         return ""
 
-    @staticmethod
-    def verify_email(auth):
+    def verify_email(self):
         token = request.query.get("token")
-        verified = auth.verify_email(token)
-        auth.flash.set("Email Verified" if verified else "Token Expired")
-        AuthForms._postprocessing(auth, "verify_email")
+        verified = self.auth.verify_email(token)
+        self.auth.flash.set("Email Verified" if verified else "Token Expired")
+        self._postprocessing("verify_email")
 
-    @staticmethod
-    def _postprocessing(auth, action, form=None, user=None):
+    def _postprocessing(self, action, form=None, user=None):
         if not form or form.accepted:
-            redirect(auth.next.get(action) or URL("index"))
+            redirect(self.auth.next.get(action) or URL("index"))
