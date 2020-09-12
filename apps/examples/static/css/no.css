@@ -167,6 +167,8 @@ thead th {
 [role="button"], button, input[type='button'], input[type='reset'], input[type='submit'] {
   background-color: #0074d9;
   border-radius: 5px;
+  margin-right: 10px;
+  margin-bottom: 10px;
   color: #fff;
   cursor: pointer;
   display: inline-block;

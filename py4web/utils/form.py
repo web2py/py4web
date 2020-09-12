@@ -5,6 +5,7 @@ import uuid
 import copy
 from py4web import request, response
 from pydal.validators import Validator
+
 from yatl.helpers import (
     A,
     TEXTAREA,
@@ -384,7 +385,6 @@ class Form(object):
         signing_info=None,
         submit_value="Submit",
     ):
-
         if isinstance(table, list):
             dbio = False
             # Mimic a table from a list of fields without calling define_table
