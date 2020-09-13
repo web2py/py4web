@@ -10,7 +10,6 @@ class Param:
     print(p.a, p.b)
     p.c = 5 # Error
     """
-    
 
     def __init__(self, **attr):
         self.__dict__.update(attr)

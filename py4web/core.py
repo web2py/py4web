@@ -349,7 +349,7 @@ class Flash(Fixture):
     def on_request(self):
         # when a new request arrives we look for a flash message in the cookie
         flash = request.get_cookie("py4web-flash")
-        if flash:            
+        if flash:
             Flash.local.flash = json.loads(flash)
         else:
             Flash.local.flash = None
@@ -357,7 +357,7 @@ class Flash(Fixture):
     def on_success(self, status):
         # if we redirect and have a flash message we move it to the session
         if status == 303 and Flash.local.flash:
-            response.set_cookie("py4web-flash", json.dumps(Flash.local.flash), path='/')
+            response.set_cookie("py4web-flash", json.dumps(Flash.local.flash), path="/")
             Flash.local.flash = None
         else:
             response.delete_cookie("py4web-flash", path="/")
@@ -371,8 +371,8 @@ class Flash(Fixture):
     def transform(self, data, shared_data=None):
         # if we have a valid flash message, we inject it in the response dict
         if isinstance(data, dict):
-            if not 'flash' in data:
-                data["flash"] = Flash.local.flash or ''
+            if not "flash" in data:
+                data["flash"] = Flash.local.flash or ""
         else:
             if Flash.local.flash is not None:
                 response.headers["component-flash"] = json.dumps(Flash.local.flash)
