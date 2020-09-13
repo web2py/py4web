@@ -1,14 +1,20 @@
 ## Fixtures
 
-A fixture is defined as "a piece of equipment or furniture which is fixed in position in a building or vehicle". In our case a fixture is something attached to the action that processes an HTTP request in order to produce a response.
+A fixture is defined as "a piece of equipment or furniture which is fixed in position in a building or vehicle". In our case a fixture is something attached to the action that
+processes an HTTP request in order to produce a response.
 
-When processing any HTTP requests there are some optional operations we may want to perform. For example parse the cookie to look for session information, commit a database transaction, determine the preferred language from the HTTP header and lookup proper internationalization, etc. These operations are optional. Some actions need them and some actions do not. They may also depend on each other. For example, if sessions are stored in the database and our action needs it, we may need to parse the session cookie from the header, pick up a connection from the database connection pool, and - after the action has been executed - save the session back in the database if data has changed.
+When processing any HTTP requests there are some optional operations we may want to perform. For example parse the cookie to look for session information, commit a database
+transaction, determine the preferred language from the HTTP header and lookup proper internationalization, etc. These operations are optional. Some actions need them and some
+actions do not. They may also depend on each other. For example, if sessions are stored in the database and our action needs it, we may need to parse the session cookie from
+the header, pick up a connection from the database connection pool, and - after the action has been executed - save the session back in the database if data has changed.
 
-PY4WEB fixtures provide a mechanism to specify what an action needs so that py4web can accomplish the required tasks (and skip non required ones) in the most efficient manner. Fixtures make the code efficient and reduce the need for boilerplate code.
+PY4WEB fixtures provide a mechanism to specify what an action needs so that py4web can accomplish the required tasks (and skip non required ones) in the most efficient manner.
+Fixtures make the code efficient and reduce the need for boilerplate code.
 
 PY4WEB fixtures are similar to WSGI middleware and BottlePy plugin except that they apply to individual actions, not to all of them, and can depend on each other.
 
-PY4WEB comes with some pre-defined fixtures for actions that need sessions, database connections, internationalization, authentication, and templates. Their usage will be explained in this chapter. The Developer is also free to add fixtures, for example, to handle a third party template language or third party session logic.
+PY4WEB comes with some pre-defined fixtures for actions that need sessions, database connections, internationalization, authentication, and templates. Their usage will be
+explained in this chapter. The Developer is also free to add fixtures, for example, to handle a third party template language or third party session logic.
 
 ### Important about Fixtures
 
@@ -44,9 +50,11 @@ def index():
 
 Note: This example assumes that you created the application from the scaffolding app, so that the template index.html is already created for you.
 
-The Template object is a Fixture. It transforms the ``dict()`` returned by the action into a string by using the ``index.html`` template file. In a later chapter we will provide an example of how to define a custom fixture to use a different template language, for example Jinja2.
+The Template object is a Fixture. It transforms the ``dict()`` returned by the action into a string by using the ``index.html`` template file. In a later chapter we will
+provide an example of how to define a custom fixture to use a different template language, for example Jinja2.
 
-Notice that since the use of templates is very common and since, most likely, every action uses a different template, we provide some syntactic sugar, and the two following lines are equivalent:
+Notice that since the use of templates is very common and since, most likely, every action uses a different template, we provide some syntactic sugar, and the two following
+lines are equivalent:
 
 ``
 @action.uses('index.html')
@@ -74,11 +82,15 @@ def index():
 
 Notice that the session object has the same interface as a Python dictionary.
 
-By default the session object is stored in a cookie called, signed and encrypted, using the provided secret. If the secret changes existing sessions are invalidated. If the user switches from HTTP to HTTPS or vice versa, the user session is invalidated. Session in cookies have a small size limit (4Kbytes after being serialized and encrypted) so do not put too much into them.
+By default the session object is stored in a cookie called, signed and encrypted, using the provided secret. If the secret changes existing sessions are invalidated. If the
+user switches from HTTP to HTTPS or vice versa, the user session is invalidated. Session in cookies have a small size limit (4Kbytes after being serialized and encrypted) so
+do not put too much into them.
 
-In py4web sessions are dictionaries but they are stored using JSON (JWT specifically) therefore you should only store objects that are JSON serializable. If the object is not JSON serializable, it will be serialized using the ``__str__`` operator and some information may be lost.
+In py4web sessions are dictionaries but they are stored using JSON (JWT specifically) therefore you should only store objects that are JSON serializable. If the object is not
+JSON serializable, it will be serialized using the ``__str__`` operator and some information may be lost.
 
-By default py4web sessions never expire (unless they contain login information, but that is another story) even if an expiration can be set. Other parameters can be specified as well:
+By default py4web sessions never expire (unless they contain login information, but that is another story) even if an expiration can be set. Other parameters can be specified
+as well:
 
 ``
 session = Session(secret='my secret key',
@@ -111,7 +123,8 @@ conn.set = lambda k, v, e, cs=conn.set, ct=conn.ttl: (cs(k, v), e and ct(e))
 session = Session(storage=conn)
 ``:python
 
-Notice: a storage object must have ``get`` and ``set`` methods and the ``set`` method must allow to specify an expiration. The redis connection object has a `ttl`` method to specify the expiration, hence we monkey patch the ``set`` method to have the expected signature and functionality.
+Notice: a storage object must have ``get`` and ``set`` methods and the ``set`` method must allow to specify an expiration. The redis connection object has a `ttl`` method to
+specify the expiration, hence we monkey patch the ``set`` method to have the expected signature and functionality.
 
 #### Session in database
 
@@ -134,7 +147,8 @@ Also this is one case when the a fixture (session) requires another fixture (db)
 
 #### Session anywhere
 
-You can easily store sessions in any place you want. All you need to do is provide to the ``Session`` object a ``storage`` object with both ``get`` and ``set`` methods. For example, imagine you want to store sessions on your local filesystem:
+You can easily store sessions in any place you want. All you need to do is provide to the ``Session`` object a ``storage`` object with both ``get`` and ``set`` methods. For
+example, imagine you want to store sessions on your local filesystem:
 
 ``
 import os
@@ -157,7 +171,8 @@ class FSStorage:
 session = Session(storage=FSStorage('/tmp/sessions'))
 ``:python
 
-We leave to you as an exercise to implement expiration, limit the number of files per folder by using subfolders, and implement file locking. Yet we do not recomment storing sessions on the filesystem: it is inefficient and does not scale well.
+We leave to you as an exercise to implement expiration, limit the number of files per folder by using subfolders, and implement file locking. Yet we do not recomment storing
+sessions on the filesystem: it is inefficient and does not scale well.
 
 
 ## Translator
@@ -245,7 +260,8 @@ and set your browser preference to Italian.
 ### The Flash fixture
 
 It is common to want to display "alerts" to the suers. Here we refer to them as flash messeges.
-There is a little more to it than just displaying a message to the view because flash messages can have state that must be preserved after redirection. Also they can be generated both server side and client side, there can be only one at the time, they may have a type, and they should be dismissible.
+There is a little more to it than just displaying a message to the view because flash messages can have state that must be preserved after redirection. Also they can be
+generated both server side and client side, there can be only one at the time, they may have a type, and they should be dismissible.
 
 The Flash helper handles the server side of them. Here is an example:
 
@@ -278,7 +294,7 @@ can position at your convenience. Also the optional class is applied to the inje
 If a page is redirected after a flash is set, the flash is remembered. This is achieved by asking the
 browser to keep the message temporarily in a one-time cookie. After redirection the message is sent
 back by the browser to the server and the server sets it again automatically before returning content,
-unless it overwritte by another set.
+unless it is overwritten by another set.
 
 The client can also set/add flash messages by calling:
 
@@ -293,9 +309,11 @@ there is nothing in py4web that hardcodes those names. You can use your own clas
 
 ### The DAL fixture
 
-We have already used the ``DAL`` fixture in the context of sessions but maybe you want direct access to the DAL object for the purpose of accessing the database, not just sessions.
+We have already used the ``DAL`` fixture in the context of sessions but maybe you want direct access to the DAL object for the purpose of accessing the database, not just
+sessions.
 
-PY4WEB, by default, uses the PyDAL (Python Database Abstraction Layer) which is documented in a later chapter. Here is an example, please remember to create the ``databases`` folder under your project in case it doesn't exist:
+PY4WEB, by default, uses the PyDAL (Python Database Abstraction Layer) which is documented in a later chapter. Here is an example, please remember to create the
+``databases`` folder under your project in case it doesn't exist:
 
 ``
 from datetime import datetime
@@ -315,7 +333,8 @@ def index():
     return "Your visit was stored in database"
 ``:python
 
-Notice that the database fixture defines (creates/re-creates tables) automatically when py4web starts (and every time it reloads this app) and picks a connection from the connection pool at every HTTP request. Also each call to the ``index()`` action is wrapped into a transaction and it commits ``on_success`` and rolls back ``on_error``.
+Notice that the database fixture defines (creates/re-creates tables) automatically when py4web starts (and every time it reloads this app) and picks a connection from the
+connection pool at every HTTP request. Also each call to the ``index()`` action is wrapped into a transaction and it commits ``on_success`` and rolls back ``on_error``.
 
 ### Caveats about Fixtures
 
@@ -343,7 +362,9 @@ def index():
 Note thas this code will only be able to display a form, to process it after submit, additional code needs to be added, as we will see later on.
 This example is assuming that you created the application from the scaffolding app, so that a generic.html is already created for you.
 
-The ``readable``, ``writable``, ``default``, ``update``, and ``require`` attributes of ``db.{table}.{field}`` are special objects of class ``ThreadSafeVariable`` defined the ``threadsafevariable`` module. These objects are very much like Python thread local objects but they are re-initialized at every request using the value specified outside of the action. This means that actions can safely change the values of these attributes.
+The ``readable``, ``writable``, ``default``, ``update``, and ``require`` attributes of ``db.{table}.{field}`` are special objects of class ``ThreadSafeVariable`` defined
+the ``threadsafevariable`` module. These objects are very much like Python thread local objects but they are re-initialized at every request using the value specified outside
+of the action. This means that actions can safely change the values of these attributes.
 
 ### Custom fixtures
 
@@ -367,7 +388,9 @@ if an action uses this fixture:
 def index(): return 'hello world'
 ``
 
-Then ``on_request()`` is guaranteed to be called before the ``index()`` function is called. The ``on_success()`` is guaranteed to be called if the ``index()`` function returns successfully or raises ``HTTP`` or performs a ``redirect``. The ``on_error()`` is guaranteed to be called when the ``index()`` function raises any exception other than ``HTTP``. The ``transform`` function is called to perform any desired transformation of the valute returned by the ``index()`` function.
+Then ``on_request()`` is guaranteed to be called before the ``index()`` function is called. The ``on_success()`` is guaranteed to be called if the ``index()`` function returns
+successfully or raises ``HTTP`` or performs a ``redirect``. The ``on_error()`` is guaranteed to be called when the ``index()`` function raises any exception other than
+``HTTP``. The ``transform`` function is called to perform any desired transformation of the value returned by the ``index()`` function.
 
 ### Auth and Auth.user
 
@@ -391,9 +414,11 @@ def index():
     return 'Welcome %s' % user.get('first_name')
 ``:python
 
-The constructor of the ``Auth`` object defines the ``auth_user`` table with the following fields: username, email, password, first_name, last_name, sso_id, and action_token (the last two are mostly for internal use).
+The constructor of the ``Auth`` object defines the ``auth_user`` table with the following fields: username, email, password, first_name, last_name, sso_id, and action_token
+(the last two are mostly for internal use).
 
-``auth.enable()`` registers multiple actions including ``{appname}/auth/login`` and it requires the presence of the ``auth.html`` template and the ``auth`` value component provided by the ``_scaffold`` app.
+``auth.enable()`` registers multiple actions including ``{appname}/auth/login`` and it requires the presence of the ``auth.html`` template and the ``auth`` value component
+provided by the ``_scaffold`` app.
 
 The ``auth`` object is the fixture. It manages the user information. It exposes a single method:
 
@@ -401,7 +426,8 @@ The ``auth`` object is the fixture. It manages the user information. It exposes 
 auth.get_user()
 ``
 
-which returns a python dictionary containing the information of the currently logged in user. If the user is not logged-in, it returns ``None``. The code of the example redirects to the 'auth/login' page if there is no user.
+which returns a python dictionary containing the information of the currently logged in user. If the user is not logged-in, it returns ``None``. The code of the example
+redirects to the 'auth/login' page if there is no user.
 
 Since this check is very common, py4web provides an additional fixture ``auth.user``:
 
@@ -427,7 +453,8 @@ auth.register_plugin(OAuth2Google(
     callback_url='auth/plugin/oauth2google/callback'))
 ``:python
 
-The ``client_id`` and ``client_secret`` are provided by google. The callback url is the default option for py4web and it must be whitelisted with Google. All ``Auth`` plugins are objects. Different plugins are configured in different ways but they are registered using ``auth.register_plugin(...)``. Examples are provided in ``_scaffold/common.py``. 
+The ``client_id`` and ``client_secret`` are provided by google. The callback url is the default option for py4web and it must be whitelisted with Google. All ``Auth`` plugins
+are objects. Different plugins are configured in different ways but they are registered using ``auth.register_plugin(...)``. Examples are provided in ``_scaffold/common.py``. 
 
 ### Caching and Memoize
 
@@ -444,13 +471,15 @@ def hello(name):
     return "Hello %s your code is %s" % (name, uuid.uuid4())
 ``:python
 
-It will cache (memoize) the return value of the ``hello`` function, as function of the input ``name``, for up to 60 seconds. It will store in cache the 1000 most recently used values. The data is always stored in ram.
+It will cache (memoize) the return value of the ``hello`` function, as function of the input ``name``, for up to 60 seconds. It will store in cache the 1000 most recently
+    used values. The data is always stored in ram.
 
-The Cache object is not a fixture and it should not and cannot be registered using the ``@action.uses`` object but we mention it here because some of the fixtures use this object internally. For example, template files are cached in ram to avoid accessing the file system every time a template needs to be rendered.
+The Cache object is not a fixture and it should not and cannot be registered using the ``@action.uses`` object but we mention it here because some of the fixtures use this
+    object internally. For example, template files are cached in ram to avoid accessing the file system every time a template needs to be rendered.
 
 ### Convenience Decorators
 
-The ``_scaffold`` application, in ``common.py`` defines two special conveninence decorators:
+The ``_scaffold`` application, in ``common.py`` defines two special conveniennce decorators:
 
 ``
 @unauthenticated
