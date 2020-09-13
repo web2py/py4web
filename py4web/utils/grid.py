@@ -1,327 +1,908 @@
-import math
-import urllib.parse
+from functools import reduce
 
-from pydal.restapi import RestAPI, Policy
-from yatl.helpers import TABLE, TR, TH, TD, DIV, A, I, SPAN, INPUT, SCRIPT, UL, LI
+from yatl.helpers import DIV, TABLE, TBODY, TR, TD, TH, A, SPAN, I, THEAD, P, TAG, INPUT, XML
+from pydal.objects import FieldVirtual
+from py4web import request, URL, response, redirect
+from py4web.utils.form import Form, FormStyleDefault
+import uuid
+import json
 
-from py4web import request, HTTP
-from py4web.utils.form import Form
+NAV = TAG.nav
+HEADER = TAG.header
 
 
-def safeint(s):
-    if s is None:
-        return s
+def get_grid_key():
+    """
+    if "grid_key" specified in the query_parms, retrieve it and use that grid_key.  else,
+    create a new one
+
+    :return: user grid_key uuid
+    """
+    return request.query.get("grid_key", uuid.uuid4())
+
+
+def get_storage_value(grid_key, filter_name, common_settings, default_value=None):
+    """
+    retrieve a value from storage
+
+    first check the query parms to see if one is passed
+
+    if not in query parms check the user grid_key cookie for the value
+
+    :param grid_key: user grid_key
+    :param filter_name: name of the filter value you want to retrieve
+    :common_settings: dict containing a key "secret" that will be used to encrypt the cookie
+    :param default_value: the default value if value hasn't been stored
+    :return: the value of the filter that was either in the query parms or user grid_key cookie
+    """
+    storage_value = request.query.get(filter_name, default_value)
+
+    if storage_value == default_value and grid_key and grid_key in request.cookies:
+        cookie = json.loads(request.get_cookie(grid_key,
+                                               default={},
+                                               secret=common_settings["secret"]))
+        storage_value = cookie.get(filter_name, default_value)
+
+    return storage_value
+
+
+def set_storage_values(grid_key, values_dict, secret, max_age=3600):
+    response.set_cookie(str(grid_key),
+                        json.dumps(values_dict),
+                        secret=secret,
+                        max_age=max_age)
+
+
+def get_common_setting(setting, common_settings, default_value=None):
     try:
-        return int(s)
-    except ValueError:
-        return None
+        return common_settings[setting]
+    except AttributeError:
+        return default_value
 
 
-class GuessingRenderers:
-    @staticmethod
-    def hide_null(key, value, rec):
-        if value is None:
-            return ""
+def parse_route(request):
+    """
+    -- play with this as a possible way to get the route - but below works
 
-    @staticmethod
-    def boolean_renderer(key, value, rec):
-        if value is True:
-            return INPUT(_type="checkbox", _readonly=True, _checked=True)
+    f = '/'.join(__file__.split('/')[1:])
+    for rt in (Reloader.ROUTES):
+        if rt['filename'] == f:
+            print(rt)
+    print(f)
+    """
+    application = request.environ["bottle.request.ext.app_name"]
+    url_parts = request.path.split("/")
 
-    @staticmethod
-    def link_renderer(key, value, rec):
-        if isinstance(value, str) and (
-            value.startswith("http://") or value.startswith("https://")
-        ):
-            return A("link", _href=value, _title=value)
+    rule_out = ""
+    for part in url_parts:
+        if part == "":
+            continue
+        elif part == application:
+            continue
+        else:
+            rule_out = part
+            break
 
-    @staticmethod
-    def list_renderer(key, value, rec):
-        if isinstance(value, list):
-            return UL(*[LI(rec(key, item)) for item in value])
-
-    @staticmethod
-    def dict_renderer(key, value, rec):
-        if isinstance(value, dict):
-            return TABLE(
-                *[TR(TH(k, ":"), TD(rec(key + "." + k, v))) for k, v in value.items()]
-            )
-
-    @staticmethod
-    def html_renderer(key, value, rec):
-        if isinstance(value, str) and value[:1] == "<" and value.rstrip()[-1] == ">":
-            return DIV(XML(value, sanitize=True), _style="height:50px;overflow:auto")
-
-    @staticmethod
-    def large_text_renderer(key, value, rec):
-        if isinstance(value, str) and len(value) > 14:
-            return SPAN(value[:10] + "...", _title=value)
+    return rule_out
 
 
 class Grid:
+    def __init__(self,
+                 common_settings,
+                 queries,
+                 search_form=None,
+                 storage_values=None,
+                 fields=None,
+                 show_id=False,
+                 orderby=None,
+                 left=None,
+                 headings=None,
+                 create=False,
+                 details=False,
+                 editable=False,
+                 deletable=False,
+                 requires=None,
+                 grid_key=None,
+                 pre_action_buttons=None,
+                 post_action_buttons=None):
+        """
+        Grid is a searchable/sortable/pageable grid
 
-    """
-    Example:
+        :param common_settings: Params object with common settings for all grids within the application
+        :param queries: list of queries used to filter the data
+        :param search_form: py4web FORM to be included as the search form
+        :param storage_values: values to save between requests
+        :param fields: list of fields to display on the list page, if blank, glean tablename from first query
+        :              and use all fields of that table
+        :param show_id: show the record id field on list page - default = False
+        :param orderby: pydal orderby field or list of fields
+        :param left: if joining other tables, specify the pydal left expression here
+        :param headings: list of headings to be used for list page - if not provided use the field label
+        :param create: URL to redirect to for creating records - set to False to not display the button
+        :param editable: URL to redirect to for editing records - set to False to not display the button
+        :param deletable: URL to redirect to for deleting records - set to False to not display the button
+        :param requires: dict of fields and their 'requires' parm for building edit pages - dict key should be
+                         tablename.fieldname
+        :param grid_key: id of the cookie containing saved values
+        :param pre_action_buttons: list of action_button instances to include before the standard action buttons
+        :param post_action_buttons: list of action_button instances to include after the standard action buttons
+        """
+        self.db = common_settings["db"]
+        self.secret = common_settings["secret"]
+        self.rows_per_page = get_common_setting("rows_per_page", common_settings, 15)
+        self.grid_key_max_age = get_common_setting("grid_key_max_age", common_settings, 3600)
+        self.include_action_button_text = get_common_setting("include_action_button_text", common_settings, True)
+        self.search_button_text = get_common_setting("search_button_text", common_settings, "Filter")
+        self.formstyle = get_common_setting("formstyle", common_settings, FormStyleDefault)
+        self.grid_class_style = get_common_setting("grid_class_style", common_settings, GridClassStyle)
 
-    @unauthenticated()
-    def index():
-       grid = Grid(db.thing, query=None, create=True, editable=True, deletable=True)
-       grid.labels = {key: key.title() for key in db.thing.fields}
-       grid.renderers['name'] = lambda name: SPAN(name, _class='name')
-       return dict(form=grid.make())
-    """
+        self.query_parms = request.params
+        self.endpoint = parse_route(request)
 
-    def __init__(
-        self,
-        table,
-        query=None,
-        fields=None,
-        limit=100,
-        create=True,
-        editable=True,
-        deletable=True,
-    ):
-        self.db = table._db
-        self.table = table
-        self.query = query
-        self.fields = fields or [f.name for f in table if f.readable]
-        self.limit = limit
-        self.create = create
-        self.editable = editable
-        self.deletable = deletable
-        self.policy = Policy()
-        self.policy.set(
-            table._tablename,
-            "GET",
-            query=query,
-            authorize=True,
-            allowed_patterns=["*"],
-            fields=fields,
-            limit=limit,
-        )
-        self.restapi = RestAPI(self.db, self.policy)
-        self.labels = {}
-        self.renderers = {"id": self.idlink}
-        self.guessing_renderers = [
-            GuessingRenderers.hide_null,
-            GuessingRenderers.boolean_renderer,
-            GuessingRenderers.link_renderer,
-            GuessingRenderers.list_renderer,
-            GuessingRenderers.dict_renderer,
-            GuessingRenderers.html_renderer,
-            GuessingRenderers.large_text_renderer,
-        ]
-        self.form_attributes = {}
-        self.T = lambda value: value
-        self.denormalize = {}
+        self.search_form = search_form
 
-    def xml(self):
-        return self.make().xml()
+        self.query = reduce(lambda a, b: (a & b), queries)
 
-    def make(self):
-        """makes the grid, must be called inside an action"""
-
-        T, db, table, query = self.T, self.db, self.table, self.query
-        # bypass rest API if it is a form
-        id = safeint(request.query.get("id") or request.forms.get("id"))
-        if id is not None:
-            if (id == 0 and not self.create) or (id > 0 and not self.editable):
-                raise HTTP(404)
-            record = db(query)(table.id == id).select().first() if id else None
-            form = Form(table, record, deletable=self.deletable, **self.form_attributes)
-            form.action = (
-                request.url.split("?")[0] + "?" + urllib.parse.urlencode(request.query)
-            )
-            del request.query["id"]
-            if form.deleted:
-                message = T("Record deleted")
-            elif form.accepted:
-                message = T("Record created") if not id else T("Record Saved")
+        self.fields = []
+        if fields:
+            if isinstance(fields, list):
+                self.fields = fields
             else:
-                return DIV(self.header(id), form, _class="py4web-grid")
+                self.fields = [fields]
         else:
-            message = ""
+            q = self.query
+            while q.second != 0:
+                q = q.first
 
-        if self.denormalize:
-            lookup = []
-            for k, fs in self.denormalize.items():
-                lookup.append("%s!:%s[%s]" % (k, k, ",".join(fs)))
-            request.query["@lookup"] = ",".join(lookup)
-        offset = safeint(request.query.get("@offset", 0))
-        request.query["@count"] = "true"
-        request.query["@limit"] = offset + self.limit
-        id = None
-        data = self.restapi("GET", self.table._tablename, None, request.query)
-        items = data.get("items", [])
-        count = data.get("count", 0)
-        table = TABLE(_class="table")
-        fields = (
-            items[0].keys()
-            if items
-            else [f.rsplit(".", 1)[0] for f in request.query if f[:1] != "@"]
-        )
-        table.append(TR(*[TH(self.sortlink(key)) for key in fields]))
-        table.append(TR(*[TH(self.filterlink(key)) for key in fields]))
-        for item in items:
-            table.append(
-                TR(*[TD(self.render(key, value)) for key, value in item.items()])
-            )
-        header = self.header(id, message)
-        footer = self.footer(count, offset, len(items))
-        return DIV(header, table, footer, _class="py4web-grid")
+            self.fields = [self.db[q.first.table][x] for x in q.first.table.fields()]
 
-    def render(self, key, value):
-        """renders a value"""
-        if key in self.renderers:
-            return self.renderers[key](value)
-        for guess in self.guessing_renderers:
-            rendered = guess(key, value, self.render)
-            if rendered is not None:
-                return rendered
-        return value
+        self.show_id = show_id
+        self.hidden_fields = [field for field in self.fields if not field.readable]
+        self.left = left
+        self.form = None
 
-    def idlink(self, id):
-        """returns the link to edit an id"""
-        query = dict(request.query)
-        query["id"] = id
-        url = request.url.split("?")[0] + "?" + urllib.parse.urlencode(query)
-        return A(id, _class="button", _href=url)
+        if "action" in request.url_args:
+            self.action = request.url_args["action"]
+            self.tablename = request.url_args["tablename"]
+            self.record_id = request.url_args["record_id"]
+            self.requires = requires
+            self.readonly_fields = [field for field in self.fields if not field.writable]
+            if request.url_args["action"] in ["new", "details", "edit"]:
+                readonly = True if request.url_args["action"] == "details" else False
+                for field in self.readonly_fields:
+                    self.db[self.tablename][field.name].writable = False
 
-    FIELD_TYPES = [
-        "id",
-        "string",
-        "integer",
-        "float",
-        "boolean",
-        "decimal",
-        "time",
-        "date",
-        "datetime",
-    ]
+                for field in self.hidden_fields:
+                    self.db[self.tablename][field.name].readable = False
+                    self.db[self.tablename][field.name].writable = False
 
-    def is_searchable(self, key):
-        if not "." in key:
-            return key in self.table.fields and self.table[key].type in self.FIELD_TYPES
-        elif key.count(".") == 1:
-            fieldname1, fieldname2 = key.split(".")
-            field1 = self.table[fieldname1]
-            tablename2 = field1.type.split(" ")[1].split(".")[0]
-            field2 = self.db[tablename2][fieldname2]
-            return field2.type in self.FIELD_TYPES
-        return False
+                if requires:
+                    for field in self.requires:
+                        tablename, fieldname = field.split(".")
+                        self.db[tablename][fieldname].requires = self.requires[field]
 
-    def is_sortable(self, key):
-        if not "." in key:
-            return key in self.table.fields and self.table[key].type in self.FIELD_TYPES
-        return False
+                if not self.show_id:
+                    #  if not show id, find the "id" field and set readable/writable to False
+                    for field in self.db[self.tablename]:
+                        if field.type == "id":
+                            self.db[self.tablename][field.name].readable = False
+                            self.db[self.tablename][field.name].writable = False
 
-    def sortlink(self, key):
-        """returns the link to sort by key"""
-        label = self.labels.get(key, key)
-        if not self.is_sortable(key):
-            return label
-        order = request.query.get("@order")
-        if order == key:
-            new_order, caret = "~" + key, "▼"
-        elif order == "~" + key:
-            new_order, caret = key, "▲"
+                self.form = Form(self.db[self.tablename], record=self.record_id, readonly=readonly,
+                                 formstyle=self.formstyle)
+                if self.form.accepted:
+                    page = request.query.get("page", 1)
+                    redirect(URL(self.endpoint, vars=dict(grid_key=request.query.get("grid_key"),
+                                                          page=page)))
+
+            if request.url_args["action"] == "delete":
+                self.db(self.db[self.tablename].id == self.record_id).delete()
+                redirect(URL(self.endpoint, vars=dict(grid_key=request.query.get("grid_key"))))
+
         else:
-            new_order, caret = key, ""
-        return A(label + caret, _href=self.url(page=0, order=new_order))
+            self.action = "select"
+            self.orderby = orderby
 
-    def filterlink(self, key):
-        """creates an input to filter by key"""
-        if not self.is_searchable(key):
-            return ""
-        return INPUT(_id="py4web-grid-filter-" + key, _class="py4web-grid-filter")
+            self.tablename = None
+            self.use_tablename = False
+            for field in self.fields:
+                if not isinstance(field, FieldVirtual):
+                    if not self.tablename:
+                        self.tablename = field.table
+                    if field.table != self.tablename:
+                        self.use_tablename = True  # tablename is included in "row" - need it to retrieve fields
 
-    def url(self, page, order=None):
-        """generates a url for a page and a sorting"""
-        query = dict(request.query)
-        query["@offset"] = page * self.limit
-        if order:
-            query["@order"] = order
-        return request.url.split("?")[0] + "?" + urllib.parse.urlencode(query)
+            #  find the primary key of the primary table
+            pt = self.db[self.tablename]
+            key_is_missing = False
+            for field in self.fields:
+                if field.table._tablename == pt._tablename and field.name == pt._id:
+                    key_is_missing = True
+            if key_is_missing:
+                #  primary key wasn't included, add it and set show_id to False so it doesn't display
+                self.fields.append(pt._id)
+                self.show_id = False
 
-    def header(self, id, message=""):
-        """generates the header"""
-        T = self.T
-        div = DIV(_class="py4web-grid-header")
-        if message:
-            div.append(DIV(message, _class="py4web-grid-message"))
-        if self.create and id is None:
-            div.append(
-                A(
-                    T("Create Record"),
-                    _class="button",
-                    _href=request.url.split("?")[0] + "?id=0",
-                )
-            )
-        elif (self.create and id == 0) or (self.editable and id and id > 0):
-            query = dict(request.query)
-            query.pop("id", None)
-            url = request.url.split("?")[0] + "?" + urllib.parse.urlencode(query)
-            div.append(A(T("Back"), _class="button", _href=url))
-            div.append(T("New Record") if id == 0 else T("Edit Record"))
-        return div
+            self.headings = []
+            if headings:
+                if isinstance(headings, list):
+                    self.headings = headings
+                else:
+                    self.headings = [headings]
 
-    def footer(self, count, offset, len_items):
-        """generates the footer"""
-        T = self.T
-        page = int(offset / self.limit)
-        last_page = math.floor(count / self.limit)
-        return DIV(
-            A("First", _href=self.url(0), _class="button") if page > 1 else "",
-            A("Previous", _href=self.url(page - 1), _class="button")
-            if page > 0
-            else "",
-            SPAN(
-                T("page %s/%s (%s/%s records)")
-                % (page + 1, last_page + 1, len_items, count)
-            ),
-            A("Next", _href=self.url(page + 1), _class="button")
-            if page < last_page
-            else "",
-            A("Last", _href=self.url(last_page - 1), _class="button")
-            if page < last_page - 1
-            else "",
-            SCRIPT(Grid.script),
-            _class="py4web-grid-footer",
-        )
+            sig_page_number = json.loads(request.query.get(grid_key, "{}")).get("page", 1)
+            current_page_number = request.query.get("page", sig_page_number)
+            self.current_page_number = current_page_number if isinstance(current_page_number, int) \
+                else int(current_page_number)
 
-    script = r"""
-    var filters = document.getElementsByClassName('py4web-grid-filter');
-    var url = window.location.href;
-    for (var i=0;i<filters.length;i++) {
-       var name = filters[i].id.substr("py4web-grid-filter-".length);
-       var matches = url.match(new RegExp("\\b" + name.replace('.','\\.') + "\\.\\w+=[^&]+", "gi"));
-       if (matches && matches.length>0) {
-          var parts = matches[0].split('=');
-          var subparts = parts[0].split('.');
-          var op = {'lt':'<', 'le':'<=', 'eq':'', 'ge':'>=', 'gt':'>', 'ne':'!='}[subparts[subparts.length-1]]||'';
-          filters[i].value = op + decodeURIComponent(parts[1]);
-       }
-       filters[i].onkeyup = filters[i].onblur = 
-         (function(elem, name){return function(event){ 
-         if(event.keyCode==13) {
-           var value;
-           var url = window.location.href;
-           url = url.replace(new RegExp("\\b@offset=[^&]+", "gi"), "");
-           url = url.replace(new RegExp("\\b" + name.replace('.','\\.') + "\\.\\w+=[^&]+", "gi"), "");
-           if(elem.value.substr(0,2) == '!=') {op='ne'; value=elem.value.substr(2);}
-           else if(elem.value.substr(0,2) == '<=') {op='le'; value=elem.value.substr(2);}
-           else if(elem.value.substr(0,2) == '>=') {op='ge'; value=elem.value.substr(2);}
-           else if(elem.value.substr(0,1) == '<') {op='lt'; value=elem.value.substr(1);}
-           else if(elem.value.substr(0,1) == '>') {op='gt'; value=elem.value.substr(1);}
-           else {op='eq'; value=elem.value;}
-           if (value!=="") {
-              if(value=='""') value='';
-              var sep = (url.indexOf('?')>0)?"&":"?";
-              url = url + sep + name+'.' + op + '=' +encodeURIComponent(value);
-           }
-           url = url.replace(/[&?]$/, '').replace(/[&]+/, '&').replace(/[?][&]/, '?');
-           window.location = url;
-         }
-       };})(filters[i], name);
-    }
-    """
+            self.create = create
+            self.details = details
+            self.editable = editable
+            self.deletable = deletable
+
+            parms = dict()
+            #  try getting sort order from the request
+            sort_order = request.query.get("sort")
+            if not sort_order:
+                #  see if there is a stored orderby
+                sort_order = get_storage_value(grid_key, "orderby", common_settings)
+                if not sort_order:
+                    #  use sort order passed in
+                    sort_order = self.orderby
+
+            orderby = self.decode_orderby(sort_order)
+            parms["orderby"] = orderby["orderby_expression"]
+            storage_values["orderby"] = orderby["orderby_string"]
+            if orderby["orderby_string"] != get_storage_value(grid_key, "orderby", common_settings):
+                #  user clicked on a header to change sort order - reset page to 1
+                self.current_page_number = 1
+
+            if self.left:
+                parms["left"] = self.left
+
+            if self.left:
+                self.total_number_of_rows = len(self.db(self.query).select(self.db[self.tablename].id, **parms))
+            else:
+                self.total_number_of_rows = self.db(self.query).count()
+
+            #  if at a high page number and then filter causes less records to be displayed, reset to page 1
+            if (self.current_page_number - 1) * self.rows_per_page > self.total_number_of_rows:
+                self.current_page_number = 1
+
+            if self.total_number_of_rows > self.rows_per_page:
+                self.page_start = self.rows_per_page * (self.current_page_number - 1)
+                self.page_end = self.page_start + self.rows_per_page
+                parms["limitby"] = (self.page_start, self.page_end)
+            else:
+                self.page_start = 0
+                if self.total_number_of_rows > 1:
+                    self.page_start = 1
+                self.page_end = self.total_number_of_rows
+
+            if self.fields:
+                self.rows = self.db(self.query).select(*self.fields, **parms)
+            else:
+                self.rows = self.db(self.query).select(**parms)
+
+            self.number_of_pages = self.total_number_of_rows // self.rows_per_page
+            if self.total_number_of_rows % self.rows_per_page > 0:
+                self.number_of_pages += 1
+            self.grid_key = grid_key
+
+            self.pre_action_buttons = pre_action_buttons
+            self.post_action_buttons = post_action_buttons
+
+            storage_values["page"] = self.current_page_number
+
+            set_storage_values(grid_key, storage_values, secret=common_settings["secret"])
+            self.storage_values = storage_values
+
+    def decode_orderby(self, sort_order):
+        """
+        sort_order can be an int, string, list of strings, pydal fields or list of pydal fields
+
+        need to determine which it is and then return a dict containing the string representation of the
+        orderby and the pydal expression to be used in the query
+
+        :param sort_order:
+        :return: dict(orderby_string=<order by string>, orderby_expression=<pydal orderby expression>)
+        """
+        orderby_expression = None
+        orderby_string = None
+        if sort_order:
+            #  can be an int or a PyDAL field
+            try:
+                index = int(sort_order)
+                #  if we get here, this is a sort request from the table
+                #  if it is in the saved order by then reverse the direction
+                if (request.query.get("sort_dir") and request.query.get("sort_dir") == "desc") or index < 0:
+                    orderby_expression = [~self.fields[abs(index)]]
+                else:
+                    orderby_expression = [self.fields[index]]
+            except:
+                #  this could be:
+                #  a string
+                #  a list of strings
+                #  a list of dal fields or a single pydal field, treat the same
+                if isinstance(sort_order, str):
+                    #  a string
+                    tablename, fieldname = sort_order.split(".")
+                    orderby_expression = [self.db[tablename][fieldname]]
+                else:
+                    sort_type = "dal_field"
+                    for x in sort_order:
+                        if isinstance(x, str):
+                            sort_type = "str"
+
+                    if sort_type == "dal_field":
+                        #  a list of dal fields
+                        orderby_expression = sort_order
+                    else:
+                        #  a list of strings
+                        orderby_expression = []
+                        for x in sort_order:
+                            tablename, fieldname = x.replace("~", "").split(".")
+                            if "~" in x:
+                                orderby_expression.append(~self.db[tablename][fieldname])
+                            else:
+                                orderby_expression.append(self.db[tablename][fieldname])
+        else:
+            for field in self.fields:
+                if field not in self.hidden_fields and (field.name != "id" or field.name == "id" and self.show_id):
+                    orderby_expression = field
+
+        if orderby_expression:
+            try:
+                orderby_string = []
+                for x in orderby_expression:
+                    if " DESC" in str(x):
+                        orderby_string.append("~" + str(x).replace('"', "").replace(" DESC", "").replace("`", ""))
+                    else:
+                        orderby_string.append("%s.%s" % (x.tablename, x.name))
+            except:
+                orderby_string = orderby_expression
+
+        return dict(orderby_string=orderby_string, orderby_expression=orderby_expression)
+
+    def iter_pages(self, left_edge=1, right_edge=1, left_current=1, right_current=2):
+        """
+        generator used to determine which page numbers should be shown on the Grid pager
+
+        :param left_edge: # of pages to show on the left
+        :param right_edge: # of pages to show on the right
+        :param left_current: # of pages to add to the left of current page
+        :param right_current: # of fpages to add to the right of current page
+        """
+        current = 1
+        last_blank = False
+        while current <= self.number_of_pages:
+            #  current page
+            if current == self.current_page_number:
+                last_blank = False
+                yield current
+
+            #  left edge
+            elif current <= left_edge:
+                last_blank = False
+                yield current
+
+            #  right edge
+            elif current > self.number_of_pages - right_edge:
+                last_blank = False
+                yield current
+
+            #  left of current
+            elif self.current_page_number - left_current <= current < self.current_page_number:
+                last_blank = False
+                yield current
+
+            #  right of current
+            elif self.current_page_number < current <= self.current_page_number + right_current:
+                last_blank = False
+                yield current
+            else:
+                if not last_blank:
+                    yield None
+                    last_blank = True
+
+            current += 1
+
+    def render_action_button(self,
+                             url,
+                             button_text,
+                             icon,
+                             icon_size="small",
+                             additional_classes=None,
+                             message=None,
+                             row_id=None,
+                             grid_key=None,
+                             page=None):
+        separator = "?"
+        if row_id:
+            url += "/%s" % row_id
+        if grid_key:
+            url += "%sgrid_key=%s" % (separator, grid_key)
+            separator = "&"
+        if page:
+            url += "%spage=%s" % (separator, page)
+
+        classes = self.grid_class_style("action_button").get("_class", "")
+        if additional_classes:
+            if isinstance(additional_classes, list):
+                classes += " ".join(additional_classes)
+            else:
+                classes += " " + additional_classes
+
+        if self.include_action_button_text:
+            _a = A(_href=url,
+                   _class=classes,
+                   _message=message,
+                   _title=button_text,
+                   _style=self.grid_class_style("action_button").get("_style", ""))
+            _span = SPAN(_class="icon is-%s" % icon_size)
+            _span.append(I(_class="fa %s" % icon))
+            _a.append(_span)
+            _a.append(SPAN(' ' + button_text))
+        else:
+            _a = A(I(_class="fa %s" % icon),
+                   _href=url,
+                   _class=classes,
+                   _message=message,
+                   _title=button_text,
+                   _style=self.grid_class_style("action_button").get("_style", ""))
+
+        return _a
+
+    def render_search_form(self):
+        _sf = DIV(**self.grid_class_style("search_form"))
+        _sf.append(self.search_form.custom["begin"])
+        _tr = TR(**self.grid_class_style("search_form_tr"))
+        for field in self.search_form.table:
+            _td = TD(**self.grid_class_style("search_form_td"))
+            if field.type == "boolean":
+                _td.append(self.search_form.custom["widgets"][field.name])
+                _td.append(field.label)
+            else:
+                _td.append(self.search_form.custom["widgets"][field.name])
+            if field.name in self.search_form.custom["errors"] and \
+                    self.search_form.custom["errors"][field.name]:
+                _td.append(DIV(self.search_form.custom["errors"][field.name], _style="color:#ff0000"))
+            _tr.append(_td)
+        if self.search_button_text:
+            _tr.append(TD(INPUT(_class="button", _type="submit", _value=self.search_button_text),
+                          **self.grid_class_style("search_form_td")))
+        else:
+            _tr.append(TD(self.search_form.custom["submit"],
+                          **self.grid_class_style("search_form_td")))
+        _sf.append(TABLE(_tr, **self.grid_class_style("search_form_table")))
+        for hidden_widget in self.search_form.custom["hidden_widgets"].keys():
+            _sf.append(self.search_form.custom["hidden_widgets"][hidden_widget])
+
+        _sf.append(self.search_form.custom["end"])
+
+        return _sf
+
+    def render_table_header(self):
+        _thead = THEAD(**self.grid_class_style("thead"))
+        for index, field in enumerate(self.fields):
+            if field.name not in [x.name for x in self.hidden_fields] and (
+                    field.name != "id" or (field.name == "id" and self.show_id)):
+                try:
+                    heading = self.headings[index]
+                except:
+                    if field.table == self.tablename:
+                        heading = field.label
+                    else:
+                        heading = str(field.table)
+                #  add the sort order query parm
+                sort_query_parms = dict(self.query_parms)
+                sort_query_parms["sort"] = index
+                current_sort_dir = "asc"
+
+                if "%s.%s" % (field.tablename, field.name) in self.storage_values["orderby"]:
+                    sort_query_parms["sort"] = -index
+                    _h = A(heading.replace("_", " ").upper(),
+                           _href=URL(self.endpoint, vars=sort_query_parms))
+                    _h.append(SPAN(I(_class="fas fa-sort-up"), _class="is-pulled-right"))
+                elif "~%s.%s" % (field.tablename, field.name) in self.storage_values["orderby"]:
+                    _h = A(heading.replace("_", " ").upper(),
+                           _href=URL(self.endpoint, vars=sort_query_parms))
+                    _h.append(SPAN(I(_class="fas fa-sort-down"), _class="is-pulled-right"))
+                else:
+                    _h = A(heading.replace("_", " ").upper(),
+                           _href=URL(self.endpoint, vars=sort_query_parms))
+
+                if "sort_dir" in sort_query_parms:
+                    current_sort_dir = sort_query_parms["sort_dir"]
+                    del sort_query_parms["sort_dir"]
+                if index == int(request.query.get("sort", 0)) and current_sort_dir == "asc":
+                    sort_query_parms["sort_dir"] = "desc"
+
+                _th = TH(**self.grid_class_style("th"))
+                _th.append(_h)
+
+                _thead.append(_th)
+
+        if self.details or self.editable or self.deletable:
+            _thead.append(TH("ACTIONS", **self.grid_class_style("action_column_header")))
+
+        return _thead
+
+    def render_field(self, row, field):
+        """
+        Render a field
+
+        if only 1 table in the query, the no table name needed when getting the row value - however, if there
+        are multiple tables in the query (self.use_tablename == True) then we need to use the tablename as well
+        when accessing the value in the row object
+
+        the row object sent in can take
+        :param row:
+        :param field:
+        :return:
+        """
+        if self.use_tablename:
+            field_value = row[field.tablename][field.name]
+        else:
+            field_value = row[field.name]
+        if field.type == "date":
+            _td = TD(XML("<script>\ndocument.write("
+                         "moment(\"%s\").format('L'));\n</script>" % field_value) \
+                         if row and field and field_value else "",
+                     **self.grid_class_style("td_date"))
+        elif field.type == "boolean":
+            #  True/False - only show on True, blank for False
+            if row and field and field_value:
+                _td = TD(**self.grid_class_style("td_boolean"))
+                _span = SPAN(_class="icon is-small")
+                _span.append(I(_class="fas fa-check-circle"))
+                _td.append(_span)
+            else:
+                _td = TD(XML("&nbsp;"), **self.grid_class_style("td_boolean"))
+        else:
+            _td = TD(field_value if row and field and field_value else "",
+                     **self.grid_class_style("td"))
+
+        return _td
+
+    def render_table_body(self):
+        _tbody = TBODY(**self.grid_class_style("tbody"))
+        for row in self.rows:
+            #  find the row id - there may be nested tables....
+            if self.use_tablename:
+                row_id = row[self.tablename]["id"]
+            else:
+                row_id = row["id"]
+
+            _tr = TR(**self.grid_class_style("td"))
+            #  add all the fields to the row
+            for field in self.fields:
+                if field.name not in [x.name for x in self.hidden_fields] and \
+                        (field.name != "id" or (field.name == "id" and self.show_id)):
+                    _tr.append(self.render_field(row, field))
+
+            _td = None
+
+            #  add the action buttons
+            if (self.details and self.details != "") or \
+                    (self.editable and self.editable != "") or \
+                    (self.deletable and self.deletable != ""):
+                _td = TD(**self.grid_class_style("action_column_cell"))
+                if self.pre_action_buttons:
+                    for btn in self.pre_action_buttons:
+                        _td.append(self.render_action_button(btn.url,
+                                                             btn.text,
+                                                             btn.icon,
+                                                             additional_classes=btn.additional_classes,
+                                                             message=btn.message,
+                                                             row_id=row_id if btn.append_id else None,
+                                                             grid_key=self.grid_key
+                                                             if btn.append_grid_key else None,
+                                                             page=self.current_page_number
+                                                             if btn.append_page else None))
+                if self.details and self.details != "":
+                    if isinstance(self.details, str):
+                        details_url = self.details
+                    else:
+                        details_url = URL(self.endpoint) + "/details/%s" % self.tablename
+                    details_url += "/%s?grid_key=%s&page=%s" % (row_id,
+                                                                self.grid_key,
+                                                                self.current_page_number)
+                    _td.append(self.render_action_button(details_url, "Details", "fa-id-card"))
+
+                if self.editable and self.editable != "":
+                    if isinstance(self.editable, str):
+                        edit_url = self.editable
+                    else:
+                        edit_url = URL(self.endpoint) + "/edit/%s" % self.tablename
+                    _td.append(self.render_action_button(edit_url, "Edit", "fa-edit", row_id=row_id,
+                                                         grid_key=self.grid_key,
+                                                         page=self.current_page_number))
+
+                if self.deletable and self.deletable != "":
+                    if isinstance(self.deletable, str):
+                        delete_url = self.deletable
+                    else:
+                        delete_url = URL(self.endpoint) + "/delete/%s" % self.tablename
+                    delete_url += "/%s?grid_key=%s" % (row_id, self.grid_key)
+                    _td.append(self.render_action_button(delete_url, "Delete", "fa-trash",
+                                                         additional_classes="confirmation",
+                                                         message="Delete record"))
+                if self.post_action_buttons:
+                    for btn in self.post_action_buttons:
+                        _td.append(self.render_action_button(btn.url,
+                                                             btn.text,
+                                                             btn.icon,
+                                                             additional_classes=btn.additional_classes,
+                                                             message=btn.message,
+                                                             row_id=row_id if btn.append_id else None,
+                                                             grid_key=self.grid_key
+                                                             if btn.append_grid_key else None,
+                                                             page=self.current_page_number
+                                                             if btn.append_page else None))
+                _tr.append(_td)
+            _tbody.append(_tr)
+
+        return _tbody
+
+    def render_table_pager(self):
+        _pager = DIV(**self.grid_class_style("pager"))
+        for page_number in self.iter_pages():
+            if page_number:
+                pager_query_parms = dict(self.query_parms)
+                pager_query_parms["page"] = page_number
+                pager_query_parms["grid_key"] = self.grid_key
+                if self.current_page_number == page_number:
+                    _pager.append(A(page_number, **self.grid_class_style("active_page_button"),
+                                    _href=URL(self.endpoint, vars=pager_query_parms)))
+                else:
+                    _pager.append(A(page_number, **self.grid_class_style("inactive_page_button"),
+                                    _href=URL(self.endpoint, vars=pager_query_parms)))
+            else:
+                _pager.append("...")
+
+        return _pager
+
+    def render_table(self):
+        _html = DIV(**self.grid_class_style("wrapper"))
+        _top_div = DIV(**self.grid_class_style("top_div"))
+
+        #  build the New button if needed
+        if self.create and self.create != "":
+            if isinstance(self.create, str):
+                create_url = self.create
+            else:
+                create_url = URL(self.endpoint) + "/new/%s/0" % self.tablename
+
+            _top_div.append(self.render_action_button(create_url, "New", "fa-plus", icon_size="normal"))
+
+        #  build the search form if provided
+        if self.search_form:
+            _top_div.append(self.render_search_form())
+
+        _html.append(_top_div)
+
+        _table = TABLE(**self.grid_class_style("table"))
+
+        # build the header
+        _table.append(self.render_table_header())
+
+        #  include moment.js to present dates in the proper locale
+        _html.append(XML('<script src="https://momentjs.com/downloads/moment.js"></script>'))
+
+        #  build the rows
+        _table.append(self.render_table_body())
+
+        #  add the table to the html
+        _html.append(_table)
+
+        #  add the row counter information
+        _footer = DIV(**self.grid_class_style("table_footer"))
+        _row_count = DIV(**self.grid_class_style("row_count"))
+        _row_count.append(
+            P("Displaying rows %s thru %s of %s" % (self.page_start + 1 if self.number_of_pages > 1 else 1,
+                                                    self.page_end if self.page_end < self.total_number_of_rows else
+                                                    self.total_number_of_rows,
+                                                    self.total_number_of_rows)))
+        _footer.append(_row_count)
+
+        #  build the pager
+        if self.number_of_pages > 1:
+            _footer.append(self.render_table_pager())
+
+        _html.append(_footer)
+
+        if self.deletable:
+            _html.append((XML("""
+                <script type="text/javascript">
+                $('.confirmation').on('click', function () {
+                    return confirm($(this).attr('message') +' - Are you sure?');
+                });
+                </script>
+            """)))
+
+        return XML(_html)
+
+    def render(self):
+        """
+        build the query table
+
+        :return: html representation of the table or the py4web Form object
+        """
+        if self.action == "select":
+            return self.render_table()
+        elif self.action in ["new", "details", "edit"]:
+            return self.form
+
+    def data(self):
+        """
+        get the record that is being edited / displayed
+
+        :return: DAL record of the record being edited
+        """
+        return self.db[self.tablename](self.record_id) if self.tablename and self.record_id else None
+
+
+def GridClassStyle(element_name):
+    classes = {"wrapper": "",
+               "top_div": "",
+               "search_form": "",
+               "search_form_table": "",
+               "search_form_tr": "",
+               "search_form_td": "",
+               "table": "",
+               "thead": "",
+               "th": "",
+               "action_column_header": "",
+               "tbody": "",
+               "tr": "",
+               "td": "",
+               "td_date": "",
+               "td_boolean": "",
+               "action_column_cell": "",
+               "action_button": "",
+               "row_count": "",
+               "pager": "",
+               "active_page_button": "",
+               "inactive_page_button": ""}
+
+    styles = {"wrapper": "",
+              "top_div": "border-bottom: 0;",
+              "search_form": "float: right; border-bottom: 0; padding-bottom: 0; margin-bottom: 0;",
+              "search_form_table": "margin-bottom: 0;",
+              "search_form_tr": "border-bottom: 0; padding-bottom: 0;",
+              "search_form_td": "border-bottom: 0; padding-bottom: 0;",
+              "table": "",
+              "thead": "",
+              "th": "text-align: center;",
+              "action_column_header": "text-align: center; width: 1px; white-space: nowrap;",
+              "tbody": "",
+              "tr": "",
+              "td": "vertical-align: middle;",
+              "td_date": "",
+              "td_boolean": "",
+              "action_column_cell": "text-align: center; width: 1px; white-space: nowrap; vertical-align: middle;",
+              "action_button": ("border: thin solid lightgray; "
+                                "color: black; "
+                                "cursor: pointer; "
+                                "display: inline-block; "
+                                "font-size: .75rem;"
+                                "min-width: 75px; "
+                                "padding-right: 1rem; "
+                                "padding-left: 1rem; "
+                                "text-align: center; "
+                                "text-decoration: none; "
+                                "vertical-align: middle; "
+                                "white-space: nowrap;"),
+              "table_footer": "line-height: 1.8rem; padding-bottom: 20px;",
+              "row_count": "float: left; line-height: 1.8rem;",
+              "pager": "float: right; line-height: 1.8rem;",
+              "active_page_button": "background-color: #0074d9; "
+                                    "color: white; "
+                                    "cursor: pointer; "
+                                    "display: inline-block; "
+                                    "font-size: .75rem;"
+                                    "padding-right: .75rem; "
+                                    "padding-left: .75rem; "
+                                    "margin-right: .5rem; "
+                                    "text-align: center; "
+                                    "text-decoration: none; "
+                                    "vertical-align: middle; "
+                                    "white-space: nowrap;",
+              "inactive_page_button": "background-color: white; "
+                                      "border: thin solid #0074d9; "
+                                      "color: #0074d9; "
+                                      "cursor: pointer; "
+                                      "display: inline-block; "
+                                      "font-size: .75rem;"
+                                      "padding-right: .75rem; "
+                                      "padding-left: .75rem; "
+                                      "margin-right: .25rem; "
+                                      "text-align: center; "
+                                      "text-decoration: none; "
+                                      "vertical-align: middle; "
+                                      "white-space: nowrap;"}
+
+    classes_styles = {}
+    if classes.get(element_name) and classes.get(element_name) != "":
+        classes_styles["_class"] = classes.get(element_name)
+
+    if styles.get(element_name) and styles.get(element_name) != "":
+        classes_styles["_style"] = styles.get(element_name)
+
+    return classes_styles
+
+
+def GridClassStyleBulma(element_name):
+    classes = {"wrapper": "field",
+               "top_div": "pb-2",
+               "search_form": "is-pulled-right pb-2",
+               "search_form_table": "",
+               "search_form_tr": "",
+               "search_form_td": "pr-1",
+               "table": "table is-bordered is-striped is-hoverable is-fullwidth",
+               "thead": "",
+               "th": "",
+               "action_column_header": "has-text-centered is-narrow",
+               "tbody": "",
+               "tr": "",
+               "td": "",
+               "td_date": "has-text-centered",
+               "td_boolean": "has-text-centered",
+               "action_column_cell": "has-text-centered is-narrow",
+               "action_button": "button is-small",
+               "row_count": "is-pulled-left",
+               "pager": "is-pulled-right",
+               "active_page_button": "button is-primary is-small",
+               "inactive_page_button": "button is-small"}
+
+    styles = {"wrapper": "",
+              "top_div": "",
+              "search_form": "",
+              "search_form_table": "",
+              "search_form_tr": "",
+              "search_form_td": "",
+              "table": "",
+              "thead": "",
+              "th": "",
+              "action_column_header": "",
+              "tbody": "",
+              "tr": "",
+              "td": "",
+              "td_date": "",
+              "td_boolean": "",
+              "action_column_cell": "",
+              "action_button": "",
+              "row_count": "",
+              "pager": "",
+              "active_page_button": "",
+              "inactive_page_button": ""}
+
+    classes_styles = {}
+    if classes.get(element_name) and classes.get(element_name) != "":
+        classes_styles["_class"] = classes.get(element_name)
+
+    if styles.get(element_name) and styles.get(element_name) != "":
+        classes_styles["_style"] = styles.get(element_name)
+
+    return classes_styles
+
+
+class ActionButton:
+    def __init__(self,
+                 url,
+                 text,
+                 icon="fa-calendar",
+                 additional_classes=None,
+                 message=None,
+                 append_id=False,
+                 append_grid_key=False,
+                 append_page=False):
+        self.url = url
+        self.text = text
+        self.icon = icon
+        self.additional_classes = additional_classes
+        self.message = message
+        self.append_id = append_id
+        self.append_grid_key = append_grid_key
+        self.append_page = append_page

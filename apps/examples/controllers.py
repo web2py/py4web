@@ -2,10 +2,12 @@ import os
 from py4web import action, request, abort, redirect, URL, Field, HTTP
 from yatl.helpers import A
 from py4web.utils.form import Form, FormStyleBulma
-from py4web.utils.grid import Grid
+from py4web.utils.grid import Grid, get_grid_key, get_storage_value, ActionButton, GridClassStyle, GridClassStyleBulma
+from py4web.utils.param import Param
 from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1, HTML, BODY, A, DIV
+from . settings import SESSION_SECRET_KEY
 
 from .common import db, session, T, flash, cache, authenticated, unauthenticated, auth
 
@@ -117,22 +119,60 @@ def custom_form(id=None):
     rows = db(db.person).select()
     return dict(form=form, rows=rows)
 
+
 @action("tagsinput_form", method=["GET", "POST"])
 @action.uses("tagsinput_form.html", session)
 def tagsinput_form():
     form = Form([Field('colors', 'list:string')], keep_values=True)
     return dict(form=form)
 
+
 # exposed as /examples/htmlgrid
-@action("html_grid", method=["GET", "POST"])
-@action.uses("js_grid.html")
-def example_html_grid():
-    grid = Grid(db.superhero)
-    grid.policy.set("person")
-    grid.policy.set("superpower")
-    grid.policy.set("tag")
-    grid.denormalize["real_identity"] = ["name"]
-    grid.denormalize["superhero.tag.superpower"] = ["description"]
+@action('html_grid', method=['POST', 'GET'])
+@action('html_grid/<action>/<tablename>/<record_id>', method=['POST', 'GET'])
+@action.uses(session, db, auth, 'html_grid.html')
+def example_html_grid(action=None, tablename=None, record_id=None):
+    #  GRID_COMMON would normally be defined in common.py, imported into
+    #  controllers and used for all grids in the app
+    GRID_COMMON = Param(db=db,
+                        secret=SESSION_SECRET_KEY,
+                        rows_per_page=5,
+                        grid_key_max_age=3600,
+                        search_button_text='Filter',
+                        include_action_button_text=True,
+                        formstyle=FormStyleBulma,
+                        grid_class_style=GridClassStyle)
+    #  check session to see if we've saved a default value
+    grid_key = get_grid_key()
+    search_filter = get_storage_value(grid_key, 'search_filter', common_settings=GRID_COMMON)
+
+    search_form = Form([Field('search_filter',
+                              length=50,
+                              default=search_filter,
+                              _placeholder='...search text...',
+                              _title='Enter search text and click on Filter')],
+                       keep_values=True, formstyle=FormStyleBulma, )
+
+    if search_form.accepted:
+        search_filter = search_form.vars['search_filter']
+
+    queries = [(db.superhero.id > 0)]
+    if search_filter:
+        queries.append(db.superhero.name.contains(search_filter))
+
+    orderby = [db.superhero.name]
+
+    grid = Grid(GRID_COMMON,
+                queries,
+                search_form=search_form,
+                storage_values=dict(search_filter=search_filter),
+                orderby=orderby,
+                create=True,
+                details=True,
+                editable=True,
+                deletable=True,
+                grid_key=grid_key)
+
     return dict(grid=grid)
 
 
