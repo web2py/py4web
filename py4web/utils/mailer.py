@@ -37,11 +37,11 @@ except ImportError:
     pyme = None
 
 
-class Settings(object):
+class Settings:
     pass
 
 
-class Mailer(object):
+class Mailer:
     """
     Class for configuring and sending emails with alternative text / html
     body, multiple attachments and encryption support

@@ -4,6 +4,7 @@ import time
 import uuid
 import copy
 from py4web import request, response
+from py4web.utils.param import Param
 from pydal.validators import Validator
 
 from yatl.helpers import (
@@ -385,6 +386,10 @@ class Form(object):
         signing_info=None,
         submit_value="Submit",
     ):
+        self.param = Param(
+            formstyle=formstyle, hidden=hidden, submit_value=submit_value, sidecar=[],
+        )
+
         if isinstance(table, list):
             dbio = False
             # Mimic a table from a list of fields without calling define_table
@@ -398,27 +403,27 @@ class Form(object):
         else:
             self.record = record
 
+        # computed from input and not changed
         self.table = table
-        self.readonly = readonly
         self.deletable = deletable and not readonly and self.record
-        self.formstyle = formstyle
         self.dbio = dbio
         self.keep_values = True if keep_values or self.record else False
+        self.form_name = form_name or table._tablename
+        self.csrf_session = csrf_session
+        self.signing_info = signing_info
+        self.validation = validation
+        self.lifespan = lifespan
+
+        # initialized and can change
         self.vars = {}
         self.errors = {}
+        self.readonly = readonly
         self.submitted = False
         self.deleted = False
         self.accepted = False
-        self.form_name = form_name or table._tablename
-        self.hidden = hidden
         self.formkey = None
         self.cached_helper = None
-        self.csrf_session = csrf_session
-        self.lifespan = lifespan
-        self.signing_info = signing_info
-        self.submit_value = submit_value
         self.action = None
-        self.sidecar = []
 
         if readonly or request.method == "GET":
             if self.record:
@@ -551,15 +556,15 @@ class Form(object):
         if self.accepted:
             self.clear()
         if not self.cached_helper:
-            helper = self.formstyle(
+            helper = self.param.formstyle(
                 self.table, self.vars, self.errors, self.readonly, self.deletable
             )
-            for item in self.sidecar:
+            for item in self.param.sidecar:
                 helper["form"][-1][-1].append(item)
             if self.action:
                 helper["_action"] = self.action
-            if self.submit_value:
-                helper["controls"]["submit"]["_value"] = self.submit_value
+            if self.param.submit_value:
+                helper["controls"]["submit"]["_value"] = self.param.submit_value
             if self.form_name:
                 helper["controls"]["hidden_widgets"]["formname"] = INPUT(
                     _type="hidden", _name="_formname", _value=self.form_name
@@ -570,9 +575,9 @@ class Form(object):
                     _type="hidden", _name="_formkey", _value=self.formkey
                 )
                 helper["form"].append(helper["controls"]["hidden_widgets"]["formkey"])
-            for key in self.hidden or {}:
+            for key in self.param.hidden or {}:
                 helper["controls"]["hidden_widgets"][key] = INPUT(
-                    _type="hidden", _name=key, _value=self.hidden[key]
+                    _type="hidden", _name=key, _value=self.param.hidden[key]
                 )
                 helper["form"].append(helper["controls"]["hidden_widgets"][key])
             helper["controls"]["begin"] = XML(
