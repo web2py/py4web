@@ -77,7 +77,7 @@ elif settings.SESSION_TYPE == "database":
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
 auth = Auth(session, db, password_complexity=settings.PASSWORD_COMPLEXITY)
-auth.registration_requires_confirmation = settings.VERIFY_EMAIL
+auth.param.registration_requires_confirmation = settings.VERIFY_EMAIL
 
 
 if settings.SMTP_SERVER:
