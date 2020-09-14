@@ -2,12 +2,12 @@ import os
 from py4web import action, request, abort, redirect, URL, Field, HTTP
 from yatl.helpers import A
 from py4web.utils.form import Form, FormStyleBulma
-from py4web.utils.grid import Grid, get_grid_key, get_storage_value, ActionButton, GridClassStyle, GridClassStyleBulma
+from py4web.utils.grid import Grid, get_storage_key, get_storage_value, GridDefaults, GridClassStyle
 from py4web.utils.param import Param
 from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1, HTML, BODY, A, DIV
-from . settings import SESSION_SECRET_KEY
+from .settings import SESSION_SECRET_KEY
 
 from .common import db, session, T, flash, cache, authenticated, unauthenticated, auth
 
@@ -36,6 +36,7 @@ def page_with_template():
 def page_with_errorr():
     1 / 0
 
+
 @action("page_with_raise")
 def page_with_raise():
     raise HTTP(400)
@@ -52,7 +53,7 @@ def target():
 
 
 @action("page_with_parameters/<x>/<y>/<z>")
-def page_with_parameters(x,y,z):
+def page_with_parameters(x, y, z):
     return repr({"x": x, "y": y, "z": z})
 
 
@@ -60,13 +61,15 @@ def page_with_parameters(x,y,z):
 def page_with_query():
     return repr(dict(request.query))
 
+
 @action("page_with_postback", method=['GET', 'POST'])
 def page_with_postback():
     return ('<html><body><pre>%s</pre>' +
             '<form method="POST" action="%s" enctype="multipart/form-data">' +
             '<input type="hidden" name="data" value="dummy"/>' +
             '<button>Click</button></form></body></html') % (
-            dict(request.forms), URL('page_with_postback'))
+               dict(request.forms), URL('page_with_postback'))
+
 
 @action("session/counter")
 @action.uses(session, 'session_counter.html')
@@ -128,42 +131,40 @@ def tagsinput_form():
 
 
 # exposed as /examples/htmlgrid
-@action('html_grid', method=['POST', 'GET'])
-@action('html_grid/<action>/<tablename>/<record_id>', method=['POST', 'GET'])
-@action.uses(session, db, auth, 'html_grid.html')
-def example_html_grid(action=None, tablename=None, record_id=None):
+@action("html_grid", method=["POST", "GET"])
+@action("html_grid/<action>/<tablename>/<record_id>", method=["POST", "GET"])
+@action.uses(session, db, auth, "html_grid.html")
+def example_html_grid(**kwargs):
     #  GRID_COMMON would normally be defined in common.py, imported into
     #  controllers and used for all grids in the app
-    GRID_COMMON = Param(db=db,
-                        secret=SESSION_SECRET_KEY,
-                        rows_per_page=5,
-                        grid_key_max_age=3600,
-                        search_button_text='Filter',
-                        include_action_button_text=True,
-                        formstyle=FormStyleBulma,
-                        grid_class_style=GridClassStyle)
+    GRID_COMMON = GridDefaults(db=db,
+                               secret=SESSION_SECRET_KEY,
+                               rows_per_page=5)
     #  check session to see if we've saved a default value
-    grid_key = get_grid_key()
-    search_filter = get_storage_value(grid_key, 'search_filter', common_settings=GRID_COMMON)
+    storage_key = get_storage_key()
+    search_filter = get_storage_value(storage_key, "search_filter", common_settings=GRID_COMMON)
 
-    search_form = Form([Field('search_filter',
+    search_form = Form([Field("search_filter",
                               length=50,
                               default=search_filter,
-                              _placeholder='...search text...',
-                              _title='Enter search text and click on Filter')],
+                              _placeholder="...search text...",
+                              _title="Enter search text and click on %s" % GRID_COMMON.param.search_button_text)],
                        keep_values=True, formstyle=FormStyleBulma, )
 
     if search_form.accepted:
-        search_filter = search_form.vars['search_filter']
+        search_filter = search_form.vars["search_filter"]
 
     queries = [(db.superhero.id > 0)]
     if search_filter:
-        queries.append(db.superhero.name.contains(search_filter))
+        queries.append((db.superhero.name.contains(search_filter)) |
+                       (db.person.name.contains(search_filter)))
 
     orderby = [db.superhero.name]
 
     grid = Grid(GRID_COMMON,
                 queries,
+                fields=[db.superhero.name, db.person.name],
+                left=db.person.on(db.superhero.real_identity==db.person.id),
                 search_form=search_form,
                 storage_values=dict(search_filter=search_filter),
                 orderby=orderby,
@@ -171,7 +172,7 @@ def example_html_grid(action=None, tablename=None, record_id=None):
                 details=True,
                 editable=True,
                 deletable=True,
-                grid_key=grid_key)
+                storage_key=storage_key)
 
     return dict(grid=grid)
 

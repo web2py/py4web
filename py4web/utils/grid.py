@@ -4,6 +4,7 @@ from yatl.helpers import DIV, TABLE, TBODY, TR, TD, TH, A, SPAN, I, THEAD, P, TA
 from pydal.objects import FieldVirtual
 from py4web import request, URL, response, redirect
 from py4web.utils.form import Form, FormStyleDefault
+from py4web.utils.param import Param
 import uuid
 import json
 
@@ -11,46 +12,46 @@ NAV = TAG.nav
 HEADER = TAG.header
 
 
-def get_grid_key():
+def get_storage_key():
     """
-    if "grid_key" specified in the query_parms, retrieve it and use that grid_key.  else,
+    if "storage_key" specified in the query_parms, retrieve it and use that storage_key.  else,
     create a new one
 
-    :return: user grid_key uuid
+    :return: user storage_key uuid
     """
-    return request.query.get("grid_key", uuid.uuid4())
+    return request.query.get("storage_key", uuid.uuid4())
 
 
-def get_storage_value(grid_key, filter_name, common_settings, default_value=None):
+def get_storage_value(storage_key, filter_name, common_settings, default_value=None):
     """
     retrieve a value from storage
 
     first check the query parms to see if one is passed
 
-    if not in query parms check the user grid_key cookie for the value
+    if not in query parms check the user storage_key cookie for the value
 
-    :param grid_key: user grid_key
+    :param storage_key: user storage_key
     :param filter_name: name of the filter value you want to retrieve
     :common_settings: dict containing a key "secret" that will be used to encrypt the cookie
     :param default_value: the default value if value hasn't been stored
-    :return: the value of the filter that was either in the query parms or user grid_key cookie
+    :return: the value of the filter that was either in the query parms or user storage_key cookie
     """
     storage_value = request.query.get(filter_name, default_value)
 
-    if storage_value == default_value and grid_key and grid_key in request.cookies:
-        cookie = json.loads(request.get_cookie(grid_key,
+    if storage_value == default_value and storage_key and storage_key in request.cookies:
+        cookie = json.loads(request.get_cookie(storage_key,
                                                default={},
-                                               secret=common_settings["secret"]))
+                                               secret=common_settings.param.secret))
         storage_value = cookie.get(filter_name, default_value)
 
     return storage_value
 
 
-def set_storage_values(grid_key, values_dict, secret, max_age=3600):
-    response.set_cookie(str(grid_key),
+def set_storage_values(storage_key, values_dict, secret, token_longevity=3600):
+    response.set_cookie(str(storage_key),
                         json.dumps(values_dict),
                         secret=secret,
-                        max_age=max_age)
+                        max_age=token_longevity)
 
 
 def get_common_setting(setting, common_settings, default_value=None):
@@ -102,7 +103,7 @@ class Grid:
                  editable=False,
                  deletable=False,
                  requires=None,
-                 grid_key=None,
+                 storage_key=None,
                  pre_action_buttons=None,
                  post_action_buttons=None):
         """
@@ -123,18 +124,18 @@ class Grid:
         :param deletable: URL to redirect to for deleting records - set to False to not display the button
         :param requires: dict of fields and their 'requires' parm for building edit pages - dict key should be
                          tablename.fieldname
-        :param grid_key: id of the cookie containing saved values
+        :param storage_key: id of the cookie containing saved values
         :param pre_action_buttons: list of action_button instances to include before the standard action buttons
         :param post_action_buttons: list of action_button instances to include after the standard action buttons
         """
-        self.db = common_settings["db"]
-        self.secret = common_settings["secret"]
-        self.rows_per_page = get_common_setting("rows_per_page", common_settings, 15)
-        self.grid_key_max_age = get_common_setting("grid_key_max_age", common_settings, 3600)
-        self.include_action_button_text = get_common_setting("include_action_button_text", common_settings, True)
-        self.search_button_text = get_common_setting("search_button_text", common_settings, "Filter")
-        self.formstyle = get_common_setting("formstyle", common_settings, FormStyleDefault)
-        self.grid_class_style = get_common_setting("grid_class_style", common_settings, GridClassStyle)
+        self.db = common_settings.param.db
+        self.secret = common_settings.param.secret
+        self.token_longevity = common_settings.param.token_longevity
+        self.rows_per_page = common_settings.param.rows_per_page
+        self.include_action_button_text = common_settings.param.include_action_button_text
+        self.search_button_text = common_settings.param.search_button_text
+        self.formstyle = common_settings.param.formstyle
+        self.grid_class_style = common_settings.param.grid_class_style
 
         self.query_parms = request.params
         self.endpoint = parse_route(request)
@@ -192,12 +193,12 @@ class Grid:
                                  formstyle=self.formstyle)
                 if self.form.accepted:
                     page = request.query.get("page", 1)
-                    redirect(URL(self.endpoint, vars=dict(grid_key=request.query.get("grid_key"),
+                    redirect(URL(self.endpoint, vars=dict(storage_key=request.query.get("storage_key"),
                                                           page=page)))
 
             if request.url_args["action"] == "delete":
                 self.db(self.db[self.tablename].id == self.record_id).delete()
-                redirect(URL(self.endpoint, vars=dict(grid_key=request.query.get("grid_key"))))
+                redirect(URL(self.endpoint, vars=dict(storage_key=request.query.get("storage_key"))))
 
         else:
             self.action = "select"
@@ -230,7 +231,7 @@ class Grid:
                 else:
                     self.headings = [headings]
 
-            sig_page_number = json.loads(request.query.get(grid_key, "{}")).get("page", 1)
+            sig_page_number = json.loads(request.query.get(storage_key, "{}")).get("page", 1)
             current_page_number = request.query.get("page", sig_page_number)
             self.current_page_number = current_page_number if isinstance(current_page_number, int) \
                 else int(current_page_number)
@@ -245,7 +246,7 @@ class Grid:
             sort_order = request.query.get("sort")
             if not sort_order:
                 #  see if there is a stored orderby
-                sort_order = get_storage_value(grid_key, "orderby", common_settings)
+                sort_order = get_storage_value(storage_key, "orderby", common_settings)
                 if not sort_order:
                     #  use sort order passed in
                     sort_order = self.orderby
@@ -253,7 +254,7 @@ class Grid:
             orderby = self.decode_orderby(sort_order)
             parms["orderby"] = orderby["orderby_expression"]
             storage_values["orderby"] = orderby["orderby_string"]
-            if orderby["orderby_string"] != get_storage_value(grid_key, "orderby", common_settings):
+            if orderby["orderby_string"] != get_storage_value(storage_key, "orderby", common_settings):
                 #  user clicked on a header to change sort order - reset page to 1
                 self.current_page_number = 1
 
@@ -287,14 +288,14 @@ class Grid:
             self.number_of_pages = self.total_number_of_rows // self.rows_per_page
             if self.total_number_of_rows % self.rows_per_page > 0:
                 self.number_of_pages += 1
-            self.grid_key = grid_key
+            self.storage_key = storage_key
 
             self.pre_action_buttons = pre_action_buttons
             self.post_action_buttons = post_action_buttons
 
             storage_values["page"] = self.current_page_number
 
-            set_storage_values(grid_key, storage_values, secret=common_settings["secret"])
+            set_storage_values(storage_key, storage_values, self.secret, self.token_longevity)
             self.storage_values = storage_values
 
     def decode_orderby(self, sort_order):
@@ -415,13 +416,13 @@ class Grid:
                              additional_classes=None,
                              message=None,
                              row_id=None,
-                             grid_key=None,
+                             storage_key=None,
                              page=None):
         separator = "?"
         if row_id:
             url += "/%s" % row_id
-        if grid_key:
-            url += "%sgrid_key=%s" % (separator, grid_key)
+        if storage_key:
+            url += "%sstorage_key=%s" % (separator, storage_key)
             separator = "&"
         if page:
             url += "%spage=%s" % (separator, page)
@@ -503,11 +504,11 @@ class Grid:
                     sort_query_parms["sort"] = -index
                     _h = A(heading.replace("_", " ").upper(),
                            _href=URL(self.endpoint, vars=sort_query_parms))
-                    _h.append(SPAN(I(_class="fas fa-sort-up"), _class="is-pulled-right"))
+                    _h.append(SPAN(I(_class="fas fa-sort-up"), **self.grid_class_style('sorter_icon')))
                 elif "~%s.%s" % (field.tablename, field.name) in self.storage_values["orderby"]:
                     _h = A(heading.replace("_", " ").upper(),
                            _href=URL(self.endpoint, vars=sort_query_parms))
-                    _h.append(SPAN(I(_class="fas fa-sort-down"), _class="is-pulled-right"))
+                    _h.append(SPAN(I(_class="fas fa-sort-down"), **self.grid_class_style('sorter_icon')))
                 else:
                     _h = A(heading.replace("_", " ").upper(),
                            _href=URL(self.endpoint, vars=sort_query_parms))
@@ -596,8 +597,8 @@ class Grid:
                                                              additional_classes=btn.additional_classes,
                                                              message=btn.message,
                                                              row_id=row_id if btn.append_id else None,
-                                                             grid_key=self.grid_key
-                                                             if btn.append_grid_key else None,
+                                                             storage_key=self.storage_key
+                                                             if btn.append_storage_key else None,
                                                              page=self.current_page_number
                                                              if btn.append_page else None))
                 if self.details and self.details != "":
@@ -605,8 +606,8 @@ class Grid:
                         details_url = self.details
                     else:
                         details_url = URL(self.endpoint) + "/details/%s" % self.tablename
-                    details_url += "/%s?grid_key=%s&page=%s" % (row_id,
-                                                                self.grid_key,
+                    details_url += "/%s?storage_key=%s&page=%s" % (row_id,
+                                                                self.storage_key,
                                                                 self.current_page_number)
                     _td.append(self.render_action_button(details_url, "Details", "fa-id-card"))
 
@@ -616,7 +617,7 @@ class Grid:
                     else:
                         edit_url = URL(self.endpoint) + "/edit/%s" % self.tablename
                     _td.append(self.render_action_button(edit_url, "Edit", "fa-edit", row_id=row_id,
-                                                         grid_key=self.grid_key,
+                                                         storage_key=self.storage_key,
                                                          page=self.current_page_number))
 
                 if self.deletable and self.deletable != "":
@@ -624,7 +625,7 @@ class Grid:
                         delete_url = self.deletable
                     else:
                         delete_url = URL(self.endpoint) + "/delete/%s" % self.tablename
-                    delete_url += "/%s?grid_key=%s" % (row_id, self.grid_key)
+                    delete_url += "/%s?storage_key=%s" % (row_id, self.storage_key)
                     _td.append(self.render_action_button(delete_url, "Delete", "fa-trash",
                                                          additional_classes="confirmation",
                                                          message="Delete record"))
@@ -636,8 +637,8 @@ class Grid:
                                                              additional_classes=btn.additional_classes,
                                                              message=btn.message,
                                                              row_id=row_id if btn.append_id else None,
-                                                             grid_key=self.grid_key
-                                                             if btn.append_grid_key else None,
+                                                             storage_key=self.storage_key
+                                                             if btn.append_storage_key else None,
                                                              page=self.current_page_number
                                                              if btn.append_page else None))
                 _tr.append(_td)
@@ -651,7 +652,7 @@ class Grid:
             if page_number:
                 pager_query_parms = dict(self.query_parms)
                 pager_query_parms["page"] = page_number
-                pager_query_parms["grid_key"] = self.grid_key
+                pager_query_parms["storage_key"] = self.storage_key
                 if self.current_page_number == page_number:
                     _pager.append(A(page_number, **self.grid_class_style("active_page_button"),
                                     _href=URL(self.endpoint, vars=pager_query_parms)))
@@ -753,6 +754,7 @@ def GridClassStyle(element_name):
                "table": "",
                "thead": "",
                "th": "",
+               "sorter_icon": "",
                "action_column_header": "",
                "tbody": "",
                "tr": "",
@@ -761,6 +763,7 @@ def GridClassStyle(element_name):
                "td_boolean": "",
                "action_column_cell": "",
                "action_button": "",
+               "table_footer": "",
                "row_count": "",
                "pager": "",
                "active_page_button": "",
@@ -775,6 +778,7 @@ def GridClassStyle(element_name):
               "table": "",
               "thead": "",
               "th": "text-align: center;",
+              "sorter_icon": "float: right;",
               "action_column_header": "text-align: center; width: 1px; white-space: nowrap;",
               "tbody": "",
               "tr": "",
@@ -798,13 +802,14 @@ def GridClassStyle(element_name):
               "row_count": "float: left; line-height: 1.8rem;",
               "pager": "float: right; line-height: 1.8rem;",
               "active_page_button": "background-color: #0074d9; "
+                                    "border: thin solid #0074d9; "
                                     "color: white; "
                                     "cursor: pointer; "
                                     "display: inline-block; "
                                     "font-size: .75rem;"
                                     "padding-right: .75rem; "
                                     "padding-left: .75rem; "
-                                    "margin-right: .5rem; "
+                                    "margin-right: .25rem; "
                                     "text-align: center; "
                                     "text-decoration: none; "
                                     "vertical-align: middle; "
@@ -843,6 +848,7 @@ def GridClassStyleBulma(element_name):
                "table": "table is-bordered is-striped is-hoverable is-fullwidth",
                "thead": "",
                "th": "",
+               "sorter_icon": "",
                "action_column_header": "has-text-centered is-narrow",
                "tbody": "",
                "tr": "",
@@ -851,6 +857,7 @@ def GridClassStyleBulma(element_name):
                "td_boolean": "has-text-centered",
                "action_column_cell": "has-text-centered is-narrow",
                "action_button": "button is-small",
+               "table_footer": "",
                "row_count": "is-pulled-left",
                "pager": "is-pulled-right",
                "active_page_button": "button is-primary is-small",
@@ -865,6 +872,7 @@ def GridClassStyleBulma(element_name):
               "table": "",
               "thead": "",
               "th": "",
+              "sorter_icon": "",
               "action_column_header": "",
               "tbody": "",
               "tr": "",
@@ -873,6 +881,7 @@ def GridClassStyleBulma(element_name):
               "td_boolean": "",
               "action_column_cell": "",
               "action_button": "",
+              "table_footer": "",
               "row_count": "",
               "pager": "",
               "active_page_button": "",
@@ -896,7 +905,7 @@ class ActionButton:
                  additional_classes=None,
                  message=None,
                  append_id=False,
-                 append_grid_key=False,
+                 append_storage_key=False,
                  append_page=False):
         self.url = url
         self.text = text
@@ -904,5 +913,25 @@ class ActionButton:
         self.additional_classes = additional_classes
         self.message = message
         self.append_id = append_id
-        self.append_grid_key = append_grid_key
+        self.append_storage_key = append_storage_key
         self.append_page = append_page
+
+
+class GridDefaults:
+    def __init__(self,
+                 db,
+                 secret,
+                 token_longevity=3600,
+                 rows_per_page=15,
+                 include_action_button_text=True,
+                 search_button_text="Filter",
+                 formstyle=FormStyleDefault,
+                 grid_class_style=GridClassStyle):
+        self.param = Param(db=db,
+                           secret=secret,
+                           token_longevity=token_longevity,
+                           rows_per_page=rows_per_page,
+                           include_action_button_text=include_action_button_text,
+                           search_button_text=search_button_text,
+                           formstyle=formstyle,
+                           grid_class_style=grid_class_style)
