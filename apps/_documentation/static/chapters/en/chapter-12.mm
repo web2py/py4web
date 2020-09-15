@@ -13,7 +13,7 @@ py4web comes with a Grid object providing simple grid and CRUD capabilities.
 - Grid dates in local format using moment.js
 - Checkboxes in grid for boolean fields
 
-#### Simple Example
+### Simple Example
 In this simple example we will make a grid over the superhero table.  Since there is a foreign key defined we will
 take advantage of the DAL `left` keyword to bring in the related values and allow sorting on them.
 
@@ -78,7 +78,7 @@ grid.html
 </div>
 ``
 
-#### Signature
+### Signature
 
 ``
 class Grid:
@@ -119,7 +119,7 @@ class Grid:
 - pre_action_buttons: list of action_button instances to include before the standard action buttons
 - post_action_buttons: list of action_button instances to include after the standard action buttons
 
-#### Grid Defaults
+### Grid Defaults
 
 ``
     def __init__(self,
@@ -144,7 +144,7 @@ The GridDefaults class allows you to set app-wide grid defaults that you can use
 - formstyle: py4web Form formstyle used to style your form when automatically building CRUD forms
 - grid_class_style: GridClassStyle object used to override defaults for styling your rendered grid.  Allows you to specify classes or styles to apply at certain points in the grid.
 
-#### Searching / Filtering
+### Searching / Filtering
 
 You can pass a py4web Form to the grid to be used as a search form.  You are responsible for taking the values from the search form and building the queries to pass to the Grid __init__ method.
 
@@ -153,7 +153,7 @@ The grid provides helper functions that allow you save/retrieve filter values be
 - set_storage_values
 - get_storage_value
 
-#### CRUD
+### CRUD
 
 The grid provide CRUD (create, read, update and delete) capabilities utilizing py4web Form.  This is disabled on the grid by default.
 
@@ -161,7 +161,7 @@ You can enable CRUD features by setting create/details/editable/deletable to Tru
 
 Additionally, you can provide a separate URL to the create/details/editable/deletable parameters to bypass the auto-generated CRUD pages and handle the detail pages yourself.
 
-#### Templates
+### Templates
 
 Use the following to render your grid or CRUD forms in your templates.
 
@@ -179,7 +179,7 @@ To allow for customizing CRUD form layout (like with web2py) you can use the fol
 [[form.custom["end"]
 ``
 
-When handling custom form layouts you need to know if you're displaying the grid or a form.  Use the following to decide
+When handling custom form layouts you need to know if you are displaying the grid or a form.  Use the following to decide
 ``
 [[if 'action' in request.url_args and request.url_args['action'] in ['details', 'edit']:]]
     #  Display the custom form
@@ -193,7 +193,7 @@ When handling custom form layouts you need to know if you're displaying the grid
 [[pass]]
 ``
 
-#### Customizing Style
+### Customizing Style
 
 You can provide your own formstyle or grid classes and style to grid.
 
@@ -356,14 +356,14 @@ def GridClassStyleBulma(element_name):
     return classes_styles
 ``
 
-#### Custom Action Buttons
+### Custom Action Buttons
 
 As with web2py, you can add additional buttons to each row in your grid.  You do this by providing pre_action_buttons or post_action_buttons to the Grid __init__ method.
 
 - pre_action_buttons - list of action_button instances to include before the standard action buttons
 - post_action_buttons - list of action_button instances to include after the standard action buttons
 
-#### Action Button Signature
+### Action Button Signature
 
 ``
 def __init__(self,
@@ -387,7 +387,7 @@ def __init__(self,
 
 Grid uses ActionButtons internally to generate the row buttons in the grid.  You can provide your own by specifying a list of ActionButtons in the pre_action_buttons and/or post_action_buttons parameter on the Grid __init__ method.
 
-#### Reference Fields
+### Reference Fields
 
 When displaying fields in a PyDAL table, you sometimes want to display a more descriptive field than a foreign key value.  There are a couple of ways to handle that with the py4web grid.
 
