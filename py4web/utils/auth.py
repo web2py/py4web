@@ -855,7 +855,7 @@ class DefaultAuthForms:
             form.accepted = not res.get("errors")
             form.errors = res.get("errors")
             if not form.errors:
-                self.auth.flash.set("User Rgistered")
+                self.auth.flash.set("User registered succesfully")
                 self._postprocessing("register", form, user)
         form.param.sidecar.append(
             A("Sign In", _href="../auth/login", _class="info", _role="button")
