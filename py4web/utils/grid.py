@@ -75,14 +75,17 @@ def parse_route(request):
     url_parts = request.path.split("/")
 
     rule_out = ""
+    slash = ""
     for part in url_parts:
-        if part == "":
+        if part in ['edit', 'details']:
+            break
+        elif part == "":
             continue
         elif part == application:
             continue
         else:
-            rule_out = part
-            break
+            rule_out += "%s%s" % (slash, part)
+            slash = "/"
 
     return rule_out
 
@@ -92,16 +95,16 @@ class Grid:
                  common_settings,
                  queries,
                  search_form=None,
-                 storage_values=None,
+                 storage_values=dict(),
                  fields=None,
                  show_id=False,
                  orderby=None,
                  left=None,
                  headings=None,
-                 create=False,
-                 details=False,
-                 editable=False,
-                 deletable=False,
+                 create=True,
+                 details=True,
+                 editable=True,
+                 deletable=True,
                  requires=None,
                  storage_key=None,
                  pre_action_buttons=None,
@@ -171,11 +174,11 @@ class Grid:
             if request.url_args["action"] in ["new", "details", "edit"]:
                 readonly = True if request.url_args["action"] == "details" else False
                 for field in self.readonly_fields:
-                    self.db[self.tablename][field.name].writable = False
+                    self.db[field.tablename][field.name].writable = False
 
                 for field in self.hidden_fields:
-                    self.db[self.tablename][field.name].readable = False
-                    self.db[self.tablename][field.name].writable = False
+                    self.db[field.tablename][field.name].readable = False
+                    self.db[field.tablename][field.name].writable = False
 
                 if requires:
                     for field in self.requires:
@@ -848,7 +851,7 @@ def GridClassStyleBulma(element_name):
                "table": "table is-bordered is-striped is-hoverable is-fullwidth",
                "thead": "",
                "th": "",
-               "sorter_icon": "",
+               "sorter_icon": "is-pulled-right",
                "action_column_header": "has-text-centered is-narrow",
                "tbody": "",
                "tr": "",
