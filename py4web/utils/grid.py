@@ -77,7 +77,7 @@ def parse_route(request):
     rule_out = ""
     slash = ""
     for part in url_parts:
-        if part in ['edit', 'details']:
+        if part in ['new', 'details', 'edit', 'delete']:
             break
         elif part == "":
             continue
@@ -196,6 +196,7 @@ class Grid:
                                  formstyle=self.formstyle)
                 if self.form.accepted:
                     page = request.query.get("page", 1)
+                    print(self.endpoint)
                     redirect(URL(self.endpoint, vars=dict(storage_key=request.query.get("storage_key"),
                                                           page=page)))
 
@@ -417,6 +418,9 @@ class Grid:
                              icon,
                              icon_size="small",
                              additional_classes=None,
+                             additional_styles=None,
+                             override_classes=None,
+                             override_styles=None,
                              message=None,
                              row_id=None,
                              storage_key=None,
@@ -431,18 +435,36 @@ class Grid:
             url += "%spage=%s" % (separator, page)
 
         classes = self.grid_class_style("action_button").get("_class", "")
+        styles = self.grid_class_style("action_button").get("_styles", "")
         if additional_classes:
             if isinstance(additional_classes, list):
                 classes += " ".join(additional_classes)
             else:
                 classes += " " + additional_classes
+        if additional_styles:
+            if isinstance(additional_styles, list):
+                styles += " ".join(additional_styles)
+            else:
+                styles += " " + additional_styles
+
+        if override_classes:
+            if isinstance(override_classes, list):
+                classes = " ".join(override_classes)
+            else:
+                classes = " " + override_classes
+
+        if override_styles:
+            if isinstance(override_styles, list):
+                styles = " ".join(override_styles)
+            else:
+                styles = " " + override_styles
 
         if self.include_action_button_text:
             _a = A(_href=url,
                    _class=classes,
                    _message=message,
                    _title=button_text,
-                   _style=self.grid_class_style("action_button").get("_style", ""))
+                   _style=styles)
             _span = SPAN(_class="icon is-%s" % icon_size)
             _span.append(I(_class="fa %s" % icon))
             _a.append(_span)
@@ -453,7 +475,7 @@ class Grid:
                    _class=classes,
                    _message=message,
                    _title=button_text,
-                   _style=self.grid_class_style("action_button").get("_style", ""))
+                   _style=styles)
 
         return _a
 
@@ -678,7 +700,9 @@ class Grid:
             else:
                 create_url = URL(self.endpoint) + "/new/%s/0" % self.tablename
 
-            _top_div.append(self.render_action_button(create_url, "New", "fa-plus", icon_size="normal"))
+            _top_div.append(self.render_action_button(create_url, "New", "fa-plus", icon_size="normal",
+                                          override_classes=self.grid_class_style("new_button").get("_class", ""),
+                                          override_styles=self.grid_class_style("new_button").get("_style", "")))
 
         #  build the search form if provided
         if self.search_form:
@@ -717,13 +741,29 @@ class Grid:
         _html.append(_footer)
 
         if self.deletable:
-            _html.append((XML("""
+            x =(XML("""
                 <script type="text/javascript">
-                $('.confirmation').on('click', function () {
+                document.querySelector('.confirmation').on('click', function () {
                     return confirm($(this).attr('message') +' - Are you sure?');
                 });
                 </script>
-            """)))
+            """))
+            _html.append(XML("""
+                 <script type="text/javascript">
+                    document.querySelector(".confirmation").addEventListener("click", function(event) {
+                        if (confirm(this.getAttribute('message') +' - Are you sure?')) {
+                            return true;
+                        } else {
+                            event.preventDefault();
+                        }
+                    });
+                 </script>   
+            """))
+            """
+            let btn = document.querySelector('#btn');
+btn.addEventListener('click',function(event) {
+    alert(event.type); // click
+});"""
 
         return XML(_html)
 
@@ -750,6 +790,7 @@ class Grid:
 def GridClassStyle(element_name):
     classes = {"wrapper": "",
                "top_div": "",
+               "new_button": "",
                "search_form": "",
                "search_form_table": "",
                "search_form_tr": "",
@@ -774,6 +815,7 @@ def GridClassStyle(element_name):
 
     styles = {"wrapper": "",
               "top_div": "border-bottom: 0;",
+              "new_button": "",
               "search_form": "float: right; border-bottom: 0; padding-bottom: 0; margin-bottom: 0;",
               "search_form_table": "margin-bottom: 0;",
               "search_form_tr": "border-bottom: 0; padding-bottom: 0;",
@@ -844,13 +886,14 @@ def GridClassStyle(element_name):
 def GridClassStyleBulma(element_name):
     classes = {"wrapper": "field",
                "top_div": "pb-2",
+               "new_button": "button",
                "search_form": "is-pulled-right pb-2",
                "search_form_table": "",
                "search_form_tr": "",
                "search_form_td": "pr-1",
                "table": "table is-bordered is-striped is-hoverable is-fullwidth",
                "thead": "",
-               "th": "",
+               "th": "has-text-centered",
                "sorter_icon": "is-pulled-right",
                "action_column_header": "has-text-centered is-narrow",
                "tbody": "",
@@ -868,6 +911,7 @@ def GridClassStyleBulma(element_name):
 
     styles = {"wrapper": "",
               "top_div": "",
+              "new_button": "",
               "search_form": "",
               "search_form_table": "",
               "search_form_tr": "",
@@ -906,6 +950,9 @@ class ActionButton:
                  text,
                  icon="fa-calendar",
                  additional_classes=None,
+                 additional_styles=None,
+                 override_classes=None,
+                 override_styles=None,
                  message=None,
                  append_id=False,
                  append_storage_key=False,
@@ -914,6 +961,9 @@ class ActionButton:
         self.text = text
         self.icon = icon
         self.additional_classes = additional_classes
+        self.additional_styles = additional_styles
+        self.override_classes = override_classes
+        self.override_styles = override_styles
         self.message = message
         self.append_id = append_id
         self.append_storage_key = append_storage_key
