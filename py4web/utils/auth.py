@@ -661,7 +661,7 @@ class Auth(Fixture):
                 @action.uses(route + ".html")
                 @action.uses(auth, self.flash, *uses)
                 def _(form_factory=form_factory, path=form_name):
-                    return dict(form=form_factory(), path=path)
+                    return dict(form=form_factory(), path=path, **env)
 
         for form_name in self.form_source.private_forms:
             if allowed(form_name):
@@ -671,7 +671,9 @@ class Auth(Fixture):
                 @action.uses(route + ".html")
                 @action.uses(auth.user, self.flash, *uses)
                 def _(auth, form_factory=form_factory, path=form_name):
-                    return dict(form=form_factory(), path=path, user=auth.get_user())
+                    return dict(
+                        form=form_factory(), path=path, user=auth.get_user(), **env
+                    )
 
         for form_name in self.form_source.no_forms:
             if allowed(form_name):
@@ -681,7 +683,9 @@ class Auth(Fixture):
                 @action.uses(route + ".html")
                 @action.uses(auth, self.flash, *uses)
                 def _(auth=auth, form_factory=form_factory, path=form_name):
-                    return dict(form=form_factory(), path=path, user=auth.get_user())
+                    return dict(
+                        form=form_factory(), path=path, user=auth.get_user(), **env
+                    )
 
     def form(self, name, **attr):
         form_factory = hasattr(self.form_source, name)
