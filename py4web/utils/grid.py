@@ -1013,4 +1013,7 @@ class GridDefaults:
                            search_button_text=search_button_text,
                            formstyle=formstyle,
                            grid_class_style=grid_class_style,
-                           mobile_columns=mobile_columns if mobile_columns else [0, 1])
+                           mobile_columns=mobile_columns if mobile_columns else [0, 1, 2, 3,
+                                                                                 4, 5, 6, 7,
+                                                                                 8, 9, 10, 11,
+                                                                                 12, 13,14, 15])
