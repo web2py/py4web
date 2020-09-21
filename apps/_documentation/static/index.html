@@ -41,7 +41,7 @@
     <script>
     var chapters = {};
     var display = function(target, chapter, anchor) {
-      jQuery(target).markmin(chapters[chapter]);
+      markmin(jQuery(target)[0], chapters[chapter]);
       Prism.highlightAll();
       if (anchor != "") {
         jQuery('html, body').animate({
