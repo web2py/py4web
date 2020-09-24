@@ -11,7 +11,11 @@ mkdir apps/myapp
 echo '' > apps/myapp/__init__.py
 ``:bash
 
-If you now restart py4web or press the "Reload Apps" in the Dashboard, py4web will find this module, import it, and recognize it as an app, simply because of its location. An app is not required to do anything. It could just be a container for static files or arbitrary code that other apps may want to import and access. Yet typically most apps are designed to expose static or dynamic web pages.
+Notice that for Windows, you must use backslashes (i.e. '\') instead of slashes. Also, an empty __init__.py file is not strictly needed since Python 3.3, but it will be useful 
+later on. 
+If you now restart py4web or press the "Reload Apps" in the Dashboard, py4web will find this module, import it, and recognize it as an app, simply because of its location.
+An app is not required to do anything. It could just be a container for static files or arbitrary code that other apps may want to import and access.
+Yet typically most apps are designed to expose static or dynamic web pages.
 
 ### Static web pages
 
@@ -30,11 +34,12 @@ http://localhost:8000/myapp/static/hello.txt
 
 Notice that ``static`` is a special path for py4web and only files under the ``static`` folder are served.
 
-Important: internally py4web uses the bottle ``static_file`` method for serving static files, which means it supports streaming, partial content, range requests, and if-modified-since. This is all handled automatically based on the http request headers.
+Important: internally py4web uses the bottle [static_file](https://bottlepy.org/docs/dev/tutorial.html#static-files) method for serving static files,
+which means it supports streaming, partial content, range requests, and if-modified-since. This is all handled automatically based on the http request headers.
 
 ### Dynamic Web Pages
 
-To create a dynamic page, you must create a function that returns the page content. For example dit the ``myapp/__init__.py`` as follows:
+To create a dynamic page, you must create a function that returns the page content. For example edit the ``myapp/__init__.py`` as follows:
 
 ``
 import datetime
@@ -45,7 +50,7 @@ def page():
     return "hello, now is %s" % datetime.datetime.now()
 ``:python
 
-Restart py4web or press the Dashboard "reload apps" button, and this page will be accessible at
+Restart py4web or press the Dashboard "Reload Apps" button, and this page will be accessible at
 
 ``
 http://localhost:8000/myapp/index
@@ -62,7 +67,8 @@ Unlike other frameworks, we do not import or start the webserver within the ``my
 
 #### On return values
 
-py4web actions should return a string or a dictionary. If they return a dictionary you must tell py4web what to do with it. By default py4web will serialize it into json. For example edit ``__init__.py`` again and add
+py4web actions should return a string or a dictionary. If they return a dictionary you must tell py4web what to do with it. By default py4web will serialize it into json.
+For example edit ``__init__.py`` again and add
 
 ``
 @action('colors')
@@ -76,9 +82,10 @@ This page will be visible at
 http://localhost:8000/myapp/colors
 ``
 
-and returns a JSON object ``{"colors": ["red", "blue", "green"]}``. Notice we chose to name the function the same as the route. This is not required, but it is a convention that we will often follow.
+and returns a JSON object ``{"colors": ["red", "blue", "green"]}``. Notice we chose to name the function the same as the route. This is not required, but it is a convention
+that we will often follow.
 
-You can use any template language to turn your data into a string. PY4WEB comes with yatl, and we will provide an example shortly.
+You can use any template language to turn your data into a string. PY4WEB comes with yatl, a full chapter will be dedicated later and we will provide an example shortly.
 
 #### Routes
 
@@ -98,7 +105,7 @@ This page will be visible at
 http://localhost:8000/myapp/color/red
 ``
 
-The syntax of the patterns is the same as the Bottle routes. A route wildcard can be defined as 
+The syntax of the patterns is the same as the [Bottle routes](https://bottlepy.org/docs/dev/tutorial.html#request-routing). A route wildcard can be defined as 
 
 - ``<name>`` or
 - ``<name:filter>`` or
@@ -171,9 +178,13 @@ def paint():
 
 The page will now display the color name on a background of the corresponding color.
 
-The key ingredient here is the decorator ``@action.uses(...)``. The arguments of ``action.uses`` are called fixtures. You can specify multiple fixtures in one decorator or you can have multiple decorators. Fixtures are objects that modify the behavior of the action, that may need to be initialized per request, that may filter input and output of the action, and that may depend on each-other (they are similar in scope to Bottle plugins but they are declared per-action, and they have a dependency tree which will be explained later).
+The key ingredient here is the decorator ``@action.uses(...)``. The arguments of ``action.uses`` are called **fixtures**. You can specify multiple fixtures in one decorator
+or you can have multiple decorators. Fixtures are objects that modify the behavior of the action, that may need to be initialized per request, that may filter input and output
+of the action, and that may depend on each-other (they are similar in scope to Bottle plugins but they are declared per-action, and they have a dependency tree which will be
+explained later).
 
-The simplest type of Fixture is a template. You specify it by simply giving the name of the file to be used as template. That file must follow the yatl syntax and must be located in the ``templates`` folder of the app. The object returned by the action will be processed by the template and turned into a string.
+The simplest type of fixture is a template. You specify it by simply giving the name of the file to be used as template. That file must follow the yatl syntax and must be
+located in the ``templates`` folder of the app. The object returned by the action will be processed by the template and turned into a string.
 
 You can easily define fixtures for other template languages. This is described later.
 
@@ -190,16 +201,16 @@ They may depend on each other. For example, the Session may need the DAL (databa
 
 Most of the times, you do not want to start writing code from scratch. You also want to follow some sane conventions outlined here, like not putting all your code into ``__init__.py``. PY4WEB provides a Scaffolding (_scaffold) app, where files are organized properly and many useful objects are pre-defined.
 
-Notice you will not find the scaffold app under apps, unless you downloaded py4web from source. But you can create one using the Dashboard.
+You will normally find the scaffold app under apps, but you can easily create a new clone of it manually or using the Dashboard. 
 
 Here is the tree structure of the ``_scaffold`` app:
 
 ``
-├── README.md
 ├── __init__.py          # imports everything else
 ├── common.py            # defines useful objects
 ├── controllers.py       # your actions
 ├── databases            # your sqlite databases and metadata
+    │   └── README.md
 ├── models.py            # your pyDAL table model
 ├── settings.py          # any settings used by the app
 ├── settings_private.py  # (optional) settings that you want to keep private
@@ -209,20 +220,22 @@ Here is the tree structure of the ``_scaffold`` app:
 │   │   ├── auth.html
 │   │   └── auth.js
 │   ├── css              # CSS files, we ship bulma because it is JS agnostic
-│   │   └── bulma.css
+│   │   └── no.css       # we used bulma.css in the past
 │   ├── favicon.ico
 │   └── js               # JS files, we ship with these but you can replace them
 │       ├── axios.min.js
 │       ├── sugar.min.js
 │       ├── utils.js
 │       └── vue.min.js
+├── tasks.py
 ├── templates            # your templates go here
 │   ├── README.md       
 │   ├── auth.html        # the auth page for register/logic/etc (uses vue)
 │   ├── generic.html     # a general purpose template
+│   ├── index.html
 │   └── layout.html      # a bulma layout example
 └── translations         # internationalization/pluralization files go here
-    └── it.json          # py4web internationalization/pluralization files are in JSON
+    └── it.json          # py4web internationalization/pluralization files are in JSON, this is an italian example
 ``
 
 The scaffold app contains an example of a more complex action:
@@ -247,7 +260,7 @@ Notice the following:
 - ``redirect`` and ``URL`` are similar to their web2py counterparts
 - helpers (``A``, ``DIV``, ``SPAN``, ``IMG``, etc) must be imported from ``yatl.helpers`` . They work pretty much as in web2py
 - ``db``, ``session``, ``T``, ``cache``, ``auth`` are Fixtures. They must be defined in ``common.py``.
-- ``@action.uses(auth.user)`` indicates that this action expects a valid logged-in user retrievable by ``auth.get_user()``. If that is not the case, this action rediects to the login page (defined also in ``common.py`` and using the Vue.js auth.html component).
+- ``@action.uses(auth.user)`` indicates that this action expects a valid logged-in user retrievable by ``auth.get_user()``. If that is not the case, this action redirects to the login page (defined also in ``common.py`` and using the Vue.js auth.html component).
 
 When you start from scaffold, you may want to edit ``settings.py``, ``templates``, ``models.py`` and ``controllers.py`` but probably you don't need to change anything in ``common.py``.
 
@@ -255,12 +268,18 @@ In your html, you can use any JS library that you want because py4web is agnosti
 
 ### App Watchdog
 
-Py4web facilitates a development server's setup that automatically reloads an app when its Python source files change. Any other files inside an app can be watched by setting a handler function using **``@app_watch_handler``** decorator.
+Py4web facilitates a development server's setup that automatically reloads an app when its Python source files change. Any other files inside an app can be watched by
+setting a handler function using **``@app_watch_handler``** decorator.
 
 ``
-py4web run apps --watch [sync|lazy]
+ --watch [off|sync|lazy]       Watch python changes and reload apps
+                                automatically, modes: off (default), sync,
+                                lazy
 ``
 
+Two examples of its usage are reported now. Do not worry if you don't fully undestand them: the key point here is that even non-python code could be reloaded automatically if
+you explicit it with the **``@app_watch_handler``** decorator. 
+    
 Watch SASS files and compile them when edited:
 ``
 from py4web.core import app_watch_handler
