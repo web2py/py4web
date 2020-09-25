@@ -670,7 +670,7 @@ class Auth(Fixture):
                 @action(route + "/" + form_name, method=["GET", "POST"])
                 @action.uses(route + ".html")
                 @action.uses(auth.user, self.flash, *uses)
-                def _(auth, form_factory=form_factory, path=form_name):
+                def _(auth=auth, form_factory=form_factory, path=form_name):
                     return dict(form=form_factory(), path=path, user=auth.get_user())
 
         for form_name in self.form_source.no_forms:
