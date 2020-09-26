@@ -139,6 +139,7 @@ class Grid:
         self.search_button_text = common_settings.param.search_button_text
         self.formstyle = common_settings.param.formstyle
         self.grid_class_style = common_settings.param.grid_class_style
+        self.mobile_columns = common_settings.param.mobile_columns
 
         self.query_parms = request.params
         self.endpoint = parse_route(request)
@@ -435,7 +436,7 @@ class Grid:
             url += "%spage=%s" % (separator, page)
 
         classes = self.grid_class_style("action_button").get("_class", "")
-        styles = self.grid_class_style("action_button").get("_styles", "")
+        styles = self.grid_class_style("action_button").get("_style", "")
         if additional_classes:
             if isinstance(additional_classes, list):
                 classes += " ".join(additional_classes)
@@ -468,7 +469,7 @@ class Grid:
             _span = SPAN(_class="icon is-%s" % icon_size)
             _span.append(I(_class="fa %s" % icon))
             _a.append(_span)
-            _a.append(SPAN(' ' + button_text))
+            _a.append(SPAN(' ' + button_text, _class='hide-on-mobile'))
         else:
             _a = A(I(_class="fa %s" % icon),
                    _href=url,
@@ -544,7 +545,10 @@ class Grid:
                 if index == int(request.query.get("sort", 0)) and current_sort_dir == "asc":
                     sort_query_parms["sort_dir"] = "desc"
 
-                _th = TH(**self.grid_class_style("th"))
+                classes = self.grid_class_style("th").get("_class", "")
+                if index not in self.mobile_columns:
+                    classes += " hide-on-mobile"
+                _th = TH(_class=classes, _style=self.grid_class_style("th").get("_style", ""))
                 _th.append(_h)
 
                 _thead.append(_th)
@@ -554,7 +558,7 @@ class Grid:
 
         return _thead
 
-    def render_field(self, row, field):
+    def render_field(self, row, field, field_index):
         """
         Render a field
 
@@ -571,23 +575,39 @@ class Grid:
             field_value = row[field.tablename][field.name]
         else:
             field_value = row[field.name]
+
+        hide_on_mobile = not field_index in self.mobile_columns
+
         if field.type == "date":
+            classes = self.grid_class_style("td_date").get("_class", "")
+            if hide_on_mobile:
+                classes += " hide-on-mobile"
             _td = TD(XML("<script>\ndocument.write("
                          "moment(\"%s\").format('L'));\n</script>" % field_value) \
-                         if row and field and field_value else "",
-                     **self.grid_class_style("td_date"))
+                        if row and field and field_value else "",
+                     _class=classes,
+                     _style=self.grid_class_style("td_date").get("_style", ""))
         elif field.type == "boolean":
             #  True/False - only show on True, blank for False
+            classes = self.grid_class_style("td_boolean").get("_class", "")
+            if hide_on_mobile:
+                classes += " hide-on-mobile"
             if row and field and field_value:
-                _td = TD(**self.grid_class_style("td_boolean"))
+                _td = TD(_class=classes, _style=self.grid_class_style("td_boolean").get("_style", ""))
                 _span = SPAN(_class="icon is-small")
                 _span.append(I(_class="fas fa-check-circle"))
                 _td.append(_span)
             else:
-                _td = TD(XML("&nbsp;"), **self.grid_class_style("td_boolean"))
+                _td = TD(XML("&nbsp;"),
+                         _class=classes,
+                         _style=self.grid_class_style("td_boolean").get("_style", ""))
         else:
+            classes = self.grid_class_style("td").get("_class", "")
+            if hide_on_mobile:
+                classes += " hide-on-mobile"
             _td = TD(field_value if row and field and field_value else "",
-                     **self.grid_class_style("td"))
+                     _class=classes,
+                     _style=self.grid_class_style("td").get("_style", ""))
 
         return _td
 
@@ -602,10 +622,10 @@ class Grid:
 
             _tr = TR(**self.grid_class_style("td"))
             #  add all the fields to the row
-            for field in self.fields:
+            for field_index, field in enumerate(self.fields):
                 if field.name not in [x.name for x in self.hidden_fields] and \
                         (field.name != "id" or (field.name == "id" and self.show_id)):
-                    _tr.append(self.render_field(row, field))
+                    _tr.append(self.render_field(row, field, field_index))
 
             _td = None
 
@@ -691,6 +711,22 @@ class Grid:
 
     def render_table(self):
         _html = DIV(**self.grid_class_style("wrapper"))
+        _html.append(
+            XML("""
+                 <style type="text/css">
+                    @media screen and (max-width: 600px) {
+                        .body {
+                            font-size: smaller;
+                        }
+                    
+                        .hide-on-mobile {
+                            display: none;
+                        }
+                    
+                    }
+                 </style>
+            """)
+        )
         _top_div = DIV(**self.grid_class_style("top_div"))
 
         #  build the New button if needed
@@ -741,13 +777,6 @@ class Grid:
         _html.append(_footer)
 
         if self.deletable:
-            x =(XML("""
-                <script type="text/javascript">
-                document.querySelector('.confirmation').on('click', function () {
-                    return confirm($(this).attr('message') +' - Are you sure?');
-                });
-                </script>
-            """))
             _html.append(XML("""
                  <script type="text/javascript">
                     document.querySelector(".confirmation").addEventListener("click", function(event) {
@@ -759,11 +788,6 @@ class Grid:
                     });
                  </script>   
             """))
-            """
-            let btn = document.querySelector('#btn');
-btn.addEventListener('click',function(event) {
-    alert(event.type); // click
-});"""
 
         return XML(_html)
 
@@ -979,7 +1003,8 @@ class GridDefaults:
                  include_action_button_text=True,
                  search_button_text="Filter",
                  formstyle=FormStyleDefault,
-                 grid_class_style=GridClassStyle):
+                 grid_class_style=GridClassStyle,
+                 mobile_columns=None):
         self.param = Param(db=db,
                            secret=secret,
                            token_longevity=token_longevity,
@@ -987,4 +1012,8 @@ class GridDefaults:
                            include_action_button_text=include_action_button_text,
                            search_button_text=search_button_text,
                            formstyle=formstyle,
-                           grid_class_style=grid_class_style)
+                           grid_class_style=grid_class_style,
+                           mobile_columns=mobile_columns if mobile_columns else [0, 1, 2, 3,
+                                                                                 4, 5, 6, 7,
+                                                                                 8, 9, 10, 11,
+                                                                                 12, 13,14, 15])

@@ -14,8 +14,48 @@ py4web comes with a Grid object providing simple grid and CRUD capabilities.
 - Checkboxes in grid for boolean fields
 
 ### Simple Example
-In this simple example we will make a grid over the superhero table.  Since there is a foreign key defined we will
-take advantage of the DAL `left` keyword to bring in the related values and allow sorting on them.
+In this simple example we will make a grid over the company table.
+
+controllers.py
+``
+from py4web.utils.grid import Grid, get_storage_key, get_storage_value, GridDefaults, GridClassStyle
+from py4web.utils.param import Param
+from .settings import SESSION_SECRET_KEY
+
+@action('administration/companies', method=['POST', 'GET'])
+@action('administration/companies/<action>/<tablename>/<record_id>', method=['POST', 'GET'])
+@action.uses(session, db, auth.user, requires_permission('select', 'region'), 'grid.html')
+def regions(**kwargs):
+    #  NOTE - GRID_COMMON would normally go in common.py and then imported to your controller
+    GRID_COMMON = GridDefaults(db=db,
+                               secret=SESSION_SECRET_KEY,
+                               rows_per_page=5)
+
+    queries = [(db.company.id > 0)]
+    orderby = [db.company.name]
+
+    grid = Grid(GRID_COMMON,
+                queries,
+                orderby=orderby,
+                storage_key=get_storage_key())
+    return dict(grid=grid)
+``:python
+
+grid.html
+``
+[[extend 'layout.html']]
+<div class="container" style="padding-top: 1em;">
+    [[if 'action' in request.url_args and request.url_args['action'] in ['details', 'edit']:]]
+        [[form = grid.render()]]
+        [[=form]]
+    [[else:]]
+        [[=grid.render()]]
+    [[pass]]
+</div>
+``
+
+### Filter/Search Example
+In this simple example we will make a grid over the companies table.  A search form will be created and allow searching over the company.name field.
 
 controllers.py
 ``
@@ -56,27 +96,13 @@ def companies(**kwargs):
                 search_form=search_form,
                 storage_values=dict(search_filter=search_filter),
                 orderby=orderby,
-                create=True,
-                details=True,
-                editable=True,
-                deletable=True,
                 storage_key=storage_key)
 
     return dict(grid=grid)
 ``:python
 
-grid.html
-``
-[[extend 'layout.html']]
-<div class="container" style="padding-top: 1em;">
-    [[if 'action' in request.url_args and request.url_args['action'] in ['details', 'edit']:]]
-        [[form = grid.render()]]
-        [[=form]]
-    [[else:]]
-        [[=grid.render()]]
-    [[pass]]
-</div>
-``
+The same grid.html as above is used in this example.
+
 
 ### Signature
 
@@ -136,7 +162,7 @@ class Grid:
 The GridDefaults class allows you to set app-wide grid defaults that you can use when instantiating grids.0
 
 - db: PyDAL db instance to use within your grid
-- secret: secrent encryption key used to encrypt storage values
+- secret: secret encryption key used to encrypt storage values
 - token_longevity: number of seconds to remember you storage values for this grid instance
 - rows_per_page: number of rows to display on each grid page
 - included_action_button_text: boolean telling the grid whether or not you want text on action buttons within your grid
@@ -205,6 +231,7 @@ The default GridClassStyle - based on no.css, primarily uses styles to modify th
 def GridClassStyle(element_name):
     classes = {"wrapper": "",
                "top_div": "",
+               "new_button", "",
                "search_form": "",
                "search_form_table": "",
                "search_form_tr": "",
@@ -229,6 +256,7 @@ def GridClassStyle(element_name):
 
     styles = {"wrapper": "",
               "top_div": "border-bottom: 0;",
+              "new_button", "",
               "search_form": "float: right; border-bottom: 0; padding-bottom: 0; margin-bottom: 0;",
               "search_form_table": "margin-bottom: 0;",
               "search_form_tr": "border-bottom: 0; padding-bottom: 0;",
@@ -294,12 +322,14 @@ def GridClassStyle(element_name):
         classes_styles["_style"] = styles.get(element_name)
 
     return classes_styles
-``
+``:python
+
 GridClassStyleBulma - bulma implementation
 ``
 def GridClassStyleBulma(element_name):
     classes = {"wrapper": "field",
                "top_div": "pb-2",
+               "new_button", "",
                "search_form": "is-pulled-right pb-2",
                "search_form_table": "",
                "search_form_tr": "",
@@ -324,6 +354,7 @@ def GridClassStyleBulma(element_name):
 
     styles = {"wrapper": "",
               "top_div": "",
+              "new_button", "",
               "search_form": "",
               "search_form_table": "",
               "search_form_tr": "",
@@ -354,7 +385,7 @@ def GridClassStyleBulma(element_name):
         classes_styles["_style"] = styles.get(element_name)
 
     return classes_styles
-``
+``:python
 
 ### Custom Action Buttons
 
@@ -371,15 +402,21 @@ def __init__(self,
              text,
              icon="fa-calendar",
              additional_classes=None,
+             additional_styles=None,
+             override_classes=None,
+             override_styles=None,
              message=None,
              append_id=False,
              append_storage_key=False,
              append_page=False):
-``
+``:python
 - url: the page to navigate to when the button is clicked
 - text: text to display on the button
 - icon: the font-awesome icon to display before the text
 - additional_classes: a space-separated list of classes to include on the button element
+- additional_styles: a space-separated list of classes to include on the button element
+- override_classes: a space-separated list of classes to override the defaults set up for a specific button
+- override_styles: a space-separated list of classes to override the defaults set up for a specific button
 - message: confirmation message to display if 'confirmation' class is added to additional classes
 - append_id: if True, add id_field_name=id_value to the url querystring for the button
 - append_storage_key: if True, append the storage key for the grid to the url for the button
@@ -398,7 +435,7 @@ Field('company', 'reference company',
                                    '%(name)s',
                                    zero='..')),
       filter_out=lambda x: x.name if x else ''),
-``
+``:python
 This will display the company name in the grid instead of the company ID
 
 The downfall of using this method is that sorting and filtering are based on the company field in the employee table and not the name of the company
@@ -406,7 +443,7 @@ The downfall of using this method is that sorting and filtering are based on the
 left join and specify fields from joined table - specified on the left parameter of Grid instantiation
 ``
 db.company.on(db.employee.company == db.company.id)
-``
+``:python
 
 You can specify a standard PyDAL left join, including a list of joins to consider.
 
@@ -415,7 +452,7 @@ Now the company name field can be included in your fields list can be clicked on
 Now you can also specify a query such as:
 ``
 queries.append((db.employee.last_name.contains(search_text)) | (db.employee.first_name.contains(search_text)) | db.company.name.contains(search_text)))
-``
+``:python
 
 This method allows you to sort and filter, but doesn't allow you to combine fields to be displayed together as the filter_out method would
 
