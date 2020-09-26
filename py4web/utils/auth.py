@@ -688,10 +688,10 @@ class Auth(Fixture):
                     )
 
     def form(self, name, **attr):
-        form_factory = hasattr(self.form_source, name)
+        form_factory = getattr(self.form_source, name, None)
         if not form_factory:
             raise HTTP(404)
-        return form_factory(self)
+        return form_factory()
 
 
 def api_wrapper(func):
