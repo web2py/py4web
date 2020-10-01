@@ -46,11 +46,18 @@ signed_url = URLSigner(session)
 # -----------------------------
 # Sample grid.
 
-vue_grid = Grid('grid_api', session)
+vue_grid = Grid("grid_api", session)
 
-@action('vuegrid', method=['GET'])
-@action.uses(vue_grid, 'vuegrid.html')
+@action("vuegrid", method=["GET"])
+@action.uses(vue_grid, "vuegrid.html")
 def vuegrid():
+    """This page generates a sample grid."""
+    # We need to instantiate our grid component.
+    return dict(grid=vue_grid())
+
+@action('vuegrid_bulma', method=["GET"])
+@action.uses(vue_grid, 'vuegrid_bulma.html')
+def vuegrid_bulma():
     """This page generates a sample grid."""
     # We need to instantiate our grid component.
     return dict(grid=vue_grid())
@@ -58,87 +65,146 @@ def vuegrid():
 # -----------------------------
 # File uploader.
 
-file_uploader = FileUpload('upload_api', session)
+file_uploader = FileUpload("upload_api", session)
 
-@action('file_uploader', method=['GET'])
-@action.uses(file_uploader, 'file_uploader.html')
+
+@action("file_uploader", method=["GET"])
+@action.uses(file_uploader, "file_uploader.html")
 def fileuploader():
     return dict(uploader=file_uploader(id=1))
+
 
 # -----------------------------
 # Custom vue form.
 
+
 def get_time():
     return datetime.datetime.utcnow()
 
-vue_form = VueForm('test_form', session,
-                       [Field('name', default="Luca"),
-                        Field('last_name', default="Smith", writable=False),
-                        Field('read', 'boolean', default=True),
-                        Field('animal', requires=IS_IN_SET(['cat', 'dog', 'bird']),
-                              default='dog', writable=False),
-                        Field('choice', requires=IS_IN_SET({'c': 'cat', 'd': 'dog', 'b': 'bird'}),
-                              default='d'),
-                        Field('arrival_time', 'datetime', default=get_time),
-                        Field('date_of_birth', 'date'),
-                        Field('narrative', 'text'),
-                        ], readonly=False, redirect_url='index')
 
-@action('vue_form', method=['GET'])
+vue_form = VueForm(
+    "test_form",
+    session,
+    [
+        Field("name", default="Luca"),
+        Field("last_name", default="Smith", writable=False),
+        Field("read", "boolean", default=True),
+        Field(
+            "animal",
+            requires=IS_IN_SET(["cat", "dog", "bird"]),
+            default="dog",
+            writable=False,
+        ),
+        Field(
+            "choice",
+            requires=IS_IN_SET({"c": "cat", "d": "dog", "b": "bird"}),
+            default="d",
+        ),
+        Field("arrival_time", "datetime", default=get_time),
+        Field("date_of_birth", "date"),
+        Field("narrative", "text"),
+    ],
+    readonly=False,
+    redirect_url="index",
+)
+
+
+@action("vue_form", method=["GET"])
 @action.uses(vue_form, "vueform.html")
 def vueform():
+    return dict(form=vue_form())
+
+@action('vue_form_bulma', method=["GET"])
+@action.uses(vue_form, "vueform_bulma.html")
+def vueform_bulma():
     return dict(form=vue_form())
 
 # -----------------------------
 # Insertion form.
 
+
 def not_too_expensive(fields):
     """Validation function that checks that the total price is low enough."""
-    if (fields['product_quantity']['validated_value'] *
-        fields['product_cost']['validated_value']) > 1000000:
+    if (
+        fields["product_quantity"]["validated_value"]
+        * fields["product_cost"]["validated_value"]
+    ) > 1000000:
         err = "Please insert only products with total value of less than a million."
-        fields['product_quantity']['error'] = err
-        fields['product_cost']['error'] = err
+        fields["product_quantity"]["error"] = err
+        fields["product_cost"]["error"] = err
 
-insert_form = InsertForm('insert_product', session, db.product,
-                         validate=not_too_expensive, redirect_url='index')
 
-@action('insert_form', method=['GET'])
-@action.uses(insert_form, 'vueform.html')
+insert_form = InsertForm(
+    "insert_product",
+    session,
+    db.product,
+    validate=not_too_expensive,
+    redirect_url="index",
+)
+
+
+@action("insert_form", method=["GET"])
+@action.uses(insert_form, "vueform.html")
 def insertform():
+    return dict(form=insert_form())
+
+@action('insert_form_bulma', method=["GET"])
+@action.uses(insert_form, 'vueform_bulma.html')
+def insertform_bulma():
     return dict(form=insert_form())
 
 # -----------------------------
 # Update form.
-update_form = TableForm('update_product', session, db.product,
-                        validate=not_too_expensive, redirect_url='index')
+update_form = TableForm(
+    "update_product",
+    session,
+    db.product,
+    validate=not_too_expensive,
+    redirect_url="index",
+)
 
-@action('update_form', method=['GET'])
-@action.uses(update_form, 'vueform.html')
+
+@action("update_form", method=["GET"])
+@action.uses(update_form, "vueform.html")
 def updateform():
+    # For simplicity, we update the record 1.
+    return dict(form=update_form(id=1))
+
+@action('update_form_bulma', method=["GET"])
+@action.uses(update_form, 'vueform_bulma.html')
+def updateform_bulma():
     # For simplicity, we update the record 1.
     return dict(form=update_form(id=1))
 
 # -----------------------------
 # Star rater.
 
-star_rater = StarRater('star_rater', session)
+star_rater = StarRater("star_rater", session)
 
-@action('star_rater', method=['GET'])
-@action.uses(star_rater, 'starrating.html')
+
+@action("star_rater", method=["GET"])
+@action.uses(star_rater, "starrating.html")
 def starrater():
     # This performs a star rating of item 1.
     return dict(stars=star_rater(id=1))
 
+
 # ------------------------------
 # Star rater, instantiated from Vue.
 
-@action('star_rater_vue', method=['GET'])
-@action.uses(star_rater, 'star_rater_vue.html')
+
+@action("star_rater_vue", method=["GET"])
+@action.uses(star_rater, "star_rater_vue.html")
 def star_rater_vue():
+    return dict(get_posts_url=URL("star_rater_get_posts"))
+
+
+@action('star_rater_vue_bulma', method=["GET"])
+@action.uses(star_rater, 'star_rater_vue_bulma.html')
+def star_rater_vue_bulma():
     return dict(get_posts_url=URL('star_rater_get_posts'))
 
-@action('star_rater_get_posts', method=['GET'])
+@action("star_rater_get_posts", method=["GET"])
 def star_rater_get_posts():
     posts = [
         {"id": 1, "content": "Hello there"},

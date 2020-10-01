@@ -1,0 +1,74 @@
+[[extend 'layout.html']]
+
+<style>
+ul.tags-list {
+  padding-left: 0;
+}
+ul.tags-list li {
+  display: inline-block;
+  border-radius: 100px;
+  background-color: #111111;
+  color: white;
+  padding: 0.3em 0.8em 0.2em 0.8em;
+  line-height: 1.2em;
+  margin: 2px;
+  cursor: pointer;
+  opacity: 0.2;
+  text-transform: capitalize;
+}
+ul.tags-list li[data-selected=true] {
+  opacity: 1.0;
+}
+ul.tags-list li[data-value=red] { background-color: red; }
+ul.tags-list li[data-value=green] { background-color: green; }
+ul.tags-list li[data-value=blue] { background-color: blue; }
+</style>
+
+<h2>Tagsinput Examples</h2>
+
+<h3>With freetext, predefined tags, custom colors</h3>
+
+<input name="color"/>
+
+<i>
+You can enter new tags comma separted.
+Press [tab] to add tags.
+[enter] will submit the form.
+Look at the page source for how to customize tags.
+</i>
+
+<h3>With autocomplete</h3>
+
+<input name="browsers"/>
+
+<!-- list of options for browser autocomplete -->
+<datalist id="browsers-list">
+  <option value="Edge">
+  <option value="Firefox">
+  <option value="Chrome">
+  <option value="Opera">
+  <option value="Safari">
+</datalist>
+
+<h3>With serverside Form</h3>
+
+Form fields of type-list-string have automatic tags!
+
+[[=form]]
+
+[[block page_scripts]]
+<script>
+  // enable the first tags_input
+  Q.tags_input('[name=color]', {
+    tags:['red','green','blue'],            // always display these tags
+    freetext: true,                         // allow typing custom tags 
+    placeholder:'add tags, comma separated' // text in the textfree input
+  });
+
+  // enable the second tagsinpu8t
+  Q.tags_input('[name=browsers]', {
+    autocomplete_list: 'browsers-list',
+    placeholder: 'type the name of a browser',
+  });
+</script>
+[[end]]

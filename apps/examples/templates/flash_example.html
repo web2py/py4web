@@ -1,0 +1,5 @@
+[[extend 'layout.html']]
+
+<button onclick="Q.flash({message: 'you clicked the button', class:'warning'})">Click me</button>
+<br/>or type something below<br/>
+<input onchange="Q.flash({message: this.value, class: 'success'});this.value='';"/>
