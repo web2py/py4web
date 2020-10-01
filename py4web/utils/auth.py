@@ -315,7 +315,7 @@ class Auth(Fixture):
     @property
     def user_id(self):
         user = self.session.get("user")
-        if not user:    
+        if not user:
             # handles corner case: session=dict(user=None)
             return None
         else:
