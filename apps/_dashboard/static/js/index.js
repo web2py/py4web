@@ -136,7 +136,7 @@ let init = (app) => {
             });
     }; 
     app.handle_upload_file = () => {
-        utils.upload_helper('upload-file', (name, data)=>{app.vue.modal.form.file=data;});
+        Q.upload_helper('upload-file', (name, data)=>{app.vue.modal.form.file=data;});
     };
     app.upload_new_app = ()=> {
         app.vue.modal = {

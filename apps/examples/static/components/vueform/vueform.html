@@ -6,15 +6,15 @@
         <!-- Datetime -->
         <div class="datetime" v-if="field.type==='datetime'">
           <input v-if="field.readonly" type="text" readonly class="input is-static" v-model="field.datetime_readonly">
-          <div v-else class="columns is-mobile">
-            <div class="column">
-              <input class="input column "
+          <div v-else class="columns">
+            <div class="c50">
+              <input class="input"
                      type="date" v-model="field.date" @change="set_readable_date(field._idx)">
               <span class="has-text-grey is-size-7">{{field.date_readonly}}</span>
             </div>
-            <div class="column">
-              <input class="input column"
-                     type="time" v-model="field.time" >
+            <div class="c50">
+              <input class="input" type="time"
+                     v-model="field.time" >
               <span class="has-text-grey is-size-7">Timezone: {{time_zone}}</span>
             </div>
           </div>

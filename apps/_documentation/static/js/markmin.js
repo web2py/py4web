@@ -1,4 +1,4 @@
-jQuery.fn.markmin = (function(){
+window.markmin = (function(){
         // all required regular expressions computed once and for all
         var re_pre = /(^|\n)``\s+([\s\S]*?)\s*``(?:\:(\w+))?/g;        
         var re_xml = /<(\w+)([^>]*)>([^<>]*?)<\/\1>|<(\w+)([^>]*)\/>/g;
@@ -27,7 +27,7 @@ jQuery.fn.markmin = (function(){
         var re_nn = /\n\s*\n/g;
         var re_strong = /\*\*([^\s*][^*]*[^\s*])\*\*/g;
         var re_em = /''([^\s\'][^\']*[^\s\'])''/g;
-        var re_blockquote = /[-]{5}[-]*\n(.*?)\n[-]{5}[-]*/gm;
+        var re_blockquote = /[-]{5}[-]*([\s\S]*?)[-]{5}[-]*/gm;
         var re_tt = /``([^\s`][^`]*)``(?:\:(\w+))?/g;
         var re_ulli = /^\-\s+([^\n]*)/gm;
         var re_olli = /^\+\s+([^\n]*)/gm;
@@ -129,8 +129,9 @@ jQuery.fn.markmin = (function(){
                         callback:null,
                         rules_post:[]};
         // the only exposed function!
-        return function(source, settings) {
-            settings = jQuery.extend({},defaults,settings);
+        return function(element, source, settings) {
+            settings = settings || {};
+            for(key in defaults) if(!(key in settings)) settings[key]=defaults[key];
             var html = source;
             // deal with preformatted code
             html = html.replace(re_pre, function(m,a,b,c) { 
@@ -167,10 +168,9 @@ jQuery.fn.markmin = (function(){
             for(var k=code.length-1; k>=0; k--)
                 html = html.replace("__MATCH:"+k+"__",code[k]);
             // display
-            jQuery(this).html(html);
+            element.innerHTML = html;
             // optionally format with ombed and mathjax
             try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch(e) {};
-            try { jQuery("a.mm-embed").oembed(); } catch(e) {};
             // or whatever the user wants
             if(settings.callback) settings.callback();
         };

@@ -4,68 +4,68 @@
     <base href="[[=URL('static')]]/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
-    <link rel="stylesheet" href="css/bulma.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="css/no.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <style>.py4web-validation-error{margin-top:-16px; font-size:0.8em;color:red}</style>
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
   <body>
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="[[=URL('index')]]">
-          <strong>APP LOGO</strong>
+    <header>
+      <!-- Navigation bar -->
+      <nav class="black">
+        <!-- Logo -->
+        <a href="[[=URL('index')]]">
+          <b>py4web <script>document.write(window.location.href.split('/')[3]);</script></b>
         </a>
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="the-navbar-menu"
-           onclick="this.classList.toggle('is-active');document.getElementById(this.dataset.target).classList.toggle('is-active');">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
+        <!-- Do not touch this -->
+        <label for="hamburger">☰</label>
+        <input type="checkbox" id="hamburger">
+        <!-- Left menu ul/li -->
+        [[block page_left_menu]][[end]]
+        <!-- Right menu ul/li -->
+        <ul>
+          [[if globals().get('user'):]]
+          <li>
+            <a class="navbar-link is-primary">
+              [[=globals().get('user',{}).get('email')]]
+            </a>
+            <ul>
+              <li><a href="[[=URL('auth/profile')]]">Edit Profile</a></li>
+              <li><a href="[[=URL('auth/change_password')]]">Change Password</a></li>
+              <li><a href="[[=URL('auth/logout')]]">Logout</a></li>
+            </ul>
+          </li>
+          [[else:]]
+          <li>
+            Login
+            <ul>
+              <li><a href="[[=URL('auth/register')]]">Sign up</a></li>
+              <li><a href="[[=URL('auth/login')]]">Log in</a></li>
+            </ul>
+          </li>
+          [[pass]]
+        </ul>
+      </nav>
+    </header>
+    <!-- beginning of HTML inserted by extending template -->
+    <center>
+      <div>
+        <!-- Flash alert messages, first optional one in data-alert -->
+        <flash-alerts class="padded" data-alert="[[=globals().get('flash','')]]"></flash-alerts>
       </div>
-      <div id="the-navbar-menu" class="navbar-menu">
-        <div class="navbar-start">
-          [[block page_menu_items]]<!-- individual pages can add menu items here -->[[end]]
-        </div>
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <div class="buttons">
-              [[if globals().get('user'):]]
-                <div class="navbar-item has-dropdown is-hoverable">
-                  <a class="navbar-link is-primary">
-                    [[=globals().get('user').get('email')]]
-                  </a>
-                  <div class="navbar-dropdown">
-                    <a class="navbar-item" href="[[=URL('auth/logout')]]">
-                      Logout
-                    </a>
-                    <!-- <a class="navbar-item" href="[[=URL('user/profile')]]">
-                      Profile
-                    </a> -->
-                  </div>
-                </div>
-              [[else:]]
-                <a class="button is-primary" href="[[=URL('auth/register')]]">
-                  Sign up
-                </a>
-                <a class="button is-primary"href="[[=URL('auth/login')]]">
-                  Log in
-                </a>
-              [[pass]]
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-      <!-- beginning of HTML inserted by extending template -->
-      [[include]]
-      <!-- end of HTML inserted by extending template -->
-    <footer class="footer">
-      <div class="content has-text-centered">
+      <main class="padded">
+        <!-- contect injected by extending page -->
+        [[include]]
+      </main>
+    </center>
+    <!-- end of HTML inserted by extending template -->
+    <footer class="black padded">
+      <p>
         Made with py4web
-      </div>
+      </p>
     </footer>
   </body>
-  <script src="js/sugar.min.js"></script>
-  <script src="js/axios.min.js"></script>
-  <script src="js/vue.min.js"></script>
+  <!-- You've gotta have utils.js -->
+  <script src="js/utils.js"></script>
   [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>

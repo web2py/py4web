@@ -1,0 +1,8 @@
+<span v-on:mouseout="stars_out">
+    <span v-on:mouseover="stars_over(idx)"
+          v-on:click="set_stars(idx)"
+          v-for="idx in star_indices">
+        <i v-if="idx <= num_stars_display" class="fa fa-star"></i>
+        <i v-if="idx > num_stars_display" class="fa fa-star-o"></i>
+    </span>
+</span>
