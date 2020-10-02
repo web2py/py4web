@@ -382,10 +382,11 @@ class Grid:
             try:
                 orderby_string = []
                 for x in orderby_expression:
-                    if " DESC" in str(x):
-                        orderby_string.append("~" + str(x).replace('"', "").replace(" DESC", "").replace("`", ""))
-                    else:
-                        orderby_string.append("%s.%s" % (x.tablename, x.name))
+                    op = ''
+                    if hasattr(x, 'op') and x.op.__name__ == 'invert':
+                        x = x.first
+                        op = '~'
+                    orderby_string.append("%s%s.%s" % (op, x.tablename, x.name))
             except:
                 orderby_string = orderby_expression
 
