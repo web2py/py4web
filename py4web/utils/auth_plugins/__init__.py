@@ -157,13 +157,17 @@ class OAuth2(SSO):
         res = requests.post(self.token_url, data=data)
         output = res.json()
         token = output.get("id_token")
-        # TODO: do something with this header
-        headers = {"Authorization": "Bearer %s" % token}
-        # Lets not get the  user attributes via the userinfo endpoint
-        # but lets take the userinfo directly extracted from the token
-        # res = requests.get(self.userinfo_url, headers=headers)
-        res = jwt.decode(token, verify=False)
-        data = res
+        if token is not None:
+            # Lets not get the  user attributes via the userinfo endpoint
+            # but lets take the userinfo directly extracted from the token
+            # res = requests.get(self.userinfo_url, headers=headers)
+            data = jwt.decode(token, verify=False)
+        else:
+            # fallback to old approach if "id_token" is not in the response
+            token = output.get("access_token")
+            headers = {"Authorization": "Bearer %s" % token}
+            res = requests.get(self.userinfo_url, headers=headers)
+            data = res.json()
         return data
 
     def revoke(self, token):
