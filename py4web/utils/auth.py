@@ -114,6 +114,15 @@ class Auth(Fixture):
             "subject": "Unsubscribe confirmation",
             "body": "By {first_name}, you have been erased from our system",
         },
+        "flash": {
+            "user-registered": "User registered",
+            "password-reset-link-sent": "Password reset link sent",
+            "password-changed": "Password changed",
+            "profile-saved": "Profile saved",
+            "user-logout": "User logout",
+            "email-verified": "Email verified",
+            "link-expired": "Link expired",
+        }
     }
 
     def __init__(
@@ -862,7 +871,7 @@ class DefaultAuthForms:
             form.accepted = not res.get("errors")
             form.errors = res.get("errors")
             if not form.errors:
-                self.auth.flash.set("User registered succesfully")
+                self._set_flash("user-registered")
                 self._postprocessing("register", form, user)
         form.param.sidecar.append(
             A("Sign In", _href="../auth/login", _class="info", _role="button")
@@ -922,7 +931,7 @@ class DefaultAuthForms:
         if form.submitted:
             email = form.vars.get("email")
             self.auth.request_reset_password(email, send=True, next="")
-            self.auth.flash.set("Password reset link sent")
+            self._set_flash("password-reset-link-sent")
             self._postprocessing("request_reset_password", form, None)
         form.param.sidecar.append(
             A("Sign In", _href="../auth/login", _class="info", _role="button")
@@ -954,7 +963,7 @@ class DefaultAuthForms:
         )
         self._process_change_password_form(form, user)
         if form.accepted:
-            self.auth.flash.set("Password changed")
+            self._set_flash("password-changed")
             self._postprocessing("reset_password", form, user)
         return form
 
@@ -974,7 +983,7 @@ class DefaultAuthForms:
         )
         self._process_change_password_form(form, user)
         if form.accepted:
-            self.auth.flash.set("Password changed")
+            self._set_flash("password-changed")
             self._postprocessing("change_password", form, user)
         return form
 
@@ -1004,21 +1013,24 @@ class DefaultAuthForms:
             self.auth.db.auth_user.email.writable = False
         form = Form(self.auth.db.auth_user, user, formstyle=self.formstyle)
         if form.accepted:
-            self.auth.flash.set("Profile saved")
+            self._set_flash("profile-saved")
             self._postprocessing("profile", form, user)
         return form
 
     def logout(self):
         self.auth.session.clear()
-        self.auth.flash.set("User logout")
+        self._set_flash("user-logout")
         self._postprocessing("logout")
         return ""
 
     def verify_email(self):
         token = request.query.get("token")
         verified = self.auth.verify_email(token)
-        self.auth.flash.set("Email Verified" if verified else "Token Expired")
+        self._set_flash("email-verified" if verified else "link-expired")
         self._postprocessing("verify_email")
+
+    def _set_flash(self, key):
+        self.auth.flash.set(self.auth.messages["flash"].get(key, key))
 
     def _postprocessing(self, action, form=None, user=None):
         if not form or form.accepted:
