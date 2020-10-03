@@ -101,7 +101,7 @@ class AuthEnforcer(Fixture):
 
 class Auth(Fixture):
 
-    messages = {
+    MESSAGES = {
         "verify_email": {
             "subject": "Confirm email",
             "body": "Welcome {first_name}, click {link} to confirm your email",
@@ -115,11 +115,6 @@ class Auth(Fixture):
             "body": "By {first_name}, you have been erased from our system",
         },
     }
-
-    onsuccess = {}
-    next = {}
-
-    extra_auth_user_fields = []
 
     def __init__(
         self,
@@ -159,6 +154,11 @@ class Auth(Fixture):
             self.__prerequisites__.append(session)
         if db:
             self.__prerequisites__.append(db)
+
+        self.messages = copy.deepcopy(self.MESSAGES)
+        self.onsuccess = {}
+        self.next = {}
+
         self.db = db
         self.session = session
         self.sender = sender
@@ -171,8 +171,6 @@ class Auth(Fixture):
         if db and define_tables:
             self.define_tables()
         self.plugins = {}
-        self.onsuccess = copy.deepcopy(Auth.onsuccess)
-        self.next = copy.deepcopy(Auth.next)
         self.form_source = DefaultAuthForms(self)
         self.flash = Flash()
 
@@ -956,6 +954,7 @@ class DefaultAuthForms:
         )
         self._process_change_password_form(form, user)
         if form.accepted:
+            self.auth.flash.set("Password changed")
             self._postprocessing("reset_password", form, user)
         return form
 
@@ -975,6 +974,7 @@ class DefaultAuthForms:
         )
         self._process_change_password_form(form, user)
         if form.accepted:
+            self.auth.flash.set("Password changed")
             self._postprocessing("change_password", form, user)
         return form
 
@@ -993,9 +993,7 @@ class DefaultAuthForms:
                 )
                 form.errors = res.get("errors", {})
                 form.accepted = not form.errors
-                if form.accepted:
-                    self.auth.flash.set("Password changed")
-                else:
+                if not form.accepted:
                     form.vars.clear()
 
     def profile(self):
