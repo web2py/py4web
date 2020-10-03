@@ -1228,7 +1228,9 @@ def start_server(args):
             logging.error("gevent not installed")
             return
         server_config = "windows"
-        params["server"] = "gevent"
+        params["server"] = "tornado"
+        if sys.version_info >= (3, 8):  #see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on windows
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     elif number_workers < 1:
         server_config = "tornado"
         params["server"] = "tornado"
