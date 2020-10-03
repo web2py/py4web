@@ -901,7 +901,7 @@ class DefaultAuthForms:
             url = "../auth/plugin/" + name + "/login"
             if next:
                 url = url + "?next=" + next
-            top_buttons.append(A(plugin.name + " Login", _href=url, _role="button"))
+            top_buttons.append(A(plugin.label + " Login", _href=url, _role="button"))
         form.param.sidecar.append(
             A("Sign Up", _href="../auth/register", _class="info", _role="button")
         )

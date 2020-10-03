@@ -2,7 +2,9 @@ from . import OAuth2
 
 
 class OAuth2Google(OAuth2):
-    name = "Google"
+    name = "oauth2google"
+    label = "Google"
+
     login_url = "https://accounts.google.com/o/oauth2/v2/auth"
     token_url = "https://oauth2.googleapis.com/token"
     userinfo_url = "https://www.googleapis.com/oauth2/v3/userinfo"

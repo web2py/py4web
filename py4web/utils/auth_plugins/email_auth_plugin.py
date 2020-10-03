@@ -5,6 +5,7 @@ import logging
 class EmailAuthPlugin:
 
     name = "email_auth"
+    label = "Email"
 
     def __init__(self, server="smtp.gmail.com:587", domain="@gmail.com", tls_mode=None):
         self.server = server
