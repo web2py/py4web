@@ -6,7 +6,7 @@
     <link href="css/prism.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   </head>
   <body>    
     <nav role="navigation" aria-label="main navigation">
@@ -43,6 +43,10 @@
     var display = function(target, chapter, anchor) {
       markmin(jQuery(target)[0], chapters[chapter]);
       Prism.highlightAll();
+      var resize = function() {
+        jQuery('pre').hide().css('width',jQuery('.mm').width()).show();
+      };
+      resize(); window.onresize = resize;
       if (anchor != "") {
         jQuery('html, body').animate({
           scrollTop: jQuery("#" + anchor).offset().top
