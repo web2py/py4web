@@ -109,7 +109,7 @@ if MODE in ("demo", "readonly", "full"):
     @action.uses("index.html", session, T)
     def index():
         return dict(
-            languages=dumps(T.local.language),
+            languages=dumps(getattr(T.local, 'language', {})),
             mode=MODE,
             user_id=(session.get("user") or {}).get("id"),
         )
@@ -140,7 +140,7 @@ if MODE in ("demo", "readonly", "full"):
     @action("dbadmin")
     @action.uses(Logged(session), "dbadmin.html")
     def dbadmin():
-        return dict(languages=dumps(T.local.language))
+        return dict(languages=dumps(getattr(T.local, 'language', {})))
 
     @action("info")
     @session_secured
