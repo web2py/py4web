@@ -1,5 +1,6 @@
 bottle >= 0.12
 click
+colorama
 tornado
 gunicorn
 gevent<=1.4.0
