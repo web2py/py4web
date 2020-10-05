@@ -949,7 +949,6 @@ class DefaultAuthForms:
             user = self.auth.db(query).select().first()
             if not user:
                 raise HTTP(404)
-        user = self.auth.db.auth_user(self.auth.user_id)
         form = Form(
             [
                 Field(
@@ -998,20 +997,21 @@ class DefaultAuthForms:
                 form.accepted = False
             else:
                 res = self.auth.change_password(
-                    user, new_password, old_password, check=True
+                    user, new_password, old_password, check=True, check_old_password=False
                 )
                 form.errors = res.get("errors", {})
                 form.accepted = not form.errors
+                print(form.errors)
                 if not form.accepted:
                     form.vars.clear()
-
+                    
     def profile(self):
         user = self.auth.db.auth_user(self.auth.user_id)
         if "username" in self.auth.db.auth_user.fields:
             self.auth.db.auth_user.username.writable = False
         else:
             self.auth.db.auth_user.email.writable = False
-        form = Form(self.auth.db.auth_user, user, formstyle=self.formstyle)
+        form = Form(self.auth.db.auth_user, user, formstyle=self.formstyle, deletable=False)
         if form.accepted:
             self._set_flash("profile-saved")
             self._postprocessing("profile", form, user)
