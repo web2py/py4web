@@ -501,11 +501,14 @@ class Session(Fixture):
                     assert self.local.data["timestamp"] > time.time() - int(
                         self.expiration
                     )
-                assert self.local.data.get("secure") == self.local.secure
+                assert self.get_data().get("secure") == self.local.secure
             except Exception:
                 pass
-        if not "uuid" in self.local.data:
+        if not "uuid" in self.get_data():
             self.clear()
+
+    def get_data(self):
+        return getattr(self.local, 'data', {})
 
     def save(self):
         self.local.data["timestamp"] = time.time()
@@ -526,13 +529,13 @@ class Session(Fixture):
         )
 
     def get(self, key, default=None):
-        return self.local.data.get(key, default)
+        return self.get_data().get(key, default)
 
     def __getitem__(self, key):
-        return self.local.data[key]
+        return self.get_data()[key]
 
     def __delitem__(self, key):
-        if key in self.local.data:
+        if key in self.get_data():
             self.local.changed = True
             del self.local.data[key]
 
@@ -541,10 +544,10 @@ class Session(Fixture):
         self.local.data[key] = value
 
     def keys(self):
-        return self.local.data.keys()
+        return self.get_data().keys()
 
     def __iter__(self):
-        return self.local.data.items()
+        return self.get_data().items()
 
     def clear(self):
         self.local.changed = True
