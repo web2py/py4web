@@ -109,7 +109,7 @@
             event.target.style.borderColor = "";
             return JSON.parse(event.target.value);
         }
-        catch{
+        catch (error) {
             event.target.style.borderColor = "#ff0000";
         }
     }
