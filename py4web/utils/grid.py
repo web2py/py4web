@@ -1,7 +1,7 @@
 from functools import reduce
 
 from yatl.helpers import DIV, TABLE, TBODY, TR, TD, TH, A, SPAN, I, THEAD, P, TAG, INPUT, XML
-from pydal.objects import FieldVirtual
+from pydal.objects import Field, FieldVirtual
 from py4web import request, URL, response, redirect
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
@@ -37,11 +37,15 @@ def get_storage_value(storage_key, filter_name, secret, default_value=None):
     :return: the value of the filter that was either in the query parms or user storage_key cookie
     """
     storage_value = request.query.get(filter_name, default_value)
+    if not storage_value or (storage_value == default_value and storage_key and storage_key in request.cookies):
+        json_cookie = request.get_cookie(storage_key,
+                                         default=None,
+                                         secret=secret)
+        if json_cookie:
+            cookie = json.loads(json_cookie)
+        else:
+            cookie = dict()
 
-    if storage_value == default_value and storage_key and storage_key in request.cookies:
-        cookie = json.loads(request.get_cookie(storage_key,
-                                               default={},
-                                               secret=secret))
         storage_value = cookie.get(filter_name, default_value)
 
     return storage_value
@@ -154,7 +158,7 @@ class Grid:
                            requires=requires,
                            search_form=search_form,
                            search_queries=search_queries,
-                           storage_values=storage_values,
+                           storage_values=storage_values if storage_values else dict(),
                            storage_key=storage_key,
                            headings=headings,
                            create=create,
@@ -185,6 +189,46 @@ class Grid:
             self.generate()
 
     def generate(self):
+        if not self.param.search_form and self.param.search_queries:
+            if not self.param.storage_key:
+                self.param.storage_key = get_storage_key()
+
+            field_names = ['sq_' + field[0].replace(' ', '_').lower() for field in self.param.search_queries]
+            field_values = dict()
+            for field in field_names:
+                field_values[field] = get_storage_value(self.param.storage_key, field, secret=self.secret)
+
+            form_fields = []
+            for field in field_names:
+                label = field.replace('sq_', '').replace('_', ' ').title()
+                placeholder = field.replace('sq_', '').replace('_', ' ').capitalize()
+                form_fields.append(Field(field,
+                                         length=50,
+                                         default=field_values[field] if field in field_values else None,
+                                         _placeholder=placeholder,
+                                         label=label,
+                                         _title=placeholder))
+
+            search_form = Form(form_fields,
+                               keep_values=True,
+                               formstyle=self.param.formstyle)
+
+            self.param.search_form = search_form
+
+            if self.param.search_form.accepted:
+                for field in field_names:
+                    field_values[field] = self.param.search_form.vars[field]
+
+            for field in field_names:
+                self.param.storage_values[field] = field_values[field] if field in field_values else None
+
+            if not self.param.queries:
+                self.param.queries = []
+            for sq in self.param.search_queries:
+                field_name = 'sq_' + sq[0].replace(' ', '_').lower()
+                if field_name in field_values and field_values[field_name]:
+                    self.param.queries.append(sq[1](field_values[field_name]))
+
         query = reduce(lambda a, b: (a & b), self.param.queries)
 
         if self.param.fields:
@@ -280,6 +324,8 @@ class Grid:
                 storage_values = dict()
 
             parms["orderby"] = orderby["orderby_expression"]
+            if "orderby" not in self.param.storage_values:
+                self.param.storage_values["orderby"] = None
             self.param.storage_values["orderby"] = orderby["orderby_string"]
             if orderby["orderby_string"] != get_storage_value(self.param.storage_key, "orderby", self.secret):
                 #  user clicked on a header to change sort order - reset page to 1
@@ -318,7 +364,7 @@ class Grid:
 
             self.param.storage_values["page"] = self.current_page_number
 
-            set_storage_values(self.param.storage_key, 
+            set_storage_values(self.param.storage_key,
                                self.param.storage_values, 
                                self.secret, 
                                self.param.token_longevity)
@@ -330,7 +376,7 @@ class Grid:
         need to determine which it is and then return a dict containing the string representation of the
         orderby and the pydal expression to be used in the query
 
-        :param sort_order:
+        :param sort_order: can be an int, string, list of strings, pydal fields or list of pydal fields
         :return: dict(orderby_string=<order by string>, orderby_expression=<pydal orderby expression>)
         """
         orderby_expression = None
@@ -383,7 +429,7 @@ class Grid:
                 orderby_string = []
                 for x in orderby_expression:
                     op = ''
-                    if hasattr(x, 'op') and x.op.__name__ == 'invert':
+                    if hasattr(x, 'op') and x.op and x.op.__name__ == 'invert':
                         x = x.first
                         op = '~'
                     orderby_string.append("%s%s.%s" % (op, x.tablename, x.name))
