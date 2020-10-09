@@ -6,6 +6,7 @@ py4web comes with a Grid object providing simple grid and CRUD capabilities.
 #### Key Features
 - Click column heads for sorting - click again for DESC
 - Pagination control
+- Search Queries list - provide the search queries used to filter the grid and grid will build the search form (remembers filters between pages)
 - Filter Form - you supply and control filtering (remember filters between pages)
 - Action Buttons - with or without text
 - Full CRUD with Delete Confirmation
@@ -72,31 +73,17 @@ def companies(**kwargs):
                                secret=SESSION_SECRET_KEY,
                                rows_per_page=5)
 
-    storage_key = get_storage_key()
-    search_filter = get_storage_value(storage_key, 'search_filter', common_settings=GRID_COMMON)
-
-    search_form = Form([Field('search_filter',
-                              length=50,
-                              default=search_filter,
-                              _placeholder='...search text...',
-                              _title='Enter search text and click on %s' % GRID_COMMON.param.search_button_text)],
-                       keep_values=True, formstyle=FormStyleGrid)
-
-    if search_form.accepted:
-        search_filter = search_form.vars['search_filter']
+    search_queries = [['Search by Name', lambda value: db.company.name.contains(values)]]
 
     queries = [(db.company.id > 0)]
-    if search_filter:
-        queries.append(db.company.name.contains(search_filter))
-
     orderby = [db.company.name]
 
     grid = Grid(GRID_COMMON,
                 queries,
-                search_form=search_form,
+                search_queries=search_queries,
                 storage_values=dict(search_filter=search_filter),
                 orderby=orderby,
-                storage_key=storage_key)
+                storage_key=get_storage_key())
 
     return dict(grid=grid)
 ``:python
@@ -112,6 +99,7 @@ class Grid:
                  common_settings,
                  queries,
                  search_form=None,
+                 search_queries=None,
                  storage_values=None,
                  fields=None,
                  show_id=False,
@@ -131,6 +119,7 @@ class Grid:
 - common_settings: Params object with common settings for all grids within the application
 - queries: list of queries used to filter the data
 - search_form: py4web FORM to be included as the search form
+- search_queries: list of query lists to use to build the search form.  Ignored if search_form is used. Format is [[query_name, lambda function to add to dal queries, dal requires statement used to build proper html element]]
 - storage_values: values to save between requests
 - fields: list of fields to display on the list page, if blank, glean tablename from first query and use all fields of that table
 - show_id: show the record id field on list page - default = False
@@ -172,7 +161,18 @@ The GridDefaults class allows you to set app-wide grid defaults that you can use
 
 ### Searching / Filtering
 
-You can pass a py4web Form to the grid to be used as a search form.  You are responsible for taking the values from the search form and building the queries to pass to the Grid __init__ method.
+There are two ways to build a search form.
+
+- Provide a search_queries list
+- Build your own custom search form
+
+If you provide a search_queries list to grid, it will:
+
+1. build the search form with all fields provided
+2. gather filter values and filter the grid
+3. if you supply a PyDAL requires statement, it will build the search field as requested
+
+However, if this doesn't give you enough flexibility you can provide your own search form and handle all the filtering (building the queries) by yourself.PyDAL
 
 The grid provides helper functions that allow you save/retrieve filter values between page displays.
 
@@ -231,9 +231,9 @@ The default GridClassStyle - based on no.css, primarily uses styles to modify th
 def GridClassStyle(element_name):
     classes = {"wrapper": "",
                "top_div": "",
-               "new_button", "",
+               "new_button": "",
                "search_form": "",
-               "search_form_table": "",
+               "search_form_table": "search-form",
                "search_form_tr": "",
                "search_form_td": "",
                "table": "",
@@ -256,7 +256,7 @@ def GridClassStyle(element_name):
 
     styles = {"wrapper": "",
               "top_div": "border-bottom: 0;",
-              "new_button", "",
+              "new_button": "",
               "search_form": "float: right; border-bottom: 0; padding-bottom: 0; margin-bottom: 0;",
               "search_form_table": "margin-bottom: 0;",
               "search_form_tr": "border-bottom: 0; padding-bottom: 0;",
@@ -329,15 +329,15 @@ GridClassStyleBulma - bulma implementation
 def GridClassStyleBulma(element_name):
     classes = {"wrapper": "field",
                "top_div": "pb-2",
-               "new_button", "",
+               "new_button": "button",
                "search_form": "is-pulled-right pb-2",
-               "search_form_table": "",
+               "search_form_table": "search-form",
                "search_form_tr": "",
                "search_form_td": "pr-1",
                "table": "table is-bordered is-striped is-hoverable is-fullwidth",
                "thead": "",
-               "th": "",
-               "sorter_icon": "",
+               "th": "has-text-centered",
+               "sorter_icon": "is-pulled-right",
                "action_column_header": "has-text-centered is-narrow",
                "tbody": "",
                "tr": "",
@@ -354,7 +354,7 @@ def GridClassStyleBulma(element_name):
 
     styles = {"wrapper": "",
               "top_div": "",
-              "new_button", "",
+              "new_button": "",
               "search_form": "",
               "search_form_table": "",
               "search_form_tr": "",
