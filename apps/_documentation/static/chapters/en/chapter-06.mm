@@ -40,8 +40,8 @@ policy.set('*', 'PUT', authorize=False)
 policy.set('*', 'POST', authorize=False)
 policy.set('*', 'DELETE', authorize=False)
 
-@action('api/<tablename>/')
-@action('api/<tablename>/<rec_id>')
+@action('api/<tablename>/', method = ['GET', 'POST'])
+@action('api/<tablename>/<rec_id>', method = ['GET', 'PUT', 'DELETE'])
 def api(tablename, rec_id=None):
     return RestAPI(db, policy)(request.method, 
                                tablename, 

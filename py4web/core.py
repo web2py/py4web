@@ -1026,15 +1026,15 @@ class Reloader:
                 module = importlib.machinery.SourceFileLoader(
                     module_name, init
                 ).load_module()
-                click.echo("\x1b[A[X] loaded %s       " % app_name, color="green")
+                click.secho("\x1b[A[X] loaded %s       " % app_name, fg="green")
                 Reloader.MODULES[app_name] = module
                 Reloader.ERRORS[app_name] = None
             except:
                 tb = traceback.format_exc()
                 print(tb)
-                click.echo(
+                click.secho(
                     "\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb),
-                    color="red",
+                    fg="red",
                 )
                 Reloader.ERRORS[app_name] = tb
                 # clear all files/submodules if the loading fails
@@ -1332,13 +1332,6 @@ def wsgi(**args):
 #########################################################################################
 
 
-def fix_ansi_on_windows():
-    if platform.system().lower() == "windows":  # fix for ANSI on Win7, 8, 10 ...
-        from ctypes import windll
-
-        windll.kernel32.SetConsoleMode(windll.kernel32.GetStdHandle(-11), 7)
-
-
 def keyboardInterruptHandler(signal, frame):
     """Catch interrupts like Ctrl-C"""
     click.echo(
@@ -1393,7 +1386,6 @@ def setup(**args):
 def shell(apps_folder):
     """Open a python shell with apps_folder added to the path"""
     install_args(dict(apps_folder=apps_folder))
-    fix_ansi_on_windows()
     code.interact(local=dict(globals(), **locals()))
 
 
@@ -1494,7 +1486,7 @@ def run(**args):
 
     from py4web import __version__
 
-    click.echo(ART, color="blue")
+    click.secho(ART, fg="blue")
     click.echo("Py4web: %s on Python %s\n\n" % (__version__, sys.version))
 
     # If we know where the password is stored, read it, otherwise ask for one
