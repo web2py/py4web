@@ -193,7 +193,14 @@ class Grid:
             if not self.param.storage_key:
                 self.param.storage_key = get_storage_key()
 
-            field_names = ['sq_' + field[0].replace(' ', '_').lower() for field in self.param.search_queries]
+            field_names = []
+            field_requires = dict()
+            for field in self.param.search_queries:
+                field_name = 'sq_' + field[0].replace(' ', '_').lower()
+                field_names.append(field_name)
+                if len(field) > 2:
+                    field_requires[field_name] = field[2]
+
             field_values = dict()
             for field in field_names:
                 field_values[field] = get_storage_value(self.param.storage_key, field, secret=self.secret)
@@ -207,6 +214,7 @@ class Grid:
                                          default=field_values[field] if field in field_values else None,
                                          _placeholder=placeholder,
                                          label=label,
+                                         requires=field_requires[field] if field in field_requires else None,
                                          _title=placeholder))
 
             search_form = Form(form_fields,
@@ -228,7 +236,6 @@ class Grid:
                 field_name = 'sq_' + sq[0].replace(' ', '_').lower()
                 if field_name in field_values and field_values[field_name]:
                     self.param.queries.append(sq[1](field_values[field_name]))
-
         query = reduce(lambda a, b: (a & b), self.param.queries)
 
         if self.param.fields:
@@ -549,7 +556,7 @@ class Grid:
         return _a
 
     def render_search_form(self):
-        _sf = DIV(**self.param.grid_class_style("search_form"))
+        _sf = DIV(_id="search_form_outer_div", **self.param.grid_class_style("search_form"))
         _sf.append(self.param.search_form.custom["begin"])
         _tr = TR(**self.param.grid_class_style("search_form_tr"))
         for field in self.param.search_form.table:
@@ -584,6 +591,8 @@ class Grid:
                     field.name != "id" or (field.name == "id" and self.param.show_id)):
                 try:
                     heading = self.param.headings[index]
+                    if not heading:
+                        raise ValueError  # raise error to force exception handling
                 except:
                     if field.table == self.tablename:
                         heading = field.label
@@ -791,6 +800,20 @@ class Grid:
                             display: none;
                         }
                     
+                        table.search-form tr td {
+                            display: block;
+                        }
+                        
+                        #search_form_outer_div {
+                            float: none !important;
+                        }
+                        
+                        #search_form_outer_div table tr td {
+                            padding-bottom: .25em;
+                        }
+                        #search_form_outer_div table tr td:first-child {
+                            padding-top: .25em;
+                        }
                     }
                  </style>
             """)
@@ -878,13 +901,24 @@ class Grid:
         """
         return self.db[self.tablename](self.record_id) if self.tablename and self.record_id else None
 
+    def add_search_query(self, name, query, requires):
+        if self.param.search_form:
+            raise ValueError('Cannot add search queries if a you provide a search_form to the grid call '
+                             'or if auto_generate is set to True.  Ensure no search_form is set, set '
+                             'auto_generate to False, add your search query and then call grid.generate().')
+
+        if self.param.search_queries:
+            self.param.search_queries.append([name, query, requires])
+        else:
+            self.param.search_queries = [[name, query, requires]]
+
 
 def GridClassStyle(element_name):
     classes = {"wrapper": "",
                "top_div": "",
                "new_button": "",
                "search_form": "",
-               "search_form_table": "",
+               "search_form_table": "search-form",
                "search_form_tr": "",
                "search_form_td": "",
                "table": "",
@@ -980,7 +1014,7 @@ def GridClassStyleBulma(element_name):
                "top_div": "pb-2",
                "new_button": "button",
                "search_form": "is-pulled-right pb-2",
-               "search_form_table": "",
+               "search_form_table": "search-form",
                "search_form_tr": "",
                "search_form_td": "pr-1",
                "table": "table is-bordered is-striped is-hoverable is-fullwidth",
