@@ -303,7 +303,7 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
         "input[type=radio]": "radio",
         "input[type=checkbox]": "checkbox",
         "input[type=submit]": "button",
-        "input[type=password]": "password",
+        "input[type=password]": "input password",
         "input[type=file]": "file",
         "select": "control select",
         "textarea": "textarea",
