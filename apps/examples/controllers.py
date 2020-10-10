@@ -142,39 +142,19 @@ def example_html_grid(**kwargs):
     GRID_COMMON = GridDefaults(db=db,
                                secret=SESSION_SECRET_KEY,
                                rows_per_page=5)
-    #  check session to see if we've saved a default value
-    storage_key = get_storage_key()
-    search_filter = get_storage_value(storage_key, "search_filter", common_settings=GRID_COMMON)
 
-    search_form = Form([Field("search_filter",
-                              length=50,
-                              default=search_filter,
-                              _placeholder="...search text...",
-                              _title="Enter search text and click on %s" % GRID_COMMON.param.search_button_text)],
-                       keep_values=True, formstyle=FormStyleBulma, )
-
-    if search_form.accepted:
-        search_filter = search_form.vars["search_filter"]
-
-    queries = [(db.superhero.id > 0)]
-    if search_filter:
-        queries.append((db.superhero.name.contains(search_filter)) |
-                       (db.person.name.contains(search_filter)))
-
+    search_queries = [['Superhero name or Real name', lambda value: db.superhero.name.contains(value) |
+                                                                    db.person.name.contains(value)]]
+    queries = [db.superhero.id > 0]
     orderby = [db.superhero.name]
 
     grid = Grid(GRID_COMMON,
                 queries,
                 fields=[db.superhero.name, db.person.name],
                 left=db.person.on(db.superhero.real_identity==db.person.id),
-                search_form=search_form,
-                storage_values=dict(search_filter=search_filter),
+                search_queries=search_queries,
                 orderby=orderby,
-                create=True,
-                details=True,
-                editable=True,
-                deletable=True,
-                storage_key=storage_key)
+                storage_key=get_storage_key())
 
     return dict(grid=grid)
 
