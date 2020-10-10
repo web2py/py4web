@@ -593,11 +593,14 @@ def URL(
         request.environ.get("HTTP_X_SCRIPT_NAME", "")
         or request.environ.get("SCRIPT_NAME", "")
     ).rstrip("/")
-    prefix = script_name + (
-        "/%s/" % request.app_name
-        if (request.app_name != "_default" and use_appname)
-        else "/"
-    )
+    if parts and parts[0].startswith('/'):
+        prefix = ''
+    else:
+        prefix = script_name + (
+            "/%s/" % request.app_name
+            if (request.app_name != "_default" and use_appname)
+            else "/"
+            )
     broken_parts = []
     for part in parts:
         broken_parts += str(part).rstrip("/").split("/")

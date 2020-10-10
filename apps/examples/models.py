@@ -5,6 +5,7 @@ import datetime
 
 from .common import db, Field, T, auth
 from pydal.validators import *
+from py4web.utils.populate import populate
 
 # simple table example
 db.define_table(
@@ -80,5 +81,16 @@ db.product.id.readable = False
 db.product.created_by.readable = False
 db.product.creation_date.readable = False
 
+db.define_table(
+    'thing',
+    Field('name', required=True),
+    Field('color', options=('red', 'green', 'blue')),
+    Field('is_ready', 'boolean'),
+    Field('time_created', 'time'),
+    Field('date_created', 'date'),
+    Field('timetime_created', 'datetime'))
+
+if db(db.thing).isempty():
+    populate(db.thing, 100)
 
 db.commit()

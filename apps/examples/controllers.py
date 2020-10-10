@@ -1,13 +1,12 @@
 import os
 from py4web import action, request, abort, redirect, URL, Field, HTTP
-from yatl.helpers import A
-from py4web.utils.form import Form, FormStyleBulma
-from py4web.utils.grid import Grid, get_storage_key, get_storage_value, GridDefaults, GridClassStyle
+from yatl.helpers import A, I
+from py4web.utils.form import Form, FormStyleDefault
+from py4web.utils.grid import Grid, GridClassStyle
 from py4web.utils.param import Param
 from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1, HTML, BODY, A, DIV
-from py4web.utils.grid import Grid, get_storage_key, get_storage_value, GridDefaults, GridClassStyle
 from py4web.utils.param import Param
 from .settings import SESSION_SECRET_KEY
 
@@ -111,7 +110,7 @@ def flash_example_next():
 @action("update_form/<id>", method=["GET", "POST"])
 @action.uses("form.html", db, session, T)
 def example_form(id=None):
-    form = Form(db.person, id, deletable=False, formstyle=FormStyleBulma)
+    form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
     rows = db(db.person).select()
     return dict(form=form, rows=rows)
 
@@ -120,7 +119,7 @@ def example_form(id=None):
 @action("custom_form", method=["GET", "POST"])
 @action.uses("custom_form.html", db, session, T)
 def custom_form(id=None):
-    form = Form(db.person, id, deletable=False, formstyle=FormStyleBulma)
+    form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
     rows = db(db.person).select()
     return dict(form=form, rows=rows)
 
@@ -133,28 +132,35 @@ def tagsinput_form():
 
 
 # exposed as /examples/htmlgrid
-@action("html_grid", method=["POST", "GET"])
-@action("html_grid/<action>/<tablename>/<record_id>", method=["POST", "GET"])
+@action("html_grid")
+@action("html_grid/<path:path>", method=["POST", "GET"])
 @action.uses(session, db, auth, "html_grid.html")
-def example_html_grid(**kwargs):
-    #  GRID_COMMON would normally be defined in common.py, imported into
+def example_html_grid(path=None):
     #  controllers and used for all grids in the app
-    GRID_COMMON = GridDefaults(db=db,
-                               secret=SESSION_SECRET_KEY,
-                               rows_per_page=5)
+    grid_param = dict(
+        rows_per_page=5,
+        include_action_button_text=True,
+        search_button_text="Filter",
+        formstyle=FormStyleDefault,
+        grid_class_style=GridClassStyle)
+                               
+    search_queries = [
+        ['By Name', lambda value: db.thing.name.contains(value)],
+        ['By Color', lambda value: db.thing.color == value],
+        ['By Name or Color', lambda value: db.thing.name.contains(value)|(db.thing.color == value)],
+    ]
 
-    search_queries = [['Superhero name or Real name', lambda value: db.superhero.name.contains(value) |
-                                                                    db.person.name.contains(value)]]
-    queries = [db.superhero.id > 0]
-    orderby = [db.superhero.name]
+    query = db.thing.id > 0
+    orderby = [db.thing.name]
 
-    grid = Grid(GRID_COMMON,
-                queries,
-                fields=[db.superhero.name, db.person.name],
-                left=db.person.on(db.superhero.real_identity==db.person.id),
+    grid = Grid(path,
+                query,
+                fields=[field for field in db.thing if field.readable],
                 search_queries=search_queries,
                 orderby=orderby,
-                storage_key=get_storage_key())
+                **grid_param)
+
+    grid.formatters['thing.color'] = lambda color: I(_class="fa fa-circle", _style="color:"+color)
 
     return dict(grid=grid)
 
@@ -189,23 +195,23 @@ def example_multiple_forms():
         Form(
             [Field("name", requires=IS_NOT_EMPTY())],
             form_name="1",
-            formstyle=FormStyleBulma,
+            formstyle=FormStyleDefault,
         ),
         Form(
             [Field("name", requires=IS_NOT_EMPTY())],
             form_name="2",
             keep_values=True,
-            formstyle=FormStyleBulma,
+            formstyle=FormStyleDefault,
         ),
         Form(
             [Field("name", requires=IS_NOT_EMPTY()), Field("age", "integer")],
             form_name="3",
-            formstyle=FormStyleBulma,
+            formstyle=FormStyleDefault,
         ),
         Form(
             [Field("name", requires=IS_NOT_EMPTY()), Field("insane", "boolean")],
             form_name="4",
-            formstyle=FormStyleBulma,
+            formstyle=FormStyleDefault,
         ),
         Form(
             [
@@ -213,7 +219,7 @@ def example_multiple_forms():
                 Field("color", requires=IS_IN_SET(["red", "blue", "green"])),
             ],
             form_name="5",
-            formstyle=FormStyleBulma,
+            formstyle=FormStyleDefault,
         ),
         Form(
             [
@@ -223,7 +229,7 @@ def example_multiple_forms():
                 ),
             ],
             form_name="6",
-            formstyle=FormStyleBulma,
+            formstyle=FormStyleDefault,
         ),
     ]
     messages = []
