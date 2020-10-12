@@ -386,7 +386,7 @@ class Grid:
                 self.param.fields.append(pt._id)
                 self.param.show_id = False
 
-            self.current_page_number = safe_int(request.query.get("page"), default=0)
+            self.current_page_number = safe_int(request.query.get("page"), default=1)
 
             select_params = dict()
             #  try getting sort order from the request
