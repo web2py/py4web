@@ -184,6 +184,7 @@ class Grid:
         )
         if value
         else "",
+        "default": lambda value: str(value) if value is not None else ""
     }
 
     def __init__(
@@ -665,7 +666,7 @@ class Grid:
         formatter = (
             self.formatters.get(key)
             or self.formatters_by_type.get(field.type)
-            or (lambda value: str(value))
+            or self.formatters_by_type.get('default')
         )
 
         class_type = "grid-cell-type-%s" % str(field.type).split(":")[0]
