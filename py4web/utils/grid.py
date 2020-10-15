@@ -22,7 +22,7 @@ from yatl.helpers import (
     OPTION,
 )
 from pydal.objects import Field, FieldVirtual
-from py4web import request, URL, response, redirect
+from py4web import request, URL, response, redirect, HTTP
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
 
@@ -36,7 +36,7 @@ def title(text):
 
 
 def safe_int(text, default):
-    """try parse txt into an int else returns the defalt"""
+    """try parse txt into an int else returns the default"""
     try:
         return int(text)
     except (ValueError, TypeError):
@@ -48,16 +48,20 @@ class GridClassStyle:
     """
     Default grid style
     Internal element names match default class name, other classes can be added
-    Style use should be minimized since it cannot be overidden by CSS
+    Style use should be minimized since it cannot be overridden by CSS
     """
 
     classes = {
-        "grid-wrapper": "grid-warpper",
+        "grid-wrapper": "grid-wrapper",
         "grid-header": "grid-header",
         "grid-new-button": "grid-new-button info",
         "grid-search": "grid-search",
         "grid-table-wrapper": "grid-table-wrapper",
         "grid-table": "grid-table",
+        "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up",
+        "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down",
+        "grid-th-action-button": "grid-col-action-button",
+        "grid-td-action-button": "grid-col-action-button",
         "grid-details-button": "grid-details-button info",
         "grid-edit-button": "grid-edit-button info",
         "grid-delete-button": "grid-delete-button info",
@@ -68,7 +72,7 @@ class GridClassStyle:
         "grid-pagination-button-current": "grid-pagination-button-current default",
         "grid-cell-type-string": "grid-cell-type-string",
         "grid-cell-type-text": "grid-cell-type-text",
-        "grid-cell-type-boolan": "grid-cell-type-boolean",
+        "grid-cell-type-boolean": "grid-cell-type-boolean",
         "grid-cell-type-float": "grid-cell-type-float",
         "grid-cell-type-int": "grid-cell-type-int",
         "grid-cell-type-date": "grid-cell-type-date",
@@ -76,6 +80,11 @@ class GridClassStyle:
         "grid-cell-type-datetime": "grid-cell-type-datetime",
         "grid-cell-type-upload": "grid-cell-type-upload",
         "grid-cell-type-list": "grid-cell-type-list",
+        # specific for custom form
+        "search_form": "search-form",
+        "search_form_table": "search-form-table",
+        "search_form_tr": "search-form-tr",
+        "search_form_td": "search-form-td",
     }
 
     styles = {
@@ -85,6 +94,10 @@ class GridClassStyle:
         "grid-search": "display: table-cell; float:right",
         "grid-table-wrapper": "overflow-x: auto; width:100%",
         "grid-table": "",
+        "grid-sorter-icon-up": "",
+        "grid-sorter-icon-down": "",
+        "grid-th-action-button": "",
+        "grid-td-action-button": "",
         "grid-tr": "",
         "grid-th": "white-space: nowrap; vertical-align: middle",
         "grid-td": "white-space: nowrap; vertical-align: middle",
@@ -98,7 +111,7 @@ class GridClassStyle:
         "grid-pagination-button-current": "min-width: 20px; pointer-events:none; opacity: 0.7",
         "grid-cell-type-string": "white-space: nowrap; vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px",
         "grid-cell-type-text": "vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px",
-        "grid-cell-type-boolan": "white-space: nowrap; vertical-align: middle; text-align: center",
+        "grid-cell-type-boolean": "white-space: nowrap; vertical-align: middle; text-align: center",
         "grid-cell-type-float": "white-space: nowrap; vertical-align: middle; text-align: right",
         "grid-cell-type-int": "white-space: nowrap; vertical-align: middle; text-align: right",
         "grid-cell-type-date": "white-space: nowrap; vertical-align: middle; text-align: right",
@@ -106,6 +119,11 @@ class GridClassStyle:
         "grid-cell-type-datetime": "white-space: nowrap; vertical-align: middle; text-align: right",
         "grid-cell-type-upload": "white-space: nowrap; vertical-align: middle; text-align: center",
         "grid-cell-type-list": "white-space: nowrap; vertical-align: middle; text-align: left",
+        # specific for custom form
+        "search_form": "",
+        "search_form_table": "",
+        "search_form_tr": "",
+        "search_form_td": "",
     }
 
     @classmethod
@@ -121,23 +139,27 @@ class GridClassStyleBulma(GridClassStyle):
     """The Grid style for Bulma"""
 
     classes = {
-        "grid-wrapper": "grid-warpper",
+        "grid-wrapper": "grid-wrapper field",
         "grid-header": "grid-header pb-2",
         "grid-new-button": "grid-new-button button",
-        "grid-search": "grid-search",
+        "grid-search": "grid-search is-pulled-right pb-2",
         "grid-table-wrapper": "grid-table-wrapper table_wrapper",
         "grid-table": "grid-table table is-bordered is-striped is-hoverable is-fullwidth",
+        "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up is-pulled-right",
+        "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down is-pulled-right",
+        "grid-th-action-button": "grid-col-action-button is-narrow",
+        "grid-td-action-button": "grid-col-action-button is-narrow",
         "grid-details-button": "grid-details-button button is-small",
         "grid-edit-button": "grid-edit-button button is-small",
         "grid-delete-button": "grid-delete-button button is-small",
         "grid-footer": "grid-footer",
-        "grid-info": "grid-info",
-        "grid-pagination": "grid-pagination",
+        "grid-info": "grid-info is-pulled-left",
+        "grid-pagination": "grid-pagination is-pulled-right",
         "grid-pagination-button": "grid-pagination-button button is-small",
-        "grid-pagination-button-current": "grid-pagination-button-current is-primary is-small",
+        "grid-pagination-button-current": "grid-pagination-button-current button is-primary is-small",
         "grid-cell-type-string": "grid-cell-type-string",
         "grid-cell-type-text": "grid-cell-type-text",
-        "grid-cell-type-boolan": "grid-cell-type-boolean",
+        "grid-cell-type-boolean": "grid-cell-type-boolean",
         "grid-cell-type-float": "grid-cell-type-float",
         "grid-cell-type-int": "grid-cell-type-int",
         "grid-cell-type-date": "grid-cell-type-date",
@@ -146,10 +168,49 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-cell-type-upload": "grid-cell-type-upload",
         "grid-cell-type-list": "grid-cell-type-list",
         # specific for custom form
-        "search_form": "is-pulled-right pb-2",
-        "search_form_table": "search-form",
+        "search_form": "search-form is-pulled-right pb-2",
+        "search_form_table": "search-form-table",
+        "search_form_tr": "search-form-tr",
+        "search_form_td": "search-form-td pr-1",
+    }
+
+    styles = {
+        "grid-wrapper": "",
+        "grid-header": "",
+        "grid-new-button": "",
+        "grid-search": "",
+        "grid-table-wrapper": "",
+        "grid-table": "",
+        "grid-sorter-icon-up": "",
+        "grid-sorter-icon-down": "",
+        "grid-th-action-button": "",
+        "grid-td-action-button": "",
+        "grid-tr": "",
+        "grid-th": "text-align: center; text-transform: uppercase;",
+        "grid-td": "",
+        "grid-details-button": "",
+        "grid-edit-button": "",
+        "grid-delete-button": "",
+        "grid-footer": "padding-top: .5em;",
+        "grid-info": "",
+        "grid-pagination": "",
+        "grid-pagination-button": "margin-left: .25em;",
+        "grid-pagination-button-current": "margin-left: .25em;",
+        "grid-cell-type-string": "",
+        "grid-cell-type-text": "",
+        "grid-cell-type-boolean": "",
+        "grid-cell-type-float": "",
+        "grid-cell-type-int": "",
+        "grid-cell-type-date": "",
+        "grid-cell-type-time": "",
+        "grid-cell-type-datetime": "",
+        "grid-cell-type-upload": "",
+        "grid-cell-type-list": "",
+        # specific for custom form
+        "search_form": "",
+        "search_form_table": "",
         "search_form_tr": "",
-        "search_form_td": "pr-1",
+        "search_form_td": "",
     }
 
 
@@ -305,6 +366,11 @@ class Grid:
         else:
             query &= self.param.query
 
+        parts = self.path.split("/")
+        self.action = parts[0] or "select"
+        self.tablename = self.get_tablenames(self.param.query)[0]  # what if there ar 2?
+        self.record_id = safe_int(parts[1] if len(parts) > 1 else None, default=None)
+
         if self.param.fields:
             if not isinstance(self.param.fields, list):
                 self.param.fields = [self.param.fields]
@@ -312,10 +378,6 @@ class Grid:
             table = db[self.tablename]
             self.param.fields = [field for field in table if field.readable]
 
-        parts = self.path.split("/")
-        self.action = parts[0] or "select"
-        self.tablename = self.get_tablenames(self.param.query)[0]  # what if there ar 2?
-        self.record_id = safe_int(parts[1] if len(parts) > 1 else None, default=None)
         self.readonly_fields = [
             field for field in self.param.fields if not field.writable
         ]
@@ -509,14 +571,14 @@ class Grid:
             I(_class="fa %s" % icon),
             _href=url,
             _role="button",
-            _class=classes + " icon is-%s" % icon_size,
+            _class=classes,
             _message=message,
             _title=button_text,
             _style=styles,
             **attr,
         )
         if self.param.include_action_button_text:
-            link.append(" " + button_text)
+            link.append(XML('<span class="grid-action-button-text">&nbsp;%s</span>' % button_text))
 
         return link
 
@@ -602,8 +664,8 @@ class Grid:
 
     def render_table_header(self):
 
-        up = I(_class="fas fa-sort-up")
-        dw = I(_class="fas fa-sort-down")
+        up = I(**self.param.grid_class_style.get("grid-sorter-icon-up"))
+        dw = I(**self.param.grid_class_style.get("grid-sorter-icon-down"))
         columns = []
         sort_order = request.query.get("orderby", "")
         for index, field in enumerate(self.param.fields):
@@ -641,7 +703,7 @@ class Grid:
             )
 
         if self.param.details or self.param.editable or self.param.deletable:
-            thead.append(TH(""))
+            thead.append(TH("", **self.param.grid_class_style.get('grid-th-action-button')))
 
         return thead
 
@@ -716,8 +778,8 @@ class Grid:
                 or (self.param.deletable and self.param.deletable != "")
             ):
                 td = TD(
-                    _class=self.param.grid_class_style.classes.get("grid-td"),
-                    _style=self.param.grid_class_style.styles.get("grid-td"),
+                    _class=self.param.grid_class_style.classes.get("grid-td-action-button"),
+                    _style=self.param.grid_class_style.styles.get("grid-td-action-button"),
                 )
                 if self.param.pre_action_buttons:
                     for btn in self.param.pre_action_buttons:
