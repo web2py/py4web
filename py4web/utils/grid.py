@@ -62,6 +62,9 @@ class GridClassStyle:
         "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down",
         "grid-th-action-button": "grid-col-action-button",
         "grid-td-action-button": "grid-col-action-button",
+        "grid-tr": "",
+        "grid-th": "",
+        "grid-td": "",
         "grid-details-button": "grid-details-button info",
         "grid-edit-button": "grid-edit-button info",
         "grid-delete-button": "grid-delete-button info",
@@ -149,6 +152,9 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down is-pulled-right",
         "grid-th-action-button": "grid-col-action-button is-narrow",
         "grid-td-action-button": "grid-col-action-button is-narrow",
+        "grid-tr": "",
+        "grid-th": "",
+        "grid-td": "",
         "grid-details-button": "grid-details-button button is-small",
         "grid-edit-button": "grid-edit-button button is-small",
         "grid-delete-button": "grid-delete-button button is-small",
@@ -159,7 +165,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-pagination-button-current": "grid-pagination-button-current button is-primary is-small",
         "grid-cell-type-string": "grid-cell-type-string",
         "grid-cell-type-text": "grid-cell-type-text",
-        "grid-cell-type-boolean": "grid-cell-type-boolean",
+        "grid-cell-type-boolean": "grid-cell-type-boolean has-text-centered",
         "grid-cell-type-float": "grid-cell-type-float",
         "grid-cell-type-int": "grid-cell-type-int",
         "grid-cell-type-date": "grid-cell-type-date",
@@ -218,7 +224,7 @@ class Grid:
 
     FORMATTERS_BY_TYPE = {
         "boolean": lambda value: INPUT(_type="checkbox", _checked=value)
-        if value is not None
+        if value
         else "",
         "datetime": lambda value: XML(
             "<script>document.write((new Date(%s,%s,%s,%s,%s,%s)).toLocaleString())</script>"
@@ -254,7 +260,6 @@ class Grid:
         query,
         search_form=None,
         search_queries=None,
-        storage_values=None,
         fields=None,
         show_id=False,
         orderby=None,
@@ -264,7 +269,6 @@ class Grid:
         details=True,
         editable=True,
         deletable=True,
-        storage_key=None,
         pre_action_buttons=None,
         post_action_buttons=None,
         auto_process=True,
@@ -668,6 +672,17 @@ class Grid:
         dw = I(**self.param.grid_class_style.get("grid-sorter-icon-down"))
         columns = []
         sort_order = request.query.get("orderby", "")
+        if sort_order:
+            sort_order = [sort_order]
+        else:
+            sort_order = []
+            for x in self.param.orderby:
+                op = ''
+                if hasattr(x, 'op') and x.op and x.op.__name__ == 'invert':
+                    x = x.first
+                    op = '~'
+                sort_order.append("%s%s.%s" % (op, x.tablename, x.name))
+
         for index, field in enumerate(self.param.fields):
             if field.readable and (field.type != "id" or self.param.show_id):
                 key = "%s.%s" % (field.tablename, field.name)
@@ -680,14 +695,14 @@ class Grid:
                 #  add the sort order query parm
                 sort_query_parms = dict(self.query_parms)
 
-                if key == sort_order:
+                if key in sort_order:
                     sort_query_parms["orderby"] = "~" + key
                     href = URL(self.endpoint, vars=sort_query_parms)
                     col = A(heading, up, _href=href)
                 else:
                     sort_query_parms["orderby"] = key
                     href = URL(self.endpoint, vars=sort_query_parms)
-                    col = A(heading, dw if "~" + key == sort_order else "", _href=href)
+                    col = A(heading, dw if "~" + key in sort_order else "", _href=href)
                 columns.append((key, col))
 
         thead = THEAD()
@@ -738,13 +753,16 @@ class Grid:
             _class=(
                 self.param.grid_class_style.classes.get("grid-td", "")
                 + " "
-                + class_type
+                + class_type if class_type not in self.param.grid_class_style.classes.get(class_type,
+                                                                                          "").split(" ") else ""
+                + " "
+                + self.param.grid_class_style.classes.get(class_type, "")
                 + " "
                 + class_col
             ).strip(),
             _style=(
                 self.param.grid_class_style.styles.get(class_type)
-                or self.param.grid_class_style.styles.get("grid_td")
+                or self.param.grid_class_style.styles.get("grid-td")
             ),
         )
 
