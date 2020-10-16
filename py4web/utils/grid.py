@@ -672,16 +672,6 @@ class Grid:
         dw = I(**self.param.grid_class_style.get("grid-sorter-icon-down"))
         columns = []
         sort_order = request.query.get("orderby", "")
-        if sort_order:
-            sort_order = [sort_order]
-        else:
-            sort_order = []
-            for x in self.param.orderby:
-                op = ''
-                if hasattr(x, 'op') and x.op and x.op.__name__ == 'invert':
-                    x = x.first
-                    op = '~'
-                sort_order.append("%s%s.%s" % (op, x.tablename, x.name))
 
         for index, field in enumerate(self.param.fields):
             if field.readable and (field.type != "id" or self.param.show_id):
@@ -695,14 +685,14 @@ class Grid:
                 #  add the sort order query parm
                 sort_query_parms = dict(self.query_parms)
 
-                if key in sort_order:
+                if key == sort_order:
                     sort_query_parms["orderby"] = "~" + key
                     href = URL(self.endpoint, vars=sort_query_parms)
                     col = A(heading, up, _href=href)
                 else:
                     sort_query_parms["orderby"] = key
                     href = URL(self.endpoint, vars=sort_query_parms)
-                    col = A(heading, dw if "~" + key in sort_order else "", _href=href)
+                    col = A(heading, dw if "~" + key == sort_order else "", _href=href)
                 columns.append((key, col))
 
         thead = THEAD()
