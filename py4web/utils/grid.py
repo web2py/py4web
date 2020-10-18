@@ -998,4 +998,10 @@ class Grid:
         return list(self.db._adapter.tables(*args).keys())
 
     def is_join(self):
-        return len(self.get_tablenames(self.param.query, self.param.left)) > 1
+        items = [self.param.query]
+        if self.param.left is not None:
+            if isinstance(self.param.left, (list, tuple)):
+                items += [item for item in self.param.left]
+            else:
+                items += [self.param.left]
+        return len(self.get_tablenames(*items)) > 1
