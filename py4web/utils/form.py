@@ -595,8 +595,12 @@ class Form(object):
     def custom(self):
         return self.helper()["controls"]
 
+    @property
+    def structure(self):
+        return self.helper()["form"]
+
     def xml(self):
-        return self.helper()["form"].xml()
+        return self.structure.xml()
 
     def __str__(self):
         return self.xml()
