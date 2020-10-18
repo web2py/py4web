@@ -5,14 +5,17 @@ These are fixtures that every app needs so probably you will not be editing this
 import os
 import sys
 import logging
-from py4web import Session, Cache, Translator, Flash, DAL, Field
+from py4web import Session, Cache, Translator, Flash, DAL, Field, action
 from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
+from py4web.utils.downloader import downloader
 from py4web.utils.tags import Tags
 from py4web.utils.factories import ActionFactory
 from . import settings
 
+# #######################################################
 # implement custom loggers form settings.LOGGERS
+# #######################################################
 logger = logging.getLogger("py4web:" + settings.APP_NAME)
 formatter = logging.Formatter(
     "%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s"
@@ -27,7 +30,19 @@ for item in settings.LOGGERS:
     logger.setLevel(getattr(logging, level.upper(), "DEBUG"))
     logger.addHandler(handler)
 
+# #######################################################
+# create required folders
+# #######################################################
+
+for folder in [settings.DB_FOLDER,
+               settings.T_FOLDER,
+               settings.UPLOAD_FOLDER]:
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+
+# #######################################################
 # connect to db
+# #######################################################
 db = DAL(
     settings.DB_URI,
     folder=settings.DB_FOLDER,
@@ -36,12 +51,16 @@ db = DAL(
     fake_migrate=settings.DB_FAKE_MIGRATE,
 )
 
-# define global objects that may or may not be used by th actions
+# #######################################################
+# define global objects that may or may not be used by the actions
+# #######################################################
 cache = Cache(size=1000)
 T = Translator(settings.T_FOLDER)
 flash = Flash()
 
+# #######################################################
 # pick the session type that suits you best
+# #######################################################
 if settings.SESSION_TYPE == "cookies":
     session = Session(secret=settings.SESSION_SECRET_KEY)
 elif settings.SESSION_TYPE == "redis":
@@ -66,6 +85,9 @@ elif settings.SESSION_TYPE == "database":
 
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
+# #######################################################
+# Instantiate the object and actions that handle auth
+# #######################################################
 auth = Auth(session, db, define_tables=False)
 auth.use_username = True
 auth.param.registration_requires_confirmation = settings.VERIFY_EMAIL
@@ -76,6 +98,9 @@ auth.password_complexity = {"entropy": 50}
 auth.block_previous_password_num = 3
 auth.define_tables()
 
+# #######################################################
+# Configure email sender for auth
+# #######################################################
 if settings.SMTP_SERVER:
     auth.sender = Mailer(
         server=settings.SMTP_SERVER,
@@ -85,9 +110,15 @@ if settings.SMTP_SERVER:
         ssl=settings.SMTP_SSL,
     )
 
+# #######################################################
+# Create a table to tag users as group members
+# #######################################################
 if auth.db:
     groups = Tags(db.auth_user, "groups")
 
+# #######################################################
+# Enable optional auth plugin
+# #######################################################
 if settings.USE_PAM:
     from py4web.utils.auth_plugins.pam_plugin import PamPlugin
 
@@ -130,7 +161,24 @@ if settings.OAUTH2OKTA_CLIENT_ID:
         )
     )
 
+# #######################################################
+# Define a convenience action to allow users to download
+# files uploaded and reference by Field(type='upload')
+# #######################################################
+if settings.UPLOAD_FOLDER:
+    @action('download/<filename>')                                                   
+    @action.uses(db)                                                                                           
+    def download(filename):
+        return downloader(db, settings.UPLOAD_FOLDER, filename) 
+    # To take advtange of this in Form(s)
+    # for every field of type upload you MUST specify:
+    #
+    # field.upload_path = settings.UPLOAD_FOLDER
+    # field.download_url = lambda filename: URL('download/%s' % filename)
 
+# #######################################################
+# Optionally configure celery
+# #######################################################
 if settings.USE_CELERY:
     from celery import Celery
 
@@ -141,9 +189,13 @@ if settings.USE_CELERY:
     )
 
 
-# we enable auth, which requres sessions, T, db and we make T available to
-# the template, although we recommend client-side translations instead
+# #######################################################
+# Enable authentication
+# #######################################################
 auth.enable(uses=(session, T, db), env=dict(T=T))
 
+# #######################################################
+# Define convenience decorators
+# #######################################################
 unauthenticated = ActionFactory(db, session, T, flash, auth)
 authenticated = ActionFactory(db, session, T, flash, auth.user)
