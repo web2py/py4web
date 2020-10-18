@@ -685,7 +685,7 @@ class action:
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
-                # data shared by all fixtures in the piplined for each request
+                # data shared by all fixtures in the pipeline for each request
                 shared_data = {"template_context": {}}
                 try:
                     [obj.on_request() for obj in fixtures]
