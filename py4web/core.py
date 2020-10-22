@@ -613,7 +613,7 @@ def URL(
         if static_version:
             broken_parts.insert(1, "_" + static_version)
 
-    url = prefix + "/".join(map(lambda x: urllib.parse.quote(x), broken_parts))
+    url = prefix + "/".join(map(urllib.parse.quote, broken_parts))
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
     urlvars = {k: v for k, v in vars.items()} if vars else {}
     if signer:
@@ -626,7 +626,7 @@ def URL(
         url += "#%s" % hash
     if not scheme is False:
         original_url = request.environ.get("HTTP_ORIGIN") or request.url
-        orig_scheme, _, domain = original_url.split("/")[:3]
+        orig_scheme, _, domain = original_url.split("/", 3)[:3]
         scheme = (
             orig_scheme if scheme is True else "" if scheme is None else scheme + ":"
         )
@@ -685,7 +685,7 @@ class action:
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
-                # data shared by all fixtures in the piplined for each request
+                # data shared by all fixtures in the pipeline for each request
                 shared_data = {"template_context": {}}
                 try:
                     [obj.on_request() for obj in fixtures]

@@ -155,15 +155,15 @@ if settings.OAUTH2OKTA_CLIENT_ID:
 # Define a convenience action to allow users to download
 # files uploaded and reference by Field(type='upload')
 # #######################################################
-if settings.UPLOAD_PATH:
+if settings.UPLOAD_FOLDER:
     @action('download/<filename>')                                                   
     @action.uses(db)                                                                                           
     def download(filename):
-        return downloader(db, settings.UPLOAD_PATH, filename) 
+        return downloader(db, settings.UPLOAD_FOLDER, filename) 
     # To take advtange of this in Form(s)
     # for every field of type upload you MUST specify:
     #
-    # field.upload_path = settings.UPLOAD_PATH
+    # field.upload_path = settings.UPLOAD_FOLDER
     # field.download_url = lambda filename: URL('download/%s' % filename)
 
 # #######################################################

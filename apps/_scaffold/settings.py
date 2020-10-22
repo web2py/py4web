@@ -19,7 +19,7 @@ DB_MIGRATE = True
 DB_FAKE_MIGRATE = False  # maybe?
 
 # location where to store uploaded files:
-UPLOAD_PATH = os.path.join(APP_FOLDER, "uploads")
+UPLOAD_FOLDER = os.path.join(APP_FOLDER, "uploads")
 
 # send email on regstration
 VERIFY_EMAIL = True

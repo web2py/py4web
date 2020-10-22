@@ -785,10 +785,15 @@ class Grid:
                 or (self.param.editable and self.param.editable != "")
                 or (self.param.deletable and self.param.deletable != "")
             ):
-                td = TD(
-                    _class=self.param.grid_class_style.classes.get("grid-td-action-button"),
-                    _style=self.param.grid_class_style.styles.get("grid-td-action-button"),
-                )
+                classes = (self.param.grid_class_style.classes.get("grid-td", "") +
+                           " " +
+                           self.param.grid_class_style.classes.get("grid-td-action-button")
+                ).strip() 
+                styles = (self.param.grid_class_style.styles.get("grid-td", "") +
+                           " " +
+                           self.param.grid_class_style.styles.get("grid-td-action-button")
+                ).strip()
+                td = TD(_class=classes, _style=styles)
                 if self.param.pre_action_buttons:
                     for btn in self.param.pre_action_buttons:
                         td.append(
