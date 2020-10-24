@@ -922,7 +922,8 @@ class DefaultAuthForms:
                 _role="button",
             )
         )
-        return DIV(DIV(*top_buttons), form)
+        form.structure.insert(0, DIV(DIV(*top_buttons)))
+        return form
 
     def request_reset_password(self):
         form = Form(
