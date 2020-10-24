@@ -888,8 +888,15 @@ class DefaultAuthForms:
         return form
 
     def login(self):
+        fields = [Field("username",), Field("login_password", type="password")]
+        if self.auth.use_username:
+            fields[0].label = self.auth.db.auth_user.username.label
+        else:
+            fields[0].label = self.auth.db.auth_user.email.label
+        fields[1].label = self.auth.db.auth_user.password.label
+
         form = Form(
-            [Field("username"), Field("login_password", type="password")],
+            fields,
             submit_value="Sign In",
             formstyle=self.formstyle,
         )
@@ -926,7 +933,7 @@ class DefaultAuthForms:
 
     def request_reset_password(self):
         form = Form(
-            [Field("email", label="Username of Email")],
+            [Field("email", label="Username or Email")],
             submit_value="Request",
             formstyle=self.formstyle,
         )
