@@ -90,8 +90,7 @@ class AuthEnforcer(Fixture):
         # enforce the optionl auth session expiration time
         if self.auth.param.login_expiration_time and activity:
             if time_now - activity > self.auth.param.login_expiration_time:
-                if "user" in self.auth.session:
-                    del self.auth.session["user"]
+                del self.auth.session["user"]
                 self.abort_or_redirect("login", "Login expired")
         # record the time of the latest activity for logged in user (with throttling)
         if not activity or time_now - activity > 6:
