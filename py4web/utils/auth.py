@@ -895,6 +895,7 @@ class DefaultAuthForms:
             formstyle=self.formstyle,
         )
         user = None
+        self.auth.next["login"] = request.query.get("next")
         if form.submitted:
             user, error = self.auth.login(
                 form.vars.get("username"), form.vars.get("login_password")
@@ -905,11 +906,10 @@ class DefaultAuthForms:
                 self.auth.store_user_in_session(user["id"])
                 self._postprocessing("login", form, user)
         top_buttons = []
-        next = request.query.get("next")
         for name, plugin in self.auth.plugins.items():
             url = "../auth/plugin/" + name + "/login"
-            if next:
-                url = url + "?next=" + next
+            if self.auth.next["login"]:
+                url = url + "?next=" + self.auth.next["login"]
             top_buttons.append(A(plugin.label + " Login", _href=url, _role="button"))
         form.param.sidecar.append(
             A("Sign Up", _href="../auth/register", _class="info", _role="button")
