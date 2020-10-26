@@ -123,7 +123,9 @@ Lookup denormalizes the linked field.
 Here are some practical examples:
 
 URL:
-``/superheroes/rest/api/superhero``
+``
+/superheroes/rest/api/superhero
+``
 
 OUTPUT:
 ``
