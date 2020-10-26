@@ -1,4 +1,4 @@
-## The database abstraction layer
+## The database abstraction layer (DAL)
 ``DAL``:inxx
 
 ### Dependencies
@@ -755,7 +755,7 @@ db = DAL(..., migrate_enabled=False)
 
 This is the recommended behavior when two apps share the same database. Only one of the two apps should perform migrations, the other should disabled them.
 
-### Fixing broken migrations
+#### Fixing broken migrations
 ``fake_migrate``:inxx
 
 There are two common problems with migrations and there are ways to recover from them.
@@ -786,7 +786,7 @@ db = DAL(..., fake_migrate_all=True)
 This also fails if the model describes tables that do not exist in the database,
 but it can help narrowing down the problem.
 
-### Migration control summary
+#### Migration control summary
 
 The logic of the various migration arguments are summarized in this pseudo-code:
 ``
