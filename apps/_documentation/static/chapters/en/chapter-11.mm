@@ -41,7 +41,7 @@ The ``auth.enable()`` step creates and exposes the following RESTful APIs:
 
 Those marked with a (+) require a logged in user.
 
-## Auth UI
+### Auth UI
 
 You can create your own web UI to login users using the above APIs but py4web provides one as an example, implemented in the following files:
 
@@ -71,7 +71,7 @@ You can pretty much use this file un-modified. It extends the current layout and
 
 If you need to change the style of the component you can edit "components/auth.html" to suit your needs. It is mostly HTML with some special Vue ``v-*`` tags.
 
-## Using Auth
+### Using Auth
 
 There two ways to use the Auth object in an action:
 
@@ -95,7 +95,7 @@ def index():
 
 Here ``@action.uses(auth.user)`` tells py4web that this action requires a logged in user and should redirect to login if no user is logged in.
 
-## Auth Plugins
+### Auth Plugins
 
 Plugins are defined in "py4web/utils/auth_plugins" and they have a hierachical structure. Some are exclusive and some are not. For example, default, LDAP, PAM, and SAML are exclusive (the developer has to pick one). Default, Google, Facebook, and Twitter OAuth are not exclusive (the developer can pick them all and the user gets to choose using the UI).
 
@@ -103,7 +103,7 @@ The ``<auth/>`` components will automatically adapt to display login forms as re
 
 **At this time we cannot guarantee that the following plugins work well. They have been ported from web2py where they do work but testing is still needed**
 
-### PAM
+#### PAM
 
 Configuring PAM is the easiest:
 
@@ -116,7 +116,7 @@ This one like all plugins must be imported and registered. Once registered the U
 
 The ``auth.register_plugin(...)`` **must** come before the ``auth.enable()`` since it makes no sense to expose APIs before desired plugins are mounted.
 
-### LDAP
+#### LDAP
 
 ``
 from py4web.utils.auth_plugins.ldap_plugin import LDAPPlugin
@@ -128,7 +128,7 @@ LDAP_SETTING = {
 auth.register_plugin(LDAPPlugin(**LDAP_SETTINGS))
 ``:python
 
-### OAuth2 with Google (tested OK)
+#### OAuth2 with Google (tested OK)
 
 ``
 from py4web.utils.auth_plugins.oauth2google import OAuth2Google # TESTED
@@ -140,7 +140,7 @@ auth.register_plugin(OAuth2Google(
 
 The client id and client secret must be provided by Google.
 
-### OAuth2 with Facebook (tested OK)
+#### OAuth2 with Facebook (tested OK)
 
 ``
 from py4web.utils.auth_plugins.oauth2facebook import OAuth2Facebook # UNTESTED
