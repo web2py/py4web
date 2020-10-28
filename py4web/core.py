@@ -25,6 +25,7 @@ import platform
 import re
 import signal
 import site
+import shutil
 import sys
 import threading
 import time
@@ -34,6 +35,7 @@ import urllib.parse
 import uuid
 import zipfile
 import asyncio
+import zipfile
 from watchgod import awatch
 
 # Optional web servers for speed
@@ -1433,6 +1435,33 @@ def set_password(password, password_file):
     click.echo('Storing the hashed password in file "%s"\n' % password_file)
     with open(password_file, "w") as fp:
         fp.write(str(pydal.validators.CRYPT()(password)[0]))
+
+@cli.command()
+@click.argument("apps_folder", default="apps")
+@click.argument("app_name")
+@click.option(
+    "-s",
+    "--scaffold_zip",
+    default=None,
+    help="Path to the zip with the scaffolding app",
+    show_default=False,
+)
+def new_app(apps_folder, app_name, scaffold_zip):
+    source = scaffold_zip or os.path.join(
+        os.path.dirname(__file__), 
+        'assets',
+        "py4web.app._scaffold.zip")
+    target_dir = os.path.join(apps_folder, app_name)
+    if not os.path.exists(source):
+        click.echo("Source app %s does not exists" % source)
+        sys.exit(1)
+    elif os.path.exists(target_dir):
+        click.echo("Target folder %s already exists" % target_dir)
+        sys.exit(1)
+    else:
+        zfile = zipfile.ZipFile(source, "r")
+        zfile.extractall(target_dir)
+        zfile.close()
 
 
 @cli.command()

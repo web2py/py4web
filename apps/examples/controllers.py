@@ -2,6 +2,7 @@ import os
 from py4web import action, request, abort, redirect, URL, Field, HTTP
 from yatl.helpers import A, I
 from py4web.utils.form import Form, FormStyleDefault
+from py4web.utils.factories import ActionFactory, Inject
 from py4web.utils.grid import Grid, GridClassStyle
 from py4web.utils.param import Param
 from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
@@ -247,10 +248,22 @@ def example_multiple_forms():
 def example_helpers():
     return dict(a=H1("I am a title"), b=2, c=dict(d=3, e=4, x=INPUT(_name="test")))
 
+expose = ActionFactory(auth, T, Inject(message="Hello World"))
+
+@expose.get("test_expose1", template="generic.html")
+def test_expose1():
+    return dict()
+
+@expose.get("test_expose2")
+def test_expose2():
+    return dict()
+
+@expose("test_expose3")
+def test_expose3():
+    return dict()
+
 
 # automatic actions
-
-
 @unauthenticated.get()  # exposed as /hello_world
 def hello_world():
     return dict()
@@ -259,7 +272,6 @@ def hello_world():
 @unauthenticated.get()  # exposed as /hello_world/<msg>
 def hello_world(msg):
     return dict(msg=msg)
-
 
 @unauthenticated.callback("click me")
 def a_callback(msg):

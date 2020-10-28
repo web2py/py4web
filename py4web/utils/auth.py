@@ -90,8 +90,7 @@ class AuthEnforcer(Fixture):
         # enforce the optionl auth session expiration time
         if self.auth.param.login_expiration_time and activity:
             if time_now - activity > self.auth.param.login_expiration_time:
-                if "user" in self.auth.session:
-                    del self.auth.session["user"]
+                del self.auth.session["user"]
                 self.abort_or_redirect("login", "Login expired")
         # record the time of the latest activity for logged in user (with throttling)
         if not activity or time_now - activity > 6:
@@ -889,8 +888,15 @@ class DefaultAuthForms:
         return form
 
     def login(self):
+        fields = [Field("username",), Field("login_password", type="password")]
+        if self.auth.use_username:
+            fields[0].label = self.auth.db.auth_user.username.label
+        else:
+            fields[0].label = self.auth.db.auth_user.email.label
+        fields[1].label = self.auth.db.auth_user.password.label
+
         form = Form(
-            [Field("username"), Field("login_password", type="password")],
+            fields,
             submit_value="Sign In",
             formstyle=self.formstyle,
         )
@@ -922,11 +928,12 @@ class DefaultAuthForms:
                 _role="button",
             )
         )
-        return DIV(DIV(*top_buttons), form)
+        form.structure.insert(0, DIV(DIV(*top_buttons)))
+        return form
 
     def request_reset_password(self):
         form = Form(
-            [Field("email", label="Username of Email")],
+            [Field("email", label="Username or Email")],
             submit_value="Request",
             formstyle=self.formstyle,
         )
