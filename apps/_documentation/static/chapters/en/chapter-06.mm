@@ -61,7 +61,7 @@ The above action is exposed as:
 /superheroes/rest/api/{tablename}
 ``    
     
-**About request.POST**: keep in mind that **request.POST** only contains the form data that posted using a **regular HTML-form** or javascript **FormData** object. If you post just plain object (e.g. ``axios.post( 'path/to/api', {field:'some'} )``) you should pass **request.json** instead of request.POST,  since latter will contain just raw request-body which is string, not json. See bottle.py documentation for more details.    
+**About request.POST**: keep in mind that **request.POST** only contains the form data that is posted using a **regular HTML-form** or javascript **FormData** object. If you post just plain object (e.g. ``axios.post( 'path/to/api', {field:'some'} )``) you should pass **request.json** instead of request.POST,  since latter will contain just raw request-body which is string, not json. See bottle.py documentation for more details.    
 
 #### RestAPI GET
 
