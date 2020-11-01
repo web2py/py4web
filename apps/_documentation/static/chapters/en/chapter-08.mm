@@ -1,4 +1,4 @@
-### YATL helpers
+## YATL helpers
 ``helpers``:inxx
 
 Consider the following code in a view:
