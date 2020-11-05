@@ -123,7 +123,7 @@ conn.set = lambda k, v, e, cs=conn.set, ct=conn.ttl: (cs(k, v), e and ct(e))
 session = Session(storage=conn)
 ``:python
 
-Notice: a storage object must have ``get`` and ``set`` methods and the ``set`` method must allow to specify an expiration. The redis connection object has a `ttl`` method to
+Notice: a storage object must have ``get`` and ``set`` methods and the ``set`` method must allow to specify an expiration. The redis connection object has a ``ttl`` method to
 specify the expiration, hence we monkey patch the ``set`` method to have the expected signature and functionality.
 
 #### Session in database
@@ -175,7 +175,7 @@ We leave to you as an exercise to implement expiration, limit the number of file
 sessions on the filesystem: it is inefficient and does not scale well.
 
 
-## Translator
+### Translator
 
 Here is an example of usage:
 

@@ -5,10 +5,11 @@
 PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is Python 3.6+, which must be installed in advance (except if 
 you use binaries).
 
+### Setup procedures
+
 There are four alternative ways of running py4web, with different level of difficulty and flexibility. Let's look at the pros and cons.
 
-
-### Installing from binaries
+#### Installing from binaries
 
 This is not a real installation, because you just copy a bunch of files on your system without modifying it anyhow. Hence this is 
 the simplest solution, especially for newbies or students, because it does not require Python pre-installed on your system 
@@ -26,7 +27,7 @@ py4web-start run apps
 
 With this type of installation, remember to always use **py4web-start** instead of 'py4web' or 'py4web.py' in the following documentation.
 
-### Hint: use a virtual environment (virtualenv)
+#### Hint: use a virtual environment (virtualenv)
 
 A full installation of any complex python application like py4web will surely modify  the python environment of your system. 
 In order to prevent any unwanted change, it's a good habit to use a python virtual environment (also called **virtualenv**, see 
@@ -35,7 +36,7 @@ This is a standard python feature; if you still don't know virtualenv it's a goo
 
 Activate it before using any of the following ''real'' installation procedures is highly reccomended.
 
-### Installing from pip
+#### Installing from pip
 
 Using ''pip'' is the standard installation procedure for py4web. From the command line
 
@@ -63,7 +64,7 @@ On Windows, a special py4web.exe file (pointing to py4web.py) will be created by
 the ''--user'' option by mistake.
 
 
-### Installing from source (globally)
+#### Installing from source (globally)
 
 This is the traditional way for installing a program, but it works only on Linux and MacOS. All the requirements will be 
 installed on the system's path along with links to the py4web.py program on the local folder
@@ -80,7 +81,7 @@ py4web run apps
 Also notice that when installing in this way the content of py4web/assets folder is missing at first but it is manually created later 
 with the 'make assets' command.
 
-### Installing from source (locally)
+#### Installing from source (locally)
 
 In this way all the requirements will be installed or upgraded on the system's path, but py4web itself will only be copied  
 on a local folder. This is especially useful if you already have a working py4web installation but you want to test a different  
@@ -367,7 +368,9 @@ Options:
 
 With the ''-a'' option you'll get the version of all the available python modules, too.
 
-## Deployment on GCloud (aka Google App Engine)
+### Deployment on the cloud
+
+#### Deployment on GCloud (aka Google App Engine)
 
 Login into the Gcloud console (https://console.cloud.google.com/) and create a new project. You will obtain a project id that looks like "{project_name}-{number}".
 
@@ -415,7 +418,7 @@ make deploy
 
 You may want to customize the Makefile and app.yaml to suit your needs. You should not need to edit ``main.py``.
 
-## Deployment on PythonAnywhere.com
+#### Deployment on PythonAnywhere.com
 
-Watch the video: https://youtu.be/Wxjl_vkLAEY
+Watch the video: https://youtu.be/Wxjl_vkLAEY and follow the detailed tutorial on https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-source-pythonanywhere.md .
 The bottle_app.py script is in ``py4web/deployment_tools/pythonanywhere.com/bottle_app.py``

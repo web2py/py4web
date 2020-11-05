@@ -5,6 +5,9 @@
 ## What is py4web?
 PY4WEB is a web framework for rapid development of efficient database driven web applications. It is an evolution of the popular web2py framework but much faster and slicker. The official documentation is on https://py4web.com/_documentation
 
+## License
+
+BSD
 
 ## Installation
 
