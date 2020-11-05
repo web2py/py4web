@@ -1,4 +1,6 @@
-## Pluralize
+## Internationalization 
+
+### Pluralize
 
 Pluralize is a Python library for Internationalization (i18n) and Pluralization (p10n).
 

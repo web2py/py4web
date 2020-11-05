@@ -1,3 +1,6 @@
+## Forms
+
+
 WORK IN PROGRESS
 
 Just know that ``py4web.utils.form.Form`` is a pretty much equivalent to web2py's ``SQLFORM``.
@@ -31,7 +34,7 @@ Where:
 - `hidden`: a dictionary of hidden fields that is added to the form
 - `before_validate`: an optional validator.
 
-## Example
+### Example
 
 Here is a simple example of a custom form not using database access.
 We declare an endpoint `/form_example`, which will be used both for the GET and for the POST of the form:
@@ -59,7 +62,7 @@ def form_example():
 
 The form can be displayed in the template simply using `[[=form]]`.
 
-## Form validation
+### Form validation
 
 The validation of form input can be done in two ways.  One can define `requires` attributes of `Field`, or one can define explicitly a validation function.  To do the latter, we pass to `validate` a function that takes the form and returns a dictionary, mapping field names to errors.  If the dictionary is non-empty, the errors will be displayed to the user, and no database I/O will take place.
 

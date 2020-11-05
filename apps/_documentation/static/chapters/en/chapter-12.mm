@@ -3,7 +3,8 @@
 **Warning: the API described in this chapter is new and subject to changes. Make sure you keep your code up to date**
 
 py4web comes with a Grid object providing simple grid and CRUD capabilities.
-#### Key Features
+
+### Key Features
 - Click column heads for sorting - click again for DESC
 - Pagination control
 - Search Queries list - provide the search queries used to filter the grid and grid will build the search form (remembers filters between pages)
