@@ -305,7 +305,7 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
         "input[type=submit]": "button",
         "input[type=password]": "input password",
         "input[type=file]": "file",
-        "select": "control select",
+        "select": "control input select",
         "textarea": "textarea",
     }
     return FormStyleDefault(table, vars, errors, readonly, deletable, classes)
