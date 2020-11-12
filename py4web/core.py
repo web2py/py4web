@@ -580,7 +580,7 @@ def URL(
     hash=None,
     scheme=False,
     signer=None,
-    use_appname=True,
+    use_appname=None,
     static_version=None,
 ):
     """
@@ -591,6 +591,9 @@ def URL(
     URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name}/a/b?x=1
     URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
     """
+    if use_appname is None:
+        use_appname = request.headers.get("x-py4web-appname")
+        use_appname = True if use_appname is None else not use_appname
     script_name = (
         request.environ.get("HTTP_X_SCRIPT_NAME", "")
         or request.environ.get("SCRIPT_NAME", "")
