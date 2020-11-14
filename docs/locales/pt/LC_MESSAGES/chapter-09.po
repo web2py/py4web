@@ -1,0 +1,103 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, Massimo DiPierro
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-02 22:29+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../chapter-09.rst:2
+msgid "Internationalization"
+msgstr ""
+
+#: ../../chapter-09.rst:5
+msgid "Pluralize"
+msgstr ""
+
+#: ../../chapter-09.rst:7
+msgid ""
+"Pluralize is a Python library for Internationalization (i18n) and "
+"Pluralization (p10n)."
+msgstr ""
+
+#: ../../chapter-09.rst:10
+msgid ""
+"The library assumes a folder (for exaple “translations”) that contains "
+"files like:"
+msgstr ""
+
+#: ../../chapter-09.rst:21
+msgid "Each file has the following structure, for example for Italian (it.json):"
+msgstr ""
+
+#: ../../chapter-09.rst:28
+msgid ""
+"The top level keys are the expressions to be translated and the "
+"associated value/dictionary maps a number to a translation. Different "
+"translations correspond to different plural forms of the expression,"
+msgstr ""
+
+#: ../../chapter-09.rst:32
+msgid "Here is another example for the word “bed” in Czech"
+msgstr ""
+
+#: ../../chapter-09.rst:38
+msgid ""
+"To translate and pluralize a string “dog” one simply warps the string in "
+"the T operator as follows:"
+msgstr ""
+
+#: ../../chapter-09.rst:60
+msgid ""
+"The string can contain multiple placeholders but the {n} placeholder is "
+"special because the variable called “n” is used to determine the "
+"pluralization by best match (max dict key <= n)."
+msgstr ""
+
+#: ../../chapter-09.rst:64
+msgid ""
+"T(…) objects can be added together with each other and with string, like "
+"regular strings."
+msgstr ""
+
+#: ../../chapter-09.rst:67
+msgid ""
+"T.select(s) can parse a string s following the HTTP accept language "
+"format."
+msgstr ""
+
+#: ../../chapter-09.rst:71
+msgid "Update the translation files"
+msgstr ""
+
+#: ../../chapter-09.rst:73
+msgid "Find all strings wrapped in T(…) in .py, .html, and .js files:"
+msgstr ""
+
+#: ../../chapter-09.rst:79
+msgid "Add newly discovered entries in all supported languages"
+msgstr ""
+
+#: ../../chapter-09.rst:85
+msgid "Add a new supported language (for example german, “de”)"
+msgstr ""
+
+#: ../../chapter-09.rst:91
+msgid "Make sure all languages contain the same origin expressions"
+msgstr ""
+
+#: ../../chapter-09.rst:101
+msgid "Finally save the changes:"
+msgstr ""
+

@@ -1,88 +1,10 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="css/no.css" rel="stylesheet">
-    <link href="css/prism.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-  </head>
-  <body>    
-    <nav role="navigation" aria-label="main navigation">
-      <a class="navbar-item" href="index.html">
-        <strong>PY4WEB DOCS</strong>
-      </a>
-      <ul>
-        <li>
-          <a class="navbar-item" href="https://py4web.com">Home</a>
-        </li>
-        <li>
-          <a class="navbar-item" href="/_dashboard">Dashboard</a>
-        </li>
-        </ul>
-    </nav>
-    <div>
-      <section class="columns">
-        <div class="c25">
-          <h6>Table of Content</h6>
-          <div class="toc"></div>
-        </div>
-        <div class="c75 page mm">
-        </div>
-      </section>  
-    </div>      
-    <footer>
-      <p>Made with py4web, about py4web, for py4web users. BSDv3 License.</p>
-    </footer>
-    <script src="js/jquery.js"></script>
-    <script src="js/prism.js"></script>
-    <script src="js/markmin.js"></script>
-    <script>
-    var chapters = {};
-    var display = function(target, chapter, anchor) {
-      markmin(jQuery(target)[0], chapters[chapter]);
-      Prism.highlightAll();
-      var resize = function() {
-        jQuery('pre').hide().css('width',jQuery('.mm').width()).show();
-      };
-      resize(); window.onresize = resize;
-      if (anchor != "") {
-        jQuery('html, body').animate({
-          scrollTop: jQuery("#" + anchor).offset().top
-        }, 2000);
-      }
-    };
-    
-    var go = function(target, chapter) {
-      if(typeof chapter === "undefined") {
-        chapter = window.location.hash.substr(1)
-        if (chapter != "") {
-          chapter_elements = chapter.split("#");
-          anchor = "";
-          if (chapter_elements.length > 1) {
-            chapter = chapter_elements[0];
-            anchor = chapter_elements[1];
-          }
-        }
-        else {
-          chapter = 'chapter-00'
-          anchor = "";
-        }
-      }      
-
-      if(chapter in chapters) {
-        display(target, chapter, anchor);
-      } else {
-        jQuery.get('chapters/en/'+chapter+'.mm').done(function(data){
-          chapters[chapter] = data;
-          display(target, chapter, anchor);
-        });
-      }
-    };
-    go('.page');
-    go('.toc','toc');
-    window.onhashchange = function(){ go('.page') };
-    </script>
-  </body>
+   <head>
+      <title>py4web Docs</title>
+      <meta http-equiv = "refresh" content="0; url='en/index.html'" />
+   </head>
+   <body>
+      <p>Please wait while you're redirected to our documentation.</p>
+   </body>
 </html>
