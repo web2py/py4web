@@ -1203,12 +1203,13 @@ def watch(apps_folder, server_config, mode="sync"):
             if not mode == "lazy":
                 try_app_watch_tasks()
 
-    if server_config == "windows":
+    # fix issue #327: tornado is default server for windows now 
+    #if server_config == "windows":
         # default wsgi server block the main thread so we open a new thread for the file watcher
-        threading.Thread(
-            target=watch_folder_event_loop, args=(apps_folder,), daemon=True
-        ).start()
-    elif server_config == "tornado":
+        #threading.Thread(
+        #    target=watch_folder_event_loop, args=(apps_folder,), daemon=True
+        #).start()
+    if server_config in ["tornado", "windows"]:
         # tornado delegate to asyncio so we add a future into the event loop
         asyncio.ensure_future(watch_folder(apps_folder))
     elif server_config == "gunicorn+gevent":
