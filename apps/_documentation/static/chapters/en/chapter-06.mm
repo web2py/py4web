@@ -591,9 +591,10 @@ OUTPUT:
 }
 ``
 
-URL:
+URL (it's a single line):
 ``
-/superheroes/rest/api/superhero?@lookup=powers:superhero.tag[strength].superpower[description]
+/superheroes/rest/api/superhero?
+@lookup=powers:superhero.tag[strength].superpower[description]
 ``
 
 OUTPUT:
@@ -690,9 +691,10 @@ OUTPUT:
 }
 ``
 
-URL:
+URL (it's a single line):
 ``
-/superheroes/rest/api/superhero?@lookup=powers!:superhero.tag[strength].superpower[description]
+/superheroes/rest/api/superhero?
+@lookup=powers!:superhero.tag[strength].superpower[description]
 ``
 
 OUTPUT:
@@ -769,9 +771,10 @@ OUTPUT:
 }
 ``
 
-URL:
+URL (it's a single line):
 ``
-/superheroes/rest/api/superhero?@lookup=powers!:superhero.tag[strength].superpower[description],identity!:real_identity[name]
+/superheroes/rest/api/superhero?
+@lookup=powers!:superhero.tag[strength].superpower[description],identity!:real_identity[name]
 ``
 
 OUTPUT:
