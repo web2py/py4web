@@ -1227,7 +1227,7 @@ def start_server(args):
     host, port, apps_folder = args["host"], int(args["port"]), args["apps_folder"]
     number_workers = args["number_workers"]
     server = None
-    params = dict(server="gevent", host=host, port=port, reloader=False,)
+    params = dict(server="gevent", host=host, port=port, reloader=False)
     if args["ssl_cert"] is not None:
         params["certfile"] = args["ssl_cert"]
         params["keyfile"] = args["ssl_key"]
