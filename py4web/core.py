@@ -1115,8 +1115,18 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
 
 @bottle.error(404)
 def error404(error):
-    guess_app_name = request.path.split("/")[1]
-    return error_page(404, button_text=guess_app_name, href="/" + guess_app_name)
+    guess_app_name = 'index' if request.headers.get("x-py4web-appname") else request.path.split("/")[1]
+    if guess_app_name == 'index':
+        href = '/'
+    else:
+        href = '/' + guess_app_name
+    script_name = (
+        request.environ.get("HTTP_X_SCRIPT_NAME", "")
+        or request.environ.get("SCRIPT_NAME", "")
+    ).rstrip("/")
+    if script_name:
+        href = script_name + href
+    return error_page(404, button_text=guess_app_name, href=href)
 
 
 #########################################################################################
