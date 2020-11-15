@@ -1,161 +1,93 @@
 ## Grid
 
-**Warning: the API described in this chapter is new and subject to changes. Make sure you keep your code up to date**
-
 py4web comes with a Grid object providing simple grid and CRUD capabilities.
 
 ### Key Features
 - Click column heads for sorting - click again for DESC
 - Pagination control
-- Search Queries list - provide the search queries used to filter the grid and grid will build the search form (remembers filters between pages)
-- Filter Form - you supply and control filtering (remember filters between pages)
+- Built in Search (can use search_queries OR search_form)
 - Action Buttons - with or without text
 - Full CRUD with Delete Confirmation
 - Pre and Post Action (add your own buttons to each row)
-- Grid dates in local format using moment.js
-- Checkboxes in grid for boolean fields
+- Grid dates in local format
+- Default formatting by type plus user overrides
 
-### Simple Example
+### Basic Example
 In this simple example we will make a grid over the company table.
 
 controllers.py
 ``
-from py4web.utils.grid import Grid, get_storage_key, get_storage_value, GridDefaults, GridClassStyle
-from py4web.utils.param import Param
-from .settings import SESSION_SECRET_KEY
+from functools import reduce
+from py4web.utils.grid import Grid
+from py4web import action
+from .common import db, session, auth
 
-@action('administration/companies', method=['POST', 'GET'])
-@action('administration/companies/<action>/<tablename>/<record_id>', method=['POST', 'GET'])
-@action.uses(session, db, auth.user, requires_permission('select', 'region'), 'grid.html')
-def regions(**kwargs):
-    #  NOTE - GRID_COMMON would normally go in common.py and then imported to your controller
-    GRID_COMMON = GridDefaults(db=db,
-                               secret=SESSION_SECRET_KEY,
-                               rows_per_page=5)
+@action('companies', method=['POST', 'GET'])
+@action('companies/<path:path>', method=['POST', 'GET'])
+@action.uses(session, db, auth, 'grid.html')
+def companies(path=None):
+    grid = Grid(path,
+                query=reduce(lambda a, b: (a & b), [db.company.id > 0]),
+                orderby=[db.company.name],
+                search_queries=[['Search by Name', lambda val: db.company.name.contains(val)]])
 
-    queries = [(db.company.id > 0)]
-    orderby = [db.company.name]
-
-    grid = Grid(GRID_COMMON,
-                queries,
-                orderby=orderby,
-                storage_key=get_storage_key())
     return dict(grid=grid)
 ``:python
 
 grid.html
 ``
 [[extend 'layout.html']]
-<div class="container" style="padding-top: 1em;">
-    [[if 'action' in request.url_args and request.url_args['action'] in ['details', 'edit']:]]
-        [[form = grid.render()]]
-        [[=form]]
-    [[else:]]
-        [[=grid.render()]]
-    [[pass]]
-</div>
+[[=grid.render()]]
 ``
-
-### Filter/Search Example
-In this simple example we will make a grid over the companies table.  A search form will be created and allow searching over the company.name field.
-
-controllers.py
-``
-from py4web.utils.grid import Grid, get_storage_key, get_storage_value, GridDefaults, GridClassStyle
-from py4web.utils.param import Param
-from .settings import SESSION_SECRET_KEY
-
-@action('companies', method=['POST', 'GET'])
-@action('companies/<action>/<tablename>/<record_id>', method=['POST', 'GET'])
-@action.uses(session, db, auth, 'grid.html')
-def companies(**kwargs):
-    #  NOTE - this would normally go in common.py and then imported to your controller
-    GRID_COMMON = GridDefaults(db=db,
-                               secret=SESSION_SECRET_KEY,
-                               rows_per_page=5)
-
-    search_queries = [['Search by Name', lambda value: db.company.name.contains(values)]]
-
-    queries = [(db.company.id > 0)]
-    orderby = [db.company.name]
-
-    grid = Grid(GRID_COMMON,
-                queries,
-                search_queries=search_queries,
-                storage_values=dict(search_filter=search_filter),
-                orderby=orderby,
-                storage_key=get_storage_key())
-
-    return dict(grid=grid)
-``:python
-
-The same grid.html as above is used in this example.
-
 
 ### Signature
 
 ``
 class Grid:
-    def __init__(self,
-                 common_settings,
-                 queries,
-                 search_form=None,
-                 search_queries=None,
-                 storage_values=None,
-                 fields=None,
-                 show_id=False,
-                 orderby=None,
-                 left=None,
-                 headings=None,
-                 create=True,
-                 details=True,
-                 editable=True,
-                 deletable=True,
-                 requires=None,
-                 storage_key=None,
-                 pre_action_buttons=None,
-                 post_action_buttons=None):
+    def __init__(
+        self,
+        path,
+        query,
+        search_form=None,
+        search_queries=None,
+        fields=None,
+        show_id=False,
+        orderby=None,
+        left=None,
+        headings=None,
+        create=True,
+        details=True,
+        editable=True,
+        deletable=True,
+        pre_action_buttons=None,
+        post_action_buttons=None,
+        auto_process=True,
+        rows_per_page=15,
+        include_action_button_text=True,
+        search_button_text="Filter",
+        formstyle=FormStyleDefault,
+        grid_class_style=GridClassStyle,
+    ):
 ``:python
 
-- common_settings: Params object with common settings for all grids within the application
-- queries: list of queries used to filter the data
-- search_form: py4web FORM to be included as the search form
-- search_queries: list of query lists to use to build the search form.  Ignored if search_form is used. Format is [[query_name, lambda function to add to dal queries, dal requires statement used to build proper html element]]
-- storage_values: values to save between requests
+- path: the route of this request
+- query: pydal query to be processed
+- search_form: py4web FORM to be included as the search form. If search_form is passed in then the developer is responsible for applying the filter to the query passed in.  This differs from search_queries.
+- search_queries: list of query lists to use to build the search form.  Ignored if search_form is used. Format is [[query_name, lambda function to add to dal queries]]
 - fields: list of fields to display on the list page, if blank, glean tablename from first query and use all fields of that table
 - show_id: show the record id field on list page - default = False
 - orderby: pydal orderby field or list of fields
 - left: if joining other tables, specify the pydal left expression here
 - headings: list of headings to be used for list page - if not provided use the field label
-- create: URL to redirect to for creating records - set to False to not display the button
-- editable: URL to redirect to for editing records - set to False to not display the button
-- deletable: URL to redirect to for deleting records - set to False to not display the button
-- requires: dict of fields and their 'requires' parm for building edit pages - dict key should be tablename.fieldname
-- storage_key: id of the cookie containing saved values
+- details: URL to redirect to for displaying records - set to True to automatically generate the URL - set to False to not display the button
+- create: URL to redirect to for creating records - set to True to automatically generate the URL - set to False to not display the button
+- editable: URL to redirect to for editing records - set to True to automatically generate the URL - set to False to not display the button
+- deletable: URL to redirect to for deleting records - set to True to automatically generate the URL - set to False to not display the button
 - pre_action_buttons: list of action_button instances to include before the standard action buttons
 - post_action_buttons: list of action_button instances to include after the standard action buttons
-
-### Grid Defaults
-
-``
-    def __init__(self,
-                 db,
-                 secret,
-                 token_longevity=3600,
-                 rows_per_page=15,
-                 include_action_button_text=True,
-                 search_button_text="Filter",
-                 formstyle=FormStyleDefault,
-                 grid_class_style=GridClassStyle):
-``:python
-
-The GridDefaults class allows you to set app-wide grid defaults that you can use when instantiating grids.0
-
-- db: PyDAL db instance to use within your grid
-- secret: secret encryption key used to encrypt storage values
-- token_longevity: number of seconds to remember you storage values for this grid instance
-- rows_per_page: number of rows to display on each grid page
-- included_action_button_text: boolean telling the grid whether or not you want text on action buttons within your grid
+- auto_process: Boolean - whether or not the grid should be processed immediately. If False, developer must call grid.process() once all params are setup
+- rows_per_page: number of rows to display per page.  Default 15
+- include_action_button_text: boolean telling the grid whether or not you want text on action buttons within your grid
 - search_button_text: text to appear on the submit button on your search form
 - formstyle: py4web Form formstyle used to style your form when automatically building CRUD forms
 - grid_class_style: GridClassStyle object used to override defaults for styling your rendered grid.  Allows you to specify classes or styles to apply at certain points in the grid.
@@ -169,22 +101,17 @@ There are two ways to build a search form.
 
 If you provide a search_queries list to grid, it will:
 
-1. build the search form with all fields provided
-2. gather filter values and filter the grid
-3. if you supply a PyDAL requires statement, it will build the search field as requested
 
-However, if this doesn't give you enough flexibility you can provide your own search form and handle all the filtering (building the queries) by yourself.PyDAL
++ build a search form. If more than one search query in the list, it will also generate a dropdown to select which search field to search agains
++ gather filter values and filter the grid
 
-The grid provides helper functions that allow you save/retrieve filter values between page displays.
-
-- set_storage_values
-- get_storage_value
+However, if this doesn't give you enough flexibility you can provide your own search form and handle all the filtering (building the queries) by yourself.
 
 ### CRUD
 
-The grid provide CRUD (create, read, update and delete) capabilities utilizing py4web Form.  This is disabled on the grid by default.
+The grid provides CRUD (create, read, update and delete) capabilities utilizing py4web Form.
 
-You can enable CRUD features by setting create/details/editable/deletable to True at instantiation.
+You can turn off CRUD features by setting create/details/editable/deletable during grid instantiation.
 
 Additionally, you can provide a separate URL to the create/details/editable/deletable parameters to bypass the auto-generated CRUD pages and handle the detail pages yourself.
 
@@ -229,164 +156,184 @@ You can provide your own formstyle or grid classes and style to grid.
 
 The default GridClassStyle - based on no.css, primarily uses styles to modify the layout of the grid
 ``
-def GridClassStyle(element_name):
-    classes = {"wrapper": "",
-               "top_div": "",
-               "new_button": "",
-               "search_form": "",
-               "search_form_table": "search-form",
-               "search_form_tr": "",
-               "search_form_td": "",
-               "table": "",
-               "thead": "",
-               "th": "",
-               "sorter_icon": "",
-               "action_column_header": "",
-               "tbody": "",
-               "tr": "",
-               "td": "",
-               "td_date": "",
-               "td_boolean": "",
-               "action_column_cell": "",
-               "action_button": "",
-               "table_footer": "",
-               "row_count": "",
-               "pager": "",
-               "active_page_button": "",
-               "inactive_page_button": ""}
+class GridClassStyle:
 
-    styles = {"wrapper": "",
-              "top_div": "border-bottom: 0;",
-              "new_button": "",
-              "search_form": "float: right; border-bottom: 0; padding-bottom: 0; margin-bottom: 0;",
-              "search_form_table": "margin-bottom: 0;",
-              "search_form_tr": "border-bottom: 0; padding-bottom: 0;",
-              "search_form_td": "border-bottom: 0; padding-bottom: 0;",
-              "table": "",
-              "thead": "",
-              "th": "text-align: center;",
-              "sorter_icon": "float: right;",
-              "action_column_header": "text-align: center; width: 1px; white-space: nowrap;",
-              "tbody": "",
-              "tr": "",
-              "td": "vertical-align: middle;",
-              "td_date": "",
-              "td_boolean": "",
-              "action_column_cell": "text-align: center; width: 1px; white-space: nowrap; vertical-align: middle;",
-              "action_button": ("border: thin solid lightgray; "
-                                "color: black; "
-                                "cursor: pointer; "
-                                "display: inline-block; "
-                                "font-size: .75rem;"
-                                "min-width: 75px; "
-                                "padding-right: 1rem; "
-                                "padding-left: 1rem; "
-                                "text-align: center; "
-                                "text-decoration: none; "
-                                "vertical-align: middle; "
-                                "white-space: nowrap;"),
-              "table_footer": "line-height: 1.8rem; padding-bottom: 20px;",
-              "row_count": "float: left; line-height: 1.8rem;",
-              "pager": "float: right; line-height: 1.8rem;",
-              "active_page_button": "background-color: #0074d9; "
-                                    "border: thin solid #0074d9; "
-                                    "color: white; "
-                                    "cursor: pointer; "
-                                    "display: inline-block; "
-                                    "font-size: .75rem;"
-                                    "padding-right: .75rem; "
-                                    "padding-left: .75rem; "
-                                    "margin-right: .25rem; "
-                                    "text-align: center; "
-                                    "text-decoration: none; "
-                                    "vertical-align: middle; "
-                                    "white-space: nowrap;",
-              "inactive_page_button": "background-color: white; "
-                                      "border: thin solid #0074d9; "
-                                      "color: #0074d9; "
-                                      "cursor: pointer; "
-                                      "display: inline-block; "
-                                      "font-size: .75rem;"
-                                      "padding-right: .75rem; "
-                                      "padding-left: .75rem; "
-                                      "margin-right: .25rem; "
-                                      "text-align: center; "
-                                      "text-decoration: none; "
-                                      "vertical-align: middle; "
-                                      "white-space: nowrap;"}
+    """
+    Default grid style
+    Internal element names match default class name, other classes can be added
+    Style use should be minimized since it cannot be overridden by CSS
+    """
 
-    classes_styles = {}
-    if classes.get(element_name) and classes.get(element_name) != "":
-        classes_styles["_class"] = classes.get(element_name)
+    classes = {
+        "grid-wrapper": "grid-wrapper",
+        "grid-header": "grid-header",
+        "grid-new-button": "grid-new-button info",
+        "grid-search": "grid-search",
+        "grid-table-wrapper": "grid-table-wrapper",
+        "grid-table": "grid-table",
+        "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up",
+        "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down",
+        "grid-th-action-button": "grid-col-action-button",
+        "grid-td-action-button": "grid-col-action-button",
+        "grid-tr": "",
+        "grid-th": "",
+        "grid-td": "",
+        "grid-details-button": "grid-details-button info",
+        "grid-edit-button": "grid-edit-button info",
+        "grid-delete-button": "grid-delete-button info",
+        "grid-footer": "grid-footer",
+        "grid-info": "grid-info",
+        "grid-pagination": "grid-pagination",
+        "grid-pagination-button": "grid-pagination-button info",
+        "grid-pagination-button-current": "grid-pagination-button-current default",
+        "grid-cell-type-string": "grid-cell-type-string",
+        "grid-cell-type-text": "grid-cell-type-text",
+        "grid-cell-type-boolean": "grid-cell-type-boolean",
+        "grid-cell-type-float": "grid-cell-type-float",
+        "grid-cell-type-int": "grid-cell-type-int",
+        "grid-cell-type-date": "grid-cell-type-date",
+        "grid-cell-type-time": "grid-cell-type-time",
+        "grid-cell-type-datetime": "grid-cell-type-datetime",
+        "grid-cell-type-upload": "grid-cell-type-upload",
+        "grid-cell-type-list": "grid-cell-type-list",
+        # specific for custom form
+        "search_form": "search-form",
+        "search_form_table": "search-form-table",
+        "search_form_tr": "search-form-tr",
+        "search_form_td": "search-form-td",
+    }
 
-    if styles.get(element_name) and styles.get(element_name) != "":
-        classes_styles["_style"] = styles.get(element_name)
+    styles = {
+        "grid-wrapper": "",
+        "grid-header": "display: table; width: 100%",
+        "grid-new-button": "display: table-cell;",
+        "grid-search": "display: table-cell; float:right",
+        "grid-table-wrapper": "overflow-x: auto; width:100%",
+        "grid-table": "",
+        "grid-sorter-icon-up": "",
+        "grid-sorter-icon-down": "",
+        "grid-th-action-button": "",
+        "grid-td-action-button": "",
+        "grid-tr": "",
+        "grid-th": "white-space: nowrap; vertical-align: middle",
+        "grid-td": "white-space: nowrap; vertical-align: middle",
+        "grid-details-button": "margin-bottom: 0",
+        "grid-edit-button": "margin-bottom: 0",
+        "grid-delete-button": "margin-bottom: 0",
+        "grid-footer": "display: table; width:100%",
+        "grid-info": "display: table-cell;",
+        "grid-pagination": "display: table-cell; text-align:right",
+        "grid-pagination-button": "min-width: 20px",
+        "grid-pagination-button-current": "min-width: 20px; pointer-events:none; opacity: 0.7",
+        "grid-cell-type-string": "white-space: nowrap; vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px",
+        "grid-cell-type-text": "vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px",
+        "grid-cell-type-boolean": "white-space: nowrap; vertical-align: middle; text-align: center",
+        "grid-cell-type-float": "white-space: nowrap; vertical-align: middle; text-align: right",
+        "grid-cell-type-int": "white-space: nowrap; vertical-align: middle; text-align: right",
+        "grid-cell-type-date": "white-space: nowrap; vertical-align: middle; text-align: right",
+        "grid-cell-type-time": "white-space: nowrap; vertical-align: middle; text-align: right",
+        "grid-cell-type-datetime": "white-space: nowrap; vertical-align: middle; text-align: right",
+        "grid-cell-type-upload": "white-space: nowrap; vertical-align: middle; text-align: center",
+        "grid-cell-type-list": "white-space: nowrap; vertical-align: middle; text-align: left",
+        # specific for custom form
+        "search_form": "",
+        "search_form_table": "",
+        "search_form_tr": "",
+        "search_form_td": "",
+    }
 
-    return classes_styles
+    @classmethod
+    def get(cls, element):
+        """returns a dict with _class and _style for the element name"""
+        return {
+            "_class": cls.classes.get(element),
+            "_style": cls.styles.get(element),
+        }
 ``:python
 
 GridClassStyleBulma - bulma implementation
 ``
-def GridClassStyleBulma(element_name):
-    classes = {"wrapper": "field",
-               "top_div": "pb-2",
-               "new_button": "button",
-               "search_form": "is-pulled-right pb-2",
-               "search_form_table": "search-form",
-               "search_form_tr": "",
-               "search_form_td": "pr-1",
-               "table": "table is-bordered is-striped is-hoverable is-fullwidth",
-               "thead": "",
-               "th": "has-text-centered",
-               "sorter_icon": "is-pulled-right",
-               "action_column_header": "has-text-centered is-narrow",
-               "tbody": "",
-               "tr": "",
-               "td": "",
-               "td_date": "has-text-centered",
-               "td_boolean": "has-text-centered",
-               "action_column_cell": "has-text-centered is-narrow",
-               "action_button": "button is-small",
-               "table_footer": "",
-               "row_count": "is-pulled-left",
-               "pager": "is-pulled-right",
-               "active_page_button": "button is-primary is-small",
-               "inactive_page_button": "button is-small"}
+class GridClassStyleBulma(GridClassStyle):
+    classes = {
+        "grid-wrapper": "grid-wrapper field",
+        "grid-header": "grid-header pb-2",
+        "grid-new-button": "grid-new-button button",
+        "grid-search": "grid-search is-pulled-right pb-2",
+        "grid-table-wrapper": "grid-table-wrapper table_wrapper",
+        "grid-table": "grid-table table is-bordered is-striped is-hoverable is-fullwidth",
+        "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up is-pulled-right",
+        "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down is-pulled-right",
+        "grid-th-action-button": "grid-col-action-button is-narrow",
+        "grid-td-action-button": "grid-col-action-button is-narrow",
+        "grid-tr": "",
+        "grid-th": "",
+        "grid-td": "",
+        "grid-details-button": "grid-details-button button is-small",
+        "grid-edit-button": "grid-edit-button button is-small",
+        "grid-delete-button": "grid-delete-button button is-small",
+        "grid-footer": "grid-footer",
+        "grid-info": "grid-info is-pulled-left",
+        "grid-pagination": "grid-pagination is-pulled-right",
+        "grid-pagination-button": "grid-pagination-button button is-small",
+        "grid-pagination-button-current": "grid-pagination-button-current button is-primary is-small",
+        "grid-cell-type-string": "grid-cell-type-string",
+        "grid-cell-type-text": "grid-cell-type-text",
+        "grid-cell-type-boolean": "grid-cell-type-boolean has-text-centered",
+        "grid-cell-type-float": "grid-cell-type-float",
+        "grid-cell-type-int": "grid-cell-type-int",
+        "grid-cell-type-date": "grid-cell-type-date",
+        "grid-cell-type-time": "grid-cell-type-time",
+        "grid-cell-type-datetime": "grid-cell-type-datetime",
+        "grid-cell-type-upload": "grid-cell-type-upload",
+        "grid-cell-type-list": "grid-cell-type-list",
+        # specific for custom form
+        "search_form": "search-form is-pulled-right pb-2",
+        "search_form_table": "search-form-table",
+        "search_form_tr": "search-form-tr",
+        "search_form_td": "search-form-td pr-1",
+    }
 
-    styles = {"wrapper": "",
-              "top_div": "",
-              "new_button": "",
-              "search_form": "",
-              "search_form_table": "",
-              "search_form_tr": "",
-              "search_form_td": "",
-              "table": "",
-              "thead": "",
-              "th": "",
-              "sorter_icon": "",
-              "action_column_header": "",
-              "tbody": "",
-              "tr": "",
-              "td": "",
-              "td_date": "",
-              "td_boolean": "",
-              "action_column_cell": "",
-              "action_button": "",
-              "table_footer": "",
-              "row_count": "",
-              "pager": "",
-              "active_page_button": "",
-              "inactive_page_button": ""}
-
-    classes_styles = {}
-    if classes.get(element_name) and classes.get(element_name) != "":
-        classes_styles["_class"] = classes.get(element_name)
-
-    if styles.get(element_name) and styles.get(element_name) != "":
-        classes_styles["_style"] = styles.get(element_name)
-
-    return classes_styles
+    styles = {
+        "grid-wrapper": "",
+        "grid-header": "",
+        "grid-new-button": "",
+        "grid-search": "",
+        "grid-table-wrapper": "",
+        "grid-table": "",
+        "grid-sorter-icon-up": "",
+        "grid-sorter-icon-down": "",
+        "grid-th-action-button": "",
+        "grid-td-action-button": "",
+        "grid-tr": "",
+        "grid-th": "text-align: center; text-transform: uppercase;",
+        "grid-td": "",
+        "grid-details-button": "",
+        "grid-edit-button": "",
+        "grid-delete-button": "",
+        "grid-footer": "padding-top: .5em;",
+        "grid-info": "",
+        "grid-pagination": "",
+        "grid-pagination-button": "margin-left: .25em;",
+        "grid-pagination-button-current": "margin-left: .25em;",
+        "grid-cell-type-string": "",
+        "grid-cell-type-text": "",
+        "grid-cell-type-boolean": "",
+        "grid-cell-type-float": "",
+        "grid-cell-type-int": "",
+        "grid-cell-type-date": "",
+        "grid-cell-type-time": "",
+        "grid-cell-type-datetime": "",
+        "grid-cell-type-upload": "",
+        "grid-cell-type-list": "",
+        # specific for custom form
+        "search_form": "",
+        "search_form_table": "",
+        "search_form_tr": "",
+        "search_form_td": "",
+    }
 ``:python
+
+You can build your own class_style to be used with the css framework of your choice.
 
 ### Custom Action Buttons
 
@@ -395,7 +342,9 @@ As with web2py, you can add additional buttons to each row in your grid.  You do
 - pre_action_buttons - list of action_button instances to include before the standard action buttons
 - post_action_buttons - list of action_button instances to include after the standard action buttons
 
-### Action Button Signature
+You can build your own Action Button class to pass to pre/post action buttons based on the template below (this is not provided with py4web)
+
+### Sample Action Button Class
 
 ``
 def __init__(self,
@@ -403,27 +352,15 @@ def __init__(self,
              text,
              icon="fa-calendar",
              additional_classes=None,
-             additional_styles=None,
-             override_classes=None,
-             override_styles=None,
              message=None,
-             append_id=False,
-             append_storage_key=False,
-             append_page=False):
+             append_id=False):
 ``:python
 - url: the page to navigate to when the button is clicked
 - text: text to display on the button
 - icon: the font-awesome icon to display before the text
 - additional_classes: a space-separated list of classes to include on the button element
-- additional_styles: a space-separated list of classes to include on the button element
-- override_classes: a space-separated list of classes to override the defaults set up for a specific button
-- override_styles: a space-separated list of classes to override the defaults set up for a specific button
 - message: confirmation message to display if 'confirmation' class is added to additional classes
 - append_id: if True, add id_field_name=id_value to the url querystring for the button
-- append_storage_key: if True, append the storage key for the grid to the url for the button
-- append_page: if True, append page=`page_number` to the url querystring
-
-Grid uses ActionButtons internally to generate the row buttons in the grid.  You can provide your own by specifying a list of ActionButtons in the pre_action_buttons and/or post_action_buttons parameter on the Grid __init__ method.
 
 ### Reference Fields
 

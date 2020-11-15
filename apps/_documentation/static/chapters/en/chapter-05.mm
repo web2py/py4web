@@ -3009,12 +3009,28 @@ Rows objects also have an ``xml`` method (like helpers) that serializes it to XM
 ``
 <table>
 <thead>
-<tr><th>person.id</th><th>person.name</th><th>thing.id</th><th>thing.name</th><th>thing.owner_id</th></tr>
+<tr><th>person.id</th><th>person.name</th>
+    <th>thing.id</th><th>thing.name</th>
+    <th>thing.owner_id</th>
+</tr>
 </thead>
 <tbody>
-<tr class="w2p_odd odd"><td>1</td><td>Alex</td><td>1</td><td>Boat</td><td>1</td></tr>
-<tr class="w2p_even even"><td>1</td><td>Alex</td><td>2</td><td>Chair</td><td>1</td></tr>
-<tr class="w2p_odd odd"><td>2</td><td>Bob</td><td>3</td><td>Shoes</td><td>2</td></tr>
+<tr class="w2p_odd odd">
+    <td>1</td><td>Alex</td>
+    <td>1</td><td>Boat</td>
+    <td>1</td>
+</tr>
+<tr class="w2p_even even">
+    <td>1</td><td>Alex</td>
+    <td>2</td><td>Chair</td>
+    <td>1</td>
+</tr>
+<tr class="w2p_odd odd">
+    <td>2</td><td>Bob</td>
+    <td>3</td>
+    <td>Shoes</td>
+    <td>2</td>
+</tr>
 </tbody>
 </table>
 ``:python[lexer='html']

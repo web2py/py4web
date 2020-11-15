@@ -1128,7 +1128,7 @@ The "views/layout.html" that ships with the py4web scaffolding application **wel
   [[pass]]
 </body>
 </html>
-``:python
+``:html
 
 There are a few features of this default layout that make it very easy to use and customize:
 
