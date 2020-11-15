@@ -1,0 +1,120 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, Massimo DiPierro
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-02 22:29+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../chapter-10.rst:2
+msgid "Forms"
+msgstr ""
+
+#: ../../chapter-10.rst:4
+msgid "WORK IN PROGRESS"
+msgstr ""
+
+#: ../../chapter-10.rst:6
+msgid ""
+"Just know that ``py4web.utils.form.Form`` is a pretty much equivalent to "
+"web2py’s ``SQLFORM``."
+msgstr ""
+
+#: ../../chapter-10.rst:9
+msgid "The ``Form`` constructor accepts the following arguments:"
+msgstr ""
+
+#: ../../chapter-10.rst:25
+msgid "Where:"
+msgstr ""
+
+#: ../../chapter-10.rst:27
+msgid ""
+"``table``: a DAL table or a list of fields (equivalent to old "
+"SQLFORM.factory)"
+msgstr ""
+
+#: ../../chapter-10.rst:29
+msgid "``record``: a DAL record or record id"
+msgstr ""
+
+#: ../../chapter-10.rst:30
+msgid "``readonly``: set to True to make a readonly form"
+msgstr ""
+
+#: ../../chapter-10.rst:31
+msgid "``deletable``: set to False to disallow deletion of record"
+msgstr ""
+
+#: ../../chapter-10.rst:32
+msgid ""
+"``formstyle``: a function that renders the form using helpers "
+"(FormStyleDefault)"
+msgstr ""
+
+#: ../../chapter-10.rst:34
+msgid "``dbio``: set to False to prevent any DB writes"
+msgstr ""
+
+#: ../../chapter-10.rst:35
+msgid ""
+"``keep_values``: if set to true, it remembers the values of the "
+"previously submitted form"
+msgstr ""
+
+#: ../../chapter-10.rst:37
+msgid "``form_name``: the optional name of this form"
+msgstr ""
+
+#: ../../chapter-10.rst:38
+msgid "``hidden``: a dictionary of hidden fields that is added to the form"
+msgstr ""
+
+#: ../../chapter-10.rst:39
+msgid "``before_validate``: an optional validator."
+msgstr ""
+
+#: ../../chapter-10.rst:42
+msgid "Example"
+msgstr ""
+
+#: ../../chapter-10.rst:44
+msgid ""
+"Here is a simple example of a custom form not using database access. We "
+"declare an endpoint ``/form_example``, which will be used both for the "
+"GET and for the POST of the form:"
+msgstr ""
+
+#: ../../chapter-10.rst:69
+msgid "The form can be displayed in the template simply using ``[[=form]]``."
+msgstr ""
+
+#: ../../chapter-10.rst:72
+msgid "Form validation"
+msgstr ""
+
+#: ../../chapter-10.rst:74
+msgid ""
+"The validation of form input can be done in two ways. One can define "
+"``requires`` attributes of ``Field``, or one can define explicitly a "
+"validation function. To do the latter, we pass to ``validate`` a function"
+" that takes the form and returns a dictionary, mapping field names to "
+"errors. If the dictionary is non-empty, the errors will be displayed to "
+"the user, and no database I/O will take place."
+msgstr ""
+
+#: ../../chapter-10.rst:81
+msgid "Here is an example:"
+msgstr ""
+
