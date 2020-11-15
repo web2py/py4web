@@ -9,24 +9,26 @@ then
 
     echo ' '
     echo '################################################################################'
-    echo 'File:    updateDocs.sh - nicozanf@gmail.com - 2011.11.14'
-    echo ' '
+    echo 'File:    updateDocs.sh'
+    echo
     echo 'Purpose: A script that builds py4web documentation using Sphinx and updates'
     echo '          Pages. This script must be executed manually'
     echo 'Needs:   A Linux system with the packages "rsync python3-sphinx'
     echo '          python3-sphinx-rtd-theme python3-stemmer'
     echo '          python3-git python3-pip python3-virtualenv python3-setuptools"'
     echo '          and the python3 modules "rinohtype pygments"'
-    echo ' '
+    echo
     echo 'How to run: "./updateDocs.sh [all|html]" from  inside the docs folder' 
     echo '################################################################################'
-    echo ' '
+    echo
     
     exit 0
 fi
 
 set -x
 
+#
+#  nicozanf@gmail.com - 2020.11.15
 # For more information on how this documentation is built using Sphinx, Read the Docs, and GitHub Actions/Pages, see:
 #  
 #  * https://tech.michaelaltfield.net/2020/07/18/sphinx-rtd-github-pages-1
@@ -139,14 +141,15 @@ cat > "${destination}/index.html" <<EOF
 EOF
 
 
+set +x
 
-  
-#######################
-# Finished            #
-#######################
-
-echo 'FINISHED! Look the results on ${destination}/index.html "
-
+echo
+echo "#######################"
+echo "# Finished            #"
+echo "#######################"
+echo
+echo "FINISHED! Look the results on ${destination}/index.html"
+echo
   
   
 # exit cleanly
