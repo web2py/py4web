@@ -193,7 +193,7 @@ then
 fi
 
 if [ ! -f /etc/init.d/py4web ]
-   then:
+then
 
 echo '
 #! /bin/sh
@@ -237,6 +237,8 @@ restart|force-reload)
 esac
 exit 0
 ' > /etc/init.d/py4web
+
+fi
 
 py4web set_password --password_file=/home/www-data/py4web/password.txt
 /etc/init.d/py4web restart
