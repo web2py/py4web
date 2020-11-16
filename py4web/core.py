@@ -580,7 +580,7 @@ def URL(
     hash=None,
     scheme=False,
     signer=None,
-    use_appname=True,
+    use_appname=None,
     static_version=None,
 ):
     """
@@ -591,6 +591,9 @@ def URL(
     URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name}/a/b?x=1
     URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
     """
+    if use_appname is None:
+        use_appname = request.headers.get("x-py4web-appname")
+        use_appname = True if use_appname is None else not use_appname
     script_name = (
         request.environ.get("HTTP_X_SCRIPT_NAME", "")
         or request.environ.get("SCRIPT_NAME", "")
@@ -1112,8 +1115,18 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
 
 @bottle.error(404)
 def error404(error):
-    guess_app_name = request.path.split("/")[1]
-    return error_page(404, button_text=guess_app_name, href="/" + guess_app_name)
+    guess_app_name = 'index' if request.headers.get("x-py4web-appname") else request.path.split("/")[1]
+    if guess_app_name == 'index':
+        href = '/'
+    else:
+        href = '/' + guess_app_name
+    script_name = (
+        request.environ.get("HTTP_X_SCRIPT_NAME", "")
+        or request.environ.get("SCRIPT_NAME", "")
+    ).rstrip("/")
+    if script_name:
+        href = script_name + href
+    return error_page(404, button_text=guess_app_name, href=href)
 
 
 #########################################################################################

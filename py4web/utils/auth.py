@@ -142,7 +142,7 @@ class Auth(Fixture):
         password_complexity={"entropy": 50},
         block_previous_password_num=None,
         allowed_actions=["all"],
-        use_appname_in_redirects=True,
+        use_appname_in_redirects=None,
     ):
 
         self.param = Param(
