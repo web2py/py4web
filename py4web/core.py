@@ -982,7 +982,7 @@ class Reloader:
         app.router = bottle.Router()
         if app_name:
             for route in routes:
-                if route.rule[1:].split("/")[0] != app_name:
+                if route.rule.rstrip('<:re:/?>')[1:].split("/")[0] != app_name:
                     app.add_route(route)
 
     @staticmethod
