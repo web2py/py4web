@@ -28,7 +28,7 @@ fi
 set -x
 
 #
-#  nicozanf@gmail.com - 2020.11.15
+#  nicozanf@gmail.com - 2020.11.16
 # For more information on how this documentation is built using Sphinx, Read the Docs, and GitHub Actions/Pages, see:
 #  
 #  * https://tech.michaelaltfield.net/2020/07/18/sphinx-rtd-github-pages-1
@@ -101,10 +101,20 @@ for current_language in ${languages}; do
 	  sphinx-build -b epub docs/ docs/_build/epub -D language="${current_language}"
 	  cp "docs/_build/epub/target.epub" "${docroot}/${current_language}/${PROJECT_NAME}_${current_language}.epub"
   else
-  	  # HTML only - backup previous pdf and epub #
+  	  # HTML only - backup previous pdf and epub if they exist #
   	  mkdir -p "${docroot}/${current_language}"
-  	  cp "${destination}/${current_language}/${PROJECT_NAME}_${current_language}.pdf" "${docroot}/${current_language}"
-  	  cp "${destination}/${current_language}/${PROJECT_NAME}_${current_language}.epub" "${docroot}/${current_language}"
+         destination_pdf="${destination}/${current_language}/${PROJECT_NAME}_${current_language}.pdf"
+         if [ -e ${destination_pdf} ]; then
+           cp "${destination_pdf}" "${docroot}/${current_language}"
+         else
+           echo "** WARNING ** : ${destination_pdf} not found!"
+         fi
+         destination_epub="${destination}/${current_language}/${PROJECT_NAME}_${current_language}.epub"
+         if [ -e ${destination_epub} ]; then
+           cp "${destination_epub}" "${docroot}/${current_language}"
+         else
+           echo "** WARNING ** : ${destination_epub} not found!"  
+         fi 
   fi
 
   # copy the static html assets produced by the above build into our docroot
