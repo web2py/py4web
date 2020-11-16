@@ -924,7 +924,7 @@ class Grid:
         #  build the search form if provided
         if self.param.search_form:
             grid_header.append(self.render_search_form())
-        else:
+        elif self.param.search_queries and len(self.param.search_queries) > 0:
             grid_header.append(self.render_default_form())
 
         html.append(grid_header)
