@@ -1,0 +1,192 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, Massimo DiPierro
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-02 22:29+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../chapter-06.rst:2
+msgid "The RESTAPI"
+msgstr ""
+
+#: ../../chapter-06.rst:4
+msgid ""
+"Since version 19.5.10 PyDAL includes a restful API called RestAPI. It is "
+"inspired by GraphQL but it’s not quite the same because it is less "
+"powerful but, in the spirit of web2py, more practical and easier to use. "
+"Like GraphSQL RestAPI allows a client to query for information using the "
+"GET method and allows to specify some details about the format of the "
+"response (which references to follow, and how to denormalize the data). "
+"Unlike GraphSQL it allows the server to specify a policy and restrict "
+"which queries are allowed and which one are not. They can be evaluated "
+"dynamically per request based on the user and the state of the server. As"
+" the name implied RestAPI allows all stardard methods GET, POST, PUT, and"
+" DELETE. Each of them can be enabled or disabled based on the policy, for"
+" individual tables and individual fields."
+msgstr ""
+
+#: ../../chapter-06.rst:17
+msgid ""
+"In the examples below we assume an app called “superheroes” and the "
+"following model:"
+msgstr ""
+
+#: ../../chapter-06.rst:42
+msgid "We also assume the following controller ``rest.py``:"
+msgstr ""
+
+#: ../../chapter-06.rst:65
+msgid ""
+"The policy is per table (or \\* for all tables and per method. authorize "
+"can be True (allow), False (deny) or a function with the signature "
+"(method, tablename, record_id, get_vars, post_vars) which returns "
+"True/False. For the GET policy one can specify a list of allowed query "
+"patterns (\\* for all). A query pattern will be matched against the keys "
+"in the query string."
+msgstr ""
+
+#: ../../chapter-06.rst:72
+msgid "The above action is exposed as:"
+msgstr ""
+
+#: ../../chapter-06.rst:78
+msgid "In our example policy we disabled all methods but GET."
+msgstr ""
+
+#: ../../chapter-06.rst:81
+msgid "RestAPI GET"
+msgstr ""
+
+#: ../../chapter-06.rst:83
+msgid ""
+"The general query has the form ``{something}.eq=value`` where ``eq=`` "
+"stands for “equal”, ``gt=`` stands for “greater than”, etc. The "
+"expression can be prepended by ``not.``."
+msgstr ""
+
+#: ../../chapter-06.rst:87
+msgid ""
+"``{something}`` can be the name of a field in the table been queried as "
+"in:"
+msgstr ""
+
+#: ../../chapter-06.rst:90
+msgid "**All superheroes called “Superman”**"
+msgstr ""
+
+#: ../../chapter-06.rst:96
+msgid ""
+"It can be a the name of a field of a table referred by the table been "
+"queried as in:"
+msgstr ""
+
+#: ../../chapter-06.rst:99
+msgid "**All superheroes with real identity “Clark Kent”**"
+msgstr ""
+
+#: ../../chapter-06.rst:105
+msgid ""
+"It can be the name of a field of a table that refers to the table neen "
+"queried as in:"
+msgstr ""
+
+#: ../../chapter-06.rst:108
+msgid "**All superheroes with any tag superpower with strength > 90**"
+msgstr ""
+
+#: ../../chapter-06.rst:114
+msgid ""
+"(here tag is the name of the link table, the preceding ``superhero`` is "
+"the name of the field that refers to the selected table and ``strength`` "
+"is the name of the field used to filter)"
+msgstr ""
+
+#: ../../chapter-06.rst:118
+msgid ""
+"It can also be a field of the table referenced by a many-to-many linked "
+"table as in:"
+msgstr ""
+
+#: ../../chapter-06.rst:121
+msgid "**All superheroes with the flight power**"
+msgstr ""
+
+#: ../../chapter-06.rst:127
+msgid "The key to understand the syntax above is to break it as follows:"
+msgstr ""
+
+#: ../../chapter-06.rst:133
+msgid "and read it as:"
+msgstr ""
+
+#: ../../chapter-06.rst:135
+msgid ""
+"select records of table **superhero** referred by field **superhero** of "
+"table **tag** when the **superpower** field of said table points to a "
+"record with **description** **eq**\\ ual to “Flight”."
+msgstr ""
+
+#: ../../chapter-06.rst:139
+msgid "The query allows additional modifiers for example"
+msgstr ""
+
+#: ../../chapter-06.rst:149
+msgid ""
+"The first 3 are obvious. @model returns a JSON description of database "
+"model. Lookup denormalizes the linked field."
+msgstr ""
+
+#: ../../chapter-06.rst:152
+msgid "Here are some practical examples:"
+msgstr ""
+
+#: ../../chapter-06.rst:154 ../../chapter-06.rst:189 ../../chapter-06.rst:264
+#: ../../chapter-06.rst:311 ../../chapter-06.rst:363 ../../chapter-06.rst:404
+#: ../../chapter-06.rst:505 ../../chapter-06.rst:636 ../../chapter-06.rst:737
+#: ../../chapter-06.rst:818 ../../chapter-06.rst:899 ../../chapter-06.rst:924
+#: ../../chapter-06.rst:949 ../../chapter-06.rst:979
+msgid "URL:"
+msgstr ""
+
+#: ../../chapter-06.rst:160 ../../chapter-06.rst:195 ../../chapter-06.rst:270
+#: ../../chapter-06.rst:319 ../../chapter-06.rst:372 ../../chapter-06.rst:410
+#: ../../chapter-06.rst:511 ../../chapter-06.rst:642 ../../chapter-06.rst:743
+#: ../../chapter-06.rst:824 ../../chapter-06.rst:905 ../../chapter-06.rst:930
+#: ../../chapter-06.rst:955 ../../chapter-06.rst:985
+msgid "OUTPUT:"
+msgstr ""
+
+#: ../../chapter-06.rst:317
+msgid "(denormalize the real_identity and rename it identity)"
+msgstr ""
+
+#: ../../chapter-06.rst:369
+msgid ""
+"(denormalize the real_identity [but only fields name and job], collapse "
+"the with the identity prefix)"
+msgstr ""
+
+#: ../../chapter-06.rst:1004
+msgid "Notice all RestAPI response have the fields"
+msgstr ""
+
+#: ../../chapter-06.rst:1015
+msgid "and some optional fields:"
+msgstr ""
+
+#: ../../chapter-06.rst:1027
+msgid "The exact specs are subject to change since this is a new feature."
+msgstr ""
+
