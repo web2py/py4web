@@ -1,0 +1,264 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, Massimo DiPierro
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-02 22:29+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../chapter-07.rst:2
+msgid "YATL Template Language"
+msgstr ""
+
+#: ../../chapter-07.rst:4
+msgid ""
+"py4web uses Python for its models, controllers, and views, although it "
+"uses a slightly modified Python syntax in the views to allow more "
+"readable code without imposing any restrictions on proper Python usage."
+msgstr ""
+
+#: ../../chapter-07.rst:8
+msgid ""
+"py4web uses ``[[ ... ]]`` to escape Python code embedded in HTML. The "
+"advantage of using square brackets instead of angle brackets is that it’s"
+" transparent to all common HTML editors. This allows the developer to use"
+" those editors to create py4web views."
+msgstr ""
+
+#: ../../chapter-07.rst:13
+msgid ""
+"Since the developer is embedding Python code into HTML, the document "
+"should be indented according to HTML rules, and not Python rules. "
+"Therefore, we allow unindented Python inside the ``[[ ... ]]`` tags. "
+"Since Python normally uses indentation to delimit blocks of code, we need"
+" a different way to delimit them; this is why the py4web template "
+"language makes use of the Python keyword ``pass``."
+msgstr ""
+
+#: ../../chapter-07.rst:20
+msgid ""
+"A code block starts with a line ending with a colon and ends with a line "
+"beginning with ``pass``. The keyword ``pass`` is not necessary when the "
+"end of the block is obvious from the context."
+msgstr ""
+
+#: ../../chapter-07.rst:24
+msgid "Here is an example:"
+msgstr ""
+
+#: ../../chapter-07.rst:36
+msgid ""
+"Note that ``pass`` is a Python keyword, not a py4web keyword. Some Python"
+" editors, such as Emacs, use the keyword ``pass`` to signify the division"
+" of blocks and use it to re-indent code automatically."
+msgstr ""
+
+#: ../../chapter-07.rst:40
+msgid ""
+"The py4web template language does exactly the same. When it finds "
+"something like:"
+msgstr ""
+
+#: ../../chapter-07.rst:49
+msgid "it translates it into a program:"
+msgstr ""
+
+#: ../../chapter-07.rst:59
+msgid "``response.write`` writes to the ``response.body``."
+msgstr ""
+
+#: ../../chapter-07.rst:61
+msgid ""
+"When there is an error in a py4web view, the error report shows the "
+"generated view code, not the actual view as written by the developer. "
+"This helps the developer debug the code by highlighting the actual code "
+"that is executed (which is something that can be debugged with an HTML "
+"editor or the DOM inspector of the browser)."
+msgstr ""
+
+#: ../../chapter-07.rst:67
+msgid "Also note that:"
+msgstr ""
+
+#: ../../chapter-07.rst:73
+msgid "generates"
+msgstr ""
+
+#: ../../chapter-07.rst:79
+msgid ""
+"Variables injected into the HTML in this way are escaped by default. The "
+"escaping is ignored if ``x`` is an ``XML`` object, even if escape is set "
+"to ``True``."
+msgstr ""
+
+#: ../../chapter-07.rst:83
+msgid "Here is an example that introduces the ``H1`` helper:"
+msgstr ""
+
+#: ../../chapter-07.rst:89
+msgid "which is translated to:"
+msgstr ""
+
+#: ../../chapter-07.rst:95
+msgid ""
+"upon evaluation, the ``H1`` object and its components are recursively "
+"serialized, escaped and written to the response body. The tags generated "
+"by ``H1`` and inner HTML are not escaped. This mechanism guarantees that "
+"all text — and only text — displayed on the web page is always escaped, "
+"thus preventing XSS vulnerabilities. At the same time, the code is simple"
+" and easy to debug."
+msgstr ""
+
+#: ../../chapter-07.rst:102
+msgid ""
+"The method ``response.write(obj, escape=True)`` takes two arguments, the "
+"object to be written and whether it has to be escaped (set to ``True`` by"
+" default). If ``obj`` has an ``.xml()`` method, it is called and the "
+"result written to the response body (the ``escape`` argument is ignored)."
+" Otherwise it uses the object’s ``__str__`` method to serialize it and, "
+"if the escape argument is ``True``, escapes it. All built-in helper "
+"objects (``H1`` in the example) are objects that know how to serialize "
+"themselves via the ``.xml()`` method."
+msgstr ""
+
+#: ../../chapter-07.rst:111
+msgid ""
+"This is all done transparently. You never need to (and never should) call"
+" the ``response.write`` method explicitly."
+msgstr ""
+
+#: ../../chapter-07.rst:115
+msgid "Basic syntax"
+msgstr ""
+
+#: ../../chapter-07.rst:117
+msgid ""
+"The py4web template language supports all Python control structures. Here"
+" we provide some examples of each of them. They can be nested according "
+"to usual programming practice."
+msgstr ""
+
+#: ../../chapter-07.rst:122
+msgid "``for...in``"
+msgstr ""
+
+#: ../../chapter-07.rst:124
+msgid "In templates you can loop over any iterable object:"
+msgstr ""
+
+#: ../../chapter-07.rst:133 ../../chapter-07.rst:159 ../../chapter-07.rst:185
+msgid "which produces:"
+msgstr ""
+
+#: ../../chapter-07.rst:143
+msgid ""
+"Here ``items`` is any iterable object such as a Python list, Python "
+"tuple, or Rows object, or any object that is implemented as an iterator. "
+"The elements displayed are first serialized and escaped."
+msgstr ""
+
+#: ../../chapter-07.rst:148
+msgid "``while``"
+msgstr ""
+
+#: ../../chapter-07.rst:150
+msgid "You can create a loop using the while keyword:"
+msgstr ""
+
+#: ../../chapter-07.rst:170
+msgid "``if...elif...else``"
+msgstr ""
+
+#: ../../chapter-07.rst:172
+msgid "You can use conditional clauses:"
+msgstr ""
+
+#: ../../chapter-07.rst:193
+msgid ""
+"Since it is obvious that ``else`` closes the first ``if`` block, there is"
+" no need for a ``pass`` statement, and using one would be incorrect. "
+"However, you must explicitly close the ``else`` block with a ``pass``."
+msgstr ""
+
+#: ../../chapter-07.rst:197
+msgid ""
+"Recall that in Python “else if” is written ``elif`` as in the following "
+"example:"
+msgstr ""
+
+#: ../../chapter-07.rst:214
+msgid "It produces:"
+msgstr ""
+
+#: ../../chapter-07.rst:223
+msgid "``try...except...else...finally``"
+msgstr ""
+
+#: ../../chapter-07.rst:225
+msgid ""
+"It is also possible to use ``try...except`` statements in views with one "
+"caveat. Consider the following example:"
+msgstr ""
+
+#: ../../chapter-07.rst:240
+msgid "It will produce the following output:"
+msgstr ""
+
+#: ../../chapter-07.rst:247
+msgid ""
+"This example illustrates that all output generated before an exception "
+"occurs is rendered (including output that preceded the exception) inside "
+"the try block. “Hello” is written because it precedes the exception."
+msgstr ""
+
+#: ../../chapter-07.rst:252
+msgid "``def...return``"
+msgstr ""
+
+#: ../../chapter-07.rst:254
+msgid ""
+"The py4web template language allows the developer to define and implement"
+" functions that can return any Python object or a text/html string. Here "
+"we consider two examples:"
+msgstr ""
+
+#: ../../chapter-07.rst:265
+msgid "produces the following output:"
+msgstr ""
+
+#: ../../chapter-07.rst:273
+msgid ""
+"The function ``itemize1`` returns a helper object that is inserted at the"
+" location where the function is called."
+msgstr ""
+
+#: ../../chapter-07.rst:276
+msgid "Consider now the following code:"
+msgstr ""
+
+#: ../../chapter-07.rst:287
+msgid ""
+"It produces exactly the same output as above. In this case, the function "
+"``itemize2`` represents a piece of HTML that is going to replace the "
+"py4web tag where the function is called. Notice that there is no ‘=’ in "
+"front of the call to ``itemize2``, since the function does not return the"
+" text, but it writes it directly into the response."
+msgstr ""
+
+#: ../../chapter-07.rst:293
+msgid ""
+"There is one caveat: functions defined inside a view must terminate with "
+"a ``return`` statement, or the automatic indentation will fail."
+msgstr ""
+
