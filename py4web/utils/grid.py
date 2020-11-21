@@ -32,7 +32,7 @@ HEADER = TAG.header
 
 def title(text):
     """Turns text into a title"""
-    return text.replace("_", " ").title()
+    return str(text).replace("_", " ").title()
 
 
 def safe_int(text, default):
