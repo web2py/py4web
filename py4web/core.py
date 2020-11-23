@@ -1448,6 +1448,7 @@ def set_password(password, password_file):
     show_default=False,
 )
 def new_app(apps_folder, app_name, scaffold_zip):
+    """Create a new app copying the scaffolding one"""
     source = scaffold_zip or os.path.join(
         os.path.dirname(__file__), 
         'assets',
