@@ -1437,7 +1437,7 @@ def set_password(password, password_file):
     with open(password_file, "w") as fp:
         fp.write(str(pydal.validators.CRYPT()(password)[0]))
 
-@cli.command()
+@cli.command(name="new_app")
 @click.argument("apps_folder", default="apps")
 @click.argument("app_name")
 @click.option(
@@ -1448,6 +1448,7 @@ def set_password(password, password_file):
     show_default=False,
 )
 def new_app(apps_folder, app_name, scaffold_zip):
+    """Create a new app copying the scaffolding one"""
     source = scaffold_zip or os.path.join(
         os.path.dirname(__file__), 
         'assets',
