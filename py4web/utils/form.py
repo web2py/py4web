@@ -75,6 +75,7 @@ class FormStyleFactory:
             errors=dict(),
             begin=XML(form.xml().split("</form>")[0]),
             submit='',
+            delete='',
             end=XML("</form>"),
         )
         class_label = self.classes["label"]
