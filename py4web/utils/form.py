@@ -406,7 +406,7 @@ class Form(object):
 
         # computed from input and not changed
         self.table = table
-        self.deletable = deletable and not readonly and self.record
+        self.deletable = self.record and deletable and not readonly
         self.dbio = dbio
         self.keep_values = True if keep_values or self.record else False
         self.form_name = form_name or table._tablename
