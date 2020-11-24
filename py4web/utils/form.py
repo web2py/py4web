@@ -65,7 +65,7 @@ class FormStyleFactory:
     def produce(self, table, vars, errors, readonly, deletable, classes=None):
         self.classes.update(classes or {})
         form = FORM(_method="POST", _action=request.url, _enctype="multipart/form-data")
-        controls = dict(
+        controls = Param(
             labels=dict(),
             widgets=dict(),
             comments=dict(),
@@ -74,6 +74,7 @@ class FormStyleFactory:
             titles=dict(),
             errors=dict(),
             begin=XML(form.xml().split("</form>")[0]),
+            submit='',
             end=XML("</form>"),
         )
         class_label = self.classes["label"]

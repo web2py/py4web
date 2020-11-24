@@ -1,29 +1,29 @@
 [[extend 'layout.html']]
 
 <h2 class="title">Form Superhero Identity (Custom) </h2>
-[[= form.custom['begin'] ]]
+[[= form.custom.begin ]]
   <div class="columns is-bordered">
     <div class="column">
       <label>Name:</label>
-      [[= form.custom['widgets']['name'] ]]
-      <span style="color:#ff0000">[[= form.custom['errors']['name'] if 'name' in form.custom['errors'] else '']]</span>
+      [[= form.custom.widgets['name'] ]]
+      <span style="color:#ff0000">[[= form.custom.errors.get('name', '') ]]</span>
     </div>
     <div class="column">
       <label>Job:</label>
-      [[= form.custom['widgets']['job'] ]]
-      <span style="color:#ff0000">[[= form.custom['errors']['job'] if 'job' in form.custom['errors'] else '']]</span>
+      [[= form.custom.widgets['job'] ]]
+      <span style="color:#ff0000">[[= form.custom.errors.get('job', '')]]</span>
     </div>
     <div class="column">
       <div class="buttons is-centered">
-        [[ form.custom['submit']['_class'] = 'button is-info is-large' ]]
-        [[= form.custom['submit'] ]]
+        [[ form.custom.submit['_class'] = 'button is-info is-large' ]]
+        [[= form.custom.submit ]]
       </div>
     </div>
   </div>
-  [[ for hidden_widget in form.custom['hidden_widgets'].keys(): ]]
-  [[= form.custom['hidden_widgets'][hidden_widget] ]]
+  [[ for hidden_widget in form.custom.hidden_widgets: ]]
+  [[= form.custom.hidden_widgets[hidden_widget] ]]
   [[ pass ]]
-[[= form.custom['end'] ]]
+[[= form.custom.end ]]
 
 
 <h2 class="title">Rows</h2>

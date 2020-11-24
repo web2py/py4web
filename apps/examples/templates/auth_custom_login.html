@@ -12,14 +12,14 @@
 </style>
 <div class="auth-container">
   [[if path == "login":]]
-    [[=form.custom['begin'] ]]
+    [[=form.custom.begin ]]
     Username:
-    [[=form.custom['widgets']['username'] ]]
+    [[=form.custom.widgets['username'] ]]
     Password:
-    [[=form.custom['widgets']['login_password'] ]]
+    [[=form.custom.widgets['login_password'] ]]
     [[=form.errors]]
-    [[=form.custom['submit'] ]]
-    [[=form.custom['end'] ]]
+    [[=form.custom.submit ]]
+    [[=form.custom.end ]]
   [[else:]]
     [[=form]]
   [[pass]]
