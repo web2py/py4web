@@ -251,6 +251,12 @@ class Grid:
         )
         if value
         else "",
+        "list:string": lambda value: ', '.join(str(x) for x in value)
+        if value
+        else "",
+        "list:integer": lambda value: ', '.join(x for x in value)
+        if value
+        else "",
         "default": lambda value: str(value) if value is not None else ""
     }
 
