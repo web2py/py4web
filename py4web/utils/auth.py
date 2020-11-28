@@ -148,6 +148,7 @@ class Auth(Fixture):
         self.param = Param(
             registration_requires_confirmation=registration_requires_confirmation,
             registration_requires_approval=registration_requires_approval,
+            login_after_registration=False,
             login_expiration_time=login_expiration_time,  # seconds
             password_complexity=password_complexity,
             block_previous_password_num=block_previous_password_num,
@@ -367,6 +368,8 @@ class Auth(Fixture):
         else:
             fields["action_token"] = ""
             res = self.db.auth_user.validate_and_insert(**fields)
+            if self.param.login_after_registration and not res.get("errors"):
+                self.store_user_in_session(res["id"])
         return res
 
     def login(self, email, password):
@@ -874,6 +877,8 @@ class DefaultAuthForms:
             if not form.errors:
                 self._set_flash("user-registered")
                 self._postprocessing("register", form, user)
+                if self.auth.param.login_after_registration:
+                    redirect("login")
         form.param.sidecar.append(
             A("Sign In", _href="../auth/login", _class="info", _role="button")
         )
@@ -895,11 +900,7 @@ class DefaultAuthForms:
             fields[0].label = self.auth.db.auth_user.email.label
         fields[1].label = self.auth.db.auth_user.password.label
 
-        form = Form(
-            fields,
-            submit_value="Sign In",
-            formstyle=self.formstyle,
-        )
+        form = Form(fields, submit_value="Sign In", formstyle=self.formstyle,)
         user = None
         self.auth.next["login"] = request.query.get("next")
         if form.submitted:
