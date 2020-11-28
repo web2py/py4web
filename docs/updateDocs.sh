@@ -88,13 +88,13 @@ for current_language in ${languages}; do
   echo "INFO: Building for ${current_language}"
 
   # make HTML #
-  sphinx-build -b html docs/ docs/_build/html/${current_language} -D language="${current_language}"
+  sphinx-build -b html -D language="${current_language}" docs/ docs/_build/html/${current_language}
   mkdir -p "${docroot}/${current_language}"
 
   if [ ${1} = 'all' ]
   then
 	  # make PDF #
-	  sphinx-build -b rinoh docs/ docs/_build/rinoh -D language="${current_language}"
+	  sphinx-build -b rinoh -D language="${current_language}" docs/ docs/_build/rinoh
 	  cp "docs/_build/rinoh/target.pdf" "${docroot}/${current_language}/${PROJECT_NAME}_${current_language}.pdf"
 
 	  # make EPUB #
