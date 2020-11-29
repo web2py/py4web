@@ -1,12 +1,11 @@
 
-Welcome to py4web's documentation!
-==================================
+py4web: the reference Manual
+============================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   chapter-00
    chapter-01
    chapter-02
    chapter-03
@@ -19,7 +18,10 @@ Welcome to py4web's documentation!
    chapter-10
    chapter-11
    chapter-12
-
+   chapter-13
+   chapter-14
+   chapter-15
+   
 
 Indices and tables
 ==================
