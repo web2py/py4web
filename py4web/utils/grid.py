@@ -554,6 +554,7 @@ class Grid:
         message=None,
         row_id=None,
         name="grid-button",
+        row=None,
         **attr,
     ):
         separator = "?"
@@ -576,6 +577,9 @@ class Grid:
             styles = join(override_styles)
         elif additional_styles:
             styles += join(additional_styles)
+
+        if callable(url):
+            url = url(row)
 
         link = A(
             I(_class="fa %s" % icon),
@@ -810,6 +814,7 @@ class Grid:
                                 additional_classes=btn.additional_classes,
                                 message=btn.message,
                                 row_id=row_id if btn.append_id else None,
+                                row=row
                             )
                         )
                 if self.param.details and self.param.details != "":
@@ -868,6 +873,7 @@ class Grid:
                                 additional_classes=btn.additional_classes,
                                 message=btn.message,
                                 row_id=row_id if btn.append_id else None,
+                                row=row
                             )
                         )
                 tr.append(td)
