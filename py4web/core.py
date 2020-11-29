@@ -43,13 +43,6 @@ try:
     import gunicorn
 except ImportError:
     gunicorn = None
-try:
-    import gevent
-    import gevent.monkey
-
-    gevent.monkey.patch_all()
-except ImportError:
-    gevent = None
 
 try:
     from enum import Enum
@@ -510,7 +503,7 @@ class Session(Fixture):
             self.clear()
 
     def get_data(self):
-        return getattr(self.local, 'data', {})
+        return getattr(self.local, "data", {})
 
     def save(self):
         self.local.data["timestamp"] = time.time()
@@ -598,14 +591,14 @@ def URL(
         request.environ.get("HTTP_X_SCRIPT_NAME", "")
         or request.environ.get("SCRIPT_NAME", "")
     ).rstrip("/")
-    if parts and parts[0].startswith('/'):
-        prefix = ''
+    if parts and parts[0].startswith("/"):
+        prefix = ""
     else:
         prefix = script_name + (
             "/%s/" % request.app_name
             if (request.app_name != "_default" and use_appname)
             else "/"
-            )
+        )
     broken_parts = []
     for part in parts:
         broken_parts += str(part).rstrip("/").split("/")
@@ -793,30 +786,28 @@ http.cookies.Morsel._reserved["same-site"] = "SameSite"
 __ssl__ = __import__("ssl")
 _ssl = getattr(__ssl__, "_ssl") or getattr(__ssl__, "_ssl2")
 
-if not hasattr(_ssl, "sslwrap"):
 
-    def new_sslwrap(
-        sock,
-        server_side=False,
-        keyfile=None,
-        certfile=None,
-        cert_reqs=__ssl__.CERT_NONE,
-        ssl_version=__ssl__.PROTOCOL_SSLv23,
-        ca_certs=None,
-        ciphers=None,
-    ):
-        context = __ssl__.SSLContext(ssl_version)
-        context.verify_mode = cert_reqs or __ssl__.CERT_NONE
-        if ca_certs:
-            context.load_verify_locations(ca_certs)
-        if certfile:
-            context.load_cert_chain(certfile, keyfile)
-        if ciphers:
-            context.set_ciphers(ciphers)
-        caller_self = inspect.currentframe().f_back.f_locals["self"]
-        return context._wrap_socket(sock, server_side=server_side, ssl_sock=caller_self)
+def new_sslwrap(
+    sock,
+    server_side=False,
+    keyfile=None,
+    certfile=None,
+    cert_reqs=__ssl__.CERT_NONE,
+    ssl_version=__ssl__.PROTOCOL_SSLv23,
+    ca_certs=None,
+    ciphers=None,
+):
+    context = __ssl__.SSLContext(ssl_version)
+    context.verify_mode = cert_reqs or __ssl__.CERT_NONE
+    if ca_certs:
+        context.load_verify_locations(ca_certs)
+    if certfile:
+        context.load_cert_chain(certfile, keyfile)
+    if ciphers:
+        context.set_ciphers(ciphers)
+    caller_self = inspect.currentframe().f_back.f_locals["self"]
+    return context._wrap_socket(sock, server_side=server_side, ssl_sock=caller_self)
 
-    _ssl.sslwrap = new_sslwrap
 
 #########################################################################################
 # Error Handling
@@ -982,7 +973,7 @@ class Reloader:
         app.router = bottle.Router()
         if app_name:
             for route in routes:
-                if route.rule.rstrip('<:re:/?>')[1:].split("/")[0] != app_name:
+                if route.rule.rstrip("<:re:/?>")[1:].split("/")[0] != app_name:
                     app.add_route(route)
 
     @staticmethod
@@ -1041,8 +1032,7 @@ class Reloader:
                 tb = traceback.format_exc()
                 print(tb)
                 click.secho(
-                    "\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb),
-                    fg="red",
+                    "\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb), fg="red",
                 )
                 Reloader.ERRORS[app_name] = tb
                 # clear all files/submodules if the loading fails
@@ -1115,11 +1105,15 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
 
 @bottle.error(404)
 def error404(error):
-    guess_app_name = 'index' if request.headers.get("x-py4web-appname") else request.path.split("/")[1]
-    if guess_app_name == 'index':
-        href = '/'
+    guess_app_name = (
+        "index"
+        if request.headers.get("x-py4web-appname")
+        else request.path.split("/")[1]
+    )
+    if guess_app_name == "index":
+        href = "/"
     else:
-        href = '/' + guess_app_name
+        href = "/" + guess_app_name
     script_name = (
         request.environ.get("HTTP_X_SCRIPT_NAME", "")
         or request.environ.get("SCRIPT_NAME", "")
@@ -1216,16 +1210,16 @@ def watch(apps_folder, server_config, mode="sync"):
             if not mode == "lazy":
                 try_app_watch_tasks()
 
-    # fix issue #327: tornado is default server for windows now 
-    #if server_config == "windows":
-        # default wsgi server block the main thread so we open a new thread for the file watcher
-        #threading.Thread(
-        #    target=watch_folder_event_loop, args=(apps_folder,), daemon=True
-        #).start()
+    # fix issue #327: tornado is default server for windows now
+    # if server_config == "windows":
+    # default wsgi server block the main thread so we open a new thread for the file watcher
+    # threading.Thread(
+    #    target=watch_folder_event_loop, args=(apps_folder,), daemon=True
+    # ).start()
     if server_config in ["tornado", "windows"]:
         # tornado delegate to asyncio so we add a future into the event loop
         asyncio.ensure_future(watch_folder(apps_folder))
-    elif server_config == "gunicorn+gevent":
+    elif server_config == "gunicorn":
         # supposedly number_workers > 1
         click.echo("--watch option has no effect in multi-process environment \n")
         return
@@ -1241,31 +1235,34 @@ def start_server(args):
     host, port, apps_folder = args["host"], int(args["port"]), args["apps_folder"]
     number_workers = args["number_workers"]
     server = None
-    params = dict(server="gevent", host=host, port=port, reloader=False)
-    if args["ssl_cert"] is not None:
-        params["certfile"] = args["ssl_cert"]
-        params["keyfile"] = args["ssl_key"]
+    params = dict(host=host, port=port, reloader=False)
     if platform.system().lower() == "windows":
-        if not gevent:
-            logging.error("gevent not installed")
-            return
         server_config = "windows"
         params["server"] = "tornado"
-        if sys.version_info >= (3, 8):  #see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on windows
+        if sys.version_info >= (
+            3,
+            8,
+        ):  # see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on windows
             asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    elif number_workers < 1:
+    elif number_workers <= 1:
         server_config = "tornado"
         params["server"] = "tornado"
     else:
         if not gunicorn:
             logging.error("gunicorn not installed")
             return
-        if not gevent:
-            logging.error("gevent not installed")
-            return
-        server_config = "gunicorn+gevent"
-        params.update(server="gunicorn", workers=number_workers, worker_class="gevent")
+        server_config = "gunicorn"
+        params["server"] = "gunicorn"
+        params["workers"] = number_workers
         sys.argv[:] = sys.argv[:1]  # else break gunicorn
+
+    if args["ssl_cert"] is not None:
+        params["certfile"] = args["ssl_cert"]
+        params["keyfile"] = args["ssl_key"]
+
+    if "gevent" in server_config:
+        if not hasattr(_ssl, "sslwrap"):
+            _ssl.sslwrap = new_sslwrap
 
     if args["watch"] != "off":
         watch(apps_folder, server_config, args["watch"])
@@ -1464,9 +1461,8 @@ def set_password(password, password_file):
 def new_app(apps_folder, app_name, scaffold_zip):
     """Create a new app copying the scaffolding one"""
     source = scaffold_zip or os.path.join(
-        os.path.dirname(__file__), 
-        'assets',
-        "py4web.app._scaffold.zip")
+        os.path.dirname(__file__), "assets", "py4web.app._scaffold.zip"
+    )
     target_dir = os.path.join(apps_folder, app_name)
     if not os.path.exists(source):
         click.echo("Source app %s does not exists" % source)
