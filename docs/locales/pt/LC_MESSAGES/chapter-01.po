@@ -1,441 +1,218 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2020, Massimo DiPierro
+# Copyright (C) 2020, BSDv3 License
 # This file is distributed under the same license as the py4web package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: py4web \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-02 22:29+0100\n"
+"Project-Id-Version: py4web 1.20201112.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-11-29 10:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: ../../chapter-01.rst:2
-msgid "Installation and Startup"
-msgstr ""
+#: ../../chapter-01.rst:3
+msgid "What is py4web?"
+msgstr "O que é py4web?"
 
 #: ../../chapter-01.rst:5
-msgid "Supported platforms and prerequisites"
-msgstr ""
-
-#: ../../chapter-01.rst:7
 msgid ""
-"PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is "
-"Python 3.6+, which must be installed in advance (except if you use "
-"binaries)."
+"PY4WEB is a web framework for rapid development of efficient database "
+"driven web applications. It is an evolution of the popular web2py "
+"framework but much faster and slicker. Its internal design has been much "
+"simplified compared to web2py."
 msgstr ""
 
-#: ../../chapter-01.rst:12
-msgid "Setup procedures"
-msgstr ""
-
-#: ../../chapter-01.rst:14
+#: ../../chapter-01.rst:10
 msgid ""
-"There are four alternative ways of running py4web, with different level "
-"of difficulty and flexibility. Let’s look at the pros and cons."
+"PY4WEB can be seen as a competitor of other frameworks like Django or "
+"Flask, and it can indeed serve the same purpose. Yet PY4WEB aims to "
+"provide a larger feature set out of the box and reduce the development "
+"time of new apps."
 msgstr ""
 
-#: ../../chapter-01.rst:18
-msgid "Installing from binaries"
-msgstr ""
-
-#: ../../chapter-01.rst:20
+#: ../../chapter-01.rst:15
 msgid ""
-"This is not a real installation, because you just copy a bunch of files "
-"on your system without modifying it anyhow. Hence this is the simplest "
-"solution, especially for newbies or students, because it does not require"
-" Python pre-installed on your system nor administrative rights. On the "
-"other hand, it’s experimental, it could contain an old py4web release and"
-" it is quite difficult to add other functionalities to it."
+"From a historical perspective our story starts in 2007 when web2py was "
+"first released. web2py was designed to provide an all-inclusive solution "
+"for web development: one zip file containing the Python interpreter, the "
+"framework, a web based IDE, and a collection of battle-tested packages "
+"that work well together. In many ways web2py has been immensely "
+"successful. Web2py succeeded in providing a low barrier of entry for new "
+"developers, a very secure development platform, and remains backwards "
+"compatible until today."
 msgstr ""
 
-#: ../../chapter-01.rst:27
+#: ../../chapter-01.rst:24
 msgid ""
-"In order to use it you just need to download the latest Windows or MacOS "
-"ZIP file from `this external repository <https://github.com/nicozanf"
-"/py4web-pyinstaller>`__. Unzip it on a local folder and open a command "
-"line there. Finally run"
+"Web2py always suffered from one problem: its monolithic design. The most "
+"experienced Python developers did not understand how to use its "
+"components outside of the framework and how to use third party components"
+" within the framework. This was for good reason, as we did not care too "
+"much about them. We thought of web2py as a perfect tool that did not have"
+" to be broken into pieces because that would compromise its security. It "
+"turned out that we were wrong, and playing well with others is important."
+" Hence, since 2015 we worked on three fronts:"
 msgstr ""
 
-#: ../../chapter-01.rst:37
+#: ../../chapter-01.rst:33
+msgid "We ported web2py to Python 3."
+msgstr ""
+
+#: ../../chapter-01.rst:34
+msgid "We broke web2py into modules that can be used independently."
+msgstr ""
+
+#: ../../chapter-01.rst:35
 msgid ""
-"With this type of installation, remember to always use **py4web-start** "
-"instead of ‘py4web’ or ‘py4web.py’ in the following documentation."
+"We reassembled some of those modules into a new more modular framework … "
+"PY4WEB."
 msgstr ""
 
-#: ../../chapter-01.rst:41
-msgid "Hint: use a virtual environment (virtualenv)"
-msgstr ""
-
-#: ../../chapter-01.rst:43
+#: ../../chapter-01.rst:38
 msgid ""
-"A full installation of any complex python application like py4web will "
-"surely modify the python environment of your system. In order to prevent "
-"any unwanted change, it’s a good habit to use a python virtual "
-"environment (also called **virtualenv**, see `here "
-"<https://docs.python.org/3.7/tutorial/venv.html>`__ for an introduction)."
-" This is a standard python feature; if you still don’t know virtualenv "
-"it’s a good time to start its discovery!"
+"PY4WEB is more than a repackaging of those modules. It is a complete "
+"redesign. It uses some of the web2py modules, but not all of them. In "
+"some cases, it uses other and better modules. Some functionality was "
+"removed and some was added. We tried to preserve most of the syntax and "
+"features that experienced web2py users loved. Here is a more explicit "
+"list:"
+msgstr ""
+
+#: ../../chapter-01.rst:45
+msgid "PY4WEB, unlike web2py, requires Python 3."
+msgstr ""
+
+#: ../../chapter-01.rst:46
+msgid ""
+"PY4WEB, unlike web2py, can be installed using pip and its dependencies "
+"are managed using requirements.txt."
+msgstr ""
+
+#: ../../chapter-01.rst:48
+msgid ""
+"PY4WEB apps are regular Python modules. This is very different to web2py."
+" In particular, we ditched the custom importer, and we rely now "
+"exclusively on the regular Python import mechanism."
 msgstr ""
 
 #: ../../chapter-01.rst:51
 msgid ""
-"Activate it before using any of the following *real* installation "
-"procedures is highly reccomended."
+"PY4WEB, like web2py, can serve multiple applications concurrently, as "
+"long as the apps are submodules of the apps module."
+msgstr ""
+
+#: ../../chapter-01.rst:53
+msgid ""
+"PY4WEB, unlike web2py, is based on bottlepy and in particular uses the "
+"Bottle request object and the Bottle routing mechanism."
 msgstr ""
 
 #: ../../chapter-01.rst:55
-msgid "Installing from pip"
+msgid ""
+"PY4WEB, unlike web2py, does not create a new environment at every "
+"request. It introduces the concept of fixtures to explicitly declare "
+"which objects need to be re-initialized when a new http request is "
+"processed. This makes it much faster."
 msgstr ""
 
-#: ../../chapter-01.rst:57
+#: ../../chapter-01.rst:59
 msgid ""
-"Using *pip* is the standard installation procedure for py4web. From the "
-"command line"
+"PY4WEB, has a new sesson object which, like web2py’s, provides strong "
+"security and encryption of the session data, but sessions are no longer "
+"stored in the file system - which created performance issues. It provides"
+" sessions in cookies, in redis, in memcache, or in database. We also "
+"limited session data to objects that are json serializable."
 msgstr ""
 
-#: ../../chapter-01.rst:64
+#: ../../chapter-01.rst:65
 msgid ""
-"but do **not** type the *–user* option with virtualenv or a standard "
-"Windows installation which is already per-user."
+"PY4WEB, like web2py, has a built-in ticketing system but, unlike web2py, "
+"this system is global and not per app. Tickets are no longer stored in "
+"the filesystem with the individual apps. They are stored in a single "
+"database."
 msgstr ""
 
-#: ../../chapter-01.rst:67
+#: ../../chapter-01.rst:69
 msgid ""
-"Also, if *python3* does not work, try with the simple *python* command "
-"instead."
+"PY4WEB, like web2py, is based on pydal but uses some new features of "
+"pydal (RESTAPI)."
 msgstr ""
 
-#: ../../chapter-01.rst:70
+#: ../../chapter-01.rst:71
 msgid ""
-"This will install py4web and all its dependencies on the system’s path "
-"only. The assets folder (that contains the py4web’s system apps) will "
-"also be created. After the installation you’ll be able to start py4web on"
-" any given working folder with"
+"PY4WEB, like web2py, uses the yatl template language but defaults to "
+"square brackets delimiters to avoid conflicts with model JS frameworks, "
+"such as Vue.js and angular.js. Yatl includes a subset of the web2py "
+"helpers."
+msgstr ""
+
+#: ../../chapter-01.rst:75
+msgid ""
+"PY4WEB, unlike web2py, uses the pluralization library for "
+"internationalization. In practice, this exposes an object T very similar "
+"to web2py’s T but it provides better caching and more flexible "
+"pluralization capabilities."
+msgstr ""
+
+#: ../../chapter-01.rst:79
+msgid ""
+"PY4WEB comes with a Dashboard APP that replaces web2py’s admin. This is a"
+" web IDE for uploading/managing/editing apps."
 msgstr ""
 
 #: ../../chapter-01.rst:81
 msgid ""
-"If the command py4web is not accepted, it means it’s not in the system’s "
-"path. On Windows, a special py4web.exe file (pointing to py4web.py) will "
-"be created by *pip* on the system’s path, but not if you type the *–user*"
-" option by mistake."
+"PY4WEB’s Dashboard includes a web based database interface. This replaces"
+" the appadmin functionality of web2py."
+msgstr ""
+
+#: ../../chapter-01.rst:83
+msgid ""
+"PY4WEB comes with a Form object that is similar to web2py’s SQLFORM but "
+"it is much simpler and faster. The syntax is the same. This has been "
+"provided in order to help users port existing apps; but PY4WEB encourages"
+" using API based forms over postbacks."
 msgstr ""
 
 #: ../../chapter-01.rst:87
-msgid "Installing from source (globally)"
-msgstr ""
-
-#: ../../chapter-01.rst:89
 msgid ""
-"This is the traditional way for installing a program, but it works only "
-"on Linux and MacOS. All the requirements will be installed on the "
-"system’s path along with links to the py4web.py program on the local "
-"folder"
+"PY4WEB comes with an Auth object that replaces the web2py one. It is more"
+" modular and easier to extend. Out of the box, it provides the basic "
+"functionality of register, login, logout, change password, request change"
+" password, edit profile as well as integration with PAM, SAML2, LDAP, "
+"OAUTH2 (google, facebook, and twitter)."
 msgstr ""
 
-#: ../../chapter-01.rst:103
+#: ../../chapter-01.rst:92
 msgid ""
-"Also notice that when installing in this way the content of py4web/assets"
-" folder is missing at first but it is manually created later with the "
-"‘make assets’ command."
+"PY4WEB comes with some utilites like “tags”, for instance, which allows "
+"adding searchable tags to any database table. It can be used, for "
+"example, to tag users with groups and search users by groups and apply "
+"permissions based on membership."
 msgstr ""
 
-#: ../../chapter-01.rst:108
-msgid "Installing from source (locally)"
-msgstr ""
-
-#: ../../chapter-01.rst:111
+#: ../../chapter-01.rst:96
 msgid ""
-"In this way all the requirements will be installed or upgraded on the "
-"system’s path, but py4web itself will only be copied"
+"PY4WEB comes with with some custom Vue.js components designed to interact"
+" with the PyDAL RESTAPI, and with PY4WEB in general. These APIs are "
+"designed to allow the server to set policies about which operations a "
+"client is allowed to perform, but give the client flexibility within "
+"those constraints. The two main components are mtable (which provides a "
+"web based interface to the database similar to web2py’s grid) and auth (a"
+" customizable interface to the Auth API)."
 msgstr ""
 
-#: ../../chapter-01.rst:113
+#: ../../chapter-01.rst:105
 msgid ""
-"on a local folder. This is especially useful if you already have a "
-"working py4web installation but you want to test a different"
-msgstr ""
-
-#: ../../chapter-01.rst:114
-msgid "one. From the command line, go to a given working folder and then run"
-msgstr ""
-
-#: ../../chapter-01.rst:122
-msgid "Once installed, you should always start it from there with"
-msgstr ""
-
-#: ../../chapter-01.rst:124
-msgid "**For Linux / MacOS**"
-msgstr ""
-
-#: ../../chapter-01.rst:132
-msgid ""
-"If you have installed py4web both globally and locally, notice the **./**"
-" ; it forces the run of the local folder’s py4web and not the globally "
-"installed one."
-msgstr ""
-
-#: ../../chapter-01.rst:136
-msgid "**For Windows**"
-msgstr ""
-
-#: ../../chapter-01.rst:144
-msgid ""
-"On Windows, the programs on the local folder are always executed before "
-"the ones in the path (hence you don’t need the **./**). But running .py "
-"files directly it’s not usual and you’ll need an explicit python3/python "
-"command."
-msgstr ""
-
-#: ../../chapter-01.rst:150
-msgid "Upgrading"
-msgstr ""
-
-#: ../../chapter-01.rst:152
-msgid "If you installed py4web from pip you can simple upgrade it with"
-msgstr ""
-
-#: ../../chapter-01.rst:158
-msgid ""
-"Mind that it will not automatically upgrade the apps like **Dashboard** "
-"and **Default**. You have to manually remove these apps and then run"
-msgstr ""
-
-#: ../../chapter-01.rst:165
-msgid ""
-"in order to re-install them. This is a safety precaution, in case you "
-"made changes to those apps."
-msgstr ""
-
-#: ../../chapter-01.rst:168
-msgid ""
-"If you installed py4web in any other way, you must upgrade it manually. "
-"First you have to make a backup of any personal py4web work you’ve done, "
-"then delete the old installation folder and re-install the framework "
-"again."
-msgstr ""
-
-#: ../../chapter-01.rst:174
-msgid "First run"
-msgstr ""
-
-#: ../../chapter-01.rst:176
-msgid ""
-"Running py4web using any of the previous procedure should produce an "
-"output like this"
-msgstr ""
-
-#: ../../chapter-01.rst:194
-msgid ""
-"Generally ``apps`` is the name of the folder where you keep all your "
-"apps, and can be explicitly set wit the \\_‘run\\_’ command. If that "
-"folder does not exist, it is created. PY4WEB expects to find at least two"
-" apps in this folder: **Dashboard** (_dashboard) and **Default** "
-"(_default). If it does not find them, it installs them."
-msgstr ""
-
-#: ../../chapter-01.rst:200
-msgid "**Dashboard** is a web based IDE."
-msgstr ""
-
-#: ../../chapter-01.rst:202
-msgid "**Default** is an app that does nothing other than welcome the user."
-msgstr ""
-
-#: ../../chapter-01.rst:204
-msgid ""
-"Notice that some apps - like **Dashboard** and **Default** - have a "
-"special role in py4web and therefore their actual name starts with ``_`` "
-"to avoid conflicts with apps created by you."
-msgstr ""
-
-#: ../../chapter-01.rst:208
-msgid ""
-"Once py4web is running you can access a specific app at the following "
-"urls:"
-msgstr ""
-
-#: ../../chapter-01.rst:217
-msgid ""
-"Notice that ONLY the **Default** app is special because if does not "
-"require the “{appname}/” prefix in the path, like all the other apps do. "
-"In general you you may want to symlink ``apps/_default`` to your default "
-"app."
-msgstr ""
-
-#: ../../chapter-01.rst:222
-msgid "For all apps the trailing ``/index`` is optional."
-msgstr ""
-
-#: ../../chapter-01.rst:225
-msgid "Command line options"
-msgstr ""
-
-#: ../../chapter-01.rst:227
-msgid ""
-"py4web provides multiple command line options which can be listed by "
-"running it with the **–help** argument"
-msgstr ""
-
-#: ../../chapter-01.rst:252
-msgid "call command option"
-msgstr ""
-
-#: ../../chapter-01.rst:266
-msgid "run command option"
-msgstr ""
-
-#: ../../chapter-01.rst:295
-msgid ""
-"If you want py4web to automatically reload an application upon any "
-"changes to files of that application, you can:"
-msgstr ""
-
-#: ../../chapter-01.rst:298
-msgid "for immediate reloading (sync-mode): ``py4web run --watch=sync``"
-msgstr ""
-
-#: ../../chapter-01.rst:300
-msgid ""
-"for reloading on any first incoming request to the application has been "
-"changed (lazy-mode): ``py4web run --watch=lazy``"
-msgstr ""
-
-#: ../../chapter-01.rst:304
-msgid "set_password command option"
-msgstr ""
-
-#: ../../chapter-01.rst:320
-msgid ""
-"If the ``--dashboard_mode`` is not ``demo`` or ``none``, every time "
-"py4web starts, it asks for a one-time password for you to access the "
-"dashboard. This is annoying. You can avoid it by storing a pdkdf2 hashed "
-"password in a file (by default called password.txt) with the command"
-msgstr ""
-
-#: ../../chapter-01.rst:329
-msgid ""
-"It will not ask again unless the file is deleted. You can also use a "
-"custom file name with"
-msgstr ""
-
-#: ../../chapter-01.rst:336
-msgid "and then ask py4web to re-use that password at runtime with"
-msgstr ""
-
-#: ../../chapter-01.rst:342
-msgid "Finally you can manually create the file yourself with:"
-msgstr ""
-
-#: ../../chapter-01.rst:350
-msgid "setup command option"
-msgstr ""
-
-#: ../../chapter-01.rst:363
-msgid ""
-"This option create a new apps folder (or reinstall it). If needed, it "
-"will ask for the confirmation of the new folder’s creation and then for "
-"copying every standard py4web apps from the assets folder. It currently "
-"does nothing on binaries installations and from source installation "
-"(locally) - for them you can manually copy the existing apps folder to "
-"the new one."
-msgstr ""
-
-#: ../../chapter-01.rst:371
-msgid "shell command option"
-msgstr ""
-
-#: ../../chapter-01.rst:383
-msgid ""
-"Py4web’s shell is just the regular python shell with apps added to the "
-"search path. Notice that the shell is for all the apps, not a single one."
-" You can then import the needed modules from the apps you need to access."
-msgstr ""
-
-#: ../../chapter-01.rst:388
-msgid "For example, inside a shell you can"
-msgstr ""
-
-#: ../../chapter-01.rst:397
-msgid "version command option"
-msgstr ""
-
-#: ../../chapter-01.rst:410
-msgid ""
-"With the *-a* option you’ll get the version of all the available python "
-"modules, too."
-msgstr ""
-
-#: ../../chapter-01.rst:414
-msgid "Deployment on the cloud"
-msgstr ""
-
-#: ../../chapter-01.rst:417
-msgid "Deployment on GCloud (aka Google App Engine)"
-msgstr ""
-
-#: ../../chapter-01.rst:419
-msgid ""
-"Login into the Gcloud console (https://console.cloud.google.com/) and "
-"create a new project. You will obtain a project id that looks like "
-"“{project_name}-{number}”."
-msgstr ""
-
-#: ../../chapter-01.rst:423
-msgid "In your local file system make a new working folder and cd into it:"
-msgstr ""
-
-#: ../../chapter-01.rst:430
-msgid ""
-"Copy the example files from py4web (assuming you have the source from "
-"github)"
-msgstr ""
-
-#: ../../chapter-01.rst:437
-msgid ""
-"Copy or symlink your ``apps`` folder into the gae folder, or maybe make a"
-" new apps folder containing an empty ``__init__.py`` and symlink the "
-"individual apps you want to deploy. You should see the following "
-"files/folders:"
-msgstr ""
-
-#: ../../chapter-01.rst:452
-msgid "Install the Google SDK, py4web and setup the working folder:"
-msgstr ""
-
-#: ../../chapter-01.rst:461
-msgid ""
-"(replace {your email} with your google email account and {project id} "
-"with the project id obtained from Google)."
-msgstr ""
-
-#: ../../chapter-01.rst:464
-msgid "Now every time you want to deploy your apps, simply do:"
-msgstr ""
-
-#: ../../chapter-01.rst:470
-msgid ""
-"You may want to customize the Makefile and app.yaml to suit your needs. "
-"You should not need to edit ``main.py``."
-msgstr ""
-
-#: ../../chapter-01.rst:474
-msgid "Deployment on PythonAnywhere.com"
-msgstr ""
-
-#: ../../chapter-01.rst:476
-msgid ""
-"Watch the video: https://youtu.be/Wxjl_vkLAEY and follow the detailed "
-"tutorial on https://github.com/tomcam/py4webcasts/blob/master/docs/how-"
-"install-source-pythonanywhere.md . The bottle_app.py script is in "
-"``py4web/deployment_tools/pythonanywhere.com/bottle_app.py``"
+"The goal of PY4WEB is and remains the same as web2py’s: to make web "
+"development easy and accessible, while producing applications that are "
+"fast and secure."
 msgstr ""
 

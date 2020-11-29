@@ -1,84 +1,464 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2020, Massimo DiPierro
+# Copyright (C) 2020, BSDv3 License
 # This file is distributed under the same license as the py4web package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: py4web \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-02 22:29+0100\n"
+"Project-Id-Version: py4web 1.20201112.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-11-29 10:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: ../../chapter-03.rst:2
-msgid "Dashboard"
-msgstr ""
-
-#: ../../chapter-03.rst:4
-msgid "Login into the dashboard"
+#: ../../chapter-03.rst:3
+msgid "Installation and Startup"
 msgstr ""
 
 #: ../../chapter-03.rst:6
-msgid "|image1|"
+msgid "Supported platforms and prerequisites"
 msgstr ""
 
 #: ../../chapter-03.rst:8
 msgid ""
-"Click on a tab title to expand. Tabs are context dependent. For example, "
-"open tab “Installed Applications” and click on an installed application "
-"to select it. This will create new tabs “Routes”, “Files”, and “Model” "
-"for the selected app."
+"PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is "
+"Python 3.6+, which must be installed in advance (except if you use "
+"binaries)."
 msgstr ""
 
 #: ../../chapter-03.rst:13
-msgid "|image2|"
+msgid "Setup procedures"
 msgstr ""
 
 #: ../../chapter-03.rst:15
 msgid ""
-"The “Files” tab allows you to browse the folder that contains the "
-"selected app and edit any file that comprises the app. If you edit a file"
-" you must click on “Reload Apps” under the “Installed Applications” tab "
-"for the change to take effect. If an app fails to load, its corresponding"
-" button is displayed in red. Click on it to see the corresponding error."
+"There are four alternative ways of running py4web, with different level "
+"of difficulty and flexibility. Let’s look at the pros and cons."
 msgstr ""
 
-#: ../../chapter-03.rst:22
-msgid "|image3|"
+#: ../../chapter-03.rst:19
+msgid "Installing from binaries"
 msgstr ""
 
-#: ../../chapter-03.rst:24
+#: ../../chapter-03.rst:21
 msgid ""
-"The Dashboard exposes the db of all the apps using pydal RESTAPI. It also"
-" provides a web interface to perform search and CRUD operations."
+"This is not a real installation, because you just copy a bunch of files "
+"on your system without modifying it anyhow. Hence this is the simplest "
+"solution, especially for newbies or students, because it does not require"
+" Python pre-installed on your system nor administrative rights. On the "
+"other hand, it’s experimental, it could contain an old py4web release and"
+" it is quite difficult to add other functionalities to it."
 msgstr ""
 
-#: ../../chapter-03.rst:27
-msgid "|image4|"
-msgstr ""
-
-#: ../../chapter-03.rst:29
-msgid "If a user visits and app and triggers a bug, the user it issued a ticket."
-msgstr ""
-
-#: ../../chapter-03.rst:32
-msgid "|image5|"
-msgstr ""
-
-#: ../../chapter-03.rst:34
+#: ../../chapter-03.rst:28
 msgid ""
-"The ticket is logged in py4web database. The Dashboard displays the most "
-"common recent issues and allows searching tickets."
+"In order to use it you just need to download the latest Windows or MacOS "
+"ZIP file from `this external repository <https://github.com/nicozanf"
+"/py4web-pyinstaller>`__. Unzip it on a local folder and open a command "
+"line there. Finally run"
 msgstr ""
 
-#: ../../chapter-03.rst:37
-msgid "|image6|"
+#: ../../chapter-03.rst:38
+msgid ""
+"With this type of installation, remember to always use **py4web-start** "
+"instead of ‘py4web’ or ‘py4web.py’ in the following documentation."
+msgstr ""
+
+#: ../../chapter-03.rst:42
+msgid "Hint: use a virtual environment (virtualenv)"
+msgstr ""
+
+#: ../../chapter-03.rst:44
+msgid ""
+"A full installation of any complex python application like py4web will "
+"surely modify the python environment of your system. In order to prevent "
+"any unwanted change, it’s a good habit to use a python virtual "
+"environment (also called **virtualenv**, see `here "
+"<https://docs.python.org/3.7/tutorial/venv.html>`__ for an introduction)."
+" This is a standard python feature; if you still don’t know virtualenv "
+"it’s a good time to start its discovery!"
+msgstr ""
+
+#: ../../chapter-03.rst:52
+msgid ""
+"Activate it before using any of the following *real* installation "
+"procedures is highly reccomended."
+msgstr ""
+
+#: ../../chapter-03.rst:56
+msgid "Installing from pip"
+msgstr ""
+
+#: ../../chapter-03.rst:58
+msgid ""
+"Using *pip* is the standard installation procedure for py4web. From the "
+"command line"
+msgstr ""
+
+#: ../../chapter-03.rst:65
+msgid ""
+"but do **not** type the *–user* option with virtualenv or a standard "
+"Windows installation which is already per-user."
+msgstr ""
+
+#: ../../chapter-03.rst:68
+msgid ""
+"Also, if *python3* does not work, try with the simple *python* command "
+"instead."
+msgstr ""
+
+#: ../../chapter-03.rst:71
+msgid ""
+"This will install py4web and all its dependencies on the system’s path "
+"only. The assets folder (that contains the py4web’s system apps) will "
+"also be created. After the installation you’ll be able to start py4web on"
+" any given working folder with"
+msgstr ""
+
+#: ../../chapter-03.rst:82
+msgid ""
+"If the command py4web is not accepted, it means it’s not in the system’s "
+"path. On Windows, a special py4web.exe file (pointing to py4web.py) will "
+"be created by *pip* on the system’s path, but not if you type the *–user*"
+" option by mistake."
+msgstr ""
+
+#: ../../chapter-03.rst:88
+msgid "Installing from source (globally)"
+msgstr ""
+
+#: ../../chapter-03.rst:90
+msgid ""
+"This is the traditional way for installing a program, but it works only "
+"on Linux and MacOS. All the requirements will be installed on the "
+"system’s path along with links to the py4web.py program on the local "
+"folder"
+msgstr ""
+
+#: ../../chapter-03.rst:104
+msgid ""
+"Also notice that when installing in this way the content of py4web/assets"
+" folder is missing at first but it is manually created later with the "
+"‘make assets’ command."
+msgstr ""
+
+#: ../../chapter-03.rst:109
+msgid "Installing from source (locally)"
+msgstr ""
+
+#: ../../chapter-03.rst:112
+msgid ""
+"In this way all the requirements will be installed or upgraded on the "
+"system’s path, but py4web itself will only be copied"
+msgstr ""
+
+#: ../../chapter-03.rst:114
+msgid ""
+"on a local folder. This is especially useful if you already have a "
+"working py4web installation but you want to test a different"
+msgstr ""
+
+#: ../../chapter-03.rst:115
+msgid "one. From the command line, go to a given working folder and then run"
+msgstr ""
+
+#: ../../chapter-03.rst:123
+msgid "Once installed, you should always start it from there with"
+msgstr ""
+
+#: ../../chapter-03.rst:125
+msgid "**For Linux / MacOS**"
+msgstr ""
+
+#: ../../chapter-03.rst:133
+msgid ""
+"If you have installed py4web both globally and locally, notice the **./**"
+" ; it forces the run of the local folder’s py4web and not the globally "
+"installed one."
+msgstr ""
+
+#: ../../chapter-03.rst:137
+msgid "**For Windows**"
+msgstr ""
+
+#: ../../chapter-03.rst:145
+msgid ""
+"On Windows, the programs on the local folder are always executed before "
+"the ones in the path (hence you don’t need the **./**). But running .py "
+"files directly it’s not usual and you’ll need an explicit python3/python "
+"command."
+msgstr ""
+
+#: ../../chapter-03.rst:151
+msgid "Upgrading"
+msgstr ""
+
+#: ../../chapter-03.rst:153
+msgid "If you installed py4web from pip you can simple upgrade it with"
+msgstr ""
+
+#: ../../chapter-03.rst:161
+msgid ""
+"This will not automatically upgrade the standard apps like **Dashboard** "
+"and **Default**. You have to manually remove these apps and then run"
+msgstr ""
+
+#: ../../chapter-03.rst:169
+msgid ""
+"in order to re-install them. This is a safety precaution, in case you "
+"made changes to those apps."
+msgstr ""
+
+#: ../../chapter-03.rst:172
+msgid ""
+"If you installed py4web in any other way, you must upgrade it manually. "
+"First you have to make a backup of any personal py4web work you’ve done, "
+"then delete the old installation folder and re-install the framework "
+"again."
+msgstr ""
+
+#: ../../chapter-03.rst:178
+msgid "First run"
+msgstr ""
+
+#: ../../chapter-03.rst:180
+msgid ""
+"Running py4web using any of the previous procedure should produce an "
+"output like this:"
+msgstr ""
+
+#: ../../chapter-03.rst:191
+msgid ""
+"Generally ``apps`` is the name of the folder where you keep all your "
+"apps, and can be explicitly set wit the ``run`` command. If that folder "
+"does not exist, it is created. PY4WEB expects to find at least two apps "
+"in this folder: **Dashboard** (_dashboard) and **Default** (_default). If"
+" it does not find them, it installs them."
+msgstr ""
+
+#: ../../chapter-03.rst:197
+msgid ""
+"**Dashboard** is a web based IDE. It will be described in the next "
+"chapter."
+msgstr ""
+
+#: ../../chapter-03.rst:199
+msgid "**Default** is an app that does nothing other than welcome the user."
+msgstr ""
+
+#: ../../chapter-03.rst:203
+msgid ""
+"Some apps - like **Dashboard** and **Default** - have a special role in "
+"py4web and therefore their actual name starts with ``_`` to avoid "
+"conflicts with apps created by you."
+msgstr ""
+
+#: ../../chapter-03.rst:206
+msgid ""
+"Once py4web is running you can access a specific app at the following "
+"urls:"
+msgstr ""
+
+#: ../../chapter-03.rst:215
+msgid ""
+"In order to stop py4web, you need to hit :kbd:`Control-C` on the window "
+"where you run it."
+msgstr ""
+
+#: ../../chapter-03.rst:219
+msgid ""
+"ONLY the **Default** app is special because if does not require the "
+"“{appname}/” prefix in the path, like all the other apps do. In general "
+"you may want to symlink ``apps/_default`` to your default app."
+msgstr ""
+
+#: ../../chapter-03.rst:222
+msgid "For all apps the trailing ``/index`` is optional."
+msgstr ""
+
+#: ../../chapter-03.rst:225
+msgid "Command line options"
+msgstr ""
+
+#: ../../chapter-03.rst:227
+msgid ""
+"py4web provides multiple command line options which can be listed by "
+"running it without any argument"
+msgstr ""
+
+#: ../../chapter-03.rst:237
+msgid ""
+"You can have additional help for a specific command line option by "
+"running it with the **–help** or **-h** argument."
+msgstr ""
+
+#: ../../chapter-03.rst:243
+msgid "``call`` command option"
+msgstr ""
+
+#: ../../chapter-03.rst:259
+msgid "``new_app`` command option"
+msgstr ""
+
+#: ../../chapter-03.rst:272
+msgid ""
+"This currently gives an error on binaries installations and from source "
+"installation (locally), because they miss the asset zip file."
+msgstr ""
+
+#: ../../chapter-03.rst:278
+msgid "``run`` command option"
+msgstr ""
+
+#: ../../chapter-03.rst:307
+msgid ""
+"If you want py4web to automatically reload an application upon any "
+"changes to files of that application, you can:"
+msgstr ""
+
+#: ../../chapter-03.rst:310
+msgid "for immediate reloading (sync-mode): ``py4web run --watch=sync``"
+msgstr ""
+
+#: ../../chapter-03.rst:312
+msgid ""
+"for reloading on any first incoming request to the application has been "
+"changed (lazy-mode): ``py4web run --watch=lazy``"
+msgstr ""
+
+#: ../../chapter-03.rst:318
+msgid "``set_password`` command option"
+msgstr ""
+
+#: ../../chapter-03.rst:334
+msgid ""
+"If the ``--dashboard_mode`` is not ``demo`` or ``none``, every time "
+"py4web starts, it asks for a one-time password for you to access the "
+"dashboard. This is annoying. You can avoid it by storing a pdkdf2 hashed "
+"password in a file (by default called password.txt) with the command"
+msgstr ""
+
+#: ../../chapter-03.rst:343
+msgid ""
+"It will not ask again unless the file is deleted. You can also use a "
+"custom file name with"
+msgstr ""
+
+#: ../../chapter-03.rst:350
+msgid "and then ask py4web to re-use that password at runtime with"
+msgstr ""
+
+#: ../../chapter-03.rst:356
+msgid "Finally you can manually create the file yourself with:"
+msgstr ""
+
+#: ../../chapter-03.rst:366
+msgid "``setup`` command option"
+msgstr ""
+
+#: ../../chapter-03.rst:379
+msgid ""
+"This option create a new apps folder (or reinstall it). If needed, it "
+"will ask for the confirmation of the new folder’s creation and then for "
+"copying every standard py4web apps from the assets folder. It currently "
+"does nothing on binaries installations and from source installation "
+"(locally) - for them you can manually copy the existing apps folder to "
+"the new one."
+msgstr ""
+
+#: ../../chapter-03.rst:389
+msgid "``shell`` command option"
+msgstr ""
+
+#: ../../chapter-03.rst:401
+msgid ""
+"Py4web’s shell is just the regular python shell with apps added to the "
+"search path. Notice that the shell is for all the apps, not a single one."
+" You can then import the needed modules from the apps you need to access."
+msgstr ""
+
+#: ../../chapter-03.rst:406
+msgid "For example, inside a shell you can"
+msgstr ""
+
+#: ../../chapter-03.rst:417
+msgid "``version`` command option"
+msgstr ""
+
+#: ../../chapter-03.rst:430
+msgid ""
+"With the *-a* option you’ll get the version of all the available python "
+"modules, too."
+msgstr ""
+
+#: ../../chapter-03.rst:434
+msgid "Deployment on the cloud"
+msgstr ""
+
+#: ../../chapter-03.rst:437
+msgid "Deployment on GCloud (aka Google App Engine)"
+msgstr ""
+
+#: ../../chapter-03.rst:439
+msgid ""
+"Login into the Gcloud console (https://console.cloud.google.com/) and "
+"create a new project. You will obtain a project id that looks like "
+"“{project_name}-{number}”."
+msgstr ""
+
+#: ../../chapter-03.rst:443
+msgid "In your local file system make a new working folder and cd into it:"
+msgstr ""
+
+#: ../../chapter-03.rst:450
+msgid ""
+"Copy the example files from py4web (assuming you have the source from "
+"github)"
+msgstr ""
+
+#: ../../chapter-03.rst:457
+msgid ""
+"Copy or symlink your ``apps`` folder into the gae folder, or maybe make a"
+" new apps folder containing an empty ``__init__.py`` and symlink the "
+"individual apps you want to deploy. You should see the following "
+"files/folders:"
+msgstr ""
+
+#: ../../chapter-03.rst:472
+msgid "Install the Google SDK, py4web and setup the working folder:"
+msgstr ""
+
+#: ../../chapter-03.rst:481
+msgid ""
+"(replace {your email} with your google email account and {project id} "
+"with the project id obtained from Google)."
+msgstr ""
+
+#: ../../chapter-03.rst:484
+msgid "Now every time you want to deploy your apps, simply do:"
+msgstr ""
+
+#: ../../chapter-03.rst:490
+msgid ""
+"You may want to customize the Makefile and app.yaml to suit your needs. "
+"You should not need to edit ``main.py``."
+msgstr ""
+
+#: ../../chapter-03.rst:494
+msgid "Deployment on PythonAnywhere.com"
+msgstr ""
+
+#: ../../chapter-03.rst:496
+msgid ""
+"Watch the video: https://youtu.be/Wxjl_vkLAEY and follow the detailed "
+"tutorial on https://github.com/tomcam/py4webcasts/blob/master/docs/how-"
+"install-source-pythonanywhere.md . The bottle_app.py script is in "
+"``py4web/deployment_tools/pythonanywhere.com/bottle_app.py``"
 msgstr ""
 

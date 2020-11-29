@@ -1,543 +1,120 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2020, Massimo DiPierro
+# Copyright (C) 2020, BSDv3 License
 # This file is distributed under the same license as the py4web package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: py4web \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-02 22:29+0100\n"
+"Project-Id-Version: py4web 1.20201112.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-11-29 10:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: ../../chapter-12.rst:2
-msgid "Grid"
+#: ../../chapter-12.rst:3
+msgid "Forms"
 msgstr ""
 
-#: ../../chapter-12.rst:4
-msgid ""
-"**Warning: the API described in this chapter is new and subject to "
-"changes. Make sure you keep your code up to date**"
+#: ../../chapter-12.rst:5
+msgid "WORK IN PROGRESS"
 msgstr ""
 
 #: ../../chapter-12.rst:7
 msgid ""
-"py4web comes with a Grid object providing simple grid and CRUD "
-"capabilities."
+"Just know that ``py4web.utils.form.Form`` is a pretty much equivalent to "
+"web2py’s ``SQLFORM``."
 msgstr ""
 
-#: ../../chapter-12.rst:11
-msgid "Key Features"
+#: ../../chapter-12.rst:10
+msgid "The ``Form`` constructor accepts the following arguments:"
 msgstr ""
 
-#: ../../chapter-12.rst:13
-msgid "Click column heads for sorting - click again for DESC"
+#: ../../chapter-12.rst:26
+msgid "Where:"
 msgstr ""
 
-#: ../../chapter-12.rst:14
-msgid "Pagination control"
-msgstr ""
-
-#: ../../chapter-12.rst:15
+#: ../../chapter-12.rst:28
 msgid ""
-"Search Queries list - provide the search queries used to filter the grid "
-"and grid will build the search form (remembers filters between pages)"
+"``table``: a DAL table or a list of fields (equivalent to old "
+"SQLFORM.factory)"
 msgstr ""
 
-#: ../../chapter-12.rst:18
+#: ../../chapter-12.rst:30
+msgid "``record``: a DAL record or record id"
+msgstr ""
+
+#: ../../chapter-12.rst:31
+msgid "``readonly``: set to True to make a readonly form"
+msgstr ""
+
+#: ../../chapter-12.rst:32
+msgid "``deletable``: set to False to disallow deletion of record"
+msgstr ""
+
+#: ../../chapter-12.rst:33
 msgid ""
-"Filter Form - you supply and control filtering (remember filters between "
-"pages)"
+"``formstyle``: a function that renders the form using helpers "
+"(FormStyleDefault)"
 msgstr ""
 
-#: ../../chapter-12.rst:20
-msgid "Action Buttons - with or without text"
+#: ../../chapter-12.rst:35
+msgid "``dbio``: set to False to prevent any DB writes"
 msgstr ""
 
-#: ../../chapter-12.rst:21
-msgid "Full CRUD with Delete Confirmation"
-msgstr ""
-
-#: ../../chapter-12.rst:22
-msgid "Pre and Post Action (add your own buttons to each row)"
-msgstr ""
-
-#: ../../chapter-12.rst:23
-msgid "Grid dates in local format using moment.js"
-msgstr ""
-
-#: ../../chapter-12.rst:24
-msgid "Checkboxes in grid for boolean fields"
-msgstr ""
-
-#: ../../chapter-12.rst:27
-msgid "Simple Example"
-msgstr ""
-
-#: ../../chapter-12.rst:29
-msgid "In this simple example we will make a grid over the company table."
-msgstr ""
-
-#: ../../chapter-12.rst:31 ../../chapter-12.rst:78
-msgid "controllers.py"
-msgstr ""
-
-#: ../../chapter-12.rst:57
-msgid "grid.html"
-msgstr ""
-
-#: ../../chapter-12.rst:72
-msgid "Filter/Search Example"
-msgstr ""
-
-#: ../../chapter-12.rst:74
+#: ../../chapter-12.rst:36
 msgid ""
-"In this simple example we will make a grid over the companies table. A "
-"search form will be created and allow searching over the company.name "
-"field."
+"``keep_values``: if set to true, it remembers the values of the "
+"previously submitted form"
 msgstr ""
 
-#: ../../chapter-12.rst:109
-msgid "The same grid.html as above is used in this example."
+#: ../../chapter-12.rst:38
+msgid "``form_name``: the optional name of this form"
 msgstr ""
 
-#: ../../chapter-12.rst:112
-msgid "Signature"
+#: ../../chapter-12.rst:39
+msgid "``hidden``: a dictionary of hidden fields that is added to the form"
 msgstr ""
 
-#: ../../chapter-12.rst:137
+#: ../../chapter-12.rst:40
+msgid "``before_validate``: an optional validator."
+msgstr ""
+
+#: ../../chapter-12.rst:43
+msgid "Example"
+msgstr ""
+
+#: ../../chapter-12.rst:45
 msgid ""
-"common_settings: Params object with common settings for all grids within "
-"the application"
+"Here is a simple example of a custom form not using database access. We "
+"declare an endpoint ``/form_example``, which will be used both for the "
+"GET and for the POST of the form:"
 msgstr ""
 
-#: ../../chapter-12.rst:139
-msgid "queries: list of queries used to filter the data"
+#: ../../chapter-12.rst:70
+msgid "The form can be displayed in the template simply using ``[[=form]]``."
 msgstr ""
 
-#: ../../chapter-12.rst:140
-msgid "search_form: py4web FORM to be included as the search form"
+#: ../../chapter-12.rst:73
+msgid "Form validation"
 msgstr ""
 
-#: ../../chapter-12.rst:141
+#: ../../chapter-12.rst:75
 msgid ""
-"search_queries: list of query lists to use to build the search form. "
-"Ignored if search_form is used. Format is"
-msgstr ""
-
-#: ../../chapter-12.rst:143
-msgid "storage_values: values to save between requests"
-msgstr ""
-
-#: ../../chapter-12.rst:144
-msgid ""
-"fields: list of fields to display on the list page, if blank, glean "
-"tablename from first query and use all fields of that table"
-msgstr ""
-
-#: ../../chapter-12.rst:146
-msgid "show_id: show the record id field on list page - default = False"
-msgstr ""
-
-#: ../../chapter-12.rst:147
-msgid "orderby: pydal orderby field or list of fields"
-msgstr ""
-
-#: ../../chapter-12.rst:148
-msgid "left: if joining other tables, specify the pydal left expression here"
-msgstr ""
-
-#: ../../chapter-12.rst:149
-msgid ""
-"headings: list of headings to be used for list page - if not provided use"
-" the field label"
-msgstr ""
-
-#: ../../chapter-12.rst:151
-msgid ""
-"create: URL to redirect to for creating records - set to False to not "
-"display the button"
-msgstr ""
-
-#: ../../chapter-12.rst:153
-msgid ""
-"editable: URL to redirect to for editing records - set to False to not "
-"display the button"
-msgstr ""
-
-#: ../../chapter-12.rst:155
-msgid ""
-"deletable: URL to redirect to for deleting records - set to False to not "
-"display the button"
-msgstr ""
-
-#: ../../chapter-12.rst:157
-msgid ""
-"requires: dict of fields and their ‘requires’ parm for building edit "
-"pages - dict key should be tablename.fieldname"
-msgstr ""
-
-#: ../../chapter-12.rst:159
-msgid "storage_key: id of the cookie containing saved values"
-msgstr ""
-
-#: ../../chapter-12.rst:160
-msgid ""
-"pre_action_buttons: list of action_button instances to include before the"
-" standard action buttons"
-msgstr ""
-
-#: ../../chapter-12.rst:162
-msgid ""
-"post_action_buttons: list of action_button instances to include after the"
-" standard action buttons"
-msgstr ""
-
-#: ../../chapter-12.rst:166
-msgid "Grid Defaults"
-msgstr ""
-
-#: ../../chapter-12.rst:180
-msgid ""
-"The GridDefaults class allows you to set app-wide grid defaults that you "
-"can use when instantiating grids.0"
-msgstr ""
-
-#: ../../chapter-12.rst:183
-msgid "db: PyDAL db instance to use within your grid"
-msgstr ""
-
-#: ../../chapter-12.rst:184
-msgid "secret: secret encryption key used to encrypt storage values"
-msgstr ""
-
-#: ../../chapter-12.rst:185
-msgid ""
-"token_longevity: number of seconds to remember you storage values for "
-"this grid instance"
-msgstr ""
-
-#: ../../chapter-12.rst:187
-msgid "rows_per_page: number of rows to display on each grid page"
-msgstr ""
-
-#: ../../chapter-12.rst:188
-msgid ""
-"included_action_button_text: boolean telling the grid whether or not you "
-"want text on action buttons within your grid"
-msgstr ""
-
-#: ../../chapter-12.rst:190
-msgid ""
-"search_button_text: text to appear on the submit button on your search "
-"form"
-msgstr ""
-
-#: ../../chapter-12.rst:192
-msgid ""
-"formstyle: py4web Form formstyle used to style your form when "
-"automatically building CRUD forms"
-msgstr ""
-
-#: ../../chapter-12.rst:194
-msgid ""
-"grid_class_style: GridClassStyle object used to override defaults for "
-"styling your rendered grid. Allows you to specify classes or styles to "
-"apply at certain points in the grid."
-msgstr ""
-
-#: ../../chapter-12.rst:199
-msgid "Searching / Filtering"
-msgstr ""
-
-#: ../../chapter-12.rst:201
-msgid "There are two ways to build a search form."
-msgstr ""
-
-#: ../../chapter-12.rst:203
-msgid "Provide a search_queries list"
-msgstr ""
-
-#: ../../chapter-12.rst:204
-msgid "Build your own custom search form"
-msgstr ""
-
-#: ../../chapter-12.rst:206
-msgid "If you provide a search_queries list to grid, it will:"
-msgstr ""
-
-#: ../../chapter-12.rst:208
-msgid "build the search form with all fields provided"
-msgstr ""
-
-#: ../../chapter-12.rst:209
-msgid "gather filter values and filter the grid"
-msgstr ""
-
-#: ../../chapter-12.rst:210
-msgid ""
-"if you supply a PyDAL requires statement, it will build the search field "
-"as requested"
-msgstr ""
-
-#: ../../chapter-12.rst:213
-msgid ""
-"However, if this doesn’t give you enough flexibility you can provide your"
-" own search form and handle all the filtering (building the queries) by "
-"yourself.PyDAL"
-msgstr ""
-
-#: ../../chapter-12.rst:217
-msgid ""
-"The grid provides helper functions that allow you save/retrieve filter "
-"values between page displays."
-msgstr ""
-
-#: ../../chapter-12.rst:220
-msgid "set_storage_values"
-msgstr ""
-
-#: ../../chapter-12.rst:221
-msgid "get_storage_value"
-msgstr ""
-
-#: ../../chapter-12.rst:224
-msgid "CRUD"
-msgstr ""
-
-#: ../../chapter-12.rst:226
-msgid ""
-"The grid provide CRUD (create, read, update and delete) capabilities "
-"utilizing py4web Form. This is disabled on the grid by default."
-msgstr ""
-
-#: ../../chapter-12.rst:229
-msgid ""
-"You can enable CRUD features by setting create/details/editable/deletable"
-" to True at instantiation."
-msgstr ""
-
-#: ../../chapter-12.rst:232
-msgid ""
-"Additionally, you can provide a separate URL to the "
-"create/details/editable/deletable parameters to bypass the auto-generated"
-" CRUD pages and handle the detail pages yourself."
-msgstr ""
-
-#: ../../chapter-12.rst:237
-msgid "Templates"
-msgstr ""
-
-#: ../../chapter-12.rst:239
-msgid "Use the following to render your grid or CRUD forms in your templates."
-msgstr ""
-
-#: ../../chapter-12.rst:241
-msgid "Display the grid or a CRUD Form"
-msgstr ""
-
-#: ../../chapter-12.rst:247
-msgid ""
-"To allow for customizing CRUD form layout (like with web2py) you can use "
-"the following"
-msgstr ""
-
-#: ../../chapter-12.rst:258
-msgid ""
-"When handling custom form layouts you need to know if you are displaying "
-"the grid or a form. Use the following to decide"
-msgstr ""
-
-#: ../../chapter-12.rst:275
-msgid "Customizing Style"
-msgstr ""
-
-#: ../../chapter-12.rst:277
-msgid "You can provide your own formstyle or grid classes and style to grid."
-msgstr ""
-
-#: ../../chapter-12.rst:279
-msgid "formstyle is the same as a Form formstyle, used to style the CRUD forms."
-msgstr ""
-
-#: ../../chapter-12.rst:281
-msgid ""
-"grid_class_style is a class that provides the classes and/or styles used "
-"for certain portions of the grid."
-msgstr ""
-
-#: ../../chapter-12.rst:284
-msgid ""
-"The default GridClassStyle - based on no.css, primarily uses styles to "
-"modify the layout of the grid"
-msgstr ""
-
-#: ../../chapter-12.rst:384
-msgid "GridClassStyleBulma - bulma implementation"
-msgstr ""
-
-#: ../../chapter-12.rst:449
-msgid "Custom Action Buttons"
-msgstr ""
-
-#: ../../chapter-12.rst:451
-msgid ""
-"As with web2py, you can add additional buttons to each row in your grid. "
-"You do this by providing pre_action_buttons or post_action_buttons to the"
-" Grid **init** method."
-msgstr ""
-
-#: ../../chapter-12.rst:455
-msgid ""
-"pre_action_buttons - list of action_button instances to include before "
-"the standard action buttons"
-msgstr ""
-
-#: ../../chapter-12.rst:457
-msgid ""
-"post_action_buttons - list of action_button instances to include after "
-"the standard action buttons"
-msgstr ""
-
-#: ../../chapter-12.rst:461
-msgid "Action Button Signature"
-msgstr ""
-
-#: ../../chapter-12.rst:478
-msgid "url: the page to navigate to when the button is clicked"
-msgstr ""
-
-#: ../../chapter-12.rst:479
-msgid "text: text to display on the button"
-msgstr ""
-
-#: ../../chapter-12.rst:480
-msgid "icon: the font-awesome icon to display before the text"
-msgstr ""
-
-#: ../../chapter-12.rst:481
-msgid ""
-"additional_classes: a space-separated list of classes to include on the "
-"button element"
-msgstr ""
-
-#: ../../chapter-12.rst:483
-msgid ""
-"additional_styles: a space-separated list of classes to include on the "
-"button element"
-msgstr ""
-
-#: ../../chapter-12.rst:485
-msgid ""
-"override_classes: a space-separated list of classes to override the "
-"defaults set up for a specific button"
-msgstr ""
-
-#: ../../chapter-12.rst:487
-msgid ""
-"override_styles: a space-separated list of classes to override the "
-"defaults set up for a specific button"
-msgstr ""
-
-#: ../../chapter-12.rst:489
-msgid ""
-"message: confirmation message to display if ‘confirmation’ class is added"
-" to additional classes"
-msgstr ""
-
-#: ../../chapter-12.rst:491
-msgid ""
-"append_id: if True, add id_field_name=id_value to the url querystring for"
-" the button"
-msgstr ""
-
-#: ../../chapter-12.rst:493
-msgid ""
-"append_storage_key: if True, append the storage key for the grid to the "
-"url for the button"
-msgstr ""
-
-#: ../../chapter-12.rst:495
-msgid ""
-"append_page: if True, append page=\\ ``page_number`` to the url "
-"querystring"
-msgstr ""
-
-#: ../../chapter-12.rst:498
-msgid ""
-"Grid uses ActionButtons internally to generate the row buttons in the "
-"grid. You can provide your own by specifying a list of ActionButtons in "
-"the pre_action_buttons and/or post_action_buttons parameter on the Grid "
-"**init** method."
-msgstr ""
-
-#: ../../chapter-12.rst:504
-msgid "Reference Fields"
-msgstr ""
-
-#: ../../chapter-12.rst:506
-msgid ""
-"When displaying fields in a PyDAL table, you sometimes want to display a "
-"more descriptive field than a foreign key value. There are a couple of "
-"ways to handle that with the py4web grid."
-msgstr ""
-
-#: ../../chapter-12.rst:510
-msgid ""
-"filter_out on PyDAL field definition - here is an example of a foreign "
-"key field"
-msgstr ""
-
-#: ../../chapter-12.rst:521
-msgid "This will display the company name in the grid instead of the company ID"
-msgstr ""
-
-#: ../../chapter-12.rst:523
-msgid ""
-"The downfall of using this method is that sorting and filtering are based"
-" on the company field in the employee table and not the name of the "
-"company"
-msgstr ""
-
-#: ../../chapter-12.rst:527
-msgid ""
-"left join and specify fields from joined table - specified on the left "
-"parameter of Grid instantiation"
-msgstr ""
-
-#: ../../chapter-12.rst:534
-msgid ""
-"You can specify a standard PyDAL left join, including a list of joins to "
-"consider."
-msgstr ""
-
-#: ../../chapter-12.rst:537
-msgid ""
-"Now the company name field can be included in your fields list can be "
-"clicked on and sorted."
-msgstr ""
-
-#: ../../chapter-12.rst:540
-msgid "Now you can also specify a query such as:"
-msgstr ""
-
-#: ../../chapter-12.rst:546
-msgid ""
-"This method allows you to sort and filter, but doesn’t allow you to "
-"combine fields to be displayed together as the filter_out method would"
-msgstr ""
-
-#: ../../chapter-12.rst:549
-msgid ""
-"You need to determine which method is best for your use case "
-"understanding the different grids in the same application may need to "
-"behave differently."
+"The validation of form input can be done in two ways. One can define "
+"``requires`` attributes of ``Field``, or one can define explicitly a "
+"validation function. To do the latter, we pass to ``validate`` a function"
+" that takes the form and returns a dictionary, mapping field names to "
+"errors. If the dictionary is non-empty, the errors will be displayed to "
+"the user, and no database I/O will take place."
+msgstr ""
+
+#: ../../chapter-12.rst:82
+msgid "Here is an example:"
 msgstr ""
 

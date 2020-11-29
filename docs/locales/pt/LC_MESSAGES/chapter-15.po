@@ -17,27 +17,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: ../../index.rst:5
-msgid "Contents:"
+#: ../../chapter-15.rst:3
+msgid "From web2py to py4web"
 msgstr ""
 
-#: ../../index.rst:3
-msgid "py4web: the reference Manual"
+#: ../../chapter-15.rst:5
+msgid ""
+"This chapter is dedicated to help users for porting old web2py "
+"applications to py4web."
 msgstr ""
 
-#: ../../index.rst:27
-msgid "Indices and tables"
-msgstr ""
-
-#: ../../index.rst:29
-msgid ":ref:`genindex`"
-msgstr ""
-
-#: ../../index.rst:30
-msgid ":ref:`modindex`"
-msgstr ""
-
-#: ../../index.rst:31
-msgid ":ref:`search`"
+#: ../../chapter-15.rst:9
+msgid "Work in progress"
 msgstr ""
 

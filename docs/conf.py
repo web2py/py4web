@@ -45,6 +45,7 @@ version = current_version
 extensions = [
 		'sphinx_rtd_theme',
 	    	'sphinx.ext.githubpages',
+	    	'sphinx.ext.autosectionlabel',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -67,7 +68,7 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-# html_logo = 'py4web.png'
+#html_logo = 'py4web.png'
 html_theme_options = {
     'logo_only': True,
     'display_version': True,
