@@ -62,6 +62,7 @@ class GridClassStyle:
         "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down",
         "grid-th-action-button": "grid-col-action-button",
         "grid-td-action-button": "grid-col-action-button",
+        "grid-thead": "",
         "grid-tr": "",
         "grid-th": "",
         "grid-td": "",
@@ -152,6 +153,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down is-pulled-right",
         "grid-th-action-button": "grid-col-action-button is-narrow",
         "grid-td-action-button": "grid-col-action-button is-narrow",
+        "grid-thead": "",
         "grid-tr": "",
         "grid-th": "",
         "grid-td": "",
@@ -705,7 +707,7 @@ class Grid:
                     col = A(heading, dw if "~" + key == sort_order else "", _href=href)
                 columns.append((key, col))
 
-        thead = THEAD()
+        thead = THEAD(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
         for key, col in columns:
             col_class = "grid-col-%s" % key
             thead.append(
