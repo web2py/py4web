@@ -1,11 +1,13 @@
-.PHONY: clean build assets install test deploy
+.PHONY: clean build docs assets install test deploy
 clean:
 	find . -name '*.pyc' -delete
 	find . -name '*~' -delete
 	find . -name '#*' -delete
 	rm -rf dist/*
 	python3 setup.py clean
-assets:
+docs:
+	cd docs; ./updateDocs.sh all
+assets: docs
 	rm -f py4web/assets/*
 	mkdir -p py4web/assets
 	cd apps/_dashboard; \
@@ -19,7 +21,7 @@ assets:
 	zip -@ ../../py4web/assets/py4web.app._scaffold.zip
 	cd apps/_minimal; \
 	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt)$$" | \
-	zip -@ ../../py4web/assets/py4web.app._minimal.zip
+	zip -@ ../../py4web/assets/py4web.app._minimal.zip	
 	cd apps/_documentation; \
 	find . | egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt|mm)$$" | \
 	zip -@ ../../py4web/assets/py4web.app._documentation.zip
