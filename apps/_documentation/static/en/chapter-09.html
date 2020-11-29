@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Internationalization &mdash; py4web 1.20201112.1
+  <title>YATL Template Language &mdash; py4web 1.20201112.1
  documentation</title>
   
 
@@ -39,8 +39,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Forms" href="chapter-10.html" />
-    <link rel="prev" title="YATL helpers" href="chapter-08.html" /> 
+    <link rel="next" title="YATL helpers" href="chapter-10.html" />
+    <link rel="prev" title="The RESTAPI" href="chapter-08.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,23 +92,31 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="chapter-00.html">What is py4web?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">Installation and Startup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Creating your first app</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">Fixtures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">The database abstraction layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">The RESTAPI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">YATL Template Language</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">YATL helpers</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Internationalization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#pluralize">Pluralize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#update-the-translation-files">Update the translation files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The database abstraction layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">YATL Template Language</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-syntax">Basic syntax</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#for-in"><code class="docutils literal notranslate"><span class="pre">for...in</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#while"><code class="docutils literal notranslate"><span class="pre">while</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#if-elif-else"><code class="docutils literal notranslate"><span class="pre">if...elif...else</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#try-except-else-finally"><code class="docutils literal notranslate"><span class="pre">try...except...else...finally</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#def-return"><code class="docutils literal notranslate"><span class="pre">def...return</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Authentication and Access control</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
 </ul>
 
             
@@ -155,7 +163,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Internationalization</li>
+      <li>YATL Template Language</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -176,86 +184,242 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="internationalization">
-<h1>Internationalization<a class="headerlink" href="#internationalization" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="pluralize">
-<h2>Pluralize<a class="headerlink" href="#pluralize" title="Permalink to this headline">¶</a></h2>
-<p>Pluralize is a Python library for Internationalization (i18n) and
-Pluralization (p10n).</p>
-<p>The library assumes a folder (for exaple “translations”) that contains
-files like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">it</span><span class="o">.</span><span class="n">json</span>
-<span class="n">it</span><span class="o">-</span><span class="n">IT</span><span class="o">.</span><span class="n">json</span>
-<span class="n">fr</span><span class="o">.</span><span class="n">json</span>
-<span class="n">fr</span><span class="o">-</span><span class="n">FR</span><span class="o">.</span><span class="n">json</span>
-<span class="p">(</span><span class="n">etc</span><span class="p">)</span>
+  <div class="section" id="yatl-template-language">
+<h1>YATL Template Language<a class="headerlink" href="#yatl-template-language" title="Permalink to this headline">¶</a></h1>
+<p>py4web uses Python for its models, controllers, and views, although it
+uses a slightly modified Python syntax in the views to allow more
+readable code without imposing any restrictions on proper Python usage.</p>
+<p>py4web uses <code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">...</span> <span class="pre">]]</span></code> to escape Python code embedded in HTML. The
+advantage of using square brackets instead of angle brackets is that
+it’s transparent to all common HTML editors. This allows the developer
+to use those editors to create py4web views.</p>
+<p>Since the developer is embedding Python code into HTML, the document
+should be indented according to HTML rules, and not Python rules.
+Therefore, we allow unindented Python inside the <code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">...</span> <span class="pre">]]</span></code> tags.
+Since Python normally uses indentation to delimit blocks of code, we
+need a different way to delimit them; this is why the py4web template
+language makes use of the Python keyword <code class="docutils literal notranslate"><span class="pre">pass</span></code>.</p>
+<blockquote>
+<div><p>A code block starts with a line ending with a colon and ends with a
+line beginning with <code class="docutils literal notranslate"><span class="pre">pass</span></code>. The keyword <code class="docutils literal notranslate"><span class="pre">pass</span></code> is not necessary
+when the end of the block is obvious from the context.</p>
+</div></blockquote>
+<p>Here is an example:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[
+if i == 0:
+response.write(&#39;i is 0&#39;)
+else:
+response.write(&#39;i is not 0&#39;)
+pass
+]]
 </pre></div>
 </div>
-<p>Each file has the following structure, for example for Italian
-(it.json):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;dog&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="s2">&quot;no cane&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;un cane&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{n}</span><span class="s2"> cani&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">:</span> <span class="s2">&quot;tantissimi cani&quot;</span><span class="p">}}</span>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">pass</span></code> is a Python keyword, not a py4web keyword. Some
+Python editors, such as Emacs, use the keyword <code class="docutils literal notranslate"><span class="pre">pass</span></code> to signify the
+division of blocks and use it to re-indent code automatically.</p>
+<p>The py4web template language does exactly the same. When it finds
+something like:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+[[for x in range(10):]][[=x]]hello<span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>[[pass]]
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </pre></div>
 </div>
-<p>The top level keys are the expressions to be translated and the
-associated value/dictionary maps a number to a translation. Different
-translations correspond to different plural forms of the expression,</p>
-<p>Here is another example for the word “bed” in Czech</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;bed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="s2">&quot;no postel&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;postel&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;postele&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="s2">&quot;postelí&quot;</span><span class="p">}}</span>
+<p>it translates it into a program:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;&lt;html&gt;&lt;body&gt;&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">escape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;hello&lt;br /&gt;&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">escape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;&lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">escape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To translate and pluralize a string “dog” one simply warps the string in
-the T operator as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pluralize</span> <span class="kn">import</span> <span class="n">Translator</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">Translator</span><span class="p">(</span><span class="s1">&#39;translations&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dog</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="s2">&quot;dog&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
-<span class="go">dog</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;it&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
-<span class="go">un cane</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-<span class="go">no cane</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-<span class="go">un cane</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
-<span class="go">5 cani</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">20</span><span class="p">))</span>
-<span class="go">tantissimi cani</span>
+<p><code class="docutils literal notranslate"><span class="pre">response.write</span></code> writes to the <code class="docutils literal notranslate"><span class="pre">response.body</span></code>.</p>
+<p>When there is an error in a py4web view, the error report shows the
+generated view code, not the actual view as written by the developer.
+This helps the developer debug the code by highlighting the actual code
+that is executed (which is something that can be debugged with an HTML
+editor or the DOM inspector of the browser).</p>
+<p>Also note that:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=x]]
 </pre></div>
 </div>
-<p>The string can contain multiple placeholders but the {n} placeholder is
-special because the variable called “n” is used to determine the
-pluralization by best match (max dict key &lt;= n).</p>
-<p>T(…) objects can be added together with each other and with string, like
-regular strings.</p>
-<p>T.select(s) can parse a string s following the HTTP accept language
-format.</p>
-</div>
-<div class="section" id="update-the-translation-files">
-<h2>Update the translation files<a class="headerlink" href="#update-the-translation-files" title="Permalink to this headline">¶</a></h2>
-<p>Find all strings wrapped in T(…) in .py, .html, and .js files:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">matches</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">find_matches</span><span class="p">(</span><span class="s1">&#39;path/to/app/folder&#39;</span><span class="p">)</span>
+<p>generates</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Add newly discovered entries in all supported languages</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">update_languages</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
+<p>Variables injected into the HTML in this way are escaped by default. The
+escaping is ignored if <code class="docutils literal notranslate"><span class="pre">x</span></code> is an <code class="docutils literal notranslate"><span class="pre">XML</span></code> object, even if escape is set
+to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>Here is an example that introduces the <code class="docutils literal notranslate"><span class="pre">H1</span></code> helper:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=H1(i)]]
 </pre></div>
 </div>
-<p>Add a new supported language (for example german, “de”)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">languages</span><span class="p">[</span><span class="s1">&#39;de&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<p>which is translated to:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">H1</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Make sure all languages contain the same origin expressions</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">known_expressions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">language</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="n">language</span><span class="p">:</span>
-        <span class="n">known_expressions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
-<span class="n">T</span><span class="o">.</span><span class="n">update_languages</span><span class="p">(</span><span class="n">known_expressions</span><span class="p">))</span>
+<p>upon evaluation, the <code class="docutils literal notranslate"><span class="pre">H1</span></code> object and its components are recursively
+serialized, escaped and written to the response body. The tags generated
+by <code class="docutils literal notranslate"><span class="pre">H1</span></code> and inner HTML are not escaped. This mechanism guarantees that
+all text — and only text — displayed on the web page is always escaped,
+thus preventing XSS vulnerabilities. At the same time, the code is
+simple and easy to debug.</p>
+<p>The method <code class="docutils literal notranslate"><span class="pre">response.write(obj,</span> <span class="pre">escape=True)</span></code> takes two arguments, the
+object to be written and whether it has to be escaped (set to <code class="docutils literal notranslate"><span class="pre">True</span></code>
+by default). If <code class="docutils literal notranslate"><span class="pre">obj</span></code> has an <code class="docutils literal notranslate"><span class="pre">.xml()</span></code> method, it is called and the
+result written to the response body (the <code class="docutils literal notranslate"><span class="pre">escape</span></code> argument is
+ignored). Otherwise it uses the object’s <code class="docutils literal notranslate"><span class="pre">__str__</span></code> method to serialize
+it and, if the escape argument is <code class="docutils literal notranslate"><span class="pre">True</span></code>, escapes it. All built-in
+helper objects (<code class="docutils literal notranslate"><span class="pre">H1</span></code> in the example) are objects that know how to
+serialize themselves via the <code class="docutils literal notranslate"><span class="pre">.xml()</span></code> method.</p>
+<p>This is all done transparently. You never need to (and never should)
+call the <code class="docutils literal notranslate"><span class="pre">response.write</span></code> method explicitly.</p>
+<div class="section" id="basic-syntax">
+<h2>Basic syntax<a class="headerlink" href="#basic-syntax" title="Permalink to this headline">¶</a></h2>
+<p>The py4web template language supports all Python control structures.
+Here we provide some examples of each of them. They can be nested
+according to usual programming practice.</p>
+<div class="section" id="for-in">
+<h3><code class="docutils literal notranslate"><span class="pre">for...in</span></code><a class="headerlink" href="#for-in" title="Permalink to this headline">¶</a></h3>
+<p>In templates you can loop over any iterable object:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[items = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]]]
+<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+[[for item in items:]]<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=item]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>[[pass]]
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
 </pre></div>
 </div>
-<p>Finally save the changes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;translations&#39;</span><span class="p">)</span>
+<p>which produces:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>a<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>b<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>c<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
 </pre></div>
+</div>
+<p>Here <code class="docutils literal notranslate"><span class="pre">items</span></code> is any iterable object such as a Python list, Python
+tuple, or Rows object, or any object that is implemented as an iterator.
+The elements displayed are first serialized and escaped.</p>
+</div>
+<div class="section" id="while">
+<h3><code class="docutils literal notranslate"><span class="pre">while</span></code><a class="headerlink" href="#while" title="Permalink to this headline">¶</a></h3>
+<p>You can create a loop using the while keyword:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[k = 3]]
+<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+[[while k &gt; 0:]]<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=k]][[k = k - 1]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>[[pass]]
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>which produces:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>3<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>2<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>1<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="if-elif-else">
+<h3><code class="docutils literal notranslate"><span class="pre">if...elif...else</span></code><a class="headerlink" href="#if-elif-else" title="Permalink to this headline">¶</a></h3>
+<p>You can use conditional clauses:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[
+import random
+k = random.randint(0, 100)
+]]
+<span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>
+[[=k]]
+[[if k % 2:]]is odd[[else:]]is even[[pass]]
+<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>which produces:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>
+45 is odd
+<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Since it is obvious that <code class="docutils literal notranslate"><span class="pre">else</span></code> closes the first <code class="docutils literal notranslate"><span class="pre">if</span></code> block, there
+is no need for a <code class="docutils literal notranslate"><span class="pre">pass</span></code> statement, and using one would be incorrect.
+However, you must explicitly close the <code class="docutils literal notranslate"><span class="pre">else</span></code> block with a <code class="docutils literal notranslate"><span class="pre">pass</span></code>.</p>
+<p>Recall that in Python “else if” is written <code class="docutils literal notranslate"><span class="pre">elif</span></code> as in the following
+example:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[
+import random
+k = random.randint(0, 100)
+]]
+<span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>
+[[=k]]
+[[if k % 4 == 0:]]is divisible by 4
+[[elif k % 2 == 0:]]is even
+[[else:]]is odd
+[[pass]]
+<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>It produces:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>
+64 is divisible by 4
+<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="try-except-else-finally">
+<h3><code class="docutils literal notranslate"><span class="pre">try...except...else...finally</span></code><a class="headerlink" href="#try-except-else-finally" title="Permalink to this headline">¶</a></h3>
+<p>It is also possible to use <code class="docutils literal notranslate"><span class="pre">try...except</span></code> statements in views with one
+caveat. Consider the following example:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[try:]]
+Hello [[= 1 / 0]]
+[[except:]]
+division by zero
+[[else:]]
+no division by zero
+[[finally:]]
+<span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>
+[[pass]]
+</pre></div>
+</div>
+<p>It will produce the following output:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>Hello division by zero
+<span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>
+</pre></div>
+</div>
+<p>This example illustrates that all output generated before an exception
+occurs is rendered (including output that preceded the exception) inside
+the try block. “Hello” is written because it precedes the exception.</p>
+</div>
+<div class="section" id="def-return">
+<h3><code class="docutils literal notranslate"><span class="pre">def...return</span></code><a class="headerlink" href="#def-return" title="Permalink to this headline">¶</a></h3>
+<p>The py4web template language allows the developer to define and
+implement functions that can return any Python object or a text/html
+string. Here we consider two examples:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[def itemize1(link): return LI(A(link, _href=&quot;http://&quot; + link))]]
+<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+[[=itemize1(&#39;www.google.com&#39;)]]
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>produces the following output:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;http:/www.google.com&quot;</span><span class="p">&gt;</span>www.google.com<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>The function <code class="docutils literal notranslate"><span class="pre">itemize1</span></code> returns a helper object that is inserted at
+the location where the function is called.</p>
+<p>Consider now the following code:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[def itemize2(link):]]
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;http://[[=link]]&quot;</span><span class="p">&gt;</span>[[=link]]<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+[[return]]
+<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+[[itemize2(&#39;www.google.com&#39;)]]
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>It produces exactly the same output as above. In this case, the function
+<code class="docutils literal notranslate"><span class="pre">itemize2</span></code> represents a piece of HTML that is going to replace the
+py4web tag where the function is called. Notice that there is no ‘=’ in
+front of the call to <code class="docutils literal notranslate"><span class="pre">itemize2</span></code>, since the function does not return
+the text, but it writes it directly into the response.</p>
+<p>There is one caveat: functions defined inside a view must terminate with
+a <code class="docutils literal notranslate"><span class="pre">return</span></code> statement, or the automatic indentation will fail.</p>
 </div>
 </div>
 </div>
@@ -268,10 +432,10 @@ format.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="chapter-10.html" class="btn btn-neutral float-right" title="Forms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="chapter-10.html" class="btn btn-neutral float-right" title="YATL helpers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="chapter-08.html" class="btn btn-neutral float-left" title="YATL helpers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="chapter-08.html" class="btn btn-neutral float-left" title="The RESTAPI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
