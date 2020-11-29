@@ -1,1402 +1,201 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2020, Massimo DiPierro
+# Copyright (C) 2020, BSDv3 License
 # This file is distributed under the same license as the py4web package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: py4web \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-02 22:29+0100\n"
+"Project-Id-Version: py4web 1.20201112.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-11-29 10:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: ../../chapter-08.rst:2
-msgid "YATL helpers"
+#: ../../chapter-08.rst:3
+msgid "The RESTAPI"
 msgstr ""
 
-#: ../../chapter-08.rst:4
-msgid "Consider the following code in a view:"
-msgstr ""
-
-#: ../../chapter-08.rst:10
-msgid "it is rendered as:"
-msgstr ""
-
-#: ../../chapter-08.rst:16
+#: ../../chapter-08.rst:5
 msgid ""
-"``DIV`` is a helper class, i.e., something that can be used to build HTML"
-" programmatically. It corresponds to the HTML ``<div>`` tag."
+"Since version 19.5.10 PyDAL includes a restful API called RestAPI. It is "
+"inspired by GraphQL but it’s not quite the same because it is less "
+"powerful but, in the spirit of web2py, more practical and easier to use. "
+"Like GraphSQL RestAPI allows a client to query for information using the "
+"GET method and allows to specify some details about the format of the "
+"response (which references to follow, and how to denormalize the data). "
+"Unlike GraphSQL it allows the server to specify a policy and restrict "
+"which queries are allowed and which one are not. They can be evaluated "
+"dynamically per request based on the user and the state of the server. As"
+" the name implied RestAPI allows all stardard methods GET, POST, PUT, and"
+" DELETE. Each of them can be enabled or disabled based on the policy, for"
+" individual tables and individual fields."
 msgstr ""
 
-#: ../../chapter-08.rst:19
+#: ../../chapter-08.rst:18
 msgid ""
-"Positional arguments are interpreted as objects contained between the "
-"open and close tags. Named arguments that start with an underscore are "
-"interpreted as HTML tag attributes (without the underscore). Some helpers"
-" also have named arguments that do not start with underscore; these "
-"arguments are tag-specific."
+"In the examples below we assume an app called “superheroes” and the "
+"following model:"
 msgstr ""
 
-#: ../../chapter-08.rst:25
+#: ../../chapter-08.rst:43
+msgid "We also assume the following controller ``rest.py``:"
+msgstr ""
+
+#: ../../chapter-08.rst:68
 msgid ""
-"Instead of a set of unnamed arguments, a helper can also take a single "
-"list or tuple as its set of components using the ``*`` notation and it "
-"can take a single dictionary as its set of attributes using the ``**``, "
-"for example:"
+"The policy is per table (or \\* for all tables and per method. authorize "
+"can be True (allow), False (deny) or a function with the signature "
+"(method, tablename, record_id, get_vars, post_vars) which returns "
+"True/False. For the GET policy one can specify a list of allowed query "
+"patterns (\\* for all). A query pattern will be matched against the keys "
+"in the query string."
 msgstr ""
 
-#: ../../chapter-08.rst:38
-msgid "(produces the same output as before)."
+#: ../../chapter-08.rst:75
+msgid "The above action is exposed as:"
 msgstr ""
 
-#: ../../chapter-08.rst:40
-msgid "The following set of helpers:"
-msgstr ""
-
-#: ../../chapter-08.rst:42
+#: ../../chapter-08.rst:81
 msgid ""
-"``A``, ``BEAUTIFY``, ``BODY``, ``CAT``, ``CODE``, ``DIV``, ``EM``, "
-"``FORM``, ``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``, ``HEAD``, "
-"``HTML``, ``I``, ``IMG``, ``INPUT``, ``LABEL``, ``LI``, ``LINK``, "
-"``META``, ``METATAG``, ``OL``, ``OPTION``, ``PRE``, ``SELECT``, ``SPAN``,"
-" ``STRONG``, ``TABLE``, ``TAG``, ``TBODY``, ``TD``, ``TEXTAREA``, ``TH``,"
-" ``THEAD``, ``TR``, ``UL``, ``XML``, ``sanitize``, ``xmlescape``"
+"**About request.POST**: keep in mind that **request.POST** only contains "
+"the form data that is posted using a **regular HTML-form** or javascript "
+"**FormData** object. If you post just plain object (e.g. ``axios.post( "
+"'path/to/api', {field:'some'} )``) you should pass **request.json** "
+"instead of request.POST, since latter will contain just raw request-body "
+"which is string, not json. See bottle.py documentation for more details."
 msgstr ""
 
-#: ../../chapter-08.rst:50
+#: ../../chapter-08.rst:90
+msgid "RestAPI GET"
+msgstr ""
+
+#: ../../chapter-08.rst:92
 msgid ""
-"can be used to build complex expressions that can then be serialized to "
-"XML. For example:"
+"The general query has the form ``{something}.eq=value`` where ``eq=`` "
+"stands for “equal”, ``gt=`` stands for “greater than”, etc. The "
+"expression can be prepended by ``not.``."
 msgstr ""
 
-#: ../../chapter-08.rst:57
-msgid "is rendered:"
-msgstr ""
-
-#: ../../chapter-08.rst:63
+#: ../../chapter-08.rst:96
 msgid ""
-"Helpers can also be serialized into strings, equivalently, with the "
-"``__str__`` and the ``xml`` methods:"
+"``{something}`` can be the name of a field in the table been queried as "
+"in:"
 msgstr ""
 
-#: ../../chapter-08.rst:73
-msgid ""
-"The helpers mechanism in py4web is more than a system to generate HTML "
-"without concatenating strings. It provides a server-side representation "
-"of the Document Object Model (DOM)."
+#: ../../chapter-08.rst:99
+msgid "**All superheroes called “Superman”**"
 msgstr ""
 
-#: ../../chapter-08.rst:77
+#: ../../chapter-08.rst:105
 msgid ""
-"Components of helpers can be referenced via their position, and helpers "
-"act as lists with respect to their components:"
-msgstr ""
-
-#: ../../chapter-08.rst:91
-msgid ""
-"Attributes of helpers can be referenced by name, and helpers act as "
-"dictionaries with respect to their attributes:"
-msgstr ""
-
-#: ../../chapter-08.rst:102
-msgid ""
-"Note, the complete set of components can be accessed via a list called "
-"``a.components``, and the complete set of attributes can be accessed via "
-"a dictionary called ``a.attributes``. So, ``a[i]`` is equivalent to "
-"``a.components[i]`` when ``i`` is an integer, and ``a[s]`` is equivalent "
-"to ``a.attributes[s]`` when ``s`` is a string."
+"It can be a the name of a field of a table referred by the table been "
+"queried as in:"
 msgstr ""
 
 #: ../../chapter-08.rst:108
+msgid "**All superheroes with real identity “Clark Kent”**"
+msgstr ""
+
+#: ../../chapter-08.rst:114
 msgid ""
-"Notice that helper attributes are passed as keyword arguments to the "
-"helper. In some cases, however, attribute names include special "
-"characters that are not allowed in Python identifiers (e.g., hyphens) and"
-" therefore cannot be used as keyword argument names. For example:"
+"It can be the name of a field of a table that refers to the table neen "
+"queried as in:"
 msgstr ""
 
 #: ../../chapter-08.rst:117
-msgid ""
-"will not work because \"_data-role\" includes a hyphen, which will "
-"produce a Python syntax error."
+msgid "**All superheroes with any tag superpower with strength > 90**"
 msgstr ""
 
-#: ../../chapter-08.rst:120
+#: ../../chapter-08.rst:123
 msgid ""
-"In such cases you have a couple of options. You can use the ``data`` "
-"argument (this time without a leading underscore) to pass a dictionary of"
-" related attributes without their leading hyphen, and the output will "
-"have the desired combinations e.g."
+"(here tag is the name of the link table, the preceding ``superhero`` is "
+"the name of the field that refers to the selected table and ``strength`` "
+"is the name of the field used to filter)"
+msgstr ""
+
+#: ../../chapter-08.rst:127
+msgid ""
+"It can also be a field of the table referenced by a many-to-many linked "
+"table as in:"
 msgstr ""
 
 #: ../../chapter-08.rst:130
+msgid "**All superheroes with the flight power**"
+msgstr ""
+
+#: ../../chapter-08.rst:136
+msgid "The key to understand the syntax above is to break it as follows:"
+msgstr ""
+
+#: ../../chapter-08.rst:142
+msgid "and read it as:"
+msgstr ""
+
+#: ../../chapter-08.rst:144
 msgid ""
-"or you can instead pass the attributes as a dictionary and make use of "
-"Python’s ``**`` function arguments notation, which maps a dictionary of "
-"(key:value) pairs into a set of keyword arguments:"
+"select records of table **superhero** referred by field **superhero** of "
+"table **tag** when the **superpower** field of said table points to a "
+"record with **description** **eq**\\ ual to “Flight”."
 msgstr ""
 
-#: ../../chapter-08.rst:139
+#: ../../chapter-08.rst:148
+msgid "The query allows additional modifiers for example"
+msgstr ""
+
+#: ../../chapter-08.rst:158
 msgid ""
-"Note that more elaborate entries will introduce HTML character entities, "
-"but they will work nonetheless e.g."
-msgstr ""
-
-#: ../../chapter-08.rst:147
-msgid "You can also dynamically create special TAGs:"
-msgstr ""
-
-#: ../../chapter-08.rst:155
-msgid "``XML``"
-msgstr ""
-
-#: ../../chapter-08.rst:157
-msgid ""
-"``XML`` is an object used to encapsulate text that should not be escaped."
-" The text may or may not contain valid XML. For example, it could contain"
-" JavaScript."
+"The first 3 are obvious. @model returns a JSON description of database "
+"model. Lookup denormalizes the linked field."
 msgstr ""
 
 #: ../../chapter-08.rst:161
-msgid "The text in this example is escaped:"
+msgid "Here are some practical examples:"
 msgstr ""
 
-#: ../../chapter-08.rst:168
-msgid "by using ``XML`` you can prevent escaping:"
+#: ../../chapter-08.rst:163 ../../chapter-08.rst:198 ../../chapter-08.rst:273
+#: ../../chapter-08.rst:320 ../../chapter-08.rst:372 ../../chapter-08.rst:413
+#: ../../chapter-08.rst:514 ../../chapter-08.rst:912 ../../chapter-08.rst:937
+#: ../../chapter-08.rst:962 ../../chapter-08.rst:992
+msgid "URL:"
 msgstr ""
 
-#: ../../chapter-08.rst:175
-msgid ""
-"Sometimes you want to render HTML stored in a variable, but the HTML may "
-"contain unsafe tags such as scripts:"
-msgstr ""
-
-#: ../../chapter-08.rst:183
-msgid ""
-"Un-escaped executable input such as this (for example, entered in the "
-"body of a comment in a blog) is unsafe, because it can be used to "
-"generate Cross Site Scripting (XSS) attacks against other visitors to the"
-" page."
-msgstr ""
-
-#: ../../chapter-08.rst:188
-msgid ""
-"The py4web ``XML`` helper can sanitize our text to prevent injections and"
-" escape all tags except those that you explicitly allow. Here is an "
-"example:"
-msgstr ""
-
-#: ../../chapter-08.rst:197
-msgid ""
-"The ``XML`` constructors, by default, consider the content of some tags "
-"and some of their attributes safe. You can override the defaults using "
-"the optional ``permitted_tags`` and ``allowed_attributes`` arguments. "
-"Here are the default values of the optional arguments of the ``XML`` "
-"helper."
-msgstr ""
-
-#: ../../chapter-08.rst:212
-msgid "Built-in helpers"
-msgstr ""
-
-#: ../../chapter-08.rst:215
-msgid "``A``"
-msgstr ""
-
-#: ../../chapter-08.rst:217
-msgid "This helper is used to build links."
-msgstr ""
-
-#: ../../chapter-08.rst:226
-msgid "``BODY``"
-msgstr ""
-
-#: ../../chapter-08.rst:228
-msgid "This helper makes the body of a page."
-msgstr ""
-
-#: ../../chapter-08.rst:236
-msgid "``CAT``"
-msgstr ""
-
-#: ../../chapter-08.rst:238
-msgid "This helper concatenates other helpers, same as TAG['']."
-msgstr ""
-
-#: ../../chapter-08.rst:246
-msgid "``CODE``"
-msgstr ""
-
-#: ../../chapter-08.rst:248
-msgid ""
-"This helper performs syntax highlighting for Python, C, C++, HTML and "
-"py4web code, and is preferable to ``PRE`` for code listings. ``CODE`` "
-"also has the ability to create links to the py4web API documentation."
-msgstr ""
-
-#: ../../chapter-08.rst:252
-msgid "Here is an example of highlighting sections of Python code."
-msgstr ""
-
-#: ../../chapter-08.rst:281
-msgid "Here is a similar example for HTML"
-msgstr ""
-
-#: ../../chapter-08.rst:294
-msgid "These are the default arguments for the ``CODE`` helper:"
-msgstr ""
-
-#: ../../chapter-08.rst:300
-msgid ""
-"Supported values for the ``language`` argument are “python”, "
-"“html_plain”, “c”, “cpp”, “py4web”, and “html”. The “html” language "
-"interprets tags as “py4web” code, while “html_plain” doesn’t."
-msgstr ""
-
-#: ../../chapter-08.rst:304
-msgid ""
-"If a ``link`` value is specified, for example “/examples/global/vars/”, "
-"py4web API references in the code are linked to documentation at the link"
-" URL. For example “request” would be linked to "
-"“/examples/global/vars/request”. In the above example, the link URL is "
-"handled by the “vars” action in the “global.py” controller that is "
-"distributed as part of the py4web “examples” application."
-msgstr ""
-
-#: ../../chapter-08.rst:311
-msgid ""
-"The ``counter`` argument is used for line numbering. It can be set to any"
-" of three different values. It can be ``None`` for no line numbers, a "
-"numerical value specifying the start number, or a string. If the counter "
-"is set to a string, it is interpreted as a prompt, and there are no line "
-"numbers."
-msgstr ""
-
-#: ../../chapter-08.rst:317
-msgid ""
-"The ``styles`` argument is a bit tricky. If you look at the generated "
-"HTML above, it contains a table with two columns, and each column has its"
-" own style declared inline using CSS. The ``styles`` attributes allows "
-"you to override those two CSS styles. For example:"
+#: ../../chapter-08.rst:169 ../../chapter-08.rst:204 ../../chapter-08.rst:279
+#: ../../chapter-08.rst:328 ../../chapter-08.rst:381 ../../chapter-08.rst:419
+#: ../../chapter-08.rst:520 ../../chapter-08.rst:652 ../../chapter-08.rst:754
+#: ../../chapter-08.rst:837 ../../chapter-08.rst:918 ../../chapter-08.rst:943
+#: ../../chapter-08.rst:968 ../../chapter-08.rst:998
+msgid "OUTPUT:"
 msgstr ""
 
 #: ../../chapter-08.rst:326
-msgid ""
-"The ``styles`` attribute must be a dictionary, and it allows two possible"
-" keys: ``CODE`` for the style of the actual code, and ``LINENUMBERS`` for"
-" the style of the left column, which contains the line numbers. Mind that"
-" these styles completely replace the default styles and are not simply "
-"added to them."
-msgstr ""
-
-#: ../../chapter-08.rst:333
-msgid "``DIV``"
-msgstr ""
-
-#: ../../chapter-08.rst:335
-msgid ""
-"All helpers apart from ``XML`` are derived from ``DIV`` and inherit its "
-"basic methods."
-msgstr ""
-
-#: ../../chapter-08.rst:344
-msgid "``EM``"
-msgstr ""
-
-#: ../../chapter-08.rst:346
-msgid "Emphasizes its content."
-msgstr ""
-
-#: ../../chapter-08.rst:354
-msgid "``FORM``"
-msgstr ""
-
-#: ../../chapter-08.rst:356
-msgid ""
-"This is one of the most important helpers. In its simple form, it just "
-"makes a ``<form>...</form>`` tag, but because helpers are objects and "
-"have knowledge of what they contain, they can process submitted forms "
-"(for example, perform validation of the fields). This will be discussed "
-"in detail in `Chapter 10 <#chapter-10>`__."
-msgstr ""
-
-#: ../../chapter-08.rst:368
-msgid "The “enctype” is “multipart/form-data” by default."
-msgstr ""
-
-#: ../../chapter-08.rst:370
-msgid ""
-"The constructor of a ``FORM``, and of ``SQLFORM``, can also take a "
-"special argument called ``hidden``. When a dictionary is passed as "
-"``hidden``, its items are translated into “hidden” INPUT fields. For "
-"example:"
-msgstr ""
-
-#: ../../chapter-08.rst:382
-msgid "``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``"
-msgstr ""
-
-#: ../../chapter-08.rst:384
-msgid "These helpers are for paragraph headings and subheadings:"
-msgstr ""
-
-#: ../../chapter-08.rst:392
-msgid "``HEAD``"
-msgstr ""
-
-#: ../../chapter-08.rst:394
-msgid "For tagging the HEAD of an HTML page."
-msgstr ""
-
-#: ../../chapter-08.rst:402
-msgid "``HTML``"
-msgstr ""
-
-#: ../../chapter-08.rst:404
-msgid ""
-"This helper is a little different. In addition to making the ``<html>`` "
-"tags, it prepends the tag with a doctype string."
-msgstr ""
-
-#: ../../chapter-08.rst:413
-msgid ""
-"The HTML helper also takes some additional optional arguments that have "
-"the following default:"
-msgstr ""
-
-#: ../../chapter-08.rst:420
-msgid ""
-"where doctype can be ‘strict’, ‘transitional’, ‘frameset’, ‘html5’, or a "
-"full doctype string."
-msgstr ""
-
-#: ../../chapter-08.rst:424
-msgid "``I``"
-msgstr ""
-
-#: ../../chapter-08.rst:426
-msgid "This helper makes its contents italic."
-msgstr ""
-
-#: ../../chapter-08.rst:434
-msgid "``IMG``"
-msgstr ""
-
-#: ../../chapter-08.rst:436
-msgid "It can be used to embed images into HTML:"
-msgstr ""
-
-#: ../../chapter-08.rst:443
-msgid ""
-"Here is a combination of A, IMG, and URL helpers for including a static "
-"image with a link:"
-msgstr ""
-
-#: ../../chapter-08.rst:456
-msgid "``INPUT``"
-msgstr ""
-
-#: ../../chapter-08.rst:458
-msgid ""
-"Creates an ``<input.../>`` tag. An input tag may not contain other tags, "
-"and is closed by ``/>`` instead of ``>``. The input tag has an optional "
-"attribute ``_type`` that can be set to “text” (the default), “submit”, "
-"“checkbox”, or “radio”."
-msgstr ""
-
-#: ../../chapter-08.rst:468
-msgid ""
-"It also takes an optional special argument called “value”, distinct from "
-"\"_value“. The latter sets the default value for the input field; the "
-"former sets its current value. For an input of type”text\", the former "
-"overrides the latter:"
-msgstr ""
-
-#: ../../chapter-08.rst:478
-msgid "For radio buttons, ``INPUT`` selectively sets the “checked” attribute:"
-msgstr ""
-
-#: ../../chapter-08.rst:489
-msgid "and similarly for checkboxes:"
-msgstr ""
-
-#: ../../chapter-08.rst:499
-msgid "``LABEL``"
-msgstr ""
-
-#: ../../chapter-08.rst:501
-msgid "It is used to create a LABEL tag for an INPUT field."
-msgstr ""
-
-#: ../../chapter-08.rst:509
-msgid "``LI``"
-msgstr ""
-
-#: ../../chapter-08.rst:511
-msgid "It makes a list item and should be contained in a ``UL`` or ``OL`` tag."
-msgstr ""
-
-#: ../../chapter-08.rst:519
-msgid "``OL``"
-msgstr ""
-
-#: ../../chapter-08.rst:521
-msgid ""
-"It stands for Ordered List. The list should contain LI tags. ``OL`` "
-"arguments that are not ``LI`` objects are automatically enclosed in "
-"``<li>...</li>`` tags."
-msgstr ""
-
-#: ../../chapter-08.rst:531
-msgid "``OPTION``"
-msgstr ""
-
-#: ../../chapter-08.rst:533
-msgid "This should only be used as part of a ``SELECT``/``OPTION`` combination."
-msgstr ""
-
-#: ../../chapter-08.rst:540
-msgid ""
-"As in the case of ``INPUT``, py4web make a distinction between \"_value\""
-" (the value of the OPTION), and “value” (the current value of the "
-"enclosing select). If they are equal, the option is “selected”."
-msgstr ""
-
-#: ../../chapter-08.rst:553
-msgid "``P``"
-msgstr ""
-
-#: ../../chapter-08.rst:555
-msgid "This is for tagging a paragraph."
-msgstr ""
-
-#: ../../chapter-08.rst:563
-msgid "``PRE``"
-msgstr ""
-
-#: ../../chapter-08.rst:565
-msgid ""
-"Generates a ``<pre>...</pre>`` tag for displaying pre-formatted text. The"
-" ``CODE`` helper is generally preferable for code listings."
-msgstr ""
-
-#: ../../chapter-08.rst:574
-msgid "``SCRIPT``"
-msgstr ""
-
-#: ../../chapter-08.rst:576
-msgid ""
-"This is include or link a script, such as JavaScript. The content between"
-" the tags is rendered as an HTML comment, for the benefit of really old "
-"browsers."
-msgstr ""
-
-#: ../../chapter-08.rst:588
-msgid "``SELECT``"
-msgstr ""
-
-#: ../../chapter-08.rst:590
-msgid ""
-"Makes a ``<select>...</select>`` tag. This is used with the ``OPTION`` "
-"helper. Those ``SELECT`` arguments that are not ``OPTION`` objects are "
-"automatically converted to options."
-msgstr ""
-
-#: ../../chapter-08.rst:603
-msgid "``SPAN``"
-msgstr ""
-
-#: ../../chapter-08.rst:605
-msgid "Similar to ``DIV`` but used to tag inline (rather than block) content."
-msgstr ""
-
-#: ../../chapter-08.rst:613
-msgid "``STYLE``"
-msgstr ""
-
-#: ../../chapter-08.rst:615
-msgid ""
-"Similar to script, but used to either include or link CSS code. Here the "
-"CSS is included:"
-msgstr ""
-
-#: ../../chapter-08.rst:625
-msgid "and here it is linked:"
-msgstr ""
-
-#: ../../chapter-08.rst:634
-msgid "``TABLE``, ``TR``, ``TD``"
-msgstr ""
-
-#: ../../chapter-08.rst:636
-msgid ""
-"These tags (along with the optional ``THEAD`` and ``TBODY`` helpers) are "
-"used to build HTML tables."
-msgstr ""
-
-#: ../../chapter-08.rst:644
-msgid ""
-"``TR`` expects ``TD`` content; arguments that are not ``TD`` objects are "
-"converted automatically."
-msgstr ""
-
-#: ../../chapter-08.rst:652
-msgid ""
-"It is easy to convert a Python array into an HTML table using Python’s "
-"``*`` function arguments notation, which maps list elements to positional"
-" function arguments."
-msgstr ""
-
-#: ../../chapter-08.rst:656
-msgid "Here, we will do it line by line:"
-msgstr ""
-
-#: ../../chapter-08.rst:664
-msgid "Here we do all lines at once:"
-msgstr ""
-
-#: ../../chapter-08.rst:673
-msgid "``TBODY``"
-msgstr ""
-
-#: ../../chapter-08.rst:675
-msgid ""
-"This is used to tag rows contained in the table body, as opposed to "
-"header or footer rows. It is optional."
-msgstr ""
-
-#: ../../chapter-08.rst:684
-msgid "``TEXTAREA``"
-msgstr ""
-
-#: ../../chapter-08.rst:686
-msgid "This helper makes a ``<textarea>...</textarea>`` tag."
-msgstr ""
-
-#: ../../chapter-08.rst:693
-msgid ""
-"The only caveat is that its optional “value” overrides its content (inner"
-" HTML)"
-msgstr ""
-
-#: ../../chapter-08.rst:702
-msgid "``TH``"
-msgstr ""
-
-#: ../../chapter-08.rst:704
-msgid "This is used instead of ``TD`` in table headers."
-msgstr ""
-
-#: ../../chapter-08.rst:712
-msgid "``THEAD``"
-msgstr ""
-
-#: ../../chapter-08.rst:714
-msgid "This is used to tag table header rows."
-msgstr ""
-
-#: ../../chapter-08.rst:722
-msgid "``TITLE``"
-msgstr ""
-
-#: ../../chapter-08.rst:724
-msgid "This is used to tag the title of a page in an HTML header."
-msgstr ""
-
-#: ../../chapter-08.rst:732
-msgid "``TR``"
-msgstr ""
-
-#: ../../chapter-08.rst:734
-msgid ""
-"Tags a table row. It should be rendered inside a table and contain "
-"``<td>...</td>`` tags. ``TR`` arguments that are not ``TD`` objects will "
-"be automatically converted."
-msgstr ""
-
-#: ../../chapter-08.rst:744
-msgid "``TT``"
-msgstr ""
-
-#: ../../chapter-08.rst:746
-msgid "Tags text as typewriter (monospaced) text."
-msgstr ""
-
-#: ../../chapter-08.rst:754
-msgid "``UL``"
-msgstr ""
-
-#: ../../chapter-08.rst:756
-msgid ""
-"Signifies an Unordered List and should contain ``LI`` items. If its "
-"content is not tagged as ``LI``, ``UL`` does it automatically."
-msgstr ""
-
-#: ../../chapter-08.rst:765
-msgid "``URL``"
-msgstr ""
-
-#: ../../chapter-08.rst:767
-msgid "The URL helper is documented in *Chapter 4 URL ../04*"
-msgstr ""
-
-#: ../../chapter-08.rst:770
-msgid "Custom helpers"
-msgstr ""
-
-#: ../../chapter-08.rst:773
-msgid "``TAG``"
-msgstr ""
-
-#: ../../chapter-08.rst:775
-msgid ""
-"Sometimes you need to generate custom XML tags. py4web provides ``TAG``, "
-"a universal tag generator."
-msgstr ""
-
-#: ../../chapter-08.rst:782
-msgid "generates the following XML"
-msgstr ""
-
-#: ../../chapter-08.rst:788
-msgid ""
-"Arguments “a”, “b”, and “d” are automatically escaped; use the ``XML`` "
-"helper to suppress this behavior. Using ``TAG`` you can generate HTML/XML"
-" tags not already provided by the API. TAGs can be nested, and are "
-"serialized with ``str().`` An equivalent syntax is:"
-msgstr ""
-
-#: ../../chapter-08.rst:797
-msgid ""
-"If the TAG object is created with an empty name, it can be used to "
-"concatenate multiple strings and HTML helpers together without inserting "
-"them into a surrounding tag, but this use is deprecated. Use the ``CAT`` "
-"helper instead."
-msgstr ""
-
-#: ../../chapter-08.rst:802
-msgid ""
-"Self-closing tags can be generated with the TAG helper. The tag name must"
-" end with a “/”."
-msgstr ""
-
-#: ../../chapter-08.rst:809
-msgid "generates the following XML:"
-msgstr ""
-
-#: ../../chapter-08.rst:815
-msgid ""
-"Notice that ``TAG`` is an object, and ``TAG.name`` or ``TAG['name']`` is "
-"a function that returns a temporary helper class."
-msgstr ""
-
-#: ../../chapter-08.rst:819
-msgid "``MENU``"
-msgstr ""
-
-#: ../../chapter-08.rst:821
-msgid ""
-"The MENU helper takes a list of lists or of tuples of the form of "
-"``response.menu`` and generates a tree-like structure using unordered "
-"lists representing the menu. For example:"
-msgstr ""
-
-#: ../../chapter-08.rst:835
-msgid ""
-"The first item in each list/tuple is the text to be displayed for the "
-"given menu item."
-msgstr ""
-
-#: ../../chapter-08.rst:838
-msgid ""
-"The second item in each list/tuple is a boolean indicating whether that "
-"particular menu item is active (i.e., the currently selected item). When "
-"set to True, the ``MENU`` helper will add a “py4web-menu-active” class to"
-" the ``<li>`` for that item (you can change the name of that class via "
-"the “li_active” argument to ``MENU``). Another way to specify the active "
-"url is by directly passing it to ``MENU`` via its “active_url” argument."
-msgstr ""
-
-#: ../../chapter-08.rst:845
-msgid ""
-"The third item in each list/tuple can be an HTML helper (which could "
-"include nested helpers), and the ``MENU`` helper will simply render that "
-"helper rather than creating its own ``<a>`` tag."
-msgstr ""
-
-#: ../../chapter-08.rst:849
-msgid ""
-"Each menu item can have a fourth argument that is a nested submenu (and "
-"so on recursively):"
-msgstr ""
-
-#: ../../chapter-08.rst:864
-msgid ""
-"A menu item can also have an optional 5th element, which is a boolean. "
-"When false, the menu item is ignored by the MENU helper."
-msgstr ""
-
-#: ../../chapter-08.rst:867
-msgid ""
-"The ``MENU`` helper takes the following optional arguments: - ``_class``:"
-" defaults to “py4web-menu py4web-menu-vertical” and sets the class of the"
-" outer UL elements. - ``ul_class``: defaults to “py4web-menu-vertical” "
-"and sets the class of the inner UL elements. - ``li_class``: defaults to "
-"“py4web-menu-expand” and sets the class of the inner LI elements. - "
-"``li_first``: allows to add a class to the first list element. - "
-"``li_last``: allows to add a class to the last list element."
-msgstr ""
-
-#: ../../chapter-08.rst:876
-msgid ""
-"``MENU`` takes an optional argument ``mobile``. When set to ``True`` "
-"instead of building a recursive ``UL`` menu structure it returns a "
-"``SELECT`` dropdown with all the menu options and a ``onchange`` "
-"attribute that redirects to the page corresponding to the selected "
-"option. This is designed an an alternative menu representation that "
-"increases usability on small mobile devices such as phones."
-msgstr ""
-
-#: ../../chapter-08.rst:883
-msgid "Normally the menu is used in a layout with the following syntax:"
-msgstr ""
-
-#: ../../chapter-08.rst:889
-msgid ""
-"In this way a mobile device is automatically detected and the menu is "
-"rendered accordingly."
-msgstr ""
-
-#: ../../chapter-08.rst:893
-msgid "``BEAUTIFY``"
-msgstr ""
-
-#: ../../chapter-08.rst:895
-msgid ""
-"``BEAUTIFY`` is used to build HTML representations of compound objects, "
-"including lists, tuples and dictionaries:"
-msgstr ""
-
-#: ../../chapter-08.rst:902
-msgid ""
-"``BEAUTIFY`` returns an XML-like object serializable to XML, with a nice "
-"looking representation of its constructor argument. In this case, the XML"
-" representation of:"
-msgstr ""
-
-#: ../../chapter-08.rst:910
-msgid "will render as:"
-msgstr ""
-
-#: ../../chapter-08.rst:920
-msgid "Server-side *DOM* and parsing"
-msgstr ""
-
-#: ../../chapter-08.rst:923
-msgid "``elements``"
-msgstr ""
-
-#: ../../chapter-08.rst:925
-msgid ""
-"The DIV helper and all derived helpers provide the search methods "
-"``element`` and ``elements``."
-msgstr ""
-
-#: ../../chapter-08.rst:928
-msgid ""
-"``element`` returns the first child element matching a specified "
-"condition (or None if no match)."
-msgstr ""
-
-#: ../../chapter-08.rst:931
-msgid "``elements`` returns a list of all matching children."
-msgstr ""
-
-#: ../../chapter-08.rst:933
-msgid ""
-"**element** and **elements** use the same syntax to specify the matching "
-"condition, which allows for three possibilities that can be mixed and "
-"matched: jQuery-like expressions, match by exact attribute value, match "
-"using regular expressions."
-msgstr ""
-
-#: ../../chapter-08.rst:938
-msgid "Here is a simple example:"
-msgstr ""
-
-#: ../../chapter-08.rst:948
-msgid ""
-"The un-named argument of ``elements`` is a string, which may contain: the"
-" name of a tag, the id of a tag preceded by a pound symbol, the class "
-"preceded by a dot, the explicit value of an attribute in square brackets."
-msgstr ""
-
-#: ../../chapter-08.rst:953
-msgid "Here are 4 equivalent ways to search the previous tag by id:"
-msgstr ""
-
-#: ../../chapter-08.rst:962
-msgid "Here are 4 equivalent ways to search the previous tag by class:"
-msgstr ""
-
-#: ../../chapter-08.rst:971
-msgid ""
-"Any attribute can be used to locate an element (not just ``id`` and "
-"``class``), including multiple attributes (the function element can take "
-"multiple named arguments), but only the first matching element will be "
-"returned."
-msgstr ""
-
-#: ../../chapter-08.rst:976
-msgid ""
-"Using the jQuery syntax “div#target” it is possible to specify multiple "
-"search criteria separated by a comma:"
-msgstr ""
-
-#: ../../chapter-08.rst:984
-msgid "or equivalently"
-msgstr ""
-
-#: ../../chapter-08.rst:991
-msgid ""
-"If the value of an attribute is specified using a name argument, it can "
-"be a string or a regular expression:"
-msgstr ""
-
-#: ../../chapter-08.rst:999
-msgid ""
-"A special named argument of the DIV (and derived) helpers is ``find``. It"
-" can be used to specify a search value or a search regular expression in "
-"the text content of the tag. For example:"
-msgstr ""
-
-#: ../../chapter-08.rst:1010
-msgid "or"
-msgstr ""
-
-#: ../../chapter-08.rst:1020
-msgid "``components``"
-msgstr ""
-
-#: ../../chapter-08.rst:1022
-msgid "Here’s an example of listing all elements in an html string:"
-msgstr ""
-
-#: ../../chapter-08.rst:1034
-msgid "``parent`` and ``siblings``"
-msgstr ""
-
-#: ../../chapter-08.rst:1036
-msgid "``parent`` returns the parent of the current element."
-msgstr ""
-
-#: ../../chapter-08.rst:1050
-msgid "Replacing elements"
-msgstr ""
-
-#: ../../chapter-08.rst:1052
-msgid ""
-"Elements that are matched can also be replaced or removed by specifying "
-"the ``replace`` argument. Notice that a list of the original matching "
-"elements is still returned as usual."
-msgstr ""
-
-#: ../../chapter-08.rst:1063
-msgid ""
-"``replace`` can be a callable. In this case it will be passed the "
-"original element and it is expected to return the replacement element:"
-msgstr ""
-
-#: ../../chapter-08.rst:1073
-msgid "If ``replace=None``, matching elements will be removed completely."
-msgstr ""
-
-#: ../../chapter-08.rst:1083
-msgid "``flatten``"
-msgstr ""
-
-#: ../../chapter-08.rst:1085
-msgid ""
-"The flatten method recursively serializes the content of the children of "
-"a given element into regular text (without tags):"
-msgstr ""
-
-#: ../../chapter-08.rst:1094
-msgid ""
-"Flatten can be passed an optional argument, ``render``, i.e. a function "
-"that renders/flattens the content using a different protocol. Here is an "
-"example to serialize some tags into Markmin wiki syntax:"
-msgstr ""
-
-#: ../../chapter-08.rst:1107
-msgid ""
-"At the time of writing we provide ``markmin_serializer`` and "
-"``markdown_serializer``."
-msgstr ""
-
-#: ../../chapter-08.rst:1111
-msgid "Parsing"
-msgstr ""
-
-#: ../../chapter-08.rst:1113
-msgid ""
-"The TAG object is also an XML/HTML parser. It can read text and convert "
-"into a tree structure of helpers. This allows manipulation using the API "
-"above:"
-msgstr ""
-
-#: ../../chapter-08.rst:1126
-msgid "Page layout"
-msgstr ""
-
-#: ../../chapter-08.rst:1128
-msgid "Views can extend and include other views in a tree-like structure."
-msgstr ""
-
-#: ../../chapter-08.rst:1130
-msgid ""
-"For example, we can think of a view “index.html” that extends "
-"“layout.html” and includes “body.html”. At the same time, “layout.html” "
-"may include “header.html” and “footer.html”."
-msgstr ""
-
-#: ../../chapter-08.rst:1134
-msgid ""
-"The root of the tree is what we call a layout view. Just like any other "
-"HTML template file, you can edit it using the py4web administrative "
-"interface. The file name “layout.html” is just a convention."
-msgstr ""
-
-#: ../../chapter-08.rst:1138
-msgid ""
-"Here is a minimalist page that extends the “layout.html” view and "
-"includes the “page.html” view:"
-msgstr ""
-
-#: ../../chapter-08.rst:1147
-msgid ""
-"The extended layout file must contain an ``[[include]]`` directive, "
-"something like:"
-msgstr ""
-
-#: ../../chapter-08.rst:1161
-msgid ""
-"When the view is called, the extended (layout) view is loaded, and the "
-"calling view replaces the ``[[include]]`` directive inside the layout. "
-"Processing continues recursively until all ``extend`` and ``include`` "
-"directives have been processed. The resulting template is then translated"
-" into Python code. Note, when an application is bytecode compiled, it is "
-"this Python code that is compiled, not the original view files "
-"themselves. So, the bytecode compiled version of a given view is a single"
-" .pyc file that includes the Python code not just for the original view "
-"file, but for its entire tree of extended and included views."
-msgstr ""
-
-#: ../../chapter-08.rst:1171
-msgid ""
-"``extend``, ``include``, ``block`` and ``super`` are special template "
-"directives, not Python commands."
-msgstr ""
-
-#: ../../chapter-08.rst:1174
-msgid ""
-"Any content or code that precedes the ``[[extend ...]]`` directive will "
-"be inserted (and therefore executed) before the beginning of the extended"
-" view’s content/code. Although this is not typically used to insert "
-"actual HTML content before the extended view’s content, it can be useful "
-"as a means to define variables or functions that you want to make "
-"available to the extended view. For example, consider a view "
-"“index.html”:"
-msgstr ""
-
-#: ../../chapter-08.rst:1188
-msgid "and an excerpt from “layout.html”:"
-msgstr ""
-
-#: ../../chapter-08.rst:1198
-msgid ""
-"Because the ``sidebar_enabled`` assignment in “index.html” comes before "
-"the ``extend``, that line gets inserted before the beginning of "
-"“layout.html”, making ``sidebar_enabled`` available anywhere within the "
-"“layout.html” code (a somewhat more sophisticated version of this is used"
-" in the **welcome** app)."
-msgstr ""
-
-#: ../../chapter-08.rst:1204
-msgid ""
-"It is also worth pointing out that the variables returned by the "
-"controller function are available not only in the function’s main view, "
-"but in all of its extended and included views as well."
-msgstr ""
-
-#: ../../chapter-08.rst:1208
-msgid ""
-"The argument of an ``extend`` or ``include`` (i.e., the extended or "
-"included view name) can be a Python variable (though not a Python "
-"expression). However, this imposes a limitation – views that use "
-"variables in ``extend`` or ``include`` statements cannot be bytecode "
-"compiled. As noted above, bytecode-compiled views include the entire tree"
-" of extended and included views, so the specific extended and included "
-"views must be known at compile time, which is not possible if the view "
-"names are variables (whose values are not determined until run time). "
-"Because bytecode compiling views can provide a significant speed boost, "
-"using variables in ``extend`` and ``include`` should generally be avoided"
-" if possible."
-msgstr ""
-
-#: ../../chapter-08.rst:1220
-msgid ""
-"In some cases, an alternative to using a variable in an ``include`` is "
-"simply to place regular ``[[include ...]]`` directives inside an "
-"``if...else`` block."
-msgstr ""
-
-#: ../../chapter-08.rst:1232
-msgid ""
-"The above code does not present any problem for bytecode compilation "
-"because no variables are involved. Note, however, that the bytecode "
-"compiled view will actually include the Python code for both "
-"“this_view.html” and “that_view.html”, though only the code for one of "
-"those views will be executed, depending on the value of "
-"``some_condition``."
-msgstr ""
-
-#: ../../chapter-08.rst:1239
-msgid ""
-"Keep in mind, this only works for ``include`` – you cannot place "
-"``[[extend ...]]`` directives inside ``if...else`` blocks."
-msgstr ""
-
-#: ../../chapter-08.rst:1242
-msgid ""
-"Layouts are used to encapsulate page commonality (headers, footers, "
-"menus), and though they are not mandatory, they will make your "
-"application easier to write and maintain. In particular, we suggest "
-"writing layouts that take advantage of the following variables that can "
-"be set in the controller. Using these well known variables will help make"
-" your layouts interchangeable:"
-msgstr ""
-
-#: ../../chapter-08.rst:1260
-msgid ""
-"Except for ``menu`` and ``files``, these are all strings and their "
-"meaning should be obvious."
-msgstr ""
-
-#: ../../chapter-08.rst:1263
-msgid ""
-"``response.menu`` menu is a list of 3-tuples or 4-tuples. The three "
-"elements are: the link name, a boolean representing whether the link is "
-"active (is the current link), and the URL of the linked page. For "
-"example:"
+msgid "(denormalize the real_identity and rename it identity)"
 msgstr ""
 
-#: ../../chapter-08.rst:1273
-msgid "The fourth tuple element is an optional sub-menu."
-msgstr ""
-
-#: ../../chapter-08.rst:1275
-msgid ""
-"``response.files`` is a list of CSS and JS files that are needed by your "
-"page."
-msgstr ""
-
-#: ../../chapter-08.rst:1278
-msgid "We also recommend that you use:"
-msgstr ""
-
-#: ../../chapter-08.rst:1284
-msgid ""
-"in the HTML head, since this will include the jQuery libraries and define"
-" some backward-compatible JavaScript functions for special effects and "
-"Ajax. “py4web_ajax.html” includes the ``response.meta`` tags in the view,"
-" jQuery base, the calendar datepicker, and all required CSS and JS "
-"``response.files``."
-msgstr ""
-
-#: ../../chapter-08.rst:1291
-msgid "Default page layout"
-msgstr ""
-
-#: ../../chapter-08.rst:1293
-msgid ""
-"The “views/layout.html” that ships with the py4web scaffolding "
-"application **welcome** (stripped down of some optional parts) is quite "
-"complex but it has the following structure:"
-msgstr ""
-
-#: ../../chapter-08.rst:1411
-msgid ""
-"There are a few features of this default layout that make it very easy to"
-" use and customize:"
-msgstr ""
-
-#: ../../chapter-08.rst:1414
-msgid ""
-"It is written in HTML5 and uses the “modernizr” library for backward "
-"compatibility. The actual layout includes some extra conditional "
-"statements required by IE and they are omitted for brevity."
-msgstr ""
-
-#: ../../chapter-08.rst:1417
-msgid ""
-"It displays both ``response.title`` and ``response.subtitle`` which can "
-"be set in a model or a controller. If they are not set, it adopts the "
-"application name as title."
-msgstr ""
-
-#: ../../chapter-08.rst:1420
-msgid ""
-"It includes the ``py4web_ajax.html`` file in the header which generated "
-"all the link and script import statements."
-msgstr ""
-
-#: ../../chapter-08.rst:1422
-msgid ""
-"It uses a modified version of Twitter Bootstrap for flexible layouts "
-"which works on mobile devices and re-arranges columns to fit small "
-"screens."
-msgstr ""
-
-#: ../../chapter-08.rst:1425
-msgid "It uses “analytics.js” to connect to Google Analytics."
-msgstr ""
-
-#: ../../chapter-08.rst:1426
-msgid ""
-"The ``[[=auth.navbar(...)]]`` displays a welcome to the current user and "
-"links to the auth functions like login, logout, register, change "
-"password, etc. depending on context. ``auth.navbar`` is a helper factory "
-"and its output can be manipulated as any other helper. It is placed in an"
-" expression to check for auth definition, the expression evaluates to ’’ "
-"in case auth is undefined."
-msgstr ""
-
-#: ../../chapter-08.rst:1432
-msgid ""
-"The ``[[=MENU(response.menu)]]`` displays the menu structure as "
-"``<ul>...</ul>``."
-msgstr ""
-
-#: ../../chapter-08.rst:1434
-msgid ""
-"``[[include]]`` is replaced by the content of the extending view when the"
-" page is rendered."
-msgstr ""
-
-#: ../../chapter-08.rst:1436
-msgid ""
-"By default it uses a conditional three column (the left and right "
-"sidebars can be turned off by the extending views)"
-msgstr ""
-
-#: ../../chapter-08.rst:1438
-msgid "It uses the following classes: page-header, main, footer."
-msgstr ""
-
-#: ../../chapter-08.rst:1439
-msgid ""
-"It contains the following blocks: head, left_sidebar, center, "
-"right_sidebar, footer."
-msgstr ""
-
-#: ../../chapter-08.rst:1442
-msgid "In views, you can turn on and customize sidebars as follows:"
-msgstr ""
-
-#: ../../chapter-08.rst:1456
-msgid "Customizing the default layout"
-msgstr ""
-
-#: ../../chapter-08.rst:1458
-msgid ""
-"Customizing the default layout without editing is easy because the "
-"welcome application is based on Twitter Bootstrap which is well "
-"documented and supports themes. In py4web four static files which are "
-"relevant to style:"
-msgstr ""
-
-#: ../../chapter-08.rst:1463
-msgid "“css/py4web.css” contains py4web specific styles"
-msgstr ""
-
-#: ../../chapter-08.rst:1464
-msgid "“css/bootstrap.min.css” contains the Twitter Bootstrap CSS style"
-msgstr ""
-
-#: ../../chapter-08.rst:1465
+#: ../../chapter-08.rst:378
 msgid ""
-"“css/py4web_bootstrap.css” which overrides some Bootstrap styles to "
-"conform to py4web needs."
+"(denormalize the real_identity [but only fields name and job], collapse "
+"the with the identity prefix)"
 msgstr ""
 
-#: ../../chapter-08.rst:1467
-msgid ""
-"“js/bootstrap.min.js” which includes the libraries for menu effects, "
-"modals, panels."
-msgstr ""
-
-#: ../../chapter-08.rst:1470
-msgid ""
-"To change colors and background images, try append the following code to "
-"layout.html header:"
-msgstr ""
-
-#: ../../chapter-08.rst:1485
-msgid ""
-"Of course you can also completely replace the “layout.html” and "
-"“py4web.css” files with your own."
-msgstr ""
-
-#: ../../chapter-08.rst:1489
-msgid "Mobile development"
-msgstr ""
-
-#: ../../chapter-08.rst:1491
-msgid ""
-"Although the default layout.html is designed to be mobile-friendly, one "
-"may sometimes need to use different views when a page is visited by a "
-"mobile device."
-msgstr ""
-
-#: ../../chapter-08.rst:1495
-msgid ""
-"To make developing for desktop and mobile devices easier, py4web includes"
-" the ``@mobilize`` decorator. This decorator is applied to actions that "
-"should have a normal view and a mobile view. This is demonstrated here:"
-msgstr ""
-
-#: ../../chapter-08.rst:1507
-msgid ""
-"Notice that the decorator must be imported before using it in a "
-"controller. When the “index” function is called from a regular browser "
-"(desktop computer), py4web will render the returned dictionary using the "
-"view “[controller]/index.html”. However, when it is called by a mobile "
-"device, the dictionary will be rendered by "
-"“[controller]/index.mobile.html”. Notice that mobile views have the "
-"“mobile.html” extension."
-msgstr ""
-
-#: ../../chapter-08.rst:1515
-msgid ""
-"Alternatively you can apply the following logic to make all views mobile "
-"friendly:"
-msgstr ""
-
-#: ../../chapter-08.rst:1523
-msgid ""
-"The task of creating the \"*.mobile.html\" views is left to the developer"
-" but we strongly suggest using the “jQuery Mobile” plugin which makes the"
-" task very easy."
-msgstr ""
-
-#: ../../chapter-08.rst:1528
-msgid "Functions in views"
-msgstr ""
-
-#: ../../chapter-08.rst:1530
-msgid "Consider this “layout.html”:"
-msgstr ""
-
-#: ../../chapter-08.rst:1545
-msgid "and this extending view"
+#: ../../chapter-08.rst:645 ../../chapter-08.rst:747 ../../chapter-08.rst:829
+msgid "URL (it's a single line, splitted for readability):"
 msgstr ""
 
-#: ../../chapter-08.rst:1555
-msgid ""
-"Notice the function is defined before the ``[[extend...]]`` statement – "
-"this results in the function being created before the “layout.html” code "
-"is executed, so the function can be called anywhere within “layout.html”,"
-" even before the ``[[include]]``. Also notice the function is included in"
-" the extended view without the ``=`` prefix."
-msgstr ""
-
-#: ../../chapter-08.rst:1561
-msgid "The code generates the following output:"
-msgstr ""
-
-#: ../../chapter-08.rst:1574
-msgid ""
-"Notice that the function is defined in HTML (although it could also "
-"contain Python code) so that ``response.write`` is used to write its "
-"content (the function does not return the content). This is why the "
-"layout calls the view function using ``[[mysidebar()]]`` rather than "
-"``[[=mysidebar()]]``. Functions defined in this way can take arguments."
-msgstr ""
-
-#: ../../chapter-08.rst:1581
-msgid "Blocks in views"
-msgstr ""
-
-#: ../../chapter-08.rst:1583
-msgid ""
-"The main way to make a view more modular is by using ``[[block ...]]``\\ "
-"s and this mechanism is an alternative to the mechanism discussed in the "
-"previous section."
-msgstr ""
-
-#: ../../chapter-08.rst:1587
-msgid ""
-"To understand how this works, consider apps based on the scaffolding app "
-"welcome, which has a view layout.html. This view is extended by the view "
-"``default/index.html`` via ``[[extend 'layout.html']]``. The contents of "
-"layout.html predefine certain blocks with certain default content, and "
-"these are therefore included into default/index.html."
-msgstr ""
-
-#: ../../chapter-08.rst:1593
-msgid ""
-"You can override these default content blocks by enclosing your new "
-"content inside the same block name. The location of the block in the "
-"layout.html is not changed, but the contents is."
-msgstr ""
-
-#: ../../chapter-08.rst:1597
-msgid "Here is a simplifed version. Imagine this is “layout.html”:"
-msgstr ""
-
-#: ../../chapter-08.rst:1612
-msgid "and this is a simple extending view ``default/index.html``:"
-msgstr ""
-
-#: ../../chapter-08.rst:1622
-msgid ""
-"It generates the following output, where the content is provided by the "
-"over-riding block in the extending view, yet the enclosing DIV and class "
-"comes from layout.html. This allows consistency across views:"
-msgstr ""
-
-#: ../../chapter-08.rst:1637
-msgid ""
-"The real layout.html defines a number of useful blocks, and you can "
-"easily add more to match the layout your desire."
+#: ../../chapter-08.rst:1017
+msgid "Notice all RestAPI response have the fields"
 msgstr ""
 
-#: ../../chapter-08.rst:1640
-msgid ""
-"You can have many blocks, and if a block is present in the extended view "
-"but not in the extending view, the content of the extended view is used. "
-"Also, notice that unlike with functions, it is not necessary to define "
-"blocks before the ``[[extend ...]]`` – even if defined after the "
-"``extend``, they can be used to make substitutions anywhere in the "
-"extended view."
-msgstr ""
-
-#: ../../chapter-08.rst:1647
-msgid ""
-"Inside a block, you can use the expression ``[[super]]`` to include the "
-"content of the parent. For example, if we replace the above extending "
-"view with:"
+#: ../../chapter-08.rst:1028
+msgid "and some optional fields:"
 msgstr ""
 
-#: ../../chapter-08.rst:1660
-msgid "we get:"
+#: ../../chapter-08.rst:1040
+msgid "The exact specs are subject to change since this is a new feature."
 msgstr ""
 

@@ -1,0 +1,380 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20201112.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-11-29 10:41+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: ../../chapter-13.rst:3
+msgid "Authentication and Access control"
+msgstr ""
+
+#: ../../chapter-13.rst:5
+msgid ""
+"**Warning: the API described in this chapter is new and subject to "
+"changes. Make sure you keep your code up to date**"
+msgstr ""
+
+#: ../../chapter-13.rst:8
+msgid ""
+"py4web comes with a an object Auth and a system of plugins for user "
+"authentication and access control. It has the same name as the "
+"corresponding web2py one and serves the same purpose but the API and "
+"internal design is very different."
+msgstr ""
+
+#: ../../chapter-13.rst:13
+msgid ""
+"To use it, first of all you need to import it, instantiate it, configure "
+"it, and enable it."
+msgstr ""
+
+#: ../../chapter-13.rst:23
+msgid ""
+"The import step is obvious. The second step does not perform any "
+"operation other than telling the Auth object which session object to use "
+"and which database to use. Auth data is stored in ``session['user']`` "
+"and, if a user is logged in, the user id is stored in "
+"session[‘user’][‘id’]. The db object is used to store persistent info "
+"about the user in a table ``auth_user`` with the following fields:"
+msgstr ""
+
+#: ../../chapter-13.rst:30
+msgid "username"
+msgstr ""
+
+#: ../../chapter-13.rst:31
+msgid "email"
+msgstr ""
+
+#: ../../chapter-13.rst:32
+msgid "password"
+msgstr ""
+
+#: ../../chapter-13.rst:33
+msgid "first_name"
+msgstr ""
+
+#: ../../chapter-13.rst:34
+msgid "last_name"
+msgstr ""
+
+#: ../../chapter-13.rst:35
+msgid "sso_id (used for single sign on, see later)"
+msgstr ""
+
+#: ../../chapter-13.rst:36
+msgid ""
+"action_token (used to verify email, block users, and other tasks, also "
+"see later)."
+msgstr ""
+
+#: ../../chapter-13.rst:39
+msgid "If the ``auth_user`` table does not exist it is created."
+msgstr ""
+
+#: ../../chapter-13.rst:41
+msgid "The configuration step is optional and discussed later."
+msgstr ""
+
+#: ../../chapter-13.rst:43
+msgid "The ``auth.enable()`` step creates and exposes the following RESTful APIs:"
+msgstr ""
+
+#: ../../chapter-13.rst:46
+msgid "{appname}/auth/api/register (POST)"
+msgstr ""
+
+#: ../../chapter-13.rst:47
+msgid "{appname}/auth/api/login (POST)"
+msgstr ""
+
+#: ../../chapter-13.rst:48
+msgid "{appname}/auth/api/request_reset_password (POST)"
+msgstr ""
+
+#: ../../chapter-13.rst:49
+msgid "{appname}/auth/api/reset_password (POST)"
+msgstr ""
+
+#: ../../chapter-13.rst:50
+msgid "{appname}/auth/api/verify_email (GET, POST)"
+msgstr ""
+
+#: ../../chapter-13.rst:51
+msgid "{appname}/auth/api/logout (GET, POST) (+)"
+msgstr ""
+
+#: ../../chapter-13.rst:52
+msgid "{appname}/auth/api/profile (GET, POST) (+)"
+msgstr ""
+
+#: ../../chapter-13.rst:53
+msgid "{appname}/auth/api/change_password (POST) (+)"
+msgstr ""
+
+#: ../../chapter-13.rst:54
+msgid "{appname}/auth/api/change_email (POST) (+)"
+msgstr ""
+
+#: ../../chapter-13.rst:56
+msgid "Those marked with a (+) require a logged in user."
+msgstr ""
+
+#: ../../chapter-13.rst:59
+msgid "Auth UI"
+msgstr ""
+
+#: ../../chapter-13.rst:61
+msgid ""
+"You can create your own web UI to login users using the above APIs but "
+"py4web provides one as an example, implemented in the following files:"
+msgstr ""
+
+#: ../../chapter-13.rst:64
+msgid "\\_scaffold/templates/auth.html"
+msgstr ""
+
+#: ../../chapter-13.rst:65
+msgid "\\_scaffold/static/components/auth.js"
+msgstr ""
+
+#: ../../chapter-13.rst:66
+msgid "\\_scaffold/static/components/auth.html"
+msgstr ""
+
+#: ../../chapter-13.rst:68
+msgid ""
+"The component files (js/html) define a Vue component ``<auth/>`` which is"
+" used in the template file auth.html as follows:"
+msgstr ""
+
+#: ../../chapter-13.rst:87
+msgid ""
+"You can pretty much use this file un-modified. It extends the current "
+"layout and embeds the ``<auth/>`` component into the page. It then uses "
+"``utils.app().start();`` (py4web magic) to render the content of ``<div "
+"id=\"vue\">...</div>`` using Vue.js. ``components/auth.js`` also "
+"automatically loads ``components/auth.html`` into the component "
+"placeholder (more py4web magic). The component is responsible for "
+"rendering the login/register/etc forms using reactive html and "
+"GETing/POSTing data to the Auth service APIs."
+msgstr ""
+
+#: ../../chapter-13.rst:96
+msgid ""
+"If you need to change the style of the component you can edit "
+"“components/auth.html” to suit your needs. It is mostly HTML with some "
+"special Vue ``v-*`` tags."
+msgstr ""
+
+#: ../../chapter-13.rst:101
+msgid "Using Auth"
+msgstr ""
+
+#: ../../chapter-13.rst:103
+msgid "There two ways to use the Auth object in an action:"
+msgstr ""
+
+#: ../../chapter-13.rst:113
+msgid ""
+"With ``@action.uses(auth)`` we tell py4web that this action needs to have"
+" information about the user, then try to parse the session for a user "
+"session."
+msgstr ""
+
+#: ../../chapter-13.rst:125
+msgid ""
+"Here ``@action.uses(auth.user)`` tells py4web that this action requires a"
+" logged in user and should redirect to login if no user is logged in."
+msgstr ""
+
+#: ../../chapter-13.rst:129
+msgid "Auth Plugins"
+msgstr ""
+
+#: ../../chapter-13.rst:131
+msgid ""
+"Plugins are defined in “py4web/utils/auth_plugins” and they have a "
+"hierachical structure. Some are exclusive and some are not. For example, "
+"default, LDAP, PAM, and SAML are exclusive (the developer has to pick "
+"one). Default, Google, Facebook, and Twitter OAuth are not exclusive (the"
+" developer can pick them all and the user gets to choose using the UI)."
+msgstr ""
+
+#: ../../chapter-13.rst:138
+msgid ""
+"The ``<auth/>`` components will automatically adapt to display login "
+"forms as required by the installed plugins."
+msgstr ""
+
+#: ../../chapter-13.rst:141
+msgid ""
+"**At this time we cannot guarantee that the following plugins work well. "
+"They have been ported from web2py where they do work but testing is still"
+" needed**"
+msgstr ""
+
+#: ../../chapter-13.rst:146
+msgid "PAM"
+msgstr ""
+
+#: ../../chapter-13.rst:148
+msgid "Configuring PAM is the easiest:"
+msgstr ""
+
+#: ../../chapter-13.rst:155
+msgid ""
+"This one like all plugins must be imported and registered. Once "
+"registered the UI (components/auth) and the RESTful APIs know how to "
+"handle it. The constructor of this plugins does not require any arguments"
+" (where other plugins do)."
+msgstr ""
+
+#: ../../chapter-13.rst:160
+msgid ""
+"The ``auth.register_plugin(...)`` **must** come before the "
+"``auth.enable()`` since it makes no sense to expose APIs before desired "
+"plugins are mounted."
+msgstr ""
+
+#: ../../chapter-13.rst:165
+msgid "LDAP"
+msgstr ""
+
+#: ../../chapter-13.rst:178
+msgid "OAuth2 with Google (tested OK)"
+msgstr ""
+
+#: ../../chapter-13.rst:188
+msgid "The client id and client secret must be provided by Google."
+msgstr ""
+
+#: ../../chapter-13.rst:191
+msgid "OAuth2 with Facebook (tested OK)"
+msgstr ""
+
+#: ../../chapter-13.rst:201
+msgid "The client id and client secret must be provided by Facebook."
+msgstr ""
+
+#: ../../chapter-13.rst:204
+msgid "Tags and Permissions"
+msgstr ""
+
+#: ../../chapter-13.rst:206
+msgid ""
+"Py4web does not have the concept of groups as web2py does. Experience "
+"showed that while that mechanism is powerful it suffers from two "
+"problems: it is overkill for most apps, and it is not flexible enough for"
+" very complex apps. Py4web provides a general purpose tagging mechanism "
+"that allows the developer to tag any record of any table, check for the "
+"existence of tags, as well as checking for records containing a tag. "
+"Group membership can be thought of a type of tag that we apply to users. "
+"Permissions can also be tags. Developer are free to create their own "
+"logic on top of the tagging system."
+msgstr ""
+
+#: ../../chapter-13.rst:216
+msgid "To use the tagging system you need to create an object to tag a table:"
+msgstr ""
+
+#: ../../chapter-13.rst:222
+msgid ""
+"Then you can add one or more tags to records of the table as well as "
+"remove existing tags:"
+msgstr ""
+
+#: ../../chapter-13.rst:231
+msgid ""
+"Here the use case is group based access control where the developer first"
+" checks if a user is a member of the ``'manager'`` group, if the user is "
+"not a manager (or no one is logged in) py4web redirects to the ``'not "
+"authorized url'``. If the user is in the correct group then py4web "
+"displays ‘hello manager’:"
+msgstr ""
+
+#: ../../chapter-13.rst:246
+msgid ""
+"Here the developer queries the db for all records having the desired "
+"tag(s):"
+msgstr ""
+
+#: ../../chapter-13.rst:257
+msgid ""
+"We leave it to you as an exercise to create a fixture ``has_membership`` "
+"to enable the following syntax:"
+msgstr ""
+
+#: ../../chapter-13.rst:267
+msgid ""
+"**Important:** ``Tags`` are automatically hierarchical. For example, if a"
+" user has a group tag ‘teacher/high-school/physics’, then all the "
+"following seaches will return the user:"
+msgstr ""
+
+#: ../../chapter-13.rst:271
+msgid "``groups.find('teacher/high-school/physics')``"
+msgstr ""
+
+#: ../../chapter-13.rst:272
+msgid "``groups.find('teacher/high-school')``"
+msgstr ""
+
+#: ../../chapter-13.rst:273
+msgid "``groups.find('teacher')``"
+msgstr ""
+
+#: ../../chapter-13.rst:275
+msgid ""
+"This means that slashes have a special meaning for tags. Slahes at the "
+"beginning or the end of a tag are optional. All other chars are allowed "
+"on equal footing."
+msgstr ""
+
+#: ../../chapter-13.rst:279
+msgid ""
+"Notice that one table can have multiple associated ``Tags`` objects. The "
+"name groups here is completely arbitary but has a specific semantic "
+"meaning. Different ``Tags`` objects are orthogonal to each other. The "
+"limit to their use is your creativity."
+msgstr ""
+
+#: ../../chapter-13.rst:284
+msgid "For example you could create a table groups:"
+msgstr ""
+
+#: ../../chapter-13.rst:290
+msgid "and to Tags:"
+msgstr ""
+
+#: ../../chapter-13.rst:297
+msgid ""
+"Then create a zapper group, give it a permission, and make a user member "
+"of the group:"
+msgstr ""
+
+#: ../../chapter-13.rst:306
+msgid "And you can check for a user permission via an explicit join:"
+msgstr ""
+
+#: ../../chapter-13.rst:323
+msgid ""
+"Notice here ``permissions.find(permission)`` generates a query for all "
+"groups with the permission and we further filter those groups for those "
+"the current user is member of. We count them and if we find any, then the"
+" user has the permission."
+msgstr ""
+

@@ -1,192 +1,563 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2020, Massimo DiPierro
+# Copyright (C) 2020, BSDv3 License
 # This file is distributed under the same license as the py4web package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: py4web \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-02 22:29+0100\n"
+"Project-Id-Version: py4web 1.20201112.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-11-29 10:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: ../../chapter-06.rst:2
-msgid "The RESTAPI"
+#: ../../chapter-06.rst:3
+msgid "Fixtures"
 msgstr ""
 
-#: ../../chapter-06.rst:4
+#: ../../chapter-06.rst:5
 msgid ""
-"Since version 19.5.10 PyDAL includes a restful API called RestAPI. It is "
-"inspired by GraphQL but it’s not quite the same because it is less "
-"powerful but, in the spirit of web2py, more practical and easier to use. "
-"Like GraphSQL RestAPI allows a client to query for information using the "
-"GET method and allows to specify some details about the format of the "
-"response (which references to follow, and how to denormalize the data). "
-"Unlike GraphSQL it allows the server to specify a policy and restrict "
-"which queries are allowed and which one are not. They can be evaluated "
-"dynamically per request based on the user and the state of the server. As"
-" the name implied RestAPI allows all stardard methods GET, POST, PUT, and"
-" DELETE. Each of them can be enabled or disabled based on the policy, for"
-" individual tables and individual fields."
+"A fixture is defined as “a piece of equipment or furniture which is fixed"
+" in position in a building or vehicle”. In our case a fixture is "
+"something attached to the action that processes an HTTP request in order "
+"to produce a response."
 msgstr ""
 
-#: ../../chapter-06.rst:17
+#: ../../chapter-06.rst:10
 msgid ""
-"In the examples below we assume an app called “superheroes” and the "
-"following model:"
+"When processing any HTTP requests there are some optional operations we "
+"may want to perform. For example parse the cookie to look for session "
+"information, commit a database transaction, determine the preferred "
+"language from the HTTP header and lookup proper internationalization, "
+"etc. These operations are optional. Some actions need them and some "
+"actions do not. They may also depend on each other. For example, if "
+"sessions are stored in the database and our action needs it, we may need "
+"to parse the session cookie from the header, pick up a connection from "
+"the database connection pool, and - after the action has been executed - "
+"save the session back in the database if data has changed."
 msgstr ""
 
-#: ../../chapter-06.rst:42
-msgid "We also assume the following controller ``rest.py``:"
-msgstr ""
-
-#: ../../chapter-06.rst:65
+#: ../../chapter-06.rst:21
 msgid ""
-"The policy is per table (or \\* for all tables and per method. authorize "
-"can be True (allow), False (deny) or a function with the signature "
-"(method, tablename, record_id, get_vars, post_vars) which returns "
-"True/False. For the GET policy one can specify a list of allowed query "
-"patterns (\\* for all). A query pattern will be matched against the keys "
-"in the query string."
+"PY4WEB fixtures provide a mechanism to specify what an action needs so "
+"that py4web can accomplish the required tasks (and skip non required "
+"ones) in the most efficient manner. Fixtures make the code efficient and "
+"reduce the need for boilerplate code."
 msgstr ""
 
-#: ../../chapter-06.rst:72
-msgid "The above action is exposed as:"
-msgstr ""
-
-#: ../../chapter-06.rst:78
-msgid "In our example policy we disabled all methods but GET."
-msgstr ""
-
-#: ../../chapter-06.rst:81
-msgid "RestAPI GET"
-msgstr ""
-
-#: ../../chapter-06.rst:83
+#: ../../chapter-06.rst:26
 msgid ""
-"The general query has the form ``{something}.eq=value`` where ``eq=`` "
-"stands for “equal”, ``gt=`` stands for “greater than”, etc. The "
-"expression can be prepended by ``not.``."
+"PY4WEB fixtures are similar to WSGI middleware and BottlePy plugin except"
+" that they apply to individual actions, not to all of them, and can "
+"depend on each other."
 msgstr ""
 
-#: ../../chapter-06.rst:87
+#: ../../chapter-06.rst:30
 msgid ""
-"``{something}`` can be the name of a field in the table been queried as "
-"in:"
+"PY4WEB comes with some pre-defined fixtures for actions that need "
+"sessions, database connections, internationalization, authentication, and"
+" templates. Their usage will be explained in this chapter. The Developer "
+"is also free to add fixtures, for example, to handle a third party "
+"template language or third party session logic."
 msgstr ""
 
-#: ../../chapter-06.rst:90
-msgid "**All superheroes called “Superman”**"
+#: ../../chapter-06.rst:37
+msgid "Important about Fixtures"
 msgstr ""
 
-#: ../../chapter-06.rst:96
+#: ../../chapter-06.rst:39
 msgid ""
-"It can be a the name of a field of a table referred by the table been "
-"queried as in:"
+"In the examples below we will explain how to apply individual fixtures. "
+"In practice fixtures can be applied in groups. For example:"
 msgstr ""
 
-#: ../../chapter-06.rst:99
-msgid "**All superheroes with real identity “Clark Kent”**"
+#: ../../chapter-06.rst:46
+msgid "Then you can apply all of the at once with:"
 msgstr ""
 
-#: ../../chapter-06.rst:105
+#: ../../chapter-06.rst:56
+msgid "Py4web templates"
+msgstr ""
+
+#: ../../chapter-06.rst:58
 msgid ""
-"It can be the name of a field of a table that refers to the table neen "
-"queried as in:"
+"PY4WEB, by default uses the yatl template language and provides a fixture"
+" for it."
 msgstr ""
 
-#: ../../chapter-06.rst:108
-msgid "**All superheroes with any tag superpower with strength > 90**"
+#: ../../chapter-06.rst:71
+msgid ""
+"Note: This example assumes that you created the application from the "
+"scaffolding app, so that the template index.html is already created for "
+"you."
+msgstr ""
+
+#: ../../chapter-06.rst:75
+msgid ""
+"The Template object is a Fixture. It transforms the ``dict()`` returned "
+"by the action into a string by using the ``index.html`` template file. In"
+" a later chapter we will provide an example of how to define a custom "
+"fixture to use a different template language, for example Jinja2."
+msgstr ""
+
+#: ../../chapter-06.rst:80
+msgid ""
+"Notice that since the use of templates is very common and since, most "
+"likely, every action uses a different template, we provide some syntactic"
+" sugar, and the two following lines are equivalent:"
+msgstr ""
+
+#: ../../chapter-06.rst:89
+msgid ""
+"Notice that py4web template files are cached in RAM. The py4web caching "
+"object is described later."
+msgstr ""
+
+#: ../../chapter-06.rst:93
+msgid "Sessions"
+msgstr ""
+
+#: ../../chapter-06.rst:95
+msgid ""
+"The session object is also a Fixture. Here is a typical example of usage "
+"to implement a counter."
+msgstr ""
+
+#: ../../chapter-06.rst:111
+msgid ""
+"Notice that the session object has the same interface as a Python "
+"dictionary."
 msgstr ""
 
 #: ../../chapter-06.rst:114
 msgid ""
-"(here tag is the name of the link table, the preceding ``superhero`` is "
-"the name of the field that refers to the selected table and ``strength`` "
-"is the name of the field used to filter)"
-msgstr ""
-
-#: ../../chapter-06.rst:118
-msgid ""
-"It can also be a field of the table referenced by a many-to-many linked "
-"table as in:"
+"By default the session object is stored in a cookie called, signed and "
+"encrypted, using the provided secret. If the secret changes existing "
+"sessions are invalidated. If the user switches from HTTP to HTTPS or vice"
+" versa, the user session is invalidated. Session in cookies have a small "
+"size limit (4Kbytes after being serialized and encrypted) so do not put "
+"too much into them."
 msgstr ""
 
 #: ../../chapter-06.rst:121
-msgid "**All superheroes with the flight power**"
+msgid ""
+"In py4web sessions are dictionaries but they are stored using JSON (JWT "
+"specifically) therefore you should only store objects that are JSON "
+"serializable. If the object is not JSON serializable, it will be "
+"serialized using the ``__str__`` operator and some information may be "
+"lost."
 msgstr ""
 
 #: ../../chapter-06.rst:127
-msgid "The key to understand the syntax above is to break it as follows:"
-msgstr ""
-
-#: ../../chapter-06.rst:133
-msgid "and read it as:"
-msgstr ""
-
-#: ../../chapter-06.rst:135
 msgid ""
-"select records of table **superhero** referred by field **superhero** of "
-"table **tag** when the **superpower** field of said table points to a "
-"record with **description** **eq**\\ ual to “Flight”."
+"By default py4web sessions never expire (unless they contain login "
+"information, but that is another story) even if an expiration can be set."
+" Other parameters can be specified as well:"
 msgstr ""
 
 #: ../../chapter-06.rst:139
-msgid "The query allows additional modifiers for example"
-msgstr ""
-
-#: ../../chapter-06.rst:149
 msgid ""
-"The first 3 are obvious. @model returns a JSON description of database "
-"model. Lookup denormalizes the linked field."
+"Here ``algorithm`` is the algorithm to be used for the JWT token "
+"signature."
 msgstr ""
 
-#: ../../chapter-06.rst:152
-msgid "Here are some practical examples:"
-msgstr ""
-
-#: ../../chapter-06.rst:154 ../../chapter-06.rst:189 ../../chapter-06.rst:264
-#: ../../chapter-06.rst:311 ../../chapter-06.rst:363 ../../chapter-06.rst:404
-#: ../../chapter-06.rst:505 ../../chapter-06.rst:636 ../../chapter-06.rst:737
-#: ../../chapter-06.rst:818 ../../chapter-06.rst:899 ../../chapter-06.rst:924
-#: ../../chapter-06.rst:949 ../../chapter-06.rst:979
-msgid "URL:"
-msgstr ""
-
-#: ../../chapter-06.rst:160 ../../chapter-06.rst:195 ../../chapter-06.rst:270
-#: ../../chapter-06.rst:319 ../../chapter-06.rst:372 ../../chapter-06.rst:410
-#: ../../chapter-06.rst:511 ../../chapter-06.rst:642 ../../chapter-06.rst:743
-#: ../../chapter-06.rst:824 ../../chapter-06.rst:905 ../../chapter-06.rst:930
-#: ../../chapter-06.rst:955 ../../chapter-06.rst:985
-msgid "OUTPUT:"
-msgstr ""
-
-#: ../../chapter-06.rst:317
-msgid "(denormalize the real_identity and rename it identity)"
-msgstr ""
-
-#: ../../chapter-06.rst:369
+#: ../../chapter-06.rst:141
 msgid ""
-"(denormalize the real_identity [but only fields name and job], collapse "
-"the with the identity prefix)"
+"``storage`` is a parameter that allows to specify an alternate session "
+"storage method (for example redis, or database)."
 msgstr ""
 
-#: ../../chapter-06.rst:1004
-msgid "Notice all RestAPI response have the fields"
+#: ../../chapter-06.rst:143
+msgid ""
+"``same_site`` is an option that prevents CSRF attacks and is enabled by "
+"default. You can read more about it `here "
+"<https://www.owasp.org/index.php/SameSite>`__."
 msgstr ""
 
-#: ../../chapter-06.rst:1015
-msgid "and some optional fields:"
+#: ../../chapter-06.rst:148
+msgid "Session in memcache"
 msgstr ""
 
-#: ../../chapter-06.rst:1027
-msgid "The exact specs are subject to change since this is a new feature."
+#: ../../chapter-06.rst:156
+msgid ""
+"Notice that a secret is not required when storing cookies in memcache "
+"because in this case the cookie only contains the UUID of the session."
+msgstr ""
+
+#: ../../chapter-06.rst:160
+msgid "Session in redis"
+msgstr ""
+
+#: ../../chapter-06.rst:169
+msgid ""
+"Notice: a storage object must have ``get`` and ``set`` methods and the "
+"``set`` method must allow to specify an expiration. The redis connection "
+"object has a ``ttl`` method to specify the expiration, hence we monkey "
+"patch the ``set`` method to have the expected signature and "
+"functionality."
+msgstr ""
+
+#: ../../chapter-06.rst:176
+msgid "Session in database"
+msgstr ""
+
+#: ../../chapter-06.rst:185
+msgid ""
+"A secret is not required when storing cookies in the database because in "
+"this case the cookie only contains the UUID of the session."
+msgstr ""
+
+#: ../../chapter-06.rst:188
+msgid ""
+"Also this is one case when the a fixture (session) requires another "
+"fixture (db). This is handled automatically by py4web and the following "
+"are equivalent:"
+msgstr ""
+
+#: ../../chapter-06.rst:198
+msgid "Session anywhere"
+msgstr ""
+
+#: ../../chapter-06.rst:200
+msgid ""
+"You can easily store sessions in any place you want. All you need to do "
+"is provide to the ``Session`` object a ``storage`` object with both "
+"``get`` and ``set`` methods. For example, imagine you want to store "
+"sessions on your local filesystem:"
+msgstr ""
+
+#: ../../chapter-06.rst:226
+msgid ""
+"We leave to you as an exercise to implement expiration, limit the number "
+"of files per folder by using subfolders, and implement file locking. Yet "
+"we do not recomment storing sessions on the filesystem: it is inefficient"
+" and does not scale well."
+msgstr ""
+
+#: ../../chapter-06.rst:232
+msgid "Translator"
+msgstr ""
+
+#: ../../chapter-06.rst:234
+msgid "Here is an example of usage:"
+msgstr ""
+
+#: ../../chapter-06.rst:248
+msgid ""
+"The string ’hello world\\` will be translated based on the "
+"internationalization file in the specified “translations” folder that "
+"best matches the HTTP ``accept-language`` header."
+msgstr ""
+
+#: ../../chapter-06.rst:252
+msgid ""
+"Here ``Translator`` is a py4web class that extends "
+"``pluralize.Translator`` and also implements the ``Fixture`` interface."
+msgstr ""
+
+#: ../../chapter-06.rst:255
+msgid ""
+"We can easily combine multiple fixtures. Here, as example, we make action"
+" with a counter that counts “visits”."
+msgstr ""
+
+#: ../../chapter-06.rst:276
+msgid "Now create the following translation file ``translations/en.json``:"
+msgstr ""
+
+#: ../../chapter-06.rst:290
+msgid ""
+"When visiting this site with the browser language preference set to "
+"english and reloading multiple times you will get the following messages:"
+msgstr ""
+
+#: ../../chapter-06.rst:304
+msgid "Now try create a file called ``translations/it.json`` which contains:"
+msgstr ""
+
+#: ../../chapter-06.rst:318
+msgid "and set your browser preference to Italian."
+msgstr ""
+
+#: ../../chapter-06.rst:321
+msgid "The Flash fixture"
+msgstr ""
+
+#: ../../chapter-06.rst:323
+msgid ""
+"It is common to want to display “alerts” to the suers. Here we refer to "
+"them as flash messeges. There is a little more to it than just displaying"
+" a message to the view because flash messages can have state that must be"
+" preserved after redirection. Also they can be generated both server side"
+" and client side, there can be only one at the time, they may have a "
+"type, and they should be dismissible."
+msgstr ""
+
+#: ../../chapter-06.rst:330
+msgid "The Flash helper handles the server side of them. Here is an example:"
+msgstr ""
+
+#: ../../chapter-06.rst:344
+msgid "and in the template:"
+msgstr ""
+
+#: ../../chapter-06.rst:354
+msgid ""
+"By setting the value of the message in the flash helper, a flash variable"
+" is returned by the action and this trigger the JS in the template to "
+"inject the message in the ``#py4web-flash`` DIV which you can position at"
+" your convenience. Also the optional class is applied to the injected "
+"HTML."
+msgstr ""
+
+#: ../../chapter-06.rst:360
+msgid ""
+"If a page is redirected after a flash is set, the flash is remembered. "
+"This is achieved by asking the browser to keep the message temporarily in"
+" a one-time cookie. After redirection the message is sent back by the "
+"browser to the server and the server sets it again automatically before "
+"returning content, unless it is overwritten by another set."
+msgstr ""
+
+#: ../../chapter-06.rst:366
+msgid "The client can also set/add flash messages by calling:"
+msgstr ""
+
+#: ../../chapter-06.rst:372
+msgid ""
+"py4web defaults to an alert class called ``default`` and most CSS "
+"frameworks define classes for alerts called ``success``, ``error``, "
+"``warning``, ``default``, and ``info``. Yet, there is nothing in py4web "
+"that hardcodes those names. You can use your own class names."
+msgstr ""
+
+#: ../../chapter-06.rst:378
+msgid "The DAL fixture"
+msgstr ""
+
+#: ../../chapter-06.rst:380
+msgid ""
+"We have already used the ``DAL`` fixture in the context of sessions but "
+"maybe you want direct access to the DAL object for the purpose of "
+"accessing the database, not just sessions."
+msgstr ""
+
+#: ../../chapter-06.rst:384
+msgid ""
+"PY4WEB, by default, uses the PyDAL (Python Database Abstraction Layer) "
+"which is documented in a later chapter. Here is an example, please "
+"remember to create the ``databases`` folder under your project in case it"
+" doesn’t exist:"
+msgstr ""
+
+#: ../../chapter-06.rst:407
+msgid ""
+"Notice that the database fixture defines (creates/re-creates tables) "
+"automatically when py4web starts (and every time it reloads this app) and"
+" picks a connection from the connection pool at every HTTP request. Also "
+"each call to the ``index()`` action is wrapped into a transaction and it "
+"commits ``on_success`` and rolls back ``on_error``."
+msgstr ""
+
+#: ../../chapter-06.rst:414
+msgid "Caveats about Fixtures"
+msgstr ""
+
+#: ../../chapter-06.rst:416
+msgid ""
+"Since fixtures are shared by multiple actions you are not allowed to "
+"change their state because it would not be thread safe. There is one "
+"exception to this rule. Actions can change some attributes of database "
+"fields:"
+msgstr ""
+
+#: ../../chapter-06.rst:439
+msgid ""
+"Note thas this code will only be able to display a form, to process it "
+"after submit, additional code needs to be added, as we will see later on."
+" This example is assuming that you created the application from the "
+"scaffolding app, so that a generic.html is already created for you."
+msgstr ""
+
+#: ../../chapter-06.rst:444
+msgid ""
+"The ``readable``, ``writable``, ``default``, ``update``, and ``require`` "
+"attributes of ``db.{table}.{field}`` are special objects of class "
+"``ThreadSafeVariable`` defined the ``threadsafevariable`` module. These "
+"objects are very much like Python thread local objects but they are re-"
+"initialized at every request using the value specified outside of the "
+"action. This means that actions can safely change the values of these "
+"attributes."
+msgstr ""
+
+#: ../../chapter-06.rst:453
+msgid "Custom fixtures"
+msgstr ""
+
+#: ../../chapter-06.rst:455
+msgid "A fixture is an object with the following minimal structure:"
+msgstr ""
+
+#: ../../chapter-06.rst:467
+msgid "if an action uses this fixture:"
+msgstr ""
+
+#: ../../chapter-06.rst:475
+msgid ""
+"Then ``on_request()`` is guaranteed to be called before the ``index()`` "
+"function is called. The ``on_success()`` is guaranteed to be called if "
+"the ``index()`` function returns successfully or raises ``HTTP`` or "
+"performs a ``redirect``. The ``on_error()`` is guaranteed to be called "
+"when the ``index()`` function raises any exception other than ``HTTP``. "
+"The ``transform`` function is called to perform any desired "
+"transformation of the value returned by the ``index()`` function."
+msgstr ""
+
+#: ../../chapter-06.rst:484
+msgid "Auth and Auth.user"
+msgstr ""
+
+#: ../../chapter-06.rst:486
+msgid ""
+"``auth`` and ``auth.user`` are both fixtures. They depend on ``session``."
+" The role of access is to provide the action with authentication "
+"information. It is used as follows:"
+msgstr ""
+
+#: ../../chapter-06.rst:508
+msgid ""
+"The constructor of the ``Auth`` object defines the ``auth_user`` table "
+"with the following fields: username, email, password, first_name, "
+"last_name, sso_id, and action_token (the last two are mostly for internal"
+" use)."
+msgstr ""
+
+#: ../../chapter-06.rst:513
+msgid ""
+"``auth.enable()`` registers multiple actions including "
+"``{appname}/auth/login`` and it requires the presence of the "
+"``auth.html`` template and the ``auth`` value component provided by the "
+"``_scaffold`` app."
+msgstr ""
+
+#: ../../chapter-06.rst:518
+msgid ""
+"The ``auth`` object is the fixture. It manages the user information. It "
+"exposes a single method:"
+msgstr ""
+
+#: ../../chapter-06.rst:525
+msgid ""
+"which returns a python dictionary containing the information of the "
+"currently logged in user. If the user is not logged-in, it returns "
+"``None``. The code of the example redirects to the ‘auth/login’ page if "
+"there is no user."
+msgstr ""
+
+#: ../../chapter-06.rst:530
+msgid ""
+"Since this check is very common, py4web provides an additional fixture "
+"``auth.user``:"
+msgstr ""
+
+#: ../../chapter-06.rst:541
+msgid ""
+"This fixture automatically redirects to the ``auth/login`` page if user "
+"is not logged-in. It depends on ``auth``, which depends on ``db`` and "
+"``session``."
+msgstr ""
+
+#: ../../chapter-06.rst:545
+msgid ""
+"The ``Auth`` fixture is plugin based and supports multiple plugin "
+"methods. They include Oauth2 (Google, Facebook, Twitter), PAM, LDAP, and "
+"SMAL2."
+msgstr ""
+
+#: ../../chapter-06.rst:549
+msgid "Here is an example of using the Google Oauth2 plugin:"
+msgstr ""
+
+#: ../../chapter-06.rst:559
+msgid ""
+"The ``client_id`` and ``client_secret`` are provided by google. The "
+"callback url is the default option for py4web and it must be whitelisted "
+"with Google. All ``Auth`` plugins are objects. Different plugins are "
+"configured in different ways but they are registered using "
+"``auth.register_plugin(...)``. Examples are provided in "
+"``_scaffold/common.py``."
+msgstr ""
+
+#: ../../chapter-06.rst:567
+msgid "Caching and Memoize"
+msgstr ""
+
+#: ../../chapter-06.rst:569
+msgid ""
+"py4web provides a cache in ram object that implements the Last Recently "
+"Used (LRU) Algorithm. It can be used to cache any function via a "
+"decorator:"
+msgstr ""
+
+#: ../../chapter-06.rst:584
+msgid ""
+"It will cache (memoize) the return value of the ``hello`` function, as "
+"function of the input ``name``, for up to 60 seconds. It will store in "
+"cache the 1000 most recently used values. The data is always stored in "
+"ram."
+msgstr ""
+
+#: ../../chapter-06.rst:589
+msgid ""
+"The Cache object is not a fixture and it should not and cannot be "
+"registered using the ``@action.uses`` object but we mention it here "
+"because some of the fixtures use this object internally. For example, "
+"template files are cached in ram to avoid accessing the file system every"
+" time a template needs to be rendered."
+msgstr ""
+
+#: ../../chapter-06.rst:596
+msgid "Convenience Decorators"
+msgstr ""
+
+#: ../../chapter-06.rst:598
+msgid ""
+"The ``_scaffold`` application, in ``common.py`` defines two special "
+"conveniennce decorators:"
+msgstr ""
+
+#: ../../chapter-06.rst:607
+msgid "and"
+msgstr ""
+
+#: ../../chapter-06.rst:609
+msgid "\\`\\ ``@authenticated def index():     return dict()``"
+msgstr ""
+
+#: ../../chapter-06.rst:611
+msgid ""
+"They apply all of the decorators below, use a template with the same name"
+" as the function (.html), and also register a route with the name of "
+"action followed the number of arguments of the action separated by a "
+"slash (/)."
+msgstr ""
+
+#: ../../chapter-06.rst:616
+msgid ""
+"@unauthenticated does not require the user to be logged in. "
+"@authenticated required the user to be logged in."
+msgstr ""
+
+#: ../../chapter-06.rst:619
+msgid ""
+"If can be combined with (and precede) other ``@action.uses(...)`` but "
+"they should not be combined with ``@action(...)`` because they perform "
+"that function automatically."
 msgstr ""
 

@@ -1,105 +1,295 @@
-Internationalization
-====================
+======================
+YATL Template Language
+======================
 
-Pluralize
----------
+py4web uses Python for its models, controllers, and views, although it
+uses a slightly modified Python syntax in the views to allow more
+readable code without imposing any restrictions on proper Python usage.
 
-Pluralize is a Python library for Internationalization (i18n) and
-Pluralization (p10n).
+py4web uses ``[[ ... ]]`` to escape Python code embedded in HTML. The
+advantage of using square brackets instead of angle brackets is that
+it’s transparent to all common HTML editors. This allows the developer
+to use those editors to create py4web views.
 
-The library assumes a folder (for exaple “translations”) that contains
-files like:
+Since the developer is embedding Python code into HTML, the document
+should be indented according to HTML rules, and not Python rules.
+Therefore, we allow unindented Python inside the ``[[ ... ]]`` tags.
+Since Python normally uses indentation to delimit blocks of code, we
+need a different way to delimit them; this is why the py4web template
+language makes use of the Python keyword ``pass``.
 
-::
+   A code block starts with a line ending with a colon and ends with a
+   line beginning with ``pass``. The keyword ``pass`` is not necessary
+   when the end of the block is obvious from the context.
 
-   it.json
-   it-IT.json
-   fr.json
-   fr-FR.json
-   (etc)
+Here is an example:
 
-Each file has the following structure, for example for Italian
-(it.json):
+.. code:: html
 
-::
+   [[
+   if i == 0:
+   response.write('i is 0')
+   else:
+   response.write('i is not 0')
+   pass
+   ]]
 
-   {"dog": {"0": "no cane", "1": "un cane", "2": "{n} cani", "10": "tantissimi cani"}}
+Note that ``pass`` is a Python keyword, not a py4web keyword. Some
+Python editors, such as Emacs, use the keyword ``pass`` to signify the
+division of blocks and use it to re-indent code automatically.
 
-The top level keys are the expressions to be translated and the
-associated value/dictionary maps a number to a translation. Different
-translations correspond to different plural forms of the expression,
+The py4web template language does exactly the same. When it finds
+something like:
 
-Here is another example for the word “bed” in Czech
+.. code:: html
 
-::
+   <html><body>
+   [[for x in range(10):]][[=x]]hello<br />[[pass]]
+   </body></html>
 
-   {"bed": {"0": "no postel", "1": "postel", "2": "postele", "5": "postelí"}}
+it translates it into a program:
 
-To translate and pluralize a string “dog” one simply warps the string in
-the T operator as follows:
+.. code:: python
 
-::
+   response.write("""<html><body>""", escape=False)
+   for x in range(10):
+       response.write(x)
+       response.write("""hello<br />""", escape=False)
+   response.write("""</body></html>""", escape=False)
 
-   >>> from pluralize import Translator
-   >>> T = Translator('translations')
-   >>> dog = T("dog")
-   >>> print(dog)
-   dog
-   >>> T.select('it')
-   >>> print(dog)
-   un cane
-   >>> print(dog.format(n=0))
-   no cane
-   >>> print(dog.format(n=1))
-   un cane
-   >>> print(dog.format(n=5))
-   5 cani
-   >>> print(dog.format(n=20))
-   tantissimi cani
+``response.write`` writes to the ``response.body``.
 
-The string can contain multiple placeholders but the {n} placeholder is
-special because the variable called “n” is used to determine the
-pluralization by best match (max dict key <= n).
+When there is an error in a py4web view, the error report shows the
+generated view code, not the actual view as written by the developer.
+This helps the developer debug the code by highlighting the actual code
+that is executed (which is something that can be debugged with an HTML
+editor or the DOM inspector of the browser).
 
-T(…) objects can be added together with each other and with string, like
-regular strings.
+Also note that:
 
-T.select(s) can parse a string s following the HTTP accept language
-format.
+.. code:: html
 
-Update the translation files
-----------------------------
+   [[=x]]
 
-Find all strings wrapped in T(…) in .py, .html, and .js files:
+generates
 
-::
+.. code:: python
 
-   matches = T.find_matches('path/to/app/folder')
+   response.write(x)
 
-Add newly discovered entries in all supported languages
+Variables injected into the HTML in this way are escaped by default. The
+escaping is ignored if ``x`` is an ``XML`` object, even if escape is set
+to ``True``.
 
-::
+Here is an example that introduces the ``H1`` helper:
 
-   T.update_languages(matches)
+.. code:: html
 
-Add a new supported language (for example german, “de”)
+   [[=H1(i)]]
 
-::
+which is translated to:
 
-   T.languages['de'] = {}
+.. code:: python
 
-Make sure all languages contain the same origin expressions
+   response.write(H1(i))
 
-::
+upon evaluation, the ``H1`` object and its components are recursively
+serialized, escaped and written to the response body. The tags generated
+by ``H1`` and inner HTML are not escaped. This mechanism guarantees that
+all text — and only text — displayed on the web page is always escaped,
+thus preventing XSS vulnerabilities. At the same time, the code is
+simple and easy to debug.
 
-   known_expressions = set()
-   for language in T.languages.values():
-       for expression in language:
-           known_expressions.add(expression)
-   T.update_languages(known_expressions))
+The method ``response.write(obj, escape=True)`` takes two arguments, the
+object to be written and whether it has to be escaped (set to ``True``
+by default). If ``obj`` has an ``.xml()`` method, it is called and the
+result written to the response body (the ``escape`` argument is
+ignored). Otherwise it uses the object’s ``__str__`` method to serialize
+it and, if the escape argument is ``True``, escapes it. All built-in
+helper objects (``H1`` in the example) are objects that know how to
+serialize themselves via the ``.xml()`` method.
 
-Finally save the changes:
+This is all done transparently. You never need to (and never should)
+call the ``response.write`` method explicitly.
 
-::
+Basic syntax
+------------
 
-   T.save('translations')
+The py4web template language supports all Python control structures.
+Here we provide some examples of each of them. They can be nested
+according to usual programming practice.
+
+``for...in``
+~~~~~~~~~~~~
+
+In templates you can loop over any iterable object:
+
+.. code:: html
+
+   [[items = ['a', 'b', 'c']]]
+   <ul>
+   [[for item in items:]]<li>[[=item]]</li>[[pass]]
+   </ul>
+
+which produces:
+
+.. code:: html
+
+   <ul>
+   <li>a</li>
+   <li>b</li>
+   <li>c</li>
+   </ul>
+
+Here ``items`` is any iterable object such as a Python list, Python
+tuple, or Rows object, or any object that is implemented as an iterator.
+The elements displayed are first serialized and escaped.
+
+``while``
+~~~~~~~~~
+
+You can create a loop using the while keyword:
+
+.. code:: html
+
+   [[k = 3]]
+   <ul>
+   [[while k > 0:]]<li>[[=k]][[k = k - 1]]</li>[[pass]]
+   </ul>
+
+which produces:
+
+.. code:: html
+
+   <ul>
+   <li>3</li>
+   <li>2</li>
+   <li>1</li>
+   </ul>
+
+``if...elif...else``
+~~~~~~~~~~~~~~~~~~~~
+
+You can use conditional clauses:
+
+.. code:: html
+
+   [[
+   import random
+   k = random.randint(0, 100)
+   ]]
+   <h2>
+   [[=k]]
+   [[if k % 2:]]is odd[[else:]]is even[[pass]]
+   </h2>
+
+which produces:
+
+.. code:: html
+
+   <h2>
+   45 is odd
+   </h2>
+
+Since it is obvious that ``else`` closes the first ``if`` block, there
+is no need for a ``pass`` statement, and using one would be incorrect.
+However, you must explicitly close the ``else`` block with a ``pass``.
+
+Recall that in Python “else if” is written ``elif`` as in the following
+example:
+
+.. code:: html
+
+   [[
+   import random
+   k = random.randint(0, 100)
+   ]]
+   <h2>
+   [[=k]]
+   [[if k % 4 == 0:]]is divisible by 4
+   [[elif k % 2 == 0:]]is even
+   [[else:]]is odd
+   [[pass]]
+   </h2>
+
+It produces:
+
+.. code:: html
+
+   <h2>
+   64 is divisible by 4
+   </h2>
+
+``try...except...else...finally``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It is also possible to use ``try...except`` statements in views with one
+caveat. Consider the following example:
+
+.. code:: html
+
+   [[try:]]
+   Hello [[= 1 / 0]]
+   [[except:]]
+   division by zero
+   [[else:]]
+   no division by zero
+   [[finally:]]
+   <br />
+   [[pass]]
+
+It will produce the following output:
+
+.. code:: html
+
+   Hello division by zero
+   <br />
+
+This example illustrates that all output generated before an exception
+occurs is rendered (including output that preceded the exception) inside
+the try block. “Hello” is written because it precedes the exception.
+
+``def...return``
+~~~~~~~~~~~~~~~~
+
+The py4web template language allows the developer to define and
+implement functions that can return any Python object or a text/html
+string. Here we consider two examples:
+
+.. code:: html
+
+   [[def itemize1(link): return LI(A(link, _href="http://" + link))]]
+   <ul>
+   [[=itemize1('www.google.com')]]
+   </ul>
+
+produces the following output:
+
+.. code:: html
+
+   <ul>
+   <li><a href="http:/www.google.com">www.google.com</a></li>
+   </ul>
+
+The function ``itemize1`` returns a helper object that is inserted at
+the location where the function is called.
+
+Consider now the following code:
+
+.. code:: html
+
+   [[def itemize2(link):]]
+   <li><a href="http://[[=link]]">[[=link]]</a></li>
+   [[return]]
+   <ul>
+   [[itemize2('www.google.com')]]
+   </ul>
+
+It produces exactly the same output as above. In this case, the function
+``itemize2`` represents a piece of HTML that is going to replace the
+py4web tag where the function is called. Notice that there is no ‘=’ in
+front of the call to ``itemize2``, since the function does not return
+the text, but it writes it directly into the response.
+
+There is one caveat: functions defined inside a view must terminate with
+a ``return`` statement, or the automatic indentation will fail.

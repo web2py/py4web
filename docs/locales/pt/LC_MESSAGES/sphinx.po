@@ -17,27 +17,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: ../../index.rst:5
-msgid "Contents:"
+#: ../../_templates/versions.html:19
+msgid "Languages"
 msgstr ""
 
-#: ../../index.rst:3
-msgid "py4web: the reference Manual"
+#: ../../_templates/versions.html:30
+msgid "Versions"
 msgstr ""
 
-#: ../../index.rst:27
-msgid "Indices and tables"
+#: ../../_templates/versions.html:40
+msgid "Downloads"
 msgstr ""
 
-#: ../../index.rst:29
-msgid ":ref:`genindex`"
+#: ../../_templates/versions.html:48
+msgid "On Read the Docs"
 msgstr ""
 
-#: ../../index.rst:30
-msgid ":ref:`modindex`"
+#: ../../_templates/versions.html:50
+msgid "Project Home"
 msgstr ""
 
-#: ../../index.rst:31
-msgid ":ref:`search`"
+#: ../../_templates/versions.html:53
+msgid "Builds"
 msgstr ""
 
