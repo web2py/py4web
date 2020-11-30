@@ -114,7 +114,17 @@ class FormStyleFactory:
                 continue
             # if the form is readonly or this is an id type field, display it as readonly
             if readonly or not field.writable or field.type == "id":
-                control = DIV(field.represent and field.represent(value) or value or "")
+                if field.type == "boolean":
+                        control = INPUT(
+                        _type="checkbox",
+                        _id=input_id,
+                        _name=field.name,
+                        _value="ON",
+                        _disabled="",
+                        _checked=value,
+                        _title=title,)
+                else:
+                        control = DIV(field.represent and field.represent(value) or value or "")
             # if we have a widget for the field use it
             elif field.widget:
                 control = field.widget(table, value)
@@ -185,7 +195,7 @@ class FormStyleFactory:
                     control.append(download_div)
                 control.append(LABEL("Change: "))
                 control.append(INPUT(_type="file", _id=input_id, _name=field.name))
-            elif get_options(field.requires) is not None:
+            elif get_options(field.requires) is not None and field.writable==True:
                 multiple = field.type.startswith("list:")
                 value = list(map(str, value if isinstance(value, list) else [value]))
                 option_tags = [
