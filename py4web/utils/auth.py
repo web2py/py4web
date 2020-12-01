@@ -65,15 +65,18 @@ class AuthEnforcer(Fixture):
         else redirects to page"""
         if re.search(REGEX_APPJSON, request.headers.get("accept", "")):
             abort(403)
-        redirect_next = request.fullpath
-        if request.query_string:
-            redirect_next = redirect_next + "?{}".format(request.query_string)
+        noappname_req_path = request.fullpath.split(f"/{request.app_name}")[-1]
+        next_url = URL(
+            noappname_req_path,
+            vars=request.query,
+            use_appname=self.auth.param.use_appname_in_redirects,
+        )
         self.auth.flash.set(message)
         redirect(
             URL(
                 self.auth.route,
                 page,
-                vars=dict(next=redirect_next),
+                vars=dict(next=next_url),
                 use_appname=self.auth.param.use_appname_in_redirects,
             )
         )
