@@ -1,1039 +1,621 @@
-The RESTAPI
-===========
+========
+Fixtures
+========
 
-Since version 19.5.10 PyDAL includes a restful API called RestAPI. It is
-inspired by GraphQL but it’s not quite the same because it is less
-powerful but, in the spirit of web2py, more practical and easier to use.
-Like GraphSQL RestAPI allows a client to query for information using the
-GET method and allows to specify some details about the format of the
-response (which references to follow, and how to denormalize the data).
-Unlike GraphSQL it allows the server to specify a policy and restrict
-which queries are allowed and which one are not. They can be evaluated
-dynamically per request based on the user and the state of the server.
-As the name implied RestAPI allows all stardard methods GET, POST, PUT,
-and DELETE. Each of them can be enabled or disabled based on the policy,
-for individual tables and individual fields.
+A fixture is defined as “a piece of equipment or furniture which is
+fixed in position in a building or vehicle”. In our case a fixture is
+something attached to the action that processes an HTTP request in order
+to produce a response.
 
-In the examples below we assume an app called “superheroes” and the
-following model:
+When processing any HTTP requests there are some optional operations we
+may want to perform. For example parse the cookie to look for session
+information, commit a database transaction, determine the preferred
+language from the HTTP header and lookup proper internationalization,
+etc. These operations are optional. Some actions need them and some
+actions do not. They may also depend on each other. For example, if
+sessions are stored in the database and our action needs it, we may need
+to parse the session cookie from the header, pick up a connection from
+the database connection pool, and - after the action has been executed -
+save the session back in the database if data has changed.
 
-::
+PY4WEB fixtures provide a mechanism to specify what an action needs so
+that py4web can accomplish the required tasks (and skip non required
+ones) in the most efficient manner. Fixtures make the code efficient and
+reduce the need for boilerplate code.
 
-   db.define_table(
-       'person',
-       Field('name'),
-       Field('job'))
+PY4WEB fixtures are similar to WSGI middleware and BottlePy plugin
+except that they apply to individual actions, not to all of them, and
+can depend on each other.
 
-   db.define_table(
-       'superhero',
-       Field('name'),
-       Field('real_identity', 'reference person'))
+PY4WEB comes with some pre-defined fixtures for actions that need
+sessions, database connections, internationalization, authentication,
+and templates. Their usage will be explained in this chapter. The
+Developer is also free to add fixtures, for example, to handle a third
+party template language or third party session logic.
 
-   db.define_table(
-       'superpower',
-       Field('description'))
+Important about Fixtures
+------------------------
 
-   db.define_table(
-       'tag',
-       Field('superhero', 'reference superhero'),
-       Field('superpower', 'reference superpower'),
-       Field('strength', 'integer'))
-
-We also assume the following controller ``rest.py``:
+In the examples below we will explain how to apply individual fixtures.
+In practice fixtures can be applied in groups. For example:
 
 ::
 
-   from pydal.dbapi import RestAPI, Policy
+   preferred = action.uses(Session, Auth, T, Flash)
 
-   policy = Policy()
-   policy.set('superhero', 'GET', authorize=True, allowed_patterns=['*'])
-   policy.set('*', 'GET', authorize=True, allowed_patterns=['*'])
-
-   # for security reasons we disabled here all methods but GET at the policy level, to enable any of them just set authorize = True
-   policy.set('*', 'PUT', authorize=False)
-   policy.set('*', 'POST', authorize=False)
-   policy.set('*', 'DELETE', authorize=False)
-
-   @action('api/<tablename>/', method = ['GET', 'POST'])
-   @action('api/<tablename>/<rec_id>', method = ['GET', 'PUT', 'DELETE'])
-   def api(tablename, rec_id=None):
-       return RestAPI(db, policy)(request.method, 
-                                  tablename, 
-                                  rec_id,
-                                  request.GET, 
-                                  request.POST
-                                  )
-
-The policy is per table (or \* for all tables and per method. authorize
-can be True (allow), False (deny) or a function with the signature
-(method, tablename, record_id, get_vars, post_vars) which returns
-True/False. For the GET policy one can specify a list of allowed query
-patterns (\* for all). A query pattern will be matched against the keys
-in the query string.
-
-The above action is exposed as:
+Then you can apply all of the at once with:
 
 ::
 
-   /superheroes/rest/api/{tablename}
+   @action('index.html')
+   @preferred
+   def index():
+       return dict()
 
-**About request.POST**: keep in mind that **request.POST** only contains
-the form data that is posted using a **regular HTML-form** or javascript
-**FormData** object. If you post just plain object
-(e.g. ``axios.post( 'path/to/api', {field:'some'} )``) you should pass
-**request.json** instead of request.POST, since latter will contain just
-raw request-body which is string, not json. See bottle.py documentation
-for more details.
+Py4web templates
+----------------
 
-RestAPI GET
------------
+PY4WEB, by default uses the yatl template language and provides a
+fixture for it.
 
-The general query has the form ``{something}.eq=value`` where ``eq=``
-stands for “equal”, ``gt=`` stands for “greater than”, etc. The
-expression can be prepended by ``not.``.
+.. code:: python
 
-``{something}`` can be the name of a field in the table been queried as
-in:
+   from py4web import action
+   from py4web.core import Template
 
-**All superheroes called “Superman”**
+   @action('index')
+   @action.uses(Template('index.html', delimiters='[[ ]]'))
+   def index(): 
+       return dict(message="Hello world")
 
-::
+Note: This example assumes that you created the application from the
+scaffolding app, so that the template index.html is already created for
+you.
 
-   /superheroes/rest/api/superhero?name.eq=Superman
+The Template object is a Fixture. It transforms the ``dict()`` returned
+by the action into a string by using the ``index.html`` template file.
+In a later chapter we will provide an example of how to define a custom
+fixture to use a different template language, for example Jinja2.
 
-It can be a the name of a field of a table referred by the table been
-queried as in:
+Notice that since the use of templates is very common and since, most
+likely, every action uses a different template, we provide some
+syntactic sugar, and the two following lines are equivalent:
 
-**All superheroes with real identity “Clark Kent”**
+.. code:: python
 
-::
+   @action.uses('index.html')
+   @action.uses(Template('index.html', delimiters='[[ ]]')
 
-   /superheroes/rest/api/superhero?real_identity.name.eq=Clark Kent
+Notice that py4web template files are cached in RAM. The py4web caching
+object is described later.
 
-It can be the name of a field of a table that refers to the table neen
-queried as in:
+Sessions
+--------
 
-**All superheroes with any tag superpower with strength > 90**
-
-::
-
-   /superheroes/rest/api/superhero?superhero.tag.strength.gt=90
-
-(here tag is the name of the link table, the preceding ``superhero`` is
-the name of the field that refers to the selected table and ``strength``
-is the name of the field used to filter)
-
-It can also be a field of the table referenced by a many-to-many linked
-table as in:
-
-**All superheroes with the flight power**
+The session object is also a Fixture. Here is a typical example of usage
+to implement a counter.
 
 ::
 
-   /superheroes/rest/api/superhero?superhero.tag.superpower.description.eq=Flight
+   from py4web import Session, action
+   session = Session(secret='my secret key')
 
-The key to understand the syntax above is to break it as follows:
+   @action('index')
+   @action.uses(session)
+   def index():
+       counter = session.get('counter', -1)
+       counter += 1
+       session['counter'] = counter
+       return "counter = %i" % counter
 
-::
+Notice that the session object has the same interface as a Python
+dictionary.
 
-   superhero?superhero.tag.superpower.description.eq=Flight
+By default the session object is stored in a cookie called, signed and
+encrypted, using the provided secret. If the secret changes existing
+sessions are invalidated. If the user switches from HTTP to HTTPS or
+vice versa, the user session is invalidated. Session in cookies have a
+small size limit (4Kbytes after being serialized and encrypted) so do
+not put too much into them.
 
-and read it as:
+In py4web sessions are dictionaries but they are stored using JSON (JWT
+specifically) therefore you should only store objects that are JSON
+serializable. If the object is not JSON serializable, it will be
+serialized using the ``__str__`` operator and some information may be
+lost.
 
-   select records of table **superhero** referred by field **superhero**
-   of table **tag** when the **superpower** field of said table points
-   to a record with **description** **eq**\ ual to “Flight”.
-
-The query allows additional modifiers for example
-
-::
-
-   @offset=10
-   @limit=10
-   @order=name
-   @model=true
-   @lookup=real_identity
-
-The first 3 are obvious. @model returns a JSON description of database
-model. Lookup denormalizes the linked field.
-
-Here are some practical examples:
-
-URL:
-
-::
-
-   /superheroes/rest/api/superhero
-
-OUTPUT:
+By default py4web sessions never expire (unless they contain login
+information, but that is another story) even if an expiration can be
+set. Other parameters can be specified as well:
 
 ::
 
-   {
-       "count": 3,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": 1,
-               "name": "Superman",
-               "id": 1
-           },
-           {
-               "real_identity": 2,
-               "name": "Spiderman",
-               "id": 2
-           },
-           {
-               "real_identity": 3,
-               "name": "Batman",
-               "id": 3
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.132635",
-       "api_version": "0.1"
+   session = Session(secret='my secret key',
+                     expiration=3600,
+                     algorithm='HS256',
+                     storage=None,
+                     same_site='Lax')
+
+-  Here ``algorithm`` is the algorithm to be used for the JWT token
+   signature.
+-  ``storage`` is a parameter that allows to specify an alternate
+   session storage method (for example redis, or database).
+-  ``same_site`` is an option that prevents CSRF attacks and is enabled
+   by default. You can read more about it
+   `here <https://www.owasp.org/index.php/SameSite>`__.
+
+Session in memcache
+~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+   import memcache, time
+   conn = memcache.Client(['127.0.0.1:11211'], debug=0)
+   session = Session(storage=conn)
+
+Notice that a secret is not required when storing cookies in memcache
+because in this case the cookie only contains the UUID of the session.
+
+Session in redis
+~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+   import redis
+   conn = redis.Redis(host='localhost', port=6379)
+   conn.set = lambda k, v, e, cs=conn.set, ct=conn.ttl: (cs(k, v), e and ct(e))
+   session = Session(storage=conn)
+
+Notice: a storage object must have ``get`` and ``set`` methods and the
+``set`` method must allow to specify an expiration. The redis connection
+object has a ``ttl`` method to specify the expiration, hence we monkey
+patch the ``set`` method to have the expected signature and
+functionality.
+
+Session in database
+~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+   from py4web import Session, DAL
+   from py4web.utils.dbstore import DBStore
+   db = DAL('sqlite:memory')
+   session =  Session(storage=DBStore(db))
+
+A secret is not required when storing cookies in the database because in
+this case the cookie only contains the UUID of the session.
+
+Also this is one case when the a fixture (session) requires another
+fixture (db). This is handled automatically by py4web and the following
+are equivalent:
+
+.. code:: python
+
+   @action.uses(session)
+   @action.uses(db, session)
+
+Session anywhere
+~~~~~~~~~~~~~~~~
+
+You can easily store sessions in any place you want. All you need to do
+is provide to the ``Session`` object a ``storage`` object with both
+``get`` and ``set`` methods. For example, imagine you want to store
+sessions on your local filesystem:
+
+.. code:: python
+
+   import os
+   import json
+
+   class FSStorage:
+      def __init__(self, folder):
+          self.folder = folder
+      def get(self, key):
+          filename = os.path.join(self.folder, key)
+          if os.path.exists(filename):
+              with open(filename) as fp:
+                 return json.load(fp)
+          return None
+      def set(self, key, value, expiration=None):
+          filename = os.path.join(self.folder, key)
+          with open(filename, 'w') as fp:
+              json.dump(value, fp)
+
+   session = Session(storage=FSStorage('/tmp/sessions'))
+
+We leave to you as an exercise to implement expiration, limit the number
+of files per folder by using subfolders, and implement file locking. Yet
+we do not recomment storing sessions on the filesystem: it is
+inefficient and does not scale well.
+
+Translator
+----------
+
+Here is an example of usage:
+
+.. code:: python
+
+   from py4web import action, Translator
+   import os
+
+   T_FOLDER = os.path.join(os.path.dirname(__file__), 'translations')
+   T = Translator(T_FOLDER)
+
+   @action('index')
+   @action.uses(T)
+   def index(): return str(T('Hello world'))
+
+The string ’hello world\` will be translated based on the
+internationalization file in the specified “translations” folder that
+best matches the HTTP ``accept-language`` header.
+
+Here ``Translator`` is a py4web class that extends
+``pluralize.Translator`` and also implements the ``Fixture`` interface.
+
+We can easily combine multiple fixtures. Here, as example, we make
+action with a counter that counts “visits”.
+
+.. code:: python
+
+   from py4web import action, Session, Translator, DAL
+   from py4web.utils.dbstore import DBStore
+   import os
+   db = DAL('sqlite:memory')
+   session =  Session(storage=DBStore(db))
+   T_FOLDER = os.path.join(os.path.dirname(__file__), 'translations')
+   T = Translator(T_FOLDER)
+
+   @action('index')
+   @action.uses(session, T)
+   def index():
+       counter = session.get('counter', -1)
+       counter += 1
+       session['counter'] = counter
+       return str(T("You have been here {n} times").format(n=counter))
+
+Now create the following translation file ``translations/en.json``:
+
+.. code:: json
+
+   {"You have been here {n} times": 
+     {
+       "0": "This your first time here", 
+       "1": "You have been here once before", 
+       "2": "You have been here twice before",
+       "3": "You have been here {n} times",
+       "6": "You have been here more than 5 times"
+     }
    }
 
-URL:
+When visiting this site with the browser language preference set to
+english and reloading multiple times you will get the following
+messages:
 
 ::
 
-   /superheroes/rest/api/superhero?@model=true
+   This your first time here
+   You have been here once before
+   You have been here twice before
+   You have been here 3 times
+   You have been here 4 times
+   You have been here 5 times
+   You have been here more than 5 times
 
-OUTPUT:
+Now try create a file called ``translations/it.json`` which contains:
 
-::
+.. code:: json
 
-   {
-       "count": 3,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": 1,
-               "name": "Superman",
-               "id": 1
-           },
-           {
-               "real_identity": 2,
-               "name": "Spiderman",
-               "id": 2
-           },
-           {
-               "real_identity": 3,
-               "name": "Batman",
-               "id": 3
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.098292",
-       "model": [
-           {
-               "regex": "[1-9]\\d*",
-               "name": "id",
-               "default": null,
-               "required": false,
-               "label": "Id",
-               "post_writable": true,
-               "referenced_by": [],
-               "unique": false,
-               "type": "id",
-               "options": null,
-               "put_writable": true
-           },
-           {
-               "regex": null,
-               "name": "name",
-               "default": null,
-               "required": false,
-               "label": "Name",
-               "post_writable": true,
-               "unique": false,
-               "type": "string",
-               "options": null,
-               "put_writable": true
-           },
-           {
-               "regex": null,
-               "name": "real_identity",
-               "default": null,
-               "required": false,
-               "label": "Real Identity",
-               "post_writable": true,
-               "references": "person",
-               "unique": false,
-               "type": "reference",
-               "options": null,
-               "put_writable": true
-           }
-       ],
-       "api_version": "0.1"
+   {"You have been here {n} times":
+     {
+       "0": "Non ti ho mai visto prima",
+       "1": "Ti ho gia' visto",
+       "2": "Ti ho gia' visto 2 volte",
+       "3": "Ti ho visto {n} volte",
+       "6": "Ti ho visto piu' di 5 volte"
+     }
    }
 
-URL:
+and set your browser preference to Italian.
+
+The Flash fixture
+-----------------
+
+It is common to want to display “alerts” to the suers. Here we refer to
+them as flash messeges. There is a little more to it than just
+displaying a message to the view because flash messages can have state
+that must be preserved after redirection. Also they can be generated
+both server side and client side, there can be only one at the time,
+they may have a type, and they should be dismissible.
+
+The Flash helper handles the server side of them. Here is an example:
 
 ::
 
-   /superheroes/rest/api/superhero?@lookup=real_identity
+   from py4web import Flash
 
-OUTPUT:
+   flash = Flash()
 
-::
+   @action('index')
+   @action.uses(Flash)
+   def index():
+       flash.set("Hello World", _class="info", sanitize=True)
+       return dict()
 
-   {
-       "count": 3,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": {
-                   "name": "Clark Kent",
-                   "job": "Journalist",
-                   "id": 1
-               },
-               "name": "Superman",
-               "id": 1
-           },
-           {
-               "real_identity": {
-                   "name": "Peter Park",
-                   "job": "Photographer",
-                   "id": 2
-               },
-               "name": "Spiderman",
-               "id": 2
-           },
-           {
-               "real_identity": {
-                   "name": "Bruce Wayne",
-                   "job": "CEO",
-                   "id": 3
-               },
-               "name": "Batman",
-               "id": 3
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.178974",
-       "api_version": "0.1"
-   }
-
-URL:
+and in the template:
 
 ::
 
-   /superheroes/rest/api/superhero?@lookup=identity:real_identity
+   ...
+   <div id="py4web-flash"></div>
+   ...
+   <script src="js/utils.js"></script>
+   [[if globals().get('flash'):]]<script>utils.flash([[=XML(flash)]]);</script>[[pass]]
 
-(denormalize the real_identity and rename it identity)
+By setting the value of the message in the flash helper, a flash
+variable is returned by the action and this trigger the JS in the
+template to inject the message in the ``#py4web-flash`` DIV which you
+can position at your convenience. Also the optional class is applied to
+the injected HTML.
 
-OUTPUT:
+If a page is redirected after a flash is set, the flash is remembered.
+This is achieved by asking the browser to keep the message temporarily
+in a one-time cookie. After redirection the message is sent back by the
+browser to the server and the server sets it again automatically before
+returning content, unless it is overwritten by another set.
 
-::
-
-   {
-       "count": 3,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": 1,
-               "name": "Superman",
-               "id": 1,
-               "identity": {
-                   "name": "Clark Kent",
-                   "job": "Journalist",
-                   "id": 1
-               }
-           },
-           {
-               "real_identity": 2,
-               "name": "Spiderman",
-               "id": 2,
-               "identity": {
-                   "name": "Peter Park",
-                   "job": "Photographer",
-                   "id": 2
-               }
-           },
-           {
-               "real_identity": 3,
-               "name": "Batman",
-               "id": 3,
-               "identity": {
-                   "name": "Bruce Wayne",
-                   "job": "CEO",
-                   "id": 3
-               }
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.123218",
-       "api_version": "0.1"
-   }
-
-URL:
+The client can also set/add flash messages by calling:
 
 ::
 
-   /superheroes/rest/api/superhero?@lookup=identity!:real_identity[name,job]
+   utils.flash({'message': 'hello world', 'class': 'info'});
 
-(denormalize the real_identity [but only fields name and job], collapse
-the with the identity prefix)
+py4web defaults to an alert class called ``default`` and most CSS
+frameworks define classes for alerts called ``success``, ``error``,
+``warning``, ``default``, and ``info``. Yet, there is nothing in py4web
+that hardcodes those names. You can use your own class names.
 
-OUTPUT:
+The DAL fixture
+---------------
 
-::
+We have already used the ``DAL`` fixture in the context of sessions but
+maybe you want direct access to the DAL object for the purpose of
+accessing the database, not just sessions.
 
-   {
-       "count": 3,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "name": "Superman",
-               "identity_job": "Journalist",
-               "identity_name": "Clark Kent",
-               "id": 1
-           },
-           {
-               "name": "Spiderman",
-               "identity_job": "Photographer",
-               "identity_name": "Peter Park",
-               "id": 2
-           },
-           {
-               "name": "Batman",
-               "identity_job": "CEO",
-               "identity_name": "Bruce Wayne",
-               "id": 3
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.192180",
-       "api_version": "0.1"
-   }
+PY4WEB, by default, uses the PyDAL (Python Database Abstraction Layer)
+which is documented in a later chapter. Here is an example, please
+remember to create the ``databases`` folder under your project in case
+it doesn’t exist:
 
-URL:
+.. code:: python
 
-::
+   from datetime import datetime
+   from py4web import action, request, DAL, Field
+   import os
 
-   /superheroes/rest/api/superhero?@lookup=superhero.tag
+   DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
+   db = DAL('sqlite://storage.db', folder=DB_FOLDER, pool_size=1)
+   db.define_table('visit_log', Field('client_ip'), Field('timestamp', 'datetime'))
+   db.commit()
 
-OUTPUT:
+   @action('index')
+   @action.uses(db)
+   def index():
+       client_ip = request.environ.get('REMOTE_ADDR')
+       db.visit_log.insert(client_ip=client_ip, timestamp=datetime.utcnow())
+       return "Your visit was stored in database"
 
-::
+Notice that the database fixture defines (creates/re-creates tables)
+automatically when py4web starts (and every time it reloads this app)
+and picks a connection from the connection pool at every HTTP request.
+Also each call to the ``index()`` action is wrapped into a transaction
+and it commits ``on_success`` and rolls back ``on_error``.
 
-   {
-       "count": 3,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": 1,
-               "name": "Superman",
-               "superhero.tag": [
-                   {
-                       "strength": 100,
-                       "superhero": 1,
-                       "id": 1,
-                       "superpower": 1
-                   },
-                   {
-                       "strength": 100,
-                       "superhero": 1,
-                       "id": 2,
-                       "superpower": 2
-                   },
-                   {
-                       "strength": 100,
-                       "superhero": 1,
-                       "id": 3,
-                       "superpower": 3
-                   },
-                   {
-                       "strength": 100,
-                       "superhero": 1,
-                       "id": 4,
-                       "superpower": 4
-                   }
-               ],
-               "id": 1
-           },
-           {
-               "real_identity": 2,
-               "name": "Spiderman",
-               "superhero.tag": [
-                   {
-                       "strength": 50,
-                       "superhero": 2,
-                       "id": 5,
-                       "superpower": 2
-                   },
-                   {
-                       "strength": 75,
-                       "superhero": 2,
-                       "id": 6,
-                       "superpower": 3
-                   },
-                   {
-                       "strength": 10,
-                       "superhero": 2,
-                       "id": 7,
-                       "superpower": 4
-                   }
-               ],
-               "id": 2
-           },
-           {
-               "real_identity": 3,
-               "name": "Batman",
-               "superhero.tag": [
-                   {
-                       "strength": 80,
-                       "superhero": 3,
-                       "id": 8,
-                       "superpower": 2
-                   },
-                   {
-                       "strength": 20,
-                       "superhero": 3,
-                       "id": 9,
-                       "superpower": 3
-                   },
-                   {
-                       "strength": 70,
-                       "superhero": 3,
-                       "id": 10,
-                       "superpower": 4
-                   }
-               ],
-               "id": 3
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.201988",
-       "api_version": "0.1"
-   }
+Caveats about Fixtures
+----------------------
 
-URL:
+Since fixtures are shared by multiple actions you are not allowed to
+change their state because it would not be thread safe. There is one
+exception to this rule. Actions can change some attributes of database
+fields:
+
+.. code:: python
+
+   from py4web import Field, action, request, DAL, Field
+   from py4web.utils.form import Form
+   import os
+
+   DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
+   db = DAL('sqlite://storage.db', folder=DB_FOLDER, pool_size=1)
+   db.define_table('thing', Field('name', writable=False))
+
+   @action('index')
+   @action.uses(db, 'generic.html')
+   def index():
+       db.thing.name.writable = True
+       form = Form(db.thing)
+       return dict(form=form)
+   )
+
+Note thas this code will only be able to display a form, to process it
+after submit, additional code needs to be added, as we will see later
+on. This example is assuming that you created the application from the
+scaffolding app, so that a generic.html is already created for you.
+
+The ``readable``, ``writable``, ``default``, ``update``, and ``require``
+attributes of ``db.{table}.{field}`` are special objects of class
+``ThreadSafeVariable`` defined the ``threadsafevariable`` module. These
+objects are very much like Python thread local objects but they are
+re-initialized at every request using the value specified outside of the
+action. This means that actions can safely change the values of these
+attributes.
+
+Custom fixtures
+---------------
+
+A fixture is an object with the following minimal structure:
+
+.. code:: python
+
+   from py4web import Fixture
+
+   class MyFixture(Fixture):
+       def on_request(self): pass
+       def on_success(self): pass
+       def on_error(self): pass
+       def transform(self, data): return data
+
+if an action uses this fixture:
 
 ::
 
-   /superheroes/rest/api/superhero?@lookup=superhero.tag.superpower
+   @action('index')
+   @action.uses(MyFixture())
+   def index(): return 'hello world'
 
-OUTPUT:
+Then ``on_request()`` is guaranteed to be called before the ``index()``
+function is called. The ``on_success()`` is guaranteed to be called if
+the ``index()`` function returns successfully or raises ``HTTP`` or
+performs a ``redirect``. The ``on_error()`` is guaranteed to be called
+when the ``index()`` function raises any exception other than ``HTTP``.
+The ``transform`` function is called to perform any desired
+transformation of the value returned by the ``index()`` function.
 
-::
+Auth and Auth.user
+------------------
 
-   {
-       "count": 3,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": 1,
-               "name": "Superman",
-               "superhero.tag.superpower": [
-                   {
-                       "strength": 100,
-                       "superhero": 1,
-                       "id": 1,
-                       "superpower": {
-                           "id": 1,
-                           "description": "Flight"
-                       }
-                   },
-                   {
-                       "strength": 100,
-                       "superhero": 1,
-                       "id": 2,
-                       "superpower": {
-                           "id": 2,
-                           "description": "Strength"
-                       }
-                   },
-                   {
-                       "strength": 100,
-                       "superhero": 1,
-                       "id": 3,
-                       "superpower": {
-                           "id": 3,
-                           "description": "Speed"
-                       }
-                   },
-                   {
-                       "strength": 100,
-                       "superhero": 1,
-                       "id": 4,
-                       "superpower": {
-                           "id": 4,
-                           "description": "Durability"
-                       }
-                   }
-               ],
-               "id": 1
-           },
-           {
-               "real_identity": 2,
-               "name": "Spiderman",
-               "superhero.tag.superpower": [
-                   {
-                       "strength": 50,
-                       "superhero": 2,
-                       "id": 5,
-                       "superpower": {
-                           "id": 2,
-                           "description": "Strength"
-                       }
-                   },
-                   {
-                       "strength": 75,
-                       "superhero": 2,
-                       "id": 6,
-                       "superpower": {
-                           "id": 3,
-                           "description": "Speed"
-                       }
-                   },
-                   {
-                       "strength": 10,
-                       "superhero": 2,
-                       "id": 7,
-                       "superpower": {
-                           "id": 4,
-                           "description": "Durability"
-                       }
-                   }
-               ],
-               "id": 2
-           },
-           {
-               "real_identity": 3,
-               "name": "Batman",
-               "superhero.tag.superpower": [
-                   {
-                       "strength": 80,
-                       "superhero": 3,
-                       "id": 8,
-                       "superpower": {
-                           "id": 2,
-                           "description": "Strength"
-                       }
-                   },
-                   {
-                       "strength": 20,
-                       "superhero": 3,
-                       "id": 9,
-                       "superpower": {
-                           "id": 3,
-                           "description": "Speed"
-                       }
-                   },
-                   {
-                       "strength": 70,
-                       "superhero": 3,
-                       "id": 10,
-                       "superpower": {
-                           "id": 4,
-                           "description": "Durability"
-                       }
-                   }
-               ],
-               "id": 3
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.322494",
-       "api_version": "0.1"
-   }
+``auth`` and ``auth.user`` are both fixtures. They depend on
+``session``. The role of access is to provide the action with
+authentication information. It is used as follows:
 
-URL (it's a single line, splitted for readability):
+.. code:: python
+
+   from py4web import action, redirect, Session, DAL, URL
+   from py4web.utils.auth import Auth
+   import os
+
+   session = Session(secret='my secret key')
+   DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
+   db = DAL('sqlite://storage.db', folder=DB_FOLDER, pool_size=1)
+   auth = Auth(session, db)
+   auth.enable()
+
+   @action('index')
+   @action.uses(auth)
+   def index():
+       user = auth.get_user() or redirect(URL('auth/login'))
+       return 'Welcome %s' % user.get('first_name')
+
+The constructor of the ``Auth`` object defines the ``auth_user`` table
+with the following fields: username, email, password, first_name,
+last_name, sso_id, and action_token (the last two are mostly for
+internal use).
+
+``auth.enable()`` registers multiple actions including
+``{appname}/auth/login`` and it requires the presence of the
+``auth.html`` template and the ``auth`` value component provided by the
+``_scaffold`` app.
+
+The ``auth`` object is the fixture. It manages the user information. It
+exposes a single method:
 
 ::
 
-   /superheroes/rest/api/superhero?
-   @lookup=powers:superhero.tag[strength].superpower[description]
+   auth.get_user()
 
-OUTPUT:
+which returns a python dictionary containing the information of the
+currently logged in user. If the user is not logged-in, it returns
+``None``. The code of the example redirects to the ‘auth/login’ page if
+there is no user.
 
-::
+Since this check is very common, py4web provides an additional fixture
+``auth.user``:
 
-   {
-       "count": 3,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": 1,
-               "name": "Superman",
-               "powers": [
-                   {
-                       "strength": 100,
-                       "superpower": {
-                           "description": "Flight"
-                       }
-                   },
-                   {
-                       "strength": 100,
-                       "superpower": {
-                           "description": "Strength"
-                       }
-                   },
-                   {
-                       "strength": 100,
-                       "superpower": {
-                           "description": "Speed"
-                       }
-                   },
-                   {
-                       "strength": 100,
-                       "superpower": {
-                           "description": "Durability"
-                       }
-                   }
-               ],
-               "id": 1
-           },
-           {
-               "real_identity": 2,
-               "name": "Spiderman",
-               "powers": [
-                   {
-                       "strength": 50,
-                       "superpower": {
-                           "description": "Strength"
-                       }
-                   },
-                   {
-                       "strength": 75,
-                       "superpower": {
-                           "description": "Speed"
-                       }
-                   },
-                   {
-                       "strength": 10,
-                       "superpower": {
-                           "description": "Durability"
-                       }
-                   }
-               ],
-               "id": 2
-           },
-           {
-               "real_identity": 3,
-               "name": "Batman",
-               "powers": [
-                   {
-                       "strength": 80,
-                       "superpower": {
-                           "description": "Strength"
-                       }
-                   },
-                   {
-                       "strength": 20,
-                       "superpower": {
-                           "description": "Speed"
-                       }
-                   },
-                   {
-                       "strength": 70,
-                       "superpower": {
-                           "description": "Durability"
-                       }
-                   }
-               ],
-               "id": 3
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.309903",
-       "api_version": "0.1"
-   }
+.. code:: python
 
-URL (it's a single line, splitted for readability):
+   @action('index')
+   @action.uses(auth.user)
+   def index():
+       user = auth.get_user()
+       return 'Welcome %s' % user.get('first_name')
+
+This fixture automatically redirects to the ``auth/login`` page if user
+is not logged-in. It depends on ``auth``, which depends on ``db`` and
+``session``.
+
+The ``Auth`` fixture is plugin based and supports multiple plugin
+methods. They include Oauth2 (Google, Facebook, Twitter), PAM, LDAP, and
+SMAL2.
+
+Here is an example of using the Google Oauth2 plugin:
+
+.. code:: python
+
+   from py4web.utils.auth_plugins.oauth2google import OAuth2Google
+   auth.register_plugin(OAuth2Google(
+       client_id='...',
+       client_secret='...',
+       callback_url='auth/plugin/oauth2google/callback'))
+
+The ``client_id`` and ``client_secret`` are provided by google. The
+callback url is the default option for py4web and it must be whitelisted
+with Google. All ``Auth`` plugins are objects. Different plugins are
+configured in different ways but they are registered using
+``auth.register_plugin(...)``. Examples are provided in
+``_scaffold/common.py``.
+
+Caching and Memoize
+-------------------
+
+py4web provides a cache in ram object that implements the Last Recently
+Used (LRU) Algorithm. It can be used to cache any function via a
+decorator:
+
+.. code:: python
+
+   import uuid
+   from py4web import Cache, action
+   cache = Cache(size=1000)
+
+   @action('hello/<name>')
+   @cache.memoize(expiration=60)
+   def hello(name):
+       return "Hello %s your code is %s" % (name, uuid.uuid4())
+
+It will cache (memoize) the return value of the ``hello`` function, as
+function of the input ``name``, for up to 60 seconds. It will store in
+cache the 1000 most recently used values. The data is always stored in
+ram.
+
+The Cache object is not a fixture and it should not and cannot be
+registered using the ``@action.uses`` object but we mention it here
+because some of the fixtures use this object internally. For example,
+template files are cached in ram to avoid accessing the file system
+every time a template needs to be rendered.
+
+Convenience Decorators
+----------------------
+
+The ``_scaffold`` application, in ``common.py`` defines two special
+conveniennce decorators:
 
 ::
 
-   /superheroes/rest/api/superhero?
-   @lookup=powers!:superhero.tag[strength].superpower[description]
+   @unauthenticated
+   def index():
+       return dict()
 
-OUTPUT:
+and
 
-::
+\`\ ``@authenticated def index():     return dict()``
 
-   {
-       "count": 3,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": 1,
-               "name": "Superman",
-               "powers": [
-                   {
-                       "strength": 100,
-                       "description": "Flight"
-                   },
-                   {
-                       "strength": 100,
-                       "description": "Strength"
-                   },
-                   {
-                       "strength": 100,
-                       "description": "Speed"
-                   },
-                   {
-                       "strength": 100,
-                       "description": "Durability"
-                   }
-               ],
-               "id": 1
-           },
-           {
-               "real_identity": 2,
-               "name": "Spiderman",
-               "powers": [
-                   {
-                       "strength": 50,
-                       "description": "Strength"
-                   },
-                   {
-                       "strength": 75,
-                       "description": "Speed"
-                   },
-                   {
-                       "strength": 10,
-                       "description": "Durability"
-                   }
-               ],
-               "id": 2
-           },
-           {
-               "real_identity": 3,
-               "name": "Batman",
-               "powers": [
-                   {
-                       "strength": 80,
-                       "description": "Strength"
-                   },
-                   {
-                       "strength": 20,
-                       "description": "Speed"
-                   },
-                   {
-                       "strength": 70,
-                       "description": "Durability"
-                   }
-               ],
-               "id": 3
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.355181",
-       "api_version": "0.1"
-   }
+They apply all of the decorators below, use a template with the same
+name as the function (.html), and also register a route with the name of
+action followed the number of arguments of the action separated by a
+slash (/).
 
-URL (it's a single line, splitted for readability):
+@unauthenticated does not require the user to be logged in.
+@authenticated required the user to be logged in.
 
-::
-
-   /superheroes/rest/api/superhero?
-   @lookup=powers!:superhero.tag[strength].superpower[description],
-   identity!:real_identity[name]
-
-OUTPUT:
-
-::
-
-   {
-       "count": 3,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "name": "Superman",
-               "identity_name": "Clark Kent",
-               "powers": [
-                   {
-                       "strength": 100,
-                       "description": "Flight"
-                   },
-                   {
-                       "strength": 100,
-                       "description": "Strength"
-                   },
-                   {
-                       "strength": 100,
-                       "description": "Speed"
-                   },
-                   {
-                       "strength": 100,
-                       "description": "Durability"
-                   }
-               ],
-               "id": 1
-           },
-           {
-               "name": "Spiderman",
-               "identity_name": "Peter Park",
-               "powers": [
-                   {
-                       "strength": 50,
-                       "description": "Strength"
-                   },
-                   {
-                       "strength": 75,
-                       "description": "Speed"
-                   },
-                   {
-                       "strength": 10,
-                       "description": "Durability"
-                   }
-               ],
-               "id": 2
-           },
-           {
-               "name": "Batman",
-               "identity_name": "Bruce Wayne",
-               "powers": [
-                   {
-                       "strength": 80,
-                       "description": "Strength"
-                   },
-                   {
-                       "strength": 20,
-                       "description": "Speed"
-                   },
-                   {
-                       "strength": 70,
-                       "description": "Durability"
-                   }
-               ],
-               "id": 3
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.396583",
-       "api_version": "0.1"
-   }
-
-URL:
-
-::
-
-   /superheroes/rest/api/superhero?name.eq=Superman
-
-OUTPUT:
-
-::
-
-   {
-       "count": 1,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": 1,
-               "name": "Superman",
-               "id": 1
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.405515",
-       "api_version": "0.1"
-   }
-
-URL:
-
-::
-
-   /superheroes/rest/api/superhero?real_identity.name.eq=Clark Kent
-
-OUTPUT:
-
-::
-
-   {
-       "count": 1,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": 1,
-               "name": "Superman",
-               "id": 1
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.366288",
-       "api_version": "0.1"
-   }
-
-URL:
-
-::
-
-   /superheroes/rest/api/superhero?not.real_identity.name.eq=Clark Kent
-
-OUTPUT:
-
-::
-
-   {
-       "count": 2,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": 2,
-               "name": "Spiderman",
-               "id": 2
-           },
-           {
-               "real_identity": 3,
-               "name": "Batman",
-               "id": 3
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.451907",
-       "api_version": "0.1"
-   }
-
-URL:
-
-::
-
-   /superheroes/rest/api/superhero?superhero.tag.superpower.description=Flight
-
-OUTPUT:
-
-::
-
-   {
-       "count": 1,
-       "status": "success",
-       "code": 200,
-       "items": [
-           {
-               "real_identity": 1,
-               "name": "Superman",
-               "id": 1
-           }
-       ],
-       "timestamp": "2019-05-19T05:38:00.453020",
-       "api_version": "0.1"
-   }
-
-Notice all RestAPI response have the fields
-
-::
-
-   {
-       "api_version": ...
-       "timestamp": ...
-       "status": ...    
-       "code": ...
-   }
-
-and some optional fields:
-
-::
-
-   {
-       "count": ... (total matching, not total returned, for GET)
-       "items": ... (in response to a GET)
-       "errors": ... (usually validation error0
-       "models": ... (usually if status != success)
-       "message": ... (is if error)
-   }
-
-The exact specs are subject to change since this is a new feature.
+If can be combined with (and precede) other ``@action.uses(...)`` but
+they should not be combined with ``@action(...)`` because they perform
+that function automatically.

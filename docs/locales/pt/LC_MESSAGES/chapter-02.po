@@ -1,429 +1,206 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2020, Massimo DiPierro
+# Copyright (C) 2020, BSDv3 License
 # This file is distributed under the same license as the py4web package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: py4web \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-02 22:29+0100\n"
+"Project-Id-Version: py4web 1.20201112.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-11-29 10:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.8.0\n"
 
-#: ../../chapter-02.rst:2
-msgid "Creating your first app"
+#: ../../chapter-02.rst:3
+msgid "Help, resources and hints"
 msgstr ""
 
 #: ../../chapter-02.rst:5
-msgid "From scratch"
-msgstr ""
-
-#: ../../chapter-02.rst:7
 msgid ""
-"Apps can be created using the dashboard or directly from the filesystem. "
-"Here, we are going to do it manually, as the Dashboard is described in "
-"its own chapter."
+"We've made our best to make PY4WEB simple and clean. But you know, modern"
+" web programming is a daunting task. It requires an open mind, able to "
+"jump frequently (without being lost!) from python to HTML to javascript "
+"to css and even database management. But don't be scared, in this manual "
+"we'll assist you side by side in this journey. And there are many other "
+"valuable resources that we're going to show you."
 msgstr ""
 
 #: ../../chapter-02.rst:11
-msgid ""
-"Keep in mind that an app is a Python module; therefore it needs only a "
-"folder and a ``__init__.py`` file in that folder:"
+msgid "Resources"
 msgstr ""
 
-#: ../../chapter-02.rst:19
+#: ../../chapter-02.rst:14
+msgid "This manual"
+msgstr ""
+
+#: ../../chapter-02.rst:16
 msgid ""
-"Notice that for Windows, you must use backslashes (i.e. ’') instead of "
-"slashes. Also, an empty **init**.py file is not strictly needed since "
-"Python 3.3, but it will be useful later on. If you now restart py4web or "
-"press the “Reload Apps” in the Dashboard, py4web will find this module, "
-"import it, and recognize it as an app, simply because of its location. An"
-" app is not required to do anything. It could just be a container for "
-"static files or arbitrary code that other apps may want to import and "
-"access. Yet typically most apps are designed to expose static or dynamic "
-"web pages."
+"This manual is the Reference Manual for py4web. It's available online at "
+"https://py4web.com/_documentation/static/index.html, where you'll also "
+"find the PDF and EBOOK version, in multiple languages. It was originally "
+"written with the MarkMin format (similar to MarkDown) and displayed in "
+"HTML with a custom py4web application. In 2020 we decided to convert its "
+"sources to the RST format which is better suited for technical "
+"documentation. Using Sphinx and the ReadTheDocs style we are now able to "
+"achieve high quality outputs."
+msgstr ""
+
+#: ../../chapter-02.rst:24
+msgid "The Google group"
+msgstr ""
+
+#: ../../chapter-02.rst:26
+msgid ""
+"There is a dedicated mailing list hosted on Google Groups, see "
+"https://groups.google.com/g/py4web. This is the main source of "
+"discussions for developers and simple users. For any problem you should "
+"face, this is the right place to search for a hint or a solution."
 msgstr ""
 
 #: ../../chapter-02.rst:30
-msgid "Static web pages"
+msgid "The chat on IRC"
 msgstr ""
 
 #: ../../chapter-02.rst:32
 msgid ""
-"To expose static web pages you simply need to create a ``static`` "
-"subfolder, and any file in there will be automatically published:"
+"We also use to chat sometime on IRC (Internet Relay Chat, which is an "
+"old-style text only chat). You can freely join us at "
+"https://webchat.freenode.net/#py4web. From time to time we also use it to"
+" host a scheduled public chat, where you can write and read live "
+"questions to developers. Transcripts of them are then available on the "
+"mailing list."
+msgstr ""
+
+#: ../../chapter-02.rst:38
+msgid "Tutorials and video"
 msgstr ""
 
 #: ../../chapter-02.rst:40
-msgid "The newly created file will be accessible at"
-msgstr ""
-
-#: ../../chapter-02.rst:46
 msgid ""
-"Notice that ``static`` is a special path for py4web and only files under "
-"the ``static`` folder are served."
+"There are some tutorials and videos if you like them. Search for them on "
+"`YouTube <https://www.youtube.com/results?search_query=py4web>`__. There "
+"is also available a good free `course by Luca de Alfaro "
+"<https://sites.google.com/a/ucsc.edu/luca/classes/cmps-183-hypermedia-"
+"and-the-web/cse-183-spring-2020>`__ at UC Santa Cruz."
 msgstr ""
 
-#: ../../chapter-02.rst:49
+#: ../../chapter-02.rst:45
+msgid "The sources on GitHub"
+msgstr ""
+
+#: ../../chapter-02.rst:47
 msgid ""
-"Important: internally py4web uses the bottle `static_file "
-"<https://bottlepy.org/docs/dev/tutorial.html#static-files>`__ method for "
-"serving static files, which means it supports streaming, partial content,"
-" range requests, and if-modified-since. This is all handled automatically"
-" based on the http request headers."
+"Py4web is Open Source, with a BSD v3 licence. It's hosted on GitHub at "
+"https://github.com/web2py/py4web, where you can read and study all of its"
+" internal details."
 msgstr ""
 
-#: ../../chapter-02.rst:56
-msgid "Dynamic Web Pages"
+#: ../../chapter-02.rst:51
+msgid "Hints and tips"
 msgstr ""
 
-#: ../../chapter-02.rst:58
+#: ../../chapter-02.rst:53
 msgid ""
-"To create a dynamic page, you must create a function that returns the "
-"page content. For example edit the ``myapp/__init__.py`` as follows:"
+"This paragraph is dedicated to preliminary hints, suggestions and tips "
+"that could be helpful to know before starting to learn py4web."
+msgstr ""
+
+#: ../../chapter-02.rst:57
+msgid "Prerequisites"
+msgstr ""
+
+#: ../../chapter-02.rst:59
+msgid ""
+"In order to understand py4web you need at least a basic python knowledge."
+" There are many books, courses and tutorials available on the web - "
+"choose what's best for you. The python's decorators, in particular, are a"
+" milestone of any python web framework and you have to fully understand "
+"it."
+msgstr ""
+
+#: ../../chapter-02.rst:63
+msgid "A modern python workplace"
+msgstr ""
+
+#: ../../chapter-02.rst:65
+msgid ""
+"In the following chapters you will start coding on your computer. We "
+"suggest you to setup a modern python workplace if you plan to do it "
+"efficiently and safely. Even for running simple examples and "
+"experimenting a little, we strongly suggest to use an **Integrated "
+"Development Environment** (IDE). This will make your programming "
+"experience much better, allowing syntax checking, linting and visual "
+"debugging. Nowadays there are two free and multiplatform main choices: "
+"Microsoft Visual Studio Code aka `VScode "
+"<https://code.visualstudio.com/>`__ and JetBrains `PyCharm "
+"<https://www.jetbrains.com/pycharm/>`__."
 msgstr ""
 
 #: ../../chapter-02.rst:70
 msgid ""
-"Restart py4web or press the Dashboard “Reload Apps” button, and this page"
-" will be accessible at"
+"When you'll start to deal with more complex programs and need "
+"reliability, we also suggest to:"
 msgstr ""
 
-#: ../../chapter-02.rst:77
-msgid "or"
+#: ../../chapter-02.rst:73
+msgid ""
+"use virtual environments (also called **virtualenv**, see `here "
+"<https://docs.python.org/3.7/tutorial/venv.html>`__ for an introduction)."
+" In a complex workplace this will avoid to be messed up with other python"
+" programs and modules"
+msgstr ""
+
+#: ../../chapter-02.rst:74
+msgid ""
+"use a Concurrent Versions System (**CVS**). Keeping track of your "
+"program's changes is highly valuable - along with backups it will save "
+"your computing life! Git and GitHub are the current standards."
+msgstr ""
+
+#: ../../chapter-02.rst:78
+msgid "Debugging py4web with VScode"
+msgstr ""
+
+#: ../../chapter-02.rst:80
+msgid ""
+"You need to edit the vscode launch.json configuration file by adding the "
+"variable ``\"gevent\": true``. Also, on the same file you can add "
+"``\"args\": [\"run\", \"apps\"]`` in order to run py4web.py directly."
 msgstr ""
 
 #: ../../chapter-02.rst:83
-msgid "(notice that index is optional)"
+msgid "Debugging py4web with PyCharm"
 msgstr ""
 
 #: ../../chapter-02.rst:85
 msgid ""
-"Unlike other frameworks, we do not import or start the webserver within "
-"the ``myapp`` code. This is because py4web is already running, and it may"
-" be serving multiple apps. py4web imports our code and exposes functions "
-"decorated with ``@action()``. Also notice that py4web prepends ``/myapp``"
-" (i.e. the name of the app) to the url path declared in the action. This "
-"is because there are multiple apps, and they may define conflicting "
-"routes. Prepending the name of the app removes the ambiguity. But there "
-"is one exception: if you call your app ``_default``, or if you create a "
-"symlink from ``_default`` to ``myapp``, then py4web will not prepend any "
-"prefix to the routes defined inside the app."
+"In PyCharm, enable Settings | Build, Execution, Deployment | Python "
+"Debugger | Gevent compatible."
 msgstr ""
 
-#: ../../chapter-02.rst:98
-msgid "On return values"
+#: ../../chapter-02.rst:89
+msgid "How to contribute"
 msgstr ""
 
-#: ../../chapter-02.rst:100
+#: ../../chapter-02.rst:91
 msgid ""
-"py4web actions should return a string or a dictionary. If they return a "
-"dictionary you must tell py4web what to do with it. By default py4web "
-"will serialize it into json. For example edit ``__init__.py`` again and "
-"add"
+"We need help from everyone: support our efforts! You can just partecipate"
+" in the Google group trying to answer other's questions, submit bugs "
+"using or create pull requests on the GitHub repository."
 msgstr ""
 
-#: ../../chapter-02.rst:111 ../../chapter-02.rst:139
-msgid "This page will be visible at"
-msgstr ""
-
-#: ../../chapter-02.rst:117
+#: ../../chapter-02.rst:94
 msgid ""
-"and returns a JSON object ``{\"colors\": [\"red\", \"blue\", "
-"\"green\"]}``. Notice we chose to name the function the same as the "
-"route. This is not required, but it is a convention that we will often "
-"follow."
-msgstr ""
-
-#: ../../chapter-02.rst:121
-msgid ""
-"You can use any template language to turn your data into a string. PY4WEB"
-" comes with yatl, a full chapter will be dedicated later and we will "
-"provide an example shortly."
-msgstr ""
-
-#: ../../chapter-02.rst:126
-msgid "Routes"
-msgstr ""
-
-#: ../../chapter-02.rst:128
-msgid ""
-"It is possible to map patterns in the URL into arguments of the function."
-" For example:"
-msgstr ""
-
-#: ../../chapter-02.rst:145
-msgid ""
-"The syntax of the patterns is the same as the `Bottle routes "
-"<https://bottlepy.org/docs/dev/tutorial.html#request-routing>`__. A route"
-" wildcard can be defined as"
-msgstr ""
-
-#: ../../chapter-02.rst:149
-msgid "``<name>`` or"
-msgstr ""
-
-#: ../../chapter-02.rst:150
-msgid "``<name:filter>`` or"
-msgstr ""
-
-#: ../../chapter-02.rst:151
-msgid "\\``\\`\\```\\`"
-msgstr ""
-
-#: ../../chapter-02.rst:153
-msgid "And these are possible filters (only \\`\\ ``:`` has a config):"
-msgstr ""
-
-#: ../../chapter-02.rst:155
-msgid "``:int`` matches (signed) digits and converts the value to integer."
-msgstr ""
-
-#: ../../chapter-02.rst:156
-msgid "``:float`` similar to :int but for decimal numbers."
-msgstr ""
-
-#: ../../chapter-02.rst:157
-msgid ""
-"``:path`` matches all characters including the slash character in a non-"
-"greedy way, and may be used to match more than one path segment."
-msgstr ""
-
-#: ../../chapter-02.rst:159
-msgid ""
-"\\``:re[:exp]``\\` allows you to specify a custom regular expression in "
-"the config field. The matched value is not modified."
-msgstr ""
-
-#: ../../chapter-02.rst:162
-msgid ""
-"The pattern matching the wildcard is passed to the function under the "
-"specified variable ``name``."
-msgstr ""
-
-#: ../../chapter-02.rst:165
-msgid ""
-"Also, the action decorator takes an optional ``method`` argument that can"
-" be an HTTP method or a list of methods:"
-msgstr ""
-
-#: ../../chapter-02.rst:172
-msgid ""
-"You can use multiple decorators to expose the same function under "
-"multiple routes."
-msgstr ""
-
-#: ../../chapter-02.rst:176
-msgid "The ``request`` object"
-msgstr ""
-
-#: ../../chapter-02.rst:178
-msgid "From py4web you can import ``request``"
-msgstr ""
-
-#: ../../chapter-02.rst:180
-msgid "\\````python from py4web import request"
-msgstr ""
-
-#: ../../chapter-02.rst:182
-#, python-format
-msgid ""
-"@action(‘paint’) def paint(): if ‘color’ in request.query return "
-"‘Painting in %s’ % request.query.get(‘color’) return ‘You did not specify"
-" a color’"
-msgstr ""
-
-#: ../../chapter-02.rst:191
-msgid "http://localhost:8000/myapp/paint?color=red"
-msgstr ""
-
-#: ../../chapter-02.rst:214
-msgid "then modify the paint action to use the template and default to green."
-msgstr ""
-
-#: ../../chapter-02.rst:223
-msgid ""
-"The page will now display the color name on a background of the "
-"corresponding color."
-msgstr ""
-
-#: ../../chapter-02.rst:226
-msgid ""
-"The key ingredient here is the decorator ``@action.uses(...)``. The "
-"arguments of ``action.uses`` are called **fixtures**. You can specify "
-"multiple fixtures in one decorator or you can have multiple decorators. "
-"Fixtures are objects that modify the behavior of the action, that may "
-"need to be initialized per request, that may filter input and output of "
-"the action, and that may depend on each-other (they are similar in scope "
-"to Bottle plugins but they are declared per-action, and they have a "
-"dependency tree which will be explained later)."
-msgstr ""
-
-#: ../../chapter-02.rst:235
-msgid ""
-"The simplest type of fixture is a template. You specify it by simply "
-"giving the name of the file to be used as template. That file must follow"
-" the yatl syntax and must be located in the ``templates`` folder of the "
-"app. The object returned by the action will be processed by the template "
-"and turned into a string."
-msgstr ""
-
-#: ../../chapter-02.rst:241
-msgid ""
-"You can easily define fixtures for other template languages. This is "
-"described later."
-msgstr ""
-
-#: ../../chapter-02.rst:244
-msgid "Some built-in fixtures are:"
-msgstr ""
-
-#: ../../chapter-02.rst:246
-msgid ""
-"the DAL object (which tells py4web to obtain a database connection from "
-"the pool at every request, and commit on success or rollback on failure)"
-msgstr ""
-
-#: ../../chapter-02.rst:249
-msgid ""
-"the Session object (which tells py4web to parse the cookie and retrieve a"
-" session at every request, and to save it if changed)"
-msgstr ""
-
-#: ../../chapter-02.rst:251
-msgid ""
-"the Translator object (which tells py4web to process the accept-language "
-"header and determine optimal internationalization/pluralization rules)"
-msgstr ""
-
-#: ../../chapter-02.rst:254
-msgid ""
-"the Auth object (which tells py4web that the app needs access to the user"
-" info)"
-msgstr ""
-
-#: ../../chapter-02.rst:257
-msgid ""
-"They may depend on each other. For example, the Session may need the DAL "
-"(database connection), and Auth may need both. Dependencies are handled "
-"automatically."
-msgstr ""
-
-#: ../../chapter-02.rst:262
-msgid "From \\_scaffold"
-msgstr ""
-
-#: ../../chapter-02.rst:264
-msgid ""
-"Most of the times, you do not want to start writing code from scratch. "
-"You also want to follow some sane conventions outlined here, like not "
-"putting all your code into ``__init__.py``. PY4WEB provides a Scaffolding"
-" (_scaffold) app, where files are organized properly and many useful "
-"objects are pre-defined."
-msgstr ""
-
-#: ../../chapter-02.rst:270
-msgid ""
-"You will normally find the scaffold app under apps, but you can easily "
-"create a new clone of it manually or using the Dashboard."
-msgstr ""
-
-#: ../../chapter-02.rst:273
-msgid "Here is the tree structure of the ``_scaffold`` app:"
-msgstr ""
-
-#: ../../chapter-02.rst:308
-msgid "The scaffold app contains an example of a more complex action:"
-msgstr ""
-
-#: ../../chapter-02.rst:324
-msgid "Notice the following:"
-msgstr ""
-
-#: ../../chapter-02.rst:326
-msgid "``request``, ``response``, ``abort`` are defined by Bottle"
-msgstr ""
-
-#: ../../chapter-02.rst:327
-msgid "``redirect`` and ``URL`` are similar to their web2py counterparts"
-msgstr ""
-
-#: ../../chapter-02.rst:328
-msgid ""
-"helpers (``A``, ``DIV``, ``SPAN``, ``IMG``, etc) must be imported from "
-"``yatl.helpers`` . They work pretty much as in web2py"
-msgstr ""
-
-#: ../../chapter-02.rst:330
-msgid ""
-"``db``, ``session``, ``T``, ``cache``, ``auth`` are Fixtures. They must "
-"be defined in ``common.py``."
-msgstr ""
-
-#: ../../chapter-02.rst:332
-msgid ""
-"``@action.uses(auth.user)`` indicates that this action expects a valid "
-"logged-in user retrievable by ``auth.get_user()``. If that is not the "
-"case, this action redirects to the login page (defined also in "
-"``common.py`` and using the Vue.js auth.html component)."
-msgstr ""
-
-#: ../../chapter-02.rst:337
-msgid ""
-"When you start from scaffold, you may want to edit ``settings.py``, "
-"``templates``, ``models.py`` and ``controllers.py`` but probably you "
-"don’t need to change anything in ``common.py``."
-msgstr ""
-
-#: ../../chapter-02.rst:341
-msgid ""
-"In your html, you can use any JS library that you want because py4web is "
-"agnostic to your choice of JS and CSS, but with some exceptions. The "
-"``auth.html`` which handles registration/login/etc. uses a vue.js "
-"component. Hence if you want to use that, you should not remove it."
-msgstr ""
-
-#: ../../chapter-02.rst:347
-msgid "App Watchdog"
-msgstr ""
-
-#: ../../chapter-02.rst:349
-msgid ""
-"Py4web facilitates a development server’s setup that automatically "
-"reloads an app when its Python source files change. Any other files "
-"inside an app can be watched by setting a handler function using "
-"**``@app_watch_handler``** decorator."
-msgstr ""
-
-#: ../../chapter-02.rst:360
-msgid ""
-"Two examples of its usage are reported now. Do not worry if you don’t "
-"fully undestand them: the key point here is that even non-python code "
-"could be reloaded automatically if you explicit it with the "
-"**``@app_watch_handler``** decorator."
-msgstr ""
-
-#: ../../chapter-02.rst:365
-msgid "Watch SASS files and compile them when edited:"
-msgstr ""
-
-#: ../../chapter-02.rst:384
-msgid "Validate javascript syntax when edited:"
-msgstr ""
-
-#: ../../chapter-02.rst:400
-msgid ""
-"Filepaths passed to **``@app_watch_handler``** decorator must be relative"
-" to an app. Python files(\"*.py\") in a list passed to the decorator are "
-"ignored since they are watched by default. Handler function’s parameter "
-"is a list of filepaths that were changed. All exceptions inside handlers "
-"are printed in terminal."
+"If you wish to correct and expand this manual, or even translate it in a "
+"new foreign language, you can read all the needed information directly on"
+" the `specific README "
+"<https://github.com/web2py/py4web/blob/master/docs/README.md>`__ on "
+"GitHub."
 msgstr ""
 
