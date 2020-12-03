@@ -339,7 +339,7 @@ class Grid:
         #  instance variables that will be computed
         self.action = None
         self.current_page_number = None
-        self.endpoint = request.path
+        self.endpoint = request.fullpath
         if self.path:
             self.endpoint = self.endpoint[: -len(self.path)].rstrip("/")
         self.hidden_fields = None
