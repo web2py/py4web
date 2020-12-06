@@ -350,7 +350,9 @@ class Auth(Fixture):
             fields["username"] = fields.get("username", "").lower()
         fields["email"] = fields.get("email", "").lower()
         if self.param.registration_requires_confirmation:
-            token = str(uuid.uuid4()) + "/" + b16e(next)
+            token = str(uuid.uuid4())
+            if next:
+                token += "/" + b16e(next)
             fields["action_token"] = "pending-registration:%s" % token
             res = self.db.auth_user.validate_and_insert(**fields)
             if send and res.get("id"):
@@ -409,7 +411,9 @@ class Auth(Fixture):
             query = db.auth_user.email == value
         user = db(query).select().first()
         if user and not user.action_token == "account-blocked":
-            token = str(uuid.uuid4()) + "/" + b16e(next)
+            token = str(uuid.uuid4())
+            if next:
+                token += "/" + b16e(next)
             user.update_record(action_token="reset-password-request:" + token)
             if send:
                 self._link = link = URL(
