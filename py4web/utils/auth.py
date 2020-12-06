@@ -636,6 +636,7 @@ class Auth(Fixture):
     def enable(self, route="auth", uses=(), env=None, spa=False):
         """enables Auth, aka generates login/logout/register/etc pages"""
         self.route = route = route.rstrip("/")
+        env = env or {}
         auth = self
 
         def allowed(name):
@@ -680,7 +681,7 @@ class Auth(Fixture):
                 @action(route + "/" + form_name, method=["GET", "POST"])
                 @action.uses(route + ".html")
                 @action.uses(auth, self.flash, *uses)
-                def _(form_factory=form_factory, path=form_name):
+                def _(form_factory=form_factory, path=form_name, env=env):
                     return dict(form=form_factory(), path=path, **env)
 
         for form_name in self.form_source.private_forms:
@@ -690,7 +691,7 @@ class Auth(Fixture):
                 @action(route + "/" + form_name, method=["GET", "POST"])
                 @action.uses(route + ".html")
                 @action.uses(auth.user, self.flash, *uses)
-                def _(auth=auth, form_factory=form_factory, path=form_name):
+                def _(auth=auth, form_factory=form_factory, path=form_name, env=env):
                     return dict(
                         form=form_factory(), path=path, user=auth.get_user(), **env
                     )
@@ -702,7 +703,7 @@ class Auth(Fixture):
                 @action(route + "/" + form_name)
                 @action.uses(route + ".html")
                 @action.uses(auth, self.flash, *uses)
-                def _(auth=auth, form_factory=form_factory, path=form_name):
+                def _(auth=auth, form_factory=form_factory, path=form_name, env=env):
                     return dict(
                         form=form_factory(), path=path, user=auth.get_user(), **env
                     )
