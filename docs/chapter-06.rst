@@ -182,6 +182,8 @@ Session in database
    db = DAL('sqlite:memory')
    session =  Session(storage=DBStore(db))
 
+**Caution:** Keep in mind that ``'sqlite:memory'`` **cannot be used in multiprocess environment**, the quirk is that your application will still work but in non-deterministic and unsafe mode, since each process/worker will have its own independent in-memory database.
+
 A secret is not required when storing cookies in the database because in
 this case the cookie only contains the UUID of the session.
 
