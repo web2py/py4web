@@ -350,7 +350,9 @@ class Auth(Fixture):
             fields["username"] = fields.get("username", "").lower()
         fields["email"] = fields.get("email", "").lower()
         if self.param.registration_requires_confirmation:
-            token = str(uuid.uuid4()) + "/" + b16e(next)
+            token = str(uuid.uuid4())
+            if next:
+                token += "/" + b16e(next)
             fields["action_token"] = "pending-registration:%s" % token
             res = self.db.auth_user.validate_and_insert(**fields)
             if send and res.get("id"):
@@ -417,7 +419,9 @@ class Auth(Fixture):
             query = db.auth_user.email == value
         user = db(query).select().first()
         if user and not user.action_token == "account-blocked":
-            token = str(uuid.uuid4()) + "/" + b16e(next)
+            token = str(uuid.uuid4())
+            if next:
+                token += "/" + b16e(next)
             user.update_record(action_token="reset-password-request:" + token)
             if send:
                 self._link = link = URL(
@@ -640,6 +644,7 @@ class Auth(Fixture):
     def enable(self, route="auth", uses=(), env=None, spa=False):
         """enables Auth, aka generates login/logout/register/etc pages"""
         self.route = route = route.rstrip("/")
+        env = env or {}
         auth = self
 
         def allowed(name):
@@ -684,7 +689,7 @@ class Auth(Fixture):
                 @action(route + "/" + form_name, method=["GET", "POST"])
                 @action.uses(route + ".html")
                 @action.uses(auth, self.flash, *uses)
-                def _(form_factory=form_factory, path=form_name):
+                def _(form_factory=form_factory, path=form_name, env=env):
                     return dict(form=form_factory(), path=path, **env)
 
         for form_name in self.form_source.private_forms:
@@ -694,7 +699,7 @@ class Auth(Fixture):
                 @action(route + "/" + form_name, method=["GET", "POST"])
                 @action.uses(route + ".html")
                 @action.uses(auth.user, self.flash, *uses)
-                def _(auth=auth, form_factory=form_factory, path=form_name):
+                def _(auth=auth, form_factory=form_factory, path=form_name, env=env):
                     return dict(
                         form=form_factory(), path=path, user=auth.get_user(), **env
                     )
@@ -706,7 +711,7 @@ class Auth(Fixture):
                 @action(route + "/" + form_name)
                 @action.uses(route + ".html")
                 @action.uses(auth, self.flash, *uses)
-                def _(auth=auth, form_factory=form_factory, path=form_name):
+                def _(auth=auth, form_factory=form_factory, path=form_name, env=env):
                     return dict(
                         form=form_factory(), path=path, user=auth.get_user(), **env
                     )
