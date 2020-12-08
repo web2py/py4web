@@ -5,7 +5,18 @@ These are fixtures that every app needs so probably you will not be editing this
 import os
 import sys
 import logging
-from py4web import action, redirect, abort, request, URL, Session, Cache, Translator, DAL, Field
+from py4web import (
+    action,
+    redirect,
+    abort,
+    request,
+    URL,
+    Session,
+    Cache,
+    Translator,
+    DAL,
+    Field,
+)
 from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
 from py4web.utils.tags import Tags
@@ -29,8 +40,12 @@ for item in settings.LOGGERS:
     logger.addHandler(handler)
 
 # connect to db
-db = DAL(settings.DB_URI, folder=settings.DB_FOLDER, pool_size=settings.DB_POOL_SIZE,
-         migrate_enabled=True)
+db = DAL(
+    settings.DB_URI,
+    folder=settings.DB_FOLDER,
+    pool_size=settings.DB_POOL_SIZE,
+    migrate_enabled=True,
+)
 
 # define global objects that may or may not be used by th actions
 cache = Cache(size=1000)
@@ -45,7 +60,11 @@ elif settings.SESSION_TYPE == "redis":
     host, port = settings.REDIS_SERVER.split(":")
     # for more options: https://github.com/andymccurdy/redis-py/blob/master/redis/client.py
     conn = redis.Redis(host=host, port=int(port))
-    conn.set = lambda k, v, e, cs=conn.set, ct=conn.ttl: (cs(k, v), e and ct(e))
+    conn.set = (
+        lambda k, v, e, cs=conn.set, ct=conn.ttl: cs(k, v, ct(k))
+        if ct(k) >= 0
+        else cs(k, v, e)
+    )
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
 elif settings.SESSION_TYPE == "memcache":
     import memcache, time
@@ -57,8 +76,9 @@ elif settings.SESSION_TYPE == "database":
 
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=DBStore(db))
 
-auth = Auth(session, db)
-auth.registration_requires_confirmation = settings.VERIFY_EMAIL
+auth = Auth(session, db, password_complexity=settings.PASSWORD_COMPLEXITY)
+auth.param.registration_requires_confirmation = settings.VERIFY_EMAIL
+
 
 if settings.SMTP_SERVER:
     auth.sender = Mailer(

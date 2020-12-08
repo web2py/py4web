@@ -95,11 +95,22 @@
                     reference_table_url.push(field.references)
                     reference_table_url = reference_table_url.join('/') + '?@options_list=true';
                     axios.get(reference_table_url).then(function (res) {
-                        self.reference_options[field.references] = res.data.items;
+                        let url_components = res.config.url.split('?')[0].split('/');
+                        self.reference_options[url_components[url_components.length - 1 ]] = res.data.items;
                      });
                     
                 }
             }
+        }
+    }
+
+    mtable.methods.parse_and_validate_json = function(event){
+        try {
+            event.target.style.borderColor = "";
+            return JSON.parse(event.target.value);
+        }
+        catch (error) {
+            event.target.style.borderColor = "#ff0000";
         }
     }
 
@@ -180,7 +191,7 @@
     var scripts = document.getElementsByTagName('script');
     var src = scripts[scripts.length-1].src;
     var path = src.substr(0, src.length-3) + '.html';
-    utils.register_vue_component('mtable', path, function(template) {        
+    Q.register_vue_component('mtable', path, function(template) {        
             mtable.template = template.data;
             return mtable;
         });

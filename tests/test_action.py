@@ -1,3 +1,4 @@
+import copy
 import multiprocessing
 import os
 import time
@@ -28,7 +29,12 @@ action.app_name = "tests"
 def index():
     db.thing.insert(name="test")
     session["number"] = session.get("number", 0) + 1
-    return "ok %s %s" % (session["number"], db(db.thing).count())
+    
+    # test copying Field ThreadSafe attr
+    db.thing.name.default = "test_clone"
+    field_clone = copy.copy(db.thing.name)
+    clone_ok = 1 if field_clone.default == db.thing.name.default == "test_clone" else 0
+    return "ok %s %s %s" % (session["number"], db(db.thing).count(), clone_ok)
 
 
 def run_server():
@@ -47,15 +53,15 @@ class CacheAction(unittest.TestCase):
 
     def test_action(self):
         res = self.browser.open("http://127.0.0.1:8001/tests/index")
-        self.assertEqual(res.read(), b"ok 1 1")
+        self.assertEqual(res.read(), b"ok 1 1 1")
 
         res = self.browser.open("http://127.0.0.1:8001/tests/index")
-        self.assertEqual(res.read(), b"ok 1 1")
+        self.assertEqual(res.read(), b"ok 1 1 1")
 
         time.sleep(2)
 
         res = self.browser.open("http://127.0.0.1:8001/tests/index")
-        self.assertEqual(res.read(), b"ok 2 2")
+        self.assertEqual(res.read(), b"ok 2 2 1")
 
     def test_local(self):
         # for test coverage

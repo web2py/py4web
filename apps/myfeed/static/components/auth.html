@@ -1,9 +1,9 @@
-e<div>
+<div>
   <div v-if="user === null && page=='register'">
     <center>
       <h2 class="subtitle">Register</h2>
     </center>
-    <div class="field">
+    <div v-if="use_username" class="field">
       <input class="input" v-model="form.username" type="email" placeholder="username">
       <span v-if="errors.username">{{errors.username}}</span>
     </div>
@@ -27,27 +27,56 @@ e<div>
       <input class="input" v-model="form.last_name" type="text" placeholder="last name">
       <span v-if="errors.last_name">{{errors.last_name}}</span>
     </div>
+    <div class="field" v-for="field in fields" v-if="field._added">
+      <label v-if="field.type=='boolean'" class="input">
+        <input v-model="form[field.name]" type="checkbox">
+        <span v-text="field.name"></span>
+      </label>
+      <input v-if="field.type=='integer' || field.type=='float'" class="input"
+             v-model="form[field.name]" type="number" v-bind:placeholder="field.name">
+      <input v-else class="input"
+             v-model="form[field.name]" type="text" v-bind:placeholder="field.name">
+      <span v-if="errors[field.name]">{{errors[field.name]}}</span>
+    </div>
     <div class="control" style="text-align:center">
       <button class="button is-link" v-on:click="submit_register()">Register</button>
       <button class="button" v-on:click="go('login')">Login</button>
       <button class="button" v-on:click="go('request_reset_password')">Lost Password</button>
     </div>
   </div>
+  <div v-else-if="page=='404'">
+    <center>
+      <h2 class="subtitle">404 - Page non available</h2>
+      <button v-if="user === null" class="button" v-on:click="go('login')">Login</button>
+      <button v-else class="button" v-on:click="go('logout')">Logout</button>
+    </center>
+  </div>
+  <div v-else-if="page=='403'">
+    <center>
+      <h2 class="subtitle">403 - User not authorized</h2>
+      <button v-if="user === null" class="button" v-on:click="go('login')">Login</button>
+      <button v-else class="button" v-on:click="go('logout')">Logout</button>
+    </center>
+  </div>
   <div v-else-if="user === null && page=='login'">
     <center>
       <h2 class="subtitle">Login</h2>
-    </center>    
-    <div class="control" style="text-align:center;margin:20px"> 
-      <a v-if="plugins.indexOf('oauth2google')>=0" 
-         class="button is-link" 
+    </center>
+    <div class="control" style="text-align:center;margin:20px">
+      <a v-if="plugins.indexOf('oauth2google')>=0"
+         class="button is-link"
          v-bind:href="'../auth/plugin/oauth2google/login?next='+next">Login with Google</a>
       <a v-if="plugins.indexOf('oauth2facebook')>=0"
-         class="button is-link" 
-         v-bin:href="'../auth/plugin/oauth2facbook/login?next='+next">Login with Facebook</a>
+         class="button is-link"
+         v-bind:href="'../auth/plugin/oauth2facebook/login?next='+next">Login with Facebook</a>
+      <a v-if="plugins.indexOf('oauth2okta')>=0"
+         class="button is-link"
+         v-bind:href="'../auth/plugin/oauth2okta/login?next='+next">Login with Okta</a>
     </div>
     <div v-if="!plugins||plugins.indexOf('local')>=0">
       <div class="field">
-        <input class="input" v-model="form.email" type="email" placeholder="username or email">
+        <input v-if="use_username" class="input" v-model="form.email" type="email" placeholder="username or email">
+        <input v-if="!use_username" class="input" v-model="form.email" type="email" placeholder="email">
         <span v-if="errors.email">{{errors.email}}</span>
       </div>
       <div class="field">
@@ -80,7 +109,7 @@ e<div>
     </center>
     <div class="field">
       <input class="input" v-model="form.new_password" type="password" placeholder="new password">
-      <span v-if="errors.new_password">{{errors.new_password}}</span>      
+      <span v-if="errors.new_password">{{errors.new_password}}</span>
     </div>
     <div class="field">
       <input class="input" v-model="form.new_password2" type="password" placeholder="new password (again)">

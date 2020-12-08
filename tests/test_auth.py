@@ -1,8 +1,8 @@
 import os
 import unittest
 import bottle
-from py4web.core import Session, DAL, request, HTTP
-from py4web.utils.auth import Auth
+from py4web.core import Session, DAL, request, HTTP, Field, request
+from py4web.utils.auth import Auth, AuthAPI, DefaultAuthForms
 
 
 class TestAuth(unittest.TestCase):
@@ -11,9 +11,27 @@ class TestAuth(unittest.TestCase):
         self.db = DAL("sqlite:memory")
         self.session = Session(secret="a", expiration=10)
         self.session.local.data = {}
-        self.auth = Auth(self.session, self.db, define_tables=True)
+        self.auth = Auth(self.session, self.db, define_tables=True, password_complexity=None)
         self.auth.enable()
+        self.auth.action = self.action
         request.app_name = "_scaffold"
+
+    def action(self, name, method, query, data):
+        request.environ['REQUEST_METHOD'] = method
+        request.environ['bottle.request.query'] = query
+        request.environ['bottle.request.json'] = data
+        # we break a symmetry below. should fix in auth.py
+        if name.startswith('api/'):
+            return getattr(AuthAPI, name[4:])(self.auth)
+        else:
+            return getattr(self.auth.form_source, name)()
+
+    def test_extra_fields(self):
+        self.db = DAL("sqlite:memory")
+        self.session = Session(secret="a", expiration=10)
+        self.session.local.data = {}
+        self.auth = Auth(self.session, self.db, define_tables=True, extra_fields=[Field('favorite_color')])
+        self.assertEqual(type(self.db.auth_user.favorite_color), Field)
 
     def test_register_invalid(self):
         body = {"email": "pinco.pallino@example.com"}
@@ -145,13 +163,13 @@ class TestAuth(unittest.TestCase):
         self.assertEqual(
             self.auth.action("api/change_password", "POST", {}, body),
             {
-                "errors": {"password": "invalid"},
+                'errors': {'old_password': 'invalid current password'},
                 "status": "error",
                 "message": "validation errors",
                 "code": 401,
             },
         )
-        body = {"password": "987654321", "new_password": "432187659"}
+        body = {"old_password": "987654321", "new_password": "432187659"}
         self.assertEqual(
             self.auth.action("api/change_password", "POST", {}, body),
             {"updated": 1, "status": "success", "code": 200},

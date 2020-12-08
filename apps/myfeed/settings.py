@@ -18,6 +18,7 @@ DB_POOL_SIZE = 1
 
 # send email on regstration
 VERIFY_EMAIL = False
+PASSWORD_COMPLEXITY = None
 
 # email settings
 SMTP_SERVER = None
@@ -60,7 +61,7 @@ T_FOLDER = os.path.join(APP_FOLDER, "translations")
 
 # Celery settings
 USE_CELERY = False
-CELERY_BROKER = 'redis://localhost:6379/0'
+CELERY_BROKER = "redis://localhost:6379/0"
 
 # try import private settings
 try:

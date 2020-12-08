@@ -1,0 +1,546 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>YATL Template Language &mdash; Documentação py4web 1.20201112.1
+</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/js/toggle.js"></script>
+        <script src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Pesquisar" href="search.html" />
+    <link rel="next" title="YATL helpers" href="chapter-10.html" />
+    <link rel="prev" title="The RESTAPI" href="chapter-08.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> py4web
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.20201112.1
+
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">O que é py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The database abstraction layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">YATL Template Language</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-syntax">Basic syntax</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#for-in"><code class="docutils literal notranslate"><span class="pre">for...in</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#while"><code class="docutils literal notranslate"><span class="pre">while</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#if-elif-else"><code class="docutils literal notranslate"><span class="pre">if...elif...else</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#try-except-else-finally"><code class="docutils literal notranslate"><span class="pre">try...except...else...finally</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#def-return"><code class="docutils literal notranslate"><span class="pre">def...return</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>YATL Template Language</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-09.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="yatl-template-language">
+<h1>YATL Template Language<a class="headerlink" href="#yatl-template-language" title="Link permanente para este título">¶</a></h1>
+<p>py4web uses Python for its models, controllers, and views, although it
+uses a slightly modified Python syntax in the views to allow more
+readable code without imposing any restrictions on proper Python usage.</p>
+<p>py4web uses <code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">...</span> <span class="pre">]]</span></code> to escape Python code embedded in HTML. The
+advantage of using square brackets instead of angle brackets is that
+it’s transparent to all common HTML editors. This allows the developer
+to use those editors to create py4web views.</p>
+<p>Since the developer is embedding Python code into HTML, the document
+should be indented according to HTML rules, and not Python rules.
+Therefore, we allow unindented Python inside the <code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">...</span> <span class="pre">]]</span></code> tags.
+Since Python normally uses indentation to delimit blocks of code, we
+need a different way to delimit them; this is why the py4web template
+language makes use of the Python keyword <code class="docutils literal notranslate"><span class="pre">pass</span></code>.</p>
+<blockquote>
+<div><p>A code block starts with a line ending with a colon and ends with a
+line beginning with <code class="docutils literal notranslate"><span class="pre">pass</span></code>. The keyword <code class="docutils literal notranslate"><span class="pre">pass</span></code> is not necessary
+when the end of the block is obvious from the context.</p>
+</div></blockquote>
+<p>Here is an example:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[
+if i == 0:
+response.write(&#39;i is 0&#39;)
+else:
+response.write(&#39;i is not 0&#39;)
+pass
+]]
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">pass</span></code> is a Python keyword, not a py4web keyword. Some
+Python editors, such as Emacs, use the keyword <code class="docutils literal notranslate"><span class="pre">pass</span></code> to signify the
+division of blocks and use it to re-indent code automatically.</p>
+<p>The py4web template language does exactly the same. When it finds
+something like:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+[[for x in range(10):]][[=x]]hello<span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>[[pass]]
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>it translates it into a program:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;&lt;html&gt;&lt;body&gt;&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">escape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;hello&lt;br /&gt;&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">escape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;&lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">escape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">response.write</span></code> writes to the <code class="docutils literal notranslate"><span class="pre">response.body</span></code>.</p>
+<p>When there is an error in a py4web view, the error report shows the
+generated view code, not the actual view as written by the developer.
+This helps the developer debug the code by highlighting the actual code
+that is executed (which is something that can be debugged with an HTML
+editor or the DOM inspector of the browser).</p>
+<p>Also note that:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=x]]
+</pre></div>
+</div>
+<p>generates</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Variables injected into the HTML in this way are escaped by default. The
+escaping is ignored if <code class="docutils literal notranslate"><span class="pre">x</span></code> is an <code class="docutils literal notranslate"><span class="pre">XML</span></code> object, even if escape is set
+to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>Here is an example that introduces the <code class="docutils literal notranslate"><span class="pre">H1</span></code> helper:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=H1(i)]]
+</pre></div>
+</div>
+<p>which is translated to:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">H1</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>upon evaluation, the <code class="docutils literal notranslate"><span class="pre">H1</span></code> object and its components are recursively
+serialized, escaped and written to the response body. The tags generated
+by <code class="docutils literal notranslate"><span class="pre">H1</span></code> and inner HTML are not escaped. This mechanism guarantees that
+all text — and only text — displayed on the web page is always escaped,
+thus preventing XSS vulnerabilities. At the same time, the code is
+simple and easy to debug.</p>
+<p>The method <code class="docutils literal notranslate"><span class="pre">response.write(obj,</span> <span class="pre">escape=True)</span></code> takes two arguments, the
+object to be written and whether it has to be escaped (set to <code class="docutils literal notranslate"><span class="pre">True</span></code>
+by default). If <code class="docutils literal notranslate"><span class="pre">obj</span></code> has an <code class="docutils literal notranslate"><span class="pre">.xml()</span></code> method, it is called and the
+result written to the response body (the <code class="docutils literal notranslate"><span class="pre">escape</span></code> argument is
+ignored). Otherwise it uses the object’s <code class="docutils literal notranslate"><span class="pre">__str__</span></code> method to serialize
+it and, if the escape argument is <code class="docutils literal notranslate"><span class="pre">True</span></code>, escapes it. All built-in
+helper objects (<code class="docutils literal notranslate"><span class="pre">H1</span></code> in the example) are objects that know how to
+serialize themselves via the <code class="docutils literal notranslate"><span class="pre">.xml()</span></code> method.</p>
+<p>This is all done transparently. You never need to (and never should)
+call the <code class="docutils literal notranslate"><span class="pre">response.write</span></code> method explicitly.</p>
+<div class="section" id="basic-syntax">
+<h2>Basic syntax<a class="headerlink" href="#basic-syntax" title="Link permanente para este título">¶</a></h2>
+<p>The py4web template language supports all Python control structures.
+Here we provide some examples of each of them. They can be nested
+according to usual programming practice.</p>
+<div class="section" id="for-in">
+<h3><code class="docutils literal notranslate"><span class="pre">for...in</span></code><a class="headerlink" href="#for-in" title="Link permanente para este título">¶</a></h3>
+<p>In templates you can loop over any iterable object:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[items = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]]]
+<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+[[for item in items:]]<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=item]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>[[pass]]
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>which produces:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>a<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>b<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>c<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Here <code class="docutils literal notranslate"><span class="pre">items</span></code> is any iterable object such as a Python list, Python
+tuple, or Rows object, or any object that is implemented as an iterator.
+The elements displayed are first serialized and escaped.</p>
+</div>
+<div class="section" id="while">
+<h3><code class="docutils literal notranslate"><span class="pre">while</span></code><a class="headerlink" href="#while" title="Link permanente para este título">¶</a></h3>
+<p>You can create a loop using the while keyword:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[k = 3]]
+<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+[[while k &gt; 0:]]<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=k]][[k = k - 1]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>[[pass]]
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>which produces:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>3<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>2<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>1<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="if-elif-else">
+<h3><code class="docutils literal notranslate"><span class="pre">if...elif...else</span></code><a class="headerlink" href="#if-elif-else" title="Link permanente para este título">¶</a></h3>
+<p>You can use conditional clauses:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[
+import random
+k = random.randint(0, 100)
+]]
+<span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>
+[[=k]]
+[[if k % 2:]]is odd[[else:]]is even[[pass]]
+<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>which produces:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>
+45 is odd
+<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Since it is obvious that <code class="docutils literal notranslate"><span class="pre">else</span></code> closes the first <code class="docutils literal notranslate"><span class="pre">if</span></code> block, there
+is no need for a <code class="docutils literal notranslate"><span class="pre">pass</span></code> statement, and using one would be incorrect.
+However, you must explicitly close the <code class="docutils literal notranslate"><span class="pre">else</span></code> block with a <code class="docutils literal notranslate"><span class="pre">pass</span></code>.</p>
+<p>Recall that in Python “else if” is written <code class="docutils literal notranslate"><span class="pre">elif</span></code> as in the following
+example:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[
+import random
+k = random.randint(0, 100)
+]]
+<span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>
+[[=k]]
+[[if k % 4 == 0:]]is divisible by 4
+[[elif k % 2 == 0:]]is even
+[[else:]]is odd
+[[pass]]
+<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>It produces:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>
+64 is divisible by 4
+<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="try-except-else-finally">
+<h3><code class="docutils literal notranslate"><span class="pre">try...except...else...finally</span></code><a class="headerlink" href="#try-except-else-finally" title="Link permanente para este título">¶</a></h3>
+<p>It is also possible to use <code class="docutils literal notranslate"><span class="pre">try...except</span></code> statements in views with one
+caveat. Consider the following example:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[try:]]
+Hello [[= 1 / 0]]
+[[except:]]
+division by zero
+[[else:]]
+no division by zero
+[[finally:]]
+<span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>
+[[pass]]
+</pre></div>
+</div>
+<p>It will produce the following output:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>Hello division by zero
+<span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>
+</pre></div>
+</div>
+<p>This example illustrates that all output generated before an exception
+occurs is rendered (including output that preceded the exception) inside
+the try block. “Hello” is written because it precedes the exception.</p>
+</div>
+<div class="section" id="def-return">
+<h3><code class="docutils literal notranslate"><span class="pre">def...return</span></code><a class="headerlink" href="#def-return" title="Link permanente para este título">¶</a></h3>
+<p>The py4web template language allows the developer to define and
+implement functions that can return any Python object or a text/html
+string. Here we consider two examples:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[def itemize1(link): return LI(A(link, _href=&quot;http://&quot; + link))]]
+<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+[[=itemize1(&#39;www.google.com&#39;)]]
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>produces the following output:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;http:/www.google.com&quot;</span><span class="p">&gt;</span>www.google.com<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>The function <code class="docutils literal notranslate"><span class="pre">itemize1</span></code> returns a helper object that is inserted at
+the location where the function is called.</p>
+<p>Consider now the following code:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[def itemize2(link):]]
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;http://[[=link]]&quot;</span><span class="p">&gt;</span>[[=link]]<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+[[return]]
+<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+[[itemize2(&#39;www.google.com&#39;)]]
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>It produces exactly the same output as above. In this case, the function
+<code class="docutils literal notranslate"><span class="pre">itemize2</span></code> represents a piece of HTML that is going to replace the
+py4web tag where the function is called. Notice that there is no ‘=’ in
+front of the call to <code class="docutils literal notranslate"><span class="pre">itemize2</span></code>, since the function does not return
+the text, but it writes it directly into the response.</p>
+<p>There is one caveat: functions defined inside a view must terminate with
+a <code class="docutils literal notranslate"><span class="pre">return</span></code> statement, or the automatic indentation will fail.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="chapter-10.html" class="btn btn-neutral float-right" title="YATL helpers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="chapter-08.html" class="btn btn-neutral float-left" title="The RESTAPI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, BSDv3 License
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20201112.1
+
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Languages</dt>
+        
+          
+          
+          <dd><a href="../en/index.html">en</a></dd> 
+        
+           <strong> 
+          <dd><a href="../pt/index.html">pt</a></dd> </strong>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+          <dd><a href="py4web_pt.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_pt.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ 
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

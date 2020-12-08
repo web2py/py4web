@@ -6,6 +6,7 @@ import base64
 class BasicAuthPlugin:
 
     name = "basic"
+    label = "Basic"
 
     def __init__(self, server="127.0.0.1", table=None):
         self.server = server

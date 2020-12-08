@@ -2,45 +2,102 @@
 
 [![Build Status](https://img.shields.io/travis/web2py/py4web/master.svg?style=flat-square&label=Travis-CI)](https://travis-ci.org/web2py/py4web)
 
-## Try me (from pip)
+## What is py4web?
+PY4WEB is a web framework for rapid development of efficient database driven web applications. It is an evolution of the popular web2py framework but much faster and slicker. The official documentation is on https://py4web.com/_documentation
+
+## License
+
+BSD
+
+## Installation
+
+PY4WEB runs fine on Windows, MacOS and Linux. There are four installation procedures (see the official documentation for details) but only two of them are summarized here.
+
+Using ''binaries'' is the **simplest way** for starting py4web, but only for Windows and MacOS. This is meant especially for newbies or students, because it does not require Python pre-installed on your system nor administrative rights. You just need to download the latest Windows or MacOS ZIP file from [this external repository](https://github.com/nicozanf/py4web-pyinstaller). Unzip it on a local folder and open a command line there. Finally run
+
 
 ```
-python3 -m pip install -U py4web --no-cache-dir --user
-py4web-start apps
-open http://localhost:8000/todo/index
+py4web-start set_password
+py4web-start run apps
 ```
 
-(The apps folder will be created with some apps inside)
 
-## Try me (from source)
-
-```
-git clone https://github.com/web2py/py4web.git
-cd py4web 
-python3 -m pip install -r requirements.txt
-./py4web-start.py apps
-open http://localhost:8000/todo/index
-```
-
-## Try me (install from source)
+Using ''pip'' is the **standard installation procedure** for py4web on Windows, MacOS and Linux. Its only prerequisite is Python 3.6+.
 
 ```
-git clone https://github.com/web2py/py4web.git
-cd py4web
-make assets
-make test
-make install
-py4web-start.py apps
-open http://localhost:8000/todo/index
+python3 -m pip install --upgrade py4web --no-cache-dir --user
 ```
 
-Notice "py4web-start" uses the pip installed py4web, "./py4web-start.py" uses the local one. Do not get confused.
-Also notice when installing from source the content of py4web/assets is missing and it is created by make assets.
+but do **not** type the ''--user'' option with virtualenv or a standard Windows installation which is already per-user.
+Also, if ''python3'' does not work, try with the simple ''python'' command instead.
+
+
+This will install py4web and all its dependencies on the system's path only. After the installation you'll be able to start py4web on any given working folder with
+
+```
+py4web setup apps
+py4web set_password
+py4web run apps
+```
+
+## Launch Arguments
+
+```
+# py4web run -h
+Usage: py4web.py run [OPTIONS] [APPS_FOLDER]
+
+  Run all the applications on apps_folder
+
+Options:
+  -Y, --yes                     No prompt, assume yes to questions  [default:
+                                False]
+
+  -H, --host TEXT               Host name  [default: 127.0.0.1]
+  -P, --port INTEGER            Port number  [default: 8000]
+  -p, --password_file TEXT      File for the encrypted password  [default:
+                                password.txt]
+
+  -w, --number_workers INTEGER  Number of workers  [default: 0]
+  -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
+                                (default), none  [default: full]
+
+  --watch [off|sync|lazy]       Watch python changes and reload apps
+                                automatically, modes: off (default), sync,
+                                lazy
+  --ssl_cert PATH               SSL certificate file for HTTPS
+  --ssl_key PATH                SSL key file for HTTPS
+  -help, -h, --help             Show this message and exit.
+
+```
+
+Example:
+
+
+```
+py4web run -H 127.0.0.1 -P 8000 -d demo apps
+```
+
+Note that since the default (as specified above) for the host and port are 127.0.0.1 and 8000 respectively, the above command can be shortened to:
+
+```
+py4web run -d demo apps
+```
+
+## WSGI
+
+py4web is a WSGI application. To obtain the WSGI app simply do:
+
+```
+from py4web.core import wsgi
+application = wsgi()
+```
+
+The wsgi function takes arguments with the same name as the command line arguments.
 
 ## Tell me more
 
 - this is a work in progress and not stable yet but close to being stable
-- python3 only
+- python3.6+ only
 - uses https://github.com/web2py/pydal (same DAL as web2py)
 - uses https://github.com/web2py/yatl (same as web2py but defaults to [[...]] instead of {{...}} delimiters)
 - uses the same validators as web2py (they are in pyDAL)
@@ -79,71 +136,6 @@ Also notice when installing from source the content of py4web/assets is missing 
 - gevent (done)
 - gunicorn (done)
 - bottle (done)
-
-## Storing _dashboard password 
-
-When py4web starts it asks for a _dashboard password and stores its pdkdf2 hash 
-in password.txt, in the working folder. It will not ask again unless the file is deleted. 
-If the ``--dashboard_mode`` is ``demo`` or ``none`` it will not ask.
-If you want to store it somewhere else, you can specify a name with ``--password_file``.
-
-You can create the file yourself with:
-
-```
-$ python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()(input('password:'))[0]))"
-password: *****
-```
-
-## Launch Arguments
-
-```
-usage: py4web-start.py [-h] [--host HOSTNAME] [--port PORT] [--headless] [-n NUMBER_WORKERS]
-                       [--ssl_cert_filename SSL_CERT_FILENAME]
-                       [--ssl_key_filename SSL_KEY_FILENAME]
-                       [--service_db_uri SERVICE_DB_URI] [-d DASHBOARD_MODE]
-                       [-p PASSWORD_FILE] [-c]
-                       apps_folder
-
-positional arguments:
-  apps_folder           path to the applications folder
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --host HOSTNAME       server address (IP or hostname)
-  --port PORT           server port number (e.g., 8000)
-  --headless            hide artwork for console based servers
-  -n NUMBER_WORKERS, --number_workers NUMBER_WORKERS
-                        number of gunicorn workers
-  --ssl_cert_filename SSL_CERT_FILENAME
-                        ssl certificate file
-  --ssl_key_filename SSL_KEY_FILENAME
-                        ssl key file
-  --service_db_uri SERVICE_DB_URI
-                        db uri for logging
-  -d DASHBOARD_MODE, --dashboard_mode DASHBOARD_MODE
-                        dashboard mode: demo, readonly, full (default), none
-  -p PASSWORD_FILE, --password_file PASSWORD_FILE
-                        file containing the encrypted (CRYPT) password
-  -c, --create          created the missing folder and apps
-```
-
-Example:
-
-
-```
-py4web-start -a 127.0.0.1:8000 -d demo apps
-```
-
-## WSGI
-
-py4web is a WSGI application. To obtain the WSGI app simply do:
-
-```
-from py4web.core import wsgi
-application = wsgi()
-```
-
-The wsgi function takes arguments with the same name as the command line arguments.
 
 
 ## Contributors

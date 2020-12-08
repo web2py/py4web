@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 
-class DBStore(object):
+class DBStore:
     def __init__(self, db, name="py4web_session"):
         self.__prerequisites__ = [db]
         Field = db.Field
@@ -46,3 +46,4 @@ class DBStore(object):
                 expiration=expiration,
                 ceated_on=None,
             )
+        db.commit()

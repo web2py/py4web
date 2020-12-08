@@ -37,11 +37,11 @@ except ImportError:
     pyme = None
 
 
-class Settings(object):
+class Settings:
     pass
 
 
-class Mailer(object):
+class Mailer:
     """
     Class for configuring and sending emails with alternative text / html
     body, multiple attachments and encryption support
@@ -198,7 +198,7 @@ class Mailer(object):
                 self["Content-Id"] = "<%s>" % to_native(content_id, encoding)
             Encoders.encode_base64(self)
 
-    def __init__(self, server=None, sender=None, login=None, tls=True):
+    def __init__(self, server=None, sender=None, login=None, tls=True, ssl=False):
 
         settings = self.settings = Settings()
         settings.logger = logging
@@ -208,7 +208,7 @@ class Mailer(object):
         settings.tls = tls
         settings.timeout = 5  # seconds
         settings.hostname = None
-        settings.ssl = False
+        settings.ssl = ssl
         settings.cipher_type = None
         settings.gpg_home = None
         settings.sign = True
@@ -800,7 +800,16 @@ class Mailer(object):
                         server.login(*self.settings.login.split(":", 1))
                     result = server.sendmail(sender, to, payload.as_string())
                 finally:
-                    server.quit()
+                    # do not want to hide errors raising some exception here
+                    try:
+                        server.quit()
+                    except:
+                        pass
+                    # ensure to close any socket with SMTP server
+                    try:
+                        server.close()
+                    except:
+                        pass
         except Exception as e:
             self.settings.logger.warning("Mailer.send failure:%s" % e)
             self.result = result

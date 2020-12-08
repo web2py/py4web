@@ -4,7 +4,7 @@ from pydal import Field, Field
 from pydal.validators import *
 
 
-class Tags(object):
+class Tags:
     def __init__(self, table, name="default"):
         self.table = table
         db = table._db
