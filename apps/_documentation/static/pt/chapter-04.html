@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>The Dashboard &mdash; Documentação py4web 1.20201112.1
+  <title>O Dashboard &mdash; Documentação py4web 1.20201127.1
 </title>
   
 
@@ -40,8 +40,8 @@
     
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Pesquisar" href="search.html" />
-    <link rel="next" title="Creating your first app" href="chapter-05.html" />
-    <link rel="prev" title="Installation and Startup" href="chapter-03.html" /> 
+    <link rel="next" title="Criando seu primeiro aplicativo" href="chapter-05.html" />
+    <link rel="prev" title="Instalação e colocação em funcionamento" href="chapter-03.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.20201112.1
+                1.20201127.1
 
               </div>
             
@@ -91,27 +91,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Conteúdo:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="chapter-01.html">O que é py4web?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">The Dashboard</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#the-main-web-page">The main Web page</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#login-into-the-dashboard">Login into the Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">O Dashboard</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-main-web-page">A página Web principal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#login-into-the-dashboard">Sessão no Dashboard</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The database abstraction layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">A camada de abstracção de banco de dados (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">A RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internacionalização</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forumlários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Autenticação e controle de acesso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
 </ul>
 
             
@@ -158,7 +158,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>The Dashboard</li>
+      <li>O Dashboard</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -180,56 +180,39 @@
            <div itemprop="articleBody">
             
   <div class="section" id="the-dashboard">
-<h1>The Dashboard<a class="headerlink" href="#the-dashboard" title="Link permanente para este título">¶</a></h1>
-<p>The Dashboard is the standard web based IDE; you will surely use it extensively to manage the applications and
-check databases. Looking at its interface is a good way to start exploring py4web and its components.</p>
+<h1>O Dashboard<a class="headerlink" href="#the-dashboard" title="Link permanente para este título">¶</a></h1>
+<p>O Dashboard é o padrão IDE baseado na web; você certamente irá usá-lo extensivamente para gerir as aplicações e verificar bancos de dados. Olhando para a sua interface é uma boa maneira de começar a explorar py4web e seus componentes.</p>
 <div class="section" id="the-main-web-page">
-<h2>The main Web page<a class="headerlink" href="#the-main-web-page" title="Link permanente para este título">¶</a></h2>
-<p>When you run the standard py4web program, it starts a web server with a main web page
-listening on <a class="reference external" href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> (which means that it is listening
-on the TCP port 8000 on your local PC, using the http protocol).</p>
-<p>You can connect to this main page only from your local pc, using a web browser
-like Firefox or Google Chrome:</p>
+<h2>A página Web principal<a class="headerlink" href="#the-main-web-page" title="Link permanente para este título">¶</a></h2>
+<p>Quando você executar o programa py4web padrão, ele começa um servidor web com uma página web de audição principal em <a class="reference external" href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> (o que significa que ele está escutando na porta TCP 8000 no seu PC local, usando o protocolo http ).</p>
+<p>Você pode conectar-se a esta página apenas a partir de seu PC local, usando um navegador web como o Firefox ou o Google Chrome:</p>
 <img alt="_images/main_page.png" src="_images/main_page.png" />
-<p>The buttons are:</p>
+<p>Os botões são:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Dashboard (<a class="reference external" href="http://127.0.0.1:8000/_dashboard">http://127.0.0.1:8000/_dashboard</a>), which we’ll describe in this chapter</p></li>
-<li><p>Documentation (<a class="reference external" href="http://127.0.0.1:8000/_documentation?version=1.20201112.1">http://127.0.0.1:8000/_documentation?version=1.20201112.1</a>), for browsing the local copy of this Manual</p></li>
-<li><p>Source (<a class="reference external" href="https://github.com/web2py/py4web">https://github.com/web2py/py4web</a>), pointing to the GitHub repository</p></li>
-<li><p>Discuss (<a class="reference external" href="https://groups.google.com/forum/#!forum/py4web">https://groups.google.com/forum/#!forum/py4web</a>), pointing to the Google mail group</p></li>
+<li><p>Dashboard (<a class="reference external" href="http://127.0.0.1:8000/_dashboard">http://127.0.0.1:8000/_dashboard</a>), que iremos descrever neste capítulo</p></li>
+<li><p>Documentação (<a class="reference external" href="http://127.0.0.1:8000/_documentation?version=1.20201112.1">http://127.0.0.1:8000/_documentation?version=1.20201112.1</a>), para navegar na cópia local deste Manual</p></li>
+<li><p>Fonte (<a class="reference external" href="https://github.com/web2py/py4web">https://github.com/web2py/py4web</a>), apontando para o repositório GitHub</p></li>
+<li><p>Discutir (<a class="reference external" href="https://groups.google.com/forum/#!forum/py4web">https://groups.google.com/forum/#!forum/py4web</a>), apontando para o grupo mail do Google</p></li>
 </ul>
 </div></blockquote>
 </div>
 <div class="section" id="login-into-the-dashboard">
-<h2>Login into the Dashboard<a class="headerlink" href="#login-into-the-dashboard" title="Link permanente para este título">¶</a></h2>
-<p>Pressing the Dashboard button will forward you to the Dashboard login.
-Here you must insert the password that you’ve already setup (see <a class="reference internal" href="chapter-03.html#set-password-command-option"><span class="std std-ref">set_password command option</span></a>).
-If you don’t remember the password, you have to stop the program with CTRL-C, setup a new one and run the py4web again.</p>
+<h2>Sessão no Dashboard<a class="headerlink" href="#login-into-the-dashboard" title="Link permanente para este título">¶</a></h2>
+<p>Pressionando o botão do painel irá transmitir-lhe para o login Dashboard. Aqui você deve inserir a senha que você já setup (veja: ref: <cite>option</cite> comando set_password). Se você não se lembre da senha, você tem que parar o programa com CTRL-C, configurar um novo e execute o py4web novamente.</p>
 <p><a class="reference internal" href="_images/dashboard_login.png"><img alt="image1" src="_images/dashboard_login.png" style="width: 800px; height: 558px;" /></a></p>
-<p>After inserting the right Dashboard’s password, it will be displayed with all the tabs compressed.</p>
+<p>Depois de inserir a senha do painel direito, será exibido com todas as abas comprimido.</p>
 <img alt="_images/dashboard.png" src="_images/dashboard.png" />
-<p>Click on a tab title to expand. Tabs are context dependent. For example,
-open tab “Installed Applications” and click on an installed application
-to select it.</p>
-<p>This will create new tabs “Routes”, “Files”, and “Model”
-for the selected app.</p>
+<p>Clique no título de um guia para expandir. As guias são dependentes do contexto. Por exemplo, aba aberta “Instalado Aplicativos” e clique em um aplicativo instalado para selecioná-lo.</p>
+<p>Isto irá criar novas guias “Rotas”, “Arquivos” e “Modelo” para o aplicativo selecionado.</p>
 <p><a class="reference internal" href="_images/dashboard_main.png"><img alt="image2" src="_images/dashboard_main.png" style="width: 800px; height: 558px;" /></a></p>
-<p>The “Files” tab allows you to browse the folder that contains the
-selected app and edit any file that comprises the app. If you edit a
-file you must click on “Reload Apps” under the “Installed Applications”
-tab for the change to take effect (except if you use <em>watch</em> with the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>).
-If an app fails to load, its corresponding button is displayed in red. Click on it to see the
-corresponding error.</p>
+<p>A aba “Arquivos” permite que você navegue a pasta que contém o aplicativo selecionado e editar qualquer arquivo que inclui o aplicativo. Se você editar um arquivo que você deve clicar em “Recarregar Apps” sob a guia “Aplicativos instalados” para que a alteração tenha efeito (exceto se você usar * relógio * com o: ref: <cite>comando de execução option</cite>). Se um aplicativo não for carregado, o botão correspondente é exibido em vermelho. Clique na imagem para ver o erro correspondente.</p>
 <p><a class="reference internal" href="_images/dashboard_edit.png"><img alt="image3" src="_images/dashboard_edit.png" style="width: 800px; height: 558px;" /></a></p>
-<p>The Dashboard exposes the db of all the apps using pydal RESTAPI. It
-also provides a web interface to perform search and CRUD operations.</p>
+<p>O painel expõe o db de todas as aplicações que utilizam RESTAPI pydal. Ele também fornece uma interface web para realizar operações de busca e CRUD.</p>
 <p><a class="reference internal" href="_images/dashboard_restapi.png"><img alt="image4" src="_images/dashboard_restapi.png" style="width: 800px; height: 558px;" /></a></p>
-<p>If a user visits an app and triggers a bug, the user is issued a
-ticket.</p>
+<p>Se um usuário visita um aplicativo e desencadeia um erro, o usuário é emitido um bilhete.</p>
 <p><a class="reference internal" href="_images/dashboard_error.png"><img alt="image5" src="_images/dashboard_error.png" style="width: 800px; height: 558px;" /></a></p>
-<p>The ticket is logged in py4web database. The Dashboard displays the most
-common recent issues and allows searching tickets.</p>
+<p>O bilhete é registrado no banco de dados py4web. O painel exibe as edições recentes mais comuns e permite pesquisar bilhetes.</p>
 <p><a class="reference internal" href="_images/dashboard_ticket.png"><img alt="image6" src="_images/dashboard_ticket.png" style="width: 800px; height: 558px;" /></a></p>
 </div>
 </div>
@@ -242,10 +225,10 @@ common recent issues and allows searching tickets.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="chapter-05.html" class="btn btn-neutral float-right" title="Creating your first app" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="chapter-05.html" class="btn btn-neutral float-right" title="Criando seu primeiro aplicativo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="chapter-03.html" class="btn btn-neutral float-left" title="Installation and Startup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="chapter-03.html" class="btn btn-neutral float-left" title="Instalação e colocação em funcionamento" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -288,14 +271,14 @@ common recent issues and allows searching tickets.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20201112.1
+      v: 1.20201127.1
 
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
       
       <dl>
-        <dt>Languages</dt>
+        <dt>Idiomas</dt>
         
           
           
@@ -309,7 +292,7 @@ common recent issues and allows searching tickets.</p>
       
       
       <dl>
-        <dt>Versions</dt>
+        <dt>Versões</dt>
         
           
           <dd><a href="index.html">current</a></dd>
@@ -319,7 +302,7 @@ common recent issues and allows searching tickets.</p>
       
       
       <dl>
-        <dt>Downloads</dt>
+        <dt>Transferências</dt>
         
           <dd><a href="py4web_pt.pdf">pdf</a></dd>
         

@@ -1,120 +1,139 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2020, BSDv3 License
 # This file is distributed under the same license as the py4web package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: py4web 1.20201112.1\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-29 10:41+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: py4web 1.20201127.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-02 20:25-0300\n"
+"PO-Revision-Date: 2020-12-08 10:49-0300\n"
+"Last-Translator: potranslator 1.1.5\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Translated-By: potranslator 1.1.5\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: ../../chapter-12.rst:3
 msgid "Forms"
-msgstr ""
+msgstr "Forumlários"
 
 #: ../../chapter-12.rst:5
 msgid "WORK IN PROGRESS"
-msgstr ""
+msgstr "TRABALHO EM PROGRESSO"
 
 #: ../../chapter-12.rst:7
 msgid ""
 "Just know that ``py4web.utils.form.Form`` is a pretty much equivalent to "
 "web2py’s ``SQLFORM``."
 msgstr ""
+"Só sei que `` py4web.utils.form.Form`` é um praticamente equivalente a `` "
+"SQLFORM`` do web2py."
 
 #: ../../chapter-12.rst:10
 msgid "The ``Form`` constructor accepts the following arguments:"
-msgstr ""
+msgstr "O `` construtor Form`` aceita os seguintes argumentos:"
 
 #: ../../chapter-12.rst:26
 msgid "Where:"
-msgstr ""
+msgstr "Onde:"
 
 #: ../../chapter-12.rst:28
 msgid ""
-"``table``: a DAL table or a list of fields (equivalent to old "
-"SQLFORM.factory)"
+"``table``: a DAL table or a list of fields (equivalent to old SQLFORM."
+"factory)"
 msgstr ""
+"`` Table``: uma mesa DAL ou uma lista de campos (equivalente a SQLFORM."
+"factory idade)"
 
 #: ../../chapter-12.rst:30
 msgid "``record``: a DAL record or record id"
-msgstr ""
+msgstr "`` Record``: um registro DAL ou ID de registro"
 
 #: ../../chapter-12.rst:31
 msgid "``readonly``: set to True to make a readonly form"
-msgstr ""
+msgstr "`` Readonly``: Defina como true para fazer um formulário readonly"
 
 #: ../../chapter-12.rst:32
 msgid "``deletable``: set to False to disallow deletion of record"
 msgstr ""
+"`` Deletable``: definida para Falso ao apagamento disallow de registro"
 
 #: ../../chapter-12.rst:33
 msgid ""
 "``formstyle``: a function that renders the form using helpers "
 "(FormStyleDefault)"
 msgstr ""
+"`` Formstyle``: uma função que processa a forma usando ajudantes "
+"(FormStyleDefault)"
 
 #: ../../chapter-12.rst:35
 msgid "``dbio``: set to False to prevent any DB writes"
-msgstr ""
+msgstr "`` Dbio``: definida para Falso para evitar quaisquer gravações DB"
 
 #: ../../chapter-12.rst:36
 msgid ""
-"``keep_values``: if set to true, it remembers the values of the "
-"previously submitted form"
+"``keep_values``: if set to true, it remembers the values of the previously "
+"submitted form"
 msgstr ""
+"`` Keep_values``: se definido como verdadeiro, ele lembra os valores do "
+"formulário previamente submetidas"
 
 #: ../../chapter-12.rst:38
 msgid "``form_name``: the optional name of this form"
-msgstr ""
+msgstr "`` Form_name``: o nome opcional desta forma"
 
 #: ../../chapter-12.rst:39
 msgid "``hidden``: a dictionary of hidden fields that is added to the form"
-msgstr ""
+msgstr "`` Hidden``: um dicionário de campos ocultos que é adicionado à forma"
 
 #: ../../chapter-12.rst:40
 msgid "``before_validate``: an optional validator."
-msgstr ""
+msgstr "`` Before_validate``: um validador opcional."
 
 #: ../../chapter-12.rst:43
 msgid "Example"
-msgstr ""
+msgstr "Exemplo"
 
 #: ../../chapter-12.rst:45
 msgid ""
 "Here is a simple example of a custom form not using database access. We "
-"declare an endpoint ``/form_example``, which will be used both for the "
-"GET and for the POST of the form:"
+"declare an endpoint ``/form_example``, which will be used both for the GET "
+"and for the POST of the form:"
 msgstr ""
+"Aqui está um exemplo simples de um formulário personalizado não utilizar "
+"acesso de banco de dados. Declaramos um ponto final `` / form_example``, "
+"que será utilizado tanto para o GET e para o POST da forma:"
 
 #: ../../chapter-12.rst:70
 msgid "The form can be displayed in the template simply using ``[[=form]]``."
 msgstr ""
+"A forma pode ser exibida no modelo simplesmente usando `` [[= formar]] ``."
 
 #: ../../chapter-12.rst:73
 msgid "Form validation"
-msgstr ""
+msgstr "Validação de formulário"
 
 #: ../../chapter-12.rst:75
 msgid ""
 "The validation of form input can be done in two ways. One can define "
 "``requires`` attributes of ``Field``, or one can define explicitly a "
-"validation function. To do the latter, we pass to ``validate`` a function"
-" that takes the form and returns a dictionary, mapping field names to "
-"errors. If the dictionary is non-empty, the errors will be displayed to "
-"the user, and no database I/O will take place."
+"validation function. To do the latter, we pass to ``validate`` a function "
+"that takes the form and returns a dictionary, mapping field names to "
+"errors. If the dictionary is non-empty, the errors will be displayed to the "
+"user, and no database I/O will take place."
 msgstr ""
+"A validação da entrada de formulário pode ser feito de duas maneiras. Pode-"
+"se definir atributos `` `` requires`` de Field``, ou pode-se definir "
+"explicitamente uma função de validação. Para fazer o último, passamos para "
+"`` validate`` uma função que toma a forma e retorna um dicionário, os nomes "
+"de campo mapeamento para erros. Se o dicionário não é vazio, os erros serão "
+"exibidos para o usuário, e nenhum banco de dados I / O ocorrerá."
 
 #: ../../chapter-12.rst:82
 msgid "Here is an example:"
-msgstr ""
-
+msgstr "Aqui está um exemplo:"

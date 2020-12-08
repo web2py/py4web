@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Internationalization &mdash; Documentação py4web 1.20201112.1
+  <title>Internacionalização &mdash; Documentação py4web 1.20201127.1
 </title>
   
 
@@ -40,8 +40,8 @@
     
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Pesquisar" href="search.html" />
-    <link rel="next" title="Forms" href="chapter-12.html" />
-    <link rel="prev" title="YATL helpers" href="chapter-10.html" /> 
+    <link rel="next" title="Forumlários" href="chapter-12.html" />
+    <link rel="prev" title="Helpers YATL" href="chapter-10.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.20201112.1
+                1.20201127.1
 
               </div>
             
@@ -91,27 +91,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Conteúdo:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="chapter-01.html">O que é py4web?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The database abstraction layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Internationalization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#pluralize">Pluralize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#update-the-translation-files">Update the translation files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">A camada de abstracção de banco de dados (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">A RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Internacionalização</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pluralize">Pluralizar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#update-the-translation-files">Atualizar os arquivos de tradução</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forumlários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Autenticação e controle de acesso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
 </ul>
 
             
@@ -158,7 +158,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Internationalization</li>
+      <li>Internacionalização</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -180,13 +180,11 @@
            <div itemprop="articleBody">
             
   <div class="section" id="internationalization">
-<h1>Internationalization<a class="headerlink" href="#internationalization" title="Link permanente para este título">¶</a></h1>
+<h1>Internacionalização<a class="headerlink" href="#internationalization" title="Link permanente para este título">¶</a></h1>
 <div class="section" id="pluralize">
-<h2>Pluralize<a class="headerlink" href="#pluralize" title="Link permanente para este título">¶</a></h2>
-<p>Pluralize is a Python library for Internationalization (i18n) and
-Pluralization (p10n).</p>
-<p>The library assumes a folder (for exaple “translations”) that contains
-files like:</p>
+<h2>Pluralizar<a class="headerlink" href="#pluralize" title="Link permanente para este título">¶</a></h2>
+<p>Pluralizar é uma biblioteca Python para a Internacionalização (i18n) e Pluralização (p10n).</p>
+<p>A biblioteca assume uma pasta (por exaple “traduções”) que contém arquivos como:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">it</span><span class="o">.</span><span class="n">json</span>
 <span class="n">it</span><span class="o">-</span><span class="n">IT</span><span class="o">.</span><span class="n">json</span>
 <span class="n">fr</span><span class="o">.</span><span class="n">json</span>
@@ -194,20 +192,16 @@ files like:</p>
 <span class="p">(</span><span class="n">etc</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Each file has the following structure, for example for Italian
-(it.json):</p>
+<p>Cada arquivo tem a seguinte estrutura, por exemplo para o italiano (it.json):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;dog&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="s2">&quot;no cane&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;un cane&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{n}</span><span class="s2"> cani&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">:</span> <span class="s2">&quot;tantissimi cani&quot;</span><span class="p">}}</span>
 </pre></div>
 </div>
-<p>The top level keys are the expressions to be translated and the
-associated value/dictionary maps a number to a translation. Different
-translations correspond to different plural forms of the expression,</p>
-<p>Here is another example for the word “bed” in Czech</p>
+<p>As chaves de nível superior são as expressões a ser traduzido e o valor associado / dicionário mapeia um número para uma tradução. Diferentes traduções correspondem a diferentes formas de plural da expressão,</p>
+<p>Aqui está outro exemplo para a palavra “cama” em checo</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;bed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="s2">&quot;no postel&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;postel&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;postele&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="s2">&quot;postelí&quot;</span><span class="p">}}</span>
 </pre></div>
 </div>
-<p>To translate and pluralize a string “dog” one simply warps the string in
-the T operator as follows:</p>
+<p>Para traduzir e pluralizar de “cachorro” string um simplesmente deforma a corda na operadora T da seguinte forma:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pluralize</span> <span class="kn">import</span> <span class="n">Translator</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">Translator</span><span class="p">(</span><span class="s1">&#39;translations&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dog</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="s2">&quot;dog&quot;</span><span class="p">)</span>
@@ -226,29 +220,25 @@ the T operator as follows:</p>
 <span class="go">tantissimi cani</span>
 </pre></div>
 </div>
-<p>The string can contain multiple placeholders but the {n} placeholder is
-special because the variable called “n” is used to determine the
-pluralization by best match (max dict key &lt;= n).</p>
-<p>T(…) objects can be added together with each other and with string, like
-regular strings.</p>
-<p>T.select(s) can parse a string s following the HTTP accept language
-format.</p>
+<p>A cadeia pode conter vários espaços reservados, mas o {n} espaço reservado é especial porque a variável chamada “n” é usado para determinar a pluralização pelo melhor jogo (tecla dict max &lt;= n).</p>
+<p>T (…) os objetos podem ser adicionados em conjunto com os outros e com a corda, como cordas regulares.</p>
+<p>T.select (s) pode analisar uma string s seguinte HTTP aceito formato de idioma.</p>
 </div>
 <div class="section" id="update-the-translation-files">
-<h2>Update the translation files<a class="headerlink" href="#update-the-translation-files" title="Link permanente para este título">¶</a></h2>
-<p>Find all strings wrapped in T(…) in .py, .html, and .js files:</p>
+<h2>Atualizar os arquivos de tradução<a class="headerlink" href="#update-the-translation-files" title="Link permanente para este título">¶</a></h2>
+<p>Encontrar todas as cordas envoltas em T (…) em .py, .html e arquivos .js:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">matches</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">find_matches</span><span class="p">(</span><span class="s1">&#39;path/to/app/folder&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Add newly discovered entries in all supported languages</p>
+<p>Adicione entradas recém-descobertas em todos os idiomas suportados</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">update_languages</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Add a new supported language (for example german, “de”)</p>
+<p>Adicionar um novo idioma suportado (por exemplo alemão “de”,)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">languages</span><span class="p">[</span><span class="s1">&#39;de&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 </pre></div>
 </div>
-<p>Make sure all languages contain the same origin expressions</p>
+<p>Certifique-se de todos os idiomas contêm as mesmas expressões de origem</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">known_expressions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">language</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="n">language</span><span class="p">:</span>
@@ -256,7 +246,7 @@ format.</p>
 <span class="n">T</span><span class="o">.</span><span class="n">update_languages</span><span class="p">(</span><span class="n">known_expressions</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Finally save the changes:</p>
+<p>Finalmente salvar as alterações:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;translations&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -271,10 +261,10 @@ format.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="chapter-12.html" class="btn btn-neutral float-right" title="Forms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="chapter-12.html" class="btn btn-neutral float-right" title="Forumlários" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="chapter-10.html" class="btn btn-neutral float-left" title="YATL helpers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="chapter-10.html" class="btn btn-neutral float-left" title="Helpers YATL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -317,14 +307,14 @@ format.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20201112.1
+      v: 1.20201127.1
 
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
       
       <dl>
-        <dt>Languages</dt>
+        <dt>Idiomas</dt>
         
           
           
@@ -338,7 +328,7 @@ format.</p>
       
       
       <dl>
-        <dt>Versions</dt>
+        <dt>Versões</dt>
         
           
           <dd><a href="index.html">current</a></dd>
@@ -348,7 +338,7 @@ format.</p>
       
       
       <dl>
-        <dt>Downloads</dt>
+        <dt>Transferências</dt>
         
           <dd><a href="py4web_pt.pdf">pdf</a></dd>
         
