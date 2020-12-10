@@ -102,17 +102,17 @@ folder
    py4web run apps
 
 Also notice that when installing in this way the content of
-py4web/assets folder is missing at first but it is manually created
-later with the ‘make assets’ command.
+``py4web/assets`` folder is missing at first but it is manually created
+later with the ``make assets`` command.
 
 Installing from source (locally)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-| In this way all the requirements will be installed or upgraded on the
-  system’s path, but py4web itself will only be copied
-| on a local folder. This is especially useful if you already have a
-  working py4web installation but you want to test a different
-| one. From the command line, go to a given working folder and then run
+In this way all the requirements will be installed or upgraded on the
+system’s path, but py4web itself will only be copied
+on a local folder. This is especially useful if you already have a
+working py4web installation but you want to test a different
+one. From the command line, go to a given working folder and then run
 
 .. code:: bash
 
