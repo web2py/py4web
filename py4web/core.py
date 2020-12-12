@@ -744,8 +744,11 @@ class action:
                 except Exception:
                     logging.error(traceback.format_exc())
                     ticket = "unknown"
-                return error_page(
-                    500, button_text=ticket, href="/_dashboard/ticket/" + ticket
+                raise bottle.HTTPResponse(
+                    body=error_page(
+                        500, button_text=ticket, href="/_dashboard/ticket/" + ticket
+                    ),
+                    status=500,
                 )
 
         return wrapper
