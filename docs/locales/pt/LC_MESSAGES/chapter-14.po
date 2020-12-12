@@ -1,197 +1,237 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2020, BSDv3 License
 # This file is distributed under the same license as the py4web package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: py4web 1.20201112.1\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-29 10:41+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: py4web 1.20201127.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-02 20:25-0300\n"
+"PO-Revision-Date: 2020-12-08 10:50-0300\n"
+"Last-Translator: potranslator 1.1.5\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Translated-By: potranslator 1.1.5\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: ../../chapter-14.rst:3
 msgid "Grid"
-msgstr ""
+msgstr "Rede"
 
 #: ../../chapter-14.rst:5
 msgid ""
-"py4web comes with a Grid object providing simple grid and CRUD "
-"capabilities."
+"py4web comes with a Grid object providing simple grid and CRUD capabilities."
 msgstr ""
+"py4web vem com um objecto de grelha fornecendo grid simples e os recursos "
+"CRUD."
 
 #: ../../chapter-14.rst:9
 msgid "Key Features"
-msgstr ""
+msgstr "Características principais"
 
 #: ../../chapter-14.rst:11
 msgid "Click column heads for sorting - click again for DESC"
 msgstr ""
+"Clique cabeças de coluna para classificar - clique novamente para DESC"
 
 #: ../../chapter-14.rst:12
 msgid "Pagination control"
-msgstr ""
+msgstr "Controle de paginação"
 
 #: ../../chapter-14.rst:13
 msgid "Built in Search (can use search_queries OR search_form)"
-msgstr ""
+msgstr "Construído em Search (pode usar search_queries OU search_form)"
 
 #: ../../chapter-14.rst:14
 msgid "Action Buttons - with or without text"
-msgstr ""
+msgstr "Botões de ação - com ou sem texto"
 
 #: ../../chapter-14.rst:15
 msgid "Full CRUD with Delete Confirmation"
-msgstr ""
+msgstr "CRUD completa com Confirmação de exclusão"
 
 #: ../../chapter-14.rst:16
 msgid "Pre and Post Action (add your own buttons to each row)"
-msgstr ""
+msgstr "Pré e Pós Ação (adicionar seus próprios botões para cada linha)"
 
 #: ../../chapter-14.rst:17
 msgid "Grid dates in local format"
-msgstr ""
+msgstr "Datas de grid em formato local"
 
 #: ../../chapter-14.rst:18
 msgid "Default formatting by type plus user overrides"
-msgstr ""
+msgstr "Formatação padrão por tipo de utilizador mais substituições"
 
 #: ../../chapter-14.rst:21
 msgid "Basic Example"
-msgstr ""
+msgstr "Exemplo básico"
 
 #: ../../chapter-14.rst:23
 msgid "In this simple example we will make a grid over the company table."
-msgstr ""
+msgstr "Neste exemplo simples, vamos fazer uma grid sobre a mesa da empresa."
 
 #: ../../chapter-14.rst:25
 msgid "controllers.py"
-msgstr ""
+msgstr "controllers.py"
 
 #: ../../chapter-14.rst:45
 msgid "grid.html"
-msgstr ""
+msgstr "grid.html"
 
 #: ../../chapter-14.rst:53
 msgid "Signature"
-msgstr ""
+msgstr "Assinatura"
 
 #: ../../chapter-14.rst:83
 msgid "path: the route of this request"
-msgstr ""
+msgstr "caminho: a rota do pedido"
 
 #: ../../chapter-14.rst:84
 msgid "query: pydal query to be processed"
-msgstr ""
+msgstr "query: consulta pydal a ser processado"
 
 #: ../../chapter-14.rst:85
 msgid ""
-"search_form: py4web FORM to be included as the search form. If "
-"search_form is passed in then the developer is responsible for applying "
-"the filter to the query passed in. This differs from search_queries."
+"search_form: py4web FORM to be included as the search form. If search_form "
+"is passed in then the developer is responsible for applying the filter to "
+"the query passed in. This differs from search_queries."
 msgstr ""
+"search_form: FORM py4web a ser incluído como o formulário de busca. Se "
+"search_form é passado em seguida, o desenvolvedor é responsável por aplicar "
+"o filtro para a consulta passada. Isso é diferente de search_queries."
 
 #: ../../chapter-14.rst:89
 msgid ""
 "search_queries: list of query lists to use to build the search form. "
 "Ignored if search_form is used. Format is"
 msgstr ""
+"search_queries: lista de listas de consulta para usar para construir o "
+"formulário de busca. Ignorado se search_form é usado. O formato é"
 
 #: ../../chapter-14.rst:91
 msgid ""
 "fields: list of fields to display on the list page, if blank, glean "
 "tablename from first query and use all fields of that table"
 msgstr ""
+"campos: lista de campos a serem exibidos na página de lista, se em branco, "
+"tablename recolher de primeira consulta e usar todos os campos dessa tabela"
 
 #: ../../chapter-14.rst:93
 msgid "show_id: show the record id field on list page - default = False"
 msgstr ""
+"show_id: mostrar o campo ID de registo na página de lista - default = false"
 
 #: ../../chapter-14.rst:94
 msgid "orderby: pydal orderby field or list of fields"
-msgstr ""
+msgstr "orderby: Campo orderby pydal ou lista de campos"
 
 #: ../../chapter-14.rst:95
 msgid "left: if joining other tables, specify the pydal left expression here"
 msgstr ""
+"esquerda: se juntando outras tabelas, especifique a expressão esquerda "
+"pydal aqui"
 
 #: ../../chapter-14.rst:96
 msgid ""
-"headings: list of headings to be used for list page - if not provided use"
-" the field label"
+"headings: list of headings to be used for list page - if not provided use "
+"the field label"
 msgstr ""
+"títulos: lista de títulos a ser utilizado para página da lista - se não for "
+"fornecido o uso do rótulo do campo"
 
 #: ../../chapter-14.rst:98
 msgid ""
 "details: URL to redirect to for displaying records - set to True to "
 "automatically generate the URL - set to False to not display the button"
 msgstr ""
+"detalhes: URL para redirecionar para os registros exibindo - Defina como "
+"true para gerar automaticamente a URL - definido como falso para não exibir "
+"o botão"
 
 #: ../../chapter-14.rst:101
 msgid ""
 "create: URL to redirect to for creating records - set to True to "
 "automatically generate the URL - set to False to not display the button"
 msgstr ""
+"criar: URL para redirecionar para a criação de registros - definido como "
+"verdadeiro para gerar automaticamente o URL - definido como falso para não "
+"exibir o botão"
 
 #: ../../chapter-14.rst:104
 msgid ""
 "editable: URL to redirect to for editing records - set to True to "
 "automatically generate the URL - set to False to not display the button"
 msgstr ""
+"editável: URL para redirecionar para a edição de registros - Defina como "
+"true para gerar automaticamente a URL - definido como falso para não exibir "
+"o botão"
 
 #: ../../chapter-14.rst:107
 msgid ""
 "deletable: URL to redirect to for deleting records - set to True to "
 "automatically generate the URL - set to False to not display the button"
 msgstr ""
+"deletable: URL para redirecionar para a exclusão de registros - Defina como "
+"true para gerar automaticamente a URL - definido como falso para não exibir "
+"o botão"
 
 #: ../../chapter-14.rst:110
 msgid ""
-"pre_action_buttons: list of action_button instances to include before the"
-" standard action buttons"
+"pre_action_buttons: list of action_button instances to include before the "
+"standard action buttons"
 msgstr ""
+"pre_action_buttons: lista de instâncias action_button para incluir antes de "
+"os botões de ação padrão"
 
 #: ../../chapter-14.rst:112
 msgid ""
-"post_action_buttons: list of action_button instances to include after the"
-" standard action buttons"
+"post_action_buttons: list of action_button instances to include after the "
+"standard action buttons"
 msgstr ""
+"post_action_buttons: lista de instâncias action_button para incluir após os "
+"botões de ação padrão"
 
 #: ../../chapter-14.rst:114
 msgid ""
 "auto_process: Boolean - whether or not the grid should be processed "
-"immediately. If False, developer must call grid.process() once all params"
-" are setup"
+"immediately. If False, developer must call grid.process() once all params "
+"are setup"
 msgstr ""
+"auto_process: Boolean - se ou não a grid deve ser processado imediatamente. "
+"Se False, desenvolvedor deve chamar grid.process () uma vez todos os "
+"parâmetros são configurados"
 
 #: ../../chapter-14.rst:117
 msgid "rows_per_page: number of rows to display per page. Default 15"
 msgstr ""
+"rows_per_page: número de linhas a serem exibidos por página. padrão 15"
 
 #: ../../chapter-14.rst:118
 msgid ""
 "include_action_button_text: boolean telling the grid whether or not you "
 "want text on action buttons within your grid"
 msgstr ""
+"include_action_button_text: boolean dizendo a grid se deseja ou não de "
+"texto em botões de ação dentro de sua grid"
 
 #: ../../chapter-14.rst:120
 msgid ""
-"search_button_text: text to appear on the submit button on your search "
-"form"
+"search_button_text: text to appear on the submit button on your search form"
 msgstr ""
+"search_button_text: texto a ser exibido no botão enviar em seu formulário "
+"de pesquisa"
 
 #: ../../chapter-14.rst:122
 msgid ""
-"formstyle: py4web Form formstyle used to style your form when "
-"automatically building CRUD forms"
+"formstyle: py4web Form formstyle used to style your form when automatically "
+"building CRUD forms"
 msgstr ""
+"formstyle: py4web Form formstyle usado para estilo seu formulário ao "
+"construir automaticamente formulários CRUD"
 
 #: ../../chapter-14.rst:124
 msgid ""
@@ -199,248 +239,309 @@ msgid ""
 "styling your rendered grid. Allows you to specify classes or styles to "
 "apply at certain points in the grid."
 msgstr ""
+"grid_class_style: objeto GridClassStyle usado para os padrões de "
+"substituição para denominar sua grid prestados. Permite especificar classes "
+"ou estilos para aplicar em certos pontos da grid."
 
 #: ../../chapter-14.rst:129
 msgid "Searching / Filtering"
-msgstr ""
+msgstr "Searching / Filtering"
 
 #: ../../chapter-14.rst:131
 msgid "There are two ways to build a search form."
-msgstr ""
+msgstr "Há duas maneiras de construir um formulário de pesquisa."
 
 #: ../../chapter-14.rst:133
 msgid "Provide a search_queries list"
-msgstr ""
+msgstr "Fornecer uma lista search_queries"
 
 #: ../../chapter-14.rst:134
 msgid "Build your own custom search form"
-msgstr ""
+msgstr "Construa a sua própria forma de pesquisa personalizada"
 
 #: ../../chapter-14.rst:136
 msgid "If you provide a search_queries list to grid, it will:"
-msgstr ""
+msgstr "Se você fornecer uma lista search_queries à grid, ele irá:"
 
 #: ../../chapter-14.rst:138
 msgid ""
 "build a search form. If more than one search query in the list, it will "
 "also generate a dropdown to select which search field to search agains"
 msgstr ""
+"construir um formulário de busca. Se mais de uma consulta de pesquisa na "
+"lista, que também irá gerar uma lista suspensa para selecionar qual campo "
+"de pesquisa para procurar agains"
 
 #: ../../chapter-14.rst:141
 msgid "gather filter values and filter the grid"
-msgstr ""
+msgstr "recolher valores de filtro e filtrar a grid"
 
 #: ../../chapter-14.rst:143
 msgid ""
-"However, if this doesn’t give you enough flexibility you can provide your"
-" own search form and handle all the filtering (building the queries) by "
+"However, if this doesn’t give you enough flexibility you can provide your "
+"own search form and handle all the filtering (building the queries) by "
 "yourself."
 msgstr ""
+"No entanto, se isso não lhe dá flexibilidade suficiente, você pode fornecer "
+"o seu próprio formulário de busca e lidar com toda a filtragem (construção "
+"das consultas) por si mesmo."
 
 #: ../../chapter-14.rst:148
 msgid "CRUD"
-msgstr ""
+msgstr "CRUD"
 
 #: ../../chapter-14.rst:150
 msgid ""
 "The grid provides CRUD (create, read, update and delete) capabilities "
 "utilizing py4web Form."
-msgstr ""
+msgstr "A grid oferece recursos CRUD (CRUD) utilizando formulário py4web."
 
 #: ../../chapter-14.rst:153
 msgid ""
-"You can turn off CRUD features by setting "
-"create/details/editable/deletable during grid instantiation."
+"You can turn off CRUD features by setting create/details/editable/deletable "
+"during grid instantiation."
 msgstr ""
+"Você pode desligar CRUD apresenta pela configuração criar / details / "
+"editável / elimináveis ​​durante a instanciação grid."
 
 #: ../../chapter-14.rst:156
 msgid ""
-"Additionally, you can provide a separate URL to the "
-"create/details/editable/deletable parameters to bypass the auto-generated"
-" CRUD pages and handle the detail pages yourself."
+"Additionally, you can provide a separate URL to the create/details/editable/"
+"deletable parameters to bypass the auto-generated CRUD pages and handle the "
+"detail pages yourself."
 msgstr ""
+"Além disso, você pode fornecer uma URL separada para a criação / detalhes / "
+"editáveis ​​/ parâmetros elimináveis ​​para ignorar as páginas CRUD gerados "
+"automaticamente e lidar com as páginas de detalhes do mesmo."
 
 #: ../../chapter-14.rst:161
 msgid "Using templates"
-msgstr ""
+msgstr "Usando templates"
 
 #: ../../chapter-14.rst:163
 msgid "Use the following to render your grid or CRUD forms in your templates."
 msgstr ""
+"Use o seguinte para tornar a sua grid ou formas CRUD em seus templates."
 
 #: ../../chapter-14.rst:165
 msgid "Display the grid or a CRUD Form"
-msgstr ""
+msgstr "Mostrar a grid ou um formulário CRUD"
 
 #: ../../chapter-14.rst:171
 msgid ""
 "To allow for customizing CRUD form layout (like with web2py) you can use "
 "the following"
 msgstr ""
+"Para permitir a personalização de layout do formulário CRUD (como com "
+"web2py) você pode usar o seguinte"
 
 #: ../../chapter-14.rst:182
 msgid ""
 "When handling custom form layouts you need to know if you are displaying "
 "the grid or a form. Use the following to decide"
 msgstr ""
+"Ao manusear formulário personalizado layouts que você precisa saber se você "
+"está exibindo a grid ou um formulário. Use o seguinte para decidir"
 
 #: ../../chapter-14.rst:199
 msgid "Customizing Style"
-msgstr ""
+msgstr "Personalizando Estilo"
 
 #: ../../chapter-14.rst:201
 msgid "You can provide your own formstyle or grid classes and style to grid."
 msgstr ""
+"Você pode fornecer suas próprias formstyle ou grid classes e estilo ao grid."
 
 #: ../../chapter-14.rst:203
-msgid "formstyle is the same as a Form formstyle, used to style the CRUD forms."
+msgid ""
+"formstyle is the same as a Form formstyle, used to style the CRUD forms."
 msgstr ""
+"formstyle é o mesmo que um formstyle Forma, usadas para as formas estilo "
+"CRUD."
 
 #: ../../chapter-14.rst:205
 msgid ""
 "grid_class_style is a class that provides the classes and/or styles used "
 "for certain portions of the grid."
 msgstr ""
+"grid_class_style é uma classe que fornece as classes e / ou estilos "
+"utilizados para certas porções da grelha."
 
 #: ../../chapter-14.rst:208
 msgid ""
 "The default GridClassStyle - based on no.css, primarily uses styles to "
 "modify the layout of the grid"
 msgstr ""
+"O GridClassStyle padrão - baseado em no.css, principalmente usa estilos "
+"para modificar o layout da grid"
 
 #: ../../chapter-14.rst:307
 msgid "GridClassStyleBulma - bulma implementation"
-msgstr ""
+msgstr "GridClassStyleBulma - implementação bulma"
 
 #: ../../chapter-14.rst:390
 msgid ""
 "You can build your own class_style to be used with the css framework of "
 "your choice."
 msgstr ""
+"Você pode construir seu próprio class_style para ser usado com o quadro css "
+"de sua escolha."
 
 #: ../../chapter-14.rst:394
 msgid "Custom Action Buttons"
-msgstr ""
+msgstr "Ação personalizada Botões"
 
 #: ../../chapter-14.rst:396
 msgid ""
 "As with web2py, you can add additional buttons to each row in your grid. "
-"You do this by providing pre_action_buttons or post_action_buttons to the"
-" Grid **init** method."
+"You do this by providing pre_action_buttons or post_action_buttons to the "
+"Grid **init** method."
 msgstr ""
+"Tal como acontece com web2py, você pode adicionar botões adicionais para "
+"cada linha em sua grid. Você faz isso fornecendo pre_action_buttons ou "
+"post_action_buttons à Rede ** inicialização ** método."
 
 #: ../../chapter-14.rst:400
 msgid ""
-"pre_action_buttons - list of action_button instances to include before "
-"the standard action buttons"
+"pre_action_buttons - list of action_button instances to include before the "
+"standard action buttons"
 msgstr ""
+"pre_action_buttons - lista de instâncias action_button para incluir antes "
+"de os botões de ação padrão"
 
 #: ../../chapter-14.rst:402
 msgid ""
-"post_action_buttons - list of action_button instances to include after "
-"the standard action buttons"
+"post_action_buttons - list of action_button instances to include after the "
+"standard action buttons"
 msgstr ""
+"post_action_buttons - lista de instâncias action_button para incluir após "
+"os botões de ação padrão"
 
 #: ../../chapter-14.rst:405
 msgid ""
 "You can build your own Action Button class to pass to pre/post action "
 "buttons based on the template below (this is not provided with py4web)"
 msgstr ""
+"Você pode construir sua própria classe de ação do botão para passar para "
+"pré / botões de ação pós baseados no template abaixo (isso não é fornecido "
+"com py4web)"
 
 #: ../../chapter-14.rst:409
 msgid "Sample Action Button Class"
-msgstr ""
+msgstr "Botão Classe Ação Amostra"
 
 #: ../../chapter-14.rst:421
 msgid "url: the page to navigate to when the button is clicked"
-msgstr ""
+msgstr "url: a página para navegar até quando o botão é clicado"
 
 #: ../../chapter-14.rst:422
 msgid "text: text to display on the button"
-msgstr ""
+msgstr "texto: texto para exibição no botão"
 
 #: ../../chapter-14.rst:423
 msgid "icon: the font-awesome icon to display before the text"
-msgstr ""
+msgstr "ícone: o ícone font-incrível para exibição antes do texto"
 
 #: ../../chapter-14.rst:424
 msgid ""
 "additional_classes: a space-separated list of classes to include on the "
 "button element"
 msgstr ""
+"additional_classes: uma lista separada por espaços de aulas para incluir no "
+"elemento botão"
 
 #: ../../chapter-14.rst:426
 msgid ""
-"message: confirmation message to display if ‘confirmation’ class is added"
-" to additional classes"
+"message: confirmation message to display if ‘confirmation’ class is added "
+"to additional classes"
 msgstr ""
+"mensagem: mensagem de confirmação para exibição se a classe ‘confirmação’ é "
+"adicionado a classes adicionais"
 
 #: ../../chapter-14.rst:428
 msgid ""
-"append_id: if True, add id_field_name=id_value to the url querystring for"
-" the button"
+"append_id: if True, add id_field_name=id_value to the url querystring for "
+"the button"
 msgstr ""
+"append_id: Se for verdade, adicionar id_field_name = id_value à querystring "
+"url para o botão"
 
 #: ../../chapter-14.rst:432
 msgid "Reference Fields"
-msgstr ""
+msgstr "Os campos de referência"
 
 #: ../../chapter-14.rst:434
 msgid ""
 "When displaying fields in a PyDAL table, you sometimes want to display a "
-"more descriptive field than a foreign key value. There are a couple of "
-"ways to handle that with the py4web grid."
+"more descriptive field than a foreign key value. There are a couple of ways "
+"to handle that with the py4web grid."
 msgstr ""
+"Ao exibir campos em uma tabela PyDAL, às vezes você deseja exibir um campo "
+"mais descritivo do que um valor de chave estrangeira. Há um par de maneiras "
+"de lidar com isso com a grid py4web."
 
 #: ../../chapter-14.rst:438
 msgid ""
-"filter_out on PyDAL field definition - here is an example of a foreign "
-"key field"
+"filter_out on PyDAL field definition - here is an example of a foreign key "
+"field"
 msgstr ""
+"filter_out na definição de campo PyDAL - aqui está um exemplo de um campo "
+"de chave estrangeira"
 
 #: ../../chapter-14.rst:449
-msgid "This will display the company name in the grid instead of the company ID"
-msgstr ""
+msgid ""
+"This will display the company name in the grid instead of the company ID"
+msgstr "Isto irá exibir o nome da empresa na grid em vez do ID empresa"
 
 #: ../../chapter-14.rst:451
 msgid ""
-"The downfall of using this method is that sorting and filtering are based"
-" on the company field in the employee table and not the name of the "
-"company"
+"The downfall of using this method is that sorting and filtering are based "
+"on the company field in the employee table and not the name of the company"
 msgstr ""
+"A queda de usar este método é que classificação e filtragem são baseados no "
+"campo da empresa na tabela de empregado e não o nome da empresa"
 
 #: ../../chapter-14.rst:455
 msgid ""
 "left join and specify fields from joined table - specified on the left "
 "parameter of Grid instantiation"
 msgstr ""
+"esquerda juntar-se e especificar campos da tabela juntou - especificado no "
+"parâmetro esquerdo da grid instanciação"
 
 #: ../../chapter-14.rst:462
 msgid ""
 "You can specify a standard PyDAL left join, including a list of joins to "
 "consider."
 msgstr ""
+"Você pode especificar um PyDAL padrão LEFT JOIN, incluindo uma lista de "
+"junta a considerar."
 
 #: ../../chapter-14.rst:465
 msgid ""
 "Now the company name field can be included in your fields list can be "
 "clicked on and sorted."
 msgstr ""
+"Agora o campo nome da empresa pode ser incluído em sua lista de campos pode "
+"ser clicado e ordenados."
 
 #: ../../chapter-14.rst:468
 msgid "Now you can also specify a query such as:"
-msgstr ""
+msgstr "Agora você também pode especificar uma consulta como:"
 
 #: ../../chapter-14.rst:474
 msgid ""
-"This method allows you to sort and filter, but doesn’t allow you to "
-"combine fields to be displayed together as the filter_out method would"
+"This method allows you to sort and filter, but doesn’t allow you to combine "
+"fields to be displayed together as the filter_out method would"
 msgstr ""
+"Este método permite classificar e filtrar, mas não permite que você para "
+"combinar campos a serem exibidos em conjunto, como o método filter_out faria"
 
 #: ../../chapter-14.rst:477
 msgid ""
-"You need to determine which method is best for your use case "
-"understanding the different grids in the same application may need to "
-"behave differently."
+"You need to determine which method is best for your use case understanding "
+"the different grids in the same application may need to behave differently."
 msgstr ""
-
+"Você precisa determinar qual método é melhor para o seu caso de uso "
+"compreender as grids diferentes no mesmo aplicativo pode precisar de se "
+"comportar de forma diferente."

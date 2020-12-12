@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Creating your first app &mdash; Documentação py4web 1.20201112.1
+  <title>Criando seu primeiro aplicativo &mdash; Documentação py4web 1.20201127.1
 </title>
   
 
@@ -40,8 +40,8 @@
     
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Pesquisar" href="search.html" />
-    <link rel="next" title="Fixtures" href="chapter-06.html" />
-    <link rel="prev" title="The Dashboard" href="chapter-04.html" /> 
+    <link rel="next" title="Fixures" href="chapter-06.html" />
+    <link rel="prev" title="O Dashboard" href="chapter-04.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.20201112.1
+                1.20201127.1
 
               </div>
             
@@ -91,36 +91,36 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Conteúdo:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="chapter-01.html">O que é py4web?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Creating your first app</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#from-scratch">From scratch</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#static-web-pages">Static web pages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#dynamic-web-pages">Dynamic Web Pages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#on-return-values">On return values</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#routes">Routes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-request-object">The <code class="docutils literal notranslate"><span class="pre">request</span></code> object</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#templates">Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Criando seu primeiro aplicativo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#from-scratch">Do princípio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#static-web-pages">Páginas estáticas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dynamic-web-pages">Páginas web dinâmicas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#on-return-values">Em valores de retorno</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#routes">Rotas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-request-object">O objeto `` request``</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#templates">Modelos</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#from-scaffold">From _scaffold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#from-scaffold">De _scaffold</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#app-watchdog">App Watchdog</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The database abstraction layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">A camada de abstracção de banco de dados (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">A RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internacionalização</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forumlários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Autenticação e controle de acesso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
 </ul>
 
             
@@ -167,7 +167,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Creating your first app</li>
+      <li>Criando seu primeiro aplicativo</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -189,56 +189,38 @@
            <div itemprop="articleBody">
             
   <div class="section" id="creating-your-first-app">
-<h1>Creating your first app<a class="headerlink" href="#creating-your-first-app" title="Link permanente para este título">¶</a></h1>
+<h1>Criando seu primeiro aplicativo<a class="headerlink" href="#creating-your-first-app" title="Link permanente para este título">¶</a></h1>
 <div class="section" id="from-scratch">
-<h2>From scratch<a class="headerlink" href="#from-scratch" title="Link permanente para este título">¶</a></h2>
-<p>Apps can be created using the dashboard or directly from the filesystem.
-Here, we are going to do it manually, as the Dashboard is described in
-its own chapter.</p>
-<p>Keep in mind that an app is a Python module; therefore it needs only a
-folder and a <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> file in that folder:</p>
+<h2>Do princípio<a class="headerlink" href="#from-scratch" title="Link permanente para este título">¶</a></h2>
+<p>Aplicativos podem ser criados usando o painel ou directamente a partir do sistema de arquivos. Aqui, nós estamos indo para fazê-lo manualmente, como o Dashboard é descrito em seu próprio capítulo.</p>
+<p>Tenha em mente que um aplicativo é um módulo Python; portanto, precisa apenas de uma pasta e um `` __init arquivo __ py`` nessa pasta.:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir apps/myapp
 <span class="nb">echo</span> <span class="s1">&#39;&#39;</span> &gt; apps/myapp/__init__.py
 </pre></div>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Dica</p>
-<p>for Windows, you must use backslashes (i.e. ”\”) instead of
-slashes. Also, an empty <em>__init__.py</em> file is not strictly needed since
-Python 3.3, but it will be useful later on.</p>
+<p>para Windows, você deve usar barras invertidas (ou seja, “\”) em vez de barras. Além disso, um vazio * __ o init __. Py * arquivo não é estritamente necessária desde Python 3.3, mas será útil mais tarde.</p>
 </div>
-<p>If you now restart py4web or
-press the “Reload Apps” in the Dashboard, py4web will find this module,
-import it, and recognize it as an app, simply because of its location.
-An app is not required to do anything. It could just be a container for
-static files or arbitrary code that other apps may want to import and
-access. Yet typically most apps are designed to expose static or dynamic
-web pages.</p>
+<p>Se você agora reiniciar py4web ou pressione o botão “Atualizar Apps” no Dashboard, py4web vai encontrar este módulo, importá-lo e reconhecê-lo como um aplicativo, simplesmente por causa de sua localização. Um aplicativo não é obrigado a fazer nada. Poderia ser apenas um recipiente para arquivos estáticos ou código arbitrário que outros aplicativos pode querer importação e de acesso. No entanto, normalmente a maioria dos aplicativos são projetados para expor páginas estáticas ou dinâmicas.</p>
 </div>
 <div class="section" id="static-web-pages">
-<h2>Static web pages<a class="headerlink" href="#static-web-pages" title="Link permanente para este título">¶</a></h2>
-<p>To expose static web pages you simply need to create a <code class="docutils literal notranslate"><span class="pre">static</span></code>
-subfolder, and any file in there will be automatically published:</p>
+<h2>Páginas estáticas<a class="headerlink" href="#static-web-pages" title="Link permanente para este título">¶</a></h2>
+<p>Para expor páginas estáticas você simplesmente precisa para criar um `` subpasta static`` e qualquer arquivo lá será automaticamente publicado:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir apps/myapp/static
 <span class="nb">echo</span> <span class="s1">&#39;Hello World&#39;</span> &gt; apps/myapp/static/hello.txt
 </pre></div>
 </div>
-<p>The newly created file will be accessible at</p>
+<p>O arquivo recém-criado será acessível em</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http://localhost:8000/myapp/static/hello.txt
 </pre></div>
 </div>
-<p>Notice that <code class="docutils literal notranslate"><span class="pre">static</span></code> is a special path for py4web and only files under
-the <code class="docutils literal notranslate"><span class="pre">static</span></code> folder are served.</p>
-<p>Important: internally py4web uses the bottle
-<a class="reference external" href="https://bottlepy.org/docs/dev/tutorial.html#static-files">static_file</a>
-method for serving static files, which means it supports streaming,
-partial content, range requests, and if-modified-since. This is all
-handled automatically based on the http request headers.</p>
+<p>Note que `` static`` é um caminho especial para py4web e arquivos somente sob o `` static`` pasta são servidos.</p>
+<p>Importante: py4web internamente usa a garrafa <cite>static_file &lt;https://bottlepy.org/docs/dev/tutorial.html#static-files&gt;</cite> __ método para servir arquivos estáticos, o que significa que suporta streaming, conteúdo parcial, pedidos de intervalo, e If-Modified-Since. Isso tudo é feito automaticamente com base nos cabeçalhos de solicitação HTTP.</p>
 </div>
 <div class="section" id="dynamic-web-pages">
-<h2>Dynamic Web Pages<a class="headerlink" href="#dynamic-web-pages" title="Link permanente para este título">¶</a></h2>
-<p>To create a dynamic page, you must create a function that returns the
-page content. For example edit the <code class="docutils literal notranslate"><span class="pre">myapp/__init__.py</span></code> as follows:</p>
+<h2>Páginas web dinâmicas<a class="headerlink" href="#dynamic-web-pages" title="Link permanente para este título">¶</a></h2>
+<p>Para criar uma página dinâmica, você deve criar uma função que retorna o conteúdo da página. . Por exemplo editar a `` novaaplicacao / __ __ Init py`` como se segue:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span>
 
@@ -247,53 +229,34 @@ page content. For example edit the <code class="docutils literal notranslate"><s
     <span class="k">return</span> <span class="s2">&quot;hello, now is </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Restart py4web or press the Dashboard “Reload Apps” button, and this
-page will be accessible at</p>
+<p>Py4web Restart ou pressione o botão “Atualizar Apps” botão do painel, e esta página será acessível em</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">myapp</span><span class="o">/</span><span class="n">index</span>
 </pre></div>
 </div>
-<p>or</p>
+<p>ou</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">myapp</span>
 </pre></div>
 </div>
-<p>(notice that index is optional)</p>
-<p>Unlike other frameworks, we do not import or start the webserver within
-the <code class="docutils literal notranslate"><span class="pre">myapp</span></code> code. This is because py4web is already running, and it
-may be serving multiple apps. py4web imports our code and exposes
-functions decorated with <code class="docutils literal notranslate"><span class="pre">&#64;action()</span></code>. Also notice that py4web prepends
-<code class="docutils literal notranslate"><span class="pre">/myapp</span></code> (i.e. the name of the app) to the url path declared in the
-action. This is because there are multiple apps, and they may define
-conflicting routes. Prepending the name of the app removes the
-ambiguity. But there is one exception: if you call your app
-<code class="docutils literal notranslate"><span class="pre">_default</span></code>, or if you create a symlink from <code class="docutils literal notranslate"><span class="pre">_default</span></code> to <code class="docutils literal notranslate"><span class="pre">myapp</span></code>,
-then py4web will not prepend any prefix to the routes defined inside the
-app.</p>
+<p>(Note que o índice é opcional)</p>
+<p>Ao contrário de outras estruturas, nós não importar ou iniciar o servidor web dentro do `` código myapp``. Isso ocorre porque py4web já está em execução, e pode servir vários aplicativos. py4web importa nossas funções de código e expõe decorados com `` &#64;Action () <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">Note</span> <span class="pre">também</span> <span class="pre">que</span> <span class="pre">prepends</span> <span class="pre">py4web</span> <span class="pre">``</span> <span class="pre">/</span> <span class="pre">myapp</span></code> (ou seja, o nome do aplicativo) para o caminho url declarado na ação. Isso ocorre porque existem vários aplicativos, e eles podem definir rotas conflitantes. Antecedendo o nome do aplicativo remove a ambiguidade. Mas há uma exceção: se você chamar seu aplicativo `` _default``, ou se você criar um link simbólico do `` _default`` para `` myapp``, então py4web não irá anteceder qualquer prefixo para as rotas definidas dentro do aplicativo .</p>
 <div class="section" id="on-return-values">
-<h3>On return values<a class="headerlink" href="#on-return-values" title="Link permanente para este título">¶</a></h3>
-<p>py4web actions should return a string or a dictionary. If they return a
-dictionary you must tell py4web what to do with it. By default py4web
-will serialize it into json. For example edit <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> again and
-add</p>
+<h3>Em valores de retorno<a class="headerlink" href="#on-return-values" title="Link permanente para este título">¶</a></h3>
+<p>ações py4web deve retornar uma string ou um dicionário. Se eles retornar um dicionário que você deve dizer py4web o que fazer com ele. Por padrão py4web serializará-lo em JSON. Por exemplo editar `` __init __. Py`` novamente e adicionar</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">colors</span><span class="p">():</span>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">]}</span>
 </pre></div>
 </div>
-<p>This page will be visible at</p>
+<p>Esta página será visível na</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">myapp</span><span class="o">/</span><span class="n">colors</span>
 </pre></div>
 </div>
-<p>and returns a JSON object <code class="docutils literal notranslate"><span class="pre">{&quot;colors&quot;:</span> <span class="pre">[&quot;red&quot;,</span> <span class="pre">&quot;blue&quot;,</span> <span class="pre">&quot;green&quot;]}</span></code>.
-Notice we chose to name the function the same as the route. This is not
-required, but it is a convention that we will often follow.</p>
-<p>You can use any template language to turn your data into a string.
-PY4WEB comes with yatl, a full chapter will be dedicated later and we
-will provide an example shortly.</p>
+<p>e retorna um objeto JSON `` { «cores»: [ «vermelho», «azul», «verde»]} <a href="#id1"><span class="problematic" id="id2">``</span></a>. Observe que escolhemos nomear a função o mesmo que a rota. Isso não é necessário, mas é uma convenção que muitas vezes se seguirão.</p>
+<p>Você pode usar qualquer linguagem de modelo para transformar seus dados em uma string. PY4WEB vem com yatl, um capítulo inteiro será dedicado mais tarde e iremos fornecer um exemplo em breve.</p>
 </div>
 <div class="section" id="routes">
-<h3>Routes<a class="headerlink" href="#routes" title="Link permanente para este título">¶</a></h3>
-<p>It is possible to map patterns in the URL into arguments of the
-function. For example:</p>
+<h3>Rotas<a class="headerlink" href="#routes" title="Link permanente para este título">¶</a></h3>
+<p>É possível mapear padrões do URL em argumentos da função. Por exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;name&gt;&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">]:</span>
@@ -301,40 +264,33 @@ function. For example:</p>
     <span class="k">return</span> <span class="s1">&#39;Unknown color </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">name</span>
 </pre></div>
 </div>
-<p>This page will be visible at</p>
+<p>Esta página será visível na</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">myapp</span><span class="o">/</span><span class="n">color</span><span class="o">/</span><span class="n">red</span>
 </pre></div>
 </div>
-<p>The syntax of the patterns is the same as the <a class="reference external" href="https://bottlepy.org/docs/dev/tutorial.html#request-routing">Bottle
-routes</a>.
-A route wildcard can be defined as</p>
+<p>A sintaxe dos padrões é o mesmo que os <cite>rotas Garrafa &lt;https://bottlepy.org/docs/dev/tutorial.html#request-routing&gt;</cite> __. Uma rota WildCard pode ser definida como</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code> or</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;name:filter&gt;</span></code> or</p></li>
-<li><p>```````</p></li>
+<li><p>`` &lt;Name&gt; `` ou</p></li>
+<li><p>`` &lt;Name: filter&gt; `` ou</p></li>
+<li><p>`` <cite>` `</cite> `</p></li>
 </ul>
-<p>And these are possible filters (only `<code class="docutils literal notranslate"><span class="pre">:</span></code> has a config):</p>
+<p>E estes são possíveis filtros (somente <cite>` `:</cite> <a href="#id1"><span class="problematic" id="id2">`</span></a>tem uma config):</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">:int</span></code> matches (signed) digits and converts the value to integer.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">:float</span></code> similar to :int but for decimal numbers.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">:path</span></code> matches all characters including the slash character in a
-non-greedy way, and may be used to match more than one path segment.</p></li>
-<li><p>``:re[:exp]``` allows you to specify a custom regular expression in
-the config field. The matched value is not modified.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">Resultados</span> <span class="pre">int</span></code> dígitos (assinatura) e converte o valor de número inteiro.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">Float</span></code> semelhante a: int mas para números decimais.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">Path</span></code> corresponde a todos os personagens, incluindo o caractere de barra de uma forma não-ganancioso, e pode ser usado para combinar mais de um segmento de caminho.</p></li>
+<li><p><a href="#id1"><span class="problematic" id="id2">``</span></a>: Re [: exp] `` <a href="#id3"><span class="problematic" id="id4">`</span></a>permite especificar uma expressão regular personalizado no campo de configuração. O valor combinado não é modificado.</p></li>
 </ul>
-<p>The pattern matching the wildcard is passed to the function under the
-specified variable <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p>
-<p>Also, the action decorator takes an optional <code class="docutils literal notranslate"><span class="pre">method</span></code> argument that
-can be an HTTP method or a list of methods:</p>
+<p>O padrão de harmonização o carácter universal é passado para a função sob a variável especificada `` name``.</p>
+<p>Além disso, o decorador acção tem um argumento `` method`` opcional que pode ser um método HTTP ou uma lista de métodos:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span><span class="s1">&#39;DELETE&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>You can use multiple decorators to expose the same function under
-multiple routes.</p>
+<p>Você pode usar vários decoradores para expor a mesma função em várias rotas.</p>
 </div>
 <div class="section" id="the-request-object">
-<h3>The <code class="docutils literal notranslate"><span class="pre">request</span></code> object<a class="headerlink" href="#the-request-object" title="Link permanente para este título">¶</a></h3>
-<p>From py4web you can import <code class="docutils literal notranslate"><span class="pre">request</span></code></p>
+<h3>O objeto `` request``<a class="headerlink" href="#the-request-object" title="Link permanente para este título">¶</a></h3>
+<p>De py4web você pode importar `` request``</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">request</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;paint&#39;</span><span class="p">)</span>
@@ -344,15 +300,15 @@ multiple routes.</p>
     <span class="k">return</span> <span class="s1">&#39;You did not specify a color&#39;</span>
 </pre></div>
 </div>
-<p>This action can be accessed at:</p>
+<p>Esta ação pode ser acessado em:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://localhost:8000/myapp/paint?color=red
 </pre></div>
 </div>
-<p>Notice that the request object is a <a class="reference external" href="https://bottlepy.org/docs/dev/api.html#the-request-object">Bottle request object</a>.</p>
+<p>Observe que o objeto de solicitação é um <cite>pedido objeto Garrafa &lt;https://bottlepy.org/docs/dev/api.html#the-request-object&gt;</cite> _.</p>
 </div>
 <div class="section" id="templates">
-<h3>Templates<a class="headerlink" href="#templates" title="Link permanente para este título">¶</a></h3>
-<p>In order to use a yatl template you must declare it. For example create a file <code class="docutils literal notranslate"><span class="pre">apps/myapp/templates/paint.html</span></code> that contains:</p>
+<h3>Modelos<a class="headerlink" href="#templates" title="Link permanente para este título">¶</a></h3>
+<p>Para utilizar um yatl modelo que você deve declará-lo. Por exemplo, criar um arquivo `` apps / myapp / templates / paint.html`` que contém:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
     <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
@@ -365,58 +321,32 @@ multiple routes.</p>
 <span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </pre></div>
 </div>
-<p>then modify the paint action to use the template and default to green.</p>
+<p>em seguida, modificar a ação de tinta para usar o modelo e padrão para verde.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;paint&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;paint.html&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">paint</span><span class="p">():</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>The page will now display the color name on a background of the
-corresponding color.</p>
-<p>The key ingredient here is the decorator <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code>. The
-arguments of <code class="docutils literal notranslate"><span class="pre">action.uses</span></code> are called <strong>fixtures</strong>. You can specify
-multiple fixtures in one decorator or you can have multiple decorators.
-Fixtures are objects that modify the behavior of the action, that may
-need to be initialized per request, that may filter input and output of
-the action, and that may depend on each-other (they are similar in scope
-to Bottle plugins but they are declared per-action, and they have a
-dependency tree which will be explained later).</p>
-<p>The simplest type of fixture is a template. You specify it by simply
-giving the name of the file to be used as template. That file must
-follow the yatl syntax and must be located in the <code class="docutils literal notranslate"><span class="pre">templates</span></code> folder
-of the app. The object returned by the action will be processed by the
-template and turned into a string.</p>
-<p>You can easily define fixtures for other template languages. This is
-described later.</p>
-<p>Some built-in fixtures are:</p>
+<p>A página irá agora mostrar o nome da cor em um fundo da cor correspondente.</p>
+<p>O ingrediente chave aqui é o decorador `` &#64; action.uses (…) <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">Os</span> <span class="pre">argumentos</span> <span class="pre">de</span> <span class="pre">``</span> <span class="pre">action.uses</span></code> são chamados luminárias ** <a href="#id1"><span class="problematic" id="id2">**</span></a>. Você pode especificar vários dispositivos elétricos em um decorador ou você pode ter vários decoradores. Chaves são objectos que modificam o comportamento da acção, que podem precisar de ser inicializado por pedido, que podem realizar uma filtragem de entrada e de saída da acção, e que pode depender de cada-outro (eles são semelhantes no seu âmbito à garrafa encaixes, mas eles são declarados por ação, e eles têm uma árvore de dependência que será explicado mais tarde).</p>
+<p>O tipo mais simples de acessório é um modelo. Você especifica que simplesmente dando o nome do arquivo a ser usado como modelo. Esse arquivo deve seguir a sintaxe yatl e deve estar localizado no diretório `` templates`` pasta do aplicativo. O objeto retornado pela ação serão processados ​​pelo modelo e se transformou em uma corda.</p>
+<p>Você pode facilmente definir luminárias para outras linguagens de modelo. Isto é descrito mais tarde.</p>
+<p>Alguns built-in luminárias são:</p>
 <ul class="simple">
-<li><p>the DAL object (which tells py4web to obtain a database connection
-from the pool at every request, and commit on success or rollback on
-failure)</p></li>
-<li><p>the Session object (which tells py4web to parse the cookie and
-retrieve a session at every request, and to save it if changed)</p></li>
-<li><p>the Translator object (which tells py4web to process the
-accept-language header and determine optimal
-internationalization/pluralization rules)</p></li>
-<li><p>the Auth object (which tells py4web that the app needs access to the
-user info)</p></li>
+<li><p>o objeto DAL (que diz py4web para obter uma conexão de banco de dados a partir da piscina a cada pedido, e comprometer-se em caso de sucesso ou reversão em caso de falha)</p></li>
+<li><p>o objeto de sessão (que diz py4web para analisar o cookie e recuperar uma sessão a cada pedido, e para salvá-lo, se alterado)</p></li>
+<li><p>o objeto Tradutor (que diz py4web para processar o cabeçalho Accept-Language e determinar óptima internacionalização / pluralização regras)</p></li>
+<li><p>o objeto Auth (que diz py4web que as necessidades de aplicativos acessar às informações do usuário)</p></li>
 </ul>
-<p>They may depend on each other. For example, the Session may need the DAL
-(database connection), and Auth may need both. Dependencies are handled
-automatically.</p>
+<p>Eles podem depender um do outro. Por exemplo, a sessão pode precisar a DAL (ligação de base de dados), e Auth podem precisamos de ambos. As dependências são tratados automaticamente.</p>
 </div>
 </div>
 <div class="section" id="from-scaffold">
-<h2>From _scaffold<a class="headerlink" href="#from-scaffold" title="Link permanente para este título">¶</a></h2>
-<p>Most of the times, you do not want to start writing code from scratch.
-You also want to follow some sane conventions outlined here, like not
-putting all your code into <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>. PY4WEB provides a
-Scaffolding (_scaffold) app, where files are organized properly and many
-useful objects are pre-defined.</p>
-<p>You will normally find the scaffold app under apps, but you can easily
-create a new clone of it manually or using the Dashboard.</p>
-<p>Here is the tree structure of the <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> app:</p>
+<h2>De _scaffold<a class="headerlink" href="#from-scaffold" title="Link permanente para este título">¶</a></h2>
+<p>Na maioria das vezes, você não quer começar a escrever código a partir do zero. Você também quer seguir algumas convenções sãs descritas aqui, como não colocar todo seu código em `` __init __. Py``. PY4WEB fornece um aplicativo de Andaimes (_scaffold), onde os arquivos são organizados de forma adequada e muitos objetos úteis são pré-definidos.</p>
+<p>Normalmente você vai encontrar o aplicativo andaime sob apps, mas você pode facilmente criar um novo clone de la manualmente ou usando o Dashboard.</p>
+<p>Aqui está a estrutura da árvore do `` aplicativo _scaffold``:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── __init__.py          # imports everything else
 ├── common.py            # defines useful objects
 ├── controllers.py       # your actions
@@ -449,7 +379,7 @@ create a new clone of it manually or using the Dashboard.</p>
     └── it.json          # py4web internationalization/pluralization files are in JSON, this is an italian example
 </pre></div>
 </div>
-<p>The scaffold app contains an example of a more complex action:</p>
+<p>O aplicativo andaime contém um exemplo de uma ação mais complexa:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span>
 <span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">A</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="n">common</span> <span class="kn">import</span> <span class="nn">db</span><span class="o">,</span> <span class="nn">session</span><span class="o">,</span> <span class="nn">T</span><span class="o">,</span> <span class="nn">cache</span><span class="o">,</span> <span class="nn">auth</span>
@@ -463,43 +393,27 @@ create a new clone of it manually or using the Dashboard.</p>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Notice the following:</p>
+<p>Observe o seguinte:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">request</span></code>, <code class="docutils literal notranslate"><span class="pre">response</span></code>, <code class="docutils literal notranslate"><span class="pre">abort</span></code> are defined by Bottle</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">redirect</span></code> and <code class="docutils literal notranslate"><span class="pre">URL</span></code> are similar to their web2py counterparts</p></li>
-<li><p>helpers (<code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">DIV</span></code>, <code class="docutils literal notranslate"><span class="pre">SPAN</span></code>, <code class="docutils literal notranslate"><span class="pre">IMG</span></code>, etc) must be imported
-from <code class="docutils literal notranslate"><span class="pre">yatl.helpers</span></code> . They work pretty much as in web2py</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">db</span></code>, <code class="docutils literal notranslate"><span class="pre">session</span></code>, <code class="docutils literal notranslate"><span class="pre">T</span></code>, <code class="docutils literal notranslate"><span class="pre">cache</span></code>, <code class="docutils literal notranslate"><span class="pre">auth</span></code> are Fixtures. They
-must be defined in <code class="docutils literal notranslate"><span class="pre">common.py</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&#64;action.uses(auth.user)</span></code> indicates that this action expects a
-valid logged-in user retrievable by <code class="docutils literal notranslate"><span class="pre">auth.get_user()</span></code>. If that is
-not the case, this action redirects to the login page (defined also
-in <code class="docutils literal notranslate"><span class="pre">common.py</span></code> and using the Vue.js auth.html component).</p></li>
+<li><p>`` `` Request``, response``, `` abort`` são definidos por garrafa</p></li>
+<li><p>`` `` Redirect`` e URL`` são semelhantes aos seus homólogos web2py</p></li>
+<li><p>ajudantes ( `` A``, `` div``, `` SPAN``, `` IMG``, etc.) deve ser importado a partir `` yatl.helpers``. Eles trabalham muito bem como em web2py</p></li>
+<li><p>`` Db``, `` session``, `` T``, `` cache``, `` auth`` são Chaves. Eles devem ser definidos em `` common.py``.</p></li>
+<li><p>`` &#64; Action.uses (auth.user) `` indica que esta acção espera um válido logado recuperáveis ​​usuário por `` auth.get_user () <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">Se</span> <span class="pre">isso</span> <span class="pre">não</span> <span class="pre">for</span> <span class="pre">o</span> <span class="pre">caso,</span> <span class="pre">esta</span> <span class="pre">ação</span> <span class="pre">redireciona</span> <span class="pre">para</span> <span class="pre">a</span> <span class="pre">página</span> <span class="pre">de</span> <span class="pre">login</span> <span class="pre">(definido</span> <span class="pre">também</span> <span class="pre">em</span> <span class="pre">``</span> <span class="pre">common.py</span></code> e usando o componente auth.html Vue.js).</p></li>
 </ul>
-<p>When you start from scaffold, you may want to edit <code class="docutils literal notranslate"><span class="pre">settings.py</span></code>,
-<code class="docutils literal notranslate"><span class="pre">templates</span></code>, <code class="docutils literal notranslate"><span class="pre">models.py</span></code> and <code class="docutils literal notranslate"><span class="pre">controllers.py</span></code> but probably you
-don’t need to change anything in <code class="docutils literal notranslate"><span class="pre">common.py</span></code>.</p>
-<p>In your html, you can use any JS library that you want because py4web is
-agnostic to your choice of JS and CSS, but with some exceptions. The
-<code class="docutils literal notranslate"><span class="pre">auth.html</span></code> which handles registration/login/etc. uses a vue.js
-component. Hence if you want to use that, you should not remove it.</p>
+<p>Quando você começar a partir de andaime, você pode querer editar `` settings.py``, `` templates``, `` models.py`` e `` controllers.py`` mas provavelmente você não precisa mudar nada no `` common.py``.</p>
+<p>Em seu HTML, você pode usar qualquer biblioteca JS que você quer, porque py4web é agnóstica para a sua escolha de JS e CSS, mas com algumas exceções. O `` auth.html`` que lida com registro / login / etc. usa um componente vue.js. Portanto, se você quiser usar isso, você não deve removê-lo.</p>
 </div>
 <div class="section" id="app-watchdog">
 <h2>App Watchdog<a class="headerlink" href="#app-watchdog" title="Link permanente para este título">¶</a></h2>
-<p>Py4web facilitates a development server’s setup that automatically
-reloads an app when its Python source files change. Any other files
-inside an app can be watched by setting a handler function using
-<strong>``&#64;app_watch_handler``</strong> decorator.</p>
+<p>Py4web facilita a configuração de um servidor de desenvolvimento que recarrega automaticamente um aplicativo quando sua fonte Python arquivos mudança. Quaisquer outros arquivos dentro de um aplicativo pode ser visto através da criação de uma função de manipulador usando ** `` &#64; app_watch_handler`` decorador <a href="#id1"><span class="problematic" id="id2">**</span></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">watch</span> <span class="p">[</span><span class="n">off</span><span class="o">|</span><span class="n">sync</span><span class="o">|</span><span class="n">lazy</span><span class="p">]</span>       <span class="n">Watch</span> <span class="n">python</span> <span class="n">changes</span> <span class="ow">and</span> <span class="n">reload</span> <span class="n">apps</span>
                                <span class="n">automatically</span><span class="p">,</span> <span class="n">modes</span><span class="p">:</span> <span class="n">off</span> <span class="p">(</span><span class="n">default</span><span class="p">),</span> <span class="n">sync</span><span class="p">,</span>
                                <span class="n">lazy</span>
 </pre></div>
 </div>
-<p>Two examples of its usage are reported now. Do not worry if you don’t
-fully undestand them: the key point here is that even non-python code
-could be reloaded automatically if you explicit it with the
-<strong>``&#64;app_watch_handler``</strong> decorator.</p>
-<p>Watch SASS files and compile them when edited:</p>
+<p>Dois exemplos de seu uso são relatados agora. Não se preocupe se você não undestand-los totalmente: o ponto-chave aqui é que mesmo código não-python pode ser recarregado automaticamente se explícita-lo com o ** `` &#64; app_watch_handler`` ** decorador.</p>
+<p>Assista SASS arquivos e compilá-los quando editado:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">app_watch_handler</span>
 <span class="kn">import</span> <span class="nn">sass</span> <span class="c1"># https://github.com/sass/libsass-python</span>
 
@@ -516,7 +430,7 @@ could be reloaded automatically if you explicit it with the
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">compiled</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Validate javascript syntax when edited:</p>
+<p>Validar sintaxe javascript quando editado:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">esprima</span> <span class="c1"># Python implementation of Esprima from Node.js</span>
 
 <span class="nd">@app_watch_handler</span><span class="p">(</span>
@@ -530,11 +444,7 @@ could be reloaded automatically if you explicit it with the
             <span class="n">esprima</span><span class="o">.</span><span class="n">parseModule</span><span class="p">(</span><span class="n">code</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>Filepaths passed to <strong>``&#64;app_watch_handler``</strong> decorator must be
-relative to an app. Python files (i.e. «*.py») in a list passed to the
-decorator are ignored since they are watched by default. Handler
-function’s parameter is a list of filepaths that were changed. All
-exceptions inside handlers are printed in terminal.</p>
+<p>Filepaths passado para ** `` &#64; app_watch_handler`` decorador ** deve ser relativo a um aplicativo. arquivos Python (ou seja, «<a href="#id1"><span class="problematic" id="id2">*</span></a>. py») em uma lista passada para o decorador são ignorados uma vez que eles são vigiados por padrão. parâmetro da função de manipulador é uma lista de caminhos de arquivos que foram alterados. Todas as exceções dentro manipuladores são impressos em terminal.</p>
 </div>
 </div>
 
@@ -546,10 +456,10 @@ exceptions inside handlers are printed in terminal.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="chapter-06.html" class="btn btn-neutral float-right" title="Fixtures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="chapter-06.html" class="btn btn-neutral float-right" title="Fixures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="chapter-04.html" class="btn btn-neutral float-left" title="The Dashboard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="chapter-04.html" class="btn btn-neutral float-left" title="O Dashboard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -592,14 +502,14 @@ exceptions inside handlers are printed in terminal.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20201112.1
+      v: 1.20201127.1
 
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
       
       <dl>
-        <dt>Languages</dt>
+        <dt>Idiomas</dt>
         
           
           
@@ -613,7 +523,7 @@ exceptions inside handlers are printed in terminal.</p>
       
       
       <dl>
-        <dt>Versions</dt>
+        <dt>Versões</dt>
         
           
           <dd><a href="index.html">current</a></dd>
@@ -623,7 +533,7 @@ exceptions inside handlers are printed in terminal.</p>
       
       
       <dl>
-        <dt>Downloads</dt>
+        <dt>Transferências</dt>
         
           <dd><a href="py4web_pt.pdf">pdf</a></dd>
         

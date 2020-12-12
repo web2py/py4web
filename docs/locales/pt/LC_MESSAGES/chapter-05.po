@@ -1,321 +1,418 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2020, BSDv3 License
 # This file is distributed under the same license as the py4web package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: py4web 1.20201112.1\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-29 10:41+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: py4web 1.20201127.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-02 20:25-0300\n"
+"PO-Revision-Date: 2020-12-08 10:15-0300\n"
+"Last-Translator: potranslator 1.1.5\n"
+"Language-Team: \n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Translated-By: potranslator 1.1.5\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: ../../chapter-05.rst:3
 msgid "Creating your first app"
-msgstr ""
+msgstr "Criando seu primeiro aplicativo"
 
 #: ../../chapter-05.rst:6
 msgid "From scratch"
-msgstr ""
+msgstr "Do princípio"
 
 #: ../../chapter-05.rst:8
 msgid ""
 "Apps can be created using the dashboard or directly from the filesystem. "
-"Here, we are going to do it manually, as the Dashboard is described in "
-"its own chapter."
+"Here, we are going to do it manually, as the Dashboard is described in its "
+"own chapter."
 msgstr ""
+"Aplicativos podem ser criados usando o painel ou directamente a partir do "
+"sistema de arquivos. Aqui, nós estamos indo para fazê-lo manualmente, como "
+"o Dashboard é descrito em seu próprio capítulo."
 
 #: ../../chapter-05.rst:12
 msgid ""
 "Keep in mind that an app is a Python module; therefore it needs only a "
 "folder and a ``__init__.py`` file in that folder:"
 msgstr ""
+"Tenha em mente que um aplicativo é um módulo Python; portanto, precisa "
+"apenas de uma pasta e um `` __init arquivo __ py`` nessa pasta.:"
 
 #: ../../chapter-05.rst:21
 msgid ""
 "for Windows, you must use backslashes (i.e. '\\\\') instead of slashes. "
-"Also, an empty *__init__.py* file is not strictly needed since Python "
-"3.3, but it will be useful later on."
+"Also, an empty *__init__.py* file is not strictly needed since Python 3.3, "
+"but it will be useful later on."
 msgstr ""
+"para Windows, você deve usar barras invertidas (ou seja, '\\\\') em vez de "
+"barras. Além disso, um vazio * __ o init __. Py * arquivo não é "
+"estritamente necessária desde Python 3.3, mas será útil mais tarde."
 
 #: ../../chapter-05.rst:25
 msgid ""
 "If you now restart py4web or press the “Reload Apps” in the Dashboard, "
-"py4web will find this module, import it, and recognize it as an app, "
-"simply because of its location. An app is not required to do anything. It"
-" could just be a container for static files or arbitrary code that other "
-"apps may want to import and access. Yet typically most apps are designed "
-"to expose static or dynamic web pages."
+"py4web will find this module, import it, and recognize it as an app, simply "
+"because of its location. An app is not required to do anything. It could "
+"just be a container for static files or arbitrary code that other apps may "
+"want to import and access. Yet typically most apps are designed to expose "
+"static or dynamic web pages."
 msgstr ""
+"Se você agora reiniciar py4web ou pressione o botão “Atualizar Apps” no "
+"Dashboard, py4web vai encontrar este módulo, importá-lo e reconhecê-lo como "
+"um aplicativo, simplesmente por causa de sua localização. Um aplicativo não "
+"é obrigado a fazer nada. Poderia ser apenas um recipiente para arquivos "
+"estáticos ou código arbitrário que outros aplicativos pode querer "
+"importação e de acesso. No entanto, normalmente a maioria dos aplicativos "
+"são projetados para expor páginas estáticas ou dinâmicas."
 
 #: ../../chapter-05.rst:34
 msgid "Static web pages"
-msgstr ""
+msgstr "Páginas estáticas"
 
 #: ../../chapter-05.rst:36
 msgid ""
 "To expose static web pages you simply need to create a ``static`` "
 "subfolder, and any file in there will be automatically published:"
 msgstr ""
+"Para expor páginas estáticas você simplesmente precisa para criar um `` "
+"subpasta static`` e qualquer arquivo lá será automaticamente publicado:"
 
 #: ../../chapter-05.rst:44
 msgid "The newly created file will be accessible at"
-msgstr ""
+msgstr "O arquivo recém-criado será acessível em"
 
 #: ../../chapter-05.rst:50
 msgid ""
 "Notice that ``static`` is a special path for py4web and only files under "
 "the ``static`` folder are served."
 msgstr ""
+"Note que `` static`` é um caminho especial para py4web e arquivos somente "
+"sob o `` static`` pasta são servidos."
 
 #: ../../chapter-05.rst:53
 msgid ""
-"Important: internally py4web uses the bottle `static_file "
-"<https://bottlepy.org/docs/dev/tutorial.html#static-files>`__ method for "
-"serving static files, which means it supports streaming, partial content,"
-" range requests, and if-modified-since. This is all handled automatically"
-" based on the http request headers."
+"Important: internally py4web uses the bottle `static_file <https://bottlepy."
+"org/docs/dev/tutorial.html#static-files>`__ method for serving static "
+"files, which means it supports streaming, partial content, range requests, "
+"and if-modified-since. This is all handled automatically based on the http "
+"request headers."
 msgstr ""
+"Importante: py4web internamente usa a garrafa `static_file <https://"
+"bottlepy.org/docs/dev/tutorial.html#static-files>` __ método para servir "
+"arquivos estáticos, o que significa que suporta streaming, conteúdo "
+"parcial, pedidos de intervalo, e If-Modified-Since. Isso tudo é feito "
+"automaticamente com base nos cabeçalhos de solicitação HTTP."
 
 #: ../../chapter-05.rst:60
 msgid "Dynamic Web Pages"
-msgstr ""
+msgstr "Páginas web dinâmicas"
 
 #: ../../chapter-05.rst:62
 msgid ""
-"To create a dynamic page, you must create a function that returns the "
-"page content. For example edit the ``myapp/__init__.py`` as follows:"
+"To create a dynamic page, you must create a function that returns the page "
+"content. For example edit the ``myapp/__init__.py`` as follows:"
 msgstr ""
+"Para criar uma página dinâmica, você deve criar uma função que retorna o "
+"conteúdo da página. . Por exemplo editar a `` novaaplicacao / __ __ Init "
+"py`` como se segue:"
 
 #: ../../chapter-05.rst:74
 msgid ""
-"Restart py4web or press the Dashboard “Reload Apps” button, and this page"
-" will be accessible at"
+"Restart py4web or press the Dashboard “Reload Apps” button, and this page "
+"will be accessible at"
 msgstr ""
+"Py4web Restart ou pressione o botão “Atualizar Apps” botão do painel, e "
+"esta página será acessível em"
 
 #: ../../chapter-05.rst:81
 msgid "or"
-msgstr ""
+msgstr "ou"
 
 #: ../../chapter-05.rst:87
 msgid "(notice that index is optional)"
-msgstr ""
+msgstr "(Note que o índice é opcional)"
 
 #: ../../chapter-05.rst:89
 msgid ""
-"Unlike other frameworks, we do not import or start the webserver within "
-"the ``myapp`` code. This is because py4web is already running, and it may"
-" be serving multiple apps. py4web imports our code and exposes functions "
-"decorated with ``@action()``. Also notice that py4web prepends ``/myapp``"
-" (i.e. the name of the app) to the url path declared in the action. This "
-"is because there are multiple apps, and they may define conflicting "
-"routes. Prepending the name of the app removes the ambiguity. But there "
-"is one exception: if you call your app ``_default``, or if you create a "
-"symlink from ``_default`` to ``myapp``, then py4web will not prepend any "
-"prefix to the routes defined inside the app."
+"Unlike other frameworks, we do not import or start the webserver within the "
+"``myapp`` code. This is because py4web is already running, and it may be "
+"serving multiple apps. py4web imports our code and exposes functions "
+"decorated with ``@action()``. Also notice that py4web prepends ``/myapp`` "
+"(i.e. the name of the app) to the url path declared in the action. This is "
+"because there are multiple apps, and they may define conflicting routes. "
+"Prepending the name of the app removes the ambiguity. But there is one "
+"exception: if you call your app ``_default``, or if you create a symlink "
+"from ``_default`` to ``myapp``, then py4web will not prepend any prefix to "
+"the routes defined inside the app."
 msgstr ""
+"Ao contrário de outras estruturas, nós não importar ou iniciar o servidor "
+"web dentro do `` código myapp``. Isso ocorre porque py4web já está em "
+"execução, e pode servir vários aplicativos. py4web importa nossas funções "
+"de código e expõe decorados com `` @Action () ``. Note também que prepends "
+"py4web `` / myapp`` (ou seja, o nome do aplicativo) para o caminho url "
+"declarado na ação. Isso ocorre porque existem vários aplicativos, e eles "
+"podem definir rotas conflitantes. Antecedendo o nome do aplicativo remove a "
+"ambiguidade. Mas há uma exceção: se você chamar seu aplicativo `` "
+"_default``, ou se você criar um link simbólico do `` _default`` para `` "
+"myapp``, então py4web não irá anteceder qualquer prefixo para as rotas "
+"definidas dentro do aplicativo ."
 
 #: ../../chapter-05.rst:102
 msgid "On return values"
-msgstr ""
+msgstr "Em valores de retorno"
 
 #: ../../chapter-05.rst:104
 msgid ""
 "py4web actions should return a string or a dictionary. If they return a "
-"dictionary you must tell py4web what to do with it. By default py4web "
-"will serialize it into json. For example edit ``__init__.py`` again and "
-"add"
+"dictionary you must tell py4web what to do with it. By default py4web will "
+"serialize it into json. For example edit ``__init__.py`` again and add"
 msgstr ""
+"ações py4web deve retornar uma string ou um dicionário. Se eles retornar um "
+"dicionário que você deve dizer py4web o que fazer com ele. Por padrão "
+"py4web serializará-lo em JSON. Por exemplo editar `` __init __. Py`` "
+"novamente e adicionar"
 
 #: ../../chapter-05.rst:115 ../../chapter-05.rst:143
 msgid "This page will be visible at"
-msgstr ""
+msgstr "Esta página será visível na"
 
 #: ../../chapter-05.rst:121
 msgid ""
-"and returns a JSON object ``{\"colors\": [\"red\", \"blue\", "
-"\"green\"]}``. Notice we chose to name the function the same as the "
-"route. This is not required, but it is a convention that we will often "
-"follow."
+"and returns a JSON object ``{\"colors\": [\"red\", \"blue\", \"green\"]}``. "
+"Notice we chose to name the function the same as the route. This is not "
+"required, but it is a convention that we will often follow."
 msgstr ""
+"e retorna um objeto JSON `` { \"cores\": [ \"vermelho\", \"azul\", \"verde"
+"\"]} ``. Observe que escolhemos nomear a função o mesmo que a rota. Isso "
+"não é necessário, mas é uma convenção que muitas vezes se seguirão."
 
 #: ../../chapter-05.rst:125
 msgid ""
-"You can use any template language to turn your data into a string. PY4WEB"
-" comes with yatl, a full chapter will be dedicated later and we will "
-"provide an example shortly."
+"You can use any template language to turn your data into a string. PY4WEB "
+"comes with yatl, a full chapter will be dedicated later and we will provide "
+"an example shortly."
 msgstr ""
+"Você pode usar qualquer linguagem de modelo para transformar seus dados em "
+"uma string. PY4WEB vem com yatl, um capítulo inteiro será dedicado mais "
+"tarde e iremos fornecer um exemplo em breve."
 
 #: ../../chapter-05.rst:130
 msgid "Routes"
-msgstr ""
+msgstr "Rotas"
 
 #: ../../chapter-05.rst:132
 msgid ""
-"It is possible to map patterns in the URL into arguments of the function."
-" For example:"
+"It is possible to map patterns in the URL into arguments of the function. "
+"For example:"
 msgstr ""
+"É possível mapear padrões do URL em argumentos da função. Por exemplo:"
 
 #: ../../chapter-05.rst:149
 msgid ""
-"The syntax of the patterns is the same as the `Bottle routes "
-"<https://bottlepy.org/docs/dev/tutorial.html#request-routing>`__. A route"
-" wildcard can be defined as"
+"The syntax of the patterns is the same as the `Bottle routes <https://"
+"bottlepy.org/docs/dev/tutorial.html#request-routing>`__. A route wildcard "
+"can be defined as"
 msgstr ""
+"A sintaxe dos padrões é o mesmo que os `rotas Garrafa <https://bottlepy.org/"
+"docs/dev/tutorial.html#request-routing>` __. Uma rota WildCard pode ser "
+"definida como"
 
 #: ../../chapter-05.rst:153
 msgid "``<name>`` or"
-msgstr ""
+msgstr "`` <Name> `` ou"
 
 #: ../../chapter-05.rst:154
 msgid "``<name:filter>`` or"
-msgstr ""
+msgstr "`` <Name: filter> `` ou"
 
 #: ../../chapter-05.rst:155
 msgid "\\``\\`\\```\\`"
-msgstr ""
+msgstr "\\ `` \\ `\\` `` \\ `"
 
 #: ../../chapter-05.rst:157
 msgid "And these are possible filters (only \\`\\ ``:`` has a config):"
-msgstr ""
+msgstr "E estes são possíveis filtros (somente \\ `\\` `:` `tem uma config):"
 
 #: ../../chapter-05.rst:159
 msgid "``:int`` matches (signed) digits and converts the value to integer."
 msgstr ""
+"``: Resultados int`` dígitos (assinatura) e converte o valor de número "
+"inteiro."
 
 #: ../../chapter-05.rst:160
 msgid "``:float`` similar to :int but for decimal numbers."
-msgstr ""
+msgstr "``: Float`` semelhante a: int mas para números decimais."
 
 #: ../../chapter-05.rst:161
 msgid ""
 "``:path`` matches all characters including the slash character in a non-"
 "greedy way, and may be used to match more than one path segment."
 msgstr ""
+"``: Path`` corresponde a todos os personagens, incluindo o caractere de "
+"barra de uma forma não-ganancioso, e pode ser usado para combinar mais de "
+"um segmento de caminho."
 
 #: ../../chapter-05.rst:163
 msgid ""
-"\\``:re[:exp]``\\` allows you to specify a custom regular expression in "
-"the config field. The matched value is not modified."
+"\\``:re[:exp]``\\` allows you to specify a custom regular expression in the "
+"config field. The matched value is not modified."
 msgstr ""
+"\\ ``: Re [: exp] `` \\ `permite especificar uma expressão regular "
+"personalizado no campo de configuração. O valor combinado não é modificado."
 
 #: ../../chapter-05.rst:166
 msgid ""
 "The pattern matching the wildcard is passed to the function under the "
 "specified variable ``name``."
 msgstr ""
+"O padrão de harmonização o carácter universal é passado para a função sob a "
+"variável especificada `` name``."
 
 #: ../../chapter-05.rst:169
 msgid ""
-"Also, the action decorator takes an optional ``method`` argument that can"
-" be an HTTP method or a list of methods:"
+"Also, the action decorator takes an optional ``method`` argument that can "
+"be an HTTP method or a list of methods:"
 msgstr ""
+"Além disso, o decorador acção tem um argumento `` method`` opcional que "
+"pode ser um método HTTP ou uma lista de métodos:"
 
 #: ../../chapter-05.rst:176
 msgid ""
-"You can use multiple decorators to expose the same function under "
-"multiple routes."
+"You can use multiple decorators to expose the same function under multiple "
+"routes."
 msgstr ""
+"Você pode usar vários decoradores para expor a mesma função em várias rotas."
 
 #: ../../chapter-05.rst:180
 msgid "The ``request`` object"
-msgstr ""
+msgstr "O objeto `` request``"
 
 #: ../../chapter-05.rst:182
 msgid "From py4web you can import ``request``"
-msgstr ""
+msgstr "De py4web você pode importar `` request``"
 
 #: ../../chapter-05.rst:195
 msgid "This action can be accessed at:"
-msgstr ""
+msgstr "Esta ação pode ser acessado em:"
 
 #: ../../chapter-05.rst:203
 msgid ""
-"Notice that the request object is a `Bottle request object "
-"<https://bottlepy.org/docs/dev/api.html#the-request-object>`_."
+"Notice that the request object is a `Bottle request object <https://"
+"bottlepy.org/docs/dev/api.html#the-request-object>`_."
 msgstr ""
+"Observe que o objeto de solicitação é um `pedido objeto Garrafa <https://"
+"bottlepy.org/docs/dev/api.html#the-request-object>` _."
 
 #: ../../chapter-05.rst:206
 msgid "Templates"
-msgstr ""
+msgstr "Modelos"
 
 #: ../../chapter-05.rst:208
 msgid ""
-"In order to use a yatl template you must declare it. For example create a"
-" file ``apps/myapp/templates/paint.html`` that contains:"
+"In order to use a yatl template you must declare it. For example create a "
+"file ``apps/myapp/templates/paint.html`` that contains:"
 msgstr ""
+"Para utilizar um yatl modelo que você deve declará-lo. Por exemplo, criar "
+"um arquivo `` apps / myapp / templates / paint.html`` que contém:"
 
 #: ../../chapter-05.rst:223
 msgid "then modify the paint action to use the template and default to green."
 msgstr ""
+"em seguida, modificar a ação de tinta para usar o modelo e padrão para "
+"verde."
 
 #: ../../chapter-05.rst:232
 msgid ""
 "The page will now display the color name on a background of the "
 "corresponding color."
 msgstr ""
+"A página irá agora mostrar o nome da cor em um fundo da cor correspondente."
 
 #: ../../chapter-05.rst:235
 msgid ""
 "The key ingredient here is the decorator ``@action.uses(...)``. The "
 "arguments of ``action.uses`` are called **fixtures**. You can specify "
 "multiple fixtures in one decorator or you can have multiple decorators. "
-"Fixtures are objects that modify the behavior of the action, that may "
-"need to be initialized per request, that may filter input and output of "
-"the action, and that may depend on each-other (they are similar in scope "
-"to Bottle plugins but they are declared per-action, and they have a "
-"dependency tree which will be explained later)."
+"Fixtures are objects that modify the behavior of the action, that may need "
+"to be initialized per request, that may filter input and output of the "
+"action, and that may depend on each-other (they are similar in scope to "
+"Bottle plugins but they are declared per-action, and they have a dependency "
+"tree which will be explained later)."
 msgstr ""
+"O ingrediente chave aqui é o decorador `` @ action.uses (...) ``. Os "
+"argumentos de `` action.uses`` são chamados luminárias ** **. Você pode "
+"especificar vários dispositivos elétricos em um decorador ou você pode ter "
+"vários decoradores. Chaves são objectos que modificam o comportamento da "
+"acção, que podem precisar de ser inicializado por pedido, que podem "
+"realizar uma filtragem de entrada e de saída da acção, e que pode depender "
+"de cada-outro (eles são semelhantes no seu âmbito à garrafa encaixes, mas "
+"eles são declarados por ação, e eles têm uma árvore de dependência que será "
+"explicado mais tarde)."
 
 #: ../../chapter-05.rst:244
 msgid ""
-"The simplest type of fixture is a template. You specify it by simply "
-"giving the name of the file to be used as template. That file must follow"
-" the yatl syntax and must be located in the ``templates`` folder of the "
-"app. The object returned by the action will be processed by the template "
-"and turned into a string."
+"The simplest type of fixture is a template. You specify it by simply giving "
+"the name of the file to be used as template. That file must follow the yatl "
+"syntax and must be located in the ``templates`` folder of the app. The "
+"object returned by the action will be processed by the template and turned "
+"into a string."
 msgstr ""
+"O tipo mais simples de acessório é um modelo. Você especifica que "
+"simplesmente dando o nome do arquivo a ser usado como modelo. Esse arquivo "
+"deve seguir a sintaxe yatl e deve estar localizado no diretório `` "
+"templates`` pasta do aplicativo. O objeto retornado pela ação serão "
+"processados ​​pelo modelo e se transformou em uma corda."
 
 #: ../../chapter-05.rst:250
 msgid ""
 "You can easily define fixtures for other template languages. This is "
 "described later."
 msgstr ""
+"Você pode facilmente definir luminárias para outras linguagens de modelo. "
+"Isto é descrito mais tarde."
 
 #: ../../chapter-05.rst:253
 msgid "Some built-in fixtures are:"
-msgstr ""
+msgstr "Alguns built-in luminárias são:"
 
 #: ../../chapter-05.rst:255
 msgid ""
-"the DAL object (which tells py4web to obtain a database connection from "
-"the pool at every request, and commit on success or rollback on failure)"
+"the DAL object (which tells py4web to obtain a database connection from the "
+"pool at every request, and commit on success or rollback on failure)"
 msgstr ""
+"o objeto DAL (que diz py4web para obter uma conexão de banco de dados a "
+"partir da piscina a cada pedido, e comprometer-se em caso de sucesso ou "
+"reversão em caso de falha)"
 
 #: ../../chapter-05.rst:258
 msgid ""
-"the Session object (which tells py4web to parse the cookie and retrieve a"
-" session at every request, and to save it if changed)"
+"the Session object (which tells py4web to parse the cookie and retrieve a "
+"session at every request, and to save it if changed)"
 msgstr ""
+"o objeto de sessão (que diz py4web para analisar o cookie e recuperar uma "
+"sessão a cada pedido, e para salvá-lo, se alterado)"
 
 #: ../../chapter-05.rst:260
 msgid ""
 "the Translator object (which tells py4web to process the accept-language "
 "header and determine optimal internationalization/pluralization rules)"
 msgstr ""
+"o objeto Tradutor (que diz py4web para processar o cabeçalho Accept-"
+"Language e determinar óptima internacionalização / pluralização regras)"
 
 #: ../../chapter-05.rst:263
 msgid ""
-"the Auth object (which tells py4web that the app needs access to the user"
-" info)"
+"the Auth object (which tells py4web that the app needs access to the user "
+"info)"
 msgstr ""
+"o objeto Auth (que diz py4web que as necessidades de aplicativos acessar às "
+"informações do usuário)"
 
 #: ../../chapter-05.rst:266
 msgid ""
@@ -323,115 +420,155 @@ msgid ""
 "(database connection), and Auth may need both. Dependencies are handled "
 "automatically."
 msgstr ""
+"Eles podem depender um do outro. Por exemplo, a sessão pode precisar a DAL "
+"(ligação de base de dados), e Auth podem precisamos de ambos. As "
+"dependências são tratados automaticamente."
 
 #: ../../chapter-05.rst:271
 msgid "From \\_scaffold"
-msgstr ""
+msgstr "De \\ _scaffold"
 
 #: ../../chapter-05.rst:273
 msgid ""
-"Most of the times, you do not want to start writing code from scratch. "
-"You also want to follow some sane conventions outlined here, like not "
-"putting all your code into ``__init__.py``. PY4WEB provides a Scaffolding"
-" (_scaffold) app, where files are organized properly and many useful "
-"objects are pre-defined."
+"Most of the times, you do not want to start writing code from scratch. You "
+"also want to follow some sane conventions outlined here, like not putting "
+"all your code into ``__init__.py``. PY4WEB provides a Scaffolding "
+"(_scaffold) app, where files are organized properly and many useful objects "
+"are pre-defined."
 msgstr ""
+"Na maioria das vezes, você não quer começar a escrever código a partir do "
+"zero. Você também quer seguir algumas convenções sãs descritas aqui, como "
+"não colocar todo seu código em `` __init __. Py``. PY4WEB fornece um "
+"aplicativo de Andaimes (_scaffold), onde os arquivos são organizados de "
+"forma adequada e muitos objetos úteis são pré-definidos."
 
 #: ../../chapter-05.rst:279
 msgid ""
 "You will normally find the scaffold app under apps, but you can easily "
 "create a new clone of it manually or using the Dashboard."
 msgstr ""
+"Normalmente você vai encontrar o aplicativo andaime sob apps, mas você pode "
+"facilmente criar um novo clone de la manualmente ou usando o Dashboard."
 
 #: ../../chapter-05.rst:282
 msgid "Here is the tree structure of the ``_scaffold`` app:"
-msgstr ""
+msgstr "Aqui está a estrutura da árvore do `` aplicativo _scaffold``:"
 
 #: ../../chapter-05.rst:317
 msgid "The scaffold app contains an example of a more complex action:"
-msgstr ""
+msgstr "O aplicativo andaime contém um exemplo de uma ação mais complexa:"
 
 #: ../../chapter-05.rst:333
 msgid "Notice the following:"
-msgstr ""
+msgstr "Observe o seguinte:"
 
 #: ../../chapter-05.rst:335
 msgid "``request``, ``response``, ``abort`` are defined by Bottle"
-msgstr ""
+msgstr "`` `` Request``, response``, `` abort`` são definidos por garrafa"
 
 #: ../../chapter-05.rst:336
 msgid "``redirect`` and ``URL`` are similar to their web2py counterparts"
-msgstr ""
+msgstr "`` `` Redirect`` e URL`` são semelhantes aos seus homólogos web2py"
 
 #: ../../chapter-05.rst:337
 msgid ""
 "helpers (``A``, ``DIV``, ``SPAN``, ``IMG``, etc) must be imported from "
 "``yatl.helpers`` . They work pretty much as in web2py"
 msgstr ""
+"ajudantes ( `` A``, `` div``, `` SPAN``, `` IMG``, etc.) deve ser importado "
+"a partir `` yatl.helpers``. Eles trabalham muito bem como em web2py"
 
 #: ../../chapter-05.rst:339
 msgid ""
-"``db``, ``session``, ``T``, ``cache``, ``auth`` are Fixtures. They must "
-"be defined in ``common.py``."
+"``db``, ``session``, ``T``, ``cache``, ``auth`` are Fixtures. They must be "
+"defined in ``common.py``."
 msgstr ""
+"`` Db``, `` session``, `` T``, `` cache``, `` auth`` são Chaves. Eles devem "
+"ser definidos em `` common.py``."
 
 #: ../../chapter-05.rst:341
 msgid ""
 "``@action.uses(auth.user)`` indicates that this action expects a valid "
-"logged-in user retrievable by ``auth.get_user()``. If that is not the "
-"case, this action redirects to the login page (defined also in "
-"``common.py`` and using the Vue.js auth.html component)."
+"logged-in user retrievable by ``auth.get_user()``. If that is not the case, "
+"this action redirects to the login page (defined also in ``common.py`` and "
+"using the Vue.js auth.html component)."
 msgstr ""
+"`` @ Action.uses (auth.user) `` indica que esta acção espera um válido "
+"logado recuperáveis ​​usuário por `` auth.get_user () ``. Se isso não for o "
+"caso, esta ação redireciona para a página de login (definido também em `` "
+"common.py`` e usando o componente auth.html Vue.js)."
 
 #: ../../chapter-05.rst:346
 msgid ""
 "When you start from scaffold, you may want to edit ``settings.py``, "
-"``templates``, ``models.py`` and ``controllers.py`` but probably you "
-"don’t need to change anything in ``common.py``."
+"``templates``, ``models.py`` and ``controllers.py`` but probably you don’t "
+"need to change anything in ``common.py``."
 msgstr ""
+"Quando você começar a partir de andaime, você pode querer editar `` "
+"settings.py``, `` templates``, `` models.py`` e `` controllers.py`` mas "
+"provavelmente você não precisa mudar nada no `` common.py``."
 
 #: ../../chapter-05.rst:350
 msgid ""
 "In your html, you can use any JS library that you want because py4web is "
-"agnostic to your choice of JS and CSS, but with some exceptions. The "
-"``auth.html`` which handles registration/login/etc. uses a vue.js "
-"component. Hence if you want to use that, you should not remove it."
+"agnostic to your choice of JS and CSS, but with some exceptions. The ``auth."
+"html`` which handles registration/login/etc. uses a vue.js component. Hence "
+"if you want to use that, you should not remove it."
 msgstr ""
+"Em seu HTML, você pode usar qualquer biblioteca JS que você quer, porque "
+"py4web é agnóstica para a sua escolha de JS e CSS, mas com algumas "
+"exceções. O `` auth.html`` que lida com registro / login / etc. usa um "
+"componente vue.js. Portanto, se você quiser usar isso, você não deve removê-"
+"lo."
 
 #: ../../chapter-05.rst:356
 msgid "App Watchdog"
-msgstr ""
+msgstr "App Watchdog"
 
 #: ../../chapter-05.rst:358
 msgid ""
-"Py4web facilitates a development server’s setup that automatically "
-"reloads an app when its Python source files change. Any other files "
-"inside an app can be watched by setting a handler function using "
+"Py4web facilitates a development server’s setup that automatically reloads "
+"an app when its Python source files change. Any other files inside an app "
+"can be watched by setting a handler function using "
 "**``@app_watch_handler``** decorator."
 msgstr ""
+"Py4web facilita a configuração de um servidor de desenvolvimento que "
+"recarrega automaticamente um aplicativo quando sua fonte Python arquivos "
+"mudança. Quaisquer outros arquivos dentro de um aplicativo pode ser visto "
+"através da criação de uma função de manipulador usando ** `` @ "
+"app_watch_handler`` decorador **."
 
 #: ../../chapter-05.rst:369
 msgid ""
-"Two examples of its usage are reported now. Do not worry if you don’t "
-"fully undestand them: the key point here is that even non-python code "
-"could be reloaded automatically if you explicit it with the "
+"Two examples of its usage are reported now. Do not worry if you don’t fully "
+"undestand them: the key point here is that even non-python code could be "
+"reloaded automatically if you explicit it with the "
 "**``@app_watch_handler``** decorator."
 msgstr ""
+"Dois exemplos de seu uso são relatados agora. Não se preocupe se você não "
+"undestand-los totalmente: o ponto-chave aqui é que mesmo código não-python "
+"pode ser recarregado automaticamente se explícita-lo com o ** `` @ "
+"app_watch_handler`` ** decorador."
 
 #: ../../chapter-05.rst:374
 msgid "Watch SASS files and compile them when edited:"
-msgstr ""
+msgstr "Assista SASS arquivos e compilá-los quando editado:"
 
 #: ../../chapter-05.rst:393
 msgid "Validate javascript syntax when edited:"
-msgstr ""
+msgstr "Validar sintaxe javascript quando editado:"
 
 #: ../../chapter-05.rst:409
 msgid ""
-"Filepaths passed to **``@app_watch_handler``** decorator must be relative"
-" to an app. Python files (i.e. \"\\*.py\") in a list passed to the "
-"decorator are ignored since they are watched by default. Handler "
-"function’s parameter is a list of filepaths that were changed. All "
-"exceptions inside handlers are printed in terminal."
+"Filepaths passed to **``@app_watch_handler``** decorator must be relative "
+"to an app. Python files (i.e. \"\\*.py\") in a list passed to the decorator "
+"are ignored since they are watched by default. Handler function’s parameter "
+"is a list of filepaths that were changed. All exceptions inside handlers "
+"are printed in terminal."
 msgstr ""
-
+"Filepaths passado para ** `` @ app_watch_handler`` decorador ** deve ser "
+"relativo a um aplicativo. arquivos Python (ou seja, \"\\ *. py\") em uma "
+"lista passada para o decorador são ignorados uma vez que eles são vigiados "
+"por padrão. parâmetro da função de manipulador é uma lista de caminhos de "
+"arquivos que foram alterados. Todas as exceções dentro manipuladores são "
+"impressos em terminal."

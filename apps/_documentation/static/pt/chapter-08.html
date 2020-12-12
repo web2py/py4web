@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>The RESTAPI &mdash; Documentação py4web 1.20201112.1
+  <title>A RESTAPI &mdash; Documentação py4web 1.20201127.1
 </title>
   
 
@@ -40,8 +40,8 @@
     
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Pesquisar" href="search.html" />
-    <link rel="next" title="YATL Template Language" href="chapter-09.html" />
-    <link rel="prev" title="The database abstraction layer (DAL)" href="chapter-07.html" /> 
+    <link rel="next" title="Linguagem de template YATL" href="chapter-09.html" />
+    <link rel="prev" title="A camada de abstracção de banco de dados (DAL)" href="chapter-07.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.20201112.1
+                1.20201127.1
 
               </div>
             
@@ -91,26 +91,26 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Conteúdo:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="chapter-01.html">O que é py4web?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The database abstraction layer (DAL)</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">The RESTAPI</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">A camada de abstracção de banco de dados (DAL)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">A RESTAPI</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#restapi-get">RestAPI GET</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internacionalização</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forumlários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Autenticação e controle de acesso</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
 </ul>
 
             
@@ -157,7 +157,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>The RESTAPI</li>
+      <li>A RESTAPI</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -179,21 +179,9 @@
            <div itemprop="articleBody">
             
   <div class="section" id="the-restapi">
-<h1>The RESTAPI<a class="headerlink" href="#the-restapi" title="Link permanente para este título">¶</a></h1>
-<p>Since version 19.5.10 PyDAL includes a restful API called RestAPI. It is
-inspired by GraphQL but it’s not quite the same because it is less
-powerful but, in the spirit of web2py, more practical and easier to use.
-Like GraphSQL RestAPI allows a client to query for information using the
-GET method and allows to specify some details about the format of the
-response (which references to follow, and how to denormalize the data).
-Unlike GraphSQL it allows the server to specify a policy and restrict
-which queries are allowed and which one are not. They can be evaluated
-dynamically per request based on the user and the state of the server.
-As the name implied RestAPI allows all stardard methods GET, POST, PUT,
-and DELETE. Each of them can be enabled or disabled based on the policy,
-for individual tables and individual fields.</p>
-<p>In the examples below we assume an app called “superheroes” and the
-following model:</p>
+<h1>A RESTAPI<a class="headerlink" href="#the-restapi" title="Link permanente para este título">¶</a></h1>
+<p>Desde a versão 19.5.10 PyDAL inclui uma API RESTful chamado RestAPI. É inspirado por GraphQL mas não é bem a mesma coisa, porque é menos poderoso, mas, no espírito do web2py, mais prático e mais fácil de usar. Como GraphSQL RestAPI permite que um cliente para consulta de informações usando o método GET e permite especificar alguns detalhes sobre o formato da resposta (que referências a seguir, e como desnormalizar os dados). Ao contrário GraphSQL ele permite que o servidor para especificar uma política e restringir quais consultas são permitidas e quais não são. Eles podem ser avaliados de forma dinâmica por solicitação com base no usuário e o estado do servidor. Como o nome implica RestAPI permite que todos os métodos stardard GET, POST, PUT e DELETE. Cada um deles pode ser ativado ou desativado com base na política, para tabelas individuais e campos individuais.</p>
+<p>Nos exemplos abaixo assumimos um aplicativo chamado “super-heróis” e o seguinte modelo:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
     <span class="s1">&#39;person&#39;</span><span class="p">,</span>
     <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
@@ -215,7 +203,7 @@ following model:</p>
     <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;strength&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>We also assume the following controller <code class="docutils literal notranslate"><span class="pre">rest.py</span></code>:</p>
+<p>Também assumimos o seguinte controlador `` rest.py``:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal.dbapi</span> <span class="kn">import</span> <span class="n">RestAPI</span><span class="p">,</span> <span class="n">Policy</span>
 
 <span class="n">policy</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">()</span>
@@ -238,66 +226,45 @@ following model:</p>
                                <span class="p">)</span>
 </pre></div>
 </div>
-<p>The policy is per table (or * for all tables and per method. authorize
-can be True (allow), False (deny) or a function with the signature
-(method, tablename, record_id, get_vars, post_vars) which returns
-True/False. For the GET policy one can specify a list of allowed query
-patterns (* for all). A query pattern will be matched against the keys
-in the query string.</p>
-<p>The above action is exposed as:</p>
+<p>A política é por tabela (ou * para todas as tabelas e por método. Autorizar pode ser verdade (permitir), False (negar) ou uma função com a assinatura (método, tablename, record_id, get_vars, post_vars) que retorna Verdadeiro / Falso . para a política GET pode especificar uma lista de padrões de consulta permitidos (* para todos). um padrão de consulta será comparado com as chaves na cadeia de consulta.</p>
+<p>A acção acima referida é exposto como:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">superheroes</span><span class="o">/</span><span class="n">rest</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="p">{</span><span class="n">tablename</span><span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>About request.POST</strong>: keep in mind that <strong>request.POST</strong> only contains
-the form data that is posted using a <strong>regular HTML-form</strong> or javascript
-<strong>FormData</strong> object. If you post just plain object
-(e.g. <code class="docutils literal notranslate"><span class="pre">axios.post(</span> <span class="pre">'path/to/api',</span> <span class="pre">{field:'some'}</span> <span class="pre">)</span></code>) you should pass
-<strong>request.json</strong> instead of request.POST, since latter will contain just
-raw request-body which is string, not json. See bottle.py documentation
-for more details.</p>
+<p>** Sobre request.POST <a href="#id1"><span class="problematic" id="id2">**</span></a>: Manter em mente que ** ** request.POST contém apenas os dados do formulário que é publicado utilizando um formulário HTML normal ** ** ou javascript ** FormData ** objeto. Se você postar apenas objeto simples (por exemplo, `` axios.post ( “path / to / api”, {campo: “alguns”}) <a href="#id3"><span class="problematic" id="id4">``</span></a>) você deve passar request.json ** ** em vez de request.POST, desde Este último irá conter request-corpo apenas cru que é corda, não json. Consulte a documentação bottle.py para mais detalhes.</p>
 <div class="section" id="restapi-get">
 <h2>RestAPI GET<a class="headerlink" href="#restapi-get" title="Link permanente para este título">¶</a></h2>
-<p>The general query has the form <code class="docutils literal notranslate"><span class="pre">{something}.eq=value</span></code> where <code class="docutils literal notranslate"><span class="pre">eq=</span></code>
-stands for “equal”, <code class="docutils literal notranslate"><span class="pre">gt=</span></code> stands for “greater than”, etc. The
-expression can be prepended by <code class="docutils literal notranslate"><span class="pre">not.</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">{something}</span></code> can be the name of a field in the table been queried as
-in:</p>
-<p><strong>All superheroes called “Superman”</strong></p>
+<p>A consulta geral tem a forma `` {} algo .eq = value`` onde `` eq = `` significa “igual”, `` gt = `` significa “maior que”, etc. A expressão pode ser prefixado por `` not.``.</p>
+<p>`` {Algo} `` pode ser o nome de um campo na tabela foi consultado como em:</p>
+<p>** Todos os super-heróis chamado de “Superman” **</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?name.eq=Superman
 </pre></div>
 </div>
-<p>It can be a the name of a field of a table referred by the table been
-queried as in:</p>
-<p><strong>All superheroes with real identity “Clark Kent”</strong></p>
+<p>Pode ser um nome de um campo de uma tabela referida pela tabela foi consultado como em:</p>
+<p>** Todos os super-heróis com a identidade real “Clark Kent” **</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?real_identity.name.eq=Clark Kent
 </pre></div>
 </div>
-<p>It can be the name of a field of a table that refers to the table neen
-queried as in:</p>
-<p><strong>All superheroes with any tag superpower with strength &gt; 90</strong></p>
+<p>Pode ser o nome de um campo de uma tabela que se refere ao neen tabela consultada como em:</p>
+<p>** Todos os super-heróis com qualquer superpotência tag com força&gt; 90 **</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?superhero.tag.strength.gt=90
 </pre></div>
 </div>
-<p>(here tag is the name of the link table, the preceding <code class="docutils literal notranslate"><span class="pre">superhero</span></code> is
-the name of the field that refers to the selected table and <code class="docutils literal notranslate"><span class="pre">strength</span></code>
-is the name of the field used to filter)</p>
-<p>It can also be a field of the table referenced by a many-to-many linked
-table as in:</p>
-<p><strong>All superheroes with the flight power</strong></p>
+<p>(Aqui tag é o nome da tabela de ligação, o anterior `` superhero`` é o nome do campo que faz referência ao quadro seleccionado e `` strength`` é o nome do campo utilizado para filtro)</p>
+<p>Ele também pode ser um campo da tabela referenciada por uma tabela de muitos-para-muitos ligado como em:</p>
+<p>** Todos os super-heróis com o poder de vôo **</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?superhero.tag.superpower.description.eq=Flight
 </pre></div>
 </div>
-<p>The key to understand the syntax above is to break it as follows:</p>
+<p>A chave para entender a sintaxe acima é para quebrá-lo da seguinte forma:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>superhero?superhero.tag.superpower.description.eq=Flight
 </pre></div>
 </div>
-<p>and read it as:</p>
+<p>e lê-lo como:</p>
 <blockquote>
-<div><p>select records of table <strong>superhero</strong> referred by field <strong>superhero</strong>
-of table <strong>tag</strong> when the <strong>superpower</strong> field of said table points
-to a record with <strong>description</strong> <strong>eq</strong>ual to “Flight”.</p>
+<div><p>selecionar registros da tabela ** super-herói ** referido pelo campo ** super-herói ** da tabela ** tag ** quando a superpotência ** ** campo dos ditos pontos de mesa para um recorde com a descrição ** ** ** ** eq ual para “Flight”.</p>
 </div></blockquote>
-<p>The query allows additional modifiers for example</p>
+<p>A consulta permite modificadores adicionais, por exemplo</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@offset</span><span class="o">=</span><span class="mi">10</span>
 <span class="nd">@limit</span><span class="o">=</span><span class="mi">10</span>
 <span class="nd">@order</span><span class="o">=</span><span class="n">name</span>
@@ -305,14 +272,13 @@ to a record with <strong>description</strong> <strong>eq</strong>ual to “Fligh
 <span class="nd">@lookup</span><span class="o">=</span><span class="n">real_identity</span>
 </pre></div>
 </div>
-<p>The first 3 are obvious. &#64;model returns a JSON description of database
-model. Lookup denormalizes the linked field.</p>
-<p>Here are some practical examples:</p>
+<p>Os 3 primeiros são óbvias. &#64;model retorna uma descrição JSON do modelo de banco de dados. Lookup desnormaliza o campo vinculado.</p>
+<p>Aqui estão alguns exemplos práticos:</p>
 <p>URL:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">superheroes</span><span class="o">/</span><span class="n">rest</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">superhero</span>
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -343,7 +309,7 @@ model. Lookup denormalizes the linked field.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@model=true
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -414,7 +380,7 @@ model. Lookup denormalizes the linked field.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@lookup=real_identity
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -457,8 +423,8 @@ model. Lookup denormalizes the linked field.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@lookup=identity:real_identity
 </pre></div>
 </div>
-<p>(denormalize the real_identity and rename it identity)</p>
-<p>OUTPUT:</p>
+<p>(Desnormalizar o real_identity e renomeá-lo de identidade)</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -504,9 +470,8 @@ model. Lookup denormalizes the linked field.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@lookup=identity!:real_identity[name,job]
 </pre></div>
 </div>
-<p>(denormalize the real_identity [but only fields name and job], collapse
-the with the identity prefix)</p>
-<p>OUTPUT:</p>
+<p>(Desnormalizar o real_identity [mas apenas campos nome e trabalho], recolher a com o prefixo de identidade)</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -540,7 +505,7 @@ the with the identity prefix)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@lookup=superhero.tag
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -637,7 +602,7 @@ the with the identity prefix)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@lookup=superhero.tag.superpower
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -760,12 +725,12 @@ the with the identity prefix)</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>URL (it’s a single line, splitted for readability):</p>
+<p>URL (que é uma linha única, dividida para facilitar a leitura):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?
 @lookup=powers:superhero.tag[strength].superpower[description]
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -858,12 +823,12 @@ the with the identity prefix)</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>URL (it’s a single line, splitted for readability):</p>
+<p>URL (que é uma linha única, dividida para facilitar a leitura):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?
 @lookup=powers!:superhero.tag[strength].superpower[description]
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -936,13 +901,13 @@ the with the identity prefix)</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>URL (it’s a single line, splitted for readability):</p>
+<p>URL (que é uma linha única, dividida para facilitar a leitura):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?
 @lookup=powers!:superhero.tag[strength].superpower[description],
 identity!:real_identity[name]
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -1019,7 +984,7 @@ identity!:real_identity[name]
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?name.eq=Superman
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -1040,7 +1005,7 @@ identity!:real_identity[name]
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?real_identity.name.eq=Clark Kent
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -1061,7 +1026,7 @@ identity!:real_identity[name]
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?not.real_identity.name.eq=Clark Kent
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -1087,7 +1052,7 @@ identity!:real_identity[name]
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?superhero.tag.superpower.description=Flight
 </pre></div>
 </div>
-<p>OUTPUT:</p>
+<p>RESULTADO:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
@@ -1104,7 +1069,7 @@ identity!:real_identity[name]
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Notice all RestAPI response have the fields</p>
+<p>Note todas resposta RestAPI ter os campos</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="o">...</span>
     <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="o">...</span>
@@ -1113,7 +1078,7 @@ identity!:real_identity[name]
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>and some optional fields:</p>
+<p>e alguns campos opcionais:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="o">...</span> <span class="p">(</span><span class="n">total</span> <span class="n">matching</span><span class="p">,</span> <span class="ow">not</span> <span class="n">total</span> <span class="n">returned</span><span class="p">,</span> <span class="k">for</span> <span class="n">GET</span><span class="p">)</span>
     <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="o">...</span> <span class="p">(</span><span class="ow">in</span> <span class="n">response</span> <span class="n">to</span> <span class="n">a</span> <span class="n">GET</span><span class="p">)</span>
@@ -1123,7 +1088,7 @@ identity!:real_identity[name]
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>The exact specs are subject to change since this is a new feature.</p>
+<p>As especificações exatas estão sujeitos a mudança uma vez que este é um novo recurso.</p>
 </div>
 </div>
 
@@ -1135,10 +1100,10 @@ identity!:real_identity[name]
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="chapter-09.html" class="btn btn-neutral float-right" title="YATL Template Language" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="chapter-09.html" class="btn btn-neutral float-right" title="Linguagem de template YATL" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="chapter-07.html" class="btn btn-neutral float-left" title="The database abstraction layer (DAL)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="chapter-07.html" class="btn btn-neutral float-left" title="A camada de abstracção de banco de dados (DAL)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1181,14 +1146,14 @@ identity!:real_identity[name]
      <label for="switch"></label>
      </span>
       
-      v: 1.20201112.1
+      v: 1.20201127.1
 
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
       
       <dl>
-        <dt>Languages</dt>
+        <dt>Idiomas</dt>
         
           
           
@@ -1202,7 +1167,7 @@ identity!:real_identity[name]
       
       
       <dl>
-        <dt>Versions</dt>
+        <dt>Versões</dt>
         
           
           <dd><a href="index.html">current</a></dd>
@@ -1212,7 +1177,7 @@ identity!:real_identity[name]
       
       
       <dl>
-        <dt>Downloads</dt>
+        <dt>Transferências</dt>
         
           <dd><a href="py4web_pt.pdf">pdf</a></dd>
         

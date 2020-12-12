@@ -177,6 +177,7 @@ class Auth(Fixture):
         self.use_username = use_username  # if False, uses email only
         self.use_phone_number = use_phone_number
         # The self._link variable is not thread safe (only intended for testing)
+        self.extra_auth_user_fields = extra_fields
         self._link = None
         self.extra_auth_user_fields = extra_fields
         if db and define_tables:
