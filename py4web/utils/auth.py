@@ -923,17 +923,20 @@ class DefaultAuthForms:
             if self.auth.next["login"]:
                 url = url + "?next=" + self.auth.next["login"]
             top_buttons.append(A(plugin.label + " Login", _href=url, _role="button"))
-        form.param.sidecar.append(
-            A("Sign Up", _href="../auth/register", _class="info", _role="button")
-        )
-        form.param.sidecar.append(
-            A(
-                "Lost Password",
-                _href="../auth/request_reset_password",
-                _class="info",
-                _role="button",
+
+        if "register" in self.auth.param.allowed_actions:
+            form.param.sidecar.append(
+                A("Sign Up", _href="../auth/register", _class="info", _role="button")
             )
-        )
+        if "request_reset_password" in self.auth.param.allowed_actions:
+            form.param.sidecar.append(
+                A(
+                    "Lost Password",
+                    _href="../auth/request_reset_password",
+                    _class="info",
+                    _role="button",
+                )
+            )
         form.structure.insert(0, DIV(DIV(*top_buttons)))
         return form
 

@@ -27,6 +27,13 @@ VERIFY_EMAIL = True
 # account requires to be approved ?
 REQUIRES_APPROVAL = False
 
+# ALLOWED_ACTIONS:
+# ["all"] 
+# ["login", "logout", "request_reset_password", "reset_password", "change_password", "change_email", "update_profile"]
+# if you add "login", add also "logout"
+ALLOWED_ACTIONS = ["all"]
+
+
 # email settings
 SMTP_SSL = False
 SMTP_SERVER = None
