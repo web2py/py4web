@@ -738,9 +738,15 @@ class Grid:
         :return:
         """
         if self.use_tablename:
-            field_value = row[field.tablename][field.name]
+            if 'represent' in field and field.represent:
+                field_value = self.db[field.tablename][field.name].represent(row[field.tablename][field.name])
+            else:
+                field_value = row[field.tablename][field.name]
         else:
-            field_value = row[field.name]
+            if 'represent' in field and field.represent:
+                field_value = self.db[field.tablename][field.name].represent(row[field.name])
+            else:
+                field_value = row[field.name]
         key = "%s.%s" % (field.tablename, field.name)
         formatter = (
             self.formatters.get(key)
