@@ -13,7 +13,7 @@ class EmailAuthPlugin:
         self.tls_mode = tls_mode
 
     def validate_credentials(self, username, password):
-        email = (username,)
+        email = username
         server = self.server
         domain = self.domain
         tls_mode = self.tls_mode
@@ -22,7 +22,12 @@ class EmailAuthPlugin:
                 domain = [str(domain)]
             if not [d for d in domain if email[-len(d) :] == d]:
                 return False
-        (host, port) = server.split(":")
+        if ":" in server:
+            host, port = server.split(":")
+        else:
+            host = server
+            port = 25
+
         if tls_mode is None:  # then auto detect
             tls_mode = port == "587"
         try:
@@ -43,4 +48,4 @@ class EmailAuthPlugin:
                 except:  # server might already close connection after error
                     pass
             return False
-        return True
+
