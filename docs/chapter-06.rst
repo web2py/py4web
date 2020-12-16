@@ -36,8 +36,11 @@ party template language or third party session logic.
 Important about Fixtures
 ------------------------
 
-In the examples below we will explain how to apply individual fixtures.
-In practice fixtures can be applied in groups. For example:
+As we've seen in the previous chapter, fixtures are the arguments of the decorator
+``@action.uses(...)``. You can specify
+multiple fixtures in one decorator or you can have multiple decorators.
+
+Also, fixtures can be applied in groups. For example:
 
 ::
 
@@ -55,7 +58,7 @@ Then you can apply all of the at once with:
 Py4web templates
 ----------------
 
-PY4WEB, by default uses the yatl template language and provides a
+PY4WEB by default uses the yatl template language and provides a
 fixture for it.
 
 .. code:: python
@@ -89,10 +92,15 @@ syntactic sugar, and the two following lines are equivalent:
 Notice that py4web template files are cached in RAM. The py4web caching
 object is described later.
 
-Sessions
---------
+The Session fixture
+-------------------
 
-The session object is also a Fixture. Here is a typical example of usage
+Simply speaking, a session can be defined as a way to preserve information that is
+desired to persist throughout the user's interaction with the web site or web application.
+In other words, sessions render the stateless HTTP connection a stateful one.
+It can be implemented server-side or client-side (by using cookies).
+
+In py4web, the session object is also a Fixture. Here is a typical example of usage
 to implement a counter.
 
 ::
@@ -230,8 +238,8 @@ of files per folder by using subfolders, and implement file locking. Yet
 we do not recomment storing sessions on the filesystem: it is
 inefficient and does not scale well.
 
-Translator
-----------
+The Translator fixture
+----------------------
 
 Here is an example of usage:
 
@@ -322,8 +330,8 @@ and set your browser preference to Italian.
 The Flash fixture
 -----------------
 
-It is common to want to display “alerts” to the suers. Here we refer to
-them as flash messeges. There is a little more to it than just
+It is common to want to display “alerts” to the users. Here we refer to
+them as **flash messages**. There is a little more to it than just
 displaying a message to the view because flash messages can have state
 that must be preserved after redirection. Also they can be generated
 both server side and client side, there can be only one at the time,
@@ -345,7 +353,7 @@ The Flash helper handles the server side of them. Here is an example:
 
 and in the template:
 
-::
+.. code:: html
 
    ...
    <div id="py4web-flash"></div>
@@ -355,7 +363,7 @@ and in the template:
 
 By setting the value of the message in the flash helper, a flash
 variable is returned by the action and this trigger the JS in the
-template to inject the message in the ``#py4web-flash`` DIV which you
+template to inject the message in the ``py4web-flash`` DIV which you
 can position at your convenience. Also the optional class is applied to
 the injected HTML.
 
@@ -384,7 +392,7 @@ maybe you want direct access to the DAL object for the purpose of
 accessing the database, not just sessions.
 
 PY4WEB, by default, uses the PyDAL (Python Database Abstraction Layer)
-which is documented in a later chapter. Here is an example, please
+which is documented in the next chapter. Here is an example, please
 remember to create the ``databases`` folder under your project in case
 it doesn’t exist:
 
@@ -406,13 +414,13 @@ it doesn’t exist:
        db.visit_log.insert(client_ip=client_ip, timestamp=datetime.utcnow())
        return "Your visit was stored in database"
 
-Notice that the database fixture defines (creates/re-creates tables)
+Notice that the database fixture defines (creates/re-creates) tables
 automatically when py4web starts (and every time it reloads this app)
 and picks a connection from the connection pool at every HTTP request.
 Also each call to the ``index()`` action is wrapped into a transaction
 and it commits ``on_success`` and rolls back ``on_error``.
 
-Caveats about Fixtures
+Caveats about fixtures
 ----------------------
 
 Since fixtures are shared by multiple actions you are not allowed to
@@ -422,7 +430,7 @@ fields:
 
 .. code:: python
 
-   from py4web import Field, action, request, DAL, Field
+   from py4web import action, request, DAL, Field
    from py4web.utils.form import Form
    import os
 
@@ -436,7 +444,6 @@ fields:
        db.thing.name.writable = True
        form = Form(db.thing)
        return dict(form=form)
-   )
 
 Note thas this code will only be able to display a form, to process it
 after submit, additional code needs to be added, as we will see later
@@ -466,7 +473,7 @@ A fixture is an object with the following minimal structure:
        def on_error(self): pass
        def transform(self, data): return data
 
-if an action uses this fixture:
+If an action uses this fixture:
 
 ::
 
@@ -474,16 +481,21 @@ if an action uses this fixture:
    @action.uses(MyFixture())
    def index(): return 'hello world'
 
-Then ``on_request()`` is guaranteed to be called before the ``index()``
-function is called. The ``on_success()`` is guaranteed to be called if
-the ``index()`` function returns successfully or raises ``HTTP`` or
-performs a ``redirect``. The ``on_error()`` is guaranteed to be called
-when the ``index()`` function raises any exception other than ``HTTP``.
-The ``transform`` function is called to perform any desired
-transformation of the value returned by the ``index()`` function.
+then:
 
-Auth and Auth.user
-------------------
+* the ``on_request()`` function is guaranteed to be called before the ``index()``
+  function is called
+* the ``on_success()`` function is guaranteed to be called if
+  the ``index()`` function returns successfully or raises ``HTTP`` or
+  performs a ``redirect``
+* the ``on_error()`` function is guaranteed to be called
+  when the ``index()`` function raises any exception other than ``HTTP``.
+* the ``transform`` function is called to perform any desired
+  transformation of the value returned by the ``index()`` function.
+
+
+Auth and Auth.user fixture
+--------------------------
 
 ``auth`` and ``auth.user`` are both fixtures. They depend on
 ``session``. The role of access is to provide the action with
@@ -526,8 +538,8 @@ exposes a single method:
 
 which returns a python dictionary containing the information of the
 currently logged in user. If the user is not logged-in, it returns
-``None``. The code of the example redirects to the ‘auth/login’ page if
-there is no user.
+``None`` and in this case the code of the example redirects to the ‘auth/login’
+page.
 
 Since this check is very common, py4web provides an additional fixture
 ``auth.user``:
@@ -560,7 +572,8 @@ Here is an example of using the Google Oauth2 plugin:
 
 The ``client_id`` and ``client_secret`` are provided by google. The
 callback url is the default option for py4web and it must be whitelisted
-with Google. All ``Auth`` plugins are objects. Different plugins are
+with Google.
+All ``Auth`` plugins are objects. Different plugins are
 configured in different ways but they are registered using
 ``auth.register_plugin(...)``. Examples are provided in
 ``_scaffold/common.py``.
@@ -598,7 +611,7 @@ Convenience Decorators
 ----------------------
 
 The ``_scaffold`` application, in ``common.py`` defines two special
-conveniennce decorators:
+convenience decorators:
 
 ::
 
@@ -608,7 +621,11 @@ conveniennce decorators:
 
 and
 
-\`\ ``@authenticated def index():     return dict()``
+::
+
+   @authenticated
+   def index():
+       return dict()
 
 They apply all of the decorators below, use a template with the same
 name as the function (.html), and also register a route with the name of
@@ -618,6 +635,6 @@ slash (/).
 @unauthenticated does not require the user to be logged in.
 @authenticated required the user to be logged in.
 
-If can be combined with (and precede) other ``@action.uses(...)`` but
+They can be combined with (and precede) other ``@action.uses(...)`` but
 they should not be combined with ``@action(...)`` because they perform
 that function automatically.
