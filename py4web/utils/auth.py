@@ -377,27 +377,35 @@ class Auth(Fixture):
 
     def login(self, email, password):
         db = self.db
-        value = email.lower()
-        if self.use_username:
-            query = (
-                (db.auth_user.email == value)
-                if "@" in value
-                else (db.auth_user.username == value)
-            )
+        if 'email_auth' in self.plugins:
+            email = email.lower()
+            if self.plugins['email_auth'].validate_credentials(email, password):
+                user = db(db.auth_user.email==email).select().first()
+                return (user, None)
+            else:
+                return None, "Invalid Credentials"
         else:
-            query = db.auth_user.email == value
-        user = db(query).select().first()
-        if not user:
-            return (None, "Invalid email")
-        if (user.action_token or "").startswith("pending-registration:"):
-            return (None, "Registration is pending")
-        if user.action_token == "account-blocked":
-            return (None, "Account is blocked")
-        if user.action_token == "pending-approval":
-            return (None, "Account needs to be approved")
-        if CRYPT()(password)[0] == user.password:
-            return (user, None)
-        return None, "Invalid Credentials"
+            value = email.lower()
+            if self.use_username:
+                query = (
+                    (db.auth_user.email == value)
+                    if "@" in value
+                    else (db.auth_user.username == value)
+                )
+            else:
+                query = db.auth_user.email == value
+            user = db(query).select().first()
+            if not user:
+                return (None, "Invalid email")
+            if (user.action_token or "").startswith("pending-registration:"):
+                return (None, "Registration is pending")
+            if user.action_token == "account-blocked":
+                return (None, "Account is blocked")
+            if user.action_token == "pending-approval":
+                return (None, "Account needs to be approved")
+            if CRYPT()(password)[0] == user.password:
+                return (user, None)
+            return None, "Invalid Credentials"
 
     def request_reset_password(self, email, send=True, next=""):
         db = self.db
@@ -888,14 +896,15 @@ class DefaultAuthForms:
         form.param.sidecar.append(
             A("Sign In", _href="../auth/login", _class="info", _role="button")
         )
-        form.param.sidecar.append(
-            A(
-                "Lost Password",
-                _href="../auth/request_reset_password",
-                _class="info",
-                _role="button",
+        if 'request_reset_password' in self.auth.param.allowed_actions:
+            form.param.sidecar.append(
+                A(
+                    "Lost Password",
+                    _href="../auth/request_reset_password",
+                    _class="info",
+                    _role="button",
+                )
             )
-        )
         return form
 
     def login(self):
