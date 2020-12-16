@@ -452,10 +452,10 @@ class Grid:
 
             #  find the primary key of the primary table
             pt = db[self.tablename]
-            key_is_missing = False
+            key_is_missing = True
             for field in self.param.fields:
-                if field.table._tablename == pt._tablename and field.name == pt._id:
-                    key_is_missing = True
+                if field.table._tablename == pt._tablename and field.name == pt._id.name:
+                    key_is_missing = False
             if key_is_missing:
                 #  primary key wasn't included, add it and set show_id to False so it doesn't display
                 self.param.fields.append(pt._id)
