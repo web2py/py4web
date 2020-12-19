@@ -221,6 +221,12 @@ In order to stop py4web, you need to hit :kbd:`Control-C` on the window where yo
 
 For all apps the trailing ``/index`` is optional.
 
+.. warning::
+
+   For Windows: it could be that ``Ctrl-C`` does not work in order to stop py4web.
+   In this case, try with ``Ctrl-Break`` or ``Ctrl-Fn-Pause``.
+   
+   
 Command line options
 --------------------
 

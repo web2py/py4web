@@ -6,11 +6,18 @@ From scratch
 ------------
 
 Apps can be created using the dashboard or directly from the filesystem.
-Here, we are going to do it manually, as the Dashboard is described in
+Here, we are going to do it manually, as the Dashboard is already described in
 its own chapter.
 
 Keep in mind that an app is a Python module; therefore it needs only a
-folder and a ``__init__.py`` file in that folder:
+folder and a ``__init__.py`` file in that folder. 
+
+.. note::
+   An empty *__init__.py* file is not strictly needed since
+   Python 3.3, but it will be useful later on.
+   
+Open a command prompt and go to your main py4web folder. Enter the following
+simple commands in order to create a new empty **myapp** app:
 
 .. code:: bash
 
@@ -18,14 +25,25 @@ folder and a ``__init__.py`` file in that folder:
    echo '' > apps/myapp/__init__.py
 
 .. tip::
-   for Windows, you must use backslashes (i.e. '\\') instead of
-   slashes. Also, an empty *__init__.py* file is not strictly needed since
-   Python 3.3, but it will be useful later on.
+   for Windows, you must use backslashes (i.e. ``\``) instead of
+   slashes.
+   
+
    
 If you now restart py4web or
 press the “Reload Apps” in the Dashboard, py4web will find this module,
 import it, and recognize it as an app, simply because of its location.
-An app is not required to do anything. It could just be a container for
+You can also run py4web in *watch* mode (see the :ref:`run command option`) for
+automatic reloading of the apps wheneve it changes, which is very useful in a development environment.
+In this case, run py4web with a command like this:
+
+
+.. code:: bash
+
+    py4web run apps --watch sync
+
+ 
+A py4web app is not required to do anything. It could just be a container for
 static files or arbitrary code that other apps may want to import and
 access. Yet typically most apps are designed to expose static or dynamic
 web pages.
@@ -71,8 +89,7 @@ page content. For example edit the ``myapp/__init__.py`` as follows:
    def page():
        return "hello, now is %s" % datetime.datetime.now()
 
-Restart py4web or press the Dashboard “Reload Apps” button, and this
-page will be accessible at
+Reload the app, and this page will be accessible at
 
 ::
 
@@ -104,7 +121,7 @@ On return values
 py4web actions should return a string or a dictionary. If they return a
 dictionary you must tell py4web what to do with it. By default py4web
 will serialize it into json. For example edit ``__init__.py`` again and
-add
+add at the end
 
 .. code:: python
 
@@ -152,15 +169,15 @@ A route wildcard can be defined as
 
 -  ``<name>`` or
 -  ``<name:filter>`` or
--  \``\`\```\`
+-  ``<name:filter:config>``
 
-And these are possible filters (only \`\ ``:`` has a config):
+And these are possible filters (only ``re:`` has a config):
 
 -  ``:int`` matches (signed) digits and converts the value to integer.
 -  ``:float`` similar to :int but for decimal numbers.
 -  ``:path`` matches all characters including the slash character in a
    non-greedy way, and may be used to match more than one path segment.
--  \``:re[:exp]``\` allows you to specify a custom regular expression in
+-  ``:re[:exp]`` allows you to specify a custom regular expression in
    the config field. The matched value is not modified.
 
 The pattern matching the wildcard is passed to the function under the
@@ -267,14 +284,20 @@ They may depend on each other. For example, the Session may need the DAL
 (database connection), and Auth may need both. Dependencies are handled
 automatically.
 
-From \_scaffold
----------------
+The \_scaffold app
+------------------
 
 Most of the times, you do not want to start writing code from scratch.
 You also want to follow some sane conventions outlined here, like not
 putting all your code into ``__init__.py``. PY4WEB provides a
 Scaffolding (_scaffold) app, where files are organized properly and many
-useful objects are pre-defined.
+useful objects are pre-defined. Also, it shows you how to manage users and
+their registration.
+Just like a real scaffolding in a building construction site, scaffolding
+could give you some kind of a fast and simplified structure for your project,
+on which you can rely to build your real project.
+
+.. image:: images/_scaffold.png
 
 You will normally find the scaffold app under apps, but you can easily
 create a new clone of it manually or using the Dashboard.
@@ -352,24 +375,19 @@ agnostic to your choice of JS and CSS, but with some exceptions. The
 ``auth.html`` which handles registration/login/etc. uses a vue.js
 component. Hence if you want to use that, you should not remove it.
 
-App Watchdog
-------------
+Watch for files change
+----------------------
 
-Py4web facilitates a development server’s setup that automatically
-reloads an app when its Python source files change. Any other files
-inside an app can be watched by setting a handler function using
-**``@app_watch_handler``** decorator.
+As described in the :ref:`run command option`, Py4web facilitates a
+development server’s setup by automatically reloads an app when its
+Python source files change (if run with the ``--watch`` option).
+But in fact any other files inside an app can be watched by setting a
+handler function using the ``@app_watch_handler`` decorator.
 
-::
-
-    --watch [off|sync|lazy]       Watch python changes and reload apps
-                                   automatically, modes: off (default), sync,
-                                   lazy
-
-Two examples of its usage are reported now. Do not worry if you don’t
+Two examples of this usage are reported now. Do not worry if you don’t
 fully undestand them: the key point here is that even non-python code
 could be reloaded automatically if you explicit it with the
-**``@app_watch_handler``** decorator.
+``@app_watch_handler`` decorator.
 
 Watch SASS files and compile them when edited:
 
@@ -406,7 +424,7 @@ Validate javascript syntax when edited:
            with open(os.path.abspath(cf)) as code:
                esprima.parseModule(code.read())
 
-Filepaths passed to **``@app_watch_handler``** decorator must be
+Filepaths passed to ``@app_watch_handler`` decorator must be
 relative to an app. Python files (i.e. "\*.py") in a list passed to the
 decorator are ignored since they are watched by default. Handler
 function’s parameter is a list of filepaths that were changed. All
