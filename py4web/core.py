@@ -129,6 +129,22 @@ def module2filename(module):
 
 
 ########################################################################################
+# fix request.fullpath for the case of domain mapping to app
+# (request.url will be autofixed, since it is based on request.fullpath)
+#########################################################################################
+def monkey_patch_bottle():
+    urljoin = urllib.parse.urljoin
+    @property
+    def fullpath(self):
+        appname = self.get_header('x-py4web-appname', '/')
+        return urljoin(self.script_name, self.path[len(appname):])
+    setattr(bottle.BaseRequest, 'fullpath', fullpath)
+
+
+monkey_patch_bottle()
+
+
+########################################################################################
 # Implement a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
 #########################################################################################
 
