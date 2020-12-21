@@ -339,7 +339,7 @@ class Grid:
         #  instance variables that will be computed
         self.action = None
         self.current_page_number = None
-        self.endpoint = request.path
+        self.endpoint = request.fullpath
         if self.path:
             self.endpoint = self.endpoint[: -len(self.path)].rstrip("/")
         self.hidden_fields = None
@@ -364,12 +364,12 @@ class Grid:
         query = None
         db = self.db
         if not self.param.search_form and self.param.search_queries:
-            seach_type = safe_int(request.query.get("seach_type", 0), default=0)
-            seach_string = request.query.get("seach_string")
-            if seach_type < len(self.param.search_queries) and seach_string:
-                query_lambda = self.param.search_queries[seach_type][1]
+            search_type = safe_int(request.query.get("search_type", 0), default=0)
+            search_string = request.query.get("search_string")
+            if search_type < len(self.param.search_queries) and search_string:
+                query_lambda = self.param.search_queries[search_type][1]
                 try:
-                    query = query_lambda(seach_string)
+                    query = query_lambda(search_string)
                 except:
                     pass  # flash a message here
 
@@ -600,22 +600,22 @@ class Grid:
 
     def render_default_form(self):
 
-        seach_type = safe_int(request.query.get("seach_type", 0), default=0)
-        seach_string = request.query.get("seach_string")
+        search_type = safe_int(request.query.get("search_type", 0), default=0)
+        search_string = request.query.get("search_string")
         options = [
-            OPTION(items[0], _value=k, _selected=(k == seach_type))
+            OPTION(items[0], _value=k, _selected=(k == search_type))
             for k, items in enumerate(self.param.search_queries)
         ]
         hidden_fields = [
             INPUT(_name=key, _value=request.query.get(key), _type="hidden")
             for key in request.query
-            if not key in ("seach_type", "seach_string")
+            if not key in ("search_type", "search_string")
         ]
         form = FORM(*hidden_fields, **dict(_method="GET", _action=self.endpoint))
-        select = SELECT(*options, **dict(_name="seach_type",))
-        input = INPUT(_type="text", _name="seach_string", _value=seach_string,)
+        select = SELECT(*options, **dict(_name="search_type",))
+        input = INPUT(_type="text", _name="search_string", _value=search_string,)
         submit = INPUT(_type="submit", _value="Search")
-        clear_script = "document.querySelector('[name=seach_string]').value='';"
+        clear_script = "document.querySelector('[name=search_string]').value='';"
         clear = INPUT(_type="submit", _value="Clear", _onclick=clear_script)
         div = DIV(_id="grid-search", **self.param.grid_class_style.get("grid-search"))
 
@@ -774,10 +774,11 @@ class Grid:
         tbody = TBODY()
         for row in self.rows:
             #  find the row id - there may be nested tables....
-            if self.use_tablename:
+            if self.use_tablename and self.tablename in row:
                 row_id = row[self.tablename]["id"]
             else:
                 row_id = row["id"]
+                self.use_tablename = False
 
             tr = TR(
                 _role="row",
