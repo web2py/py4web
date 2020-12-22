@@ -1525,14 +1525,15 @@ def new_app(apps_folder, app_name, scaffold_zip):
     "-d",
     "--dashboard_mode",
     default="full",
-    help="Dashboard mode: demo, readonly, full (default), none",
+    help="Dashboard mode: demo, readonly, full, none",
     show_default=True,
 )
 @click.option(
     "--watch",
     default="off",
     type=click.Choice(["off", "sync", "lazy"]),
-    help="Watch python changes and reload apps automatically, modes: off (default), sync, lazy",
+    help="Watch python changes and reload apps automatically, modes: off, sync, lazy",
+    show_default=True,
 )
 @click.option(
     "--ssl_cert", type=click.Path(exists=True), help="SSL certificate file for HTTPS"

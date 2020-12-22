@@ -300,12 +300,13 @@ This currently gives an error on binaries installations and from source installa
                                    password.txt]
 
      -w, --number_workers INTEGER  Number of workers  [default: 0]
-     -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
-                                   (default), none  [default: full]
+     -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
+                                   [default: full]
 
      --watch [off|sync|lazy]       Watch python changes and reload apps
-                                   automatically, modes: off (default), sync,
-                                   lazy
+                                   automatically, modes: off, sync, lazy
+                                   [default: off]
+
      --ssl_cert PATH               SSL certificate file for HTTPS
      --ssl_key PATH                SSL key file for HTTPS
      -help, -h, --help             Show this message and exit.
