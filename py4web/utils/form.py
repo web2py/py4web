@@ -535,9 +535,7 @@ class Form(object):
         payload = {"ts": str(time.time())}
         if self.lifespan is not None:
             payload["exp"] = time.time() + self.lifespan
-        self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256").decode(
-            "utf-8"
-        )
+        self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256")
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""
