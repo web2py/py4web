@@ -72,7 +72,7 @@ Important: internally py4web uses the bottle
 `static_file <https://bottlepy.org/docs/dev/tutorial.html#static-files>`__
 method for serving static files, which means it supports streaming,
 partial content, range requests, and if-modified-since. This is all
-handled automatically based on the http request headers.
+handled automatically based on the HTTP request headers.
 
 Dynamic Web Pages
 -----------------
@@ -217,7 +217,7 @@ This action can be accessed at:
 
 
 
-Notice that the request object is a `Bottle request object <https://bottlepy.org/docs/dev/api.html#the-request-object>`_.
+Notice that the request object is a `Bottle request object <https://bottlepy.org/docs/dev/api.html#the-request-object>`__.
 
 Templates
 ~~~~~~~~~
