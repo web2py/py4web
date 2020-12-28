@@ -15,8 +15,8 @@ of databases. A partial list of supported databases is show in the table
 below. Please check on the py4web web site and mailing list for more
 recent adapters. Google NoSQL is treated as a particular case.
 
-The Gotchas_ section at the end of this chapter has some more information
-about specific databases.
+The :ref:`Gotchas` section at the end of this chapter has some more
+information about specific databases.
 
 The Windows binary distribution works out of the box with SQLite, MSSQL,
 PostgreSQL and MySQL. The Mac binary distribution works out of the box
@@ -319,7 +319,7 @@ Lazy Tables
 ~~~~~~~~~~~
 
 setting ``lazy_tables = True`` provides a major performance boost. See
-below: `Lazy Tables, a major performance boost`_
+below: :ref:`Lazy Tables, a major performance boost`
 
 Model-less applications
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -717,6 +717,8 @@ which take a Set object as the first argument, such as IS_IN_DB, will
 make a query like ``db.sometable.somefield == some_value`` which would
 cause ``sometable`` to be defined early. This is the situation saved by
 ``on_define``.
+
+.. _Lazy Tables, a major performance boost:
 
 Lazy Tables, a major performance boost
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4897,6 +4899,8 @@ can specify optional driver arguments and adapter arguments:
 .. code:: python
 
    db =DAL(..., driver_args={}, adapter_args={})
+
+.. _Gotchas:
 
 Gotchas
 -------
