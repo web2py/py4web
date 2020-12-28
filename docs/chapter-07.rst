@@ -15,7 +15,7 @@ of databases. A partial list of supported databases is show in the table
 below. Please check on the py4web web site and mailing list for more
 recent adapters. Google NoSQL is treated as a particular case.
 
-The :ref:`Gotchas` section at the end of this chapter has some more
+The :ref:Gotchas section at the end of this chapter has some more
 information about specific databases.
 
 The Windows binary distribution works out of the box with SQLite, MSSQL,
