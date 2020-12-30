@@ -44,7 +44,7 @@ Also, fixtures can be applied in groups. For example:
 
 ::
 
-   preferred = action.uses(Session, Auth, T, Flash)
+   preferred = action.uses(session, auth, T, flash)
 
 Then you can apply all of the at once with:
 
