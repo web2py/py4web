@@ -342,12 +342,12 @@ ICECUBE = {}
 
 class Flash(Fixture):
     """
-    flash = Flash(session)
-    
-    #acton('index.html')
+    flash = Flash()
+
+    @action('index')
     @action.uses(flash)
     def index():
-        flash.set('hello', class_='important')        
+        flash.set('hello', class_='important')
         return dict()
 
     Flash messages are added to the dict and, upon redirect, carry forward

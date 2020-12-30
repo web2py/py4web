@@ -5,6 +5,7 @@ import uuid
 import copy
 from py4web import request, response
 from py4web.utils.param import Param
+from pydal._compat import to_native
 from pydal.validators import Validator
 
 from yatl.helpers import (
@@ -535,7 +536,7 @@ class Form(object):
         payload = {"ts": str(time.time())}
         if self.lifespan is not None:
             payload["exp"] = time.time() + self.lifespan
-        self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256")
+        self.formkey = to_native(jwt.encode(payload, self._get_key(), algorithm="HS256"))
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""
