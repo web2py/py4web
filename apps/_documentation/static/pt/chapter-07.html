@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>A camada de abstracção de banco de dados (DAL) &mdash; Documentação py4web 1.20201127.1
+  <title>A camada de abstracção de banco de dados (DAL) &mdash; Documentação py4web 1.20201211.1
 </title>
   
 
@@ -31,7 +31,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/js/toggle.js"></script>
         <script src="_static/translations.js"></script>
     
@@ -65,7 +64,7 @@
             
             
               <div class="version">
-                1.20201127.1
+                1.20201211.1
 
               </div>
             
@@ -340,7 +339,8 @@
 <div class="section" id="dependencies">
 <h2>Dependências<a class="headerlink" href="#dependencies" title="Link permanente para este título">¶</a></h2>
 <p>py4web vem com uma camada de abstração de banco de dados (DAL), uma API que mapeia Python objetos no banco de dados objetos, como consultas, tabelas e registros. A DAL gera dinamicamente o SQL em tempo real usando o dialeto especificado para o back-end de banco de dados, de modo que você não precisa de código SQL gravação ou aprender diferentes dialetos SQL (SQL termo é utilizado genericamente), ea aplicação irá ser portátil entre diferentes tipos de bancos de dados. Uma lista parcial de bases de dados suportadas é mostrado na tabela abaixo. Por favor, verifique no site py4web e lista de endereços para adaptadores mais recentes. Google NoSQL é tratado como um case particular.</p>
-<p>A seção Gotchas no final deste capítulo tem mais algumas informações sobre bancos de dados específicos.</p>
+<p>The :ref:Gotchas section at the end of this chapter has some more
+information about specific databases.</p>
 <p>A distribuição binária Windows funciona fora da caixa com SQLite, MSSQL, PostgreSQL e MySQL. A distribuição binária Mac funciona fora da caixa com SQLite. Para usar qualquer outro banco de dados back-end, executado a partir da distribuição fonte e instalar o driver apropriado para o back-end necessário.</p>
 <p>Uma vez que o driver apropriado está instalado, inicie py4web a partir da fonte, e vai encontrar o driver. Aqui está uma lista de drivers py4web pode usar:</p>
 <table class="docutils align-default">
@@ -446,7 +446,7 @@
 <div class="section" id="using-the-dal-stand-alone">
 <h2>Usando o DAL “stand-alone”<a class="headerlink" href="#using-the-dal-stand-alone" title="Link permanente para este título">¶</a></h2>
 <p>A DAL pode ser usado num ambiente não-py4web através</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 </pre></div>
 </div>
 </div>
@@ -467,7 +467,8 @@
 <span class="go">sqlite</span>
 </pre></div>
 </div>
-<p>A seqüência de conexão é chamado de `` _uri`` porque é uma instância de um Uniform Resource Identifier.</p>
+<p>The connection string is called a <code class="docutils literal notranslate"><span class="pre">_uri</span></code> because it is an instance of
+a uniform resource identifier.</p>
 <p>A DAL permite várias ligações com o mesmo banco de dados ou com diferentes bases de dados, mesmo bases de dados de diferentes tipos. Por enquanto, vamos supor a presença de um único banco de dados uma vez que esta é a situação mais comum.</p>
 <div class="section" id="dal-signature">
 <h3>Assinatura da DAL<a class="headerlink" href="#dal-signature" title="Link permanente para este título">¶</a></h3>
@@ -507,32 +508,30 @@
 <p>`` Db`` não é uma palavra-chave; é uma variável local que armazena o objeto de conexão `` DAL``. Você é livre para dar-lhe um nome diferente. O construtor de `` DAL`` requer um único argumento, a string de conexão. A seqüência de conexão é o único código py4web que depende de um banco de dados específico back-end. Aqui estão alguns exemplos de strings de conexão para tipos específicos de bancos de dados de back-end suportados (em todos os cases, assumimos o banco de dados está sendo executado a partir de localhost na sua porta padrão e é chamado de “teste”):</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 32%" />
-<col style="width: 68%" />
+<col style="width: 27%" />
+<col style="width: 73%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>** ** SQLite</p></th>
-<th class="head"><p>`` SQLite: // storage.sqlite``</p></th>
-</tr>
-</thead>
 <tbody>
+<tr class="row-odd"><td><p>** ** SQLite</p></td>
+<td><p>`` SQLite: // storage.sqlite``</p></td>
+</tr>
 <tr class="row-even"><td><p>** ** MySQL</p></td>
 <td><p>`` Mysql: // username:? Pa ssword &#64; localhost / test set_encoding = utf8mb4``</p></td>
 </tr>
 <tr class="row-odd"><td><p>** ** PostgreSQL</p></td>
-<td><p>`` P ostgres: // username: password &#64; localhost / test``</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">postgres://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>** MSSQL (legado) **</p></td>
 <td><p>`` Mssql: // username: password &#64; localhost / test``</p></td>
 </tr>
 <tr class="row-odd"><td><p>** MSSQL (&gt; = 2005) **</p></td>
-<td><p>`` Mssql3: // username: password &#64; localhost / test``</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mssql3://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>** MSSQL (&gt; = 2012) **</p></td>
-<td><p>`` Mssql4: // username: password &#64; localhost / test``</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mssql4://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>** ** FireBird</p></td>
-<td><p>`` Irebird f: // username: password &#64; localhost / test``</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">firebird://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Oráculo</strong></p></td>
 <td><p>`` Oracle: // username / password &#64; test``</p></td>
@@ -541,19 +540,19 @@
 <td><p>`` Db2: // username: password &#64; test``</p></td>
 </tr>
 <tr class="row-even"><td><p>** ** Ingres</p></td>
-<td><p>`` Ingres: // username: password &#64; localhost / test``</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ingres://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>** ** Sybase</p></td>
-<td><p>`` Sybase: // username: password &#64; localhost / test``</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sybase://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>** ** Informix</p></td>
 <td><p>`` Informix: // username: password &#64; test``</p></td>
 </tr>
 <tr class="row-odd"><td><p>** ** Teradata</p></td>
-<td><p>`` Teradata: // DSN = dsn; UID = utilizador; PWD = pass; DATABASE = test``</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">teradata://DSN=dsn;UID=user;PWD=pass;DATABASE=test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>** ** CUBRID</p></td>
-<td><p>`` CUBRID: // username: password &#64; localhost / test``</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cubrid://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>** ** SAPDB</p></td>
 <td><p>`` Sapdb: // username: password &#64; localhost / test``</p></td>
@@ -562,7 +561,7 @@
 <td><p>`` Imap: // utilizador: senha &#64; servidor: port``</p></td>
 </tr>
 <tr class="row-odd"><td><p>** ** MongoDB</p></td>
-<td><p>`` Mongodb: // username: password &#64; localhost / test``</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mongodb://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>** Google / SQL **</p></td>
 <td><p>`` Google: sql: // projecto: instance / database``</p></td>
@@ -593,7 +592,14 @@
 <div class="section" id="connection-pooling">
 <h3>O pool de conexões<a class="headerlink" href="#connection-pooling" title="Link permanente para este título">¶</a></h3>
 <p>Um argumento comum do construtor DAL é a `` pool_size``; o padrão é zero.</p>
-<p>Como é bastante lento para estabelecer uma nova conexão com o banco para cada solicitação, implementos py4web um mecanismo para o pool de conexão. Uma vez que uma conexão é estabelecida e a página foi servido ea transação concluída, a conexão não é fechada, mas vai para uma piscina. Quando o próximo pedido http chega, py4web tenta reciclar uma conexão do pool e uso que para a nova transação. Se não há conexões disponíveis na piscina, uma nova conexão é estabelecida.</p>
+<p>As it is rather slow to establish a new database connection for each
+request, py4web implements a mechanism for connection pooling. Once a
+connection is established and the page has been served and the
+transaction completed, the connection is not closed but goes into a
+pool. When the next request arrives, py4web tries to recycle a
+connection from the pool and use that for the new transaction. If there
+are no available connections in the pool, a new connection is
+established.</p>
 <p>Quando py4web começa, a piscina é sempre vazio. A piscina cresce até o mínimo entre o valor de `` pool_size`` e o número máximo de solicitações simultâneas. Isto significa que se `` POOL_SIZE = 10`` mas o nosso servidor nunca recebe mais de 5 solicitações simultâneas, em seguida, o tamanho real piscina só vai crescer a 5. Se `` POOL_SIZE = 0`` então o pool de conexão não é usada.</p>
 <p>Conexões nas piscinas são compartilhados sequencialmente entre threads, no sentido de que eles podem ser usados ​​por dois tópicos diferentes, mas não simultâneas. Há apenas uma piscina para cada processo py4web.</p>
 <p>O parâmetro `` pool_size`` é ignorado pelo SQLite e Google App Engine. pool de conexão é ignorado para SQLite, uma vez que não daria qualquer benefício.</p>
@@ -604,7 +610,8 @@
 </div>
 <div class="section" id="lazy-tables">
 <h3>Tabelas preguiçosos<a class="headerlink" href="#lazy-tables" title="Link permanente para este título">¶</a></h3>
-<p>ajuste `` lazy_tables = True`` fornece um grande aumento de desempenho. Veja abaixo: <cite>tabelas preguiçosos &lt;#lazy_tables&gt;</cite> __</p>
+<p>setting <code class="docutils literal notranslate"><span class="pre">lazy_tables</span> <span class="pre">=</span> <span class="pre">True</span></code> provides a major performance boost. See
+below: <a class="reference internal" href="#lazy-tables-a-major-performance-boost"><span class="std std-ref">Tabelas de descanso, um grande aumento de desempenho</span></a></p>
 </div>
 <div class="section" id="model-less-applications">
 <h3>Aplicativos de modelo-less<a class="headerlink" href="#model-less-applications" title="Link permanente para este título">¶</a></h3>
@@ -832,7 +839,7 @@
 <p>Nota Este exemplo mostra como usar `` on_define`` mas não é realmente necessário. O simples `` valores requires`` poderiam ser adicionados às definições de campo ea mesa ainda seria preguiçoso. No entanto, `` requires`` que tomar um objeto definido como o primeiro argumento, como IS_IN_DB, vai fazer uma consulta como `` db.sometable.somefield == some_value`` que causaria `` sometable`` a ser definido no início . Esta é a situação salvos por `` on_define``.</p>
 </div>
 <div class="section" id="lazy-tables-a-major-performance-boost">
-<h3>Tabelas de descanso, um grande aumento de desempenho<a class="headerlink" href="#lazy-tables-a-major-performance-boost" title="Link permanente para este título">¶</a></h3>
+<span id="id1"></span><h3>Tabelas de descanso, um grande aumento de desempenho<a class="headerlink" href="#lazy-tables-a-major-performance-boost" title="Link permanente para este título">¶</a></h3>
 <p>modelos py4web são executados antes de controladores, por isso, todas as tabelas são definidas em cada solicitação. Nem todas as tabelas são necessários para lidar com cada pedido, por isso é possível que algum do tempo gasto definindo tabelas é desperdiçado. modelos condicionais (veja <cite>Model-menos aplicações &lt;#model_less_applications&gt;</cite> __) pode ajudar, mas ofertas py4web um grande aumento de desempenho através lazy_tables. Este meio de recursos que a criação da tabela é adiada até que a tabela é realmente referenciado. Permitindo tabelas preguiçosos é feita quando inicializar um banco de dados via o construtor DAL. Ele requer definir os lazy_tables parâmetro: `` DAL (…, lazy_tables = True) <a href="#id1"><span class="problematic" id="id2">``</span></a>: python Este é um dos impulsos mais significativos de desempenho em tempo de resposta em py4web.</p>
 </div>
 <div class="section" id="adding-attributes-to-fields-and-tables">
@@ -3503,7 +3510,7 @@ python scripts/cpdb.py <span class="se">\\</span>
 </div>
 </div>
 <div class="section" id="gotchas">
-<h2>Pegadinhas<a class="headerlink" href="#gotchas" title="Link permanente para este título">¶</a></h2>
+<span id="id2"></span><h2>Pegadinhas<a class="headerlink" href="#gotchas" title="Link permanente para este título">¶</a></h2>
 <div class="section" id="sqlite">
 <h3>SQLite<a class="headerlink" href="#sqlite" title="Link permanente para este título">¶</a></h3>
 <p>SQLite não apoiar caindo e alterar colunas. Isso significa que as migrações py4web irão trabalhar até certo ponto. Se você excluir um campo de uma tabela, a coluna permanecerá no banco de dados, mas será invisível para py4web. Se você decidir para restabelecer a coluna, py4web vai tentar recriá-la e falhar. Neste case, você deve definir `` fake_migrate = True`` de modo que os metadados é reconstruído sem tentar adicionar a coluna novamente. Além disso, pela mesma razão, ** SQLite ** não tem conhecimento de qualquer mudança de tipo de coluna. Se você inserir um número em um campo string, ele será armazenado como string. Se posteriormente você alterar o modelo e substituir o tipo “string” com o tipo “inteiro”, SQLite continuará a manter o número como uma string e isso pode causar problemas quando você tenta extrair os dados.</p>
@@ -3603,7 +3610,7 @@ python scripts/cpdb.py <span class="se">\\</span>
      <label for="switch"></label>
      </span>
       
-      v: 1.20201127.1
+      v: 1.20201211.1
 
       <span class="fa fa-caret-down"></span>
     </span>

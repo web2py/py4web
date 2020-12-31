@@ -94,3 +94,9 @@ repository.
 If you wish to correct and expand this manual, or even translate it in a new foreign language, you can read all the needed information directly on the
 `specific README <https://github.com/web2py/py4web/blob/master/docs/README.md>`__ on GitHub.
 
+It's really simple! Just change the .RST files in the /doc folder and create a Push Request on
+the GitHub repository at https://github.com/web2py/py4web - you can even do it within your browser.
+Once the PR is accepted, your changes will be written on the master branch, and will be reflected on the web pages / pdf / epub at
+the next output generation on the branch. 
+
+

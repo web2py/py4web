@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>The database abstraction layer (DAL) &mdash; py4web 1.20201127.1
+  <title>The database abstraction layer (DAL) &mdash; py4web 1.20201211.1
  documentation</title>
   
 
@@ -31,7 +31,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/js/toggle.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -64,7 +63,7 @@
             
             
               <div class="version">
-                1.20201127.1
+                1.20201211.1
 
               </div>
             
@@ -347,8 +346,8 @@ generically), and the application will be portable among different types
 of databases. A partial list of supported databases is show in the table
 below. Please check on the py4web web site and mailing list for more
 recent adapters. Google NoSQL is treated as a particular case.</p>
-<p>The Gotchas section at the end of this chapter has some more information
-about specific databases.</p>
+<p>The :ref:Gotchas section at the end of this chapter has some more
+information about specific databases.</p>
 <p>The Windows binary distribution works out of the box with SQLite, MSSQL,
 PostgreSQL and MySQL. The Mac binary distribution works out of the box
 with SQLite. To use any other database back-end, run from the source
@@ -468,7 +467,7 @@ example.</p>
 <div class="section" id="using-the-dal-stand-alone">
 <h2>Using the DAL “stand-alone”<a class="headerlink" href="#using-the-dal-stand-alone" title="Permalink to this headline">¶</a></h2>
 <p>The DAL can be used in a non-py4web environment via</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 </pre></div>
 </div>
 </div>
@@ -491,7 +490,7 @@ variable <code class="docutils literal notranslate"><span class="pre">db</span><
 </pre></div>
 </div>
 <p>The connection string is called a <code class="docutils literal notranslate"><span class="pre">_uri</span></code> because it is an instance of
-a Uniform Resource Identifier.</p>
+a uniform resource identifier.</p>
 <p>The DAL allows multiple connections with the same database or with
 different databases, even databases of different types. For now, we will
 assume the presence of a single database since this is the most common
@@ -542,37 +541,31 @@ the database is running from localhost on its default port and is named
 “test”):</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 32%" />
-<col style="width: 68%" />
+<col style="width: 27%" />
+<col style="width: 73%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p><strong>SQLite</strong></p></th>
-<th class="head"><p><code class="docutils literal notranslate"><span class="pre">sqlite://storage.sqlite</span></code></p></th>
-</tr>
-</thead>
 <tbody>
+<tr class="row-odd"><td><p><strong>SQLite</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sqlite://storage.sqlite</span></code></p></td>
+</tr>
 <tr class="row-even"><td><p><strong>MySQL</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">mysql://username:pa</span>
 <span class="pre">ssword&#64;localhost/test?set_encoding=utf8mb4</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>PostgreSQL</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">p</span>
-<span class="pre">ostgres://username:password&#64;localhost/test</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">postgres://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>MSSQL (legacy)</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">mssql://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>MSSQL (&gt;=2005)</strong></p></td>
-<td><p>`
-<cite>mssql3://username:password&#64;localhost/test`</cite></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mssql3://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>MSSQL (&gt;=2012)</strong></p></td>
-<td><p>`
-<cite>mssql4://username:password&#64;localhost/test`</cite></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mssql4://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>FireBird</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">f</span>
-<span class="pre">irebird://username:password&#64;localhost/test</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">firebird://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Oracle</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">oracle://username/password&#64;test</span></code></p></td>
@@ -581,23 +574,19 @@ the database is running from localhost on its default port and is named
 <td><p><code class="docutils literal notranslate"><span class="pre">db2://username:password&#64;test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Ingres</strong></p></td>
-<td><p>`
-<cite>ingres://username:password&#64;localhost/test`</cite></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ingres://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Sybase</strong></p></td>
-<td><p>`
-<cite>sybase://username:password&#64;localhost/test`</cite></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sybase://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Informix</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">informix://username:password&#64;test</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>Teradata</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">teradata</span>
-<span class="pre">://DSN=dsn;UID=user;PWD=pass;DATABASE=test</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">teradata://DSN=dsn;UID=user;PWD=pass;DATABASE=test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Cubrid</strong></p></td>
-<td><p>`
-<cite>cubrid://username:password&#64;localhost/test`</cite></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cubrid://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>SAPDB</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">sapdb://username:password&#64;localhost/test</span></code></p></td>
@@ -606,8 +595,7 @@ the database is running from localhost on its default port and is named
 <td><p><code class="docutils literal notranslate"><span class="pre">imap://user:password&#64;server:port</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>MongoDB</strong></p></td>
-<td><p>``
-mongodb://username:password&#64;localhost/test``</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mongodb://username:password&#64;localhost/test</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>Google/SQL</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">google:sql://project:instance/database</span></code></p></td>
@@ -662,7 +650,7 @@ defaults to zero.</p>
 request, py4web implements a mechanism for connection pooling. Once a
 connection is established and the page has been served and the
 transaction completed, the connection is not closed but goes into a
-pool. When the next http request arrives, py4web tries to recycle a
+pool. When the next request arrives, py4web tries to recycle a
 connection from the pool and use that for the new transaction. If there
 are no available connections in the pool, a new connection is
 established.</p>
@@ -691,7 +679,7 @@ connections. The number of attempts is set via the attempts parameter.</p>
 <div class="section" id="lazy-tables">
 <h3>Lazy Tables<a class="headerlink" href="#lazy-tables" title="Permalink to this headline">¶</a></h3>
 <p>setting <code class="docutils literal notranslate"><span class="pre">lazy_tables</span> <span class="pre">=</span> <span class="pre">True</span></code> provides a major performance boost. See
-below: <a class="reference external" href="#lazy_tables">lazy tables</a></p>
+below: <a class="reference internal" href="#lazy-tables-a-major-performance-boost"><span class="std std-ref">Lazy Tables, a major performance boost</span></a></p>
 </div>
 <div class="section" id="model-less-applications">
 <h3>Model-less applications<a class="headerlink" href="#model-less-applications" title="Permalink to this headline">¶</a></h3>
@@ -1037,7 +1025,7 @@ cause <code class="docutils literal notranslate"><span class="pre">sometable</sp
 <code class="docutils literal notranslate"><span class="pre">on_define</span></code>.</p>
 </div>
 <div class="section" id="lazy-tables-a-major-performance-boost">
-<h3>Lazy Tables, a major performance boost<a class="headerlink" href="#lazy-tables-a-major-performance-boost" title="Permalink to this headline">¶</a></h3>
+<span id="id1"></span><h3>Lazy Tables, a major performance boost<a class="headerlink" href="#lazy-tables-a-major-performance-boost" title="Permalink to this headline">¶</a></h3>
 <p>py4web models are executed before controllers, so all tables are defined
 at every request. Not all tables are needed to handle each request, so
 it is possible that some of the time spent defining tables is wasted.
@@ -4518,7 +4506,7 @@ can specify optional driver arguments and adapter arguments:</p>
 </div>
 </div>
 <div class="section" id="gotchas">
-<h2>Gotchas<a class="headerlink" href="#gotchas" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>Gotchas<a class="headerlink" href="#gotchas" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="sqlite">
 <h3>SQLite<a class="headerlink" href="#sqlite" title="Permalink to this headline">¶</a></h3>
 <p>SQLite does not support dropping and altering columns. That means that
@@ -4684,7 +4672,7 @@ than on SQL databases.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20201127.1
+      v: 1.20201211.1
 
       <span class="fa fa-caret-down"></span>
     </span>

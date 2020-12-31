@@ -8,7 +8,7 @@ clean:
 	rm -rf dist/*
 	python3 setup.py clean
 docs:
-	# cd docs; ./updateDocs.sh all
+	cd docs; ./updateDocs.sh all
 clean-assets:
 	rm -f py4web/assets/*
 	mkdir -p py4web/assets

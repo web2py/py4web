@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation and Startup &mdash; py4web 1.20201127.1
+  <title>Installation and Startup &mdash; py4web 1.20201211.1
  documentation</title>
   
 
@@ -31,7 +31,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/js/toggle.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -64,7 +63,7 @@
             
             
               <div class="version">
-                1.20201127.1
+                1.20201211.1
 
               </div>
             
@@ -285,18 +284,16 @@ py4web run apps
 </pre></div>
 </div>
 <p>Also notice that when installing in this way the content of
-py4web/assets folder is missing at first but it is manually created
-later with the ‘make assets’ command.</p>
+<code class="docutils literal notranslate"><span class="pre">py4web/assets</span></code> folder is missing at first but it is manually created
+later with the <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">assets</span></code> command.</p>
 </div>
 <div class="section" id="installing-from-source-locally">
 <h3>Installing from source (locally)<a class="headerlink" href="#installing-from-source-locally" title="Permalink to this headline">¶</a></h3>
-<div class="line-block">
-<div class="line">In this way all the requirements will be installed or upgraded on the
-system’s path, but py4web itself will only be copied</div>
-<div class="line">on a local folder. This is especially useful if you already have a
-working py4web installation but you want to test a different</div>
-<div class="line">one. From the command line, go to a given working folder and then run</div>
-</div>
+<p>In this way all the requirements will be installed or upgraded on the
+system’s path, but py4web itself will only be copied
+on a local folder. This is especially useful if you already have a
+working py4web installation but you want to test a different
+one. From the command line, go to a given working folder and then run</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
 <span class="nb">cd</span> py4web
 python3 -m pip install  --upgrade -r requirements.txt
@@ -380,6 +377,11 @@ urls:</p>
 In general you may want to symlink <code class="docutils literal notranslate"><span class="pre">apps/_default</span></code> to your default app.</p>
 </div>
 <p>For all apps the trailing <code class="docutils literal notranslate"><span class="pre">/index</span></code> is optional.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For Windows: it could be that <code class="docutils literal notranslate"><span class="pre">Ctrl-C</span></code> does not work in order to stop py4web.
+In this case, try with <code class="docutils literal notranslate"><span class="pre">Ctrl-Break</span></code> or <code class="docutils literal notranslate"><span class="pre">Ctrl-Fn-Pause</span></code>.</p>
+</div>
 </div>
 <div class="section" id="command-line-options">
 <h2>Command line options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h2>
@@ -436,12 +438,13 @@ Options:
                                 password.txt]
 
   -w, --number_workers INTEGER  Number of workers  [default: 0]
-  -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
-                                (default), none  [default: full]
+  -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
+                                [default: full]
 
   --watch [off|sync|lazy]       Watch python changes and reload apps
-                                automatically, modes: off (default), sync,
-                                lazy
+                                automatically, modes: off, sync, lazy
+                                [default: off]
+
   --ssl_cert PATH               SSL certificate file for HTTPS
   --ssl_key PATH                SSL key file for HTTPS
   -help, -h, --help             Show this message and exit.
@@ -660,7 +663,7 @@ tutorial on
      <label for="switch"></label>
      </span>
       
-      v: 1.20201127.1
+      v: 1.20201211.1
 
       <span class="fa fa-caret-down"></span>
     </span>

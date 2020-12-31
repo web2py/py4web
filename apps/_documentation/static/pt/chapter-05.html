@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Criando seu primeiro aplicativo &mdash; Documentação py4web 1.20201127.1
+  <title>Criando seu primeiro aplicativo &mdash; Documentação py4web 1.20201211.1
 </title>
   
 
@@ -31,7 +31,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/js/toggle.js"></script>
         <script src="_static/translations.js"></script>
     
@@ -65,7 +64,7 @@
             
             
               <div class="version">
-                1.20201127.1
+                1.20201211.1
 
               </div>
             
@@ -107,8 +106,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#templates">Modelos</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#from-scaffold">De _scaffold</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#app-watchdog">App Watchdog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-scaffold-app">The _scaffold app</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#watch-for-files-change">Watch for files change</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
@@ -192,17 +191,40 @@
 <h1>Criando seu primeiro aplicativo<a class="headerlink" href="#creating-your-first-app" title="Link permanente para este título">¶</a></h1>
 <div class="section" id="from-scratch">
 <h2>Do princípio<a class="headerlink" href="#from-scratch" title="Link permanente para este título">¶</a></h2>
-<p>Aplicativos podem ser criados usando o painel ou directamente a partir do sistema de arquivos. Aqui, nós estamos indo para fazê-lo manualmente, como o Dashboard é descrito em seu próprio capítulo.</p>
-<p>Tenha em mente que um aplicativo é um módulo Python; portanto, precisa apenas de uma pasta e um `` __init arquivo __ py`` nessa pasta.:</p>
+<p>Apps can be created using the dashboard or directly from the filesystem.
+Here, we are going to do it manually, as the Dashboard is already described in
+its own chapter.</p>
+<p>Keep in mind that an app is a Python module; therefore it needs only a
+folder and a <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> file in that folder.</p>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>An empty <em>__init__.py</em> file is not strictly needed since
+Python 3.3, but it will be useful later on.</p>
+</div>
+<p>Open a command prompt and go to your main py4web folder. Enter the following
+simple commands in order to create a new empty <strong>myapp</strong> app:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir apps/myapp
 <span class="nb">echo</span> <span class="s1">&#39;&#39;</span> &gt; apps/myapp/__init__.py
 </pre></div>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Dica</p>
-<p>para Windows, você deve usar barras invertidas (ou seja, “\”) em vez de barras. Além disso, um vazio * __ o init __. Py * arquivo não é estritamente necessária desde Python 3.3, mas será útil mais tarde.</p>
+<p>for Windows, you must use backslashes (i.e. <code class="docutils literal notranslate"><span class="pre">\</span></code>) instead of
+slashes.</p>
 </div>
-<p>Se você agora reiniciar py4web ou pressione o botão “Atualizar Apps” no Dashboard, py4web vai encontrar este módulo, importá-lo e reconhecê-lo como um aplicativo, simplesmente por causa de sua localização. Um aplicativo não é obrigado a fazer nada. Poderia ser apenas um recipiente para arquivos estáticos ou código arbitrário que outros aplicativos pode querer importação e de acesso. No entanto, normalmente a maioria dos aplicativos são projetados para expor páginas estáticas ou dinâmicas.</p>
+<p>If you now restart py4web or
+press the “Reload Apps” in the Dashboard, py4web will find this module,
+import it, and recognize it as an app, simply because of its location.
+You can also run py4web in <em>watch</em> mode (see the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">Opção `` comando run``</span></a>) for
+automatic reloading of the apps wheneve it changes, which is very useful in a development environment.
+In this case, run py4web with a command like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web run apps --watch sync
+</pre></div>
+</div>
+<p>A py4web app is not required to do anything. It could just be a container for
+static files or arbitrary code that other apps may want to import and
+access. Yet typically most apps are designed to expose static or dynamic
+web pages.</p>
 </div>
 <div class="section" id="static-web-pages">
 <h2>Páginas estáticas<a class="headerlink" href="#static-web-pages" title="Link permanente para este título">¶</a></h2>
@@ -216,7 +238,11 @@
 </pre></div>
 </div>
 <p>Note que `` static`` é um caminho especial para py4web e arquivos somente sob o `` static`` pasta são servidos.</p>
-<p>Importante: py4web internamente usa a garrafa <cite>static_file &lt;https://bottlepy.org/docs/dev/tutorial.html#static-files&gt;</cite> __ método para servir arquivos estáticos, o que significa que suporta streaming, conteúdo parcial, pedidos de intervalo, e If-Modified-Since. Isso tudo é feito automaticamente com base nos cabeçalhos de solicitação HTTP.</p>
+<p>Important: internally py4web uses the bottle
+<a class="reference external" href="https://bottlepy.org/docs/dev/tutorial.html#static-files">static_file</a>
+method for serving static files, which means it supports streaming,
+partial content, range requests, and if-modified-since. This is all
+handled automatically based on the HTTP request headers.</p>
 </div>
 <div class="section" id="dynamic-web-pages">
 <h2>Páginas web dinâmicas<a class="headerlink" href="#dynamic-web-pages" title="Link permanente para este título">¶</a></h2>
@@ -229,7 +255,7 @@
     <span class="k">return</span> <span class="s2">&quot;hello, now is </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Py4web Restart ou pressione o botão “Atualizar Apps” botão do painel, e esta página será acessível em</p>
+<p>Reload the app, and this page will be accessible at</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">myapp</span><span class="o">/</span><span class="n">index</span>
 </pre></div>
 </div>
@@ -241,7 +267,10 @@
 <p>Ao contrário de outras estruturas, nós não importar ou iniciar o servidor web dentro do `` código myapp``. Isso ocorre porque py4web já está em execução, e pode servir vários aplicativos. py4web importa nossas funções de código e expõe decorados com `` &#64;Action () <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">Note</span> <span class="pre">também</span> <span class="pre">que</span> <span class="pre">prepends</span> <span class="pre">py4web</span> <span class="pre">``</span> <span class="pre">/</span> <span class="pre">myapp</span></code> (ou seja, o nome do aplicativo) para o caminho url declarado na ação. Isso ocorre porque existem vários aplicativos, e eles podem definir rotas conflitantes. Antecedendo o nome do aplicativo remove a ambiguidade. Mas há uma exceção: se você chamar seu aplicativo `` _default``, ou se você criar um link simbólico do `` _default`` para `` myapp``, então py4web não irá anteceder qualquer prefixo para as rotas definidas dentro do aplicativo .</p>
 <div class="section" id="on-return-values">
 <h3>Em valores de retorno<a class="headerlink" href="#on-return-values" title="Link permanente para este título">¶</a></h3>
-<p>ações py4web deve retornar uma string ou um dicionário. Se eles retornar um dicionário que você deve dizer py4web o que fazer com ele. Por padrão py4web serializará-lo em JSON. Por exemplo editar `` __init __. Py`` novamente e adicionar</p>
+<p>py4web actions should return a string or a dictionary. If they return a
+dictionary you must tell py4web what to do with it. By default py4web
+will serialize it into json. For example edit <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> again and
+add at the end</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;colors&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">colors</span><span class="p">():</span>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">]}</span>
@@ -272,14 +301,15 @@
 <ul class="simple">
 <li><p>`` &lt;Name&gt; `` ou</p></li>
 <li><p>`` &lt;Name: filter&gt; `` ou</p></li>
-<li><p>`` <cite>` `</cite> `</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;name:filter:config&gt;</span></code></p></li>
 </ul>
-<p>E estes são possíveis filtros (somente <cite>` `:</cite> <a href="#id1"><span class="problematic" id="id2">`</span></a>tem uma config):</p>
+<p>And these are possible filters (only <code class="docutils literal notranslate"><span class="pre">re:</span></code> has a config):</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">Resultados</span> <span class="pre">int</span></code> dígitos (assinatura) e converte o valor de número inteiro.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">Float</span></code> semelhante a: int mas para números decimais.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">Path</span></code> corresponde a todos os personagens, incluindo o caractere de barra de uma forma não-ganancioso, e pode ser usado para combinar mais de um segmento de caminho.</p></li>
-<li><p><a href="#id1"><span class="problematic" id="id2">``</span></a>: Re [: exp] `` <a href="#id3"><span class="problematic" id="id4">`</span></a>permite especificar uma expressão regular personalizado no campo de configuração. O valor combinado não é modificado.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">:re[:exp]</span></code> allows you to specify a custom regular expression in
+the config field. The matched value is not modified.</p></li>
 </ul>
 <p>O padrão de harmonização o carácter universal é passado para a função sob a variável especificada `` name``.</p>
 <p>Além disso, o decorador acção tem um argumento `` method`` opcional que pode ser um método HTTP ou uma lista de métodos:</p>
@@ -304,7 +334,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://localhost:8000/myapp/paint?color=red
 </pre></div>
 </div>
-<p>Observe que o objeto de solicitação é um <cite>pedido objeto Garrafa &lt;https://bottlepy.org/docs/dev/api.html#the-request-object&gt;</cite> _.</p>
+<p>Notice that the request object is a <a class="reference external" href="https://bottlepy.org/docs/dev/api.html#the-request-object">Bottle request object</a>.</p>
 </div>
 <div class="section" id="templates">
 <h3>Modelos<a class="headerlink" href="#templates" title="Link permanente para este título">¶</a></h3>
@@ -342,9 +372,18 @@
 <p>Eles podem depender um do outro. Por exemplo, a sessão pode precisar a DAL (ligação de base de dados), e Auth podem precisamos de ambos. As dependências são tratados automaticamente.</p>
 </div>
 </div>
-<div class="section" id="from-scaffold">
-<h2>De _scaffold<a class="headerlink" href="#from-scaffold" title="Link permanente para este título">¶</a></h2>
-<p>Na maioria das vezes, você não quer começar a escrever código a partir do zero. Você também quer seguir algumas convenções sãs descritas aqui, como não colocar todo seu código em `` __init __. Py``. PY4WEB fornece um aplicativo de Andaimes (_scaffold), onde os arquivos são organizados de forma adequada e muitos objetos úteis são pré-definidos.</p>
+<div class="section" id="the-scaffold-app">
+<h2>The _scaffold app<a class="headerlink" href="#the-scaffold-app" title="Link permanente para este título">¶</a></h2>
+<p>Most of the times, you do not want to start writing code from scratch.
+You also want to follow some sane conventions outlined here, like not
+putting all your code into <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>. PY4WEB provides a
+Scaffolding (_scaffold) app, where files are organized properly and many
+useful objects are pre-defined. Also, it shows you how to manage users and
+their registration.
+Just like a real scaffolding in a building construction site, scaffolding
+could give you some kind of a fast and simplified structure for your project,
+on which you can rely to build your real project.</p>
+<img alt="_images/_scaffold.png" src="_images/_scaffold.png" />
 <p>Normalmente você vai encontrar o aplicativo andaime sob apps, mas você pode facilmente criar um novo clone de la manualmente ou usando o Dashboard.</p>
 <p>Aqui está a estrutura da árvore do `` aplicativo _scaffold``:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── __init__.py          # imports everything else
@@ -404,15 +443,17 @@
 <p>Quando você começar a partir de andaime, você pode querer editar `` settings.py``, `` templates``, `` models.py`` e `` controllers.py`` mas provavelmente você não precisa mudar nada no `` common.py``.</p>
 <p>Em seu HTML, você pode usar qualquer biblioteca JS que você quer, porque py4web é agnóstica para a sua escolha de JS e CSS, mas com algumas exceções. O `` auth.html`` que lida com registro / login / etc. usa um componente vue.js. Portanto, se você quiser usar isso, você não deve removê-lo.</p>
 </div>
-<div class="section" id="app-watchdog">
-<h2>App Watchdog<a class="headerlink" href="#app-watchdog" title="Link permanente para este título">¶</a></h2>
-<p>Py4web facilita a configuração de um servidor de desenvolvimento que recarrega automaticamente um aplicativo quando sua fonte Python arquivos mudança. Quaisquer outros arquivos dentro de um aplicativo pode ser visto através da criação de uma função de manipulador usando ** `` &#64; app_watch_handler`` decorador <a href="#id1"><span class="problematic" id="id2">**</span></a>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">watch</span> <span class="p">[</span><span class="n">off</span><span class="o">|</span><span class="n">sync</span><span class="o">|</span><span class="n">lazy</span><span class="p">]</span>       <span class="n">Watch</span> <span class="n">python</span> <span class="n">changes</span> <span class="ow">and</span> <span class="n">reload</span> <span class="n">apps</span>
-                               <span class="n">automatically</span><span class="p">,</span> <span class="n">modes</span><span class="p">:</span> <span class="n">off</span> <span class="p">(</span><span class="n">default</span><span class="p">),</span> <span class="n">sync</span><span class="p">,</span>
-                               <span class="n">lazy</span>
-</pre></div>
-</div>
-<p>Dois exemplos de seu uso são relatados agora. Não se preocupe se você não undestand-los totalmente: o ponto-chave aqui é que mesmo código não-python pode ser recarregado automaticamente se explícita-lo com o ** `` &#64; app_watch_handler`` ** decorador.</p>
+<div class="section" id="watch-for-files-change">
+<h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Link permanente para este título">¶</a></h2>
+<p>As described in the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">Opção `` comando run``</span></a>, Py4web facilitates a
+development server’s setup by automatically reloads an app when its
+Python source files change (if run with the <code class="docutils literal notranslate"><span class="pre">--watch</span></code> option).
+But in fact any other files inside an app can be watched by setting a
+handler function using the <code class="docutils literal notranslate"><span class="pre">&#64;app_watch_handler</span></code> decorator.</p>
+<p>Two examples of this usage are reported now. Do not worry if you don’t
+fully undestand them: the key point here is that even non-python code
+could be reloaded automatically if you explicit it with the
+<code class="docutils literal notranslate"><span class="pre">&#64;app_watch_handler</span></code> decorator.</p>
 <p>Assista SASS arquivos e compilá-los quando editado:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">app_watch_handler</span>
 <span class="kn">import</span> <span class="nn">sass</span> <span class="c1"># https://github.com/sass/libsass-python</span>
@@ -444,7 +485,11 @@
             <span class="n">esprima</span><span class="o">.</span><span class="n">parseModule</span><span class="p">(</span><span class="n">code</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>Filepaths passado para ** `` &#64; app_watch_handler`` decorador ** deve ser relativo a um aplicativo. arquivos Python (ou seja, «<a href="#id1"><span class="problematic" id="id2">*</span></a>. py») em uma lista passada para o decorador são ignorados uma vez que eles são vigiados por padrão. parâmetro da função de manipulador é uma lista de caminhos de arquivos que foram alterados. Todas as exceções dentro manipuladores são impressos em terminal.</p>
+<p>Filepaths passed to <code class="docutils literal notranslate"><span class="pre">&#64;app_watch_handler</span></code> decorator must be
+relative to an app. Python files (i.e. «*.py») in a list passed to the
+decorator are ignored since they are watched by default. Handler
+function’s parameter is a list of filepaths that were changed. All
+exceptions inside handlers are printed in terminal.</p>
 </div>
 </div>
 
@@ -502,7 +547,7 @@
      <label for="switch"></label>
      </span>
       
-      v: 1.20201127.1
+      v: 1.20201211.1
 
       <span class="fa fa-caret-down"></span>
     </span>
