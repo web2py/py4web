@@ -124,6 +124,13 @@ class Auth(Fixture):
             "email-verified": "Email verified",
             "link-expired": "Link expired",
         },
+        "buttons": {
+            "register": "Register",
+            "request": "Request",
+            "sign-in": "Sign In",
+            "sign-up": "Sign Up",
+            "submit": "Submit",
+        },
     }
 
     def __init__(
@@ -377,10 +384,10 @@ class Auth(Fixture):
 
     def login(self, email, password):
         db = self.db
-        if 'email_auth' in self.plugins:
+        if "email_auth" in self.plugins:
             email = email.lower()
-            if self.plugins['email_auth'].validate_credentials(email, password):
-                user = db(db.auth_user.email==email).select().first()
+            if self.plugins["email_auth"].validate_credentials(email, password):
+                user = db(db.auth_user.email == email).select().first()
                 return (user, None)
             else:
                 return None, "Invalid Credentials"
@@ -882,7 +889,8 @@ class DefaultAuthForms:
             if field.type == "password":
                 fields.insert(k + 1, Field("password_again", "password"))
                 break
-        form = Form(fields, submit_value="Sign Up", formstyle=self.formstyle)
+        button_name = self.auth.messages["buttons"]["sign-up"]
+        form = Form(fields, submit_value=button_name, formstyle=self.formstyle)
         user = None
         if form.submitted:
             res = self.auth.register(form.vars)
@@ -894,9 +902,14 @@ class DefaultAuthForms:
                 if self.auth.param.login_after_registration:
                     redirect("login")
         form.param.sidecar.append(
-            A("Sign In", _href="../auth/login", _class="info", _role="button")
+            A(
+                self.auth.messages["buttons"]["sign-in"],
+                _href="../auth/login",
+                _class="info",
+                _role="button",
+            )
         )
-        if 'request_reset_password' in self.auth.param.allowed_actions:
+        if "request_reset_password" in self.auth.param.allowed_actions:
             form.param.sidecar.append(
                 A(
                     "Lost Password",
@@ -908,14 +921,24 @@ class DefaultAuthForms:
         return form
 
     def login(self):
-        fields = [Field("username",), Field("login_password", type="password")]
+        fields = [
+            Field(
+                "username",
+            ),
+            Field("login_password", type="password"),
+        ]
         if self.auth.use_username:
             fields[0].label = self.auth.db.auth_user.username.label
         else:
             fields[0].label = self.auth.db.auth_user.email.label
         fields[1].label = self.auth.db.auth_user.password.label
 
-        form = Form(fields, submit_value="Sign In", formstyle=self.formstyle,)
+        button_name = self.auth.messages["buttons"]["sign-in"]
+        form = Form(
+            fields,
+            submit_value=button_name,
+            formstyle=self.formstyle,
+        )
         user = None
         self.auth.next["login"] = request.query.get("next")
         if form.submitted:
@@ -953,7 +976,7 @@ class DefaultAuthForms:
     def request_reset_password(self):
         form = Form(
             [Field("email", label="Username or Email")],
-            submit_value="Request",
+            submit_value=self.auth.messages["buttons"]["request"],
             formstyle=self.formstyle,
         )
         if form.submitted:
@@ -962,11 +985,21 @@ class DefaultAuthForms:
             self._set_flash("password-reset-link-sent")
             self._postprocessing("request_reset_password", form, None)
         form.param.sidecar.append(
-            A("Sign In", _href="../auth/login", _class="info", _role="button")
+            A(
+                self.auth.messages["buttons"]["sign-in"],
+                _href="../auth/login",
+                _class="info",
+                _role="button",
+            )
         )
         if "register" in self.auth.param.allowed_actions:
             form.param.sidecar.append(
-                A("Sign Up", _href="../auth/register", _class="info", _role="button")
+                A(
+                    self.auth.messages["buttons"]["sign-up"],
+                    _href="../auth/register",
+                    _class="info",
+                    _role="button",
+                )
             )
         return form
 
@@ -988,6 +1021,7 @@ class DefaultAuthForms:
                 Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
             ],
             formstyle=self.formstyle,
+            submit_value=self.auth.messages["buttons"]["submit"],
         )
         self._process_change_password_form(form, user)
         if form.accepted:
@@ -1008,6 +1042,7 @@ class DefaultAuthForms:
                 Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
             ],
             formstyle=self.formstyle,
+            submit_value=self.auth.messages["buttons"]["submit"],
         )
         self._process_change_password_form(form, user)
         if form.accepted:
@@ -1034,7 +1069,6 @@ class DefaultAuthForms:
                 )
                 form.errors = res.get("errors", {})
                 form.accepted = not form.errors
-                print(form.errors)
                 if not form.accepted:
                     form.vars.clear()
 
@@ -1045,7 +1079,11 @@ class DefaultAuthForms:
         else:
             self.auth.db.auth_user.email.writable = False
         form = Form(
-            self.auth.db.auth_user, user, formstyle=self.formstyle, deletable=False
+            self.auth.db.auth_user,
+            user,
+            formstyle=self.formstyle,
+            deletable=False,
+            submit_value=self.auth.messages["buttons"]["submit"],
         )
         if form.accepted:
             self._set_flash("profile-saved")
