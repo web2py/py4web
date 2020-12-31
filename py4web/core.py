@@ -35,7 +35,6 @@ import urllib.parse
 import uuid
 import zipfile
 import asyncio
-import zipfile
 from watchgod import awatch
 
 # Optional web servers for speed
@@ -343,12 +342,12 @@ ICECUBE = {}
 
 class Flash(Fixture):
     """
-    flash = Flash(session)
-    
-    #acton('index.html')
+    flash = Flash()
+
+    @action('index')
     @action.uses(flash)
     def index():
-        flash.set('hello', class_='important')        
+        flash.set('hello', class_='important')
         return dict()
 
     Flash messages are added to the dict and, upon redirect, carry forward
@@ -1323,7 +1322,7 @@ def install_args(args, reinstall_apps=False):
             click.echo("Command aborted")
             sys.exit(0)
 
-    # Upzip the _dashboard app if it is old or does not exist
+    # Reinstall apps from zipped ones in assets
     if reinstall_apps:
         assets_dir = os.path.join(os.path.dirname(__file__), "assets")
         if os.path.exists(assets_dir):
@@ -1337,11 +1336,9 @@ def install_args(args, reinstall_apps=False):
                 if not os.path.exists(target_dir):
                     if yes or click.confirm("Create app %s?" % app_name):
                         click.echo("[ ] Unzipping app %s" % filename)
-                        zip_file = zipfile.ZipFile(zip_filename, "r")
-                        if not os.path.exists(target_dir):
+                        with zipfile.ZipFile(zip_filename, "r") as zip_file:
                             os.makedirs(target_dir)
                             zip_file.extractall(target_dir)
-                            zip_file.close()
                             click.echo("\x1b[A[X]")
 
     if not os.path.exists(args["service_folder"]):
@@ -1528,14 +1525,15 @@ def new_app(apps_folder, app_name, scaffold_zip):
     "-d",
     "--dashboard_mode",
     default="full",
-    help="Dashboard mode: demo, readonly, full (default), none",
+    help="Dashboard mode: demo, readonly, full, none",
     show_default=True,
 )
 @click.option(
     "--watch",
     default="off",
     type=click.Choice(["off", "sync", "lazy"]),
-    help="Watch python changes and reload apps automatically, modes: off (default), sync, lazy",
+    help="Watch python changes and reload apps automatically, modes: off, sync, lazy",
+    show_default=True,
 )
 @click.option(
     "--ssl_cert", type=click.Path(exists=True), help="SSL certificate file for HTTPS"

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 1.20201127.1
+  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 1.20201211.1
 </title>
   
 
@@ -31,7 +31,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/js/toggle.js"></script>
         <script src="_static/translations.js"></script>
     
@@ -65,7 +64,7 @@
             
             
               <div class="version">
-                1.20201127.1
+                1.20201211.1
 
               </div>
             
@@ -254,15 +253,17 @@ make install
 py4web run apps
 </pre></div>
 </div>
-<p>Note também que ao instalar desta forma o conteúdo de py4web / ativo pasta está faltando no começo, mas ele é criado manualmente mais tarde com o comando ‘make activos’.</p>
+<p>Also notice that when installing in this way the content of
+<code class="docutils literal notranslate"><span class="pre">py4web/assets</span></code> folder is missing at first but it is manually created
+later with the <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">assets</span></code> command.</p>
 </div>
 <div class="section" id="installing-from-source-locally">
 <h3>Instalando a partir de fonte (localmente)<a class="headerlink" href="#installing-from-source-locally" title="Link permanente para este título">¶</a></h3>
-<div class="line-block">
-<div class="line">Desta forma todos os requisitos será instalado ou atualizado no caminho do sistema, mas a própria py4web só serão copiados</div>
-<div class="line">em uma pasta local. Isto é especialmente útil se você já tem uma instalação py4web de trabalho, mas você quer testar uma diferente</div>
-<div class="line">one. From the command line, go to a given working folder and then run</div>
-</div>
+<p>In this way all the requirements will be installed or upgraded on the
+system’s path, but py4web itself will only be copied
+on a local folder. This is especially useful if you already have a
+working py4web installation but you want to test a different
+one. From the command line, go to a given working folder and then run</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
 <span class="nb">cd</span> py4web
 python3 -m pip install  --upgrade -r requirements.txt
@@ -327,6 +328,11 @@ python3 py4web.py run apps
 <p>Somente o padrão ** ** aplicativo é especial porque se não exige que o “{AppName} /” prefixo no caminho, como todos os outros aplicativos fazer. Em geral, você pode querer ligar simbolicamente `` apps / _default`` ao seu aplicativo padrão.</p>
 </div>
 <p>Para todas as aplicações de arrastamento `` / index`` é opcional.</p>
+<div class="admonition warning">
+<p class="admonition-title">Aviso</p>
+<p>For Windows: it could be that <code class="docutils literal notranslate"><span class="pre">Ctrl-C</span></code> does not work in order to stop py4web.
+In this case, try with <code class="docutils literal notranslate"><span class="pre">Ctrl-Break</span></code> or <code class="docutils literal notranslate"><span class="pre">Ctrl-Fn-Pause</span></code>.</p>
+</div>
 </div>
 <div class="section" id="command-line-options">
 <h2>Opções de linha de comando<a class="headerlink" href="#command-line-options" title="Link permanente para este título">¶</a></h2>
@@ -380,12 +386,13 @@ Options:
                                 password.txt]
 
   -w, --number_workers INTEGER  Number of workers  [default: 0]
-  -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
-                                (default), none  [default: full]
+  -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
+                                [default: full]
 
   --watch [off|sync|lazy]       Watch python changes and reload apps
-                                automatically, modes: off (default), sync,
-                                lazy
+                                automatically, modes: off, sync, lazy
+                                [default: off]
+
   --ssl_cert PATH               SSL certificate file for HTTPS
   --ssl_key PATH                SSL key file for HTTPS
   -help, -h, --help             Show this message and exit.
@@ -577,7 +584,7 @@ gcloud config <span class="nb">set</span> <span class="o">{</span>project id<spa
      <label for="switch"></label>
      </span>
       
-      v: 1.20201127.1
+      v: 1.20201211.1
 
       <span class="fa fa-caret-down"></span>
     </span>

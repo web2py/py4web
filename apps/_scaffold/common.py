@@ -82,10 +82,10 @@ auth = Auth(session, db, define_tables=False)
 auth.use_username = True
 auth.param.registration_requires_confirmation = settings.VERIFY_EMAIL
 auth.param.registration_requires_approval = settings.REQUIRES_APPROVAL
-auth.allowed_actions = settings.ALLOWED_ACTIONS
-auth.login_expiration_time = 3600
-auth.password_complexity = {"entropy": 50}
-auth.block_previous_password_num = 3
+auth.param.allowed_actions = settings.ALLOWED_ACTIONS
+auth.param.login_expiration_time = 3600
+auth.param.password_complexity = {"entropy": 50}
+auth.param.block_previous_password_num = 3
 auth.define_tables()
 
 # #######################################################

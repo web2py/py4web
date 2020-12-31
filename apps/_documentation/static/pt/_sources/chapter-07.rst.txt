@@ -15,8 +15,8 @@ of databases. A partial list of supported databases is show in the table
 below. Please check on the py4web web site and mailing list for more
 recent adapters. Google NoSQL is treated as a particular case.
 
-The Gotchas section at the end of this chapter has some more information
-about specific databases.
+The :ref:Gotchas section at the end of this chapter has some more
+information about specific databases.
 
 The Windows binary distribution works out of the box with SQLite, MSSQL,
 PostgreSQL and MySQL. The Mac binary distribution works out of the box
@@ -123,7 +123,7 @@ The DAL can be used in a non-py4web environment via
 
 .. code:: python
 
-   from pydal import DAL, Field
+   >>> from pydal import DAL, Field
 
 DAL constructor
 ---------------
@@ -152,7 +152,7 @@ and the database name
    sqlite
 
 The connection string is called a ``_uri`` because it is an instance of
-a Uniform Resource Identifier.
+a uniform resource identifier.
 
 The DAL allows multiple connections with the same database or with
 different databases, even databases of different types. For now, we will
@@ -208,57 +208,29 @@ specific types of supported back-end databases (in all cases, we assume
 the database is running from localhost on its default port and is named
 “test”):
 
-+----------------------+----------------------------------------------+
-| **SQLite**           | ``sqlite://storage.sqlite``                  |
-+======================+==============================================+
-| **MySQL**            | ``mysql://username:pa                        |
-|                      | ssword@localhost/test?set_encoding=utf8mb4`` |
-+----------------------+----------------------------------------------+
-| **PostgreSQL**       | ``p                                          |
-|                      | ostgres://username:password@localhost/test`` |
-+----------------------+----------------------------------------------+
-| **MSSQL (legacy)**   | ``mssql://username:password@localhost/test`` |
-+----------------------+----------------------------------------------+
-| **MSSQL (>=2005)**   | `                                            |
-|                      | `mssql3://username:password@localhost/test`` |
-+----------------------+----------------------------------------------+
-| **MSSQL (>=2012)**   | `                                            |
-|                      | `mssql4://username:password@localhost/test`` |
-+----------------------+----------------------------------------------+
-| **FireBird**         | ``f                                          |
-|                      | irebird://username:password@localhost/test`` |
-+----------------------+----------------------------------------------+
-| **Oracle**           | ``oracle://username/password@test``          |
-+----------------------+----------------------------------------------+
-| **DB2**              | ``db2://username:password@test``             |
-+----------------------+----------------------------------------------+
-| **Ingres**           | `                                            |
-|                      | `ingres://username:password@localhost/test`` |
-+----------------------+----------------------------------------------+
-| **Sybase**           | `                                            |
-|                      | `sybase://username:password@localhost/test`` |
-+----------------------+----------------------------------------------+
-| **Informix**         | ``informix://username:password@test``        |
-+----------------------+----------------------------------------------+
-| **Teradata**         | ``teradata                                   |
-|                      | ://DSN=dsn;UID=user;PWD=pass;DATABASE=test`` |
-+----------------------+----------------------------------------------+
-| **Cubrid**           | `                                            |
-|                      | `cubrid://username:password@localhost/test`` |
-+----------------------+----------------------------------------------+
-| **SAPDB**            | ``sapdb://username:password@localhost/test`` |
-+----------------------+----------------------------------------------+
-| **IMAP**             | ``imap://user:password@server:port``         |
-+----------------------+----------------------------------------------+
-| **MongoDB**          | ``                                           |
-|                      | mongodb://username:password@localhost/test`` |
-+----------------------+----------------------------------------------+
-| **Google/SQL**       | ``google:sql://project:instance/database``   |
-+----------------------+----------------------------------------------+
-| **Google/NoSQL**     | ``google:datastore``                         |
-+----------------------+----------------------------------------------+
-| **Google/NoSQL/NDB** | ``google:datastore+ndb``                     |
-+----------------------+----------------------------------------------+
+====================  ======================================================
+**SQLite**            ``sqlite://storage.sqlite``
+**MySQL**             ``mysql://username:pa
+                      ssword@localhost/test?set_encoding=utf8mb4``
+**PostgreSQL**        ``postgres://username:password@localhost/test``
+**MSSQL (legacy)**    ``mssql://username:password@localhost/test``
+**MSSQL (>=2005)**    ``mssql3://username:password@localhost/test``
+**MSSQL (>=2012)**    ``mssql4://username:password@localhost/test``
+**FireBird**          ``firebird://username:password@localhost/test``
+**Oracle**            ``oracle://username/password@test``
+**DB2**               ``db2://username:password@test``
+**Ingres**            ``ingres://username:password@localhost/test``
+**Sybase**            ``sybase://username:password@localhost/test``
+**Informix**          ``informix://username:password@test``
+**Teradata**          ``teradata://DSN=dsn;UID=user;PWD=pass;DATABASE=test``
+**Cubrid**            ``cubrid://username:password@localhost/test``
+**SAPDB**             ``sapdb://username:password@localhost/test``
+**IMAP**              ``imap://user:password@server:port``
+**MongoDB**           ``mongodb://username:password@localhost/test``
+**Google/SQL**        ``google:sql://project:instance/database``
+**Google/NoSQL**      ``google:datastore``
+**Google/NoSQL/NDB**  ``google:datastore+ndb``
+====================  ======================================================
 
 Notice that in SQLite the database consists of a single file. If it does
 not exist, it is created. This file is locked every time it is accessed.
@@ -313,7 +285,7 @@ As it is rather slow to establish a new database connection for each
 request, py4web implements a mechanism for connection pooling. Once a
 connection is established and the page has been served and the
 transaction completed, the connection is not closed but goes into a
-pool. When the next http request arrives, py4web tries to recycle a
+pool. When the next request arrives, py4web tries to recycle a
 connection from the pool and use that for the new transaction. If there
 are no available connections in the pool, a new connection is
 established.
@@ -347,7 +319,7 @@ Lazy Tables
 ~~~~~~~~~~~
 
 setting ``lazy_tables = True`` provides a major performance boost. See
-below: `lazy tables <#lazy_tables>`__
+below: :ref:`Lazy Tables, a major performance boost`
 
 Model-less applications
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -745,6 +717,8 @@ which take a Set object as the first argument, such as IS_IN_DB, will
 make a query like ``db.sometable.somefield == some_value`` which would
 cause ``sometable`` to be defined early. This is the situation saved by
 ``on_define``.
+
+.. _Lazy Tables, a major performance boost:
 
 Lazy Tables, a major performance boost
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4925,6 +4899,8 @@ can specify optional driver arguments and adapter arguments:
 .. code:: python
 
    db =DAL(..., driver_args={}, adapter_args={})
+
+.. _Gotchas:
 
 Gotchas
 -------
