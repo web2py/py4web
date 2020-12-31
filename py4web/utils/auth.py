@@ -909,7 +909,7 @@ class DefaultAuthForms:
                 _role="button",
             )
         )
-        if "request_reset_password" in self.auth.param.allowed_actions:
+        if len(set(["all", "request_reset_password"]).intersection(set(self.auth.param.allowed_actions))) > 0:
             form.param.sidecar.append(
                 A(
                     "Lost Password",
@@ -992,7 +992,7 @@ class DefaultAuthForms:
                 _role="button",
             )
         )
-        if "register" in self.auth.param.allowed_actions:
+        if len(set(["all", "register"]).intersection(set(self.auth.param.allowed_actions))) > 0:
             form.param.sidecar.append(
                 A(
                     self.auth.messages["buttons"]["sign-up"],
