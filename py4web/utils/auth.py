@@ -964,9 +964,10 @@ class DefaultAuthForms:
         form.param.sidecar.append(
             A("Sign In", _href="../auth/login", _class="info", _role="button")
         )
-        form.param.sidecar.append(
-            A("Sign Up", _href="../auth/register", _class="info", _role="button")
-        )
+        if "register" in self.auth.param.allowed_actions:
+            form.param.sidecar.append(
+                A("Sign Up", _href="../auth/register", _class="info", _role="button")
+            )
         return form
 
     def reset_password(self):
