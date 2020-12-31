@@ -39,7 +39,7 @@ let init = (app) => {
     };
     app.activate_editor = (path, payload) => {
         app.vue.files[path] = payload;
-        app.editor.setValue(payload);
+        app.editor.session.setValue(payload);
         var mode = app.modelist.getModeForPath(path).mode
         app.editor.session.setMode(mode);
     }
