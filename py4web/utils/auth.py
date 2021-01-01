@@ -193,6 +193,10 @@ class Auth(Fixture):
         self.form_source = DefaultAuthForms(self)
         self.flash = Flash()
 
+    def allows(self, action_name):
+        return ("all" in self.param.allowed_actions or 
+                action_name in self.param.allowed_actions)
+
     def transform(self, output, shared_data):
         if self.inject:
             template_context = shared_data.get("template_context")
@@ -909,7 +913,7 @@ class DefaultAuthForms:
                 _role="button",
             )
         )
-        if len(set(["all", "request_reset_password"]).intersection(set(self.auth.param.allowed_actions))) > 0:
+        if self.auth.allows("request_reset_password"):
             form.param.sidecar.append(
                 A(
                     "Lost Password",
@@ -957,11 +961,11 @@ class DefaultAuthForms:
                 url = url + "?next=" + self.auth.next["login"]
             top_buttons.append(A(plugin.label + " Login", _href=url, _role="button"))
 
-        if len(set(["all", "register"]).intersection(set(self.auth.param.allowed_actions))) > 0:
+        if self.auth.allows("register"):
             form.param.sidecar.append(
                 A("Sign Up", _href="../auth/register", _class="info", _role="button")
             )
-        if len(set(["all", "request_reset_password"]).intersection(set(self.auth.param.allowed_actions))) > 0:
+        if self.auth.allows("request_reset_password"):
             form.param.sidecar.append(
                 A(
                     "Lost Password",
@@ -992,7 +996,7 @@ class DefaultAuthForms:
                 _role="button",
             )
         )
-        if len(set(["all", "register"]).intersection(set(self.auth.param.allowed_actions))) > 0:
+        if self.auth.allows("register"):
             form.param.sidecar.append(
                 A(
                     self.auth.messages["buttons"]["sign-up"],
