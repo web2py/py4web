@@ -687,8 +687,7 @@ class action:
         while stack:
             fixture = stack.pop()
             reversed_fixtures.append(fixture)
-            for other in getattr(fixture, "__prerequisites__", []):
-                stack.append(other)
+            stack.extend(getattr(fixture, "__prerequisites__", ()))
         for fixture in reversed(reversed_fixtures):
             if isinstance(fixture, str):
                 fixture = Template(fixture)

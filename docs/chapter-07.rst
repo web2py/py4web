@@ -1,31 +1,63 @@
 ====================================
-The database abstraction layer (DAL)
+The Database Abstraction Layer (DAL)
 ====================================
 
-Dependencies
-------------
+DAL introduction
+----------------
 
-py4web comes with a Database Abstraction Layer (DAL), an API that maps
+py4web rely on a Database Abstraction Layer (DAL), an API that maps
 Python objects into database objects such as queries, tables, and
 records. The DAL dynamically generates the SQL in real time using the
 specified dialect for the database back end, so that you do not have to
 write SQL code or learn different SQL dialects (the term SQL is used
 generically), and the application will be portable among different types
-of databases. A partial list of supported databases is show in the table
-below. Please check on the py4web web site and mailing list for more
-recent adapters. Google NoSQL is treated as a particular case.
+of databases.
+The DAL choosen is a pure Python one called `pyDAL <github.com/web2py/pydal/>`__.
+It was conceived in the web2py project but it's a standard python module:
+you can use it in any Python context.
 
-The :ref:Gotchas section at the end of this chapter has some more
-information about specific databases.
+A little taste of pyDAL features:
 
-The Windows binary distribution works out of the box with SQLite, MSSQL,
-PostgreSQL and MySQL. The Mac binary distribution works out of the box
-with SQLite. To use any other database back-end, run from the source
+  * Transactions
+  * Aggregates
+  * Inner & Outer Joins
+  * Nested Selects
+
+py4web model
+~~~~~~~~~~~~
+
+Even if web2py and py4web use the same PyDAL, there are important differences (see 
+:ref:`From web2py to py4web` for details). The main caveat is that in py4web only
+the action is executed for every HTTP request, while the code defined outside of
+actions is only executed at startup. That makes py4web much faster, in particular
+when there are many tables. The downside of this approach is that the developer
+should be careful to never override PyDAL variables inside action or in any way
+that depends on the content of the request object, else the code is not thread safe.
+The only variables that can be changed at will are the following field attributes:
+readable, writable, requires, update, default, requires.
+All the others are for practical purposes to be considered global and non thread safe.
+
+
+Supported databases
+~~~~~~~~~~~~~~~~~~~
+
+A partial list of supported databases is show in the table
+below. Please check on the py4web/pyDAL web site and mailing list for more
+recent adapters.
+
+.. note::
+
+   In any modern python distribution **SQLite** is actually built-in as a Python library.
+   The SQLite driver (sqlite3) is also included: you don't need to install it.
+   Hence this is the most popular database for testing and developement.
+
+The Windows and the Mac binary distribution work out of the box with SQLite only.
+To use any other database back end, run a full py4web
 distribution and install the appropriate driver for the required back
-end.
+end. Once the proper driver is installed, start py4web and it
+will automatically find the driver.
 
-Once the proper driver is installed, start py4web from source, and it
-will find the driver. Here is a list of the drivers py4web can use:
+Here is a list of the drivers py4web can use:
 
 ========== ==========================================
 database   drivers (source)
@@ -47,83 +79,124 @@ MongoDB    pymongo
 IMAP       imaplib
 ========== ==========================================
 
-``sqlite3``, ``pymysql``, and ``imaplib`` ship with py4web. Support of
-MongoDB is experimental. The IMAP option allows to use DAL to access
-IMAP.
+Support of MongoDB is experimental. Google NoSQL is treated as a particular case.
+The Gotchas_ section at the end of this chapter has some more information
+about specific databases.
 
-The DAL: A quick tour
----------------------
+The DAL: a quick tour
+~~~~~~~~~~~~~~~~~~~~~
 
 py4web defines the following classes that make up the DAL:
 
-The **DAL** object represents a database connection. For example:
+ * The **DAL** object represents a database connection. For example:
 
-.. code:: python
+   .. code:: python
 
-   db = DAL('sqlite://storage.sqlite')
+      db = DAL('sqlite://storage.sqlite')
 
-**Table** represents a database table. You do not directly instantiate
-Table; instead, ``DAL.define_table`` instantiates it.
+ * **Table** represents a database table. You do not directly instantiate
+   Table; instead, ``DAL.define_table`` instantiates it.
 
-.. code:: python
+   .. code:: python
 
-   db.define_table('mytable', Field('myfield'))
+      db.define_table('mytable', Field('myfield'))
 
-The most important methods of a Table are:
+   The most important methods of a Table are:
 
-``insert``, ``truncate``, ``drop``, and ``import_from_csv_file``.
+   ``insert``, ``truncate``, ``drop``, and ``import_from_csv_file``.
 
-**Field** represents a database field. It can be instantiated and passed
-as an argument to ``DAL.define_table``.
+ * **Field** represents a database field. It can be instantiated and passed
+   as an argument to ``DAL.define_table``.
 
-**DAL Rows** is the object returned by a database select. It can be
-thought of as a list of ``Row`` rows:
+ * **DAL Rows** is the object returned by a database select. It can be
+   thought of as a list of ``Row`` rows:
 
-.. code:: python
+   .. code:: python
 
-   rows = db(db.mytable.myfield != None).select()
+      rows = db(db.mytable.myfield != None).select()
 
-**Row** contains field values.
+ * **Row** contains field values.
 
-.. code:: python
+   .. code:: python
 
-   for row in rows:
-       print row.myfield
+      for row in rows:
+          print row.myfield
 
-**Query** is an object that represents a SQL “where” clause:
+ * **Query** is an object that represents a SQL “where” clause:
 
-.. code:: python
+   .. code:: python
 
-   myquery = (db.mytable.myfield != None) | (db.mytable.myfield > 'A')
+      myquery = (db.mytable.myfield != None) | (db.mytable.myfield > 'A')
 
-**Set** is an object that represents a set of records. Its most
-important methods are ``count``, ``select``, ``update``, and ``delete``.
-For example:
+ * **Set** is an object that represents a set of records. Its most
+   important methods are ``count``, ``select``, ``update``, and ``delete``.
+   For example:
 
-.. code:: python
+   .. code:: python
 
-   myset = db(myquery)
-   rows = myset.select()
-   myset.update(myfield='somevalue')
-   myset.delete()
+      myset = db(myquery)
+      rows = myset.select()
+      myset.update(myfield='somevalue')
+      myset.delete()
 
-**Expression** is something like an ``orderby`` or ``groupby``
-expression. The Field class is derived from the Expression. Here is an
-example.
+ * **Expression** is something like an ``orderby`` or ``groupby``
+   expression. The Field class is derived from the Expression. Here is an
+   example.
 
-.. code:: python
+   .. code:: python
 
-   myorder = db.mytable.myfield.upper() | db.mytable.id
-   db().select(db.table.ALL, orderby=myorder)
+      myorder = db.mytable.myfield.upper() | db.mytable.id
+      db().select(db.table.ALL, orderby=myorder)
+
 
 Using the DAL “stand-alone”
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The DAL can be used in a non-py4web environment via
+pyDAL is an independent python module. As such, it can be used
+without the web2py/py4web environment; you just need to install
+it with the usual ``pip`` python program. Then import the pydal
+module when needed:
+
 
 .. code:: python
 
    >>> from pydal import DAL, Field
+
+
+
+Experiment with the py4web shell
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can also experiment with the pyDAL API using the py4web shell,
+that is available using the :ref:`shell command option`.
+
+.. warning::
+
+   Mind that
+   database changes may be persistent. So be carefull and do NOT exitate
+   to create a new application for doing testing instead of tampering
+   with an existing one.
+
+
+Note that most of the code snippets that contain the python prompt
+``>>>`` are also directly executable via a plain shell, which you can obtain
+using the :ref:`shell command option`.
+
+This is a simple example, using the provided ``examples`` app:
+
+.. code:: python
+
+   >>> from pydal import DAL, Field
+   >>> from apps.examples import db
+   >>> db.tables()
+   ['auth_user', 'auth_user_tag_groups', 'person', 'superhero', 'superpower', 'tag', 'product', 'thing']
+   >>> rows = db(db.superhero.name != None).select()
+   >>> rows.first()
+   <Row {'id': 1, 'tag': <Set ("tag"."superhero" = 1)>, 'name': 'Superman', 'real_identity': 1}>
+   
+You can also start by creating a connection from zero. For the sake of example, you
+can use SQLite. Nothing in this discussion changes when you change the back-end
+engine.
 
 DAL constructor
 ---------------
@@ -207,11 +280,12 @@ specific back-end database. Here are examples of connection strings for
 specific types of supported back-end databases (in all cases, we assume
 the database is running from localhost on its default port and is named
 “test”):
-
-====================  ======================================================
+          
+====================  ===================================================================
+ Database              Connection string
+====================  ===================================================================
 **SQLite**            ``sqlite://storage.sqlite``
-**MySQL**             ``mysql://username:pa
-                      ssword@localhost/test?set_encoding=utf8mb4``
+**MySQL**             ``mysql://username:password@localhost/test?set_encoding=utf8mb4``
 **PostgreSQL**        ``postgres://username:password@localhost/test``
 **MSSQL (legacy)**    ``mssql://username:password@localhost/test``
 **MSSQL (>=2005)**    ``mssql3://username:password@localhost/test``
@@ -230,30 +304,28 @@ the database is running from localhost on its default port and is named
 **Google/SQL**        ``google:sql://project:instance/database``
 **Google/NoSQL**      ``google:datastore``
 **Google/NoSQL/NDB**  ``google:datastore+ndb``
-====================  ======================================================
+====================  ===================================================================
 
-Notice that in SQLite the database consists of a single file. If it does
-not exist, it is created. This file is locked every time it is accessed.
-In the case of MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Ingres
-and Informix the database “test” must be created outside py4web. Once
-the connection is established, py4web will create, alter, and drop
-tables appropriately.
 
-In the MySQL connection string, the ``?set_encoding=utf8mb4`` at the end
-sets the encoding to UTF-8 and avoids an
-``Invalid utf8 character string:`` error on Unicode characters that
-consist of four bytes, as by default, MySQL can only handle Unicode
-characters that consist of one to three bytes.
+ * in SQLite the database consists of a single file. If it does
+   not exist, it is created. This file is locked every time it is accessed.
+ * in the case of MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Ingres
+   and Informix the database “test” must be created outside py4web. Once
+   the connection is established, py4web will create, alter, and drop
+   tables appropriately.
+ * in the MySQL connection string, the ``?set_encoding=utf8mb4`` at the end
+   sets the encoding to UTF-8 and avoids an
+   ``Invalid utf8 character string:`` error on Unicode characters that
+   consist of four bytes, as by default, MySQL can only handle Unicode
+   characters that consist of one to three bytes.
+ * in the Google/NoSQL case the ``+ndb`` option turns on NDB. NDB uses a
+   Memcache buffer to read data that is accessed often. This is completely
+   automatic and done at the datastore level, not at the py4web level.
+ * it is also possible to set the connection string to ``None``. In this
+   case DAL will not connect to any back-end database, but the API can
+   still be accessed for testing.
 
-In the Google/NoSQL case the ``+ndb`` option turns on NDB. NDB uses a
-Memcache buffer to read data that is accessed often. This is completely
-automatic and done at the datastore level, not at the py4web level.
-
-It is also possible to set the connection string to ``None``. In this
-case DAL will not connect to any back-end database, but the API can
-still be accessed for testing.
-
-Some times you may need to generate SQL as if you had a connection but
+Some times you may also need to generate SQL as if you had a connection but
 without actually connecting to the database. This can be done with
 
 .. code:: python
@@ -262,7 +334,8 @@ without actually connecting to the database. This can be done with
 
 In this case you will be able to call ``_select``, ``_insert``,
 ``_update``, and ``_delete`` to generate SQL but not call ``select``,
-``insert``, ``update``, and ``delete``. In most of the cases you can use
+``insert``, ``update``, and ``delete``; see :ref:`Generating raw sql`
+for details. In most of the cases you can use
 ``do_connect=False`` even without having the required database drivers.
 
 Notice that by default py4web uses utf8 character encoding for
@@ -318,58 +391,31 @@ connections. The number of attempts is set via the attempts parameter.
 Lazy Tables
 ~~~~~~~~~~~
 
-setting ``lazy_tables = True`` provides a major performance boost. See
-below: :ref:`Lazy Tables, a major performance boost`
+Setting ``lazy_tables = True`` provides a major performance boost (but
+not with py4web). It means that table creation is deferred until the
+table is actually referenced.
+
+.. warning::
+
+   You should never use lazy tables in py4web. There is no advantage,
+   no need, and possibly concurrency problems.
+
 
 Model-less applications
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Using py4web’s model directory for your application models is very
-convenient and productive. With lazy tables and conditional models,
-performance is usually acceptable even for large applications. Many
-experienced developers use this in production environments.
+In py4web the code defined outside of actions (where normally DAL tables
+are defined) is only executed at startup.
 
-However, it is possible to define DAL tables on demand inside controller
-functions or modules. This may make sense when the number or complexity
-of table definitions overloads the use of lazy tables and conditional
-models.
-
+However, it is possible to define DAL tables on demand inside actions.
 This is referred to as “model-less” development by the py4web community.
-It means less use of the automatic execution of Python files in the
-model directory. It does not imply abandoning the concept of models,
-views and controllers.
-
-PY4WEB’s auto-execution of Python code inside the model directory does
-this for you:
-
--  models are run automatically every time a request is processed
--  models access py4web’s global scope.
-
-Models also make for useful interactive shell sessions when py4web is
-started with the -M commandline option.
-
-Also, remember maintainability: other py4web developers expect to find
-model definitions in the model directory.
 
 To use the “model-less” approach, you take responsibility for doing
-these two housekeeping tasks. You call the table definitions when you
+all the housekeeping tasks. You call the table definitions when you
 need them, and provide necessary access passed as parameter.
+Also, remember maintainability: other py4web developers expect to find
+database definitions in the ``models.py`` file.
 
-For example, a typical model-less application may leave the definitions
-of the database connection objects in the model file, but define the
-tables on demand per controller function.
-
-The typical case is to move the table definitions to a module file (a
-Python file saved in the modules directory).
-
-If the function to define a set of tables is called
-``define_employee_tables()`` in a module called “table_setup.py”, your
-controller that wants to refer to the tables related to employee records
-in order to make an SQLFORM needs to call the
-``define_employee_tables()`` function before accessing any tables. The
-``define_employee_tables()`` function needs to access the database
-connection object in order to define tables. You need to pass the db
-object to the ``define_employee_tables()`` (as mentioned above).
 
 Replicated databases
 ~~~~~~~~~~~~~~~~~~~~
@@ -412,7 +458,7 @@ will check against all known SQL keywords. If you specify common, it
 will only check against common SQL keywords such as ``SELECT``,
 ``INSERT``, ``UPDATE``, etc.
 
-For supported back-ends you may also specify if you would like to check
+For supported back ends you may also specify if you would like to check
 against the non-reserved SQL keywords as well. In this case you would
 append ``_nonreserved`` to the name. For example:
 
@@ -489,7 +535,7 @@ Database folder location
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``folder`` sets the place where migration files will be created (see
-`Migrations <#table_migrations>`__ section in this chapter for details).
+:ref:`Migrations` for details).
 It is also used for SQLite databases. Automatically set within py4web.
 Set a path when using DAL outside py4web.
 
@@ -508,25 +554,69 @@ tables
 
 ``fake_migrate_all = False`` If set to True fake migrates ALL tables
 
-Experiment with the py4web shell
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``commit`` and ``rollback``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can experiment with the DAL API using the py4web shell, that is
-available using the ``shell`` command (read more in `Chapter
-1 <#chapter-01#command_line_options>`__).
-
-   You need to choose an application to run the shell on, mind that
-   database changes may be persistent. So be carefull and do NOT exitate
-   to create a new application for doing testing instead of tampering
-   with an existing one.
-
-Start by creating a connection. For the sake of example, you can use
-SQLite. Nothing in this discussion changes when you change the back-end
+The insert, truncate, delete, and update operations aren’t actually
+committed until py4web issues the commit command. The create and drop
+operations may be executed immediately, depending on the database
 engine.
 
-Note that most of the code snippets that contain the python prompt
-``>>>`` are directly executable via a plain shell, which you can obtain
-using ``-PS`` command line options.
+If you add 'db' in an action.uses decorator, you don't need to call commit in the controller, it is done for you.  (also, if you use authenticated or unauthenticated).
+
+.. tip::
+
+   always add 'db' in an action.uses decorator (or use the authenticated or unauthenticated decorator).
+   Otherwise you have to add ``db.commit()`` in every define table and in every table activities : insert(), update(), delete()
+
+
+So in actions there is normally no need to ever call
+``commit`` or ``rollback`` explicitly in py4web unless you need more
+granular control. 
+
+But if you executed commands via the shell, you are required
+to manually commit:
+
+.. code:: python
+
+   >>> db.commit()
+
+To check it let’s insert a new record:
+
+.. code:: python
+
+   >>> db.person.insert(name="Bob")
+   2
+
+and roll back, i.e., ignore all operations since the last commit:
+
+.. code:: python
+
+   >>> db.rollback()
+
+If you now insert again, the counter will again be set to 2, since the
+previous insert was rolled back.
+
+.. code:: python
+
+   >>> db.person.insert(name="Bob")
+   2
+
+Code in models, views and controllers is enclosed in py4web code that
+looks like this (pseudo code) :
+
+.. code:: python
+
+   try:
+       execute models, controller function and view
+   except:
+       rollback all connections
+       log the traceback
+       send a ticket to the visitor
+   else:
+       commit all connections
+       save cookies, sessions and return the page
+
 
 Table constructor
 -----------------
@@ -638,20 +728,20 @@ py4web table name an alias, and ``rname`` is the real name used when
 constructing the query for the backend. To illustrate just one use,
 ``rname`` can be used to provide MSSQL fully qualified table names
 accessing tables belonging to other databases on the server:
-``rname = 'db1.dbo.table1'``:python
+``rname = 'db1.dbo.table1'``
 
 ``primarykey``: Support for legacy tables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``primarykey`` helps support legacy tables with existing primary keys,
-even multi-part. See `Legacy databases and keyed
-tables <#LegacyDatabases>`__ section in this chapter.
+even multi-part. See :ref:`Legacy databases and keyed
+tables` section in this chapter.
 
 ``migrate``, ``fake_migrate``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``migrate`` sets migration options for the table. Refer to
-`Migrations <#table_migrations>`__ section in this chapter for details.
+:ref:`Migrations` section in this chapter for details.
 
 ``table_class``
 ~~~~~~~~~~~~~~~
@@ -718,23 +808,6 @@ make a query like ``db.sometable.somefield == some_value`` which would
 cause ``sometable`` to be defined early. This is the situation saved by
 ``on_define``.
 
-.. _Lazy Tables, a major performance boost:
-
-Lazy Tables, a major performance boost
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-py4web models are executed before controllers, so all tables are defined
-at every request. Not all tables are needed to handle each request, so
-it is possible that some of the time spent defining tables is wasted.
-Conditional models (see `Model-less
-applications <#model_less_applications>`__) can help, but py4web offers
-a big performance boost via lazy_tables. This feature means that table
-creation is deferred until the table is actually referenced. Enabling
-lazy tables is made when initialising a database via the DAL
-constructor. It requires setting the lazy_tables parameter:
-``DAL(..., lazy_tables=True)``:python This is one of the most
-significant response-time performance boosts in py4web.
-
 Adding attributes to fields and tables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -745,7 +818,61 @@ If you need to add custom attributes to fields, you can simply do this:
 field object. You can do it with tables too but they must be preceded by
 an underscore to avoid naming conflicts with fields:
 
-``db.table._extra = {}``:python
+
+.. code:: python
+
+   db.table._extra = {}
+
+
+Legacy databases and keyed tables
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+py4web can connect to legacy databases under some conditions.
+
+The easiest way is when these conditions are met:
+ * Each table must have a unique auto-increment integer field called “id”
+ * Records must be referenced exclusively using the “id” field.
+
+When accessing an existing table, i.e., a table not created by py4web in
+the current application, always set ``migrate=False``.
+
+If the legacy table has an auto-increment integer field but it is not
+called “id”, py4web can still access it but the table definition must
+declare the auto-increment field with ‘id’ type (that is using
+``FIeld('...', 'id')``).
+
+Finally if the legacy table uses a primary key that is not an
+auto-increment id field it is possible to use a “keyed table”, for
+example:
+
+.. code:: python
+
+   db.define_table('account',
+                   Field('accnum', 'integer'),
+                   Field('acctype'),
+                   Field('accdesc'),
+                   primarykey=['accnum', 'acctype'],
+                   migrate=False)
+
+-  ``primarykey`` is a list of the field names that make up the primary
+   key.
+-  All primarykey fields have a ``NOT NULL`` set even if not specified.
+-  Keyed tables can only reference other keyed tables.
+-  Referencing fields must use the ``reference tablename.fieldname``
+   format.
+-  The ``update_record`` function is not available for Rows of keyed
+   tables.
+
+..
+
+   Currently keyed tables are only supported for DB2, MSSQL, Ingres and
+   Informix, but others engines will be added.
+
+At the time of writing, we cannot guarantee that the ``primarykey``
+attribute works with every existing legacy table and every supported
+database backend. For simplicity, we recommend, if possible, creating a
+database view that has an auto-increment id field.
+
 
 Field constructor
 -----------------
@@ -832,7 +959,7 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    uploaded file goes into the application’s “uploads/” folder, that is
    into ``os.path.join(request.folder, 'uploads')`` (this seems not the
    case for MongoAdapter at present). For example:
-   ``Field(..., uploadfolder=os.path.join(request.folder, 'static/temp'))``:python
+   ``Field(..., uploadfolder=os.path.join(request.folder, 'static/temp'))``
    will upload files to the “py4web/applications/myapp/static/temp”
    folder.
 
@@ -993,8 +1120,8 @@ MongoDB and backported to the other database adapters for portability.
 ``blob`` fields are also special. By default, binary data is encoded in
 base64 before being stored into the actual database field, and it is
 decoded when extracted. This has the negative effect of using 33% more
-storage space than necessary in blob fields, but has the advantageof
-making the communication independent of back-end-specific escaping
+storage space than necessary in blob fields, but has the advantage of
+making the communication independent of the back-end specific escaping
 conventions.
 
 Run-time field and table modification
@@ -1088,457 +1215,9 @@ will see them later. A special method of the field object is
 which returns a tuple ``(value, error)``. ``error`` is ``None`` if the
 input passes validation.
 
-Migrations
-----------
-
-``define_table`` checks whether or not the corresponding table exists.
-If it does not, it generates the SQL to create it and executes the SQL.
-If the table does exist but differs from the one being defined, it
-generates the SQL to alter the table and executes it. If a field has
-changed type but not name, it will try to convert the data (If you do
-not want this, you need to redefine the table twice, the first time,
-letting py4web drop the field by removing it, and the second time adding
-the newly defined field so that py4web can create it.). If the table
-exists and matches the current definition, it will leave it alone. In
-all cases it will create the ``db.person`` object that represents the
-table.
-
-We refer to this behavior as a “migration”. py4web logs all migrations
-and migration attempts in the file “sql.log”.
-
-   Notice that by default py4web uses the “app/databases” folder for the
-   log file and all other migration files it needs. You can change this
-   setting the ``folder`` argument to DAL. To set a different log file
-   name, for example “migrate.log” you can do
-   ``db = DAL(..., adapter_args=dict(logfile='migrate.log'))``:python
-
-The first argument of ``define_table`` is always the table name. The
-other unnamed arguments are the fields (Field). The function also takes
-an optional keyword argument called “migrate”:
-
-.. code:: python
-
-   db.define_table('person', ..., migrate='person.table')
-
-The value of migrate is the filename where py4web stores internal
-migration information for this table. These files are very important and
-should never be removed while the corresponding tables exist. In cases
-where a table has been dropped and the corresponding file still exist,
-it can be removed manually. By default, migrate is set to True. This
-causes py4web to generate the filename from a hash of the connection
-string. If migrate is set to False, the migration is not performed, and
-py4web assumes that the table exists in the datastore and it contains
-(at least) the fields listed in ``define_table``.
-
-There may not be two tables in the same application with the same
-migrate filename.
-
-The DAL class also takes a “migrate” argument, which determines the
-default value of migrate for calls to ``define_table``. For example,
-
-.. code:: python
-
-   db = DAL('sqlite://storage.sqlite', migrate=False)
-
-will set the default value of migrate to False whenever
-``db.define_table`` is called without a migrate argument.
-
-   Notice that py4web only migrates new columns, removed columns, and
-   changes in column type (except in SQLite). py4web does not migrate
-   changes in attributes such as changes in the values of ``default``,
-   ``unique``, ``notnull``, and ``ondelete``.
-
-Migrations can be disabled for all tables at once:
-
-.. code:: python
-
-   db = DAL(..., migrate_enabled=False)
-
-This is the recommended behavior when two apps share the same database.
-Only one of the two apps should perform migrations, the other should
-disabled them.
-
-Fixing broken migrations
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-There are two common problems with migrations and there are ways to
-recover from them.
-
-One problem is specific with SQLite. SQLite does not enforce column
-types and cannot drop columns. This means that if you have a column of
-type string and you remove it, it is not really removed. If you add the
-column again with a different type (for example datetime) you end up
-with a datetime column that contains strings (junk for practical
-purposes). py4web does not complain about this because it does not know
-what is in the database, until it tries to retrieve records and fails.
-
-If py4web returns an error in some parse function when selecting
-records, most likely this is due to corrupted data in a column because
-of the above issue.
-
-The solution consists in updating all records of the table and updating
-the values in the column in question with None.
-
-The other problem is more generic but typical with MySQL. MySQL does not
-allow more than one ALTER TABLE in a transaction. This means that py4web
-must break complex transactions into smaller ones (one ALTER TABLE at
-the time) and commit one piece at the time. It is therefore possible
-that part of a complex transaction gets committed and one part fails,
-leaving py4web in a corrupted state. Why would part of a transaction
-fail? Because, for example, it involves altering a table and converting
-a string column into a datetime column, py4web tries to convert the
-data, but the data cannot be converted. What happens to py4web? It gets
-confused about what exactly is the table structure actually stored in
-the database.
-
-The solution consists of enabling fake migrations:
-
-.. code:: python
-
-   db.define_table(...., migrate=True, fake_migrate=True)
-
-This will rebuild py4web metadata about the table according to the table
-definition. Try multiple table definitions to see which one works (the
-one before the failed migration and the one after the failed migration).
-Once successful remove the ``fake_migrate=True`` parameter.
-
-Before attempting to fix migration problems it is prudent to make a copy
-of "applications/yourapp/databases/\*.table" files.
-
-Migration problems can also be fixed for all tables at once:
-
-.. code:: python
-
-   db = DAL(..., fake_migrate_all=True)
-
-This also fails if the model describes tables that do not exist in the
-database, but it can help narrowing down the problem.
-
-Migration control summary
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The logic of the various migration arguments are summarized in this
-pseudo-code:
-
-.. code:: python
-
-   if DAL.migrate_enabled and table.migrate:
-      if DAL.fake_migrate_all or table.fake_migrate:
-          perform fake migration
-      else:
-          perform migration
-
-``insert``
-----------
-
-Given a table, you can insert records
-
-.. code:: python
-
-   >>> db.person.insert(name="Alex")
-   1
-   >>> db.person.insert(name="Bob")
-   2
-
-Insert returns the unique “id” value of each record inserted.
-
-You can truncate the table, i.e., delete all records and reset the
-counter of the id.
-
-.. code:: python
-
-   >>> db.person.truncate()
-
-Now, if you insert a record again, the counter starts again at 1 (this
-is back-end specific and does not apply to Google NoSQL):
-
-.. code:: python
-
-   >>> db.person.insert(name="Alex")
-   1
-
-Notice you can pass a parameter to ``truncate``, for example you can
-tell SQLite to restart the id counter.
-
-.. code:: python
-
-   >>> db.person.truncate('RESTART IDENTITY CASCADE')
-
-The argument is in raw SQL and therefore engine specific.
-
-py4web also provides a bulk_insert method
-
-.. code:: python
-
-   >>> db.person.bulk_insert([{'name': 'Alex'}, {'name': 'John'}, {'name': 'Tim'}])
-   [3, 4, 5]
-
-It takes a list of dictionaries of fields to be inserted and performs
-multiple inserts at once. It returns the list of “id” values of the
-inserted records. On the supported relational databases there is no
-advantage in using this function as opposed to looping and performing
-individual inserts but on Google App Engine NoSQL, there is a major
-speed advantage.
-
-``commit`` and ``rollback``
----------------------------
-
-The insert, truncate, delete, and update operations aren’t actually
-committed until py4web issues the commit command. The create and drop
-operations may be executed immediately, depending on the database
-engine. Calls to py4web actions are automatically wrapped in
-transactions. If you executed commands via the shell, you are required
-to manually commit:
-
-.. code:: python
-
-   >>> db.commit()
-
-To check it let’s insert a new record:
-
-.. code:: python
-
-   >>> db.person.insert(name="Bob")
-   2
-
-and roll back, i.e., ignore all operations since the last commit:
-
-.. code:: python
-
-   >>> db.rollback()
-
-If you now insert again, the counter will again be set to 2, since the
-previous insert was rolled back.
-
-.. code:: python
-
-   >>> db.person.insert(name="Bob")
-   2
-
-Code in models, views and controllers is enclosed in py4web code that
-looks like this (pseudo code) :
-
-.. code:: python
-
-   try:
-       execute models, controller function and view
-   except:
-       rollback all connections
-       log the traceback
-       send a ticket to the visitor
-   else:
-       commit all connections
-       save cookies, sessions and return the page
-
-So in models, views and controllers there is no need to ever call
-``commit`` or ``rollback`` explicitly in py4web unless you need more
-granular control. However, in modules you will need to use ``commit()``.
-
-Raw SQL
--------
-
-Timing queries
-~~~~~~~~~~~~~~
-
-All queries are automatically timed by py4web. The variable
-``db._timings`` is a list of tuples. Each tuple contains the raw SQL
-query as passed to the database driver and the time it took to execute
-in seconds. This variable can be displayed in views using the toolbar:
-
-.. code:: jinja
-
-   {{=response.toolbar()}}
-
-``executesql``
-~~~~~~~~~~~~~~
-
-The DAL allows you to explicitly issue SQL statements.
-
-.. code:: python
-
-   >>> db.executesql('SELECT * FROM person;')
-   [(1, u'Massimo'), (2, u'Massimo')]
-
-In this case, the return values are not parsed or transformed by the
-DAL, and the format depends on the specific database driver. This usage
-with selects is normally not needed, but it is more common with indexes.
-
-``executesql`` takes five optional arguments: ``placeholders``,
-``as_dict``, ``fields``, ``colnames``, and ``as_ordered_dict``.
-
-``placeholders`` is an optional sequence of values to be substituted in
-or, if supported by the DB driver, a dictionary with keys matching named
-placeholders in your SQL.
-
-If ``as_dict`` is set to True, the results cursor returned by the DB
-driver will be converted to a sequence of dictionaries keyed with the db
-field names. Results returned with ``as_dict = True`` are the same as
-those returned when applying **.as_list()** to a normal select:
-
-.. code:: python
-
-   [{'field1': val1_row1, 'field2': val2_row1}, {'field1': val1_row2, 'field2': val2_row2}]
-
-``as_ordered_dict`` is pretty much like ``as_dict`` but the former
-ensures that the order of resulting fields (OrderedDict keys) reflect
-the order on which they are returned from DB driver:
-
-.. code:: python
-
-   [OrderedDict([('field1', val1_row1), ('field2', val2_row1)]),
-    OrderedDict([('field1', val1_row2), ('field2', val2_row2)])]
-
-The ``fields`` argument is a list of DAL Field objects that match the
-fields returned from the DB. The Field objects should be part of one or
-more Table objects defined on the DAL object. The ``fields`` list can
-include one or more DAL Table objects in addition to or instead of
-including Field objects, or it can be just a single table (not in a
-list). In that case, the Field objects will be extracted from the
-table(s).
-
-Instead of specifying the ``fields`` argument, the ``colnames`` argument
-can be specified as a list of field names in tablename.fieldname format.
-Again, these should represent tables and fields defined on the DAL
-object.
-
-It is also possible to specify both ``fields`` and the associated
-``colnames``. In that case, ``fields`` can also include DAL Expression
-objects in addition to Field objects. For Field objects in “fields”, the
-associated ``colnames`` must still be in tablename.fieldname format. For
-Expression objects in ``fields``, the associated ``colnames`` can be any
-arbitrary labels.
-
-Notice, the DAL Table objects referred to by ``fields`` or ``colnames``
-can be dummy tables and do not have to represent any real tables in the
-database. Also, note that the ``fields`` and ``colnames`` must be in the
-same order as the fields in the results cursor returned from the DB.
-
-``_lastsql``
-~~~~~~~~~~~~
-
-Whether SQL was executed manually using executesql or was SQL generated
-by the DAL, you can always find the SQL code in ``db._lastsql``. This is
-useful for debugging purposes:
-
-.. code:: python
-
-   >>> rows = db().select(db.person.ALL)
-   >>> db._lastsql
-   SELECT person.id, person.name FROM person;
-
-..
-
-   py4web never generates queries using the "*" operator. py4web is
-   always explicit when selecting fields.
-
-``drop``
---------
-
-Finally, you can drop tables and all data will be lost:
-
-.. code:: python
-
-   db.person.drop()
-
-Indexes
--------
-
-Currently the DAL API does not provide a command to create indexes on
-tables, but this can be done using the ``executesql`` command. This is
-because the existence of indexes can make migrations complex, and it is
-better to deal with them explicitly. Indexes may be needed for those
-fields that are used in recurrent queries.
-
-Here is an example of how to:
-
-.. code:: python
-
-   db = DAL('sqlite://storage.sqlite')
-   db.define_table('person', Field('name'))
-   db.executesql('CREATE INDEX IF NOT EXISTS myidx ON person (name);')
-
-Other database dialects have very similar syntaxes but may not support
-the optional “IF NOT EXISTS” directive.
-
-Legacy databases and keyed tables
----------------------------------
-
-py4web can connect to legacy databases under some conditions.
-
-The easiest way is when these conditions are met: - Each table must have
-a unique auto-increment integer field called “id” - Records must be
-referenced exclusively using the “id” field.
-
-When accessing an existing table, i.e., a table not created by py4web in
-the current application, always set ``migrate=False``.
-
-If the legacy table has an auto-increment integer field but it is not
-called “id”, py4web can still access it but the table definition must
-declare the auto-increment field with ‘id’ type (that is using
-``FIeld('...', 'id')``).
-
-Finally if the legacy table uses a primary key that is not an
-auto-increment id field it is possible to use a “keyed table”, for
-example:
-
-.. code:: python
-
-   db.define_table('account',
-                   Field('accnum', 'integer'),
-                   Field('acctype'),
-                   Field('accdesc'),
-                   primarykey=['accnum', 'acctype'],
-                   migrate=False)
-
--  ``primarykey`` is a list of the field names that make up the primary
-   key.
--  All primarykey fields have a ``NOT NULL`` set even if not specified.
--  Keyed tables can only reference other keyed tables.
--  Referencing fields must use the ``reference tablename.fieldname``
-   format.
--  The ``update_record`` function is not available for Rows of keyed
-   tables.
-
-..
-
-   Currently keyed tables are only supported for DB2, MSSQL, Ingres and
-   Informix, but others engines will be added.
-
-At the time of writing, we cannot guarantee that the ``primarykey``
-attribute works with every existing legacy table and every supported
-database backend. For simplicity, we recommend, if possible, creating a
-database view that has an auto-increment id field.
-
-Distributed transaction
------------------------
-
-   At the time of writing this feature is only supported by PostgreSQL,
-   MySQL and Firebird, since they expose API for two-phase commits.
-
-Assuming you have two (or more) connections to distinct PostgreSQL
-databases, for example:
-
-.. code:: python
-
-   db_a = DAL('postgres://...')
-   db_b = DAL('postgres://...')
-
-In your models or controllers, you can commit them concurrently with:
-
-.. code:: python
-
-   DAL.distributed_transaction_commit(db_a, db_b)
-
-On failure, this function rolls back and raises an ``Exception``.
-
-In controllers, when one action returns, if you have two distinct
-connections and you do not call the above function, py4web commits them
-separately. This means there is a possibility that one of the commits
-succeeds and one fails. The distributed transaction prevents this from
-happening.
 
 More on uploads
----------------
+~~~~~~~~~~~~~~~
 
 Consider the following model:
 
@@ -1644,8 +1323,218 @@ Here is an example of safe usage of ``retrieve``:
    with closing(stream) as src, closing(open(filename, 'wb')) as dest:
        shutil.copyfileobj(src, dest)
 
+
+
+Migrations
+----------
+
+With our example table definition:
+
+.. code:: python
+
+   db.define_table('person')
+
+
+``define_table`` checks whether or not the corresponding table exists.
+If it does not, it generates the SQL to create it and executes the SQL.
+If the table does exist but differs from the one being defined, it
+generates the SQL to alter the table and executes it. If a field has
+changed type but not name, it will try to convert the data (If you do
+not want this, you need to redefine the table twice, the first time,
+letting py4web drop the field by removing it, and the second time adding
+the newly defined field so that py4web can create it). If the table
+exists and matches the current definition, it will leave it alone. In
+all cases it will create the ``db.person`` object that represents the
+table.
+
+We refer to this behavior as a “migration”. py4web logs all migrations
+and migration attempts in the file “sql.log”.
+
+.. note::
+
+   by default py4web uses the “app/databases” folder for the
+   log file and all other migration files it needs. You can change this
+   setting by changing the ``folder`` argument to DAL. To set a different
+   log file name, for example “migrate.log” you can do
+   ``db = DAL(..., adapter_args=dict(logfile='migrate.log'))``
+
+The first argument of ``define_table`` is always the table name. The
+other unnamed arguments are the fields (Field). The function also takes
+an optional keyword argument called “migrate”:
+
+.. code:: python
+
+   db.define_table('person', ..., migrate='person.table')
+
+The value of migrate is the filename where py4web stores internal
+migration information for this table. These files are very important and
+should never be removed while the corresponding tables exist. In cases
+where a table has been dropped and the corresponding file still exist,
+it can be removed manually. By default, migrate is set to True. This
+causes py4web to generate the filename from a hash of the connection
+string. If migrate is set to False, the migration is not performed, and
+py4web assumes that the table exists in the datastore and it contains
+(at least) the fields listed in ``define_table``.
+
+There may not be two tables in the same application with the same
+migrate filename.
+
+The DAL class also takes a “migrate” argument, which determines the
+default value of migrate for calls to ``define_table``. For example,
+
+.. code:: python
+
+   db = DAL('sqlite://storage.sqlite', migrate=False)
+
+will set the default value of migrate to False whenever
+``db.define_table`` is called without a migrate argument.
+
+
+.. note::
+
+   py4web only migrates new columns, removed columns, and
+   changes in column type (except in SQLite). py4web does not migrate
+   changes in attributes such as changes in the values of ``default``,
+   ``unique``, ``notnull``, and ``ondelete``.
+
+Migrations can be disabled for all tables at once:
+
+.. code:: python
+
+   db = DAL(..., migrate_enabled=False)
+
+This is the recommended behavior when two apps share the same database.
+Only one of the two apps should perform migrations, the other should
+disable them.
+
+Fixing broken migrations
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+There are two common problems with migrations and there are ways to
+recover from them.
+
+One problem is specific with SQLite. SQLite does not enforce column
+types and cannot drop columns. This means that if you have a column of
+type string and you remove it, it is not really removed. If you add the
+column again with a different type (for example datetime) you end up
+with a datetime column that contains strings (junk for practical
+purposes). py4web does not complain about this because it does not know
+what is in the database, until it tries to retrieve records and fails.
+
+If py4web returns an error in some parse function when selecting
+records, most likely this is due to corrupted data in a column because
+of the above issue.
+
+The solution consists in updating all records of the table and updating
+the values in the column in question with None.
+
+The other problem is more generic but typical with MySQL. MySQL does not
+allow more than one ALTER TABLE in a transaction. This means that py4web
+must break complex transactions into smaller ones (one ALTER TABLE at
+the time) and commit one piece at the time. It is therefore possible
+that part of a complex transaction gets committed and one part fails,
+leaving py4web in a corrupted state. Why would part of a transaction
+fail? Because, for example, it involves altering a table and converting
+a string column into a datetime column, py4web tries to convert the
+data, but the data cannot be converted. What happens to py4web? It gets
+confused about what exactly is the table structure actually stored in
+the database.
+
+The solution consists of enabling fake migrations:
+
+.. code:: python
+
+   db.define_table(...., migrate=True, fake_migrate=True)
+
+This will rebuild py4web metadata about the table according to the table
+definition. Try multiple table definitions to see which one works (the
+one before the failed migration and the one after the failed migration).
+Once successful remove the ``fake_migrate=True`` parameter.
+
+Before attempting to fix migration problems it is prudent to make a copy
+of "applications/yourapp/databases/\*.table" files.
+
+Migration problems can also be fixed for all tables at once:
+
+.. code:: python
+
+   db = DAL(..., fake_migrate_all=True)
+
+This also fails if the model describes tables that do not exist in the
+database, but it can help narrowing down the problem.
+
+Migration control summary
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The logic of the various migration arguments are summarized in this
+pseudo-code:
+
+.. code:: python
+
+   if DAL.migrate_enabled and table.migrate:
+      if DAL.fake_migrate_all or table.fake_migrate:
+          perform fake migration
+      else:
+          perform migration
+
+Table methods
+-------------
+
+``insert``
+~~~~~~~~~~
+
+Given a table, you can insert records
+
+.. code:: python
+
+   >>> db.person.insert(name="Alex")
+   1
+   >>> db.person.insert(name="Bob")
+   2
+
+Insert returns the unique “id” value of each record inserted.
+
+You can truncate the table, i.e., delete all records and reset the
+counter of the id.
+
+.. code:: python
+
+   >>> db.person.truncate()
+
+Now, if you insert a record again, the counter starts again at 1 (this
+is back-end specific and does not apply to Google NoSQL):
+
+.. code:: python
+
+   >>> db.person.insert(name="Alex")
+   1
+
+Notice you can pass a parameter to ``truncate``, for example you can
+tell SQLite to restart the id counter.
+
+.. code:: python
+
+   >>> db.person.truncate('RESTART IDENTITY CASCADE')
+
+The argument is in raw SQL and therefore engine specific.
+
+py4web also provides a bulk_insert method
+
+.. code:: python
+
+   >>> db.person.bulk_insert([{'name': 'Alex'}, {'name': 'John'}, {'name': 'Tim'}])
+   [3, 4, 5]
+
+It takes a list of dictionaries of fields to be inserted and performs
+multiple inserts at once. It returns the list of “id” values of the
+inserted records. On the supported relational databases there is no
+advantage in using this function as opposed to looping and performing
+individual inserts but on Google App Engine NoSQL, there is a major
+speed advantage.
+
+
 ``Query``, ``Set``, ``Rows``
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Let’s consider again the table defined (and dropped) previously and
 insert three records:
@@ -1693,6 +1582,312 @@ Notice that no database query has been performed so far. DAL + Query
 simply define a set of records in this db that match the query. py4web
 determines from the query which table (or tables) are involved and, in
 fact, there is no need to specify that.
+
+``update_or_insert``
+~~~~~~~~~~~~~~~~~~~~
+
+Some times you need to perform an insert only if there is no record with
+the same values as those being inserted. This can be done with
+
+.. code:: python
+
+   db.define_table('person',
+                   Field('name'),
+                   Field('birthplace'))
+
+   db.person.update_or_insert(name='John', birthplace='Chicago')
+
+The record will be inserted only if there is no other user called John
+born in Chicago.
+
+You can specify which values to use as a key to determine if the record
+exists. For example:
+
+.. code:: python
+
+   db.person.update_or_insert(db.person.name == 'John',
+                              name='John',
+                              birthplace='Chicago')
+
+and if there is John his birthplace will be updated else a new record
+will be created.
+
+The selection criteria in the example above is a single field. It can
+also be a query, such as
+
+.. code:: python
+
+   db.person.update_or_insert((db.person.name == 'John') & (db.person.birthplace == 'Chicago'),
+                              name='John',
+                              birthplace='Chicago',
+                              pet='Rover')
+
+``validate_and_insert``, ``validate_and_update``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The function
+
+.. code:: python
+
+   ret = db.mytable.validate_and_insert(field='value')
+
+works very much like
+
+.. code:: python
+
+   id = db.mytable.insert(field='value')
+
+except that it calls the validators for the fields before performing the
+insert and bails out if the validation does not pass. If validation does
+not pass the errors can be found in ``ret.errors``. ``ret.errors`` holds
+a key-value mapping where each key is the field name whose validation
+failed, and the value of the key is the result from the validation error
+(much like ``form.errors``). If it passes, the id of the new record is
+in ``ret.id``. Mind that normally validation is done by the form
+processing logic so this function is rarely needed.
+
+Similarly
+
+.. code:: python
+
+   ret = db(query).validate_and_update(field='value')
+
+works very much the same as
+
+.. code:: python
+
+   num = db(query).update(field='value')
+
+except that it calls the validators for the fields before performing the
+update. Notice that it only works if query involves a single table. The
+number of updated records can be found in ``ret.updated`` and errors
+will be in ``ret.errors``.
+
+
+``drop``
+~~~~~~~~
+
+Finally, you can drop tables and all data will be lost:
+
+.. code:: python
+
+   db.person.drop()
+
+
+
+Tagging records
+~~~~~~~~~~~~~~~
+
+Tags allows to add or find properties attached to records in your
+database.
+
+.. code:: python
+
+   from pydal import DAL, Field
+   from py4web.utils.tags import Tags
+
+   db = DAL("sqlite:memory")
+   db.define_table("thing", Field("name"))
+   properties = Tags(db.thing)
+   id1 = db.thing.insert(name="chair")
+   id2 = db.thing.insert(name="table")
+   properties.add(id1, "color/red")
+   properties.add(id1, "style/modern")
+   properties.add(id2, "color/green")
+   properties.add(id2, "material/wood")
+
+   self.assertTrue(properties.get(id1), ["color/red", "style/modern"])
+   self.assertTrue(properties.get(id2), ["color/green", "material/wood"])
+
+   rows = db(properties.find(["style/modern"])).select()
+   self.assertTrue(rows.first().id, id1)
+
+   rows = db(properties.find(["material/wood"])).select()
+   self.assertTrue(rows.first().id, id1)
+
+   rows = db(properties.find(["color"])).select()
+   self.assertTrue(len(rows), 2)
+
+It is internally implemented as a table with name: \ *tags*\ , which in
+this example would be db.thing_tags_default, because no path was
+specified on the Tags(table, path=“default”) constructor
+
+The ``find`` method is doing a search by ``startswith`` of the path
+passed as parameter. Then find([“color”]) would return id1 and id2
+because both records have tags starting with “color”. py4web uses tags as a
+flexible mechanism to manage permissions.
+
+
+
+Raw SQL
+-------
+
+
+``executesql``
+~~~~~~~~~~~~~~
+
+The DAL allows you to explicitly issue SQL statements.
+
+.. code:: python
+
+   >>> db.executesql('SELECT * FROM person;')
+   [(1, u'Massimo'), (2, u'Massimo')]
+
+In this case, the return values are not parsed or transformed by the
+DAL, and the format depends on the specific database driver. This usage
+with selects is normally not needed, but it is more common with indexes.
+
+``executesql`` takes five optional arguments: ``placeholders``,
+``as_dict``, ``fields``, ``colnames``, and ``as_ordered_dict``.
+
+``placeholders`` is an optional sequence of values to be substituted in
+or, if supported by the DB driver, a dictionary with keys matching named
+placeholders in your SQL.
+
+If ``as_dict`` is set to True, the results cursor returned by the DB
+driver will be converted to a sequence of dictionaries keyed with the db
+field names. Results returned with ``as_dict = True`` are the same as
+those returned when applying **as_list()** to a normal select:
+
+.. code:: python
+
+   [{'field1': val1_row1, 'field2': val2_row1}, {'field1': val1_row2, 'field2': val2_row2}]
+
+``as_ordered_dict`` is pretty much like ``as_dict`` but the former
+ensures that the order of resulting fields (OrderedDict keys) reflect
+the order on which they are returned from DB driver:
+
+.. code:: python
+
+   [OrderedDict([('field1', val1_row1), ('field2', val2_row1)]),
+    OrderedDict([('field1', val1_row2), ('field2', val2_row2)])]
+
+The ``fields`` argument is a list of DAL Field objects that match the
+fields returned from the DB. The Field objects should be part of one or
+more Table objects defined on the DAL object. The ``fields`` list can
+include one or more DAL Table objects in addition to or instead of
+including Field objects, or it can be just a single table (not in a
+list). In that case, the Field objects will be extracted from the
+table(s).
+
+Instead of specifying the ``fields`` argument, the ``colnames`` argument
+can be specified as a list of field names in tablename.fieldname format.
+Again, these should represent tables and fields defined on the DAL
+object.
+
+It is also possible to specify both ``fields`` and the associated
+``colnames``. In that case, ``fields`` can also include DAL Expression
+objects in addition to Field objects. For Field objects in “fields”, the
+associated ``colnames`` must still be in tablename.fieldname format. For
+Expression objects in ``fields``, the associated ``colnames`` can be any
+arbitrary labels.
+
+Notice, the DAL Table objects referred to by ``fields`` or ``colnames``
+can be dummy tables and do not have to represent any real tables in the
+database. Also, note that the ``fields`` and ``colnames`` must be in the
+same order as the fields in the results cursor returned from the DB.
+
+``_lastsql``
+~~~~~~~~~~~~
+
+Whether SQL was executed manually using executesql or was SQL generated
+by the DAL, you can always find the SQL code in ``db._lastsql``. This is
+useful for debugging purposes:
+
+.. code:: python
+
+   >>> rows = db().select(db.person.ALL)
+   >>> db._lastsql
+   SELECT person.id, person.name FROM person;
+
+..
+
+   py4web never generates queries using the "*" operator. py4web is
+   always explicit when selecting fields.
+
+
+Timing queries
+~~~~~~~~~~~~~~
+
+All queries are automatically timed by py4web. The variable
+``db._timings`` is a list of tuples. Each tuple contains the raw SQL
+query as passed to the database driver and the time it took to execute
+in seconds. This variable can be displayed in views using the toolbar:
+
+.. code:: jinja
+
+   {{=response.toolbar()}}
+
+Indexes
+~~~~~~~
+
+Currently the DAL API does not provide a command to create indexes on
+tables, but this can be done using the ``executesql`` command. This is
+because the existence of indexes can make migrations complex, and it is
+better to deal with them explicitly. Indexes may be needed for those
+fields that are used in recurrent queries.
+
+Here is an example of how to:
+
+.. code:: python
+
+   db = DAL('sqlite://storage.sqlite')
+   db.define_table('person', Field('name'))
+   db.executesql('CREATE INDEX IF NOT EXISTS myidx ON person (name);')
+
+Other database dialects have very similar syntaxes but may not support
+the optional “IF NOT EXISTS” directive.
+
+Generating raw sql
+~~~~~~~~~~~~~~~~~~
+
+Sometimes you need to generate the SQL but not execute it. This is easy
+to do with py4web since every command that performs database IO has an
+equivalent command that does not, and simply returns the SQL that would
+have been executed. These commands have the same names and syntax as the
+functional ones, but they start with an underscore:
+
+Here is ``_insert``
+
+.. code:: python
+
+   >>> print db.person._insert(name='Alex')
+   INSERT INTO "person"("name") VALUES ('Alex');
+
+Here is ``_count``
+
+.. code:: python
+
+   >>> print db(db.person.name == 'Alex')._count()
+   SELECT COUNT(*) FROM "person" WHERE ("person"."name" = 'Alex');
+
+Here is ``_select``
+
+.. code:: python
+
+   >>> print db(db.person.name == 'Alex')._select()
+   SELECT "person"."id", "person"."name" FROM "person" WHERE ("person"."name" = 'Alex');
+
+Here is ``_delete``
+
+.. code:: python
+
+   >>> print db(db.person.name == 'Alex')._delete()
+   DELETE FROM "person" WHERE ("person"."name" = 'Alex');
+
+And finally, here is ``_update``
+
+.. code:: python
+
+   >>> print db(db.person.name == 'Alex')._update(name='Susan')
+   UPDATE "person" SET "name"='Susan' WHERE ("person"."name" = 'Alex');
+
+..
+
+   Moreover you can always use ``db._lastsql`` to return the most recent
+   SQL code, whether it was executed manually using executesql or was
+   SQL generated by the DAL.
+
 
 ``select`` command
 ------------------
@@ -2188,8 +2383,8 @@ cache, cacheable
 ^^^^^^^^^^^^^^^^
 
 An example use which gives much faster selects is:
-``rows = db(query).select(cache=(cache.ram, 3600), cacheable=True)``:python
-Look at *Caching selects* section in this chapter, to understand what
+``rows = db(query).select(cache=(cache.ram, 3600), cacheable=True)``
+Look at :ref:`Caching selects` section in this chapter, to understand what
 the trade-offs are.
 
 Logical operators
@@ -2565,91 +2760,57 @@ meaning.
 The ``find`` method has an optional ``limitby`` argument with the same
 syntax and functionality as the Set ``select`` method.
 
-Other methods
--------------
 
-``update_or_insert``
-~~~~~~~~~~~~~~~~~~~~
+Caching selects
+~~~~~~~~~~~~~~~
 
-Some times you need to perform an insert only if there is no record with
-the same values as those being inserted. This can be done with
+The select method also takes a ``cache`` argument, which defaults to
+None. For caching purposes, it should be set to a tuple where the first
+element is the cache model (``cache.ram``, ``cache.disk``, etc.), and
+the second element is the expiration time in seconds.
 
-.. code:: python
-
-   db.define_table('person',
-                   Field('name'),
-                   Field('birthplace'))
-
-   db.person.update_or_insert(name='John', birthplace='Chicago')
-
-The record will be inserted only if there is no other user called John
-born in Chicago.
-
-You can specify which values to use as a key to determine if the record
-exists. For example:
+In the following example, you see a controller that caches a select on
+the previously defined db.log table. The actual select fetches data from
+the back-end database no more frequently than once every 60 seconds and
+stores the result in memory. If the next call to this controller occurs
+in less than 60 seconds since the last database IO, it simply fetches
+the previous data from memory.
 
 .. code:: python
 
-   db.person.update_or_insert(db.person.name == 'John',
-                              name='John',
-                              birthplace='Chicago')
+   def cache_db_select():
+       logs = db().select(db.log.ALL, cache=(cache.ram, 60))
+       return dict(logs=logs)
 
-and if there is John his birthplace will be updated else a new record
-will be created.
+The ``select`` method has an optional ``cacheable`` argument, normally
+set to False. When ``cacheable=True`` the resulting ``Rows`` is
+serializable but The ``Row``\ s lack ``update_record`` and
+``delete_record`` methods.
 
-The selection criteria in the example above is a single field. It can
-also be a query, such as
-
-.. code:: python
-
-   db.person.update_or_insert((db.person.name == 'John') & (db.person.birthplace == 'Chicago'),
-                              name='John',
-                              birthplace='Chicago',
-                              pet='Rover')
-
-``validate_and_insert``, ``validate_and_update``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The function
+If you do not need these methods you can speed up selects a lot by
+setting the ``cacheable`` attribute:
 
 .. code:: python
 
-   ret = db.mytable.validate_and_insert(field='value')
+   rows = db(query).select(cacheable=True)
 
-works very much like
-
-.. code:: python
-
-   id = db.mytable.insert(field='value')
-
-except that it calls the validators for the fields before performing the
-insert and bails out if the validation does not pass. If validation does
-not pass the errors can be found in ``ret.errors``. ``ret.errors`` holds
-a key-value mapping where each key is the field name whose validation
-failed, and the value of the key is the result from the validation error
-(much like ``form.errors``). If it passes, the id of the new record is
-in ``ret.id``. Mind that normally validation is done by the form
-processing logic so this function is rarely needed.
-
-Similarly
+When the ``cache`` argument is set but ``cacheable=False`` (default)
+only the database results are cached, not the actual Rows object. When
+the ``cache`` argument is used in conjunction with ``cacheable=True``
+the entire Rows object is cached and this results in much faster
+caching:
 
 .. code:: python
 
-   ret = db(query).validate_and_update(field='value')
+   rows = db(query).select(cache=(cache.ram, 3600), cacheable=True)
 
-works very much the same as
 
-.. code:: python
 
-   num = db(query).update(field='value')
-
-except that it calls the validators for the fields before performing the
-update. Notice that it only works if query involves a single table. The
-number of updated records can be found in ``ret.updated`` and errors
-will be in ``ret.errors``.
+Computed and Virtual fields
+---------------------------
 
 Computed fields
----------------
+~~~~~~~~~~~~~~~
 
 DAL fields may have a ``compute`` attribute. This must be a function (or
 lambda) that takes a Row object and returns a value for the field. When
@@ -2671,17 +2832,18 @@ other field values using the ``compute`` function. Here is an example:
 
 Notice that the computed value is stored in the db and it is not
 computed on retrieval, as in the case of virtual fields, described next.
-Two typical applications of computed fields are: - in wiki applications,
-to store the processed input wiki text as HTML, to avoid re-processing
-on every request - for searching, to compute normalized values for a
-field, to be used for searching.
+Two typical applications of computed fields are:
+
+ * in wiki applications, to store the processed input wiki text as HTML, to
+   avoid re-processing on every request
+ * for searching, to compute normalized values for a field, to be used for searching.
 
 Computed fields are evaluated in the order in which they are defined in
 the table definition. A computed field can refer to previously defined
-computed fields (new after v 2.5.1)
+computed fields.
 
 Virtual fields
---------------
+~~~~~~~~~~~~~~
 
 Virtual fields are also computed fields (as in the previous subsection)
 but they differ from those because they are *virtual* in the sense that
@@ -2890,8 +3052,12 @@ or shorter using a lambda function:
        def lazy_total_price(self):
            return lambda self=self: self.item.unit_price * self.item.quantity
 
+Joins and Relations
+-------------------
+
 One to many relation
---------------------
+~~~~~~~~~~~~~~~~~~~~
+
 
 To illustrate how to implement one to many relations with the DAL,
 define another table “thing” that refers to the table “person” which we
@@ -2917,8 +3083,8 @@ Table “thing” has two fields, the name of the thing and the owner of the
 thing. The “owner_id” field is a reference field, it is intended that
 the field reference the other table by its id. A reference type can be
 specified in two equivalent ways, either:
-``Field('owner_id', 'reference person')``:python or:
-``Field('owner_id', db.person)``:python
+``Field('owner_id', 'reference person')`` or:
+``Field('owner_id', db.person)``.
 
 The latter is always converted to the former. They are equivalent except
 in the case of lazy tables, self references or other types of cyclic
@@ -2964,8 +3130,8 @@ looping over all persons and fetching their things easily:
         Shoes
    Carl
 
-Inner joins
-~~~~~~~~~~~
+Inner join
+~~~~~~~~~~
 
 Another way to achieve a similar result is by using a join, specifically
 an INNER JOIN. py4web performs joins automatically and transparently
@@ -3099,8 +3265,8 @@ The ``count`` method of the Field object has an optional ``distinct``
 argument. When set to ``True`` it specifies that only distinct values of
 the field in question are to be counted.
 
-Many to many
-------------
+Many to many relation
+~~~~~~~~~~~~~~~~~~~~~
 
 In the previous examples, we allowed a thing to have one owner but one
 person could have many things. What if Boat was owned by Alex and Curt?
@@ -3190,144 +3356,99 @@ found an example of this in the next section. Tagging works even on
 database backends that do not support JOINs like the Google App Engine
 NoSQL.
 
-Tagging records
----------------
+Self-Reference and aliases
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Tags allows to add or find properties attached to records in your
-database.
-
-.. code:: python
-
-   from pydal import DAL, Field
-   from py4web.utils.tags import Tags
-
-   db = DAL("sqlite:memory")
-   db.define_table("thing", Field("name"))
-   properties = Tags(db.thing)
-   id1 = db.thing.insert(name="chair")
-   id2 = db.thing.insert(name="table")
-   properties.add(id1, "color/red")
-   properties.add(id1, "style/modern")
-   properties.add(id2, "color/green")
-   properties.add(id2, "material/wood")
-
-   self.assertTrue(properties.get(id1), ["color/red", "style/modern"])
-   self.assertTrue(properties.get(id2), ["color/green", "material/wood"])
-
-   rows = db(properties.find(["style/modern"])).select()
-   self.assertTrue(rows.first().id, id1)
-
-   rows = db(properties.find(["material/wood"])).select()
-   self.assertTrue(rows.first().id, id1)
-
-   rows = db(properties.find(["color"])).select()
-   self.assertTrue(len(rows), 2)
-
-It is internally implemented as a table with name: \ *tags*\ , which in
-this example would be db.thing_tags_default, because no path was
-specified on the Tags(table, path=“default”) constructor
-
-The ``find`` method is doing a search by ``startswith`` of the path
-passed as parameter. Then find([“color”]) would return id1 and id2
-because both records have tags starting with “color”. py4web uses tags as a
-flexible mechanism to manage permissions.
-
-``list:<type>`` and ``contains``
---------------------------------
-
-py4web provides the following special field types:
+It is possible to define tables with fields that refer to themselves,
+here is an example:
 
 .. code:: python
 
-   list:string
-   list:integer
-   list:reference <table>
+   db.define_table('person',
+                   Field('name'),
+                   Field('father_id', 'reference person'),
+                   Field('mother_id', 'reference person'))
 
-They can contain lists of strings, of integers and of references
-respectively.
-
-On Google App Engine NoSQL ``list:string`` is mapped into
-``StringListProperty``, the other two are mapped into
-``ListProperty(int)``. On relational databases they are mapped into text
-fields which contain the list of items separated by ``|``. For example
-``[1, 2, 3]`` is mapped into ``|1|2|3|``.
-
-For lists of string the items are escaped so that any ``|`` in the item
-is replaced by a ``||``. Anyway this is an internal representation and
-it is transparent to the user.
-
-You can use ``list:string``, for example, in the following way:
+Notice that the alternative notation of using a table object as field
+type will fail in this case, because it uses a table before it is
+defined:
 
 .. code:: python
 
-   >>> db.define_table('product',
-   ...                 Field('name'),
-   ...                 Field('colors', 'list:string'))
-   <Table product (id, name, colors)>
-   >>> db.product.colors.requires = IS_IN_SET(('red', 'blue', 'green'))
-   >>> db.product.insert(name='Toy Car', colors=['red', 'green'])
-   1
-   >>> products = db(db.product.colors.contains('red')).select()
-   >>> for item in products:
-   ...     print item.name, item.colors
+   db.define_table('person',
+                   Field('name'),
+                   Field('father_id', db.person),  # wrong!
+                   Field('mother_id', db['person']))  # wrong!
+
+In general ``db.tablename`` and ``'reference tablename'`` are equivalent
+field types, but the latter is the only one allowed for self-references.
+
+When a table has a self-reference and you have to do join, for example
+to select a person and its father, you need an alias for the table. In
+SQL an alias is a temporary alternate name you can use to reference a
+table/column into a query (or other SQL statement).
+
+With py4web you can make an alias for a table using the ``with_alias``
+method. This works also for expressions, which means also for fields
+since ``Field`` is derived from ``Expression``.
+
+Here is an example:
+
+.. code:: python
+
+   >>> fid, mid = db.person.bulk_insert([dict(name='Massimo'), dict(name='Claudia')])
+   >>> db.person.insert(name='Marco', father_id=fid, mother_id=mid)
+   3
+   >>> Father = db.person.with_alias('father')
+   >>> Mother = db.person.with_alias('mother')
+   >>> type(Father)
+   <class 'pydal.objects.Table'>
+   >>> str(Father)
+   'person AS father'
+   >>> rows = db().select(db.person.name, Father.name, Mother.name,
+   ...                    left=(Father.on(Father.id == db.person.father_id),
+   ...                          Mother.on(Mother.id == db.person.mother_id)))
+   >>> for row in rows:
+   ...     print row.person.name, row.father.name, row.mother.name
    ... 
-   Toy Car ['red', 'green']
+   Massimo None None
+   Claudia None None
+   Marco Massimo Claudia
 
-``list:integer`` works in the same way but the items must be integers.
+Notice that we have chosen to make a distinction between: - “father_id”:
+the field name used in the table “person”; - “father”: the alias we want
+to use for the table referenced by the above field; this is communicated
+to the database; - “Father”: the variable used by py4web to refer to
+that alias.
 
-As usual the requirements are enforced at the level of forms, not at the
-level of ``insert``.
-
-   For ``list:<type>`` fields the ``contains(value)`` operator maps into
-   a non trivial query that checks for lists containing the ``value``.
-   The ``contains`` operator also works for regular ``string`` and
-   ``text`` fields and it maps into a ``LIKE '%value%'``.
-
-The ``list:reference`` and the ``contains(value)`` operator are
-particularly useful to de-normalize many-to-many relations. Here is an
-example:
+The difference is subtle, and there is nothing wrong in using the same
+name for the three of them:
 
 .. code:: python
 
-   >>> db.define_table('tag',
+   >>> db.define_table('person',
    ...                 Field('name'),
-   ...                 format='%(name)s')
-   <Table tag (id, name)>
-   >>> db.define_table('product',
-   ...                 Field('name'),
-   ...                 Field('tags', 'list:reference tag'))
-   <Table product (id, name, tags)>
-   >>> a = db.tag.insert(name='red')
-   >>> b = db.tag.insert(name='green')
-   >>> c = db.tag.insert(name='blue')
-   >>> db.product.insert(name='Toy Car', tags=[a, b, c])
-   1
-   >>> products = db(db.product.tags.contains(b)).select()
-   >>> for item in products:
-   ...     print item.name, item.tags
+   ...                 Field('father', 'reference person'),
+   ...                 Field('mother', 'reference person'))
+   <Table person (id, name, father, mother)>
+   >>> fid, mid = db.person.bulk_insert([dict(name='Massimo'), dict(name='Claudia')])
+   >>> db.person.insert(name='Marco', father=fid, mother=mid)
+   3
+   >>> father = db.person.with_alias('father')
+   >>> mother = db.person.with_alias('mother')
+   >>> rows = db().select(db.person.name, father.name, mother.name,
+   ...                    left=(father.on(father.id==db.person.father),
+   ...                          mother.on(mother.id==db.person.mother)))
+   >>> for row in rows:
+   ...     print row.person.name, row.father.name, row.mother.name
    ... 
-   Toy Car [1, 2, 3]
-   >>> for item in products:
-   ...     print item.name, db.product.tags.represent(item.tags)
-   ... 
-   Toy Car red, green, blue
+   Massimo None None
+   Claudia None None
+   Marco Massimo Claudia
 
-Notice that a ``list:reference tag`` field get a default constraint
+But it is important to have the distinction clear in order to build
+correct queries.
 
-.. code:: python
-
-   requires = IS_IN_DB(db, db.tag._id, db.tag._format, multiple=True)
-
-that produces a ``SELECT/OPTION`` multiple drop-box in forms.
-
-Also notice that this field gets a default ``represent`` attribute which
-represents the list of references as a comma-separated list of formatted
-references. This is used in read ``forms``.
-
-   While ``list:reference`` has a default validator and a default
-   representation, ``list:integer`` and ``list:string`` do not. So these
-   two need an ``IS_IN_SET`` or an ``IS_IN_DB`` validator if you want to
-   use them in forms.
 
 Other operators
 ---------------
@@ -3611,55 +3732,6 @@ query:
    >>> print exp
    SUM(COALESCE("sysuser"."points",'0'))
 
-Generating raw sql
-------------------
-
-Sometimes you need to generate the SQL but not execute it. This is easy
-to do with py4web since every command that performs database IO has an
-equivalent command that does not, and simply returns the SQL that would
-have been executed. These commands have the same names and syntax as the
-functional ones, but they start with an underscore:
-
-Here is ``_insert``
-
-.. code:: python
-
-   >>> print db.person._insert(name='Alex')
-   INSERT INTO "person"("name") VALUES ('Alex');
-
-Here is ``_count``
-
-.. code:: python
-
-   >>> print db(db.person.name == 'Alex')._count()
-   SELECT COUNT(*) FROM "person" WHERE ("person"."name" = 'Alex');
-
-Here is ``_select``
-
-.. code:: python
-
-   >>> print db(db.person.name == 'Alex')._select()
-   SELECT "person"."id", "person"."name" FROM "person" WHERE ("person"."name" = 'Alex');
-
-Here is ``_delete``
-
-.. code:: python
-
-   >>> print db(db.person.name == 'Alex')._delete()
-   DELETE FROM "person" WHERE ("person"."name" = 'Alex');
-
-And finally, here is ``_update``
-
-.. code:: python
-
-   >>> print db(db.person.name == 'Alex')._update(name='Susan')
-   UPDATE "person" SET "name"='Susan' WHERE ("person"."name" = 'Alex');
-
-..
-
-   Moreover you can always use ``db._lastsql`` to return the most recent
-   SQL code, whether it was executed manually using executesql or was
-   SQL generated by the DAL.
 
 Exporting and importing data
 ----------------------------
@@ -3687,15 +3759,9 @@ You can serialize a single table in CSV and store it in a file
    with open('test.csv', 'wb') as dumpfile:
        dumpfile.write(str(db(db.person).select()))
 
-..
 
-   Notice that converting a ``Rows`` object into a string using Python 2
-   produces an utf8 encoded binary string. To obtain a different
-   encoding you have to ask for it explicitly, for example with:
-
-``unicode(str(db(db.person).select()), 'utf8').encode(...)``:pythonn
-
-Or in Python 3:
+Converting a ``Rows`` object into a string produces an encoded binary string
+and it's better to be explicit with the encoding used:
 
 .. code:: python
 
@@ -3717,7 +3783,7 @@ You can read the CSV file back with:
    with open('test.csv', 'rb') as dumpfile:
        db.person.import_from_csv_file(dumpfile)
 
-Again, when using Python 3, you can be explict about the encoding for
+Again, you can be explict about the encoding for
 the exporting file:
 
 .. code:: python
@@ -3954,8 +4020,8 @@ it to XML/HTML:
    </table>
 
 If you need to serialize the Rows in any other XML format with custom
-tags, you can easily do that using the universal ``TAG`` helper
-(described in `Chapter 11 <#chapter-08#TAGs>`__ and the Python syntax
+tags, you can easily do that using the universal :ref:`TAG helper <\`\`TAG\`\`>` 
+that we'll see later and the Python syntax
 ``*<iterable>`` allowed in function calls:
 
 .. code:: python
@@ -4009,144 +4075,106 @@ Which would render something similar to
 
 For more information consult the official Python documentation
 
-Caching selects
----------------
-
-The select method also takes a ``cache`` argument, which defaults to
-None. For caching purposes, it should be set to a tuple where the first
-element is the cache model (``cache.ram``, ``cache.disk``, etc.), and
-the second element is the expiration time in seconds.
-
-In the following example, you see a controller that caches a select on
-the previously defined db.log table. The actual select fetches data from
-the back-end database no more frequently than once every 60 seconds and
-stores the result in memory. If the next call to this controller occurs
-in less than 60 seconds since the last database IO, it simply fetches
-the previous data from memory.
-
-.. code:: python
-
-   def cache_db_select():
-       logs = db().select(db.log.ALL, cache=(cache.ram, 60))
-       return dict(logs=logs)
-
-The ``select`` method has an optional ``cacheable`` argument, normally
-set to False. When ``cacheable=True`` the resulting ``Rows`` is
-serializable but The ``Row``\ s lack ``update_record`` and
-``delete_record`` methods.
-
-If you do not need these methods you can speed up selects a lot by
-setting the ``cacheable`` attribute:
-
-.. code:: python
-
-   rows = db(query).select(cacheable=True)
-
-When the ``cache`` argument is set but ``cacheable=False`` (default)
-only the database results are cached, not the actual Rows object. When
-the ``cache`` argument is used in conjunction with ``cacheable=True``
-the entire Rows object is cached and this results in much faster
-caching:
-
-.. code:: python
-
-   rows = db(query).select(cache=(cache.ram, 3600), cacheable=True)
-
-Self-Reference and aliases
---------------------------
-
-It is possible to define tables with fields that refer to themselves,
-here is an example:
-
-.. code:: python
-
-   db.define_table('person',
-                   Field('name'),
-                   Field('father_id', 'reference person'),
-                   Field('mother_id', 'reference person'))
-
-Notice that the alternative notation of using a table object as field
-type will fail in this case, because it uses a table before it is
-defined:
-
-.. code:: python
-
-   db.define_table('person',
-                   Field('name'),
-                   Field('father_id', db.person),  # wrong!
-                   Field('mother_id', db['person']))  # wrong!
-
-In general ``db.tablename`` and ``'reference tablename'`` are equivalent
-field types, but the latter is the only one allowed for self-references.
-
-When a table has a self-reference and you have to do join, for example
-to select a person and its father, you need an alias for the table. In
-SQL an alias is a temporary alternate name you can use to reference a
-table/column into a query (or other SQL statement).
-
-With py4web you can make an alias for a table using the ``with_alias``
-method. This works also for expressions, which means also for fields
-since ``Field`` is derived from ``Expression``.
-
-Here is an example:
-
-.. code:: python
-
-   >>> fid, mid = db.person.bulk_insert([dict(name='Massimo'), dict(name='Claudia')])
-   >>> db.person.insert(name='Marco', father_id=fid, mother_id=mid)
-   3
-   >>> Father = db.person.with_alias('father')
-   >>> Mother = db.person.with_alias('mother')
-   >>> type(Father)
-   <class 'pydal.objects.Table'>
-   >>> str(Father)
-   'person AS father'
-   >>> rows = db().select(db.person.name, Father.name, Mother.name,
-   ...                    left=(Father.on(Father.id == db.person.father_id),
-   ...                          Mother.on(Mother.id == db.person.mother_id)))
-   >>> for row in rows:
-   ...     print row.person.name, row.father.name, row.mother.name
-   ... 
-   Massimo None None
-   Claudia None None
-   Marco Massimo Claudia
-
-Notice that we have chosen to make a distinction between: - “father_id”:
-the field name used in the table “person”; - “father”: the alias we want
-to use for the table referenced by the above field; this is communicated
-to the database; - “Father”: the variable used by py4web to refer to
-that alias.
-
-The difference is subtle, and there is nothing wrong in using the same
-name for the three of them:
-
-.. code:: python
-
-   >>> db.define_table('person',
-   ...                 Field('name'),
-   ...                 Field('father', 'reference person'),
-   ...                 Field('mother', 'reference person'))
-   <Table person (id, name, father, mother)>
-   >>> fid, mid = db.person.bulk_insert([dict(name='Massimo'), dict(name='Claudia')])
-   >>> db.person.insert(name='Marco', father=fid, mother=mid)
-   3
-   >>> father = db.person.with_alias('father')
-   >>> mother = db.person.with_alias('mother')
-   >>> rows = db().select(db.person.name, father.name, mother.name,
-   ...                    left=(father.on(father.id==db.person.father),
-   ...                          mother.on(mother.id==db.person.mother)))
-   >>> for row in rows:
-   ...     print row.person.name, row.father.name, row.mother.name
-   ... 
-   Massimo None None
-   Claudia None None
-   Marco Massimo Claudia
-
-But it is important to have the distinction clear in order to build
-correct queries.
-
 Advanced features
 -----------------
+
+``list:<type>`` and ``contains``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+py4web provides the following special field types:
+
+.. code:: python
+
+   list:string
+   list:integer
+   list:reference <table>
+
+They can contain lists of strings, of integers and of references
+respectively.
+
+On Google App Engine NoSQL ``list:string`` is mapped into
+``StringListProperty``, the other two are mapped into
+``ListProperty(int)``. On relational databases they are mapped into text
+fields which contain the list of items separated by ``|``. For example
+``[1, 2, 3]`` is mapped into ``|1|2|3|``.
+
+For lists of string the items are escaped so that any ``|`` in the item
+is replaced by a ``||``. Anyway this is an internal representation and
+it is transparent to the user.
+
+You can use ``list:string``, for example, in the following way:
+
+.. code:: python
+
+   >>> db.define_table('product',
+   ...                 Field('name'),
+   ...                 Field('colors', 'list:string'))
+   <Table product (id, name, colors)>
+   >>> db.product.colors.requires = IS_IN_SET(('red', 'blue', 'green'))
+   >>> db.product.insert(name='Toy Car', colors=['red', 'green'])
+   1
+   >>> products = db(db.product.colors.contains('red')).select()
+   >>> for item in products:
+   ...     print item.name, item.colors
+   ... 
+   Toy Car ['red', 'green']
+
+``list:integer`` works in the same way but the items must be integers.
+
+As usual the requirements are enforced at the level of forms, not at the
+level of ``insert``.
+
+   For ``list:<type>`` fields the ``contains(value)`` operator maps into
+   a non trivial query that checks for lists containing the ``value``.
+   The ``contains`` operator also works for regular ``string`` and
+   ``text`` fields and it maps into a ``LIKE '%value%'``.
+
+The ``list:reference`` and the ``contains(value)`` operator are
+particularly useful to de-normalize many-to-many relations. Here is an
+example:
+
+.. code:: python
+
+   >>> db.define_table('tag',
+   ...                 Field('name'),
+   ...                 format='%(name)s')
+   <Table tag (id, name)>
+   >>> db.define_table('product',
+   ...                 Field('name'),
+   ...                 Field('tags', 'list:reference tag'))
+   <Table product (id, name, tags)>
+   >>> a = db.tag.insert(name='red')
+   >>> b = db.tag.insert(name='green')
+   >>> c = db.tag.insert(name='blue')
+   >>> db.product.insert(name='Toy Car', tags=[a, b, c])
+   1
+   >>> products = db(db.product.tags.contains(b)).select()
+   >>> for item in products:
+   ...     print item.name, item.tags
+   ... 
+   Toy Car [1, 2, 3]
+   >>> for item in products:
+   ...     print item.name, db.product.tags.represent(item.tags)
+   ... 
+   Toy Car red, green, blue
+
+Notice that a ``list:reference tag`` field get a default constraint
+
+.. code:: python
+
+   requires = IS_IN_DB(db, db.tag._id, db.tag._format, multiple=True)
+
+that produces a ``SELECT/OPTION`` multiple drop-box in forms.
+
+Also notice that this field gets a default ``represent`` attribute which
+represents the list of references as a comma-separated list of formatted
+references. This is used in read ``forms``.
+
+   While ``list:reference`` has a default validator and a default
+   representation, ``list:integer`` and ``list:string`` do not. So these
+   two need an ``IS_IN_SET`` or an ``IS_IN_DB`` validator if you want to
+   use them in forms.
+
 
 Table inheritance
 ~~~~~~~~~~~~~~~~~
@@ -4361,8 +4389,7 @@ is set to False. The ``is_active`` parameter in the
 field used by the ``common_filter`` to determine if the field was
 deleted or not.
 
-``common_filter``\ s will be discussed in next `Common
-filters <#common_filters>`__ section.
+:ref:`Common filters` will be discussed later.
 
 Common fields and multi-tenancy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4538,7 +4565,7 @@ The DAL can be used from any Python program simply by doing this:
 
 .. code:: python
 
-   from gluon import DAL
+   from pydal import DAL, Field
    db = DAL('sqlite://storage.sqlite', folder='path/to/app/databases')
 
 i.e. import the DAL, connect and specify the folder which contains the
@@ -4553,10 +4580,38 @@ py4web to read the necessary info from the metadata in the .table files:
 
 .. code:: python
 
-   from gluon import DAL
+   from pydal import DAL, Field
    db = DAL('sqlite://storage.sqlite', folder='path/to/app/databases', auto_import=True)
 
 This allows us to access any db.table without need to re-define it.
+
+Distributed transaction
+~~~~~~~~~~~~~~~~~~~~~~~
+
+   At the time of writing this feature is only supported by PostgreSQL,
+   MySQL and Firebird, since they expose API for two-phase commits.
+
+Assuming you have two (or more) connections to distinct PostgreSQL
+databases, for example:
+
+.. code:: python
+
+   db_a = DAL('postgres://...')
+   db_b = DAL('postgres://...')
+
+In your models or controllers, you can commit them concurrently with:
+
+.. code:: python
+
+   DAL.distributed_transaction_commit(db_a, db_b)
+
+On failure, this function rolls back and raises an ``Exception``.
+
+In controllers, when one action returns, if you have two distinct
+connections and you do not call the above function, py4web commits them
+separately. This means there is a possibility that one of the commits
+succeeds and one fails. The distributed transaction prevents this from
+happening.
 
 PostGIS, SpatiaLite, and MS Geo (experimental)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4700,6 +4755,9 @@ tables, clear the data in the tables. For more info try:
 
    python scripts/cpdb.py -h
 
+Gotchas
+-------
+
 Note on new DAL and adapters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4707,7 +4765,7 @@ The source code of the Database Abstraction Layer was completely
 rewritten in 2010. While it stays backward compatible, the rewrite made
 it more modular and easier to extend. Here we explain the main logic.
 
-The file “gluon/dal.py” defines, among other, the following classes.
+The module “dal.py” defines, among other, the following classes.
 
 ::
 
@@ -4759,7 +4817,7 @@ where the first line builds the query and the second executes it.
 
 ``BaseAdapter`` defines the interface for all adapters.
 
-“gluon/dal.py” at the moment of writing this book, contains the
+pyDAL at the moment of writing this book, contains the
 following adapters:
 
 ::
@@ -4841,7 +4899,7 @@ When ``db`` instance is created:
    db = DAL('mysql://...')
 
 the prefix in the uri string defines the adapter. The mapping is defined
-in the following dictionary also in “gluon/dal.py”:
+in the following dictionary also in “dal.py”:
 
 .. code:: python
 
@@ -4900,10 +4958,6 @@ can specify optional driver arguments and adapter arguments:
 
    db =DAL(..., driver_args={}, adapter_args={})
 
-.. _Gotchas:
-
-Gotchas
--------
 
 SQLite
 ~~~~~~
@@ -5027,3 +5081,5 @@ into a ``ListStringProperty``. Similarly “list:integer” and
 “list:reference” are mapped into ``ListProperty``. This makes searches
 for content inside these fields types more efficient on Google NoSQL
 than on SQL databases.
+
+
