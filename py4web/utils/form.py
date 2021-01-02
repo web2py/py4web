@@ -218,7 +218,7 @@ class FormStyleFactory:
                     _type=field_type,
                     _id=input_id,
                     _name=field.name,
-                    _value=value,
+                    _value=None if field.type == "password" else value,
                     _class=field_class,
                     _placeholder=placeholder,
                     _title=title,
@@ -459,7 +459,7 @@ class Form(object):
                     for field in self.table:
                         if not field.name in post_vars: 
                             continue
-                        if field.writable and field.readable and field.type != "id":
+                        if field.writable and field.type != "id":
                             original_value = post_vars.getall(field.name)
                             if (
                                 isinstance(original_value, list)

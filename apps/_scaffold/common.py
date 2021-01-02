@@ -160,7 +160,7 @@ if settings.UPLOAD_FOLDER:
     @action.uses(db)                                                                                           
     def download(filename):
         return downloader(db, settings.UPLOAD_FOLDER, filename) 
-    # To take advtange of this in Form(s)
+    # To take advantage of this in Form(s)
     # for every field of type upload you MUST specify:
     #
     # field.upload_path = settings.UPLOAD_FOLDER
@@ -172,8 +172,8 @@ if settings.UPLOAD_FOLDER:
 if settings.USE_CELERY:
     from celery import Celery
 
-    # to use from . common import scheduled and then use it accoding to celery docs
-    # examples in tasks.py
+    # to use "from .common import scheduler" and then use it according
+    # to celery docs, examples in tasks.py
     scheduler = Celery(
         "apps.%s.tasks" % settings.APP_NAME, broker=settings.CELERY_BROKER
     )
