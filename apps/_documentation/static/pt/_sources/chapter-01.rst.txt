@@ -39,8 +39,11 @@ PY4WEB is more than a repackaging of those modules. It is a complete
 redesign. It uses some of the web2py modules, but not all of them. In
 some cases, it uses other and better modules. Some functionality was
 removed and some was added. We tried to preserve most of the syntax and
-features that experienced web2py users loved. Here is a more explicit
-list:
+features that experienced web2py users loved. 
+
+
+Here is a more explicit list (see :ref:`From web2py to py4web` for more
+details if you come from web2py):
 
 -  PY4WEB, unlike web2py, requires Python 3.
 -  PY4WEB, unlike web2py, can be installed using pip and its
@@ -105,3 +108,14 @@ list:
 The goal of PY4WEB is and remains the same as web2py’s: to make web
 development easy and accessible, while producing applications that are
 fast and secure.
+
+
+
+Acknowledegments
+----------------
+
+py4web is supported by a growing community of developers and even simple users.
+Many thanks to everybody, and especially:
+
+.. include:: ../CONTRIBUTORS.rst
+

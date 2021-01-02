@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>py4web: the reference Manual &mdash; py4web 1.20201211.1
+  <title>py4web: the reference Manual &mdash; py4web 1.20210101.1&#34;
  documentation</title>
   
 
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.20201211.1
+                1.20210101.1"
 
               </div>
             
@@ -96,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The database abstraction layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
@@ -177,7 +177,10 @@
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-01.html#acknowledegments">Acknowledegments</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="chapter-02.html#resources">Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-02.html#hints-and-tips">Hints and tips</a></li>
@@ -220,36 +223,19 @@
 <li class="toctree-l2"><a class="reference internal" href="chapter-06.html#convenience-decorators">Convenience Decorators</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The database abstraction layer (DAL)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#dependencies">Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#the-dal-a-quick-tour">The DAL: A quick tour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#using-the-dal-stand-alone">Using the DAL “stand-alone”</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#dal-introduction">DAL introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#dal-constructor">DAL constructor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#table-constructor">Table constructor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#field-constructor">Field constructor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#migrations">Migrations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#insert"><code class="docutils literal notranslate"><span class="pre">insert</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#commit-and-rollback"><code class="docutils literal notranslate"><span class="pre">commit</span></code> and <code class="docutils literal notranslate"><span class="pre">rollback</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#table-methods">Table methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#raw-sql">Raw SQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#drop"><code class="docutils literal notranslate"><span class="pre">drop</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#indexes">Indexes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#legacy-databases-and-keyed-tables">Legacy databases and keyed tables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#distributed-transaction">Distributed transaction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#more-on-uploads">More on uploads</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#query-set-rows"><code class="docutils literal notranslate"><span class="pre">Query</span></code>, <code class="docutils literal notranslate"><span class="pre">Set</span></code>, <code class="docutils literal notranslate"><span class="pre">Rows</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#select-command"><code class="docutils literal notranslate"><span class="pre">select</span></code> command</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#other-methods">Other methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#computed-fields">Computed fields</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#virtual-fields">Virtual fields</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#one-to-many-relation">One to many relation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#many-to-many">Many to many</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#tagging-records">Tagging records</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#list-type-and-contains"><code class="docutils literal notranslate"><span class="pre">list:&lt;type&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">contains</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#computed-and-virtual-fields">Computed and Virtual fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#joins-and-relations">Joins and Relations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#other-operators">Other operators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#generating-raw-sql">Generating raw sql</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#exporting-and-importing-data">Exporting and importing data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#caching-selects">Caching selects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#self-reference-and-aliases">Self-Reference and aliases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#advanced-features">Advanced features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#gotchas">Gotchas</a></li>
 </ul>
@@ -304,7 +290,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter-15.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-15.html#simple-conversion-examples">Simple conversion examples</a></li>
 </ul>
 </li>
 </ul>
@@ -371,7 +357,7 @@
      <label for="switch"></label>
      </span>
       
-      v: 1.20201211.1
+      v: 1.20210101.1"
 
       <span class="fa fa-caret-down"></span>
     </span>
