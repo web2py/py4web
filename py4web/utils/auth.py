@@ -1009,12 +1009,10 @@ class DefaultAuthForms:
         )
         user = None
         self.auth.next["login"] = request.query.get("next")
-        print(form.submitted)
         if form.submitted:
             user, error = self.auth.login(
                 form.vars.get("username"), form.vars.get("login_password")
             )
-            print(user, error)
             form.accepted = not error
             form.errors["username"] = error
             if user:
