@@ -12,7 +12,7 @@ docs:
 clean-assets:
 	rm -f py4web/assets/*
 	mkdir -p py4web/assets
-assets: docs clean-assets $(asset-zips)
+assets: clean-assets $(asset-zips)
 py4web/assets/py4web.app.%.zip: apps/%
 	cd $< && find . | \
 	egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt|mm)$$" | \
