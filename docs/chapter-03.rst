@@ -267,7 +267,7 @@ with the **–help** or **-h** argument.
 .. code-block:: none
 
    # py4web new_app -h
-   Usage: py4web.py new_app [OPTIONS] [APPS_FOLDER] APP_NAME
+   Usage: py4web.py new_app [OPTIONS] APPS_FOLDER APP_NAME
 
      Create a new app copying the scaffolding one
 
