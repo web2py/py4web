@@ -55,6 +55,15 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# How to format the current date, used as the replacement for |today|
+today_fmt = "%B %d, %Y"
+
+# The default language to highlight source code in.
+# The value should be a valid Pygments lexer name,
+# 'default' it is similar to 'python3'; it is mostly a superset of
+# 'python' but it fallbacks to 'none' without warning if failed.
+highlight_language = 'none'
+
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -148,7 +157,6 @@ rinoh_documents = [(
     project + ' Documentation',
     '© ' + copyright,
 )]
-today_fmt = "%B %d, %Y"
 
 
 # -- Options for EPUB output -------------------------------------------------
