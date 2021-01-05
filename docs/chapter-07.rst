@@ -18,10 +18,10 @@ you can use it in any Python context.
 
 A little taste of pyDAL features:
 
- * Transactions
- * Aggregates
- * Inner & Outer Joins
- * Nested Selects
+- Transactions
+- Aggregates
+- Inner & Outer Joins
+- Nested Selects
 
 py4web model
 ~~~~~~~~~~~~
@@ -36,7 +36,6 @@ that depends on the content of the request object, else the code is not thread s
 The only variables that can be changed at will are the following field attributes:
 readable, writable, requires, update, and default.
 All the others are for practical purposes to be considered global and non thread safe.
-
 
 Supported databases
 ~~~~~~~~~~~~~~~~~~~
@@ -284,11 +283,12 @@ specific types of supported back-end databases (in all cases, we assume
 the database is running from localhost on its default port and is named
 “test”):
 
-====================  ===================================================================
+====================  =======================================================
 Database              Connection string
-====================  ===================================================================
+====================  =======================================================
 **SQLite**            ``sqlite://storage.sqlite``
-**MySQL**             ``mysql://username:password@localhost/test?set_encoding=utf8mb4``
+**MySQL**             ``mysql://username:password@localhost/test?set_encoding
+                      =utf8mb4``
 **PostgreSQL**        ``postgres://username:password@localhost/test``
 **MSSQL (legacy)**    ``mssql://username:password@localhost/test``
 **MSSQL (>=2005)**    ``mssql3://username:password@localhost/test``
@@ -307,25 +307,25 @@ Database              Connection string
 **Google/SQL**        ``google:sql://project:instance/database``
 **Google/NoSQL**      ``google:datastore``
 **Google/NoSQL/NDB**  ``google:datastore+ndb``
-====================  ===================================================================
+====================  =======================================================
 
- * in SQLite the database consists of a single file. If it does
-   not exist, it is created. This file is locked every time it is accessed.
- * in the case of MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Ingres
-   and Informix the database “test” must be created outside py4web. Once
-   the connection is established, py4web will create, alter, and drop
-   tables appropriately.
- * in the MySQL connection string, the ``?set_encoding=utf8mb4`` at the end
-   sets the encoding to UTF-8 and avoids an
-   ``Invalid utf8 character string:`` error on Unicode characters that
-   consist of four bytes, as by default, MySQL can only handle Unicode
-   characters that consist of one to three bytes.
- * in the Google/NoSQL case the ``+ndb`` option turns on NDB. NDB uses a
-   Memcache buffer to read data that is accessed often. This is completely
-   automatic and done at the datastore level, not at the py4web level.
- * it is also possible to set the connection string to ``None``. In this
-   case DAL will not connect to any back-end database, but the API can
-   still be accessed for testing.
+- in SQLite the database consists of a single file. If it does
+  not exist, it is created. This file is locked every time it is accessed.
+- in the case of MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Ingres
+  and Informix the database “test” must be created outside py4web. Once
+  the connection is established, py4web will create, alter, and drop
+  tables appropriately.
+- in the MySQL connection string, the ``?set_encoding=utf8mb4`` at the end
+  sets the encoding to UTF-8 and avoids an
+  ``Invalid utf8 character string:`` error on Unicode characters that
+  consist of four bytes, as by default, MySQL can only handle Unicode
+  characters that consist of one to three bytes.
+- in the Google/NoSQL case the ``+ndb`` option turns on NDB. NDB uses a
+  Memcache buffer to read data that is accessed often. This is completely
+  automatic and done at the datastore level, not at the py4web level.
+- it is also possible to set the connection string to ``None``. In this
+  case DAL will not connect to any back-end database, but the API can
+  still be accessed for testing.
 
 Some times you may also need to generate SQL as if you had a connection but
 without actually connecting to the database. This can be done with
@@ -336,7 +336,7 @@ without actually connecting to the database. This can be done with
 
 In this case you will be able to call ``_select``, ``_insert``,
 ``_update``, and ``_delete`` to generate SQL but not call ``select``,
-``insert``, ``update``, and ``delete``; see `Generating raw sql`_
+``insert``, ``update``, and ``delete``; see `Generating raw SQL`_
 for details. In most of the cases you can use
 ``do_connect=False`` even without having the required database drivers.
 
@@ -719,11 +719,11 @@ or even more complex ones using a function:
 
 The format attribute will be used for two purposes:
 
- * To represent referenced records in select/option drop-downs.
- * To set the ``db.othertable.otherfield.represent`` attribute for all fields
-   referencing this table. This means that the ``Form`` constructor will
-   not show references by id but will use the preferred format
-   representation instead.
+- To represent referenced records in select/option drop-downs.
+- To set the ``db.othertable.otherfield.represent`` attribute for all fields
+  referencing this table. This means that the ``Form`` constructor will
+  not show references by id but will use the preferred format
+  representation instead.
 
 ``rname``: Real name
 ~~~~~~~~~~~~~~~~~~~~
@@ -833,8 +833,8 @@ py4web can connect to legacy databases under some conditions.
 
 The easiest way is when these conditions are met:
 
- * Each table must have a unique auto-increment integer field called “id”.
- * Records must be referenced exclusively using the “id” field.
+- Each table must have a unique auto-increment integer field called “id”.
+- Records must be referenced exclusively using the “id” field.
 
 When accessing an existing table, i.e., a table not created by py4web in
 the current application, always set ``migrate=False``.
@@ -1813,7 +1813,7 @@ Here is an example of how to:
 Other database dialects have very similar syntaxes but may not support
 the optional “IF NOT EXISTS” directive.
 
-Generating raw sql
+Generating raw SQL
 ~~~~~~~~~~~~~~~~~~
 
 Sometimes you need to generate the SQL but not execute it. This is easy
@@ -2813,9 +2813,9 @@ Notice that the computed value is stored in the db and it is not
 computed on retrieval, as in the case of virtual fields, described next.
 Two typical applications of computed fields are:
 
- * in wiki applications, to store the processed input wiki text as HTML, to
-   avoid re-processing on every request
- * for searching, to compute normalized values for a field, to be used for searching.
+- in wiki applications, to store the processed input wiki text as HTML, to
+  avoid re-processing on every request
+- for searching, to compute normalized values for a field, to be used for searching.
 
 Computed fields are evaluated in the order in which they are defined in
 the table definition. A computed field can refer to previously defined
@@ -3983,7 +3983,7 @@ it to XML/HTML:
    </table>
 
 If you need to serialize the Rows in any other XML format with custom
-tags, you can easily do that using the universal :ref:TAG helper
+tags, you can easily do that using the universal :ref:`TAG` helper
 that we'll see later and the Python syntax
 ``*<iterable>`` allowed in function calls:
 
