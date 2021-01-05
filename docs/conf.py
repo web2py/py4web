@@ -58,7 +58,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # How to format the current date, used as the replacement for |today|
 today_fmt = "%B %d, %Y"
 
-# The default language to highlight source code in.
+# The default language to highlight source code in literal blocks.
 # The value should be a valid Pygments lexer name,
 # 'default' it is similar to 'python3'; it is mostly a superset of
 # 'python' but it fallbacks to 'none' without warning if failed.
