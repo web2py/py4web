@@ -1039,6 +1039,12 @@ class Reloader:
                     # forget the module
                     del Reloader.MODULES[app_name]
                     clear_modules()
+                # create missing standard folders
+                standard_folders = ["databases", "static", "translations", "templates"]
+                for folder in standard_folders:
+                   folder_path = os.path.join(path, folder)
+                   if not os.path.exists(folder_path):
+                      os.mkdir(folder_path)                
                 module = importlib.machinery.SourceFileLoader(
                     module_name, init
                 ).load_module()
