@@ -494,7 +494,7 @@ class Session(Fixture):
         ) or request.query.get("_session_token")
         if not raw_token and request.method in ("POST", "PUT", "DELETE"):
             raw_token = (request.forms and request.forms.get("_session_token")) or (
-                request.json and request.json and request.json.get("_session_token")
+                request.json and request.json.get("_session_token")
             )
         if raw_token:
             token_data = to_bytes(raw_token)
