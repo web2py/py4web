@@ -18,7 +18,7 @@ listening on the TCP port 8000 on your local PC, using the HTTP protocol).
 You can connect to this main page only from your local pc, using a web
 browser like Firefox or Google Chrome:
 
-.. FIXME: this image fits into the page, the others not, why this?
+.. FIXME: why do this image fit into the pdf page while the others do not?
 
 .. image:: images/main_page.png
 
@@ -48,7 +48,7 @@ CTRL-C, setup a new one and run the py4web again.
 After inserting the right Dashboard's password, it will be displayed with
 all the tabs compressed.
 
-.. FIXME: this image fits into the page, the others not, why this?
+.. FIXME: why do this image fit into the pdf page while the others do not?
 
 .. image:: images/dashboard.png
 
