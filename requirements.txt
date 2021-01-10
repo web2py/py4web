@@ -16,3 +16,4 @@ watchgod >= 0.6
 ### optional, used for documentation only ###
 # sphinx
 # sphinx_rtd_theme
+# rinohtype

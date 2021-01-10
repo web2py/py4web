@@ -67,12 +67,17 @@ Even for running simple examples and experimenting a little, we strongly suggest
 Nowadays there are two free and multiplatform main choices: Microsoft Visual Studio Code aka `VScode <https://code.visualstudio.com/>`__ and
 JetBrains `PyCharm <https://www.jetbrains.com/pycharm/>`__.
 
-When you'll start to deal with more complex programs and need reliability, we also suggest to:  
+When you'll start to deal with more complex programs and need reliability,
+we also suggest to:
 
+- use virtual environments (also called **virtualenv**, see
+  `here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an
+  introduction). In a complex workplace this will avoid to be messed up
+  with other python programs and modules
+- use a Concurrent Versions System (**CVS**). Keeping track of your
+  program's changes is highly valuable - along with backups it will save
+  your computing life! Git and GitHub are the current standards.
 
-   * use virtual environments (also called **virtualenv**, see `here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an introduction). In a complex workplace this will avoid to be messed up with other python programs and modules
-   * use a Concurrent Versions System (**CVS**). Keeping track of your program's changes is highly valuable - along with backups it will save your computing life! Git and GitHub are the current standards.
-   
 
 Debugging py4web with VScode
 ----------------------------
