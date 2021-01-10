@@ -1421,7 +1421,7 @@ def shell(apps_folder):
 
 
 @cli.command()
-@click.argument("apps_folder")
+@click.argument("apps_folder", type=click.Path(exists=True))
 @click.argument("func")
 @click.option(
     "--args",
@@ -1464,7 +1464,7 @@ def set_password(password, password_file):
 
 
 @cli.command(name="new_app")
-@click.argument("apps_folder", default="apps")
+@click.argument("apps_folder", type=click.Path(exists=True))
 @click.argument("app_name")
 @click.option(
     "-s",
