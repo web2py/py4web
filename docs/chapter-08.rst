@@ -3,12 +3,12 @@ The RESTAPI
 ===========
 
 Since version 19.5.10 pyDAL includes a restful API called RestAPI. It is
-inspired by GraphSQL but it’s not quite the same because it is less
+inspired by GraphQL but it’s not quite the same because it is less
 powerful but, in the spirit of py4web, more practical and easier to use.
-Like GraphSQL RestAPI allows a client to query for information using the
+Like GraphQL RestAPI allows a client to query for information using the
 GET method and allows to specify some details about the format of the
 response (which references to follow, and how to denormalize the data).
-Unlike GraphSQL it allows the server to specify a policy and restrict
+Unlike GraphQL it allows the server to specify a policy and restrict
 which queries are allowed and which one are not. They can be evaluated
 dynamically per request based on the user and the state of the server.
 As the name implied RestAPI allows all stardard methods GET, POST, PUT,
