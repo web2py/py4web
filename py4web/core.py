@@ -611,7 +611,7 @@ def URL(
     else:
         prefix = script_name + (
             "/%s/" % request.app_name
-            if (request.app_name != "_default" and use_appname)
+            if (use_appname and request.app_name != "_default")
             else "/"
         )
     broken_parts = []
