@@ -270,7 +270,7 @@ if MODE in ("demo", "readonly", "full"):
         appname = sanitize(appname)
         app_dir = os.path.join(FOLDER, appname)
         store = io.BytesIO()
-        zip = zipfile.ZipFile(store, mode="w")
+        zip = zipfile.ZipFile(store, mode="w", compression=zipfile.ZIP_DEFLATED)
         for root, dirs, files in os.walk(app_dir, topdown=False):
             if not root.startswith("."):
                 for name in files:
