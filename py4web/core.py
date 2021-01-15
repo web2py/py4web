@@ -601,7 +601,7 @@ def URL(
     """
     if use_appname is None:
         use_appname = request.headers.get("x-py4web-appname")
-        use_appname = True if use_appname is None else not use_appname
+        use_appname = True
     script_name = (
         request.environ.get("HTTP_X_SCRIPT_NAME", "")
         or request.environ.get("SCRIPT_NAME", "")
