@@ -601,6 +601,7 @@ def URL(
     """
     if use_appname is None:
         use_appname = request.headers.get("x-py4web-appname", "") == ""
+    app_name = getattr(request, 'app_name', None) if use_appname else None
     script_name = (
         request.environ.get("HTTP_X_SCRIPT_NAME", "")
         or request.environ.get("SCRIPT_NAME", "")
@@ -609,8 +610,8 @@ def URL(
         prefix = ""
     else:
         prefix = script_name + (
-            "/%s/" % request.app_name
-            if (use_appname and request.app_name != "_default")
+            "/%s/" % app_name
+            if (use_appname and app_name != "_default")
             else "/"
         )
     broken_parts = []
@@ -618,7 +619,7 @@ def URL(
         broken_parts += str(part).rstrip("/").split("/")
     if static_version != "" and broken_parts and broken_parts[0] == "static":
         if not static_version:  # try to retrieve from __init__.py
-            app_module = "apps.%s" % request.app_name if use_appname else "apps"
+            app_module = "apps.%s" % app_name if use_appname else "apps"
             static_version = getattr(
                 sys.modules[app_module], "__static_version__", None
             )
@@ -627,7 +628,7 @@ def URL(
 
     url = prefix + "/".join(map(urllib.parse.quote, broken_parts))
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
-    urlvars = {k: v for k, v in vars.items()} if vars else {}
+    urlvars = dict(vars) if vars else {}
     if signer:
         signer.sign_vars(url, urlvars)
     if urlvars:
