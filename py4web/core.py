@@ -605,13 +605,14 @@ def URL(
     if use_appname:
         # app_name is not set by py4web shell
         app_name = getattr(request, 'app_name', None)
+    has_appname = use_appname and app_name
     script_name = (
         request.environ.get("HTTP_X_SCRIPT_NAME", "")
         or request.environ.get("SCRIPT_NAME", "")
     ).rstrip("/")
     if parts and parts[0].startswith("/"):
         prefix = ""
-    elif use_appname and app_name and app_name != "_default":
+    elif has_appname and app_name != "_default":
         prefix = "%s/%s/" % (script_name, app_name)
     else:
         prefix = "%s/" % script_name
@@ -621,7 +622,7 @@ def URL(
     if static_version != "" and broken_parts and broken_parts[0] == "static":
         if not static_version:
             # try to retrieve from __init__.py
-            app_module = "apps.%s" % app_name if use_appname and app_name else "apps"
+            app_module = "apps.%s" % app_name if has_appname else "apps"
             static_version = getattr(
                 sys.modules[app_module], "__static_version__", None
             )
