@@ -442,7 +442,7 @@ class Form(object):
             if self.record:
                 self.vars = self._read_vars_from_record(table)
         else:
-            post_vars = request.forms
+            post_vars = request.POST
             self.vars = copy.deepcopy(request.forms)
             self.submitted = True
             process = False
