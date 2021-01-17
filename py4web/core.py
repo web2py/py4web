@@ -601,14 +601,14 @@ def URL(
     """
     if use_appname is None:
         # force use_appname on domain-unmapped apps
-        use_appname = not request.headers.get("x-py4web-appname")
+        use_appname = not request.environ.get("HTTP_X_PY4WEB_APPNAME")
     if use_appname:
         # app_name is not set by py4web shell
         app_name = getattr(request, 'app_name', None)
     has_appname = use_appname and app_name
     script_name = (
-        request.environ.get("HTTP_X_SCRIPT_NAME", "")
-        or request.environ.get("SCRIPT_NAME", "")
+        request.environ.get("SCRIPT_NAME", "")
+        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
     ).rstrip("/")
     if parts and parts[0].startswith("/"):
         prefix = ""
