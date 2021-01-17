@@ -80,6 +80,7 @@ __all__ = [
     "Translator",
     "URL",
     "check_compatible",
+    "required_folder",
     "wsgi",
 ]
 
@@ -126,6 +127,13 @@ def module2filename(module):
     )
     return filename
 
+def required_folder(*parts):
+    """joins the args and creates the folder if not exists"""
+    path = os.path.join(*parts)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    assert os.path.isdir(path), "%s is not a folder as required" % path
+    return path
 
 ########################################################################################
 # fix request.fullpath for the case of domain mapping to app
