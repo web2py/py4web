@@ -28,10 +28,17 @@ Q.get_query = function (source) {
 
 // a wrapper for fetch return a promise
 Q.ajax = function(method, url, data, headers) {
-    var options = {method: method,
-                   referrerPolicy: 'no-referrer', 
-                   headers: {'Content-type': 'application/json'}}
-    if (data) options.body = JSON.stringify(data);
+    var options = {
+        method: method,
+        referrerPolicy: 'no-referrer',
+    }
+    if (data){
+        if ( !(data instanceof FormData)){
+            options.headers = {'Content-type': 'application/json'};
+            data = JSON.stringify(data);
+        }
+        options.body = data;
+    }
     if (headers) for(var name in headers) options.headers[name] = headers[name];
     return new Promise(function(resolve, reject) {
             fetch(url, options).then(function(res){
@@ -42,7 +49,6 @@ Q.ajax = function(method, url, data, headers) {
                         }, reject);}).catch(reject);
     });
 }
-
 // Gets a cookie value
 Q.get_cookie = function (name) {
     var cookie = RegExp("" + name + "[^;]+").exec(document.cookie);
