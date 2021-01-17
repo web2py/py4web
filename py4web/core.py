@@ -601,33 +601,36 @@ def URL(
 ):
     """
     Examples:
-    URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name}/a/b?x=1#y
-    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name?}/a/b?x=1#y
+    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name?}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name?}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name?}/a/b?x=1
     URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
     """
     if use_appname is None:
-        use_appname = request.headers.get("x-py4web-appname")
-        use_appname = True if use_appname is None else not use_appname
+        # force use_appname on domain-unmapped apps
+        use_appname = not request.environ.get("HTTP_X_PY4WEB_APPNAME")
+    if use_appname:
+        # app_name is not set by py4web shell
+        app_name = getattr(request, 'app_name', None)
+    has_appname = use_appname and app_name
     script_name = (
-        request.environ.get("HTTP_X_SCRIPT_NAME", "")
-        or request.environ.get("SCRIPT_NAME", "")
+        request.environ.get("SCRIPT_NAME", "")
+        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
     ).rstrip("/")
     if parts and parts[0].startswith("/"):
         prefix = ""
+    elif has_appname and app_name != "_default":
+        prefix = "%s/%s/" % (script_name, app_name)
     else:
-        prefix = script_name + (
-            "/%s/" % request.app_name
-            if (request.app_name != "_default" and use_appname)
-            else "/"
-        )
+        prefix = "%s/" % script_name
     broken_parts = []
     for part in parts:
         broken_parts += str(part).rstrip("/").split("/")
     if static_version != "" and broken_parts and broken_parts[0] == "static":
-        if not static_version:  # try to retrieve from __init__.py
-            app_module = "apps.%s" % request.app_name if use_appname else "apps"
+        if not static_version:
+            # try to retrieve from __init__.py
+            app_module = "apps.%s" % app_name if has_appname else "apps"
             static_version = getattr(
                 sys.modules[app_module], "__static_version__", None
             )
@@ -636,7 +639,7 @@ def URL(
 
     url = prefix + "/".join(map(urllib.parse.quote, broken_parts))
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
-    urlvars = {k: v for k, v in vars.items()} if vars else {}
+    urlvars = dict(vars) if vars else {}
     if signer:
         signer.sign_vars(url, urlvars)
     if urlvars:
@@ -648,9 +651,9 @@ def URL(
     if not scheme is False:
         original_url = request.environ.get("HTTP_ORIGIN") or request.url
         orig_scheme, _, domain = original_url.split("/", 3)[:3]
-        scheme = (
-            orig_scheme if scheme is True else "" if scheme is None else scheme + ":"
-        )
+        if scheme is True: scheme = orig_scheme
+        elif scheme is None: scheme = ""
+        else: scheme += ":"
         url = "%s//%s%s" % (scheme, domain, url)
     return url
 
