@@ -127,6 +127,7 @@ def module2filename(module):
     )
     return filename
 
+
 def required_folder(*parts):
     """joins the args and creates the folder if not exists"""
     path = os.path.join(*parts)
@@ -135,17 +136,20 @@ def required_folder(*parts):
     assert os.path.isdir(path), "%s is not a folder as required" % path
     return path
 
+
 ########################################################################################
 # fix request.fullpath for the case of domain mapping to app
 # (request.url will be autofixed, since it is based on request.fullpath)
 #########################################################################################
 def monkey_patch_bottle():
     urljoin = urllib.parse.urljoin
+
     @property
     def fullpath(self):
-        appname = self.get_header('x-py4web-appname', '/')
-        return urljoin(self.script_name, self.path[len(appname):])
-    setattr(bottle.BaseRequest, 'fullpath', fullpath)
+        appname = self.get_header("x-py4web-appname", "/")
+        return urljoin(self.script_name, self.path[len(appname) :])
+
+    setattr(bottle.BaseRequest, "fullpath", fullpath)
 
 
 monkey_patch_bottle()
@@ -188,32 +192,37 @@ class Cache:
         self.head.next = self.tail
         self.tail.prev = self.head
         self.mapping = {}
+        self.lock = threading.Lock()
 
     def get(self, key, callback, expiration=3600, monitor=None):
         """If key not stored or key has expired and monitor == None or monitor() value has changed, returns value = callback()"""
         node, t0 = self.mapping.get(key), time.time()
-        if node:
-            value, t, node.next.prev, node.prev.next = (
-                node.value,
-                node.t,
-                node.prev,
-                node.next,
-            )
-        if not node:
-            self.free -= 1
+        with self.lock:
+            if node:
+                # if a node was found remove it from storage
+                value, t, node.next.prev, node.prev.next = (
+                    node.value,
+                    node.t,
+                    node.prev,
+                    node.next,
+                )
+            else:
+                self.free -= 1
         m = monitor and monitor()
         if node and node.t + expiration < t0:
             if m is None or node.m != m:
                 node = None
         if node is None:
             value, t = callback(), t0
-        new_node = Node(key, value, t, m, prev=self.head, next=self.head.next)
-        self.mapping[key] = self.head.next = new_node.next.prev = new_node
-        if self.free < 0:
-            last_node = self.tail.prev
-            self.tail.prev, last_node.prev.next = last_node.prev, self.tail
-            del self.mapping[last_node.key]
-            self.free += 1
+        # add the new node back into storage
+        with self.lock:
+            new_node = Node(key, value, t, m, prev=self.head, next=self.head.next)
+            self.mapping[key] = self.head.next = new_node.next.prev = new_node
+            if self.free < 0:
+                last_node = self.tail.prev
+                self.tail.prev, last_node.prev.next = last_node.prev, self.tail
+                del self.mapping[last_node.key]
+                self.free += 1
         return value
 
     def memoize(self, expiration=3600):
@@ -612,7 +621,7 @@ def URL(
         use_appname = not request.environ.get("HTTP_X_PY4WEB_APPNAME")
     if use_appname:
         # app_name is not set by py4web shell
-        app_name = getattr(request, 'app_name', None)
+        app_name = getattr(request, "app_name", None)
     has_appname = use_appname and app_name
     script_name = (
         request.environ.get("SCRIPT_NAME", "")
@@ -651,9 +660,12 @@ def URL(
     if not scheme is False:
         original_url = request.environ.get("HTTP_ORIGIN") or request.url
         orig_scheme, _, domain = original_url.split("/", 3)[:3]
-        if scheme is True: scheme = orig_scheme
-        elif scheme is None: scheme = ""
-        else: scheme += ":"
+        if scheme is True:
+            scheme = orig_scheme
+        elif scheme is None:
+            scheme = ""
+        else:
+            scheme += ":"
         url = "%s//%s%s" % (scheme, domain, url)
     return url
 
@@ -948,8 +960,9 @@ class ErrorStorage:
         else:
             orderby = ~db.py4web_error.timestamp
             groupby = db.py4web_error.path | db.py4web_error.error
-            query = db.py4web_error.timestamp > datetime.datetime.now() - datetime.timedelta(
-                days=7
+            query = (
+                db.py4web_error.timestamp
+                > datetime.datetime.now() - datetime.timedelta(days=7)
             )
             fields = [field for field in db.py4web_error if not field.type == "json"]
             fields.append(db.py4web_error.id.count())
@@ -1060,7 +1073,8 @@ class Reloader:
                 tb = traceback.format_exc()
                 print(tb)
                 click.secho(
-                    "\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb), fg="red",
+                    "\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb),
+                    fg="red",
                 )
                 Reloader.ERRORS[app_name] = tb
                 # clear all files/submodules if the loading fails
