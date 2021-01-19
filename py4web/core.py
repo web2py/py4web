@@ -1308,6 +1308,8 @@ def start_server(args):
 
     if args["watch"] != "off":
         watch(apps_folder, server_config, args["watch"])
+    #DEBUG
+    params["server"] = "wsgiref"
     bottle.run(**params)
 
 

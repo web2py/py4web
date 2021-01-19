@@ -5,7 +5,7 @@ import itertools
 import threading
 
 
-def thread_safe(*ts_names, safeguard = False):
+def thread_safe(*ts_names, safeguard = False, store_name = '__ts_store__'):
     '''
     if not ts_names:
         turns all `self.some = ...`  assignments in __init__
@@ -26,26 +26,24 @@ def thread_safe(*ts_names, safeguard = False):
             self.__class__ is patched:
                 self.__class__.a = property(...)  # inject thread safe property
                 del self.__dict__['a']   # remove instance attr
-            self.__init__ is undecorated:
-                self.__class__.__init__   = pure__init__
-
     '''
 
     def inner(init):
+        class_patched = False
         def patch(self, ts_attrs):
             if not ts_attrs:
                 return
             cls = self.__class__
-            store = threading.local()
-            fget = lambda nm: lambda s: getattr(store, nm)
-            fset = lambda nm: lambda s, v: setattr(store, nm, v)
-            fdel = lambda nm: lambda s: delattr(store, nm)
+            fget = lambda nm: lambda s: getattr(s.__dict__[store_name], nm)
+            fset = lambda nm: lambda s, v: setattr(s.__dict__[store_name], nm, v)
+            fdel = lambda nm: lambda s: delattr(s.__dict__[store_name], nm)
+            store = self.__dict__[store_name]
             for a in ts_attrs:
-                setattr(store, a, self.__dict__.get(a))
                 ts_prop = property(
                     fget(a), fset(a), fdel(a)
                 )
                 setattr(cls, a, ts_prop)
+                setattr(store, a, self.__dict__.get(a))
                 try:
                     del self.__dict__[a]
                 except KeyError:
@@ -53,20 +51,29 @@ def thread_safe(*ts_names, safeguard = False):
 
         @functools.wraps(init)
         def patcher(self, *args, **kw):
-            #print(f'patch : {str(self)}')
+            nonlocal class_patched
+            # maybe patched
+            if store_name in self.__dict__:
+                return init(self, *args, **kw)
+            else:
+                self.__dict__[store_name] = threading.local()
+
+            if class_patched:
+                return init(self, *args, **kw)
+
             attr_keys = list(self.__dict__.keys())
             ret = init(self, *args, **kw)
             if not ts_names:
                 new_attr_keys = self.__dict__.keys()
                 _ts_names = set(new_attr_keys) - set(attr_keys)
-            else:  _ts_names = ts_names
+            else:
+                _ts_names = ts_names
             patch(self, _ts_names)
-            setattr(self.__class__, '__init__', init)
-            __setattr__ = self.__class__.__setattr__
-            __getattrubute__ = getattr(self.__class__,'__getattribute__', object.__getattribute__)
-            __setattr__ = getattr(self.__class__,'__setattr__', object.__setattr__)
-
+            class_patched = True
             if safeguard:
+                __setattr__ = self.__class__.__setattr__
+                __getattrubute__ = getattr(self.__class__,'__getattribute__', object.__getattribute__)
+                __setattr__ = getattr(self.__class__,'__setattr__', object.__setattr__)
                 is_safe = set()
                 def __safe_getattribue__(s, k):
                     ret = __getattrubute__(s, k)

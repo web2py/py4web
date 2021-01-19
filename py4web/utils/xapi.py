@@ -67,12 +67,12 @@ class MyAPI:
 
 # api context - adapter between framework and api:
 # context-object must have:
-#   .get(ctx_property:str) -> callable -> ctx_property:dict
+#   .get(ctx_property:str) ->  ctx_property:dict
 #   .__call__(**path_params)
 #   .__contains__(ctx_property:str)
 # ctx_properties should match filters/validators, i.e.:
 #   if we have `P = api.make_filter('path')`
-#   then `ctx.get('path')` must return callable that returns ctx_property
+#   then `ctx.get('path')` must return ctx_property
 
 class API_CTX:
     def __init__(self):
@@ -85,7 +85,7 @@ class API_CTX:
         self.ctx['path'] = lambda: args
 
     def get(self, k):
-        return self.ctx.get(k)
+        return self.ctx.get(k)()
 
     def __contains__(self, p):
         return p in self.ctx
@@ -175,8 +175,9 @@ class Param:
             if isinstance(f, set):
                 self._filters[k] = list(f)[0]()
 
-    def __init__(self, ctx_prop:str, **filters):
+    def __init__(self, ctx_prop:str, init_by = None, **filters):
         self._ctx_prop = ctx_prop
+        self._init_by = init_by
         self._filters = dict(**self._filters)
         self._filters.update(filters)
         self._init_filters()
@@ -295,9 +296,29 @@ class Validator:
         '''
         ret = dict()
         for ftype, obj in self.filters.items():
-            ret[ftype] = self.apply(ftype, ctx.get(ftype)() or {})
+            ret[ftype] = self.apply(ftype, ctx.get(ftype) or {})
         return ret
 
+
+def post_proc(cb, shaper = None, on_success = None, on_error = None, errors = None):
+    @functools.wraps(cb)
+    def inner(*args, **kw):
+        has_err = False
+        ret = None
+        try:
+            ret = cb(*args, **kw)
+        except Exception as err:
+            has_err = True
+            if on_error and (not errors or isinstance(err, errors)):
+                on_error(err)
+            else:
+                raise
+        if not has_err:
+            if on_success: on_success(200)
+            if shaper:
+                ret = shaper(ret)
+        return ret
+    return inner
 
 def make_decorator(ctx):
     def decor(src = None, fun = None):
@@ -317,9 +338,14 @@ def make_decorator(ctx):
 
         if fun:
             validator = Validator(src or fun)
-            return inner
+            return post_proc(
+                inner,
+                shaper= lambda r: ctx.on('transform', r),
+                on_success= lambda *a, **kw : ctx.on('on_success', *a, **kw),
+                on_error= lambda *a, **kw: ctx.on('on_error', *a, **kw),
+            )
         else:
-            return lambda f: decor(scr = src, fun = f)
+            return lambda f: decor(src = src, fun = f)
     return decor
 
 
@@ -490,24 +516,7 @@ class API:
         if (shaper := self.handlers.get('shaper')):
             shaper = bound(shaper['cb'])
 
-        @functools.wraps(cb)
-        def postproc(*args, **kw):
-            has_err = False
-            ret = None
-            try:
-                ret = cb(*args, **kw)
-            except Exception as err:
-                has_err = True
-                if errcb and isinstance(err, errors):
-                    errcb(err)
-                else:
-                    raise
-            if not has_err:
-                if success: success()
-                if shaper:
-                    ret = shaper(ret)
-            return ret
-        return postproc
+        return post_proc(cb, shaper, success, errcb, errors)
 
 
     @classmethod
