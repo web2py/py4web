@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>O Dashboard &mdash; Documentação py4web 1.20210101.1&#34;
+  <title>O Dashboard &mdash; Documentação py4web 1.20210119.1&#34;
 </title>
   
 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                1.20210101.1"
+                1.20210119.1"
 
               </div>
             
@@ -183,38 +183,40 @@
 <p>O Dashboard é o padrão IDE baseado na web; você certamente irá usá-lo extensivamente para gerir as aplicações e verificar bancos de dados. Olhando para a sua interface é uma boa maneira de começar a explorar py4web e seus componentes.</p>
 <div class="section" id="the-main-web-page">
 <h2>A página Web principal<a class="headerlink" href="#the-main-web-page" title="Link permanente para este título">¶</a></h2>
-<p>When you run the standard py4web program, it starts a web server with a main web page
-listening on <a class="reference external" href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> (which means that it is listening
-on the TCP port 8000 on your local PC, using the HTTP protocol).</p>
+<p>When you run the standard py4web program, it starts a web server with a
+main web page listening on <a class="reference external" href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> (which means that it is
+listening on the TCP port 8000 on your local PC, using the HTTP protocol).</p>
 <p>Você pode conectar-se a esta página apenas a partir de seu PC local, usando um navegador web como o Firefox ou o Google Chrome:</p>
 <img alt="_images/main_page.png" src="_images/main_page.png" />
 <p>Os botões são:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Dashboard (<a class="reference external" href="http://127.0.0.1:8000/_dashboard">http://127.0.0.1:8000/_dashboard</a>), que iremos descrever neste capítulo</p></li>
-<li><p>Documentação (<a class="reference external" href="http://127.0.0.1:8000/_documentation?version=1.20201112.1">http://127.0.0.1:8000/_documentation?version=1.20201112.1</a>), para navegar na cópia local deste Manual</p></li>
-<li><p>Fonte (<a class="reference external" href="https://github.com/web2py/py4web">https://github.com/web2py/py4web</a>), apontando para o repositório GitHub</p></li>
-<li><p>Discutir (<a class="reference external" href="https://groups.google.com/forum/#!forum/py4web">https://groups.google.com/forum/#!forum/py4web</a>), apontando para o grupo mail do Google</p></li>
+<ul class="simple">
+<li><p>Dashboard (<a class="reference external" href="http://127.0.0.1:8000/_dashboard">http://127.0.0.1:8000/_dashboard</a>), which we’ll describe
+in this chapter.</p></li>
+<li><p>Documentation (<a class="reference external" href="http://127.0.0.1:8000/_documentation?version=1.20201112.1">http://127.0.0.1:8000/_documentation?version=1.20201112.1</a>),
+for browsing the local copy of this Manual.</p></li>
+<li><p>Source (<a class="reference external" href="https://github.com/web2py/py4web">https://github.com/web2py/py4web</a>), pointing to the
+GitHub repository.</p></li>
+<li><p>Discuss (<a class="reference external" href="https://groups.google.com/forum/#!forum/py4web">https://groups.google.com/forum/#!forum/py4web</a>), pointing
+to the Google mail group.</p></li>
 </ul>
-</div></blockquote>
 </div>
 <div class="section" id="login-into-the-dashboard">
 <h2>Sessão no Dashboard<a class="headerlink" href="#login-into-the-dashboard" title="Link permanente para este título">¶</a></h2>
 <p>Pressionando o botão do painel irá transmitir-lhe para o login Dashboard. Aqui você deve inserir a senha que você já setup (veja: ref: <cite>option</cite> comando set_password). Se você não se lembre da senha, você tem que parar o programa com CTRL-C, configurar um novo e execute o py4web novamente.</p>
-<p><a class="reference internal" href="_images/dashboard_login.png"><img alt="image1" src="_images/dashboard_login.png" style="width: 800px; height: 558px;" /></a></p>
+<img alt="_images/dashboard_login.png" src="_images/dashboard_login.png" />
 <p>Depois de inserir a senha do painel direito, será exibido com todas as abas comprimido.</p>
 <img alt="_images/dashboard.png" src="_images/dashboard.png" />
 <p>Clique no título de um guia para expandir. As guias são dependentes do contexto. Por exemplo, aba aberta “Instalado Aplicativos” e clique em um aplicativo instalado para selecioná-lo.</p>
 <p>Isto irá criar novas guias “Rotas”, “Arquivos” e “Modelo” para o aplicativo selecionado.</p>
-<p><a class="reference internal" href="_images/dashboard_main.png"><img alt="image2" src="_images/dashboard_main.png" style="width: 800px; height: 558px;" /></a></p>
+<img alt="_images/dashboard_main.png" src="_images/dashboard_main.png" />
 <p>A aba “Arquivos” permite que você navegue a pasta que contém o aplicativo selecionado e editar qualquer arquivo que inclui o aplicativo. Se você editar um arquivo que você deve clicar em “Recarregar Apps” sob a guia “Aplicativos instalados” para que a alteração tenha efeito (exceto se você usar * relógio * com o: ref: <cite>comando de execução option</cite>). Se um aplicativo não for carregado, o botão correspondente é exibido em vermelho. Clique na imagem para ver o erro correspondente.</p>
-<p><a class="reference internal" href="_images/dashboard_edit.png"><img alt="image3" src="_images/dashboard_edit.png" style="width: 800px; height: 558px;" /></a></p>
+<img alt="_images/dashboard_edit.png" src="_images/dashboard_edit.png" />
 <p>O painel expõe o db de todas as aplicações que utilizam RESTAPI pydal. Ele também fornece uma interface web para realizar operações de busca e CRUD.</p>
-<p><a class="reference internal" href="_images/dashboard_restapi.png"><img alt="image4" src="_images/dashboard_restapi.png" style="width: 800px; height: 558px;" /></a></p>
+<img alt="_images/dashboard_restapi.png" src="_images/dashboard_restapi.png" />
 <p>Se um usuário visita um aplicativo e desencadeia um erro, o usuário é emitido um bilhete.</p>
-<p><a class="reference internal" href="_images/dashboard_error.png"><img alt="image5" src="_images/dashboard_error.png" style="width: 800px; height: 558px;" /></a></p>
+<img alt="_images/dashboard_error.png" src="_images/dashboard_error.png" />
 <p>O bilhete é registrado no banco de dados py4web. O painel exibe as edições recentes mais comuns e permite pesquisar bilhetes.</p>
-<p><a class="reference internal" href="_images/dashboard_ticket.png"><img alt="image6" src="_images/dashboard_ticket.png" style="width: 800px; height: 558px;" /></a></p>
+<img alt="_images/dashboard_ticket.png" src="_images/dashboard_ticket.png" />
 </div>
 </div>
 
@@ -272,7 +274,7 @@ on the TCP port 8000 on your local PC, using the HTTP protocol).</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210101.1"
+      v: 1.20210119.1"
 
       <span class="fa fa-caret-down"></span>
     </span>

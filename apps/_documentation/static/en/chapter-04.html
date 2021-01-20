@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>The Dashboard &mdash; py4web 1.20210101.1&#34;
+  <title>The Dashboard &mdash; py4web 1.20210119.1&#34;
  documentation</title>
   
 
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.20210101.1"
+                1.20210119.1"
 
               </div>
             
@@ -179,56 +179,64 @@
             
   <div class="section" id="the-dashboard">
 <h1>The Dashboard<a class="headerlink" href="#the-dashboard" title="Permalink to this headline">¶</a></h1>
-<p>The Dashboard is the standard web based IDE; you will surely use it extensively to manage the applications and
-check databases. Looking at its interface is a good way to start exploring py4web and its components.</p>
+<p>The Dashboard is the standard web based IDE; you will surely use it
+extensively to manage the applications and check databases.
+Looking at its interface is a good way to start exploring py4web and
+its components.</p>
 <div class="section" id="the-main-web-page">
 <h2>The main Web page<a class="headerlink" href="#the-main-web-page" title="Permalink to this headline">¶</a></h2>
-<p>When you run the standard py4web program, it starts a web server with a main web page
-listening on <a class="reference external" href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> (which means that it is listening
-on the TCP port 8000 on your local PC, using the HTTP protocol).</p>
-<p>You can connect to this main page only from your local pc, using a web browser
-like Firefox or Google Chrome:</p>
+<p>When you run the standard py4web program, it starts a web server with a
+main web page listening on <a class="reference external" href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> (which means that it is
+listening on the TCP port 8000 on your local PC, using the HTTP protocol).</p>
+<p>You can connect to this main page only from your local pc, using a web
+browser like Firefox or Google Chrome:</p>
 <img alt="_images/main_page.png" src="_images/main_page.png" />
 <p>The buttons are:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Dashboard (<a class="reference external" href="http://127.0.0.1:8000/_dashboard">http://127.0.0.1:8000/_dashboard</a>), which we’ll describe in this chapter</p></li>
-<li><p>Documentation (<a class="reference external" href="http://127.0.0.1:8000/_documentation?version=1.20201112.1">http://127.0.0.1:8000/_documentation?version=1.20201112.1</a>), for browsing the local copy of this Manual</p></li>
-<li><p>Source (<a class="reference external" href="https://github.com/web2py/py4web">https://github.com/web2py/py4web</a>), pointing to the GitHub repository</p></li>
-<li><p>Discuss (<a class="reference external" href="https://groups.google.com/forum/#!forum/py4web">https://groups.google.com/forum/#!forum/py4web</a>), pointing to the Google mail group</p></li>
+<ul class="simple">
+<li><p>Dashboard (<a class="reference external" href="http://127.0.0.1:8000/_dashboard">http://127.0.0.1:8000/_dashboard</a>), which we’ll describe
+in this chapter.</p></li>
+<li><p>Documentation (<a class="reference external" href="http://127.0.0.1:8000/_documentation?version=1.20201112.1">http://127.0.0.1:8000/_documentation?version=1.20201112.1</a>),
+for browsing the local copy of this Manual.</p></li>
+<li><p>Source (<a class="reference external" href="https://github.com/web2py/py4web">https://github.com/web2py/py4web</a>), pointing to the
+GitHub repository.</p></li>
+<li><p>Discuss (<a class="reference external" href="https://groups.google.com/forum/#!forum/py4web">https://groups.google.com/forum/#!forum/py4web</a>), pointing
+to the Google mail group.</p></li>
 </ul>
-</div></blockquote>
 </div>
 <div class="section" id="login-into-the-dashboard">
 <h2>Login into the Dashboard<a class="headerlink" href="#login-into-the-dashboard" title="Permalink to this headline">¶</a></h2>
 <p>Pressing the Dashboard button will forward you to the Dashboard login.
-Here you must insert the password that you’ve already setup (see <a class="reference internal" href="chapter-03.html#set-password-command-option"><span class="std std-ref">set_password command option</span></a>).
-If you don’t remember the password, you have to stop the program with CTRL-C, setup a new one and run the py4web again.</p>
-<p><a class="reference internal" href="_images/dashboard_login.png"><img alt="image1" src="_images/dashboard_login.png" style="width: 800px; height: 558px;" /></a></p>
-<p>After inserting the right Dashboard’s password, it will be displayed with all the tabs compressed.</p>
+Here you must insert the password that you’ve already setup (see
+<a class="reference internal" href="chapter-03.html#set-password-command-option"><span class="std std-ref">set_password command option</span></a>).
+If you don’t remember the password, you have to stop the program with
+CTRL-C, setup a new one and run the py4web again.</p>
+<img alt="_images/dashboard_login.png" src="_images/dashboard_login.png" />
+<p>After inserting the right Dashboard’s password, it will be displayed with
+all the tabs compressed.</p>
 <img alt="_images/dashboard.png" src="_images/dashboard.png" />
 <p>Click on a tab title to expand. Tabs are context dependent. For example,
 open tab “Installed Applications” and click on an installed application
 to select it.</p>
 <p>This will create new tabs “Routes”, “Files”, and “Model”
 for the selected app.</p>
-<p><a class="reference internal" href="_images/dashboard_main.png"><img alt="image2" src="_images/dashboard_main.png" style="width: 800px; height: 558px;" /></a></p>
+<img alt="_images/dashboard_main.png" src="_images/dashboard_main.png" />
 <p>The “Files” tab allows you to browse the folder that contains the
 selected app and edit any file that comprises the app. If you edit a
 file you must click on “Reload Apps” under the “Installed Applications”
-tab for the change to take effect (except if you use <em>watch</em> with the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>).
-If an app fails to load, its corresponding button is displayed in red. Click on it to see the
-corresponding error.</p>
-<p><a class="reference internal" href="_images/dashboard_edit.png"><img alt="image3" src="_images/dashboard_edit.png" style="width: 800px; height: 558px;" /></a></p>
+tab for the change to take effect (except if you use <em>watch</em> with the
+<a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>).
+If an app fails to load, its corresponding button is displayed in red.
+Click on it to see the corresponding error.</p>
+<img alt="_images/dashboard_edit.png" src="_images/dashboard_edit.png" />
 <p>The Dashboard exposes the db of all the apps using pydal RESTAPI. It
 also provides a web interface to perform search and CRUD operations.</p>
-<p><a class="reference internal" href="_images/dashboard_restapi.png"><img alt="image4" src="_images/dashboard_restapi.png" style="width: 800px; height: 558px;" /></a></p>
+<img alt="_images/dashboard_restapi.png" src="_images/dashboard_restapi.png" />
 <p>If a user visits an app and triggers a bug, the user is issued a
 ticket.</p>
-<p><a class="reference internal" href="_images/dashboard_error.png"><img alt="image5" src="_images/dashboard_error.png" style="width: 800px; height: 558px;" /></a></p>
+<img alt="_images/dashboard_error.png" src="_images/dashboard_error.png" />
 <p>The ticket is logged in py4web database. The Dashboard displays the most
 common recent issues and allows searching tickets.</p>
-<p><a class="reference internal" href="_images/dashboard_ticket.png"><img alt="image6" src="_images/dashboard_ticket.png" style="width: 800px; height: 558px;" /></a></p>
+<img alt="_images/dashboard_ticket.png" src="_images/dashboard_ticket.png" />
 </div>
 </div>
 
@@ -286,7 +294,7 @@ common recent issues and allows searching tickets.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210101.1"
+      v: 1.20210119.1"
 
       <span class="fa fa-caret-down"></span>
     </span>

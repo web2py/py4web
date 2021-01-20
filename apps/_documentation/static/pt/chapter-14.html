@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Rede &mdash; Documentação py4web 1.20210101.1&#34;
+  <title>Rede &mdash; Documentação py4web 1.20210119.1&#34;
 </title>
   
 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                1.20210101.1"
+                1.20210119.1"
 
               </div>
             
@@ -224,8 +224,8 @@
 </pre></div>
 </div>
 <p>grid.html</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">extend</span> <span class="s1">&#39;layout.html&#39;</span><span class="p">]]</span>
-<span class="p">[[</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">render</span><span class="p">()]]</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+[[=grid.render()]]
 </pre></div>
 </div>
 </div>
@@ -306,28 +306,28 @@
 <h2>Usando templates<a class="headerlink" href="#using-templates" title="Link permanente para este título">¶</a></h2>
 <p>Use o seguinte para tornar a sua grid ou formas CRUD em seus templates.</p>
 <p>Mostrar a grid ou um formulário CRUD</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">render</span><span class="p">()]]</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=grid.render()]]
 </pre></div>
 </div>
 <p>Para permitir a personalização de layout do formulário CRUD (como com web2py) você pode usar o seguinte</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">form</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">render</span><span class="p">()</span> <span class="p">]]</span>
-<span class="p">[[</span><span class="n">form</span><span class="o">.</span><span class="n">custom</span><span class="p">[</span><span class="s2">&quot;begin&quot;</span><span class="p">]</span> <span class="p">]]</span>
-<span class="o">...</span>
-<span class="p">[[</span><span class="n">form</span><span class="o">.</span><span class="n">custom</span><span class="p">[</span><span class="s2">&quot;submit&quot;</span><span class="p">]</span>
-<span class="p">[[</span><span class="n">form</span><span class="o">.</span><span class="n">custom</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[form = grid.render() ]]
+[[form.custom[&quot;begin&quot;] ]]
+...
+[[form.custom[&quot;submit&quot;]
+[[form.custom[&quot;end&quot;]
 </pre></div>
 </div>
 <p>Ao manusear formulário personalizado layouts que você precisa saber se você está exibindo a grid ou um formulário. Use o seguinte para decidir</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="k">if</span> <span class="s1">&#39;action&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">url_args</span> <span class="ow">and</span> <span class="n">request</span><span class="o">.</span><span class="n">url_args</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;details&#39;</span><span class="p">,</span> <span class="s1">&#39;edit&#39;</span><span class="p">]:]]</span>
-    <span class="c1">#  Display the custom form</span>
-    <span class="p">[[</span><span class="n">form</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">render</span><span class="p">()</span> <span class="p">]]</span>
-    <span class="p">[[</span><span class="n">form</span><span class="o">.</span><span class="n">custom</span><span class="p">[</span><span class="s2">&quot;begin&quot;</span><span class="p">]</span> <span class="p">]]</span>
-    <span class="o">...</span>
-    <span class="p">[[</span><span class="n">form</span><span class="o">.</span><span class="n">custom</span><span class="p">[</span><span class="s2">&quot;submit&quot;</span><span class="p">]</span>
-    <span class="p">[[</span><span class="n">form</span><span class="o">.</span><span class="n">custom</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]</span>
-<span class="p">[[</span><span class="k">else</span><span class="p">:]]</span>
-    <span class="p">[[</span><span class="n">grid</span><span class="o">.</span><span class="n">render</span><span class="p">()</span> <span class="p">]]</span>
-<span class="p">[[</span><span class="k">pass</span><span class="p">]]</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[if &#39;action&#39; in request.url_args and request.url_args[&#39;action&#39;] in [&#39;details&#39;, &#39;edit&#39;]:]]
+    #  Display the custom form
+    [[form = grid.render() ]]
+    [[form.custom[&quot;begin&quot;] ]]
+    ...
+    [[form.custom[&quot;submit&quot;]
+    [[form.custom[&quot;end&quot;]
+[[else:]]
+    [[grid.render() ]]
+[[pass]]
 </pre></div>
 </div>
 </div>
@@ -628,7 +628,7 @@
      <label for="switch"></label>
      </span>
       
-      v: 1.20210101.1"
+      v: 1.20210119.1"
 
       <span class="fa fa-caret-down"></span>
     </span>

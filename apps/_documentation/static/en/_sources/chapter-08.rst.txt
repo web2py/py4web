@@ -2,23 +2,27 @@
 The RESTAPI
 ===========
 
-Since version 19.5.10 PyDAL includes a restful API called RestAPI. It is
+Since version 19.5.10 pyDAL includes a restful API called RestAPI. It is
 inspired by GraphQL but it’s not quite the same because it is less
-powerful but, in the spirit of web2py, more practical and easier to use.
-Like GraphSQL RestAPI allows a client to query for information using the
+powerful but, in the spirit of py4web, more practical and easier to use.
+Like GraphQL RestAPI allows a client to query for information using the
 GET method and allows to specify some details about the format of the
 response (which references to follow, and how to denormalize the data).
-Unlike GraphSQL it allows the server to specify a policy and restrict
+Unlike GraphQL it allows the server to specify a policy and restrict
 which queries are allowed and which one are not. They can be evaluated
 dynamically per request based on the user and the state of the server.
 As the name implied RestAPI allows all stardard methods GET, POST, PUT,
 and DELETE. Each of them can be enabled or disabled based on the policy,
 for individual tables and individual fields.
 
+.. note::
+
+   Specifications might be subject to changes since this is a new feature.
+
 In the examples below we assume an app called “superheroes” and the
 following model:
 
-::
+.. code:: python
 
    db.define_table(
        'person',
@@ -40,11 +44,13 @@ following model:
        Field('superpower', 'reference superpower'),
        Field('strength', 'integer'))
 
-We also assume the following controller ``rest.py``:
+We also assume the following controller:
 
-::
+.. code:: python
 
-   from pydal.dbapi import RestAPI, Policy
+   from py4web import action, request
+   from .common import db
+   from pydal.restapi import RestAPI, Policy
 
    policy = Policy()
    policy.set('superhero', 'GET', authorize=True, allowed_patterns=['*'])
@@ -57,11 +63,12 @@ We also assume the following controller ``rest.py``:
 
    @action('api/<tablename>/', method = ['GET', 'POST'])
    @action('api/<tablename>/<rec_id>', method = ['GET', 'PUT', 'DELETE'])
+   @action.uses(db)
    def api(tablename, rec_id=None):
-       return RestAPI(db, policy)(request.method, 
-                                  tablename, 
+       return RestAPI(db, policy)(request.method,
+                                  tablename,
                                   rec_id,
-                                  request.GET, 
+                                  request.GET,
                                   request.POST
                                   )
 
@@ -76,15 +83,19 @@ The above action is exposed as:
 
 ::
 
-   /superheroes/rest/api/{tablename}
+   /superheroes/api/{tablename}
+   /superheroes/api/{tablename}/{rec_id}
 
-**About request.POST**: keep in mind that **request.POST** only contains
-the form data that is posted using a **regular HTML-form** or javascript
-**FormData** object. If you post just plain object
-(e.g. ``axios.post( 'path/to/api', {field:'some'} )``) you should pass
-**request.json** instead of request.POST, since latter will contain just
-raw request-body which is string, not json. See bottle.py documentation
-for more details.
+.. note::
+
+   Keep in mind that **request.POST** only contains the form data
+   that is posted using a **regular HTML-form** or **JavaScript
+   FormData** object. If you post just plain object
+   (e.g. ``axios.post('path/to/api', {field:'some'})``) you should pass
+   **request.json** instead of request.POST, since the latter will contain
+   just raw request-body which is string, not JSON. See `Bottle
+   <http://bottlepy.org/>`__ documentation about ``request`` object.
+
 
 RestAPI GET
 -----------
@@ -100,16 +111,16 @@ in:
 
 ::
 
-   /superheroes/rest/api/superhero?name.eq=Superman
+   /superheroes/api/superhero?name.eq=Superman
 
-It can be a the name of a field of a table referred by the table been
+It can be the name of a field of a table referred by the table been
 queried as in:
 
 **All superheroes with real identity “Clark Kent”**
 
 ::
 
-   /superheroes/rest/api/superhero?real_identity.name.eq=Clark Kent
+   /superheroes/api/superhero?real_identity.name.eq=Clark Kent
 
 It can be the name of a field of a table that refers to the table neen
 queried as in:
@@ -118,9 +129,9 @@ queried as in:
 
 ::
 
-   /superheroes/rest/api/superhero?superhero.tag.strength.gt=90
+   /superheroes/api/superhero?superhero.tag.strength.gt=90
 
-(here tag is the name of the link table, the preceding ``superhero`` is
+(here ``tag`` is the name of the link table, the preceding ``superhero`` is
 the name of the field that refers to the selected table and ``strength``
 is the name of the field used to filter)
 
@@ -131,7 +142,7 @@ table as in:
 
 ::
 
-   /superheroes/rest/api/superhero?superhero.tag.superpower.description.eq=Flight
+   /superheroes/api/superhero?superhero.tag.superpower.description.eq=Flight
 
 The key to understand the syntax above is to break it as follows:
 
@@ -155,8 +166,8 @@ The query allows additional modifiers for example
    @model=true
    @lookup=real_identity
 
-The first 3 are obvious. @model returns a JSON description of database
-model. Lookup denormalizes the linked field.
+The first 3 are obvious. ``@model`` returns a JSON description of database
+model. ``@lookup`` denormalizes the linked field.
 
 Here are some practical examples:
 
@@ -164,11 +175,11 @@ URL:
 
 ::
 
-   /superheroes/rest/api/superhero
+   /superheroes/api/superhero
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 3,
@@ -199,11 +210,11 @@ URL:
 
 ::
 
-   /superheroes/rest/api/superhero?@model=true
+   /superheroes/api/superhero?@model=true
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 3,
@@ -226,7 +237,7 @@ OUTPUT:
                "id": 3
            }
        ],
-       "timestamp": "2019-05-19T05:38:00.098292",
+       "timestamp": "2021-01-04T07:03:38.466030",
        "model": [
            {
                "regex": "[1-9]\\d*",
@@ -235,7 +246,9 @@ OUTPUT:
                "required": false,
                "label": "Id",
                "post_writable": true,
-               "referenced_by": [],
+               "referenced_by": [
+                   "tag.superhero"
+               ],
                "unique": false,
                "type": "id",
                "options": null,
@@ -274,11 +287,11 @@ URL:
 
 ::
 
-   /superheroes/rest/api/superhero?@lookup=real_identity
+   /superheroes/api/superhero?@lookup=real_identity
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 3,
@@ -321,13 +334,13 @@ URL:
 
 ::
 
-   /superheroes/rest/api/superhero?@lookup=identity:real_identity
+   /superheroes/api/superhero?@lookup=identity:real_identity
 
 (denormalize the real_identity and rename it identity)
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 3,
@@ -373,14 +386,14 @@ URL:
 
 ::
 
-   /superheroes/rest/api/superhero?@lookup=identity!:real_identity[name,job]
+   /superheroes/api/superhero?@lookup=identity!:real_identity[name,job]
 
 (denormalize the real_identity [but only fields name and job], collapse
 the with the identity prefix)
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 3,
@@ -389,24 +402,24 @@ OUTPUT:
        "items": [
            {
                "name": "Superman",
-               "identity_job": "Journalist",
-               "identity_name": "Clark Kent",
+               "identity.job": "Journalist",
+               "identity.name": "Clark Kent",
                "id": 1
            },
            {
                "name": "Spiderman",
-               "identity_job": "Photographer",
-               "identity_name": "Peter Park",
+               "identity.job": "Photographer",
+               "identity.name": "Peter Park",
                "id": 2
            },
            {
                "name": "Batman",
-               "identity_job": "CEO",
-               "identity_name": "Bruce Wayne",
+               "identity.job": "CEO",
+               "identity.name": "Bruce Wayne",
                "id": 3
            }
        ],
-       "timestamp": "2019-05-19T05:38:00.192180",
+       "timestamp": "2021-01-04T07:03:38.559918",
        "api_version": "0.1"
    }
 
@@ -414,11 +427,11 @@ URL:
 
 ::
 
-   /superheroes/rest/api/superhero?@lookup=superhero.tag
+   /superheroes/api/superhero?@lookup=superhero.tag
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 3,
@@ -515,11 +528,11 @@ URL:
 
 ::
 
-   /superheroes/rest/api/superhero?@lookup=superhero.tag.superpower
+   /superheroes/api/superhero?@lookup=superhero.tag.superpower
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 3,
@@ -646,12 +659,12 @@ URL (it's a single line, splitted for readability):
 
 ::
 
-   /superheroes/rest/api/superhero?
+   /superheroes/api/superhero?
    @lookup=powers:superhero.tag[strength].superpower[description]
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 3,
@@ -748,12 +761,12 @@ URL (it's a single line, splitted for readability):
 
 ::
 
-   /superheroes/rest/api/superhero?
+   /superheroes/api/superhero?
    @lookup=powers!:superhero.tag[strength].superpower[description]
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 3,
@@ -830,13 +843,13 @@ URL (it's a single line, splitted for readability):
 
 ::
 
-   /superheroes/rest/api/superhero?
+   /superheroes/api/superhero?
    @lookup=powers!:superhero.tag[strength].superpower[description],
    identity!:real_identity[name]
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 3,
@@ -845,7 +858,7 @@ OUTPUT:
        "items": [
            {
                "name": "Superman",
-               "identity_name": "Clark Kent",
+               "identity.name": "Clark Kent",
                "powers": [
                    {
                        "strength": 100,
@@ -868,7 +881,7 @@ OUTPUT:
            },
            {
                "name": "Spiderman",
-               "identity_name": "Peter Park",
+               "identity.name": "Peter Park",
                "powers": [
                    {
                        "strength": 50,
@@ -887,7 +900,7 @@ OUTPUT:
            },
            {
                "name": "Batman",
-               "identity_name": "Bruce Wayne",
+               "identity.name": "Bruce Wayne",
                "powers": [
                    {
                        "strength": 80,
@@ -905,7 +918,7 @@ OUTPUT:
                "id": 3
            }
        ],
-       "timestamp": "2019-05-19T05:38:00.396583",
+       "timestamp": "2021-01-04T07:31:34.974953",
        "api_version": "0.1"
    }
 
@@ -913,11 +926,11 @@ URL:
 
 ::
 
-   /superheroes/rest/api/superhero?name.eq=Superman
+   /superheroes/api/superhero?name.eq=Superman
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 1,
@@ -938,11 +951,11 @@ URL:
 
 ::
 
-   /superheroes/rest/api/superhero?real_identity.name.eq=Clark Kent
+   /superheroes/api/superhero?real_identity.name.eq=Clark Kent
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 1,
@@ -963,11 +976,11 @@ URL:
 
 ::
 
-   /superheroes/rest/api/superhero?not.real_identity.name.eq=Clark Kent
+   /superheroes/api/superhero?not.real_identity.name.eq=Clark Kent
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 2,
@@ -993,11 +1006,11 @@ URL:
 
 ::
 
-   /superheroes/rest/api/superhero?superhero.tag.superpower.description=Flight
+   /superheroes/api/superhero?superhero.tag.superpower.description=Flight
 
 OUTPUT:
 
-::
+.. code:: json
 
    {
        "count": 1,
@@ -1014,27 +1027,17 @@ OUTPUT:
        "api_version": "0.1"
    }
 
-Notice all RestAPI response have the fields
+All RestAPI response have the fields:
 
-::
+:api_version: RestAPI version.
+:timestamp: Datetime in ISO 8601 format.
+:status: RestAPI status (i.e. "success" or "error").
+:code: HTTP status.
 
-   {
-       "api_version": ...
-       "timestamp": ...
-       "status": ...    
-       "code": ...
-   }
+Other optional fields are:
 
-and some optional fields:
-
-::
-
-   {
-       "count": ... (total matching, not total returned, for GET)
-       "items": ... (in response to a GET)
-       "errors": ... (usually validation error0
-       "models": ... (usually if status != success)
-       "message": ... (is if error)
-   }
-
-The exact specs are subject to change since this is a new feature.
+:count: Total matching (not total returned), for GET.
+:items: In response to a GET.
+:errors: Usually a validation error.
+:models: Usually if status != "success".
+:message: For error details.

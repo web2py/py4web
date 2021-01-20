@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>The RESTAPI &mdash; py4web 1.20210101.1&#34;
+  <title>The RESTAPI &mdash; py4web 1.20210119.1&#34;
  documentation</title>
   
 
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.20210101.1"
+                1.20210119.1"
 
               </div>
             
@@ -178,21 +178,25 @@
             
   <div class="section" id="the-restapi">
 <h1>The RESTAPI<a class="headerlink" href="#the-restapi" title="Permalink to this headline">¶</a></h1>
-<p>Since version 19.5.10 PyDAL includes a restful API called RestAPI. It is
+<p>Since version 19.5.10 pyDAL includes a restful API called RestAPI. It is
 inspired by GraphQL but it’s not quite the same because it is less
-powerful but, in the spirit of web2py, more practical and easier to use.
-Like GraphSQL RestAPI allows a client to query for information using the
+powerful but, in the spirit of py4web, more practical and easier to use.
+Like GraphQL RestAPI allows a client to query for information using the
 GET method and allows to specify some details about the format of the
 response (which references to follow, and how to denormalize the data).
-Unlike GraphSQL it allows the server to specify a policy and restrict
+Unlike GraphQL it allows the server to specify a policy and restrict
 which queries are allowed and which one are not. They can be evaluated
 dynamically per request based on the user and the state of the server.
 As the name implied RestAPI allows all stardard methods GET, POST, PUT,
 and DELETE. Each of them can be enabled or disabled based on the policy,
 for individual tables and individual fields.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Specifications might be subject to changes since this is a new feature.</p>
+</div>
 <p>In the examples below we assume an app called “superheroes” and the
 following model:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
     <span class="s1">&#39;person&#39;</span><span class="p">,</span>
     <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
     <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;job&#39;</span><span class="p">))</span>
@@ -213,8 +217,10 @@ following model:</p>
     <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;strength&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>We also assume the following controller <code class="docutils literal notranslate"><span class="pre">rest.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal.dbapi</span> <span class="kn">import</span> <span class="n">RestAPI</span><span class="p">,</span> <span class="n">Policy</span>
+<p>We also assume the following controller:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">pydal.restapi</span> <span class="kn">import</span> <span class="n">RestAPI</span><span class="p">,</span> <span class="n">Policy</span>
 
 <span class="n">policy</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">()</span>
 <span class="n">policy</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;superhero&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">authorize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allowed_patterns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">])</span>
@@ -227,6 +233,7 @@ following model:</p>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;api/&lt;tablename&gt;/&#39;</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;api/&lt;tablename&gt;/&lt;rec_id&gt;&#39;</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;PUT&#39;</span><span class="p">,</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">api</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">rec_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">RestAPI</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">policy</span><span class="p">)(</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">,</span>
                                <span class="n">tablename</span><span class="p">,</span>
@@ -243,16 +250,19 @@ True/False. For the GET policy one can specify a list of allowed query
 patterns (* for all). A query pattern will be matched against the keys
 in the query string.</p>
 <p>The above action is exposed as:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">superheroes</span><span class="o">/</span><span class="n">rest</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="p">{</span><span class="n">tablename</span><span class="p">}</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/{tablename}
+/superheroes/api/{tablename}/{rec_id}
 </pre></div>
 </div>
-<p><strong>About request.POST</strong>: keep in mind that <strong>request.POST</strong> only contains
-the form data that is posted using a <strong>regular HTML-form</strong> or javascript
-<strong>FormData</strong> object. If you post just plain object
-(e.g. <code class="docutils literal notranslate"><span class="pre">axios.post(</span> <span class="pre">'path/to/api',</span> <span class="pre">{field:'some'}</span> <span class="pre">)</span></code>) you should pass
-<strong>request.json</strong> instead of request.POST, since latter will contain just
-raw request-body which is string, not json. See bottle.py documentation
-for more details.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Keep in mind that <strong>request.POST</strong> only contains the form data
+that is posted using a <strong>regular HTML-form</strong> or <strong>JavaScript
+FormData</strong> object. If you post just plain object
+(e.g. <code class="docutils literal notranslate"><span class="pre">axios.post('path/to/api',</span> <span class="pre">{field:'some'})</span></code>) you should pass
+<strong>request.json</strong> instead of request.POST, since the latter will contain
+just raw request-body which is string, not JSON. See <a class="reference external" href="http://bottlepy.org/">Bottle</a> documentation about <code class="docutils literal notranslate"><span class="pre">request</span></code> object.</p>
+</div>
 <div class="section" id="restapi-get">
 <h2>RestAPI GET<a class="headerlink" href="#restapi-get" title="Permalink to this headline">¶</a></h2>
 <p>The general query has the form <code class="docutils literal notranslate"><span class="pre">{something}.eq=value</span></code> where <code class="docutils literal notranslate"><span class="pre">eq=</span></code>
@@ -261,32 +271,32 @@ expression can be prepended by <code class="docutils literal notranslate"><span 
 <p><code class="docutils literal notranslate"><span class="pre">{something}</span></code> can be the name of a field in the table been queried as
 in:</p>
 <p><strong>All superheroes called “Superman”</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?name.eq=Superman
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?name.eq=Superman
 </pre></div>
 </div>
-<p>It can be a the name of a field of a table referred by the table been
+<p>It can be the name of a field of a table referred by the table been
 queried as in:</p>
 <p><strong>All superheroes with real identity “Clark Kent”</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?real_identity.name.eq=Clark Kent
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?real_identity.name.eq=Clark Kent
 </pre></div>
 </div>
 <p>It can be the name of a field of a table that refers to the table neen
 queried as in:</p>
 <p><strong>All superheroes with any tag superpower with strength &gt; 90</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?superhero.tag.strength.gt=90
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?superhero.tag.strength.gt=90
 </pre></div>
 </div>
-<p>(here tag is the name of the link table, the preceding <code class="docutils literal notranslate"><span class="pre">superhero</span></code> is
+<p>(here <code class="docutils literal notranslate"><span class="pre">tag</span></code> is the name of the link table, the preceding <code class="docutils literal notranslate"><span class="pre">superhero</span></code> is
 the name of the field that refers to the selected table and <code class="docutils literal notranslate"><span class="pre">strength</span></code>
 is the name of the field used to filter)</p>
 <p>It can also be a field of the table referenced by a many-to-many linked
 table as in:</p>
 <p><strong>All superheroes with the flight power</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?superhero.tag.superpower.description.eq=Flight
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?superhero.tag.superpower.description.eq=Flight
 </pre></div>
 </div>
 <p>The key to understand the syntax above is to break it as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>superhero?superhero.tag.superpower.description.eq=Flight
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>superhero?superhero.tag.superpower.description.eq=Flight
 </pre></div>
 </div>
 <p>and read it as:</p>
@@ -296,832 +306,847 @@ of table <strong>tag</strong> when the <strong>superpower</strong> field of said
 to a record with <strong>description</strong> <strong>eq</strong>ual to “Flight”.</p>
 </div></blockquote>
 <p>The query allows additional modifiers for example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@offset</span><span class="o">=</span><span class="mi">10</span>
-<span class="nd">@limit</span><span class="o">=</span><span class="mi">10</span>
-<span class="nd">@order</span><span class="o">=</span><span class="n">name</span>
-<span class="nd">@model</span><span class="o">=</span><span class="n">true</span>
-<span class="nd">@lookup</span><span class="o">=</span><span class="n">real_identity</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@offset=10
+@limit=10
+@order=name
+@model=true
+@lookup=real_identity
 </pre></div>
 </div>
-<p>The first 3 are obvious. &#64;model returns a JSON description of database
-model. Lookup denormalizes the linked field.</p>
+<p>The first 3 are obvious. <code class="docutils literal notranslate"><span class="pre">&#64;model</span></code> returns a JSON description of database
+model. <code class="docutils literal notranslate"><span class="pre">&#64;lookup</span></code> denormalizes the linked field.</p>
 <p>Here are some practical examples:</p>
 <p>URL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">superheroes</span><span class="o">/</span><span class="n">rest</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">superhero</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.132635&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.132635&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@model=true
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?@model=true
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.098292&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-04T07:03:38.466030&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;model&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;regex&quot;</span><span class="p">:</span> <span class="s2">&quot;[1-9]</span><span class="se">\\</span><span class="s2">d*&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;post_writable&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-            <span class="s2">&quot;referenced_by&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;unique&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-            <span class="s2">&quot;put_writable&quot;</span><span class="p">:</span> <span class="n">true</span>
+            <span class="nt">&quot;regex&quot;</span><span class="p">:</span> <span class="s2">&quot;[1-9]\\d*&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Id&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;post_writable&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="nt">&quot;referenced_by&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;tag.superhero&quot;</span>
+            <span class="p">],</span>
+            <span class="nt">&quot;unique&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;options&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;put_writable&quot;</span><span class="p">:</span> <span class="kc">true</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;regex&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;post_writable&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-            <span class="s2">&quot;unique&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-            <span class="s2">&quot;put_writable&quot;</span><span class="p">:</span> <span class="n">true</span>
+            <span class="nt">&quot;regex&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;post_writable&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="nt">&quot;unique&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;options&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;put_writable&quot;</span><span class="p">:</span> <span class="kc">true</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;regex&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;real_identity&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Real Identity&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;post_writable&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-            <span class="s2">&quot;references&quot;</span><span class="p">:</span> <span class="s2">&quot;person&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;unique&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;reference&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-            <span class="s2">&quot;put_writable&quot;</span><span class="p">:</span> <span class="n">true</span>
+            <span class="nt">&quot;regex&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;real_identity&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Real Identity&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;post_writable&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="nt">&quot;references&quot;</span><span class="p">:</span> <span class="s2">&quot;person&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;unique&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;reference&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;options&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+            <span class="nt">&quot;put_writable&quot;</span><span class="p">:</span> <span class="kc">true</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@lookup=real_identity
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?@lookup=real_identity
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Clark Kent&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;Journalist&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Clark Kent&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;Journalist&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
             <span class="p">},</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Peter Park&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;Photographer&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Peter Park&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;Photographer&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
             <span class="p">},</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bruce Wayne&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;CEO&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bruce Wayne&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;CEO&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
             <span class="p">},</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.178974&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.178974&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@lookup=identity:real_identity
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?@lookup=identity:real_identity
 </pre></div>
 </div>
 <p>(denormalize the real_identity and rename it identity)</p>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;identity&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Clark Kent&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;Journalist&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;identity&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Clark Kent&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;Journalist&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
             <span class="p">}</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s2">&quot;identity&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Peter Park&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;Photographer&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="nt">&quot;identity&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Peter Park&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;Photographer&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
             <span class="p">}</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="s2">&quot;identity&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bruce Wayne&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;CEO&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="nt">&quot;identity&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bruce Wayne&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;job&quot;</span><span class="p">:</span> <span class="s2">&quot;CEO&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.123218&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.123218&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@lookup=identity!:real_identity[name,job]
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?@lookup=identity!:real_identity[name,job]
 </pre></div>
 </div>
 <p>(denormalize the real_identity [but only fields name and job], collapse
 the with the identity prefix)</p>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;identity_job&quot;</span><span class="p">:</span> <span class="s2">&quot;Journalist&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;identity_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Clark Kent&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;identity.job&quot;</span><span class="p">:</span> <span class="s2">&quot;Journalist&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;identity.name&quot;</span><span class="p">:</span> <span class="s2">&quot;Clark Kent&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;identity_job&quot;</span><span class="p">:</span> <span class="s2">&quot;Photographer&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;identity_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Peter Park&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;identity.job&quot;</span><span class="p">:</span> <span class="s2">&quot;Photographer&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;identity.name&quot;</span><span class="p">:</span> <span class="s2">&quot;Peter Park&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;identity_job&quot;</span><span class="p">:</span> <span class="s2">&quot;CEO&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;identity_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bruce Wayne&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;identity.job&quot;</span><span class="p">:</span> <span class="s2">&quot;CEO&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;identity.name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bruce Wayne&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.192180&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-04T07:03:38.559918&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@lookup=superhero.tag
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?@lookup=superhero.tag
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;superhero.tag&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;superhero.tag&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">1</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">1</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">2</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">2</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">3</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">3</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">4</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">4</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;superhero.tag&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;superhero.tag&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">2</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">2</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">3</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">3</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">4</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">4</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;superhero.tag&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;superhero.tag&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">2</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">2</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">3</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">3</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">4</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="mi">4</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.201988&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.201988&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?@lookup=superhero.tag.superpower
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?@lookup=superhero.tag.superpower
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;superhero.tag.superpower&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;superhero.tag.superpower&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Flight&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Flight&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;superhero.tag.superpower&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;superhero.tag.superpower&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;superhero.tag.superpower&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;superhero.tag.superpower&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
-                    <span class="s2">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+                    <span class="nt">&quot;superhero&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.322494&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.322494&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL (it’s a single line, splitted for readability):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?
 @lookup=powers:superhero.tag[strength].superpower[description]
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Flight&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Flight&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                     <span class="p">}</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
-                    <span class="s2">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+                    <span class="nt">&quot;superpower&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                     <span class="p">}</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.309903&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.309903&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL (it’s a single line, splitted for readability):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?
 @lookup=powers!:superhero.tag[strength].superpower[description]
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Flight&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Flight&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.355181&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.355181&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL (it’s a single line, splitted for readability):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?
 @lookup=powers!:superhero.tag[strength].superpower[description],
 identity!:real_identity[name]
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;identity_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Clark Kent&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;identity.name&quot;</span><span class="p">:</span> <span class="s2">&quot;Clark Kent&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Flight&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Flight&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;identity_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Peter Park&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;identity.name&quot;</span><span class="p">:</span> <span class="s2">&quot;Peter Park&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;identity_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bruce Wayne&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;identity.name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bruce Wayne&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;powers&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Strength&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Speed&quot;</span>
                 <span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
+                    <span class="nt">&quot;strength&quot;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+                    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Durability&quot;</span>
                 <span class="p">}</span>
             <span class="p">],</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.396583&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-01-04T07:31:34.974953&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?name.eq=Superman
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?name.eq=Superman
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.405515&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.405515&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?real_identity.name.eq=Clark Kent
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?real_identity.name.eq=Clark Kent
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.366288&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.366288&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?not.real_identity.name.eq=Clark Kent
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?not.real_identity.name.eq=Clark Kent
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Spiderman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Batman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.451907&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.451907&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>URL:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/superheroes/rest/api/superhero?superhero.tag.superpower.description=Flight
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?superhero.tag.superpower.description=Flight
 </pre></div>
 </div>
 <p>OUTPUT:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+            <span class="nt">&quot;real_identity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Superman&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.453020&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-05-19T05:38:00.453020&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;api_version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Notice all RestAPI response have the fields</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;api_version&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="o">...</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>and some optional fields:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="o">...</span> <span class="p">(</span><span class="n">total</span> <span class="n">matching</span><span class="p">,</span> <span class="ow">not</span> <span class="n">total</span> <span class="n">returned</span><span class="p">,</span> <span class="k">for</span> <span class="n">GET</span><span class="p">)</span>
-    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="o">...</span> <span class="p">(</span><span class="ow">in</span> <span class="n">response</span> <span class="n">to</span> <span class="n">a</span> <span class="n">GET</span><span class="p">)</span>
-    <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="o">...</span> <span class="p">(</span><span class="n">usually</span> <span class="n">validation</span> <span class="n">error0</span>
-    <span class="s2">&quot;models&quot;</span><span class="p">:</span> <span class="o">...</span> <span class="p">(</span><span class="n">usually</span> <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">success</span><span class="p">)</span>
-    <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="o">...</span> <span class="p">(</span><span class="ow">is</span> <span class="k">if</span> <span class="n">error</span><span class="p">)</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>The exact specs are subject to change since this is a new feature.</p>
+<p>All RestAPI response have the fields:</p>
+<dl class="field-list simple">
+<dt class="field-odd">api_version</dt>
+<dd class="field-odd"><p>RestAPI version.</p>
+</dd>
+<dt class="field-even">timestamp</dt>
+<dd class="field-even"><p>Datetime in ISO 8601 format.</p>
+</dd>
+<dt class="field-odd">status</dt>
+<dd class="field-odd"><p>RestAPI status (i.e. “success” or “error”).</p>
+</dd>
+<dt class="field-even">code</dt>
+<dd class="field-even"><p>HTTP status.</p>
+</dd>
+</dl>
+<p>Other optional fields are:</p>
+<dl class="field-list simple">
+<dt class="field-odd">count</dt>
+<dd class="field-odd"><p>Total matching (not total returned), for GET.</p>
+</dd>
+<dt class="field-even">items</dt>
+<dd class="field-even"><p>In response to a GET.</p>
+</dd>
+<dt class="field-odd">errors</dt>
+<dd class="field-odd"><p>Usually a validation error.</p>
+</dd>
+<dt class="field-even">models</dt>
+<dd class="field-even"><p>Usually if status != “success”.</p>
+</dd>
+<dt class="field-odd">message</dt>
+<dd class="field-odd"><p>For error details.</p>
+</dd>
+</dl>
 </div>
 </div>
 
@@ -1179,7 +1204,7 @@ identity!:real_identity[name]
      <label for="switch"></label>
      </span>
       
-      v: 1.20210101.1"
+      v: 1.20210119.1"
 
       <span class="fa fa-caret-down"></span>
     </span>

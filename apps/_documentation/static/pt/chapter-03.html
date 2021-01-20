@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 1.20210101.1&#34;
+  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 1.20210119.1&#34;
 </title>
   
 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                1.20210101.1"
+                1.20210119.1"
 
               </div>
             
@@ -305,7 +305,7 @@ python3 py4web.py run apps
 <div class="section" id="first-run">
 <h2>Primeira corrida<a class="headerlink" href="#first-run" title="Link permanente para este título">¶</a></h2>
 <p>Correndo py4web utilizando qualquer um procedimento anterior deve produzir uma saída como esta:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># py4web run apps</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web run apps
 </pre></div>
 </div>
 <img alt="_images/first_run.png" class="with-shadow" src="_images/first_run.png" />
@@ -317,9 +317,9 @@ python3 py4web.py run apps
 <p>Alguns aplicativos - como o Dashboard ** ** e padrão ** ** - têm um papel especial na py4web e, portanto, seus começos nome real com `` <a href="#id1"><span class="problematic" id="id2">_`</span></a>` para evitar conflitos com aplicativos criados por você.</p>
 </div>
 <p>Uma vez py4web está sendo executado você pode acessar um aplicativo específico nas seguintes URLs:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span>
-<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">_dashboard</span>
-<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="p">{</span><span class="n">yourappname</span><span class="p">}</span><span class="o">/</span><span class="n">index</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http://localhost:8000
+http://localhost:8000/_dashboard
+http://localhost:8000/{yourappname}/index
 </pre></div>
 </div>
 <p>A fim de py4web stop, você precisa acertar: kbd: <cite>Control-C</cite> na janela onde você executá-lo.</p>
@@ -337,7 +337,7 @@ In this case, try with <code class="docutils literal notranslate"><span class="p
 <div class="section" id="command-line-options">
 <h2>Opções de linha de comando<a class="headerlink" href="#command-line-options" title="Link permanente para este título">¶</a></h2>
 <p>py4web fornece várias opções de linha de comando que podem ser listados por executá-lo sem qualquer argumento</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># py4web</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web
 </pre></div>
 </div>
 <img alt="_images/command.png" class="with-shadow" src="_images/command.png" />
@@ -358,7 +358,7 @@ Options:
 <div class="section" id="new-app-command-option">
 <span id="id2"></span><h3>Opção `` comando new_app``<a class="headerlink" href="#new-app-command-option" title="Link permanente para este título">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web new_app -h
-Usage: py4web.py new_app [OPTIONS] [APPS_FOLDER] APP_NAME
+Usage: py4web.py new_app [OPTIONS] APPS_FOLDER APP_NAME
 
   Create a new app copying the scaffolding one
 
@@ -432,7 +432,7 @@ Options:
 </pre></div>
 </div>
 <p>Finalmente, você pode criar manualmente o mesmo arquivo com:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 -c &quot;from pydal.validators import CRYPT; open(&#39;password.txt&#39;,&#39;w&#39;).write(str(CRYPT()(input(&#39;password:&#39;))[0]))&quot;
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ python3 -c &quot;from pydal.validators import CRYPT; open(&#39;password.txt&#39;,&#39;w&#39;).write(str(CRYPT()(input(&#39;password:&#39;))[0]))&quot;
 password: *****
 </pre></div>
 </div>
@@ -496,17 +496,17 @@ Options:
 </pre></div>
 </div>
 <p>Copie os arquivos de exemplo de py4web (supondo que você tem a fonte de github)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">py4web</span><span class="o">/</span><span class="n">development_tools</span><span class="o">/</span><span class="n">gcloud</span><span class="o">/*</span> <span class="o">./</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cp /path/to/py4web/development_tools/gcloud/* ./
 </pre></div>
 </div>
 <p>Copiar ou ligar simbolicamente o seu `` apps`` pasta para a pasta gae, ou talvez fazer novos aplicativos pasta que contém um `` __init vazio __. Py`` e ligar simbolicamente os aplicativos individuais que você deseja implantar. Você deve ver os seguintes arquivos / pastas:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Makefile</span>
-<span class="n">apps</span>
-  <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
-  <span class="o">...</span> <span class="n">your</span> <span class="n">apps</span> <span class="o">...</span>
-<span class="n">lib</span>
-<span class="n">app</span><span class="o">.</span><span class="n">yaml</span>
-<span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Makefile
+apps
+  __init__.py
+  ... your apps ...
+lib
+app.yaml
+main.py
 </pre></div>
 </div>
 <p>Instale o Google SDK, py4web e configure a pasta de trabalho:</p>
@@ -584,7 +584,7 @@ gcloud config <span class="nb">set</span> <span class="o">{</span>project id<spa
      <label for="switch"></label>
      </span>
       
-      v: 1.20210101.1"
+      v: 1.20210119.1"
 
       <span class="fa fa-caret-down"></span>
     </span>
