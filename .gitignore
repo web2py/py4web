@@ -22,6 +22,7 @@ Thumbs.db
 ./*.zip
 apps/*
 !apps/todo/*
+!apps/xtodo/*
 !apps/examples/*
 !apps/_dashboard/*
 !apps/_scaffold/*
