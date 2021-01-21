@@ -676,11 +676,16 @@ def URL(
 
 
 class HTTP(BaseException):
+    class Type:
+        success = 'success'
+        error = 'error'
+
     """Our HTTP exception does not delete cookies and headers like the bottle.HTTPResponse does;
     since it is considered a success, not a failure"""
 
-    def __init__(self, status):
+    def __init__(self, status, type = Type.success):
         self.status = status
+        self.type = type
 
 
 def redirect(location):
@@ -730,8 +735,14 @@ class action:
                     [obj.on_success(200) for obj in fixtures]
                     return ret
                 except HTTP as http:
-                    [obj.on_success(http.status) for obj in fixtures]
-                    raise
+                    if http.type == http.Type.success:
+                        [obj.on_success(http.status) for obj in fixtures]
+                    else:
+                        [obj.on_error() for obj in fixtures]
+                        # it should be [obj.on_error(status) for obj in fixtures]
+                        # but it breaks users fixtures
+                        # `def on_error(status = None):` - cost nothing, but we have  `def on_error():`
+                    raise               
                 except Exception:
                     [obj.on_error() for obj in fixtures]
                     raise
@@ -771,7 +782,7 @@ class action:
                 return ret
             except HTTP as http:
                 response.status = http.status
-                return ""
+                return getattr(http, "body", "")
             except bottle.HTTPResponse:
                 raise
             except Exception:
