@@ -94,7 +94,7 @@ class API_CTX:
 api.proxy(mounter = action, uses = action.uses)
 
 # set api context
-api.set_ctx(API_CTX())
+api.set_context(API_CTX())
 
 # will be mounted at `app/xtodo`
 MyAPI.premount('xtodo')
@@ -159,6 +159,14 @@ class Param:
             self.msg = msg
             self.extra = extra
 
+        def __getattr__(self, k):
+            if k not in self.extra:
+                raise AttributeError(f"there is no {k}-attribute")
+            return self.extra[k]
+
+        def __contains__(self, k):
+            return k in self.extra
+
     _filters = dict(
         str = str,
         int = int,
@@ -167,7 +175,10 @@ class Param:
         # if filter-fun is wrapped in set it should be evaluated
         # see  _init_filters
         map = {Map},
-        to = lambda f: f
+        to = lambda f: f,
+        item = lambda k: (lambda obj: obj[k]),
+        get = lambda k, default = None:  (lambda obj: obj.get(k, default)),
+        attr = lambda k, default = None: (lambda obj: getattr(obj, k, default))
     )
 
     def _init_filters(self):
@@ -175,15 +186,16 @@ class Param:
             if isinstance(f, set):
                 self._filters[k] = list(f)[0]()
 
-    def __init__(self, ctx_prop:str, init_by = None, **filters):
+    def __init__(self, ctx_prop:str, allow_extra = True, **filters):
         self._ctx_prop = ctx_prop
-        self._init_by = init_by
+        self._allow_extra = allow_extra
         self._filters = dict(**self._filters)
         self._filters.update(filters)
         self._init_filters()
-        self._filter_chain = DictList()
+        self._filter_chain = []  # [[name, filter:callable], ...]
         self._required = True
         self._name = None
+
         # optional:
         # self._default
 
@@ -193,7 +205,11 @@ class Param:
             ret._name = k
             return ret
         else:
-            return super().__getitem__(k)
+            if not self._name:
+                raise RuntimeError('use dot-access notation')
+            self._filter_chain.append(['item', self._filters['item'](k)])
+            return self
+            #return super().__getitem__(k)
 
     def __getattr__(self, k):
         if k[0] == '_':
@@ -203,22 +219,22 @@ class Param:
             ret._name = k
             return ret
 
-        last_flt = self._filter_chain and self._filter_chain[-1] or None
+        last_flt = self._filter_chain and self._filter_chain[-1][1] or None
         if last_flt and isinstance(last_flt, Map):
             last_flt.cbs.append(self._filters[k])
         else:
-            self._filter_chain[k] = self._filters[k]
+            self._filter_chain.append([k, self._filters[k]])
         return self
 
     def __call__(self, *args, **kw):
-        k = self._filter_chain.keys()[-1]
-        if isinstance((flt := self._filter_chain[k]), Map):
-            if not flt.cbs:
-                flt.cbs.extend(args)
+        last_flt = self._filter_chain[-1][1]
+        if isinstance(last_flt, Map):
+            if not last_flt.cbs:
+                last_flt.cbs.extend(args)
             else:
-                flt.cbs[-1] = (flt.cbs[-1](*args, **kw))
+                last_flt.cbs[-1] = (last_flt.cbs[-1](*args, **kw))
         else:
-            self._filter_chain[k] = flt(*args, **kw)
+            self._filter_chain[-1][1] = last_flt(*args, **kw)
         return self
 
     def __or__(self, other):
@@ -241,7 +257,7 @@ class Param:
                 raise self.ValueError(f'missing `{name}`', type = 'missing')
         if ret is None:
             return ret
-        for k, f in self._filter_chain.items():
+        for k, f in self._filter_chain:
             try:
                 ret = f(ret)
             except Exception as err:
@@ -284,7 +300,8 @@ class Validator:
             if v._name in extra:
                 extra.remove(v._name)
             if not allow_extra:
-                allow_extra = v._name is ...
+                allow_extra = v._allow_extra or v._name is ...
+
 
         if ret and not allow_extra and extra:
             raise Param.ValueError(f'unexpected: {extra}', type = 'unexpected')
@@ -310,17 +327,18 @@ def post_proc(cb, shaper = None, on_success = None, on_error = None, errors = No
         except Exception as err:
             has_err = True
             if on_error and (not errors or isinstance(err, errors)):
-                on_error(err)
-            else:
-                raise
+                on_error(error = err)
+            # in `on_error` may doesnt rise
+            raise
         if not has_err:
-            if on_success: on_success(200)
+            if on_success:
+                on_success(200)
             if shaper:
                 ret = shaper(ret)
         return ret
     return inner
 
-def make_decorator(ctx):
+def make_decorator(ctx, *, with_context_init = True):
     def decor(src = None, fun = None):
         @functools.wraps(fun)
         def inner(**oargs):
@@ -331,7 +349,8 @@ def make_decorator(ctx):
                     raw_args[k] = v
                 else:
                     args[k] = v
-            ctx(**args)
+            if with_context_init:
+                ctx(**args)
             ctx_values = validator(ctx)
             [raw_args.update(_) for _ in ctx_values.values()]
             return fun(**raw_args)
@@ -340,9 +359,9 @@ def make_decorator(ctx):
             validator = Validator(src or fun)
             return post_proc(
                 inner,
-                shaper= lambda r: ctx.on('transform', r),
-                on_success= lambda *a, **kw : ctx.on('on_success', *a, **kw),
-                on_error= lambda *a, **kw: ctx.on('on_error', *a, **kw),
+                shaper= lambda r: ctx.emit('transform', r),
+                on_success= lambda *a, **kw : ctx.emit('on_success', *a, **kw),
+                on_error= lambda *a, **kw: ctx.emit('on_error', *a, **kw),
             )
         else:
             return lambda f: decor(src = src, fun = f)
@@ -363,9 +382,10 @@ class API:
     __current__ = None
     __ctx__ = None
     thread_safe = staticmethod(thread_safe)
+    ValueError = Param.ValueError
 
     @classmethod
-    def factory(cls, *, mounter = None):
+    def factory(cls, *, mounter = None) -> 'API':
         deps = dict(
             mounter = mounter,
         )
@@ -376,8 +396,13 @@ class API:
         return api
 
     @classmethod
-    def set_ctx(cls, ctx):
+    def set_context(cls, ctx):
         cls.__ctx__ = ctx
+
+    @property
+    def context(self):
+        return self.__class__.__ctx__
+
 
     @classmethod
     def proxy(cls, **name_cbs):
@@ -430,14 +455,14 @@ class API:
         self.handlers = {}
         self.api = None
 
-    def __call__(self, cls):
+    def __call__(self, cls) -> 'API':
         self.cls = cls
         self.__class__.__current__ = None
         return self
 
     @staticmethod
-    def make_filter(ctx_prop):
-        return Param(ctx_prop)
+    def make_filter(ctx_prop, **kw):
+        return Param(ctx_prop, **kw)
 
     def run(self, *args, **kw):
         raise RuntimeError('api is not premounted')
@@ -468,18 +493,19 @@ class API:
     def _mount(self, base_path, cls, mounter, ctx, args = None, kwargs = None):
         if not ctx:
             ctx = self.__ctx__
-        decorator = make_decorator(ctx)
         api = self.api = cls(*(args or []), **(kwargs or {}))
         api_init = getattr(api, 'on_request', None)
+        decorator = make_decorator(ctx, with_context_init = not api_init)
 
         def make_with_init(cb, route):
             @functools.wraps(cb)
             def with_init(*args, **kw):
                 route_ctx = dict(
-                    ctx = ctx,
+                    api_context = ctx,
                     route = route,
                     payload = (args[:], dict(**kw))
                 )
+                ctx(**kw)
                 api_init(route_ctx)
                 return cb(*args, **kw)
             return with_init
@@ -585,3 +611,118 @@ class API:
             return f
         return inner
 
+
+class APIContext:
+
+    def __call__(self, **args):
+        pass
+
+    def get(self, k):
+        pass
+
+    def __contains__(self, p):
+        pass
+
+    def emit(self, on_type, *args, **kw):
+        pass
+
+
+#########################################################################################
+# py4web adaptation
+#########################################################################################
+
+
+class FixturesSupplier:
+    @thread_safe('issued', safeguard = True)
+    def __init__(self, **fixtures):
+        self.fixtures = fixtures
+        self.issued = None
+        self.fixture_deps = dict()
+        [self._make_deps(f) for f in fixtures.values()]
+
+    def add_fixture(self, **fixtures):
+        self.fixtures.update(fixtures)
+        [self._make_deps(f) for f in fixtures.values()]
+
+    def _make_deps(self, fix):
+        if fix in self.fixture_deps:
+            return
+        deps = getattr(fix, "__prerequisites__", ())
+        if not deps:
+            self.fixture_deps[fix] = []
+            return
+        out = []
+        for dep in deps:
+            self._make_deps(dep)
+            out.extend(self.fixture_deps[dep])
+            out.append(dep)
+        out_uniq = []
+        [out_uniq.append(f) for f in out if f not in out_uniq]
+        self.fixture_deps[fix] = out_uniq
+
+    def on_request(self):
+        self.issued = []
+
+    def get(self, k, default = None):
+        if k in self.fixtures:
+            return self[k]
+        return default
+
+    def __getitem__(self, k):
+        f = self.fixtures[k]
+        if f not in self.issued:
+            for req_f in self.fixture_deps[f]:
+                req_f.on_request()
+                self.issued.append(req_f)
+            f.on_request()
+            self.issued.append(f)
+        return f
+
+    def emit(self, on_type, *args, **kw):
+        if on_type == 'transform':
+            ret = args[0]
+            for f in self.issued:
+                ret = getattr(f, on_type)(ret)
+            return ret
+        elif on_type == 'on_error':
+            [getattr(f, on_type)() for f in self.issued]
+        elif on_type == 'on_success':
+            status = args[0]
+            [getattr(f, on_type)(status) for f in self.issued]
+
+    def keys(self):
+        return self.fixtures.keys()
+
+
+class DefaultAPIContext(APIContext):
+    def __init__(self, request):
+        self.fsupplier = FixturesSupplier()
+        self.ctx = dict(
+            path = lambda: None,
+            query = lambda: request.query,
+            json = lambda: request.json,
+            form_data = lambda: request.POST,
+            form = lambda: request.forms,
+            files = lambda: request.files,
+            requset = lambda: request,
+            wsgi_env = lambda: request.environ,
+            headers = lambda: request.headers,
+
+            fixtures = lambda: self.fsupplier,
+        )
+
+    def __call__(self, **args):
+        self.fsupplier.on_request()
+        self.ctx['path'] = lambda: args
+
+    def get(self, k):
+        return self.ctx.get(k)()
+
+    def __contains__(self, p):
+        return p in self.ctx
+
+    def emit(self, on_type, *args, **kw):
+        return self.fsupplier.emit(on_type, *args, **kw)
+
+    def provide(self, **fixtures):
+        self.fsupplier.add_fixture(**fixtures)

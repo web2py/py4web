@@ -27,9 +27,11 @@ def thread_safe(*ts_names, safeguard = False, store_name = '__ts_store__'):
                 self.__class__.a = property(...)  # inject thread safe property
                 del self.__dict__['a']   # remove instance attr
     '''
+    ts_names = list(ts_names)
 
     def inner(init):
         class_patched = False
+
         def patch(self, ts_attrs):
             if not ts_attrs:
                 return
@@ -56,19 +58,19 @@ def thread_safe(*ts_names, safeguard = False, store_name = '__ts_store__'):
             if store_name in self.__dict__:
                 return init(self, *args, **kw)
             else:
-                self.__dict__[store_name] = threading.local()
+                store = self.__dict__[store_name] = threading.local()
 
             if class_patched:
+                # init store
+                [setattr(store, a, None) for a in ts_names]
                 return init(self, *args, **kw)
 
             attr_keys = list(self.__dict__.keys())
             ret = init(self, *args, **kw)
             if not ts_names:
                 new_attr_keys = self.__dict__.keys()
-                _ts_names = set(new_attr_keys) - set(attr_keys)
-            else:
-                _ts_names = ts_names
-            patch(self, _ts_names)
+                ts_names[:] = list(set(new_attr_keys) - set(attr_keys))
+            patch(self, ts_names)
             class_patched = True
             if safeguard:
                 __setattr__ = self.__class__.__setattr__
