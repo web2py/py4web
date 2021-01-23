@@ -5,6 +5,7 @@ import uuid
 import copy
 from py4web import request, response
 from py4web.utils.param import Param
+from pydal._compat import to_native
 from pydal.validators import Validator
 
 from yatl.helpers import (
@@ -217,7 +218,7 @@ class FormStyleFactory:
                     _type=field_type,
                     _id=input_id,
                     _name=field.name,
-                    _value=value,
+                    _value=None if field.type == "password" else value,
                     _class=field_class,
                     _placeholder=placeholder,
                     _title=title,
@@ -441,7 +442,7 @@ class Form(object):
             if self.record:
                 self.vars = self._read_vars_from_record(table)
         else:
-            post_vars = request.forms
+            post_vars = request.POST
             self.vars = copy.deepcopy(request.forms)
             self.submitted = True
             process = False
@@ -458,7 +459,7 @@ class Form(object):
                     for field in self.table:
                         if not field.name in post_vars: 
                             continue
-                        if field.writable and field.readable and field.type != "id":
+                        if field.writable and field.type != "id":
                             original_value = post_vars.getall(field.name)
                             if (
                                 isinstance(original_value, list)
@@ -535,9 +536,7 @@ class Form(object):
         payload = {"ts": str(time.time())}
         if self.lifespan is not None:
             payload["exp"] = time.time() + self.lifespan
-        self.formkey = jwt.encode(payload, self._get_key(), algorithm="HS256").decode(
-            "utf-8"
-        )
+        self.formkey = to_native(jwt.encode(payload, self._get_key(), algorithm="HS256"))
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""

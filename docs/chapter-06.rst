@@ -44,7 +44,7 @@ Also, fixtures can be applied in groups. For example:
 
 ::
 
-   preferred = action.uses(Session, Auth, T, Flash)
+   preferred = action.uses(session, auth, T, flash)
 
 Then you can apply all of the at once with:
 
@@ -123,7 +123,7 @@ By default the session object is stored in a cookie called, signed and
 encrypted, using the provided secret. If the secret changes existing
 sessions are invalidated. If the user switches from HTTP to HTTPS or
 vice versa, the user session is invalidated. Session in cookies have a
-small size limit (4Kbytes after being serialized and encrypted) so do
+small size limit (4 kbytes after being serialized and encrypted) so do
 not put too much into them.
 
 In py4web sessions are dictionaries but they are stored using JSON (JWT
@@ -195,7 +195,7 @@ Session in database
 A secret is not required when storing cookies in the database because in
 this case the cookie only contains the UUID of the session.
 
-Also this is one case when the a fixture (session) requires another
+Also this is one case when a fixture (session) requires another
 fixture (db). This is handled automatically by py4web and the following
 are equivalent:
 
@@ -346,7 +346,7 @@ The Flash helper handles the server side of them. Here is an example:
    flash = Flash()
 
    @action('index')
-   @action.uses(Flash)
+   @action.uses(flash)
    def index():
        flash.set("Hello World", _class="info", sanitize=True)
        return dict()
@@ -379,7 +379,7 @@ The client can also set/add flash messages by calling:
 
    utils.flash({'message': 'hello world', 'class': 'info'});
 
-py4web defaults to an alert class called ``default`` and most CSS
+py4web defaults to an alert class called ``info`` and most CSS
 frameworks define classes for alerts called ``success``, ``error``,
 ``warning``, ``default``, and ``info``. Yet, there is nothing in py4web
 that hardcodes those names. You can use your own class names.
@@ -494,7 +494,7 @@ then:
   transformation of the value returned by the ``index()`` function.
 
 
-Auth and Auth.user fixture
+auth and auth.user fixture
 --------------------------
 
 ``auth`` and ``auth.user`` are both fixtures. They depend on
@@ -538,8 +538,8 @@ exposes a single method:
 
 which returns a python dictionary containing the information of the
 currently logged in user. If the user is not logged-in, it returns
-``None`` and in this case the code of the example redirects to the ‘auth/login’
-page.
+``None`` and in this case the code of the example redirects to the
+``auth/login`` page.
 
 Since this check is very common, py4web provides an additional fixture
 ``auth.user``:
@@ -556,11 +556,11 @@ This fixture automatically redirects to the ``auth/login`` page if user
 is not logged-in. It depends on ``auth``, which depends on ``db`` and
 ``session``.
 
-The ``Auth`` fixture is plugin based and supports multiple plugin
-methods. They include Oauth2 (Google, Facebook, Twitter), PAM, LDAP, and
+The ``auth`` fixture is plugin based and supports multiple plugin
+methods. They include OAuth2 (Google, Facebook, Twitter), PAM, LDAP, and
 SMAL2.
 
-Here is an example of using the Google Oauth2 plugin:
+Here is an example of using the Google OAuth2 plugin:
 
 .. code:: python
 
@@ -570,10 +570,10 @@ Here is an example of using the Google Oauth2 plugin:
        client_secret='...',
        callback_url='auth/plugin/oauth2google/callback'))
 
-The ``client_id`` and ``client_secret`` are provided by google. The
+The ``client_id`` and ``client_secret`` are provided by Google. The
 callback url is the default option for py4web and it must be whitelisted
 with Google.
-All ``Auth`` plugins are objects. Different plugins are
+All ``auth`` plugins are objects. Different plugins are
 configured in different ways but they are registered using
 ``auth.register_plugin(...)``. Examples are provided in
 ``_scaffold/common.py``.
@@ -581,8 +581,8 @@ configured in different ways but they are registered using
 Caching and Memoize
 -------------------
 
-py4web provides a cache in ram object that implements the Last Recently
-Used (LRU) Algorithm. It can be used to cache any function via a
+py4web provides a cache in RAM object that implements the last recently
+used (LRU) algorithm. It can be used to cache any function via a
 decorator:
 
 .. code:: python
@@ -599,12 +599,12 @@ decorator:
 It will cache (memoize) the return value of the ``hello`` function, as
 function of the input ``name``, for up to 60 seconds. It will store in
 cache the 1000 most recently used values. The data is always stored in
-ram.
+RAM.
 
-The Cache object is not a fixture and it should not and cannot be
-registered using the ``@action.uses`` object but we mention it here
+The ``cache`` object is not a fixture and it should not and cannot be
+registered using the ``@action.uses`` decorator but we mention it here
 because some of the fixtures use this object internally. For example,
-template files are cached in ram to avoid accessing the file system
+template files are cached in RAM to avoid accessing the file system
 every time a template needs to be rendered.
 
 Convenience Decorators
@@ -629,7 +629,7 @@ and
 
 They apply all of the decorators below, use a template with the same
 name as the function (.html), and also register a route with the name of
-action followed the number of arguments of the action separated by a
+action followed by the number of arguments of the action separated by a
 slash (/).
 
 @unauthenticated does not require the user to be logged in.

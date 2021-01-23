@@ -82,10 +82,10 @@ auth = Auth(session, db, define_tables=False)
 auth.use_username = True
 auth.param.registration_requires_confirmation = settings.VERIFY_EMAIL
 auth.param.registration_requires_approval = settings.REQUIRES_APPROVAL
-auth.allowed_actions = settings.ALLOWED_ACTIONS
-auth.login_expiration_time = 3600
-auth.password_complexity = {"entropy": 50}
-auth.block_previous_password_num = 3
+auth.param.allowed_actions = settings.ALLOWED_ACTIONS
+auth.param.login_expiration_time = 3600
+auth.param.password_complexity = {"entropy": 50}
+auth.param.block_previous_password_num = 3
 auth.define_tables()
 
 # #######################################################
@@ -160,7 +160,7 @@ if settings.UPLOAD_FOLDER:
     @action.uses(db)                                                                                           
     def download(filename):
         return downloader(db, settings.UPLOAD_FOLDER, filename) 
-    # To take advtange of this in Form(s)
+    # To take advantage of this in Form(s)
     # for every field of type upload you MUST specify:
     #
     # field.upload_path = settings.UPLOAD_FOLDER
@@ -172,8 +172,8 @@ if settings.UPLOAD_FOLDER:
 if settings.USE_CELERY:
     from celery import Celery
 
-    # to use from . common import scheduled and then use it accoding to celery docs
-    # examples in tasks.py
+    # to use "from .common import scheduler" and then use it according
+    # to celery docs, examples in tasks.py
     scheduler = Celery(
         "apps.%s.tasks" % settings.APP_NAME, broker=settings.CELERY_BROKER
     )

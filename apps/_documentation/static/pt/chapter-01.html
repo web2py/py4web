@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>O que é py4web? &mdash; Documentação py4web 1.20201127.1
+  <title>O que é py4web? &mdash; Documentação py4web 1.20210119.1&#34;
 </title>
   
 
@@ -31,7 +31,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/js/toggle.js"></script>
         <script src="_static/translations.js"></script>
     
@@ -65,7 +64,7 @@
             
             
               <div class="version">
-                1.20201127.1
+                1.20210119.1"
 
               </div>
             
@@ -93,13 +92,16 @@
             
               <p class="caption"><span class="caption-text">Conteúdo:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">O que é py4web?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">O que é py4web?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#acknowledegments">Acknowledegments</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">A camada de abstracção de banco de dados (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-08.html">A RESTAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a></li>
@@ -186,7 +188,13 @@
 <li><p>Nós quebramos web2py em módulos que podem ser usados ​​de forma independente.</p></li>
 <li><p>Nós reagrupados alguns desses módulos em uma nova e mais modular quadro … PY4WEB.</p></li>
 </ul>
-<p>PY4WEB é mais do que uma reembalagem desses módulos. É uma completa remodelação. Ele usa alguns dos módulos web2py, mas não todos eles. Em alguns casos, ele usa outras e melhores módulos. Alguns funcionalidade foi removido e foi adicionado alguns. Nós tentamos preservar a maior parte da sintaxe e recursos que os usuários web2py experientes amado. Aqui está uma lista mais explícito:</p>
+<p>PY4WEB is more than a repackaging of those modules. It is a complete
+redesign. It uses some of the web2py modules, but not all of them. In
+some cases, it uses other and better modules. Some functionality was
+removed and some was added. We tried to preserve most of the syntax and
+features that experienced web2py users loved.</p>
+<p>Here is a more explicit list (see <a class="reference internal" href="chapter-15.html#from-web2py-to-py4web"><span class="std std-ref">De web2py para py4web</span></a> for more
+details if you come from web2py):</p>
 <ul class="simple">
 <li><p>PY4WEB, ao contrário web2py, requer Python 3.</p></li>
 <li><p>PY4WEB, ao contrário web2py, pode ser instalado usando pip e suas dependências são gerenciados usando requirements.txt.</p></li>
@@ -207,6 +215,23 @@
 <li><p>PY4WEB vem com com alguns componentes personalizados Vue.js projetados para interagir com o PyDAL RESTAPI, e com PY4WEB em geral. Essas APIs são projetados para permitir que o servidor para definir políticas sobre quais operações um cliente é permitido para executar, mas dá a flexibilidade cliente dentro dessas restrições. Os dois principais componentes são mtable (que fornece uma interface baseada na web para o banco de dados semelhante à grade do web2py) e auth (uma interface personalizável à API Auth).</p></li>
 </ul>
 <p>O objetivo do PY4WEB é e continua a ser o mesmo que web2py de: para o desenvolvimento web make fácil e acessível, enquanto a produção de aplicações que são rápidos e seguros.</p>
+<div class="section" id="acknowledegments">
+<h2>Acknowledegments<a class="headerlink" href="#acknowledegments" title="Link permanente para este título">¶</a></h2>
+<p>py4web is supported by a growing community of developers and even simple users.
+Many thanks to everybody, and especially:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mdipierro">Massimo Di Pierro</a></p></li>
+<li><p><a class="reference external" href="https://github.com/cassiobotaro">Cassio Botaro</a></p></li>
+<li><p><a class="reference external" href="https://github.com/dan-carroll">Dan Carroll</a></p></li>
+<li><p><a class="reference external" href="https://github.com/jpsteil">Jim Steil</a></p></li>
+<li><p><a class="reference external" href="https://github.com/jmwolff3">John M. Wolf</a></p></li>
+<li><p><a class="reference external" href="https://github.com/MBfromOK">Micah Beasley</a></p></li>
+<li><p><a class="reference external" href="https://github.com/nicozanf">Nico Zanferrari</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Pirsch">Pirsch</a></p></li>
+<li><p><a class="reference external" href="https://github.com/sugizo">sugizo</a></p></li>
+<li><p><a class="reference external" href="https://github.com/valq7711">valq7711</a></p></li>
+</ul>
+</div>
 </div>
 
 
@@ -263,7 +288,7 @@
      <label for="switch"></label>
      </span>
       
-      v: 1.20201127.1
+      v: 1.20210119.1"
 
       <span class="fa fa-caret-down"></span>
     </span>

@@ -13,6 +13,7 @@ pydal >= 20200910.1
 python-memcached # used for testing or for optionally actually accessing memcache
 watchgod >= 0.6
 
-### optonal only for documntation ###
+### optional, used for documentation only ###
 # sphinx
 # sphinx_rtd_theme
+# rinohtype

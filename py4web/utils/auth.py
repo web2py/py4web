@@ -17,6 +17,7 @@ from yatl.helpers import INPUT, A, DIV
 from pydal.validators import (
     IS_EMAIL,
     CRYPT,
+    IS_EQUAL_TO,
     IS_NOT_EMPTY,
     IS_NOT_IN_DB,
     IS_STRONG,
@@ -124,6 +125,30 @@ class Auth(Fixture):
             "email-verified": "Email verified",
             "link-expired": "Link expired",
         },
+        "labels": {
+            "username": "Username",
+            "email": "Email",
+            "first_name": "First Name",
+            "last_name": "Last Name",
+            "phone_number": "Phone Number",
+            "username_or_email": "Username or Email",
+            "password": "Password",
+            "new_password": "New Password",
+            "old_password": "Old Password",
+            "login_password": "Password",
+            "password_again": "Password (again)",
+            "created_on": "Created On",
+            "created_by": "Created By",
+            "modified on": "Modified On",
+            "modified by": "Modified By",
+        },
+        "buttons": {
+            "register": "Register",
+            "request": "Request",
+            "sign-in": "Sign In",
+            "sign-up": "Sign Up",
+            "submit": "Submit",
+        },
     }
 
     def __init__(
@@ -186,6 +211,12 @@ class Auth(Fixture):
         self.form_source = DefaultAuthForms(self)
         self.flash = Flash()
 
+    def allows(self, action_name):
+        return (
+            "all" in self.param.allowed_actions
+            or action_name in self.param.allowed_actions
+        )
+
     def transform(self, output, shared_data):
         if self.inject:
             template_context = shared_data.get("template_context")
@@ -206,6 +237,7 @@ class Auth(Fixture):
                     "email",
                     requires=(IS_EMAIL(), IS_NOT_IN_DB(db, "auth_user.email")),
                     unique=True,
+                    label=self.messages["labels"].get("email"),
                 ),
                 Field(
                     "password",
@@ -213,9 +245,18 @@ class Auth(Fixture):
                     requires=requires,
                     readable=False,
                     writable=False,
+                    label=self.messages["labels"].get("password"),
                 ),
-                Field("first_name", requires=ne),
-                Field("last_name", requires=ne),
+                Field(
+                    "first_name",
+                    requires=ne,
+                    label=self.messages["labels"].get("first_name"),
+                ),
+                Field(
+                    "last_name",
+                    requires=ne,
+                    label=self.messages["labels"].get("last_name"),
+                ),
                 Field("sso_id", readable=False, writable=False),
                 Field("action_token", readable=False, writable=False),
                 Field(
@@ -233,6 +274,7 @@ class Auth(Fixture):
                         "username",
                         requires=[ne, IS_NOT_IN_DB(db, "auth_user.username")],
                         unique=True,
+                        label=self.messages["labels"].get("username"),
                     ),
                 )
             if self.use_phone_number:
@@ -244,6 +286,7 @@ class Auth(Fixture):
                             ne,
                             IS_MATCH(r"^[+]?(\(\d+\)|\d+)(\(\d+\)|\d+|[ -])+$"),
                         ],
+                        label=self.messages["labels"].get("phone_number"),
                     ),
                 )
             if self.param.block_previous_password_num is not None:
@@ -263,13 +306,21 @@ class Auth(Fixture):
         now = lambda: datetime.datetime.utcnow()
         user = lambda s=self: s.get_user().get("id")
         fields = [
-            Field("created_on", "datetime", default=now, writable=False, readable=True),
+            Field(
+                "created_on",
+                "datetime",
+                default=now,
+                writable=False,
+                readable=True,
+                label=self.messages["labels"].get("created_on"),
+            ),
             Field(
                 "created_by",
                 "reference auth_user",
                 default=user,
                 writable=False,
                 readable=True,
+                label=self.messages["labels"].get("created_by"),
             ),
             Field(
                 "modified_on",
@@ -278,6 +329,7 @@ class Auth(Fixture):
                 default=now,
                 writable=False,
                 readable=True,
+                label=self.messages["labels"].get("modified_on"),
             ),
             Field(
                 "modified_by",
@@ -286,8 +338,16 @@ class Auth(Fixture):
                 update=user,
                 writable=False,
                 readable=True,
+                label=self.messages["labels"].get("modified_by"),
             ),
-            Field("is_active", "boolean", default=True, readable=False, writable=False),
+            Field(
+                "is_active",
+                "boolean",
+                default=True,
+                readable=False,
+                writable=False,
+                label=self.messages["labels"].get("is_active"),
+            ),
         ]
         return fields
 
@@ -346,16 +406,20 @@ class Auth(Fixture):
 
     # Methods that do not assume a user
 
-    def register(self, fields, send=True, next=""):
+    def register(self, fields, send=True, next="", validate=True):
         if self.use_username:
             fields["username"] = fields.get("username", "").lower()
         fields["email"] = fields.get("email", "").lower()
+        def store(fields):
+            if validate:
+                return self.db.auth_user.validate_and_insert(**fields)
+            return dict(id=self.db.auth_user.insert(**fields))
         if self.param.registration_requires_confirmation:
             token = str(uuid.uuid4())
             if next:
                 token += "/" + b16e(next)
             fields["action_token"] = "pending-registration:%s" % token
-            res = self.db.auth_user.validate_and_insert(**fields)
+            res = store(fields)
             if send and res.get("id"):
                 self._link = link = URL(
                     self.route,
@@ -367,20 +431,20 @@ class Auth(Fixture):
                 self.send("verify_email", fields, link=link)
         elif self.param.registration_requires_approval:
             fields["action_token"] = "pending-approval"
-            res = self.db.auth_user.validate_and_insert(**fields)
+            res = store(fields)
         else:
             fields["action_token"] = ""
-            res = self.db.auth_user.validate_and_insert(**fields)
+            res = store(fields)
             if self.param.login_after_registration and not res.get("errors"):
                 self.store_user_in_session(res["id"])
         return res
 
     def login(self, email, password):
         db = self.db
-        if 'email_auth' in self.plugins:
+        if "email_auth" in self.plugins:
             email = email.lower()
-            if self.plugins['email_auth'].validate_credentials(email, password):
-                user = db(db.auth_user.email==email).select().first()
+            if self.plugins["email_auth"].validate_credentials(email, password):
+                user = db(db.auth_user.email == email).select().first()
                 return (user, None)
             else:
                 return None, "Invalid Credentials"
@@ -448,11 +512,9 @@ class Auth(Fixture):
         query = self._query_from_token(token)
         user = db(query).select().first()
         if user:
-            return (
-                db(db.auth_user.id == user.get("id"))
-                .validate_and_update(password=new_password)
-                .as_dict()
-            )
+            qset = db(db.auth_user.id == user.get("id"))
+            res = qset.validate_and_update(password=new_password).as_dict()
+            return res
 
     # Methods that assume a user
 
@@ -481,7 +543,7 @@ class Auth(Fixture):
                 if any(new_pwd == old_pwd for old_pwd in past_pwds):
                     return {"errors": {"new_password": "new password was already used"}}
                 else:
-                    past_pwds.insert(0, pwd)
+                    past_pwds.insert(0, user.get("password"))
                     db(db.auth_user.id == user.get("id")).update(
                         past_passwords_hash=past_pwds
                     )
@@ -880,23 +942,38 @@ class DefaultAuthForms:
         fields = [field for field in self.auth.db.auth_user if field.writable]
         for k, field in enumerate(fields):
             if field.type == "password":
-                fields.insert(k + 1, Field("password_again", "password"))
+                fields.insert(
+                    k + 1,
+                    Field(
+                        "password_again",
+                        "password",
+                        requires=IS_EQUAL_TO(request.forms.get("password")),
+                        label=self.auth.messages["labels"].get("password_again"),
+                    ),
+                )
                 break
-        form = Form(fields, submit_value="Sign Up", formstyle=self.formstyle)
+        button_name = self.auth.messages["buttons"]["sign-up"]
+        form = Form(fields, submit_value=button_name, formstyle=self.formstyle)
         user = None
-        if form.submitted:
-            res = self.auth.register(form.vars)
-            form.accepted = not res.get("errors")
-            form.errors = res.get("errors")
-            if not form.errors:
-                self._set_flash("user-registered")
-                self._postprocessing("register", form, user)
-                if self.auth.param.login_after_registration:
-                    redirect("login")
+        if form.accepted:
+            # notice that here the form is alrealdy validated
+            res = self.auth.register(form.vars, validate=False)
+            form.errors.update(**res.get("errors", {}))
+            form.accepted = not form.errors
+        if form.accepted:
+            self._set_flash("user-registered")
+            self._postprocessing("register", form, user)
+            if self.auth.param.login_after_registration:
+                redirect("login")
         form.param.sidecar.append(
-            A("Sign In", _href="../auth/login", _class="info", _role="button")
+            A(
+                self.auth.messages["buttons"]["sign-in"],
+                _href="../auth/login",
+                _class="info",
+                _role="button",
+            )
         )
-        if 'request_reset_password' in self.auth.param.allowed_actions:
+        if self.auth.allows("request_reset_password"):
             form.param.sidecar.append(
                 A(
                     "Lost Password",
@@ -908,14 +985,28 @@ class DefaultAuthForms:
         return form
 
     def login(self):
-        fields = [Field("username",), Field("login_password", type="password")]
+        fields = [
+            Field(
+                "username",
+            ),
+            Field(
+                "login_password",
+                type="password",
+                label=self.auth.messages["labels"].get("password"),
+            ),
+        ]
         if self.auth.use_username:
             fields[0].label = self.auth.db.auth_user.username.label
         else:
             fields[0].label = self.auth.db.auth_user.email.label
         fields[1].label = self.auth.db.auth_user.password.label
 
-        form = Form(fields, submit_value="Sign In", formstyle=self.formstyle,)
+        button_name = self.auth.messages["buttons"]["sign-in"]
+        form = Form(
+            fields,
+            submit_value=button_name,
+            formstyle=self.formstyle,
+        )
         user = None
         self.auth.next["login"] = request.query.get("next")
         if form.submitted:
@@ -934,11 +1025,11 @@ class DefaultAuthForms:
                 url = url + "?next=" + self.auth.next["login"]
             top_buttons.append(A(plugin.label + " Login", _href=url, _role="button"))
 
-        if "register" in self.auth.param.allowed_actions:
+        if self.auth.allows("register"):
             form.param.sidecar.append(
                 A("Sign Up", _href="../auth/register", _class="info", _role="button")
             )
-        if "request_reset_password" in self.auth.param.allowed_actions:
+        if self.auth.allows("request_reset_password"):
             form.param.sidecar.append(
                 A(
                     "Lost Password",
@@ -952,8 +1043,12 @@ class DefaultAuthForms:
 
     def request_reset_password(self):
         form = Form(
-            [Field("email", label="Username or Email")],
-            submit_value="Request",
+            [
+                Field(
+                    "email", label=self.auth.messages["labels"].get("username_or_email")
+                )
+            ],
+            submit_value=self.auth.messages["buttons"]["request"],
             formstyle=self.formstyle,
         )
         if form.submitted:
@@ -962,11 +1057,22 @@ class DefaultAuthForms:
             self._set_flash("password-reset-link-sent")
             self._postprocessing("request_reset_password", form, None)
         form.param.sidecar.append(
-            A("Sign In", _href="../auth/login", _class="info", _role="button")
+            A(
+                self.auth.messages["buttons"]["sign-in"],
+                _href="../auth/login",
+                _class="info",
+                _role="button",
+            )
         )
-        form.param.sidecar.append(
-            A("Sign Up", _href="../auth/register", _class="info", _role="button")
-        )
+        if self.auth.allows("register"):
+            form.param.sidecar.append(
+                A(
+                    self.auth.messages["buttons"]["sign-up"],
+                    _href="../auth/register",
+                    _class="info",
+                    _role="button",
+                )
+            )
         return form
 
     def reset_password(self):
@@ -983,10 +1089,17 @@ class DefaultAuthForms:
                     "new_password",
                     type="password",
                     requires=self.auth.db.auth_user.password.requires,
+                    label=self.auth.messages["labels"].get("new_password"),
                 ),
-                Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
+                Field(
+                    "new_password_again",
+                    type="password",
+                    requires=IS_EQUAL_TO(request.forms.get("new_password")),
+                    label=self.auth.messages["labels"].get("password_again"),
+                ),
             ],
             formstyle=self.formstyle,
+            submit_value=self.auth.messages["buttons"]["submit"],
         )
         self._process_change_password_form(form, user)
         if form.accepted:
@@ -998,15 +1111,27 @@ class DefaultAuthForms:
         user = self.auth.db.auth_user(self.auth.user_id)
         form = Form(
             [
-                Field("old_password", type="password", requires=IS_NOT_EMPTY()),
+                Field(
+                    "old_password",
+                    type="password",
+                    requires=IS_NOT_EMPTY(),
+                    label=self.auth.messages["labels"].get("old_password"),
+                ),
                 Field(
                     "new_password",
                     type="password",
                     requires=self.auth.db.auth_user.password.requires,
+                    label=self.auth.messages["labels"].get("new_password"),
                 ),
-                Field("new_password_again", type="password", requires=IS_NOT_EMPTY()),
+                Field(
+                    "new_password_again",
+                    type="password",
+                    requires=IS_EQUAL_TO(request.forms.get("new_password")),
+                    label=self.auth.messages["labels"].get("password_again"),
+                ),
             ],
             formstyle=self.formstyle,
+            submit_value=self.auth.messages["buttons"]["submit"],
         )
         self._process_change_password_form(form, user)
         if form.accepted:
@@ -1015,27 +1140,20 @@ class DefaultAuthForms:
         return form
 
     def _process_change_password_form(self, form, user):
-        if form.submitted:
+        if form.accepted:
             old_password = request.forms.get("old_password")
             new_password = request.forms.get("new_password")
-            new_password_again = request.forms.get("new_password_again")
-            if new_password_again != new_password:
-                form.errors["new_password_again"] = "Passwords do not match"
+            res = self.auth.change_password(
+                user,
+                new_password,
+                old_password,
+                check=True,
+                check_old_password=False,
+            )
+            form.errors = res.get("errors", {})
+            form.accepted = not form.errors
+            if not form.accepted:
                 form.vars.clear()
-                form.accepted = False
-            else:
-                res = self.auth.change_password(
-                    user,
-                    new_password,
-                    old_password,
-                    check=True,
-                    check_old_password=False,
-                )
-                form.errors = res.get("errors", {})
-                form.accepted = not form.errors
-                print(form.errors)
-                if not form.accepted:
-                    form.vars.clear()
 
     def profile(self):
         user = self.auth.db.auth_user(self.auth.user_id)
@@ -1044,7 +1162,11 @@ class DefaultAuthForms:
         else:
             self.auth.db.auth_user.email.writable = False
         form = Form(
-            self.auth.db.auth_user, user, formstyle=self.formstyle, deletable=False
+            self.auth.db.auth_user,
+            user,
+            formstyle=self.formstyle,
+            deletable=False,
+            submit_value=self.auth.messages["buttons"]["submit"],
         )
         if form.accepted:
             self._set_flash("profile-saved")

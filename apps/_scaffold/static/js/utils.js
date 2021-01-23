@@ -28,10 +28,17 @@ Q.get_query = function (source) {
 
 // a wrapper for fetch return a promise
 Q.ajax = function(method, url, data, headers) {
-    var options = {method: method,
-                   referrerPolicy: 'no-referrer', 
-                   headers: {'Content-type': 'application/json'}}
-    if (data) options.body = JSON.stringify(data);
+    var options = {
+        method: method,
+        referrerPolicy: 'no-referrer',
+    }
+    if (data){
+        if ( !(data instanceof FormData)){
+            options.headers = {'Content-type': 'application/json'};
+            data = JSON.stringify(data);
+        }
+        options.body = data;
+    }
     if (headers) for(var name in headers) options.headers[name] = headers[name];
     return new Promise(function(resolve, reject) {
             fetch(url, options).then(function(res){
@@ -42,7 +49,6 @@ Q.ajax = function(method, url, data, headers) {
                         }, reject);}).catch(reject);
     });
 }
-
 // Gets a cookie value
 Q.get_cookie = function (name) {
     var cookie = RegExp("" + name + "[^;]+").exec(document.cookie);
@@ -259,8 +265,9 @@ Q.tags_input = function(elem, options) {
       inp.placeholder = options.placeholder;
       inp.setAttribute('list',  options.autocomplete_list);
       inp.onchange = function(evt) {
-        inp.value.split(',').map(function(x){ 
-          x = options.transform(x.trim());
+        inp.value.split(',').map(function(x){
+	  x = options.transform(x.trim());
+	  if (options.regex && !x.match(options.regex)) return;
           if (x && tags.indexOf(x)<0) tags.push(x); 
           if (x && keys.indexOf(x)<0) keys.push(x); 
         });
@@ -369,4 +376,5 @@ Q.handle_flash = function() {
 Q.handle_components();
 Q.handle_flash();
 Q('input[type=text].type-list-string').forEach(function(elem){Q.tags_input(elem);});
+Q('input[type=text].type-list-integer').forEach(function(elem){Q.tags_input(elem, {regex:/[-+]?[\d]+/});});
 Q('input[name=password],input[name=new_password]').forEach(Q.score_input);

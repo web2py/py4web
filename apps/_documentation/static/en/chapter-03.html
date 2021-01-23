@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation and Startup &mdash; py4web 1.20201127.1
+  <title>Installation and Startup &mdash; py4web 1.20210119.1&#34;
  documentation</title>
   
 
@@ -31,7 +31,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/js/toggle.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -64,7 +63,7 @@
             
             
               <div class="version">
-                1.20201127.1
+                1.20210119.1"
 
               </div>
             
@@ -126,7 +125,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The database abstraction layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
@@ -285,18 +284,16 @@ py4web run apps
 </pre></div>
 </div>
 <p>Also notice that when installing in this way the content of
-py4web/assets folder is missing at first but it is manually created
-later with the ‘make assets’ command.</p>
+<code class="docutils literal notranslate"><span class="pre">py4web/assets</span></code> folder is missing at first but it is manually created
+later with the <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">assets</span></code> command.</p>
 </div>
 <div class="section" id="installing-from-source-locally">
 <h3>Installing from source (locally)<a class="headerlink" href="#installing-from-source-locally" title="Permalink to this headline">¶</a></h3>
-<div class="line-block">
-<div class="line">In this way all the requirements will be installed or upgraded on the
-system’s path, but py4web itself will only be copied</div>
-<div class="line">on a local folder. This is especially useful if you already have a
-working py4web installation but you want to test a different</div>
-<div class="line">one. From the command line, go to a given working folder and then run</div>
-</div>
+<p>In this way all the requirements will be installed or upgraded on the
+system’s path, but py4web itself will only be copied
+on a local folder. This is especially useful if you already have a
+working py4web installation but you want to test a different
+one. From the command line, go to a given working folder and then run</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
 <span class="nb">cd</span> py4web
 python3 -m pip install  --upgrade -r requirements.txt
@@ -350,7 +347,7 @@ again.</p>
 <h2>First run<a class="headerlink" href="#first-run" title="Permalink to this headline">¶</a></h2>
 <p>Running py4web using any of the previous procedure should produce an
 output like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># py4web run apps</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web run apps
 </pre></div>
 </div>
 <img alt="_images/first_run.png" class="with-shadow" src="_images/first_run.png" />
@@ -368,9 +365,9 @@ to avoid conflicts with apps created by you.</p>
 </div>
 <p>Once py4web is running you can access a specific app at the following
 urls:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span>
-<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">_dashboard</span>
-<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="p">{</span><span class="n">yourappname</span><span class="p">}</span><span class="o">/</span><span class="n">index</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http://localhost:8000
+http://localhost:8000/_dashboard
+http://localhost:8000/{yourappname}/index
 </pre></div>
 </div>
 <p>In order to stop py4web, you need to hit <kbd class="kbd docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">C</kbd></kbd> on the window where you run it.</p>
@@ -380,12 +377,17 @@ urls:</p>
 In general you may want to symlink <code class="docutils literal notranslate"><span class="pre">apps/_default</span></code> to your default app.</p>
 </div>
 <p>For all apps the trailing <code class="docutils literal notranslate"><span class="pre">/index</span></code> is optional.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For Windows: it could be that <code class="docutils literal notranslate"><span class="pre">Ctrl-C</span></code> does not work in order to stop py4web.
+In this case, try with <code class="docutils literal notranslate"><span class="pre">Ctrl-Break</span></code> or <code class="docutils literal notranslate"><span class="pre">Ctrl-Fn-Pause</span></code>.</p>
+</div>
 </div>
 <div class="section" id="command-line-options">
 <h2>Command line options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h2>
 <p>py4web provides multiple command line options which can be listed by
 running it without any argument</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># py4web</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web
 </pre></div>
 </div>
 <img alt="_images/command.png" class="with-shadow" src="_images/command.png" />
@@ -407,7 +409,7 @@ Options:
 <div class="section" id="new-app-command-option">
 <span id="id2"></span><h3><code class="docutils literal notranslate"><span class="pre">new_app</span></code> command option<a class="headerlink" href="#new-app-command-option" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web new_app -h
-Usage: py4web.py new_app [OPTIONS] [APPS_FOLDER] APP_NAME
+Usage: py4web.py new_app [OPTIONS] APPS_FOLDER APP_NAME
 
   Create a new app copying the scaffolding one
 
@@ -436,12 +438,13 @@ Options:
                                 password.txt]
 
   -w, --number_workers INTEGER  Number of workers  [default: 0]
-  -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
-                                (default), none  [default: full]
+  -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
+                                [default: full]
 
   --watch [off|sync|lazy]       Watch python changes and reload apps
-                                automatically, modes: off (default), sync,
-                                lazy
+                                automatically, modes: off, sync, lazy
+                                [default: off]
+
   --ssl_cert PATH               SSL certificate file for HTTPS
   --ssl_key PATH                SSL key file for HTTPS
   -help, -h, --help             Show this message and exit.
@@ -487,7 +490,7 @@ custom file name with</p>
 </pre></div>
 </div>
 <p>Finally you can manually create the file yourself with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 -c &quot;from pydal.validators import CRYPT; open(&#39;password.txt&#39;,&#39;w&#39;).write(str(CRYPT()(input(&#39;password:&#39;))[0]))&quot;
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ python3 -c &quot;from pydal.validators import CRYPT; open(&#39;password.txt&#39;,&#39;w&#39;).write(str(CRYPT()(input(&#39;password:&#39;))[0]))&quot;
 password: *****
 </pre></div>
 </div>
@@ -563,20 +566,20 @@ create a new project. You will obtain a project id that looks like
 </div>
 <p>Copy the example files from py4web (assuming you have the source from
 github)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">py4web</span><span class="o">/</span><span class="n">development_tools</span><span class="o">/</span><span class="n">gcloud</span><span class="o">/*</span> <span class="o">./</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cp /path/to/py4web/development_tools/gcloud/* ./
 </pre></div>
 </div>
 <p>Copy or symlink your <code class="docutils literal notranslate"><span class="pre">apps</span></code> folder into the gae folder, or maybe make
 a new apps folder containing an empty <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> and symlink the
 individual apps you want to deploy. You should see the following
 files/folders:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Makefile</span>
-<span class="n">apps</span>
-  <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
-  <span class="o">...</span> <span class="n">your</span> <span class="n">apps</span> <span class="o">...</span>
-<span class="n">lib</span>
-<span class="n">app</span><span class="o">.</span><span class="n">yaml</span>
-<span class="n">main</span><span class="o">.</span><span class="n">py</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Makefile
+apps
+  __init__.py
+  ... your apps ...
+lib
+app.yaml
+main.py
 </pre></div>
 </div>
 <p>Install the Google SDK, py4web and setup the working folder:</p>
@@ -660,7 +663,7 @@ tutorial on
      <label for="switch"></label>
      </span>
       
-      v: 1.20201127.1
+      v: 1.20210119.1"
 
       <span class="fa fa-caret-down"></span>
     </span>

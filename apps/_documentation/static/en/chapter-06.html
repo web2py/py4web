@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fixtures &mdash; py4web 1.20201127.1
+  <title>Fixtures &mdash; py4web 1.20210119.1&#34;
  documentation</title>
   
 
@@ -31,7 +31,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/js/toggle.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -39,7 +38,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="The database abstraction layer (DAL)" href="chapter-07.html" />
+    <link rel="next" title="The Database Abstraction Layer (DAL)" href="chapter-07.html" />
     <link rel="prev" title="Creating your first app" href="chapter-05.html" /> 
 </head>
 
@@ -64,7 +63,7 @@
             
             
               <div class="version">
-                1.20201127.1
+                1.20210119.1"
 
               </div>
             
@@ -100,24 +99,24 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Fixtures</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#important-about-fixtures">Important about Fixtures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#py4web-templates">Py4web templates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#sessions">Sessions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-session-fixture">The Session fixture</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#session-in-memcache">Session in memcache</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#session-in-redis">Session in redis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#session-in-database">Session in database</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#session-anywhere">Session anywhere</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#translator">Translator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-translator-fixture">The Translator fixture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-flash-fixture">The Flash fixture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-dal-fixture">The DAL fixture</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#caveats-about-fixtures">Caveats about Fixtures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caveats-about-fixtures">Caveats about fixtures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-fixtures">Custom fixtures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#auth-and-auth-user">Auth and Auth.user</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#auth-and-auth-user-fixture">auth and auth.user fixture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#caching-and-memoize">Caching and Memoize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#convenience-decorators">Convenience Decorators</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The database abstraction layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
@@ -223,22 +222,24 @@ Developer is also free to add fixtures, for example, to handle a third
 party template language or third party session logic.</p>
 <div class="section" id="important-about-fixtures">
 <h2>Important about Fixtures<a class="headerlink" href="#important-about-fixtures" title="Permalink to this headline">¶</a></h2>
-<p>In the examples below we will explain how to apply individual fixtures.
-In practice fixtures can be applied in groups. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">preferred</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">Session</span><span class="p">,</span> <span class="n">Auth</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">Flash</span><span class="p">)</span>
+<p>As we’ve seen in the previous chapter, fixtures are the arguments of the decorator
+<code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code>. You can specify
+multiple fixtures in one decorator or you can have multiple decorators.</p>
+<p>Also, fixtures can be applied in groups. For example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>preferred = action.uses(session, auth, T, flash)
 </pre></div>
 </div>
 <p>Then you can apply all of the at once with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
-<span class="nd">@preferred</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@action(&#39;index.html&#39;)
+@preferred
+def index():
+    return dict()
 </pre></div>
 </div>
 </div>
 <div class="section" id="py4web-templates">
 <h2>Py4web templates<a class="headerlink" href="#py4web-templates" title="Permalink to this headline">¶</a></h2>
-<p>PY4WEB, by default uses the yatl template language and provides a
+<p>PY4WEB by default uses the yatl template language and provides a
 fixture for it.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span>
 <span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">Template</span>
@@ -266,20 +267,24 @@ syntactic sugar, and the two following lines are equivalent:</p>
 <p>Notice that py4web template files are cached in RAM. The py4web caching
 object is described later.</p>
 </div>
-<div class="section" id="sessions">
-<h2>Sessions<a class="headerlink" href="#sessions" title="Permalink to this headline">¶</a></h2>
-<p>The session object is also a Fixture. Here is a typical example of usage
+<div class="section" id="the-session-fixture">
+<h2>The Session fixture<a class="headerlink" href="#the-session-fixture" title="Permalink to this headline">¶</a></h2>
+<p>Simply speaking, a session can be defined as a way to preserve information that is
+desired to persist throughout the user’s interaction with the web site or web application.
+In other words, sessions render the stateless HTTP connection a stateful one.
+It can be implemented server-side or client-side (by using cookies).</p>
+<p>In py4web, the session object is also a Fixture. Here is a typical example of usage
 to implement a counter.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">action</span>
-<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">secret</span><span class="o">=</span><span class="s1">&#39;my secret key&#39;</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from py4web import Session, action
+session = Session(secret=&#39;my secret key&#39;)
 
-<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="n">counter</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;counter&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">counter</span>
-    <span class="k">return</span> <span class="s2">&quot;counter = </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">counter</span>
+@action(&#39;index&#39;)
+@action.uses(session)
+def index():
+    counter = session.get(&#39;counter&#39;, -1)
+    counter += 1
+    session[&#39;counter&#39;] = counter
+    return &quot;counter = %i&quot; % counter
 </pre></div>
 </div>
 <p>Notice that the session object has the same interface as a Python
@@ -288,7 +293,7 @@ dictionary.</p>
 encrypted, using the provided secret. If the secret changes existing
 sessions are invalidated. If the user switches from HTTP to HTTPS or
 vice versa, the user session is invalidated. Session in cookies have a
-small size limit (4Kbytes after being serialized and encrypted) so do
+small size limit (4 kbytes after being serialized and encrypted) so do
 not put too much into them.</p>
 <p>In py4web sessions are dictionaries but they are stored using JSON (JWT
 specifically) therefore you should only store objects that are JSON
@@ -298,11 +303,11 @@ lost.</p>
 <p>By default py4web sessions never expire (unless they contain login
 information, but that is another story) even if an expiration can be
 set. Other parameters can be specified as well:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">secret</span><span class="o">=</span><span class="s1">&#39;my secret key&#39;</span><span class="p">,</span>
-                  <span class="n">expiration</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>
-                  <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;HS256&#39;</span><span class="p">,</span>
-                  <span class="n">storage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                  <span class="n">same_site</span><span class="o">=</span><span class="s1">&#39;Lax&#39;</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>session = Session(secret=&#39;my secret key&#39;,
+                  expiration=3600,
+                  algorithm=&#39;HS256&#39;,
+                  storage=None,
+                  same_site=&#39;Lax&#39;)
 </pre></div>
 </div>
 <ul class="simple">
@@ -346,9 +351,10 @@ functionality.</p>
 <span class="n">session</span> <span class="o">=</span>  <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">DBStore</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
 </pre></div>
 </div>
+<p><strong>Caution:</strong> Keep in mind that <code class="docutils literal notranslate"><span class="pre">'sqlite:memory'</span></code> <strong>cannot be used in multiprocess environment</strong>, the quirk is that your application will still work but in non-deterministic and unsafe mode, since each process/worker will have its own independent in-memory database.</p>
 <p>A secret is not required when storing cookies in the database because in
 this case the cookie only contains the UUID of the session.</p>
-<p>Also this is one case when the a fixture (session) requires another
+<p>Also this is one case when a fixture (session) requires another
 fixture (db). This is handled automatically by py4web and the following
 are equivalent:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
@@ -388,8 +394,8 @@ we do not recomment storing sessions on the filesystem: it is
 inefficient and does not scale well.</p>
 </div>
 </div>
-<div class="section" id="translator">
-<h2>Translator<a class="headerlink" href="#translator" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="the-translator-fixture">
+<h2>The Translator fixture<a class="headerlink" href="#the-translator-fixture" title="Permalink to this headline">¶</a></h2>
 <p>Here is an example of usage:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Translator</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -441,13 +447,13 @@ action with a counter that counts “visits”.</p>
 <p>When visiting this site with the browser language preference set to
 english and reloading multiple times you will get the following
 messages:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">This</span> <span class="n">your</span> <span class="n">first</span> <span class="n">time</span> <span class="n">here</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="n">once</span> <span class="n">before</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="n">twice</span> <span class="n">before</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="mi">3</span> <span class="n">times</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="mi">4</span> <span class="n">times</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="mi">5</span> <span class="n">times</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="n">more</span> <span class="n">than</span> <span class="mi">5</span> <span class="n">times</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>This your first time here
+You have been here once before
+You have been here twice before
+You have been here 3 times
+You have been here 4 times
+You have been here 5 times
+You have been here more than 5 times
 </pre></div>
 </div>
 <p>Now try create a file called <code class="docutils literal notranslate"><span class="pre">translations/it.json</span></code> which contains:</p>
@@ -466,35 +472,35 @@ messages:</p>
 </div>
 <div class="section" id="the-flash-fixture">
 <h2>The Flash fixture<a class="headerlink" href="#the-flash-fixture" title="Permalink to this headline">¶</a></h2>
-<p>It is common to want to display “alerts” to the suers. Here we refer to
-them as flash messeges. There is a little more to it than just
+<p>It is common to want to display “alerts” to the users. Here we refer to
+them as <strong>flash messages</strong>. There is a little more to it than just
 displaying a message to the view because flash messages can have state
 that must be preserved after redirection. Also they can be generated
 both server side and client side, there can be only one at the time,
 they may have a type, and they should be dismissible.</p>
 <p>The Flash helper handles the server side of them. Here is an example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Flash</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from py4web import Flash
 
-<span class="n">flash</span> <span class="o">=</span> <span class="n">Flash</span><span class="p">()</span>
+flash = Flash()
 
-<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">Flash</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">,</span> <span class="n">_class</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+@action(&#39;index&#39;)
+@action.uses(flash)
+def index():
+    flash.set(&quot;Hello World&quot;, _class=&quot;info&quot;, sanitize=True)
+    return dict()
 </pre></div>
 </div>
 <p>and in the template:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
-<span class="o">&lt;</span><span class="n">div</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;py4web-flash&quot;</span><span class="o">&gt;&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
-<span class="o">...</span>
-<span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;js/utils.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
-<span class="p">[[</span><span class="k">if</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flash&#39;</span><span class="p">):]]</span><span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span><span class="n">utils</span><span class="o">.</span><span class="n">flash</span><span class="p">([[</span><span class="o">=</span><span class="n">XML</span><span class="p">(</span><span class="n">flash</span><span class="p">)]]);</span><span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="p">[[</span><span class="k">pass</span><span class="p">]]</span>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>...
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;py4web-flash&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+...
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;js/utils.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+[[if globals().get(&#39;flash&#39;):]]<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nx">utils</span><span class="p">.</span><span class="nx">flash</span><span class="p">([[</span><span class="o">=</span><span class="nx">XML</span><span class="p">(</span><span class="nx">flash</span><span class="p">)]]);&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>[[pass]]
 </pre></div>
 </div>
 <p>By setting the value of the message in the flash helper, a flash
 variable is returned by the action and this trigger the JS in the
-template to inject the message in the <code class="docutils literal notranslate"><span class="pre">#py4web-flash</span></code> DIV which you
+template to inject the message in the <code class="docutils literal notranslate"><span class="pre">py4web-flash</span></code> DIV which you
 can position at your convenience. Also the optional class is applied to
 the injected HTML.</p>
 <p>If a page is redirected after a flash is set, the flash is remembered.
@@ -503,10 +509,10 @@ in a one-time cookie. After redirection the message is sent back by the
 browser to the server and the server sets it again automatically before
 returning content, unless it is overwritten by another set.</p>
 <p>The client can also set/add flash messages by calling:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span><span class="o">.</span><span class="n">flash</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;hello world&#39;</span><span class="p">,</span> <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;info&#39;</span><span class="p">});</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>utils.flash({&#39;message&#39;: &#39;hello world&#39;, &#39;class&#39;: &#39;info&#39;});
 </pre></div>
 </div>
-<p>py4web defaults to an alert class called <code class="docutils literal notranslate"><span class="pre">default</span></code> and most CSS
+<p>py4web defaults to an alert class called <code class="docutils literal notranslate"><span class="pre">info</span></code> and most CSS
 frameworks define classes for alerts called <code class="docutils literal notranslate"><span class="pre">success</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>,
 <code class="docutils literal notranslate"><span class="pre">warning</span></code>, <code class="docutils literal notranslate"><span class="pre">default</span></code>, and <code class="docutils literal notranslate"><span class="pre">info</span></code>. Yet, there is nothing in py4web
 that hardcodes those names. You can use your own class names.</p>
@@ -517,7 +523,7 @@ that hardcodes those names. You can use your own class names.</p>
 maybe you want direct access to the DAL object for the purpose of
 accessing the database, not just sessions.</p>
 <p>PY4WEB, by default, uses the PyDAL (Python Database Abstraction Layer)
-which is documented in a later chapter. Here is an example, please
+which is documented in the next chapter. Here is an example, please
 remember to create the <code class="docutils literal notranslate"><span class="pre">databases</span></code> folder under your project in case
 it doesn’t exist:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -537,19 +543,19 @@ it doesn’t exist:</p>
     <span class="k">return</span> <span class="s2">&quot;Your visit was stored in database&quot;</span>
 </pre></div>
 </div>
-<p>Notice that the database fixture defines (creates/re-creates tables)
+<p>Notice that the database fixture defines (creates/re-creates) tables
 automatically when py4web starts (and every time it reloads this app)
 and picks a connection from the connection pool at every HTTP request.
 Also each call to the <code class="docutils literal notranslate"><span class="pre">index()</span></code> action is wrapped into a transaction
 and it commits <code class="docutils literal notranslate"><span class="pre">on_success</span></code> and rolls back <code class="docutils literal notranslate"><span class="pre">on_error</span></code>.</p>
 </div>
 <div class="section" id="caveats-about-fixtures">
-<h2>Caveats about Fixtures<a class="headerlink" href="#caveats-about-fixtures" title="Permalink to this headline">¶</a></h2>
+<h2>Caveats about fixtures<a class="headerlink" href="#caveats-about-fixtures" title="Permalink to this headline">¶</a></h2>
 <p>Since fixtures are shared by multiple actions you are not allowed to
 change their state because it would not be thread safe. There is one
 exception to this rule. Actions can change some attributes of database
 fields:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
@@ -563,7 +569,6 @@ fields:</p>
     <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">writable</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
-<span class="p">)</span>
 </pre></div>
 </div>
 <p>Note thas this code will only be able to display a form, to process it
@@ -590,22 +595,27 @@ attributes.</p>
     <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span> <span class="k">return</span> <span class="n">data</span>
 </pre></div>
 </div>
-<p>if an action uses this fixture:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">MyFixture</span><span class="p">())</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="s1">&#39;hello world&#39;</span>
+<p>If an action uses this fixture:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@action(&#39;index&#39;)
+@action.uses(MyFixture())
+def index(): return &#39;hello world&#39;
 </pre></div>
 </div>
-<p>Then <code class="docutils literal notranslate"><span class="pre">on_request()</span></code> is guaranteed to be called before the <code class="docutils literal notranslate"><span class="pre">index()</span></code>
-function is called. The <code class="docutils literal notranslate"><span class="pre">on_success()</span></code> is guaranteed to be called if
+<p>then:</p>
+<ul class="simple">
+<li><p>the <code class="docutils literal notranslate"><span class="pre">on_request()</span></code> function is guaranteed to be called before the <code class="docutils literal notranslate"><span class="pre">index()</span></code>
+function is called</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">on_success()</span></code> function is guaranteed to be called if
 the <code class="docutils literal notranslate"><span class="pre">index()</span></code> function returns successfully or raises <code class="docutils literal notranslate"><span class="pre">HTTP</span></code> or
-performs a <code class="docutils literal notranslate"><span class="pre">redirect</span></code>. The <code class="docutils literal notranslate"><span class="pre">on_error()</span></code> is guaranteed to be called
-when the <code class="docutils literal notranslate"><span class="pre">index()</span></code> function raises any exception other than <code class="docutils literal notranslate"><span class="pre">HTTP</span></code>.
-The <code class="docutils literal notranslate"><span class="pre">transform</span></code> function is called to perform any desired
-transformation of the value returned by the <code class="docutils literal notranslate"><span class="pre">index()</span></code> function.</p>
+performs a <code class="docutils literal notranslate"><span class="pre">redirect</span></code></p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">on_error()</span></code> function is guaranteed to be called
+when the <code class="docutils literal notranslate"><span class="pre">index()</span></code> function raises any exception other than <code class="docutils literal notranslate"><span class="pre">HTTP</span></code>.</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">transform</span></code> function is called to perform any desired
+transformation of the value returned by the <code class="docutils literal notranslate"><span class="pre">index()</span></code> function.</p></li>
+</ul>
 </div>
-<div class="section" id="auth-and-auth-user">
-<h2>Auth and Auth.user<a class="headerlink" href="#auth-and-auth-user" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="auth-and-auth-user-fixture">
+<h2>auth and auth.user fixture<a class="headerlink" href="#auth-and-auth-user-fixture" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">auth</span></code> and <code class="docutils literal notranslate"><span class="pre">auth.user</span></code> are both fixtures. They depend on
 <code class="docutils literal notranslate"><span class="pre">session</span></code>. The role of access is to provide the action with
 authentication information. It is used as follows:</p>
@@ -636,13 +646,13 @@ internal use).</p>
 <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> app.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">auth</span></code> object is the fixture. It manages the user information. It
 exposes a single method:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>auth.get_user()
 </pre></div>
 </div>
 <p>which returns a python dictionary containing the information of the
 currently logged in user. If the user is not logged-in, it returns
-<code class="docutils literal notranslate"><span class="pre">None</span></code>. The code of the example redirects to the ‘auth/login’ page if
-there is no user.</p>
+<code class="docutils literal notranslate"><span class="pre">None</span></code> and in this case the code of the example redirects to the
+<code class="docutils literal notranslate"><span class="pre">auth/login</span></code> page.</p>
 <p>Since this check is very common, py4web provides an additional fixture
 <code class="docutils literal notranslate"><span class="pre">auth.user</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
@@ -655,10 +665,10 @@ there is no user.</p>
 <p>This fixture automatically redirects to the <code class="docutils literal notranslate"><span class="pre">auth/login</span></code> page if user
 is not logged-in. It depends on <code class="docutils literal notranslate"><span class="pre">auth</span></code>, which depends on <code class="docutils literal notranslate"><span class="pre">db</span></code> and
 <code class="docutils literal notranslate"><span class="pre">session</span></code>.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">Auth</span></code> fixture is plugin based and supports multiple plugin
-methods. They include Oauth2 (Google, Facebook, Twitter), PAM, LDAP, and
+<p>The <code class="docutils literal notranslate"><span class="pre">auth</span></code> fixture is plugin based and supports multiple plugin
+methods. They include OAuth2 (Google, Facebook, Twitter), PAM, LDAP, and
 SMAL2.</p>
-<p>Here is an example of using the Google Oauth2 plugin:</p>
+<p>Here is an example of using the Google OAuth2 plugin:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.oauth2google</span> <span class="kn">import</span> <span class="n">OAuth2Google</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Google</span><span class="p">(</span>
     <span class="n">client_id</span><span class="o">=</span><span class="s1">&#39;...&#39;</span><span class="p">,</span>
@@ -666,17 +676,18 @@ SMAL2.</p>
     <span class="n">callback_url</span><span class="o">=</span><span class="s1">&#39;auth/plugin/oauth2google/callback&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">client_id</span></code> and <code class="docutils literal notranslate"><span class="pre">client_secret</span></code> are provided by google. The
+<p>The <code class="docutils literal notranslate"><span class="pre">client_id</span></code> and <code class="docutils literal notranslate"><span class="pre">client_secret</span></code> are provided by Google. The
 callback url is the default option for py4web and it must be whitelisted
-with Google. All <code class="docutils literal notranslate"><span class="pre">Auth</span></code> plugins are objects. Different plugins are
+with Google.
+All <code class="docutils literal notranslate"><span class="pre">auth</span></code> plugins are objects. Different plugins are
 configured in different ways but they are registered using
 <code class="docutils literal notranslate"><span class="pre">auth.register_plugin(...)</span></code>. Examples are provided in
 <code class="docutils literal notranslate"><span class="pre">_scaffold/common.py</span></code>.</p>
 </div>
 <div class="section" id="caching-and-memoize">
 <h2>Caching and Memoize<a class="headerlink" href="#caching-and-memoize" title="Permalink to this headline">¶</a></h2>
-<p>py4web provides a cache in ram object that implements the Last Recently
-Used (LRU) Algorithm. It can be used to cache any function via a
+<p>py4web provides a cache in RAM object that implements the last recently
+used (LRU) algorithm. It can be used to cache any function via a
 decorator:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Cache</span><span class="p">,</span> <span class="n">action</span>
@@ -691,31 +702,35 @@ decorator:</p>
 <p>It will cache (memoize) the return value of the <code class="docutils literal notranslate"><span class="pre">hello</span></code> function, as
 function of the input <code class="docutils literal notranslate"><span class="pre">name</span></code>, for up to 60 seconds. It will store in
 cache the 1000 most recently used values. The data is always stored in
-ram.</p>
-<p>The Cache object is not a fixture and it should not and cannot be
-registered using the <code class="docutils literal notranslate"><span class="pre">&#64;action.uses</span></code> object but we mention it here
+RAM.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cache</span></code> object is not a fixture and it should not and cannot be
+registered using the <code class="docutils literal notranslate"><span class="pre">&#64;action.uses</span></code> decorator but we mention it here
 because some of the fixtures use this object internally. For example,
-template files are cached in ram to avoid accessing the file system
+template files are cached in RAM to avoid accessing the file system
 every time a template needs to be rendered.</p>
 </div>
 <div class="section" id="convenience-decorators">
 <h2>Convenience Decorators<a class="headerlink" href="#convenience-decorators" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> application, in <code class="docutils literal notranslate"><span class="pre">common.py</span></code> defines two special
-conveniennce decorators:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@unauthenticated</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+convenience decorators:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@unauthenticated
+def index():
+    return dict()
 </pre></div>
 </div>
 <p>and</p>
-<p>`<code class="docutils literal notranslate"><span class="pre">&#64;authenticated</span> <span class="pre">def</span> <span class="pre">index():</span>&#160;&#160;&#160;&#160; <span class="pre">return</span> <span class="pre">dict()</span></code></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@authenticated
+def index():
+    return dict()
+</pre></div>
+</div>
 <p>They apply all of the decorators below, use a template with the same
 name as the function (.html), and also register a route with the name of
-action followed the number of arguments of the action separated by a
+action followed by the number of arguments of the action separated by a
 slash (/).</p>
 <p>&#64;unauthenticated does not require the user to be logged in.
 &#64;authenticated required the user to be logged in.</p>
-<p>If can be combined with (and precede) other <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code> but
+<p>They can be combined with (and precede) other <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code> but
 they should not be combined with <code class="docutils literal notranslate"><span class="pre">&#64;action(...)</span></code> because they perform
 that function automatically.</p>
 </div>
@@ -729,7 +744,7 @@ that function automatically.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="chapter-07.html" class="btn btn-neutral float-right" title="The database abstraction layer (DAL)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="chapter-07.html" class="btn btn-neutral float-right" title="The Database Abstraction Layer (DAL)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="chapter-05.html" class="btn btn-neutral float-left" title="Creating your first app" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -775,7 +790,7 @@ that function automatically.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20201127.1
+      v: 1.20210119.1"
 
       <span class="fa fa-caret-down"></span>
     </span>

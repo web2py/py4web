@@ -67,12 +67,17 @@ Even for running simple examples and experimenting a little, we strongly suggest
 Nowadays there are two free and multiplatform main choices: Microsoft Visual Studio Code aka `VScode <https://code.visualstudio.com/>`__ and
 JetBrains `PyCharm <https://www.jetbrains.com/pycharm/>`__.
 
-When you'll start to deal with more complex programs and need reliability, we also suggest to:  
+When you'll start to deal with more complex programs and need reliability,
+we also suggest to:
 
+- use virtual environments (also called **virtualenv**, see
+  `here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an
+  introduction). In a complex workplace this will avoid to be messed up
+  with other python programs and modules
+- use a Concurrent Versions System (**CVS**). Keeping track of your
+  program's changes is highly valuable - along with backups it will save
+  your computing life! Git and GitHub are the current standards.
 
-   * use virtual environments (also called **virtualenv**, see `here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an introduction). In a complex workplace this will avoid to be messed up with other python programs and modules
-   * use a Concurrent Versions System (**CVS**). Keeping track of your program's changes is highly valuable - along with backups it will save your computing life! Git and GitHub are the current standards.
-   
 
 Debugging py4web with VScode
 ----------------------------
@@ -93,4 +98,10 @@ repository.
 
 If you wish to correct and expand this manual, or even translate it in a new foreign language, you can read all the needed information directly on the
 `specific README <https://github.com/web2py/py4web/blob/master/docs/README.md>`__ on GitHub.
+
+It's really simple! Just change the .RST files in the /doc folder and create a Push Request on
+the GitHub repository at https://github.com/web2py/py4web - you can even do it within your browser.
+Once the PR is accepted, your changes will be written on the master branch, and will be reflected on the web pages / pdf / epub at
+the next output generation on the branch. 
+
 
