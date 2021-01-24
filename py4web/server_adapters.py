@@ -28,12 +28,18 @@ def wsgirefThreadingServer():
     from wsgiref.simple_server import make_server
     from socketserver import ThreadingMixIn
     import socket
+    from concurrent.futures import ThreadPoolExecutor  # pip install futures
 
     class WSGIRefThreadingServer(ServerAdapter):
         def run(self, app):
 
-            class ThreadingWSGIServer(ThreadingMixIn, WSGIServer):
+            class PoolMixIn(ThreadingMixIn):
+                def process_request(self, request, client_address):
+                    self.pool.submit(self.process_request_thread, request, client_address)
+
+            class ThreadingWSGIServer(PoolMixIn, WSGIServer):
                 daemon_threads = True
+                pool = ThreadPoolExecutor(max_workers=40)
 
             class Server:
                 def __init__(self, server_address = ('127.0.0.1', 8000), handler_cls = None):
