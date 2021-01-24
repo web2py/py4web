@@ -36,6 +36,7 @@ import uuid
 import zipfile
 import asyncio
 from watchgod import awatch
+from . import server_adapters
 
 # Optional web servers for speed
 try:
@@ -1296,6 +1297,8 @@ def start_server(args):
                 return
             server_config["server"] = "gunicorn"
     params["server"] = server_config["server"]
+    if params["server"] in server_adapters.__all__:
+        params["server"] = getattr(server_adapters, params["server"])()
     if number_workers > 1:
         params["workers"] = number_workers
     if server_config["server"] == "gunicorn":
@@ -1542,7 +1545,7 @@ def new_app(apps_folder, app_name, scaffold_zip):
     "-s",
     "--server",
     default="default",
-    type=click.Choice(["default", "wsgiref", "tornado", "gunicorn", "gevent"]),
+    type=click.Choice(["default", "wsgiref", "tornado", "gunicorn", "gevent"] + server_adapters.__all__),
     help="server to use",
     show_default=True,
 )
