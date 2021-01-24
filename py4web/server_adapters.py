@@ -1,7 +1,7 @@
 import logging
 from bottle import ServerAdapter
 
-__all__ = ['geventWebSocketServer']
+__all__ = ['geventWebSocketServer', 'wsgirefThreadingServer']
 
 def geventWebSocketServer():
     from gevent import pywsgi
@@ -19,3 +19,53 @@ def geventWebSocketServer():
 
             server.serve_forever()
     return GeventWebSocketServer
+
+
+def wsgirefThreadingServer():
+    #https://www.electricmonk.nl/log/2016/02/15/multithreaded-dev-web-server-for-the-python-bottle-web-framework/
+
+    from wsgiref.simple_server import WSGIRequestHandler, WSGIServer
+    from wsgiref.simple_server import make_server
+    from socketserver import ThreadingMixIn
+    import socket
+
+    class WSGIRefThreadingServer(ServerAdapter):
+        def run(self, app):
+
+            class ThreadingWSGIServer(ThreadingMixIn, WSGIServer):
+                daemon_threads = True
+
+            class Server:
+                def __init__(self, server_address = ('127.0.0.1', 8000), handler_cls = None):
+                    self.wsgi_app = None
+                    self.listen, self.port = server_address
+                    self.handler_cls = handler_cls
+                def set_app(self, app):
+                    self.wsgi_app = app
+                def get_app(self):
+                    return self.wsgi_app
+                def serve_forever(self):
+                    self.server = make_server(
+                        self.listen, self.port, self.wsgi_app, ThreadingWSGIServer, self.handler_cls
+                    )
+                    self.server.serve_forever()
+
+            class FixedHandler(WSGIRequestHandler):
+                def address_string(self): # Prevent reverse DNS lookups please.
+                    return self.client_address[0]
+                def log_request(*args, **kw):
+                    if not self.quiet:
+                        return WSGIRequestHandler.log_request(*args, **kw)
+
+            handler_cls = self.options.get('handler_class', FixedHandler)
+            server_cls  = Server
+
+            if ':' in self.host: # Fix wsgiref for IPv6 addresses.
+                if getattr(server_cls, 'address_family') == socket.AF_INET:
+                    class server_cls(server_cls):
+                        address_family = socket.AF_INET6
+
+            srv = make_server(self.host, self.port, app, server_cls, handler_cls)
+            srv.serve_forever()
+    return WSGIRefThreadingServer
+
