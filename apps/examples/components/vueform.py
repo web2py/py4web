@@ -11,7 +11,7 @@ class VueForm(Fixture):
     """This is a prototype class for building client-side forms with
     validation."""
 
-    FORM = '<vueform url="{url}" check_url="{check_url}"></grid>'
+    FORM = '<vueform url="{url}" check_url="{check_url}"></vueform>'
 
     TYPE_CONVERSION = {
         "boolean": "checkbox",
