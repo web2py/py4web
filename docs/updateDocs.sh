@@ -1,5 +1,5 @@
 #!/bin/bash
-# vim: set ts=4 sw et ai:
+# vim: set ts=4 noet ai:
 
 #
 #  nicozanf@gmail.com - 2020.11.16
@@ -12,7 +12,7 @@
  
 t=${1:-help}
 if [ $t != 'all' -a $t != 'html' ]; then
-    cat << EOF
+	cat << EOF
 ##############################################################################
 File:    $0
 
@@ -27,7 +27,7 @@ How to run: "$0 [all|html]" from  inside the docs folder
 ##############################################################################
 
 EOF
-    exit 0
+	exit 0
 fi
 
 #####################
@@ -42,14 +42,14 @@ destination=apps/_documentation/static
 
 # check for docs dir & sphinx config
 if [ ! -e docs/conf.py ]; then
-    echo "$0: missing docs/conf.py" 1>&2
-    exit 1
+	echo "$0: missing docs/conf.py" 1>&2
+	exit 1
 fi
 
 # check for _documentation app
 if [ ! -e ${destination} ]; then
-    echo "$0: missing _documentation app" 1>&2
-    exit 1
+	echo "$0: missing _documentation app" 1>&2
+	exit 1
 fi
 
 ##############
@@ -71,43 +71,43 @@ docroot=$(mktemp -d)
 
 for current_language in ${languages}; do
 
-    echo "Building for ${current_language}"
-    # make the current language available to conf.py
-    export current_language
+	echo "Building for ${current_language}"
+	# make the current language available to conf.py
+	export current_language
 
-    # make HTML
-    # NOTE: this affect files in docs/locales/${current_language}/LC_MESSAGES/
-    sphinx-build -b html -D language="${current_language}" docs/ docs/_build/html/${current_language}
-    mkdir -p "${docroot}/${current_language}"
+	# make HTML
+	# NOTE: this affect files in docs/locales/${current_language}/LC_MESSAGES/
+	sphinx-build -b html -D language="${current_language}" docs/ docs/_build/html/${current_language}
+	mkdir -p "${docroot}/${current_language}"
 
-    base_target="${docroot}/${current_language}/${project_name}_${current_language}"
-    if [ $t = 'all' ]
-    then
-        # make PDF
-        sphinx-build -b rinoh -D language="${current_language}" docs/ docs/_build/rinoh
-        cp docs/_build/rinoh/target.pdf "${base_target}.pdf"
+	base_target="${docroot}/${current_language}/${project_name}_${current_language}"
+	if [ $t = 'all' ]
+	then
+		# make PDF
+		sphinx-build -b rinoh -D language="${current_language}" docs/ docs/_build/rinoh
+		cp docs/_build/rinoh/target.pdf "${base_target}.pdf"
 
-        # make EPUB
-        sphinx-build -b epub -D language="${current_language}" docs/ docs/_build/epub
-        cp docs/_build/epub/target.epub "${base_target}.epub"
-    else
-        # HTML only, backup previous pdf and epub if any
-        target_pdf="${base_target}.pdf"
-        if [ -e "${target_pdf}" ]; then
-            cp "${target_pdf}" "${docroot}/${current_language}"
-        else
-            echo "WARNING: ${target_pdf} not found"
-        fi
-        target_epub="${base_target}.epub"
-        if [ -e "${target_epub}" ]; then
-            cp "${target_epub}" "${docroot}/${current_language}"
-        else
-            echo "WARNING: ${target_epub} not found"  
-        fi 
-    fi
+		# make EPUB
+		sphinx-build -b epub -D language="${current_language}" docs/ docs/_build/epub
+		cp docs/_build/epub/target.epub "${base_target}.epub"
+	else
+		# HTML only, backup previous pdf and epub if any
+		target_pdf="${base_target}.pdf"
+		if [ -e "${target_pdf}" ]; then
+			cp "${target_pdf}" "${docroot}/${current_language}"
+		else
+			echo "WARNING: ${target_pdf} not found"
+		fi
+		target_epub="${base_target}.epub"
+		if [ -e "${target_epub}" ]; then
+			cp "${target_epub}" "${docroot}/${current_language}"
+		else
+			echo "WARNING: ${target_epub} not found"  
+		fi 
+	fi
 
-    # copy html files into docroot
-    rsync -a docs/_build/html/ ${docroot}
+	# copy html files into docroot
+	rsync -a docs/_build/html/ ${docroot}
 
 done
 
