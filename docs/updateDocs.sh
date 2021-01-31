@@ -116,7 +116,8 @@ make -C docs clean
 
 # move docroot to destination
 rm -r ${destination}
-mv ${docroot} ${destination}
+#mv ${docroot} ${destination}
+rsync -a "${docroot}/" ${destination} && rm -r ${docroot}
 
 ################
 # CUSTOM INDEX #
