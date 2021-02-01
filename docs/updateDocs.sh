@@ -115,7 +115,7 @@ done
 make -C docs clean
 
 # move docroot to destination
-rm -r ${destination}
+rm -fr ${destination}
 #mv ${docroot} ${destination}
 rsync -a "${docroot}/" ${destination} && rm -r ${docroot}
 
