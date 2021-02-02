@@ -56,14 +56,14 @@ fi
 # BUILD DOCS #
 ##############
 
-# abort on nonzero exitstatus
+# abort on nonzero exit status
 set -o errexit
 
 # cleanup old sphinx builds
 make -C docs clean
 
 languages='en '
-# find available languages
+# find other available languages (translations)
 languages+=$(find docs/locales/ -mindepth 1 -maxdepth 1 -type d -exec basename \{\} \;)
 
 # use a temp dir as docroot
