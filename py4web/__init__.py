@@ -1,6 +1,6 @@
 import sys
 if sys.argv[1] == "usegevent":
-    sys.argv.remove("usegevent")
+    sys.argv.pop(1)
     from gevent import monkey
     monkey.patch_all()
 
