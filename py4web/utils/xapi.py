@@ -670,19 +670,24 @@ class FixturesSupplier:
 
     def __getitem__(self, k):
         f = self.fixtures[k]
-        if f not in self.issued:
-            for req_f in self.fixture_deps[f]:
-                req_f.on_request()
-                self.issued.append(req_f)
-            f.on_request()
-            self.issued.append(f)
+        if f in self.issued:
+            return f
+        for req_f in self.fixture_deps[f]:
+            if req_f in self.issued:
+                continue
+            req_f.on_request()
+            self.issued.append(req_f)
+        f.on_request()
+        self.issued.append(f)
         return f
+
 
     def emit(self, on_type, *args, **kw):
         if on_type == 'transform':
             ret = args[0]
+            shared_data = {}
             for f in self.issued:
-                ret = getattr(f, on_type)(ret)
+                ret = getattr(f, on_type)(ret, shared_data)
             return ret
         elif on_type == 'on_error':
             [getattr(f, on_type)() for f in self.issued]
