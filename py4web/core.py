@@ -1333,7 +1333,7 @@ def install_args(args, reinstall_apps=False):
     for key in args:
         os.environ["PY4WEB_" + key.upper()] = str(args[key])
     apps_folder = args["apps_folder"]
-    yes = args.get("yes", "N")
+    yes = args.get("yes", False)
     # If the apps folder does not exist create it and populate it
     if not os.path.exists(apps_folder):
         if yes or click.confirm("Create missing folder %s?" % apps_folder):
