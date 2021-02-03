@@ -146,7 +146,7 @@ def monkey_patch_bottle():
 
     @property
     def fullpath(self):
-        appname = self.get_header("x-py4web-appname", "/")
+        appname = self.environ.get("HTTP_X_PY4WEB_APPNAME", "/")
         return urljoin(self.script_name, self.path[len(appname) :])
 
     setattr(bottle.BaseRequest, "fullpath", fullpath)
@@ -1160,7 +1160,7 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
 def error404(error):
     guess_app_name = (
         "index"
-        if request.headers.get("x-py4web-appname")
+        if request.environ.get("HTTP_X_PY4WEB_APPNAME")
         else request.path.split("/")[1]
     )
     if guess_app_name == "index":
@@ -1168,8 +1168,8 @@ def error404(error):
     else:
         href = "/" + guess_app_name
     script_name = (
-        request.environ.get("HTTP_X_SCRIPT_NAME", "")
-        or request.environ.get("SCRIPT_NAME", "")
+        request.environ.get("SCRIPT_NAME", "")
+        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
     ).rstrip("/")
     if script_name:
         href = script_name + href
@@ -1469,10 +1469,14 @@ def call(apps_folder, func, args):
     """Call a function inside apps_folder"""
     args = json.loads(args)
     install_args(dict(apps_folder=apps_folder))
+    # FIXME: apps_folder need to be named 'apps'?
+    #        why do not use argument value instead?
+    #        I think this is not the only place where 'apps' is hardcoded.
     module, name = ("apps." + func).rsplit(".", 1)
     env = {}
     if not apps_folder in sys.path:
-        sys.path.insert(0, apps_folder)
+        # need apps_folder's parent in path for the import to work
+        sys.path.insert(0, os.path.dirname(os.path.abspath(apps_folder)))
     exec("from %s import %s" % (module, name), {}, env)
     env[name](**args)
 
