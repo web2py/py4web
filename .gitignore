@@ -20,6 +20,8 @@ Thumbs.db
 ./docs
 ./logs
 ./*.zip
+apps/_documentation/static/*/*.pdf
+apps/_documentation/static/*/*.epub
 apps/*
 !apps/todo/*
 !apps/examples/*

@@ -770,6 +770,8 @@ The URL helper is documented in *Chapter 4 URL ../04*
 Custom helpers
 --------------
 
+.. _TAG:
+
 ``TAG``
 ~~~~~~~
 

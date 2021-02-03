@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fixures &mdash; Documentação py4web 1.20210101.1&#34;
+  <title>Fixures &mdash; Documentação py4web 1.20210119.1&#34;
 </title>
   
 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                1.20210101.1"
+                1.20210119.1"
 
               </div>
             
@@ -206,14 +206,14 @@
 <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code>. You can specify
 multiple fixtures in one decorator or you can have multiple decorators.</p>
 <p>Also, fixtures can be applied in groups. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">preferred</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>preferred = action.uses(session, auth, T, flash)
 </pre></div>
 </div>
 <p>Então você pode aplicar todo o ao mesmo tempo com:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
-<span class="nd">@preferred</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@action(&#39;index.html&#39;)
+@preferred
+def index():
+    return dict()
 </pre></div>
 </div>
 </div>
@@ -247,16 +247,16 @@ In other words, sessions render the stateless HTTP connection a stateful one.
 It can be implemented server-side or client-side (by using cookies).</p>
 <p>In py4web, the session object is also a Fixture. Here is a typical example of usage
 to implement a counter.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">action</span>
-<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">secret</span><span class="o">=</span><span class="s1">&#39;my secret key&#39;</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from py4web import Session, action
+session = Session(secret=&#39;my secret key&#39;)
 
-<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="n">counter</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;counter&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">counter</span>
-    <span class="k">return</span> <span class="s2">&quot;counter = </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">counter</span>
+@action(&#39;index&#39;)
+@action.uses(session)
+def index():
+    counter = session.get(&#39;counter&#39;, -1)
+    counter += 1
+    session[&#39;counter&#39;] = counter
+    return &quot;counter = %i&quot; % counter
 </pre></div>
 </div>
 <p>Observe que o objeto da sessão tem a mesma interface como um dicionário Python.</p>
@@ -268,11 +268,11 @@ small size limit (4 kbytes after being serialized and encrypted) so do
 not put too much into them.</p>
 <p>Em py4web sessões são dicionários, mas eles são armazenados usando JSON (JWT especificamente), portanto, você só deve armazenar objetos que são JSON serializado. Se o objeto não é JSON serializado, ele vai ser serializado usando o `` operador __str__`` e algumas informações podem ser perdidas.</p>
 <p>Por padrão sessões py4web nunca expiram (a menos que contenham informações de login, mas isso é outra história), mesmo se uma expiração pode ser definido. Outros parâmetros podem ser especificados, bem como:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">secret</span><span class="o">=</span><span class="s1">&#39;my secret key&#39;</span><span class="p">,</span>
-                  <span class="n">expiration</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>
-                  <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;HS256&#39;</span><span class="p">,</span>
-                  <span class="n">storage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                  <span class="n">same_site</span><span class="o">=</span><span class="s1">&#39;Lax&#39;</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>session = Session(secret=&#39;my secret key&#39;,
+                  expiration=3600,
+                  algorithm=&#39;HS256&#39;,
+                  storage=None,
+                  same_site=&#39;Lax&#39;)
 </pre></div>
 </div>
 <ul class="simple">
@@ -390,13 +390,13 @@ are equivalent:</p>
 </pre></div>
 </div>
 <p>Ao visitar este site com o navegador preferência de idioma definida para Inglês e recarregar várias vezes você receberá as seguintes mensagens:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">This</span> <span class="n">your</span> <span class="n">first</span> <span class="n">time</span> <span class="n">here</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="n">once</span> <span class="n">before</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="n">twice</span> <span class="n">before</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="mi">3</span> <span class="n">times</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="mi">4</span> <span class="n">times</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="mi">5</span> <span class="n">times</span>
-<span class="n">You</span> <span class="n">have</span> <span class="n">been</span> <span class="n">here</span> <span class="n">more</span> <span class="n">than</span> <span class="mi">5</span> <span class="n">times</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>This your first time here
+You have been here once before
+You have been here twice before
+You have been here 3 times
+You have been here 4 times
+You have been here 5 times
+You have been here more than 5 times
 </pre></div>
 </div>
 <p>Agora tente criar um arquivo chamado `` traduções / it.json`` que contém:</p>
@@ -422,15 +422,15 @@ that must be preserved after redirection. Also they can be generated
 both server side and client side, there can be only one at the time,
 they may have a type, and they should be dismissible.</p>
 <p>O auxiliar o Flash lida com o lado do servidor deles. Aqui está um exemplo:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Flash</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from py4web import Flash
 
-<span class="n">flash</span> <span class="o">=</span> <span class="n">Flash</span><span class="p">()</span>
+flash = Flash()
 
-<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">flash</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">,</span> <span class="n">_class</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+@action(&#39;index&#39;)
+@action.uses(flash)
+def index():
+    flash.set(&quot;Hello World&quot;, _class=&quot;info&quot;, sanitize=True)
+    return dict()
 </pre></div>
 </div>
 <p>e no template:</p>
@@ -448,7 +448,7 @@ can position at your convenience. Also the optional class is applied to
 the injected HTML.</p>
 <p>Se uma página é redirecionada depois de um flash está definido, o flash é lembrado. Isto é conseguido por pedir o navegador para manter a mensagem temporariamente em um cookie de uma só vez. Depois de redirecionamento a mensagem é enviada de volta pelo navegador para o servidor e os conjuntos de servidor ele novamente automaticamente antes de retornar o conteúdo, a menos que seja substituído por um outro conjunto.</p>
 <p>O cliente também pode definir / adicionar mensagens flash chamando:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span><span class="o">.</span><span class="n">flash</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;hello world&#39;</span><span class="p">,</span> <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;info&#39;</span><span class="p">});</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>utils.flash({&#39;message&#39;: &#39;hello world&#39;, &#39;class&#39;: &#39;info&#39;});
 </pre></div>
 </div>
 <p>py4web defaults to an alert class called <code class="docutils literal notranslate"><span class="pre">info</span></code> and most CSS
@@ -521,9 +521,9 @@ and it commits <code class="docutils literal notranslate"><span class="pre">on_s
 </pre></div>
 </div>
 <p>If an action uses this fixture:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">MyFixture</span><span class="p">())</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="s1">&#39;hello world&#39;</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@action(&#39;index&#39;)
+@action.uses(MyFixture())
+def index(): return &#39;hello world&#39;
 </pre></div>
 </div>
 <p>then:</p>
@@ -562,7 +562,7 @@ transformation of the value returned by the <code class="docutils literal notran
 <p>O construtor do objeto `` Auth`` define a tabela `` auth_user`` com os seguintes campos: nome de usuário, e-mail, senha, first_name, last_name, sso_id e action_token (os dois últimos são principalmente para uso interno).</p>
 <p>`` Auth.enable () `` registadoras múltiplas acções incluindo `` {nomeaplic} / auth / login`` e que exige a presença de a `` auth.html`` molde e a `` auth`` componente valor fornecido pela o `` aplicativo _scaffold``.</p>
 <p>O objeto `` auth`` é a fixure. Ele gerencia as informações do usuário. Ela expõe um único método:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>auth.get_user()
 </pre></div>
 </div>
 <p>which returns a python dictionary containing the information of the
@@ -626,15 +626,15 @@ every time a template needs to be rendered.</p>
 <h2>Decoradores de conveniência<a class="headerlink" href="#convenience-decorators" title="Link permanente para este título">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> application, in <code class="docutils literal notranslate"><span class="pre">common.py</span></code> defines two special
 convenience decorators:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@unauthenticated</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@unauthenticated
+def index():
+    return dict()
 </pre></div>
 </div>
 <p>e</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@authenticated</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@authenticated
+def index():
+    return dict()
 </pre></div>
 </div>
 <p>They apply all of the decorators below, use a template with the same
@@ -702,7 +702,7 @@ that function automatically.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210101.1"
+      v: 1.20210119.1"
 
       <span class="fa fa-caret-down"></span>
     </span>

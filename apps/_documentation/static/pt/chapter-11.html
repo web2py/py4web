@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Internacionalização &mdash; Documentação py4web 1.20210101.1&#34;
+  <title>Internacionalização &mdash; Documentação py4web 1.20210119.1&#34;
 </title>
   
 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                1.20210101.1"
+                1.20210119.1"
 
               </div>
             
@@ -184,39 +184,39 @@
 <h2>Pluralizar<a class="headerlink" href="#pluralize" title="Link permanente para este título">¶</a></h2>
 <p>Pluralizar é uma biblioteca Python para a Internacionalização (i18n) e Pluralização (p10n).</p>
 <p>A biblioteca assume uma pasta (por exaple “traduções”) que contém arquivos como:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">it</span><span class="o">.</span><span class="n">json</span>
-<span class="n">it</span><span class="o">-</span><span class="n">IT</span><span class="o">.</span><span class="n">json</span>
-<span class="n">fr</span><span class="o">.</span><span class="n">json</span>
-<span class="n">fr</span><span class="o">-</span><span class="n">FR</span><span class="o">.</span><span class="n">json</span>
-<span class="p">(</span><span class="n">etc</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>it.json
+it-IT.json
+fr.json
+fr-FR.json
+(etc)
 </pre></div>
 </div>
 <p>Cada arquivo tem a seguinte estrutura, por exemplo para o italiano (it.json):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;dog&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="s2">&quot;no cane&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;un cane&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{n}</span><span class="s2"> cani&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">:</span> <span class="s2">&quot;tantissimi cani&quot;</span><span class="p">}}</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{&quot;dog&quot;: {&quot;0&quot;: &quot;no cane&quot;, &quot;1&quot;: &quot;un cane&quot;, &quot;2&quot;: &quot;{n} cani&quot;, &quot;10&quot;: &quot;tantissimi cani&quot;}}
 </pre></div>
 </div>
 <p>As chaves de nível superior são as expressões a ser traduzido e o valor associado / dicionário mapeia um número para uma tradução. Diferentes traduções correspondem a diferentes formas de plural da expressão,</p>
 <p>Aqui está outro exemplo para a palavra “cama” em checo</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;bed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="s2">&quot;no postel&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;postel&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;postele&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="s2">&quot;postelí&quot;</span><span class="p">}}</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{&quot;bed&quot;: {&quot;0&quot;: &quot;no postel&quot;, &quot;1&quot;: &quot;postel&quot;, &quot;2&quot;: &quot;postele&quot;, &quot;5&quot;: &quot;postelí&quot;}}
 </pre></div>
 </div>
 <p>Para traduzir e pluralizar de “cachorro” string um simplesmente deforma a corda na operadora T da seguinte forma:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pluralize</span> <span class="kn">import</span> <span class="n">Translator</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">Translator</span><span class="p">(</span><span class="s1">&#39;translations&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dog</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="s2">&quot;dog&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
-<span class="go">dog</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;it&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
-<span class="go">un cane</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-<span class="go">no cane</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-<span class="go">un cane</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
-<span class="go">5 cani</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dog</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">20</span><span class="p">))</span>
-<span class="go">tantissimi cani</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; from pluralize import Translator
+&gt;&gt;&gt; T = Translator(&#39;translations&#39;)
+&gt;&gt;&gt; dog = T(&quot;dog&quot;)
+&gt;&gt;&gt; print(dog)
+dog
+&gt;&gt;&gt; T.select(&#39;it&#39;)
+&gt;&gt;&gt; print(dog)
+un cane
+&gt;&gt;&gt; print(dog.format(n=0))
+no cane
+&gt;&gt;&gt; print(dog.format(n=1))
+un cane
+&gt;&gt;&gt; print(dog.format(n=5))
+5 cani
+&gt;&gt;&gt; print(dog.format(n=20))
+tantissimi cani
 </pre></div>
 </div>
 <p>A cadeia pode conter vários espaços reservados, mas o {n} espaço reservado é especial porque a variável chamada “n” é usado para determinar a pluralização pelo melhor jogo (tecla dict max &lt;= n).</p>
@@ -226,27 +226,27 @@
 <div class="section" id="update-the-translation-files">
 <h2>Atualizar os arquivos de tradução<a class="headerlink" href="#update-the-translation-files" title="Link permanente para este título">¶</a></h2>
 <p>Encontrar todas as cordas envoltas em T (…) em .py, .html e arquivos .js:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">matches</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">find_matches</span><span class="p">(</span><span class="s1">&#39;path/to/app/folder&#39;</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>matches = T.find_matches(&#39;path/to/app/folder&#39;)
 </pre></div>
 </div>
 <p>Adicione entradas recém-descobertas em todos os idiomas suportados</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">update_languages</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>T.update_languages(matches)
 </pre></div>
 </div>
 <p>Adicionar um novo idioma suportado (por exemplo alemão “de”,)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">languages</span><span class="p">[</span><span class="s1">&#39;de&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>T.languages[&#39;de&#39;] = {}
 </pre></div>
 </div>
 <p>Certifique-se de todos os idiomas contêm as mesmas expressões de origem</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">known_expressions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">language</span> <span class="ow">in</span> <span class="n">T</span><span class="o">.</span><span class="n">languages</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="n">language</span><span class="p">:</span>
-        <span class="n">known_expressions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
-<span class="n">T</span><span class="o">.</span><span class="n">update_languages</span><span class="p">(</span><span class="n">known_expressions</span><span class="p">))</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>known_expressions = set()
+for language in T.languages.values():
+    for expression in language:
+        known_expressions.add(expression)
+T.update_languages(known_expressions))
 </pre></div>
 </div>
 <p>Finalmente salvar as alterações:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;translations&#39;</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>T.save(&#39;translations&#39;)
 </pre></div>
 </div>
 </div>
@@ -306,7 +306,7 @@
      <label for="switch"></label>
      </span>
       
-      v: 1.20210101.1"
+      v: 1.20210119.1"
 
       <span class="fa fa-caret-down"></span>
     </span>

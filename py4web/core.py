@@ -80,6 +80,7 @@ __all__ = [
     "Translator",
     "URL",
     "check_compatible",
+    "required_folder",
     "wsgi",
 ]
 
@@ -127,17 +128,28 @@ def module2filename(module):
     return filename
 
 
+def required_folder(*parts):
+    """joins the args and creates the folder if not exists"""
+    path = os.path.join(*parts)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    assert os.path.isdir(path), "%s is not a folder as required" % path
+    return path
+
+
 ########################################################################################
 # fix request.fullpath for the case of domain mapping to app
 # (request.url will be autofixed, since it is based on request.fullpath)
 #########################################################################################
 def monkey_patch_bottle():
     urljoin = urllib.parse.urljoin
+
     @property
     def fullpath(self):
-        appname = self.get_header('x-py4web-appname', '/')
-        return urljoin(self.script_name, self.path[len(appname):])
-    setattr(bottle.BaseRequest, 'fullpath', fullpath)
+        appname = self.get_header("x-py4web-appname", "/")
+        return urljoin(self.script_name, self.path[len(appname) :])
+
+    setattr(bottle.BaseRequest, "fullpath", fullpath)
 
 
 monkey_patch_bottle()
@@ -180,32 +192,37 @@ class Cache:
         self.head.next = self.tail
         self.tail.prev = self.head
         self.mapping = {}
+        self.lock = threading.Lock()
 
     def get(self, key, callback, expiration=3600, monitor=None):
         """If key not stored or key has expired and monitor == None or monitor() value has changed, returns value = callback()"""
         node, t0 = self.mapping.get(key), time.time()
-        if node:
-            value, t, node.next.prev, node.prev.next = (
-                node.value,
-                node.t,
-                node.prev,
-                node.next,
-            )
-        if not node:
-            self.free -= 1
+        with self.lock:
+            if node:
+                # if a node was found remove it from storage
+                value, t, node.next.prev, node.prev.next = (
+                    node.value,
+                    node.t,
+                    node.prev,
+                    node.next,
+                )
+            else:
+                self.free -= 1
         m = monitor and monitor()
         if node and node.t + expiration < t0:
             if m is None or node.m != m:
                 node = None
         if node is None:
             value, t = callback(), t0
-        new_node = Node(key, value, t, m, prev=self.head, next=self.head.next)
-        self.mapping[key] = self.head.next = new_node.next.prev = new_node
-        if self.free < 0:
-            last_node = self.tail.prev
-            self.tail.prev, last_node.prev.next = last_node.prev, self.tail
-            del self.mapping[last_node.key]
-            self.free += 1
+        # add the new node back into storage
+        with self.lock:
+            new_node = Node(key, value, t, m, prev=self.head, next=self.head.next)
+            self.mapping[key] = self.head.next = new_node.next.prev = new_node
+            if self.free < 0:
+                last_node = self.tail.prev
+                self.tail.prev, last_node.prev.next = last_node.prev, self.tail
+                del self.mapping[last_node.key]
+                self.free += 1
         return value
 
     def memoize(self, expiration=3600):
@@ -593,33 +610,36 @@ def URL(
 ):
     """
     Examples:
-    URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name}/a/b?x=1#y
-    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name?}/a/b?x=1#y
+    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name?}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name?}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name?}/a/b?x=1
     URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
     """
     if use_appname is None:
-        use_appname = request.headers.get("x-py4web-appname")
-        use_appname = True if use_appname is None else not use_appname
+        # force use_appname on domain-unmapped apps
+        use_appname = not request.environ.get("HTTP_X_PY4WEB_APPNAME")
+    if use_appname:
+        # app_name is not set by py4web shell
+        app_name = getattr(request, "app_name", None)
+    has_appname = use_appname and app_name
     script_name = (
-        request.environ.get("HTTP_X_SCRIPT_NAME", "")
-        or request.environ.get("SCRIPT_NAME", "")
+        request.environ.get("SCRIPT_NAME", "")
+        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
     ).rstrip("/")
     if parts and parts[0].startswith("/"):
         prefix = ""
+    elif has_appname and app_name != "_default":
+        prefix = "%s/%s/" % (script_name, app_name)
     else:
-        prefix = script_name + (
-            "/%s/" % request.app_name
-            if (request.app_name != "_default" and use_appname)
-            else "/"
-        )
+        prefix = "%s/" % script_name
     broken_parts = []
     for part in parts:
         broken_parts += str(part).rstrip("/").split("/")
     if static_version != "" and broken_parts and broken_parts[0] == "static":
-        if not static_version:  # try to retrieve from __init__.py
-            app_module = "apps.%s" % request.app_name if use_appname else "apps"
+        if not static_version:
+            # try to retrieve from __init__.py
+            app_module = "apps.%s" % app_name if has_appname else "apps"
             static_version = getattr(
                 sys.modules[app_module], "__static_version__", None
             )
@@ -628,7 +648,7 @@ def URL(
 
     url = prefix + "/".join(map(urllib.parse.quote, broken_parts))
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
-    urlvars = {k: v for k, v in vars.items()} if vars else {}
+    urlvars = dict(vars) if vars else {}
     if signer:
         signer.sign_vars(url, urlvars)
     if urlvars:
@@ -640,9 +660,12 @@ def URL(
     if not scheme is False:
         original_url = request.environ.get("HTTP_ORIGIN") or request.url
         orig_scheme, _, domain = original_url.split("/", 3)[:3]
-        scheme = (
-            orig_scheme if scheme is True else "" if scheme is None else scheme + ":"
-        )
+        if scheme is True:
+            scheme = orig_scheme
+        elif scheme is None:
+            scheme = ""
+        else:
+            scheme += ":"
         url = "%s//%s%s" % (scheme, domain, url)
     return url
 
@@ -653,11 +676,16 @@ def URL(
 
 
 class HTTP(BaseException):
+    class Type:
+        success = 'success'
+        error = 'error'
+
     """Our HTTP exception does not delete cookies and headers like the bottle.HTTPResponse does;
     since it is considered a success, not a failure"""
 
-    def __init__(self, status):
+    def __init__(self, status, type = Type.success):
         self.status = status
+        self.type = type
 
 
 def redirect(location):
@@ -707,8 +735,14 @@ class action:
                     [obj.on_success(200) for obj in fixtures]
                     return ret
                 except HTTP as http:
-                    [obj.on_success(http.status) for obj in fixtures]
-                    raise
+                    if http.type == http.Type.success:
+                        [obj.on_success(http.status) for obj in fixtures]
+                    else:
+                        [obj.on_error() for obj in fixtures]
+                        # it should be [obj.on_error(status) for obj in fixtures]
+                        # but it breaks users fixtures
+                        # `def on_error(status = None):` - cost nothing, but we have  `def on_error():`
+                    raise               
                 except Exception:
                     [obj.on_error() for obj in fixtures]
                     raise
@@ -748,7 +782,7 @@ class action:
                 return ret
             except HTTP as http:
                 response.status = http.status
-                return ""
+                return getattr(http, "body", "")
             except bottle.HTTPResponse:
                 raise
             except Exception:
@@ -937,8 +971,9 @@ class ErrorStorage:
         else:
             orderby = ~db.py4web_error.timestamp
             groupby = db.py4web_error.path | db.py4web_error.error
-            query = db.py4web_error.timestamp > datetime.datetime.now() - datetime.timedelta(
-                days=7
+            query = (
+                db.py4web_error.timestamp
+                > datetime.datetime.now() - datetime.timedelta(days=7)
             )
             fields = [field for field in db.py4web_error if not field.type == "json"]
             fields.append(db.py4web_error.id.count())
@@ -1049,7 +1084,8 @@ class Reloader:
                 tb = traceback.format_exc()
                 print(tb)
                 click.secho(
-                    "\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb), fg="red",
+                    "\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb),
+                    fg="red",
                 )
                 Reloader.ERRORS[app_name] = tb
                 # clear all files/submodules if the loading fails
@@ -1308,7 +1344,7 @@ def install_args(args, reinstall_apps=False):
     for key in args:
         os.environ["PY4WEB_" + key.upper()] = str(args[key])
     apps_folder = args["apps_folder"]
-    yes = args.get("yes", "N")
+    yes = args.get("yes", False)
     # If the apps folder does not exist create it and populate it
     if not os.path.exists(apps_folder):
         if yes or click.confirm("Create missing folder %s?" % apps_folder):

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Criando seu primeiro aplicativo &mdash; Documentação py4web 1.20210101.1&#34;
+  <title>Criando seu primeiro aplicativo &mdash; Documentação py4web 1.20210119.1&#34;
 </title>
   
 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                1.20210101.1"
+                1.20210119.1"
 
               </div>
             
@@ -256,11 +256,11 @@ handled automatically based on the HTTP request headers.</p>
 </pre></div>
 </div>
 <p>Reload the app, and this page will be accessible at</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">myapp</span><span class="o">/</span><span class="n">index</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http://localhost:8000/myapp/index
 </pre></div>
 </div>
 <p>ou</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">myapp</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http://localhost:8000/myapp
 </pre></div>
 </div>
 <p>(Note que o índice é opcional)</p>
@@ -277,7 +277,7 @@ add at the end</p>
 </pre></div>
 </div>
 <p>Esta página será visível na</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">myapp</span><span class="o">/</span><span class="n">colors</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http://localhost:8000/myapp/colors
 </pre></div>
 </div>
 <p>e retorna um objeto JSON `` { «cores»: [ «vermelho», «azul», «verde»]} <a href="#id1"><span class="problematic" id="id2">``</span></a>. Observe que escolhemos nomear a função o mesmo que a rota. Isso não é necessário, mas é uma convenção que muitas vezes se seguirão.</p>
@@ -294,7 +294,7 @@ add at the end</p>
 </pre></div>
 </div>
 <p>Esta página será visível na</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span><span class="n">myapp</span><span class="o">/</span><span class="n">color</span><span class="o">/</span><span class="n">red</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http://localhost:8000/myapp/color/red
 </pre></div>
 </div>
 <p>A sintaxe dos padrões é o mesmo que os <cite>rotas Garrafa &lt;https://bottlepy.org/docs/dev/tutorial.html#request-routing&gt;</cite> __. Uma rota WildCard pode ser definida como</p>
@@ -313,7 +313,7 @@ the config field. The matched value is not modified.</p></li>
 </ul>
 <p>O padrão de harmonização o carácter universal é passado para a função sob a variável especificada `` name``.</p>
 <p>Além disso, o decorador acção tem um argumento `` method`` opcional que pode ser um método HTTP ou uma lista de métodos:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span><span class="s1">&#39;DELETE&#39;</span><span class="p">])</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@action(&#39;index&#39;, method=[&#39;GET&#39;,&#39;POST&#39;,&#39;DELETE&#39;])
 </pre></div>
 </div>
 <p>Você pode usar vários decoradores para expor a mesma função em várias rotas.</p>
@@ -331,7 +331,7 @@ the config field. The matched value is not modified.</p></li>
 </pre></div>
 </div>
 <p>Esta ação pode ser acessado em:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>http://localhost:8000/myapp/paint?color=red
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http://localhost:8000/myapp/paint?color=red
 </pre></div>
 </div>
 <p>Notice that the request object is a <a class="reference external" href="https://bottlepy.org/docs/dev/api.html#the-request-object">Bottle request object</a>.</p>
@@ -386,7 +386,7 @@ on which you can rely to build your real project.</p>
 <img alt="_images/_scaffold.png" src="_images/_scaffold.png" />
 <p>Normalmente você vai encontrar o aplicativo andaime sob apps, mas você pode facilmente criar um novo clone de la manualmente ou usando o Dashboard.</p>
 <p>Aqui está a estrutura da árvore do `` aplicativo _scaffold``:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── __init__.py          # imports everything else
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>├── __init__.py          # imports everything else
 ├── common.py            # defines useful objects
 ├── controllers.py       # your actions
 ├── databases            # your sqlite databases and metadata
@@ -547,7 +547,7 @@ exceptions inside handlers are printed in terminal.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210101.1"
+      v: 1.20210119.1"
 
       <span class="fa fa-caret-down"></span>
     </span>

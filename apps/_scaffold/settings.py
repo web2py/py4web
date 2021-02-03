@@ -6,20 +6,24 @@ This is an optional file that defined app level settings such as:
 This file is provided as an example:
 """
 import os
+from py4web.core import required_folder
 
 # db settings
 APP_FOLDER = os.path.dirname(__file__)
 APP_NAME = os.path.split(APP_FOLDER)[-1]
 # DB_FOLDER:    Sets the place where migration files will be created
 #               and is the store location for SQLite databases
-DB_FOLDER = os.path.join(APP_FOLDER, "databases")
+DB_FOLDER = required_folder(APP_FOLDER, "databases")
 DB_URI = "sqlite://storage.db"
 DB_POOL_SIZE = 1
 DB_MIGRATE = True
 DB_FAKE_MIGRATE = False  # maybe?
 
+# location where static files are stored:
+STATIC_FOLDER = required_folder(APP_FOLDER, "static")
+
 # location where to store uploaded files:
-UPLOAD_FOLDER = os.path.join(APP_FOLDER, "uploads")
+UPLOAD_FOLDER = required_folder(APP_FOLDER, "uploads")
 
 # send email on regstration
 VERIFY_EMAIL = True
@@ -78,7 +82,7 @@ LDAP_SETTINGS = {
 }
 
 # i18n settings
-T_FOLDER = os.path.join(APP_FOLDER, "translations")
+T_FOLDER = required_folder(APP_FOLDER, "translations")
 
 # Celery settings
 USE_CELERY = False
