@@ -1470,13 +1470,14 @@ def call(apps_folder, func, args):
     args = json.loads(args)
     install_args(dict(apps_folder=apps_folder))
     # FIXME: apps_folder need to be named 'apps'?
-    #        why do not use argument value instead?
+    #        why do not honour the argument value instead?
     #        I think this is not the only place where 'apps' is hardcoded.
     module, name = ("apps." + func).rsplit(".", 1)
     env = {}
-    if not apps_folder in sys.path:
-        # need apps_folder's parent in path for the import to work
-        sys.path.insert(0, os.path.dirname(os.path.abspath(apps_folder)))
+    # need apps_folder's parent in path for the import to work
+    apps_folder_parent = str(pathlib.Path(apps_folder).resolve().parent)
+    if not apps_folder_parent in sys.path:
+        sys.path.insert(0, apps_folder_parent)
     exec("from %s import %s" % (module, name), {}, env)
     env[name](**args)
 
