@@ -1256,8 +1256,8 @@ def watch(apps_folder, server_config, mode="sync"):
     if server_config["number_workers"] > 1:
         click.echo("--watch option has no effect in multi-process environment \n")
         return
-    elif server_config["server"].startswith("wsgiref"):
-        # default wsgi server block the main thread so we open a new thread for the file watcher
+    elif server_config["server"].startswith(("wsgiref", "waitress")):
+        # these servers block the main thread so we open a new thread for the file watcher
         threading.Thread(
             target=watch_folder_event_loop, args=(apps_folder,), daemon=True
         ).start()
