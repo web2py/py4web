@@ -44,7 +44,7 @@ py4web run apps
 
 ```
 # py4web run -h
-Usage: py4web.py run [OPTIONS] [APPS_FOLDER]
+Usage: py4web.py [usegevent] run [OPTIONS] [APPS_FOLDER]
 
   Run all the applications on apps_folder
 
@@ -56,7 +56,9 @@ Options:
   -P, --port INTEGER            Port number  [default: 8000]
   -p, --password_file TEXT      File for the encrypted password  [default:
                                 password.txt]
-
+                                
+  -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|geventWebSocketServer|wsgirefThreadingServer]
+                                  server to use  [default: default]
   -w, --number_workers INTEGER  Number of workers  [default: 0]
   -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
                                 (default), none  [default: full]
@@ -72,7 +74,6 @@ Options:
 
 Example:
 
-
 ```
 py4web run -H 127.0.0.1 -P 8000 -d demo apps
 ```
@@ -82,6 +83,16 @@ Note that since the default (as specified above) for the host and port are 127.0
 ```
 py4web run -d demo apps
 ```
+
+Run using `gevent monkey.patch_all()`
+
+```
+py4web usegevent run -d demo
+```
+
+Note that `usegevent`-directive must be used with `gevent` and `geventWebSocketServer`
+and shouldn't be used with `tornado` and `waitress`
+
 
 ## WSGI
 
