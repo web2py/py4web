@@ -1547,7 +1547,7 @@ def new_app(apps_folder, app_name, scaffold_zip):
     "-s",
     "--server",
     default="default",
-    type=click.Choice(["default", "wsgiref", "tornado", "gunicorn", "gevent"] + server_adapters.__all__),
+    type=click.Choice(["default", "wsgiref", "tornado", "gunicorn", "gevent", "waitress"] + server_adapters.__all__),
     help="server to use",
     show_default=True,
 )
