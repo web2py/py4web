@@ -201,8 +201,11 @@ class Param:
 
     def __getitem__(self, k):
         if k is ...:
-            ret = self.__class__(self._ctx_prop, **self._filters)
-            ret._name = k
+            if not self._name:
+                ret = self.__class__(self._ctx_prop, **self._filters)
+                ret._name = k
+            else:
+                raise RuntimeError('`[...]` is no allowed here')
             return ret
         else:
             if not self._name:
@@ -377,10 +380,10 @@ def with_method_shortcuts(methods):
 
 @with_method_shortcuts('DELETE GET HEAD OPTIONS PATCH POST PUT'.split())
 class API:
-    __deps__ = None  # extarnal dependencies
     __mounted__ = {}
-    __current__ = None
-    __ctx__ = None
+    #__deps__ = None  # extarnal dependencies
+    #__current__ = None,
+    #__ctx__ = None
     thread_safe = staticmethod(thread_safe)
     ValueError = Param.ValueError
 
@@ -391,7 +394,11 @@ class API:
         )
         api = type('api',
             (cls,),
-            dict(__deps__ = deps)
+            dict(
+                __deps__ = deps,
+                __current__ = None,
+                __ctx__ = None
+            )
         )
         return api
 

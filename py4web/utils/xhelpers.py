@@ -73,21 +73,14 @@ def thread_safe(*ts_names, safeguard = False, store_name = '__ts_store__'):
             patch(self, ts_names)
             class_patched = True
             if safeguard:
-                __setattr__ = self.__class__.__setattr__
-                __getattrubute__ = getattr(self.__class__,'__getattribute__', object.__getattribute__)
+                attr_keys = list(self.__dict__.keys())
+                attr_len = len(attr_keys)
                 __setattr__ = getattr(self.__class__,'__setattr__', object.__setattr__)
-                is_safe = set()
-                def __safe_getattribue__(s, k):
-                    ret = __getattrubute__(s, k)
-                    is_safe.add(k)
-                    return ret
                 def __safe_setattr__(s, k, v):
-                    if k in is_safe:
-                        return __setattr__(s, k, v)
-                    else:
-                        s.__getattribute__(k)
-                        return __setattr__(s, k, v)
-                self.__class__.__getattribute__ = __safe_getattribue__
+                    ret = __setattr__(s, k, v)
+                    if len(s.__dict__) > attr_len:
+                        unsafe_key = set(s.__dict__.keys()) - set(attr_keys)
+                        raise RuntimeError(f'unsafe attribute assignment detected: `{unsafe_key}`')
                 self.__class__.__setattr__ = __safe_setattr__
             return ret
         return patcher
