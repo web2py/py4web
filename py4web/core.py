@@ -1446,6 +1446,7 @@ def version(all):
 )
 def setup(**kwargs):
     """Setup new apps folder or reinstall it"""
+    # FIXME: unchecked apps_folder
     install_args(kwargs, reinstall_apps=True)
 
 
@@ -1453,6 +1454,7 @@ def setup(**kwargs):
 @click.argument("apps_folder", default="apps")
 def shell(apps_folder):
     """Open a python shell with apps_folder added to the path"""
+    # FIXME: unchecked apps_folder
     install_args(dict(apps_folder=apps_folder))
     code.interact(local=dict(globals(), **locals()))
 
@@ -1582,6 +1584,7 @@ def new_app(apps_folder, app_name, scaffold_zip):
 @click.option("--ssl_key", type=click.Path(exists=True), help="SSL key file for HTTPS")
 def run(**kwargs):
     """Run all the applications on apps_folder"""
+    # FIXME: unchecked apps_folder
     install_args(kwargs)
     apps_folder = kwargs["apps_folder"]
     yes = kwargs["yes"]
