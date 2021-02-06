@@ -147,7 +147,7 @@ def monkey_patch_bottle():
 
     @property
     def fullpath(self):
-        appname = self.get_header("x-py4web-appname", "/")
+        appname = self.environ.get("HTTP_X_PY4WEB_APPNAME", "/")
         return urljoin(self.script_name, self.path[len(appname) :])
 
     setattr(bottle.BaseRequest, "fullpath", fullpath)
@@ -1161,7 +1161,7 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
 def error404(error):
     guess_app_name = (
         "index"
-        if request.headers.get("x-py4web-appname")
+        if request.environ.get("HTTP_X_PY4WEB_APPNAME")
         else request.path.split("/")[1]
     )
     if guess_app_name == "index":
@@ -1169,8 +1169,8 @@ def error404(error):
     else:
         href = "/" + guess_app_name
     script_name = (
-        request.environ.get("HTTP_X_SCRIPT_NAME", "")
-        or request.environ.get("SCRIPT_NAME", "")
+        request.environ.get("SCRIPT_NAME", "")
+        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
     ).rstrip("/")
     if script_name:
         href = script_name + href
@@ -1285,13 +1285,14 @@ def watch(apps_folder, server_config, mode="sync"):
         Reloader.install_reloader_hook()
 
 
-def start_server(args):
-    host, port, apps_folder = args["host"], int(args["port"]), args["apps_folder"]
-    number_workers = args["number_workers"]
+def start_server(kwargs):
+    host = kwargs["host"]; port = int(kwargs["port"])
+    apps_folder = kwargs["apps_folder"]
+    number_workers = kwargs["number_workers"]
     params = dict(host=host, port=port, reloader=False)
     server_config = dict(
         platform = platform.system().lower(),
-        server = None if args["server"] == "default" else args["server"],
+        server = None if kwargs["server"] == "default" else kwargs["server"],
         number_workers = number_workers
     )
     if not server_config["server"]:
@@ -1316,15 +1317,16 @@ def start_server(args):
         params["workers"] = number_workers
     if server_config["server"] == "gunicorn":
         sys.argv[:] = sys.argv[:1]  # else break gunicorn
-    if args["ssl_cert"] is not None:
-        params["certfile"] = args["ssl_cert"]
-        params["keyfile"] = args["ssl_key"]
+    if kwargs["ssl_cert"] is not None:
+        params["certfile"] = kwargs["ssl_cert"]
+        params["keyfile"] = kwargs["ssl_key"]
+
     if server_config["server"] == "gevent":
         if not hasattr(_ssl, "sslwrap"):
             _ssl.sslwrap = new_sslwrap
 
-    if args["watch"] != "off":
-        watch(apps_folder, server_config, args["watch"])
+    if kwargs["watch"] != "off":
+        watch(apps_folder, server_config, kwargs["watch"])
     bottle.run(**params)
 
 
@@ -1342,15 +1344,15 @@ def check_compatible(version):
 #########################################################################################
 
 
-def install_args(args, reinstall_apps=False):
-    args["service_folder"] = os.path.join(
-        args["apps_folder"], DEFAULTS["PY4WEB_SERVICE_FOLDER"]
+def install_args(kwargs, reinstall_apps=False):
+    kwargs["service_folder"] = os.path.join(
+        kwargs["apps_folder"], DEFAULTS["PY4WEB_SERVICE_FOLDER"]
     )
-    args["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
-    for key in args:
-        os.environ["PY4WEB_" + key.upper()] = str(args[key])
-    apps_folder = args["apps_folder"]
-    yes = args.get("yes", False)
+    kwargs["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
+    for key, val in kwargs.items():
+        os.environ["PY4WEB_" + key.upper()] = str(val)
+    apps_folder = kwargs["apps_folder"]
+    yes = kwargs.get("yes", False)
     # If the apps folder does not exist create it and populate it
     if not os.path.exists(apps_folder):
         if yes or click.confirm("Create missing folder %s?" % apps_folder):
@@ -1382,9 +1384,9 @@ def install_args(args, reinstall_apps=False):
                             zip_file.extractall(target_dir)
                             click.echo("\x1b[A[X]")
 
-    if not os.path.exists(args["service_folder"]):
-        os.mkdir(args["service_folder"])
-    session_secret_filename = os.path.join(args["service_folder"], "session.secret")
+    if not os.path.exists(kwargs["service_folder"]):
+        os.mkdir(kwargs["service_folder"])
+    session_secret_filename = os.path.join(kwargs["service_folder"], "session.secret")
     if not os.path.exists(session_secret_filename):
         with open(session_secret_filename, "w") as fp:
             fp.write(str(uuid.uuid4()))
@@ -1393,9 +1395,9 @@ def install_args(args, reinstall_apps=False):
         Session.SECRET = fp.read()
 
 
-def wsgi(**args):
+def wsgi(**kwargs):
     """Initializes everything, loads apps, returns the wsgi app"""
-    install_args(args)
+    install_args(kwargs)
     Reloader.import_apps()
     return bottle.default_app()
 
@@ -1449,15 +1451,17 @@ def version(all):
     help="No prompt, assume yes to questions",
     show_default=True,
 )
-def setup(**args):
+def setup(**kwargs):
     """Setup new apps folder or reinstall it"""
-    install_args(args, reinstall_apps=True)
+    # FIXME: unchecked apps_folder
+    install_args(kwargs, reinstall_apps=True)
 
 
 @cli.command()
 @click.argument("apps_folder", default="apps")
 def shell(apps_folder):
     """Open a python shell with apps_folder added to the path"""
+    # FIXME: unchecked apps_folder
     install_args(dict(apps_folder=apps_folder))
     code.interact(local=dict(globals(), **locals()))
 
@@ -1473,14 +1477,19 @@ def shell(apps_folder):
 )
 def call(apps_folder, func, args):
     """Call a function inside apps_folder"""
-    args = json.loads(args)
+    kwargs = json.loads(args)
     install_args(dict(apps_folder=apps_folder))
+    # FIXME: apps_folder need to be named 'apps'?
+    #        why do not honour the argument value instead?
+    #        I think this is not the only place where 'apps' is hardcoded.
     module, name = ("apps." + func).rsplit(".", 1)
     env = {}
-    if not apps_folder in sys.path:
-        sys.path.insert(0, apps_folder)
+    # need apps_folder's parent in path for the import to work
+    apps_folder_parent = str(pathlib.Path(apps_folder).resolve().parent)
+    if not apps_folder_parent in sys.path:
+        sys.path.insert(0, apps_folder_parent)
     exec("from %s import %s" % (module, name), {}, env)
-    env[name](**args)
+    env[name](**kwargs)
 
 
 @cli.command(name="set_password")
@@ -1588,11 +1597,12 @@ def new_app(apps_folder, app_name, scaffold_zip):
     "--ssl_cert", type=click.Path(exists=True), help="SSL certificate file for HTTPS"
 )
 @click.option("--ssl_key", type=click.Path(exists=True), help="SSL key file for HTTPS")
-def run(**args):
+def run(**kwargs):
     """Run all the applications on apps_folder"""
-    install_args(args)
-    apps_folder = args["apps_folder"]
-    yes = args["yes"]
+    # FIXME: unchecked apps_folder
+    install_args(kwargs)
+    apps_folder = kwargs["apps_folder"]
+    yes = kwargs["yes"]
 
     from py4web import __version__
 
@@ -1601,8 +1611,8 @@ def run(**args):
 
     # If we know where the password is stored, read it, otherwise ask for one
     if os.path.exists(os.path.join(apps_folder, "_dashboard")):
-        if args["dashboard_mode"] not in ("demo", "none") and not os.path.exists(
-            args["password_file"]
+        if kwargs["dashboard_mode"] not in ("demo", "none") and not os.path.exists(
+            kwargs["password_file"]
         ):
             click.echo(
                 'You have not set a dashboard password. Run "%s set_password" to do so.'
@@ -1611,7 +1621,7 @@ def run(**args):
         else:
             click.echo(
                 "Dashboard is at: http://%s:%s/_dashboard"
-                % (args["host"], args["port"])
+                % (kwargs["host"], kwargs["port"])
             )
 
     # Catch interrupts like Ctrl-C
@@ -1619,7 +1629,7 @@ def run(**args):
 
     # Start
     Reloader.import_apps()
-    start_server(args)
+    start_server(kwargs)
 
 
 if __name__ == "__main__":
