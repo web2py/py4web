@@ -182,7 +182,7 @@ class Auth(Fixture):
             formstyle=FormStyleDefault,
         )
 
-        """Creates and Auth object responsinble for handling
+        """Creates and Auth object responsible for handling
         authentication and authorization"""
         self.__prerequisites__ = []
         self.inject = inject
@@ -672,7 +672,7 @@ class Auth(Fixture):
             auth.enable_record_versioning(tables=db)
 
         tables can be the db (all table) or a list of tables.
-        only tables with modified_by and modified_on fiels (as created
+        only tables with modified_by and modified_on fields (as created
         by auth.signature) will have versioning. Old record versions will be
         in table 'mything_archive' automatically defined.
         when you enable enable_record_versioning, records are never
