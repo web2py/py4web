@@ -1,3 +1,10 @@
+import sys
+if sys.argv[1] == "usegevent":
+    sys.argv.pop(1)
+    from gevent import monkey
+    monkey.patch_all()
+
+
 from .core import (
     action,  # main py4web decorator
     request,

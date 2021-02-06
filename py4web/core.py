@@ -36,6 +36,7 @@ import uuid
 import zipfile
 import asyncio
 from watchgod import awatch
+from . import server_adapters
 
 # Optional web servers for speed
 try:
@@ -1223,7 +1224,7 @@ def try_app_watch_tasks():
             try:
                 APP_WATCH["handlers"][handler](changed_files_dict.keys())
                 tried_tasks.append(handler)
-            except Exception as e:
+            except Exception:
                 logging.error(traceback.format_exc())
         ## remove executed tasks from register
         for handler in tried_tasks:
@@ -1260,22 +1261,22 @@ def watch(apps_folder, server_config, mode="sync"):
                 else:
                     Reloader.import_app(name)
             ## in 'lazy' mode it's done in bottle's 'before_request' hook
-            if not mode == "lazy":
+            if mode != "lazy":
                 try_app_watch_tasks()
 
-    # fix issue #327: tornado is default server for windows now
-    # if server_config == "windows":
-    # default wsgi server block the main thread so we open a new thread for the file watcher
-    # threading.Thread(
-    #    target=watch_folder_event_loop, args=(apps_folder,), daemon=True
-    # ).start()
-    if server_config in ["tornado", "windows"]:
-        # tornado delegate to asyncio so we add a future into the event loop
-        asyncio.ensure_future(watch_folder(apps_folder))
-    elif server_config == "gunicorn":
-        # supposedly number_workers > 1
+    if server_config["number_workers"] > 1:
         click.echo("--watch option has no effect in multi-process environment \n")
         return
+    elif server_config["server"].startswith(("wsgiref", "waitress")):
+        # these servers block the main thread so we open a new thread for the file watcher
+        threading.Thread(
+            target=watch_folder_event_loop, args=(apps_folder,), daemon=True
+        ).start()
+    elif server_config["server"] == "tornado":
+        # tornado delegate to asyncio so we add a future into the event loop
+        asyncio.ensure_future(watch_folder(apps_folder))
+    elif server_config["server"].startswith('gevent'):
+        watch_folder_event_loop(apps_folder)
     else:
         # should never happen
         return
@@ -1287,33 +1288,38 @@ def watch(apps_folder, server_config, mode="sync"):
 def start_server(args):
     host, port, apps_folder = args["host"], int(args["port"]), args["apps_folder"]
     number_workers = args["number_workers"]
-    server = None
     params = dict(host=host, port=port, reloader=False)
-    if platform.system().lower() == "windows":
-        server_config = "windows"
-        params["server"] = "tornado"
-        if sys.version_info >= (
-            3,
-            8,
-        ):  # see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on windows
-            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    elif number_workers <= 1:
-        server_config = "tornado"
-        params["server"] = "tornado"
-    else:
-        if not gunicorn:
-            logging.error("gunicorn not installed")
-            return
-        server_config = "gunicorn"
-        params["server"] = "gunicorn"
+    server_config = dict(
+        platform = platform.system().lower(),
+        server = None if args["server"] == "default" else args["server"],
+        number_workers = number_workers
+    )
+    if not server_config["server"]:
+        if server_config["platform"] == "windows":
+            server_config["server"] = "tornado"
+            if sys.version_info >= (
+                3,
+                8,
+            ):  # see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on windows
+                asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        elif number_workers <= 1:
+            server_config["server"] = "tornado"
+        else:
+            if not gunicorn:
+                logging.error("gunicorn not installed")
+                return
+            server_config["server"] = "gunicorn"
+    params["server"] = server_config["server"]
+    if params["server"] in server_adapters.__all__:
+        params["server"] = getattr(server_adapters, params["server"])()
+    if number_workers > 1:
         params["workers"] = number_workers
+    if server_config["server"] == "gunicorn":
         sys.argv[:] = sys.argv[:1]  # else break gunicorn
-
     if args["ssl_cert"] is not None:
         params["certfile"] = args["ssl_cert"]
         params["keyfile"] = args["ssl_key"]
-
-    if "gevent" in server_config:
+    if server_config["server"] == "gevent":
         if not hasattr(_ssl, "sslwrap"):
             _ssl.sslwrap = new_sslwrap
 
@@ -1546,6 +1552,14 @@ def new_app(apps_folder, app_name, scaffold_zip):
     "--password_file",
     default="password.txt",
     help="File for the encrypted password",
+    show_default=True,
+)
+@click.option(
+    "-s",
+    "--server",
+    default="default",
+    type=click.Choice(["default", "wsgiref", "tornado", "gunicorn", "gevent", "waitress"] + server_adapters.__all__),
+    help="server to use",
     show_default=True,
 )
 @click.option(
