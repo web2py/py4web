@@ -575,7 +575,8 @@ class Session(Fixture):
         return self.get_data().keys()
 
     def __iter__(self):
-        return self.get_data().items()
+        for item in self.get_data().items():
+            yield item
 
     def clear(self):
         self.local.changed = True
@@ -678,13 +679,13 @@ def URL(
 
 class HTTP(BaseException):
     class Type:
-        success = 'success'
-        error = 'error'
+        success = "success"
+        error = "error"
 
     """Our HTTP exception does not delete cookies and headers like the bottle.HTTPResponse does;
     since it is considered a success, not a failure"""
 
-    def __init__(self, status, type = Type.success):
+    def __init__(self, status, type=Type.success):
         self.status = status
         self.type = type
 
@@ -743,7 +744,7 @@ class action:
                         # it should be [obj.on_error(status) for obj in fixtures]
                         # but it breaks users fixtures
                         # `def on_error(status = None):` - cost nothing, but we have  `def on_error():`
-                    raise               
+                    raise
                 except Exception:
                     [obj.on_error() for obj in fixtures]
                     raise
@@ -1275,7 +1276,7 @@ def watch(apps_folder, server_config, mode="sync"):
     elif server_config["server"] == "tornado":
         # tornado delegate to asyncio so we add a future into the event loop
         asyncio.ensure_future(watch_folder(apps_folder))
-    elif server_config["server"].startswith('gevent'):
+    elif server_config["server"].startswith("gevent"):
         watch_folder_event_loop(apps_folder)
     else:
         # should never happen
@@ -1286,14 +1287,15 @@ def watch(apps_folder, server_config, mode="sync"):
 
 
 def start_server(kwargs):
-    host = kwargs["host"]; port = int(kwargs["port"])
+    host = kwargs["host"]
+    port = int(kwargs["port"])
     apps_folder = kwargs["apps_folder"]
     number_workers = kwargs["number_workers"]
     params = dict(host=host, port=port, reloader=False)
     server_config = dict(
-        platform = platform.system().lower(),
-        server = None if kwargs["server"] == "default" else kwargs["server"],
-        number_workers = number_workers
+        platform=platform.system().lower(),
+        server=None if kwargs["server"] == "default" else kwargs["server"],
+        number_workers=number_workers,
     )
     if not server_config["server"]:
         if server_config["platform"] == "windows":
@@ -1567,7 +1569,10 @@ def new_app(apps_folder, app_name, scaffold_zip):
     "-s",
     "--server",
     default="default",
-    type=click.Choice(["default", "wsgiref", "tornado", "gunicorn", "gevent", "waitress"] + server_adapters.__all__),
+    type=click.Choice(
+        ["default", "wsgiref", "tornado", "gunicorn", "gevent", "waitress"]
+        + server_adapters.__all__
+    ),
     help="server to use",
     show_default=True,
 )
