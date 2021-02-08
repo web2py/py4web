@@ -1444,7 +1444,7 @@ def version(all):
 
 
 @cli.command()
-@click.argument("apps_folder", default="apps")
+@click.argument("apps_folder")
 @click.option(
     "-Y",
     "--yes",
@@ -1460,7 +1460,7 @@ def setup(**kwargs):
 
 
 @cli.command()
-@click.argument("apps_folder", default="apps")
+@click.argument("apps_folder")
 def shell(apps_folder):
     """Open a python shell with apps_folder added to the path"""
     # FIXME: unchecked apps_folder
@@ -1545,7 +1545,7 @@ def new_app(apps_folder, app_name, scaffold_zip):
 
 
 @cli.command()
-@click.argument("apps_folder", default="apps")
+@click.argument("apps_folder")
 @click.option(
     "-Y",
     "--yes",
