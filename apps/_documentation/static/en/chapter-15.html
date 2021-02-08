@@ -14,6 +14,7 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
 
   
@@ -190,73 +191,72 @@
 <h1>From web2py to py4web<a class="headerlink" href="#from-web2py-to-py4web" title="Permalink to this headline">¶</a></h1>
 <p>This chapter is dedicated to help users for porting old web2py applications to py4web.</p>
 <p>Web2py and py4web share many similarities and some differences. For example they share the same
-database abstraction layer (PyDAL) which means pydal table definitions and queries are identical
+database abstraction layer (pyDAL) which means pydal table definitions and queries are identical
 between the two frameworks. They also share the same template language with the minor caveat that
-web2py defaults to <cite>{{…}}</cite> delimiters while py4web defaultes to <cite>[[…]]</cite> delimiters. They also
-share the same validators, part of PyDAL, and very similar helpers. The py4web ones are a
-ligher/faster/minimalist re-implementation but they serve the same purpose and support a very
+web2py defaults to <cite>{{…}}</cite> delimiters while py4web defaults to <cite>[[…]]</cite> delimiters. They also
+share the same validators, part of pyDAL, and very similar helpers. The py4web ones are a
+lighter/faster/minimalist re-implementation but they serve the same purpose and support a very
 similar syntax. They both provide a <cite>Form</cite> object (equivalent to <cite>SQLFORM</cite> in web2py) and a <cite>Grid</cite>
 object (equivalent to <cite>SQLFORM.grid</cite> in web2py). They both provide a <cite>XML</cite> object that can sanitize
 HTML and <cite>URL</cite> helper to generate URL. They both can raise <cite>HTTP</cite> to return non-200 OK pages. They
 both provide an <cite>Auth</cite> object that can generate register/login/change password/lost password/edit
 profile forms. Both web2py and py4web track and log all errors.</p>
 <p>Some of the main differences are the following:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p>web2py works with both Python 2.6+ and 3.6+, while py4web runs on Python 3.6+ only. So, if your
 old web2py application is still using Python 2, your first step involves migrating it to at
 least Python 3.6, better if the latest 3.8.</p></li>
 <li><p>web2py apps consist of collection of files which are executed at every HTTP request (using a
 custom importer, in a predetermined order). In py4web apps are regular python modules that are
-imported automatically by the frameworks. Byt the way, this makes possible the use of standard
+imported automatically by the frameworks. By the way, this makes possible the use of standard
 python debuggers (even inside the most used IDEs).</p></li>
-<li><p>In web2py every app has a fixed folder structure. A function is an action if and only if is is
+<li><p>In web2py every app has a fixed folder structure. A function is an action if and only if it is
 defined in a <code class="docutils literal notranslate"><span class="pre">controllers/*.py</span></code> file. py4web is much less constraining. In py4web an app must
 have an entry point <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> and a <code class="docutils literal notranslate"><span class="pre">static</span></code> folder. Every other convention such as the
 location of templates, uploaded files, translation files, sessions, etc. is user specified.</p></li>
 <li><p>In web2py the scaffolding app (the blue print for creating new apps) is called “welcome”. In
 py4web it is called “_scaffold”. _scaffold contains a “settings.py” file and a “common.py”.
 The latter provides an example of how to enable Auth and configure all the options for the
-specific app. _scaffold has also a “model.py” file and a “controller.py’ file but, unlike
+specific app. _scaffold has also a “model.py” file and a “controller.py” file but, unlike
 web2py, those files are not treated in any special manner. Their names follow a convention
 (not enforced by the framework) and they are imported by the <cite>__init__.py</cite> file as for any
 regular python module.</p></li>
 <li><p>In web2py every function in <code class="docutils literal notranslate"><span class="pre">controllers/*.py</span></code> is an action. In py4web a function is an action
-if it has the <cite>&#64;action(“…”)</cite> decorator. That means that actions can be defined anywhere. The
+if it has the <code class="docutils literal notranslate"><span class="pre">&#64;action(&quot;...&quot;)</span></code> decorator. That means that actions can be defined anywhere. The
 admin interface will help you locate where a particular action is defined.</p></li>
 <li><p>In web2py the mapping between URLs and file/function names is automatic but it can be
-overwritten in routes.py (like in Django). In py4web the mapping is specified in the decorator
+overwritten in “routes.py” (like in Django). In py4web the mapping is specified in the decorator
 as in <cite>&#64;action(‘my_url_path’)</cite> (like in Bottle and Flask). Notice that if the path starts with
 “/” it is assumed to be an absolute path. If not, it is assumed to be reative and prepended by
 the “/{appname}/” prefix. Also, if the path ends with “/index”, the latter postfix is assumed
 to be optional.</p></li>
-<li><p>In web2py the path extention matters and “<a class="reference external" href="http://...html">http://…html</a>” is expected to return HTMl while
-“<a class="reference external" href="http://...json">http://…json</a>” is expected to return JSON, etc. In py4web there is no such convention. If the
+<li><p>In web2py the path extention matters and “<a class="reference external" href="http://">http://</a><em>.html” is expected to return HTML while
+“http://</em>.json” is expected to return JSON, etc. In py4web there is no such convention. If the
 action returns a dict() and has a template, the dict() will be rendered by the template, else it
-will be renedered in JSON. More complex behavior can be accomplished using decorators.</p></li>
+will be rendered in JSON. More complex behavior can be accomplished using decorators.</p></li>
 <li><p>In web2py there are many wrappers around each action and, for example, they could handle sessions,
 pluralization, database connections, and more whether the action needs it or not. This makes
 web2py performances hard to compare with other frameworks. In py4web everything is optional and
-features must be enabled and configured for each action using the <cite>&#64;action.uses(…)</cite> decorator.
-The arguments of <cite>&#64;action.uses(…)</cite> are called fixtures in analogy with the fixtures in a
+features must be enabled and configured for each action using the <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code> decorator.
+The arguments of <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code> are called fixtures in analogy with the fixtures in a
 house. They add functionality by providing preprocessing and postprocessing to the action. For
-example <cite>&#64;action.uses(session, T, db, flash)</cite> indicates that the action needs to use session,
-internationlization/pluralization (T), the database (db), and carry on state for flash messages
+example <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(session,</span> <span class="pre">T,</span> <span class="pre">db,</span> <span class="pre">flash)</span></code> indicates that the action needs to use session,
+internationalization/pluralization (T), the database (db), and carry on state for flash messages
 upon redirection.</p></li>
 <li><p>web2py uses its own request/response objects. py4web uses the request/response objects from the
 underlying Bottle framework. While this may change in the future we are committed to keep them
 compatible with Bottle because of its excellent documentation. Bottle also handles for py4web
 the interface with the web server, routing, partial requests, if modified since, and file
 streaming.</p></li>
-<li><p>Both web2py and py4web use the same PyDAL therefore tables are defined using the same exact
-syntax, and so do queries. The main caveat is that in web2py tables are re-defined at every HTTP
+<li><p>Both web2py and py4web use the same pyDAL therefore tables are defined using the same exact
+syntax, and so do queries. In web2py tables are re-defined at every HTTP
 request, when the entire models are executed. In py4web only the action is executed for every
 HTTP request, while the code defined outside of actions is only executed at startup. That makes
 py4web much faster, in particular when there are many tables. The downside of this approach is
-that the developer should be careful to never override PyDAL variables inside action or in any
+that the developer should be careful to never override pyDAL variables inside action or in any
 way that depends on the content of the request object, else the code is not thread safe. The
 only variables that can be changed at will are the following field attributes: readable,
-writable, requires, update, default, requires. All the others are for practical purposes to be
+writable, requires, update, default. All the others are for practical purposes to be
 considered global and non thread safe. This is also the reason that makes using
 <a class="reference internal" href="chapter-07.html#lazy-tables"><span class="std std-ref">Lazy Tables</span></a> with py4web unuseful and even dangerous.</p></li>
 <li><p>Both web2py and pyweb have an Auth object which serve the same purpose. Both objects have the
@@ -273,7 +273,6 @@ not limited to, users.</p></li>
 <li><p>Web2py comes with the Rocket web server. py4web at the time of writing defaults to the Tornado
 web server but this may change.</p></li>
 </ul>
-</div></blockquote>
 <div class="section" id="simple-conversion-examples">
 <h2>Simple conversion examples<a class="headerlink" href="#simple-conversion-examples" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="hello-world-example">
@@ -377,7 +376,7 @@ web server but this may change.</p></li>
 </div>
 <p>–&gt; <strong>py4web</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">counter</span><span class="p">():</span>
-   <span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;counter, 0) + 1</span>
+   <span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;counter&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
