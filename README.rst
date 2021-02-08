@@ -120,7 +120,8 @@ Note that since the default (as specified above) for the host and port are 127.0
    py4web run -d demo apps
 
 
-Note that ''usegevent'' directive must be used with ''gevent'' and ''geventWebSocketServer'' and shouldn't be used with ''tornado'' and ''waitress''.
+Note also that the optional ''usegevent'' directive must be used with ''gevent'' or ''geventWebSocketServer'' webservers
+and shouldn't be used with ''tornado'' and ''waitress''.
 
 
 WSGI

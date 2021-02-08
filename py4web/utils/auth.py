@@ -143,6 +143,7 @@ class Auth(Fixture):
             "modified by": "Modified By",
         },
         "buttons": {
+            "lost-password" : "Lost Password",
             "register": "Register",
             "request": "Request",
             "sign-in": "Sign In",
@@ -976,7 +977,7 @@ class DefaultAuthForms:
         if self.auth.allows("request_reset_password"):
             form.param.sidecar.append(
                 A(
-                    "Lost Password",
+                    self.auth.messages["buttons"]["lost-password"],
                     _href="../auth/request_reset_password",
                     _class="info",
                     _role="button",
@@ -1032,7 +1033,7 @@ class DefaultAuthForms:
         if self.auth.allows("request_reset_password"):
             form.param.sidecar.append(
                 A(
-                    "Lost Password",
+                    self.auth.messages["buttons"]["lost-password"],
                     _href="../auth/request_reset_password",
                     _class="info",
                     _role="button",
