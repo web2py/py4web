@@ -82,14 +82,12 @@ def rocketServer():
     except ImportError:
         from .rocket3 import Rocket3 as Rocket
     import logging.handlers
-    # import sys
 
     class RocketServer(ServerAdapter):
         def run(self, app):
             if not self.quiet:
                 log = logging.getLogger('Rocket')
                 log.setLevel(logging.INFO)
-                # log.addHandler(logging.StreamHandler(sys.stdout))
                 log.addHandler(logging.StreamHandler())
             server = Rocket((self.host, self.port), 'wsgi', dict(wsgi_app = app))
             server.start()
