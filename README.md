@@ -87,10 +87,10 @@ py4web run -d demo apps
 Run using `gevent monkey.patch_all()`
 
 ```
-py4web usegevent run -d demo
+py4web --usegevent run -d demo
 ```
 
-Note that `usegevent`-directive must be used with `gevent` and `geventWebSocketServer`
+Note that `--usegevent`-directive must be used with `gevent` and `geventWebSocketServer`
 and shouldn't be used with `tornado` and `waitress`
 
 
