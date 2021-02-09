@@ -641,7 +641,7 @@ def URL(
     if static_version != "" and broken_parts and broken_parts[0] == "static":
         if not static_version:
             # try to retrieve from __init__.py
-            apps_folder_name = os.path.basename(os.environ["PY4WEB_APPS_FOLDER"])
+            apps_folder_name = pathlib.PurePath(os.environ["PY4WEB_APPS_FOLDER"]).name
             app_module = "%s.%s" % (apps_folder_name, app_name) if has_appname else apps_folder_name
             try:
                 static_version = getattr(
