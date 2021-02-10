@@ -116,7 +116,7 @@ abort = bottle.abort
 os.environ.update(
     {key: value for key, value in DEFAULTS.items() if not key in os.environ}
 )
-os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parent.parent)
+os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parents[1])
 
 
 def module2filename(module):
