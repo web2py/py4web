@@ -1,6 +1,7 @@
 import json
 import re
 import functools
+from types import SimpleNamespace
 
 from .xhelpers import parse_defs, DictList, thread_safe
 
@@ -151,6 +152,13 @@ class Map:
             raise err
         return ret
 
+def is_bool(v):
+    v = v.lower()
+    if v not in ('true', 'false'):
+        raise Param.ValueError(
+                f'`{v}` must be true/false',
+        )
+    return v == 'true'
 
 class Param:
     class ValueError(Exception):
@@ -172,6 +180,7 @@ class Param:
         int = int,
         re = _re,
         json = json.loads,
+        bool = is_bool,
         # if filter-fun is wrapped in set it should be evaluated
         # see  _init_filters
         map = {Map},
@@ -190,19 +199,23 @@ class Param:
         self._ctx_prop = ctx_prop
         self._allow_extra = allow_extra
         self._filters = dict(**self._filters)
+
         self._filters.update(filters)
         self._init_filters()
         self._filter_chain = []  # [[name, filter:callable], ...]
         self._required = True
         self._name = None
-
+        self._factory = None
         # optional:
         # self._default
+
+    def _blank_copy(self):
+        return self.__class__(self._ctx_prop, self._allow_extra, **self._filters)
 
     def __getitem__(self, k):
         if k is ...:
             if not self._name:
-                ret = self.__class__(self._ctx_prop, **self._filters)
+                ret = self._blank_copy()
                 ret._name = k
             else:
                 raise RuntimeError('`[...]` is no allowed here')
@@ -218,7 +231,7 @@ class Param:
         if k[0] == '_':
             raise AttributeError(f'attr `{k}` is not set')
         if not self._name:
-            ret = self.__class__(self._ctx_prop, **self._filters)
+            ret = self._blank_copy()
             ret._name = k
             return ret
 
@@ -230,6 +243,12 @@ class Param:
         return self
 
     def __call__(self, *args, **kw):
+        # maybe factory call
+        if not self._name:
+            ret = self._blank_copy()
+            ret._name, ret._factory = (args[0], args[1]) if isinstance(args[0], str) else (args[0].__name__, args[0])
+            return ret
+
         last_flt = self._filter_chain[-1][1]
         if isinstance(last_flt, Map):
             if not last_flt.cbs:
@@ -281,6 +300,7 @@ class Param:
 
 class Validator:
     def __init__(self, f):
+        self.with_factories = []
         self.defs = defs = parse_defs(f)
         filters = self.filters = dict()
         self.raw_args = []
@@ -293,6 +313,8 @@ class Validator:
             if not ctx_prop in filters:
                 filters[ctx_prop] = dict()
             filters[ctx_prop][a] = v
+            if v._factory:
+                self.with_factories.append(v)
 
     def apply(self, ftype, obj):
         ret = dict()
@@ -319,30 +341,53 @@ class Validator:
             ret[ftype] = self.apply(ftype, ctx.get(ftype) or {})
         return ret
 
+    def run_factories(self, ctx):
+        [ctx.factory(flt._ctx_prop, flt._name, flt._factory) for flt in self.with_factories]
 
-def post_proc(cb, shaper = None, on_success = None, on_error = None, errors = None):
+
+def post_proc(
+    cb,
+    shapers: list = None,
+    on_success: list = None,
+    on_error: dict = None,
+    success_exceptions: list = None
+):
+    '''
+    on_error: {cb1: (FooException, BarException), cb2: None/<Falseness means all errors> }
+    '''
+
     @functools.wraps(cb)
     def inner(*args, **kw):
-        has_err = False
         ret = None
+        shapers = inner.shapers
+        on_success = inner.on_success
+        on_error = inner.on_error
+        success_exceptions = tuple(inner.success_exceptions or ())
         try:
             ret = cb(*args, **kw)
-        except Exception as err:
-            has_err = True
-            if on_error and (not errors or isinstance(err, errors)):
-                on_error(error = err)
-            # in `on_error` may doesnt rise
-            raise
-        if not has_err:
-            if on_success:
-                on_success(200)
-            if shaper:
+            [h() for h in on_success]
+            for shaper in shapers:
                 ret = shaper(ret)
+        except Exception as exon:
+            if success_exceptions and isinstance(exon, success_exceptions):
+                [h(exon) for h in on_success]
+            else:
+                for h, errors in on_error.items():
+                    #  `not errors` means on any error
+                    if not errors or isinstance(exon, errors):
+                        h(exon)
+            raise
         return ret
+
+    inner.on_success = on_success or []
+    inner.on_error = on_error or {}
+    inner.shapers = shapers or []
+    inner.success_exceptions = success_exceptions or []
     return inner
 
+
 def make_decorator(ctx, *, with_context_init = True):
-    def decor(src = None, fun = None):
+    def decor(src = None, fun = None, fixtures = None):
         @functools.wraps(fun)
         def inner(**oargs):
             args = dict()
@@ -354,17 +399,21 @@ def make_decorator(ctx, *, with_context_init = True):
                     args[k] = v
             if with_context_init:
                 ctx(**args)
+            if fixtures:
+                ctx_fixtures = ctx.get('fixtures')
+                [ctx_fixtures.get(_) for _ in fixtures]
             ctx_values = validator(ctx)
             [raw_args.update(_) for _ in ctx_values.values()]
             return fun(**raw_args)
 
         if fun:
             validator = Validator(src or fun)
+            validator.run_factories(ctx)
             return post_proc(
                 inner,
-                shaper= lambda r: ctx.emit('transform', r),
-                on_success= lambda *a, **kw : ctx.emit('on_success', *a, **kw),
-                on_error= lambda *a, **kw: ctx.emit('on_error', *a, **kw),
+                shapers= [lambda r: ctx.emit('transform', r)],
+                on_success= [lambda *a, **kw : ctx.emit('on_success', *a, **kw)],
+                on_error= {(lambda *a, **kw: ctx.emit('on_error', *a, **kw)): None},
             )
         else:
             return lambda f: decor(src = src, fun = f)
@@ -380,6 +429,14 @@ def with_method_shortcuts(methods):
 
 @with_method_shortcuts('DELETE GET HEAD OPTIONS PATCH POST PUT'.split())
 class API:
+    class Use:
+        def __init__(self, current):
+            self.current:'API' = current
+
+        def __getattr__(self, k):
+            return self.current._use(k)
+
+
     __mounted__ = {}
     #__deps__ = None  # extarnal dependencies
     #__current__ = None,
@@ -408,7 +465,7 @@ class API:
 
     @property
     def context(self):
-        return self.__class__.__ctx__
+        return self.local_ctx or self.__ctx__
 
 
     @classmethod
@@ -450,22 +507,33 @@ class API:
         return setattr(cls, name, proxy_meth)
 
 
-
     def __new__(cls):
         self = super().__new__(cls)
         cls.__current__ = self
+        cls.use = cls.Use(self)
         return self
 
     def __init__(self):
         self.routes = {}
         self.meta_data = {}
-        self.handlers = {}
+        self.handlers = {}  # on_success, on_error ...
+        self.on_mounted = {}  # perform local context extend
         self.api = None
+        self.local_ctx = None
 
     def __call__(self, cls) -> 'API':
         self.cls = cls
         self.__class__.__current__ = None
+        self.__class__.use = None
         return self
+
+    def _use(self, name):
+        def wrapper():
+            def inner(f):
+                self._meta(f)['fixtures'][name] = True
+                return f
+            return inner
+        return wrapper
 
     @staticmethod
     def make_filter(ctx_prop, **kw):
@@ -486,7 +554,15 @@ class API:
         cls = self.cls
         self._patch_proxy()
         self._mount(path, cls, mounter, ctx = ctx, args = args, kwargs = kwargs)
-        self.__mounted__[cls] = self.routes
+        self.__mounted__[self.api] = self.routes
+
+        # extend context
+        for name, cb in self.on_mounted.items():
+            self.context.factory('fixtures', name, getattr(self.api, cb.__name__))
+        on_mounted = getattr(self.api, 'on_mounted', None)
+        if on_mounted:
+            on_mounted(self.context)
+
 
     def _patch_proxy(self):
         for meta_data in self.meta_data.values():
@@ -500,17 +576,20 @@ class API:
     def _mount(self, base_path, cls, mounter, ctx, args = None, kwargs = None):
         if not ctx:
             ctx = self.__ctx__
+        ctx = ctx.copy()
+        self.local_ctx = ctx
+        # now `self.context` is self.local_ctx
         api = self.api = cls(*(args or []), **(kwargs or {}))
         api_init = getattr(api, 'on_request', None)
         decorator = make_decorator(ctx, with_context_init = not api_init)
-
         def make_with_init(cb, route):
             @functools.wraps(cb)
             def with_init(*args, **kw):
                 route_ctx = dict(
                     api_context = ctx,
+                    api_method = cb.__name__,
                     route = route,
-                    payload = (args[:], dict(**kw))
+                    payload = dict(args = args[:], vars = dict(**kw)),
                 )
                 ctx(**kw)
                 api_init(route_ctx)
@@ -523,7 +602,7 @@ class API:
             raw_cb = r['cb'] = getattr(api, r['cb'].__name__)
             if raw_cb not in decorated:
                 meta_data = self.meta_data[raw_cb.__name__]
-                decorated[raw_cb] = decorator(meta_data['cb'], raw_cb)
+                decorated[raw_cb] = decorator(meta_data['cb'], raw_cb, meta_data['fixtures'])
             cb = decorated[raw_cb]
             path = f"{base_path}/{r.get('path')}".rstrip('/')
             if api_init:
@@ -542,15 +621,17 @@ class API:
         if (error := self.handlers.get('error')):
             errcb = bound(error['cb'])
             errors = tuple(error['args']) or Exception
+            cb.on_error[errcb] = errors
 
         if (success := self.handlers.get('success')):
             success = bound(success['cb'])
+            cb.on_success.append(success)
 
         if (shaper := self.handlers.get('shaper')):
             shaper = bound(shaper['cb'])
+            cb.shapers.append(shaper)
 
-        return post_proc(cb, shaper, success, errcb, errors)
-
+        return cb
 
     @classmethod
     def route(cls, path = None, method = 'GET'):
@@ -590,7 +671,8 @@ class API:
             f.__name__,
             dict(
                 cb = f,
-                proxy = dict()
+                proxy = dict(),
+                fixtures = dict()
             )
         )
 
@@ -618,20 +700,45 @@ class API:
             return f
         return inner
 
+    @classmethod
+    def fixture(cls, name = None):
+        self:API = cls.__current__
+        def inner(f):
+            self.on_mounted[name or f.__name__] = f
+            return f
+        return inner
+
+
 
 class APIContext:
 
     def __call__(self, **args):
-        pass
+        raise NotImplementedError
 
     def get(self, k):
-        pass
+        raise NotImplementedError
 
     def __contains__(self, p):
         pass
 
     def emit(self, on_type, *args, **kw):
-        pass
+        raise NotImplementedError
+
+    def provide(self, **fixtures):
+        raise NotImplementedError
+
+    def factory(self, ctx_prop, name, factory_cb):
+        '''
+        self.ctx[ctx_prop][name] = factory_cb(self.ctx[ctx_prop])
+        '''
+        raise NotImplementedError
+
+    def copy(self):
+        '''
+        api can extend context, so we need a copy
+        (of course we can make a derived context but that will be slower)
+        '''
+        raise NotImplementedError
 
 
 #########################################################################################
@@ -640,11 +747,13 @@ class APIContext:
 
 
 class FixturesSupplier:
+
     @thread_safe('issued', safeguard = True)
-    def __init__(self, **fixtures):
+    def __init__(self, *, HTTPException, **fixtures):
+        self.HTTPException = HTTPException
         self.fixtures = fixtures
         self.issued = None
-        self.fixture_deps = dict()
+        self.fixture_deps = dict()  # may be shared at class level
         [self._make_deps(f) for f in fixtures.values()]
 
     def add_fixture(self, **fixtures):
@@ -688,7 +797,6 @@ class FixturesSupplier:
         self.issued.append(f)
         return f
 
-
     def emit(self, on_type, *args, **kw):
         if on_type == 'transform':
             ret = args[0]
@@ -697,9 +805,15 @@ class FixturesSupplier:
                 ret = getattr(f, on_type)(ret, shared_data)
             return ret
         elif on_type == 'on_error':
-            [getattr(f, on_type)() for f in self.issued]
+            on_handler = on_type
+            err = args[0]
+            hargs = []
+            if isinstance(err, self.HTTPException):
+                on_handler = f"on_{getattr(err, 'type', 'error')}"  #  'success' | 'error'
+                hargs = [getattr(err, 'status', 500)] if on_handler == 'on_success' else []
+            [getattr(f, on_handler)(*hargs) for f in self.issued]
         elif on_type == 'on_success':
-            status = args[0]
+            status = 200 if not args else getattr(args[0], 'status', 200)
             [getattr(f, on_type)(status) for f in self.issued]
 
     def keys(self):
@@ -707,9 +821,10 @@ class FixturesSupplier:
 
 
 class DefaultAPIContext(APIContext):
-    def __init__(self, request):
-        self.fsupplier = FixturesSupplier()
-        self.ctx = dict(
+    def __init__(self, request, HTTP):
+        self.fsupplier = FixturesSupplier(HTTPException = HTTP)
+        self.request = request
+        props = dict(
             path = lambda: None,
             query = lambda: request.query,
             json = lambda: request.json,
@@ -722,19 +837,37 @@ class DefaultAPIContext(APIContext):
 
             fixtures = lambda: self.fsupplier,
         )
+        self.props = SimpleNamespace(**props)
+        self.__props_dict__ = self.props.__dict__
+        self._get = self.props.__dict__.get
 
     def __call__(self, **args):
         self.fsupplier.on_request()
-        self.ctx['path'] = lambda: args
+        self.props.path = lambda: args
 
     def get(self, k):
-        return self.ctx.get(k)()
+        return self._get(k)()
 
     def __contains__(self, p):
-        return p in self.ctx
+        return p in self.__props_dict__
 
     def emit(self, on_type, *args, **kw):
         return self.fsupplier.emit(on_type, *args, **kw)
 
     def provide(self, **fixtures):
         self.fsupplier.add_fixture(**fixtures)
+
+    def factory(self, ctx_prop, name, factory_cb):
+        if ctx_prop != 'fixtures':
+            raise NotImplementedError('`factory` is only supported for `fixtures`')
+        self.provide(**{name: factory_cb(self.fsupplier.fixtures)})
+
+    def copy(self):
+        ret = self.__class__(self.request, self.fsupplier.HTTPException)
+        ret.__props_dict__.update(self.__props_dict__)
+        ret.props.fixtures = lambda: ret.fsupplier
+        ret.fsupplier.add_fixture(**self.fsupplier.fixtures)
+        return ret
+
+
+
