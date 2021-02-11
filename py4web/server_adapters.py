@@ -1,7 +1,7 @@
 import logging
 from bottle import ServerAdapter
 
-__all__ = ['geventWebSocketServer', 'wsgirefThreadingServer']
+__all__ = ['geventWebSocketServer', 'wsgirefThreadingServer', 'geventPySocketIOServer', 'wsgirefPySoketIOServer' ]
 
 def geventWebSocketServer():
     from gevent import pywsgi
@@ -19,7 +19,6 @@ def geventWebSocketServer():
 
             server.serve_forever()
     return GeventWebSocketServer
-
 
 def wsgirefThreadingServer():
     #https://www.electricmonk.nl/log/2016/02/15/multithreaded-dev-web-server-for-the-python-bottle-web-framework/
@@ -75,3 +74,156 @@ def wsgirefThreadingServer():
             srv.serve_forever()
     return WSGIRefThreadingServer
 
+
+def wsgirefPySoketIOServer():
+    # https://www.electricmonk.nl/log/2016/02/15/multithreaded-dev-web-server-for-the-python-bottle-web-framework/
+    # https://python-socketio.readthedocs.io/en/latest/server.html#standard-threads
+
+    # websocket does not work with this wsgirefPySoketIOServer 
+    #  ./py4web.py run -s wsgirefPySoketIOServer   apps
+
+    from wsgiref.simple_server import WSGIRequestHandler, WSGIServer
+    from wsgiref.simple_server import make_server
+    from socketserver import ThreadingMixIn
+    import socket
+    import sys
+    from concurrent.futures import ThreadPoolExecutor  # pip install futures
+
+    try:
+        import socketio
+    except BaseException:
+        sys.exit('pls, install python-socketio')
+
+
+    sio_debug = False
+    sio = socketio.Server(async_mode='threading')
+
+    @sio.event
+    def connect(sid, environ):
+        sio_debug and rint('connect ', sid)
+
+    @sio.event
+    def disconnect(sid):
+         sio_debug and print('disconnect ', sid)
+
+    @sio.on('to_py4web')
+    def echo(sid, data):
+         sio_debug and  print('from client: ', data)
+         sio.emit("py4web_echo", data)
+
+    @sio.event
+    def my_message(sid, data):
+        sio_debug and  print('Send message ', data)
+        sio.send(data)
+
+    @sio.on('message')
+    def message(sid, data):
+          sio_debug and print('message ', data)
+
+
+    class WSGIRefPySoketIOServer(ServerAdapter):
+        def run(self, app):
+
+            class PoolMixIn(ThreadingMixIn):
+                def process_request(self, request, client_address):
+                    self.pool.submit(self.process_request_thread, request, client_address)
+
+            class ThreadingWSGIServer(PoolMixIn, WSGIServer):
+                daemon_threads = True
+                pool = ThreadPoolExecutor(max_workers=40)
+
+            class Server:
+                def __init__(self, server_address = ('127.0.0.1', 8000), handler_cls = None):
+                    self.sio=sio
+                    self.wsgi_app = None
+                    self.listen, self.port = server_address
+                    self.handler_cls = handler_cls
+                def set_app(self, app):
+                    self.wsgi_app = socketio.WSGIApp(self.sio, app) 
+                def get_app(self):
+                    return self.wsgi_app
+                def serve_forever(self):
+                    self.server = make_server(
+                        self.listen, self.port, self.wsgi_app, ThreadingWSGIServer, self.handler_cls
+                    )
+                    self.server.serve_forever()
+
+            class FixedHandler(WSGIRequestHandler):
+                def address_string(self): # Prevent reverse DNS lookups please.
+                    return self.client_address[0]
+                def log_request(*args, **kw):
+                    #self.quiet = True
+                    if not self.quiet:
+                        return WSGIRequestHandler.log_request(*args, **kw)
+
+            handler_cls = self.options.get('handler_class', FixedHandler)
+            server_cls  = Server
+
+            if ':' in self.host: # Fix wsgiref for IPv6 addresses.
+                if getattr(server_cls, 'address_family') == socket.AF_INET:
+                    class server_cls(server_cls):
+                        address_family = socket.AF_INET6
+
+            srv = make_server(self.host, self.port, app, server_cls, handler_cls)
+            srv.serve_forever()
+    return WSGIRefPySoketIOServer
+
+def geventPySocketIOServer():
+    # https://stackoverflow.com/questions/54703656/python-socketio-how-to-emit-message-from-server-to-client
+    # websocket work with this geventPySocketIOServer 
+    # ./py4web.py --usegevent  run -s geventPySocketIOServer   apps
+
+    from gevent import pywsgi
+    from geventwebsocket.handler import WebSocketHandler
+    from geventwebsocket.logging import create_logger
+    import sys
+
+    try:
+        import socketio
+    except BaseException:
+        sys.exit('pls, install python-socketio')
+
+
+    sio_debug = False
+    sio = socketio.Server( async_mode='gevent'  )
+
+    @sio.event
+    def connect(sid, environ):
+        sio_debug and print('connect ', sid)
+
+    @sio.event
+    def disconnect(sid):
+         sio_debug and print('disconnect ', sid)
+
+    @sio.on('to_py4web')
+    def echo(sid, data):
+         sio_debug and  print('from client: ', data)
+         sio.emit("py4web_echo", data)
+
+    @sio.event
+    def my_message(sid, data):
+        sio_debug and  print('Send message ', data)
+        sio.send(data)
+
+    @sio.on('message')
+    def message(sid, data):
+          sio_debug and print('message ', data)
+
+
+    @sio.on("my_new_message")
+    def handle_message(sid, data):
+         sio_debug and print("from client my_new_message:", data)
+ 
+    class GeventPySocketIOServer(ServerAdapter):
+        def run(self, handler):
+
+            handler = socketio.WSGIApp(sio, handler)
+            server = pywsgi.WSGIServer((self.host, self.port), handler, handler_class=WebSocketHandler, **self.options)
+            #self.quiet = True
+            if not self.quiet:
+                server.logger = create_logger('geventsocketio.logging')
+                server.logger.setLevel(logging.INFO)
+                server.logger.addHandler(logging.StreamHandler())
+
+            server.serve_forever()
+    return GeventPySocketIOServer
