@@ -1,7 +1,7 @@
 import logging
 from bottle import ServerAdapter
 
-__all__ = ['geventWebSocketServer', 'wsgirefThreadingServer', 'geventPySocketIOServer', 'wsgirefPySoketIOServer', 'tornadoSocketIOServer' ]
+__all__ = ['geventWebSocketServer', 'wsgirefThreadingServer', 'geventPySocketIOServer', 'wsgirefPySoketIOServer', 'tornadoSioWsServer' ]
 
 def geventWebSocketServer():
     from gevent import pywsgi
@@ -77,7 +77,7 @@ def wsgirefThreadingServer():
 
 def wsgirefPySoketIOServer():
     # https://www.electricmonk.nl/log/2016/02/15/multithreaded-dev-web-server-for-the-python-bottle-web-framework/
-    # https://python-socketio.readthedocs.io/en/latest/server.html#standard-threads
+    # https://python-socketio.readthedocs.io/en/latest
 
     # websocket does not work with this wsgirefPySoketIOServer 
     #  ./py4web.py run -s wsgirefPySoketIOServer   apps
@@ -99,26 +99,26 @@ def wsgirefPySoketIOServer():
     sio = socketio.Server(async_mode='threading')
 
     @sio.event
-    def connect(sid, environ):
+    async def connect(sid, environ):
         sio_debug and print('connect ', sid)
 
     @sio.event
-    def disconnect(sid):
+    async def disconnect(sid):
          sio_debug and print('disconnect ', sid)
 
     @sio.on('to_py4web')
-    def echo(sid, data):
+    async def echo(sid, data):
          sio_debug and  print('from client: ', data)
-         sio.emit("py4web_echo", data)
+         await sio.emit("py4web_echo", data)
 
-    @sio.event
-    def my_message(sid, data):
-        sio_debug and  print('Send message ', data)
-        sio.send(data)
+    #@sio.event
+    #async def my_message(sid, data):
+    #    sio_debug and  print('Send message ', data)
+    #    await sio.send(data)
 
-    @sio.on('message')
-    def message(sid, data):
-          sio_debug and print('message ', data)
+    #@sio.on('message')
+    #async def message(sid, data):
+    #      sio_debug and print('message ', data)
 
 
     class WSGIRefPySoketIOServer(ServerAdapter):
@@ -169,7 +169,6 @@ def wsgirefPySoketIOServer():
     return WSGIRefPySoketIOServer
 
 def geventPySocketIOServer():
-    # https://stackoverflow.com/questions/54703656/python-socketio-how-to-emit-message-from-server-to-client
     # websocket work with this geventPySocketIOServer 
     # ./py4web.py --usegevent  run -s geventPySocketIOServer   apps
 
@@ -200,20 +199,15 @@ def geventPySocketIOServer():
          sio_debug and  print('from client: ', data)
          await sio.emit("py4web_echo", data)
 
-    @sio.event
-    def my_message(sid, data):
-        sio_debug and  print('Send message ', data)
-        sio.send(data)
+    #@sio.event
+    #async def my_message(sid, data):
+    #    sio_debug and  print('Send message ', data)
+    #    await sio.send(data)
 
-    @sio.on('message')
-    def message(sid, data):
-          sio_debug and print('message ', data)
+    #@sio.on('message')
+    #async def message(sid, data):
+    #      sio_debug and print('message ', data)
 
-
-    @sio.on("my_new_message")
-    def handle_message(sid, data):
-         sio_debug and print("from client my_new_message:", data)
- 
     class GeventPySocketIOServer(ServerAdapter):
         def run(self, handler):
 
@@ -229,28 +223,22 @@ def geventPySocketIOServer():
     return GeventPySocketIOServer
 
 
-def tornadoSocketIOServer():
+def tornadoSioWsServer():
 
-    # py4web.py run -s tornadoSocketIOServer apps
+    # py4web.py run -s tornadoSioWsServer apps
     
-    '''
-websockets + tornado about
-
+# websockets + tornado about:
 # https://stackoverflow.com/questions/62044284/tornado-websocket-server-and-websocket-client-concurrently-in-one-loop-with-asyn
 # https://www.includehelp.com/python/how-to-implement-a-websocket-server-using-tornado.aspx
 # https://docs.aiohttp.org/en/stable/client_quickstart.html#websockets
-
-    '''
     
-    import tornado.websocket as ws
+    import tornado.websocket
     import time
 
     ws_debug = False 
     
-    class web_socket_handler(ws.WebSocketHandler):
-        '''
-        This class handles the websocket channel
-        '''
+    class web_socket_handler(tornado.websocket.WebSocketHandler):
+        # This class handles the websocket channel
         @classmethod
         def route_urls(cls):
             return (r'/',cls, {})
@@ -260,25 +248,19 @@ websockets + tornado about
             self.stop = False
         
         def open(self):
-            '''
-                client opens a connection
-            '''
+            #    client opens a connection
             self.simple_init()
             ws_debug and print("ws: New client connected")
-            self.write_message("You are connected")
+            self.write_message("ws: You are connected")
             
         def on_message(self, message):
-            '''
-                Message received on the handler
-            '''
-            ws_debug and print("ws: received message {}".format(message))
-            self.write_message("You said: {}".format(message))
+            #    Message received on the handler
+            ws_debug and print(f"ws: received message {message}")
+            self.write_message(f"ws: You said - {message}")
             self.last = time.time()
         
         def on_close(self):
-            '''
-                Channel is closed
-            '''
+            #    Channel is closed
             ws_debug and print("ws: connection is closed")
             self.stop= True
             #self.loop.stop()
@@ -289,7 +271,7 @@ websockets + tornado about
     # socketio    pip install python-socketio
     
     import socketio
-    sio_debug = True
+    sio_debug = False
     sio = socketio.AsyncServer(async_mode='tornado')
 
     @sio.event
@@ -305,11 +287,10 @@ websockets + tornado about
          sio_debug and  print('sio: from client: ', data)
          await sio.emit("py4web_echo", data)
 
-    class TornadoSocketIOServer(ServerAdapter):
+    class TornadoSioWsServer(ServerAdapter):
 
         def run(self, handler): # pragma: no cover
             import tornado.wsgi, tornado.httpserver,  tornado.web,  tornado.ioloop
-            import tornado.websocket
             container = tornado.wsgi.WSGIContainer(handler)
             app= tornado.web.Application([
                     web_socket_handler.route_urls(),
@@ -321,5 +302,5 @@ websockets + tornado about
 
             tornado.ioloop.IOLoop.instance().start()
 
-    return TornadoSocketIOServer
+    return TornadoSioWsServer
 
