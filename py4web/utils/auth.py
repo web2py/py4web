@@ -407,7 +407,7 @@ class Auth(Fixture):
 
     # Methods that do not assume a user
 
-    def register(self, fields, send=True, next="", validate=True):
+    def register(self, fields, send=True, next="", validate=True, route=None):
         if self.use_username:
             fields["username"] = fields.get("username", "").lower()
         fields["email"] = fields.get("email", "").lower()
@@ -423,7 +423,7 @@ class Auth(Fixture):
             res = store(fields)
             if send and res.get("id"):
                 self._link = link = URL(
-                    self.route,
+                    route or self.route,
                     "verify_email",
                     vars=dict(token=token),
                     scheme=True,
@@ -472,7 +472,7 @@ class Auth(Fixture):
                 return (user, None)
             return None, "Invalid Credentials"
 
-    def request_reset_password(self, email, send=True, next=""):
+    def request_reset_password(self, email, send=True, next="", route=None):
         db = self.db
         value = email.lower()
         if self.use_username:
@@ -491,7 +491,7 @@ class Auth(Fixture):
             user.update_record(action_token="reset-password-request:" + token)
             if send:
                 self._link = link = URL(
-                    self.route,
+                    route or self.route,
                     "reset_password",
                     vars=dict(token=token),
                     scheme=True,
