@@ -1,7 +1,7 @@
 import logging
 from bottle import ServerAdapter
 
-__all__ = ['geventWebSocketServer', 'wsgirefThreadingServer']
+__all__ = ['geventWebSocketServer', 'wsgirefThreadingServer', 'rocketServer']
 
 def geventWebSocketServer():
     from gevent import pywsgi
@@ -75,3 +75,21 @@ def wsgirefThreadingServer():
             srv.serve_forever()
     return WSGIRefThreadingServer
 
+
+def rocketServer():
+    try:
+        from rocket3 import Rocket3 as Rocket
+    except ImportError:
+        from .rocket3 import Rocket3 as Rocket
+    import logging.handlers
+
+    class RocketServer(ServerAdapter):
+        def run(self, app):
+            if not self.quiet:
+                log = logging.getLogger('Rocket')
+                log.setLevel(logging.INFO)
+                log.addHandler(logging.StreamHandler())
+            server = Rocket((self.host, self.port), 'wsgi', dict(wsgi_app = app))
+            server.start()
+
+    return RocketServer
