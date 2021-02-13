@@ -116,7 +116,7 @@ abort = bottle.abort
 os.environ.update(
     {key: value for key, value in DEFAULTS.items() if not key in os.environ}
 )
-os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parent.parent)
+os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parents[1])
 
 
 def module2filename(module):
@@ -641,10 +641,14 @@ def URL(
     if static_version != "" and broken_parts and broken_parts[0] == "static":
         if not static_version:
             # try to retrieve from __init__.py
-            app_module = "apps.%s" % app_name if has_appname else "apps"
-            static_version = getattr(
-                sys.modules[app_module], "__static_version__", None
-            )
+            apps_folder_name = pathlib.PurePath(os.environ["PY4WEB_APPS_FOLDER"]).name
+            app_module = "%s.%s" % (apps_folder_name, app_name) if has_appname else apps_folder_name
+            try:
+                static_version = getattr(
+                    sys.modules[app_module], "__static_version__", None
+                )
+            except KeyError:
+                static_version = None
         if static_version:
             broken_parts.insert(1, "_" + static_version)
 
@@ -1055,6 +1059,7 @@ class Reloader:
         if os.path.isdir(path) and not path.endswith("__") and os.path.exists(init):
 
             action.app_name = app_name
+            # FIXME: hardcoded os.environ["PY4WEB_APPS_FOLDER"]
             module_name = "apps.%s" % app_name
 
             def clear_modules():
@@ -1353,6 +1358,8 @@ def install_args(kwargs, reinstall_apps=False):
     kwargs["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
     for key, val in kwargs.items():
         os.environ["PY4WEB_" + key.upper()] = str(val)
+    # NOTE: maybe we need to resolve() kwargs["apps_folder"] prior to install into
+    # os.environ["PY4WEB_APPS_FOLDER"], then use the latter instead of kwargs["apps_folder"]
     apps_folder = kwargs["apps_folder"]
     yes = kwargs.get("yes", False)
     # If the apps folder does not exist create it and populate it
@@ -1444,7 +1451,7 @@ def version(all):
 
 
 @cli.command()
-@click.argument("apps_folder")
+@click.argument("apps_folder", type=click.Path(exists=True))
 @click.option(
     "-Y",
     "--yes",
@@ -1455,15 +1462,13 @@ def version(all):
 )
 def setup(**kwargs):
     """Setup new apps folder or reinstall it"""
-    # FIXME: unchecked apps_folder
     install_args(kwargs, reinstall_apps=True)
 
 
 @cli.command()
-@click.argument("apps_folder")
+@click.argument("apps_folder", type=click.Path(exists=True))
 def shell(apps_folder):
     """Open a python shell with apps_folder added to the path"""
-    # FIXME: unchecked apps_folder
     install_args(dict(apps_folder=apps_folder))
     code.interact(local=dict(globals(), **locals()))
 
@@ -1481,15 +1486,14 @@ def call(apps_folder, func, args):
     """Call a function inside apps_folder"""
     kwargs = json.loads(args)
     install_args(dict(apps_folder=apps_folder))
-    # FIXME: apps_folder need to be named 'apps'?
-    #        why do not honour the argument value instead?
-    #        I think this is not the only place where 'apps' is hardcoded.
-    module, name = ("apps." + func).rsplit(".", 1)
-    env = {}
+    # NOTE: os.environ["PY4WEB_APPS_FOLDER"] might be already resolve()d by install_args()
+    apps_folder_path = pathlib.Path(apps_folder).resolve()
+    module, name = ("%s.%s" % (apps_folder_path.name, func)).rsplit(".", 1)
     # need apps_folder's parent in path for the import to work
-    apps_folder_parent = str(pathlib.Path(apps_folder).resolve().parent)
+    apps_folder_parent = str(apps_folder_path.parent)
     if not apps_folder_parent in sys.path:
         sys.path.insert(0, apps_folder_parent)
+    env = {}
     exec("from %s import %s" % (module, name), {}, env)
     env[name](**kwargs)
 
@@ -1545,7 +1549,7 @@ def new_app(apps_folder, app_name, scaffold_zip):
 
 
 @cli.command()
-@click.argument("apps_folder")
+@click.argument("apps_folder", type=click.Path(exists=True))
 @click.option(
     "-Y",
     "--yes",
@@ -1604,7 +1608,6 @@ def new_app(apps_folder, app_name, scaffold_zip):
 @click.option("--ssl_key", type=click.Path(exists=True), help="SSL key file for HTTPS")
 def run(**kwargs):
     """Run all the applications on apps_folder"""
-    # FIXME: unchecked apps_folder
     install_args(kwargs)
     apps_folder = kwargs["apps_folder"]
     yes = kwargs["yes"]
