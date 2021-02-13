@@ -1039,7 +1039,7 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
 
    db.mytable.name.represent = lambda name, row: name.capitalize()
    db.mytable.other_id.represent = lambda oid, row: row.myfield
-   db.mytable.some_uploadfield.represent = lambda val, row: A('get it', _href=URL('download', args=val))
+   db.mytable.some_uploadfield.represent = lambda val, row: A('get it', _href=URL('download', val))
 
 -  ``filter_in`` and ``filter_out`` can be set to callables for further
    processing of field’s value. ``filter_in`` is passed the field’s
