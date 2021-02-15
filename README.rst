@@ -89,8 +89,8 @@ Launch Arguments
    -p, --password_file TEXT      File for the encrypted password  [default:
                                 password.txt]
 
-                                
-   -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|geventWebSocketServer|wsgirefThreadingServer]
+     -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|
+                   geventWebSocketServer|wsgirefThreadingServer|rocketServer]
                                  server to use  [default: default]
    -w, --number_workers INTEGER  Number of workers  [default: 0]
    -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
@@ -120,21 +120,6 @@ Note that since the default (as specified above) for the host and port are 127.0
    py4web run -d demo apps
 
 
-Note also that the optional ''usegevent'' directive must be used with ''gevent'' or ''geventWebSocketServer'' webservers
-and shouldn't be used with ''tornado'' and ''waitress''.
-
-
-WSGI
-####
-
-py4web is a WSGI application. To obtain the WSGI app simply do:
-
-.. code:: bash
-
-   from py4web.core import wsgi
-   application = wsgi()
-
-The wsgi function takes arguments with the same name as the command line arguments.
 
 Tell me more
 ############

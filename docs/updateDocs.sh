@@ -111,6 +111,10 @@ for current_language in ${languages}; do
 
 done
 
+# copy favicon
+favicon=apps/_scaffold/static/favicon.ico
+cp ${favicon} ${docroot}
+
 # final cleanup
 make -C docs clean
 
