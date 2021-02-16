@@ -1451,7 +1451,7 @@ def version(all):
 
 
 @cli.command()
-@click.argument("apps_folder", type=click.Path(exists=True))
+@click.argument("apps_folder")
 @click.option(
     "-Y",
     "--yes",
