@@ -9,7 +9,7 @@ import code
 import copy
 import datetime
 import functools
-import importlib
+import importlib.util
 import importlib.machinery
 import inspect
 import json
@@ -641,8 +641,7 @@ def URL(
     if static_version != "" and broken_parts and broken_parts[0] == "static":
         if not static_version:
             # try to retrieve from __init__.py
-            apps_folder_name = pathlib.PurePath(os.environ["PY4WEB_APPS_FOLDER"]).name
-            app_module = "%s.%s" % (apps_folder_name, app_name) if has_appname else apps_folder_name
+            app_module = "apps.%s" % app_name if has_appname else "apps"
             try:
                 static_version = getattr(
                     sys.modules[app_module], "__static_version__", None
@@ -1059,8 +1058,7 @@ class Reloader:
         if os.path.isdir(path) and not path.endswith("__") and os.path.exists(init):
 
             action.app_name = app_name
-            apps_folder = os.path.basename(os.environ["PY4WEB_APPS_FOLDER"])
-            module_name = "%s.%s" % (apps_folder, app_name)
+            module_name = "apps.%s" % app_name
 
             def clear_modules():
                 # all files/submodules
@@ -1351,6 +1349,39 @@ def check_compatible(version):
 #########################################################################################
 
 
+class MetaPathRouter:
+    """
+    Instances of this class makes alias for a package name,
+    in other words instruct the import system to route request
+    for a package alias, i.e.:
+
+        MetaPathRouter("pkg", "pkg_alias")
+        import pkg_alias.sub
+
+    works as
+
+        import pkg.sub
+
+    author: Paolo Pastori
+    """
+
+    def __init__(self, pkg, pkg_alias='apps'):
+        assert pkg_alias; assert pkg
+        if pkg != pkg_alias:
+            self.pkg_alias = pkg_alias
+            self.pkg = pkg
+            # register as path finder
+            sys.meta_path.append(self)
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname == self.pkg_alias and path is None:
+            spec = importlib.util.find_spec(self.pkg)
+            if spec:
+                spec.name = fullname
+                spec.loader = importlib.machinery.SourceFileLoader(fullname, spec.origin)
+                return spec
+
+
 def install_args(kwargs, reinstall_apps=False):
     # always convert apps_folder to an absolute path
     apps_folder = kwargs["apps_folder"] = os.path.abspath(kwargs["apps_folder"])
@@ -1377,6 +1408,12 @@ def install_args(kwargs, reinstall_apps=False):
         else:
             click.echo("Command aborted")
             sys.exit(0)
+    # ensure that "import apps.someapp" works
+    apps_folder_parent, apps_folder_name = os.path.split(apps_folder)
+    if not apps_folder_parent in sys.path:
+        sys.path.insert(0, apps_folder_parent)
+    if apps_folder_name != "apps":
+        MetaPathRouter(apps_folder_name)
 
     # Reinstall apps from zipped ones in assets
     if reinstall_apps:
@@ -1506,12 +1543,8 @@ def call(apps_folder, func, yes, args):
     """Call a function inside apps_folder"""
     kwargs = json.loads(args)
     install_args(dict(apps_folder=apps_folder, yes=yes))
-    apps_folder_path = pathlib.Path(os.environ["PY4WEB_APPS_FOLDER"])
-    module, name = ("%s.%s" % (apps_folder_path.name, func)).rsplit(".", 1)
-    # need apps_folder's parent in path for the import to work
-    apps_folder_parent = str(apps_folder_path.parent)
-    if not apps_folder_parent in sys.path:
-        sys.path.insert(0, apps_folder_parent)
+    apps_folder_name = os.path.basename(os.environ["PY4WEB_APPS_FOLDER"])
+    module, name = ("%s.%s" % (apps_folder_name, func)).rsplit(".", 1)
     env = {}
     exec("from %s import %s" % (module, name), {}, env)
     env[name](**kwargs)
