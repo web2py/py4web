@@ -152,6 +152,15 @@ class Auth(Fixture):
         },
     }
 
+    BUTTON_CLASSES = {
+        "lost-password": "info",
+        "register": "info",
+        "request": "info",
+        "sign-in": "info",
+        "sign-up": "info",
+        "submit": "info",
+    }
+
     def __init__(
         self,
         session,
@@ -182,6 +191,7 @@ class Auth(Fixture):
             use_appname_in_redirects=use_appname_in_redirects,
             formstyle=FormStyleDefault,
             messages=copy.deepcopy(self.MESSAGES),
+            button_classes=copy.deepcopy(self.BUTTON_CLASSES),
         )
 
         """Creates and Auth object responsible for handling
@@ -970,7 +980,7 @@ class DefaultAuthForms:
             A(
                 self.auth.param.messages["buttons"]["sign-in"],
                 _href="../auth/login",
-                _class="info",
+                _class=self.auth.param.button_classes["sign-in"],
                 _role="button",
             )
         )
@@ -979,7 +989,7 @@ class DefaultAuthForms:
                 A(
                     self.auth.param.messages["buttons"]["lost-password"],
                     _href="../auth/request_reset_password",
-                    _class="info",
+                    _class=self.auth.param.button_classes["lost-password"],
                     _role="button",
                 )
             )
@@ -1029,14 +1039,16 @@ class DefaultAuthForms:
         if self.auth.allows("register"):
             form.param.sidecar.append(
                 A(self.auth.param.messages["buttons"]["sign-up"],
-                  _href="../auth/register", _class="info", _role="button")
+                  _href="../auth/register",
+                  _class=self.auth.param.button_classes["sign-up"],
+                  _role="button")
             )
         if self.auth.allows("request_reset_password"):
             form.param.sidecar.append(
                 A(
                     self.auth.param.messages["buttons"]["lost-password"],
                     _href="../auth/request_reset_password",
-                    _class="info",
+                    _class=self.auth.param.button_classes["lost-password"],
                     _role="button",
                 )
             )
@@ -1062,7 +1074,7 @@ class DefaultAuthForms:
             A(
                 self.auth.param.messages["buttons"]["sign-in"],
                 _href="../auth/login",
-                _class="info",
+                _class=self.auth.param.button_classes["sign-in"],
                 _role="button",
             )
         )
@@ -1071,7 +1083,7 @@ class DefaultAuthForms:
                 A(
                     self.auth.param.messages["buttons"]["sign-up"],
                     _href="../auth/register",
-                    _class="info",
+                    _class=self.auth.param.button_classes["sign-up"],
                     _role="button",
                 )
             )
