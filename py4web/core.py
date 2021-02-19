@@ -9,7 +9,7 @@ import code
 import copy
 import datetime
 import functools
-import importlib
+import importlib.util
 import importlib.machinery
 import inspect
 import json
@@ -641,8 +641,7 @@ def URL(
     if static_version != "" and broken_parts and broken_parts[0] == "static":
         if not static_version:
             # try to retrieve from __init__.py
-            apps_folder_name = pathlib.PurePath(os.environ["PY4WEB_APPS_FOLDER"]).name
-            app_module = "%s.%s" % (apps_folder_name, app_name) if has_appname else apps_folder_name
+            app_module = "apps.%s" % app_name if has_appname else "apps"
             try:
                 static_version = getattr(
                     sys.modules[app_module], "__static_version__", None
@@ -1059,7 +1058,6 @@ class Reloader:
         if os.path.isdir(path) and not path.endswith("__") and os.path.exists(init):
 
             action.app_name = app_name
-            # FIXME: hardcoded os.environ["PY4WEB_APPS_FOLDER"]
             module_name = "apps.%s" % app_name
 
             def clear_modules():
@@ -1351,28 +1349,71 @@ def check_compatible(version):
 #########################################################################################
 
 
+class MetaPathRouter:
+    """
+    Instances of this class makes alias for a package name,
+    in other words instruct the import system to route request
+    for a package alias, i.e.:
+
+        MetaPathRouter("pkg", "pkg_alias")
+        import pkg_alias.sub
+
+    works as
+
+        import pkg.sub
+
+    author: Paolo Pastori
+    """
+
+    def __init__(self, pkg, pkg_alias='apps'):
+        assert pkg_alias; assert pkg
+        if pkg != pkg_alias:
+            self.pkg_alias = pkg_alias
+            self.pkg = pkg
+            # register as path finder
+            sys.meta_path.append(self)
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname == self.pkg_alias and path is None:
+            spec = importlib.util.find_spec(self.pkg)
+            if spec:
+                spec.name = fullname
+                spec.loader = importlib.machinery.SourceFileLoader(fullname, spec.origin)
+                return spec
+
+
 def install_args(kwargs, reinstall_apps=False):
+    # always convert apps_folder to an absolute path
+    apps_folder = kwargs["apps_folder"] = os.path.abspath(kwargs["apps_folder"])
     kwargs["service_folder"] = os.path.join(
         kwargs["apps_folder"], DEFAULTS["PY4WEB_SERVICE_FOLDER"]
     )
     kwargs["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
     for key, val in kwargs.items():
         os.environ["PY4WEB_" + key.upper()] = str(val)
-    # NOTE: maybe we need to resolve() kwargs["apps_folder"] prior to install into
-    # os.environ["PY4WEB_APPS_FOLDER"], then use the latter instead of kwargs["apps_folder"]
-    apps_folder = kwargs["apps_folder"]
-    yes = kwargs.get("yes", False)
+    yes2 = yes = kwargs.get("yes", False)
     # If the apps folder does not exist create it and populate it
     if not os.path.exists(apps_folder):
         if yes or click.confirm("Create missing folder %s?" % apps_folder):
             os.makedirs(apps_folder)
-            init_py = os.path.join(apps_folder, "__init__.py")
-            if not os.path.exists(init_py):
-                with open(init_py, "w") as fp:
-                    fp.write("")
+            yes2 = True
         else:
             click.echo("Command aborted")
             sys.exit(0)
+    init_py = os.path.join(apps_folder, "__init__.py")
+    if not os.path.exists(init_py):
+        if yes2 or click.confirm("Create missing init file %s?" % init_py):
+            with open(init_py, "wb"):
+                pass
+        else:
+            click.echo("Command aborted")
+            sys.exit(0)
+    # ensure that "import apps.someapp" works
+    apps_folder_parent, apps_folder_name = os.path.split(apps_folder)
+    if not apps_folder_parent in sys.path:
+        sys.path.insert(0, apps_folder_parent)
+    if apps_folder_name != "apps":
+        MetaPathRouter(apps_folder_name)
 
     # Reinstall apps from zipped ones in assets
     if reinstall_apps:
@@ -1467,9 +1508,17 @@ def setup(**kwargs):
 
 @cli.command()
 @click.argument("apps_folder", type=click.Path(exists=True))
-def shell(apps_folder):
+@click.option(
+    "-Y",
+    "--yes",
+    is_flag=True,
+    default=False,
+    help="No prompt, assume yes to questions",
+    show_default=True,
+)
+def shell(**kwargs):
     """Open a python shell with apps_folder added to the path"""
-    install_args(dict(apps_folder=apps_folder))
+    install_args(kwargs)
     code.interact(local=dict(globals(), **locals()))
 
 
@@ -1477,22 +1526,25 @@ def shell(apps_folder):
 @click.argument("apps_folder", type=click.Path(exists=True))
 @click.argument("func")
 @click.option(
+    "-Y",
+    "--yes",
+    is_flag=True,
+    default=False,
+    help="No prompt, assume yes to questions",
+    show_default=True,
+)
+@click.option(
     "--args",
     default="{}",
     help="Arguments passed to the program/function",
     show_default=True,
 )
-def call(apps_folder, func, args):
+def call(apps_folder, func, yes, args):
     """Call a function inside apps_folder"""
     kwargs = json.loads(args)
-    install_args(dict(apps_folder=apps_folder))
-    # NOTE: os.environ["PY4WEB_APPS_FOLDER"] might be already resolve()d by install_args()
-    apps_folder_path = pathlib.Path(apps_folder).resolve()
-    module, name = ("%s.%s" % (apps_folder_path.name, func)).rsplit(".", 1)
-    # need apps_folder's parent in path for the import to work
-    apps_folder_parent = str(apps_folder_path.parent)
-    if not apps_folder_parent in sys.path:
-        sys.path.insert(0, apps_folder_parent)
+    install_args(dict(apps_folder=apps_folder, yes=yes))
+    apps_folder_name = os.path.basename(os.environ["PY4WEB_APPS_FOLDER"])
+    module, name = ("%s.%s" % (apps_folder_name, func)).rsplit(".", 1)
     env = {}
     exec("from %s import %s" % (module, name), {}, env)
     env[name](**kwargs)
@@ -1521,8 +1573,16 @@ def set_password(password, password_file):
 
 
 @cli.command(name="new_app")
-@click.argument("apps_folder", type=click.Path(exists=True))
+@click.argument("apps_folder")
 @click.argument("app_name")
+@click.option(
+    "-Y",
+    "--yes",
+    is_flag=True,
+    default=False,
+    help="No prompt, assume yes to questions",
+    show_default=True,
+)
 @click.option(
     "-s",
     "--scaffold_zip",
@@ -1530,12 +1590,13 @@ def set_password(password, password_file):
     help="Path to the zip with the scaffolding app",
     show_default=False,
 )
-def new_app(apps_folder, app_name, scaffold_zip):
+def new_app(apps_folder, app_name, yes, scaffold_zip):
     """Create a new app copying the scaffolding one"""
+    install_args(dict(apps_folder=apps_folder, yes=yes))
     source = scaffold_zip or os.path.join(
         os.path.dirname(__file__), "assets", "py4web.app._scaffold.zip"
     )
-    target_dir = os.path.join(apps_folder, app_name)
+    target_dir = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], app_name)
     if not os.path.exists(source):
         click.echo("Source app %s does not exists" % source)
         sys.exit(1)
@@ -1609,8 +1670,6 @@ def new_app(apps_folder, app_name, scaffold_zip):
 def run(**kwargs):
     """Run all the applications on apps_folder"""
     install_args(kwargs)
-    apps_folder = kwargs["apps_folder"]
-    yes = kwargs["yes"]
 
     from py4web import __version__
 
@@ -1618,7 +1677,7 @@ def run(**kwargs):
     click.echo("Py4web: %s on Python %s\n\n" % (__version__, sys.version))
 
     # If we know where the password is stored, read it, otherwise ask for one
-    if os.path.exists(os.path.join(apps_folder, "_dashboard")):
+    if os.path.exists(os.path.join(os.environ["PY4WEB_APPS_FOLDER"], "_dashboard")):
         if kwargs["dashboard_mode"] not in ("demo", "none") and not os.path.exists(
             kwargs["password_file"]
         ):
