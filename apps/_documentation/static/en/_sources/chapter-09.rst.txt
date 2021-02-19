@@ -268,7 +268,7 @@ produces the following output:
 .. code:: html
 
    <ul>
-   <li><a href="http:/www.google.com">www.google.com</a></li>
+   <li><a href="http://www.google.com">www.google.com</a></li>
    </ul>
 
 The function ``itemize1`` returns a helper object that is inserted at

@@ -42,38 +42,38 @@ The following set of helpers:
 
 ``A``, ``BEAUTIFY``, ``BODY``, ``CAT``, ``CODE``, ``DIV``, ``EM``,
 ``FORM``, ``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``, ``HEAD``,
-``HTML``, ``I``, ``IMG``, ``INPUT``, ``LABEL``, ``LI``, ``LINK``,
-``META``, ``METATAG``, ``OL``, ``OPTION``, ``PRE``, ``SELECT``,
-``SPAN``, ``STRONG``, ``TABLE``, ``TAG``, ``TBODY``, ``TD``,
-``TEXTAREA``, ``TH``, ``THEAD``, ``TR``, ``UL``, ``XML``, ``sanitize``,
-``xmlescape``
+``HTML``, ``IMG``, ``INPUT``, ``LABEL``, ``LI``, ``METATAG``,
+``OL``, ``OPTION``, ``P``, ``PRE``, ``SELECT``, ``SPAN``, ``STRONG``,
+``TABLE``, ``TAG``, ``TAGGER``, ``THEAD``, ``TBODY``, ``TD``,
+``TEXTAREA``, ``TH``, ``TT``, ``TR``, ``UL``, ``XML``, ``xmlescape``,
+``I``, ``META``, ``LINK``, ``TITLE``, ``STYLE``, ``SCRIPT``
 
 can be used to build complex expressions that can then be serialized to
 XML. For example:
 
 .. code:: html
 
-   [[=DIV(B(I("hello ", "<world>")), _class="myclass")]]
+   [[=DIV(STRONG(I("hello ", "<world>")), _class="myclass")]]
 
 is rendered:
 
 .. code:: html
 
-   <div class="myclass"><b><i>hello &lt;world&gt;</i></b></div>
+   <div class="myclass"><strong><i>hello &lt;world&gt;</i></strong></div>
 
 Helpers can also be serialized into strings, equivalently, with the
 ``__str__`` and the ``xml`` methods:
 
 .. code:: python
 
-   >>> print str(DIV("hello world"))
-   <div>hello world</div>
-   >>> print DIV("hello world").xml()
-   <div>hello world</div>
+   >>> str(DIV("hello world"))
+   '<div>hello world</div>'
+   >>> DIV("hello world").xml()
+   '<div>hello world</div>'
 
 The helpers mechanism in py4web is more than a system to generate HTML
 without concatenating strings. It provides a server-side representation
-of the Document Object Model (DOM).
+of the document object model (DOM).
 
 Components of helpers can be referenced via their position, and helpers
 act as lists with respect to their components:
@@ -81,13 +81,13 @@ act as lists with respect to their components:
 .. code:: python
 
    >>> a = DIV(SPAN('a', 'b'), 'c')
-   >>> print a
+   >>> print(a)
    <div><span>ab</span>c</div>
    >>> del a[1]
-   >>> a.append(B('x'))
+   >>> a.append(STRONG('x'))
    >>> a[0][0] = 'y'
-   >>> print a
-   <div><span>yb</span><b>x</b></div>
+   >>> print(a)
+   <div><span>yb</span><strong>x</strong></div>
 
 Attributes of helpers can be referenced by name, and helpers act as
 dictionaries with respect to their attributes:
@@ -97,7 +97,7 @@ dictionaries with respect to their attributes:
    >>> a = DIV(SPAN('a', 'b'), 'c')
    >>> a['_class'] = 's'
    >>> a[0]['_class'] = 't'
-   >>> print a
+   >>> print(a)
    <div class="s"><span class="t">ab</span>c</div>
 
 Note, the complete set of components can be accessed via a list called
@@ -125,7 +125,7 @@ have the desired combinations e.g.
 
 .. code:: python
 
-   >>> print DIV('text', data={'role': 'collapsible'})
+   >>> print(DIV('text', data={'role': 'collapsible'}))
    <div data-role="collapsible">text</div>
 
 or you can instead pass the attributes as a dictionary and make use of
@@ -134,7 +134,7 @@ Python’s ``**`` function arguments notation, which maps a dictionary of
 
 .. code:: python
 
-   >>> print DIV('text', **{'_data-role': 'collapsible'})
+   >>> print(DIV('text', **{'_data-role': 'collapsible'}))
    <div data-role="collapsible">text</div>
 
 Note that more elaborate entries will introduce HTML character entities,
@@ -142,15 +142,16 @@ but they will work nonetheless e.g.
 
 .. code:: python
 
-   >>> print DIV('text', data={'options':'{"mode":"calbox", "useNewStyle":true}'})
+   >>> print(DIV('text', data={'options':'{"mode":"calbox", "useNewStyle":true}'}))
    <div data-options="{&quot;mode&quot;:&quot;calbox&quot;, &quot;useNewStyle&quot;:true}">text</div>
 
 You can also dynamically create special TAGs:
 
 .. code:: python
 
-   >>> print TAG['soap:Body']('whatever', **{'_xmlns:m':'http://www.example.org'})
+   >>> print(TAG['soap:Body']('whatever', **{'_xmlns:m':'http://www.example.org'}))
    <soap:Body xmlns:m="http://www.example.org">whatever</soap:Body>
+
 
 ``XML``
 -------
@@ -163,27 +164,27 @@ The text in this example is escaped:
 
 .. code:: python
 
-   >>> print DIV("<b>hello</b>")
-   <div>&lt;b&gt;hello&lt;/b&gt;</div>
+   >>> print(DIV("<strong>hello</strong>"))
+   <div>&lt;strong&gt;hello&lt;/strong&gt;</div>
 
 by using ``XML`` you can prevent escaping:
 
 .. code:: python
 
-   >>> print DIV(XML("<b>hello</b>"))
-   <div><b>hello</b></div>
+   >>> print(DIV(XML("<strong>hello</strong>")))
+   <div><strong>hello</strong></div>
 
 Sometimes you want to render HTML stored in a variable, but the HTML may
 contain unsafe tags such as scripts:
 
 .. code:: python
 
-   >>> print XML('<script>alert("unsafe!")</script>')
+   >>> print(XML('<script>alert("unsafe!")</script>'))
    <script>alert("unsafe!")</script>
 
 Un-escaped executable input such as this (for example, entered in the
 body of a comment in a blog) is unsafe, because it can be used to
-generate Cross Site Scripting (XSS) attacks against other visitors to
+generate cross site scripting (XSS) attacks against other visitors to
 the page.
 
 The py4web ``XML`` helper can sanitize our text to prevent injections
@@ -192,7 +193,7 @@ example:
 
 .. code:: python
 
-   >>> print XML('<script>alert("unsafe!")</script>', sanitize=True)
+   >>> print(XML('<script>alert("unsafe!")</script>', sanitize=True))
    &lt;script&gt;alert(&quot;unsafe!&quot;)&lt;/script&gt;
 
 The ``XML`` constructors, by default, consider the content of some tags
@@ -205,9 +206,12 @@ helper.
 
    XML(text, sanitize=False,
        permitted_tags=['a', 'b', 'blockquote', 'br/', 'i', 'li',
-          'ol', 'ul', 'p', 'cite', 'code', 'pre', 'img/'],
-       allowed_attributes={'a':['href', 'title'],
-          'img':['src', 'alt'], 'blockquote':['type']})
+           'ol', 'ul', 'p', 'cite', 'code', 'pre', 'img/',
+           'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'tr', 'td',
+           'div', 'strong', 'span'],
+       allowed_attributes={'a': ['href', 'title', 'target'],
+           'img': ['src', 'alt'], 'blockquote': ['type'], 'td': ['colspan']})
+
 
 Built-in helpers
 ----------------
@@ -219,9 +223,9 @@ This helper is used to build links.
 
 .. code:: python
 
-   >>> print A('<click>', XML('<b>me</b>'),
-               _href='http://www.py4web.com')
-   <a href='http://www.py4web.com'>&lt;click&gt;<b>me</b></a>
+   >>> print(A('<click>', XML('<strong>me</strong>'),
+               _href='http://www.py4web.com'))
+   <a href="http://www.py4web.com">&lt;click&gt;<strong>me</strong></a>
 
 ``BODY``
 ~~~~~~~~
@@ -230,8 +234,8 @@ This helper makes the body of a page.
 
 .. code:: python
 
-   >>> print BODY('<hello>', XML('<b>world</b>'), _bgcolor='red')
-   <body bgcolor="red">&lt;hello&gt;<b>world</b></body>
+   >>> print(BODY('<hello>', XML('<strong>world</strong>'), _bgcolor='red'))
+   <body bgcolor="red">&lt;hello&gt;<strong>world</strong></body>
 
 ``CAT``
 ~~~~~~~
@@ -240,95 +244,8 @@ This helper concatenates other helpers, same as TAG[''].
 
 .. code:: python
 
-   >>> print CAT('Here is a ', A('link', _href=URL()), ', and here is some ', B('bold text'), '.')
-   Here is a <a href="/app/default/index">link</a>, and here is some <b>bold text</b>.
-
-``CODE``
-~~~~~~~~
-
-This helper performs syntax highlighting for Python, C, C++, HTML and
-py4web code, and is preferable to ``PRE`` for code listings. ``CODE``
-also has the ability to create links to the py4web API documentation.
-
-Here is an example of highlighting sections of Python code.
-
-.. code:: python
-
-   >>> print CODE('print "hello"', language='python').xml()
-
-.. code:: html
-
-   <table><tr style="vertical-align:top;">
-     <td style="min-width:40px; text-align: right;"><pre style="
-           font-size: 11px;
-           font-family: Bitstream Vera Sans Mono,monospace;
-           background-color: transparent;
-           margin: 0;
-           padding: 5px;
-           border: none;
-           color: #A0A0A0;
-       ">1.</pre></td><td><pre style="
-           font-size: 11px;
-           font-family: Bitstream Vera Sans Mono,monospace;
-           background-color: transparent;
-           margin: 0;
-           padding: 5px;
-           border: none;
-           overflow: auto;
-           white-space: pre !important;
-   "><span style="color:#185369; font-weight: bold">print </span>
-     <span style="color: #FF9966">"hello"</span></pre></td></tr></table>
-
-Here is a similar example for HTML
-
-.. code:: python
-
-   >>> print CODE('<html><body>[[=request.env.remote_add]]</body></html>',
-   ...     language='html')
-
-.. code:: python
-
-   <table>...<code>...
-   <html><body>[[=request.env.remote_add]]</body></html>
-   ...</code>...</table>
-
-These are the default arguments for the ``CODE`` helper:
-
-.. code:: python
-
-   CODE("print 'hello world'", language='python', link=None, counter=1, styles={})
-
-Supported values for the ``language`` argument are “python”,
-“html_plain”, “c”, “cpp”, “py4web”, and “html”. The “html” language
-interprets tags as “py4web” code, while “html_plain” doesn’t.
-
-If a ``link`` value is specified, for example “/examples/global/vars/”,
-py4web API references in the code are linked to documentation at the
-link URL. For example “request” would be linked to
-“/examples/global/vars/request”. In the above example, the link URL is
-handled by the “vars” action in the “global.py” controller that is
-distributed as part of the py4web “examples” application.
-
-The ``counter`` argument is used for line numbering. It can be set to
-any of three different values. It can be ``None`` for no line numbers, a
-numerical value specifying the start number, or a string. If the counter
-is set to a string, it is interpreted as a prompt, and there are no line
-numbers.
-
-The ``styles`` argument is a bit tricky. If you look at the generated
-HTML above, it contains a table with two columns, and each column has
-its own style declared inline using CSS. The ``styles`` attributes
-allows you to override those two CSS styles. For example:
-
-.. code:: python
-
-   CODE(..., styles={'CODE':'margin: 0;padding: 5px;border: none;'})
-
-The ``styles`` attribute must be a dictionary, and it allows two
-possible keys: ``CODE`` for the style of the actual code, and
-``LINENUMBERS`` for the style of the left column, which contains the
-line numbers. Mind that these styles completely replace the default
-styles and are not simply added to them.
+   >>> print(CAT('Here is a ', A('link', _href='target'), ', and here is some ', STRONG('bold text'), '.'))
+   Here is a <a href="target">link</a>, and here is some <strong>bold text</strong>.
 
 ``DIV``
 ~~~~~~~
@@ -338,8 +255,8 @@ basic methods.
 
 .. code:: python
 
-   >>> print DIV('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <div id="0" class="test">&lt;hello&gt;<b>world</b></div>
+   >>> print(DIV('<hello>', XML('<strong>world</strong>'), _class='test', _id=0))
+   <div id="0" class="test">&lt;hello&gt;<strong>world</strong></div>
 
 ``EM``
 ~~~~~~
@@ -348,8 +265,8 @@ Emphasizes its content.
 
 .. code:: python
 
-   >>> print EM('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <em id="0" class="test">&lt;hello&gt;<b>world</b></em>
+   >>> print(EM('<hello>', XML('<strong>world</strong>'), _class='test', _id=0))
+   <em id="0" class="test">&lt;hello&gt;<strong>world</strong></em>
 
 ``FORM``
 ~~~~~~~~
@@ -362,32 +279,18 @@ in detail in `Chapter 12 <#chapter-12>`__.
 
 .. code:: python
 
-   >>> print FORM(INPUT(_type='submit'), _action='', _method='post')
-   <form enctype="multipart/form-data" action="" method="post">
-   <input type="submit" /></form>
-
-The “enctype” is “multipart/form-data” by default.
-
-The constructor of a ``FORM``, and of ``SQLFORM``, can also take a
-special argument called ``hidden``. When a dictionary is passed as
-``hidden``, its items are translated into “hidden” INPUT fields. For
-example:
-
-.. code:: python
-
-   >>> print FORM(hidden=dict(a='b'))
-   <form enctype="multipart/form-data" action="" method="post">
-   <input value="b" type="hidden" name="a" /></form>
+   >>> print(FORM(INPUT(_type='submit'), _action='', _method='post'))
+   <form action="" method="post"><input type="submit"/></form>
 
 ``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-These helpers are for paragraph headings and subheadings:
+These helpers are for paragraph headings and subheadings.
 
 .. code:: python
 
-   >>> print H1('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <h1 id="0" class="test">&lt;hello&gt;<b>world</b></h1>
+   >>> print(H1('<hello>', XML('<strong>world</strong>'), _class='test', _id=0))
+   <h1 id="0" class="test">&lt;hello&gt;<strong>world</strong></h1>
 
 ``HEAD``
 ~~~~~~~~
@@ -396,30 +299,18 @@ For tagging the HEAD of an HTML page.
 
 .. code:: python
 
-   >>> print HEAD(TITLE('<hello>', XML('<b>world</b>')))
-   <head><title>&lt;hello&gt;<b>world</b></title></head>
+   >>> print(HEAD(TITLE('<hello>', XML('<strong>world</strong>'))))
+   <head><title>&lt;hello&gt;<strong>world</strong></title></head>
 
 ``HTML``
 ~~~~~~~~
 
-This helper is a little different. In addition to making the ``<html>``
-tags, it prepends the tag with a doctype string.
+For tagging an HTML page.
 
 .. code:: python
 
-   >>> print HTML(BODY('<hello>', XML('<b>world</b>')))
-   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-   <html><body>&lt;hello&gt;<b>world</b></body></html>
-
-The HTML helper also takes some additional optional arguments that have
-the following default:
-
-.. code:: python
-
-   HTML(..., lang='en', doctype='transitional')
-
-where doctype can be ‘strict’, ‘transitional’, ‘frameset’, ‘html5’, or a
-full doctype string.
+   >>> print(HTML(BODY('<hello>', XML('<strong>world</strong>'))))
+   <html><body>&lt;hello&gt;<strong>world</strong></body></html>
 
 ``I``
 ~~~~~
@@ -428,30 +319,29 @@ This helper makes its contents italic.
 
 .. code:: python
 
-   >>> print I('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <i id="0" class="test">&lt;hello&gt;<b>world</b></i>
+   >>> print(I('<hello>', XML('<strong>world</strong>'), _class='test', _id=0))
+   <i id="0" class="test">&lt;hello&gt;<strong>world</strong></i>
 
 ``IMG``
 ~~~~~~~
 
-It can be used to embed images into HTML:
+It can be used to embed images into HTML.
 
 .. code:: python
 
-   >>> print IMG(_src='http://example.com/image.png', _alt='test')
-    ![](http://example.com/image.ong){ alt="rest" }
+   >>> print(IMG(_src='http://example.com/image.png', _alt='test'))
+   <img alt="test" src="http://example.com/image.png"/>
 
 Here is a combination of A, IMG, and URL helpers for including a static
 image with a link:
 
 .. code:: python
 
-   >>> print A(IMG(_src=URL('static', 'logo.png'), _alt="My Logo"),
-   ...   _href=URL('default', 'index'))
-   ... 
-   <a href="/myapp/default/index">
-      ![](/myapp/static/logo.png){ alt="My Logo" }
-   </a>
+   >>> print(A(IMG(_src=URL('static', 'logo.png'), _alt="My Logo"),
+   ... _href=URL('default', 'index')))
+   <a href="/default/index"><img alt="My Logo" src="/static/logo.png"/></a>
+
+.. FIXME: URL('static', ...) is broken on py4web shell
 
 ``INPUT``
 ~~~~~~~~~
@@ -463,38 +353,28 @@ attribute ``_type`` that can be set to “text” (the default), “submit”,
 
 .. code:: python
 
-   >>> print INPUT(_name='test', _value='a')
-   <input value="a" name="test" />
+   >>> print(INPUT(_name='test', _value='a'))
+   <input name="test" value="a"/>
 
-It also takes an optional special argument called “value”, distinct from
-"_value“. The latter sets the default value for the input field; the
-former sets its current value. For an input of type”text", the former
-overrides the latter:
-
-.. code:: python
-
-   >>> print INPUT(_name='test', _value='a', value='b')
-   <input value="b" name="test" />
-
-For radio buttons, ``INPUT`` selectively sets the “checked” attribute:
+For radio buttons use the ``_checked`` attribute:
 
 .. code:: python
 
    >>> for v in ['a', 'b', 'c']:
-   ...     print INPUT(_type='radio', _name='test', _value=v, value='b'), v
+   ...     print(INPUT(_type='radio', _name='test', _value=v, _checked=v=='b'), v)
    ... 
-   <input value="a" type="radio" name="test" /> a
-   <input value="b" type="radio" checked="checked" name="test" /> b
-   <input value="c" type="radio" name="test" /> c
+   <input name="test" type="radio" value="a"/> a
+   <input checked="checked" name="test" type="radio" value="b"/> b
+   <input name="test" type="radio" value="c"/> c
 
 and similarly for checkboxes:
 
 .. code:: python
 
-   >>> print INPUT(_type='checkbox', _name='test', _value='a', value=True)
-   <input value="a" type="checkbox" checked="checked" name="test" />
-   >>> print INPUT(_type='checkbox', _name='test', _value='a', value=False)
-   <input value="a" type="checkbox" name="test" />
+   >>> print(INPUT(_type='checkbox', _name='test', _value='a', _checked=True))
+   <input checked="checked" name="test" type="checkbox" value="a"/>
+   >>> print(INPUT(_type='checkbox', _name='test', _value='a', _checked=False))
+   <input name="test" type="checkbox" value="a"/>
 
 ``LABEL``
 ~~~~~~~~~
@@ -503,8 +383,8 @@ It is used to create a LABEL tag for an INPUT field.
 
 .. code:: python
 
-   >>> print LABEL('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <label id="0" class="test">&lt;hello&gt;<b>world</b></label>
+   >>> print(LABEL('<hello>', XML('<strong>world</strong>'), _class='test', _id=0))
+   <label id="0" class="test">&lt;hello&gt;<strong>world</strong></label>
 
 ``LI``
 ~~~~~~
@@ -513,42 +393,35 @@ It makes a list item and should be contained in a ``UL`` or ``OL`` tag.
 
 .. code:: python
 
-   >>> print LI('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <li id="0" class="test">&lt;hello&gt;<b>world</b></li>
+   >>> print(LI('<hello>', XML('<strong>world</strong>'), _class='test', _id=0))
+   <li id="0" class="test">&lt;hello&gt;<strong>world</strong></li>
 
 ``OL``
 ~~~~~~
 
-It stands for Ordered List. The list should contain LI tags. ``OL``
-arguments that are not ``LI`` objects are automatically enclosed in
-``<li>...</li>`` tags.
+It stands for ordered list. The list should contain LI tags.
 
 .. code:: python
 
-   >>> print OL('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <ol id="0" class="test"><li>&lt;hello&gt;</li><li><b>world</b></li></ol>
+   >>> print(OL(LI('<hello>'), LI(XML('<strong>world</strong>')), _class='test', _id=0))
+   <ol class="test" id="0"><li>&lt;hello&gt;</li><li><strong>world</strong></li></ol>
 
 ``OPTION``
 ~~~~~~~~~~
 
-This should only be used as part of a ``SELECT``/``OPTION`` combination.
+This should only be used as argument of a ``SELECT``.
 
 .. code:: python
 
-   >>> print OPTION('<hello>', XML('<b>world</b>'), _value='a')
-   <option value="a">&lt;hello&gt;<b>world</b></option>
+   >>> print(OPTION('<hello>', XML('<strong>world</strong>'), _value='a'))
+   <option value="a">&lt;hello&gt;<strong>world</strong></option>
 
-As in the case of ``INPUT``, py4web make a distinction between "_value"
-(the value of the OPTION), and “value” (the current value of the
-enclosing select). If they are equal, the option is “selected”.
+For selected options use the ``_selected`` attribute:
 
 .. code:: python
 
-   >>> print SELECT('a', 'b', value='b'):
-   <select>
-   <option value="a">a</option>
-   <option value="b" selected="selected">b</option>
-   </select>
+   >>> print(OPTION('Thank You', _value='ok', _selected=True))
+   <option selected="selected" value="ok">Thank You</option>
 
 ``P``
 ~~~~~
@@ -557,8 +430,8 @@ This is for tagging a paragraph.
 
 .. code:: python
 
-   >>> print P('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <p id="0" class="test">&lt;hello&gt;<b>world</b></p>
+   >>> print(P('<hello>', XML('<strong>world</strong>'), _class='test', _id=0))
+   <p id="0" class="test">&lt;hello&gt;<strong>world</strong></p>
 
 ``PRE``
 ~~~~~~~
@@ -568,37 +441,30 @@ The ``CODE`` helper is generally preferable for code listings.
 
 .. code:: python
 
-   >>> print PRE('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <pre id="0" class="test">&lt;hello&gt;<b>world</b></pre>
+   >>> print(SELECT(OPTION('first', _value='1'), OPTION('second', _value='2'), _class='test', _id=0))
+   <pre id="0" class="test">&lt;hello&gt;<strong>world</strong></pre>
 
 ``SCRIPT``
 ~~~~~~~~~~
 
-This is include or link a script, such as JavaScript. The content
-between the tags is rendered as an HTML comment, for the benefit of
-really old browsers.
+This is include or link a script, such as JavaScript.
 
 .. code:: python
 
-   >>> print SCRIPT('alert("hello world");', _type='text/javascript')
-   <script type="text/javascript"><!--
-   alert("hello world");
-   //--></script>
+   >>> print(SCRIPT('console.log("hello world");', _type='text/javascript'))
+   <script type="text/javascript">console.log("hello world");</script>
 
 ``SELECT``
 ~~~~~~~~~~
 
 Makes a ``<select>...</select>`` tag. This is used with the ``OPTION``
-helper. Those ``SELECT`` arguments that are not ``OPTION`` objects are
-automatically converted to options.
+helper.
 
 .. code:: python
 
-   >>> print SELECT('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <select id="0" class="test">
-   <option value="&lt;hello&gt;">&lt;hello&gt;</option>
-   <option value="&lt;b&gt;world&lt;/b&gt;"><b>world</b></option>
-   </select>
+   >>> print(SELECT(OPTION('first', _value='1'), OPTION('second', _value='2'),
+   ... _class='test', _id=0))
+   <select class="test" id="0"><option value="1">first</option><option value="2">second</option></select>
 
 ``SPAN``
 ~~~~~~~~
@@ -607,8 +473,8 @@ Similar to ``DIV`` but used to tag inline (rather than block) content.
 
 .. code:: python
 
-   >>> print SPAN('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <span id="0" class="test">&lt;hello&gt;<b>world</b></span>
+   >>> print(SPAN('<hello>', XML('<strong>world</strong>'), _class='test', _id=0))
+   <span id="0" class="test">&lt;hello&gt;<strong>world</strong></span>
 
 ``STYLE``
 ~~~~~~~~~
@@ -618,18 +484,15 @@ CSS is included:
 
 .. code:: python
 
-   >>> print STYLE(XML('body {color: white}'))
-   <style><!--
-   body { color: white }
-   //--></style>
+   >>> print(STYLE(XML('body {color: white}')))
+   <style>body {color: white}</style>
 
 and here it is linked:
 
 .. code:: python
 
-   >>> print STYLE(_src='style.css')
-   <style src="style.css"><!--
-   //--></style>
+   >>> print(STYLE(_src='style.css'))
+   <style src="style.css"></style>
 
 ``TABLE``, ``TR``, ``TD``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -639,16 +502,10 @@ used to build HTML tables.
 
 .. code:: python
 
-   >>> print TABLE(TR(TD('a'), TD('b')), TR(TD('c'), TD('d')))
+   >>> print(TABLE(TR(TD('a'), TD('b')), TR(TD('c'), TD('d'))))
    <table><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>
 
-``TR`` expects ``TD`` content; arguments that are not ``TD`` objects are
-converted automatically.
-
-.. code:: python
-
-   >>> print TABLE(TR('a', 'b'), TR('c', 'd'))
-   <table><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>
+``TR`` expects ``TD`` content.
 
 It is easy to convert a Python array into an HTML table using Python’s
 ``*`` function arguments notation, which maps list elements to
@@ -659,7 +516,7 @@ Here, we will do it line by line:
 .. code:: python
 
    >>> table = [['a', 'b'], ['c', 'd']]
-   >>> print TABLE(TR(*table[0]), TR(*table[1]))
+   >>> print(TABLE(TR(*map(TD, table[0])), TR(*map(TD, table[1]))))
    <table><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>
 
 Here we do all lines at once:
@@ -667,7 +524,7 @@ Here we do all lines at once:
 .. code:: python
 
    >>> table = [['a', 'b'], ['c', 'd']]
-   >>> print TABLE(*[TR(*rows) for rows in table])
+   >>> print(TABLE(*[TR(*map(TD, rows)) for rows in table]))
    <table><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>
 
 ``TBODY``
@@ -678,7 +535,7 @@ header or footer rows. It is optional.
 
 .. code:: python
 
-   >>> print TBODY(TR('<hello>'), _class='test', _id=0)
+   >>> print(TBODY(TR(TD('<hello>')), _class='test', _id=0))
    <tbody id="0" class="test"><tr><td>&lt;hello&gt;</td></tr></tbody>
 
 ``TEXTAREA``
@@ -688,16 +545,9 @@ This helper makes a ``<textarea>...</textarea>`` tag.
 
 .. code:: python
 
-   >>> print TEXTAREA('<hello>', XML('<b>world</b>'), _class='test')
-   <textarea class="test" cols="40" rows="10">&lt;hello&gt;<b>world</b></textarea>
-
-The only caveat is that its optional “value” overrides its content
-(inner HTML)
-
-.. code:: python
-
-   >>> print TEXTAREA(value="<hello world>", _class="test")
-   <textarea class="test" cols="40" rows="10">&lt;hello world&gt;</textarea>
+   >>> print(TEXTAREA('<hello>', XML('<strong>world</strong>'), _class='test',
+   ... _cols="40", _rows="10"))
+   <textarea class="test" cols="40" rows="10">&lt;hello&gt;<strong>world</strong></textarea>
 
 ``TH``
 ~~~~~~
@@ -706,8 +556,8 @@ This is used instead of ``TD`` in table headers.
 
 .. code:: python
 
-   >>> print TH('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <th id="0" class="test">&lt;hello&gt;<b>world</b></th>
+   >>> print(TH('<hello>', XML('<strong>world</strong>'), _class='test', _id=0))
+   <th id="0" class="test">&lt;hello&gt;<strong>world</strong></th>
 
 ``THEAD``
 ~~~~~~~~~
@@ -716,7 +566,7 @@ This is used to tag table header rows.
 
 .. code:: python
 
-   >>> print THEAD(TR(TH('<hello>')), _class='test', _id=0)
+   >>> print(THEAD(TR(TH('<hello>')), _class='test', _id=0))
    <thead id="0" class="test"><tr><th>&lt;hello&gt;</th></tr></thead>
 
 ``TITLE``
@@ -726,20 +576,8 @@ This is used to tag the title of a page in an HTML header.
 
 .. code:: python
 
-   >>> print TITLE('<hello>', XML('<b>world</b>'))
-   <title>&lt;hello&gt;<b>world</b></title>
-
-``TR``
-~~~~~~
-
-Tags a table row. It should be rendered inside a table and contain
-``<td>...</td>`` tags. ``TR`` arguments that are not ``TD`` objects will
-be automatically converted.
-
-.. code:: python
-
-   >>> print TR('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <tr id="0" class="test"><td>&lt;hello&gt;</td><td><b>world</b></td></tr>
+   >>> print(TITLE('<hello>', XML('<strong>world</strong>')))
+   <title>&lt;hello&gt;<strong>world</strong></title>
 
 ``TT``
 ~~~~~~
@@ -748,24 +586,25 @@ Tags text as typewriter (monospaced) text.
 
 .. code:: python
 
-   >>> print TT('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <tt id="0" class="test">&lt;hello&gt;<b>world</b></tt>
+   >>> print(TT('<hello>', XML('<strong>world</strong>'), _class='test', _id=0))
+   <tt id="0" class="test">&lt;hello&gt;<strong>world</strong></tt>
 
 ``UL``
 ~~~~~~
 
-Signifies an Unordered List and should contain ``LI`` items. If its
-content is not tagged as ``LI``, ``UL`` does it automatically.
+It stands for unordered list. The list should contain LI tags.
 
 .. code:: python
 
-   >>> print UL('<hello>', XML('<b>world</b>'), _class='test', _id=0)
-   <ul id="0" class="test"><li>&lt;hello&gt;</li><li><b>world</b></li></ul>
+   >>> print(UL(LI('<hello>'), LI(XML('<strong>world</strong>')), _class='test', _id=0))
+   <ul class="test" id="0"><li>&lt;hello&gt;</li><li><strong>world</strong></li></ul>
 
 ``URL``
 ~~~~~~~
 
-The URL helper is documented in *Chapter 4 URL ../04*
+.. FIXME: maybe this section should go in another chapter
+
+The URL helper is not part of yatl package, instead it is provided by py4web.
 
 Custom helpers
 --------------
@@ -795,7 +634,7 @@ are serialized with ``str().`` An equivalent syntax is:
 
 .. code:: html
 
-   [[=TAG['name']('a', 'b', c='d')]]
+   [[=TAG['name']('a', 'b', _c='d')]]
 
 If the TAG object is created with an empty name, it can be used to
 concatenate multiple strings and HTML helpers together without inserting
@@ -818,80 +657,6 @@ generates the following XML:
 Notice that ``TAG`` is an object, and ``TAG.name`` or ``TAG['name']`` is
 a function that returns a temporary helper class.
 
-``MENU``
-~~~~~~~~
-
-The MENU helper takes a list of lists or of tuples of the form of
-``response.menu`` and generates a tree-like structure using unordered
-lists representing the menu. For example:
-
-.. code:: python
-
-   >>> print MENU([['One', False, 'link1'], ['Two', False, 'link2']])
-   <ul class="py4web-menu py4web-menu-vertical">
-   <li><a href="link1">One</a></li>
-   <li><a href="link2">Two</a></li>
-   </ul>
-
-..
-
-   The first item in each list/tuple is the text to be displayed for the
-   given menu item.
-
-The second item in each list/tuple is a boolean indicating whether that
-particular menu item is active (i.e., the currently selected item). When
-set to True, the ``MENU`` helper will add a “py4web-menu-active” class
-to the ``<li>`` for that item (you can change the name of that class via
-the “li_active” argument to ``MENU``). Another way to specify the active
-url is by directly passing it to ``MENU`` via its “active_url” argument.
-
-The third item in each list/tuple can be an HTML helper (which could
-include nested helpers), and the ``MENU`` helper will simply render that
-helper rather than creating its own ``<a>`` tag.
-
-Each menu item can have a fourth argument that is a nested submenu (and
-so on recursively):
-
-.. code:: python
-
-   >>> print MENU([['One', False, 'link1', [['Two', False, 'link2']]]])
-   <ul class="py4web-menu py4web-menu-vertical">
-   <li class="py4web-menu-expand">
-   <a href="link1">One</a>
-   <ul class="py4web-menu-vertical">
-   <li><a href="link2">Two</a></li>
-   </ul>
-   </li>
-   </ul>
-
-A menu item can also have an optional 5th element, which is a boolean.
-When false, the menu item is ignored by the MENU helper.
-
-The ``MENU`` helper takes the following optional arguments: -
-``_class``: defaults to “py4web-menu py4web-menu-vertical” and sets the
-class of the outer UL elements. - ``ul_class``: defaults to
-“py4web-menu-vertical” and sets the class of the inner UL elements. -
-``li_class``: defaults to “py4web-menu-expand” and sets the class of the
-inner LI elements. - ``li_first``: allows to add a class to the first
-list element. - ``li_last``: allows to add a class to the last list
-element.
-
-``MENU`` takes an optional argument ``mobile``. When set to ``True``
-instead of building a recursive ``UL`` menu structure it returns a
-``SELECT`` dropdown with all the menu options and a ``onchange``
-attribute that redirects to the page corresponding to the selected
-option. This is designed an an alternative menu representation that
-increases usability on small mobile devices such as phones.
-
-Normally the menu is used in a layout with the following syntax:
-
-.. code:: html
-
-   [[=MENU(response.menu, mobile=request.user_agent().is_mobile)]]
-
-In this way a mobile device is automatically detected and the menu is
-rendered accordingly.
-
 ``BEAUTIFY``
 ------------
 
@@ -900,7 +665,7 @@ including lists, tuples and dictionaries:
 
 .. code:: html
 
-   [[=BEAUTIFY({"a": ["hello", XML("world")], "b": (1, 2)})]]
+   [[=BEAUTIFY({"a": ["hello", STRONG("world")], "b": (1, 2)})]]
 
 ``BEAUTIFY`` returns an XML-like object serializable to XML, with a nice
 looking representation of its constructor argument. In this case, the
@@ -908,19 +673,21 @@ XML representation of:
 
 .. code:: python
 
-   {"a": ["hello", XML("world")], "b": (1, 2)}
+   {"a": ["hello", STRONG("world")], "b": (1, 2)}
 
 will render as:
 
 .. code:: html
 
-   <table>
-   <tr><td>a</td><td>:</td><td>hello<br />world</td></tr>
-   <tr><td>b</td><td>:</td><td>1<br />2</td></tr>
-   </table>
+   <table><tbody>
+   <tr><th>a</th><td><ul><li>hello</li><li><strong>world</strong></li></ul></td></tr>
+   <tr><th>b</th><td>(1, 2)</td></tr>
+   </tbody></table>
 
 Server-side *DOM* and parsing
 -----------------------------
+
+.. FIXME: review needed
 
 ``elements``
 ~~~~~~~~~~~~
@@ -1090,7 +857,7 @@ a given element into regular text (without tags):
 
 .. code:: python
 
-   >>> a = DIV(SPAN('this', DIV('is', B('a'))), SPAN('test'))
+   >>> a = DIV(SPAN('this', DIV('is', STRONG('a'))), SPAN('test'))
    >>> print a.flatten()
    thisisatest
 

@@ -28,6 +28,7 @@ apps/*
 !apps/_dashboard/*
 !apps/_scaffold/*
 !apps/_minimal/*
+!apps/_websocket/*
 !apps/_default/*
 !apps/_documentation/*
 !apps/superheroes/*

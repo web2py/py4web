@@ -36,6 +36,7 @@ import uuid
 import zipfile
 import asyncio
 from watchgod import awatch
+from . import server_adapters
 
 # Optional web servers for speed
 try:
@@ -115,7 +116,7 @@ abort = bottle.abort
 os.environ.update(
     {key: value for key, value in DEFAULTS.items() if not key in os.environ}
 )
-os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parent.parent)
+os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parents[1])
 
 
 def module2filename(module):
@@ -146,7 +147,7 @@ def monkey_patch_bottle():
 
     @property
     def fullpath(self):
-        appname = self.get_header("x-py4web-appname", "/")
+        appname = self.environ.get("HTTP_X_PY4WEB_APPNAME", "/")
         return urljoin(self.script_name, self.path[len(appname) :])
 
     setattr(bottle.BaseRequest, "fullpath", fullpath)
@@ -574,7 +575,8 @@ class Session(Fixture):
         return self.get_data().keys()
 
     def __iter__(self):
-        return self.get_data().items()
+        for item in self.get_data().items():
+            yield item
 
     def clear(self):
         self.local.changed = True
@@ -639,10 +641,14 @@ def URL(
     if static_version != "" and broken_parts and broken_parts[0] == "static":
         if not static_version:
             # try to retrieve from __init__.py
-            app_module = "apps.%s" % app_name if has_appname else "apps"
-            static_version = getattr(
-                sys.modules[app_module], "__static_version__", None
-            )
+            apps_folder_name = pathlib.PurePath(os.environ["PY4WEB_APPS_FOLDER"]).name
+            app_module = "%s.%s" % (apps_folder_name, app_name) if has_appname else apps_folder_name
+            try:
+                static_version = getattr(
+                    sys.modules[app_module], "__static_version__", None
+                )
+            except KeyError:
+                static_version = None
         if static_version:
             broken_parts.insert(1, "_" + static_version)
 
@@ -676,11 +682,16 @@ def URL(
 
 
 class HTTP(BaseException):
+    class Type:
+        success = "success"
+        error = "error"
+
     """Our HTTP exception does not delete cookies and headers like the bottle.HTTPResponse does;
     since it is considered a success, not a failure"""
 
-    def __init__(self, status):
+    def __init__(self, status, type=Type.success):
         self.status = status
+        self.type = type
 
 
 def redirect(location):
@@ -730,7 +741,13 @@ class action:
                     [obj.on_success(200) for obj in fixtures]
                     return ret
                 except HTTP as http:
-                    [obj.on_success(http.status) for obj in fixtures]
+                    if http.type == http.Type.success:
+                        [obj.on_success(http.status) for obj in fixtures]
+                    else:
+                        [obj.on_error() for obj in fixtures]
+                        # it should be [obj.on_error(status) for obj in fixtures]
+                        # but it breaks users fixtures
+                        # `def on_error(status = None):` - cost nothing, but we have  `def on_error():`
                     raise
                 except Exception:
                     [obj.on_error() for obj in fixtures]
@@ -771,7 +788,7 @@ class action:
                 return ret
             except HTTP as http:
                 response.status = http.status
-                return ""
+                return getattr(http, "body", "")
             except bottle.HTTPResponse:
                 raise
             except Exception:
@@ -1042,6 +1059,7 @@ class Reloader:
         if os.path.isdir(path) and not path.endswith("__") and os.path.exists(init):
 
             action.app_name = app_name
+            # FIXME: hardcoded os.environ["PY4WEB_APPS_FOLDER"]
             module_name = "apps.%s" % app_name
 
             def clear_modules():
@@ -1149,7 +1167,7 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
 def error404(error):
     guess_app_name = (
         "index"
-        if request.headers.get("x-py4web-appname")
+        if request.environ.get("HTTP_X_PY4WEB_APPNAME")
         else request.path.split("/")[1]
     )
     if guess_app_name == "index":
@@ -1157,8 +1175,8 @@ def error404(error):
     else:
         href = "/" + guess_app_name
     script_name = (
-        request.environ.get("HTTP_X_SCRIPT_NAME", "")
-        or request.environ.get("SCRIPT_NAME", "")
+        request.environ.get("SCRIPT_NAME", "")
+        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
     ).rstrip("/")
     if script_name:
         href = script_name + href
@@ -1212,7 +1230,7 @@ def try_app_watch_tasks():
             try:
                 APP_WATCH["handlers"][handler](changed_files_dict.keys())
                 tried_tasks.append(handler)
-            except Exception as e:
+            except Exception:
                 logging.error(traceback.format_exc())
         ## remove executed tasks from register
         for handler in tried_tasks:
@@ -1249,22 +1267,22 @@ def watch(apps_folder, server_config, mode="sync"):
                 else:
                     Reloader.import_app(name)
             ## in 'lazy' mode it's done in bottle's 'before_request' hook
-            if not mode == "lazy":
+            if mode != "lazy":
                 try_app_watch_tasks()
 
-    # fix issue #327: tornado is default server for windows now
-    # if server_config == "windows":
-    # default wsgi server block the main thread so we open a new thread for the file watcher
-    # threading.Thread(
-    #    target=watch_folder_event_loop, args=(apps_folder,), daemon=True
-    # ).start()
-    if server_config in ["tornado", "windows"]:
-        # tornado delegate to asyncio so we add a future into the event loop
-        asyncio.ensure_future(watch_folder(apps_folder))
-    elif server_config == "gunicorn":
-        # supposedly number_workers > 1
+    if server_config["number_workers"] > 1:
         click.echo("--watch option has no effect in multi-process environment \n")
         return
+    elif server_config["server"].startswith(("wsgiref", "waitress", "rocket")):
+        # these servers block the main thread so we open a new thread for the file watcher
+        threading.Thread(
+            target=watch_folder_event_loop, args=(apps_folder,), daemon=True
+        ).start()
+    elif server_config["server"] == "tornado":
+        # tornado delegate to asyncio so we add a future into the event loop
+        asyncio.ensure_future(watch_folder(apps_folder))
+    elif server_config["server"].startswith("gevent"):
+        watch_folder_event_loop(apps_folder)
     else:
         # should never happen
         return
@@ -1273,41 +1291,49 @@ def watch(apps_folder, server_config, mode="sync"):
         Reloader.install_reloader_hook()
 
 
-def start_server(args):
-    host, port, apps_folder = args["host"], int(args["port"]), args["apps_folder"]
-    number_workers = args["number_workers"]
-    server = None
+def start_server(kwargs):
+    host = kwargs["host"]
+    port = int(kwargs["port"])
+    apps_folder = kwargs["apps_folder"]
+    number_workers = kwargs["number_workers"]
     params = dict(host=host, port=port, reloader=False)
-    if platform.system().lower() == "windows":
-        server_config = "windows"
-        params["server"] = "tornado"
-        if sys.version_info >= (
-            3,
-            8,
-        ):  # see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on windows
-            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    elif number_workers <= 1:
-        server_config = "tornado"
-        params["server"] = "tornado"
-    else:
-        if not gunicorn:
-            logging.error("gunicorn not installed")
-            return
-        server_config = "gunicorn"
-        params["server"] = "gunicorn"
+    server_config = dict(
+        platform=platform.system().lower(),
+        server=None if kwargs["server"] == "default" else kwargs["server"],
+        number_workers=number_workers,
+    )
+    if not server_config["server"]:
+        if server_config["platform"] == "windows":
+            server_config["server"] = "tornado"
+            if sys.version_info >= (
+                3,
+                8,
+            ):  # see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on windows
+                asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        elif number_workers <= 1:
+            server_config["server"] = "tornado"
+        else:
+            if not gunicorn:
+                logging.error("gunicorn not installed")
+                return
+            server_config["server"] = "gunicorn"
+    params["server"] = server_config["server"]
+    if params["server"] in server_adapters.__all__:
+        params["server"] = getattr(server_adapters, params["server"])()
+    if number_workers > 1:
         params["workers"] = number_workers
+    if server_config["server"] == "gunicorn":
         sys.argv[:] = sys.argv[:1]  # else break gunicorn
+    if kwargs["ssl_cert"] is not None:
+        params["certfile"] = kwargs["ssl_cert"]
+        params["keyfile"] = kwargs["ssl_key"]
 
-    if args["ssl_cert"] is not None:
-        params["certfile"] = args["ssl_cert"]
-        params["keyfile"] = args["ssl_key"]
-
-    if "gevent" in server_config:
+    if server_config["server"] == "gevent":
         if not hasattr(_ssl, "sslwrap"):
             _ssl.sslwrap = new_sslwrap
 
-    if args["watch"] != "off":
-        watch(apps_folder, server_config, args["watch"])
+    if kwargs["watch"] != "off":
+        watch(apps_folder, server_config, kwargs["watch"])
     bottle.run(**params)
 
 
@@ -1325,15 +1351,17 @@ def check_compatible(version):
 #########################################################################################
 
 
-def install_args(args, reinstall_apps=False):
-    args["service_folder"] = os.path.join(
-        args["apps_folder"], DEFAULTS["PY4WEB_SERVICE_FOLDER"]
+def install_args(kwargs, reinstall_apps=False):
+    kwargs["service_folder"] = os.path.join(
+        kwargs["apps_folder"], DEFAULTS["PY4WEB_SERVICE_FOLDER"]
     )
-    args["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
-    for key in args:
-        os.environ["PY4WEB_" + key.upper()] = str(args[key])
-    apps_folder = args["apps_folder"]
-    yes = args.get("yes", "N")
+    kwargs["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
+    for key, val in kwargs.items():
+        os.environ["PY4WEB_" + key.upper()] = str(val)
+    # NOTE: maybe we need to resolve() kwargs["apps_folder"] prior to install into
+    # os.environ["PY4WEB_APPS_FOLDER"], then use the latter instead of kwargs["apps_folder"]
+    apps_folder = kwargs["apps_folder"]
+    yes = kwargs.get("yes", False)
     # If the apps folder does not exist create it and populate it
     if not os.path.exists(apps_folder):
         if yes or click.confirm("Create missing folder %s?" % apps_folder):
@@ -1365,9 +1393,9 @@ def install_args(args, reinstall_apps=False):
                             zip_file.extractall(target_dir)
                             click.echo("\x1b[A[X]")
 
-    if not os.path.exists(args["service_folder"]):
-        os.mkdir(args["service_folder"])
-    session_secret_filename = os.path.join(args["service_folder"], "session.secret")
+    if not os.path.exists(kwargs["service_folder"]):
+        os.mkdir(kwargs["service_folder"])
+    session_secret_filename = os.path.join(kwargs["service_folder"], "session.secret")
     if not os.path.exists(session_secret_filename):
         with open(session_secret_filename, "w") as fp:
             fp.write(str(uuid.uuid4()))
@@ -1376,9 +1404,9 @@ def install_args(args, reinstall_apps=False):
         Session.SECRET = fp.read()
 
 
-def wsgi(**args):
+def wsgi(**kwargs):
     """Initializes everything, loads apps, returns the wsgi app"""
-    install_args(args)
+    install_args(kwargs)
     Reloader.import_apps()
     return bottle.default_app()
 
@@ -1423,7 +1451,7 @@ def version(all):
 
 
 @cli.command()
-@click.argument("apps_folder", default="apps")
+@click.argument("apps_folder")
 @click.option(
     "-Y",
     "--yes",
@@ -1432,13 +1460,13 @@ def version(all):
     help="No prompt, assume yes to questions",
     show_default=True,
 )
-def setup(**args):
+def setup(**kwargs):
     """Setup new apps folder or reinstall it"""
-    install_args(args, reinstall_apps=True)
+    install_args(kwargs, reinstall_apps=True)
 
 
 @cli.command()
-@click.argument("apps_folder", default="apps")
+@click.argument("apps_folder", type=click.Path(exists=True))
 def shell(apps_folder):
     """Open a python shell with apps_folder added to the path"""
     install_args(dict(apps_folder=apps_folder))
@@ -1456,14 +1484,18 @@ def shell(apps_folder):
 )
 def call(apps_folder, func, args):
     """Call a function inside apps_folder"""
-    args = json.loads(args)
+    kwargs = json.loads(args)
     install_args(dict(apps_folder=apps_folder))
-    module, name = ("apps." + func).rsplit(".", 1)
+    # NOTE: os.environ["PY4WEB_APPS_FOLDER"] might be already resolve()d by install_args()
+    apps_folder_path = pathlib.Path(apps_folder).resolve()
+    module, name = ("%s.%s" % (apps_folder_path.name, func)).rsplit(".", 1)
+    # need apps_folder's parent in path for the import to work
+    apps_folder_parent = str(apps_folder_path.parent)
+    if not apps_folder_parent in sys.path:
+        sys.path.insert(0, apps_folder_parent)
     env = {}
-    if not apps_folder in sys.path:
-        sys.path.insert(0, apps_folder)
     exec("from %s import %s" % (module, name), {}, env)
-    env[name](**args)
+    env[name](**kwargs)
 
 
 @cli.command(name="set_password")
@@ -1517,7 +1549,7 @@ def new_app(apps_folder, app_name, scaffold_zip):
 
 
 @cli.command()
-@click.argument("apps_folder", default="apps")
+@click.argument("apps_folder", type=click.Path(exists=True))
 @click.option(
     "-Y",
     "--yes",
@@ -1535,6 +1567,17 @@ def new_app(apps_folder, app_name, scaffold_zip):
     "--password_file",
     default="password.txt",
     help="File for the encrypted password",
+    show_default=True,
+)
+@click.option(
+    "-s",
+    "--server",
+    default="default",
+    type=click.Choice(
+        ["default", "wsgiref", "tornado", "gunicorn", "gevent", "waitress"]
+        + server_adapters.__all__
+    ),
+    help="server to use",
     show_default=True,
 )
 @click.option(
@@ -1563,11 +1606,11 @@ def new_app(apps_folder, app_name, scaffold_zip):
     "--ssl_cert", type=click.Path(exists=True), help="SSL certificate file for HTTPS"
 )
 @click.option("--ssl_key", type=click.Path(exists=True), help="SSL key file for HTTPS")
-def run(**args):
+def run(**kwargs):
     """Run all the applications on apps_folder"""
-    install_args(args)
-    apps_folder = args["apps_folder"]
-    yes = args["yes"]
+    install_args(kwargs)
+    apps_folder = kwargs["apps_folder"]
+    yes = kwargs["yes"]
 
     from py4web import __version__
 
@@ -1576,8 +1619,8 @@ def run(**args):
 
     # If we know where the password is stored, read it, otherwise ask for one
     if os.path.exists(os.path.join(apps_folder, "_dashboard")):
-        if args["dashboard_mode"] not in ("demo", "none") and not os.path.exists(
-            args["password_file"]
+        if kwargs["dashboard_mode"] not in ("demo", "none") and not os.path.exists(
+            kwargs["password_file"]
         ):
             click.echo(
                 'You have not set a dashboard password. Run "%s set_password" to do so.'
@@ -1586,7 +1629,7 @@ def run(**args):
         else:
             click.echo(
                 "Dashboard is at: http://%s:%s/_dashboard"
-                % (args["host"], args["port"])
+                % (kwargs["host"], kwargs["port"])
             )
 
     # Catch interrupts like Ctrl-C
@@ -1594,7 +1637,7 @@ def run(**args):
 
     # Start
     Reloader.import_apps()
-    start_server(args)
+    start_server(kwargs)
 
 
 if __name__ == "__main__":

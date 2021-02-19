@@ -143,6 +143,7 @@ class Auth(Fixture):
             "modified by": "Modified By",
         },
         "buttons": {
+            "lost-password" : "Lost Password",
             "register": "Register",
             "request": "Request",
             "sign-in": "Sign In",
@@ -182,7 +183,7 @@ class Auth(Fixture):
             formstyle=FormStyleDefault,
         )
 
-        """Creates and Auth object responsinble for handling
+        """Creates and Auth object responsible for handling
         authentication and authorization"""
         self.__prerequisites__ = []
         self.inject = inject
@@ -406,7 +407,7 @@ class Auth(Fixture):
 
     # Methods that do not assume a user
 
-    def register(self, fields, send=True, next="", validate=True):
+    def register(self, fields, send=True, next="", validate=True, route=None):
         if self.use_username:
             fields["username"] = fields.get("username", "").lower()
         fields["email"] = fields.get("email", "").lower()
@@ -422,7 +423,7 @@ class Auth(Fixture):
             res = store(fields)
             if send and res.get("id"):
                 self._link = link = URL(
-                    self.route,
+                    route or self.route,
                     "verify_email",
                     vars=dict(token=token),
                     scheme=True,
@@ -471,7 +472,7 @@ class Auth(Fixture):
                 return (user, None)
             return None, "Invalid Credentials"
 
-    def request_reset_password(self, email, send=True, next=""):
+    def request_reset_password(self, email, send=True, next="", route=None):
         db = self.db
         value = email.lower()
         if self.use_username:
@@ -490,7 +491,7 @@ class Auth(Fixture):
             user.update_record(action_token="reset-password-request:" + token)
             if send:
                 self._link = link = URL(
-                    self.route,
+                    route or self.route,
                     "reset_password",
                     vars=dict(token=token),
                     scheme=True,
@@ -672,7 +673,7 @@ class Auth(Fixture):
             auth.enable_record_versioning(tables=db)
 
         tables can be the db (all table) or a list of tables.
-        only tables with modified_by and modified_on fiels (as created
+        only tables with modified_by and modified_on fields (as created
         by auth.signature) will have versioning. Old record versions will be
         in table 'mything_archive' automatically defined.
         when you enable enable_record_versioning, records are never
@@ -976,7 +977,7 @@ class DefaultAuthForms:
         if self.auth.allows("request_reset_password"):
             form.param.sidecar.append(
                 A(
-                    "Lost Password",
+                    self.auth.messages["buttons"]["lost-password"],
                     _href="../auth/request_reset_password",
                     _class="info",
                     _role="button",
@@ -1032,7 +1033,7 @@ class DefaultAuthForms:
         if self.auth.allows("request_reset_password"):
             form.param.sidecar.append(
                 A(
-                    "Lost Password",
+                    self.auth.messages["buttons"]["lost-password"],
                     _href="../auth/request_reset_password",
                     _class="info",
                     _role="button",

@@ -1,0 +1,6 @@
+### optional, used for documentation only ###
+
+sphinx
+sphinx-tabs
+sphinx_rtd_theme
+rinohtype
