@@ -9,10 +9,12 @@ def index():
 @action('websocket')
 def echo():
     ws  = request.environ.get("wsgi.websocket")
+    if ws is None:
+        return '_websocket: not found wsgi.websocket'
     while True:
-        msg = ws.receive()
-        if msg is not None:
-            ws.send(msg)
-        else: break
+            msg = ws.receive()
+            if msg is not None:
+                ws.send(msg)
+            else: break
 
 
