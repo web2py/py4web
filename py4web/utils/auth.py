@@ -152,6 +152,15 @@ class Auth(Fixture):
         },
     }
 
+    BUTTON_CLASSES = {
+        "lost-password": "info",
+        "register": "info",
+        "request": "info",
+        "sign-in": "info",
+        "sign-up": "info",
+        "submit": "info",
+    }
+
     def __init__(
         self,
         session,
@@ -181,6 +190,8 @@ class Auth(Fixture):
             allowed_actions=allowed_actions,
             use_appname_in_redirects=use_appname_in_redirects,
             formstyle=FormStyleDefault,
+            messages=copy.deepcopy(self.MESSAGES),
+            button_classes=copy.deepcopy(self.BUTTON_CLASSES),
         )
 
         """Creates and Auth object responsible for handling
@@ -192,7 +203,6 @@ class Auth(Fixture):
         if db:
             self.__prerequisites__.append(db)
 
-        self.messages = copy.deepcopy(self.MESSAGES)
         self.onsuccess = {}
         self.next = {}
 
@@ -238,7 +248,7 @@ class Auth(Fixture):
                     "email",
                     requires=(IS_EMAIL(), IS_NOT_IN_DB(db, "auth_user.email")),
                     unique=True,
-                    label=self.messages["labels"].get("email"),
+                    label=self.param.messages["labels"].get("email"),
                 ),
                 Field(
                     "password",
@@ -246,17 +256,17 @@ class Auth(Fixture):
                     requires=requires,
                     readable=False,
                     writable=False,
-                    label=self.messages["labels"].get("password"),
+                    label=self.param.messages["labels"].get("password"),
                 ),
                 Field(
                     "first_name",
                     requires=ne,
-                    label=self.messages["labels"].get("first_name"),
+                    label=self.param.messages["labels"].get("first_name"),
                 ),
                 Field(
                     "last_name",
                     requires=ne,
-                    label=self.messages["labels"].get("last_name"),
+                    label=self.param.messages["labels"].get("last_name"),
                 ),
                 Field("sso_id", readable=False, writable=False),
                 Field("action_token", readable=False, writable=False),
@@ -275,7 +285,7 @@ class Auth(Fixture):
                         "username",
                         requires=[ne, IS_NOT_IN_DB(db, "auth_user.username")],
                         unique=True,
-                        label=self.messages["labels"].get("username"),
+                        label=self.param.messages["labels"].get("username"),
                     ),
                 )
             if self.use_phone_number:
@@ -287,7 +297,7 @@ class Auth(Fixture):
                             ne,
                             IS_MATCH(r"^[+]?(\(\d+\)|\d+)(\(\d+\)|\d+|[ -])+$"),
                         ],
-                        label=self.messages["labels"].get("phone_number"),
+                        label=self.param.messages["labels"].get("phone_number"),
                     ),
                 )
             if self.param.block_previous_password_num is not None:
@@ -313,7 +323,7 @@ class Auth(Fixture):
                 default=now,
                 writable=False,
                 readable=True,
-                label=self.messages["labels"].get("created_on"),
+                label=self.param.messages["labels"].get("created_on"),
             ),
             Field(
                 "created_by",
@@ -321,7 +331,7 @@ class Auth(Fixture):
                 default=user,
                 writable=False,
                 readable=True,
-                label=self.messages["labels"].get("created_by"),
+                label=self.param.messages["labels"].get("created_by"),
             ),
             Field(
                 "modified_on",
@@ -330,7 +340,7 @@ class Auth(Fixture):
                 default=now,
                 writable=False,
                 readable=True,
-                label=self.messages["labels"].get("modified_on"),
+                label=self.param.messages["labels"].get("modified_on"),
             ),
             Field(
                 "modified_by",
@@ -339,7 +349,7 @@ class Auth(Fixture):
                 update=user,
                 writable=False,
                 readable=True,
-                label=self.messages["labels"].get("modified_by"),
+                label=self.param.messages["labels"].get("modified_by"),
             ),
             Field(
                 "is_active",
@@ -347,7 +357,7 @@ class Auth(Fixture):
                 default=True,
                 readable=False,
                 writable=False,
-                label=self.messages["labels"].get("is_active"),
+                label=self.param.messages["labels"].get("is_active"),
             ),
         ]
         return fields
@@ -641,7 +651,7 @@ class Auth(Fixture):
     def send(self, name, user, **attrs):
         """Extend the object and override this function to send messages with
         twilio or onesignal or alternative method other than email"""
-        message = self.messages[name]
+        message = self.param.messages[name]
         d = dict(user)
         d.update(**attrs)
         email = user["email"]
@@ -949,11 +959,11 @@ class DefaultAuthForms:
                         "password_again",
                         "password",
                         requires=IS_EQUAL_TO(request.forms.get("password")),
-                        label=self.auth.messages["labels"].get("password_again"),
+                        label=self.auth.param.messages["labels"].get("password_again"),
                     ),
                 )
                 break
-        button_name = self.auth.messages["buttons"]["sign-up"]
+        button_name = self.auth.param.messages["buttons"]["sign-up"]
         form = Form(fields, submit_value=button_name, formstyle=self.formstyle)
         user = None
         if form.accepted:
@@ -968,18 +978,18 @@ class DefaultAuthForms:
                 redirect("login")
         form.param.sidecar.append(
             A(
-                self.auth.messages["buttons"]["sign-in"],
+                self.auth.param.messages["buttons"]["sign-in"],
                 _href="../auth/login",
-                _class="info",
+                _class=self.auth.param.button_classes["sign-in"],
                 _role="button",
             )
         )
         if self.auth.allows("request_reset_password"):
             form.param.sidecar.append(
                 A(
-                    self.auth.messages["buttons"]["lost-password"],
+                    self.auth.param.messages["buttons"]["lost-password"],
                     _href="../auth/request_reset_password",
-                    _class="info",
+                    _class=self.auth.param.button_classes["lost-password"],
                     _role="button",
                 )
             )
@@ -993,7 +1003,7 @@ class DefaultAuthForms:
             Field(
                 "login_password",
                 type="password",
-                label=self.auth.messages["labels"].get("password"),
+                label=self.auth.param.messages["labels"].get("password"),
             ),
         ]
         if self.auth.use_username:
@@ -1002,7 +1012,7 @@ class DefaultAuthForms:
             fields[0].label = self.auth.db.auth_user.email.label
         fields[1].label = self.auth.db.auth_user.password.label
 
-        button_name = self.auth.messages["buttons"]["sign-in"]
+        button_name = self.auth.param.messages["buttons"]["sign-in"]
         form = Form(
             fields,
             submit_value=button_name,
@@ -1028,14 +1038,17 @@ class DefaultAuthForms:
 
         if self.auth.allows("register"):
             form.param.sidecar.append(
-                A("Sign Up", _href="../auth/register", _class="info", _role="button")
+                A(self.auth.param.messages["buttons"]["sign-up"],
+                  _href="../auth/register",
+                  _class=self.auth.param.button_classes["sign-up"],
+                  _role="button")
             )
         if self.auth.allows("request_reset_password"):
             form.param.sidecar.append(
                 A(
-                    self.auth.messages["buttons"]["lost-password"],
+                    self.auth.param.messages["buttons"]["lost-password"],
                     _href="../auth/request_reset_password",
-                    _class="info",
+                    _class=self.auth.param.button_classes["lost-password"],
                     _role="button",
                 )
             )
@@ -1046,10 +1059,10 @@ class DefaultAuthForms:
         form = Form(
             [
                 Field(
-                    "email", label=self.auth.messages["labels"].get("username_or_email")
+                    "email", label=self.auth.param.messages["labels"].get("username_or_email")
                 )
             ],
-            submit_value=self.auth.messages["buttons"]["request"],
+            submit_value=self.auth.param.messages["buttons"]["request"],
             formstyle=self.formstyle,
         )
         if form.submitted:
@@ -1059,18 +1072,18 @@ class DefaultAuthForms:
             self._postprocessing("request_reset_password", form, None)
         form.param.sidecar.append(
             A(
-                self.auth.messages["buttons"]["sign-in"],
+                self.auth.param.messages["buttons"]["sign-in"],
                 _href="../auth/login",
-                _class="info",
+                _class=self.auth.param.button_classes["sign-in"],
                 _role="button",
             )
         )
         if self.auth.allows("register"):
             form.param.sidecar.append(
                 A(
-                    self.auth.messages["buttons"]["sign-up"],
+                    self.auth.param.messages["buttons"]["sign-up"],
                     _href="../auth/register",
-                    _class="info",
+                    _class=self.auth.param.button_classes["sign-up"],
                     _role="button",
                 )
             )
@@ -1090,17 +1103,17 @@ class DefaultAuthForms:
                     "new_password",
                     type="password",
                     requires=self.auth.db.auth_user.password.requires,
-                    label=self.auth.messages["labels"].get("new_password"),
+                    label=self.auth.param.messages["labels"].get("new_password"),
                 ),
                 Field(
                     "new_password_again",
                     type="password",
                     requires=IS_EQUAL_TO(request.forms.get("new_password")),
-                    label=self.auth.messages["labels"].get("password_again"),
+                    label=self.auth.param.messages["labels"].get("password_again"),
                 ),
             ],
             formstyle=self.formstyle,
-            submit_value=self.auth.messages["buttons"]["submit"],
+            submit_value=self.auth.param.messages["buttons"]["submit"],
         )
         self._process_change_password_form(form, user)
         if form.accepted:
@@ -1116,23 +1129,23 @@ class DefaultAuthForms:
                     "old_password",
                     type="password",
                     requires=IS_NOT_EMPTY(),
-                    label=self.auth.messages["labels"].get("old_password"),
+                    label=self.auth.param.messages["labels"].get("old_password"),
                 ),
                 Field(
                     "new_password",
                     type="password",
                     requires=self.auth.db.auth_user.password.requires,
-                    label=self.auth.messages["labels"].get("new_password"),
+                    label=self.auth.param.messages["labels"].get("new_password"),
                 ),
                 Field(
                     "new_password_again",
                     type="password",
                     requires=IS_EQUAL_TO(request.forms.get("new_password")),
-                    label=self.auth.messages["labels"].get("password_again"),
+                    label=self.auth.param.messages["labels"].get("password_again"),
                 ),
             ],
             formstyle=self.formstyle,
-            submit_value=self.auth.messages["buttons"]["submit"],
+            submit_value=self.auth.param.messages["buttons"]["submit"],
         )
         self._process_change_password_form(form, user)
         if form.accepted:
@@ -1167,7 +1180,7 @@ class DefaultAuthForms:
             user,
             formstyle=self.formstyle,
             deletable=False,
-            submit_value=self.auth.messages["buttons"]["submit"],
+            submit_value=self.auth.param.messages["buttons"]["submit"],
         )
         if form.accepted:
             self._set_flash("profile-saved")
@@ -1187,7 +1200,7 @@ class DefaultAuthForms:
         self._postprocessing("verify_email")
 
     def _set_flash(self, key):
-        self.auth.flash.set(self.auth.messages["flash"].get(key, key))
+        self.auth.flash.set(self.auth.param.messages["flash"].get(key, key))
 
     def _postprocessing(self, action, form=None, user=None):
         if not form or form.accepted:
