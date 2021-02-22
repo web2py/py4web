@@ -150,7 +150,7 @@ set. Other parameters can be specified as well:
    session storage method (for example redis, or database).
 -  ``same_site`` is an option that prevents CSRF attacks and is enabled
    by default. You can read more about it
-   `here <https://www.owasp.org/index.php/SameSite>`__.
+   `here <https://owasp.org/www-community/SameSite>`__.
 
 Session in memcache
 ~~~~~~~~~~~~~~~~~~~
