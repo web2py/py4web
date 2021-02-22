@@ -518,13 +518,22 @@ class Auth(Fixture):
         n = self.db(self._query_from_token(token)).update(action_token=action_token)
         return n > 0
 
-    def reset_password(self, token, new_password):
+    def reset_password(self, token, new_password, new_password2):
         db = self.db
         query = self._query_from_token(token)
         user = db(query).select().first()
+        
+        if new_password != new_password2:
+            return {
+                "errors": {"new_password2": "Password doesn't match"}
+            }
+
         if user:
             qset = db(db.auth_user.id == user.get("id"))
             res = qset.validate_and_update(password=new_password).as_dict()
+            if "password" in res["errors"]:
+                res["errors"]["new_password"] = res["errors"]["password"]
+                del res["errors"]["password"]
             return res
 
     # Methods that assume a user
@@ -891,9 +900,14 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def reset_password(auth):
-        if not auth.reset_password(
-            request.json.get("token"), request.json.get("new_password")
-        ):
+        res = auth.reset_password(
+            request.json.get("token"),
+            request.json.get("new_password"),
+            request.json.get("new_password2"),
+        )
+        if res:
+            return res
+        else:
             return auth._error("invalid token, request expired")
 
     @staticmethod
