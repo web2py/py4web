@@ -655,7 +655,9 @@ def URL(
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
     urlvars = dict(vars) if vars else {}
     if signer:
-        signer.sign_vars(url, urlvars)
+        # Note that we need to sign the non-urlencoded URL, since
+        # at verification time, it will be already URLdecoded.
+        signer.sign_vars(prefix + "/".join(broken_parts), urlvars)
     if urlvars:
         url += "?" + "&".join(
             "%s=%s" % (k, urllib.parse.quote(str(v))) for k, v in urlvars.items()

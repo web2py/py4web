@@ -97,7 +97,16 @@ class URLSigner(Fixture):
         return key
 
     def get_url_key(self, url, variables):
-        # The key consists of the key, and of the URL parameters.
+        """Buids a signing key. The signing key consists of:
+        - The key proper, which is generally taken from the session
+          (see _get_key method above)
+        - An additional key, consisting in the information to sign:
+          - The URL
+          - Information, if given
+          - variables to sign
+        The key proper and additional key are concatenated and returned.
+        """
+        # The key consists of the url, and of the URL parameters.
         additional_key = {
             "url": url,
             "info": self.signing_info() if self.signing_info is not None else "",
