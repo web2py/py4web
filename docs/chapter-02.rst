@@ -37,14 +37,19 @@ Transcripts of them are then available on the mailing list.
 Tutorials and video
 -------------------
 
-There are some tutorials and videos if you like them. Search for them on `YouTube <https://www.youtube.com/results?search_query=py4web>`__.
-There is also available a good free `course by Luca de Alfaro <https://sites.google.com/a/ucsc.edu/luca/classes/cmps-183-hypermedia-and-the-web/cse-183-spring-2020>`__ at UC Santa Cruz. 
+There are many tutorials and videos if you like them. Generally, you can search for them on `YouTube <https://www.youtube.com/results?search_query=py4web>`__.
+
+Here are some of them:
+
+- the free video `course by Luca de Alfaro <https://sites.google.com/a/ucsc.edu/luca/classes/cmps-183-hypermedia-and-the-web/cse-183-spring-2020>`__ at UC Santa Cruz. 
+- the `py4web blog app <https://github.com/agavgavi/py4web-blog-app.git>`__ by Andrew Gavgavian,  which uses py4web to replicate the famous Corey Schafer's tutorial series on creating a blog app in Django
 
 
 The sources on GitHub
 ---------------------
 
-Py4web is Open Source, with a BSD v3 licence. It's hosted on GitHub at https://github.com/web2py/py4web, where you can read and study all of its internal details.
+Last but not least, py4web is Open Source, with a BSD v3 licence, hosted on GitHub at https://github.com/web2py/py4web. This means that you can read, study and experiment
+with all of its internal details by yourself.
 
 
 Hints and tips
@@ -82,12 +87,13 @@ we also suggest to:
 Debugging py4web with VScode
 ----------------------------
 
-You need to edit the vscode launch.json configuration file by adding the variable ``"gevent": true``. Also, on the same file you can add ``"args": ["run", "apps"]`` in order to run py4web.py directly.
+In order to run py4web.py directly, you need to add ``"args": ["run", "apps"]`` to the vscode launch.json configuration file.
+In addition, if you should get gevent errors you have to add ``"gevent": true`` on the same configuration file.
 
 Debugging py4web with PyCharm
 -----------------------------
 
-In PyCharm, enable Settings | Build, Execution, Deployment | Python Debugger | Gevent compatible.
+In PyCharm, if you should get gevent errors you need to enable Settings | Build, Execution, Deployment | Python Debugger | Gevent compatible.
 
 
 How to contribute

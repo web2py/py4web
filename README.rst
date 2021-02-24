@@ -89,6 +89,9 @@ Launch Arguments
    -p, --password_file TEXT      File for the encrypted password  [default:
                                 password.txt]
 
+     -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|
+                   geventWebSocketServer|wsgirefThreadingServer|rocketServer]
+                                 server to use  [default: default]
    -w, --number_workers INTEGER  Number of workers  [default: 0]
    -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
                                 (default), none  [default: full]
@@ -115,6 +118,7 @@ Note that since the default (as specified above) for the host and port are 127.0
 .. code:: bash
 
    py4web run -d demo apps
+
 
 
 Tell me more

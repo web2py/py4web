@@ -9,6 +9,8 @@ PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is
 Python 3.6+, which must be installed in advance (except if you use
 binaries).
 
+
+
 Setup procedures
 ----------------
 
@@ -55,8 +57,10 @@ procedures is highly reccomended.
 Installing from pip
 ~~~~~~~~~~~~~~~~~~~
 
-Using *pip* is the standard installation procedure for py4web. From the
-command line
+Using *pip* is the standard installation procedure for py4web, since it will
+quickly install the latest stable release of py4web.
+
+From the command line
 
 .. code:: bash
 
@@ -88,7 +92,8 @@ Installing from source (globally)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This is the traditional way for installing a program, but it works only
-on Linux and MacOS. All the requirements will be installed on the
+on Linux and MacOS (Windows does not normally support the `make` utility).
+All the requirements will be installed on the
 system’s path along with links to the py4web.py program on the local
 folder
 
@@ -112,7 +117,12 @@ In this way all the requirements will be installed or upgraded on the
 system’s path, but py4web itself will only be copied
 on a local folder. This is especially useful if you already have a
 working py4web installation but you want to test a different
-one. From the command line, go to a given working folder and then run
+one. Also, installing from sources (locally or globally) will
+install all the latest changes present on the master branch of py4web - hence
+you will gain the latest (but potentially untested) code.
+
+
+From the command line, go to a given working folder and then run
 
 .. code:: bash
 
@@ -120,32 +130,36 @@ one. From the command line, go to a given working folder and then run
    cd py4web
    python3 -m pip install  --upgrade -r requirements.txt
 
-Once installed, you should always start it from there with
+Once installed, you should always start it from there with:
 
-**For Linux / MacOS**
+.. tabs::
 
-.. code:: bash
+   .. group-tab:: Linux and MacOS
 
-   ./py4web.py setup apps
-   ./py4web.py set_password
-   ./py4web.py run apps
+      .. code:: bash
 
-If you have installed py4web both globally and locally, notice the
-**./** ; it forces the run of the local folder’s py4web and not the
-globally installed one.
+         ./py4web.py setup apps
+         ./py4web.py set_password
+         ./py4web.py run apps
 
-**For Windows**
+      If you have installed py4web both globally and locally, notice the
+      **./** ; it forces the run of the local folder’s py4web and not the
+      globally installed one.
 
-.. code:: bash
+   .. group-tab:: Windows
 
-   python3 py4web.py setup apps
-   python3 py4web.py set_password
-   python3 py4web.py run apps
+      .. code:: bash
 
-On Windows, the programs on the local folder are always executed before
-the ones in the path (hence you don’t need the **./**). But running .py
-files directly it’s not usual and you’ll need an explicit python3/python
-command.
+         python3 py4web.py setup apps
+         python3 py4web.py set_password
+         python3 py4web.py run apps
+
+      On Windows, the programs on the local folder are always executed before
+      the ones in the path (hence you don’t need the **./** as on Linux).
+      But running .py files directly it’s not usual and you’ll need an explicit
+      python3/python command.
+
+      
 
 Upgrading
 ---------
@@ -299,6 +313,9 @@ This currently gives an error on binaries installations and from source installa
      -p, --password_file TEXT      File for the encrypted password  [default:
                                    password.txt]
 
+     -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|
+                   geventWebSocketServer|wsgirefThreadingServer|rocketServer]
+                                   server to use  [default: default]
      -w, --number_workers INTEGER  Number of workers  [default: 0]
      -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
                                    [default: full]
@@ -318,6 +335,23 @@ changes to files of that application, you can:
 
 -  for reloading on any first incoming request to the application has
    been changed (lazy-mode): ``py4web run --watch=lazy``
+
+
+The default web server used is currently Tornado, but you can change this behaviour with the ``server`` option.
+
+
+Also, for advanced users, you can specify the optional ''usegevent'' directive like in this example:
+
+.. code:: bash
+
+   py4web usegevent run -s geventWebSocketServer apps
+
+
+.. warning::
+    The optional ''usegevent'' directive must be used with ''gevent'' or ''geventWebSocketServer'' webservers (in order to apply monkey patching)
+    and shouldn't be used with ''tornado'' and ''waitress''.
+
+
 
 .. _set_password command option:
 
@@ -437,13 +471,38 @@ For example, inside a shell you can
 With the *-a* option you’ll get the version of all the available python
 modules, too.
 
-Deployment on the cloud
------------------------
+Special deployments
+-------------------
+
+
+WSGI
+~~~~
+
+py4web is a standard WSGI application. So, if a full program installation it's not
+feasible you can simply run py4web as a WSGI app. For example, using gunicorn-cli,
+create a pyton file:
+
+.. code:: python
+
+   # py4web_wsgi.py 
+   from py4web.core import wsgi
+   application = wsgi(apps_folder="apps")
+   
+
+and then start the application using cli:
+
+.. code:: bash
+
+   $ gunicorn -w 4 py4web_wsgi:myapp     
+
+
+The wsgi function takes arguments with the same name as the command line arguments.
+
 
 Deployment on GCloud (aka Google App Engine)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Login into the Gcloud console (https://console.cloud.google.com/) and
+Login into the `Gcloud console <https://console.cloud.google.com/>`__ and
 create a new project. You will obtain a project id that looks like
 “{project_name}-{number}”.
 
@@ -500,9 +559,8 @@ You should not need to edit ``main.py``.
 Deployment on PythonAnywhere.com
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Watch the video: https://youtu.be/Wxjl_vkLAEY and follow the detailed
-tutorial on
-https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-source-pythonanywhere.md
+Watch the `YouTube video <https://youtu.be/Wxjl_vkLAEY>`__ and follow the `detailed
+tutorial <https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-source-pythonanywhere.md>`__
 . The bottle_app.py script is in
 ``py4web/deployment_tools/pythonanywhere.com/bottle_app.py``
 

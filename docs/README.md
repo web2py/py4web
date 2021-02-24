@@ -24,8 +24,8 @@ The conversion is made with [Sphinx](https://www.sphinx-doc.org) and the result 
 
 The updateDocs.sh program needs a Linux/Mac system with the packages
 "rsync python3-sphinx python3-sphinx-rtd-theme python3-stemmer python3-git python3-pip python3-virtualenv python3-setuptools"
-and the python3 modules "rinohtype pygments".
-It accept the **html** parameter (that builds/updates only the html outputs, or the **all** parameters that build also the PDF and EPUB files.
+and the python3 modules "rinohtype pygments sphinx-tabs".
+It accepts the **html** parameter (that builds/updates only the html outputs), or the **all** parameters that build also the PDF and EPUB files.
 If lauched without any options it displays the help message.
 
 After the updateDocs run, the results are available only locally.

@@ -117,5 +117,9 @@ Acknowledegments
 py4web is supported by a growing community of developers and even simple users.
 Many thanks to everybody, and especially:
 
-.. include:: ../CONTRIBUTORS.rst
+..
+  Comment: the list in CONTRIBUTORS.rst has been moved to the end of the README.rst file
+
+.. include:: ../README.rst
+  :start-after: inclusion-marker-do-not-remove
 

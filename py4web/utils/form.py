@@ -474,10 +474,11 @@ class Form(object):
                             if field.type == "upload":
                                 value = request.files.get(field.name)
                                 delete = post_vars.get("_delete_" + field.name)
-                                if value is not None and hasattr(value, "file"):
-                                    value = field.store(
-                                        value.file, value.filename, field.uploadfolder
-                                    )
+                                if value is not None:
+                                    if field.uploadfolder:
+                                        value = field.store(
+                                            value.file, value.filename, field.uploadfolder
+                                        )
                                 elif self.record and not delete:
                                     value = self.record.get(field.name)
                                 else:

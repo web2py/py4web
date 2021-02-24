@@ -14,6 +14,7 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
 
   
@@ -106,7 +107,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#a"><code class="docutils literal notranslate"><span class="pre">A</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#body"><code class="docutils literal notranslate"><span class="pre">BODY</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cat"><code class="docutils literal notranslate"><span class="pre">CAT</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#code"><code class="docutils literal notranslate"><span class="pre">CODE</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#div"><code class="docutils literal notranslate"><span class="pre">DIV</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#em"><code class="docutils literal notranslate"><span class="pre">EM</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#form"><code class="docutils literal notranslate"><span class="pre">FORM</span></code></a></li>
@@ -132,7 +132,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#th"><code class="docutils literal notranslate"><span class="pre">TH</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#thead"><code class="docutils literal notranslate"><span class="pre">THEAD</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#title"><code class="docutils literal notranslate"><span class="pre">TITLE</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tr"><code class="docutils literal notranslate"><span class="pre">TR</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#tt"><code class="docutils literal notranslate"><span class="pre">TT</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ul"><code class="docutils literal notranslate"><span class="pre">UL</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#url"><code class="docutils literal notranslate"><span class="pre">URL</span></code></a></li>
@@ -140,7 +139,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-helpers">Custom helpers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#tag"><code class="docutils literal notranslate"><span class="pre">TAG</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#menu"><code class="docutils literal notranslate"><span class="pre">MENU</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#beautify"><code class="docutils literal notranslate"><span class="pre">BEAUTIFY</span></code></a></li>
@@ -267,41 +265,41 @@ attributes = {&#39;_id&#39;:&#39;123&#39;, &#39;_class&#39;:&#39;myclass&#39;}
 <p>The following set of helpers:</p>
 <p><code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">BEAUTIFY</span></code>, <code class="docutils literal notranslate"><span class="pre">BODY</span></code>, <code class="docutils literal notranslate"><span class="pre">CAT</span></code>, <code class="docutils literal notranslate"><span class="pre">CODE</span></code>, <code class="docutils literal notranslate"><span class="pre">DIV</span></code>, <code class="docutils literal notranslate"><span class="pre">EM</span></code>,
 <code class="docutils literal notranslate"><span class="pre">FORM</span></code>, <code class="docutils literal notranslate"><span class="pre">H1</span></code>, <code class="docutils literal notranslate"><span class="pre">H2</span></code>, <code class="docutils literal notranslate"><span class="pre">H3</span></code>, <code class="docutils literal notranslate"><span class="pre">H4</span></code>, <code class="docutils literal notranslate"><span class="pre">H5</span></code>, <code class="docutils literal notranslate"><span class="pre">H6</span></code>, <code class="docutils literal notranslate"><span class="pre">HEAD</span></code>,
-<code class="docutils literal notranslate"><span class="pre">HTML</span></code>, <code class="docutils literal notranslate"><span class="pre">I</span></code>, <code class="docutils literal notranslate"><span class="pre">IMG</span></code>, <code class="docutils literal notranslate"><span class="pre">INPUT</span></code>, <code class="docutils literal notranslate"><span class="pre">LABEL</span></code>, <code class="docutils literal notranslate"><span class="pre">LI</span></code>, <code class="docutils literal notranslate"><span class="pre">LINK</span></code>,
-<code class="docutils literal notranslate"><span class="pre">META</span></code>, <code class="docutils literal notranslate"><span class="pre">METATAG</span></code>, <code class="docutils literal notranslate"><span class="pre">OL</span></code>, <code class="docutils literal notranslate"><span class="pre">OPTION</span></code>, <code class="docutils literal notranslate"><span class="pre">PRE</span></code>, <code class="docutils literal notranslate"><span class="pre">SELECT</span></code>,
-<code class="docutils literal notranslate"><span class="pre">SPAN</span></code>, <code class="docutils literal notranslate"><span class="pre">STRONG</span></code>, <code class="docutils literal notranslate"><span class="pre">TABLE</span></code>, <code class="docutils literal notranslate"><span class="pre">TAG</span></code>, <code class="docutils literal notranslate"><span class="pre">TBODY</span></code>, <code class="docutils literal notranslate"><span class="pre">TD</span></code>,
-<code class="docutils literal notranslate"><span class="pre">TEXTAREA</span></code>, <code class="docutils literal notranslate"><span class="pre">TH</span></code>, <code class="docutils literal notranslate"><span class="pre">THEAD</span></code>, <code class="docutils literal notranslate"><span class="pre">TR</span></code>, <code class="docutils literal notranslate"><span class="pre">UL</span></code>, <code class="docutils literal notranslate"><span class="pre">XML</span></code>, <code class="docutils literal notranslate"><span class="pre">sanitize</span></code>,
-<code class="docutils literal notranslate"><span class="pre">xmlescape</span></code></p>
+<code class="docutils literal notranslate"><span class="pre">HTML</span></code>, <code class="docutils literal notranslate"><span class="pre">IMG</span></code>, <code class="docutils literal notranslate"><span class="pre">INPUT</span></code>, <code class="docutils literal notranslate"><span class="pre">LABEL</span></code>, <code class="docutils literal notranslate"><span class="pre">LI</span></code>, <code class="docutils literal notranslate"><span class="pre">METATAG</span></code>,
+<code class="docutils literal notranslate"><span class="pre">OL</span></code>, <code class="docutils literal notranslate"><span class="pre">OPTION</span></code>, <code class="docutils literal notranslate"><span class="pre">P</span></code>, <code class="docutils literal notranslate"><span class="pre">PRE</span></code>, <code class="docutils literal notranslate"><span class="pre">SELECT</span></code>, <code class="docutils literal notranslate"><span class="pre">SPAN</span></code>, <code class="docutils literal notranslate"><span class="pre">STRONG</span></code>,
+<code class="docutils literal notranslate"><span class="pre">TABLE</span></code>, <code class="docutils literal notranslate"><span class="pre">TAG</span></code>, <code class="docutils literal notranslate"><span class="pre">TAGGER</span></code>, <code class="docutils literal notranslate"><span class="pre">THEAD</span></code>, <code class="docutils literal notranslate"><span class="pre">TBODY</span></code>, <code class="docutils literal notranslate"><span class="pre">TD</span></code>,
+<code class="docutils literal notranslate"><span class="pre">TEXTAREA</span></code>, <code class="docutils literal notranslate"><span class="pre">TH</span></code>, <code class="docutils literal notranslate"><span class="pre">TT</span></code>, <code class="docutils literal notranslate"><span class="pre">TR</span></code>, <code class="docutils literal notranslate"><span class="pre">UL</span></code>, <code class="docutils literal notranslate"><span class="pre">XML</span></code>, <code class="docutils literal notranslate"><span class="pre">xmlescape</span></code>,
+<code class="docutils literal notranslate"><span class="pre">I</span></code>, <code class="docutils literal notranslate"><span class="pre">META</span></code>, <code class="docutils literal notranslate"><span class="pre">LINK</span></code>, <code class="docutils literal notranslate"><span class="pre">TITLE</span></code>, <code class="docutils literal notranslate"><span class="pre">STYLE</span></code>, <code class="docutils literal notranslate"><span class="pre">SCRIPT</span></code></p>
 <p>can be used to build complex expressions that can then be serialized to
 XML. For example:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=DIV(B(I(&quot;hello &quot;, &quot;<span class="p">&lt;</span><span class="nt">world</span><span class="p">&gt;</span>&quot;)), _class=&quot;myclass&quot;)]]
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=DIV(STRONG(I(&quot;hello &quot;, &quot;<span class="p">&lt;</span><span class="nt">world</span><span class="p">&gt;</span>&quot;)), _class=&quot;myclass&quot;)]]
 </pre></div>
 </div>
 <p>is rendered:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;myclass&quot;</span><span class="p">&gt;&lt;</span><span class="nt">b</span><span class="p">&gt;&lt;</span><span class="nt">i</span><span class="p">&gt;</span>hello <span class="ni">&amp;lt;</span>world<span class="ni">&amp;gt;</span><span class="p">&lt;/</span><span class="nt">i</span><span class="p">&gt;&lt;/</span><span class="nt">b</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;myclass&quot;</span><span class="p">&gt;&lt;</span><span class="nt">strong</span><span class="p">&gt;&lt;</span><span class="nt">i</span><span class="p">&gt;</span>hello <span class="ni">&amp;lt;</span>world<span class="ni">&amp;gt;</span><span class="p">&lt;/</span><span class="nt">i</span><span class="p">&gt;&lt;/</span><span class="nt">strong</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 </pre></div>
 </div>
 <p>Helpers can also be serialized into strings, equivalently, with the
 <code class="docutils literal notranslate"><span class="pre">__str__</span></code> and the <code class="docutils literal notranslate"><span class="pre">xml</span></code> methods:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="nb">str</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="s2">&quot;hello world&quot;</span><span class="p">))</span>
-<span class="go">&lt;div&gt;hello world&lt;/div&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DIV</span><span class="p">(</span><span class="s2">&quot;hello world&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xml</span><span class="p">()</span>
-<span class="go">&lt;div&gt;hello world&lt;/div&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="s2">&quot;hello world&quot;</span><span class="p">))</span>
+<span class="go">&#39;&lt;div&gt;hello world&lt;/div&gt;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DIV</span><span class="p">(</span><span class="s2">&quot;hello world&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xml</span><span class="p">()</span>
+<span class="go">&#39;&lt;div&gt;hello world&lt;/div&gt;&#39;</span>
 </pre></div>
 </div>
 <p>The helpers mechanism in py4web is more than a system to generate HTML
 without concatenating strings. It provides a server-side representation
-of the Document Object Model (DOM).</p>
+of the document object model (DOM).</p>
 <p>Components of helpers can be referenced via their position, and helpers
 act as lists with respect to their components:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">DIV</span><span class="p">(</span><span class="n">SPAN</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">),</span> <span class="s1">&#39;c&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">a</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="go">&lt;div&gt;&lt;span&gt;ab&lt;/span&gt;c&lt;/div&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">B</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">STRONG</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;y&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">a</span>
-<span class="go">&lt;div&gt;&lt;span&gt;yb&lt;/span&gt;&lt;b&gt;x&lt;/b&gt;&lt;/div&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">&lt;div&gt;&lt;span&gt;yb&lt;/span&gt;&lt;strong&gt;x&lt;/strong&gt;&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>Attributes of helpers can be referenced by name, and helpers act as
@@ -309,7 +307,7 @@ dictionaries with respect to their attributes:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">DIV</span><span class="p">(</span><span class="n">SPAN</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">),</span> <span class="s1">&#39;c&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="s1">&#39;_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;t&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">a</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="go">&lt;div class=&quot;s&quot;&gt;&lt;span class=&quot;t&quot;&gt;ab&lt;/span&gt;c&lt;/div&gt;</span>
 </pre></div>
 </div>
@@ -331,25 +329,25 @@ a Python syntax error.</p>
 argument (this time without a leading underscore) to pass a dictionary
 of related attributes without their leading hyphen, and the output will
 have the desired combinations e.g.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DIV</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;role&#39;</span><span class="p">:</span> <span class="s1">&#39;collapsible&#39;</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;role&#39;</span><span class="p">:</span> <span class="s1">&#39;collapsible&#39;</span><span class="p">}))</span>
 <span class="go">&lt;div data-role=&quot;collapsible&quot;&gt;text&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>or you can instead pass the attributes as a dictionary and make use of
 Python’s <code class="docutils literal notranslate"><span class="pre">**</span></code> function arguments notation, which maps a dictionary of
 (key:value) pairs into a set of keyword arguments:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DIV</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;_data-role&#39;</span><span class="p">:</span> <span class="s1">&#39;collapsible&#39;</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;_data-role&#39;</span><span class="p">:</span> <span class="s1">&#39;collapsible&#39;</span><span class="p">}))</span>
 <span class="go">&lt;div data-role=&quot;collapsible&quot;&gt;text&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>Note that more elaborate entries will introduce HTML character entities,
 but they will work nonetheless e.g.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DIV</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:</span><span class="s1">&#39;{&quot;mode&quot;:&quot;calbox&quot;, &quot;useNewStyle&quot;:true}&#39;</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:</span><span class="s1">&#39;{&quot;mode&quot;:&quot;calbox&quot;, &quot;useNewStyle&quot;:true}&#39;</span><span class="p">}))</span>
 <span class="go">&lt;div data-options=&quot;{&amp;quot;mode&amp;quot;:&amp;quot;calbox&amp;quot;, &amp;quot;useNewStyle&amp;quot;:true}&quot;&gt;text&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>You can also dynamically create special TAGs:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TAG</span><span class="p">[</span><span class="s1">&#39;soap:Body&#39;</span><span class="p">](</span><span class="s1">&#39;whatever&#39;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;_xmlns:m&#39;</span><span class="p">:</span><span class="s1">&#39;http://www.example.org&#39;</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">TAG</span><span class="p">[</span><span class="s1">&#39;soap:Body&#39;</span><span class="p">](</span><span class="s1">&#39;whatever&#39;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;_xmlns:m&#39;</span><span class="p">:</span><span class="s1">&#39;http://www.example.org&#39;</span><span class="p">}))</span>
 <span class="go">&lt;soap:Body xmlns:m=&quot;http://www.example.org&quot;&gt;whatever&lt;/soap:Body&gt;</span>
 </pre></div>
 </div>
@@ -359,29 +357,29 @@ but they will work nonetheless e.g.</p>
 escaped. The text may or may not contain valid XML. For example, it
 could contain JavaScript.</p>
 <p>The text in this example is escaped:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DIV</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;hello&lt;/b&gt;&quot;</span><span class="p">)</span>
-<span class="go">&lt;div&gt;&amp;lt;b&amp;gt;hello&amp;lt;/b&amp;gt;&lt;/div&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="s2">&quot;&lt;strong&gt;hello&lt;/strong&gt;&quot;</span><span class="p">))</span>
+<span class="go">&lt;div&gt;&amp;lt;strong&amp;gt;hello&amp;lt;/strong&amp;gt;&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>by using <code class="docutils literal notranslate"><span class="pre">XML</span></code> you can prevent escaping:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DIV</span><span class="p">(</span><span class="n">XML</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;hello&lt;/b&gt;&quot;</span><span class="p">))</span>
-<span class="go">&lt;div&gt;&lt;b&gt;hello&lt;/b&gt;&lt;/div&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="n">XML</span><span class="p">(</span><span class="s2">&quot;&lt;strong&gt;hello&lt;/strong&gt;&quot;</span><span class="p">)))</span>
+<span class="go">&lt;div&gt;&lt;strong&gt;hello&lt;/strong&gt;&lt;/div&gt;</span>
 </pre></div>
 </div>
 <p>Sometimes you want to render HTML stored in a variable, but the HTML may
 contain unsafe tags such as scripts:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;script&gt;alert(&quot;unsafe!&quot;)&lt;/script&gt;&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;script&gt;alert(&quot;unsafe!&quot;)&lt;/script&gt;&#39;</span><span class="p">))</span>
 <span class="go">&lt;script&gt;alert(&quot;unsafe!&quot;)&lt;/script&gt;</span>
 </pre></div>
 </div>
 <p>Un-escaped executable input such as this (for example, entered in the
 body of a comment in a blog) is unsafe, because it can be used to
-generate Cross Site Scripting (XSS) attacks against other visitors to
+generate cross site scripting (XSS) attacks against other visitors to
 the page.</p>
 <p>The py4web <code class="docutils literal notranslate"><span class="pre">XML</span></code> helper can sanitize our text to prevent injections
 and escape all tags except those that you explicitly allow. Here is an
 example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;script&gt;alert(&quot;unsafe!&quot;)&lt;/script&gt;&#39;</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;script&gt;alert(&quot;unsafe!&quot;)&lt;/script&gt;&#39;</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 <span class="go">&amp;lt;script&amp;gt;alert(&amp;quot;unsafe!&amp;quot;)&amp;lt;/script&amp;gt;</span>
 </pre></div>
 </div>
@@ -392,9 +390,11 @@ Here are the default values of the optional arguments of the <code class="docuti
 helper.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">XML</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">permitted_tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;blockquote&#39;</span><span class="p">,</span> <span class="s1">&#39;br/&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;li&#39;</span><span class="p">,</span>
-       <span class="s1">&#39;ol&#39;</span><span class="p">,</span> <span class="s1">&#39;ul&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;cite&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;pre&#39;</span><span class="p">,</span> <span class="s1">&#39;img/&#39;</span><span class="p">],</span>
-    <span class="n">allowed_attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:[</span><span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">],</span>
-       <span class="s1">&#39;img&#39;</span><span class="p">:[</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">],</span> <span class="s1">&#39;blockquote&#39;</span><span class="p">:[</span><span class="s1">&#39;type&#39;</span><span class="p">]})</span>
+        <span class="s1">&#39;ol&#39;</span><span class="p">,</span> <span class="s1">&#39;ul&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;cite&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;pre&#39;</span><span class="p">,</span> <span class="s1">&#39;img/&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;h1&#39;</span><span class="p">,</span> <span class="s1">&#39;h2&#39;</span><span class="p">,</span> <span class="s1">&#39;h3&#39;</span><span class="p">,</span> <span class="s1">&#39;h4&#39;</span><span class="p">,</span> <span class="s1">&#39;h5&#39;</span><span class="p">,</span> <span class="s1">&#39;h6&#39;</span><span class="p">,</span> <span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">,</span> <span class="s1">&#39;td&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="s1">&#39;strong&#39;</span><span class="p">,</span> <span class="s1">&#39;span&#39;</span><span class="p">],</span>
+    <span class="n">allowed_attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;img&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">,</span> <span class="s1">&#39;alt&#39;</span><span class="p">],</span> <span class="s1">&#39;blockquote&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">],</span> <span class="s1">&#39;td&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;colspan&#39;</span><span class="p">]})</span>
 </pre></div>
 </div>
 </div>
@@ -403,114 +403,42 @@ helper.</p>
 <div class="section" id="a">
 <h3><code class="docutils literal notranslate"><span class="pre">A</span></code><a class="headerlink" href="#a" title="Permalink to this headline">¶</a></h3>
 <p>This helper is used to build links.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">A</span><span class="p">(</span><span class="s1">&#39;&lt;click&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;me&lt;/b&gt;&#39;</span><span class="p">),</span>
-<span class="go">            _href=&#39;http://www.py4web.com&#39;)</span>
-<span class="go">&lt;a href=&#39;http://www.py4web.com&#39;&gt;&amp;lt;click&amp;gt;&lt;b&gt;me&lt;/b&gt;&lt;/a&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="s1">&#39;&lt;click&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;me&lt;/strong&gt;&#39;</span><span class="p">),</span>
+<span class="go">            _href=&#39;http://www.py4web.com&#39;))</span>
+<span class="go">&lt;a href=&quot;http://www.py4web.com&quot;&gt;&amp;lt;click&amp;gt;&lt;strong&gt;me&lt;/strong&gt;&lt;/a&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="body">
 <h3><code class="docutils literal notranslate"><span class="pre">BODY</span></code><a class="headerlink" href="#body" title="Permalink to this headline">¶</a></h3>
 <p>This helper makes the body of a page.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">BODY</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_bgcolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="go">&lt;body bgcolor=&quot;red&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/body&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">BODY</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_bgcolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">))</span>
+<span class="go">&lt;body bgcolor=&quot;red&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/body&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="cat">
 <h3><code class="docutils literal notranslate"><span class="pre">CAT</span></code><a class="headerlink" href="#cat" title="Permalink to this headline">¶</a></h3>
 <p>This helper concatenates other helpers, same as TAG[‘’].</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">CAT</span><span class="p">(</span><span class="s1">&#39;Here is a &#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">(</span><span class="s1">&#39;link&#39;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">()),</span> <span class="s1">&#39;, and here is some &#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">(</span><span class="s1">&#39;bold text&#39;</span><span class="p">),</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-<span class="go">Here is a &lt;a href=&quot;/app/default/index&quot;&gt;link&lt;/a&gt;, and here is some &lt;b&gt;bold text&lt;/b&gt;.</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">CAT</span><span class="p">(</span><span class="s1">&#39;Here is a &#39;</span><span class="p">,</span> <span class="n">A</span><span class="p">(</span><span class="s1">&#39;link&#39;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="s1">&#39;target&#39;</span><span class="p">),</span> <span class="s1">&#39;, and here is some &#39;</span><span class="p">,</span> <span class="n">STRONG</span><span class="p">(</span><span class="s1">&#39;bold text&#39;</span><span class="p">),</span> <span class="s1">&#39;.&#39;</span><span class="p">))</span>
+<span class="go">Here is a &lt;a href=&quot;target&quot;&gt;link&lt;/a&gt;, and here is some &lt;strong&gt;bold text&lt;/strong&gt;.</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="code">
-<h3><code class="docutils literal notranslate"><span class="pre">CODE</span></code><a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h3>
-<p>This helper performs syntax highlighting for Python, C, C++, HTML and
-py4web code, and is preferable to <code class="docutils literal notranslate"><span class="pre">PRE</span></code> for code listings. <code class="docutils literal notranslate"><span class="pre">CODE</span></code>
-also has the ability to create links to the py4web API documentation.</p>
-<p>Here is an example of highlighting sections of Python code.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">CODE</span><span class="p">(</span><span class="s1">&#39;print &quot;hello&quot;&#39;</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">xml</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">table</span><span class="p">&gt;&lt;</span><span class="nt">tr</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;vertical-align:top;&quot;</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">td</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;min-width:40px; text-align: right;&quot;</span><span class="p">&gt;&lt;</span><span class="nt">pre</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;</span>
-<span class="s">        font-size: 11px;</span>
-<span class="s">        font-family: Bitstream Vera Sans Mono,monospace;</span>
-<span class="s">        background-color: transparent;</span>
-<span class="s">        margin: 0;</span>
-<span class="s">        padding: 5px;</span>
-<span class="s">        border: none;</span>
-<span class="s">        color: #A0A0A0;</span>
-<span class="s">    &quot;</span><span class="p">&gt;</span>1.<span class="p">&lt;/</span><span class="nt">pre</span><span class="p">&gt;&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">pre</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;</span>
-<span class="s">        font-size: 11px;</span>
-<span class="s">        font-family: Bitstream Vera Sans Mono,monospace;</span>
-<span class="s">        background-color: transparent;</span>
-<span class="s">        margin: 0;</span>
-<span class="s">        padding: 5px;</span>
-<span class="s">        border: none;</span>
-<span class="s">        overflow: auto;</span>
-<span class="s">        white-space: pre !important;</span>
-<span class="s">&quot;</span><span class="p">&gt;&lt;</span><span class="nt">span</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;color:#185369; font-weight: bold&quot;</span><span class="p">&gt;</span>print <span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">span</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;color: #FF9966&quot;</span><span class="p">&gt;</span>&quot;hello&quot;<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;&lt;/</span><span class="nt">pre</span><span class="p">&gt;&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
-</pre></div>
-</div>
-<p>Here is a similar example for HTML</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">CODE</span><span class="p">(</span><span class="s1">&#39;&lt;html&gt;&lt;body&gt;[[=request.env.remote_add]]&lt;/body&gt;&lt;/html&gt;&#39;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">language</span><span class="o">=</span><span class="s1">&#39;html&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">table</span><span class="o">&gt;...&lt;</span><span class="n">code</span><span class="o">&gt;...</span>
-<span class="o">&lt;</span><span class="n">html</span><span class="o">&gt;&lt;</span><span class="n">body</span><span class="o">&gt;</span><span class="p">[[</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">remote_add</span><span class="p">]]</span><span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
-<span class="o">...&lt;/</span><span class="n">code</span><span class="o">&gt;...&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<p>These are the default arguments for the <code class="docutils literal notranslate"><span class="pre">CODE</span></code> helper:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CODE</span><span class="p">(</span><span class="s2">&quot;print &#39;hello world&#39;&quot;</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="n">link</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">counter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">styles</span><span class="o">=</span><span class="p">{})</span>
-</pre></div>
-</div>
-<p>Supported values for the <code class="docutils literal notranslate"><span class="pre">language</span></code> argument are “python”,
-“html_plain”, “c”, “cpp”, “py4web”, and “html”. The “html” language
-interprets tags as “py4web” code, while “html_plain” doesn’t.</p>
-<p>If a <code class="docutils literal notranslate"><span class="pre">link</span></code> value is specified, for example “/examples/global/vars/”,
-py4web API references in the code are linked to documentation at the
-link URL. For example “request” would be linked to
-“/examples/global/vars/request”. In the above example, the link URL is
-handled by the “vars” action in the “global.py” controller that is
-distributed as part of the py4web “examples” application.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">counter</span></code> argument is used for line numbering. It can be set to
-any of three different values. It can be <code class="docutils literal notranslate"><span class="pre">None</span></code> for no line numbers, a
-numerical value specifying the start number, or a string. If the counter
-is set to a string, it is interpreted as a prompt, and there are no line
-numbers.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">styles</span></code> argument is a bit tricky. If you look at the generated
-HTML above, it contains a table with two columns, and each column has
-its own style declared inline using CSS. The <code class="docutils literal notranslate"><span class="pre">styles</span></code> attributes
-allows you to override those two CSS styles. For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CODE</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">styles</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;CODE&#39;</span><span class="p">:</span><span class="s1">&#39;margin: 0;padding: 5px;border: none;&#39;</span><span class="p">})</span>
-</pre></div>
-</div>
-<p>The <code class="docutils literal notranslate"><span class="pre">styles</span></code> attribute must be a dictionary, and it allows two
-possible keys: <code class="docutils literal notranslate"><span class="pre">CODE</span></code> for the style of the actual code, and
-<code class="docutils literal notranslate"><span class="pre">LINENUMBERS</span></code> for the style of the left column, which contains the
-line numbers. Mind that these styles completely replace the default
-styles and are not simply added to them.</p>
 </div>
 <div class="section" id="div">
 <h3><code class="docutils literal notranslate"><span class="pre">DIV</span></code><a class="headerlink" href="#div" title="Permalink to this headline">¶</a></h3>
 <p>All helpers apart from <code class="docutils literal notranslate"><span class="pre">XML</span></code> are derived from <code class="docutils literal notranslate"><span class="pre">DIV</span></code> and inherit its
 basic methods.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DIV</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;div id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/div&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;div id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/div&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="em">
 <h3><code class="docutils literal notranslate"><span class="pre">EM</span></code><a class="headerlink" href="#em" title="Permalink to this headline">¶</a></h3>
 <p>Emphasizes its content.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">EM</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;em id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/em&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">EM</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;em id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/em&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -521,78 +449,55 @@ makes a <code class="docutils literal notranslate"><span class="pre">&lt;form&gt
 have knowledge of what they contain, they can process submitted forms
 (for example, perform validation of the fields). This will be discussed
 in detail in <a class="reference external" href="#chapter-12">Chapter 12</a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">FORM</span><span class="p">(</span><span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;submit&#39;</span><span class="p">),</span> <span class="n">_action</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">_method</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">)</span>
-<span class="go">&lt;form enctype=&quot;multipart/form-data&quot; action=&quot;&quot; method=&quot;post&quot;&gt;</span>
-<span class="go">&lt;input type=&quot;submit&quot; /&gt;&lt;/form&gt;</span>
-</pre></div>
-</div>
-<p>The “enctype” is “multipart/form-data” by default.</p>
-<p>The constructor of a <code class="docutils literal notranslate"><span class="pre">FORM</span></code>, and of <code class="docutils literal notranslate"><span class="pre">SQLFORM</span></code>, can also take a
-special argument called <code class="docutils literal notranslate"><span class="pre">hidden</span></code>. When a dictionary is passed as
-<code class="docutils literal notranslate"><span class="pre">hidden</span></code>, its items are translated into “hidden” INPUT fields. For
-example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">FORM</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">))</span>
-<span class="go">&lt;form enctype=&quot;multipart/form-data&quot; action=&quot;&quot; method=&quot;post&quot;&gt;</span>
-<span class="go">&lt;input value=&quot;b&quot; type=&quot;hidden&quot; name=&quot;a&quot; /&gt;&lt;/form&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">FORM</span><span class="p">(</span><span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;submit&#39;</span><span class="p">),</span> <span class="n">_action</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">_method</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">))</span>
+<span class="go">&lt;form action=&quot;&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;submit&quot;/&gt;&lt;/form&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="h1-h2-h3-h4-h5-h6">
 <h3><code class="docutils literal notranslate"><span class="pre">H1</span></code>, <code class="docutils literal notranslate"><span class="pre">H2</span></code>, <code class="docutils literal notranslate"><span class="pre">H3</span></code>, <code class="docutils literal notranslate"><span class="pre">H4</span></code>, <code class="docutils literal notranslate"><span class="pre">H5</span></code>, <code class="docutils literal notranslate"><span class="pre">H6</span></code><a class="headerlink" href="#h1-h2-h3-h4-h5-h6" title="Permalink to this headline">¶</a></h3>
-<p>These helpers are for paragraph headings and subheadings:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">H1</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;h1 id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/h1&gt;</span>
+<p>These helpers are for paragraph headings and subheadings.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">H1</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;h1 id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/h1&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="head">
 <h3><code class="docutils literal notranslate"><span class="pre">HEAD</span></code><a class="headerlink" href="#head" title="Permalink to this headline">¶</a></h3>
 <p>For tagging the HEAD of an HTML page.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">HEAD</span><span class="p">(</span><span class="n">TITLE</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">)))</span>
-<span class="go">&lt;head&gt;&lt;title&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/title&gt;&lt;/head&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HEAD</span><span class="p">(</span><span class="n">TITLE</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">))))</span>
+<span class="go">&lt;head&gt;&lt;title&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/title&gt;&lt;/head&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="html">
 <h3><code class="docutils literal notranslate"><span class="pre">HTML</span></code><a class="headerlink" href="#html" title="Permalink to this headline">¶</a></h3>
-<p>This helper is a little different. In addition to making the <code class="docutils literal notranslate"><span class="pre">&lt;html&gt;</span></code>
-tags, it prepends the tag with a doctype string.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">HTML</span><span class="p">(</span><span class="n">BODY</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">)))</span>
-<span class="go">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;</span>
-<span class="go">&lt;html&gt;&lt;body&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/body&gt;&lt;/html&gt;</span>
+<p>For tagging an HTML page.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">BODY</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">))))</span>
+<span class="go">&lt;html&gt;&lt;body&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/body&gt;&lt;/html&gt;</span>
 </pre></div>
 </div>
-<p>The HTML helper also takes some additional optional arguments that have
-the following default:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">HTML</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s1">&#39;en&#39;</span><span class="p">,</span> <span class="n">doctype</span><span class="o">=</span><span class="s1">&#39;transitional&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>where doctype can be ‘strict’, ‘transitional’, ‘frameset’, ‘html5’, or a
-full doctype string.</p>
 </div>
 <div class="section" id="i">
 <h3><code class="docutils literal notranslate"><span class="pre">I</span></code><a class="headerlink" href="#i" title="Permalink to this headline">¶</a></h3>
 <p>This helper makes its contents italic.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">I</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;i id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/i&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">I</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;i id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/i&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="img">
 <h3><code class="docutils literal notranslate"><span class="pre">IMG</span></code><a class="headerlink" href="#img" title="Permalink to this headline">¶</a></h3>
-<p>It can be used to embed images into HTML:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">IMG</span><span class="p">(</span><span class="n">_src</span><span class="o">=</span><span class="s1">&#39;http://example.com/image.png&#39;</span><span class="p">,</span> <span class="n">_alt</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
-<span class="go"> ![](http://example.com/image.ong){ alt=&quot;rest&quot; }</span>
+<p>It can be used to embed images into HTML.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">IMG</span><span class="p">(</span><span class="n">_src</span><span class="o">=</span><span class="s1">&#39;http://example.com/image.png&#39;</span><span class="p">,</span> <span class="n">_alt</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">))</span>
+<span class="go">&lt;img alt=&quot;test&quot; src=&quot;http://example.com/image.png&quot;/&gt;</span>
 </pre></div>
 </div>
 <p>Here is a combination of A, IMG, and URL helpers for including a static
 image with a link:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">A</span><span class="p">(</span><span class="n">IMG</span><span class="p">(</span><span class="n">_src</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="s1">&#39;logo.png&#39;</span><span class="p">),</span> <span class="n">_alt</span><span class="o">=</span><span class="s2">&quot;My Logo&quot;</span><span class="p">),</span>
-<span class="gp">... </span>  <span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">))</span>
-<span class="gp">...</span>
-<span class="go">&lt;a href=&quot;/myapp/default/index&quot;&gt;</span>
-<span class="go">   ![](/myapp/static/logo.png){ alt=&quot;My Logo&quot; }</span>
-<span class="go">&lt;/a&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">IMG</span><span class="p">(</span><span class="n">_src</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="s1">&#39;logo.png&#39;</span><span class="p">),</span> <span class="n">_alt</span><span class="o">=</span><span class="s2">&quot;My Logo&quot;</span><span class="p">),</span>
+<span class="gp">... </span><span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">)))</span>
+<span class="go">&lt;a href=&quot;/default/index&quot;&gt;&lt;img alt=&quot;My Logo&quot; src=&quot;/static/logo.png&quot;/&gt;&lt;/a&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -602,84 +507,69 @@ image with a link:</p>
 and is closed by <code class="docutils literal notranslate"><span class="pre">/&gt;</span></code> instead of <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>. The input tag has an optional
 attribute <code class="docutils literal notranslate"><span class="pre">_type</span></code> that can be set to “text” (the default), “submit”,
 “checkbox”, or “radio”.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">INPUT</span><span class="p">(</span><span class="n">_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
-<span class="go">&lt;input value=&quot;a&quot; name=&quot;test&quot; /&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">INPUT</span><span class="p">(</span><span class="n">_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">))</span>
+<span class="go">&lt;input name=&quot;test&quot; value=&quot;a&quot;/&gt;</span>
 </pre></div>
 </div>
-<p>It also takes an optional special argument called “value”, distinct from
-“_value“. The latter sets the default value for the input field; the
-former sets its current value. For an input of type”text”, the former
-overrides the latter:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">INPUT</span><span class="p">(</span><span class="n">_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
-<span class="go">&lt;input value=&quot;b&quot; name=&quot;test&quot; /&gt;</span>
-</pre></div>
-</div>
-<p>For radio buttons, <code class="docutils literal notranslate"><span class="pre">INPUT</span></code> selectively sets the “checked” attribute:</p>
+<p>For radio buttons use the <code class="docutils literal notranslate"><span class="pre">_checked</span></code> attribute:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]:</span>
-<span class="gp">... </span>    <span class="nb">print</span> <span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;radio&#39;</span><span class="p">,</span> <span class="n">_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">),</span> <span class="n">v</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;radio&#39;</span><span class="p">,</span> <span class="n">_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">_checked</span><span class="o">=</span><span class="n">v</span><span class="o">==</span><span class="s1">&#39;b&#39;</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span>
 <span class="gp">...</span>
-<span class="go">&lt;input value=&quot;a&quot; type=&quot;radio&quot; name=&quot;test&quot; /&gt; a</span>
-<span class="go">&lt;input value=&quot;b&quot; type=&quot;radio&quot; checked=&quot;checked&quot; name=&quot;test&quot; /&gt; b</span>
-<span class="go">&lt;input value=&quot;c&quot; type=&quot;radio&quot; name=&quot;test&quot; /&gt; c</span>
+<span class="go">&lt;input name=&quot;test&quot; type=&quot;radio&quot; value=&quot;a&quot;/&gt; a</span>
+<span class="go">&lt;input checked=&quot;checked&quot; name=&quot;test&quot; type=&quot;radio&quot; value=&quot;b&quot;/&gt; b</span>
+<span class="go">&lt;input name=&quot;test&quot; type=&quot;radio&quot; value=&quot;c&quot;/&gt; c</span>
 </pre></div>
 </div>
 <p>and similarly for checkboxes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;checkbox&#39;</span><span class="p">,</span> <span class="n">_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="go">&lt;input value=&quot;a&quot; type=&quot;checkbox&quot; checked=&quot;checked&quot; name=&quot;test&quot; /&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;checkbox&#39;</span><span class="p">,</span> <span class="n">_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="go">&lt;input value=&quot;a&quot; type=&quot;checkbox&quot; name=&quot;test&quot; /&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;checkbox&#39;</span><span class="p">,</span> <span class="n">_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">_checked</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="go">&lt;input checked=&quot;checked&quot; name=&quot;test&quot; type=&quot;checkbox&quot; value=&quot;a&quot;/&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;checkbox&#39;</span><span class="p">,</span> <span class="n">_name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">_checked</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="go">&lt;input name=&quot;test&quot; type=&quot;checkbox&quot; value=&quot;a&quot;/&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="label">
 <h3><code class="docutils literal notranslate"><span class="pre">LABEL</span></code><a class="headerlink" href="#label" title="Permalink to this headline">¶</a></h3>
 <p>It is used to create a LABEL tag for an INPUT field.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">LABEL</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;label id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/label&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">LABEL</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;label id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/label&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="li">
 <h3><code class="docutils literal notranslate"><span class="pre">LI</span></code><a class="headerlink" href="#li" title="Permalink to this headline">¶</a></h3>
 <p>It makes a list item and should be contained in a <code class="docutils literal notranslate"><span class="pre">UL</span></code> or <code class="docutils literal notranslate"><span class="pre">OL</span></code> tag.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">LI</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;li id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/li&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">LI</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;li id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/li&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="ol">
 <h3><code class="docutils literal notranslate"><span class="pre">OL</span></code><a class="headerlink" href="#ol" title="Permalink to this headline">¶</a></h3>
-<p>It stands for Ordered List. The list should contain LI tags. <code class="docutils literal notranslate"><span class="pre">OL</span></code>
-arguments that are not <code class="docutils literal notranslate"><span class="pre">LI</span></code> objects are automatically enclosed in
-<code class="docutils literal notranslate"><span class="pre">&lt;li&gt;...&lt;/li&gt;</span></code> tags.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">OL</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;ol id=&quot;0&quot; class=&quot;test&quot;&gt;&lt;li&gt;&amp;lt;hello&amp;gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;world&lt;/b&gt;&lt;/li&gt;&lt;/ol&gt;</span>
+<p>It stands for ordered list. The list should contain LI tags.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">OL</span><span class="p">(</span><span class="n">LI</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">),</span> <span class="n">LI</span><span class="p">(</span><span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">)),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;ol class=&quot;test&quot; id=&quot;0&quot;&gt;&lt;li&gt;&amp;lt;hello&amp;gt;&lt;/li&gt;&lt;li&gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/li&gt;&lt;/ol&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="option">
 <h3><code class="docutils literal notranslate"><span class="pre">OPTION</span></code><a class="headerlink" href="#option" title="Permalink to this headline">¶</a></h3>
-<p>This should only be used as part of a <code class="docutils literal notranslate"><span class="pre">SELECT</span></code>/<code class="docutils literal notranslate"><span class="pre">OPTION</span></code> combination.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">OPTION</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
-<span class="go">&lt;option value=&quot;a&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/option&gt;</span>
+<p>This should only be used as argument of a <code class="docutils literal notranslate"><span class="pre">SELECT</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">OPTION</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">))</span>
+<span class="go">&lt;option value=&quot;a&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/option&gt;</span>
 </pre></div>
 </div>
-<p>As in the case of <code class="docutils literal notranslate"><span class="pre">INPUT</span></code>, py4web make a distinction between “_value”
-(the value of the OPTION), and “value” (the current value of the
-enclosing select). If they are equal, the option is “selected”.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">SELECT</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">):</span>
-<span class="go">&lt;select&gt;</span>
-<span class="go">&lt;option value=&quot;a&quot;&gt;a&lt;/option&gt;</span>
-<span class="go">&lt;option value=&quot;b&quot; selected=&quot;selected&quot;&gt;b&lt;/option&gt;</span>
-<span class="go">&lt;/select&gt;</span>
+<p>For selected options use the <code class="docutils literal notranslate"><span class="pre">_selected</span></code> attribute:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">OPTION</span><span class="p">(</span><span class="s1">&#39;Thank You&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;ok&#39;</span><span class="p">,</span> <span class="n">_selected</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="go">&lt;option selected=&quot;selected&quot; value=&quot;ok&quot;&gt;Thank You&lt;/option&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="p">
 <h3><code class="docutils literal notranslate"><span class="pre">P</span></code><a class="headerlink" href="#p" title="Permalink to this headline">¶</a></h3>
 <p>This is for tagging a paragraph.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">P</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;p id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/p&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">P</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;p id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/p&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -687,41 +577,34 @@ enclosing select). If they are equal, the option is “selected”.</p>
 <h3><code class="docutils literal notranslate"><span class="pre">PRE</span></code><a class="headerlink" href="#pre" title="Permalink to this headline">¶</a></h3>
 <p>Generates a <code class="docutils literal notranslate"><span class="pre">&lt;pre&gt;...&lt;/pre&gt;</span></code> tag for displaying pre-formatted text.
 The <code class="docutils literal notranslate"><span class="pre">CODE</span></code> helper is generally preferable for code listings.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">PRE</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;pre id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/pre&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">SELECT</span><span class="p">(</span><span class="n">OPTION</span><span class="p">(</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">),</span> <span class="n">OPTION</span><span class="p">(</span><span class="s1">&#39;second&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;2&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;pre id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/pre&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="script">
 <h3><code class="docutils literal notranslate"><span class="pre">SCRIPT</span></code><a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h3>
-<p>This is include or link a script, such as JavaScript. The content
-between the tags is rendered as an HTML comment, for the benefit of
-really old browsers.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">SCRIPT</span><span class="p">(</span><span class="s1">&#39;alert(&quot;hello world&quot;);&#39;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="s1">&#39;text/javascript&#39;</span><span class="p">)</span>
-<span class="go">&lt;script type=&quot;text/javascript&quot;&gt;&lt;!--</span>
-<span class="go">alert(&quot;hello world&quot;);</span>
-<span class="go">//--&gt;&lt;/script&gt;</span>
+<p>This is include or link a script, such as JavaScript.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">SCRIPT</span><span class="p">(</span><span class="s1">&#39;console.log(&quot;hello world&quot;);&#39;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="s1">&#39;text/javascript&#39;</span><span class="p">))</span>
+<span class="go">&lt;script type=&quot;text/javascript&quot;&gt;console.log(&quot;hello world&quot;);&lt;/script&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="select">
 <h3><code class="docutils literal notranslate"><span class="pre">SELECT</span></code><a class="headerlink" href="#select" title="Permalink to this headline">¶</a></h3>
 <p>Makes a <code class="docutils literal notranslate"><span class="pre">&lt;select&gt;...&lt;/select&gt;</span></code> tag. This is used with the <code class="docutils literal notranslate"><span class="pre">OPTION</span></code>
-helper. Those <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> arguments that are not <code class="docutils literal notranslate"><span class="pre">OPTION</span></code> objects are
-automatically converted to options.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">SELECT</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;select id=&quot;0&quot; class=&quot;test&quot;&gt;</span>
-<span class="go">&lt;option value=&quot;&amp;lt;hello&amp;gt;&quot;&gt;&amp;lt;hello&amp;gt;&lt;/option&gt;</span>
-<span class="go">&lt;option value=&quot;&amp;lt;b&amp;gt;world&amp;lt;/b&amp;gt;&quot;&gt;&lt;b&gt;world&lt;/b&gt;&lt;/option&gt;</span>
-<span class="go">&lt;/select&gt;</span>
+helper.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">SELECT</span><span class="p">(</span><span class="n">OPTION</span><span class="p">(</span><span class="s1">&#39;first&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">),</span> <span class="n">OPTION</span><span class="p">(</span><span class="s1">&#39;second&#39;</span><span class="p">,</span> <span class="n">_value</span><span class="o">=</span><span class="s1">&#39;2&#39;</span><span class="p">),</span>
+<span class="gp">... </span><span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;select class=&quot;test&quot; id=&quot;0&quot;&gt;&lt;option value=&quot;1&quot;&gt;first&lt;/option&gt;&lt;option value=&quot;2&quot;&gt;second&lt;/option&gt;&lt;/select&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="span">
 <h3><code class="docutils literal notranslate"><span class="pre">SPAN</span></code><a class="headerlink" href="#span" title="Permalink to this headline">¶</a></h3>
 <p>Similar to <code class="docutils literal notranslate"><span class="pre">DIV</span></code> but used to tag inline (rather than block) content.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">SPAN</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;span id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/span&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">SPAN</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;span id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/span&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -729,16 +612,13 @@ automatically converted to options.</p>
 <h3><code class="docutils literal notranslate"><span class="pre">STYLE</span></code><a class="headerlink" href="#style" title="Permalink to this headline">¶</a></h3>
 <p>Similar to script, but used to either include or link CSS code. Here the
 CSS is included:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">STYLE</span><span class="p">(</span><span class="n">XML</span><span class="p">(</span><span class="s1">&#39;body {color: white}&#39;</span><span class="p">))</span>
-<span class="go">&lt;style&gt;&lt;!--</span>
-<span class="go">body { color: white }</span>
-<span class="go">//--&gt;&lt;/style&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">STYLE</span><span class="p">(</span><span class="n">XML</span><span class="p">(</span><span class="s1">&#39;body {color: white}&#39;</span><span class="p">)))</span>
+<span class="go">&lt;style&gt;body {color: white}&lt;/style&gt;</span>
 </pre></div>
 </div>
 <p>and here it is linked:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">STYLE</span><span class="p">(</span><span class="n">_src</span><span class="o">=</span><span class="s1">&#39;style.css&#39;</span><span class="p">)</span>
-<span class="go">&lt;style src=&quot;style.css&quot;&gt;&lt;!--</span>
-<span class="go">//--&gt;&lt;/style&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">STYLE</span><span class="p">(</span><span class="n">_src</span><span class="o">=</span><span class="s1">&#39;style.css&#39;</span><span class="p">))</span>
+<span class="go">&lt;style src=&quot;style.css&quot;&gt;&lt;/style&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -746,28 +626,23 @@ CSS is included:</p>
 <h3><code class="docutils literal notranslate"><span class="pre">TABLE</span></code>, <code class="docutils literal notranslate"><span class="pre">TR</span></code>, <code class="docutils literal notranslate"><span class="pre">TD</span></code><a class="headerlink" href="#table-tr-td" title="Permalink to this headline">¶</a></h3>
 <p>These tags (along with the optional <code class="docutils literal notranslate"><span class="pre">THEAD</span></code> and <code class="docutils literal notranslate"><span class="pre">TBODY</span></code> helpers) are
 used to build HTML tables.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TABLE</span><span class="p">(</span><span class="n">TR</span><span class="p">(</span><span class="n">TD</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">),</span> <span class="n">TD</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">)),</span> <span class="n">TR</span><span class="p">(</span><span class="n">TD</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">),</span> <span class="n">TD</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">)))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">TABLE</span><span class="p">(</span><span class="n">TR</span><span class="p">(</span><span class="n">TD</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">),</span> <span class="n">TD</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">)),</span> <span class="n">TR</span><span class="p">(</span><span class="n">TD</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">),</span> <span class="n">TD</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">))))</span>
 <span class="go">&lt;table&gt;&lt;tr&gt;&lt;td&gt;a&lt;/td&gt;&lt;td&gt;b&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;c&lt;/td&gt;&lt;td&gt;d&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">TR</span></code> expects <code class="docutils literal notranslate"><span class="pre">TD</span></code> content; arguments that are not <code class="docutils literal notranslate"><span class="pre">TD</span></code> objects are
-converted automatically.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TABLE</span><span class="p">(</span><span class="n">TR</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">),</span> <span class="n">TR</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">))</span>
-<span class="go">&lt;table&gt;&lt;tr&gt;&lt;td&gt;a&lt;/td&gt;&lt;td&gt;b&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;c&lt;/td&gt;&lt;td&gt;d&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</span>
-</pre></div>
-</div>
+<p><code class="docutils literal notranslate"><span class="pre">TR</span></code> expects <code class="docutils literal notranslate"><span class="pre">TD</span></code> content.</p>
 <p>It is easy to convert a Python array into an HTML table using Python’s
 <code class="docutils literal notranslate"><span class="pre">*</span></code> function arguments notation, which maps list elements to
 positional function arguments.</p>
 <p>Here, we will do it line by line:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TABLE</span><span class="p">(</span><span class="n">TR</span><span class="p">(</span><span class="o">*</span><span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">TR</span><span class="p">(</span><span class="o">*</span><span class="n">table</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">TABLE</span><span class="p">(</span><span class="n">TR</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">TD</span><span class="p">,</span> <span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="n">TR</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">TD</span><span class="p">,</span> <span class="n">table</span><span class="p">[</span><span class="mi">1</span><span class="p">]))))</span>
 <span class="go">&lt;table&gt;&lt;tr&gt;&lt;td&gt;a&lt;/td&gt;&lt;td&gt;b&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;c&lt;/td&gt;&lt;td&gt;d&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</span>
 </pre></div>
 </div>
 <p>Here we do all lines at once:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TABLE</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">TR</span><span class="p">(</span><span class="o">*</span><span class="n">rows</span><span class="p">)</span> <span class="k">for</span> <span class="n">rows</span> <span class="ow">in</span> <span class="n">table</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">TABLE</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">TR</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">TD</span><span class="p">,</span> <span class="n">rows</span><span class="p">))</span> <span class="k">for</span> <span class="n">rows</span> <span class="ow">in</span> <span class="n">table</span><span class="p">]))</span>
 <span class="go">&lt;table&gt;&lt;tr&gt;&lt;td&gt;a&lt;/td&gt;&lt;td&gt;b&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;c&lt;/td&gt;&lt;td&gt;d&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</span>
 </pre></div>
 </div>
@@ -776,7 +651,7 @@ positional function arguments.</p>
 <h3><code class="docutils literal notranslate"><span class="pre">TBODY</span></code><a class="headerlink" href="#tbody" title="Permalink to this headline">¶</a></h3>
 <p>This is used to tag rows contained in the table body, as opposed to
 header or footer rows. It is optional.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TBODY</span><span class="p">(</span><span class="n">TR</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">TBODY</span><span class="p">(</span><span class="n">TR</span><span class="p">(</span><span class="n">TD</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">)),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 <span class="go">&lt;tbody id=&quot;0&quot; class=&quot;test&quot;&gt;&lt;tr&gt;&lt;td&gt;&amp;lt;hello&amp;gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;</span>
 </pre></div>
 </div>
@@ -784,29 +659,24 @@ header or footer rows. It is optional.</p>
 <div class="section" id="textarea">
 <h3><code class="docutils literal notranslate"><span class="pre">TEXTAREA</span></code><a class="headerlink" href="#textarea" title="Permalink to this headline">¶</a></h3>
 <p>This helper makes a <code class="docutils literal notranslate"><span class="pre">&lt;textarea&gt;...&lt;/textarea&gt;</span></code> tag.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TEXTAREA</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
-<span class="go">&lt;textarea class=&quot;test&quot; cols=&quot;40&quot; rows=&quot;10&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/textarea&gt;</span>
-</pre></div>
-</div>
-<p>The only caveat is that its optional “value” overrides its content
-(inner HTML)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TEXTAREA</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;&lt;hello world&gt;&quot;</span><span class="p">,</span> <span class="n">_class</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
-<span class="go">&lt;textarea class=&quot;test&quot; cols=&quot;40&quot; rows=&quot;10&quot;&gt;&amp;lt;hello world&amp;gt;&lt;/textarea&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">TEXTAREA</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">_cols</span><span class="o">=</span><span class="s2">&quot;40&quot;</span><span class="p">,</span> <span class="n">_rows</span><span class="o">=</span><span class="s2">&quot;10&quot;</span><span class="p">))</span>
+<span class="go">&lt;textarea class=&quot;test&quot; cols=&quot;40&quot; rows=&quot;10&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/textarea&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="th">
 <h3><code class="docutils literal notranslate"><span class="pre">TH</span></code><a class="headerlink" href="#th" title="Permalink to this headline">¶</a></h3>
 <p>This is used instead of <code class="docutils literal notranslate"><span class="pre">TD</span></code> in table headers.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TH</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;th id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/th&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">TH</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;th id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/th&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="thead">
 <h3><code class="docutils literal notranslate"><span class="pre">THEAD</span></code><a class="headerlink" href="#thead" title="Permalink to this headline">¶</a></h3>
 <p>This is used to tag table header rows.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">THEAD</span><span class="p">(</span><span class="n">TR</span><span class="p">(</span><span class="n">TH</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">)),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">THEAD</span><span class="p">(</span><span class="n">TR</span><span class="p">(</span><span class="n">TH</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">)),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 <span class="go">&lt;thead id=&quot;0&quot; class=&quot;test&quot;&gt;&lt;tr&gt;&lt;th&gt;&amp;lt;hello&amp;gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;</span>
 </pre></div>
 </div>
@@ -814,41 +684,30 @@ header or footer rows. It is optional.</p>
 <div class="section" id="title">
 <h3><code class="docutils literal notranslate"><span class="pre">TITLE</span></code><a class="headerlink" href="#title" title="Permalink to this headline">¶</a></h3>
 <p>This is used to tag the title of a page in an HTML header.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TITLE</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">))</span>
-<span class="go">&lt;title&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/title&gt;</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="tr">
-<h3><code class="docutils literal notranslate"><span class="pre">TR</span></code><a class="headerlink" href="#tr" title="Permalink to this headline">¶</a></h3>
-<p>Tags a table row. It should be rendered inside a table and contain
-<code class="docutils literal notranslate"><span class="pre">&lt;td&gt;...&lt;/td&gt;</span></code> tags. <code class="docutils literal notranslate"><span class="pre">TR</span></code> arguments that are not <code class="docutils literal notranslate"><span class="pre">TD</span></code> objects will
-be automatically converted.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TR</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;tr id=&quot;0&quot; class=&quot;test&quot;&gt;&lt;td&gt;&amp;lt;hello&amp;gt;&lt;/td&gt;&lt;td&gt;&lt;b&gt;world&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">TITLE</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">)))</span>
+<span class="go">&lt;title&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/title&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="tt">
 <h3><code class="docutils literal notranslate"><span class="pre">TT</span></code><a class="headerlink" href="#tt" title="Permalink to this headline">¶</a></h3>
 <p>Tags text as typewriter (monospaced) text.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">TT</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;tt id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;b&gt;world&lt;/b&gt;&lt;/tt&gt;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">TT</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;tt id=&quot;0&quot; class=&quot;test&quot;&gt;&amp;lt;hello&amp;gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/tt&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="ul">
 <h3><code class="docutils literal notranslate"><span class="pre">UL</span></code><a class="headerlink" href="#ul" title="Permalink to this headline">¶</a></h3>
-<p>Signifies an Unordered List and should contain <code class="docutils literal notranslate"><span class="pre">LI</span></code> items. If its
-content is not tagged as <code class="docutils literal notranslate"><span class="pre">LI</span></code>, <code class="docutils literal notranslate"><span class="pre">UL</span></code> does it automatically.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">UL</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;world&lt;/b&gt;&#39;</span><span class="p">),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&lt;ul id=&quot;0&quot; class=&quot;test&quot;&gt;&lt;li&gt;&amp;lt;hello&amp;gt;&lt;/li&gt;&lt;li&gt;&lt;b&gt;world&lt;/b&gt;&lt;/li&gt;&lt;/ul&gt;</span>
+<p>It stands for unordered list. The list should contain LI tags.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UL</span><span class="p">(</span><span class="n">LI</span><span class="p">(</span><span class="s1">&#39;&lt;hello&gt;&#39;</span><span class="p">),</span> <span class="n">LI</span><span class="p">(</span><span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;strong&gt;world&lt;/strong&gt;&#39;</span><span class="p">)),</span> <span class="n">_class</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">_id</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">&lt;ul class=&quot;test&quot; id=&quot;0&quot;&gt;&lt;li&gt;&amp;lt;hello&amp;gt;&lt;/li&gt;&lt;li&gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/li&gt;&lt;/ul&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="url">
 <h3><code class="docutils literal notranslate"><span class="pre">URL</span></code><a class="headerlink" href="#url" title="Permalink to this headline">¶</a></h3>
-<p>The URL helper is documented in <em>Chapter 4 URL ../04</em></p>
+<p>The URL helper is not part of yatl package, instead it is provided by py4web.</p>
 </div>
 </div>
 <div class="section" id="custom-helpers">
@@ -868,7 +727,7 @@ a universal tag generator.</p>
 helper to suppress this behavior. Using <code class="docutils literal notranslate"><span class="pre">TAG</span></code> you can generate
 HTML/XML tags not already provided by the API. TAGs can be nested, and
 are serialized with <code class="docutils literal notranslate"><span class="pre">str().</span></code> An equivalent syntax is:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=TAG[&#39;name&#39;](&#39;a&#39;, &#39;b&#39;, c=&#39;d&#39;)]]
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=TAG[&#39;name&#39;](&#39;a&#39;, &#39;b&#39;, _c=&#39;d&#39;)]]
 </pre></div>
 </div>
 <p>If the TAG object is created with an empty name, it can be used to
@@ -887,86 +746,25 @@ must end with a “/”.</p>
 <p>Notice that <code class="docutils literal notranslate"><span class="pre">TAG</span></code> is an object, and <code class="docutils literal notranslate"><span class="pre">TAG.name</span></code> or <code class="docutils literal notranslate"><span class="pre">TAG['name']</span></code> is
 a function that returns a temporary helper class.</p>
 </div>
-<div class="section" id="menu">
-<h3><code class="docutils literal notranslate"><span class="pre">MENU</span></code><a class="headerlink" href="#menu" title="Permalink to this headline">¶</a></h3>
-<p>The MENU helper takes a list of lists or of tuples of the form of
-<code class="docutils literal notranslate"><span class="pre">response.menu</span></code> and generates a tree-like structure using unordered
-lists representing the menu. For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">MENU</span><span class="p">([[</span><span class="s1">&#39;One&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;link1&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Two&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;link2&#39;</span><span class="p">]])</span>
-<span class="go">&lt;ul class=&quot;py4web-menu py4web-menu-vertical&quot;&gt;</span>
-<span class="go">&lt;li&gt;&lt;a href=&quot;link1&quot;&gt;One&lt;/a&gt;&lt;/li&gt;</span>
-<span class="go">&lt;li&gt;&lt;a href=&quot;link2&quot;&gt;Two&lt;/a&gt;&lt;/li&gt;</span>
-<span class="go">&lt;/ul&gt;</span>
-</pre></div>
-</div>
-<blockquote>
-<div><p>The first item in each list/tuple is the text to be displayed for the
-given menu item.</p>
-</div></blockquote>
-<p>The second item in each list/tuple is a boolean indicating whether that
-particular menu item is active (i.e., the currently selected item). When
-set to True, the <code class="docutils literal notranslate"><span class="pre">MENU</span></code> helper will add a “py4web-menu-active” class
-to the <code class="docutils literal notranslate"><span class="pre">&lt;li&gt;</span></code> for that item (you can change the name of that class via
-the “li_active” argument to <code class="docutils literal notranslate"><span class="pre">MENU</span></code>). Another way to specify the active
-url is by directly passing it to <code class="docutils literal notranslate"><span class="pre">MENU</span></code> via its “active_url” argument.</p>
-<p>The third item in each list/tuple can be an HTML helper (which could
-include nested helpers), and the <code class="docutils literal notranslate"><span class="pre">MENU</span></code> helper will simply render that
-helper rather than creating its own <code class="docutils literal notranslate"><span class="pre">&lt;a&gt;</span></code> tag.</p>
-<p>Each menu item can have a fourth argument that is a nested submenu (and
-so on recursively):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">MENU</span><span class="p">([[</span><span class="s1">&#39;One&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;link1&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="s1">&#39;Two&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;link2&#39;</span><span class="p">]]]])</span>
-<span class="go">&lt;ul class=&quot;py4web-menu py4web-menu-vertical&quot;&gt;</span>
-<span class="go">&lt;li class=&quot;py4web-menu-expand&quot;&gt;</span>
-<span class="go">&lt;a href=&quot;link1&quot;&gt;One&lt;/a&gt;</span>
-<span class="go">&lt;ul class=&quot;py4web-menu-vertical&quot;&gt;</span>
-<span class="go">&lt;li&gt;&lt;a href=&quot;link2&quot;&gt;Two&lt;/a&gt;&lt;/li&gt;</span>
-<span class="go">&lt;/ul&gt;</span>
-<span class="go">&lt;/li&gt;</span>
-<span class="go">&lt;/ul&gt;</span>
-</pre></div>
-</div>
-<p>A menu item can also have an optional 5th element, which is a boolean.
-When false, the menu item is ignored by the MENU helper.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">MENU</span></code> helper takes the following optional arguments: -
-<code class="docutils literal notranslate"><span class="pre">_class</span></code>: defaults to “py4web-menu py4web-menu-vertical” and sets the
-class of the outer UL elements. - <code class="docutils literal notranslate"><span class="pre">ul_class</span></code>: defaults to
-“py4web-menu-vertical” and sets the class of the inner UL elements. -
-<code class="docutils literal notranslate"><span class="pre">li_class</span></code>: defaults to “py4web-menu-expand” and sets the class of the
-inner LI elements. - <code class="docutils literal notranslate"><span class="pre">li_first</span></code>: allows to add a class to the first
-list element. - <code class="docutils literal notranslate"><span class="pre">li_last</span></code>: allows to add a class to the last list
-element.</p>
-<p><code class="docutils literal notranslate"><span class="pre">MENU</span></code> takes an optional argument <code class="docutils literal notranslate"><span class="pre">mobile</span></code>. When set to <code class="docutils literal notranslate"><span class="pre">True</span></code>
-instead of building a recursive <code class="docutils literal notranslate"><span class="pre">UL</span></code> menu structure it returns a
-<code class="docutils literal notranslate"><span class="pre">SELECT</span></code> dropdown with all the menu options and a <code class="docutils literal notranslate"><span class="pre">onchange</span></code>
-attribute that redirects to the page corresponding to the selected
-option. This is designed an an alternative menu representation that
-increases usability on small mobile devices such as phones.</p>
-<p>Normally the menu is used in a layout with the following syntax:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=MENU(response.menu, mobile=request.user_agent().is_mobile)]]
-</pre></div>
-</div>
-<p>In this way a mobile device is automatically detected and the menu is
-rendered accordingly.</p>
-</div>
 </div>
 <div class="section" id="beautify">
 <h2><code class="docutils literal notranslate"><span class="pre">BEAUTIFY</span></code><a class="headerlink" href="#beautify" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">BEAUTIFY</span></code> is used to build HTML representations of compound objects,
 including lists, tuples and dictionaries:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=BEAUTIFY({&quot;a&quot;: [&quot;hello&quot;, XML(&quot;world&quot;)], &quot;b&quot;: (1, 2)})]]
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=BEAUTIFY({&quot;a&quot;: [&quot;hello&quot;, STRONG(&quot;world&quot;)], &quot;b&quot;: (1, 2)})]]
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">BEAUTIFY</span></code> returns an XML-like object serializable to XML, with a nice
 looking representation of its constructor argument. In this case, the
 XML representation of:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="n">XML</span><span class="p">(</span><span class="s2">&quot;world&quot;</span><span class="p">)],</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="n">STRONG</span><span class="p">(</span><span class="s2">&quot;world&quot;</span><span class="p">)],</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}</span>
 </pre></div>
 </div>
 <p>will render as:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">table</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;</span>a<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;</span>:<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;</span>hello<span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>world<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;</span>b<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;</span>:<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;</span><span class="nt">td</span><span class="p">&gt;</span>1<span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>2<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>&lt;table&gt;&lt;tbody
+&lt;tr&gt;&lt;th&gt;a&lt;/th&gt;&lt;td&gt;&lt;ul&gt;&lt;li&gt;hello&lt;/li&gt;&lt;li&gt;&lt;strong&gt;world&lt;/strong&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;b&lt;/th&gt;&lt;td&gt;(1, 2)&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
 </pre></div>
 </div>
 </div>
@@ -1104,7 +902,7 @@ original element and it is expected to return the replacement element:</p>
 <h3><code class="docutils literal notranslate"><span class="pre">flatten</span></code><a class="headerlink" href="#flatten" title="Permalink to this headline">¶</a></h3>
 <p>The flatten method recursively serializes the content of the children of
 a given element into regular text (without tags):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">DIV</span><span class="p">(</span><span class="n">SPAN</span><span class="p">(</span><span class="s1">&#39;this&#39;</span><span class="p">,</span> <span class="n">DIV</span><span class="p">(</span><span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="n">B</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">))),</span> <span class="n">SPAN</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">DIV</span><span class="p">(</span><span class="n">SPAN</span><span class="p">(</span><span class="s1">&#39;this&#39;</span><span class="p">,</span> <span class="n">DIV</span><span class="p">(</span><span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="n">STRONG</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">))),</span> <span class="n">SPAN</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">a</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 <span class="go">thisisatest</span>
 </pre></div>

@@ -28,6 +28,7 @@ apps/*
 !apps/_dashboard/*
 !apps/_scaffold/*
 !apps/_minimal/*
+!apps/_websocket/*
 !apps/_default/*
 !apps/_documentation/*
 !apps/superheroes/*
@@ -41,3 +42,4 @@ password.txt
 deployment_tools/gae/lib
 deployment_tools/gae/apps
 py4web/assets
+workspace.code-workspace
