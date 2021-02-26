@@ -249,17 +249,17 @@ class Grid:
         else "",
         "date": lambda value: XML(
             '<script>document.write((new Date(%s,%s,%s)).toLocaleString().split(",")[0])</script>'
-            % (value.year, value.month, value.day,)
+            % (
+                value.year,
+                value.month,
+                value.day,
+            )
         )
         if value
         else "",
-        "list:string": lambda value: ', '.join(str(x) for x in value)
-        if value
-        else "",
-        "list:integer": lambda value: ', '.join(x for x in value)
-        if value
-        else "",
-        "default": lambda value: str(value) if value is not None else ""
+        "list:string": lambda value: ", ".join(str(x) for x in value) if value else "",
+        "list:integer": lambda value: ", ".join(x for x in value) if value else "",
+        "default": lambda value: str(value) if value is not None else "",
     }
 
     def __init__(
@@ -334,6 +334,16 @@ class Grid:
             search_button_text=search_button_text,
             formstyle=formstyle,
             grid_class_style=grid_class_style,
+            new_sidecar=None,
+            new_submit_value=None,
+            new_action_button_text="New",
+            details_sidecar=None,
+            details_submit_value=None,
+            details_action_button_text="Details",
+            edit_sidecar=None,
+            edit_submit_value=None,
+            edit_action_button_text="Edit",
+            delete_action_button_text="Delete",
         )
 
         #  instance variables that will be computed
@@ -427,6 +437,22 @@ class Grid:
                 readonly=readonly,
                 formstyle=self.param.formstyle,
             )
+            if self.action == "new":
+                if self.param.new_sidecar:
+                    self.form.param.sidecar.append(self.param.new_sidecar)
+                if self.param.new_submit_value:
+                    self.form.param.submit_value = self.param.new_submit_value
+            if self.action == "details":
+                if self.param.details_sidecar:
+                    self.form.param.sidecar.append(self.param.details_sidecar)
+                if self.param.details_submit_value:
+                    self.form.param.submit_value = self.param.details_submit_value
+            if self.action == "edit":
+                if self.param.edit_sidecar:
+                    self.form.param.sidecar.append(self.param.edit_sidecar)
+                if self.param.edit_submit_value:
+                    self.form.param.submit_value = self.param.edit_submit_value
+
             # SECURITY: if the new record was created but does not match filter, delete it
             if self.form.accepted and not self.record_id:
                 new_record = db[self.tablename]._id == self.form.vars["id"]
@@ -454,7 +480,10 @@ class Grid:
             pt = db[self.tablename]
             key_is_missing = True
             for field in self.param.fields:
-                if field.table._tablename == pt._tablename and field.name == pt._id.name:
+                if (
+                    field.table._tablename == pt._tablename
+                    and field.name == pt._id.name
+                ):
                     key_is_missing = False
             if key_is_missing:
                 #  primary key wasn't included, add it and set show_id to False so it doesn't display
@@ -562,7 +591,7 @@ class Grid:
         separator = "?"
         if row_id:
             url += "/%s" % row_id
- 
+
         classes = self.param.grid_class_style.classes.get(name, "")
         styles = self.param.grid_class_style.styles.get(name, "")
 
@@ -594,7 +623,12 @@ class Grid:
             **attr,
         )
         if self.param.include_action_button_text:
-            link.append(XML('<span class="grid-action-button-text">&nbsp;%s</span>' % button_text))
+            link.append(
+                XML(
+                    '<span class="grid-action-button-text">&nbsp;%s</span>'
+                    % button_text
+                )
+            )
 
         return link
 
@@ -612,8 +646,17 @@ class Grid:
             if not key in ("search_type", "search_string")
         ]
         form = FORM(*hidden_fields, **dict(_method="GET", _action=self.endpoint))
-        select = SELECT(*options, **dict(_name="search_type",))
-        input = INPUT(_type="text", _name="search_string", _value=search_string,)
+        select = SELECT(
+            *options,
+            **dict(
+                _name="search_type",
+            ),
+        )
+        input = INPUT(
+            _type="text",
+            _name="search_string",
+            _value=search_string,
+        )
         submit = INPUT(_type="submit", _value="Search")
         clear_script = "document.querySelector('[name=search_string]').value='';"
         clear = INPUT(_type="submit", _value="Clear", _onclick=clear_script)
@@ -720,7 +763,9 @@ class Grid:
             )
 
         if self.param.details or self.param.editable or self.param.deletable:
-            thead.append(TH("", **self.param.grid_class_style.get('grid-th-action-button')))
+            thead.append(
+                TH("", **self.param.grid_class_style.get("grid-th-action-button"))
+            )
 
         return thead
 
@@ -745,7 +790,7 @@ class Grid:
         formatter = (
             self.formatters.get(key)
             or self.formatters_by_type.get(field.type)
-            or self.formatters_by_type.get('default')
+            or self.formatters_by_type.get("default")
         )
 
         class_type = "grid-cell-type-%s" % str(field.type).split(":")[0]
@@ -755,8 +800,12 @@ class Grid:
             _class=(
                 self.param.grid_class_style.classes.get("grid-td", "")
                 + " "
-                + class_type if class_type not in self.param.grid_class_style.classes.get(class_type,
-                                                                                          "").split(" ") else ""
+                + class_type
+                if class_type
+                not in self.param.grid_class_style.classes.get(class_type, "").split(
+                    " "
+                )
+                else ""
                 + " "
                 + self.param.grid_class_style.classes.get(class_type, "")
                 + " "
@@ -798,13 +847,15 @@ class Grid:
                 or (self.param.editable and self.param.editable != "")
                 or (self.param.deletable and self.param.deletable != "")
             ):
-                classes = (self.param.grid_class_style.classes.get("grid-td", "") +
-                           " " +
-                           self.param.grid_class_style.classes.get("grid-td-action-button")
-                ).strip() 
-                styles = (self.param.grid_class_style.styles.get("grid-td", "") +
-                           " " +
-                           self.param.grid_class_style.styles.get("grid-td-action-button")
+                classes = (
+                    self.param.grid_class_style.classes.get("grid-td", "")
+                    + " "
+                    + self.param.grid_class_style.classes.get("grid-td-action-button")
+                ).strip()
+                styles = (
+                    self.param.grid_class_style.styles.get("grid-td", "")
+                    + " "
+                    + self.param.grid_class_style.styles.get("grid-td-action-button")
                 ).strip()
                 td = TD(_class=classes, _style=styles)
                 if self.param.pre_action_buttons:
@@ -817,13 +868,11 @@ class Grid:
                                 additional_classes=btn.additional_classes,
                                 message=btn.message,
                                 row_id=row_id if btn.append_id else None,
-                                row=row
+                                row=row,
                             )
                         )
                 if self.param.details and self.param.details != "":
-                    if isinstance(
-                        self.param.details, str
-                    ):
+                    if isinstance(self.param.details, str):
                         details_url = self.param.details
                     else:
                         details_url = self.endpoint + "/details"
@@ -831,7 +880,7 @@ class Grid:
                     td.append(
                         self.render_action_button(
                             details_url,
-                            "Details",
+                            self.param.details_action_button_text,
                             "fa-id-card",
                             name="grid-details-button",
                         )
@@ -845,7 +894,10 @@ class Grid:
                     edit_url += "/%s?%s" % (row_id, self.referrer)
                     td.append(
                         self.render_action_button(
-                            edit_url, "Edit", "fa-edit", name="grid-edit-button"
+                            edit_url,
+                            self.param.edit_action_button_text,
+                            "fa-edit",
+                            name="grid-edit-button",
                         )
                     )
 
@@ -858,7 +910,7 @@ class Grid:
                     td.append(
                         self.render_action_button(
                             delete_url,
-                            "Delete",
+                            self.param.delete_action_button_text,
                             "fa-trash",
                             additional_classes="confirmation",
                             message="Delete record",
@@ -876,7 +928,7 @@ class Grid:
                                 additional_classes=btn.additional_classes,
                                 message=btn.message,
                                 row_id=row_id if btn.append_id else None,
-                                row=row
+                                row=row,
                             )
                         )
                 tr.append(td)
@@ -926,7 +978,7 @@ class Grid:
             grid_header.append(
                 self.render_action_button(
                     create_url,
-                    "New",
+                    self.param.new_action_button_text,
                     "fa-plus",
                     icon_size="normal",
                     override_classes=self.param.grid_class_style.classes.get(
