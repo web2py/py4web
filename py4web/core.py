@@ -657,7 +657,7 @@ def URL(
     if signer:
         # Note that we need to sign the non-urlencoded URL, since
         # at verification time, it will be already URLdecoded.
-        signer.sign_vars(prefix + "/".join(broken_parts), urlvars)
+        signer.sign(prefix + "/".join(broken_parts), urlvars)
     if urlvars:
         url += "?" + "&".join(
             "%s=%s" % (k, urllib.parse.quote(str(v))) for k, v in urlvars.items()
