@@ -7,8 +7,8 @@
 <div id="vue">
   <div class="section">
   <div v-for="post in posts" class="box">
-    <p>{{post.content}}</p>
-    <starrater :url="post.url">
+      <p>{{post.content}}</p>
+      <starrater :url="post.url">
   </div>
 </div>
 
@@ -17,6 +17,6 @@
   // URL for loading the posts.
   let get_posts_url = "[[=XML(get_posts_url)]]";
 </script>
-<script src="components/starrater/starrater.js"></script>
+<script src="components-bulma/starrater/starrater.js"></script>
 <script src="js/star_rater_vue.js"></script>
 [[end]]
