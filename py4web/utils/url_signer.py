@@ -1,5 +1,5 @@
 import json
-import jwt
+import hashlib
 import time
 import uuid
 from py4web import request, abort
@@ -22,19 +22,30 @@ class URLVerifier(Fixture):
     def on_request(self):
         """Checks the request's signature"""
         # extra and remove the signature from the query
-        token = request.query.get("_signature")
-        if token is None:
+        signature = request.query.get("_signature")
+        if signature is None:
             abort(403)
         try:
-            key = self.url_signer.get_url_key(request.fullpath, request.query)
-            jwt.decode(token, key, algorithms=["HS256"])
+            h = hashlib.sha256(self.url_signer.get_key())
+            h.update(self.url_signer.get_info_to_sign(request.fullpath, request.query))
+            if h.hexdigest() != request.query["_signature"]:
+                abort(403)
             # We remove the signature, not to pollute the request.
             del request.query["_signature"]
+            # Checks the expiration time.
+            if self.url_signer.lifespan is not None:
+                ts = float(request.query["_ts"])
+                if ts + self.url_signer.lifespan < time.time():
+                    abort(403)
+            del request.query["_ts"]
         except:
             abort(403)
 
 
 class URLSigner(Fixture):
+
+    RESERVED_VARIABLES = ["_ts", "_salt", "_signature"]
+
     def __init__(
         self,
         session=None,
@@ -83,9 +94,12 @@ class URLSigner(Fixture):
         self.variables_to_sign = variables_to_sign or []
         self.signing_info = signing_info
         self.lifespan = lifespan
-        assert "_signature" not in self.variables_to_sign
+        for v in self.RESERVED_VARIABLES:
+            assert v not in self.variables_to_sign
+            if v != "_signature":
+                self.variables_to_sign.append(v)
 
-    def _get_key(self):
+    def get_key(self):
         """Gets the signing key, creating it if necessary."""
         if self.session is None:
             key = self.key
@@ -94,39 +108,31 @@ class URLSigner(Fixture):
             if key is None:
                 key = str(uuid.uuid1())
                 self.session["_signature_key"] = key
-        return key
+        return key.encode("utf8")
 
-    def get_url_key(self, url, variables):
-        """Buids a signing key. The signing key consists of:
-        - The key proper, which is generally taken from the session
-          (see _get_key method above)
-        - An additional key, consisting in the information to sign:
-          - The URL
-          - Information, if given
-          - variables to sign
-        The key proper and additional key are concatenated and returned.
-        """
+    def get_info_to_sign(self, url, variables):
+        """Gathers the information to be signed."""
         # The key consists of the url, and of the URL parameters.
-        additional_key = {
+        print("info:",  {
             "url": url,
             "info": self.signing_info() if self.signing_info is not None else "",
-            "vars": {v: repr(variables.get(v)) for v in self.variables_to_sign},
-        }
-        key = self._get_key() + "." + json.dumps(additional_key)
-        return key
+            "vars": {v: str(variables.get(v)) for v in self.variables_to_sign},
+        })
+        return json.dumps({
+            "url": url,
+            "info": self.signing_info() if self.signing_info is not None else "",
+            "vars": {v: str(variables.get(v)) for v in self.variables_to_sign},
+        }).encode("utf8")
 
     def sign(self, url, variables):
         """Signs the URL"""
-        # The payload consists of a timestamp, and of additonal parameters.
-        payload = {"ts": str(time.time())}
-        if self.lifespan is not None:
-            payload["exp"] = time.time() + self.lifespan
-        key = self.get_url_key(url, variables)
-        return jwt.encode(payload, key, algorithm="HS256").decode("utf-8")
-
-    def sign_vars(self, url, variables):
-        """Signs a URL, adding to vars (the variables of the URL) a signature."""
-        variables["_signature"] = self.sign(url, variables)
+        for v in self.RESERVED_VARIABLES:
+            assert v not in variables
+        h = hashlib.sha256(self.get_key())
+        variables["_ts"] = time.time()
+        variables["_salt"] = uuid.uuid1()
+        h.update(self.get_info_to_sign(url, variables))
+        variables["_signature"] = h.hexdigest()
 
     def verify(self):
         """returns a fixture that verifies the URL and optionally the query_keys"""
