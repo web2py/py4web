@@ -5,8 +5,8 @@
 [[end]]
 
 <div id="vue">
-  <div class="section">
-  <div v-for="post in posts" class="box">
+  <div>
+  <div v-for="post in posts">
     <p>{{post.content}}</p>
     <starrater :url="post.url">
   </div>

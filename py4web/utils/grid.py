@@ -583,6 +583,7 @@ class Grid:
         override_classes=None,
         override_styles=None,
         message=None,
+        onclick=None,
         row_id=None,
         name="grid-button",
         row=None,
@@ -860,11 +861,14 @@ class Grid:
                 td = TD(_class=classes, _style=styles)
                 if self.param.pre_action_buttons:
                     for btn in self.param.pre_action_buttons:
+                        if btn.onclick:
+                            btn.url=None
                         td.append(
                             self.render_action_button(
                                 btn.url,
                                 btn.text,
                                 btn.icon,
+                                _onclick=btn.onclick,
                                 additional_classes=btn.additional_classes,
                                 message=btn.message,
                                 row_id=row_id if btn.append_id else None,
@@ -920,11 +924,14 @@ class Grid:
                     )
                 if self.param.post_action_buttons:
                     for btn in self.param.post_action_buttons:
+                        if btn.onclick:
+                            btn.url=None
                         td.append(
                             self.render_action_button(
                                 btn.url,
                                 btn.text,
                                 btn.icon,
+                                _onclick=btn.onclick,
                                 additional_classes=btn.additional_classes,
                                 message=btn.message,
                                 row_id=row_id if btn.append_id else None,

@@ -40,7 +40,7 @@ from .components.vueform import VueForm, InsertForm, TableForm
 from .components.fileupload import FileUpload
 from .components.starrater import StarRater
 
-signed_url = URLSigner(session)
+signed_url = URLSigner(session, lifespan=3600)
 
 
 # -----------------------------
