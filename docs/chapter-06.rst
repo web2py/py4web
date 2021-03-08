@@ -298,7 +298,7 @@ counter value. Closing and reopening the browser, or opening a
 new *private window*, will instead restart the counter from 0.
 
 Usually the informations saved in the session object are related
-to the users, like its username, preferences, last pages visited,
+to the user - like its username, preferences, last pages visited,
 shopping cart and so on. The session object has the same interface
 as a Python dictionary but in py4web sessions are always stored using
 JSON (**JWT** specifically, i.e. 
