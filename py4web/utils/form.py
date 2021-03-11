@@ -475,8 +475,6 @@ class Form(object):
                 if not post_vars.get("_delete"):
                     validated_vars = {}
                     for field in self.table:
-                        if not post_vars.get(field.name):
-                            continue
                         if field.writable and field.type != "id":
                             original_value = post_vars.getall(field.name)
                             if (
