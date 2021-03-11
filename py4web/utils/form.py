@@ -505,7 +505,7 @@ class Form(object):
                                     value = self.record.get(field.name)
                                 else:
                                     value = None
-                            if value:
+                            if value is not None:
                                 validated_vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
