@@ -1071,13 +1071,14 @@ class DefaultAuthForms:
         form = Form(
             [
                 Field(
-                    "email", label=self.auth.param.messages["labels"].get("username_or_email")
-                )
+                    "email", label=self.auth.param.messages["labels"].get("username_or_email"),
+                    requires=IS_NOT_EMPTY()
+                     )
             ],
             submit_value=self.auth.param.messages["buttons"]["request"],
             formstyle=self.formstyle,
         )
-        if form.submitted:
+        if form.accepted:
             email = form.vars.get("email", "")
             self.auth.request_reset_password(email, send=True, next="")
             self._set_flash("password-reset-link-sent")
