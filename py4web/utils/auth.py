@@ -1078,7 +1078,7 @@ class DefaultAuthForms:
             formstyle=self.formstyle,
         )
         if form.submitted:
-            email = form.vars.get("email")
+            email = form.vars.get("email", "")
             self.auth.request_reset_password(email, send=True, next="")
             self._set_flash("password-reset-link-sent")
             self._postprocessing("request_reset_password", form, None)
