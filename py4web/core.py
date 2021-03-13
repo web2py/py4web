@@ -1519,7 +1519,7 @@ def setup(**kwargs):
     show_default=True,
 )
 def shell(**kwargs):
-    """Open a python shell with apps_folder added to the path"""
+    """Open a python shell with apps_folder's parent added to the path"""
     install_args(kwargs)
     code.interact(local=dict(globals(), **locals()))
 
