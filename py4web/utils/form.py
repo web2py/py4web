@@ -475,15 +475,15 @@ class Form(object):
                 if not post_vars.get("_delete"):
                     validated_vars = {}
                     for field in self.table:
-                        if not post_vars.get(field.name):
-                            continue
                         if field.writable and field.type != "id":
                             original_value = post_vars.getall(field.name)
-                            if (
-                                isinstance(original_value, list)
-                                and len(original_value) == 1
-                            ):
-                                original_value = original_value[0]
+                            if isinstance(original_value, list):
+                                if len(original_value) == 1:
+                                    original_value = original_value[0]
+                                    
+                                elif len(original_value) == 0:
+                                    original_value = None
+                                    
                             if field.type.startswith("list:") and isinstance(
                                 original_value, str
                             ):
@@ -505,7 +505,8 @@ class Form(object):
                                     value = self.record.get(field.name)
                                 else:
                                     value = None
-                            validated_vars[field.name] = value
+                            if value is not None:
+                                validated_vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
                     self.vars.update(validated_vars)
