@@ -410,6 +410,7 @@ class Form(object):
         hidden=None,
         validation=None,
         csrf_session=None,
+        csrf_protection=True,
         lifespan=None,
         signing_info=None,
         submit_value="Submit",
@@ -444,7 +445,7 @@ class Form(object):
         self.signing_info = signing_info
         self.validation = validation
         self.lifespan = lifespan
-
+        self.csrf_protection = csrf_protection
         # initialized and can change
         self.vars = {}
         self.errors = {}
@@ -468,7 +469,7 @@ class Form(object):
             # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
             # Notice: we never expose the crsf uuid, we only use to sign the form uuid
             if request.method == "POST":
-                if self._verify_form(post_vars):
+                if not self.csrf_protection or self._verify_form(post_vars):
                     process = True
             if process:
                 record_id = self.record and self.record.get("id")
@@ -524,7 +525,8 @@ class Form(object):
             elif self.record:
                 # This form should not be processed.  We return the same as for GET.
                 self.vars = self._read_vars_from_record(table)
-        self._sign_form()
+        if self.csrf_protection:
+            self._sign_form()
 
     def _read_vars_from_record(self, table):
         if isinstance(table, list):
