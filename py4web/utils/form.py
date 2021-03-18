@@ -181,7 +181,7 @@ class FormStyleFactory:
                 )
             elif field.type == "upload":
                 control = DIV()
-                if value:
+                if value and not error:
                     download_div = DIV()
                     download_div.append(
                         LABEL(
@@ -496,7 +496,7 @@ class Form(object):
                                 value = request.files.get(field.name)
                                 delete = post_vars.get("_delete_" + field.name)
                                 if value is not None:
-                                    if field.uploadfolder:
+                                    if field.uploadfolder and not error:
                                         value = field.store(
                                             value.file,
                                             value.filename,
