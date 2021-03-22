@@ -181,7 +181,7 @@ class FormStyleFactory:
                 )
             elif field.type == "upload":
                 control = DIV()
-                if value and not error:
+                if value and field.download_url is not None and not error:
                     download_div = DIV()
                     download_div.append(
                         LABEL(
@@ -475,6 +475,7 @@ class Form(object):
                 record_id = self.record and self.record.get("id")
                 if not post_vars.get("_delete"):
                     validated_vars = {}
+                    uploaded_files = []
                     for field in self.table:
                         if field.writable and field.type != "id":
                             original_value = post_vars.getall(field.name)
@@ -496,12 +497,8 @@ class Form(object):
                                 value = request.files.get(field.name)
                                 delete = post_vars.get("_delete_" + field.name)
                                 if value is not None:
-                                    if field.uploadfolder and not error:
-                                        value = field.store(
-                                            value.file,
-                                            value.filename,
-                                            field.uploadfolder,
-                                        )
+                                    if field.uploadfolder:
+                                        uploaded_files.append(tuple(field, value))
                                 elif self.record and not delete:
                                     value = self.record.get(field.name)
                                 else:
@@ -516,6 +513,15 @@ class Form(object):
                     if self.record and dbio:
                         self.vars["id"] = self.record.id
                     if not self.errors:
+                        for file in uploaded_files:
+                            field, value = file
+                            value = field.store(
+                                value.file,
+                                value.filename,
+                                field.uploadfolder
+                            )
+                            if value is not None:
+                                validated_vars[field.name] = value
                         self.accepted = True
                         if dbio:
                             self.update_or_insert(validated_vars)
