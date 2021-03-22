@@ -75,8 +75,8 @@ class FormStyleFactory:
             titles=dict(),
             errors=dict(),
             begin=XML(form.xml().split("</form>")[0]),
-            submit='',
-            delete='',
+            submit="",
+            delete="",
             end=XML("</form>"),
         )
         class_label = self.classes["label"]
@@ -116,16 +116,19 @@ class FormStyleFactory:
             # if the form is readonly or this is an id type field, display it as readonly
             if readonly or not field.writable or field.type == "id":
                 if field.type == "boolean":
-                        control = INPUT(
+                    control = INPUT(
                         _type="checkbox",
                         _id=input_id,
                         _name=field.name,
                         _value="ON",
                         _disabled="",
                         _checked=value,
-                        _title=title,)
+                        _title=title,
+                    )
                 else:
-                        control = DIV(field.represent and field.represent(value) or value or "")
+                    control = DIV(
+                        field.represent and field.represent(value) or value or ""
+                    )
             # if we have a widget for the field use it
             elif field.widget:
                 control = field.widget(table, value)
@@ -180,7 +183,11 @@ class FormStyleFactory:
                 control = DIV()
                 if value:
                     download_div = DIV()
-                    download_div.append(LABEL("Currently:  ",))
+                    download_div.append(
+                        LABEL(
+                            "Currently:  ",
+                        )
+                    )
                     download_div.append(
                         A(" download ", _href=field.download_url(value))
                     )
@@ -196,7 +203,7 @@ class FormStyleFactory:
                     control.append(download_div)
                 control.append(LABEL("Change: "))
                 control.append(INPUT(_type="file", _id=input_id, _name=field.name))
-            elif get_options(field.requires) is not None and field.writable==True:
+            elif get_options(field.requires) is not None and field.writable == True:
                 multiple = field.type.startswith("list:")
                 value = list(map(str, value if isinstance(value, list) else [value]))
                 option_tags = [
@@ -290,9 +297,17 @@ class FormStyleFactory:
                 )
             )
         controls["submit"] = INPUT(
-            _type="submit", _value="Submit", _class=self.classes["input[type=submit]"],
+            _type="submit",
+            _value="Submit",
+            _class=self.classes["input[type=submit]"],
         )
-        submit = DIV(DIV(controls["submit"], _class=class_inner,), _class=class_outer,)
+        submit = DIV(
+            DIV(
+                controls["submit"],
+                _class=class_inner,
+            ),
+            _class=class_outer,
+        )
         form.append(submit)
         return dict(form=form, controls=controls)
 
@@ -395,12 +410,16 @@ class Form(object):
         hidden=None,
         validation=None,
         csrf_session=None,
+        csrf_protection=True,
         lifespan=None,
         signing_info=None,
         submit_value="Submit",
     ):
         self.param = Param(
-            formstyle=formstyle, hidden=hidden, submit_value=submit_value, sidecar=[],
+            formstyle=formstyle,
+            hidden=hidden,
+            submit_value=submit_value,
+            sidecar=[],
         )
 
         if isinstance(table, list):
@@ -426,7 +445,7 @@ class Form(object):
         self.signing_info = signing_info
         self.validation = validation
         self.lifespan = lifespan
-
+        self.csrf_protection = csrf_protection
         # initialized and can change
         self.vars = {}
         self.errors = {}
@@ -450,23 +469,25 @@ class Form(object):
             # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
             # Notice: we never expose the crsf uuid, we only use to sign the form uuid
             if request.method == "POST":
-                if self._verify_form(post_vars):
+                if not self.csrf_protection or self._verify_form(post_vars):
                     process = True
             if process:
                 record_id = self.record and self.record.get("id")
                 if not post_vars.get("_delete"):
                     validated_vars = {}
                     for field in self.table:
-                        if not field.name in post_vars: 
-                            continue
                         if field.writable and field.type != "id":
                             original_value = post_vars.getall(field.name)
-                            if (
-                                isinstance(original_value, list)
-                                and len(original_value) == 1
+                            if isinstance(original_value, list):
+                                if len(original_value) == 1:
+                                    original_value = original_value[0]
+                                    
+                                elif len(original_value) == 0:
+                                    original_value = None
+                                    
+                            if field.type.startswith("list:") and isinstance(
+                                original_value, str
                             ):
-                                original_value = original_value[0]
-                            if field.type.startswith("list:") and isinstance(original_value, str):
                                 original_value = json.loads(original_value or "[]")
                             (value, error) = field.validate(original_value, record_id)
                             if field.type == "password" and record_id and value is None:
@@ -477,13 +498,16 @@ class Form(object):
                                 if value is not None:
                                     if field.uploadfolder:
                                         value = field.store(
-                                            value.file, value.filename, field.uploadfolder
+                                            value.file,
+                                            value.filename,
+                                            field.uploadfolder,
                                         )
                                 elif self.record and not delete:
                                     value = self.record.get(field.name)
                                 else:
                                     value = None
-                            validated_vars[field.name] = value
+                            if value is not None:
+                                validated_vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
                     self.vars.update(validated_vars)
@@ -501,7 +525,8 @@ class Form(object):
             elif self.record:
                 # This form should not be processed.  We return the same as for GET.
                 self.vars = self._read_vars_from_record(table)
-        self._sign_form()
+        if self.csrf_protection:
+            self._sign_form()
 
     def _read_vars_from_record(self, table):
         if isinstance(table, list):
@@ -514,22 +539,21 @@ class Form(object):
                 if name in self.record
             }
 
+    def _make_key(self):
+        if self.csrf_session is not None:
+            key = str(uuid.uuid1())
+            self.csrf_session["_formkey"] = key
+        else:
+            key = str(uuid.uuid1())
+            response.set_cookie("_formkey", key, same_site="Strict")
+        return key
+
     def _get_key(self):
         if self.csrf_session is not None:
-            key = self.csrf_session.get("_form_key")
-            if key is None:
-                key = str(uuid.uuid1())
-                self.csrf_session["_form_key"] = key
+            key = self.csrf_session.get("_formkey")
         else:
-            key = request.get_cookie("_form_key")
-            if key is None:
-                key = str(uuid.uuid1())
-                response.set_cookie("_form_key", key, same_site="Strict")
-        additional_info = {
-            "signing_info": self.signing_info,
-            "form_name": self.form_name,
-        }
-        return key + "." + json.dumps(additional_info)
+            key = request.get_cookie("_formkey")
+        return key
 
     def _sign_form(self):
         """Signs the form, for csrf"""
@@ -537,17 +561,19 @@ class Form(object):
         payload = {"ts": str(time.time())}
         if self.lifespan is not None:
             payload["exp"] = time.time() + self.lifespan
-        self.formkey = to_native(jwt.encode(payload, self._get_key(), algorithm="HS256"))
+        key = self._get_key() or self._make_key()
+        self.formkey = to_native(jwt.encode(payload, key, algorithm="HS256"))
 
     def _verify_form(self, post_vars):
         """Verifies the csrf signature and form name."""
         if post_vars.get("_formname") != self.form_name:
             return False
-        if not self.csrf_session:
-            return True
         token = post_vars.get("_formkey")
+        key = self._get_key()
+        if not key:
+            return False
         try:
-            jwt.decode(token, self._get_key(), algorithms=["HS256"])
+            jwt.decode(token, key, algorithms=["HS256"])
             return True
         except:
             return False

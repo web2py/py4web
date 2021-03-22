@@ -1035,9 +1035,7 @@ class DefaultAuthForms:
         user = None
         self.auth.next["login"] = request.query.get("next")
         if form.submitted:
-            user, error = self.auth.login(
-                form.vars.get("username"), form.vars.get("login_password")
-            )
+            user, error = self.auth.login(form.vars.get("username", ""), form.vars.get("login_password", ""))
             form.accepted = not error
             form.errors["username"] = error
             if user:
@@ -1073,14 +1071,15 @@ class DefaultAuthForms:
         form = Form(
             [
                 Field(
-                    "email", label=self.auth.param.messages["labels"].get("username_or_email")
-                )
+                    "email", label=self.auth.param.messages["labels"].get("username_or_email"),
+                    requires=IS_NOT_EMPTY()
+                     )
             ],
             submit_value=self.auth.param.messages["buttons"]["request"],
             formstyle=self.formstyle,
         )
-        if form.submitted:
-            email = form.vars.get("email")
+        if form.accepted:
+            email = form.vars.get("email", "")
             self.auth.request_reset_password(email, send=True, next="")
             self._set_flash("password-reset-link-sent")
             self._postprocessing("request_reset_password", form, None)
