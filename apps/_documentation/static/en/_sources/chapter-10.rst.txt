@@ -679,7 +679,7 @@ will render as:
 
 .. code:: html
 
-   <table><tbody
+   <table><tbody>
    <tr><th>a</th><td><ul><li>hello</li><li><strong>world</strong></li></ul></td></tr>
    <tr><th>b</th><td>(1, 2)</td></tr>
    </tbody></table>
