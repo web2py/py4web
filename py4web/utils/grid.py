@@ -89,6 +89,7 @@ class GridClassStyle:
         "search_form_table": "search-form-table",
         "search_form_tr": "search-form-tr",
         "search_form_td": "search-form-td",
+        "search_boolean": "search-boolean",
     }
 
     styles = {
@@ -128,6 +129,7 @@ class GridClassStyle:
         "search_form_table": "",
         "search_form_tr": "",
         "search_form_td": "",
+        "search_boolean": "",
     }
 
     @classmethod
@@ -180,6 +182,7 @@ class GridClassStyleBulma(GridClassStyle):
         "search_form_table": "search-form-table",
         "search_form_tr": "search-form-tr",
         "search_form_td": "search-form-td pr-1",
+        "search_boolean": "search-boolean",
     }
 
     styles = {
@@ -219,6 +222,7 @@ class GridClassStyleBulma(GridClassStyle):
         "search_form_table": "",
         "search_form_tr": "",
         "search_form_td": "",
+        "search_boolean": "padding-top: .5rem;",
     }
 
 
@@ -681,8 +685,10 @@ class Grid:
         for field in self.param.search_form.table:
             td = TD(**self.param.grid_class_style.get("search_form_td"))
             if field.type == "boolean":
-                td.append(self.param.search_form.custom["widgets"][field.name])
-                td.append(field.label)
+                sb = DIV(**self.param.grid_class_style.get("search_boolean"))
+                sb.append(self.param.search_form.custom["widgets"][field.name])
+                sb.append(field.label)
+                td.append(sb)
             else:
                 td.append(self.param.search_form.custom["widgets"][field.name])
             if (
@@ -794,7 +800,7 @@ class Grid:
             or self.formatters_by_type.get("default")
         )
 
-        class_type = "grid-cell-type-%s" % str(field.type).split(":")[0]
+        class_type = "grid-cell-type-%s" % str(field.type).split(":")[0].split("(")[0]
         class_col = "grid-col-%s" % key
         td = TD(
             formatter(field_value),
@@ -862,7 +868,7 @@ class Grid:
                 if self.param.pre_action_buttons:
                     for btn in self.param.pre_action_buttons:
                         if btn.onclick:
-                            btn.url=None
+                            btn.url = None
                         td.append(
                             self.render_action_button(
                                 btn.url,
@@ -925,7 +931,7 @@ class Grid:
                 if self.param.post_action_buttons:
                     for btn in self.param.post_action_buttons:
                         if btn.onclick:
-                            btn.url=None
+                            btn.url = None
                         td.append(
                             self.render_action_button(
                                 btn.url,
