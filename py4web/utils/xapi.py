@@ -368,7 +368,7 @@ def post_proc(
             [h() for h in on_success]
             for shaper in shapers:
                 ret = shaper(ret)
-        except Exception as exon:
+        except BaseException as exon:
             if success_exceptions and isinstance(exon, success_exceptions):
                 [h(exon) for h in on_success]
             else:
