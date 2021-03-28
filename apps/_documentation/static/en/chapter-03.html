@@ -3,12 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Installation and Startup &mdash; py4web 1.20210119.1&#34;
- documentation</title>
+  <title>Installation and Startup &mdash; py4web 1.20210207.1 documentation</title>
   
 
   
@@ -19,7 +18,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -32,6 +34,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/tabs.js"></script>
         <script src="_static/js/toggle.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -54,7 +57,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> py4web
+            <a href="index.html" class="icon icon-home"> py4web
           
 
           
@@ -64,8 +67,7 @@
             
             
               <div class="version">
-                1.20210119.1"
-
+                1.20210207.1
               </div>
             
           
@@ -116,7 +118,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#version-command-option"><code class="docutils literal notranslate"><span class="pre">version</span></code> command option</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#deployment-on-the-cloud">Deployment on the cloud</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#special-deployments">Special deployments</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#wsgi">WSGI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deployment-on-gcloud-aka-google-app-engine">Deployment on GCloud (aka Google App Engine)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deployment-on-pythonanywhere-com">Deployment on PythonAnywhere.com</a></li>
 </ul>
@@ -175,6 +178,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -186,7 +191,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-03.rst" class="fa fa-github"> Edit on GitHub</a>
             
@@ -247,8 +252,9 @@ procedures is highly reccomended.</p>
 </div>
 <div class="section" id="installing-from-pip">
 <h3>Installing from pip<a class="headerlink" href="#installing-from-pip" title="Permalink to this headline">¶</a></h3>
-<p>Using <em>pip</em> is the standard installation procedure for py4web. From the
-command line</p>
+<p>Using <em>pip</em> is the standard installation procedure for py4web, since it will
+quickly install the latest stable release of py4web.</p>
+<p>From the command line</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web --no-cache-dir --user
 </pre></div>
 </div>
@@ -273,7 +279,8 @@ be created by <em>pip</em> on the system’s path, but not if you type the
 <div class="section" id="installing-from-source-globally">
 <h3>Installing from source (globally)<a class="headerlink" href="#installing-from-source-globally" title="Permalink to this headline">¶</a></h3>
 <p>This is the traditional way for installing a program, but it works only
-on Linux and MacOS. All the requirements will be installed on the
+on Linux and MacOS (Windows does not normally support the <cite>make</cite> utility).
+All the requirements will be installed on the
 system’s path along with links to the py4web.py program on the local
 folder</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
@@ -294,15 +301,18 @@ later with the <code class="docutils literal notranslate"><span class="pre">make
 system’s path, but py4web itself will only be copied
 on a local folder. This is especially useful if you already have a
 working py4web installation but you want to test a different
-one. From the command line, go to a given working folder and then run</p>
+one. Also, installing from sources (locally or globally) will
+install all the latest changes present on the master branch of py4web - hence
+you will gain the latest (but potentially untested) code.</p>
+<p>From the command line, go to a given working folder and then run</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
 <span class="nb">cd</span> py4web
 python3 -m pip install  --upgrade -r requirements.txt
 </pre></div>
 </div>
-<p>Once installed, you should always start it from there with</p>
-<p><strong>For Linux / MacOS</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./py4web.py setup apps
+<p>Once installed, you should always start it from there with:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-TGludXggYW5kIE1hY09T" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tab" tabindex="0">Linux and MacOS</button><button aria-controls="panel-0-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-0-TGludXggYW5kIE1hY09T" class="sphinx-tabs-panel group-tab" id="panel-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./py4web.py setup apps
 ./py4web.py set_password
 ./py4web.py run apps
 </pre></div>
@@ -310,16 +320,16 @@ python3 -m pip install  --upgrade -r requirements.txt
 <p>If you have installed py4web both globally and locally, notice the
 <strong>./</strong> ; it forces the run of the local folder’s py4web and not the
 globally installed one.</p>
-<p><strong>For Windows</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 py4web.py setup apps
+</div><div aria-labelledby="tab-0-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 py4web.py setup apps
 python3 py4web.py set_password
 python3 py4web.py run apps
 </pre></div>
 </div>
 <p>On Windows, the programs on the local folder are always executed before
-the ones in the path (hence you don’t need the <strong>./</strong>). But running .py
-files directly it’s not usual and you’ll need an explicit python3/python
-command.</p>
+the ones in the path (hence you don’t need the <strong>./</strong> as on Linux).
+But running .py files directly it’s not usual and you’ll need an explicit
+python3/python command.</p>
+</div></div>
 </div>
 </div>
 <div class="section" id="upgrading">
@@ -371,7 +381,7 @@ http://localhost:8000/_dashboard
 http://localhost:8000/{yourappname}/index
 </pre></div>
 </div>
-<p>In order to stop py4web, you need to hit <kbd class="kbd docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">C</kbd></kbd> on the window where you run it.</p>
+<p>In order to stop py4web, you need to hit <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">C</kbd></kbd> on the window where you run it.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>ONLY the <strong>Default</strong> app is special because if does not require the “{appname}/” prefix in the path, like all the other apps do.
@@ -438,6 +448,9 @@ Options:
   -p, --password_file TEXT      File for the encrypted password  [default:
                                 password.txt]
 
+  -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|
+                geventWebSocketServer|wsgirefThreadingServer|rocketServer]
+                                server to use  [default: default]
   -w, --number_workers INTEGER  Number of workers  [default: 0]
   -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
                                 [default: full]
@@ -458,6 +471,16 @@ changes to files of that application, you can:</p>
 <li><p>for reloading on any first incoming request to the application has
 been changed (lazy-mode): <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--watch=lazy</span></code></p></li>
 </ul>
+<p>The default web server used is currently Tornado, but you can change this behaviour with the <code class="docutils literal notranslate"><span class="pre">server</span></code> option.</p>
+<p>Also, for advanced users, you can specify the optional ‘’usegevent’’ directive like in this example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web usegevent run -s geventWebSocketServer apps
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The optional ‘’usegevent’’ directive must be used with ‘’gevent’’ or ‘’geventWebSocketServer’’ webservers (in order to apply monkey patching)
+and shouldn’t be used with ‘’tornado’’ and ‘’waitress’’.</p>
+</div>
 </div>
 <div class="section" id="set-password-command-option">
 <span id="id4"></span><h3><code class="docutils literal notranslate"><span class="pre">set_password</span></code> command option<a class="headerlink" href="#set-password-command-option" title="Permalink to this headline">¶</a></h3>
@@ -553,11 +576,27 @@ Options:
 modules, too.</p>
 </div>
 </div>
-<div class="section" id="deployment-on-the-cloud">
-<h2>Deployment on the cloud<a class="headerlink" href="#deployment-on-the-cloud" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="special-deployments">
+<h2>Special deployments<a class="headerlink" href="#special-deployments" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="wsgi">
+<h3>WSGI<a class="headerlink" href="#wsgi" title="Permalink to this headline">¶</a></h3>
+<p>py4web is a standard WSGI application. So, if a full program installation it’s not
+feasible you can simply run py4web as a WSGI app. For example, using gunicorn-cli,
+create a pyton file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># py4web_wsgi.py</span>
+<span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">wsgi</span>
+<span class="n">application</span> <span class="o">=</span> <span class="n">wsgi</span><span class="p">(</span><span class="n">apps_folder</span><span class="o">=</span><span class="s2">&quot;apps&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and then start the application using cli:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ gunicorn -w <span class="m">4</span> py4web_wsgi:myapp
+</pre></div>
+</div>
+<p>The wsgi function takes arguments with the same name as the command line arguments.</p>
+</div>
 <div class="section" id="deployment-on-gcloud-aka-google-app-engine">
 <h3>Deployment on GCloud (aka Google App Engine)<a class="headerlink" href="#deployment-on-gcloud-aka-google-app-engine" title="Permalink to this headline">¶</a></h3>
-<p>Login into the Gcloud console (<a class="reference external" href="https://console.cloud.google.com/">https://console.cloud.google.com/</a>) and
+<p>Login into the <a class="reference external" href="https://console.cloud.google.com/">Gcloud console</a> and
 create a new project. You will obtain a project id that looks like
 “{project_name}-{number}”.</p>
 <p>In your local file system make a new working folder and cd into it:</p>
@@ -601,9 +640,8 @@ You should not need to edit <code class="docutils literal notranslate"><span cla
 </div>
 <div class="section" id="deployment-on-pythonanywhere-com">
 <h3>Deployment on PythonAnywhere.com<a class="headerlink" href="#deployment-on-pythonanywhere-com" title="Permalink to this headline">¶</a></h3>
-<p>Watch the video: <a class="reference external" href="https://youtu.be/Wxjl_vkLAEY">https://youtu.be/Wxjl_vkLAEY</a> and follow the detailed
-tutorial on
-<a class="reference external" href="https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-source-pythonanywhere.md">https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-source-pythonanywhere.md</a>
+<p>Watch the <a class="reference external" href="https://youtu.be/Wxjl_vkLAEY">YouTube video</a> and follow the <a class="reference external" href="https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-source-pythonanywhere.md">detailed
+tutorial</a>
 . The bottle_app.py script is in
 <code class="docutils literal notranslate"><span class="pre">py4web/deployment_tools/pythonanywhere.com/bottle_app.py</span></code></p>
 </div>
@@ -615,37 +653,29 @@ tutorial on
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="chapter-04.html" class="btn btn-neutral float-right" title="The Dashboard" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="chapter-02.html" class="btn btn-neutral float-left" title="Help, resources and hints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="chapter-04.html" class="btn btn-neutral float-right" title="The Dashboard" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="chapter-02.html" class="btn btn-neutral float-left" title="Help, resources and hints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, BSDv3 License
+        &#169; Copyright 2020, BSDv3 License.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -664,8 +694,7 @@ tutorial on
      <label for="switch"></label>
      </span>
       
-      v: 1.20210119.1"
-
+      v: 1.20210207.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
@@ -676,10 +705,6 @@ tutorial on
            <strong> 
           <dd><a href="../en/index.html">en</a></dd> </strong>
           
-        
-          
-          
-          <dd><a href="../pt/index.html">pt</a></dd> 
         
       </dl>
       
