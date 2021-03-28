@@ -482,10 +482,10 @@ class Form(object):
                             if isinstance(original_value, list):
                                 if len(original_value) == 1:
                                     original_value = original_value[0]
-                                    
+
                                 elif len(original_value) == 0:
                                     original_value = None
-                                    
+
                             if field.type.startswith("list:") and isinstance(
                                 original_value, str
                             ):
@@ -516,9 +516,7 @@ class Form(object):
                         for file in uploaded_files:
                             field, value = file
                             value = field.store(
-                                value.file,
-                                value.filename,
-                                field.uploadfolder
+                                value.file, value.filename, field.uploadfolder
                             )
                             if value is not None:
                                 validated_vars[field.name] = value
