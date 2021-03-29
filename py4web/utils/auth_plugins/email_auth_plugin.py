@@ -48,4 +48,3 @@ class EmailAuthPlugin:
                 except:  # server might already close connection after error
                     pass
             return False
-

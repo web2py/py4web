@@ -429,7 +429,8 @@ if MODE == "full":
         form = request.json
         # Directory for zipped assets
         assets_dir = os.path.join(os.path.dirname(py4web.__file__), "assets")
-        target_dir = safe_join(FOLDER, form["name"])
+        app_name = form['name']
+        target_dir = safe_join(FOLDER, app_name)
         if form["type"] == "minimal":
             source = os.path.join(assets_dir, "py4web.app._minimal.zip")
             source_dir = safe_join(FOLDER, "_minimal")
@@ -471,6 +472,7 @@ if MODE == "full":
             data = data.replace("<session-secret-key>", str(uuid.uuid4()))
             with open(settings, "w") as fp:
                 fp.write(data)
+        Reloader.import_app(app_name)
         return {"status": "success"}
 
     #

@@ -606,7 +606,7 @@ class Form(object):
             for item in self.param.sidecar:
                 helper["form"][-1][-1].append(item)
             if self.action:
-                helper["_action"] = self.action
+                helper["form"]["_action"] = self.action
             if self.param.submit_value:
                 helper["controls"]["submit"]["_value"] = self.param.submit_value
             if self.form_name:
