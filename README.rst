@@ -165,7 +165,4 @@ Many thanks to everybody, and especially:
 - `Pirsch <https://github.com/Pirsch>`__
 - `sugizo <https://github.com/sugizo>`__
 - `valq7711 <https://github.com/valq7711>`__
-
-
-
-
+- `Luca de Alfaro <https://github.com/lucadealfaro>`__
