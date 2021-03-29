@@ -142,6 +142,7 @@ class TestAuth(unittest.TestCase):
         body = {
             "token": self.auth._link.split("?token=")[1],
             "new_password": "987654321",
+            "new_password2": "987654321",
         }
         self.assertTrue(
             self.auth.action("api/reset_password", "POST", {}, body),
