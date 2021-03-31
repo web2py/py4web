@@ -2115,7 +2115,7 @@ table person.</p>
 <span class="go">Alex</span>
 </pre></div>
 </div>
-<p>The latter syntax is particularly handy when selecting en expression
+<p>The latter syntax is particularly handy when selecting an expression
 instead of a column. We will show this later.</p>
 <p>You can also do</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span><span class="o">.</span><span class="n">compact</span> <span class="o">=</span> <span class="kc">False</span>
@@ -2627,7 +2627,7 @@ dictionaries using the <code class="docutils literal notranslate"><span class="p
 </div>
 <p>These methods are convenient for passing Rows to generic views and or to
 store Rows in sessions (Rows objects themselves cannot be
-serialized because contain a reference to an open DB connection):</p>
+serialized because they contain a reference to an open DB connection):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="n">session</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="n">rows</span>  <span class="c1"># not allowed!</span>
 <span class="n">session</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="n">rows</span><span class="o">.</span><span class="n">as_list</span><span class="p">()</span>  <span class="c1"># allowed!</span>
