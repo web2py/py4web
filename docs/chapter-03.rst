@@ -500,7 +500,7 @@ and then start the application using cli:
 
 ::
 
-   gunicorn -w 4 py4web_wsgi:myapp
+   gunicorn -w 4 py4web_wsgi:application
 
 
 The wsgi function takes arguments with the same name as the command line arguments.
