@@ -63,9 +63,17 @@ class FormStyleFactory:
             "textarea": "",
         }
 
-    def produce(self, table, vars, errors, readonly, deletable, classes=None):
+    def produce(
+        self, table, vars, errors, readonly, deletable, classes=None, kwargs=None
+    ):
         self.classes.update(classes or {})
-        form = FORM(_method="POST", _action=request.url, _enctype="multipart/form-data")
+        kwargs = kwargs if kwargs else {}
+        form = FORM(
+            _method="POST",
+            _action=request.url,
+            _enctype="multipart/form-data",
+            **kwargs
+        )
         controls = Param(
             labels=dict(),
             widgets=dict(),
@@ -315,7 +323,7 @@ class FormStyleFactory:
 FormStyleDefault = FormStyleFactory().produce
 
 
-def FormStyleBulma(table, vars, errors, readonly, deletable):
+def FormStyleBulma(table, vars, errors, readonly, deletable, kwargs=None):
     classes = {
         "outer": "field",
         "inner": "control",
@@ -336,10 +344,10 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
         "select": "control select",
         "textarea": "textarea",
     }
-    return FormStyleDefault(table, vars, errors, readonly, deletable, classes)
+    return FormStyleDefault(table, vars, errors, readonly, deletable, classes, kwargs)
 
 
-def FormStyleBootstrap4(table, vars, errors, readonly, deletable):
+def FormStyleBootstrap4(table, vars, errors, readonly, deletable, kwargs=None):
     classes = {
         "outer": "form-group",
         "inner": "",
@@ -360,7 +368,7 @@ def FormStyleBootstrap4(table, vars, errors, readonly, deletable):
         "select": "form-control",
         "textarea": "form-control",
     }
-    return FormStyleDefault(table, vars, errors, readonly, deletable, classes)
+    return FormStyleDefault(table, vars, errors, readonly, deletable, classes, kwargs)
 
 
 # ################################################################
@@ -414,6 +422,7 @@ class Form(object):
         lifespan=None,
         signing_info=None,
         submit_value="Submit",
+        **kwargs
     ):
         self.param = Param(
             formstyle=formstyle,
@@ -456,6 +465,8 @@ class Form(object):
         self.formkey = None
         self.cached_helper = None
         self.action = None
+
+        self.kwargs = kwargs if kwargs else {}
 
         if readonly or request.method == "GET":
             if self.record:
@@ -601,7 +612,12 @@ class Form(object):
             self.clear()
         if not self.cached_helper:
             helper = self.param.formstyle(
-                self.table, self.vars, self.errors, self.readonly, self.deletable
+                self.table,
+                self.vars,
+                self.errors,
+                self.readonly,
+                self.deletable,
+                kwargs=self.kwargs,
             )
             for item in self.param.sidecar:
                 helper["form"][-1][-1].append(item)
