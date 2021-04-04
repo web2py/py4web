@@ -156,7 +156,7 @@ Many thanks to everybody, and especially:
 .. inclusion-marker-do-not-remove
 
 - `Massimo Di Pierro <https://github.com/mdipierro>`__
-- `Luca De Alfaro <https://github.com/lucadealfaro>`__
+- `Luca de Alfaro <https://github.com/lucadealfaro>`__
 - `Cassio Botaro <https://github.com/cassiobotaro>`__
 - `Dan Carroll <https://github.com/dan-carroll>`__
 - `Jim Steil <https://github.com/jpsteil>`__
@@ -166,4 +166,3 @@ Many thanks to everybody, and especially:
 - `Pirsch <https://github.com/Pirsch>`__
 - `sugizo <https://github.com/sugizo>`__
 - `valq7711 <https://github.com/valq7711>`__
-- `Luca de Alfaro <https://github.com/lucadealfaro>`__
