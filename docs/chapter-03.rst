@@ -32,7 +32,7 @@ ZIP file from `this external
 repository <https://github.com/nicozanf/py4web-pyinstaller>`__. Unzip it
 on a local folder and open a command line there. Finally run
 
-.. code:: bash
+::
 
    py4web-start set_password
    py4web-start run apps
@@ -62,7 +62,7 @@ quickly install the latest stable release of py4web.
 
 From the command line
 
-.. code:: bash
+::
 
    python3 -m pip install --upgrade py4web --no-cache-dir --user
 
@@ -77,7 +77,7 @@ only. The assets folder (that contains the py4web’s system apps) will
 also be created. After the installation you’ll be able to start py4web
 on any given working folder with
 
-.. code:: bash
+::
 
    py4web setup apps
    py4web set_password
@@ -97,7 +97,7 @@ All the requirements will be installed on the
 system’s path along with links to the py4web.py program on the local
 folder
 
-.. code:: bash
+::
 
    git clone https://github.com/web2py/py4web.git
    cd py4web
@@ -124,7 +124,7 @@ you will gain the latest (but potentially untested) code.
 
 From the command line, go to a given working folder and then run
 
-.. code:: bash
+::
 
    git clone https://github.com/web2py/py4web.git
    cd py4web
@@ -136,7 +136,7 @@ Once installed, you should always start it from there with:
 
    .. group-tab:: Linux and MacOS
 
-      .. code:: bash
+      ::
 
          ./py4web.py setup apps
          ./py4web.py set_password
@@ -148,7 +148,7 @@ Once installed, you should always start it from there with:
 
    .. group-tab:: Windows
 
-      .. code:: bash
+      ::
 
          python3 py4web.py setup apps
          python3 py4web.py set_password
@@ -166,7 +166,7 @@ Upgrading
 
 If you installed py4web from pip you can simple upgrade it with
 
-.. code:: bash
+::
 
    python3 -m pip install --upgrade py4web
 
@@ -176,7 +176,7 @@ If you installed py4web from pip you can simple upgrade it with
    and **Default**. 
    You have to manually remove these apps and then run
 
-   .. code:: bash
+   ::
 
       py4web setup apps
 
@@ -251,6 +251,8 @@ running it without any argument
 
    # py4web
 
+.. FIXME: next image must be updated
+
 .. image:: images/command.png
    :class: with-shadow
  
@@ -262,7 +264,7 @@ with the **–help** or **-h** argument.
 ``call`` command option
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: none
+::
 
    # py4web call -h
    Usage: py4web.py call [OPTIONS] APPS_FOLDER FUNC
@@ -270,6 +272,7 @@ with the **–help** or **-h** argument.
      Call a function inside apps_folder
 
    Options:
+     -Y, --yes          No prompt, assume yes to questions  [default: False]
      --args TEXT        Arguments passed to the program/function  [default: {}]
      -help, -h, --help  Show this message and exit.
 
@@ -278,7 +281,7 @@ with the **–help** or **-h** argument.
 ``new_app`` command option
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: none
+::
 
    # py4web new_app -h
    Usage: py4web.py new_app [OPTIONS] APPS_FOLDER APP_NAME
@@ -286,6 +289,9 @@ with the **–help** or **-h** argument.
      Create a new app copying the scaffolding one
 
    Options:
+     -Y, --yes                No prompt, assume yes to questions  [default:
+                              False]
+
      -s, --scaffold_zip TEXT  Path to the zip with the scaffolding app
      -help, -h, --help        Show this message and exit.
 
@@ -297,16 +303,16 @@ This currently gives an error on binaries installations and from source installa
 ``run`` command option
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: none
+::
 
    # py4web run -h
-   Usage: py4web.py run [OPTIONS] [APPS_FOLDER]
+   Usage: py4web.py run [OPTIONS] APPS_FOLDER
 
      Run all the applications on apps_folder
 
    Options:
-     -Y, --yes                     No prompt, assume yes to questions  [default:
-                                   False]
+     -Y, --yes                     No prompt, assume yes to questions
+                                   [default: False]
 
      -H, --host TEXT               Host name  [default: 127.0.0.1]
      -P, --port INTEGER            Port number  [default: 8000]
@@ -340,16 +346,16 @@ changes to files of that application, you can:
 The default web server used is currently Tornado, but you can change this behaviour with the ``server`` option.
 
 
-Also, for advanced users, you can specify the optional ''usegevent'' directive like in this example:
+Also, for advanced users, you can specify the optional ``--usegevent`` directive like in this example:
 
-.. code:: bash
+::
 
-   py4web usegevent run -s geventWebSocketServer apps
+   py4web --usegevent run -s geventWebSocketServer apps
 
 
 .. warning::
-    The optional ''usegevent'' directive must be used with ''gevent'' or ''geventWebSocketServer'' webservers (in order to apply monkey patching)
-    and shouldn't be used with ''tornado'' and ''waitress''.
+    The optional ``--usegevent`` directive must be used with ``gevent`` or ``geventWebSocketServer`` webservers (in order to apply monkey patching)
+    and shouldn't be used with ``tornado`` and ``waitress``.
 
 
 
@@ -358,7 +364,7 @@ Also, for advanced users, you can specify the optional ''usegevent'' directive l
 ``set_password`` command option
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: none
+::
 
    # py4web set_password -h
    Usage: py4web.py set_password [OPTIONS]
@@ -377,20 +383,20 @@ py4web starts, it asks for a one-time password for you to access the
 dashboard. This is annoying. You can avoid it by storing a pdkdf2 hashed
 password in a file (by default called password.txt) with the command
 
-.. code:: bash
+::
 
    py4web set_password
 
 It will not ask again unless the file is deleted. You can also use a
 custom file name with
 
-.. code:: bash
+::
 
    py4web set_password my_password_file.txt
 
 and then ask py4web to re-use that password at runtime with
 
-.. code:: bash
+::
 
    py4webt run -p my_password_file.txt apps
 
@@ -398,7 +404,7 @@ Finally you can manually create the file yourself with:
 
 ::
 
-   $ python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()(input('password:'))[0]))"
+   python3 -c "from pydal.validators import CRYPT; open('password.txt','w').write(str(CRYPT()(input('password:'))[0]))"
    password: *****
 
 .. _setup command option:
@@ -406,10 +412,10 @@ Finally you can manually create the file yourself with:
 ``setup`` command option
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: none
+::
 
    # py4web setup -h
-   Usage: py4web.py setup [OPTIONS] [APPS_FOLDER]
+   Usage: py4web.py setup [OPTIONS] APPS_FOLDER
 
      Setup new apps folder or reinstall it
 
@@ -429,14 +435,15 @@ the new one.
 ``shell`` command option
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: none
+::
 
    # py4web shell -h
-   Usage: py4web.py shell [OPTIONS] [APPS_FOLDER]
+   Usage: py4web.py shell [OPTIONS] APPS_FOLDER
 
-     Open a python shell with apps_folder added to the path
+     Open a python shell with apps_folder's parent added to the path
 
    Options:
+     -Y, --yes          No prompt, assume yes to questions  [default: False]
      -h, -help, --help  Show this message and exit.
 
 Py4web’s shell is just the regular python shell with apps added to the
@@ -457,7 +464,7 @@ For example, inside a shell you can
 ``version`` command option
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: none
+::
 
    # py4web version -h
    Usage: py4web.py version [OPTIONS]
@@ -468,7 +475,7 @@ For example, inside a shell you can
      -a, --all          List version of all modules
      -h, -help, --help  Show this message and exit.
 
-With the *-a* option you’ll get the version of all the available python
+With the ``-all`` option you’ll get the version of all the available python
 modules, too.
 
 Special deployments
@@ -491,9 +498,9 @@ create a pyton file:
 
 and then start the application using cli:
 
-.. code:: bash
+::
 
-   $ gunicorn -w 4 py4web_wsgi:myapp     
+   gunicorn -w 4 py4web_wsgi:application
 
 
 The wsgi function takes arguments with the same name as the command line arguments.
@@ -508,7 +515,7 @@ create a new project. You will obtain a project id that looks like
 
 In your local file system make a new working folder and cd into it:
 
-.. code:: bash
+::
 
    mkdir gae
    cd gae
@@ -537,7 +544,7 @@ files/folders:
 
 Install the Google SDK, py4web and setup the working folder:
 
-.. code:: bash
+::
 
    make install-gcloud-linux
    make setup
@@ -549,7 +556,7 @@ with the project id obtained from Google).
 
 Now every time you want to deploy your apps, simply do:
 
-.. code:: bash
+::
 
    make deploy
 
