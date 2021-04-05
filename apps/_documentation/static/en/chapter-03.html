@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation and Startup &mdash; py4web 1.20210207.1 documentation</title>
+  <title>Installation and Startup &mdash; py4web 1.20210328.2 documentation</title>
   
 
   
@@ -18,10 +18,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -57,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> py4web
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> py4web
           
 
           
@@ -67,7 +64,7 @@
             
             
               <div class="version">
-                1.20210207.1
+                1.20210328.2
               </div>
             
           
@@ -178,8 +175,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -191,7 +186,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-03.rst" class="fa fa-github"> Edit on GitHub</a>
             
@@ -312,7 +307,7 @@ python3 -m pip install  --upgrade -r requirements.txt
 </div>
 <p>Once installed, you should always start it from there with:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-TGludXggYW5kIE1hY09T" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tab" tabindex="0">Linux and MacOS</button><button aria-controls="panel-0-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-0-TGludXggYW5kIE1hY09T" class="sphinx-tabs-panel group-tab" id="panel-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./py4web.py setup apps
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-TGludXggYW5kIE1hY09T" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tab" tabindex="0">Linux and MacOS</button><button aria-controls="panel-0-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-0-TGludXggYW5kIE1hY09T" class="sphinx-tabs-panel group-tab" id="panel-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./py4web.py setup apps
 ./py4web.py set_password
 ./py4web.py run apps
 </pre></div>
@@ -381,7 +376,7 @@ http://localhost:8000/_dashboard
 http://localhost:8000/{yourappname}/index
 </pre></div>
 </div>
-<p>In order to stop py4web, you need to hit <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">C</kbd></kbd> on the window where you run it.</p>
+<p>In order to stop py4web, you need to hit <kbd class="kbd docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">C</kbd></kbd> on the window where you run it.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>ONLY the <strong>Default</strong> app is special because if does not require the “{appname}/” prefix in the path, like all the other apps do.
@@ -653,29 +648,37 @@ tutorial</a>
            
           </div>
           <footer>
+  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="chapter-04.html" class="btn btn-neutral float-right" title="The Dashboard" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="chapter-02.html" class="btn btn-neutral float-left" title="Help, resources and hints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+        <a href="chapter-04.html" class="btn btn-neutral float-right" title="The Dashboard" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="chapter-02.html" class="btn btn-neutral float-left" title="Help, resources and hints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, BSDv3 License.
+        
+        &copy; Copyright 2020, BSDv3 License
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 
@@ -694,7 +697,7 @@ tutorial</a>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210207.1
+      v: 1.20210328.2
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
@@ -705,6 +708,10 @@ tutorial</a>
            <strong> 
           <dd><a href="../en/index.html">en</a></dd> </strong>
           
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
         
       </dl>
       

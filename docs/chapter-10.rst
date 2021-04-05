@@ -4,7 +4,7 @@ YATL helpers
 
 Consider the following code in a view:
 
-.. code:: html
+::
 
    [[=DIV('this', 'is', 'a', 'test', _id='123', _class='myclass')]]
 
@@ -28,7 +28,7 @@ list or tuple as its set of components using the ``*`` notation and it
 can take a single dictionary as its set of attributes using the ``**``,
 for example:
 
-.. code:: html
+::
 
    [[
    contents = ['this', 'is', 'a', 'test']
@@ -51,7 +51,7 @@ The following set of helpers:
 can be used to build complex expressions that can then be serialized to
 XML. For example:
 
-.. code:: html
+::
 
    [[=DIV(STRONG(I("hello ", "<world>")), _class="myclass")]]
 
@@ -101,9 +101,9 @@ dictionaries with respect to their attributes:
    <div class="s"><span class="t">ab</span>c</div>
 
 Note, the complete set of components can be accessed via a list called
-``a.components``, and the complete set of attributes can be accessed via
+``a.children``, and the complete set of attributes can be accessed via
 a dictionary called ``a.attributes``. So, ``a[i]`` is equivalent to
-``a.components[i]`` when ``i`` is an integer, and ``a[s]`` is equivalent
+``a.children[i]`` when ``i`` is an integer, and ``a[s]`` is equivalent
 to ``a.attributes[s]`` when ``s`` is a string.
 
 Notice that helper attributes are passed as keyword arguments to the
@@ -115,35 +115,17 @@ and therefore cannot be used as keyword argument names. For example:
 
    DIV('text', _data-role='collapsible')
 
-will not work because "_data-role" includes a hyphen, which will produce
+will not work because “_data-role” includes a hyphen, which will produce
 a Python syntax error.
 
-In such cases you have a couple of options. You can use the ``data``
-argument (this time without a leading underscore) to pass a dictionary
-of related attributes without their leading hyphen, and the output will
-have the desired combinations e.g.
-
-.. code:: python
-
-   >>> print(DIV('text', data={'role': 'collapsible'}))
-   <div data-role="collapsible">text</div>
-
-or you can instead pass the attributes as a dictionary and make use of
-Python’s ``**`` function arguments notation, which maps a dictionary of
-(key:value) pairs into a set of keyword arguments:
+In such cases you can pass the attributes as a dictionary and make use
+of Python’s ``**`` function arguments notation, which maps a dictionary
+of (key:value) pairs into a set of keyword arguments:
 
 .. code:: python
 
    >>> print(DIV('text', **{'_data-role': 'collapsible'}))
    <div data-role="collapsible">text</div>
-
-Note that more elaborate entries will introduce HTML character entities,
-but they will work nonetheless e.g.
-
-.. code:: python
-
-   >>> print(DIV('text', data={'options':'{"mode":"calbox", "useNewStyle":true}'}))
-   <div data-options="{&quot;mode&quot;:&quot;calbox&quot;, &quot;useNewStyle&quot;:true}">text</div>
 
 You can also dynamically create special TAGs:
 
@@ -240,7 +222,7 @@ This helper makes the body of a page.
 ``CAT``
 ~~~~~~~
 
-This helper concatenates other helpers, same as TAG[''].
+This helper concatenates other helpers.
 
 .. code:: python
 
@@ -250,8 +232,7 @@ This helper concatenates other helpers, same as TAG[''].
 ``DIV``
 ~~~~~~~
 
-All helpers apart from ``XML`` are derived from ``DIV`` and inherit its
-basic methods.
+This is the content division element.
 
 .. code:: python
 
@@ -271,10 +252,7 @@ Emphasizes its content.
 ``FORM``
 ~~~~~~~~
 
-This is one of the most important helpers. In its simple form, it just
-makes a ``<form>...</form>`` tag, but because helpers are objects and
-have knowledge of what they contain, they can process submitted forms
-(for example, perform validation of the fields). This will be discussed
+Use this helper to make a FORM for user input. Forms will be discussed
 in detail in `Chapter 12 <#chapter-12>`__.
 
 .. code:: python
@@ -340,8 +318,6 @@ image with a link:
    >>> print(A(IMG(_src=URL('static', 'logo.png'), _alt="My Logo"),
    ... _href=URL('default', 'index')))
    <a href="/default/index"><img alt="My Logo" src="/static/logo.png"/></a>
-
-.. FIXME: URL('static', ...) is broken on py4web shell
 
 ``INPUT``
 ~~~~~~~~~
@@ -447,7 +423,7 @@ The ``CODE`` helper is generally preferable for code listings.
 ``SCRIPT``
 ~~~~~~~~~~
 
-This is include or link a script, such as JavaScript.
+This is for include or link a script, such as JavaScript.
 
 .. code:: python
 
@@ -617,11 +593,11 @@ Custom helpers
 Sometimes you need to generate custom XML tags. py4web provides ``TAG``,
 a universal tag generator.
 
-.. code:: html
+::
 
    [[=TAG.name('a', 'b', _c='d')]]
 
-generates the following XML
+generates the following XML:
 
 .. code:: xml
 
@@ -632,19 +608,14 @@ helper to suppress this behavior. Using ``TAG`` you can generate
 HTML/XML tags not already provided by the API. TAGs can be nested, and
 are serialized with ``str().`` An equivalent syntax is:
 
-.. code:: html
+::
 
    [[=TAG['name']('a', 'b', _c='d')]]
-
-If the TAG object is created with an empty name, it can be used to
-concatenate multiple strings and HTML helpers together without inserting
-them into a surrounding tag, but this use is deprecated. Use the ``CAT``
-helper instead.
 
 Self-closing tags can be generated with the TAG helper. The tag name
 must end with a “/”.
 
-.. code:: html
+::
 
    [[=TAG['link/'](_href='http://py4web.com')]]
 
@@ -655,7 +626,7 @@ generates the following XML:
    <link ref="http://py4web.com"/>
 
 Notice that ``TAG`` is an object, and ``TAG.name`` or ``TAG['name']`` is
-a function that returns a temporary helper class.
+a function that returns an helper instance.
 
 ``BEAUTIFY``
 ------------
@@ -663,7 +634,7 @@ a function that returns a temporary helper class.
 ``BEAUTIFY`` is used to build HTML representations of compound objects,
 including lists, tuples and dictionaries:
 
-.. code:: html
+::
 
    [[=BEAUTIFY({"a": ["hello", STRONG("world")], "b": (1, 2)})]]
 
@@ -684,216 +655,135 @@ will render as:
    <tr><th>b</th><td>(1, 2)</td></tr>
    </tbody></table>
 
-Server-side *DOM* and parsing
------------------------------
+Server-side *DOM*
+-----------------
 
-.. FIXME: review needed
-
-``elements``
+``children``
 ~~~~~~~~~~~~
 
-The DIV helper and all derived helpers provide the search methods
-``element`` and ``elements``.
-
-``element`` returns the first child element matching a specified
-condition (or None if no match).
-
-``elements`` returns a list of all matching children.
-
-**element** and **elements** use the same syntax to specify the matching
-condition, which allows for three possibilities that can be mixed and
-matched: jQuery-like expressions, match by exact attribute value, match
-using regular expressions.
-
-Here is a simple example:
+Each helper object keep the list of its components into the ``children``
+attribute.
 
 .. code:: python
 
-   >>> a = DIV(DIV(DIV('a', _id='target', _class='abc')))
-   >>> d = a.elements('div#target')
-   >>> d[0][0] = 'changed'
-   >>> print a
-   <div><div><div id="target" class="abc">changed</div></div></div>
+   >>> CAT('hello', STRONG('world')).children
+   ['hello', <yatl.helpers.TAGGER object at 0x7fa533ff7640>]
 
-The un-named argument of ``elements`` is a string, which may contain:
-the name of a tag, the id of a tag preceded by a pound symbol, the class
-preceded by a dot, the explicit value of an attribute in square
-brackets.
+``find``
+~~~~~~~~
 
-Here are 4 equivalent ways to search the previous tag by id:
+To help searching into the DOM, all helpers have a ``find`` method with
+the following signature:
 
 .. code:: python
 
-   d = a.elements('#target')
-   d = a.elements('div#target')
-   d = a.elements('div[id=target]')
-   d = a.elements('div', _id='target')
+   def find(self, query=None, **kargs)
 
-Here are 4 equivalent ways to search the previous tag by class:
+that returns all the components matching supplied arguments.
 
-.. code:: python
-
-   d = a.elements('.abc')
-   d = a.elements('div.abc')
-   d = a.elements('div[class=abc]')
-   d = a.elements('div', _class='abc')
-
-Any attribute can be used to locate an element (not just ``id`` and
-``class``), including multiple attributes (the function element can take
-multiple named arguments), but only the first matching element will be
-returned.
-
-Using the jQuery syntax “div#target” it is possible to specify multiple
-search criteria separated by a comma:
+A very simple ``query`` can be a tag name:
 
 .. code:: python
 
-   a = DIV(SPAN('a', _id='t1'), DIV('b', _class='c2'))
-   d = a.elements('span#t1, div.c2')
+   >>> a = DIV(DIV(SPAN('x'), 3, DIV(SPAN('y'))))
+   >>> for c in a.find('span', first_only=True): c[0]='z'
+   >>> print(a)  # We should .xml() here instead of print
+   <div><div><span>z</span>3<div><span>y</span></div></div></div>
+   >>> for c in a.find('span'): c[0]='z'
+   >>> print(a)
+   <div><div><span>z</span>3<div><span>z</span></div></div></div>
 
-or equivalently
+It also supports a syntax compatible with `jQuery <https://api.jquery.com/>`__,
+accepting the following expressions:
 
-.. code:: python
+- `jQuery Multiple Selector <https://api.jquery.com/multiple-selector/>`__,
+  e.g. “selector1, selector2, selectorN”,
+- `jQuery Descendant Selector <https://api.jquery.com/descendant-selector/>`__,
+  e.g. “ancestor descendant”,
+- `jQuery ID Selector <https://api.jquery.com/id-selector/>`__, e.g. “#id”,
+- `jQuery Class Selector <https://api.jquery.com/class-selector/>`__,
+  e.g. “.class”, and
+- `jQuery Attribute Equals Selector <https://api.jquery.com/attribute-equals-selector/>`__,
+  e.g. “[name=value]”, notice that here the value must be unquoted.
 
-   a = DIV(SPAN('a', _id='t1'), DIV('b', _class='c2'))
-   d = a.elements('span#t1', 'div.c2')
-
-If the value of an attribute is specified using a name argument, it can
-be a string or a regular expression:
-
-.. code:: python
-
-   a = DIV(SPAN('a', _id='test123'), DIV('b', _class='c2'))
-   d = a.elements('span', _id=re.compile('test\d{3}')
-
-A special named argument of the DIV (and derived) helpers is ``find``.
-It can be used to specify a search value or a search regular expression
-in the text content of the tag. For example:
-
-.. code:: python
-
-   >>> a = DIV(SPAN('abcde'), DIV('fghij'))
-   >>> d = a.elements(find='bcd')
-   >>> print d[0]
-   <span>abcde</span>
-
-or
+Here are some examples:
 
 .. code:: python
 
-   >>> a = DIV(SPAN('abcde'), DIV('fghij'))
-   >>> d = a.elements(find=re.compile('fg\w{3}'))
-   >>> print d[0]
-   <div>fghij</div>
-
-``components``
-~~~~~~~~~~~~~~
-
-Here’s an example of listing all elements in an html string:
-
-.. code:: python
-
-   >>> html = TAG('<a>xxx</a><b>yyy</b>')
-   >>> for item in html.components:
-   ...     print item
-   ... 
-   <a>xxx</a>
-   <b>yyy</b>
-
-``parent`` and ``siblings``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-``parent`` returns the parent of the current element.
-
-.. code:: python
-
-   >>> a = DIV(SPAN('a'), DIV('b'))
-   >>> s = a.element('span')
-   >>> d = s.parent
-   >>> d['_class']='abc'
-   >>> print a
-   <div class="abc"><span>a</span><div>b</div></div>
-   >>> for e in s.siblings(): print e
-   <div>b</div>
-
-Replacing elements
-~~~~~~~~~~~~~~~~~~
+   >>> a = DIV(SPAN(A('hello', **{'_id': '1-1', '_u:v': '$'})), P('world', _class='this is a test'))
+   >>> for e in a.find('div a#1-1, p.is'): print(e)
+   <a id="1-1" u:v="$">hello</a>
+   <p class="this is a test">world</p>
+   >>> for e in a.find('#1-1'): print(e)
+   <a id="1-1" u:v="$">hello</a>
+   >>> a.find('a[u:v=$]')[0].xml()
+   '<a id="1-1" u:v="$">hello</a>'
+   >>> a = FORM(INPUT(_type='text'), SELECT(OPTION(0)), TEXTAREA())
+   >>> for c in a.find('input, select, textarea'): c['_disabled'] = True
+   >>> a.xml()
+   '<form><input disabled="disabled" type="text"/><select disabled="disabled"><option>0</option></select><textarea disabled="disabled"></textarea></form>'
+   >>> for c in a.find('input, select, textarea'): c['_disabled'] = False
+   >>> a.xml()
+   '<form><input type="text"/><select><option>0</option></select><textarea></textarea></form>'
 
 Elements that are matched can also be replaced or removed by specifying
-the ``replace`` argument. Notice that a list of the original matching
-elements is still returned as usual.
+a ``replace`` argument (note, a list of the original matching elements
+is still returned as usual).
 
 .. code:: python
 
-   >>> a = DIV(SPAN('x'), DIV(SPAN('y'))
-   >>> b = a.elements('span', replace=P('z')
-   >>> print a
-   <div><p>z</p><div><p>z</p></div>
+   >>> a = DIV(DIV(SPAN('x', _class='abc'), DIV(SPAN('y', _class='abc'), SPAN('z', _class='abc'))))
+   >>> b = a.find('span.abc', replace=P('x', _class='xyz'))
+   >>> print(a)
+   <div><div><p class="xyz">x</p><div><p class="xyz">x</p><p class="xyz">x</p></div></div></div>
 
-``replace`` can be a callable. In this case it will be passed the
-original element and it is expected to return the replacement element:
+``replace`` can be a callable, which will be passed the original element and
+should return a new element to replace it.
 
 .. code:: python
 
-   >>> a = DIV(SPAN('x'), DIV(SPAN('y'))
-   >>> b = a.elements('span', replace=lambda t: P(t[0])
-   >>> print a
-   <div><p>x</p><div><p>y</p></div>
+   >>> a = DIV(DIV(SPAN('x', _class='abc'), DIV(SPAN('y', _class='abc'), SPAN('z', _class='abc'))))
+   >>> b = a.find('span.abc', replace=lambda el: P(el[0], _class='xyz'))
+   >>> print(a)
+   <div><div><p class="xyz">x</p><div><p class="xyz">y</p><p class="xyz">z</p></div></div></div>
 
 If ``replace=None``, matching elements will be removed completely.
 
 .. code:: python
 
-   >>> a = DIV(SPAN('x'), DIV(SPAN('y'))
-   >>> b = a.elements('span', replace=None)
-   >>> print a
-   <div></div>
+   >>> a = DIV(DIV(SPAN('x', _class='abc'), DIV(SPAN('y', _class='abc'), SPAN('z', _class='abc'))))
+   >>> b = a.find('span', text='y', replace=None)
+   >>> print(a)
+   <div><div><span class="abc">x</span><div><span class="abc"></span><span class="abc">z</span></div></div></div>
 
-``flatten``
-~~~~~~~~~~~
+If a ``text`` argument is specified, elements will be searched for text
+components that match text, and any matching text components will be
+replaced (``text`` is ignored if ``replace`` is not also specified, use
+a ``find`` argument when you only need searching for textual elements).
 
-The flatten method recursively serializes the content of the children of
-a given element into regular text (without tags):
-
-.. code:: python
-
-   >>> a = DIV(SPAN('this', DIV('is', STRONG('a'))), SPAN('test'))
-   >>> print a.flatten()
-   thisisatest
-
-Flatten can be passed an optional argument, ``render``, i.e. a function
-that renders/flattens the content using a different protocol. Here is an
-example to serialize some tags into Markmin wiki syntax:
+Like the ``find`` argument, ``text`` can be a string or a compiled regex.
 
 .. code:: python
 
-   >>> a = DIV(H1('title'), P('example of a ', A('link', _href='#test')))
-   >>> from gluon.html import markmin_serializer
-   >>> print a.flatten(render=markmin_serializer)
-   # titles
+   >>> a = DIV(DIV(SPAN('x', _class='abc'), DIV(SPAN('y', _class='abc'), SPAN('z', _class='abc'))))
+   >>> b = a.find(text=re.compile('x|y|z'), replace='hello')
+   >>> print(a)
+   <div><div><span class="abc">hello</span><div><span class="abc">hello</span><span class="abc">hello</span></div></div></div>
 
-   example of *a link * 
-
-At the time of writing we provide ``markmin_serializer`` and
-``markdown_serializer``.
-
-Parsing
-~~~~~~~
-
-The TAG object is also an XML/HTML parser. It can read text and convert
-into a tree structure of helpers. This allows manipulation using the API
-above:
+If other attributes are specified along with ``text``, then only components
+that match the specified attributes will be searched for text.
 
 .. code:: python
 
-   >>> html = '<h1>Title</h1><p>this is a <span>test</span></p>'
-   >>> parsed_html = TAG(html)
-   >>> parsed_html.element('span')[0]='TEST'
-   >>> print parsed_html
-   <h1>Title</h1><p>this is a <span>TEST</span></p>
+   >>> a = DIV(DIV(SPAN('x', _class='abc'), DIV(SPAN('y', _class='efg'), SPAN('z', _class='abc'))))
+   >>> b = a.find('span.efg', text=re.compile('x|y|z'), replace='hello')
+   >>> print(a)
+   <div><div><span class="abc">x</span><div><span class="efg">hello</span><span class="abc">z</span></div></div></div>
 
 Page layout
 -----------
+
+.. FIXME: review needed
 
 Views can extend and include other views in a tree-like structure.
 
@@ -1290,7 +1180,7 @@ friendly:
    if request.user_agent().is_mobile:
        response.view.replace('.html', '.mobile.html')
 
-The task of creating the "\*.mobile.html" views is left to the developer
+The task of creating the “\*.mobile.html” views is left to the developer
 but we strongly suggest using the “jQuery Mobile” plugin which makes the
 task very easy.
 
