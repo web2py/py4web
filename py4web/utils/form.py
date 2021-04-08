@@ -514,6 +514,8 @@ class Form(object):
                                     value = self.record.get(field.name)
                                 else:
                                     value = None
+                            elif field.type == "boolean":
+                                value = (value is not None)
                             if value is not None:
                                 validated_vars[field.name] = value
                             if error:
