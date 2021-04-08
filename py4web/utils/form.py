@@ -280,8 +280,8 @@ class FormStyleFactory:
                     )
                 )
 
-            if vars.get("id"):
-                form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
+        if vars.get("id"):
+            form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
         if deletable:
             controls["delete"] = INPUT(
                 _type="checkbox",
