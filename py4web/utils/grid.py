@@ -236,7 +236,7 @@ class Grid:
             "<script>document.write((new Date(%s,%s,%s,%s,%s,%s)).toLocaleString())</script>"
             % (
                 value.year,
-                value.month,
+                value.month - 1,
                 value.day,
                 value.hour,
                 value.minute,
@@ -255,7 +255,7 @@ class Grid:
             '<script>document.write((new Date(%s,%s,%s)).toLocaleString().split(",")[0])</script>'
             % (
                 value.year,
-                value.month,
+                value.month - 1,
                 value.day,
             )
         )
