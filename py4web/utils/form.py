@@ -62,11 +62,14 @@ class FormStyleFactory:
             "select": "",
             "textarea": "",
         }
+        self.class_inner_exceptions = {}
 
     def produce(
-        self, table, vars, errors, readonly, deletable, classes=None, kwargs=None
+        self, table, vars, errors, readonly, deletable, classes=None,
+            class_inner_exceptions=None, kwargs=None
     ):
         self.classes.update(classes or {})
+        self.class_inner_exceptions.update(class_inner_exceptions or {})
         kwargs = kwargs if kwargs else {}
         form = FORM(
             _method="POST",
@@ -273,7 +276,7 @@ class FormStyleFactory:
                 form.append(
                     DIV(
                         LABEL(field.label, _for=input_id, _class=class_label),
-                        DIV(control, _class=class_inner),
+                        DIV(control, _class=self.class_inner_exceptions.get(control.name, class_inner)),
                         P(error, _class=class_error) if error else "",
                         P(field.comment or "", _class=class_info),
                         _class=class_outer,
@@ -344,7 +347,10 @@ def FormStyleBulma(table, vars, errors, readonly, deletable, kwargs=None):
         "select": "control select",
         "textarea": "textarea",
     }
-    return FormStyleDefault(table, vars, errors, readonly, deletable, classes, kwargs)
+    return FormStyleDefault(table, vars, errors, readonly, deletable,
+                            classes=classes,
+                            class_inner_exceptions={'select': 'select'},
+                            kwargs=kwargs)
 
 
 def FormStyleBootstrap4(table, vars, errors, readonly, deletable, kwargs=None):
