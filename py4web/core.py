@@ -365,7 +365,7 @@ class Flash(Fixture):
     @action('index')
     @action.uses(flash)
     def index():
-        flash.set('hello', class_='important')
+        flash.set('hello', _class='important')
         return dict()
 
     Flash messages are added to the dict and, upon redirect, carry forward
@@ -390,11 +390,11 @@ class Flash(Fixture):
         else:
             response.delete_cookie("py4web-flash", path="/")
 
-    def set(self, message, class_="", sanitize=True):
+    def set(self, message, _class="", sanitize=True):
         # we set a flash message
         if sanitize:
             message = yatl.sanitizer.xmlescape(message)
-        Flash.local.flash = {"message": message, "class": class_}
+        Flash.local.flash = {"message": message, "class": _class}
 
     def transform(self, data, shared_data=None):
         # if we have a valid flash message, we inject it in the response dict
