@@ -828,10 +828,16 @@ class AuthAPI:
         "config",
         "register",
         "login",
+        "logout",
         "request_reset_password",
         "reset_password",
     ]
-    private_api = ["profile", "change_password", "change_email", "unsubscribe"]
+    private_api = [
+        "profile",
+        "change_password",
+        "change_email",
+        "unsubscribe"
+    ]
 
     @staticmethod
     @api_wrapper
