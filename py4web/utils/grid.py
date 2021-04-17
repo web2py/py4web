@@ -274,6 +274,7 @@ class Grid:
         search_form=None,
         search_queries=None,
         fields=None,
+        field_id=None,
         show_id=False,
         orderby=None,
         left=None,
@@ -322,6 +323,7 @@ class Grid:
         self.param = Param(
             query=query,
             fields=fields,
+            field_id=field_id,
             show_id=show_id,
             orderby=orderby,
             left=left,
@@ -396,7 +398,10 @@ class Grid:
 
         parts = self.path.split("/")
         self.action = parts[0] or "select"
-        self.tablename = self.get_tablenames(self.param.query)[0]  # what if there ar 2?
+        if self.param.field_id:
+            self.tablename = str(self.param.field_id._table)
+        else:
+            self.tablename = self.get_tablenames(self.param.query)[0]
         self.record_id = safe_int(parts[1] if len(parts) > 1 else None, default=None)
 
         if self.param.fields:
