@@ -1071,7 +1071,12 @@ class DefaultAuthForms:
             url = "../auth/plugin/" + name + "/login"
             if self.auth.next["login"]:
                 url = url + "?next=" + self.auth.next["login"]
-            top_buttons.append(A(plugin.label + " Login", _href=url, _role="button"))
+            if (
+                name != "email_auth"
+            ):  #  do not add the top button for the email auth plugin
+                top_buttons.append(
+                    A(plugin.label + " Login", _href=url, _role="button")
+                )
 
         if self.auth.allows("register"):
             form.param.sidecar.append(
