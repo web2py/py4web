@@ -895,6 +895,8 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def request_reset_password(auth):
+        if not request.json:
+            return auth._error("no json post payload")
         if not auth.request_reset_password(**request.json):
             return auth._error("invalid user")
         return {}
@@ -946,7 +948,7 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def profile(auth):
-        if request.method == "GET":
+        if request.method == "GET" or not request.json:
             return {"user": auth.get_user()}
         else:
             return auth.update_profile(auth.get_user(), **request.json)
