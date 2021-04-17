@@ -859,14 +859,14 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def register(auth):
-        if not request.json:
+        if request.json is None:
             return auth._error("no json post payload")       
         return auth.register(request.json, send=True).as_dict()
 
     @staticmethod
     @api_wrapper
     def login(auth):
-        if not request.json:
+        if request.json is None:
             return auth._error("no json post payload")       
         username, password = request.json.get("email"), request.json.get("password")
         if not all(isinstance(_, str) for _ in [username, password]):
@@ -905,7 +905,7 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def request_reset_password(auth):
-        if not request.json:
+        if request.json is None:
             return auth._error("no json post payload")
         if not auth.request_reset_password(**request.json):
             return auth._error("invalid user")
@@ -915,7 +915,7 @@ class AuthAPI:
     @api_wrapper
     def reset_password(auth):
         # check the new_password2 only if passed
-        if not request.json:
+        if request.json is None:
             return auth._error("no json post payload")       
         res = auth.reset_password(
             request.json.get("token"),
@@ -942,7 +942,7 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def change_password(auth):
-        if not request.json:
+        if request.json is None:
             return auth._error("no json post payload")       
         return auth.change_password(
             auth.get_user(safe=False),  # refactor make faster
@@ -953,7 +953,7 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def change_email(auth):
-        if not request.json:
+        if request.json is None:
             return auth._error("no json post payload")       
         return auth.change_email(
             auth.get_user(safe=False),
@@ -966,7 +966,7 @@ class AuthAPI:
     def profile(auth):
         if request.method == "GET":
             return {"user": auth.get_user()}
-        if not request.json:
+        if request.json is None:
             return auth._error("no json post payload")       
         else:
             return auth.update_profile(auth.get_user(), **request.json)
