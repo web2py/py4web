@@ -1367,8 +1367,9 @@ class MetaPathRouter:
     author: Paolo Pastori
     """
 
-    def __init__(self, pkg, pkg_alias='apps'):
-        assert pkg_alias; assert pkg
+    def __init__(self, pkg, pkg_alias="apps"):
+        assert pkg_alias
+        assert pkg
         if pkg != pkg_alias:
             self.pkg_alias = pkg_alias
             self.pkg = pkg
@@ -1380,7 +1381,9 @@ class MetaPathRouter:
             spec = importlib.util.find_spec(self.pkg)
             if spec:
                 spec.name = fullname
-                spec.loader = importlib.machinery.SourceFileLoader(fullname, spec.origin)
+                spec.loader = importlib.machinery.SourceFileLoader(
+                    fullname, spec.origin
+                )
                 return spec
 
 
