@@ -1,6 +1,7 @@
 import base64
 import copy
 from functools import reduce
+from urllib.parse import urlparse
 
 from yatl.helpers import (
     DIV,
@@ -149,7 +150,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-header": "grid-header pb-2",
         "grid-new-button": "grid-new-button button",
         "grid-search": "grid-search is-pulled-right pb-2",
-        "grid-table-wrapper": "grid-table-wrapper table_wrapper",
+        "grid-table-wrapper": "grid-table-wrapper table_wrapper responsive-table",
         "grid-table": "grid-table table is-bordered is-striped is-hoverable is-fullwidth",
         "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up is-pulled-right",
         "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down is-pulled-right",
@@ -348,6 +349,7 @@ class Grid:
             edit_submit_value=None,
             edit_action_button_text="Edit",
             delete_action_button_text="Delete",
+            htmx_target=None,
         )
 
         #  instance variables that will be computed
@@ -435,11 +437,21 @@ class Grid:
                         db[self.tablename][field.name].readable = False
                         db[self.tablename][field.name].writable = False
 
+            attrs = (
+                {
+                    "_hx-post": request.url,
+                    "_hx-target": self.param.htmx_target,
+                    "_hx-swap": "innertHTML",
+                }
+                if self.param.htmx_target
+                else {}
+            )
             self.form = Form(
                 db[self.tablename],
                 record=self.record_id,
                 readonly=readonly,
                 formstyle=self.param.formstyle,
+                **attrs,
             )
             if self.action == "new":
                 if self.param.new_sidecar:
@@ -473,6 +485,10 @@ class Grid:
 
         elif self.action == "delete":
             db(db[self.tablename].id == self.record_id).delete()
+
+            url = parse_referer()
+            if url and url.query:
+                self.endpoint += "?%s" % url.query
             redirect(self.endpoint)
 
         elif self.action == "select":
@@ -617,9 +633,14 @@ class Grid:
         if callable(url):
             url = url(row)
 
+        if self.param.htmx_target:
+            attr["_hx-get"] = url
+            attr["_hx-target"] = self.param.htmx_target
+            attr["_hx-swap"] = "innertHTML"
+        else:
+            attr["_href"] = url
         link = A(
             I(_class="fa %s" % icon),
-            _href=url,
             _role="button",
             _class=classes,
             _message=message,
@@ -638,7 +659,6 @@ class Grid:
         return link
 
     def render_default_form(self):
-
         search_type = safe_int(request.query.get("search_type", 0), default=0)
         search_string = request.query.get("search_string")
         options = [
@@ -650,7 +670,15 @@ class Grid:
             for key in request.query
             if not key in ("search_type", "search_string")
         ]
-        form = FORM(*hidden_fields, **dict(_method="GET", _action=self.endpoint))
+        if self.param.htmx_target:
+            attrs = {
+                "_hx-post": self.endpoint,
+                "_hx-target": self.param.htmx_target,
+                "_hx-swap": "innertHTML",
+            }
+        else:
+            attrs = {"_method": "GET", "_action": self.endpoint}
+        form = FORM(*hidden_fields, **attrs)
         select = SELECT(
             *options,
             **dict(
@@ -759,7 +787,7 @@ class Grid:
 
         thead = THEAD(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
         for key, col in columns:
-            col_class = "grid-col-%s" % key
+            col_class = " grid-col-%s" % key
             thead.append(
                 TH(
                     col,
@@ -801,7 +829,7 @@ class Grid:
         )
 
         class_type = "grid-cell-type-%s" % str(field.type).split(":")[0].split("(")[0]
-        class_col = "grid-col-%s" % key
+        class_col = " grid-col-%s" % key
         td = TD(
             formatter(field_value),
             _class=(
@@ -830,7 +858,7 @@ class Grid:
         tbody = TBODY()
         for row in self.rows:
             #  find the row id - there may be nested tables....
-            if self.use_tablename and self.tablename in row:
+            if self.use_tablename and self.tablename in row and "id" not in row:
                 row_id = row[self.tablename]["id"]
             else:
                 row_id = row["id"]
@@ -966,12 +994,21 @@ class Grid:
                 if is_current
                 else "grid-pagination-button"
             )
+            attrs = (
+                {
+                    "_hx-get": URL(self.endpoint, vars=pager_query_parms),
+                    "_hx-target": self.param.htmx_target,
+                    "_hx-swap": "innertHTML",
+                }
+                if self.param.htmx_target
+                else {"_href": URL(self.endpoint, vars=pager_query_parms)}
+            )
             pager.append(
                 A(
                     page_number,
                     **self.param.grid_class_style.get(page_name),
                     _role="button",
-                    _href=URL(self.endpoint, vars=pager_query_parms),
+                    **attrs,
                 )
             )
             previous_page_number = page_number
@@ -987,6 +1024,8 @@ class Grid:
                 create_url = self.param.create
             else:
                 create_url = self.endpoint + "/new"
+
+            create_url += "?%s" % self.referrer
 
             grid_header.append(
                 self.render_action_button(
@@ -1033,7 +1072,7 @@ class Grid:
                 else self.total_number_of_rows,
                 self.total_number_of_rows,
             )
-        )
+        ) if self.number_of_pages > 0 else row_count.append("No rows to display")
         footer.append(row_count)
 
         #  build the pager
@@ -1090,3 +1129,21 @@ class Grid:
             else:
                 items += [self.param.left]
         return len(self.get_tablenames(*items)) > 1
+
+
+def parse_referer(r):
+    """
+    Get the referrer from the request query and use urlparse to parse it into a url object
+
+    :param r: The request object to be interrogated
+
+    :return: the URL object or None if no URL object obtained/decoded
+    """
+    referrer = r.query.get("_referrer")
+    url = None
+    if referrer:
+        url_string = base64.b16decode(referrer.encode("utf8")).decode("utf8")
+        if url_string:
+            url = urlparse(url_string)
+
+    return url
