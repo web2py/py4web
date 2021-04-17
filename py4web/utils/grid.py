@@ -794,8 +794,6 @@ class Grid:
             field_value = row[field.tablename][field.name]
         else:
             field_value = row[field.name]
-        if field.represent is not None:
-            field_value = field.represent(field_value, row)
         key = "%s.%s" % (field.tablename, field.name)
         formatter = (
             self.formatters.get(key)
