@@ -1,7 +1,9 @@
 import sys
+
 if len(sys.argv) > 1 and sys.argv[1] == "--usegevent":
     sys.argv.pop(1)
     from gevent import monkey
+
     monkey.patch_all()
 
 

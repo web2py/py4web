@@ -87,6 +87,7 @@ class OAuth2(SSO):
     token_url = ""
     userinfo_url = ""
     default_scope = ""
+    algorithms = ["HS256", "RS256"]
 
     def __init__(
         self,
@@ -161,7 +162,7 @@ class OAuth2(SSO):
             # Lets not get the  user attributes via the userinfo endpoint
             # but lets take the userinfo directly extracted from the token
             # res = requests.get(self.userinfo_url, headers=headers)
-            data = jwt.decode(token, verify=False)
+            data = jwt.decode(token, verify=False, algorithms=self.algorithms)
         else:
             # fallback to old approach if "id_token" is not in the response
             token = output.get("access_token")

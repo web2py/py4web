@@ -797,8 +797,13 @@ class Grid:
                 )
             )
 
-        if (self.param.details or self.param.editable or self.param.deletable
-            or self.param.pre_action_buttons or self.param.post_action_buttons):
+        if (
+            self.param.details
+            or self.param.editable
+            or self.param.deletable
+            or self.param.pre_action_buttons
+            or self.param.post_action_buttons
+        ):
             thead.append(
                 TH("", **self.param.grid_class_style.get("grid-th-action-button"))
             )
