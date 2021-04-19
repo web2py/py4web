@@ -70,6 +70,7 @@ class FormStyleFactory:
         vars,
         errors,
         readonly,
+        noncreate,
         deletable,
         classes=None,
         class_inner_exceptions=None,
@@ -120,8 +121,8 @@ class FormStyleFactory:
             if readonly:
                 if not field.readable:
                     continue
-            # if this is an create form (unkown id) then only show writable fields
-            elif not vars.get("id"):
+            # if this is an create form (unkown id) then only show writable fields. Some if an edit form was made from a list of fields and noncreate=True
+            elif not vars.get("id") and noncreate:
                 if not field.writable:
                     continue
             # ignore blob fields
@@ -338,7 +339,7 @@ class FormStyleFactory:
 FormStyleDefault = FormStyleFactory().produce
 
 
-def FormStyleBulma(table, vars, errors, readonly, deletable, kwargs=None):
+def FormStyleBulma(table, vars, errors, readonly, deletable, noncreate, kwargs=None):
     classes = {
         "outer": "field",
         "inner": "control",
@@ -364,6 +365,7 @@ def FormStyleBulma(table, vars, errors, readonly, deletable, kwargs=None):
         vars,
         errors,
         readonly,
+        noncreate,
         deletable,
         classes=classes,
         class_inner_exceptions={"select": "select"},
@@ -371,7 +373,7 @@ def FormStyleBulma(table, vars, errors, readonly, deletable, kwargs=None):
     )
 
 
-def FormStyleBootstrap4(table, vars, errors, readonly, deletable, kwargs=None):
+def FormStyleBootstrap4(table, vars, errors, readonly, deletable, noncreate, kwargs=None):
     classes = {
         "outer": "form-group",
         "inner": "",
@@ -392,7 +394,7 @@ def FormStyleBootstrap4(table, vars, errors, readonly, deletable, kwargs=None):
         "select": "form-control",
         "textarea": "form-control",
     }
-    return FormStyleDefault(table, vars, errors, readonly, deletable, classes, kwargs)
+    return FormStyleDefault(table, vars, errors, readonly, deletable,noncreate, classes, kwargs)
 
 
 # ################################################################
@@ -415,6 +417,7 @@ class Form(object):
     :param table: a DAL table or a list of fields (equivalent to old SQLFORM.factory)
     :param record: a DAL record or record id
     :param readonly: set to True to make a readonly form
+    :param noncreate: make sure when you use a form with a list of fields that does not contain the id field, does not always render the create form. 
     :param deletable: set to False to disallow deletion of record
     :param formstyle: a function that renders the form using helpers (FormStyleDefault)
     :param dbio: set to False to prevent any DB writes
@@ -435,6 +438,7 @@ class Form(object):
         record=None,
         readonly=False,
         deletable=True,
+        noncreate=False,
         formstyle=FormStyleDefault,
         dbio=True,
         keep_values=False,
@@ -483,6 +487,7 @@ class Form(object):
         self.vars = {}
         self.errors = {}
         self.readonly = readonly
+        self.noncreate= noncreate
         self.submitted = False
         self.deleted = False
         self.accepted = False
@@ -642,6 +647,7 @@ class Form(object):
                 self.vars,
                 self.errors,
                 self.readonly,
+                self.noncreate,
                 self.deletable,
                 kwargs=self.kwargs,
             )
