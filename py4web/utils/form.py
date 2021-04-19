@@ -169,10 +169,10 @@ class FormStyleFactory:
                     _title=title,
                 )
             elif field.type == "datetime":
-                if isinstance(value, str):
-                    value = value.replace(" ", "T")
+                helpervalue=str(value)
+                helpervalue = helpervalue.replace(" ", "T")
                 control = INPUT(
-                    _value=value,
+                    _value=helpervalue,
                     _type="datetime-local",
                     _id=input_id,
                     _name=field.name,
