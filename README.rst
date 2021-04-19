@@ -166,3 +166,4 @@ Many thanks to everybody, and especially:
 - `Pirsch <https://github.com/Pirsch>`__
 - `sugizo <https://github.com/sugizo>`__
 - `valq7711 <https://github.com/valq7711>`__
+- `Kkeller83 <https://github.com/Kkeller83>`__
