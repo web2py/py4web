@@ -538,7 +538,7 @@ class Form(object):
                                 delete = post_vars.get("_delete_" + field.name)
                                 if value is not None:
                                     if field.uploadfolder:
-                                        uploaded_files.append(tuple(field, value))
+                                        uploaded_files.append(tuple((field, value)))
                                 elif self.record and not delete:
                                     value = self.record.get(field.name)
                                 else:
@@ -563,6 +563,7 @@ class Form(object):
                             if value is not None:
                                 validated_vars[field.name] = value
                         self.accepted = True
+                        self.vars.update(validated_vars)
                         if dbio:
                             self.update_or_insert(validated_vars)
                 elif dbio:
