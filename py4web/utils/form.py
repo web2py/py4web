@@ -3,7 +3,7 @@ import jwt
 import time
 import uuid
 import copy
-from py4web import request, response
+from py4web import request, response, HTTP
 from py4web.utils.param import Param
 from pydal._compat import to_native
 from pydal.validators import Validator
@@ -200,15 +200,19 @@ class FormStyleFactory:
                 )
             elif field.type == "upload":
                 control = DIV()
-                if value and field.download_url is not None and not error:
+                if value and not error:
                     download_div = DIV()
                     download_div.append(
                         LABEL(
                             "Currently:  ",
                         )
                     )
+                    if getattr(field, 'download_url', None):
+                        url = field.download_url(value)
+                    else:
+                        url = '#'
                     download_div.append(
-                        A(" download ", _href=field.download_url(value))
+                        A(" download ", _href=url)
                     )
                     download_div.append(
                         INPUT(
@@ -469,6 +473,8 @@ class Form(object):
         if isinstance(record, (int, str)):
             record_id = int(str(record))
             self.record = table[record_id]
+            if not self.record:
+                raise HTTP(404)
         else:
             self.record = record
 
@@ -535,17 +541,20 @@ class Form(object):
                                 continue
                             if field.type == "upload":
                                 value = request.files.get(field.name)
+                                print(str(value)[:100])
                                 delete = post_vars.get("_delete_" + field.name)
                                 if value is not None:
                                     if field.uploadfolder:
                                         uploaded_files.append(tuple((field, value)))
-                                elif self.record and not delete:
-                                    value = self.record.get(field.name)
-                                else:
-                                    value = None
+                                    validated_vars[field.name] = value
+                                elif self.record:
+                                    if not delete:
+                                        validated_vars[field.name] = self.record.get(field.name)
+                                    else:
+                                        validated_vars[field.name] = None
                             elif field.type == "boolean":
-                                value = value is not None
-                            if value is not None:
+                                validated_vars[field.name] = value is not None
+                            else:
                                 validated_vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
