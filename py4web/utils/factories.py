@@ -7,8 +7,8 @@ from yatl.helpers import TAG
 from py4web import action, URL, request
 from py4web.core import dumps, Session, Fixture
 
-class Inject(Fixture):
 
+class Inject(Fixture):
     def __init__(self, **variables):
         self.variables = variables
 
@@ -19,7 +19,6 @@ class Inject(Fixture):
 
 
 class ActionFactory:
-
     def __init__(self, *fixtures):
         self.fixtures = fixtures
 
@@ -38,7 +37,9 @@ class ActionFactory:
     def head(self, path=None, template=None):
         return self._action_maker("HEAD", path, template)
 
-    def __call__(self, path=None, template=None, method=['GET', 'POST', 'PUT', 'HEAD', 'DELETE']):
+    def __call__(
+        self, path=None, template=None, method=["GET", "POST", "PUT", "HEAD", "DELETE"]
+    ):
         return self._action_maker(method, path, template)
 
     def _action_maker(self, method, path, template):
@@ -73,11 +74,13 @@ class CallbackFactory:
         @action(path, method="POST")
         @action.uses(*self.fixtures)
         def tmp(func=func):
-            data = jwt.decode(json.loads(request.body.read()), Session.SECRET)
+            data = jwt.decode(
+                json.loads(request.body.read()), Session.SECRET, algorithms=["HS256"]
+            )
             return func(**data)
 
         def get_link(**data):
-            return (URL(path), jwt.encode(data, Session.SECRET).decode())
+            return (URL(path), jwt.encode(data, Session.SECRET))
 
         def button(*components, **attributes):
             def button_maker(**data):

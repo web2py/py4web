@@ -365,7 +365,7 @@ class Flash(Fixture):
     @action('index')
     @action.uses(flash)
     def index():
-        flash.set('hello', class_='important')
+        flash.set('hello', _class='important')
         return dict()
 
     Flash messages are added to the dict and, upon redirect, carry forward
@@ -390,11 +390,11 @@ class Flash(Fixture):
         else:
             response.delete_cookie("py4web-flash", path="/")
 
-    def set(self, message, class_="", sanitize=True):
+    def set(self, message, _class="", sanitize=True):
         # we set a flash message
         if sanitize:
             message = yatl.sanitizer.xmlescape(message)
-        Flash.local.flash = {"message": message, "class": class_}
+        Flash.local.flash = {"message": message, "class": _class}
 
     def transform(self, data, shared_data=None):
         # if we have a valid flash message, we inject it in the response dict
@@ -1367,8 +1367,9 @@ class MetaPathRouter:
     author: Paolo Pastori
     """
 
-    def __init__(self, pkg, pkg_alias='apps'):
-        assert pkg_alias; assert pkg
+    def __init__(self, pkg, pkg_alias="apps"):
+        assert pkg_alias
+        assert pkg
         if pkg != pkg_alias:
             self.pkg_alias = pkg_alias
             self.pkg = pkg
@@ -1380,7 +1381,9 @@ class MetaPathRouter:
             spec = importlib.util.find_spec(self.pkg)
             if spec:
                 spec.name = fullname
-                spec.loader = importlib.machinery.SourceFileLoader(fullname, spec.origin)
+                spec.loader = importlib.machinery.SourceFileLoader(
+                    fullname, spec.origin
+                )
                 return spec
 
 
@@ -1519,7 +1522,7 @@ def setup(**kwargs):
     show_default=True,
 )
 def shell(**kwargs):
-    """Open a python shell with apps_folder added to the path"""
+    """Open a python shell with apps_folder's parent added to the path"""
     install_args(kwargs)
     code.interact(local=dict(globals(), **locals()))
 

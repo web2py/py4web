@@ -30,7 +30,7 @@ with open(pkg_init, 'r') as src:
     for line in src:
         if '__version__ = ' in line:
             values = line.split(sep = ' = ')
-            current_version = values[1].strip('"')
+            current_version = values[1].strip('\n').strip('"')
             break
 release = current_version
 version = current_version

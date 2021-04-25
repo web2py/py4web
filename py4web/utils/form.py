@@ -3,7 +3,7 @@ import jwt
 import time
 import uuid
 import copy
-from py4web import request, response
+from py4web import request, response, HTTP
 from py4web.utils.param import Param
 from pydal._compat import to_native
 from pydal.validators import Validator
@@ -62,10 +62,29 @@ class FormStyleFactory:
             "select": "",
             "textarea": "",
         }
+        self.class_inner_exceptions = {}
 
-    def produce(self, table, vars, errors, readonly, deletable, classes=None):
+    def produce(
+        self,
+        table,
+        vars,
+        errors,
+        readonly,
+        noncreate,
+        deletable,
+        classes=None,
+        class_inner_exceptions=None,
+        kwargs=None,
+    ):
         self.classes.update(classes or {})
-        form = FORM(_method="POST", _action=request.url, _enctype="multipart/form-data")
+        self.class_inner_exceptions.update(class_inner_exceptions or {})
+        kwargs = kwargs if kwargs else {}
+        form = FORM(
+            _method="POST",
+            _action=request.url,
+            _enctype="multipart/form-data",
+            **kwargs
+        )
         controls = Param(
             labels=dict(),
             widgets=dict(),
@@ -102,8 +121,8 @@ class FormStyleFactory:
             if readonly:
                 if not field.readable:
                     continue
-            # if this is an create form (unkown id) then only show writable fields
-            elif not vars.get("id"):
+            # if this is an create form (unkown id) then only show writable fields. Some if an edit form was made from a list of fields and noncreate=True
+            elif not vars.get("id") and noncreate:
                 if not field.writable:
                     continue
             # ignore blob fields
@@ -151,10 +170,10 @@ class FormStyleFactory:
                     _title=title,
                 )
             elif field.type == "datetime":
-                if isinstance(value, str):
-                    value = value.replace(" ", "T")
+                helpervalue=str(value)
+                helpervalue = helpervalue.replace(" ", "T")
                 control = INPUT(
-                    _value=value,
+                    _value=helpervalue,
                     _type="datetime-local",
                     _id=input_id,
                     _name=field.name,
@@ -181,15 +200,19 @@ class FormStyleFactory:
                 )
             elif field.type == "upload":
                 control = DIV()
-                if value:
+                if value and not error:
                     download_div = DIV()
                     download_div.append(
                         LABEL(
                             "Currently:  ",
                         )
                     )
+                    if getattr(field, 'download_url', None):
+                        url = field.download_url(value)
+                    else:
+                        url = '#'
                     download_div.append(
-                        A(" download ", _href=field.download_url(value))
+                        A(" download ", _href=url)
                     )
                     download_div.append(
                         INPUT(
@@ -265,15 +288,20 @@ class FormStyleFactory:
                 form.append(
                     DIV(
                         LABEL(field.label, _for=input_id, _class=class_label),
-                        DIV(control, _class=class_inner),
+                        DIV(
+                            control,
+                            _class=self.class_inner_exceptions.get(
+                                control.name, class_inner
+                            ),
+                        ),
                         P(error, _class=class_error) if error else "",
                         P(field.comment or "", _class=class_info),
                         _class=class_outer,
                     )
                 )
 
-            if vars.get("id"):
-                form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
+        if vars.get("id"):
+            form.append(INPUT(_name="id", _value=vars["id"], _hidden=True))
         if deletable:
             controls["delete"] = INPUT(
                 _type="checkbox",
@@ -315,7 +343,7 @@ class FormStyleFactory:
 FormStyleDefault = FormStyleFactory().produce
 
 
-def FormStyleBulma(table, vars, errors, readonly, deletable):
+def FormStyleBulma(table, vars, errors, readonly, deletable, noncreate, kwargs=None):
     classes = {
         "outer": "field",
         "inner": "control",
@@ -336,10 +364,20 @@ def FormStyleBulma(table, vars, errors, readonly, deletable):
         "select": "control select",
         "textarea": "textarea",
     }
-    return FormStyleDefault(table, vars, errors, readonly, deletable, classes)
+    return FormStyleDefault(
+        table,
+        vars,
+        errors,
+        readonly,
+        noncreate,
+        deletable,
+        classes=classes,
+        class_inner_exceptions={"select": "select"},
+        kwargs=kwargs,
+    )
 
 
-def FormStyleBootstrap4(table, vars, errors, readonly, deletable):
+def FormStyleBootstrap4(table, vars, errors, readonly, deletable, noncreate, kwargs=None):
     classes = {
         "outer": "form-group",
         "inner": "",
@@ -360,7 +398,7 @@ def FormStyleBootstrap4(table, vars, errors, readonly, deletable):
         "select": "form-control",
         "textarea": "form-control",
     }
-    return FormStyleDefault(table, vars, errors, readonly, deletable, classes)
+    return FormStyleDefault(table, vars, errors, readonly, deletable,noncreate, classes, kwargs)
 
 
 # ################################################################
@@ -383,6 +421,7 @@ class Form(object):
     :param table: a DAL table or a list of fields (equivalent to old SQLFORM.factory)
     :param record: a DAL record or record id
     :param readonly: set to True to make a readonly form
+    :param noncreate: make sure when you use a form with a list of fields that does not contain the id field, does not always render the create form. 
     :param deletable: set to False to disallow deletion of record
     :param formstyle: a function that renders the form using helpers (FormStyleDefault)
     :param dbio: set to False to prevent any DB writes
@@ -403,6 +442,7 @@ class Form(object):
         record=None,
         readonly=False,
         deletable=True,
+        noncreate=False,
         formstyle=FormStyleDefault,
         dbio=True,
         keep_values=False,
@@ -410,9 +450,11 @@ class Form(object):
         hidden=None,
         validation=None,
         csrf_session=None,
+        csrf_protection=True,
         lifespan=None,
         signing_info=None,
         submit_value="Submit",
+        **kwargs
     ):
         self.param = Param(
             formstyle=formstyle,
@@ -431,6 +473,8 @@ class Form(object):
         if isinstance(record, (int, str)):
             record_id = int(str(record))
             self.record = table[record_id]
+            if not self.record:
+                raise HTTP(404)
         else:
             self.record = record
 
@@ -444,17 +488,20 @@ class Form(object):
         self.signing_info = signing_info
         self.validation = validation
         self.lifespan = lifespan
-
+        self.csrf_protection = csrf_protection
         # initialized and can change
         self.vars = {}
         self.errors = {}
         self.readonly = readonly
+        self.noncreate= noncreate
         self.submitted = False
         self.deleted = False
         self.accepted = False
         self.formkey = None
         self.cached_helper = None
         self.action = None
+
+        self.kwargs = kwargs if kwargs else {}
 
         if readonly or request.method == "GET":
             if self.record:
@@ -468,22 +515,23 @@ class Form(object):
             # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
             # Notice: we never expose the crsf uuid, we only use to sign the form uuid
             if request.method == "POST":
-                if self._verify_form(post_vars):
+                if not self.csrf_protection or self._verify_form(post_vars):
                     process = True
             if process:
                 record_id = self.record and self.record.get("id")
                 if not post_vars.get("_delete"):
                     validated_vars = {}
+                    uploaded_files = []
                     for field in self.table:
-                        if not post_vars.get(field.name):
-                            continue
                         if field.writable and field.type != "id":
                             original_value = post_vars.getall(field.name)
-                            if (
-                                isinstance(original_value, list)
-                                and len(original_value) == 1
-                            ):
-                                original_value = original_value[0]
+                            if isinstance(original_value, list):
+                                if len(original_value) == 1:
+                                    original_value = original_value[0]
+
+                                elif len(original_value) == 0:
+                                    original_value = None
+
                             if field.type.startswith("list:") and isinstance(
                                 original_value, str
                             ):
@@ -493,19 +541,21 @@ class Form(object):
                                 continue
                             if field.type == "upload":
                                 value = request.files.get(field.name)
+                                print(str(value)[:100])
                                 delete = post_vars.get("_delete_" + field.name)
                                 if value is not None:
                                     if field.uploadfolder:
-                                        value = field.store(
-                                            value.file,
-                                            value.filename,
-                                            field.uploadfolder,
-                                        )
-                                elif self.record and not delete:
-                                    value = self.record.get(field.name)
-                                else:
-                                    value = None
-                            validated_vars[field.name] = value
+                                        uploaded_files.append(tuple((field, value)))
+                                    validated_vars[field.name] = value
+                                elif self.record:
+                                    if not delete:
+                                        validated_vars[field.name] = self.record.get(field.name)
+                                    else:
+                                        validated_vars[field.name] = None
+                            elif field.type == "boolean":
+                                validated_vars[field.name] = value is not None
+                            else:
+                                validated_vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
                     self.vars.update(validated_vars)
@@ -514,7 +564,15 @@ class Form(object):
                     if self.record and dbio:
                         self.vars["id"] = self.record.id
                     if not self.errors:
+                        for file in uploaded_files:
+                            field, value = file
+                            value = field.store(
+                                value.file, value.filename, field.uploadfolder
+                            )
+                            if value is not None:
+                                validated_vars[field.name] = value
                         self.accepted = True
+                        self.vars.update(validated_vars)
                         if dbio:
                             self.update_or_insert(validated_vars)
                 elif dbio:
@@ -523,7 +581,8 @@ class Form(object):
             elif self.record:
                 # This form should not be processed.  We return the same as for GET.
                 self.vars = self._read_vars_from_record(table)
-        self._sign_form()
+        if self.csrf_protection:
+            self._sign_form()
 
     def _read_vars_from_record(self, table):
         if isinstance(table, list):
@@ -594,12 +653,18 @@ class Form(object):
             self.clear()
         if not self.cached_helper:
             helper = self.param.formstyle(
-                self.table, self.vars, self.errors, self.readonly, self.deletable
+                self.table,
+                self.vars,
+                self.errors,
+                self.readonly,
+                self.noncreate,
+                self.deletable,
+                kwargs=self.kwargs,
             )
             for item in self.param.sidecar:
                 helper["form"][-1][-1].append(item)
             if self.action:
-                helper["_action"] = self.action
+                helper["form"]["_action"] = self.action
             if self.param.submit_value:
                 helper["controls"]["submit"]["_value"] = self.param.submit_value
             if self.form_name:
