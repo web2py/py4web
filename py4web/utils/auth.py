@@ -65,7 +65,9 @@ class AuthEnforcer(Fixture):
         return HTTP 403 if 'application/json' in HTTP_ACCEPT and HTTP_JSON_REDIRECTS flag is not set in the request to 'on'
         else redirects to page
         """
-        if re.search(REGEX_APPJSON, request.headers.get("accept", "")) and (request.headers.get("json-redirects", "") != 'on'):
+        if re.search(REGEX_APPJSON, request.headers.get("accept", "")) and (
+            request.headers.get("json-redirects", "") != "on"
+        ):
             abort(403)
         redirect_next = request.fullpath
         if request.query_string:
@@ -833,12 +835,7 @@ class AuthAPI:
         "request_reset_password",
         "reset_password",
     ]
-    private_api = [
-        "profile",
-        "change_password",
-        "change_email",
-        "unsubscribe"
-    ]
+    private_api = ["profile", "change_password", "change_email", "unsubscribe"]
 
     @staticmethod
     @api_wrapper
@@ -861,14 +858,14 @@ class AuthAPI:
     @api_wrapper
     def register(auth):
         if request.json is None:
-            return auth._error("no json post payload")       
+            return auth._error("no json post payload")
         return auth.register(request.json, send=True).as_dict()
 
     @staticmethod
     @api_wrapper
     def login(auth):
         if request.json is None:
-            return auth._error("no json post payload")       
+            return auth._error("no json post payload")
         username, password = request.json.get("email"), request.json.get("password")
         if not all(isinstance(_, str) for _ in [username, password]):
             return auth._error("Invalid Credentials")
@@ -917,7 +914,7 @@ class AuthAPI:
     def reset_password(auth):
         # check the new_password2 only if passed
         if request.json is None:
-            return auth._error("no json post payload")       
+            return auth._error("no json post payload")
         res = auth.reset_password(
             request.json.get("token"),
             request.json.get("new_password"),
@@ -944,7 +941,7 @@ class AuthAPI:
     @api_wrapper
     def change_password(auth):
         if request.json is None:
-            return auth._error("no json post payload")       
+            return auth._error("no json post payload")
         return auth.change_password(
             auth.get_user(safe=False),  # refactor make faster
             request.json.get("new_password"),
@@ -955,7 +952,7 @@ class AuthAPI:
     @api_wrapper
     def change_email(auth):
         if request.json is None:
-            return auth._error("no json post payload")       
+            return auth._error("no json post payload")
         return auth.change_email(
             auth.get_user(safe=False),
             request.json.get("new_email"),
@@ -968,7 +965,7 @@ class AuthAPI:
         if request.method == "GET":
             return {"user": auth.get_user()}
         if request.json is None:
-            return auth._error("no json post payload")       
+            return auth._error("no json post payload")
         else:
             return auth.update_profile(auth.get_user(), **request.json)
 
