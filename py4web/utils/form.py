@@ -170,7 +170,7 @@ class FormStyleFactory:
                     _title=title,
                 )
             elif field.type == "datetime":
-                helpervalue=str(value)
+                helpervalue = str(value)
                 helpervalue = helpervalue.replace(" ", "T")
                 control = INPUT(
                     _value=helpervalue,
@@ -207,13 +207,11 @@ class FormStyleFactory:
                             "Currently:  ",
                         )
                     )
-                    if getattr(field, 'download_url', None):
+                    if getattr(field, "download_url", None):
                         url = field.download_url(value)
                     else:
-                        url = '#'
-                    download_div.append(
-                        A(" download ", _href=url)
-                    )
+                        url = "#"
+                    download_div.append(A(" download ", _href=url))
                     download_div.append(
                         INPUT(
                             _type="checkbox",
@@ -377,7 +375,9 @@ def FormStyleBulma(table, vars, errors, readonly, deletable, noncreate, kwargs=N
     )
 
 
-def FormStyleBootstrap4(table, vars, errors, readonly, deletable, noncreate, kwargs=None):
+def FormStyleBootstrap4(
+    table, vars, errors, readonly, deletable, noncreate, kwargs=None
+):
     classes = {
         "outer": "form-group",
         "inner": "",
@@ -398,7 +398,9 @@ def FormStyleBootstrap4(table, vars, errors, readonly, deletable, noncreate, kwa
         "select": "form-control",
         "textarea": "form-control",
     }
-    return FormStyleDefault(table, vars, errors, readonly, deletable,noncreate, classes, kwargs)
+    return FormStyleDefault(
+        table, vars, errors, readonly, deletable, noncreate, classes, kwargs
+    )
 
 
 # ################################################################
@@ -421,7 +423,7 @@ class Form(object):
     :param table: a DAL table or a list of fields (equivalent to old SQLFORM.factory)
     :param record: a DAL record or record id
     :param readonly: set to True to make a readonly form
-    :param noncreate: make sure when you use a form with a list of fields that does not contain the id field, does not always render the create form. 
+    :param noncreate: make sure when you use a form with a list of fields that does not contain the id field, does not always render the create form.
     :param deletable: set to False to disallow deletion of record
     :param formstyle: a function that renders the form using helpers (FormStyleDefault)
     :param dbio: set to False to prevent any DB writes
@@ -493,7 +495,7 @@ class Form(object):
         self.vars = {}
         self.errors = {}
         self.readonly = readonly
-        self.noncreate= noncreate
+        self.noncreate = noncreate
         self.submitted = False
         self.deleted = False
         self.accepted = False
@@ -549,7 +551,9 @@ class Form(object):
                                     validated_vars[field.name] = value
                                 elif self.record:
                                     if not delete:
-                                        validated_vars[field.name] = self.record.get(field.name)
+                                        validated_vars[field.name] = self.record.get(
+                                            field.name
+                                        )
                                     else:
                                         validated_vars[field.name] = None
                             elif field.type == "boolean":
