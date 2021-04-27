@@ -4,10 +4,10 @@ from bottle import ServerAdapter
 try:
     from .utils.wsservers import *
 except ImportError:
-    wsservers_list = []
+    anyservers_list = []
 
 
-__all__ = [ "geventWebSocketServer", "wsgirefThreadingServer", "rocketServer" ] + wsservers_list 
+__all__ = [ "geventWebSocketServer", "wsgirefThreadingServer", "rocketServer" ] + anyservers_list 
 
 
 def geventWebSocketServer():
