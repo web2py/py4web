@@ -7,7 +7,11 @@ except ImportError:
     anyservers_list = []
 
 
-__all__ = [ "geventWebSocketServer", "wsgirefThreadingServer", "rocketServer" ] + anyservers_list 
+__all__ = [
+    "geventWebSocketServer",
+    "wsgirefThreadingServer",
+    "rocketServer",
+] + anyservers_list
 
 
 def geventWebSocketServer():
