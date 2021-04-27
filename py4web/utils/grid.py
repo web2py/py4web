@@ -797,7 +797,7 @@ class Grid:
                     sort_query_parms["orderby"] = "~" + key
                     url = URL(self.endpoint, vars=sort_query_parms)
                     if self.param.htmx_target:
-                        rf = parse_referer()
+                        rf = parse_referer(request)
                         if rf and rf.query:
                             url += "?%s" % rf.query
                         attr["_hx-get"] = url
@@ -808,7 +808,7 @@ class Grid:
                     sort_query_parms["orderby"] = key
                     url = URL(self.endpoint, vars=sort_query_parms)
                     if self.param.htmx_target:
-                        rf = parse_referer()
+                        rf = parse_referer(request)
                         if rf and rf.query:
                             url += "?%s" % rf.query
                         attr["_hx-get"] = url
