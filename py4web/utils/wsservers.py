@@ -44,7 +44,7 @@ import socketio # pip install python-socketio
 # ./py4web.py  run -s  geventSioWsServer  apps
 # ./py4web.py  run -s  wsgirefSioServer  apps
 
-anyservers_list = ['wsgirefAioSioWsServer', 'tornadoSioWsServer', 'geventSioWsServer', 'wsgirefSioServer', ]
+wsservers_list = ['wsgirefAioSioWsServer', 'tornadoSioWsServer', 'geventSioWsServer', 'wsgirefSioServer', ]
 
 def wsgirefAioSioWsServer():
     import logging.handlers
