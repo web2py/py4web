@@ -1,0 +1,58 @@
+// TREEVIEW
+// -----------------------------------------------------------------------------
+.jstree-default {
+	.jstree-checkbox {
+		background-image: url(../images/jstree.png);
+	}
+	.jstree-icon {
+		color: #333;
+	}
+	.jstree-hovered {
+		background-color: lighten($color-primary, 55%);
+	}
+	.jstree-clicked {
+		background-color: lighten($color-primary, 45%);
+	}
+	.jstree-disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+	.colored {
+		color: $color-primary;
+		.jstree-icon {
+			color: $color-primary;
+		}
+	}
+	.colored-icon {
+		.jstree-icon {
+			color: $color-primary;
+		}
+	}
+	.folder {
+		.jstree-icon {
+			color: #ddc03f !important;
+		}
+	}
+}
+
+// DARK
+// -----------------------------------------------------------------------------
+/* dark */
+html.dark body {
+	.jstree-default {
+		.jstree-checkbox {
+			background-image: url(../images/jstree-dark.png);
+		}
+		.jstree-hovered {
+			background-color: $dark-color-2 !important;
+			box-shadow: none;
+		}
+		.jstree-clicked {
+			background-color: $dark-color-1 !important;
+			box-shadow: none;
+		}
+		.jstree-icon {
+			color: $dark-default-text;
+		}
+	}
+}

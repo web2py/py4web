@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+    
+<!-- Mirrored from nafplann.bulma-admin.dev/forms by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 31 Jul 2019 05:38:01 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bulma Admin | Free Admin Template By @nafplann</title>
+
+        <meta charset="UTF-8">
+        <meta name="description" content="Free Admin Dashboard Template Build with Bulma.io By nafplann">
+        <meta name="keywords" content="Bulma,CSS,Admin,Template,Free,Download">
+        <meta name="language" content="en-EN">
+        <meta name="author" content="Abdul Manaaf">
+
+        <link href="https://fonts.googleapis.com/icon?family=Poppins" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css">
+        <link rel="stylesheet" href="css/app.css">
+    </head>
+    <body>
+        <!-- START NAV -->
+        <nav class="navbar columns is-fixed-top" role="navigation" aria-label="main navigation" id="app-header">
+    <div class="navbar-brand column is-2 is-paddingless">
+        <a class="navbar-item" href="index.html">
+            BULMA ADMIN
+        </a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="touchMenu">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+    
+    <div id="touchMenu">
+        
+    </div>
+
+    <div id="navMenu" class="navbar-menu column is-hidden-touch">
+        <!-- <div class="navbar-end">
+            <div class="navbar-item">
+                <a class="button is-white" onclick="Auth.logout()">
+                    <span class="icon">
+                        <i class="fa fa-bell"></i>
+                    </span>
+                </a>
+            </div>
+            <div class="navbar-item">
+                <a class="button is-white" onclick="Auth.logout()">
+                    <span class="icon">
+                        <i class="fa fa-sign-out"></i>
+                    </span>
+                </a>
+            </div>
+        </div> -->
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <a class="button is-white" onclick="Auth.logout()">
+                    <span class="icon">
+                        <i class="fa fa-lg fa-bell"></i>
+                    </span>
+                </a>
+            </div>
+            <div class="navbar-item">
+                <a class="button is-white" onclick="Auth.logout()">
+                    <span class="icon">
+                        <i class="fa fa-lg fa-power-off"></i>
+                    </span>
+                </a>
+            </div>
+            <div class="navbar-item has-dropdown">
+                <a class="navbar-link">
+                    <figure class="image avatar is-32x32">
+                        <img class="is-rounded" src="images/user1.png">
+                    </figure>
+                    &nbsp; Hi, nafplann
+                </a>
+                <div class="navbar-dropdown is-right">
+                    <a class="navbar-item">
+                        Overview
+                    </a>
+                    <a class="navbar-item">
+                        Elements
+                    </a>
+                    <a class="navbar-item">
+                        Components
+                    </a>
+                    <hr class="navbar-divider">
+                    <div class="navbar-item">
+                        Version 0.7.1
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>        <!-- END NAV -->
+
+        <div class="columns" id="app-content">
+            <div class="column is-2 is-fullheight is-hidden-touch" id="navigation">
+    <aside class="menu">
+        <p class="menu-label is-hidden-touch">
+            General
+        </p>
+        <ul class="menu-list">
+            <li>
+                <a class="" href="index.html">
+                    <span class="icon">
+                        <i class="fa fa-home"></i>
+                    </span> Dashboard
+                </a>
+            </li>
+            <li>
+                <a class="is-active" href="forms.html">
+                    <span class="icon">
+                        <i class="fa fa-edit"></i>
+                    </span> Forms
+                </a>
+            </li>
+            <li>
+                <a class="" href="elements.html">
+                    <span class="icon">
+                        <i class="fa fa-desktop"></i>
+                    </span> UI Elements
+                </a>
+            </li>
+            <li>
+                <a class="" href="datatables.html">
+                    <span class="icon">
+                        <i class="fa fa-table"></i>
+                    </span> Datatables
+                </a>
+            </li>
+        </ul>
+
+        <p class="menu-label is-hidden-touch">
+            Sample Pages
+        </p>
+        <ul class="menu-list">
+            <li>
+                <a class="" href="login.html">
+                    <span class="icon">
+                        <i class="fa fa-lock"></i>
+                    </span> Login
+                </a>
+            </li>
+        </ul>
+    </aside>
+</div>
+            <div class="column is-10" id="page-content">
+                    <div class="content-header">
+        <h4 class="title is-4">Forms</h4>
+        <span class="separator"></span>
+        <nav class="breadcrumb has-bullet-separator" aria-label="breadcrumbs">
+            <ul>
+                <li><a href="#">General</a></li>
+                <li class="is-active"><a href="#" aria-current="page">Forms</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content-body">
+        <div class="columns">
+            <div class="column">
+                <div class="card">
+                    <div class="card-content">
+                        <p class="title is-4">General</p>
+                        <div class="field">
+                            <label class="label">Name</label>
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Text input">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Username</label>
+                            <div class="control has-icons-left has-icons-right">
+                                <input class="input is-success" type="text" placeholder="Text input" value="bulma">
+                                <span class="icon is-small is-left">
+                                    <i class="fa fa-user"></i>
+                                </span>
+                                <span class="icon is-small is-right">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                            </div>
+                            <p class="help is-success">This username is available</p>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Email</label>
+                            <div class="control has-icons-left has-icons-right">
+                                <input class="input is-danger" type="email" placeholder="Email input"
+                                    value="hello@">
+                                <span class="icon is-small is-left">
+                                    <i class="fa fa-envelope"></i>
+                                </span>
+                                <span class="icon is-small is-right">
+                                    <i class="fa fa-exclamation-triangle"></i>
+                                </span>
+                            </div>
+                            <p class="help is-danger">This email is invalid</p>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Subject</label>
+                            <div class="control">
+                                <div class="select">
+                                    <select>
+                                        <option>Select dropdown</option>
+                                        <option>With options</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Message</label>
+                            <div class="control">
+                                <textarea class="textarea" placeholder="Textarea"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <label class="checkbox">
+                                    <input type="checkbox">
+                                    I agree to the <a href="#">terms and conditions</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <label class="radio">
+                                    <input type="radio" name="question">
+                                    Yes
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="question">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button class="button is-link">Submit</button>
+                            </div>
+                            <div class="control">
+                                <button class="button is-text">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <p class="title is-4">Loading</p>
+                        <div class="field">
+                            <div class="control is-small is-loading">
+                                <input class="input is-small" type="text" placeholder="Small loading input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control is-loading">
+                                <input class="input" type="text" placeholder="Normal loading input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control is-medium is-loading">
+                                <input class="input is-medium" type="text" placeholder="Medium loading input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control is-large is-loading">
+                                <input class="input is-large" type="text" placeholder="Large loading input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <p class="title is-4">Checkboxes &amp; Radios</p>
+                        <div class="field">
+                            <label class="checkbox">
+                                <input type="checkbox">
+                                Remember me
+                            </label>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <label class="radio">
+                                    <input type="radio" name="rsvp">
+                                    Going
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="rsvp">
+                                    Not going
+                                </label>
+                                <label class="radio" disabled>
+                                    <input type="radio" name="rsvp" disabled>
+                                    Maybe
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <div class="card-content">
+                        <p class="title is-4">Colors</p>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-primary" type="text" placeholder="Primary input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-info" type="text" placeholder="Info input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-success" type="text" placeholder="Success input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-warning" type="text" placeholder="Warning input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-danger" type="text" placeholder="Danger input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <p class="title is-4">Sizes</p>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-small" type="text" placeholder="Small input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Normal input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-medium" type="text" placeholder="Medium input">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" type="text" placeholder="Large input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <p class="title is-4">Select</p>
+                        <div class="field">
+                            <div class="control">
+                                <div class="select is-small">
+                                    <select>
+                                        <option>Select dropdown</option>
+                                        <option>With options</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <div class="select">
+                                    <select>
+                                        <option>Select dropdown</option>
+                                        <option>With options</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <div class="select is-medium">
+                                    <select>
+                                        <option>Select dropdown</option>
+                                        <option>With options</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <div class="select is-large">
+                                    <select>
+                                        <option>Select dropdown</option>
+                                        <option>With options</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <div class="select is-small">
+                                    <select>
+                                        <option selected>Country</option>
+                                        <option>Select dropdown</option>
+                                        <option>With options</option>
+                                    </select>
+                                </div>
+                                <span class="icon is-small is-left">
+                                    <i class="fa fa-globe"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <div class="select">
+                                    <select>
+                                        <option selected>Country</option>
+                                        <option>Select dropdown</option>
+                                        <option>With options</option>
+                                    </select>
+                                </div>
+                                <span class="icon is-left">
+                                    <i class="fa fa-globe"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <div class="select is-medium">
+                                    <select>
+                                        <option selected>Country</option>
+                                        <option>Select dropdown</option>
+                                        <option>With options</option>
+                                    </select>
+                                </div>
+                                <span class="icon is-medium is-left">
+                                    <i class="fa fa-globe"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <div class="select is-large">
+                                    <select>
+                                        <option selected>Country</option>
+                                        <option>Select dropdown</option>
+                                        <option>With options</option>
+                                    </select>
+                                </div>
+                                <span class="icon is-large is-left">
+                                    <i class="fa fa-globe"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <p class="title is-4">File Input</p>
+                        <div class="field">
+                            <div class="file is-primary">
+                                <label class="file-label">
+                                    <input class="file-input" type="file" name="resume">
+                                    <span class="file-cta">
+                                        <span class="file-icon">
+                                            <i class="fa fa-upload"></i>
+                                        </span>
+                                        <span class="file-label">
+                                            Primary file…
+                                        </span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="file is-info has-name">
+                                <label class="file-label">
+                                    <input class="file-input" type="file" name="resume">
+                                    <span class="file-cta">
+                                        <span class="file-icon">
+                                            <i class="fa fa-upload"></i>
+                                        </span>
+                                        <span class="file-label">
+                                            Info file…
+                                        </span>
+                                    </span>
+                                    <span class="file-name">
+                                        Screen Shot 2017-07-29 at 15.54.25.png
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="file is-warning is-boxed">
+                                <label class="file-label">
+                                    <input class="file-input" type="file" name="resume">
+                                    <span class="file-cta">
+                                        <span class="file-icon">
+                                            <i class="fa fa-cloud-upload"></i>
+                                        </span>
+                                        <span class="file-label">
+                                            Warning file…
+                                        </span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="file is-danger has-name is-boxed">
+                                <label class="file-label">
+                                    <input class="file-input" type="file" name="resume">
+                                    <span class="file-cta">
+                                        <span class="file-icon">
+                                            <i class="fa fa-cloud-upload"></i>
+                                        </span>
+                                        <span class="file-label">
+                                            Danger file…
+                                        </span>
+                                    </span>
+                                    <span class="file-name">
+                                        Screen Shot 2017-07-29 at 15.54.25.png
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                
+    </div>
+            </div>
+        </div>
+
+        <script src="js/app.js"></script>
+            <script>
+        $(document).ready(function() {
+            let bar = {
+                type: 'bar',
+                height: 40,
+                barWidth: 4,
+                barColor: '#fff',
+                barSpacing: 3
+            };
+
+            let line = {
+                type: 'line',
+                width: 150,//73
+                height: 36,
+                lineColor: '#fff',
+                fillColor: 'rgba(0,0,0,0)',
+                lineWidth: 2,
+                maxSpotColor: 'rgba(255,255,255,0.4)',
+                minSpotColor: 'rgba(255,255,255,0.4)',
+                spotColor: 'rgba(255,255,255,0.4)',
+                spotRadius: 3,
+                highlightSpotColor: '#fff',
+                highlightLineColor: 'rgba(255,255,255,0.4)'
+            };
+            // $(item).find('.sparkline-bar-stats').sparkline('html', chart === 'bar' ? bar : line);
+            
+            function data() {
+                return Array.from({length: 22}, () => Math.floor(Math.random() * 40));
+            }
+
+            $('.inlinesparkline-bar').each(function() {
+                $(this).sparkline(data(), bar);
+            });
+
+            $('.inlinesparkline-line').each(function() {
+                $(this).sparkline(data(), line);
+            });
+
+            var ctx1 = document.getElementById('chart2').getContext('2d');
+            window.myBar = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    "labels": ["January", "February", "March", "April", "May", "June", "July"],
+                    "datasets": [{
+                        "label": "Dataset 1",
+                        "backgroundColor": "rgb(255, 99, 132)",
+                        "stack": "Stack 0",
+                        "data": [-49, -7, -21, 23, 76, -29, 0]
+                    }, {
+                        "label": "Dataset 2",
+                        "backgroundColor": "rgb(54, 162, 235)",
+                        "stack": "Stack 0",
+                        "data": [25, -77, -35, -77, -81, 2, 54]
+                    }, {
+                        "label": "Dataset 3",
+                        "backgroundColor": "rgb(75, 192, 192)",
+                        "stack": "Stack 1",
+                        "data": [43, -6, -98, -22, 24, -51, 6]
+                    }]
+                },
+                options: {
+                    title: {
+                        display: false,
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    responsive: true,
+                    scales: {
+                        xAxes: [{
+                            stacked: true,
+                        }],
+                        yAxes: [{
+                            stacked: true
+                        }]
+                    },
+                    legend: {
+                        display: false
+                    },
+                }
+            });
+
+            var ctx2 = document.getElementById('chart1').getContext('2d');
+            window.myLine = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+                    datasets: [{
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: [-60.21, 67.03, -66.63, 97.27, -39.65, 6.71, 6.14, 98.68],
+                        label: 'Dataset',
+                        fill: 'start'
+                    }]
+                },
+                options: {
+                    title: {
+                        display: false
+                    },
+                    legend: {
+                        display: false
+                    },
+                }
+            });
+        });
+    </script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-89250524-7"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-89250524-7');
+        </script>
+
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({
+                google_ad_client: "ca-pub-7864475889913507",
+                enable_page_level_ads: true
+            });
+        </script>
+
+        <script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","url":"https://www.nafplann.com/","name":"Abdul Manaaf | Fullstack Web Developer","author":"Abdul Manaaf","image":"https://avatars3.githubusercontent.com/u/7114259?s=460&v=4","description":"Abdul Manaaf is a Fullstack Web Developer from Indonesia","sameAs":["https://www.facebook.com/nafplann","https://instagram.com/nafplann","https://twitter.com/nafplann","https://id.linkedin.com/in/nafplann","https://github.com/nafplann"]}</script>
+        
+        <script type=application/ld+json>{"@context":"http://schema.org","@type":"Person","email":"mailto:nafplann@gmail.com","image":"https://avatars3.githubusercontent.com/u/7114259?s=460&v=4","jobTitle":"Fullstack Web Developer","name":"Abdul Manaaf","url":"https://www.nafplann.com/","sameAs":["https://www.facebook.com/nafplann","https://instagram.com/nafplann","https://twitter.com/nafplann","https://id.linkedin.com/in/nafplann","https://github.com/nafplann"]}</script>
+        
+        <script type=application/ld+json>{
+            "@context": "http://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+                "@id": "https://nafplann.com/",
+                "name": "Home",
+                "image": "https://avatars3.githubusercontent.com/u/7114259?s=460&v=4"
+            }
+            }, {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+                "@id": "https://nafplann.com/bulma-admin/",
+                "name": "free-bulma-admin-dashboard-template",
+                "image": "https://avatars3.githubusercontent.com/u/7114259?s=460&v=4"
+            }
+            }
+            }]
+        }</script>
+    </body>
+
+<!-- Mirrored from nafplann.bulma-admin.dev/forms by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 31 Jul 2019 05:38:01 GMT -->
+</html>

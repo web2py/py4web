@@ -1,0 +1,1017 @@
+/*
+Name: 			Theme Base
+Written by: 	Okler Themes - (http://www.okler.net)
+Theme Version: 	@@version
+*/
+
+html,
+body {
+	background: $body-color;
+	width: 100%;
+}
+
+html {
+	font-size: $root-font-size + 0px;
+}
+
+body {
+	color: #777;
+	font-family: $font-primary;
+	line-height: 22px;
+	margin: 0;
+	font-size: $body-font-size + 0px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+a {
+	color: $color-primary;
+}
+
+a:hover, a:focus {
+	color: lighten($color-primary, 5% );
+}
+
+a:active {
+	color: darken($color-primary, 5% );
+}
+
+// LAYOUT STYLE - SCROLL
+// -----------------------------------------------------------------------------
+
+/* Layout Base - Main Wrapper  */
+.body {
+	min-height: 100vh;
+	width: 100%;
+}
+
+// HEADER
+// -----------------------------------------------------------------------------
+
+/* Layout Base - Header */
+.header {
+	height: $header-height;
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+// INNER WRAPPER
+// -----------------------------------------------------------------------------
+
+/* Layout Base - Inner Wrapper */
+.inner-wrapper {
+	display: table;
+	min-height: 100vh;
+	padding-top: $header-height;
+	table-layout: fixed;
+	overflow: hidden;
+	width: 100%;
+}
+
+// MAIN CONTENT
+// -----------------------------------------------------------------------------
+
+/* Layout Base - Content Body */
+.content-body {
+	display: table-cell;
+	padding: $content-body-padding;
+	position: relative;
+	vertical-align: top;
+
+	> .row + .row {
+		padding-top: 10px;
+	}
+}
+
+// PAGE HEADER
+// -----------------------------------------------------------------------------
+
+/* Layout Base - Page Header */
+.page-header {
+	background: $page-header-background;
+	border-bottom: none;
+	border-left: $page-header-border-left-width solid $page-header-border-left-color;
+	box-shadow: 1px ($page-header-border-bottom-width - 1) 0 1px $page-header-border-bottom-color;
+	height: $page-header-height;
+	margin: (-$content-body-padding) (-$content-body-padding) $content-body-padding (-$content-body-padding);
+	padding: 0;
+}
+
+// SIDEBAR LEFT
+// -----------------------------------------------------------------------------
+
+/* Layout Base - Sidebar Left */
+.sidebar-left {
+	background: $sidebar-background;
+	box-shadow: -$sidebar-border-width 0 0 $sidebar-border-color inset;
+	color: $color-default-inverse;
+	display: table-cell;
+	position: relative;
+	vertical-align: top;
+	width: $sidebar-left-full-width;
+	z-index: $sidebar-left-z-index;
+}
+
+/* Layout Base - Sidebar Left Opened ( Larger than mobile ) */
+@media only screen and (min-width: 768px) {
+	html.sidebar-left-collapsed {
+		.sidebar-left {
+			width: $sidebar-left-collapsed-width;
+		}
+	}
+}
+
+// SIDEBAR RIGHT
+// -----------------------------------------------------------------------------
+
+/* Layout Base - Sidebar Right */
+.sidebar-right {
+	background: $sidebar-right-background;
+	bottom: 0;
+	margin-right: -$sidebar-right-width;
+	min-height: 100vh;
+	position: fixed;
+	right: 0;
+	top: 0;
+	width: $sidebar-right-width;
+}
+
+/* Layout Base - Sidebar Right Opened ( Larger than mobile ) */
+@media only screen and (min-width: 768px) {
+	html.sidebar-right-opened {
+		.header {
+			margin-left: -$sidebar-right-width;
+			margin-right: $sidebar-right-width;
+		}
+
+		.inner-wrapper {
+			margin-left: -$sidebar-right-width;
+		}
+
+		.sidebar-right {
+			margin-right: 0;
+		}
+	}
+}
+
+// FLEXBOX SUPPORTED
+// -----------------------------------------------------------------------------
+
+/* Layout Base - Flexbox supported */
+@media only screen and (min-width: 768px) {
+	html.flexbox,
+	html.flexboxlegacy {
+		.inner-wrapper {
+			@include display(flex);
+		}
+
+		.sidebar-left,
+		.content-body {
+			display: block;
+			@include flex-shrink(0);
+		}
+
+		.content-body {
+			@include flex(2);
+		}
+	}
+}
+
+// LAYOUT STYLE - FIXED
+// -----------------------------------------------------------------------------
+
+/* Layout Fixed */
+@media only screen and (min-width: 768px) {
+
+	/* Layout Fixed - Reseting Styles */
+	html.fixed {
+		.inner-wrapper,
+		.sidebar-left,
+		.content-body {
+			display: block;
+		}
+	}
+
+	/* Layout Fixed - Header */
+	html.fixed {
+		.header {
+			position: fixed;
+			z-index: $header-fixed-z-index;
+		}
+	}
+
+	/* Layout Fixed - Inner Wrapper */
+	html.fixed {
+		.inner-wrapper {
+			padding-top: $header-height + $page-header-height;
+		}
+	}
+
+	/* Layout Fixed - Content Body */
+	html.fixed {
+		.content-body {
+			margin-left: $sidebar-left-full-width;
+
+			&.has-toolbar {
+				padding-top: $content-body-padding + $inner-toolbar-height;
+			}
+		}
+	}
+
+	/* Layout Fixed - Page header */
+	html.fixed {
+		.page-header {
+			left: $sidebar-left-full-width;
+			margin: 0;
+			position: fixed;
+			right: 0;
+			top: $header-height;
+		}
+	}
+
+	/* Layout Fixed - Sidebar Left */
+	html.fixed {
+		.sidebar-left {
+			bottom: 0;
+			left: 0;
+			padding-bottom: 50px;
+			position: fixed;
+			top: $header-height;
+
+			.nano-content {
+				padding-bottom: 50px;
+			}
+		}
+	}
+
+	/* Layout Fixed - Sidebar Left Collapsed */
+	html.fixed.sidebar-left-collapsed {
+		.page-header {
+			left: $sidebar-left-collapsed-width;
+		}
+
+		.content-body {
+			margin-left: $sidebar-left-collapsed-width;
+		}
+	}
+
+	/* Layout Fixed - Sidebar Right Opened */
+	html.fixed.sidebar-right-opened {
+		.page-header {
+			left: 0;
+			margin-right: $sidebar-left-full-width;
+		}
+
+		.sidebar-left {
+			left: -$sidebar-left-full-width;
+		}
+	}
+
+	/* Layout Fixed - Sidebar Left Collapsed & Sidebar Right Opened */
+	html.fixed.sidebar-left-collapsed.sidebar-right-opened {
+		.page-header {
+			left: -$sidebar-left-full-width;
+		}
+	}
+}
+
+// LAYOUT STYLE - BOXED
+// -----------------------------------------------------------------------------
+
+/* Layout Boxed - small than min-width */
+@media only screen and (max-width: 1199px) {
+	html.boxed {
+		.header {
+			border-color: $color-primary;
+		}
+	}
+}
+/* Layout Boxed - larger or equal min width */
+@media only screen and (min-width: 1200px) {
+
+	/* Layout Boxed - Body Tag */
+	html.boxed {
+		body {
+			background: url(../images/patterns/denim.png) repeat;
+		}
+	}
+
+	/* Layout Boxed - Main Wrapper */
+	html.boxed {
+		.body {
+			position: relative;
+			max-width: 1200px;
+			margin: 0 auto;
+			background-color: transparent;
+		}
+	}
+
+	/* Layout Boxed - Header */
+	html.boxed {
+		.header {
+			border-top: 3px solid $color-primary;
+			height: $header-height + 3;
+			position: absolute;
+			top: 25px;
+		}
+	}
+
+	/* Layout Boxed - Inner Wrapper */
+	html.boxed {
+		.inner-wrapper {
+			padding-top: 88px;
+			padding-bottom: 25px;
+		}
+	}
+
+	/* Layout Boxed - Content Body */
+	html.boxed {
+		.content-body {
+			background-color: $body-color;
+		}
+	}
+
+	/* Layout Boxed - Border Radius */
+	html.boxed {
+		.header {
+			border-radius: 5px 5px 0 0;
+		}
+
+		.sidebar-left {
+			border-radius: 0 0 0 5px;
+		}
+
+		.content-body {
+			border-radius: 0 0 5px 0;
+		}
+
+		.sidebar-right {
+			border-radius: 0 5px 5px 0;
+		}
+	}
+
+	/* Layout Boxed - Sidebar Right */
+	html.boxed {
+		.sidebar-right {
+			border-top: 3px solid $color-primary;
+			min-height: 0;
+		}
+	}
+
+	/* Layout Boxed - Sidebar Right Opened */
+	html.boxed.sidebar-right-opened {
+		.body {
+			overflow: hidden;
+		}
+
+		.header {
+			border-radius: 5px 0 0 0;
+		}
+
+		.content-body {
+			border-radius: 0 0 0 5px;
+		}
+
+		.sidebar-right {
+			bottom: 25px;
+			position: absolute;
+			top: 25px;
+		}
+	}
+}
+
+// LAYOUT MOBILE
+// -----------------------------------------------------------------------------
+
+@media only screen and (max-width: 767px) {
+	html,
+	body {
+		background: $body-color;
+	}
+
+	html.mobile-device {
+		.sidebar-left,
+		.sidebar-right {
+			overflow-y: scroll;
+			overflow-x: hidden;
+			-webkit-overflow-scrolling: touch;
+		}
+	}
+
+	body {
+		min-height: 100vh;
+	}
+
+	.inner-wrapper,
+	.sidebar-left,
+	.content-body {
+		display: block;
+	}
+
+	.body {
+		min-height: 0;
+		overflow: visible;
+	}
+
+	.header {
+		background: none;
+		border: none;
+		height: auto;
+		position: static;
+
+		.logo-container {
+			height: $header-height;
+			left: 0;
+			position: fixed;
+			right: 0;
+			top: 0;
+			z-index: 99;
+		}
+
+		.header-right {
+			background: #FFF;
+			float: none !important;
+			height: $header-height;
+			margin-top: $header-height;
+			width: 100%;
+		}
+	}
+
+	.inner-wrapper {
+		min-height: 0;
+		padding-top: 0;
+		//overflow-y: scroll;
+	}
+
+	.content-body {
+		padding: 0 15px 15px;
+	}
+
+	.page-header {
+		margin: 0 -15px 20px;
+	}
+
+	.sidebar-left {
+		bottom: 0;
+		left: -100%;
+		min-height: 0;
+		min-width: 100%;
+		min-width: 100vw;
+		padding-top: $header-height;
+		padding-bottom: 50px;
+		position: fixed;
+		overflow: hidden;
+		top: 0;
+		z-index: 98 !important;
+	}
+
+	.sidebar-right {
+		bottom: 0;
+		left: auto;
+		right: -100%;
+		min-height: 0;
+		margin-right: 0;
+		min-width: 100%;
+		min-width: 100vw;
+		top: 0;
+		z-index: 100;
+	}
+
+	html.csstransforms {
+		.sidebar-left,
+		.sidebar-right {
+			/* performs better but native android browser
+			has problems with translate and percentage
+			@include transition-property(transform);
+			*/
+			@include transition-property( margin );
+			@include transition-duration( .25s );
+			@include transition-timing-function( ease-out );
+			@include transition-delay( 0 );
+		}
+		.sidebar-left {
+			/* performs better but native android browser
+			has problems with translate and percentage
+			@include transform( translateX(0) );
+			*/
+			margin-left: -25px;
+		}
+
+		.sidebar-right {
+			/* performs better but native android browser
+			has problems with translate and percentage
+			@include transform( translateX(0) );
+			*/
+			margin-right: -25px;
+		}
+	}
+
+	/* If desktop is seeing mobile res, fix scrollbars */
+	html.no-mobile-device {
+		body {
+			min-height: 0;
+		}
+
+		.body {
+			min-height: 100vh;
+			overflow: hidden;
+		}
+
+		.inner-wrapper {
+			overflow-y: auto;
+		}
+
+		&.sidebar-left-opened,
+		&.sidebar-right-opened {
+			&,
+			& body {
+				overflow: hidden;
+			}
+		}
+	}
+
+	/* Layout Mobile - Sidebar Left Opened */
+	html.sidebar-left-opened {
+		&.no-csstransforms {
+			.sidebar-left {
+				left: 0;
+			}
+		}
+
+		&.csstransforms {
+			.sidebar-left {
+				/* performs better but native android browser
+				has problems with translate and percentage
+				@include transform( translateX(100%) );
+				*/
+				margin-left: 100%;
+			}
+		}
+	}
+
+	/* Layout Mobile - Sidebar Right Opened */
+	html.sidebar-right-opened {
+		&.no-csstransforms {
+			.sidebar-right {
+				right: 0;
+			}
+		}
+
+		&.csstransforms {
+			.sidebar-right {
+				/* performs better but native android browser
+				has problems with translate and percentage
+				@include transform( translateX(-100%) );
+				*/
+				margin-right: 100%;
+			}
+		}
+	}
+
+	/* Layout Mobile - Sidebar Left Collapsed & Sidebar Right Opened */
+	html.sidebar-left-collapsed.sidebar-right-opened {
+		.sidebar-left {
+			margin-left: -$sidebar-left-full-width;
+		}
+	}
+}
+
+// INNER LAYOUT - WITH MENU
+// -----------------------------------------------------------------------------
+
+/* Content With Menu - Boxed Layout Fixing Spacement on Bottom */
+@media only screen and (min-width: 1200px) {
+	html.boxed {
+		.content-with-menu {
+			margin-bottom: -($content-body-padding);
+		}
+	}
+}
+
+/* Content With Menu - Container */
+@media only screen and (min-width: 768px) {
+	.content-with-menu-container {
+		display: table;
+		table-layout: fixed;
+		width: 100%;
+	}
+}
+
+/* Content With Menu - Menu Faux Column for Scroll and Boxed Layouts */
+@media only screen and (min-width: 768px) {
+	html.scroll,
+	html.boxed {
+		.content-with-menu {
+			&:before {
+				bottom: -($page-header-height - 3);
+				content: '';
+				display: block;
+				left: 0;
+				position: absolute;
+				top: ($page-header-height + 4);
+				width: $inner-menu-width;
+			}
+
+			&:after {
+				bottom: -($page-header-height - 4);
+				content: '';
+				display: block;
+				left: -1px;
+				position: absolute;
+				top: ($page-header-height + 4);
+				width: 1px;
+				z-index: 3;
+			}
+		}
+	}
+
+	html.boxed {
+		.content-with-menu {
+			&:before {
+				bottom: 0;
+			}
+
+			&:after {
+				bottom: 2px;
+			}
+		}
+
+	}
+}
+
+// CONTENT WITH MENU
+// -----------------------------------------------------------------------------
+
+.content-with-menu {
+	margin: -20px -15px 0;
+}
+
+/* Content With Menu - Responsive */
+@media only screen and (max-width: 767px) {
+	.content-with-menu {
+		clear: both;
+	}
+
+	.inner-body {
+		padding: 40px 15px 0;
+	}
+}
+
+/* Content With Menu - Menu and Body */
+@media only screen and (min-width: 768px) {
+	.content-with-menu {
+		border-top: ($header-height + $page-header-height) solid transparent;
+		margin: (-($header-height + $page-header-height + $content-body-padding)) (-$content-body-padding) (-($page-header-height + 3)) (-$content-body-padding);
+		min-height: 100vh;
+	}
+
+	.inner-menu {
+		display: table-cell;
+		vertical-align: top;
+	}
+
+	.inner-body {
+		display: table-cell;
+		vertical-align: top;
+		padding: $content-body-padding;
+	}
+
+	.inner-toolbar {
+		height: $inner-toolbar-height;
+		overflow: hidden;
+	}
+
+	.content-with-menu-has-toolbar {
+		.inner-menu-toggle {
+			border-radius: 0;
+		}
+		.inner-toolbar {
+			padding-left: $inner-menu-toggle-width;
+		}
+	}
+}
+
+// FLEXBOX SUPPORTED
+// -----------------------------------------------------------------------------
+
+/* Content With Menu - Flexbox supported */
+@media only screen and (min-width: 768px) {
+	html.flexbox,
+	html.flexboxlegacy {
+		.content-with-menu-container {
+			@include display(flex);
+		}
+
+		.inner-menu,
+		.inner-body {
+			display: block;
+			@include flex-shrink(0);
+		}
+
+		.inner-body {
+			@include flex(2);
+		}
+	}
+}
+
+/* Content With Menu + Layout Fixed */
+@media only screen and (min-width: 768px) {
+	html.fixed {
+		.content-with-menu-container,
+		.inner-menu,
+		.inner-body {
+			display: block;
+		}
+
+		.content-with-menu-container {
+			position: relative;
+		}
+
+		.inner-menu-toggle {
+			position: absolute;
+			top: $header-height + $page-header-height + 4;
+			border-radius: 0 0 $border-radius 0;
+			width: $inner-menu-toggle-width;
+			z-index: $inner-menu-toggle-z-index;
+		}
+
+		.inner-menu {
+			bottom: 0;
+			display: block;
+			left: $sidebar-left-full-width;
+			position: fixed;
+			margin: 0;
+			top: $header-height + $page-header-height + 4;
+			width: $inner-menu-width;
+			padding: 35px;
+			z-index: $inner-menu-z-index;
+		}
+
+		.inner-menu-content {
+			display: block;
+		}
+
+		.inner-body {
+			margin-left: $inner-menu-width;
+			border-top: ($header-height + $page-header-height + 3) solid transparent;
+			margin-top: -110px;
+			min-height: 100vh;
+			position: relative;
+		}
+
+		.content-with-menu-has-toolbar .inner-body {
+			border-top-width: ($header-height + $page-header-height + $inner-toolbar-height + 3);
+		}
+	}
+}
+
+/* Content With Menu + Layout Scroll & Boxed */
+@media only screen and (min-width: 768px) {
+	html.scroll,
+	html.boxed {
+		.inner-menu,
+		.inner-body {
+			display: block;
+		}
+
+		.content-with-menu-container {
+			position: relative;
+		}
+
+		.inner-menu-toggle {
+			position: absolute;
+			top: 0;
+			border-radius: 0 0 $border-radius 0;
+			width: $inner-menu-toggle-width;
+			z-index: 3;
+		}
+
+		.inner-menu {
+			display: block;
+			position: relative;
+			margin: 0;
+			width: $inner-menu-width;
+			padding: 35px;
+		}
+
+		.inner-menu-content {
+			display: block;
+		}
+
+		.inner-body {
+			margin-left: 0;
+			min-height: 100vh;
+			position: relative;
+		}
+
+		&.flexbox,
+		&.flexboxlegacy {
+			.content-with-menu-container {
+				@include display(flex);
+			}
+		}
+	}
+}
+
+/* Content With Menu + Layout Fixed + Sidebar Left Collapsed */
+@media only screen and (min-width: 768px) {
+	html.fixed.sidebar-left-collapsed {
+		.inner-menu,
+		.inner-menu-toggle,
+		.inner-toolbar {
+			left: $sidebar-left-collapsed-width;
+		}
+
+		&.inner-menu-opened {
+			.inner-menu-toggle,
+			.inner-toolbar {
+				left: $sidebar-left-collapsed-width + $inner-menu-width;
+			}
+		}
+	}
+}
+
+/* Content With Menu + Layout Fixed + Sidebar Right Opened */
+@media only screen and (min-width: 768px) {
+	html.fixed.sidebar-right-opened {
+		.inner-menu,
+		.inner-menu-toggle,
+		.inner-toolbar {
+			left:  -($sidebar-right-width - $sidebar-left-full-width);
+		}
+
+		.inner-toolbar {
+			margin-right: $sidebar-right-width;
+		}
+
+		&.inner-menu-opened {
+			.inner-menu-toggle,
+			.inner-toolbar {
+				left:  -($sidebar-right-width - $sidebar-left-full-width + $inner-menu-width);
+			}
+		}
+	}
+}
+
+/* Content With Menu + Layout Fixed + Sidebar Left Collapsed + Sidebar Right Opened */
+@media only screen and (min-width: 768px) {
+	html.fixed.sidebar-left-collapsed.sidebar-right-opened {
+		.inner-menu,
+		.inner-menu-toggle,
+		.inner-toolbar {
+			left:  -($sidebar-right-width - $sidebar-left-collapsed-width);
+		}
+
+		&.inner-menu-opened {
+			.inner-menu-toggle,
+			.inner-toolbar {
+				left:  -($sidebar-right-width - $sidebar-left-collapsed-width + $inner-menu-width);
+			}
+		}
+	}
+}
+
+/* Resolution gt 767 and lt 1366 - Hide Inner Menu */
+@media only screen and (min-width: 768px) and (max-width: 1365px) {
+	html.fixed,
+	html.scroll,
+	html.boxed {
+		.inner-menu {
+			display: none;
+		}
+		.inner-menu-toggle {
+			display: block;
+		}
+		.inner-body {
+			margin-left: 0;
+		}
+
+		.content-with-menu-has-toolbar {
+			.inner-toolbar {
+				padding-left: $inner-menu-toggle-width;
+			}
+		}
+
+		&.inner-menu-opened {
+			.inner-menu {
+				display: block;
+			}
+			.inner-menu-toggle {
+				display: none;
+			}
+			.inner-body {
+				margin-right: -300px;
+			}
+			.content-with-menu-has-toolbar {
+				.inner-toolbar {
+					padding-left: 0;
+				}
+			}
+		}
+	}
+
+	html.fixed.inner-menu-opened {
+		.inner-body {
+			margin-left: 300px;
+		}
+	}
+
+	html.scroll,
+	html.boxed {
+		.content-with-menu {
+			&:before {
+				display: none;
+			}
+		}
+
+		&.inner-menu-opened {
+			&:before {
+				display: block;
+			}
+		}
+	}
+}
+
+/* Resolution gt 1366 - Show Inner Menu */
+@media only screen and (min-width: 1366px) {
+	html.fixed,
+	html.scroll,
+	html.boxed {
+		.inner-menu {
+			display: block;
+		}
+		.inner-menu-toggle,
+		.inner-menu-toggle-inside {
+			display: none;
+		}
+		.inner-body {
+			margin-right: 0;
+		}
+		.content-with-menu-has-toolbar {
+			.inner-toolbar {
+				padding-left: 0;
+			}
+		}
+	}
+
+	html.fixed.inner-menu-opened {
+		.inner-body {
+			margin-left: 300px;
+		}
+	}
+
+	html.fixed,
+	html.fixed.inner-menu-opened {
+		.content-with-menu .inner-toolbar {
+			left: $sidebar-left-full-width + $inner-menu-width;
+		}
+
+		.inner-menu-toggle,
+		.inner-menu {
+			left: $sidebar-left-full-width;
+		}
+	}
+
+	html.fixed.sidebar-right-opened {
+		.content-with-menu .inner-toolbar {
+			left: $sidebar-left-full-width + $inner-menu-width - $sidebar-right-width;
+		}
+
+		.inner-menu,
+		.inner-menu-toggle {
+			left: $sidebar-left-full-width - $sidebar-right-width;
+		}
+	}
+
+	html.fixed.sidebar-left-collapsed,
+	html.fixed.sidebar-left-collapsed.sidebar-right-opened.inner-menu-opened,
+	html.fixed.sidebar-left-collapsed.inner-menu-opened {
+		.content-with-menu .inner-toolbar {
+			left: $sidebar-left-collapsed-width + $inner-menu-width;
+		}
+
+		.inner-menu-toggle,
+		.inner-menu {
+			left: $sidebar-left-collapsed-width;
+		}
+	}
+
+	html.fixed.sidebar-left-collapsed.sidebar-right-opened {
+		.content-with-menu .inner-toolbar {
+			left: $sidebar-left-collapsed-width - $sidebar-right-width + $inner-menu-width;
+		}
+
+		.inner-menu,
+		.inner-menu-toggle {
+			left: $sidebar-left-collapsed-width - $sidebar-right-width;
+		}
+	}
+
+}
+
+/* Fix IE Scrollbar Overlaying content */
+@-ms-viewport {
+	width: auto !important;
+}

@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 12:04:48 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <meta content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5" name="description"/>
+  <meta content="AdminKit" name="author"/>
+  <meta content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web" name="keywords"/>
+  <link href="[%[=URL('static/tte/img/icons/icon-48x48.png') ]]" rel="shortcut icon"/>
+  <title>biorex title text</title>
+  <link href="[%[=URL('static/tte/css/app.css') ]]" rel="stylesheet"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <div class="wrapper">
+   <nav class="sidebar" id="sidebar">
+    <div class="sidebar-content js-simplebar">
+     <a class="sidebar-brand" href="[%[=URL('index') ]]">
+      <span class="align-middle">AdminKit</span>
+     </a>
+     <ul class="sidebar-nav">
+      <li class="sidebar-header">Pages</li>
+      <li class="sidebar-item active">
+       <a class="sidebar-link" href="[%[=URL('index') ]]">
+        <i class="align-middle" data-feather="sliders"></i>
+        <span class="align-middle">Dashboard</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXprofile') ]]">
+        <i class="align-middle" data-feather="user"></i>
+        <span class="align-middle">Profile</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXsettings') ]]">
+        <i class="align-middle" data-feather="settings"></i>
+        <span class="align-middle">Settings</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXinvoice') ]]">
+        <i class="align-middle" data-feather="credit-card"></i>
+        <span class="align-middle">Invoice</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXblank') ]]">
+        <i class="align-middle" data-feather="book"></i>
+        <span class="align-middle">Blank</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link collapsed" data-toggle="collapse" href="#auth">
+        <i class="align-middle" data-feather="users"></i>
+        <span class="align-middle">Auth</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar" id="auth">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('pagesXsignXin') ]]">Sign In</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('pagesXsignXup') ]]">Sign Up</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-header">Tools &amp; Components</li>
+      <li class="sidebar-item">
+       <a class="sidebar-link collapsed" data-target="#ui" data-toggle="collapse">
+        <i class="align-middle" data-feather="briefcase"></i>
+        <span class="align-middle">UI Elements</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar" id="ui">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXalerts') ]]">Alerts</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXbuttons') ]]">Buttons</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXcards') ]]">Cards</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXgeneral') ]]">General</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXgrid') ]]">Grid</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXmodals') ]]">Modals</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXtypography') ]]">Typography</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('iconsXfeather') ]]">
+        <i class="align-middle" data-feather="coffee"></i>
+        <span class="align-middle">Icons</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link collapsed" data-target="#forms" data-toggle="collapse">
+        <i class="align-middle" data-feather="check-circle"></i>
+        <span class="align-middle">Forms</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar" id="forms">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('formsXlayouts') ]]">Form Layouts</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('formsXbasicXinputs') ]]">Basic Inputs</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('tablesXbootstrap') ]]">
+        <i class="align-middle" data-feather="list"></i>
+        <span class="align-middle">Tables</span>
+       </a>
+      </li>
+      <li class="sidebar-header">Plugins &amp; Addons</li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('chartsXchartjs') ]]">
+        <i class="align-middle" data-feather="bar-chart-2"></i>
+        <span class="align-middle">Charts</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('mapsXgoogle') ]]">
+        <i class="align-middle" data-feather="map"></i>
+        <span class="align-middle">Maps</span>
+       </a>
+      </li>
+     </ul>
+     <div class="sidebar-cta">
+      <div class="sidebar-cta-content">
+       <strong class="d-inline-block mb-2">Upgrade to Pro</strong>
+       <div class="mb-3 text-sm">Are you looking for more components? Check out our premium version.</div>
+       <a class="btn btn-primary btn-block" href="https://adminkit.io/pricing" target="_blank">Upgrade to Pro</a>
+      </div>
+     </div>
+    </div>
+   </nav>
+   <div class="main">
+    <nav class="navbar navbar-expand navbar-light navbar-bg">
+     <a class="sidebar-toggle d-flex">
+      <i class="hamburger align-self-center"></i>
+     </a>
+     
+<!-- BEGIN view: findex0, db_table: dfindex0 -->
+<div class="d-none d-sm-inline-block">
+[%[= findex0.custom['begin'] ]]
+<div class="input-group input-group-navbar">
+ [%[ findex0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ findex0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ findex0.custom['widgets']['f0']['_placeholder']= 'Search'  ]]
+ [%[ findex0.custom['widgets']['f0']['_aria-label']= 'Search'  ]]
+ [%[= findex0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= findex0.custom['errors']['f0'] if 'f0' in findex0.custom['errors'] else '' ]]</span>
+
+ [%[ findex0.custom['submit']['_class']= 'btn'  ]]
+ [%[ findex0.custom['submit']['_type']= 'submit'  ]]
+ [%[ findex0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ findex0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ findex0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= findex0.custom['submit'] ]]
+
+</div>
+
+ [%[ for hidden_widget in findex0.custom['hidden_widgets'].keys(): ]]
+     [%[= findex0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">findex0</span></div>
+
+
+[%[= findex0.custom['end'] ]]
+</div>
+<!-- END findex0-->
+
+     <div class="navbar-collapse collapse">
+      <ul class="navbar-nav navbar-align">
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle" data-toggle="dropdown" href="#" id="alertsDropdown">
+         <div class="position-relative">
+          <i class="align-middle" data-feather="bell"></i>
+          <span class="indicator">4</span>
+         </div>
+        </a>
+        <div aria-labelledby="alertsDropdown" class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0">
+         <div class="dropdown-menu-header">4 New Notifications</div>
+         <div class="list-group">
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-danger" data-feather="alert-circle"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Update completed</div>
+             <div class="text-muted small mt-1">Restart server 12 to complete the update.</div>
+             <div class="text-muted small mt-1">30m ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-warning" data-feather="bell"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Lorem ipsum</div>
+             <div class="text-muted small mt-1">Aliquam ex eros, imperdiet vulputate hendrerit et.</div>
+             <div class="text-muted small mt-1">2h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-primary" data-feather="home"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Login from 192.186.1.8</div>
+             <div class="text-muted small mt-1">5h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-success" data-feather="user-plus"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">New connection</div>
+             <div class="text-muted small mt-1">Christina accepted your request.</div>
+             <div class="text-muted small mt-1">14h ago</div>
+            </div>
+           </div>
+          </a>
+         </div>
+         <div class="dropdown-menu-footer">
+          <a class="text-muted" href="#">Show all notifications</a>
+         </div>
+        </div>
+       </li>
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle" data-toggle="dropdown" href="#" id="messagesDropdown">
+         <div class="position-relative">
+          <i class="align-middle" data-feather="message-square"></i>
+         </div>
+        </a>
+        <div aria-labelledby="messagesDropdown" class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0">
+         <div class="dropdown-menu-header">
+          <div class="position-relative">4 New Messages</div>
+         </div>
+         <div class="list-group">
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Vanessa Tucker" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-5.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Vanessa Tucker</div>
+             <div class="text-muted small mt-1">Nam pretium turpis et arcu. Duis arcu tortor.</div>
+             <div class="text-muted small mt-1">15m ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="William Harris" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-2.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">William Harris</div>
+             <div class="text-muted small mt-1">Curabitur ligula sapien euismod vitae.</div>
+             <div class="text-muted small mt-1">2h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Christina Mason" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-4.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Christina Mason</div>
+             <div class="text-muted small mt-1">Pellentesque auctor neque nec urna.</div>
+             <div class="text-muted small mt-1">4h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Sharon Lessman" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-3.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Sharon Lessman</div>
+             <div class="text-muted small mt-1">Aenean tellus metus, bibendum sed, posuere ac, mattis non.</div>
+             <div class="text-muted small mt-1">5h ago</div>
+            </div>
+           </div>
+          </a>
+         </div>
+         <div class="dropdown-menu-footer">
+          <a class="text-muted" href="#">Show all messages</a>
+         </div>
+        </div>
+       </li>
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" data-toggle="dropdown" href="#">
+         <i class="align-middle" data-feather="settings"></i>
+        </a>
+        <a class="nav-link dropdown-toggle d-none d-sm-inline-block" data-toggle="dropdown" href="#">
+         <img alt="Charles Hall" class="avatar img-fluid rounded mr-1" src="[%[=URL('static/tte/img/avatars/avatar.jpg') ]]"/>
+         <span class="text-dark">Charles Hall</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+         <a class="dropdown-item" href="[%[=URL('pagesXprofile') ]]">
+          <i class="align-middle mr-1" data-feather="user"></i>
+          Profile
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="align-middle mr-1" data-feather="pie-chart"></i>
+          Analytics
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item" href="[%[=URL('pagesXsettings') ]]">
+          <i class="align-middle mr-1" data-feather="settings"></i>
+          Settings &amp; Privacy
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="align-middle mr-1" data-feather="help-circle"></i>
+          Help Center
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item" href="#">Log out</a>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </nav>
+    <main class="content">
+     <div class="container-fluid p-0">
+      <div class="row mb-2 mb-xl-3">
+       <div class="col-auto d-none d-sm-block">
+        <h3>
+         <strong>Analytics</strong>
+         Dashboard
+        </h3>
+       </div>
+       <div class="col-auto ml-auto text-right mt-n1">
+        <nav aria-label="breadcrumb">
+         <ol class="breadcrumb bg-transparent p-0 mt-1 mb-0">
+          <li class="breadcrumb-item">
+           <a href="#">AdminKit</a>
+          </li>
+          <li class="breadcrumb-item">
+           <a href="#">Dashboards</a>
+          </li>
+          <li aria-current="page" class="breadcrumb-item active">Analytics</li>
+         </ol>
+        </nav>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-xl-6 col-xxl-5 d-flex">
+        <div class="w-100">
+         <div class="row">
+          <div class="col-sm-6">
+           <div class="card">
+            <div class="card-body">
+             <h5 class="card-title mb-4">Sales</h5>
+             <h1 class="mt-1 mb-3">2.382</h1>
+             <div class="mb-1">
+              <span class="text-danger">
+               <i class="mdi mdi-arrow-bottom-right"></i>
+               -3.65%
+              </span>
+              <span class="text-muted">Since last week</span>
+             </div>
+            </div>
+           </div>
+           <div class="card">
+            <div class="card-body">
+             <h5 class="card-title mb-4">Visitors</h5>
+             <h1 class="mt-1 mb-3">14.212</h1>
+             <div class="mb-1">
+              <span class="text-success">
+               <i class="mdi mdi-arrow-bottom-right"></i>
+               5.25%
+              </span>
+              <span class="text-muted">Since last week</span>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="col-sm-6">
+           <div class="card">
+            <div class="card-body">
+             <h5 class="card-title mb-4">Earnings</h5>
+             <h1 class="mt-1 mb-3">$21.300</h1>
+             <div class="mb-1">
+              <span class="text-success">
+               <i class="mdi mdi-arrow-bottom-right"></i>
+               6.65%
+              </span>
+              <span class="text-muted">Since last week</span>
+             </div>
+            </div>
+           </div>
+           <div class="card">
+            <div class="card-body">
+             <h5 class="card-title mb-4">Orders</h5>
+             <h1 class="mt-1 mb-3">64</h1>
+             <div class="mb-1">
+              <span class="text-danger">
+               <i class="mdi mdi-arrow-bottom-right"></i>
+               -2.25%
+              </span>
+              <span class="text-muted">Since last week</span>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-xl-6 col-xxl-7">
+        <div class="card flex-fill w-100">
+         <div class="card-header">
+          <h5 class="card-title mb-0">Recent Movement</h5>
+         </div>
+         <div class="card-body py-3">
+          <div class="chart chart-sm">
+           <canvas id="chartjs-dashboard-line"></canvas>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
+        <div class="card flex-fill w-100">
+         <div class="card-header">
+          <h5 class="card-title mb-0">Browser Usage</h5>
+         </div>
+         <div class="card-body d-flex">
+          <div class="align-self-center w-100">
+           <div class="py-3">
+            <div class="chart chart-xs">
+             <canvas id="chartjs-dashboard-pie"></canvas>
+            </div>
+           </div>
+           
+<!--view: rows_tindex0, db_table: tindex0 -->
+  <table class="table mb-0">
+  <tbody>
+        [%[ for row0 in rows_tindex0: ]]
+        <tr>
+            <td>[%[= XML(row0.f0) ]]</td>
+            <td class="text-right">[%[= XML(row0.f1) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tindex0 -->
+
+<div class="flashdiv"><span class="flashspan">tindex0</span></div>
+
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-md-12 col-xxl-6 d-flex order-3 order-xxl-2">
+        <div class="card flex-fill w-100">
+         <div class="card-header">
+          <h5 class="card-title mb-0">Real-Time</h5>
+         </div>
+         <div class="card-body px-4">
+          <div id="world_map" style="height:350px;"></div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-md-6 col-xxl-3 d-flex order-1 order-xxl-1">
+        <div class="card flex-fill">
+         <div class="card-header">
+          <h5 class="card-title mb-0">Calendar</h5>
+         </div>
+         <div class="card-body d-flex">
+          <div class="align-self-center w-100">
+           <div class="chart">
+            <div id="datetimepicker-dashboard"></div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-12 col-lg-8 col-xxl-9 d-flex">
+        <div class="card flex-fill">
+         <div class="card-header">
+          <h5 class="card-title mb-0">Latest Projects</h5>
+         </div>
+         
+<!--view: rows_tindex1, db_table: tindex1 -->
+  <table class="table table-hover my-0">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th class="d-none d-xl-table-cell">Start Date</th>
+        <th class="d-none d-xl-table-cell">End Date</th>
+        <th>Status</th>
+        <th class="d-none d-md-table-cell">Assignee</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row1 in rows_tindex1: ]]
+        <tr>
+            <td>[%[= XML(row1.f0) ]]</td>
+            <td class="d-none d-xl-table-cell">[%[= XML(row1.f1) ]]</td>
+            <td class="d-none d-xl-table-cell">[%[= XML(row1.f2) ]]</td>
+            <td>[%[= XML(row1.f3) ]]</td>
+            <td class="d-none d-md-table-cell">[%[= XML(row1.f4) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tindex1 -->
+
+<div class="flashdiv"><span class="flashspan">tindex1</span></div>
+
+        </div>
+       </div>
+       <div class="col-12 col-lg-4 col-xxl-3 d-flex">
+        <div class="card flex-fill w-100">
+         <div class="card-header">
+          <h5 class="card-title mb-0">Monthly Sales</h5>
+         </div>
+         <div class="card-body d-flex w-100">
+          <div class="align-self-center chart chart-lg">
+           <canvas id="chartjs-dashboard-bar"></canvas>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </main>
+    <footer class="footer">
+     <div class="container-fluid">
+      <div class="row text-muted">
+       <div class="col-6 text-left">
+        <p class="mb-0">
+         <a class="text-muted" href="[%[=URL('index') ]]">
+          <strong>AdminKit Demo</strong>
+         </a>
+         ©
+        </p>
+       </div>
+       <div class="col-6 text-right">
+        <ul class="list-inline">
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Support</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Help Center</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Privacy</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Terms</a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </footer>
+   </div>
+  </div>
+  <script src="[%[=URL('static/tte/js/app.js') ]]"></script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    var ctx = document.getElementById("chartjs-dashboard-line").getContext("2d");
+    var gradient = ctx.createLinearGradient(0, 0, 0, 225);
+    gradient.addColorStop(0, "rgba(215, 227, 244, 1)");
+    gradient.addColorStop(1, "rgba(215, 227, 244, 0)");
+    // Line chart
+    new Chart(document.getElementById("chartjs-dashboard-line"), {
+        type: "line",
+        data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: [{
+                label: "Sales ($)",
+                fill: true,
+                backgroundColor: gradient,
+                borderColor: window.theme.primary,
+                data: [
+                    2115,
+                    1562,
+                    1584,
+                    1892,
+                    1587,
+                    1923,
+                    2566,
+                    2448,
+                    2805,
+                    3438,
+                    2917,
+                    3327
+                ]
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                intersect: false
+            },
+            hover: {
+                intersect: true
+            },
+            plugins: {
+                filler: {
+                    propagate: false
+                }
+            },
+            scales: {
+                xAxes: [{
+                    reverse: true,
+                    gridLines: {
+                        color: "rgba(0,0,0,0.0)"
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        stepSize: 1000
+                    },
+                    display: true,
+                    borderDash: [3, 3],
+                    gridLines: {
+                        color: "rgba(0,0,0,0.0)"
+                    }
+                }]
+            }
+        }
+    });
+});
+  </script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    // Pie chart
+    new Chart(document.getElementById("chartjs-dashboard-pie"), {
+        type: "pie",
+        data: {
+            labels: ["Chrome", "Firefox", "IE"],
+            datasets: [{
+                data: [4306, 3801, 1689],
+                backgroundColor: [
+                    window.theme.primary,
+                    window.theme.warning,
+                    window.theme.danger
+                ],
+                borderWidth: 5
+            }]
+        },
+        options: {
+            responsive: !window.MSInputMethodContext,
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+            },
+            cutoutPercentage: 75
+        }
+    });
+});
+  </script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    // Bar chart
+    new Chart(document.getElementById("chartjs-dashboard-bar"), {
+        type: "bar",
+        data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: [{
+                label: "This year",
+                backgroundColor: window.theme.primary,
+                borderColor: window.theme.primary,
+                hoverBackgroundColor: window.theme.primary,
+                hoverBorderColor: window.theme.primary,
+                data: [54, 67, 41, 55, 62, 45, 55, 73, 60, 76, 48, 79],
+                barPercentage: .75,
+                categoryPercentage: .5
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+            },
+            scales: {
+                yAxes: [{
+                    gridLines: {
+                        display: false
+                    },
+                    stacked: false,
+                    ticks: {
+                        stepSize: 20
+                    }
+                }],
+                xAxes: [{
+                    stacked: false,
+                    gridLines: {
+                        color: "transparent"
+                    }
+                }]
+            }
+        }
+    });
+});
+  </script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    var markers = [{
+        coords: [31.230391, 121.473701],
+        name: "Shanghai"
+    }, {
+        coords: [28.704060, 77.102493],
+        name: "Delhi"
+    }, {
+        coords: [6.524379, 3.379206],
+        name: "Lagos"
+    }, {
+        coords: [35.689487, 139.691711],
+        name: "Tokyo"
+    }, {
+        coords: [23.129110, 113.264381],
+        name: "Guangzhou"
+    }, {
+        coords: [40.7127837, -74.0059413],
+        name: "New York"
+    }, {
+        coords: [34.052235, -118.243683],
+        name: "Los Angeles"
+    }, {
+        coords: [41.878113, -87.629799],
+        name: "Chicago"
+    }, {
+        coords: [51.507351, -0.127758],
+        name: "London"
+    }, {
+        coords: [40.416775, -3.703790],
+        name: "Madrid "
+    }];
+    var map = new JsVectorMap({
+        map: "world",
+        selector: "#world_map",
+        zoomButtons: true,
+        markers: markers,
+        markerStyle: {
+            initial: {
+                r: 9,
+                strokeWidth: 7,
+                stokeOpacity: .4,
+                fill: window.theme.primary
+            },
+            hover: {
+                fill: window.theme.primary,
+                stroke: window.theme.primary
+            }
+        }
+    });
+    window.addEventListener("resize", () => {
+        map.updateSize();
+    });
+});
+  </script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("datetimepicker-dashboard").flatpickr({
+        inline: true,
+        prevArrow: "<span class=\"fas fa-chevron-left\" title=\"Previous month\"></span>",
+        nextArrow: "<span class=\"fas fa-chevron-right\" title=\"Next month\"></span>",
+    });
+});
+  </script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+// MARKDOWN
+// -----------------------------------------------------------------------------
+/* Bootstrap Markdown */
+.md-editor {
+	border-radius: 4px;
+	@include transition( border-color ease-in-out .15s, box-shadow ease-in-out .15s );
+
+	> .md-header {
+		border-radius: 4px 4px 0 0;
+		padding: 6px 4px 0;
+	}
+
+	> .md-preview,
+	> textarea {
+		background: #FFF;
+		border-bottom: none;
+		border-radius: 0 0 4px 4px;
+		padding: 10px;
+		outline: none;
+		width: 100% !important;
+	}
+
+	.btn-group {
+		margin-bottom: 6px;
+	}
+}
+
+// DARK
+// -----------------------------------------------------------------------------
+html.dark {
+	.md-editor {
+		border-color: $dark-color-3;
+	}
+
+	.md-editor >.md-header,
+	.md-editor .md-footer {
+		background: $dark-color-5;
+	}
+
+	.md-editor > .md-preview,
+	.md-editor > textarea {
+		background: $dark-color-3;
+	}
+
+	.md-editor > textarea {
+		color: #EEE;
+		border-color: $dark-color-1;
+	}
+}

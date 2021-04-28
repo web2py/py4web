@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 08:47:39 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <!-- Bootstrap CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/circular-std/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/libs/css/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') ]]" rel="stylesheet"/>
+  <title>biorex title text</title>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body class="chat-body">
+  <!-- ============================================================== -->
+  <!-- main wrapper -->
+  <!-- ============================================================== -->
+  <div class="dashboard-main-wrapper">
+   <!-- ============================================================== -->
+   <!-- navbar -->
+   <!-- ============================================================== -->
+   <div class="dashboard-header">
+    <nav class="navbar navbar-expand-lg bg-white fixed-top">
+     <a class="navbar-brand" href="[%[=URL('index') ]]">Concept</a>
+     <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+      <span class="navbar-toggler-icon"></span>
+     </button>
+     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto navbar-right-top">
+       <li class="nav-item">
+        <div class="top-search-bar" id="custom-search">
+         <input class="form-control" placeholder="Search.." type="text"/></div>
+       </li>
+       <li class="nav-item dropdown notification">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-icons" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink1">
+         <i class="fas fa-fw fa-bell"></i>
+         <span class="indicator"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+         <li>
+          <div class="notification-title">Notification</div>
+          <div class="notification-list">
+           <div class="list-group">
+            <a class="list-group-item list-group-item-action active" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jeremy Rakestraw</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">John Abraham</span>
+               is now following you
+               <div class="notification-date">2 days ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Monaan Pechi</span>
+               is watching your main repository
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-5.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jessica Caruso</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="list-footer">
+           <a href="#">View all notifications</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown connection">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown" href="#" id="navbarDropdown" role="button">
+         <i class="fas fa-fw fa-th"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
+         <li class="connection-list">
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/github.png') ]]"/>
+             <span>Github</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dribbble.png') ]]"/>
+             <span>Dribbble</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dropbox.png') ]]"/>
+             <span>Dropbox</span>
+            </a>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/bitbucket.png') ]]"/>
+             <span>Bitbucket</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/mail_chimp.png') ]]"/>
+             <span>Mail chimp</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/slack.png') ]]"/>
+             <span>Slack</span>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="conntection-footer">
+           <a href="#">More</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown nav-user">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-user-img" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink2">
+         <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/></a>
+        <div aria-labelledby="navbarDropdownMenuLink2" class="dropdown-menu dropdown-menu-right nav-user-dropdown">
+         <div class="nav-user-info">
+          <h5 class="mb-0 text-white nav-user-name">John Abraham</h5>
+          <span class="status"></span>
+          <span class="ml-2">Available</span>
+         </div>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-user mr-2"></i>
+          Account
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-cog mr-2"></i>
+          Setting
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-power-off mr-2"></i>
+          Logout
+         </a>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </nav>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end navbar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- left sidebar -->
+   <!-- ============================================================== -->
+   <div class="nav-left-sidebar sidebar-dark">
+    <div class="menu-list">
+     <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+      <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarNav" data-toggle="collapse" type="button">
+       <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+       <ul class="navbar-nav flex-column">
+        <li class="nav-divider">Menu</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-1" aria-expanded="false" class="nav-link active" data-target="#submenu-1" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-user-circle"></i>
+          Dashboard
+          <span class="badge badge-success">6</span>
+         </a>
+         <div class="collapse submenu" id="submenu-1" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a aria-controls="submenu-1-2" aria-expanded="false" class="nav-link" data-target="#submenu-1-2" data-toggle="collapse" href="[%[=URL('index') ]]">E-Commerce</a>
+            <div class="collapse submenu" id="submenu-1-2" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('index') ]]">E Commerce Dashboard</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproduct') ]]">Product List</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXsingle') ]]">Product Single</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXcheckout') ]]">Product Checkout</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXfinance') ]]">Finance</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXsales') ]]">Sales</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-1-1" aria-expanded="false" class="nav-link" data-target="#submenu-1-1" data-toggle="collapse" href="#">Infulencer</a>
+            <div class="collapse submenu" id="submenu-1-1" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('dashboardXinfluencer') ]]">Influencer</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXfinder') ]]">Influencer Finder</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXprofile') ]]">Influencer Profile</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-2" aria-expanded="false" class="nav-link" data-target="#submenu-2" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-rocket"></i>
+          UI Elements
+         </a>
+         <div class="collapse submenu" id="submenu-2" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cards') ]]">
+             Cards
+             <span class="badge badge-secondary">New</span>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('general') ]]">General</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('carousel') ]]">Carousel</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('listgroup') ]]">List Group</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('accordions') ]]">Accordions</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('tabs') ]]">Tabs</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-3" aria-expanded="false" class="nav-link" data-target="#submenu-3" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-chart-pie"></i>
+          Chart
+         </a>
+         <div class="collapse submenu" id="submenu-3" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXc3') ]]">C3 Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXchartist') ]]">Chartist Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXcharts') ]]">Chart</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXmorris') ]]">Morris</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXsparkline') ]]">Sparkline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXgauge') ]]">Guage</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-4" aria-expanded="false" class="nav-link" data-target="#submenu-4" data-toggle="collapse" href="#">
+          <i class="fab fa-fw fa-wpforms"></i>
+          Forms
+         </a>
+         <div class="collapse submenu" id="submenu-4" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXelements') ]]">Form Elements</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXvalidation') ]]">Parsely Validations</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('multiselect') ]]">Multiselect</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-5" aria-expanded="false" class="nav-link" data-target="#submenu-5" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-table"></i>
+          Tables
+         </a>
+         <div class="collapse submenu" id="submenu-5" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('generalXtable') ]]">General Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dataXtables') ]]">Data Tables</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-divider">Features</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-6" aria-expanded="false" class="nav-link" data-target="#submenu-6" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-file"></i>
+          Pages
+         </a>
+         <div class="collapse submenu" id="submenu-6" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('invoice') ]]">Invoice</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpage') ]]">Blank Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpageXheader') ]]">Blank Page Header</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('loginA') ]]">Login</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('X404Xpage') ]]">404 page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('signXup') ]]">Sign up Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('forgotXpassword') ]]">Forgot Password</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('pricing') ]]">Pricing Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('timeline') ]]">Timeline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('calendar') ]]">Calendar</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('sortableXnestableXlists') ]]">Sortable/Nestable List</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mediaXobject') ]]">Media Objects</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cropperXimage') ]]">Cropper</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('colorXpicker') ]]">Color Picker</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-7" aria-expanded="false" class="nav-link" data-target="#submenu-7" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-inbox"></i>
+          Apps
+          <span class="badge badge-secondary">New</span>
+         </a>
+         <div class="collapse submenu" id="submenu-7" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXdetails') ]]">Email Detail</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXcompose') ]]">Email Compose</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('messageXchat') ]]">Message Chat</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-8" aria-expanded="false" class="nav-link" data-target="#submenu-8" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-columns"></i>
+          Icons
+         </a>
+         <div class="collapse submenu" id="submenu-8" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXfontawesome') ]]">FontAwesome Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXmaterial') ]]">Material Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXsimpleXlineicon') ]]">Simpleline Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXthemify') ]]">Themify Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXflag') ]]">Flag Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXweather') ]]">Weather Icon</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-9" aria-expanded="false" class="nav-link" data-target="#submenu-9" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-map-marker-alt"></i>
+          Maps
+         </a>
+         <div class="collapse submenu" id="submenu-9" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXgoogle') ]]">Google Maps</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXvector') ]]">Vector Maps</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-10" aria-expanded="false" class="nav-link" data-target="#submenu-10" data-toggle="collapse" href="#">
+          <i class="fas fa-f fa-folder"></i>
+          Menu Level
+         </a>
+         <div class="collapse submenu" id="submenu-10" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 1</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-11" aria-expanded="false" class="nav-link" data-target="#submenu-11" data-toggle="collapse" href="#">Level 2</a>
+            <div class="collapse submenu" id="submenu-11" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 1</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 2</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 3</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+       </ul>
+      </div>
+     </nav>
+    </div>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end left sidebar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- wrapper  -->
+   <!-- ============================================================== -->
+   <div class="dashboard-wrapper">
+    <div class="main-container">
+     <div class="navbar bg-white breadcrumb-bar border-bottom">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+         <a href="[%[=URL('index') ]]">Overview</a>
+        </li>
+        <li class="breadcrumb-item">
+         <a href="[%[=URL('pagesXapp') ]]">App Pages</a>
+        </li>
+        <li aria-current="page" class="breadcrumb-item active">Chat</li>
+       </ol>
+      </nav>
+      <div class="dropdown">
+       <button aria-expanded="false" class="btn btn-outline-light btn-sm" data-toggle="dropdown">
+        <i class="fas fa-cog"></i>
+       </button>
+       <div class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item" href="#">Manage Members</a>
+        <a class="dropdown-item" href="#">Subscribe</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item text-danger" href="#">Leave Chat</a>
+       </div>
+      </div>
+     </div>
+     <div class="content-container">
+      <div class="chat-module">
+       <div class="chat-module-top">
+        
+<!-- BEGIN view: fmessageXchat0, db_table: dfmessageXchat0 -->
+<div>
+[%[= fmessageXchat0.custom['begin'] ]]
+<div class="input-group input-group-round">
+ <div class="input-group-prepend">
+  <span class="input-group-text">
+   <i class="fas fa-search">
+   </i>
+  </span>
+ </div>
+ [%[ fmessageXchat0.custom['widgets']['f0']['_aria-label']= 'Search Chat'  ]]
+ [%[ fmessageXchat0.custom['widgets']['f0']['_class']= 'form-control filter-list-input'  ]]
+ [%[ fmessageXchat0.custom['widgets']['f0']['_placeholder']= 'Search chat'  ]]
+ [%[ fmessageXchat0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fmessageXchat0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fmessageXchat0.custom['errors']['f0'] if 'f0' in fmessageXchat0.custom['errors'] else '' ]]</span>
+
+ [%[ fmessageXchat0.custom['submit']['_class']= 'form-control filter-list-input mysubmit_cls'  ]]
+ [%[ fmessageXchat0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fmessageXchat0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fmessageXchat0.custom['submit']['_rows']= '1'  ]]
+ [%[ fmessageXchat0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fmessageXchat0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fmessageXchat0.custom['submit'] ]]
+
+</div>
+
+ [%[ for hidden_widget in fmessageXchat0.custom['hidden_widgets'].keys(): ]]
+     [%[= fmessageXchat0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fmessageXchat0</span></div>
+
+
+[%[= fmessageXchat0.custom['end'] ]]
+</div>
+<!-- END fmessageXchat0-->
+
+        <div class="chat-module-body">
+         <div class="media chat-item">
+          <img alt="William" class="rounded-circle user-avatar-lg" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/>
+          <div class="media-body">
+           <div class="chat-item-title">
+            <span class="chat-item-author">William</span>
+            <span>4 days ago</span>
+           </div>
+           <div class="chat-item-body">
+            <p>Hey guys, Phasellus imperdiet arcu venenatis, malesuada nulla a, porta sem. Curabitur nec massa ultrices, consequat erat sit amet, luctus justo. Brand Concept &amp; Design!</p>
+           </div>
+          </div>
+         </div>
+         <div class="media chat-item">
+          <img alt="Komal" class="rounded-circle user-avatar-lg" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/>
+          <div class="media-body">
+           <div class="chat-item-title">
+            <span class="chat-item-author">Komal</span>
+            <span>4 days ago</span>
+           </div>
+           <div class="chat-item-body">
+            <p>
+             Nice one
+             <a href="#">@Komal</a>
+             , Nulla ut diam porttitor odio malesuada malesuada eu at ipsum.
+            </p>
+           </div>
+          </div>
+         </div>
+         <div class="media chat-item">
+          <img alt="tanu" class="rounded-circle user-avatar-lg" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/>
+          <div class="media-body">
+           <div class="chat-item-title">
+            <span class="chat-item-author">Tanu</span>
+            <span>3 days ago</span>
+           </div>
+           <div class="chat-item-body">
+            <p>
+             Roger that boss!
+             <a href="#">@Ravi</a>
+             Donec quis ante ut felis tincidunt blandit. 🔥
+            </p>
+           </div>
+          </div>
+         </div>
+         <div class="media chat-item">
+          <img alt="Bhoomi" class="rounded-circle user-avatar-lg" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/>
+          <div class="media-body">
+           <div class="chat-item-title">
+            <span class="chat-item-author">Bhoomi</span>
+            <span>3 days ago</span>
+           </div>
+           <div class="chat-item-body">
+            <h1 id="-"></h1>
+           </div>
+          </div>
+         </div>
+         <div class="media chat-item">
+          <img alt="William" class="rounded-circle user-avatar-lg" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/>
+          <div class="media-body">
+           <div class="chat-item-title">
+            <span class="chat-item-author">William</span>
+            <span>2 days ago</span>
+           </div>
+           <div class="chat-item-body">
+            <p>
+             Can't wait!
+             <a href="#">@David</a>
+             Curabitur nec massa ultrices, consequat erat sit amet, luctus justo.
+             <a href="#">Meeting</a>
+             ?
+            </p>
+           </div>
+          </div>
+         </div>
+         <div class="media chat-item">
+          <img alt="Daniel" class="rounded-circle user-avatar-lg" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/>
+          <div class="media-body">
+           <div class="chat-item-title">
+            <span class="chat-item-author">Daniel</span>
+            <span>Yesterday</span>
+           </div>
+           <div class="chat-item-body">
+            <p>Quisque condimentum elit quis nibh condimentum, in maximus tortor viverra.</p>
+           </div>
+           <div class="media media-attachment">
+            <div class="avatar bg-primary">
+             <i class="fas fa-file"></i>
+            </div>
+            <div class="media-body">
+             <a class="" href="#">questionnaire-draft.doc</a>
+             <span>24kb Document</span>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="media chat-item">
+          <img alt="Fallon" class="rounded-circle user-avatar-lg" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/>
+          <div class="media-body">
+           <div class="chat-item-title">
+            <span class="chat-item-author">Fallon</span>
+            <span>2 hours ago</span>
+           </div>
+           <div class="chat-item-body">
+            <p>Great start guys, Fusce tempus ipsum a mi rutrum, at dignissim mauris vulputate.</p>
+           </div>
+          </div>
+         </div>
+         <div class="media chat-item">
+          <img alt="Kimberly" class="rounded-circle user-avatar-lg" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/>
+          <div class="media-body">
+           <div class="chat-item-title">
+            <span class="chat-item-author">Kimberly</span>
+            <span>Just now</span>
+           </div>
+           <div class="chat-item-body">
+            <p>
+             Well done
+             <a href="#">@all</a>
+             . See you all Fusce tempus ipsum a mi rutrum, at dignissim mauris vulputate. 🤜
+            </p>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="chat-module-bottom">
+        
+<!-- BEGIN view: fmessageXchat1, db_table: dfmessageXchat1 -->
+<div class="chat-form">
+[%[= fmessageXchat1.custom['begin'] ]]
+ [%[ fmessageXchat1.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fmessageXchat1.custom['widgets']['f0']['_placeholder']= 'Type message'  ]]
+ [%[ fmessageXchat1.custom['widgets']['f0']['_rows']= '1'  ]]
+ [%[ fmessageXchat1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fmessageXchat1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fmessageXchat1.custom['errors']['f0'] if 'f0' in fmessageXchat1.custom['errors'] else '' ]]</span>
+
+ [%[ fmessageXchat1.custom['submit']['_class']= 'form-control mysubmit_cls'  ]]
+ [%[ fmessageXchat1.custom['submit']['_placeholder']= ''  ]]
+ [%[ fmessageXchat1.custom['submit']['_rows']= '1'  ]]
+ [%[ fmessageXchat1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fmessageXchat1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fmessageXchat1.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fmessageXchat1.custom['submit'] ]]
+
+ [%[ for hidden_widget in fmessageXchat1.custom['hidden_widgets'].keys(): ]]
+     [%[= fmessageXchat1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fmessageXchat1</span></div>
+
+
+[%[= fmessageXchat1.custom['end'] ]]
+</div>
+<!-- END fmessageXchat1-->
+
+       </div>
+      </div>
+      <div class="chat-sidebar collapse" id="sidebar-collapse">
+       <div class="chat-sidebar-content">
+        <div class="chat-team-sidebar text-small">
+         <div class="chat-team-sidebar-top">
+          <div class="media align-items-center">
+           <a class="mr-2" href="#">
+            <img alt="Team Avatar" class="rounded-circle user-avatar-xl" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/></a>
+           <div class="media-body">
+            <h5 class="mb-1">Pipeline Fans</h5>
+            <p>A collective of Pipeline enthusiasts sharing the the love</p>
+           </div>
+          </div>
+          <ul class="nav nav-tabs nav-justified" role="tablist">
+           <li class="nav-item">
+            <a aria-controls="members" aria-selected="true" class="nav-link active show" data-toggle="tab" href="#members" id="members-tab" role="tab">Members</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="files" aria-selected="false" class="nav-link" data-toggle="tab" href="#files" id="files-tab" role="tab">Files</a>
+           </li>
+          </ul>
+         </div>
+         <div class="chat-team-sidebar-bottom">
+          <div class="tab-content">
+           <div aria-labelledby="members-tab" class="tab-pane fade active show" data-filter-list="list-group" id="members" role="tabpanel">
+            <div id="test-list">
+             
+<!-- BEGIN view: fmessageXchat2, db_table: dfmessageXchat2 -->
+<div class="px-3 mb-3">
+[%[= fmessageXchat2.custom['begin'] ]]
+<div class="input-group input-group-round">
+ <div class="input-group-prepend">
+  <span class="input-group-text">
+   <i class="fas fa-search">
+   </i>
+  </span>
+ </div>
+ [%[ fmessageXchat2.custom['widgets']['f0']['_aria-label']= 'Filter Members'  ]]
+ [%[ fmessageXchat2.custom['widgets']['f0']['_class']= 'form-control search'  ]]
+ [%[ fmessageXchat2.custom['widgets']['f0']['_placeholder']= 'Filter members'  ]]
+ [%[ fmessageXchat2.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fmessageXchat2.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fmessageXchat2.custom['errors']['f0'] if 'f0' in fmessageXchat2.custom['errors'] else '' ]]</span>
+
+ [%[ fmessageXchat2.custom['submit']['_class']= 'form-control search mysubmit_cls'  ]]
+ [%[ fmessageXchat2.custom['submit']['_placeholder']= ''  ]]
+ [%[ fmessageXchat2.custom['submit']['_type']= 'submit'  ]]
+ [%[ fmessageXchat2.custom['submit']['_rows']= '1'  ]]
+ [%[ fmessageXchat2.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fmessageXchat2.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fmessageXchat2.custom['submit'] ]]
+
+</div>
+
+ [%[ for hidden_widget in fmessageXchat2.custom['hidden_widgets'].keys(): ]]
+     [%[= fmessageXchat2.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fmessageXchat2</span></div>
+
+
+[%[= fmessageXchat2.custom['end'] ]]
+</div>
+<!-- END fmessageXchat2-->
+
+             <div class="list-group list-group-flush list">
+              <a class="list-group-item list-group-item-action" href="#">
+               <div class="media media-member mb-0">
+                <img alt="Claire Connors" class="avatar" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/>
+                <div class="media-body">
+                 <h6 class="mb-0 name">Claire Connors</h6>
+                 <span class="name">Administrator</span>
+                </div>
+               </div>
+              </a>
+              <a class="list-group-item list-group-item-action" href="#">
+               <div class="media media-member mb-0">
+                <img alt="Marcus Simmons" class="avatar" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/>
+                <div class="media-body">
+                 <h6 class="mb-0 name">Marcus Simmons</h6>
+                 <span class="name">Administrator</span>
+                </div>
+               </div>
+              </a>
+              <a class="list-group-item list-group-item-action" href="#">
+               <div class="media media-member mb-0">
+                <img alt="Peggy Brown" class="avatar" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/>
+                <div class="media-body">
+                 <h6 class="mb-0 name">Peggy Brown</h6>
+                 <span class="name">Project Manager</span>
+                </div>
+               </div>
+              </a>
+              <a class="list-group-item list-group-item-action" href="#">
+               <div class="media media-member mb-0">
+                <img alt="Harry Xai" class="avatar" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/>
+                <div class="media-body">
+                 <h6 class="mb-0 name">Harry Xai</h6>
+                 <span class="name">Project Manager</span>
+                </div>
+               </div>
+              </a>
+              <a class="list-group-item list-group-item-action" href="#">
+               <div class="media media-member mb-0">
+                <img alt="Sally Harper" class="avatar" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/>
+                <div class="media-body">
+                 <h6 class="mb-0 name">Sally Harper</h6>
+                 <span class="name">Developer</span>
+                </div>
+               </div>
+              </a>
+              <a class="list-group-item list-group-item-action" href="#">
+               <div class="media media-member mb-0">
+                <img alt="Ravi Singh" class="avatar" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/>
+                <div class="media-body">
+                 <h6 class="mb-0 name">Ravi Singh</h6>
+                 <span class="name">Developer</span>
+                </div>
+               </div>
+              </a>
+              <a class="list-group-item list-group-item-action" href="#">
+               <div class="media media-member mb-0">
+                <img alt="David Whittaker" class="avatar" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/>
+                <div class="media-body">
+                 <h6 class="mb-0 name">David Whittaker</h6>
+                 <span class="name">Designer</span>
+                </div>
+               </div>
+              </a>
+              <a class="list-group-item list-group-item-action" href="#">
+               <div class="media media-member mb-0">
+                <img alt="Kerri-Anne Banks" class="avatar" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/>
+                <div class="media-body">
+                 <h6 class="mb-0 name">Kerri-Anne Banks</h6>
+                 <span class="name">Marketing</span>
+                </div>
+               </div>
+              </a>
+              <a class="list-group-item list-group-item-action" href="# ">
+               <div class="media media-member mb-0">
+                <img alt="Masimba Sibanda " class="avatar" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/>
+                <div class="media-body">
+                 <h6 class="mb-0 name">Masimba Sibanda</h6>
+                 <span class="name">Designer</span>
+                </div>
+               </div>
+              </a>
+              <a class="list-group-item list-group-item-action" href="#">
+               <div class="media media-member mb-0">
+                <img alt="Krishna Bajaj" class="avatar" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/>
+                <div class="media-body">
+                 <h6 class="mb-0 name">Krishna Bajaj</h6>
+                 <span class="name">Marketing</span>
+                </div>
+               </div>
+              </a>
+              <a class="list-group-item list-group-item-action" href="# ">
+               <div class="media media-member mb-0">
+                <img alt="Kenny Tran " class="avatar" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/>
+                <div class="media-body">
+                 <h6 class="mb-0 name">Kenny Tran</h6>
+                 <span class="name">Contributor</span>
+                </div>
+               </div>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div aria-labelledby="files-tab" class="tab-pane fade" data-filter-list="dropzone-previews" id="files" role="tabpanel">
+            <div id="test-list-2">
+             
+<!-- BEGIN view: fmessageXchat3, db_table: dfmessageXchat3 -->
+<div class="px-3 mb-3">
+[%[= fmessageXchat3.custom['begin'] ]]
+<div class="input-group input-group-round">
+ <div class="input-group-prepend">
+  <span class="input-group-text">
+   <i class="fas fa-search">
+   </i>
+  </span>
+ </div>
+ [%[ fmessageXchat3.custom['widgets']['f0']['_aria-label']= 'Filter Members'  ]]
+ [%[ fmessageXchat3.custom['widgets']['f0']['_class']= 'form-control search'  ]]
+ [%[ fmessageXchat3.custom['widgets']['f0']['_placeholder']= 'Filter members'  ]]
+ [%[ fmessageXchat3.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fmessageXchat3.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fmessageXchat3.custom['errors']['f0'] if 'f0' in fmessageXchat3.custom['errors'] else '' ]]</span>
+
+ [%[ fmessageXchat3.custom['submit']['_class']= 'form-control search mysubmit_cls'  ]]
+ [%[ fmessageXchat3.custom['submit']['_placeholder']= ''  ]]
+ [%[ fmessageXchat3.custom['submit']['_type']= 'submit'  ]]
+ [%[ fmessageXchat3.custom['submit']['_rows']= '1'  ]]
+ [%[ fmessageXchat3.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fmessageXchat3.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fmessageXchat3.custom['submit'] ]]
+
+</div>
+
+ [%[ for hidden_widget in fmessageXchat3.custom['hidden_widgets'].keys(): ]]
+     [%[= fmessageXchat3.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fmessageXchat3</span></div>
+
+
+[%[= fmessageXchat3.custom['end'] ]]
+</div>
+<!-- END fmessageXchat3-->
+
+             <ul class="d-none dz-template list-unstyled">
+              <li class="list-group-item dz-preview dz-file-preview">
+               <div class="media align-items-center dz-details">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary dz-file-representation">
+                   <img alt="" class="avatar" data-dz-thumbnail="" src="https://jituchauhan.com/"/>
+                   <i class="fas fa-paperclip"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="David Whittaker" class="avatar" data-title="David Whittaker" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div class="dz-file-details">
+                  <a class="dz-filename" href="#">
+                   <span data-dz-name=""></span>
+                  </a>
+                  <br/>
+                  <span class="text-small dz-size" data-dz-size=""></span>
+                 </div>
+                 <img alt="Loader" class="dz-loading" src="[%[=URL('static/tte/assets/images/loader.svg') ]]"/>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown" type="button">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" data-dz-remove="" href="#">Delete</a>
+                  </div>
+                 </div>
+                 <button class="btn btn-danger btn-sm dz-remove" data-dz-remove="">Cancel</button>
+                </div>
+               </div>
+               <div class="progress dz-progress">
+                <div class="progress-bar dz-upload" data-dz-uploadprogress=""></div>
+               </div>
+              </li>
+             </ul>
+             
+<!-- BEGIN view: fmessageXchat4, db_table: dfmessageXchat4 -->
+<div class="dropzone dz-clickable">
+[%[= fmessageXchat4.custom['begin'] ]]
+<span class="dz-message">
+ Drop files here or click here to upload
+</span>
+
+ [%[ for hidden_widget in fmessageXchat4.custom['hidden_widgets'].keys(): ]]
+     [%[= fmessageXchat4.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fmessageXchat4</span></div>
+
+
+[%[= fmessageXchat4.custom['end'] ]]
+</div>
+<!-- END fmessageXchat4-->
+
+             <ul class="list-group list-group-activity dropzone-previews flex-column-reverse list-group-flush list">
+              <li class="list-group-item" data-e="null" data-i="null" data-l="null" data-t="null">
+               <div class="media align-items-center">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary">
+                   <i class="fas fa-file"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="Peggy Brown" class="avatar filter-by-data-title" data-filter-by="data-title" data-title="Peggy Brown" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div>
+                  <a class="name" href="#">client-questionnaire</a>
+                  <br/>
+                  <span class="name">48kb Text Doc</span>
+                 </div>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </li>
+              <li class="list-group-item">
+               <div class="media align-items-center">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary">
+                   <i class="fas fa-file"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="Harry Xai" class="avatar filter-by-data-title" data-filter-by="data-title" data-title="Harry Xai" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div>
+                  <a class="name" href="#">moodboard_images</a>
+                  <br/>
+                  <span class="name">748kb ZIP</span>
+                 </div>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown" type="button">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </li>
+              <li class="list-group-item">
+               <div class="media align-items-center">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary">
+                   <i class="fas fa-image"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="Ravi Singh" class="avatar filter-by-data-title" data-filter-by="data-title" data-title="Ravi Singh" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div>
+                  <a class="name" href="#">possible-hero-image</a>
+                  <br/>
+                  <span class="name">1.2mb JPEG image</span>
+                 </div>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown" type="button">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </li>
+              <li class="list-group-item">
+               <div class="media align-items-center">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary">
+                   <i class="fas fa-file"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="Claire Connors" class="avatar filter-by-data-title" data-filter-by="data-title" data-title="Claire Connors" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div>
+                  <a class="name" href="#">LandingPrototypes</a>
+                  <br/>
+                  <span class="name">415kb Sketch Doc</span>
+                 </div>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown" type="button">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </li>
+              <li class="list-group-item">
+               <div class="media align-items-center">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary">
+                   <i class="fas fa-file"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="David Whittaker" class="avatar filter-by-data-title" data-filter-by="data-title" data-title="David Whittaker" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div>
+                  <a class="name" href="#">Branding-Proforma</a>
+                  <br/>
+                  <span class="name">15kb Text Document</span>
+                 </div>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown" type="button">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </li>
+              <li class="list-group-item">
+               <div class="media align-items-center">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary">
+                   <i class="fas fa-file"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="David Whittaker" class="avatar filter-by-data-title" data-filter-by="data-title" data-title="David Whittaker" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div>
+                  <a class="name" href="#">Branding-Proforma</a>
+                  <br/>
+                  <span class="name">15kb Text Document</span>
+                 </div>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown" type="button">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </li>
+              <li class="list-group-item">
+               <div class="media align-items-center">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary">
+                   <i class="fas fa-file"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="David Whittaker" class="avatar filter-by-data-title" data-filter-by="data-title" data-title="David Whittaker" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div>
+                  <a class="name" href="#">Branding-Proforma</a>
+                  <br/>
+                  <span class="name">15kb Text Document</span>
+                 </div>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown" type="button">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </li>
+              <li class="list-group-item">
+               <div class="media align-items-center">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary">
+                   <i class="fas fa-file"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="David Whittaker" class="avatar filter-by-data-title" data-filter-by="data-title" data-title="David Whittaker" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div>
+                  <a class="name" href="#">Branding-Proforma</a>
+                  <br/>
+                  <span class="name">15kb Text Document</span>
+                 </div>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown" type="button">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </li>
+              <li class="list-group-item">
+               <div class="media align-items-center">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary">
+                   <i class="fas fa-file"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="David Whittaker" class="avatar filter-by-data-title" data-filter-by="data-title" data-title="David Whittaker" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div>
+                  <a class="name" href="#">Branding-Proforma</a>
+                  <br/>
+                  <span class="name">15kb Text Document</span>
+                 </div>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown" type="button">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </li>
+              <li class="list-group-item">
+               <div class="media align-items-center">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary">
+                   <i class="fas fa-file"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="David Whittaker" class="avatar filter-by-data-title" data-filter-by="data-title" data-title="David Whittaker" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div>
+                  <a class="name" href="#">Branding-Proforma</a>
+                  <br/>
+                  <span class="name">15kb Text Document</span>
+                 </div>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown" type="button">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </li>
+              <li class="list-group-item">
+               <div class="media align-items-center">
+                <ul class="avatars list-unstyled">
+                 <li>
+                  <div class="avatar bg-primary">
+                   <i class="fas fa-file"></i>
+                  </div>
+                 </li>
+                 <li>
+                  <img alt="David Whittaker" class="avatar filter-by-data-title" data-filter-by="data-title" data-title="David Whittaker" data-toggle="tooltip" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></li>
+                </ul>
+                <div class="media-body d-flex justify-content-between align-items-center">
+                 <div>
+                  <a class="name" href="#">Branding-Proforma</a>
+                  <br/>
+                  <span class="name">15kb Text Document</span>
+                 </div>
+                 <div class="dropdown">
+                  <button aria-expanded="false" aria-haspopup="true" class="btn-options" data-toggle="dropdown" type="button">
+                   <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                   <a class="dropdown-item" href="#">Download</a>
+                   <a class="dropdown-item" href="#">Share</a>
+                   <div class="dropdown-divider"></div>
+                   <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </li>
+             </ul>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- ============================================================== -->
+  <!-- end main wrapper -->
+  <!-- ============================================================== -->
+  <!-- Optional JavaScript -->
+  <script src="[%[=URL('static/tte/assets/vendor/jquery/jquery-3.3.1.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap/js/bootstrap.bundle.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/slimscroll/jquery.slimscroll.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/dropzone/dropzone.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/libs/js/main-js.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

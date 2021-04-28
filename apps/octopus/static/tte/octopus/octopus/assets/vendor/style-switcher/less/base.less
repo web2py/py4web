@@ -1,0 +1,216 @@
+/* Base */
+a, .btn-link {
+	color: @skinColor;
+}
+
+a:hover, a:focus, .btn-link:hover, .btn-link:focus {
+	color: lighten(@skinColor, 5%);
+}
+
+a:active, .btn-link:active {
+	color: darken(@skinColor, 5%);
+}
+
+/* Sidebar Left */
+.sidebar-left {
+	.sidebar-header {
+
+		.sidebar-toggle {
+
+			&:hover {
+				i {
+					color: @skinColor;
+				}
+			}
+		}
+
+	}
+}
+
+@media only screen and (min-width: 768px) {
+	html.sidebar-left-collapsed {
+
+		// boxed and scroll
+		&.scroll,
+		&.boxed {
+			.sidebar-left {
+
+				.nav-main {
+
+					li {
+						&.nav-active {
+							a:hover {
+								color: @skinColor;
+							}
+						}
+					}
+
+					& > li:hover {
+
+						& > a {
+
+							span.label {
+								background-color: @skinColor;
+							}
+						}
+
+					}
+
+				}
+
+
+			}
+		}
+	}
+}
+
+/* Layout Boxed - small than min-width */
+@media only screen and (max-width: 1199px) {
+	html.boxed {
+		.header {
+			border-top-color: @skinColor;
+		}
+	}
+}
+
+/* Layout Boxed - larger or equal min width */
+@media only screen and (min-width: 1200px) {
+
+	html.boxed {
+		.header {
+			border-top-color: @skinColor;
+		}
+	}
+
+	html.boxed {
+		.sidebar-right {
+			border-top-color: @skinColor;
+			min-height: 0;
+		}
+	}
+}
+
+/* Userbox - Open */
+.userbox.open {
+	.dropdown-menu {
+
+		a {
+			&:hover {
+				background: @skinColor;
+			}
+		}
+	}
+}
+
+/* Mailbox */
+.mailbox {
+	.mailbox-mail-list {
+
+		li {
+
+			&.active {
+				background: @skinColor;
+			}
+		}
+
+	}
+
+	.mailbox-mail {
+
+		.mailbox-close-mail {
+			color: @skinColor;
+
+			&:hover {
+				color: lighten(@skinColor, 5%);
+			}
+		}
+
+		.panel {
+			.panel-heading {
+				.panel-actions {
+
+					a {
+						&:hover {
+							color: @skinColor;
+						}
+					}
+				}
+			}
+		}
+	}
+
+}
+
+/* Media Gallery */
+.media-gallery {
+
+	ul.mg-tags {
+
+		& > li {
+
+			a {
+
+				&:hover {
+					background-color: @skinColor;
+				}
+
+			}
+		}
+	}
+
+	.mg-files {
+
+		.thumbnail {
+
+			.thumb-preview {
+
+				.mg-thumb-options {
+
+					.mg-zoom {
+						background-color: @skinColor;
+					}
+
+					.mg-toolbar {
+						background-color: @skinColor;
+					}
+				}
+
+			}
+
+			&.thumbnail-selected {
+				box-shadow: 0 0 8px -1px @skinColor;
+			}
+
+		}
+	}
+
+}
+
+/* Sign Screens - Wrappers */
+.body-sign {
+
+	.panel-sign {
+
+		.panel-title-sign {
+			.title {
+				background-color: @skinColor;
+			}
+		}
+
+		.panel-body {
+			border-top-color: @skinColor;
+		}
+	}
+}
+
+/* Lock Screen */
+.body-locked {
+
+	.current-user {
+
+		.user-image {
+			border-color: @skinColor;
+		}
+
+	}
+}

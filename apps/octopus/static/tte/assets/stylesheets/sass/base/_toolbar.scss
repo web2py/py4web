@@ -1,0 +1,137 @@
+// TOOLBAR
+// -----------------------------------------------------------------------------
+/* Toolbar */
+.inner-toolbar {
+	background: $sidebar-background;
+	margin: -40px -40px 30px;
+	padding: 0;
+	border-left: 1px solid #121418;
+
+	& > ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+
+		& > li {
+			display: inline-block;
+			padding: 15px;
+			font-size: 13px;
+			border-right: 1px solid #121418;
+
+			& > a {
+				display: inline-block;
+				padding: 0;
+				color: #abb4be;
+
+				&:hover, &:focus {
+					color: #fff;
+					text-decoration: none;
+				}
+			}
+
+			&.right {
+				float: right;
+				padding-right: 10px;
+			}
+
+			i.fa {
+				font-size: 14px;
+			}
+
+			> .btn {
+				margin-top: -6px;
+			}
+		}
+	}
+
+
+
+	.nav-pills {
+		margin-top: -8px;
+
+		> li > label {
+			margin-bottom: 0;
+			margin-right: 12px;
+			margin-top: 8px;
+		}
+
+		a {
+			color: $menu-item-text-color;
+			padding-top: 8px;
+			padding-bottom: 8px;
+		}
+
+		a:hover {
+			background: $color-dark;
+			color: #FFF;
+		}
+
+		.active {
+			a {
+				color: #FFF;
+			}
+		}
+	}
+}
+
+/* Toolbar - Responsive */
+@media only screen and (max-width: 767px) {
+	.inner-toolbar {
+		padding: 0 15px;
+		margin: -40px -15px 30px;
+
+		ul {
+			& > li {
+				border-right: 0;
+			}
+
+			& > li:first-child {
+				padding-left: 0;
+			}
+
+			& > li.right {
+				float: none;
+				padding-left: 0;
+				padding-right: 0;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	.inner-toolbar {
+		.nav-pills a {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+	}
+}
+
+/* Toolbar + Layout Fixed */
+@media only screen and (min-width: 768px) {
+	html.fixed {
+		.inner-toolbar {
+			left: $sidebar-left-full-width;
+			right: 0;
+			margin: 0;
+			padding: 0;
+			position: fixed;
+			top: $header-height + $page-header-height + 4;
+			z-index: $inner-toolbar-z-index;
+		}
+	}
+}
+
+// DARK
+// -----------------------------------------------------------------------------
+/* dark */
+html.dark {
+	.inner-toolbar {
+		border-left: none;
+		border-bottom: 1px solid darken($dark-color-4, 5%);
+
+		> ul > li {
+			border-color: darken($dark-color-4, 5%);
+		}
+	}
+}

@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html class="fixed">
+ <head>
+            <!-- 01.12.2020 12:03:31 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Basic -->
+  <meta charset="utf-8"/>
+  <title>biorex title text</title>
+  <meta content="HTML5 Admin Template" name="keywords"/>
+  <meta content="Porto Admin - Responsive HTML5 Template" name="description"/>
+  <meta content="okler.net" name="author"/>
+  <!-- Mobile Metas -->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <!-- Web Fonts  -->
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css"/>
+  <!-- Vendor CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/font-awesome/css/font-awesome.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/magnific-popup/magnific-popup.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap-datepicker/css/datepicker3.css') ]]" rel="stylesheet"/>
+  <!-- Specific Page Vendor CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.css') ]]" rel="stylesheet"/>
+  <!-- Theme CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/theme.css') ]]" rel="stylesheet"/>
+  <!-- Skin CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/skins/default.css') ]]" rel="stylesheet"/>
+  <!-- Theme Custom CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/theme-custom.css') ]]" rel="stylesheet"/>
+  <!-- Head Libs -->
+  <script src="[%[=URL('static/tte/assets/vendor/modernizr/modernizr.js') ]]"></script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    background-color: LightGray;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-weight: bold;
+    border: 1px dashed black;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <section class="body">
+   <!-- start: header -->
+   <header class="header">
+    <div class="logo-container">
+     <a class="logo" href="../">
+      <img alt="Porto Admin" height="35" src="[%[=URL('static/tte/assets/images/logo.png') ]]"/></a>
+     <div class="visible-xs toggle-sidebar-left" data-fire-event="sidebar-left-opened" data-target="html" data-toggle-class="sidebar-left-opened">
+      <i aria-label="Toggle sidebar" class="fa fa-bars"></i>
+     </div>
+    </div>
+    <!-- start: search & user box -->
+    <div class="header-right">
+     
+<!-- BEGIN view: fformsXbasic0, db_table: dfformsXbasic0 -->
+<div class="search nav-form">
+[%[= fformsXbasic0.custom['begin'] ]]
+<div class="input-group input-search">
+ [%[ fformsXbasic0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformsXbasic0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic0.custom['widgets']['f0']['_id']= 'q'  ]]
+ [%[ fformsXbasic0.custom['widgets']['f0']['_placeholder']= 'Search..._p4w'  ]]
+ [%[= fformsXbasic0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic0.custom['errors']['f0'] if 'f0' in fformsXbasic0.custom['errors'] else '' ]]</span>
+
+ <span class="input-group-btn">
+ [%[ fformsXbasic0.custom['submit']['_class']= 'btn btn-default'  ]]
+ [%[ fformsXbasic0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXbasic0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fformsXbasic0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXbasic0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fformsXbasic0.custom['submit'] ]]
+
+ </span>
+</div>
+
+ [%[ for hidden_widget in fformsXbasic0.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXbasic0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXbasic0 flashdiv"> <span class="flashspan">fformsXbasic0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXbasic0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXbasic0.custom['end'] ]]
+</div>
+<!-- END fformsXbasic0-->
+
+     <span class="separator"></span>
+     <ul class="notifications">
+      <li>
+       <a class="dropdown-toggle notification-icon" data-toggle="dropdown" href="#">
+        <i class="fa fa-tasks"></i>
+        <span class="badge">3</span>
+       </a>
+       <div class="dropdown-menu notification-menu large">
+        <div class="notification-title">
+         <span class="pull-right label label-default">3</span>
+         Tasks
+        </div>
+        <div class="content">
+         <ul>
+          <li>
+           <p class="clearfix mb-xs">
+            <span class="message pull-left">Generating Sales Report</span>
+            <span class="message pull-right text-dark">60%</span>
+           </p>
+           <div class="progress progress-xs light">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="60" class="progress-bar" role="progressbar" style="width: 60%;"></div>
+           </div>
+          </li>
+          <li>
+           <p class="clearfix mb-xs">
+            <span class="message pull-left">Importing Contacts</span>
+            <span class="message pull-right text-dark">98%</span>
+           </p>
+           <div class="progress progress-xs light">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="98" class="progress-bar" role="progressbar" style="width: 98%;"></div>
+           </div>
+          </li>
+          <li>
+           <p class="clearfix mb-xs">
+            <span class="message pull-left">Uploading something big</span>
+            <span class="message pull-right text-dark">33%</span>
+           </p>
+           <div class="progress progress-xs light mb-xs">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="33" class="progress-bar" role="progressbar" style="width: 33%;"></div>
+           </div>
+          </li>
+         </ul>
+        </div>
+       </div>
+      </li>
+      <li>
+       <a class="dropdown-toggle notification-icon" data-toggle="dropdown" href="#">
+        <i class="fa fa-envelope"></i>
+        <span class="badge">4</span>
+       </a>
+       <div class="dropdown-menu notification-menu">
+        <div class="notification-title">
+         <span class="pull-right label label-default">230</span>
+         Messages
+        </div>
+        <div class="content">
+         <ul>
+          <li>
+           <a class="clearfix" href="#">
+            <figure class="image">
+             <img alt="Joseph Doe Junior" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <span class="title">Joseph Doe</span>
+            <span class="message">Lorem ipsum dolor sit.</span>
+           </a>
+          </li>
+          <li>
+           <a class="clearfix" href="#">
+            <figure class="image">
+             <img alt="Joseph Junior" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <span class="title">Joseph Junior</span>
+            <span class="message truncate">Truncated message. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet lacinia orci. Proin vestibulum eget risus non luctus. Nunc cursus lacinia lacinia. Nulla molestie malesuada est ac tincidunt. Quisque eget convallis diam, nec venenatis risus. Vestibulum blandit faucibus est et malesuada. Sed interdum cursus dui nec venenatis. Pellentesque non nisi lobortis, rutrum eros ut, convallis nisi. Sed tellus turpis, dignissim sit amet tristique quis, pretium id est. Sed aliquam diam diam, sit amet faucibus tellus ultricies eu. Aliquam lacinia nibh a metus bibendum, eu commodo eros commodo. Sed commodo molestie elit, a molestie lacus porttitor id. Donec facilisis varius sapien, ac fringilla velit porttitor et. Nam tincidunt gravida dui, sed pharetra odio pharetra nec. Duis consectetur venenatis pharetra. Vestibulum egestas nisi quis elementum elementum.</span>
+           </a>
+          </li>
+          <li>
+           <a class="clearfix" href="#">
+            <figure class="image">
+             <img alt="Joe Junior" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <span class="title">Joe Junior</span>
+            <span class="message">Lorem ipsum dolor sit.</span>
+           </a>
+          </li>
+          <li>
+           <a class="clearfix" href="#">
+            <figure class="image">
+             <img alt="Joseph Junior" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <span class="title">Joseph Junior</span>
+            <span class="message">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet lacinia orci. Proin vestibulum eget risus non luctus. Nunc cursus lacinia lacinia. Nulla molestie malesuada est ac tincidunt. Quisque eget convallis diam.</span>
+           </a>
+          </li>
+         </ul>
+         <hr/>
+         <div class="text-right">
+          <a class="view-more" href="#">View All</a>
+         </div>
+        </div>
+       </div>
+      </li>
+      <li>
+       <a class="dropdown-toggle notification-icon" data-toggle="dropdown" href="#">
+        <i class="fa fa-bell"></i>
+        <span class="badge">3</span>
+       </a>
+       <div class="dropdown-menu notification-menu">
+        <div class="notification-title">
+         <span class="pull-right label label-default">3</span>
+         Alerts
+        </div>
+        <div class="content">
+         <ul>
+          <li>
+           <a class="clearfix" href="#">
+            <div class="image">
+             <i class="fa fa-thumbs-down bg-danger"></i>
+            </div>
+            <span class="title">Server is Down!</span>
+            <span class="message">Just now</span>
+           </a>
+          </li>
+          <li>
+           <a class="clearfix" href="#">
+            <div class="image">
+             <i class="fa fa-lock bg-warning"></i>
+            </div>
+            <span class="title">User Locked</span>
+            <span class="message">15 minutes ago</span>
+           </a>
+          </li>
+          <li>
+           <a class="clearfix" href="#">
+            <div class="image">
+             <i class="fa fa-signal bg-success"></i>
+            </div>
+            <span class="title">Connection Restaured</span>
+            <span class="message">10/10/2014</span>
+           </a>
+          </li>
+         </ul>
+         <hr/>
+         <div class="text-right">
+          <a class="view-more" href="#">View All</a>
+         </div>
+        </div>
+       </div>
+      </li>
+     </ul>
+     <span class="separator"></span>
+     <div class="userbox" id="userbox">
+      <a data-toggle="dropdown" href="#">
+       <figure class="profile-picture">
+        <img alt="Joseph Doe" class="img-circle" data-lock-picture="[%[=URL('static/tte/assets/images/!logged-user.jpg') ]]" src="[%[=URL('static/tte/assets/images/!logged-user.jpg') ]]"/>
+       </figure>
+       <div class="profile-info" data-lock-email="johndoe@okler.com" data-lock-name="John Doe">
+        <span class="name">John Doe Junior</span>
+        <span class="role">administrator</span>
+       </div>
+       <i class="fa custom-caret"></i>
+      </a>
+      <div class="dropdown-menu">
+       <ul class="list-unstyled">
+        <li class="divider"></li>
+        <li>
+         <a href="[%[=URL('pagesXuserXprofile') ]]" role="menuitem" tabindex="-1">
+          <i class="fa fa-user"></i>
+          My Profile
+         </a>
+        </li>
+        <li>
+         <a data-lock-screen="true" href="#" role="menuitem" tabindex="-1">
+          <i class="fa fa-lock"></i>
+          Lock Screen
+         </a>
+        </li>
+        <li>
+         <a href="[%[=URL('pagesXsignin') ]]" role="menuitem" tabindex="-1">
+          <i class="fa fa-power-off"></i>
+          Logout
+         </a>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+    <!-- end: search & user box -->
+   </header>
+   <!-- end: header -->
+   <div class="inner-wrapper">
+    <!-- start: sidebar -->
+    <aside class="sidebar-left" id="sidebar-left">
+     <div class="sidebar-header">
+      <div class="sidebar-title">Navigation</div>
+      <div class="sidebar-toggle hidden-xs" data-fire-event="sidebar-left-toggle" data-target="html" data-toggle-class="sidebar-left-collapsed">
+       <i aria-label="Toggle sidebar" class="fa fa-bars"></i>
+      </div>
+     </div>
+     <div class="nano">
+      <div class="nano-content">
+       <nav class="nav-main" id="menu" role="navigation">
+        <ul class="nav nav-main">
+         <li>
+          <a href="[%[=URL('index') ]]">
+           <i aria-hidden="true" class="fa fa-home"></i>
+           <span>Dashboard</span>
+          </a>
+         </li>
+         <li>
+          <a href="[%[=URL('mailboxXfolder') ]]">
+           <span class="pull-right label label-primary">182</span>
+           <i aria-hidden="true" class="fa fa-envelope"></i>
+           <span>Mailbox</span>
+          </a>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-copy"></i>
+           <span>Pages</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a href="[%[=URL('pagesXsignup') ]]">Sign Up</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXsignin') ]]">Sign In</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXrecoverXpassword') ]]">Recover Password</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXlockXscreen') ]]">Locked Screen</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXuserXprofile') ]]">User Profile</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXsessionXtimeout') ]]">Session Timeout</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXcalendar') ]]">Calendar</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXtimeline') ]]">Timeline</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXmediaXgallery') ]]">Media Gallery</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXinvoice') ]]">Invoice</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXblank') ]]">Blank Page</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesX404') ]]">404</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesX500') ]]">500</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXlogXviewer') ]]">Log Viewer</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXsearchXresults') ]]">Search Results</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-tasks"></i>
+           <span>UI Elements</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a href="[%[=URL('uiXelementsXtypography') ]]">Typography</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXicons') ]]">Icons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXtabs') ]]">Tabs</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXpanels') ]]">Panels</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXwidgets') ]]">Widgets</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXportlets') ]]">Portlets</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXbuttons') ]]">Buttons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXalerts') ]]">Alerts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXnotifications') ]]">Notifications</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXmodals') ]]">Modals</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXlightbox') ]]">Lightbox</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXprogressbars') ]]">Progress Bars</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXsliders') ]]">Sliders</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXcarousels') ]]">Carousels</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXaccordions') ]]">Accordions</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXnestable') ]]">Nestable</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXtreeXview') ]]">Tree View</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXgridXsystem') ]]">Grid System</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXcharts') ]]">Charts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXanimations') ]]">Animations</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXextra') ]]">Extra</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent nav-expanded nav-active">
+          <a>
+           <i aria-hidden="true" class="fa fa-list-alt"></i>
+           <span>Forms</span>
+          </a>
+          <ul class="nav nav-children">
+           <li class="nav-active">
+            <a href="[%[=URL('formsXbasic') ]]">Basic</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formsXadvanced') ]]">Advanced</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formsXvalidation') ]]">Validation</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formsXlayouts') ]]">Layouts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formsXwizard') ]]">Wizard</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formsXcodeXeditor') ]]">Code Editor</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-table"></i>
+           <span>Tables</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a href="[%[=URL('tablesXbasic') ]]">Basic</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXadvanced') ]]">Advanced</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXresponsive') ]]">Responsive</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXeditable') ]]">Editable</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXajax') ]]">Ajax</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXpricing') ]]">Pricing</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-map-marker"></i>
+           <span>Maps</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a href="[%[=URL('mapsXgoogleXmaps') ]]">Basic</a>
+           </li>
+           <li>
+            <a href="[%[=URL('mapsXgoogleXmapsXbuilder') ]]">Map Builder</a>
+           </li>
+           <li>
+            <a href="[%[=URL('mapsXvector') ]]">Vector</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-columns"></i>
+           <span>Layouts</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a href="[%[=URL('layoutsXdefault') ]]">Default</a>
+           </li>
+           <li>
+            <a href="[%[=URL('layoutsXboxed') ]]">Boxed</a>
+           </li>
+           <li>
+            <a href="[%[=URL('layoutsXmenuXcollapsed') ]]">Menu Collapsed</a>
+           </li>
+           <li>
+            <a href="[%[=URL('layoutsXscroll') ]]">Scroll</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-align-left"></i>
+           <span>Menu Levels</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a>First Level</a>
+           </li>
+           <li class="nav-parent">
+            <a>Second Level</a>
+            <ul class="nav nav-children">
+             <li class="nav-parent">
+              <a>Third Level</a>
+              <ul class="nav nav-children">
+               <li>
+                <a>Third Level Link #1</a>
+               </li>
+               <li>
+                <a>Third Level Link #2</a>
+               </li>
+              </ul>
+             </li>
+             <li>
+              <a>Second Level Link #1</a>
+             </li>
+             <li>
+              <a>Second Level Link #2</a>
+             </li>
+            </ul>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a href="http://themeforest.net/item/porto-responsive-html5-template/4106987?ref=Okler" target="_blank">
+           <i aria-hidden="true" class="fa fa-external-link"></i>
+           <span>
+            Front-End
+            <em class="not-included">(Not Included)</em>
+           </span>
+          </a>
+         </li>
+        </ul>
+       </nav>
+       <hr class="separator"/>
+       <div class="sidebar-widget widget-tasks">
+        <div class="widget-header">
+         <h6>Projects</h6>
+         <div class="widget-toggle">+</div>
+        </div>
+        <div class="widget-content">
+         <ul class="list-unstyled m-none">
+          <li>
+           <a href="#">Porto HTML5 Template</a>
+          </li>
+          <li>
+           <a href="#">Tucson Template</a>
+          </li>
+          <li>
+           <a href="#">Porto Admin</a>
+          </li>
+         </ul>
+        </div>
+       </div>
+       <hr class="separator"/>
+       <div class="sidebar-widget widget-stats">
+        <div class="widget-header">
+         <h6>Company Stats</h6>
+         <div class="widget-toggle">+</div>
+        </div>
+        <div class="widget-content">
+         <ul>
+          <li>
+           <span class="stats-title">Stat 1</span>
+           <span class="stats-complete">85%</span>
+           <div class="progress">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="85" class="progress-bar progress-bar-primary progress-without-number" role="progressbar" style="width: 85%;">
+             <span class="sr-only">85% Complete</span>
+            </div>
+           </div>
+          </li>
+          <li>
+           <span class="stats-title">Stat 2</span>
+           <span class="stats-complete">70%</span>
+           <div class="progress">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="70" class="progress-bar progress-bar-primary progress-without-number" role="progressbar" style="width: 70%;">
+             <span class="sr-only">70% Complete</span>
+            </div>
+           </div>
+          </li>
+          <li>
+           <span class="stats-title">Stat 3</span>
+           <span class="stats-complete">2%</span>
+           <div class="progress">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="2" class="progress-bar progress-bar-primary progress-without-number" role="progressbar" style="width: 2%;">
+             <span class="sr-only">2% Complete</span>
+            </div>
+           </div>
+          </li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </div>
+    </aside>
+    <!-- end: sidebar -->
+    <section class="content-body" role="main">
+     <header class="page-header">
+      <h2>Basic Forms</h2>
+      <div class="right-wrapper pull-right">
+       <ol class="breadcrumbs">
+        <li>
+         <a href="[%[=URL('index') ]]">
+          <i class="fa fa-home"></i>
+         </a>
+        </li>
+        <li>
+         <span>Forms</span>
+        </li>
+        <li>
+         <span>Basic</span>
+        </li>
+       </ol>
+       <a class="sidebar-right-toggle" data-open="sidebar-right">
+        <i class="fa fa-chevron-left"></i>
+       </a>
+      </div>
+     </header>
+     <!-- start: page -->
+     <div class="row">
+      <div class="col-lg-12">
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Form Elements</h2>
+        </header>
+        <div class="panel-body">
+         
+<!-- BEGIN view: fformsXbasic1, db_table: dfformsXbasic1 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXbasic1.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputDefault">
+  Default
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f0']['_id']= 'inputDefault'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f0'] if 'f0' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputDisabled">
+  Disabled
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f1']['_id']= 'inputDisabled'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f1']['_placeholder']= 'Disabled input here..._p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f1'] if 'f1' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputReadOnly">
+  Read-Only Input
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f2']['_value']= 'Read-Only Input'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f2']['_id']= 'inputReadOnly'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f2']['_readonly']= 'readonly'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f2'] if 'f2' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputHelpText">
+  Help text
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f3']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f3']['_id']= 'inputHelpText'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f3']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f3'] if 'f3' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+  <span class="help-block">
+   A block of help text that breaks onto a new line and may extend beyond one line.
+  </span>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputRounded">
+  Rounded Input
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f4']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f4']['_class']= 'form-control input-rounded'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f4']['_id']= 'inputRounded'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f4']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f4'] if 'f4' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputFocus">
+  Input focus
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f5']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f5']['_id']= 'inputFocus'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f5']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f5']['_value']= 'This is focused...'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f5']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f5'] if 'f5' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputPlaceholder">
+  Placeholder
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f6']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f6']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f6']['_placeholder']= 'placeholder_p4w'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f6']['_id']= 'inputPlaceholder'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f6'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f6'] if 'f6' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputPassword">
+  Password
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f7']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f7']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f7']['_placeholder']= '==0_p4w'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f7']['_id']= 'inputPassword'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f7'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f7'] if 'f7' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Static control
+ </label>
+ <div class="col-lg-6">
+  <p class="form-control-static">
+   email@example.com
+  </p>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Left Icon
+ </label>
+ <div class="col-md-6">
+  <div class="input-group input-group-icon">
+   <span class="input-group-addon">
+    <span class="icon">
+     <i class="fa fa-user">
+     </i>
+    </span>
+   </span>
+ [%[ fformsXbasic1.custom['widgets']['f8']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f8']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f8']['_placeholder']= 'Left icon_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f8'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f8'] if 'f8' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Right Icon
+ </label>
+ <div class="col-md-6">
+  <div class="input-group input-group-icon">
+ [%[ fformsXbasic1.custom['widgets']['f9']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f9']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f9']['_placeholder']= 'Right icon_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f9'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f9'] if 'f9' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+   <span class="input-group-addon">
+    <span class="icon">
+     <i class="fa fa-user">
+     </i>
+    </span>
+   </span>
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Search
+ </label>
+ <div class="col-md-6">
+  <div class="input-group input-search">
+ [%[ fformsXbasic1.custom['widgets']['f10']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f10']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f10']['_id']= 'q'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f10']['_placeholder']= 'Search..._p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f10'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f10'] if 'f10' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+   <span class="input-group-btn">
+ [%[ fformsXbasic1.custom['submit']['_class']= 'btn btn-default'  ]]
+ [%[ fformsXbasic1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXbasic1.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fformsXbasic1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXbasic1.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fformsXbasic1.custom['submit'] ]]
+
+   </span>
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  File Upload
+ </label>
+ <div class="col-md-6">
+  <div class="fileupload fileupload-new" data-provides="fileupload">
+   <div class="input-append">
+    <div class="uneditable-input">
+     <i class="fa fa-file fileupload-exists">
+     </i>
+     <span class="fileupload-preview">
+     </span>
+    </div>
+    <span class="btn btn-default btn-file">
+     <span class="fileupload-exists">
+      Change
+     </span>
+     <span class="fileupload-new">
+      Select file
+     </span>
+ [%[ fformsXbasic1.custom['widgets']['f11']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f11']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f11'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f11'] if 'f11' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+    </span>
+    <a class="btn btn-default fileupload-exists" data-dismiss="fileupload" href="[%[=URL('index')]]">
+     Remove
+    </a>
+   </div>
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Vertical Group
+ </label>
+ <div class="col-md-6">
+  <section class="form-group-vertical">
+ [%[ fformsXbasic1.custom['widgets']['f12']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f12']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f12']['_placeholder']= 'Username_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f12'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f12'] if 'f12' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic1.custom['widgets']['f13']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f13']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f13']['_placeholder']= 'Email_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f13'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f13'] if 'f13' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic1.custom['widgets']['f14']['_class']= 'form-control last'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f14']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f14']['_placeholder']= 'Password_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f14'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f14'] if 'f14' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+  </section>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="control-label col-md-3">
+  Vertical Group w/ icon
+ </label>
+ <div class="col-md-6">
+  <section class="form-group-vertical">
+   <div class="input-group input-group-icon">
+    <span class="input-group-addon">
+     <span class="icon">
+      <i class="fa fa-user">
+      </i>
+     </span>
+    </span>
+ [%[ fformsXbasic1.custom['widgets']['f15']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f15']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f15']['_placeholder']= 'Username_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f15'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f15'] if 'f15' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+   </div>
+   <div class="input-group input-group-icon">
+    <span class="input-group-addon">
+     <span class="icon">
+      <i class="fa fa-key">
+      </i>
+     </span>
+    </span>
+ [%[ fformsXbasic1.custom['widgets']['f16']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f16']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f16']['_placeholder']= 'Password_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f16'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f16'] if 'f16' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+   </div>
+  </section>
+ </div>
+</div>
+
+<div class="form-group has-success">
+ <label class="col-md-3 control-label" for="inputSuccess">
+  Input with success
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f17']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f17']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f17']['_id']= 'inputSuccess'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f17']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f17'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f17'] if 'f17' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group has-warning">
+ <label class="col-md-3 control-label" for="inputWarning">
+  Input with warning
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f18']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f18']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f18']['_id']= 'inputWarning'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f18']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f18'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f18'] if 'f18' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group has-error">
+ <label class="col-md-3 control-label" for="inputError">
+  Input with error
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f19']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f19']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f19']['_id']= 'inputError'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f19']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f19'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f19'] if 'f19' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputTooltip">
+  Input with Tooltip
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f20']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f20']['_placeholder']= 'Hover me_p4w'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f20']['_title']= '==0'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f20']['_data-toggle']= 'tooltip'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f20']['_data-trigger']= 'hover'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f20']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f20']['_data-original-title']= 'Place your tooltip info here'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f20']['_id']= 'inputTooltip'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f20'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f20'] if 'f20' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputPopover">
+  Input with Popover
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic1.custom['widgets']['f21']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f21']['_placeholder']= 'Click Here_p4w'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f21']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f21']['_data-toggle']= 'popover'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f21']['_data-placement']= 'top'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f21']['_data-original-title']= 'The Title'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f21']['_data-content']= 'Content goes here...'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f21']['_data-trigger']= 'click'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f21']['_id']= 'inputPopover'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f21'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f21'] if 'f21' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Column sizing
+ </label>
+ <div class="col-sm-8">
+  <div class="row">
+   <div class="col-sm-2">
+ [%[ fformsXbasic1.custom['widgets']['f22']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f22']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f22']['_placeholder']= '.col-sm-2_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f22'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f22'] if 'f22' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+   </div>
+   <div class="visible-xs mb-md">
+   </div>
+   <div class="col-sm-3">
+ [%[ fformsXbasic1.custom['widgets']['f23']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f23']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f23']['_placeholder']= '.col-sm-3_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f23'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f23'] if 'f23' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+   </div>
+   <div class="visible-xs mb-md">
+   </div>
+   <div class="col-sm-4">
+ [%[ fformsXbasic1.custom['widgets']['f24']['_type']= 'text'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f24']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic1.custom['widgets']['f24']['_placeholder']= '.col-sm-4_p4w'  ]]
+ [%[= fformsXbasic1.custom['widgets']['f24'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic1.custom['errors']['f24'] if 'f24' in fformsXbasic1.custom['errors'] else '' ]]</span>
+
+   </div>
+  </div>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXbasic1.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXbasic1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXbasic1 flashdiv"> <span class="flashspan">fformsXbasic1</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXbasic1');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXbasic1.custom['end'] ]]
+</div>
+<!-- END fformsXbasic1-->
+
+        </div>
+       </section>
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Controls sizing</h2>
+        </header>
+        <div class="panel-body">
+         
+<!-- BEGIN view: fformsXbasic2, db_table: dfformsXbasic2 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXbasic2.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputSuccess">
+  Input sizing
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic2.custom['widgets']['f0']['_class']= 'form-control input-lg mb-md'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f0']['_placeholder']= '.input-lg_p4w'  ]]
+ [%[= fformsXbasic2.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic2.custom['errors']['f0'] if 'f0' in fformsXbasic2.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic2.custom['widgets']['f1']['_class']= 'form-control mb-md'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f1']['_placeholder']= 'Default input_p4w'  ]]
+ [%[= fformsXbasic2.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic2.custom['errors']['f1'] if 'f1' in fformsXbasic2.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic2.custom['widgets']['f2']['_class']= 'form-control input-sm mb-md'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f2']['_placeholder']= '.input-sm_p4w'  ]]
+ [%[= fformsXbasic2.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic2.custom['errors']['f2'] if 'f2' in fformsXbasic2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputSuccess">
+  Select sizing
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic2.custom['widgets']['f3']['_class']= 'form-control input-lg mb-md'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f3']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f3']['_style']= 'color:red;'  ]]
+ [%[= fformsXbasic2.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic2.custom['errors']['f3'] if 'f3' in fformsXbasic2.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic2.custom['widgets']['f4']['_class']= 'form-control mb-md'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f4']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f4']['_style']= 'color:red;'  ]]
+ [%[= fformsXbasic2.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic2.custom['errors']['f4'] if 'f4' in fformsXbasic2.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic2.custom['widgets']['f5']['_class']= 'form-control input-sm mb-md'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f5']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXbasic2.custom['widgets']['f5']['_style']= 'color:red;'  ]]
+ [%[= fformsXbasic2.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic2.custom['errors']['f5'] if 'f5' in fformsXbasic2.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic2.custom['submit']['_class']= 'form-control input-sm mb-md mysubmit_cls'  ]]
+ [%[ fformsXbasic2.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXbasic2.custom['submit']['_style']= 'color:red;'  ]]
+ [%[ fformsXbasic2.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXbasic2.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXbasic2.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXbasic2.custom['submit'] ]]
+
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXbasic2.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXbasic2.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXbasic2 flashdiv"> <span class="flashspan">fformsXbasic2</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXbasic2');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXbasic2.custom['end'] ]]
+</div>
+<!-- END fformsXbasic2-->
+
+        </div>
+       </section>
+       <section class="panel">
+        <div class="panel-body">
+         
+<!-- BEGIN view: fformsXbasic3, db_table: dfformsXbasic3 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXbasic3.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputSuccess">
+  Checkboxes and radios
+ </label>
+ <div class="col-md-6">
+  <div class="checkbox">
+   <label>
+ [%[ fformsXbasic3.custom['widgets']['f0']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f0']['_value']= '==0'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic3.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic3.custom['errors']['f0'] if 'f0' in fformsXbasic3.custom['errors'] else '' ]]</span>
+
+    Option one is this and that—be sure to include why it's great
+   </label>
+  </div>
+  <div class="checkbox">
+   <label>
+ [%[ fformsXbasic3.custom['widgets']['f1']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f1']['_value']= '==0'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic3.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic3.custom['errors']['f1'] if 'f1' in fformsXbasic3.custom['errors'] else '' ]]</span>
+
+    Option one is this and that—be sure to include why it's great option one
+   </label>
+  </div>
+  <div class="radio">
+   <label>
+ [%[ fformsXbasic3.custom['widgets']['f2']['_type']= 'radio'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f2']['_id']= 'optionsRadios1'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f2']['_value']= 'option1'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f2']['_checked']= '==0'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic3.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic3.custom['errors']['f2'] if 'f2' in fformsXbasic3.custom['errors'] else '' ]]</span>
+
+    Option one is this and that—be sure to include why it's great
+   </label>
+  </div>
+  <div class="radio">
+   <label>
+ [%[ fformsXbasic3.custom['widgets']['f3']['_type']= 'radio'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f3']['_id']= 'optionsRadios2'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f3']['_value']= 'option2'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f3']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic3.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic3.custom['errors']['f3'] if 'f3' in fformsXbasic3.custom['errors'] else '' ]]</span>
+
+    Option two can be something else and selecting it will deselect option one
+   </label>
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputSuccess">
+  Inline checkboxes
+ </label>
+ <div class="col-md-6">
+  <label class="checkbox-inline">
+ [%[ fformsXbasic3.custom['widgets']['f4']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f4']['_id']= 'inlineCheckbox1'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f4']['_value']= 'option1'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f4']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic3.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic3.custom['errors']['f4'] if 'f4' in fformsXbasic3.custom['errors'] else '' ]]</span>
+
+   1
+  </label>
+  <label class="checkbox-inline">
+ [%[ fformsXbasic3.custom['widgets']['f5']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f5']['_id']= 'inlineCheckbox2'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f5']['_value']= 'option2'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f5']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic3.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic3.custom['errors']['f5'] if 'f5' in fformsXbasic3.custom['errors'] else '' ]]</span>
+
+   2
+  </label>
+  <label class="checkbox-inline">
+ [%[ fformsXbasic3.custom['widgets']['f6']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f6']['_id']= 'inlineCheckbox3'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f6']['_value']= 'option3'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f6']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic3.custom['widgets']['f6'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic3.custom['errors']['f6'] if 'f6' in fformsXbasic3.custom['errors'] else '' ]]</span>
+
+   3
+  </label>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="inputSuccess">
+  Selects
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic3.custom['widgets']['f7']['_class']= 'form-control mb-md'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f7']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f7']['_style']= 'color:red;'  ]]
+ [%[= fformsXbasic3.custom['widgets']['f7'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic3.custom['errors']['f7'] if 'f7' in fformsXbasic3.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic3.custom['widgets']['f8']['_multiple']= '==0'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f8']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f8']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXbasic3.custom['widgets']['f8']['_style']= 'color:red;'  ]]
+ [%[= fformsXbasic3.custom['widgets']['f8'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic3.custom['errors']['f8'] if 'f8' in fformsXbasic3.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic3.custom['submit']['_multiple']= '==0'  ]]
+ [%[ fformsXbasic3.custom['submit']['_class']= 'form-control mysubmit_cls'  ]]
+ [%[ fformsXbasic3.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXbasic3.custom['submit']['_style']= 'color:red;'  ]]
+ [%[ fformsXbasic3.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXbasic3.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXbasic3.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXbasic3.custom['submit'] ]]
+
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXbasic3.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXbasic3.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXbasic3 flashdiv"> <span class="flashspan">fformsXbasic3</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXbasic3');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXbasic3.custom['end'] ]]
+</div>
+<!-- END fformsXbasic3-->
+
+        </div>
+       </section>
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Input Groups</h2>
+        </header>
+        <div class="panel-body">
+         
+<!-- BEGIN view: fformsXbasic4, db_table: dfformsXbasic4 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXbasic4.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Basic examples
+ </label>
+ <div class="col-md-6">
+  <div class="input-group mb-md">
+   <span class="input-group-addon btn-success">
+    @
+   </span>
+ [%[ fformsXbasic4.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f0']['_placeholder']= 'Username_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f0'] if 'f0' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="input-group mb-md">
+ [%[ fformsXbasic4.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f1'] if 'f1' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+   <span class="input-group-addon btn-warning">
+    .00
+   </span>
+  </div>
+  <div class="input-group mb-md">
+   <span class="input-group-addon">
+    $
+   </span>
+ [%[ fformsXbasic4.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f2'] if 'f2' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+   <span class="input-group-addon">
+    .00
+   </span>
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Sizing
+ </label>
+ <div class="col-md-6">
+  <div class="input-group input-group-lg mb-md">
+   <span class="input-group-addon btn-danger">
+    @
+   </span>
+ [%[ fformsXbasic4.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f3']['_class']= 'form-control input-lg'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f3']['_placeholder']= 'Username_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f3'] if 'f3' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="input-group mb-md">
+   <span class="input-group-addon">
+    @
+   </span>
+ [%[ fformsXbasic4.custom['widgets']['f4']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f4']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f4']['_placeholder']= 'Username_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f4'] if 'f4' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="input-group input-group-sm mb-md">
+   <span class="input-group-addon">
+    @
+   </span>
+ [%[ fformsXbasic4.custom['widgets']['f5']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f5']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f5']['_placeholder']= 'Username_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f5'] if 'f5' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Iconic
+ </label>
+ <div class="col-md-6">
+  <div class="input-group mb-md">
+   <span class="input-group-addon">
+    <i class="fa fa-user">
+    </i>
+   </span>
+ [%[ fformsXbasic4.custom['widgets']['f6']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f6']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f6']['_placeholder']= 'Username_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f6'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f6'] if 'f6' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="input-group mb-md">
+   <span class="input-group-addon">
+    <i class="fa fa-envelope">
+    </i>
+   </span>
+ [%[ fformsXbasic4.custom['widgets']['f7']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f7']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f7']['_placeholder']= 'Email_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f7'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f7'] if 'f7' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Checkbox and radio
+ </label>
+ <div class="col-md-6">
+  <div class="input-group mb-md">
+   <span class="input-group-addon">
+ [%[ fformsXbasic4.custom['widgets']['f8']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f8']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f8'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f8'] if 'f8' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+   </span>
+ [%[ fformsXbasic4.custom['widgets']['f9']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f9']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f9']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f9'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f9'] if 'f9' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="input-group mb-md">
+   <span class="input-group-addon">
+ [%[ fformsXbasic4.custom['widgets']['f10']['_type']= 'radio'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f10']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f10'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f10'] if 'f10' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+   </span>
+ [%[ fformsXbasic4.custom['widgets']['f11']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f11']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f11']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f11'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f11'] if 'f11' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Button addons
+ </label>
+ <div class="col-md-6">
+  <div class="input-group mb-md">
+   <span class="input-group-btn">
+ [%[ fformsXbasic4.custom['submit']['_class']= 'btn btn-danger'  ]]
+ [%[ fformsXbasic4.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXbasic4.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fformsXbasic4.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXbasic4.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fformsXbasic4.custom['submit'] ]]
+
+   </span>
+ [%[ fformsXbasic4.custom['widgets']['f12']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f12']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f12']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f12'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f12'] if 'f12' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="input-group mb-md">
+ [%[ fformsXbasic4.custom['widgets']['f13']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f13']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f13']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f13'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f13'] if 'f13' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+   <span class="input-group-btn">
+    <button class="btn btn-success" type="button">
+     Go!
+    </button>
+   </span>
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Segmented buttons
+ </label>
+ <div class="col-md-6">
+  <div class="input-group mb-md">
+   <div class="input-group-btn">
+    <button class="btn btn-primary" tabindex="-1" type="button">
+     Action
+    </button>
+    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" tabindex="-1" type="button">
+     <span class="caret">
+     </span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+     <li>
+      <a href="[%[=URL('index')]]">
+       Action
+      </a>
+     </li>
+     <li>
+      <a href="[%[=URL('index')]]">
+       Another action
+      </a>
+     </li>
+     <li>
+      <a href="[%[=URL('index')]]">
+       Something else here
+      </a>
+     </li>
+     <li class="divider">
+     </li>
+     <li>
+      <a href="[%[=URL('index')]]">
+       Separated link
+      </a>
+     </li>
+    </ul>
+   </div>
+ [%[ fformsXbasic4.custom['widgets']['f14']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f14']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f14']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f14'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f14'] if 'f14' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="input-group mb-md">
+ [%[ fformsXbasic4.custom['widgets']['f15']['_type']= 'text'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f15']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic4.custom['widgets']['f15']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic4.custom['widgets']['f15'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic4.custom['errors']['f15'] if 'f15' in fformsXbasic4.custom['errors'] else '' ]]</span>
+
+   <div class="input-group-btn">
+    <button class="btn btn-primary" tabindex="-1" type="button">
+     Action
+    </button>
+    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" tabindex="-1" type="button">
+     <span class="caret">
+     </span>
+    </button>
+    <ul class="dropdown-menu pull-right" role="menu">
+     <li>
+      <a href="[%[=URL('index')]]">
+       Action
+      </a>
+     </li>
+     <li>
+      <a href="[%[=URL('index')]]">
+       Another action
+      </a>
+     </li>
+     <li>
+      <a href="[%[=URL('index')]]">
+       Something else here
+      </a>
+     </li>
+     <li class="divider">
+     </li>
+     <li>
+      <a href="[%[=URL('index')]]">
+       Separated link
+      </a>
+     </li>
+    </ul>
+   </div>
+  </div>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXbasic4.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXbasic4.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXbasic4 flashdiv"> <span class="flashspan">fformsXbasic4</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXbasic4');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXbasic4.custom['end'] ]]
+</div>
+<!-- END fformsXbasic4-->
+
+        </div>
+       </section>
+      </div>
+     </div>
+     <div class="row">
+      <div class="col-lg-12">
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Custom Checkbox &amp; Radio</h2>
+        </header>
+        <div class="panel-body">
+         <div class="row">
+          <div class="col-md-6">
+           
+<!-- BEGIN view: fformsXbasic5, db_table: dfformsXbasic5 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXbasic5.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-sm-4 control-label">
+  Checkboxes
+ </label>
+ <div class="col-sm-8">
+  <div class="checkbox-custom checkbox-default">
+ [%[ fformsXbasic5.custom['widgets']['f0']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f0']['_checked']= '==0'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f0']['_id']= 'checkboxExample1'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic5.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic5.custom['errors']['f0'] if 'f0' in fformsXbasic5.custom['errors'] else '' ]]</span>
+
+   <label for="checkboxExample1">
+    Checkbox Default
+   </label>
+  </div>
+  <div class="checkbox-custom checkbox-primary">
+ [%[ fformsXbasic5.custom['widgets']['f1']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f1']['_checked']= '==0'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f1']['_id']= 'checkboxExample2'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic5.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic5.custom['errors']['f1'] if 'f1' in fformsXbasic5.custom['errors'] else '' ]]</span>
+
+   <label for="checkboxExample2">
+    Checkbox Primary
+   </label>
+  </div>
+  <div class="checkbox-custom checkbox-success">
+ [%[ fformsXbasic5.custom['widgets']['f2']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f2']['_checked']= '==0'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f2']['_id']= 'checkboxExample3'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic5.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic5.custom['errors']['f2'] if 'f2' in fformsXbasic5.custom['errors'] else '' ]]</span>
+
+   <label for="checkboxExample3">
+    Checkbox Success
+   </label>
+  </div>
+  <div class="checkbox-custom checkbox-warning">
+ [%[ fformsXbasic5.custom['widgets']['f3']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f3']['_checked']= '==0'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f3']['_id']= 'checkboxExample4'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f3']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic5.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic5.custom['errors']['f3'] if 'f3' in fformsXbasic5.custom['errors'] else '' ]]</span>
+
+   <label for="checkboxExample4">
+    Checkbox Warning
+   </label>
+  </div>
+  <div class="checkbox-custom checkbox-danger">
+ [%[ fformsXbasic5.custom['widgets']['f4']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f4']['_checked']= '==0'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f4']['_id']= 'checkboxExample5'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f4']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic5.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic5.custom['errors']['f4'] if 'f4' in fformsXbasic5.custom['errors'] else '' ]]</span>
+
+   <label for="checkboxExample5">
+    Checkbox Danger
+   </label>
+  </div>
+  <div class="checkbox-custom">
+ [%[ fformsXbasic5.custom['widgets']['f5']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f5']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic5.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic5.custom['errors']['f5'] if 'f5' in fformsXbasic5.custom['errors'] else '' ]]</span>
+
+   <label>
+    Checkbox Disabled
+   </label>
+  </div>
+  <div class="checkbox-custom">
+ [%[ fformsXbasic5.custom['widgets']['f6']['_type']= 'checkbox'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f6']['_checked']= '==0'  ]]
+ [%[ fformsXbasic5.custom['widgets']['f6']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic5.custom['widgets']['f6'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic5.custom['errors']['f6'] if 'f6' in fformsXbasic5.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic5.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXbasic5.custom['submit']['_checked']= '==0'  ]]
+ [%[ fformsXbasic5.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXbasic5.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fformsXbasic5.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXbasic5.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXbasic5.custom['submit'] ]]
+
+   <label>
+    Checked &amp; Disabled
+   </label>
+  </div>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXbasic5.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXbasic5.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXbasic5 flashdiv"> <span class="flashspan">fformsXbasic5</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXbasic5');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXbasic5.custom['end'] ]]
+</div>
+<!-- END fformsXbasic5-->
+
+          </div>
+          <div class="col-md-6">
+           
+<!-- BEGIN view: fformsXbasic6, db_table: dfformsXbasic6 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXbasic6.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-sm-4 control-label">
+  Radios
+ </label>
+ <div class="col-sm-8">
+  <div class="radio-custom">
+ [%[ fformsXbasic6.custom['widgets']['f0']['_type']= 'radio'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f0']['_id']= 'radioExample1'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic6.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic6.custom['errors']['f0'] if 'f0' in fformsXbasic6.custom['errors'] else '' ]]</span>
+
+   <label for="radioExample1">
+    Radio Default
+   </label>
+  </div>
+  <div class="radio-custom radio-primary">
+ [%[ fformsXbasic6.custom['widgets']['f1']['_type']= 'radio'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f1']['_id']= 'radioExample2'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic6.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic6.custom['errors']['f1'] if 'f1' in fformsXbasic6.custom['errors'] else '' ]]</span>
+
+   <label for="radioExample2">
+    Radio Primary
+   </label>
+  </div>
+  <div class="radio-custom radio-success">
+ [%[ fformsXbasic6.custom['widgets']['f2']['_type']= 'radio'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f2']['_id']= 'radioExample3'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic6.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic6.custom['errors']['f2'] if 'f2' in fformsXbasic6.custom['errors'] else '' ]]</span>
+
+   <label for="radioExample3">
+    Radio Success
+   </label>
+  </div>
+  <div class="radio-custom radio-warning">
+ [%[ fformsXbasic6.custom['widgets']['f3']['_type']= 'radio'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f3']['_id']= 'radioExample4'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f3']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic6.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic6.custom['errors']['f3'] if 'f3' in fformsXbasic6.custom['errors'] else '' ]]</span>
+
+   <label for="radioExample4">
+    Radio Warning
+   </label>
+  </div>
+  <div class="radio-custom radio-danger">
+ [%[ fformsXbasic6.custom['widgets']['f4']['_type']= 'radio'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f4']['_id']= 'radioExample5'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f4']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic6.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic6.custom['errors']['f4'] if 'f4' in fformsXbasic6.custom['errors'] else '' ]]</span>
+
+   <label for="radioExample5">
+    Radio Danger
+   </label>
+  </div>
+  <div class="radio-custom">
+ [%[ fformsXbasic6.custom['widgets']['f5']['_type']= 'radio'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f5']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic6.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic6.custom['errors']['f5'] if 'f5' in fformsXbasic6.custom['errors'] else '' ]]</span>
+
+   <label>
+    Radio Disabled
+   </label>
+  </div>
+  <div class="radio-custom">
+ [%[ fformsXbasic6.custom['widgets']['f6']['_type']= 'radio'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f6']['_checked']= '==0'  ]]
+ [%[ fformsXbasic6.custom['widgets']['f6']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXbasic6.custom['widgets']['f6'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic6.custom['errors']['f6'] if 'f6' in fformsXbasic6.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic6.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXbasic6.custom['submit']['_checked']= '==0'  ]]
+ [%[ fformsXbasic6.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXbasic6.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fformsXbasic6.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXbasic6.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXbasic6.custom['submit'] ]]
+
+   <label>
+    Checked &amp; Disabled
+   </label>
+  </div>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXbasic6.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXbasic6.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXbasic6 flashdiv"> <span class="flashspan">fformsXbasic6</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXbasic6');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXbasic6.custom['end'] ]]
+</div>
+<!-- END fformsXbasic6-->
+
+          </div>
+         </div>
+        </div>
+       </section>
+      </div>
+     </div>
+     <div class="row">
+      <div class="col-lg-12">
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Textarea</h2>
+        </header>
+        <div class="panel-body">
+         
+<!-- BEGIN view: fformsXbasic7, db_table: dfformsXbasic7 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXbasic7.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label" for="textareaDefault">
+  Textarea
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXbasic7.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformsXbasic7.custom['widgets']['f0']['_rows']= '3'  ]]
+ [%[ fformsXbasic7.custom['widgets']['f0']['_id']= 'textareaDefault'  ]]
+ [%[ fformsXbasic7.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fformsXbasic7.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXbasic7.custom['errors']['f0'] if 'f0' in fformsXbasic7.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXbasic7.custom['submit']['_class']= 'form-control mysubmit_cls'  ]]
+ [%[ fformsXbasic7.custom['submit']['_rows']= '1'  ]]
+ [%[ fformsXbasic7.custom['submit']['_id']= 'textareaDefault'  ]]
+ [%[ fformsXbasic7.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXbasic7.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXbasic7.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXbasic7.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXbasic7.custom['submit'] ]]
+
+ [%[ for hidden_widget in fformsXbasic7.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXbasic7.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXbasic7 flashdiv"> <span class="flashspan">fformsXbasic7</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXbasic7');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXbasic7.custom['end'] ]]
+</div>
+<!-- END fformsXbasic7-->
+
+        </div>
+       </section>
+      </div>
+     </div>
+     <div class="row">
+      <div class="col-md-12">
+       <div class="panel" data-collapsed="0">
+        <div class="panel-heading">
+         <div class="panel-title">
+          <div class="panel-actions">
+           <a class="fa fa-caret-down" href="#"></a>
+           <a class="fa fa-times" href="#"></a>
+          </div>
+          <h2 class="panel-title">Input Grid</h2>
+         </div>
+        </div>
+        <div class="panel-body">
+         <div class="row">
+          <div class="col-md-12 form-group">
+           <input class="form-control" placeholder=".col-md-12" type="text"/></div>
+          <div class="col-md-6 form-group">
+           <input class="form-control" placeholder=".col-md-6" type="text"/></div>
+          <div class="col-md-6 form-group">
+           <input class="form-control" placeholder=".col-md-6" type="text"/></div>
+          <div class="col-md-4 form-group">
+           <input class="form-control" placeholder=".col-md-4" type="text"/></div>
+          <div class="col-md-4 form-group">
+           <input class="form-control" placeholder=".col-md-4" type="text"/></div>
+          <div class="col-md-4 form-group">
+           <input class="form-control" placeholder=".col-md-4" type="text"/></div>
+          <div class="col-md-3 form-group">
+           <input class="form-control" placeholder=".col-md-3" type="text"/></div>
+          <div class="col-md-3 form-group">
+           <input class="form-control" placeholder=".col-md-3" type="text"/></div>
+          <div class="col-md-3 form-group">
+           <input class="form-control" placeholder=".col-md-3" type="text"/></div>
+          <div class="col-md-3 form-group">
+           <input class="form-control" placeholder=".col-md-3" type="text"/></div>
+          <div class="col-md-2 form-group">
+           <input class="form-control" placeholder=".col-md-2" type="text"/></div>
+          <div class="col-md-2 form-group">
+           <input class="form-control" placeholder=".col-md-2" type="text"/></div>
+          <div class="col-md-2 form-group">
+           <input class="form-control" placeholder=".col-md-2" type="text"/></div>
+          <div class="col-md-2 form-group">
+           <input class="form-control" placeholder=".col-md-2" type="text"/></div>
+          <div class="col-md-2 form-group">
+           <input class="form-control" placeholder=".col-md-2" type="text"/></div>
+          <div class="col-md-2 form-group">
+           <input class="form-control" placeholder=".col-md-2" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+          <div class="col-md-1 form-group">
+           <input class="form-control" placeholder=".col-md-1" type="text"/></div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- end: page -->
+    </section>
+   </div>
+   <aside class="sidebar-right" id="sidebar-right">
+    <div class="nano">
+     <div class="nano-content">
+      <a class="mobile-close visible-xs" href="#">
+       Collapse
+       <i class="fa fa-chevron-right"></i>
+      </a>
+      <div class="sidebar-right-wrapper">
+       <div class="sidebar-widget widget-calendar">
+        <h6>Upcoming Tasks</h6>
+        <div data-plugin-datepicker="" data-plugin-skin="dark"></div>
+        <ul>
+         <li>
+          <time datetime="2014-04-19T00:00+00:00">
+           04/19/2014
+          </time>
+          <span>Company Meeting</span>
+         </li>
+        </ul>
+       </div>
+       <div class="sidebar-widget widget-friends">
+        <h6>Friends</h6>
+        <ul>
+         <li class="status-online">
+          <figure class="profile-picture">
+           <img alt="Joseph Doe" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+          </figure>
+          <div class="profile-info">
+           <span class="name">Joseph Doe Junior</span>
+           <span class="title">Hey, how are you?</span>
+          </div>
+         </li>
+         <li class="status-online">
+          <figure class="profile-picture">
+           <img alt="Joseph Doe" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+          </figure>
+          <div class="profile-info">
+           <span class="name">Joseph Doe Junior</span>
+           <span class="title">Hey, how are you?</span>
+          </div>
+         </li>
+         <li class="status-offline">
+          <figure class="profile-picture">
+           <img alt="Joseph Doe" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+          </figure>
+          <div class="profile-info">
+           <span class="name">Joseph Doe Junior</span>
+           <span class="title">Hey, how are you?</span>
+          </div>
+         </li>
+         <li class="status-offline">
+          <figure class="profile-picture">
+           <img alt="Joseph Doe" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+          </figure>
+          <div class="profile-info">
+           <span class="name">Joseph Doe Junior</span>
+           <span class="title">Hey, how are you?</span>
+          </div>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </aside>
+  </section>
+  <!-- Vendor -->
+  <script src="[%[=URL('static/tte/assets/vendor/jquery/jquery.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap/js/bootstrap.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/nanoscroller/nanoscroller.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/magnific-popup/magnific-popup.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/jquery-placeholder/jquery.placeholder.js') ]]"></script>
+  <!-- Specific Page Vendor -->
+  <script src="[%[=URL('static/tte/assets/vendor/jquery-autosize/jquery.autosize.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.js') ]]"></script>
+  <!-- Theme Base, Components and Settings -->
+  <script src="[%[=URL('static/tte/assets/javascripts/theme.js') ]]"></script>
+  <!-- Theme Custom -->
+  <script src="[%[=URL('static/tte/assets/javascripts/theme.custom.js') ]]"></script>
+  <!-- Theme Initialization Files -->
+  <script src="[%[=URL('static/tte/assets/javascripts/theme.init.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+    const forms_url = [%[ =XML( page_url ) ]];
+
+    for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, 
+                 { method: 'POST', 
+                   body: new FormData( document.forms[i] ) 
+                 });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: '3 sec & will hide',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+  }
+</script>
+
+
+ </body>
+</html>

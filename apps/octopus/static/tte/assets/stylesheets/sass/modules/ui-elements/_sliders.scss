@@ -1,0 +1,105 @@
+// SLIDER
+// -----------------------------------------------------------------------------
+/*  Slider - */
+.ui-slider.ui-widget-content {
+	background: $color-default;
+	border: none;
+}
+
+// HORIZONTAL
+// -----------------------------------------------------------------------------
+/*  Sliders - Horizontal */
+.ui-slider-horizontal {
+	height: 6px;
+
+	.ui-slider-handle {
+		top: -7px;
+	}
+}
+
+// VERTICAL
+// -----------------------------------------------------------------------------
+/*  Sliders - Vertical */
+.ui-slider-vertical {
+	display: inline-block;
+	width: 6px;
+
+	.ui-slider-handle {
+		left: -7px;
+	}
+}
+
+// HANDLE
+// -----------------------------------------------------------------------------
+/*  Sliders - UI Handle */
+.ui-slider {
+	.ui-slider-handle {
+		background: darken($color-default, 7%);
+		border: 6px solid #fff;
+		border-radius: 50%;
+		box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.4);
+		cursor: pointer;
+		height: 20px;
+		width: 20px;
+
+		&:hover {
+			box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.3);
+		}
+	}
+}
+
+// FIX WINDOWS MOBILE DEVICES
+// -----------------------------------------------------------------------------
+/*  Sliders - UI Handle (Fix Windows Mobile Devices) */
+.ui-slider {
+	.ui-slider-handle {
+		-ms-touch-action: none;
+		touch-action: none;
+	}
+}
+
+// RANGE
+// -----------------------------------------------------------------------------
+/*  Sliders - Range */
+.ui-slider {
+	.ui-slider-range {
+		background: darken($color-default, 7%);
+	}
+}
+
+// STATES
+// -----------------------------------------------------------------------------
+/*  Sliders - Contextual */
+@each $state in $states {
+	.slider-#{nth($state,1)} {
+		.ui-slider-range,
+		.ui-slider-handle {
+			background: #{nth($state,2)};
+		}
+	}
+
+	.slider-gradient.slider-#{nth($state,1)} {
+		.ui-slider-range,
+		.ui-slider-handle {
+			@include background-image(linear-gradient(lighten(nth($state,2), 10%) 0, #{nth($state,2)} 50%, darken(nth($state,2), 10%) 100%));
+		}
+	}
+
+	.slider-gradient.ui-slider-vertical.slider-#{nth($state,1)} {
+		.ui-slider-range,
+		.ui-slider-handle {
+			@include background-image(linear-gradient(to right, lighten(nth($state,2), 10%) 0, #{nth($state,2)} 50%, darken(nth($state,2), 10%) 100%));
+		}
+	}
+
+}
+
+// DARK SKIN
+// -----------------------------------------------------------------------------
+html.dark {
+	.ui-slider {
+		&.ui-widget-content {
+			background: $dark-color-2;
+		}
+	}
+}

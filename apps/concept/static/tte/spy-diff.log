@@ -1,0 +1,4 @@
+ratio= 0.83
+   src: assets/vendor/daterangepicker/daterangepicker.css
+   dst: cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js
+

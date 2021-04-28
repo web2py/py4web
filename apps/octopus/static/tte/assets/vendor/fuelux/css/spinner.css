@@ -1,0 +1,39 @@
+.spinner input {
+  width: 43px;
+  float: left;
+}
+.spinner .btn {
+  position: relative;
+  width: 20px;
+  height: 14px;
+  padding-top: 0;
+  padding-right: 9px;
+  padding-left: 9px;
+}
+.spinner .btn.disabled {
+  cursor: not-allowed;
+}
+.spinner .spinner-buttons {
+  position: relative;
+  float: left;
+  height: 28px;
+  width: 20px;
+  left: -22px;
+}
+.spinner .spinner-up {
+  padding: 0 0 4px 1px;
+  top: 2px;
+}
+.spinner .spinner-up i {
+  position: relative;
+  top: -4px;
+}
+.spinner .spinner-down {
+  padding: 0 0 4px 1px;
+  top: 2px;
+  height: 13px;
+}
+.spinner .spinner-down i {
+  position: relative;
+  top: -5px;
+}

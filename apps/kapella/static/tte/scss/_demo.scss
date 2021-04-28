@@ -1,0 +1,91 @@
+/* Demo Styles */
+// Add spacing to Boostrap components for demo purpose
+.template-demo {
+  > .btn {
+    @extend .mt-3;
+    @extend .mr-2;
+  }
+
+  > .btn-toolbar {
+    @extend .mt-3;
+    @extend .mr-3;
+  }
+
+  > .btn-group,
+  >  .btn-group-vertical {
+    @extend .mt-2;
+    @extend .mr-2;
+  }
+  .circle-progress {
+    @extend .mt-2;
+  }
+
+  > h2,
+   > h3,
+   > h4,
+   > h5,
+   > h6,
+  > h1 {
+    border-top: 1px solid $border-color;
+    padding: 0.5rem 0 0;
+  }
+
+  > .dropdown {
+    display: inline-block;
+    @extend .mr-2;
+    margin-bottom: 0.5rem;
+  }
+
+  nav {
+
+    &:last-child {
+      .breadcrumb {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+
+  .circle-progress {
+    padding: 15px;
+  }
+
+  .circle-progress-block {
+    @extend .mb-3;
+    @extend .px-2;
+  }
+}
+.documentation {
+  padding-top: 0;
+  max-width: 100%;
+  .content-wrapper {
+    padding-top: 0;
+    min-height: calc(100vh - #{$footer-height});
+  }
+}
+.doc-table-contents,
+.doc-header {
+  position: fixed;
+}
+.doc-header {
+  position: fixed;
+  top: 0;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  z-index: 2;
+  background: $content-bg;
+  z-index: 999;
+}
+
+.doc-content {
+  padding-top: 140px;
+  @media (max-width: 991px) {
+    padding-top: 85px;
+  }
+  
+}
+
+.demo-vector-map {
+  width: 100%;
+  height: 500px;
+}

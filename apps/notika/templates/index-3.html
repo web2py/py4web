@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+ <head>
+            <!-- 01.12.2020 12:08:01 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+  <title>biorex title text</title>
+  <meta content="" name="description"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- favicon
+		============================================ -->
+  <link href="[%[=URL('static/tte/img/favicon.ico') ]]" rel="shortcut icon" type="image/x-icon"/>
+  <!-- Google Fonts
+		============================================ -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet"/>
+  <!-- Bootstrap CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <!-- font awesome CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/font-awesome.min.css') ]]" rel="stylesheet"/>
+  <!-- owl.carousel CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/owl.carousel.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/owl.theme.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/owl.transitions.css') ]]" rel="stylesheet"/>
+  <!-- meanmenu CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/meanmenu/meanmenu.min.css') ]]" rel="stylesheet"/>
+  <!-- animate CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/animate.css') ]]" rel="stylesheet"/>
+  <!-- normalize CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/normalize.css') ]]" rel="stylesheet"/>
+  <!-- mCustomScrollbar CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/scrollbar/jquery.mCustomScrollbar.min.css') ]]" rel="stylesheet"/>
+  <!-- jvectormap CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/jvectormap/jquery-jvectormap-2.0.3.css') ]]" rel="stylesheet"/>
+  <!-- notika icon CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/notika-custom-icon.css') ]]" rel="stylesheet"/>
+  <!-- main CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/main.css') ]]" rel="stylesheet"/>
+  <!-- wave CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/wave/waves.min.css') ]]" rel="stylesheet"/>
+  <!-- style CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/style.css') ]]" rel="stylesheet"/>
+  <!-- responsive CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/responsive.css') ]]" rel="stylesheet"/>
+  <!-- modernizr JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/vendor/modernizr-2.8.3.min.js') ]]"></script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    background-color: LightGray;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-weight: bold;
+    border: 1px dashed black;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+  <!-- Start Header Top Area -->
+  <div class="header-top-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+      <div class="logo-area">
+       <a href="#">
+        <img alt="" src="[%[=URL('static/tte/img/logo/logo.png') ]]"/></a>
+      </div>
+     </div>
+     <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+      <div class="header-top-menu">
+       <ul class="nav navbar-nav notika-top-nav">
+        <li class="nav-item dropdown">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-search"></i>
+          </span>
+         </a>
+         <div class="dropdown-menu search-dd animated flipInX" role="menu">
+          <div class="search-input">
+           <i class="notika-icon notika-left-arrow"></i>
+           
+
+<!-- BEGIN view: findexX30, db_table: dfindexX30 -->
+<div>
+[%[= findexX30.custom['begin'] ]]
+ [%[ findexX30.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ findexX30.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= findexX30.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= findexX30.custom['errors']['f0'] if 'f0' in findexX30.custom['errors'] else '' ]]</span>
+
+ [%[ findexX30.custom['submit']['_type']= 'submit'  ]]
+ [%[ findexX30.custom['submit']['_placeholder']= ''  ]]
+ [%[ findexX30.custom['submit']['_rows']= '1'  ]]
+ [%[ findexX30.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ findexX30.custom['submit']['_value']= 'Submit'  ]]
+ [%[ findexX30.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= findexX30.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in findexX30.custom['hidden_widgets'].keys(): ]]
+     [%[= findexX30.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfindexX30 flashdiv"> <span class="flashspan">findexX30</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfindexX30');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= findexX30.custom['end'] ]]
+</div>
+<!-- END findexX30-->
+
+</div>
+         </div>
+        </li>
+        <li class="nav-item dropdown">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-mail"></i>
+          </span>
+         </a>
+         <div class="dropdown-menu message-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Messages</h2>
+          </div>
+          <div class="hd-message-info">
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Jonathan Morris</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/4.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Fredric Mitchell</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Glenn Jecobs</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+        <li class="nav-item nc-al">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-alarm"></i>
+          </span>
+          <div class="spinner4 spinner-4"></div>
+          <div class="ntd-ctn">
+           <span>3</span>
+          </div>
+         </a>
+         <div class="dropdown-menu message-dd notification-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Notification</h2>
+          </div>
+          <div class="hd-message-info">
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Jonathan Morris</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/4.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Fredric Mitchell</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Glenn Jecobs</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-menus"></i>
+          </span>
+          <div class="spinner4 spinner-4"></div>
+          <div class="ntd-ctn">
+           <span>2</span>
+          </div>
+         </a>
+         <div class="dropdown-menu message-dd task-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Tasks</h2>
+          </div>
+          <div class="hd-message-info hd-task-info">
+           <div class="skill">
+            <div class="progress">
+             <div class="lead-content">
+              <p>HTML5 Validation Report</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="95%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 95%;">
+              <span>95%</span>
+             </div>
+            </div>
+            <div class="progress">
+             <div class="lead-content">
+              <p>Google Chrome Extension</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="85%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 85%;">
+              <span>85%</span>
+             </div>
+            </div>
+            <div class="progress">
+             <div class="lead-content">
+              <p>Social Internet Projects</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="75%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 75%;">
+              <span>75%</span>
+             </div>
+            </div>
+            <div class="progress">
+             <div class="lead-content">
+              <p>Bootstrap Admin</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="65%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 65%;">
+              <span>65%</span>
+             </div>
+            </div>
+            <div class="progress progress-bt">
+             <div class="lead-content">
+              <p>Youtube App</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="55%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 55%;">
+              <span>55%</span>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-chat"></i>
+          </span>
+         </a>
+         <div class="dropdown-menu message-dd chat-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Chat</h2>
+          </div>
+          <div class="search-people">
+           <i class="notika-icon notika-left-arrow"></i>
+           
+
+<!-- BEGIN view: findexX31, db_table: dfindexX31 -->
+<div>
+[%[= findexX31.custom['begin'] ]]
+ [%[ findexX31.custom['widgets']['f0']['_placeholder']= 'Search People_p4w'  ]]
+ [%[ findexX31.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= findexX31.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= findexX31.custom['errors']['f0'] if 'f0' in findexX31.custom['errors'] else '' ]]</span>
+
+ [%[ findexX31.custom['submit']['_placeholder']= ''  ]]
+ [%[ findexX31.custom['submit']['_type']= 'submit'  ]]
+ [%[ findexX31.custom['submit']['_rows']= '1'  ]]
+ [%[ findexX31.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ findexX31.custom['submit']['_value']= 'Submit'  ]]
+ [%[ findexX31.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= findexX31.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in findexX31.custom['hidden_widgets'].keys(): ]]
+     [%[= findexX31.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfindexX31 flashdiv"> <span class="flashspan">findexX31</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfindexX31');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= findexX31.custom['end'] ]]
+</div>
+<!-- END findexX31-->
+
+</div>
+          <div class="hd-message-info">
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/>
+              <div class="chat-avaible">
+               <i class="notika-icon notika-dot"></i>
+              </div>
+             </div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Available</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Jonathan Morris</h3>
+              <p>Last seen 3 hours ago</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/4.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Fredric Mitchell</h3>
+              <p>Last seen 2 minutes ago</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/>
+              <div class="chat-avaible">
+               <i class="notika-icon notika-dot"></i>
+              </div>
+             </div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Available</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/>
+              <div class="chat-avaible">
+               <i class="notika-icon notika-dot"></i>
+              </div>
+             </div>
+             <div class="hd-mg-ctn">
+              <h3>Glenn Jecobs</h3>
+              <p>Available</p>
+             </div>
+            </div>
+           </a>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- End Header Top Area -->
+  <!-- Mobile Menu start -->
+  <div class="mobile-menu-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="mobile-menu">
+       <nav id="dropdown">
+        <ul class="mobile-menu-nav">
+         <li>
+          <a data-target="#Charts" data-toggle="collapse" href="#">Home</a>
+          <ul class="collapse dropdown-header-top">
+           <li>
+            <a href="[%[=URL('index') ]]">Dashboard One</a>
+           </li>
+           <li>
+            <a href="[%[=URL('indexX2') ]]">Dashboard Two</a>
+           </li>
+           <li>
+            <a href="[%[=URL('indexX3') ]]">Dashboard Three</a>
+           </li>
+           <li>
+            <a href="[%[=URL('indexX4') ]]">Dashboard Four</a>
+           </li>
+           <li>
+            <a href="[%[=URL('analytics') ]]">Analytics</a>
+           </li>
+           <li>
+            <a href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demoevent" data-toggle="collapse" href="#">Email</a>
+          <ul class="collapse dropdown-header-top" id="demoevent">
+           <li>
+            <a href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li>
+            <a href="[%[=URL('viewXemail') ]]">View Email</a>
+           </li>
+           <li>
+            <a href="[%[=URL('composeXemail') ]]">Compose Email</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#democrou" data-toggle="collapse" href="#">Interface</a>
+          <ul class="collapse dropdown-header-top" id="democrou">
+           <li>
+            <a href="[%[=URL('animations') ]]">Animations</a>
+           </li>
+           <li>
+            <a href="[%[=URL('googleXmap') ]]">Google Map</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dataXmap') ]]">Data Maps</a>
+           </li>
+           <li>
+            <a href="[%[=URL('codeXeditor') ]]">Code Editor</a>
+           </li>
+           <li>
+            <a href="[%[=URL('imageXcropper') ]]">Images Cropper</a>
+           </li>
+           <li>
+            <a href="[%[=URL('wizard') ]]">Wizard</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demolibra" data-toggle="collapse" href="#">Charts</a>
+          <ul class="collapse dropdown-header-top" id="demolibra">
+           <li>
+            <a href="[%[=URL('flotXcharts') ]]">Flot Charts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('barXcharts') ]]">Bar Charts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('lineXcharts') ]]">Line Charts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('areaXcharts') ]]">Area Charts</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demodepart" data-toggle="collapse" href="#">Tables</a>
+          <ul class="collapse dropdown-header-top" id="demodepart">
+           <li>
+            <a href="[%[=URL('normalXtable') ]]">Normal Table</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dataXtable') ]]">Data Table</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demo" data-toggle="collapse" href="#">Forms</a>
+          <ul class="collapse dropdown-header-top" id="demo">
+           <li>
+            <a href="[%[=URL('formXelements') ]]">Form Elements</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXcomponents') ]]">Form Components</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXexamples') ]]">Form Examples</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#Miscellaneousmob" data-toggle="collapse" href="#">App views</a>
+          <ul class="collapse dropdown-header-top" id="Miscellaneousmob">
+           <li>
+            <a href="[%[=URL('notification') ]]">Notifications</a>
+           </li>
+           <li>
+            <a href="[%[=URL('alert') ]]">Alerts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('modals') ]]">Modals</a>
+           </li>
+           <li>
+            <a href="[%[=URL('buttons') ]]">Buttons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tabs') ]]">Tabs</a>
+           </li>
+           <li>
+            <a href="[%[=URL('accordion') ]]">Accordion</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dialog') ]]">Dialogs</a>
+           </li>
+           <li>
+            <a href="[%[=URL('popovers') ]]">Popovers</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tooltips') ]]">Tooltips</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dropdown') ]]">Dropdowns</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#Pagemob" data-toggle="collapse" href="#">Pages</a>
+          <ul class="collapse dropdown-header-top" id="Pagemob">
+           <li>
+            <a href="[%[=URL('contact') ]]">Contact</a>
+           </li>
+           <li>
+            <a href="[%[=URL('invoice') ]]">Invoice</a>
+           </li>
+           <li>
+            <a href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li>
+            <a href="[%[=URL('color') ]]">Color</a>
+           </li>
+           <li>
+            <a href="[%[=URL('loginXregister') ]]">Login Register</a>
+           </li>
+           <li>
+            <a href="[%[=URL('X404') ]]">404 Page</a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </nav>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Mobile Menu end -->
+  <!-- Main Menu area start-->
+  <div class="main-menu-area mg-tb-40">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <ul class="nav nav-tabs notika-menu-wrap menu-it-icon-pro">
+       <li class="active">
+        <a data-toggle="tab" href="#Home">
+         <i class="notika-icon notika-house"></i>
+         Home
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#mailbox">
+         <i class="notika-icon notika-mail"></i>
+         Email
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Interface">
+         <i class="notika-icon notika-edit"></i>
+         Interface
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Charts">
+         <i class="notika-icon notika-bar-chart"></i>
+         Charts
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Tables">
+         <i class="notika-icon notika-windows"></i>
+         Tables
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Forms">
+         <i class="notika-icon notika-form"></i>
+         Forms
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Appviews">
+         <i class="notika-icon notika-app"></i>
+         App views
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Page">
+         <i class="notika-icon notika-support"></i>
+         Pages
+        </a>
+       </li>
+      </ul>
+      <div class="tab-content custom-menu-content">
+       <div class="tab-pane in active notika-tab-menu-bg animated flipInX" id="Home">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('index') ]]">Dashboard One</a>
+         </li>
+         <li>
+          <a href="[%[=URL('indexX2') ]]">Dashboard Two</a>
+         </li>
+         <li>
+          <a href="[%[=URL('indexX3') ]]">Dashboard Three</a>
+         </li>
+         <li>
+          <a href="[%[=URL('indexX4') ]]">Dashboard Four</a>
+         </li>
+         <li>
+          <a href="[%[=URL('analytics') ]]">Analytics</a>
+         </li>
+         <li>
+          <a href="[%[=URL('widgets') ]]">Widgets</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="mailbox">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('inbox') ]]">Inbox</a>
+         </li>
+         <li>
+          <a href="[%[=URL('viewXemail') ]]">View Email</a>
+         </li>
+         <li>
+          <a href="[%[=URL('composeXemail') ]]">Compose Email</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Interface">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('animations') ]]">Animations</a>
+         </li>
+         <li>
+          <a href="[%[=URL('googleXmap') ]]">Google Map</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dataXmap') ]]">Data Maps</a>
+         </li>
+         <li>
+          <a href="[%[=URL('codeXeditor') ]]">Code Editor</a>
+         </li>
+         <li>
+          <a href="[%[=URL('imageXcropper') ]]">Images Cropper</a>
+         </li>
+         <li>
+          <a href="[%[=URL('wizard') ]]">Wizard</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Charts">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('flotXcharts') ]]">Flot Charts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('barXcharts') ]]">Bar Charts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('lineXcharts') ]]">Line Charts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('areaXcharts') ]]">Area Charts</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Tables">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('normalXtable') ]]">Normal Table</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dataXtable') ]]">Data Table</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Forms">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('formXelements') ]]">Form Elements</a>
+         </li>
+         <li>
+          <a href="[%[=URL('formXcomponents') ]]">Form Components</a>
+         </li>
+         <li>
+          <a href="[%[=URL('formXexamples') ]]">Form Examples</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Appviews">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('notification') ]]">Notifications</a>
+         </li>
+         <li>
+          <a href="[%[=URL('alert') ]]">Alerts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('modals') ]]">Modals</a>
+         </li>
+         <li>
+          <a href="[%[=URL('buttons') ]]">Buttons</a>
+         </li>
+         <li>
+          <a href="[%[=URL('tabs') ]]">Tabs</a>
+         </li>
+         <li>
+          <a href="[%[=URL('accordion') ]]">Accordion</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dialog') ]]">Dialogs</a>
+         </li>
+         <li>
+          <a href="[%[=URL('popovers') ]]">Popovers</a>
+         </li>
+         <li>
+          <a href="[%[=URL('tooltips') ]]">Tooltips</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dropdown') ]]">Dropdowns</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Page">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('contact') ]]">Contact</a>
+         </li>
+         <li>
+          <a href="[%[=URL('invoice') ]]">Invoice</a>
+         </li>
+         <li>
+          <a href="[%[=URL('typography') ]]">Typography</a>
+         </li>
+         <li>
+          <a href="[%[=URL('color') ]]">Color</a>
+         </li>
+         <li>
+          <a href="[%[=URL('loginXregister') ]]">Login Register</a>
+         </li>
+         <li>
+          <a href="[%[=URL('X404') ]]">404 Page</a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Main Menu area End-->
+  <!-- Start Status area -->
+  <div class="notika-status-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+      <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
+       <div class="website-traffic-ctn">
+        <h2>
+         <span class="counter">50,000</span>
+        </h2>
+        <p>Total Website Traffics</p>
+       </div>
+       <div class="sparkline-bar-stats1">9,4,8,6,5,6,4,8,3,5,9,5</div>
+      </div>
+     </div>
+     <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+      <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
+       <div class="website-traffic-ctn">
+        <h2>
+         <span class="counter">90,000</span>
+         k
+        </h2>
+        <p>Website Impressions</p>
+       </div>
+       <div class="sparkline-bar-stats2">1,4,8,3,5,6,4,8,3,3,9,5</div>
+      </div>
+     </div>
+     <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+      <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
+       <div class="website-traffic-ctn">
+        <h2>
+         $
+         <span class="counter">40,000</span>
+        </h2>
+        <p>Total Online Sales</p>
+       </div>
+       <div class="sparkline-bar-stats3">4,2,8,2,5,6,3,8,3,5,9,5</div>
+      </div>
+     </div>
+     <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+      <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
+       <div class="website-traffic-ctn">
+        <h2>
+         <span class="counter">1,000</span>
+        </h2>
+        <p>Total Support Tickets</p>
+       </div>
+       <div class="sparkline-bar-stats4">2,4,8,4,5,7,4,7,3,5,7,5</div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- End Status area-->
+  <!-- Start Sale Statistic area-->
+  <div class="sale-statistic-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12">
+      <div class="sale-statistic-inner notika-shadow mg-tb-30">
+       <div class="curved-inner-pro">
+        <div class="curved-ctn">
+         <h2>Sales Statistics</h2>
+         <p>Vestibulum purus quam scelerisque, mollis nonummy metus</p>
+        </div>
+       </div>
+       <div class="flot-chart bar-three bar-hm-three" id="bar-chart"></div>
+      </div>
+     </div>
+     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+      <div class="statistic-right-area notika-shadow mg-tb-30 sm-res-mg-t-0">
+       <div class="past-day-statis">
+        <h2>For The Past 30 Days</h2>
+        <p>Fusce eget dolor id justo luctus the commodo vel pharetra nisi. Donec velit of libero.</p>
+       </div>
+       <div class="dash-widget-visits"></div>
+       <div class="past-statistic-an">
+        <div class="past-statistic-ctn">
+         <h3>
+          <span class="counter">3,20,000</span>
+         </h3>
+         <p>Page Views</p>
+        </div>
+        <div class="past-statistic-graph">
+         <div class="stats-bar"></div>
+        </div>
+       </div>
+       <div class="past-statistic-an">
+        <div class="past-statistic-ctn">
+         <h3>
+          <span class="counter">1,03,000</span>
+         </h3>
+         <p>Total Clicks</p>
+        </div>
+        <div class="past-statistic-graph">
+         <div class="stats-line"></div>
+        </div>
+       </div>
+       <div class="past-statistic-an">
+        <div class="past-statistic-ctn">
+         <h3>
+          <span class="counter">24,00,000</span>
+         </h3>
+         <p>Site Visitors</p>
+        </div>
+        <div class="past-statistic-graph">
+         <div class="stats-bar-2"></div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- End Sale Statistic area-->
+  <!-- Start Email Statistic area-->
+  <div class="notika-email-post-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+      <div class="email-statis-inner notika-shadow">
+       <div class="email-ctn-round">
+        <div class="email-rdn-hd">
+         <h2>Email Statistics</h2>
+        </div>
+        <div class="email-statis-wrap">
+         <div class="email-round-nock">
+          
+
+<!-- BEGIN view: findexX32, db_table: dfindexX32 -->
+<div>
+[%[= findexX32.custom['begin'] ]]
+ [%[ findexX32.custom['widgets']['f0']['_class']= 'knob'  ]]
+ [%[ findexX32.custom['widgets']['f0']['_data-bgcolor']= '#E4E4E4'  ]]
+ [%[ findexX32.custom['widgets']['f0']['_data-fgcolor']= '#00c292'  ]]
+ [%[ findexX32.custom['widgets']['f0']['_data-linecap']= 'round'  ]]
+ [%[ findexX32.custom['widgets']['f0']['_data-readonly']= 'true'  ]]
+ [%[ findexX32.custom['widgets']['f0']['_data-rel']= '55'  ]]
+ [%[ findexX32.custom['widgets']['f0']['_data-thickness']= '10'  ]]
+ [%[ findexX32.custom['widgets']['f0']['_data-width']= '130'  ]]
+ [%[ findexX32.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ findexX32.custom['widgets']['f0']['_value']= '0'  ]]
+ [%[ findexX32.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= findexX32.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= findexX32.custom['errors']['f0'] if 'f0' in findexX32.custom['errors'] else '' ]]</span>
+
+ [%[ findexX32.custom['submit']['_class']= 'knob mysubmit_cls'  ]]
+ [%[ findexX32.custom['submit']['_data-bgcolor']= '#E4E4E4'  ]]
+ [%[ findexX32.custom['submit']['_data-fgcolor']= '#00c292'  ]]
+ [%[ findexX32.custom['submit']['_data-linecap']= 'round'  ]]
+ [%[ findexX32.custom['submit']['_data-readonly']= 'true'  ]]
+ [%[ findexX32.custom['submit']['_data-rel']= '55'  ]]
+ [%[ findexX32.custom['submit']['_data-thickness']= '10'  ]]
+ [%[ findexX32.custom['submit']['_data-width']= '130'  ]]
+ [%[ findexX32.custom['submit']['_type']= 'submit'  ]]
+ [%[ findexX32.custom['submit']['_value']= 'Submit'  ]]
+ [%[ findexX32.custom['submit']['_placeholder']= ''  ]]
+ [%[ findexX32.custom['submit']['_rows']= '1'  ]]
+ [%[ findexX32.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= findexX32.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in findexX32.custom['hidden_widgets'].keys(): ]]
+     [%[= findexX32.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfindexX32 flashdiv"> <span class="flashspan">findexX32</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfindexX32');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= findexX32.custom['end'] ]]
+</div>
+<!-- END findexX32-->
+
+</div>
+         <div class="email-ctn-nock">
+          <p>Total Emails Sent</p>
+         </div>
+        </div>
+        <div class="email-round-gp">
+         <div class="email-round-pro">
+          <div class="email-signle-gp">
+           
+
+<!-- BEGIN view: findexX33, db_table: dfindexX33 -->
+<div>
+[%[= findexX33.custom['begin'] ]]
+ [%[ findexX33.custom['widgets']['f0']['_class']= 'knob'  ]]
+ [%[ findexX33.custom['widgets']['f0']['_data-bgcolor']= '#E4E4E4'  ]]
+ [%[ findexX33.custom['widgets']['f0']['_data-fgcolor']= '#00c292'  ]]
+ [%[ findexX33.custom['widgets']['f0']['_data-linecap']= 'round'  ]]
+ [%[ findexX33.custom['widgets']['f0']['_data-readonly']= 'true'  ]]
+ [%[ findexX33.custom['widgets']['f0']['_data-rel']= '75'  ]]
+ [%[ findexX33.custom['widgets']['f0']['_data-thickness']= '10'  ]]
+ [%[ findexX33.custom['widgets']['f0']['_data-width']= '90'  ]]
+ [%[ findexX33.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ findexX33.custom['widgets']['f0']['_value']= '0'  ]]
+ [%[ findexX33.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= findexX33.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= findexX33.custom['errors']['f0'] if 'f0' in findexX33.custom['errors'] else '' ]]</span>
+
+ [%[ findexX33.custom['submit']['_class']= 'knob mysubmit_cls'  ]]
+ [%[ findexX33.custom['submit']['_data-bgcolor']= '#E4E4E4'  ]]
+ [%[ findexX33.custom['submit']['_data-fgcolor']= '#00c292'  ]]
+ [%[ findexX33.custom['submit']['_data-linecap']= 'round'  ]]
+ [%[ findexX33.custom['submit']['_data-readonly']= 'true'  ]]
+ [%[ findexX33.custom['submit']['_data-rel']= '75'  ]]
+ [%[ findexX33.custom['submit']['_data-thickness']= '10'  ]]
+ [%[ findexX33.custom['submit']['_data-width']= '90'  ]]
+ [%[ findexX33.custom['submit']['_type']= 'submit'  ]]
+ [%[ findexX33.custom['submit']['_value']= 'Submit'  ]]
+ [%[ findexX33.custom['submit']['_placeholder']= ''  ]]
+ [%[ findexX33.custom['submit']['_rows']= '1'  ]]
+ [%[ findexX33.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= findexX33.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in findexX33.custom['hidden_widgets'].keys(): ]]
+     [%[= findexX33.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfindexX33 flashdiv"> <span class="flashspan">findexX33</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfindexX33');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= findexX33.custom['end'] ]]
+</div>
+<!-- END findexX33-->
+
+</div>
+          <div class="email-ctn-nock">
+           <p>Bounce Rate</p>
+          </div>
+         </div>
+         <div class="email-round-pro">
+          <div class="email-signle-gp">
+           
+
+<!-- BEGIN view: findexX34, db_table: dfindexX34 -->
+<div>
+[%[= findexX34.custom['begin'] ]]
+ [%[ findexX34.custom['widgets']['f0']['_class']= 'knob'  ]]
+ [%[ findexX34.custom['widgets']['f0']['_data-bgcolor']= '#E4E4E4'  ]]
+ [%[ findexX34.custom['widgets']['f0']['_data-fgcolor']= '#00c292'  ]]
+ [%[ findexX34.custom['widgets']['f0']['_data-linecap']= 'round'  ]]
+ [%[ findexX34.custom['widgets']['f0']['_data-readonly']= 'true'  ]]
+ [%[ findexX34.custom['widgets']['f0']['_data-rel']= '35'  ]]
+ [%[ findexX34.custom['widgets']['f0']['_data-thickness']= '10'  ]]
+ [%[ findexX34.custom['widgets']['f0']['_data-width']= '90'  ]]
+ [%[ findexX34.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ findexX34.custom['widgets']['f0']['_value']= '0'  ]]
+ [%[ findexX34.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= findexX34.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= findexX34.custom['errors']['f0'] if 'f0' in findexX34.custom['errors'] else '' ]]</span>
+
+ [%[ findexX34.custom['submit']['_class']= 'knob mysubmit_cls'  ]]
+ [%[ findexX34.custom['submit']['_data-bgcolor']= '#E4E4E4'  ]]
+ [%[ findexX34.custom['submit']['_data-fgcolor']= '#00c292'  ]]
+ [%[ findexX34.custom['submit']['_data-linecap']= 'round'  ]]
+ [%[ findexX34.custom['submit']['_data-readonly']= 'true'  ]]
+ [%[ findexX34.custom['submit']['_data-rel']= '35'  ]]
+ [%[ findexX34.custom['submit']['_data-thickness']= '10'  ]]
+ [%[ findexX34.custom['submit']['_data-width']= '90'  ]]
+ [%[ findexX34.custom['submit']['_type']= 'submit'  ]]
+ [%[ findexX34.custom['submit']['_value']= 'Submit'  ]]
+ [%[ findexX34.custom['submit']['_placeholder']= ''  ]]
+ [%[ findexX34.custom['submit']['_rows']= '1'  ]]
+ [%[ findexX34.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= findexX34.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in findexX34.custom['hidden_widgets'].keys(): ]]
+     [%[= findexX34.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfindexX34 flashdiv"> <span class="flashspan">findexX34</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfindexX34');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= findexX34.custom['end'] ]]
+</div>
+<!-- END findexX34-->
+
+</div>
+          <div class="email-ctn-nock">
+           <p>Total Opened</p>
+          </div>
+         </div>
+         <div class="email-round-pro sm-res-ds-n lg-res-mg-bl">
+          <div class="email-signle-gp">
+           
+
+<!-- BEGIN view: findexX35, db_table: dfindexX35 -->
+<div>
+[%[= findexX35.custom['begin'] ]]
+ [%[ findexX35.custom['widgets']['f0']['_class']= 'knob'  ]]
+ [%[ findexX35.custom['widgets']['f0']['_data-bgcolor']= '#E4E4E4'  ]]
+ [%[ findexX35.custom['widgets']['f0']['_data-fgcolor']= '#00c292'  ]]
+ [%[ findexX35.custom['widgets']['f0']['_data-linecap']= 'round'  ]]
+ [%[ findexX35.custom['widgets']['f0']['_data-readonly']= 'true'  ]]
+ [%[ findexX35.custom['widgets']['f0']['_data-rel']= '45'  ]]
+ [%[ findexX35.custom['widgets']['f0']['_data-thickness']= '10'  ]]
+ [%[ findexX35.custom['widgets']['f0']['_data-width']= '90'  ]]
+ [%[ findexX35.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ findexX35.custom['widgets']['f0']['_value']= '0'  ]]
+ [%[ findexX35.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= findexX35.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= findexX35.custom['errors']['f0'] if 'f0' in findexX35.custom['errors'] else '' ]]</span>
+
+ [%[ findexX35.custom['submit']['_class']= 'knob mysubmit_cls'  ]]
+ [%[ findexX35.custom['submit']['_data-bgcolor']= '#E4E4E4'  ]]
+ [%[ findexX35.custom['submit']['_data-fgcolor']= '#00c292'  ]]
+ [%[ findexX35.custom['submit']['_data-linecap']= 'round'  ]]
+ [%[ findexX35.custom['submit']['_data-readonly']= 'true'  ]]
+ [%[ findexX35.custom['submit']['_data-rel']= '45'  ]]
+ [%[ findexX35.custom['submit']['_data-thickness']= '10'  ]]
+ [%[ findexX35.custom['submit']['_data-width']= '90'  ]]
+ [%[ findexX35.custom['submit']['_type']= 'submit'  ]]
+ [%[ findexX35.custom['submit']['_value']= 'Submit'  ]]
+ [%[ findexX35.custom['submit']['_placeholder']= ''  ]]
+ [%[ findexX35.custom['submit']['_rows']= '1'  ]]
+ [%[ findexX35.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= findexX35.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in findexX35.custom['hidden_widgets'].keys(): ]]
+     [%[= findexX35.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfindexX35 flashdiv"> <span class="flashspan">findexX35</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfindexX35');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= findexX35.custom['end'] ]]
+</div>
+<!-- END findexX35-->
+
+</div>
+          <div class="email-ctn-nock">
+           <p>Total Ignored</p>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+      <div class="recent-post-wrapper notika-shadow sm-res-mg-t-30 tb-res-ds-n dk-res-ds">
+       <div class="recent-post-ctn">
+        <div class="recent-post-title">
+         <h2>Recent Posts</h2>
+        </div>
+       </div>
+       <div class="recent-post-items">
+        <div class="recent-post-signle rct-pt-mg-wp">
+         <a href="#">
+          <div class="recent-post-flex">
+           <div class="recent-post-img">
+            <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+           <div class="recent-post-it-ctn">
+            <h2>Smith</h2>
+            <p>Nunc quis diam diamurabitur at dolor elementum, dictum turpis vel</p>
+           </div>
+          </div>
+         </a>
+        </div>
+        <div class="recent-post-signle">
+         <a href="#">
+          <div class="recent-post-flex rct-pt-mg">
+           <div class="recent-post-img">
+            <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+           <div class="recent-post-it-ctn">
+            <h2>John Deo</h2>
+            <p>Nunc quis diam diamurabitur at dolor elementum, dictum turpis vel</p>
+           </div>
+          </div>
+         </a>
+        </div>
+        <div class="recent-post-signle">
+         <a href="#">
+          <div class="recent-post-flex rct-pt-mg">
+           <div class="recent-post-img">
+            <img alt="" src="[%[=URL('static/tte/img/post/4.jpg') ]]"/></div>
+           <div class="recent-post-it-ctn">
+            <h2>Malika</h2>
+            <p>Nunc quis diam diamurabitur at dolor elementum, dictum turpis vel</p>
+           </div>
+          </div>
+         </a>
+        </div>
+        <div class="recent-post-signle">
+         <a href="#">
+          <div class="recent-post-flex rct-pt-mg">
+           <div class="recent-post-img">
+            <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+           <div class="recent-post-it-ctn">
+            <h2>Smith</h2>
+            <p>Nunc quis diam diamurabitur at dolor elementum, dictum turpis vel</p>
+           </div>
+          </div>
+         </a>
+        </div>
+        <div class="recent-post-signle">
+         <a href="#">
+          <div class="recent-post-flex rct-pt-mg">
+           <div class="recent-post-img">
+            <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+           <div class="recent-post-it-ctn">
+            <h2>John Deo</h2>
+            <p>Nunc quis diam diamurabitur at dolor elementum, dictum turpis vel</p>
+           </div>
+          </div>
+         </a>
+        </div>
+        <div class="recent-post-signle">
+         <a href="#">
+          <div class="recent-post-flex rc-ps-vw">
+           <div class="recent-post-line rct-pt-mg">
+            <p>View All</p>
+           </div>
+          </div>
+         </a>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+      <div class="recent-items-wp notika-shadow sm-res-mg-t-30">
+       <div class="rc-it-ltd">
+        <div class="recent-items-ctn">
+         <div class="recent-items-title">
+          <h2>Recent Items</h2>
+         </div>
+        </div>
+        <div class="recent-items-inn">
+         
+<!--view: rows_tindexX30, db_table: tindexX30 -->
+  <table class="table table-inner table-vmiddle">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th style="width: 60px">Price</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row0 in rows_tindexX30: ]]
+        <tr>
+            <td class="f-500 c-cyan">[%[= XML(row0.f0) ]]</td>
+            <td>[%[= XML(row0.f1) ]]</td>
+            <td class="f-500 c-cyan">[%[= XML(row0.f2) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tindexX30 -->
+
+
+<div class="divtindexX30 flashdiv"> <span class="flashspan">tindexX30</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtindexX30');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+        </div>
+        <div class="flot-chart-items flot-chart vt-ct-it tb-rc-it-res" id="recent-items-chart"></div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- End Email Statistic area-->
+  <!-- Start Realtime sts area-->
+  <div class="realtime-statistic-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+      <div class="realtime-wrap notika-shadow mg-t-30">
+       <div class="realtime-ctn">
+        <div class="realtime-title">
+         <h2>Realtime Visitors</h2>
+        </div>
+       </div>
+       <div class="realtime-visitor-ctn">
+        <div class="realtime-vst-sg">
+         <h4>
+          <span class="counter">4,35,456</span>
+         </h4>
+         <p>Visitors last 24h</p>
+        </div>
+        <div class="realtime-vst-sg">
+         <h4>
+          <span class="counter">4,566</span>
+         </h4>
+         <p>Visitors last 30m</p>
+        </div>
+       </div>
+       <div class="realtime-map">
+        <div class="vectorjsmarp" id="world-map"></div>
+       </div>
+       <div class="realtime-country-ctn realtime-ltd-mg">
+        <h5>September 4, 21:44:02 (2 Mins 56 Seconds)</h5>
+        <div class="realtime-ctn-bw">
+         <div class="realtime-ctn-st">
+          <span>
+           <img alt="" src="[%[=URL('static/tte/img/country/1.png') ]]"/></span>
+          <span>United States</span>
+         </div>
+         <div class="realtime-bw">
+          <span>Firefox</span>
+         </div>
+         <div class="realtime-bw">
+          <span>Mac OSX</span>
+         </div>
+        </div>
+       </div>
+       <div class="realtime-country-ctn">
+        <h5>September 7, 20:44:02 (5 Mins 56 Seconds)</h5>
+        <div class="realtime-ctn-bw">
+         <div class="realtime-ctn-st">
+          <span>
+           <img alt="" src="[%[=URL('static/tte/img/country/2.png') ]]"/></span>
+          <span>Australia</span>
+         </div>
+         <div class="realtime-bw">
+          <span>Firefox</span>
+         </div>
+         <div class="realtime-bw">
+          <span>Mac OSX</span>
+         </div>
+        </div>
+       </div>
+       <div class="realtime-country-ctn">
+        <h5>September 9, 19:44:02 (10 Mins 56 Seconds)</h5>
+        <div class="realtime-ctn-bw">
+         <div class="realtime-ctn-st">
+          <span>
+           <img alt="" src="[%[=URL('static/tte/img/country/3.png') ]]"/></span>
+          <span>Brazil</span>
+         </div>
+         <div class="realtime-bw">
+          <span>Firefox</span>
+         </div>
+         <div class="realtime-bw">
+          <span>Mac OSX</span>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+      <div class="add-todo-list notika-shadow mg-t-30">
+       <div class="realtime-ctn">
+        <div class="realtime-title">
+         <h2>Add Todo</h2>
+        </div>
+       </div>
+       <div class="card-box">
+        <div class="todoapp">
+         <div class="row">
+          <div class="col-sm-6 col-md-6 col-sm-6 col-xs-12">
+           <h4 id="todo-message">
+            <span id="todo-remaining"></span>
+            of
+            <span id="todo-total"></span>
+            remaining
+           </h4>
+          </div>
+          <div class="col-sm-6 col-md-6 col-sm-6 col-xs-12">
+           <div class="notika-todo-btn">
+            <a class="pull-right btn btn-primary btn-sm" href="#" id="btn-archive">Archive</a>
+           </div>
+          </div>
+         </div>
+         <div class="notika-todo-scrollbar">
+          <ul class="list-group no-margn todo-list" id="todo-list"></ul>
+         </div>
+         <div id="todo-form">
+          <div class="row">
+           <div class="col-sm-12 col-md-12 col-sm-12 col-xs-12 todo-inputbar">
+            <div class="form-group todo-flex">
+             <div class="nk-int-st">
+              
+
+<!-- BEGIN view: findexX36, db_table: dfindexX36 -->
+<div>
+[%[= findexX36.custom['begin'] ]]
+ [%[ findexX36.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ findexX36.custom['widgets']['f0']['_id']= 'todo-input-text'  ]]
+ [%[ findexX36.custom['widgets']['f0']['_placeholder']= 'Add new todo_p4w'  ]]
+ [%[ findexX36.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= findexX36.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= findexX36.custom['errors']['f0'] if 'f0' in findexX36.custom['errors'] else '' ]]</span>
+
+ [%[ findexX36.custom['submit']['_class']= 'form-control mysubmit_cls'  ]]
+ [%[ findexX36.custom['submit']['_id']= 'todo-input-text'  ]]
+ [%[ findexX36.custom['submit']['_placeholder']= ''  ]]
+ [%[ findexX36.custom['submit']['_type']= 'submit'  ]]
+ [%[ findexX36.custom['submit']['_rows']= '1'  ]]
+ [%[ findexX36.custom['submit']['_value']= 'Submit'  ]]
+ [%[ findexX36.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= findexX36.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in findexX36.custom['hidden_widgets'].keys(): ]]
+     [%[= findexX36.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfindexX36 flashdiv"> <span class="flashspan">findexX36</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfindexX36');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= findexX36.custom['end'] ]]
+</div>
+<!-- END findexX36-->
+
+</div>
+             <div class="todo-send">
+              <button class="btn-primary btn-md btn-block btn notika-add-todo" id="todo-btn-submit" type="button">Add</button>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+      <div class="notika-chat-list notika-shadow mg-t-30 tb-res-ds-n dk-res-ds">
+       <div class="realtime-ctn">
+        <div class="realtime-title">
+         <h2>Chat Box</h2>
+        </div>
+       </div>
+       <div class="card-box">
+        <div class="chat-conversation">
+         <div class="widgets-chat-scrollbar">
+          <ul class="conversation-list">
+           <li class="clearfix">
+            <div class="chat-avatar">
+             <img alt="male" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/>
+             <i>10:00</i>
+            </div>
+            <div class="conversation-text">
+             <div class="ctext-wrap">
+              <i>John Deo</i>
+              <p>Hello!</p>
+             </div>
+            </div>
+           </li>
+           <li class="clearfix odd">
+            <div class="chat-avatar">
+             <img alt="Female" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/>
+             <i>10:01</i>
+            </div>
+            <div class="conversation-text">
+             <div class="ctext-wrap chat-widgets-cn">
+              <i>Smith</i>
+              <p>Hi, How are you? What about our next meeting?</p>
+             </div>
+            </div>
+           </li>
+           <li class="clearfix">
+            <div class="chat-avatar">
+             <img alt="male" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/>
+             <i>10:01</i>
+            </div>
+            <div class="conversation-text">
+             <div class="ctext-wrap">
+              <i>John Deo</i>
+              <p>Yeah everything is fine</p>
+             </div>
+            </div>
+           </li>
+           <li class="clearfix odd">
+            <div class="chat-avatar">
+             <img alt="male" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/>
+             <i>10:02</i>
+            </div>
+            <div class="conversation-text">
+             <div class="ctext-wrap chat-widgets-cn">
+              <i>Smith</i>
+              <p>Wow that's great</p>
+             </div>
+            </div>
+           </li>
+           <li class="clearfix">
+            <div class="chat-avatar">
+             <img alt="male" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/>
+             <i>10:01</i>
+            </div>
+            <div class="conversation-text">
+             <div class="ctext-wrap">
+              <i>John Deo</i>
+              <p>Doing Better i am thinking about that..</p>
+             </div>
+            </div>
+           </li>
+           <li class="clearfix odd">
+            <div class="chat-avatar">
+             <img alt="male" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/>
+             <i>10:02</i>
+            </div>
+            <div class="conversation-text">
+             <div class="ctext-wrap chat-widgets-cn">
+              <i>Smith</i>
+              <p>Wow, You also tallent man...</p>
+             </div>
+            </div>
+           </li>
+          </ul>
+         </div>
+         <div class="chat-widget-input">
+          <div class="row">
+           <div class="col-sm-12 col-md-12 col-sm-12 col-xs-12 chat-inputbar">
+            <div class="form-group todo-flex">
+             <div class="nk-int-st">
+              
+
+<!-- BEGIN view: findexX37, db_table: dfindexX37 -->
+<div>
+[%[= findexX37.custom['begin'] ]]
+ [%[ findexX37.custom['widgets']['f0']['_class']= 'form-control chat-input'  ]]
+ [%[ findexX37.custom['widgets']['f0']['_placeholder']= 'Enter your text_p4w'  ]]
+ [%[ findexX37.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= findexX37.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= findexX37.custom['errors']['f0'] if 'f0' in findexX37.custom['errors'] else '' ]]</span>
+
+ [%[ findexX37.custom['submit']['_class']= 'form-control chat-input mysubmit_cls'  ]]
+ [%[ findexX37.custom['submit']['_placeholder']= ''  ]]
+ [%[ findexX37.custom['submit']['_type']= 'submit'  ]]
+ [%[ findexX37.custom['submit']['_rows']= '1'  ]]
+ [%[ findexX37.custom['submit']['_value']= 'Submit'  ]]
+ [%[ findexX37.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= findexX37.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in findexX37.custom['hidden_widgets'].keys(): ]]
+     [%[= findexX37.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfindexX37 flashdiv"> <span class="flashspan">findexX37</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfindexX37');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= findexX37.custom['end'] ]]
+</div>
+<!-- END findexX37-->
+
+</div>
+             <div class="chat-send">
+              <button class="btn btn-md btn-primary btn-block notika-chat-btn" type="submit">Send</button>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- End Realtime sts area-->
+  <!-- Start Footer area-->
+  <div class="footer-copyright-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="footer-copy-right">
+       <p>
+        Copyright © 2018 
+. All rights reserved. Template by
+        <a href="https://colorlib.com">Colorlib</a>
+        .
+       </p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- End Footer area-->
+  <!-- jquery
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/vendor/jquery-1.12.4.min.js') ]]"></script>
+  <!-- bootstrap JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/bootstrap.min.js') ]]"></script>
+  <!-- wow JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/wow.min.js') ]]"></script>
+  <!-- price-slider JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/jquery-price-slider.js') ]]"></script>
+  <!-- owl.carousel JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/owl.carousel.min.js') ]]"></script>
+  <!-- scrollUp JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/jquery.scrollUp.min.js') ]]"></script>
+  <!-- meanmenu JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/meanmenu/jquery.meanmenu.js') ]]"></script>
+  <!-- counterup JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/counterup/jquery.counterup.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/counterup/waypoints.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/counterup/counterup-active.js') ]]"></script>
+  <!-- mCustomScrollbar JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/scrollbar/jquery.mCustomScrollbar.concat.min.js') ]]"></script>
+  <!-- jvectormap JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/jvectormap/jquery-jvectormap-2.0.2.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/jvectormap/jquery-jvectormap-world-mill-en.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/jvectormap/jvectormap-active.js') ]]"></script>
+  <!-- sparkline JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/sparkline/jquery.sparkline.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/sparkline/sparkline-active.js') ]]"></script>
+  <!-- flot JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/flot/jquery.flot.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/jquery.flot.resize.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/jquery.flot.pie.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/jquery.flot.tooltip.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/jquery.flot.orderBars.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/curvedLines.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/flot-active.js') ]]"></script>
+  <!-- knob JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/knob/jquery.knob.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/knob/jquery.appear.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/knob/knob-active.js') ]]"></script>
+  <!--  wave JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/wave/waves.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/wave/wave-active.js') ]]"></script>
+  <!--  Chat JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/chat/moment.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/chat/jquery.chat.js') ]]"></script>
+  <!--  todo JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/todo/jquery.todo.js') ]]"></script>
+  <!-- plugins JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/plugins.js') ]]"></script>
+  <!-- main JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/main.js') ]]"></script>
+  <!-- tawk chat JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/tawk-chat.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+    const forms_url = [%[ =XML( page_url ) ]];
+
+    for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, 
+                 { method: 'POST', 
+                   body: new FormData( document.forms[i] ) 
+                 });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: '3 sec & will hide',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+  }
+</script>
+
+
+ </body>
+</html>

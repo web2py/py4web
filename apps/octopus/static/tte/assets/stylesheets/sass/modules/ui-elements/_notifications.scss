@@ -1,0 +1,219 @@
+// BASE
+// -----------------------------------------------------------------------------
+/* Notification */
+.ui-pnotify {
+	right: 15px;
+	top: 15px;
+
+	.notification {
+		border-radius: $border-radius;
+		box-shadow: none;
+		padding: 15px 15px 15px 75px;
+
+		.ui-pnotify-icon {
+			left: 0;
+			position: absolute;
+			top: 0;
+			width: 75px;
+			text-align: center;
+
+			& > span {
+				border: 2px solid #FFF;
+				border-radius: 50%;
+				display: inline-block;
+				float: none;
+				font-size: 35px;
+				height: 50px;
+				line-height: 48px;
+				margin: 8px 0 0;
+				padding: 0;
+				width: 50px;
+				text-align: center;
+			}
+		}
+
+		.ui-pnotify-title {
+			font-size: 14px;
+			letter-spacing: 0;
+		}
+
+		.ui-pnotify-text {
+			font-size: 12px;
+			line-height: 1.3em;
+		}
+	}
+}
+
+// TIMES FIX
+// -----------------------------------------------------------------------------
+.ui-pnotify {
+	.notification.notification-danger {
+		.ui-pnotify-icon {
+			& > span.fa-times {
+				line-height: 47px;
+			}
+		}
+	}
+}
+
+// SHADOWED
+// -----------------------------------------------------------------------------
+.ui-pnotify {
+	.ui-pnotify-shadow {
+		box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.4);
+	}
+}
+
+// WITHOUT ICON
+// -----------------------------------------------------------------------------
+.ui-pnotify.ui-pnotify-no-icon {
+	.notification {
+		padding-left: 15px;
+	}
+}
+
+// WITHOUT BORDER RADIOUS
+// -----------------------------------------------------------------------------
+.ui-pnotify {
+	.ui-pnotify-sharp {
+		border-radius: 0;
+	}
+}
+
+// ICON WITHOUT BORDER
+// -----------------------------------------------------------------------------
+body {
+	.ui-pnotify.icon-nb {
+		.notification {
+			.ui-pnotify-icon {
+				& > span {
+					border-color: transparent;
+					border-radius: 0;
+				}
+			}
+		}
+	}
+}
+
+// STACK BAR TOP
+// -----------------------------------------------------------------------------
+.ui-pnotify.stack-bar-top {
+	right: 0;
+	top: 0;
+
+	.notification {
+		border-radius: 0;
+
+		.ui-pnotify-icon {
+			& > span {
+				margin-top: 7px;
+			}
+		}
+	}
+}
+
+// STACK BAR BOTTOM
+// -----------------------------------------------------------------------------
+.ui-pnotify.stack-bar-bottom {
+	bottom: 0;
+	left: auto;
+	margin-left: 15%;
+	right: auto;
+	top: auto;
+
+	.notification {
+		border-radius: 0;
+
+		.ui-pnotify-icon {
+			& > span {
+				margin-top: 9px;
+			}
+		}
+	}
+}
+
+
+// CLICK 2 CLOSE
+// -----------------------------------------------------------------------------
+.ui-pnotify.click-2-close {
+	cursor: pointer;
+}
+
+// STATES
+// -----------------------------------------------------------------------------
+/* Notification States */
+@each $state in $states {
+	.ui-pnotify {
+		.notification-#{nth($state,1)} {
+			background: rgba(nth($state,2), 0.95);
+			color: rgba(nth($state,3), 0.7);
+
+			.ui-pnotify-icon > span {
+				border-color: rgba(nth($state,3), 0.7);
+			}
+		}
+
+		&.stack-bar-top,
+		&.stack-bar-bottom {
+			.notification-#{nth($state,1)} {
+				background: nth($state,2);
+			}
+		}
+	}
+
+	.ui-pnotify.notification-#{nth($state,1)} {
+		.notification,
+		.notification-#{nth($state,1)} {
+			background: rgba(nth($state,2), 0.95);
+			color: rgba(nth($state,3), 0.7);
+
+			.ui-pnotify-icon > span {
+				border-color: rgba(nth($state,3), 0.7);
+			}
+		}
+
+		&.stack-bar-top,
+		&.stack-bar-bottom {
+			.notification,
+			.notification-#{nth($state,1)} {
+				background: nth($state,2);
+			}
+		}
+	}
+}
+
+// RESPONSIVE
+// -----------------------------------------------------------------------------
+/* Notification Responsive */
+@media only screen and (max-width: 767px) {
+	html > body > .ui-pnotify {
+		bottom: auto !important;
+		left: 0 !important;
+		margin: 0 !important;
+		right: 0 !important;
+		top: $header-height !important;
+		width: auto !important;
+
+		.notification {
+			border-radius: 0 !important;
+			height: auto !important;
+			position: static !important;
+			width: 100%;
+
+			.ui-pnotify-title,
+			.ui-pnotify-text {
+				padding-right: 35px !important;
+			}
+
+			.ui-pnotify-sticker {
+				display: none !important;
+			}
+
+			.ui-pnotify-closer {
+				display: block !important;
+				font-size: 24px !important;
+				visibility: visible !important;
+			}
+		}
+	}
+}

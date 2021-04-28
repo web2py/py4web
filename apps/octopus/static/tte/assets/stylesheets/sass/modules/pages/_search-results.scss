@@ -1,0 +1,285 @@
+// SEARCH RESULTS
+// -----------------------------------------------------------------------------
+/* Change Content Background Color */
+html.search-results {
+	body {
+		background: #FFF;
+	}
+}
+
+// WRAPPER
+// -----------------------------------------------------------------------------
+/* Search Results Wrapper */
+.search-content {
+	margin: -($content-body-padding);
+
+	.search-control-wrapper {
+		background: darken( #FFF, 3% );
+		border-bottom: 1px solid darken( #FFF, 8% );
+		margin-top: 3px;
+		padding: ($content-body-padding / 2);
+	}
+}
+
+// WRAPPER
+// -----------------------------------------------------------------------------
+/* Search Results Tabs */
+.search-content {
+	.search-toolbar {
+		border-bottom :1px solid #ebebeb;
+		margin: 0 0 $content-body-padding;
+
+		.nav-pills {
+			margin: 0 $content-body-padding;
+
+			li {
+				margin: 0 15px 0 0;
+
+				&:last-child {
+					margin-right: 0;
+				}
+
+				a {
+					padding-left: 5px;
+					padding-right: 5px;
+
+					&,
+					&:hover,
+					&:focus {
+						background: none;
+						border-radius: 0;
+						border-bottom: 2px solid #FFF;
+						border-top: 2px solid #FFF;
+						color: #777;
+					}
+				}
+
+				a {
+					&:hover,
+					&:focus {
+						background: none;
+						border-radius: 0;
+						border-bottom: 2px solid #FFF;
+						border-top: 2px solid #FFF;
+						color: #555;
+					}
+				}
+
+				&.active {
+					a {
+						color: $color-primary;
+						border-bottom-color: $color-primary;
+					}
+				}
+			}
+		}
+	}
+
+	> .tab-content {
+		border: none;
+		box-shadow: none;
+		padding: 0 $content-body-padding;
+	}
+}
+
+// TOTALS
+// -----------------------------------------------------------------------------
+/* Search Result Totals */
+.search-content {
+	.total-results {
+		margin-top: -25px;
+	}
+}
+
+// LIST
+// -----------------------------------------------------------------------------
+/* Search Results List */
+.search-results-list {
+	max-width: 750px;
+
+	li {
+		border-bottom: 1px solid #EEE;
+		margin-bottom: 15px;
+		padding-bottom: 15px;
+		position: relative;
+
+		&:last-child {
+			border-bottom: none;
+			margin-bottom: 0;
+			padding-bottom: 0;
+		}
+	}
+
+	.result-type {
+		right: 5px;
+		position: absolute;
+		top: 5px;
+	}
+
+	a {
+		border-radius: 4px;
+		display: block;
+		padding: 25px;
+		text-decoration: none;
+
+		.title {
+			margin-top: 0;
+		}
+
+		.description {
+			color: #777;
+		}
+
+		p:last-child {
+			margin-bottom: 0;
+		}
+
+		&:hover {
+			background: darken( #FFF, 3% );
+		}
+	}
+
+	.has-thumb {
+		display: table;
+		width: 100%;
+
+		.result-thumb,
+		.result-data {
+			display: table-cell;
+			vertical-align: top;
+		}
+	}
+
+	.result-thumb {
+		padding-right: 25px;
+
+		img,
+		.fa {
+			height: 75px;
+			width: 75px;
+		}
+
+		.fa {
+			background: $color-primary;
+			color: $color-primary-inverse;
+			@include font-size(36);
+			@include line-height(75);
+			text-align: center;
+		}
+	}
+}
+
+// RESPONSIVENESS
+// -----------------------------------------------------------------------------
+/* Search Results Responsive */
+@media only screen and (max-width: 767px) {
+	.search-content {
+		margin: -($content-body-padding / 2);
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	.search-results-list {
+		.has-thumb {
+			@include clearfix();
+			display: block;
+
+			.result-thumb,
+			.result-data {
+				display: block;
+			}
+
+			.result-thumb {
+				float: left;
+			}
+
+			.result-data {
+				.title {
+					margin-top: 3px;
+				}
+			}
+		}
+
+		.result-thumb {
+			img,
+			.fa {
+				height: 35px;
+				width: 35px;
+			}
+
+			.fa {
+				@include font-size(16);
+				@include line-height(35);
+			}
+		}
+	}
+}
+
+// DARK
+// -----------------------------------------------------------------------------
+/* dark */
+html.dark {
+	.search-content {
+		.search-control-wrapper {
+			background: $dark-color-1;
+			border-bottom-color: $dark-color-3;
+		}
+
+		.tab-content {
+			background: transparent;
+		}
+
+		.search-toolbar {
+			background: $dark-color-2;
+			border-bottom-color: $dark-color-2;
+
+			.nav-pills {
+				a {
+					&,
+					&:hover,
+					&:focus {
+						border-bottom-color: $dark-color-2;
+						border-top-color: $dark-color-2;
+						color: $dark-default-text;
+					}
+				}
+
+				a {
+					&:hover,
+					&:focus {
+						border-bottom-color: $dark-color-2;
+						border-top-color: $dark-color-2;
+						color: #555;
+					}
+				}
+
+				li.active {
+					a {
+						&,
+						&:hover,
+						&:focus {
+							color: $color-primary;
+							border-bottom-color: $color-primary;
+						}
+					}
+				}
+			}
+		}
+
+		.search-results-list {
+			li {
+				border-bottom-color: $dark-color-3;
+			}
+
+			a {
+				.description {
+					color: $dark-default-text;
+				}
+
+				&:hover {
+					background: lighten( $dark-bg, 5% );
+				}
+			}
+		}
+	}
+}

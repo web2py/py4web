@@ -1,0 +1,311 @@
+/* ------------------------------------------------------------------------------------------------------------------------------------------
+BOOTSTRAP EXTEND
+------------------------------------------------------------------------------------------------------------------------------------------ */
+/* Add New Grid Tier FOR NON BOXED LAYOUT */
+html.scroll,
+html.fixed {
+	@media (min-width: $screen-xl) {
+		.container {
+			width: $screen-xl - $grid-gutter-width;
+		}
+	}
+
+	.col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12 {
+		position: relative;
+		min-height: 1px;
+		padding-right: 15px;
+		padding-left: 15px;
+	}
+
+	@media (min-width: $screen-xl) {
+		.col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12 {
+			float: left;
+		}
+		.col-xl-12 {
+			width: 100%;
+		}
+		.col-xl-11 {
+			width: 91.66666667%;
+		}
+		.col-xl-10 {
+			width: 83.33333333%;
+		}
+		.col-xl-9 {
+			width: 75%;
+		}
+		.col-xl-8 {
+			width: 66.66666667%;
+		}
+		.col-xl-7 {
+			width: 58.33333333%;
+		}
+		.col-xl-6 {
+			width: 50%;
+		}
+		.col-xl-5 {
+			width: 41.66666667%;
+		}
+		.col-xl-4 {
+			width: 33.33333333%;
+		}
+		.col-xl-3 {
+			width: 25%;
+		}
+		.col-xl-2 {
+			width: 16.66666667%;
+		}
+		.col-xl-1 {
+			width: 8.33333333%;
+		}
+		.col-xl-pull-12 {
+			right: 100%;
+		}
+		.col-xl-pull-11 {
+			right: 91.66666667%;
+		}
+		.col-xl-pull-10 {
+			right: 83.33333333%;
+		}
+		.col-xl-pull-9 {
+			right: 75%;
+		}
+		.col-xl-pull-8 {
+			right: 66.66666667%;
+		}
+		.col-xl-pull-7 {
+			right: 58.33333333%;
+		}
+		.col-xl-pull-6 {
+			right: 50%;
+		}
+		.col-xl-pull-5 {
+			right: 41.66666667%;
+		}
+		.col-xl-pull-4 {
+			right: 33.33333333%;
+		}
+		.col-xl-pull-3 {
+			right: 25%;
+		}
+		.col-xl-pull-2 {
+			right: 16.66666667%;
+		}
+		.col-xl-pull-1 {
+			right: 8.33333333%;
+		}
+		.col-xl-pull-0 {
+			right: auto;
+		}
+		.col-xl-push-12 {
+			left: 100%;
+		}
+		.col-xl-push-11 {
+			left: 91.66666667%;
+		}
+		.col-xl-push-10 {
+			left: 83.33333333%;
+		}
+		.col-xl-push-9 {
+			left: 75%;
+		}
+		.col-xl-push-8 {
+			left: 66.66666667%;
+		}
+		.col-xl-push-7 {
+			left: 58.33333333%;
+		}
+		.col-xl-push-6 {
+			left: 50%;
+		}
+		.col-xl-push-5 {
+			left: 41.66666667%;
+		}
+		.col-xl-push-4 {
+			left: 33.33333333%;
+		}
+		.col-xl-push-3 {
+			left: 25%;
+		}
+		.col-xl-push-2 {
+			left: 16.66666667%;
+		}
+		.col-xl-push-1 {
+			left: 8.33333333%;
+		}
+		.col-xl-push-0 {
+			left: auto;
+		}
+		.col-xl-offset-12 {
+			margin-left: 100%;
+		}
+		.col-xl-offset-11 {
+			margin-left: 91.66666667%;
+		}
+		.col-xl-offset-10 {
+			margin-left: 83.33333333%;
+		}
+		.col-xl-offset-9 {
+			margin-left: 75%;
+		}
+		.col-xl-offset-8 {
+			margin-left: 66.66666667%;
+		}
+		.col-xl-offset-7 {
+			margin-left: 58.33333333%;
+		}
+		.col-xl-offset-6 {
+			margin-left: 50%;
+		}
+		.col-xl-offset-5 {
+			margin-left: 41.66666667%;
+		}
+		.col-xl-offset-4 {
+			margin-left: 33.33333333%;
+		}
+		.col-xl-offset-3 {
+			margin-left: 25%;
+		}
+		.col-xl-offset-2 {
+			margin-left: 16.66666667%;
+		}
+		.col-xl-offset-1 {
+			margin-left: 8.33333333%;
+		}
+		.col-xl-offset-0 {
+			margin-left: 0;
+		}
+	}
+
+	.visible-xl {
+	  display: none !important;
+	}
+
+	.visible-xl-block,
+	.visible-xl-inline,
+	.visible-xl-inline-block {
+	  display: none !important;
+	}
+
+	@media (min-width: $screen-lg) and (max-width: $screen-lg-max) {
+		.visible-lg {
+			display: block !important;
+		}
+		table.visible-lg {
+			display: table;
+		}
+		tr.visible-lg {
+			display: table-row !important;
+		}
+		th.visible-lg,
+		td.visible-lg {
+			display: table-cell !important;
+		}
+		.visible-lg-block {
+			display: block !important;
+		}
+		.visible-lg-inline {
+			display: inline !important;
+		}
+		.visible-lg-inline-block {
+			display: inline-block !important;
+		}
+		.hidden-lg {
+			display: none !important;
+		}
+	}
+
+	/* UNDO original bootrap LG helper classes*/
+	@media (min-width: $screen-xl) {
+		.visible-lg-block {
+			display: none !important;
+		}
+		.visible-lg-inline {
+			display: none !important;
+		}
+		.visible-lg-inline-block {
+			display: none !important;
+		}
+	}
+
+	/* Helper classes for XL */
+	@media (min-width: $screen-xl) {
+		.visible-xl {
+			display: block !important;
+		}
+		table.visible-xl {
+			display: table;
+		}
+		tr.visible-xl {
+			display: table-row !important;
+		}
+		th.visible-xl,
+		td.visible-xl {
+			display: table-cell !important;
+		}
+		.visible-xl-block {
+			display: block !important;
+		}
+		.visible-xl-inline {
+			display: inline !important;
+		}
+		.visible-xl-inline-block {
+			display: inline-block !important;
+		}
+		.hidden-xl {
+			display: none !important;
+		}
+	}
+}
+
+@media screen and (max-width: 991px) {
+	.table-responsive {
+		width: 100%;
+		margin-bottom: 15px;
+		overflow-x: auto;
+		overflow-y: hidden;
+		-webkit-overflow-scrolling: touch;
+		-ms-overflow-style: -ms-autohiding-scrollbar;
+		border: 1px solid #ddd;
+	}
+	.table-responsive > .table {
+		margin-bottom: 0;
+	}
+	.table-responsive > .table > thead > tr > th,
+	.table-responsive > .table > tbody > tr > th,
+	.table-responsive > .table > tfoot > tr > th,
+	.table-responsive > .table > thead > tr > td,
+	.table-responsive > .table > tbody > tr > td,
+	.table-responsive > .table > tfoot > tr > td {
+		white-space: nowrap;
+	}
+	.table-responsive > .table-bordered {
+		border: 0;
+	}
+	.table-responsive > .table-bordered > thead > tr > th:first-child,
+	.table-responsive > .table-bordered > tbody > tr > th:first-child,
+	.table-responsive > .table-bordered > tfoot > tr > th:first-child,
+	.table-responsive > .table-bordered > thead > tr > td:first-child,
+	.table-responsive > .table-bordered > tbody > tr > td:first-child,
+	.table-responsive > .table-bordered > tfoot > tr > td:first-child {
+		border-left: 0;
+	}
+	.table-responsive > .table-bordered > thead > tr > th:last-child,
+	.table-responsive > .table-bordered > tbody > tr > th:last-child,
+	.table-responsive > .table-bordered > tfoot > tr > th:last-child,
+	.table-responsive > .table-bordered > thead > tr > td:last-child,
+	.table-responsive > .table-bordered > tbody > tr > td:last-child,
+	.table-responsive > .table-bordered > tfoot > tr > td:last-child {
+		border-right: 0;
+	}
+	.table-responsive > .table-bordered > tbody > tr:last-child > th,
+	.table-responsive > .table-bordered > tfoot > tr:last-child > th,
+	.table-responsive > .table-bordered > tbody > tr:last-child > td,
+	.table-responsive > .table-bordered > tfoot > tr:last-child > td {
+		border-bottom: 0;
+	}
+}
+
+/* Fix img-thumbnail - IE10 and below */
+.img-thumbnail {
+	width: auto \9;
+}

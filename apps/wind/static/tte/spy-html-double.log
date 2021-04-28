@@ -1,0 +1,6 @@
+{'blank.html': ['tailwind-admin-template/blank.html'],
+ 'calendar.html': ['tailwind-admin-template/calendar.html'],
+ 'forms.html': ['tailwind-admin-template/forms.html'],
+ 'index.html': ['tailwind-admin-template/index.html'],
+ 'tables.html': ['tailwind-admin-template/tables.html'],
+ 'tabs.html': ['tailwind-admin-template/tabs.html']}

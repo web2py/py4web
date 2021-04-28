@@ -1,0 +1,295 @@
+// CHARTS
+// -----------------------------------------------------------------------------
+.chart {
+	width: 100%;
+	&.chart-xs {
+		height: 150px;
+	}
+	&.chart-sm {
+		height: 184px;
+	}
+	&.chart-md {
+		height: 350px;
+	}
+	&.chart-lg {
+		height: 500px;
+	}
+}
+
+// CHARTS TOOLTIP
+// -----------------------------------------------------------------------------
+#flotTip {
+	padding: 4px 8px;
+	background-color: #000;
+	z-index: 100;
+	color: #FFF;
+	opacity: .7;
+	font-size: 11px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.jqstooltip {
+	min-width: 30px;
+	min-height: 25px;
+	border: 0 !important;
+	height: auto !important;
+	width: auto !important;
+}
+
+// CIRCULAR
+// -----------------------------------------------------------------------------
+.circular-bar {
+	margin: 25px 0;
+	.circular-bar-chart {
+		position: relative;
+	}
+	strong {
+		display: block;
+		font-weight: 600;
+		font-size: 18px;
+		line-height: 30px;
+		position: absolute;
+		top: 35%;
+		width: 80%;
+		left: 10%;
+		text-align: center;
+	}
+	label {
+		display: block;
+		font-weight: 100;
+		font-size: 17px;
+		line-height: 20px;
+		position: absolute;
+		top: 50%;
+		width: 80%;
+		left: 10%;
+		text-align: center;
+	}
+	&.circular-bar-xs {
+		width: 50px;
+		strong {
+			display: none;
+		}
+		label {
+			font-size: 11px;
+			left: 0;
+			text-align: center;
+			top: 28%;
+			width: 100%;
+		}
+	}
+}
+
+// GAUGE
+// -----------------------------------------------------------------------------
+.gauge-chart {
+	margin: 25px 0;
+	strong {
+		display: block;
+		font-weight: 600;
+		font-size: 18px;
+		line-height: 30px;
+		text-align: center;
+		margin-top: 10px;
+	}
+	label {
+		display: block;
+		font-weight: 100;
+		font-size: 17px;
+		line-height: 20px;
+		padding-bottom: 5px;
+		text-align: center;
+	}
+}
+
+// SMALL CHARTS
+// -----------------------------------------------------------------------------
+.small-chart-wrapper {
+	display: inline-block;
+	margin: 10px 15px;
+	width: 100%;
+	.small-chart {
+		display: inline-block;
+		float: left;
+		margin-bottom: 8px;
+		min-width: 80px;
+	}
+	.small-chart-info {
+		display: inline-block;
+		padding: 0 0 0 10px;
+		label {
+			display: block;
+			font-size: 11px;
+			text-transform: uppercase;
+			color: #a0a0a0;
+			padding: 0;
+			margin: 0;
+			line-height: 15px;
+		}
+		strong {
+			display: block;
+			font-size: 13px;
+			padding: 0;
+			margin: 0;
+			line-height: 15px;
+		}
+	}
+	+ .small-chart-wrapper {
+		margin-left: 25px;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.small-chart-wrapper {
+		margin-right: 0;
+		margin-left: 0;
+		text-align: center;
+		.small-chart {
+			width: 100%;
+			text-align: center;
+		}
+		.small-chart-info {
+			padding-left: 0;
+		}
+	}
+}
+
+// LIQUID
+// -----------------------------------------------------------------------------
+.liquid-meter {
+	position: relative;
+	max-height: 200px;
+	max-width: 200px;
+	margin: 0 auto;
+	width: 100%;
+	padding-bottom: 50%;
+
+	meter {
+		display: none;
+	}
+
+	&.liquid-meter-loaded {
+		width: auto;
+		padding-bottom: 0;
+
+		&:before {
+			display: none;
+		}
+	}
+}
+
+.liquid-meter-wrapper {
+	&.liquid-meter-xs {
+		.liquid-meter {
+			max-height: 120px;
+			max-width: 120px;
+		}
+	}
+	&.liquid-meter-sm {
+		.liquid-meter {
+			max-height: 150px;
+			max-width: 150px;
+		}
+	}
+	&.liquid-meter-md {
+		.liquid-meter {
+			max-height: 200px;
+			max-width: 200px;
+		}
+	}
+	&.liquid-meter-lg {
+		.liquid-meter {
+			max-height: 230px;
+			max-width: 230px;
+		}
+	}
+
+	.liquid-meter-selector {
+		margin-top: 3px;
+		a {
+			text-transform: uppercase;
+			font-weight: $font-weight-light;
+			font-size: 11px;
+			color: #9b9b9b;
+			border-right: 1px solid #e4e4e4;
+			display: inline-block;
+			padding-right: 8px;
+			margin-right: 8px;
+			&.active {
+				color: $color-primary;
+			}
+			&:last-child {
+				border-right: 0;
+				padding-right: 0;
+				margin-right: 0;
+			}
+		}
+	}
+}
+
+// CHART SELECTOR
+// -----------------------------------------------------------------------------
+.chart-data-selector {
+	visibility: hidden;
+	max-height: 255px;
+	padding: 6px;
+	h2 {
+		color: $panel-title-color;
+		font-size: $panel-title-size;
+		line-height: $panel-title-size;
+		margin: 0;
+		padding: 0;
+		text-transform: none;
+		letter-spacing: -1px;
+		.multiselect {
+			background: $panel-heading-background;
+			border: 0 none;
+			font-size: $panel-title-size;
+			font-weight: 600;
+			margin: -4px 0 0 4px !important;
+			padding: 3px 12px 3px 8px;
+			&:hover, &:focus, &:active {
+				text-decoration: none;
+			}
+		}
+		.multiselect-container {
+			margin: 0 0 0 4px;
+			min-width: 120%;
+		}
+	}
+	.chart-data-selector-items {
+		position: relative;
+		overflow: hidden;
+		.chart-active {
+			visibility: hidden;
+		}
+		.chart-hidden {
+			visibility: hidden;
+		}
+	}
+	&.ready {
+		max-height: none;
+		visibility: visible;
+		.chart-active {
+			visibility: visible;
+			position: relative;
+			z-index: 2;
+		}
+		.chart-hidden {
+			visibility: hidden;
+			position: absolute;
+			z-index: 1;
+			top: -9999px;
+		}
+	}
+}
+
+// DARK
+// -----------------------------------------------------------------------------
+html.dark {
+	.chart-data-selector h2 .multiselect {
+		background-color: $dark-color-3;
+	}
+}

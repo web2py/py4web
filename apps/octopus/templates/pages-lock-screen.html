@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="fixed">
+ <head>
+            <!-- 01.12.2020 12:03:28 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Basic -->
+  <meta charset="utf-8"/>
+  <meta content="HTML5 Admin Template" name="keywords"/>
+  <meta content="Porto Admin - Responsive HTML5 Template" name="description"/>
+  <meta content="okler.net" name="author"/>
+  <!-- Mobile Metas -->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <!-- Web Fonts  -->
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css"/>
+  <!-- Vendor CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/font-awesome/css/font-awesome.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/magnific-popup/magnific-popup.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap-datepicker/css/datepicker3.css') ]]" rel="stylesheet"/>
+  <!-- Theme CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/theme.css') ]]" rel="stylesheet"/>
+  <!-- Skin CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/skins/default.css') ]]" rel="stylesheet"/>
+  <!-- Theme Custom CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/theme-custom.css') ]]" rel="stylesheet"/>
+  <!-- Head Libs -->
+  <script src="[%[=URL('static/tte/assets/vendor/modernizr/modernizr.js') ]]"></script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    background-color: LightGray;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-weight: bold;
+    border: 1px dashed black;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <!-- start: page -->
+  <section class="body-sign body-locked">
+   <div class="center-sign">
+    <div class="panel panel-sign">
+     <div class="panel-body">
+      
+<!-- BEGIN view: fpagesXlockXscreen0, db_table: dfpagesXlockXscreen0 -->
+<div>
+[%[= fpagesXlockXscreen0.custom['begin'] ]]
+<div class="current-user text-center">
+ <img alt="John Doe" class="img-circle user-image" src="[%[=URL('static/tte/assets/images/!logged-user.jpg')]]"/>
+ <h2 class="user-name text-dark m-none">
+  John Doe
+ </h2>
+ <p class="user-email m-none">
+  johndoe@okler.com
+ </p>
+</div>
+
+<div class="form-group mb-lg">
+ <div class="input-group input-group-icon">
+ [%[ fpagesXlockXscreen0.custom['widgets']['f0']['_id']= 'pwd'  ]]
+ [%[ fpagesXlockXscreen0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fpagesXlockXscreen0.custom['widgets']['f0']['_class']= 'form-control input-lg'  ]]
+ [%[ fpagesXlockXscreen0.custom['widgets']['f0']['_placeholder']= 'Password_p4w'  ]]
+ [%[= fpagesXlockXscreen0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXlockXscreen0.custom['errors']['f0'] if 'f0' in fpagesXlockXscreen0.custom['errors'] else '' ]]</span>
+
+  <span class="input-group-addon">
+   <span class="icon icon-lg">
+    <i class="fa fa-lock">
+    </i>
+   </span>
+  </span>
+ </div>
+</div>
+
+<div class="row">
+ <div class="col-xs-6">
+  <p class="mt-xs mb-none">
+   <a href="[%[=URL('index')]]">
+    Not John Doe?
+   </a>
+  </p>
+ </div>
+ <div class="col-xs-6 text-right">
+ [%[ fpagesXlockXscreen0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fpagesXlockXscreen0.custom['submit']['_class']= 'btn btn-primary'  ]]
+ [%[ fpagesXlockXscreen0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fpagesXlockXscreen0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fpagesXlockXscreen0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fpagesXlockXscreen0.custom['submit'] ]]
+
+ </div>
+</div>
+
+ [%[ for hidden_widget in fpagesXlockXscreen0.custom['hidden_widgets'].keys(): ]]
+     [%[= fpagesXlockXscreen0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfpagesXlockXscreen0 flashdiv"> <span class="flashspan">fpagesXlockXscreen0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfpagesXlockXscreen0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fpagesXlockXscreen0.custom['end'] ]]
+</div>
+<!-- END fpagesXlockXscreen0-->
+
+     </div>
+    </div>
+   </div>
+  </section>
+  <!-- end: page -->
+  <!-- Vendor -->
+  <script src="[%[=URL('static/tte/assets/vendor/jquery/jquery.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap/js/bootstrap.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/nanoscroller/nanoscroller.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/magnific-popup/magnific-popup.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/jquery-placeholder/jquery.placeholder.js') ]]"></script>
+  <!-- Theme Base, Components and Settings -->
+  <script src="[%[=URL('static/tte/assets/javascripts/theme.js') ]]"></script>
+  <!-- Theme Custom -->
+  <script src="[%[=URL('static/tte/assets/javascripts/theme.custom.js') ]]"></script>
+  <!-- Theme Initialization Files -->
+  <script src="[%[=URL('static/tte/assets/javascripts/theme.init.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+    const forms_url = [%[ =XML( page_url ) ]];
+
+    for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, 
+                 { method: 'POST', 
+                   body: new FormData( document.forms[i] ) 
+                 });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: '3 sec & will hide',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+  }
+</script>
+
+
+ </body>
+</html>

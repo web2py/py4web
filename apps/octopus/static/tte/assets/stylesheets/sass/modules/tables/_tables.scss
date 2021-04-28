@@ -1,0 +1,212 @@
+// BASIC
+// -----------------------------------------------------------------------------
+/* Tables - Basic */
+.table {
+	width: 100%;
+
+	.table {
+		background: transparent;
+	}
+}
+
+/* Bootstrap uses important, we need to force it here */
+.table.mb-none {
+	margin-bottom: 0 !important;
+}
+
+/* In case you dont want a border in some row */
+.table .b-top-none td {
+	border-top: none;
+}
+
+// ACTIONS
+// -----------------------------------------------------------------------------
+/* Tables - Actions */
+.table {
+	.actions,
+	.actions-hover {
+		vertical-align: middle;
+
+		a {
+			display: inline-block;
+			margin-right: 5px;
+			color: #666;
+
+			&:last-child {
+				margin-right: 0;
+			}
+		}
+
+		a:hover {
+			color: #333;
+		}
+	}
+
+	.actions-hover {
+		a {
+			opacity: 0;
+		}
+	}
+
+	tr:hover {
+		.actions-hover {
+			a {
+				opacity: 1;
+			}
+		}
+	}
+
+	.actions-fade {
+		a {
+			@include transition (all .2s linear);
+		}
+	}
+}
+
+// NO MORE TABLES
+// -----------------------------------------------------------------------------
+/* Tables - No More Tables technique (991px is the bootstrap SM max-width) */
+@media only screen and (max-width: 991px) {
+	.table.table-no-more {
+		&,
+		thead,
+		tbody,
+		tr,
+		th,
+		td {
+			display: block;
+		}
+
+		thead tr {
+			left: -9999px;
+			position: absolute;
+			top: -9999px;
+		}
+
+		tr {
+			border-bottom: 1px solid #DDD;
+		}
+
+		td {
+			border: none;
+
+			position: relative;
+			padding-left: 50%;
+			text-align: left;
+			white-space: normal;
+
+			&:before {
+				content: attr(data-title);
+				font-weight: bold;
+				left: 6px;
+				padding-right: 10px;
+				position: absolute;
+				text-align:left;
+				top: 8px;
+				white-space: nowrap;
+				width: 45%;
+			}
+		}
+
+		&.table-bordered {
+			td {
+				border-bottom: 1px solid #EFEFEF;
+			}
+		}
+
+		&.table-condensed {
+			td {
+				&:before {
+					top: 5px;
+				}
+			}
+		}
+	}
+}
+
+// DARK
+// -----------------------------------------------------------------------------
+/* Dark - Tables */
+html.dark {
+	.table > thead > tr > th,
+	.table > tbody > tr > th,
+	.table > tfoot > tr > th,
+	.table > thead > tr > td,
+	.table > tbody > tr > td,
+	.table > tfoot > tr > td,
+	.table-bordered {
+		border-color: darken($dark-color-3, 1%);
+	}
+
+	.table-striped > tbody > tr:nth-child(2n+1) > td,
+	.table-striped > tbody > tr:nth-child(2n+1) > th {
+		background-color: darken($dark-color-4, 3%);
+	}
+
+	.table-hover > tbody > tr:hover > td,
+	.table-hover > tbody > tr:hover > th {
+		background-color: darken($dark-color-4, 3.5%);
+	}
+
+	.table {
+		.actions,
+		.actions-hover {
+			a {
+				color: $dark-default-text;
+			}
+		}
+	}
+}
+
+@media screen and (max-width: 991px) {
+	html.dark .table-responsive {
+		border-color: darken($dark-color-3, 1%);
+	}
+}
+
+@media only screen and (max-width: 991px) {
+	html.dark {
+		.table.table-no-more tr,
+		.table.table-no-more.table-bordered td {
+			border-bottom-color: darken($dark-color-3, 1%);
+		}
+	}
+}
+
+// STATES
+// -----------------------------------------------------------------------------
+/* Tables - States */
+@each $state in $states {
+
+	.table > thead > tr > td.#{nth($state,1)},
+	.table > tbody > tr > td.#{nth($state,1)},
+	.table > tfoot > tr > td.#{nth($state,1)},
+	.table > thead > tr > th.#{nth($state,1)},
+	.table > tbody > tr > th.#{nth($state,1)},
+	.table > tfoot > tr > th.#{nth($state,1)},
+	.table > thead > tr.#{nth($state,1)} > td,
+	.table > tbody > tr.#{nth($state,1)} > td,
+	.table > tfoot > tr.#{nth($state,1)} > td,
+	.table > thead > tr.#{nth($state,1)} > th,
+	.table > tbody > tr.#{nth($state,1)} > th,
+	.table > tfoot > tr.#{nth($state,1)} > th {
+		color: #FFF;
+		background-color: nth($state,2);
+	}
+}
+
+.table > thead > tr > td.dark,
+.table > tbody > tr > td.dark,
+.table > tfoot > tr > td.dark,
+.table > thead > tr > th.dark,
+.table > tbody > tr > th.dark,
+.table > tfoot > tr > th.dark,
+.table > thead > tr.dark > td,
+.table > tbody > tr.dark > td,
+.table > tfoot > tr.dark > td,
+.table > thead > tr.dark > th,
+.table > tbody > tr.dark > th,
+.table > tfoot > tr.dark > th {
+	background-color: lighten($color-dark, 20%);
+	color: $color-dark-inverse;
+}

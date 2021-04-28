@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 08:47:42 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- Bootstrap CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/circular-std/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/libs/css/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/flag-icon-css/flag-icon.min.css') ]]" rel="stylesheet"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!-- ============================================================== -->
+  <!-- main wrapper -->
+  <!-- ============================================================== -->
+  <div class="dashboard-main-wrapper">
+   <!-- ============================================================== -->
+   <!-- navbar -->
+   <!-- ============================================================== -->
+   <div class="dashboard-header">
+    <nav class="navbar navbar-expand-lg bg-white fixed-top">
+     <a class="navbar-brand" href="[%[=URL('index') ]]">Concept</a>
+     <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+      <span class="navbar-toggler-icon"></span>
+     </button>
+     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto navbar-right-top">
+       <li class="nav-item">
+        <div class="top-search-bar" id="custom-search">
+         <input class="form-control" placeholder="Search.." type="text"/></div>
+       </li>
+       <li class="nav-item dropdown notification">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-icons" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink1">
+         <i class="fas fa-fw fa-bell"></i>
+         <span class="indicator"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+         <li>
+          <div class="notification-title">Notification</div>
+          <div class="notification-list">
+           <div class="list-group">
+            <a class="list-group-item list-group-item-action active" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jeremy Rakestraw</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">John Abraham</span>
+               is now following you
+               <div class="notification-date">2 days ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Monaan Pechi</span>
+               is watching your main repository
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-5.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jessica Caruso</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="list-footer">
+           <a href="#">View all notifications</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown connection">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown" href="#" id="navbarDropdown" role="button">
+         <i class="fas fa-fw fa-th"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
+         <li class="connection-list">
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/github.png') ]]"/>
+             <span>Github</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dribbble.png') ]]"/>
+             <span>Dribbble</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dropbox.png') ]]"/>
+             <span>Dropbox</span>
+            </a>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/bitbucket.png') ]]"/>
+             <span>Bitbucket</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/mail_chimp.png') ]]"/>
+             <span>Mail chimp</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/slack.png') ]]"/>
+             <span>Slack</span>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="conntection-footer">
+           <a href="#">More</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown nav-user">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-user-img" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink2">
+         <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/></a>
+        <div aria-labelledby="navbarDropdownMenuLink2" class="dropdown-menu dropdown-menu-right nav-user-dropdown">
+         <div class="nav-user-info">
+          <h5 class="mb-0 text-white nav-user-name">John Abraham</h5>
+          <span class="status"></span>
+          <span class="ml-2">Available</span>
+         </div>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-user mr-2"></i>
+          Account
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-cog mr-2"></i>
+          Setting
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-power-off mr-2"></i>
+          Logout
+         </a>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </nav>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end navbar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- left sidebar -->
+   <!-- ============================================================== -->
+   <div class="nav-left-sidebar sidebar-dark">
+    <div class="menu-list">
+     <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+      <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarNav" data-toggle="collapse" type="button">
+       <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+       <ul class="navbar-nav flex-column">
+        <li class="nav-divider">Menu</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-1" aria-expanded="false" class="nav-link active" data-target="#submenu-1" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-user-circle"></i>
+          Dashboard
+          <span class="badge badge-success">6</span>
+         </a>
+         <div class="collapse submenu" id="submenu-1" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a aria-controls="submenu-1-2" aria-expanded="false" class="nav-link" data-target="#submenu-1-2" data-toggle="collapse" href="[%[=URL('index') ]]">E-Commerce</a>
+            <div class="collapse submenu" id="submenu-1-2" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('index') ]]">E Commerce Dashboard</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproduct') ]]">Product List</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXsingle') ]]">Product Single</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXcheckout') ]]">Product Checkout</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXfinance') ]]">Finance</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXsales') ]]">Sales</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-1-1" aria-expanded="false" class="nav-link" data-target="#submenu-1-1" data-toggle="collapse" href="#">Infulencer</a>
+            <div class="collapse submenu" id="submenu-1-1" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('dashboardXinfluencer') ]]">Influencer</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXfinder') ]]">Influencer Finder</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXprofile') ]]">Influencer Profile</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-2" aria-expanded="false" class="nav-link" data-target="#submenu-2" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-rocket"></i>
+          UI Elements
+         </a>
+         <div class="collapse submenu" id="submenu-2" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cards') ]]">
+             Cards
+             <span class="badge badge-secondary">New</span>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('general') ]]">General</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('carousel') ]]">Carousel</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('listgroup') ]]">List Group</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('accordions') ]]">Accordions</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('tabs') ]]">Tabs</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-3" aria-expanded="false" class="nav-link" data-target="#submenu-3" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-chart-pie"></i>
+          Chart
+         </a>
+         <div class="collapse submenu" id="submenu-3" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXc3') ]]">C3 Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXchartist') ]]">Chartist Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXcharts') ]]">Chart</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXmorris') ]]">Morris</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXsparkline') ]]">Sparkline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXgauge') ]]">Guage</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-4" aria-expanded="false" class="nav-link" data-target="#submenu-4" data-toggle="collapse" href="#">
+          <i class="fab fa-fw fa-wpforms"></i>
+          Forms
+         </a>
+         <div class="collapse submenu" id="submenu-4" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXelements') ]]">Form Elements</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXvalidation') ]]">Parsely Validations</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('multiselect') ]]">Multiselect</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-5" aria-expanded="false" class="nav-link" data-target="#submenu-5" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-table"></i>
+          Tables
+         </a>
+         <div class="collapse submenu" id="submenu-5" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('generalXtable') ]]">General Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dataXtables') ]]">Data Tables</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-divider">Features</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-6" aria-expanded="false" class="nav-link" data-target="#submenu-6" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-file"></i>
+          Pages
+         </a>
+         <div class="collapse submenu" id="submenu-6" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('invoice') ]]">Invoice</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpage') ]]">Blank Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpageXheader') ]]">Blank Page Header</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('loginA') ]]">Login</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('X404Xpage') ]]">404 page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('signXup') ]]">Sign up Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('forgotXpassword') ]]">Forgot Password</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('pricing') ]]">Pricing Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('timeline') ]]">Timeline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('calendar') ]]">Calendar</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('sortableXnestableXlists') ]]">Sortable/Nestable List</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mediaXobject') ]]">Media Objects</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cropperXimage') ]]">Cropper</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('colorXpicker') ]]">Color Picker</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-7" aria-expanded="false" class="nav-link" data-target="#submenu-7" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-inbox"></i>
+          Apps
+          <span class="badge badge-secondary">New</span>
+         </a>
+         <div class="collapse submenu" id="submenu-7" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXdetails') ]]">Email Detail</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXcompose') ]]">Email Compose</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('messageXchat') ]]">Message Chat</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-8" aria-expanded="false" class="nav-link" data-target="#submenu-8" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-columns"></i>
+          Icons
+         </a>
+         <div class="collapse submenu" id="submenu-8" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXfontawesome') ]]">FontAwesome Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXmaterial') ]]">Material Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXsimpleXlineicon') ]]">Simpleline Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXthemify') ]]">Themify Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXflag') ]]">Flag Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXweather') ]]">Weather Icon</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-9" aria-expanded="false" class="nav-link" data-target="#submenu-9" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-map-marker-alt"></i>
+          Maps
+         </a>
+         <div class="collapse submenu" id="submenu-9" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXgoogle') ]]">Google Maps</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXvector') ]]">Vector Maps</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-10" aria-expanded="false" class="nav-link" data-target="#submenu-10" data-toggle="collapse" href="#">
+          <i class="fas fa-f fa-folder"></i>
+          Menu Level
+         </a>
+         <div class="collapse submenu" id="submenu-10" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 1</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-11" aria-expanded="false" class="nav-link" data-target="#submenu-11" data-toggle="collapse" href="#">Level 2</a>
+            <div class="collapse submenu" id="submenu-11" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 1</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 2</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 3</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+       </ul>
+      </div>
+     </nav>
+    </div>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end left sidebar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- wrapper  -->
+   <!-- ============================================================== -->
+   <div class="dashboard-wrapper">
+    <div class="container-fluid dashboard-content">
+     <!-- ============================================================== -->
+     <!-- pageheader -->
+     <!-- ============================================================== -->
+     <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+       <div class="page-header">
+        <h2 class="pageheader-title">Flag Icons</h2>
+        <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
+        <div class="page-breadcrumb">
+         <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+           <li class="breadcrumb-item">
+            <a class="breadcrumb-link" href="#">Dashboard</a>
+           </li>
+           <li class="breadcrumb-item">
+            <a class="breadcrumb-link" href="#">Icons</a>
+           </li>
+           <li aria-current="page" class="breadcrumb-item active">Flag Icons</li>
+          </ol>
+         </nav>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- ============================================================== -->
+     <!-- end pageheader -->
+     <!-- ============================================================== -->
+     <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+       <!-- ============================================================== -->
+       <!-- icon flag  -->
+       <!-- ============================================================== -->
+       <div class="card">
+        <div class="card-header">
+         <h4 class="card-title">Flag icons</h4>
+         <h6 class="card-subtitle">
+          You can use any icons with class
+          <code>
+           flag-icon flag-icon-us
+          </code>
+         </h6>
+        </div>
+        <div class="card-body">
+         <div class="icon-list-demo row">
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ad" id="ad" title="ad"></i>
+           AD
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ae" id="ae" title="ae"></i>
+           AE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-af" id="af" title="af"></i>
+           AF
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ag" id="ag" title="ag"></i>
+           AG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ai" id="ai" title="ai"></i>
+           AU
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-al" id="al" title="al"></i>
+           AL
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-am" id="am" title="am"></i>
+           AM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ao" id="ao" title="ao"></i>
+           AO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-aq" id="aq" title="aq"></i>
+           AQ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ar" id="ar" title="ar"></i>
+           AR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-as" id="as" title="as"></i>
+           AS
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-at" id="at" title="at"></i>
+           AT
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-au" id="au" title="au"></i>
+           AU
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-aw" id="aw" title="aw"></i>
+           AW
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ax" id="ax" title="ax"></i>
+           AX
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-az" id="az" title="az"></i>
+           AZ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ba" id="ba" title="ba"></i>
+           BA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bb" id="bb" title="bb"></i>
+           BB
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bd" id="bd" title="bd"></i>
+           BD
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-be" id="be" title="be"></i>
+           BE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bf" id="bf" title="bf"></i>
+           BF
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bg" id="bg" title="bg"></i>
+           BG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bh" id="bh" title="bh"></i>
+           BH
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bi" id="bi" title="bi"></i>
+           BI
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bj" id="bj" title="bj"></i>
+           BJ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bl" id="bl" title="bl"></i>
+           BL
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bm" id="bm" title="bm"></i>
+           BM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bn" id="bn" title="bn"></i>
+           BN
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bo" id="bo" title="bo"></i>
+           BO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bq" id="bq" title="bq"></i>
+           BQ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-br" id="br" title="br"></i>
+           BR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bs" id="bs" title="bs"></i>
+           BS
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bt" id="bt" title="bt"></i>
+           BT
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bv" id="bv" title="bv"></i>
+           BV
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bw" id="bw" title="bw"></i>
+           BW
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-by" id="by" title="by"></i>
+           BY
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-bz" id="bz" title="bz"></i>
+           BZ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ca" id="ca" title="ca"></i>
+           CA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cc" id="cc" title="cc"></i>
+           CC
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cd" id="cd" title="cd"></i>
+           CD
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cf" id="cf" title="cf"></i>
+           CF
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cg" id="cg" title="cg"></i>
+           CG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ch" id="ch" title="ch"></i>
+           CH
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ci" id="ci" title="ci"></i>
+           CI
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ck" id="ck" title="ck"></i>
+           CK
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cl" id="cl" title="cl"></i>
+           CL
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cm" id="cm" title="cm"></i>
+           CM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cn" id="cn" title="cn"></i>
+           CN
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-co" id="co" title="co"></i>
+           CO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cr" id="cr" title="cr"></i>
+           CR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cu" id="cu" title="cu"></i>
+           CU
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cv" id="cv" title="cv"></i>
+           CV
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cw" id="cw" title="cw"></i>
+           CW
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cx" id="cx" title="cx"></i>
+           CX
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cy" id="cy" title="cy"></i>
+           CY
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-cz" id="cz" title="cz"></i>
+           CZ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-de" id="de" title="de"></i>
+           DE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-dj" id="dj" title="dj"></i>
+           DJ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-dk" id="dk" title="dk"></i>
+           DK
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-dm" id="dm" title="dm"></i>
+           DM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-do" id="do" title="do"></i>
+           DO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-dz" id="dz" title="dz"></i>
+           DZ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ec" id="ec" title="ec"></i>
+           EC
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ee" id="ee" title="ee"></i>
+           EE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-eg" id="eg" title="eg"></i>
+           EG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-eh" id="eh" title="eh"></i>
+           EH
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-er" id="er" title="er"></i>
+           ER
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-es" id="es" title="es"></i>
+           ES
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-et" id="et" title="et"></i>
+           ET
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-fi" id="fi" title="fi"></i>
+           FI
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-fj" id="fj" title="fj"></i>
+           FJ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-fk" id="fk" title="fk"></i>
+           FK
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-fm" id="fm" title="fm"></i>
+           FM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-fo" id="fo" title="fo"></i>
+           FO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-fr" id="fr" title="fr"></i>
+           FR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ga" id="ga" title="ga"></i>
+           GA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gb" id="gb" title="gb"></i>
+           GB
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gd" id="gd" title="gd"></i>
+           GD
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ge" id="ge" title="ge"></i>
+           GE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gf" id="gf" title="gf"></i>
+           GF
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gg" id="gg" title="gg"></i>
+           GG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gh" id="gh" title="gh"></i>
+           GH
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gi" id="gi" title="gi"></i>
+           GI
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gl" id="gl" title="gl"></i>
+           GL
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gm" id="gm" title="gm"></i>
+           GM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gn" id="gn" title="gn"></i>
+           GN
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gp" id="gp" title="gp"></i>
+           GP
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gq" id="gq" title="gq"></i>
+           GQ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gr" id="gr" title="gr"></i>
+           GR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gs" id="gs" title="gs"></i>
+           GS
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gt" id="gt" title="gt"></i>
+           GT
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gu" id="gu" title="gu"></i>
+           GU
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gw" id="gw" title="gw"></i>
+           GW
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-gy" id="gy" title="gy"></i>
+           GY
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-hk" id="hk" title="hk"></i>
+           HK
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-hm" id="hm" title="hm"></i>
+           HM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-hn" id="hn" title="hn"></i>
+           HN
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-hr" id="hr" title="hr"></i>
+           HR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ht" id="ht" title="ht"></i>
+           HT
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-hu" id="hu" title="hu"></i>
+           HU
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-id" id="id" title="id"></i>
+           ID
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ie" id="ie" title="ie"></i>
+           IE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-il" id="il" title="il"></i>
+           IL
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-im" id="im" title="im"></i>
+           IM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-in" id="in" title="in"></i>
+           IN
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-io" id="io" title="io"></i>
+           IO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-iq" id="iq" title="iq"></i>
+           IQ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ir" id="ir" title="ir"></i>
+           IR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-is" id="is" title="is"></i>
+           IS
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-it" id="it" title="it"></i>
+           IT
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-je" id="je" title="je"></i>
+           JE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-jm" id="jm" title="jm"></i>
+           JM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-jo" id="jo" title="jo"></i>
+           JO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-jp" id="jp" title="jp"></i>
+           JP
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ke" id="ke" title="ke"></i>
+           KE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-kg" id="kg" title="kg"></i>
+           KG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-kh" id="kh" title="kh"></i>
+           KH
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ki" id="ki" title="ki"></i>
+           KI
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-km" id="km" title="km"></i>
+           KM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-kn" id="kn" title="kn"></i>
+           KN
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-kp" id="kp" title="kp"></i>
+           KP
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-kr" id="kr" title="kr"></i>
+           KR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-kw" id="kw" title="kw"></i>
+           KW
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ky" id="ky" title="ky"></i>
+           KY
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-kz" id="kz" title="kz"></i>
+           KZ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-la" id="la" title="la"></i>
+           LA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-lb" id="lb" title="lb"></i>
+           LB
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-lc" id="lc" title="lc"></i>
+           LC
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-li" id="li" title="li"></i>
+           LI
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-lk" id="lk" title="lk"></i>
+           LK
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-lr" id="lr" title="lr"></i>
+           LR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ls" id="ls" title="ls"></i>
+           LS
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-lt" id="lt" title="lt"></i>
+           LT
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-lu" id="lu" title="lu"></i>
+           LU
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-lv" id="lv" title="lv"></i>
+           LV
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ly" id="ly" title="ly"></i>
+           LY
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ma" id="ma" title="ma"></i>
+           MA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mc" id="mc" title="mc"></i>
+           MC
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-md" id="md" title="md"></i>
+           MD
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-me" id="me" title="me"></i>
+           ME
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mf" id="mf" title="mf"></i>
+           MF
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mg" id="mg" title="mg"></i>
+           MG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mh" id="mh" title="mh"></i>
+           MH
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mk" id="mk" title="mk"></i>
+           MK
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ml" id="ml" title="ml"></i>
+           ML
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mm" id="mm" title="mm"></i>
+           MM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mn" id="mn" title="mn"></i>
+           MN
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mo" id="mo" title="mo"></i>
+           MO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mp" id="mp" title="mp"></i>
+           MP
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mq" id="mq" title="mq"></i>
+           MQ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mr" id="mr" title="mr"></i>
+           MR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ms" id="ms" title="ms"></i>
+           MS
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mt" id="mt" title="mt"></i>
+           MT
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mu" id="mu" title="mu"></i>
+           MU
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mv" id="mv" title="mv"></i>
+           MV
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mw" id="mw" title="mw"></i>
+           MW
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mx" id="mx" title="mx"></i>
+           MX
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-my" id="my" title="my"></i>
+           MY
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-mz" id="mz" title="mz"></i>
+           MZ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-na" id="na" title="na"></i>
+           NA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-nc" id="nc" title="nc"></i>
+           NC
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ne" id="ne" title="ne"></i>
+           NE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-nf" id="nf" title="nf"></i>
+           NF
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ng" id="ng" title="ng"></i>
+           NG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ni" id="ni" title="ni"></i>
+           NI
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-nl" id="nl" title="nl"></i>
+           NL
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-no" id="no" title="no"></i>
+           NO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-np" id="np" title="np"></i>
+           NP
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-nr" id="nr" title="nr"></i>
+           NR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-nu" id="nu" title="nu"></i>
+           NU
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-nz" id="nz" title="nz"></i>
+           NZ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-om" id="om" title="om"></i>
+           OM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-pa" id="pa" title="pa"></i>
+           PA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-pe" id="pe" title="pe"></i>
+           PE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-pf" id="pf" title="pf"></i>
+           PF
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-pg" id="pg" title="pg"></i>
+           PG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ph" id="ph" title="ph"></i>
+           PH
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-pk" id="pk" title="pk"></i>
+           PK
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-pl" id="pl" title="pl"></i>
+           PL
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-pm" id="pm" title="pm"></i>
+           PM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-pn" id="pn" title="pn"></i>
+           PN
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-pr" id="pr" title="pr"></i>
+           PR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ps" id="ps" title="ps"></i>
+           PS
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-pt" id="pt" title="pt"></i>
+           PT
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-pw" id="pw" title="pw"></i>
+           PW
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-py" id="py" title="py"></i>
+           PY
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-qa" id="qa" title="qa"></i>
+           QA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-re" id="re" title="re"></i>
+           RE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ro" id="ro" title="ro"></i>
+           RO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-rs" id="rs" title="rs"></i>
+           RS
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ru" id="ru" title="ru"></i>
+           RU
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-rw" id="rw" title="rw"></i>
+           RW
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sa" id="sa" title="sa"></i>
+           SA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sb" id="sb" title="sb"></i>
+           SB
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sc" id="sc" title="sc"></i>
+           SC
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sd" id="sd" title="sd"></i>
+           SD
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-se" id="se" title="se"></i>
+           SE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sg" id="sg" title="sg"></i>
+           SG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sh" id="sh" title="sh"></i>
+           SH
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-si" id="si" title="si"></i>
+           SI
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sj" id="sj" title="sj"></i>
+           SJ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sk" id="sk" title="sk"></i>
+           SK
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sl" id="sl" title="sl"></i>
+           SL
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sm" id="sm" title="sm"></i>
+           SM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sn" id="sn" title="sn"></i>
+           SN
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-so" id="so" title="so"></i>
+           SO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sr" id="sr" title="sr"></i>
+           SR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ss" id="ss" title="ss"></i>
+           SS
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-st" id="st" title="st"></i>
+           ST
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sv" id="sv" title="sv"></i>
+           SV
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sx" id="sx" title="sx"></i>
+           SX
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sy" id="sy" title="sy"></i>
+           SY
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-sz" id="sz" title="sz"></i>
+           SZ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tc" id="tc" title="tc"></i>
+           TC
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-td" id="td" title="td"></i>
+           TD
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tf" id="tf" title="tf"></i>
+           TF
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tg" id="tg" title="tg"></i>
+           TG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-th" id="th" title="th"></i>
+           TH
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tj" id="tj" title="tj"></i>
+           TJ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tk" id="tk" title="tk"></i>
+           TK
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tl" id="tl" title="tl"></i>
+           TL
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tm" id="tm" title="tm"></i>
+           TM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tn" id="tn" title="tn"></i>
+           TN
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-to" id="to" title="to"></i>
+           TO
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tr" id="tr" title="tr"></i>
+           TR
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tt" id="tt" title="tt"></i>
+           TT
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tv" id="tv" title="tv"></i>
+           TV
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tw" id="tw" title="tw"></i>
+           TW
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-tz" id="tz" title="tz"></i>
+           TZ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ua" id="ua" title="ua"></i>
+           UA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ug" id="ug" title="ug"></i>
+           UG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-um" id="um" title="um"></i>
+           UM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-us" id="us" title="us"></i>
+           US
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-uy" id="uy" title="uy"></i>
+           UY
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-uz" id="uz" title="uz"></i>
+           UZ
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-va" id="va" title="va"></i>
+           VA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-vc" id="vc" title="vc"></i>
+           VC
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ve" id="ve" title="ve"></i>
+           VE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-vg" id="vg" title="vg"></i>
+           VG
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-vi" id="vi" title="vi"></i>
+           VI
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-vn" id="vn" title="vn"></i>
+           VN
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-vu" id="vu" title="vu"></i>
+           VU
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-wf" id="wf" title="wf"></i>
+           WF
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ws" id="ws" title="ws"></i>
+           WS
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-ye" id="ye" title="ye"></i>
+           YE
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-yt" id="yt" title="yt"></i>
+           YT
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-za" id="za" title="za"></i>
+           ZA
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-zm" id="zm" title="zm"></i>
+           ZM
+          </div>
+          <div class="col-3 if-icon">
+           <i class="flag-icon flag-icon-zw" id="zw" title="zw"></i>
+           ZW
+          </div>
+         </div>
+        </div>
+       </div>
+       <!-- ============================================================== -->
+       <!-- end icon flag  -->
+       <!-- ============================================================== -->
+      </div>
+     </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- footer -->
+    <!-- ============================================================== -->
+    <div class="footer">
+     <div class="container-fluid">
+      <div class="row">
+       <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+        Copyright © 2018 Concept. All rights reserved. Dashboard by
+        <a href="https://colorlib.com/wp/">Colorlib</a>
+        .
+       </div>
+       <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+        <div class="text-md-right footer-links d-none d-sm-block">
+         <a href="javascript: void(0);">About</a>
+         <a href="javascript: void(0);">Support</a>
+         <a href="javascript: void(0);">Contact Us</a>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- end footer -->
+    <!-- ============================================================== -->
+   </div>
+  </div>
+  <!-- ============================================================== -->
+  <!-- end main wrapper -->
+  <!-- ============================================================== -->
+  <!-- Optional JavaScript -->
+  <script src="[%[=URL('static/tte/assets/vendor/jquery/jquery-3.3.1.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap/js/bootstrap.bundle.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/slimscroll/jquery.slimscroll.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/libs/js/main-js.js') ]]"></script>
+ </body>
+</html>

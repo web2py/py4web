@@ -1,0 +1,31 @@
+{
+	"name": "bulma-admin-dashboard",
+	"description": "Free Admin Dashboard Template Build with Bulma.io",
+	"version": "1.0.0",
+	"author": "Irfan Maulana <mazipanneh@gmail.com>",
+	"private": false,
+	"license": "MIT",
+	"scripts": {
+		"watch:sass": "node-sass --importer node_modules/node-sass-magic-importer/dist/cli.js --watch src/scss -o dist/css",
+		"build:sass": "node-sass --importer node_modules/node-sass-magic-importer/dist/cli.js src/scss -o dist/css",
+		"build-local:sass": "node-sass --importer node_modules/node-sass-magic-importer/dist/cli.js src/scss -o dist/css",
+		"build:eleventy": "NODE_ENV=production eleventy",
+		"watch:eleventy": "cross-env NODE_ENV=development eleventy --watch --serve",
+		"dev": "npm-run-all build-local:sass --parallel watch:*",
+		"build": "npm-run-all build:*",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"animate.css": "^4.1.1",
+		"bulma": "^0.9.1",
+		"bulma-dracula": "^1.1.1"
+	},
+	"devDependencies": {
+		"@11ty/eleventy": "^0.11.0",
+		"cross-env": "7.0.2",
+		"node-sass": "^4.14.1",
+		"node-sass-magic-importer": "^5.3.2",
+		"npm-run-all": "^4.1.5",
+		"rimraf": "3.0.2"
+	}
+}

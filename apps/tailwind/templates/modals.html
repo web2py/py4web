@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 11:31:58 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="ie=edge" http-equiv="X-UA-Compatible"/>
+  <!-- Css -->
+  <link href="[%[=URL('static/tte/dist/styles.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/dist/all.css') ]]" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i,700,700i" rel="stylesheet"/>
+  <title>biorex title text</title>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!--Container -->
+  <div class="mx-auto bg-gray-300est">
+   <!--Screen-->
+   <div class="min-h-screen flex flex-col">
+    <!--Header Section Starts Here-->
+    <header class="bg-nav">
+     <div class="flex justify-between">
+      <div class="p-1 mx-3 inline-flex items-center">
+       <i class="fas fa-bars pr-2 text-white" onclick="sidebarToggle()"></i>
+       <h1 class="text-white p-2">Logo</h1>
+      </div>
+      <div class="p-1 flex flex-row items-center">
+       <img alt="" class="inline-block h-8 w-8 rounded-full" onclick="profileToggle()" src="https://avatars0.githubusercontent.com/u/4323180?s=460&amp;v=4"/>
+       <a class="text-white p-2 no-underline hidden md:block lg:block" href="#" onclick="profileToggle()">Adam Wathan</a>
+       <div class="rounded hidden shadow-md bg-white absolute top-0 mt-12 mr-1 right-0" id="ProfileDropDown">
+        <ul class="list-reset">
+         <li>
+          <a class="no-underline px-4 py-2 block text-black hover:bg-gray-300" href="#">My account</a>
+         </li>
+         <li>
+          <a class="no-underline px-4 py-2 block text-black hover:bg-gray-300" href="#">Notifications</a>
+         </li>
+         <li>
+          <hr class="border-t mx-2 border-gray-ligght"/>
+         </li>
+         <li>
+          <a class="no-underline px-4 py-2 block text-black hover:bg-gray-300" href="#">Logout</a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </header>
+    <!--/Header-->
+    <div class="flex flex-1">
+     <!--Sidebar-->
+     <aside class="bg-side-nav w-1/2 md:w-1/6 lg:w-1/6 border-r border-side-nav hidden md:block lg:block" id="sidebar">
+      <div class="flex"></div>
+      <ul class="list-reset flex flex-col">
+       <li class="w-full h-full py-3 px-2 border-b border-300-border">
+        <a class="font-sans font-hairline hover:font-normal text-sm text-nav-item no-underline" href="[%[=URL('index') ]]">
+         <i class="fas fa-tachometer-alt float-left mx-2"></i>
+         Dashboard
+         <span>
+          <i class="fas fa-angle-right float-right"></i>
+         </span>
+        </a>
+       </li>
+       <li class="w-full h-full py-3 px-2 border-b border-300-border">
+        <a class="font-sans font-hairline hover:font-normal text-sm text-nav-item no-underline" href="[%[=URL('forms') ]]">
+         <i class="fab fa-wpforms float-left mx-2"></i>
+         Forms
+         <span>
+          <i class="fa fa-angle-right float-right"></i>
+         </span>
+        </a>
+       </li>
+       <li class="w-full h-full py-3 px-2 border-b border-300-border">
+        <a class="font-sans font-hairline hover:font-normal text-sm text-nav-item no-underline" href="[%[=URL('buttons') ]]">
+         <i class="fas fa-grip-horizontal float-left mx-2"></i>
+         Buttons
+         <span>
+          <i class="fa fa-angle-right float-right"></i>
+         </span>
+        </a>
+       </li>
+       <li class="w-full h-full py-3 px-2 border-b border-light-border">
+        <a class="font-sans font-hairline hover:font-normal text-sm text-nav-item no-underline" href="[%[=URL('tables') ]]">
+         <i class="fas fa-table float-left mx-2"></i>
+         Tables
+         <span>
+          <i class="fa fa-angle-right float-right"></i>
+         </span>
+        </a>
+       </li>
+       <li class="w-full h-full py-3 px-2 border-b border-300-border">
+        <a class="font-sans font-hairline hover:font-normal text-sm text-nav-item no-underline" href="[%[=URL('ui') ]]">
+         <i class="fab fa-uikit float-left mx-2"></i>
+         Ui components
+         <span>
+          <i class="fa fa-angle-right float-right"></i>
+         </span>
+        </a>
+       </li>
+       <li class="w-full h-full py-3 px-2 border-b border-300-border">
+        <a class="font-sans font-hairline hover:font-normal text-sm text-nav-item no-underline" href="[%[=URL('modals') ]]">
+         <i class="fas fa-square-full float-left mx-2"></i>
+         Modals
+         <span>
+          <i class="fa fa-angle-right float-right"></i>
+         </span>
+        </a>
+       </li>
+       <li class="w-full h-full py-3 px-2">
+        <a class="font-sans font-hairline hover:font-normal text-sm text-nav-item no-underline" href="#">
+         <i class="far fa-file float-left mx-2"></i>
+         Pages
+         <span>
+          <i class="fa fa-angle-down float-right"></i>
+         </span>
+        </a>
+        <ul class="list-reset -mx-2 bg-white-medium-dark">
+         <li class="border-t mt-2 border-300-border w-full h-full px-2 py-3">
+          <a class="mx-4 font-sans font-hairline hover:font-normal text-sm text-nav-item no-underline" href="[%[=URL('loginA') ]]">
+           Login Page
+           <span>
+            <i class="fa fa-angle-right float-right"></i>
+           </span>
+          </a>
+         </li>
+         <li class="border-t border-300-border w-full h-full px-2 py-3">
+          <a class="mx-4 font-sans font-hairline hover:font-normal text-sm text-nav-item no-underline" href="[%[=URL('registerA') ]]">
+           Register Page
+           <span>
+            <i class="fa fa-angle-right float-right"></i>
+           </span>
+          </a>
+         </li>
+         <li class="border-t border-300-border w-full h-full px-2 py-3">
+          <a class="mx-4 font-sans font-hairline hover:font-normal text-sm text-nav-item no-underline" href="[%[=URL('X404') ]]">
+           404 Page
+           <span>
+            <i class="fa fa-angle-right float-right"></i>
+           </span>
+          </a>
+         </li>
+        </ul>
+       </li>
+      </ul>
+     </aside>
+     <!--/Sidebar-->
+     <!--Main-->
+     <main class="bg-white-medium flex-1 p-3 overflow-hidden">
+      <div class="flex flex-col">
+       <div class="flex flex-1 flex-col md:flex-row lg:flex-row mx-2">
+        <div class="mb-2 mx-2 border-solid border-gray-300 rounded border shadow-sm w-full md:w-1/2 lg:w-1/2">
+         <div class="bg-gray-200 px-2 py-3 border-solid border-gray-300 border-b">Topped Modal</div>
+         <div class="p-3">
+          <button class="modal-trigger bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" data-modal="toppedModal">Open Modal</button>
+         </div>
+        </div>
+        <div class="mb-2 mx-2 border-solid border-gray-300 rounded border shadow-sm w-full md:w-1/2 lg:w-1/2">
+         <div class="bg-gray-200 px-2 py-3 border-solid border-gray-300 border-b">Centered Modal</div>
+         <div class="p-3">
+          <button class="modal-trigger bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" data-modal="centeredModal">Open modal</button>
+         </div>
+        </div>
+       </div>
+       <div class="flex flex-1 flex-col md:flex-row lg:flex-row mx-2">
+        <div class="mb-2 mx-2 border-solid border-gray-300 rounded border shadow-sm w-full md:w-1/2 lg:w-1/2">
+         <div class="bg-gray-200 px-2 py-3 border-solid border-gray-300 border-b">Centered with form</div>
+         <div class="p-3">
+          <button class="modal-trigger bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" data-modal="centeredFormModal">Open modal</button>
+         </div>
+        </div>
+        <div class="mb-2 mx-2 border-solid border-gray-300 rounded border shadow-sm w-full md:w-1/2 lg:w-1/2">
+         <div class="bg-gray-200 px-2 py-3 border-solid border-gray-300 border-b">Large size modal</div>
+         <div class="p-3">
+          <button class="modal-trigger bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" data-modal="largeSizeModal">Open modal</button>
+         </div>
+        </div>
+       </div>
+      </div>
+     </main>
+     <!--/Main-->
+    </div>
+    <!--Footer-->
+    <footer class="bg-gray-900 text-white p-2">
+     <div class="flex flex-1 mx-auto">
+      © My Design
+     </div>
+    </footer>
+    <!--/footer-->
+   </div>
+  </div>
+  <!-- Topped Modal -->
+  <div class="modal-wrapper" id="toppedModal">
+   <div class="overlay close-modal"></div>
+   <div class="modal">
+    <div class="modal-content shadow-lg p-5">
+     <div class="border-b p-2 pb-3 pt-0 mb-4">
+      <div class="flex justify-between items-center">
+       Modal header
+       <span class="close-modal cursor-pointer px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200">
+        <i class="fas fa-times text-gray-700"></i>
+       </span>
+      </div>
+     </div>
+     <!-- Modal content -->
+     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint impedit placeat nulla accusamus tempora, error inventore, ducimus est soluta voluptatem eligendi, saepe ullam non ratione laboriosam itaque cumque? Eaque, excepturi.</p>
+    </div>
+   </div>
+  </div>
+  <!-- Centered Modal -->
+  <div class="modal-wrapper" id="centeredModal">
+   <div class="overlay close-modal"></div>
+   <div class="modal modal-centered">
+    <div class="modal-content shadow-lg p-5">
+     <div class="border-b p-2 pb-3 pt-0 mb-4">
+      <div class="flex justify-between items-center">
+       Modal header
+       <span class="close-modal cursor-pointer px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200">
+        <i class="fas fa-times text-gray-700"></i>
+       </span>
+      </div>
+     </div>
+     <!-- Modal content -->
+     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint impedit placeat nulla accusamus tempora, error inventore, ducimus est soluta voluptatem eligendi, saepe ullam non ratione laboriosam itaque cumque? Eaque, excepturi.</p>
+    </div>
+   </div>
+  </div>
+  <!-- Centered With a Form Modal -->
+  <div class="modal-wrapper" id="centeredFormModal">
+   <div class="overlay close-modal"></div>
+   <div class="modal modal-centered">
+    <div class="modal-content shadow-lg p-5">
+     <div class="border-b p-2 pb-3 pt-0 mb-4">
+      <div class="flex justify-between items-center">
+       Modal header
+       <span class="close-modal cursor-pointer px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200">
+        <i class="fas fa-times text-gray-700"></i>
+       </span>
+      </div>
+     </div>
+     <!-- Modal content -->
+     
+<!-- BEGIN view: fmodals0, db_table: dfmodals0 -->
+<div id="form_id" class="w-full">
+[%[= fmodals0.custom['begin'] ]]
+<div class="flex flex-wrap -mx-3 mb-6">
+ <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+  <label class="block uppercase tracking-wide text-gray-700 text-xs font-light mb-1" for="grid-first-name">
+   First Name
+  </label>
+ [%[ fmodals0.custom['widgets']['f0']['_class']= 'appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white-500'  ]]
+ [%[ fmodals0.custom['widgets']['f0']['_id']= 'grid-first-name'  ]]
+ [%[ fmodals0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fmodals0.custom['widgets']['f0']['_placeholder']= 'Jane'  ]]
+ [%[= fmodals0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fmodals0.custom['errors']['f0'] if 'f0' in fmodals0.custom['errors'] else '' ]]</span>
+
+  <p class="text-red-500 text-xs italic">
+   Please fill out this field.
+  </p>
+ </div>
+ <div class="w-full md:w-1/2 px-3">
+  <label class="block uppercase tracking-wide text-gray-700 text-xs font-light mb-1" for="grid-last-name">
+   Last Name
+  </label>
+ [%[ fmodals0.custom['widgets']['f1']['_class']= 'appearance-none block w-full bg-gray-200 text-grey-darker border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white-500 focus:border-gray-600'  ]]
+ [%[ fmodals0.custom['widgets']['f1']['_id']= 'grid-last-name'  ]]
+ [%[ fmodals0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fmodals0.custom['widgets']['f1']['_placeholder']= 'Doe'  ]]
+ [%[= fmodals0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fmodals0.custom['errors']['f1'] if 'f1' in fmodals0.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="flex flex-wrap -mx-3 mb-6">
+ <div class="w-full px-3">
+  <label class="block uppercase tracking-wide text-grey-darker text-xs font-light mb-1" for="grid-password">
+   Password
+  </label>
+ [%[ fmodals0.custom['widgets']['f2']['_class']= 'appearance-none block w-full bg-grey-200 text-grey-darker border border-grey-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-grey'  ]]
+ [%[ fmodals0.custom['widgets']['f2']['_id']= 'grid-password'  ]]
+ [%[ fmodals0.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fmodals0.custom['widgets']['f2']['_placeholder']= '******************'  ]]
+ [%[= fmodals0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fmodals0.custom['errors']['f2'] if 'f2' in fmodals0.custom['errors'] else '' ]]</span>
+
+  <p class="text-grey-dark text-xs italic">
+   Make it as long and as crazy as
+                            you'd like
+  </p>
+ </div>
+</div>
+
+<div class="flex flex-wrap -mx-3 mb-2">
+ <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+  <label class="block uppercase tracking-wide text-grey-darker text-xs font-light mb-1" for="grid-city">
+   City
+  </label>
+ [%[ fmodals0.custom['widgets']['f3']['_class']= 'appearance-none block w-full bg-grey-200 text-grey-darker border border-grey-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey'  ]]
+ [%[ fmodals0.custom['widgets']['f3']['_id']= 'grid-city'  ]]
+ [%[ fmodals0.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fmodals0.custom['widgets']['f3']['_placeholder']= 'Albuquerque'  ]]
+ [%[= fmodals0.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fmodals0.custom['errors']['f3'] if 'f3' in fmodals0.custom['errors'] else '' ]]</span>
+
+ </div>
+ <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+  <label class="block uppercase tracking-wide text-grey-darker text-xs font-light mb-1" for="grid-state">
+   State
+  </label>
+  <div class="relative">
+ [%[ fmodals0.custom['widgets']['f4']['_class']= 'block appearance-none w-full bg-grey-200 border border-grey-200 text-grey-darker py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-grey'  ]]
+ [%[ fmodals0.custom['widgets']['f4']['_id']= 'grid-state'  ]]
+ [%[ fmodals0.custom['widgets']['f4']['_placeholder']= 'it was select'  ]]
+ [%[ fmodals0.custom['widgets']['f4']['_style']= 'color:red;'  ]]
+ [%[= fmodals0.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fmodals0.custom['errors']['f4'] if 'f4' in fmodals0.custom['errors'] else '' ]]</span>
+
+   <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-grey-darker">
+    <svg class="fill-current h-4 w-4" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+     <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z">
+     </path>
+    </svg>
+   </div>
+  </div>
+ </div>
+ <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+  <label class="block uppercase tracking-wide text-grey-darker text-xs font-light mb-1" for="grid-zip">
+   Zip
+  </label>
+ [%[ fmodals0.custom['widgets']['f5']['_class']= 'appearance-none block w-full bg-grey-200 text-grey-darker border border-grey-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-grey'  ]]
+ [%[ fmodals0.custom['widgets']['f5']['_id']= 'grid-zip'  ]]
+ [%[ fmodals0.custom['widgets']['f5']['_type']= 'text'  ]]
+ [%[ fmodals0.custom['widgets']['f5']['_placeholder']= '90210'  ]]
+ [%[= fmodals0.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fmodals0.custom['errors']['f5'] if 'f5' in fmodals0.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="mt-5">
+ [%[ fmodals0.custom['submit']['_class']= 'bg-green-500 hover:bg-green-800 text-white font-bold py-2 px-4 rounded'  ]]
+ [%[ fmodals0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fmodals0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fmodals0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fmodals0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fmodals0.custom['submit'] ]]
+
+ <span class="close-modal cursor-pointer bg-red-200 hover:bg-red-500 text-red-900 font-bold py-2 px-4 rounded">
+  Close
+ </span>
+</div>
+
+ [%[ for hidden_widget in fmodals0.custom['hidden_widgets'].keys(): ]]
+     [%[= fmodals0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fmodals0</span></div>
+
+
+[%[= fmodals0.custom['end'] ]]
+</div>
+<!-- END fmodals0-->
+
+    </div>
+   </div>
+  </div>
+  <!-- large Size Modal -->
+  <div class="modal-wrapper" id="largeSizeModal">
+   <div class="overlay close-modal"></div>
+   <div class="modal modal-lg">
+    <div class="modal-content shadow-lg p-5">
+     <div class="border-b p-2 pb-3 pt-0 mb-4">
+      <div class="flex justify-between items-center">
+       Modal header
+       <span class="close-modal cursor-pointer px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200">
+        <i class="fas fa-times text-gray-700"></i>
+       </span>
+      </div>
+     </div>
+     <!-- Modal content -->
+     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum vero amet minus facere, vitae quas suscipit harum aspernatur sint non rerum deleniti explicabo excepturi cumque nihil neque in. Consectetur Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corporis repellendus, excepturi saepe aliquam reprehenderit fugit quam non dignissimos voluptatem sed numquam ex aut earum tempore beatae delectus itaque asperiores neque.</p>
+    </div>
+   </div>
+  </div>
+  <script src="[%[=URL('static/tte/main.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

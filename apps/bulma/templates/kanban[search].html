@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 08.12.2020 08:51:35 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <title>biorex title text</title>
+  <!-- Bulma Version 0.9.0-->
+  <link href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" rel="stylesheet prefetch"/>
+  <link href="[%[=URL('static/tte/css/kanban.css') ]]" rel="stylesheet"/>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <div id="app">
+   <nav class="navbar has-shadow">
+    <div class="container">
+     <div class="navbar-brand">
+      <a class="navbar-item" href="[%[=URL('index') ]]">
+       <img alt="Bulma: a modern CSS framework based on Flexbox" src="http://bulma.io/images/bulma-logo.png"/></a>
+     </div>
+    </div>
+   </nav>
+   <section class="hero is-info">
+    <div class="hero-body">
+     <div class="container">
+      <div class="card">
+       <div class="card-content">
+        <div class="content">
+         <div class="control has-icons-left has-icons-right search-field">
+          
+
+<!-- BEGIN view: fkanbanXsearchX0, db_table: dfkanbanXsearchX0 -->
+<div>
+[%[= fkanbanXsearchX0.custom['begin'] ]]
+ [%[ fkanbanXsearchX0.custom['widgets']['f0']['_class']= 'input is-large'  ]]
+ [%[ fkanbanXsearchX0.custom['widgets']['f0']['_placeholder']= '==0_p4w'  ]]
+ [%[ fkanbanXsearchX0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fkanbanXsearchX0.custom['widgets']['f0']['_v-model']= 'search'  ]]
+ [%[= fkanbanXsearchX0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fkanbanXsearchX0.custom['errors']['f0'] if 'f0' in fkanbanXsearchX0.custom['errors'] else '' ]]</span>
+
+ [%[ fkanbanXsearchX0.custom['submit']['_class']= 'input is-large mysubmit_cls'  ]]
+ [%[ fkanbanXsearchX0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fkanbanXsearchX0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fkanbanXsearchX0.custom['submit']['_rows']= '1'  ]]
+ [%[ fkanbanXsearchX0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fkanbanXsearchX0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fkanbanXsearchX0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fkanbanXsearchX0.custom['hidden_widgets'].keys(): ]]
+     [%[= fkanbanXsearchX0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fkanbanXsearchX0</span></div>
+
+
+[%[= fkanbanXsearchX0.custom['end'] ]]
+</div>
+<!-- END fkanbanXsearchX0-->
+
+
+          <span class="icon is-medium is-left">
+           <i class="fa fa-search"></i>
+          </span>
+          <span class="icon is-medium is-right">
+           <i class="delete is-medium clear-search" v-if="search.length"></i>
+          </span>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <div class="box cta">
+    <p class="has-text-centered">
+     Powered by
+     <span class="tag is-link">Vue.js</span>
+     . All the data is stored inside of
+     <span class="tag is-black">kanban.js</span>
+     file, and can be easily changed according to your needs.
+    </p>
+   </div>
+   <!-- Loop through the parent array -->
+   <section class="container cards-container">
+    <div class="columns is-centered is-multiline" id="sectioncontainer">
+     <div class="column is-narrow" v-for="yxy in filteredCards">
+      <article :class="'is-' + yxy.cardColor" class="message">
+       <div class="message-header">
+        <!-- Make a header using the `name` property from the current season in the loop -->
+        <p>{{ title }} {{ yxy.name }}</p>
+        <button aria-label="delete" class="delete"></button>
+       </div>
+       <div class="message-body">
+        <div class="board-item">
+         <!-- Loop through the `items` array from the current season to show each item -->
+         <div class="board-item-content" v-for="item in yxy.items">
+          <span>{{ item }}</span>
+         </div>
+        </div>
+       </div>
+      </article>
+     </div>
+    </div>
+   </section>
+  </div>
+  <footer>
+   <div class="box cta">
+    <div class="columns is-mobile is-centered">
+     <div class="field is-grouped is-grouped-multiline">
+      <div class="control">
+       <div class="tags has-addons">
+        <a class="tag is-link" href="https://github.com/BulmaTemplates/bulma-templates">Bulma Templates</a>
+        <span class="tag is-light">Daniel Supernault</span>
+       </div>
+      </div>
+      <div class="control">
+       <div class="tags has-addons">
+        <a class="tag is-link">The source code is licensed</a>
+        <span class="tag is-light">
+         MIT
+         <i class="fa fa-github"></i>
+        </span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+  <script src="[%[=URL('static/tte/js/kanban.js') ]]"></script>
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 9000); }
+     }();
+</script>
+
+</body>
+</html>

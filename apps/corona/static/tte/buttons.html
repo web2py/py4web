@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <title>
+   Corona Admin
+  </title>
+  <!-- plugins:css -->
+  <link href="../../assets/vendors/mdi/css/materialdesignicons.min.css" rel="stylesheet"/>
+  <link href="../../assets/vendors/css/vendor.bundle.base.css" rel="stylesheet"/>
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <!-- End Plugin css for this page -->
+  <!-- inject:css -->
+  <!-- endinject -->
+  <!-- Layout styles -->
+  <link href="../../assets/css/style.css" rel="stylesheet"/>
+  <!-- End layout styles -->
+  <link href="../../assets/images/favicon.png" rel="shortcut icon"/>
+ </head>
+ <body>
+  <div class="container-scroller">
+   <!-- partial:../../partials/_sidebar.html -->
+   <nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+     <a class="sidebar-brand brand-logo" href="../../index.html">
+      <img alt="logo" src="../../assets/images/logo.svg"/>
+     </a>
+     <a class="sidebar-brand brand-logo-mini" href="../../index.html">
+      <img alt="logo" src="../../assets/images/logo-mini.svg"/>
+     </a>
+    </div>
+    <ul class="nav">
+     <li class="nav-item profile">
+      <div class="profile-desc">
+       <div class="profile-pic">
+        <div class="count-indicator">
+         <img alt="" class="img-xs rounded-circle" src="../../assets/images/faces/face15.jpg"/>
+         <span class="count bg-success">
+         </span>
+        </div>
+        <div class="profile-name">
+         <h5 class="mb-0 font-weight-normal">
+          Henry Klein
+         </h5>
+         <span>
+          Gold Member
+         </span>
+        </div>
+       </div>
+       <a data-toggle="dropdown" href="#" id="profile-dropdown">
+        <i class="mdi mdi-dots-vertical">
+        </i>
+       </a>
+       <div aria-labelledby="profile-dropdown" class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list">
+        <a class="dropdown-item preview-item" href="#">
+         <div class="preview-thumbnail">
+          <div class="preview-icon bg-dark rounded-circle">
+           <i class="mdi mdi-settings text-primary">
+           </i>
+          </div>
+         </div>
+         <div class="preview-item-content">
+          <p class="preview-subject ellipsis mb-1 text-small">
+           Account settings
+          </p>
+         </div>
+        </a>
+        <div class="dropdown-divider">
+        </div>
+        <a class="dropdown-item preview-item" href="#">
+         <div class="preview-thumbnail">
+          <div class="preview-icon bg-dark rounded-circle">
+           <i class="mdi mdi-onepassword text-info">
+           </i>
+          </div>
+         </div>
+         <div class="preview-item-content">
+          <p class="preview-subject ellipsis mb-1 text-small">
+           Change Password
+          </p>
+         </div>
+        </a>
+        <div class="dropdown-divider">
+        </div>
+        <a class="dropdown-item preview-item" href="#">
+         <div class="preview-thumbnail">
+          <div class="preview-icon bg-dark rounded-circle">
+           <i class="mdi mdi-calendar-today text-success">
+           </i>
+          </div>
+         </div>
+         <div class="preview-item-content">
+          <p class="preview-subject ellipsis mb-1 text-small">
+           To-do list
+          </p>
+         </div>
+        </a>
+       </div>
+      </div>
+     </li>
+     <li class="nav-item nav-category">
+      <span class="nav-link">
+       Navigation
+      </span>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="../../index.html">
+       <span class="menu-icon">
+        <i class="mdi mdi-speedometer">
+        </i>
+       </span>
+       <span class="menu-title">
+        Dashboard
+       </span>
+      </a>
+     </li>
+     <li class="nav-item menu-items">
+      <a aria-controls="ui-basic" aria-expanded="false" class="nav-link" data-toggle="collapse" href="#ui-basic">
+       <span class="menu-icon">
+        <i class="mdi mdi-laptop">
+        </i>
+       </span>
+       <span class="menu-title">
+        Basic UI Elements
+       </span>
+       <i class="menu-arrow">
+       </i>
+      </a>
+      <div class="collapse" id="ui-basic">
+       <ul class="nav flex-column sub-menu">
+        <li class="nav-item">
+         <a class="nav-link" href="../../pages/ui-features/buttons.html">
+          Buttons
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="../../pages/ui-features/dropdowns.html">
+          Dropdowns
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="../../pages/ui-features/typography.html">
+          Typography
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="../../pages/forms/basic_elements.html">
+       <span class="menu-icon">
+        <i class="mdi mdi-playlist-play">
+        </i>
+       </span>
+       <span class="menu-title">
+        Form Elements
+       </span>
+      </a>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="../../pages/tables/basic-table.html">
+       <span class="menu-icon">
+        <i class="mdi mdi-table-large">
+        </i>
+       </span>
+       <span class="menu-title">
+        Tables
+       </span>
+      </a>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="../../pages/charts/chartjs.html">
+       <span class="menu-icon">
+        <i class="mdi mdi-chart-bar">
+        </i>
+       </span>
+       <span class="menu-title">
+        Charts
+       </span>
+      </a>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="../../pages/icons/mdi.html">
+       <span class="menu-icon">
+        <i class="mdi mdi-contacts">
+        </i>
+       </span>
+       <span class="menu-title">
+        Icons
+       </span>
+      </a>
+     </li>
+     <li class="nav-item menu-items">
+      <a aria-controls="auth" aria-expanded="false" class="nav-link" data-toggle="collapse" href="#auth">
+       <span class="menu-icon">
+        <i class="mdi mdi-security">
+        </i>
+       </span>
+       <span class="menu-title">
+        User Pages
+       </span>
+       <i class="menu-arrow">
+       </i>
+      </a>
+      <div class="collapse" id="auth">
+       <ul class="nav flex-column sub-menu">
+        <li class="nav-item">
+         <a class="nav-link" href="../../pages/samples/blank-page.html">
+          Blank Page
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="../../pages/samples/error-404.html">
+          404
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="../../pages/samples/error-500.html">
+          500
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="../../pages/samples/login.html">
+          Login
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="../../pages/samples/register.html">
+          Register
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="http://www.bootstrapdash.com/demo/corona-free/jquery/documentation/documentation.html">
+       <span class="menu-icon">
+        <i class="mdi mdi-file-document-box">
+        </i>
+       </span>
+       <span class="menu-title">
+        Documentation
+       </span>
+      </a>
+     </li>
+    </ul>
+   </nav>
+   <!-- partial -->
+   <div class="container-fluid page-body-wrapper">
+    <!-- partial:../../partials/_navbar.html -->
+    <nav class="navbar p-0 fixed-top d-flex flex-row">
+     <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+      <a class="navbar-brand brand-logo-mini" href="../../index.html">
+       <img alt="logo" src="../../assets/images/logo-mini.svg"/>
+      </a>
+     </div>
+     <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+      <button class="navbar-toggler navbar-toggler align-self-center" data-toggle="minimize" type="button">
+       <span class="mdi mdi-menu">
+       </span>
+      </button>
+      <ul class="navbar-nav w-100">
+       <li class="nav-item w-100">
+        <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
+         <input class="form-control" placeholder="Search products" type="text"/>
+        </form>
+       </li>
+      </ul>
+      <ul class="navbar-nav navbar-nav-right">
+       <li class="nav-item dropdown d-none d-lg-block">
+        <a aria-expanded="false" class="nav-link btn btn-success create-new-button" data-toggle="dropdown" href="#" id="createbuttonDropdown">
+         + Create New Project
+        </a>
+        <div aria-labelledby="createbuttonDropdown" class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list">
+         <h6 class="p-3 mb-0">
+          Projects
+         </h6>
+         <div class="dropdown-divider">
+         </div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-file-outline text-primary">
+            </i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">
+            Software Development
+           </p>
+          </div>
+         </a>
+         <div class="dropdown-divider">
+         </div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-web text-info">
+            </i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">
+            UI Development
+           </p>
+          </div>
+         </a>
+         <div class="dropdown-divider">
+         </div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-layers text-danger">
+            </i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">
+            Software Testing
+           </p>
+          </div>
+         </a>
+         <div class="dropdown-divider">
+         </div>
+         <p class="p-3 mb-0 text-center">
+          See all projects
+         </p>
+        </div>
+       </li>
+       <li class="nav-item nav-settings d-none d-lg-block">
+        <a class="nav-link" href="#">
+         <i class="mdi mdi-view-grid">
+         </i>
+        </a>
+       </li>
+       <li class="nav-item dropdown border-left">
+        <a aria-expanded="false" class="nav-link count-indicator dropdown-toggle" data-toggle="dropdown" href="#" id="messageDropdown">
+         <i class="mdi mdi-email">
+         </i>
+         <span class="count bg-success">
+         </span>
+        </a>
+        <div aria-labelledby="messageDropdown" class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list">
+         <h6 class="p-3 mb-0">
+          Messages
+         </h6>
+         <div class="dropdown-divider">
+         </div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <img alt="image" class="rounded-circle profile-pic" src="../../assets/images/faces/face4.jpg"/>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">
+            Mark send you a message
+           </p>
+           <p class="text-muted mb-0">
+            1 Minutes ago
+           </p>
+          </div>
+         </a>
+         <div class="dropdown-divider">
+         </div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <img alt="image" class="rounded-circle profile-pic" src="../../assets/images/faces/face2.jpg"/>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">
+            Cregh send you a message
+           </p>
+           <p class="text-muted mb-0">
+            15 Minutes ago
+           </p>
+          </div>
+         </a>
+         <div class="dropdown-divider">
+         </div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <img alt="image" class="rounded-circle profile-pic" src="../../assets/images/faces/face3.jpg"/>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">
+            Profile picture updated
+           </p>
+           <p class="text-muted mb-0">
+            18 Minutes ago
+           </p>
+          </div>
+         </a>
+         <div class="dropdown-divider">
+         </div>
+         <p class="p-3 mb-0 text-center">
+          4 new messages
+         </p>
+        </div>
+       </li>
+       <li class="nav-item dropdown border-left">
+        <a class="nav-link count-indicator dropdown-toggle" data-toggle="dropdown" href="#" id="notificationDropdown">
+         <i class="mdi mdi-bell">
+         </i>
+         <span class="count bg-danger">
+         </span>
+        </a>
+        <div aria-labelledby="notificationDropdown" class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list">
+         <h6 class="p-3 mb-0">
+          Notifications
+         </h6>
+         <div class="dropdown-divider">
+         </div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-calendar text-success">
+            </i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject mb-1">
+            Event today
+           </p>
+           <p class="text-muted ellipsis mb-0">
+            Just a reminder that you have an event today
+           </p>
+          </div>
+         </a>
+         <div class="dropdown-divider">
+         </div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-settings text-danger">
+            </i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject mb-1">
+            Settings
+           </p>
+           <p class="text-muted ellipsis mb-0">
+            Update dashboard
+           </p>
+          </div>
+         </a>
+         <div class="dropdown-divider">
+         </div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-link-variant text-warning">
+            </i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject mb-1">
+            Launch Admin
+           </p>
+           <p class="text-muted ellipsis mb-0">
+            New admin wow!
+           </p>
+          </div>
+         </a>
+         <div class="dropdown-divider">
+         </div>
+         <p class="p-3 mb-0 text-center">
+          See all notifications
+         </p>
+        </div>
+       </li>
+       <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#" id="profileDropdown">
+         <div class="navbar-profile">
+          <img alt="" class="img-xs rounded-circle" src="../../assets/images/faces/face15.jpg"/>
+          <p class="mb-0 d-none d-sm-block navbar-profile-name">
+           Henry Klein
+          </p>
+          <i class="mdi mdi-menu-down d-none d-sm-block">
+          </i>
+         </div>
+        </a>
+        <div aria-labelledby="profileDropdown" class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list">
+         <h6 class="p-3 mb-0">
+          Profile
+         </h6>
+         <div class="dropdown-divider">
+         </div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-settings text-success">
+            </i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject mb-1">
+            Settings
+           </p>
+          </div>
+         </a>
+         <div class="dropdown-divider">
+         </div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-logout text-danger">
+            </i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject mb-1">
+            Log out
+           </p>
+          </div>
+         </a>
+         <div class="dropdown-divider">
+         </div>
+         <p class="p-3 mb-0 text-center">
+          Advanced settings
+         </p>
+        </div>
+       </li>
+      </ul>
+      <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas" type="button">
+       <span class="mdi mdi-format-line-spacing">
+       </span>
+      </button>
+     </div>
+    </nav>
+    <!-- partial -->
+    <div class="main-panel">
+     <div class="content-wrapper">
+      <div class="page-header">
+       <h3 class="page-title">
+        Buttons
+       </h3>
+       <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+         <li class="breadcrumb-item">
+          <a href="#">
+           UI Elements
+          </a>
+         </li>
+         <li aria-current="page" class="breadcrumb-item active">
+          Buttons
+         </li>
+        </ol>
+       </nav>
+      </div>
+      <div class="row">
+       <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+         <div class="card-body">
+          <h4 class="card-title">
+           Normal buttons
+          </h4>
+          <p class="card-description">
+           Add class
+           <code>
+            .btn-{color}
+           </code>
+           for buttons in theme colors
+          </p>
+          <div class="template-demo">
+           <button class="btn btn-primary btn-fw" type="button">
+            Primary
+           </button>
+           <button class="btn btn-secondary btn-fw" type="button">
+            Secondary
+           </button>
+           <button class="btn btn-success btn-fw" type="button">
+            Success
+           </button>
+           <button class="btn btn-danger btn-fw" type="button">
+            Danger
+           </button>
+           <button class="btn btn-warning btn-fw" type="button">
+            Warning
+           </button>
+           <button class="btn btn-info btn-fw" type="button">
+            Info
+           </button>
+           <button class="btn btn-light btn-fw" type="button">
+            Light
+           </button>
+           <button class="btn btn-dark btn-fw" type="button">
+            Dark
+           </button>
+           <button class="btn btn-link btn-fw" type="button">
+            Link
+           </button>
+          </div>
+         </div>
+         <div class="card-body">
+          <h4 class="card-title">
+           Inverse buttons
+          </h4>
+          <p class="card-description">
+           Add class
+           <code>
+            .btn-inverse-{color} for inverse buttons
+           </code>
+          </p>
+          <div class="template-demo">
+           <button class="btn btn-inverse-primary btn-fw" type="button">
+            Primary
+           </button>
+           <button class="btn btn-inverse-secondary btn-fw" type="button">
+            Secondary
+           </button>
+           <button class="btn btn-inverse-success btn-fw" type="button">
+            Success
+           </button>
+           <button class="btn btn-inverse-danger btn-fw" type="button">
+            Danger
+           </button>
+           <button class="btn btn-inverse-warning btn-fw" type="button">
+            Warning
+           </button>
+           <button class="btn btn-inverse-info btn-fw" type="button">
+            Info
+           </button>
+           <button class="btn btn-inverse-light btn-fw" type="button">
+            Light
+           </button>
+           <button class="btn btn-inverse-dark btn-fw" type="button">
+            Dark
+           </button>
+           <button class="btn btn-link btn-fw" type="button">
+            Link
+           </button>
+          </div>
+         </div>
+         <div class="card-body">
+          <h4 class="card-title">
+           Rounded buttons
+          </h4>
+          <p class="card-description">
+           Add class
+           <code>
+            .btn-rounded
+           </code>
+          </p>
+          <div class="template-demo">
+           <button class="btn btn-primary btn-rounded btn-fw" type="button">
+            Primary
+           </button>
+           <button class="btn btn-secondary btn-rounded btn-fw" type="button">
+            Secondary
+           </button>
+           <button class="btn btn-success btn-rounded btn-fw" type="button">
+            Success
+           </button>
+           <button class="btn btn-danger btn-rounded btn-fw" type="button">
+            Danger
+           </button>
+           <button class="btn btn-warning btn-rounded btn-fw" type="button">
+            Warning
+           </button>
+           <button class="btn btn-info btn-rounded btn-fw" type="button">
+            Info
+           </button>
+           <button class="btn btn-light btn-rounded btn-fw" type="button">
+            Light
+           </button>
+           <button class="btn btn-dark btn-rounded btn-fw" type="button">
+            Dark
+           </button>
+           <button class="btn btn-link btn-rounded btn-fw" type="button">
+            Link
+           </button>
+          </div>
+         </div>
+         <div class="card-body">
+          <h4 class="card-title">
+           Outlined buttons
+          </h4>
+          <p class="card-description">
+           Add class
+           <code>
+            .btn-outline-{color}
+           </code>
+           for outline buttons
+          </p>
+          <div class="template-demo">
+           <button class="btn btn-outline-primary btn-fw" type="button">
+            Primary
+           </button>
+           <button class="btn btn-outline-secondary btn-fw" type="button">
+            Secondary
+           </button>
+           <button class="btn btn-outline-success btn-fw" type="button">
+            Success
+           </button>
+           <button class="btn btn-outline-danger btn-fw" type="button">
+            Danger
+           </button>
+           <button class="btn btn-outline-warning btn-fw" type="button">
+            Warning
+           </button>
+           <button class="btn btn-outline-info btn-fw" type="button">
+            Info
+           </button>
+           <button class="btn btn-outline-light btn-fw" type="button">
+            Light
+           </button>
+           <button class="btn btn-outline-dark btn-fw" type="button">
+            Dark
+           </button>
+           <button class="btn btn-link btn-fw" type="button">
+            Link
+           </button>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+         <div class="card-body">
+          <div class="row">
+           <div class="col-md-7">
+            <h4 class="card-title">
+             Icon Buttons
+            </h4>
+            <p class="card-description">
+             Add class
+             <code>
+              .btn-icon
+             </code>
+             for buttons with only icons
+            </p>
+            <div class="template-demo d-flex justify-content-between flex-nowrap">
+             <button class="btn btn-primary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-home-outline">
+              </i>
+             </button>
+             <button class="btn btn-dark btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-internet-explorer">
+              </i>
+             </button>
+             <button class="btn btn-danger btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-email-open">
+              </i>
+             </button>
+             <button class="btn btn-info btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-star">
+              </i>
+             </button>
+             <button class="btn btn-success btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-map-marker">
+              </i>
+             </button>
+            </div>
+            <div class="template-demo d-flex justify-content-between flex-nowrap">
+             <button class="btn btn-inverse-primary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-home-outline">
+              </i>
+             </button>
+             <button class="btn btn-inverse-dark btn-icon" type="button">
+              <i class="mdi mdi-internet-explorer">
+              </i>
+             </button>
+             <button class="btn btn-inverse-danger btn-icon" type="button">
+              <i class="mdi mdi-email-open">
+              </i>
+             </button>
+             <button class="btn btn-inverse-info btn-icon" type="button">
+              <i class="mdi mdi-star">
+              </i>
+             </button>
+             <button class="btn btn-inverse-success btn-icon" type="button">
+              <i class="mdi mdi-map-marker">
+              </i>
+             </button>
+            </div>
+            <div class="template-demo d-flex justify-content-between flex-nowrap mt-4">
+             <button class="btn btn-outline-secondary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-heart-outline text-danger">
+              </i>
+             </button>
+             <button class="btn btn-outline-secondary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-music text-dark">
+              </i>
+             </button>
+             <button class="btn btn-outline-secondary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-star text-primary">
+              </i>
+             </button>
+             <button class="btn btn-outline-secondary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-signal text-info">
+              </i>
+             </button>
+             <button class="btn btn-outline-secondary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-trending-up text-success">
+              </i>
+             </button>
+            </div>
+            <div class="template-demo d-flex justify-content-between flex-nowrap">
+             <button class="btn btn-outline-secondary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-heart-outline">
+              </i>
+             </button>
+             <button class="btn btn-outline-secondary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-music">
+              </i>
+             </button>
+             <button class="btn btn-outline-secondary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-star">
+              </i>
+             </button>
+             <button class="btn btn-outline-secondary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-signal">
+              </i>
+             </button>
+             <button class="btn btn-outline-secondary btn-rounded btn-icon" type="button">
+              <i class="mdi mdi-trending-up">
+              </i>
+             </button>
+            </div>
+           </div>
+           <div class="col-md-5">
+            <h4 class="card-title">
+             Button Size
+            </h4>
+            <p class="card-description">
+             Use class
+             <code>
+              .btn-{size}
+             </code>
+            </p>
+            <div class="template-demo">
+             <button class="btn btn-outline-secondary btn-lg" type="button">
+              btn-lg
+             </button>
+             <button class="btn btn-outline-secondary btn-md" type="button">
+              btn-md
+             </button>
+             <button class="btn btn-outline-secondary btn-sm" type="button">
+              btn-sm
+             </button>
+            </div>
+            <div class="template-demo mt-4">
+             <button class="btn btn-danger btn-lg" type="button">
+              btn-lg
+             </button>
+             <button class="btn btn-success btn-md" type="button">
+              btn-md
+             </button>
+             <button class="btn btn-primary btn-sm" type="button">
+              btn-sm
+             </button>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-md-4 grid-margin stretch-card">
+        <div class="card">
+         <div class="card-body">
+          <h4 class="card-title">
+           Block buttons
+          </h4>
+          <p class="card-description">
+           Add class
+           <code>
+            .btn-block
+           </code>
+          </p>
+          <div class="template-demo">
+           <button class="btn btn-info btn-lg btn-block" type="button">
+            Block buttons
+            <i class="mdi mdi-menu float-right">
+            </i>
+           </button>
+           <button class="btn btn-dark btn-lg btn-block" type="button">
+            Block buttons
+           </button>
+           <button class="btn btn-primary btn-lg btn-block" type="button">
+            <i class="mdi mdi-account">
+            </i>
+            Block buttons
+           </button>
+           <button class="btn btn-outline-secondary btn-lg btn-block" type="button">
+            Block buttons
+           </button>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 grid-margin">
+        <div class="card">
+         <div class="card-body">
+          <div class="row">
+           <div class="col-md-6">
+            <h4 class="card-title">
+             Button groups
+            </h4>
+            <p class="card-description">
+             Wrap a series of buttons with
+             <code>
+              .btn
+             </code>
+             in
+             <code>
+              .btn-group
+             </code>
+            </p>
+            <div class="template-demo">
+             <div aria-label="Basic example" class="btn-group" role="group">
+              <button class="btn btn-outline-secondary" type="button">
+               1
+              </button>
+              <button class="btn btn-outline-secondary" type="button">
+               2
+              </button>
+              <button class="btn btn-outline-secondary" type="button">
+               3
+              </button>
+             </div>
+             <div aria-label="Basic example" class="btn-group" role="group">
+              <button class="btn btn-outline-secondary" type="button">
+               <i class="mdi mdi-heart-outline">
+               </i>
+              </button>
+              <button class="btn btn-outline-secondary" type="button">
+               <i class="mdi mdi-calendar">
+               </i>
+              </button>
+              <button class="btn btn-outline-secondary" type="button">
+               <i class="mdi mdi-clock">
+               </i>
+              </button>
+             </div>
+            </div>
+            <div class="template-demo">
+             <div aria-label="Basic example" class="btn-group" role="group">
+              <button class="btn btn-primary" type="button">
+               1
+              </button>
+              <button class="btn btn-primary" type="button">
+               2
+              </button>
+              <button class="btn btn-primary" type="button">
+               3
+              </button>
+             </div>
+             <div aria-label="Basic example" class="btn-group" role="group">
+              <button class="btn btn-primary" type="button">
+               <i class="mdi mdi-heart-outline">
+               </i>
+              </button>
+              <button class="btn btn-primary" type="button">
+               <i class="mdi mdi-calendar">
+               </i>
+              </button>
+              <button class="btn btn-primary" type="button">
+               <i class="mdi mdi-clock">
+               </i>
+              </button>
+             </div>
+            </div>
+            <div class="template-demo mt-4">
+             <div aria-label="Basic example" class="btn-group-vertical" role="group">
+              <button class="btn btn-outline-secondary" type="button">
+               <i class="mdi mdi-format-vertical-align-top">
+               </i>
+              </button>
+              <button class="btn btn-outline-secondary" type="button">
+               <i class="mdi mdi-format-vertical-align-center">
+               </i>
+              </button>
+              <button class="btn btn-outline-secondary" type="button">
+               <i class="mdi mdi-format-vertical-align-bottom">
+               </i>
+              </button>
+             </div>
+             <div aria-label="Basic example" class="btn-group-vertical" role="group">
+              <button class="btn btn-outline-secondary" type="button">
+               Default
+              </button>
+              <div class="btn-group">
+               <button class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" type="button">
+                Dropdown
+               </button>
+               <div class="dropdown-menu">
+                <a class="dropdown-item">
+                 Go back
+                </a>
+                <a class="dropdown-item">
+                 Delete
+                </a>
+                <a class="dropdown-item">
+                 Swap
+                </a>
+               </div>
+              </div>
+              <button class="btn btn-outline-secondary" type="button">
+               Default
+              </button>
+             </div>
+             <div aria-label="Basic example" class="btn-group-vertical" role="group">
+              <button class="btn btn-outline-secondary" type="button">
+               Top
+              </button>
+              <button class="btn btn-outline-secondary" type="button">
+               Middle
+              </button>
+              <button class="btn btn-outline-secondary" type="button">
+               Bottom
+              </button>
+             </div>
+            </div>
+            <div class="template-demo mt-4">
+             <div aria-label="Basic example" class="btn-group" role="group">
+              <button class="btn btn-outline-secondary" type="button">
+               <i class="mdi mdi-star d-block mb-1">
+               </i>
+               Favourites
+              </button>
+              <button class="btn btn-outline-secondary" type="button">
+               <i class="mdi mdi-reload d-block mb-1">
+               </i>
+               Reload
+              </button>
+              <button class="btn btn-outline-secondary" type="button">
+               <i class="mdi mdi-account d-block mb-1">
+               </i>
+               Users
+              </button>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-6">
+            <h4 class="card-title">
+             Button with text and icon
+            </h4>
+            <p class="card-description">
+             Wrap icon and text inside
+             <code>
+              .btn-icon-text
+             </code>
+             and use
+             <code>
+              .btn-icon-prepend
+             </code>
+             or
+             <code>
+              .btn-icon-append
+             </code>
+             for icon tags
+            </p>
+            <div class="template-demo">
+             <button class="btn btn-primary btn-icon-text" type="button">
+              <i class="mdi mdi-file-check btn-icon-prepend">
+              </i>
+              Submit
+             </button>
+             <button class="btn btn-dark btn-icon-text" type="button">
+              Edit
+              <i class="mdi mdi-file-check btn-icon-append">
+              </i>
+             </button>
+             <button class="btn btn-success btn-icon-text" type="button">
+              <i class="mdi mdi-alert btn-icon-prepend">
+              </i>
+              Warning
+             </button>
+            </div>
+            <div class="template-demo">
+             <button class="btn btn-danger btn-icon-text" type="button">
+              <i class="mdi mdi-upload btn-icon-prepend">
+              </i>
+              Upload
+             </button>
+             <button class="btn btn-info btn-icon-text" type="button">
+              Print
+              <i class="mdi mdi-printer btn-icon-append">
+              </i>
+             </button>
+             <button class="btn btn-warning btn-icon-text" type="button">
+              <i class="mdi mdi-reload btn-icon-prepend">
+              </i>
+              Reset
+             </button>
+            </div>
+            <div class="template-demo mt-2">
+             <button class="btn btn-outline-primary btn-icon-text" type="button">
+              <i class="mdi mdi-file-check btn-icon-prepend">
+              </i>
+              Submit
+             </button>
+             <button class="btn btn-outline-secondary btn-icon-text" type="button">
+              Edit
+              <i class="mdi mdi-file-check btn-icon-append">
+              </i>
+             </button>
+             <button class="btn btn-outline-success btn-icon-text" type="button">
+              <i class="mdi mdi-alert btn-icon-prepend">
+              </i>
+              Warning
+             </button>
+            </div>
+            <div class="template-demo">
+             <button class="btn btn-outline-danger btn-icon-text" type="button">
+              <i class="mdi mdi-upload btn-icon-prepend">
+              </i>
+              Upload
+             </button>
+             <button class="btn btn-outline-info btn-icon-text" type="button">
+              Print
+              <i class="mdi mdi-printer btn-icon-append">
+              </i>
+             </button>
+             <button class="btn btn-outline-warning btn-icon-text" type="button">
+              <i class="mdi mdi-reload btn-icon-prepend">
+              </i>
+              Reset
+             </button>
+            </div>
+            <div class="template-demo mt-2">
+             <button class="btn btn-outline-light btn-icon-text">
+              <i class="mdi mdi-apple btn-icon-prepend mdi-36px">
+              </i>
+              <span class="d-inline-block text-left">
+               <small class="font-weight-light d-block">
+                Available on the
+               </small>
+               App Store
+              </span>
+             </button>
+             <button class="btn btn-outline-light btn-icon-text">
+              <i class="mdi mdi-android-debug-bridge btn-icon-prepend mdi-36px">
+              </i>
+              <span class="d-inline-block text-left">
+               <small class="font-weight-light d-block">
+                Get it on the
+               </small>
+               Google Play
+              </span>
+             </button>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+         <div class="card-body">
+          <h4 class="card-title">
+           Social Icon Buttons
+          </h4>
+          <p class="card-description">
+           Add class
+           <code>
+            .btn-social-icon
+           </code>
+          </p>
+          <div class="template-demo">
+           <button class="btn btn-social-icon btn-outline-facebook" type="button">
+            <i class="mdi mdi-facebook">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-outline-youtube" type="button">
+            <i class="mdi mdi-youtube">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-outline-twitter" type="button">
+            <i class="mdi mdi-twitter">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-outline-dribbble" type="button">
+            <i class="mdi mdi-dribbble">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-outline-linkedin" type="button">
+            <i class="mdi mdi-linkedin">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-outline-google" type="button">
+            <i class="mdi mdi-google-plus">
+            </i>
+           </button>
+          </div>
+          <div class="template-demo">
+           <button class="btn btn-social-icon btn-facebook" type="button">
+            <i class="mdi mdi-facebook">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-youtube" type="button">
+            <i class="mdi mdi-youtube">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-twitter" type="button">
+            <i class="mdi mdi-twitter">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-dribbble" type="button">
+            <i class="mdi mdi-dribbble">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-linkedin" type="button">
+            <i class="mdi mdi-linkedin">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-google" type="button">
+            <i class="mdi mdi-google-plus">
+            </i>
+           </button>
+          </div>
+          <div class="template-demo">
+           <button class="btn btn-social-icon btn-facebook btn-rounded" type="button">
+            <i class="mdi mdi-facebook">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-youtube btn-rounded" type="button">
+            <i class="mdi mdi-youtube">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-twitter btn-rounded" type="button">
+            <i class="mdi mdi-twitter">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-dribbble btn-rounded" type="button">
+            <i class="mdi mdi-dribbble">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-linkedin btn-rounded" type="button">
+            <i class="mdi mdi-linkedin">
+            </i>
+           </button>
+           <button class="btn btn-social-icon btn-google btn-rounded" type="button">
+            <i class="mdi mdi-google-plus">
+            </i>
+           </button>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+         <div class="card-body">
+          <h4 class="card-title">
+           Social button with text
+          </h4>
+          <p class="card-description">
+           Add class
+           <code>
+            .btn-social-icon-text
+           </code>
+          </p>
+          <div class="template-demo">
+           <button class="btn btn-social-icon-text btn-facebook" type="button">
+            <i class="mdi mdi-facebook">
+            </i>
+            Facebook
+           </button>
+           <button class="btn btn-social-icon-text btn-youtube" type="button">
+            <i class="mdi mdi-youtube">
+            </i>
+            Youtube
+           </button>
+           <button class="btn btn-social-icon-text btn-twitter" type="button">
+            <i class="mdi mdi-twitter">
+            </i>
+            Twitter
+           </button>
+           <button class="btn btn-social-icon-text btn-dribbble" type="button">
+            <i class="mdi mdi-dribbble">
+            </i>
+            Dribbble
+           </button>
+           <button class="btn btn-social-icon-text btn-linkedin" type="button">
+            <i class="mdi mdi-linkedin">
+            </i>
+            Linkedin
+           </button>
+           <button class="btn btn-social-icon-text btn-google" type="button">
+            <i class="mdi mdi-google-plus">
+            </i>
+            Google
+           </button>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- content-wrapper ends -->
+     <!-- partial:../../partials/_footer.html -->
+     <footer class="footer">
+      <div class="d-sm-flex justify-content-center justify-content-sm-between">
+       <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">
+        Copyright © bootstrapdash.com 2020
+       </span>
+       <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+        Free
+        <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">
+         Bootstrap admin templates
+        </a>
+        from Bootstrapdash.com
+       </span>
+      </div>
+     </footer>
+     <!-- partial -->
+    </div>
+    <!-- main-panel ends -->
+   </div>
+   <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <script src="../../assets/vendors/js/vendor.bundle.base.js">
+  </script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="../../assets/js/off-canvas.js">
+  </script>
+  <script src="../../assets/js/hoverable-collapse.js">
+  </script>
+  <script src="../../assets/js/misc.js">
+  </script>
+  <script src="../../assets/js/settings.js">
+  </script>
+  <script src="../../assets/js/todolist.js">
+  </script>
+  <!-- endinject -->
+ </body>
+</html>

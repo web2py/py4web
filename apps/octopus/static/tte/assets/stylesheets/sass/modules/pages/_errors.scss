@@ -1,0 +1,98 @@
+// WRAPPER
+// -----------------------------------------------------------------------------
+/* Error Pages - wrappers */
+.body-error {
+	margin: 0 auto;
+	max-width: 900px;
+	width: 100%;
+
+	&.error-outside {
+		display: table;
+		height: 100vh;
+
+		.center-error {
+			display: table-cell;
+			vertical-align: middle;
+		}
+	}
+
+	&.error-inside {
+		margin-top: 150px;
+	}
+}
+
+// HEADER
+// -----------------------------------------------------------------------------
+/* Error Pages - header */
+.body-error {
+	.error-header {
+		border-bottom: 1px solid #DADADA;
+		margin-bottom: 50px;
+		padding-bottom: 15px;
+
+		.form {
+			margin-top: 12px;
+		}
+	}
+}
+
+// TYPO
+// -----------------------------------------------------------------------------
+/* Error Pages - typo */
+.body-error {
+	.error-code {
+		@include font-size(140);
+		@include line-height(140);
+		letter-spacing: -10px;
+	}
+
+	.error-explanation {
+		@include font-size(20);
+		@include line-height(36);
+	}
+}
+
+// RESPONSIVE
+// -----------------------------------------------------------------------------
+/* Error Pages - Responsive */
+@media only screen and (max-width: 1150px) {
+	.body-error.error-inside {
+		margin-top: 50px;
+		padding-bottom: 50px;
+	}
+}
+@media only screen and (min-width: 768px) and (max-width: 1150px) {
+	.body-error.error-inside {
+		.error-code {
+			@include font-size(100);
+			@include line-height(100);
+			letter-spacing: -7px;
+		}
+
+		.error-explanation {
+			@include font-size(18);
+			@include line-height(32);
+		}
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.body-error {
+
+		.error-code {
+			@include font-size(90);
+			@include line-height(90);
+			letter-spacing: -7px;
+		}
+
+		.error-explanation {
+			@include font-size(16);
+			@include line-height(28);
+		}
+	}
+
+	.body-error.error-outside {
+		height: auto;
+		padding: 20px;
+	}
+}

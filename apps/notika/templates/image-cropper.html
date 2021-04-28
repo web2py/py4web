@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+ <head>
+            <!-- 01.12.2020 12:08:03 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+  <title>biorex title text</title>
+  <meta content="" name="description"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- favicon
+		============================================ -->
+  <link href="[%[=URL('static/tte/img/favicon.ico') ]]" rel="shortcut icon" type="image/x-icon"/>
+  <!-- Google Fonts
+		============================================ -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet"/>
+  <!-- Bootstrap CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <!-- font awesome CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/font-awesome.min.css') ]]" rel="stylesheet"/>
+  <!-- owl.carousel CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/owl.carousel.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/owl.theme.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/owl.transitions.css') ]]" rel="stylesheet"/>
+  <!-- meanmenu CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/meanmenu/meanmenu.min.css') ]]" rel="stylesheet"/>
+  <!-- animate CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/animate.css') ]]" rel="stylesheet"/>
+  <!-- normalize CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/normalize.css') ]]" rel="stylesheet"/>
+  <!-- mCustomScrollbar CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/scrollbar/jquery.mCustomScrollbar.min.css') ]]" rel="stylesheet"/>
+  <!-- Notika icon CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/notika-custom-icon.css') ]]" rel="stylesheet"/>
+  <!-- wave CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/wave/waves.min.css') ]]" rel="stylesheet"/>
+  <!-- cropper CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/cropper/cropper.min.css') ]]" rel="stylesheet"/>
+  <!-- main CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/main.css') ]]" rel="stylesheet"/>
+  <!-- style CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/style.css') ]]" rel="stylesheet"/>
+  <!-- responsive CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/responsive.css') ]]" rel="stylesheet"/>
+  <!-- modernizr JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/vendor/modernizr-2.8.3.min.js') ]]"></script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    background-color: LightGray;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-weight: bold;
+    border: 1px dashed black;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+  <!-- Start Header Top Area -->
+  <div class="header-top-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+      <div class="logo-area">
+       <a href="#">
+        <img alt="" src="[%[=URL('static/tte/img/logo/logo.png') ]]"/></a>
+      </div>
+     </div>
+     <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+      <div class="header-top-menu">
+       <ul class="nav navbar-nav notika-top-nav">
+        <li class="nav-item dropdown">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-search"></i>
+          </span>
+         </a>
+         <div class="dropdown-menu search-dd animated flipInX" role="menu">
+          <div class="search-input">
+           <i class="notika-icon notika-left-arrow"></i>
+           
+
+<!-- BEGIN view: fimageXcropper0, db_table: dfimageXcropper0 -->
+<div>
+[%[= fimageXcropper0.custom['begin'] ]]
+ [%[ fimageXcropper0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fimageXcropper0.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fimageXcropper0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fimageXcropper0.custom['errors']['f0'] if 'f0' in fimageXcropper0.custom['errors'] else '' ]]</span>
+
+ [%[ fimageXcropper0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fimageXcropper0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fimageXcropper0.custom['submit']['_rows']= '1'  ]]
+ [%[ fimageXcropper0.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fimageXcropper0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fimageXcropper0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fimageXcropper0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fimageXcropper0.custom['hidden_widgets'].keys(): ]]
+     [%[= fimageXcropper0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfimageXcropper0 flashdiv"> <span class="flashspan">fimageXcropper0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfimageXcropper0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fimageXcropper0.custom['end'] ]]
+</div>
+<!-- END fimageXcropper0-->
+
+</div>
+         </div>
+        </li>
+        <li class="nav-item dropdown">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-mail"></i>
+          </span>
+         </a>
+         <div class="dropdown-menu message-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Messages</h2>
+          </div>
+          <div class="hd-message-info">
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Jonathan Morris</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/4.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Fredric Mitchell</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Glenn Jecobs</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+        <li class="nav-item nc-al">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-alarm"></i>
+          </span>
+          <div class="spinner4 spinner-4"></div>
+          <div class="ntd-ctn">
+           <span>3</span>
+          </div>
+         </a>
+         <div class="dropdown-menu message-dd notification-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Notification</h2>
+          </div>
+          <div class="hd-message-info">
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Jonathan Morris</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/4.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Fredric Mitchell</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Glenn Jecobs</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-menus"></i>
+          </span>
+          <div class="spinner4 spinner-4"></div>
+          <div class="ntd-ctn">
+           <span>2</span>
+          </div>
+         </a>
+         <div class="dropdown-menu message-dd task-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Tasks</h2>
+          </div>
+          <div class="hd-message-info hd-task-info">
+           <div class="skill">
+            <div class="progress">
+             <div class="lead-content">
+              <p>HTML5 Validation Report</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="95%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 95%;">
+              <span>95%</span>
+             </div>
+            </div>
+            <div class="progress">
+             <div class="lead-content">
+              <p>Google Chrome Extension</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="85%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 85%;">
+              <span>85%</span>
+             </div>
+            </div>
+            <div class="progress">
+             <div class="lead-content">
+              <p>Social Internet Projects</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="75%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 75%;">
+              <span>75%</span>
+             </div>
+            </div>
+            <div class="progress">
+             <div class="lead-content">
+              <p>Bootstrap Admin</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="65%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 65%;">
+              <span>65%</span>
+             </div>
+            </div>
+            <div class="progress progress-bt">
+             <div class="lead-content">
+              <p>Youtube App</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="55%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 55%;">
+              <span>55%</span>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-chat"></i>
+          </span>
+         </a>
+         <div class="dropdown-menu message-dd chat-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Chat</h2>
+          </div>
+          <div class="search-people">
+           <i class="notika-icon notika-left-arrow"></i>
+           
+
+<!-- BEGIN view: fimageXcropper1, db_table: dfimageXcropper1 -->
+<div>
+[%[= fimageXcropper1.custom['begin'] ]]
+ [%[ fimageXcropper1.custom['widgets']['f0']['_placeholder']= 'Search People_p4w'  ]]
+ [%[ fimageXcropper1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fimageXcropper1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fimageXcropper1.custom['errors']['f0'] if 'f0' in fimageXcropper1.custom['errors'] else '' ]]</span>
+
+ [%[ fimageXcropper1.custom['submit']['_placeholder']= ''  ]]
+ [%[ fimageXcropper1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fimageXcropper1.custom['submit']['_rows']= '1'  ]]
+ [%[ fimageXcropper1.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fimageXcropper1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fimageXcropper1.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fimageXcropper1.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fimageXcropper1.custom['hidden_widgets'].keys(): ]]
+     [%[= fimageXcropper1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfimageXcropper1 flashdiv"> <span class="flashspan">fimageXcropper1</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfimageXcropper1');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fimageXcropper1.custom['end'] ]]
+</div>
+<!-- END fimageXcropper1-->
+
+</div>
+          <div class="hd-message-info">
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/>
+              <div class="chat-avaible">
+               <i class="notika-icon notika-dot"></i>
+              </div>
+             </div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Available</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Jonathan Morris</h3>
+              <p>Last seen 3 hours ago</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/4.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Fredric Mitchell</h3>
+              <p>Last seen 2 minutes ago</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/>
+              <div class="chat-avaible">
+               <i class="notika-icon notika-dot"></i>
+              </div>
+             </div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Available</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/>
+              <div class="chat-avaible">
+               <i class="notika-icon notika-dot"></i>
+              </div>
+             </div>
+             <div class="hd-mg-ctn">
+              <h3>Glenn Jecobs</h3>
+              <p>Available</p>
+             </div>
+            </div>
+           </a>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- End Header Top Area -->
+  <!-- Mobile Menu start -->
+  <div class="mobile-menu-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="mobile-menu">
+       <nav id="dropdown">
+        <ul class="mobile-menu-nav">
+         <li>
+          <a data-target="#Charts" data-toggle="collapse" href="#">Home</a>
+          <ul class="collapse dropdown-header-top">
+           <li>
+            <a href="[%[=URL('index') ]]">Dashboard One</a>
+           </li>
+           <li>
+            <a href="[%[=URL('indexX2') ]]">Dashboard Two</a>
+           </li>
+           <li>
+            <a href="[%[=URL('indexX3') ]]">Dashboard Three</a>
+           </li>
+           <li>
+            <a href="[%[=URL('indexX4') ]]">Dashboard Four</a>
+           </li>
+           <li>
+            <a href="[%[=URL('analytics') ]]">Analytics</a>
+           </li>
+           <li>
+            <a href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demoevent" data-toggle="collapse" href="#">Email</a>
+          <ul class="collapse dropdown-header-top" id="demoevent">
+           <li>
+            <a href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li>
+            <a href="[%[=URL('viewXemail') ]]">View Email</a>
+           </li>
+           <li>
+            <a href="[%[=URL('composeXemail') ]]">Compose Email</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#democrou" data-toggle="collapse" href="#">Interface</a>
+          <ul class="collapse dropdown-header-top" id="democrou">
+           <li>
+            <a href="[%[=URL('animations') ]]">Animations</a>
+           </li>
+           <li>
+            <a href="[%[=URL('googleXmap') ]]">Google Map</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dataXmap') ]]">Data Maps</a>
+           </li>
+           <li>
+            <a href="[%[=URL('codeXeditor') ]]">Code Editor</a>
+           </li>
+           <li>
+            <a href="[%[=URL('imageXcropper') ]]">Images Cropper</a>
+           </li>
+           <li>
+            <a href="[%[=URL('wizard') ]]">Wizard</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demolibra" data-toggle="collapse" href="#">Charts</a>
+          <ul class="collapse dropdown-header-top" id="demolibra">
+           <li>
+            <a href="[%[=URL('flotXcharts') ]]">Flot Charts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('barXcharts') ]]">Bar Charts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('lineXcharts') ]]">Line Charts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('areaXcharts') ]]">Area Charts</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demodepart" data-toggle="collapse" href="#">Tables</a>
+          <ul class="collapse dropdown-header-top" id="demodepart">
+           <li>
+            <a href="[%[=URL('normalXtable') ]]">Normal Table</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dataXtable') ]]">Data Table</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demo" data-toggle="collapse" href="#">Forms</a>
+          <ul class="collapse dropdown-header-top" id="demo">
+           <li>
+            <a href="[%[=URL('formXelements') ]]">Form Elements</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXcomponents') ]]">Form Components</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXexamples') ]]">Form Examples</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#Miscellaneousmob" data-toggle="collapse" href="#">App views</a>
+          <ul class="collapse dropdown-header-top" id="Miscellaneousmob">
+           <li>
+            <a href="[%[=URL('notification') ]]">Notifications</a>
+           </li>
+           <li>
+            <a href="[%[=URL('alert') ]]">Alerts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('modals') ]]">Modals</a>
+           </li>
+           <li>
+            <a href="[%[=URL('buttons') ]]">Buttons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tabs') ]]">Tabs</a>
+           </li>
+           <li>
+            <a href="[%[=URL('accordion') ]]">Accordion</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dialog') ]]">Dialogs</a>
+           </li>
+           <li>
+            <a href="[%[=URL('popovers') ]]">Popovers</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tooltips') ]]">Tooltips</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dropdown') ]]">Dropdowns</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#Pagemob" data-toggle="collapse" href="#">Pages</a>
+          <ul class="collapse dropdown-header-top" id="Pagemob">
+           <li>
+            <a href="[%[=URL('contact') ]]">Contact</a>
+           </li>
+           <li>
+            <a href="[%[=URL('invoice') ]]">Invoice</a>
+           </li>
+           <li>
+            <a href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li>
+            <a href="[%[=URL('color') ]]">Color</a>
+           </li>
+           <li>
+            <a href="[%[=URL('loginXregister') ]]">Login Register</a>
+           </li>
+           <li>
+            <a href="[%[=URL('X404') ]]">404 Page</a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </nav>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Mobile Menu end -->
+  <!-- Main Menu area start-->
+  <div class="main-menu-area mg-tb-40">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <ul class="nav nav-tabs notika-menu-wrap menu-it-icon-pro">
+       <li>
+        <a data-toggle="tab" href="#Home">
+         <i class="notika-icon notika-house"></i>
+         Home
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#mailbox">
+         <i class="notika-icon notika-mail"></i>
+         Email
+        </a>
+       </li>
+       <li class="active">
+        <a data-toggle="tab" href="#Interface">
+         <i class="notika-icon notika-edit"></i>
+         Interface
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Charts">
+         <i class="notika-icon notika-bar-chart"></i>
+         Charts
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Tables">
+         <i class="notika-icon notika-windows"></i>
+         Tables
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Forms">
+         <i class="notika-icon notika-form"></i>
+         Forms
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Appviews">
+         <i class="notika-icon notika-app"></i>
+         App views
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Page">
+         <i class="notika-icon notika-support"></i>
+         Pages
+        </a>
+       </li>
+      </ul>
+      <div class="tab-content custom-menu-content">
+       <div class="tab-pane in notika-tab-menu-bg animated flipInX" id="Home">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('index') ]]">Dashboard One</a>
+         </li>
+         <li>
+          <a href="[%[=URL('indexX2') ]]">Dashboard Two</a>
+         </li>
+         <li>
+          <a href="[%[=URL('indexX3') ]]">Dashboard Three</a>
+         </li>
+         <li>
+          <a href="[%[=URL('indexX4') ]]">Dashboard Four</a>
+         </li>
+         <li>
+          <a href="[%[=URL('analytics') ]]">Analytics</a>
+         </li>
+         <li>
+          <a href="[%[=URL('widgets') ]]">Widgets</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="mailbox">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('inbox') ]]">Inbox</a>
+         </li>
+         <li>
+          <a href="[%[=URL('viewXemail') ]]">View Email</a>
+         </li>
+         <li>
+          <a href="[%[=URL('composeXemail') ]]">Compose Email</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane active notika-tab-menu-bg animated flipInX" id="Interface">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('animations') ]]">Animations</a>
+         </li>
+         <li>
+          <a href="[%[=URL('googleXmap') ]]">Google Map</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dataXmap') ]]">Data Maps</a>
+         </li>
+         <li>
+          <a href="[%[=URL('codeXeditor') ]]">Code Editor</a>
+         </li>
+         <li>
+          <a href="[%[=URL('imageXcropper') ]]">Images Cropper</a>
+         </li>
+         <li>
+          <a href="[%[=URL('wizard') ]]">Wizard</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Charts">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('flotXcharts') ]]">Flot Charts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('barXcharts') ]]">Bar Charts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('lineXcharts') ]]">Line Charts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('areaXcharts') ]]">Area Charts</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Tables">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('normalXtable') ]]">Normal Table</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dataXtable') ]]">Data Table</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Forms">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('formXelements') ]]">Form Elements</a>
+         </li>
+         <li>
+          <a href="[%[=URL('formXcomponents') ]]">Form Components</a>
+         </li>
+         <li>
+          <a href="[%[=URL('formXexamples') ]]">Form Examples</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Appviews">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('notification') ]]">Notifications</a>
+         </li>
+         <li>
+          <a href="[%[=URL('alert') ]]">Alerts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('modals') ]]">Modals</a>
+         </li>
+         <li>
+          <a href="[%[=URL('buttons') ]]">Buttons</a>
+         </li>
+         <li>
+          <a href="[%[=URL('tabs') ]]">Tabs</a>
+         </li>
+         <li>
+          <a href="[%[=URL('accordion') ]]">Accordion</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dialog') ]]">Dialogs</a>
+         </li>
+         <li>
+          <a href="[%[=URL('popovers') ]]">Popovers</a>
+         </li>
+         <li>
+          <a href="[%[=URL('tooltips') ]]">Tooltips</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dropdown') ]]">Dropdowns</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Page">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('contact') ]]">Contact</a>
+         </li>
+         <li>
+          <a href="[%[=URL('invoice') ]]">Invoice</a>
+         </li>
+         <li>
+          <a href="[%[=URL('typography') ]]">Typography</a>
+         </li>
+         <li>
+          <a href="[%[=URL('color') ]]">Color</a>
+         </li>
+         <li>
+          <a href="[%[=URL('loginXregister') ]]">Login Register</a>
+         </li>
+         <li>
+          <a href="[%[=URL('X404') ]]">404 Page</a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Main Menu area End-->
+  <!-- Breadcomb area Start-->
+  <div class="breadcomb-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="breadcomb-list">
+       <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="breadcomb-wp">
+          <div class="breadcomb-icon">
+           <i class="notika-icon notika-edit"></i>
+          </div>
+          <div class="breadcomb-ctn">
+           <h2>Image Cropper</h2>
+           <p>
+            Welcome to Notika
+            <span class="bread-ntd">Admin Template</span>
+           </p>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-3">
+         <div class="breadcomb-report">
+          <button class="btn" data-placement="left" data-toggle="tooltip" title="Download Report">
+           <i class="notika-icon notika-sent"></i>
+          </button>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Breadcomb area End-->
+  <!-- Image Cropper area Start-->
+  <div class="images-cropper-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="image-cropper-wp">
+       <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="image-crop">
+          <img alt="" src="[%[=URL('static/tte/img/cropper/1.jpg') ]]"/></div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="preview-img-pro-ad">
+          <div class="maincrop-img">
+           <div class="image-crp-int">
+            <h4>Preview image</h4>
+            <div class="img-preview img-preview-custom"></div>
+           </div>
+           <div class="image-crp-img">
+            <h4>Comon method</h4>
+            <p>You can upload new image to crop.</p>
+            <div class="btn-group images-cropper-pro">
+             <label class="btn btn-primary img-cropper-cp" for="inputImage" title="Upload image file">
+              <input accept="image/*" class="hide" id="inputImage" name="file" type="file"/>
+              Upload new image
+             </label>
+             <label class="btn btn-primary" id="download" title="Donload image">
+              Download
+             </label>
+            </div>
+           </div>
+          </div>
+          <div class="cp-img-anal">
+           <h4>Other method</h4>
+           <p>
+            You may set cropper options with
+            <code>
+             $(image}).cropper(options)
+            </code>
+           </p>
+           <div class="btn-group images-action-pro">
+            <button class="btn btn-white" id="zoomIn" type="button">Zoom In</button>
+            <button class="btn btn-white" id="zoomOut" type="button">Zoom Out</button>
+            <button class="btn btn-white" id="rotateLeft" type="button">Rotate Left</button>
+            <button class="btn btn-white" id="rotateRight" type="button">Rotate Right</button>
+            <button class="btn btn-warning img-cropper-cp-t" id="setDrag" type="button">New crop</button>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Image Cropper area End-->
+  <!-- Start Footer area-->
+  <div class="footer-copyright-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="footer-copy-right">
+       <p>
+        Copyright © 2018 
+. All rights reserved. Template by
+        <a href="https://colorlib.com">Colorlib</a>
+        .
+       </p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- End Footer area-->
+  <!-- jquery
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/vendor/jquery-1.12.4.min.js') ]]"></script>
+  <!-- bootstrap JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/bootstrap.min.js') ]]"></script>
+  <!-- wow JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/wow.min.js') ]]"></script>
+  <!-- price-slider JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/jquery-price-slider.js') ]]"></script>
+  <!-- owl.carousel JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/owl.carousel.min.js') ]]"></script>
+  <!-- scrollUp JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/jquery.scrollUp.min.js') ]]"></script>
+  <!-- meanmenu JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/meanmenu/jquery.meanmenu.js') ]]"></script>
+  <!-- counterup JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/counterup/jquery.counterup.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/counterup/waypoints.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/counterup/counterup-active.js') ]]"></script>
+  <!-- mCustomScrollbar JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/scrollbar/jquery.mCustomScrollbar.concat.min.js') ]]"></script>
+  <!-- sparkline JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/sparkline/jquery.sparkline.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/sparkline/sparkline-active.js') ]]"></script>
+  <!-- flot JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/flot/jquery.flot.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/jquery.flot.resize.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/flot-active.js') ]]"></script>
+  <!-- knob JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/knob/jquery.knob.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/knob/jquery.appear.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/knob/knob-active.js') ]]"></script>
+  <!-- cropper JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/cropper/cropper.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/cropper/cropper-actice.js') ]]"></script>
+  <!--  wave JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/wave/waves.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/wave/wave-active.js') ]]"></script>
+  <!--  Chat JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/chat/jquery.chat.js') ]]"></script>
+  <!--  todo JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/todo/jquery.todo.js') ]]"></script>
+  <!-- plugins JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/plugins.js') ]]"></script>
+  <!-- main JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/main.js') ]]"></script>
+  <!-- tawk chat JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/tawk-chat.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+    const forms_url = [%[ =XML( page_url ) ]];
+
+    for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, 
+                 { method: 'POST', 
+                   body: new FormData( document.forms[i] ) 
+                 });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: '3 sec & will hide',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+  }
+</script>
+
+
+ </body>
+</html>

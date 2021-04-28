@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 08.12.2020 08:51:35 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <link href="[%[=URL('static/tte/images/fav_icon.png') ]]" rel="shortcut icon" type="image/x-icon"/>
+  <!-- Bulma Version 0.9.0-->
+  <link href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" rel="stylesheet"/>
+  <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/contact.css') ]]" rel="stylesheet"/>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!-- START NAV -->
+  <nav class="navbar">
+   <div class="container">
+    <div class="navbar-brand">
+     <a class="navbar-item" href="[%[=URL('index') ]]">
+      <img alt="Logo" src="[%[=URL('static/tte/images/bulma.png') ]]"/></a>
+     <span class="navbar-burger burger" data-target="navbarMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+     </span>
+    </div>
+    <div class="navbar-menu" id="navbarMenu">
+     <div class="navbar-end">
+      <a class="navbar-item is-active">Home</a>
+      <a class="navbar-item">Examples</a>
+      <a class="navbar-item">Features</a>
+      <a class="navbar-item">Team</a>
+      <a class="navbar-item">Archives</a>
+      <a class="navbar-item">Help</a>
+      <div class="navbar-item has-dropdown is-hoverable">
+       <a class="navbar-link">Account</a>
+       <div class="navbar-dropdown">
+        <a class="navbar-item">Dashboard</a>
+        <a class="navbar-item">Profile</a>
+        <a class="navbar-item">Settings</a>
+        <hr class="navbar-divider"/>
+        <div class="navbar-item">Logout</div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </nav>
+  <!-- END NAV -->
+  <section class="hero is-fullheight">
+   <div class="hero-body">
+    <div class="container has-text-centered">
+     <div class="columns is-8 is-variable">
+      <div class="column is-two-thirds has-text-left">
+       <h1 class="title is-1">Contact Us</h1>
+       <p class="is-size-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla eligendi soluta voluptate facere molestiae consequatur.</p>
+       <div class="social-media">
+        <a class="button is-light is-large" href="https://facebook.com" target="_blank">
+         <i aria-hidden="true" class="fa fa-facebook-square"></i>
+        </a>
+        <a class="button is-light is-large" href="https://instagram.com" target="_blank">
+         <i aria-hidden="true" class="fa fa-instagram"></i>
+        </a>
+        <a class="button is-light is-large" href="https://twitter.com" target="_blank">
+         <i aria-hidden="true" class="fa fa-twitter"></i>
+        </a>
+       </div>
+      </div>
+      <div class="column is-one-third has-text-left">
+       <div class="field">
+        <label class="label">
+         Name
+        </label>
+        <div class="control">
+         
+
+<!-- BEGIN view: fcontact0, db_table: dfcontact0 -->
+<div>
+[%[= fcontact0.custom['begin'] ]]
+ [%[ fcontact0.custom['widgets']['f0']['_class']= 'input is-medium'  ]]
+ [%[ fcontact0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fcontact0.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fcontact0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fcontact0.custom['errors']['f0'] if 'f0' in fcontact0.custom['errors'] else '' ]]</span>
+
+ [%[ fcontact0.custom['submit']['_class']= 'input is-medium mysubmit_cls'  ]]
+ [%[ fcontact0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fcontact0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fcontact0.custom['submit']['_rows']= '1'  ]]
+ [%[ fcontact0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fcontact0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fcontact0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fcontact0.custom['hidden_widgets'].keys(): ]]
+     [%[= fcontact0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fcontact0</span></div>
+
+
+[%[= fcontact0.custom['end'] ]]
+</div>
+<!-- END fcontact0-->
+
+</div>
+       </div>
+       <div class="field">
+        <label class="label">
+         Email
+        </label>
+        <div class="control">
+         
+
+<!-- BEGIN view: fcontact1, db_table: dfcontact1 -->
+<div>
+[%[= fcontact1.custom['begin'] ]]
+ [%[ fcontact1.custom['widgets']['f0']['_class']= 'input is-medium'  ]]
+ [%[ fcontact1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fcontact1.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fcontact1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fcontact1.custom['errors']['f0'] if 'f0' in fcontact1.custom['errors'] else '' ]]</span>
+
+ [%[ fcontact1.custom['submit']['_class']= 'input is-medium mysubmit_cls'  ]]
+ [%[ fcontact1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fcontact1.custom['submit']['_placeholder']= ''  ]]
+ [%[ fcontact1.custom['submit']['_rows']= '1'  ]]
+ [%[ fcontact1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fcontact1.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fcontact1.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fcontact1.custom['hidden_widgets'].keys(): ]]
+     [%[= fcontact1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fcontact1</span></div>
+
+
+[%[= fcontact1.custom['end'] ]]
+</div>
+<!-- END fcontact1-->
+
+</div>
+       </div>
+       <div class="field">
+        <label class="label">
+         Message
+        </label>
+        <div class="control">
+         
+
+<!-- BEGIN view: fcontact2, db_table: dfcontact2 -->
+<div>
+[%[= fcontact2.custom['begin'] ]]
+ [%[ fcontact2.custom['widgets']['f0']['_class']= 'textarea is-medium'  ]]
+ [%[ fcontact2.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fcontact2.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fcontact2.custom['errors']['f0'] if 'f0' in fcontact2.custom['errors'] else '' ]]</span>
+
+ [%[ fcontact2.custom['submit']['_class']= 'textarea is-medium mysubmit_cls'  ]]
+ [%[ fcontact2.custom['submit']['_type']= 'submit'  ]]
+ [%[ fcontact2.custom['submit']['_rows']= '1'  ]]
+ [%[ fcontact2.custom['submit']['_placeholder']= ''  ]]
+ [%[ fcontact2.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fcontact2.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fcontact2.custom['submit'] ]]
+
+ [%[ for hidden_widget in fcontact2.custom['hidden_widgets'].keys(): ]]
+     [%[= fcontact2.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fcontact2</span></div>
+
+
+[%[= fcontact2.custom['end'] ]]
+</div>
+<!-- END fcontact2-->
+
+
+        </div>
+       </div>
+       <div class="control">
+        <button class="button is-link is-fullwidth has-text-weight-medium is-medium" type="submit">Send Message</button>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section>
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 9000); }
+     }();
+</script>
+
+</body>
+</html>

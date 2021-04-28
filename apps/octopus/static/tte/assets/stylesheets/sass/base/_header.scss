@@ -1,0 +1,124 @@
+// HEADER
+// -----------------------------------------------------------------------------
+/* Header */
+.header {
+	@include linear-gradient(#F6F6F6 0%, #FFFFFF 45%);
+	border: {
+		bottom: 1px solid #E9E9E6;
+		top: 3px solid #EDEDED;
+	}
+	z-index: $header-z-index;
+
+	.logo {
+		float: left;
+		margin: 10px 0 0 15px;
+		img {
+			color: transparent;
+		}
+	}
+
+	.separator {
+		@include linear-gradient(#F6F6F6 60%, #EDEDED);
+		display: inline-block;
+		height: 100%;
+		margin: 0 25px 0;
+		width: 2px;
+		vertical-align: middle;
+	}
+
+	.search {
+		width: 170px;
+		display: inline-block;
+		vertical-align: middle;
+	}
+
+	.toggle-sidebar-left {
+		background: $color-primary;
+		border-radius: 100px;
+		color: $color-primary-inverse;
+		height: 30px;
+		line-height: 30px;
+		position: absolute;
+		right: 15px;
+		text-align: center;
+		top: 14px;
+		width: 30px;
+	}
+}
+
+.header-right {
+	float: right;
+	height: $header-height - 4px;
+}
+
+// HEADER MOBILE
+// -----------------------------------------------------------------------------
+/* Header Mobile */
+@media only screen and (max-width: 767px) {
+	.header {
+		.logo-container {
+			@include linear-gradient(#F6F6F6 0%, #FFFFFF 45%);
+			border: {
+				bottom: 1px solid #E9E9E6;
+				top: 3px solid #EDEDED;
+			}
+
+			.logo {
+				float: none;
+				display: inline-block;
+				line-height: $header-height - 3;
+				margin-top: 0;
+			}
+		}
+
+		.search,
+		.separator {
+			display: none;
+		}
+	}
+}
+
+// HEADER DARK AND DARK VERSION
+// -----------------------------------------------------------------------------
+/* Header Dark */
+html.dark,
+html.header-dark {
+	.header {
+		background: $sidebar-background;
+		border-bottom-color: darken( $sidebar-background, 3% );
+		border-top-color: $sidebar-background;
+
+		@media only screen and (max-width: 767px) {
+		.logo-container {
+				background: $sidebar-background;
+				border-bottom-color: darken( $sidebar-background, 3% );
+				border-top-color: $sidebar-background;
+			}
+
+			.header-right {
+				background: $sidebar-background;
+			}
+		}
+
+		.separator {
+			@include linear-gradient($sidebar-background 10%, darken( $sidebar-background, 5% ));
+		}
+
+		.input-search {
+			input {
+				&,
+				&:focus {
+					background: lighten( $sidebar-background, 5% );
+					border-color: darken( $sidebar-background, 3% );
+					box-shadow: 0 1px 1px rgba(0, 0, 0, 0.40) inset;
+					color: #FFF;
+				}
+			}
+
+			.input-group-btn .btn-default {
+				background: transparent;
+				color: $page-header-color;
+			}
+		}
+	}
+}

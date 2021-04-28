@@ -1,0 +1,35 @@
+.toast-position-picker[data-v-689c0b2f] {
+    width: 112px;
+    height: 76px
+}
+
+.position-boxes-row[data-v-689c0b2f] {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row
+}
+
+.position-boxes-row[data-v-689c0b2f]:first-child {
+    margin-bottom: 2px
+}
+
+.position-box[data-v-689c0b2f] {
+    height: 36px;
+    width: 36px;
+    margin-right: 2px;
+    cursor: pointer;
+    opacity: .3
+}
+
+.position-box[data-v-689c0b2f]:last-child {
+    margin-right: 0
+}
+
+.position-box[data-v-689c0b2f]:hover {
+    opacity: .6
+}
+
+.position-box.selected[data-v-689c0b2f] {
+    opacity: 1
+}

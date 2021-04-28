@@ -1,0 +1,14 @@
+[[extend 'p4w_layout.html']]
+
+<a role="button" href="[[=URL(  'index'  )]]">goto index</a>
+<a role="button" href="[[=URL(  'tabinfo'  )]]">goto tabinfo</a>
+
+
+[[ if len(messages) != 0: ]]
+    [[=messages ]]
+[[pass]]
+
+
+[[=upload_form ]]
+[[=mygrid]]
+

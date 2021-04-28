@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 12:04:49 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <meta content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5" name="description"/>
+  <meta content="AdminKit" name="author"/>
+  <meta content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web" name="keywords"/>
+  <link href="[%[=URL('static/tte/img/icons/icon-48x48.png') ]]" rel="shortcut icon"/>
+  <title>biorex title text</title>
+  <link href="[%[=URL('static/tte/css/app.css') ]]" rel="stylesheet"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <div class="wrapper">
+   <nav class="sidebar" id="sidebar">
+    <div class="sidebar-content js-simplebar">
+     <a class="sidebar-brand" href="[%[=URL('index') ]]">
+      <span class="align-middle">AdminKit</span>
+     </a>
+     <ul class="sidebar-nav">
+      <li class="sidebar-header">Pages</li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('index') ]]">
+        <i class="align-middle" data-feather="sliders"></i>
+        <span class="align-middle">Dashboard</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXprofile') ]]">
+        <i class="align-middle" data-feather="user"></i>
+        <span class="align-middle">Profile</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXsettings') ]]">
+        <i class="align-middle" data-feather="settings"></i>
+        <span class="align-middle">Settings</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXinvoice') ]]">
+        <i class="align-middle" data-feather="credit-card"></i>
+        <span class="align-middle">Invoice</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXblank') ]]">
+        <i class="align-middle" data-feather="book"></i>
+        <span class="align-middle">Blank</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link collapsed" data-toggle="collapse" href="#auth">
+        <i class="align-middle" data-feather="users"></i>
+        <span class="align-middle">Auth</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar" id="auth">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('pagesXsignXin') ]]">Sign In</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('pagesXsignXup') ]]">Sign Up</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-header">Tools &amp; Components</li>
+      <li class="sidebar-item active">
+       <a class="sidebar-link" data-target="#ui" data-toggle="collapse">
+        <i class="align-middle" data-feather="briefcase"></i>
+        <span class="align-middle">UI Elements</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse show" data-parent="#sidebar" id="ui">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXalerts') ]]">Alerts</a>
+        </li>
+        <li class="sidebar-item active">
+         <a class="sidebar-link" href="[%[=URL('uiXbuttons') ]]">Buttons</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXcards') ]]">Cards</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXgeneral') ]]">General</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXgrid') ]]">Grid</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXmodals') ]]">Modals</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXtypography') ]]">Typography</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('iconsXfeather') ]]">
+        <i class="align-middle" data-feather="coffee"></i>
+        <span class="align-middle">Icons</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link collapsed" data-target="#forms" data-toggle="collapse">
+        <i class="align-middle" data-feather="check-circle"></i>
+        <span class="align-middle">Forms</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar" id="forms">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('formsXlayouts') ]]">Form Layouts</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('formsXbasicXinputs') ]]">Basic Inputs</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('tablesXbootstrap') ]]">
+        <i class="align-middle" data-feather="list"></i>
+        <span class="align-middle">Tables</span>
+       </a>
+      </li>
+      <li class="sidebar-header">Plugins &amp; Addons</li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('chartsXchartjs') ]]">
+        <i class="align-middle" data-feather="bar-chart-2"></i>
+        <span class="align-middle">Charts</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('mapsXgoogle') ]]">
+        <i class="align-middle" data-feather="map"></i>
+        <span class="align-middle">Maps</span>
+       </a>
+      </li>
+     </ul>
+     <div class="sidebar-cta">
+      <div class="sidebar-cta-content">
+       <strong class="d-inline-block mb-2">Upgrade to Pro</strong>
+       <div class="mb-3 text-sm">Are you looking for more components? Check out our premium version.</div>
+       <a class="btn btn-primary btn-block" href="https://adminkit.io/pricing" target="_blank">Upgrade to Pro</a>
+      </div>
+     </div>
+    </div>
+   </nav>
+   <div class="main">
+    <nav class="navbar navbar-expand navbar-light navbar-bg">
+     <a class="sidebar-toggle d-flex">
+      <i class="hamburger align-self-center"></i>
+     </a>
+     
+<!-- BEGIN view: fuiXbuttons0, db_table: dfuiXbuttons0 -->
+<div class="d-none d-sm-inline-block">
+[%[= fuiXbuttons0.custom['begin'] ]]
+<div class="input-group input-group-navbar">
+ [%[ fuiXbuttons0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fuiXbuttons0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fuiXbuttons0.custom['widgets']['f0']['_placeholder']= 'Search'  ]]
+ [%[ fuiXbuttons0.custom['widgets']['f0']['_aria-label']= 'Search'  ]]
+ [%[= fuiXbuttons0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fuiXbuttons0.custom['errors']['f0'] if 'f0' in fuiXbuttons0.custom['errors'] else '' ]]</span>
+
+ [%[ fuiXbuttons0.custom['submit']['_class']= 'btn'  ]]
+ [%[ fuiXbuttons0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fuiXbuttons0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fuiXbuttons0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fuiXbuttons0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fuiXbuttons0.custom['submit'] ]]
+
+</div>
+
+ [%[ for hidden_widget in fuiXbuttons0.custom['hidden_widgets'].keys(): ]]
+     [%[= fuiXbuttons0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fuiXbuttons0</span></div>
+
+
+[%[= fuiXbuttons0.custom['end'] ]]
+</div>
+<!-- END fuiXbuttons0-->
+
+     <div class="navbar-collapse collapse">
+      <ul class="navbar-nav navbar-align">
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle" data-toggle="dropdown" href="#" id="alertsDropdown">
+         <div class="position-relative">
+          <i class="align-middle" data-feather="bell"></i>
+          <span class="indicator">4</span>
+         </div>
+        </a>
+        <div aria-labelledby="alertsDropdown" class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0">
+         <div class="dropdown-menu-header">4 New Notifications</div>
+         <div class="list-group">
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-danger" data-feather="alert-circle"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Update completed</div>
+             <div class="text-muted small mt-1">Restart server 12 to complete the update.</div>
+             <div class="text-muted small mt-1">30m ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-warning" data-feather="bell"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Lorem ipsum</div>
+             <div class="text-muted small mt-1">Aliquam ex eros, imperdiet vulputate hendrerit et.</div>
+             <div class="text-muted small mt-1">2h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-primary" data-feather="home"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Login from 192.186.1.8</div>
+             <div class="text-muted small mt-1">5h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-success" data-feather="user-plus"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">New connection</div>
+             <div class="text-muted small mt-1">Christina accepted your request.</div>
+             <div class="text-muted small mt-1">14h ago</div>
+            </div>
+           </div>
+          </a>
+         </div>
+         <div class="dropdown-menu-footer">
+          <a class="text-muted" href="#">Show all notifications</a>
+         </div>
+        </div>
+       </li>
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle" data-toggle="dropdown" href="#" id="messagesDropdown">
+         <div class="position-relative">
+          <i class="align-middle" data-feather="message-square"></i>
+         </div>
+        </a>
+        <div aria-labelledby="messagesDropdown" class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0">
+         <div class="dropdown-menu-header">
+          <div class="position-relative">4 New Messages</div>
+         </div>
+         <div class="list-group">
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Vanessa Tucker" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-5.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Vanessa Tucker</div>
+             <div class="text-muted small mt-1">Nam pretium turpis et arcu. Duis arcu tortor.</div>
+             <div class="text-muted small mt-1">15m ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="William Harris" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-2.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">William Harris</div>
+             <div class="text-muted small mt-1">Curabitur ligula sapien euismod vitae.</div>
+             <div class="text-muted small mt-1">2h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Christina Mason" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-4.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Christina Mason</div>
+             <div class="text-muted small mt-1">Pellentesque auctor neque nec urna.</div>
+             <div class="text-muted small mt-1">4h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Sharon Lessman" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-3.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Sharon Lessman</div>
+             <div class="text-muted small mt-1">Aenean tellus metus, bibendum sed, posuere ac, mattis non.</div>
+             <div class="text-muted small mt-1">5h ago</div>
+            </div>
+           </div>
+          </a>
+         </div>
+         <div class="dropdown-menu-footer">
+          <a class="text-muted" href="#">Show all messages</a>
+         </div>
+        </div>
+       </li>
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" data-toggle="dropdown" href="#">
+         <i class="align-middle" data-feather="settings"></i>
+        </a>
+        <a class="nav-link dropdown-toggle d-none d-sm-inline-block" data-toggle="dropdown" href="#">
+         <img alt="Charles Hall" class="avatar img-fluid rounded mr-1" src="[%[=URL('static/tte/img/avatars/avatar.jpg') ]]"/>
+         <span class="text-dark">Charles Hall</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+         <a class="dropdown-item" href="[%[=URL('pagesXprofile') ]]">
+          <i class="align-middle mr-1" data-feather="user"></i>
+          Profile
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="align-middle mr-1" data-feather="pie-chart"></i>
+          Analytics
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item" href="[%[=URL('pagesXsettings') ]]">
+          <i class="align-middle mr-1" data-feather="settings"></i>
+          Settings &amp; Privacy
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="align-middle mr-1" data-feather="help-circle"></i>
+          Help Center
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item" href="#">Log out</a>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </nav>
+    <main class="content">
+     <div class="container-fluid p-0">
+      <h1 class="h3 mb-3">Buttons</h1>
+      <div class="row">
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Basic Buttons</h5>
+          <h6 class="card-subtitle text-muted">Default Bootstrap buttons style.</h6>
+         </div>
+         <div class="card-body text-center">
+          <div class="mb-3">
+           <button class="btn btn-primary">Primary</button>
+           <button class="btn btn-secondary">Secondary</button>
+           <button class="btn btn-success">Success</button>
+           <button class="btn btn-danger">Danger</button>
+           <button class="btn btn-warning">Warning</button>
+           <button class="btn btn-info">Info</button>
+          </div>
+          <div>
+           <button class="btn btn-primary" disabled="">Primary</button>
+           <button class="btn btn-secondary" disabled="">Secondary</button>
+           <button class="btn btn-success" disabled="">Success</button>
+           <button class="btn btn-danger" disabled="">Danger</button>
+           <button class="btn btn-warning" disabled="">Warning</button>
+           <button class="btn btn-info" disabled="">Info</button>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Rounded Buttons</h5>
+          <h6 class="card-subtitle text-muted">Rounded Bootstrap buttons.</h6>
+         </div>
+         <div class="card-body text-center">
+          <div class="mb-3">
+           <button class="btn btn-pill btn-primary">Primary</button>
+           <button class="btn btn-pill btn-secondary">Secondary</button>
+           <button class="btn btn-pill btn-success">Success</button>
+           <button class="btn btn-pill btn-danger">Danger</button>
+           <button class="btn btn-pill btn-warning">Warning</button>
+           <button class="btn btn-pill btn-info">Info</button>
+          </div>
+          <div>
+           <button class="btn btn-pill btn-primary" disabled="">Primary</button>
+           <button class="btn btn-pill btn-secondary" disabled="">Secondary</button>
+           <button class="btn btn-pill btn-success" disabled="">Success</button>
+           <button class="btn btn-pill btn-danger" disabled="">Danger</button>
+           <button class="btn btn-pill btn-warning" disabled="">Warning</button>
+           <button class="btn btn-pill btn-info" disabled="">Info</button>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Outline Buttons</h5>
+          <h6 class="card-subtitle text-muted">Buttons without background color.</h6>
+         </div>
+         <div class="card-body text-center">
+          <div class="mb-3">
+           <button class="btn btn-outline-primary">Primary</button>
+           <button class="btn btn-outline-secondary">Secondary</button>
+           <button class="btn btn-outline-success">Success</button>
+           <button class="btn btn-outline-danger">Danger</button>
+           <button class="btn btn-outline-warning">Warning</button>
+           <button class="btn btn-outline-info">Info</button>
+          </div>
+          <div>
+           <button class="btn btn-outline-primary" disabled="">Primary</button>
+           <button class="btn btn-outline-secondary" disabled="">Secondary</button>
+           <button class="btn btn-outline-success" disabled="">Success</button>
+           <button class="btn btn-outline-danger" disabled="">Danger</button>
+           <button class="btn btn-outline-warning" disabled="">Warning</button>
+           <button class="btn btn-outline-info" disabled="">Info</button>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Square Buttons</h5>
+          <h6 class="card-subtitle text-muted">Buttons without border radius.</h6>
+         </div>
+         <div class="card-body text-center">
+          <div class="mb-3">
+           <button class="btn btn-square btn-primary">Primary</button>
+           <button class="btn btn-square btn-secondary">Secondary</button>
+           <button class="btn btn-square btn-success">Success</button>
+           <button class="btn btn-square btn-danger">Danger</button>
+           <button class="btn btn-square btn-warning">Warning</button>
+           <button class="btn btn-square btn-info">Info</button>
+          </div>
+          <div>
+           <button class="btn btn-square btn-primary" disabled="">Primary</button>
+           <button class="btn btn-square btn-secondary" disabled="">Secondary</button>
+           <button class="btn btn-square btn-success" disabled="">Success</button>
+           <button class="btn btn-square btn-danger" disabled="">Danger</button>
+           <button class="btn btn-square btn-warning" disabled="">Warning</button>
+           <button class="btn btn-square btn-info" disabled="">Info</button>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Icon Buttons</h5>
+          <h6 class="card-subtitle text-muted">Default Bootstrap buttons with icons.</h6>
+         </div>
+         <div class="card-body text-center">
+          <div class="mb-3">
+           <button class="btn btn-primary">
+            <i class="far fa-smile"></i>
+            Primary
+           </button>
+           <button class="btn btn-secondary">
+            <i class="fas fa-globe-americas"></i>
+            Secondary
+           </button>
+           <button class="btn btn-success">
+            <i class="fas fa-check"></i>
+            Success
+           </button>
+           <button class="btn btn-danger">
+            <i class="fas fa-times"></i>
+            Danger
+           </button>
+           <button class="btn btn-warning">
+            <i class="fas fa-exclamation"></i>
+            Warning
+           </button>
+           <button class="btn btn-info">
+            <i class="fas fa-info"></i>
+            Info
+           </button>
+          </div>
+          <div>
+           <button class="btn btn-primary">
+            <i class="far fa-smile"></i>
+           </button>
+           <button class="btn btn-secondary">
+            <i class="fas fa-globe-americas"></i>
+           </button>
+           <button class="btn btn-success">
+            <i class="fas fa-check"></i>
+           </button>
+           <button class="btn btn-danger">
+            <i class="fas fa-times"></i>
+           </button>
+           <button class="btn btn-warning">
+            <i class="fas fa-exclamation"></i>
+           </button>
+           <button class="btn btn-info">
+            <i class="fas fa-info"></i>
+           </button>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Button Sizes</h5>
+          <h6 class="card-subtitle text-muted">Fancy larger or smaller buttons.</h6>
+         </div>
+         <div class="card-body text-center">
+          <div class="mb-3">
+           <button class="btn btn-primary btn-sm">Small</button>
+           <button class="btn btn-primary">Medium</button>
+           <button class="btn btn-primary btn-lg">Large</button>
+          </div>
+          <div>
+           <button class="btn btn-primary btn-sm">
+            <i class="fas fa-globe-americas"></i>
+            Small
+           </button>
+           <button class="btn btn-primary">
+            <i class="fas fa-globe-americas"></i>
+            Medium
+           </button>
+           <button class="btn btn-primary btn-lg">
+            <i class="fas fa-globe-americas"></i>
+            Large
+           </button>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Button Dropdown</h5>
+          <h6 class="card-subtitle text-muted">Dropdowns styles with buttons.</h6>
+         </div>
+         <div class="card-body text-center">
+          <div class="mb-3">
+           <div class="btn-group">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" type="button">Primary</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" type="button">Secondary</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-success dropdown-toggle" data-toggle="dropdown" type="button">Success</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" type="button">Danger</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" type="button">Warning</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-info dropdown-toggle" data-toggle="dropdown" type="button">Info</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+          </div>
+          <div>
+           <div class="btn-group btn-group-sm">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" type="button">Primary</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group btn-group-sm">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" type="button">Secondary</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group btn-group-sm">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-success dropdown-toggle" data-toggle="dropdown" type="button">Success</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group btn-group-sm">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" type="button">Danger</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group btn-group-sm">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" type="button">Warning</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group btn-group-sm">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-info dropdown-toggle" data-toggle="dropdown" type="button">Info</button>
+            <div class="dropdown-menu">
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Button Group</h5>
+          <h6 class="card-subtitle text-muted">Button group components.</h6>
+         </div>
+         <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Horizontal button group</h6>
+          <div aria-label="Large button group" class="btn-group btn-group-lg mb-3" role="group">
+           <button class="btn btn-secondary" type="button">Left</button>
+           <button class="btn btn-secondary" type="button">Middle</button>
+           <button class="btn btn-secondary" type="button">Right</button>
+          </div>
+          <br/>
+          <div aria-label="Default button group" class="btn-group mb-3" role="group">
+           <button class="btn btn-secondary" type="button">Left</button>
+           <button class="btn btn-secondary" type="button">Middle</button>
+           <button class="btn btn-secondary" type="button">Right</button>
+          </div>
+          <br/>
+          <div aria-label="Small button group" class="btn-group btn-group-sm mb-4" role="group">
+           <button class="btn btn-secondary" type="button">Left</button>
+           <button class="btn btn-secondary" type="button">Middle</button>
+           <button class="btn btn-secondary" type="button">Right</button>
+          </div>
+          <h6 class="card-subtitle mb-2 text-muted">Button toolbar</h6>
+          <div aria-label="Toolbar with button groups" class="btn-toolbar mb-4" role="toolbar">
+           <div aria-label="First group" class="btn-group mr-2" role="group">
+            <button class="btn btn-secondary" type="button">1</button>
+            <button class="btn btn-secondary" type="button">2</button>
+            <button class="btn btn-secondary" type="button">3</button>
+            <button class="btn btn-secondary" type="button">4</button>
+           </div>
+           <div aria-label="Second group" class="btn-group mr-2" role="group">
+            <button class="btn btn-secondary" type="button">5</button>
+            <button class="btn btn-secondary" type="button">6</button>
+            <button class="btn btn-secondary" type="button">7</button>
+           </div>
+           <div aria-label="Third group" class="btn-group" role="group">
+            <button class="btn btn-secondary" type="button">8</button>
+           </div>
+          </div>
+          <h6 class="card-subtitle mb-2 text-muted">Vertical button group</h6>
+          <div class="btn-toolbar">
+           <div aria-label="Vertical button group" class="btn-group-vertical mr-2" role="group">
+            <button class="btn btn-primary" type="button">Button</button>
+            <button class="btn btn-primary" type="button">Button</button>
+            <button class="btn btn-primary" type="button">Button</button>
+           </div>
+           <div aria-label="Vertical button group" class="btn-group-vertical mr-2" role="group">
+            <button class="btn btn-success" type="button">Button</button>
+            <button class="btn btn-success" type="button">Button</button>
+            <button class="btn btn-success" type="button">Button</button>
+           </div>
+           <div aria-label="Vertical button group" class="btn-group-vertical mr-2" role="group">
+            <button class="btn btn-warning" type="button">Button</button>
+            <button class="btn btn-warning" type="button">Button</button>
+            <button class="btn btn-warning" type="button">Button</button>
+           </div>
+           <div aria-label="Vertical button group" class="btn-group-vertical mr-2" role="group">
+            <button class="btn btn-danger" type="button">Button</button>
+            <button class="btn btn-danger" type="button">Button</button>
+            <button class="btn btn-danger" type="button">Button</button>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- /.row -->
+     </div>
+    </main>
+    <footer class="footer">
+     <div class="container-fluid">
+      <div class="row text-muted">
+       <div class="col-6 text-left">
+        <p class="mb-0">
+         <a class="text-muted" href="[%[=URL('index') ]]">
+          <strong>AdminKit Demo</strong>
+         </a>
+         ©
+        </p>
+       </div>
+       <div class="col-6 text-right">
+        <ul class="list-inline">
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Support</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Help Center</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Privacy</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Terms</a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </footer>
+   </div>
+  </div>
+  <script src="[%[=URL('static/tte/js/app.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+/* Navbar */
+@mixin menu-style {
+	@include media-breakpoint-up(md) {
+		position: absolute;
+		top: 77px;
+		z-index: 999;
+		background: $horizontal-bottom-bg;
+		border-top: none;
+		border-radius: 4px;
+		box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
+		-webkit-box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
+		li {
+			a {
+				position: relative;
+				padding-left: 20px;	
+				&::before {
+					position: absolute;
+					content: "";
+					width: 6px;
+					height: 2px;
+					border-radius: 100%;
+					background: theme-color(secondary);
+					top: 12px;
+					left: 0;
+				}			
+			}
+		}
+	}
+	@include media-breakpoint-down(md) {
+		position: relative;
+		top:0;
+		box-shadow: none;
+	}
+}
+
+@mixin show-submenu {
+	.submenu {
+		display: block;
+	}
+
+	> .nav-link {
+		background: $horizontal-bottom-menu-item-hover-bg;
+		i,
+		.menu-title {
+			color: $horizontal-bottom-menu-item-hover-color;
+			transition: color 1s ease;
+		}
+		.menu-arrow {
+			@include transform(rotate(-180deg));
+			@include transform-origin(center);
+            @include transition-duration($action-transition-duration);
+		}
+	}
+}

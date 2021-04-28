@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+ <!-- Mirrored from nafplann.bulma-admin.dev/datatables by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 31 Jul 2019 05:38:01 GMT -->
+ <!-- Added by HTTrack -->
+ <head>
+            <!-- 03.12.2020 11:33:23 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta content="text/html;charset=utf-8" http-equiv="content-type"/>
+  <!-- /Added by HTTrack -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <meta charset="utf-8"/>
+  <meta content="Free Admin Dashboard Template Build with Bulma.io By nafplann" name="description"/>
+  <meta content="Bulma,CSS,Admin,Template,Free,Download" name="keywords"/>
+  <meta content="en-EN" name="language"/>
+  <meta content="Abdul Manaaf" name="author"/>
+  <link href="https://fonts.googleapis.com/icon?family=Poppins" rel="stylesheet"/>
+  <link href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/app.css') ]]" rel="stylesheet"/>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    margin: 0.2em auto 0.2em auto !important;
+    padding: 0 0 0 0 !important;
+    border: 1px dashed black;
+    color: black;
+    background-color: LightGray;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <!-- START NAV -->
+  <nav aria-label="main navigation" class="navbar columns is-fixed-top" id="app-header" role="navigation">
+   <div class="navbar-brand column is-2 is-paddingless">
+    <a class="navbar-item" href="[%[=URL('index') ]]">BULMA ADMIN</a>
+    <a aria-expanded="false" aria-label="menu" class="navbar-burger" data-target="touchMenu" role="button">
+     <span aria-hidden="true"></span>
+     <span aria-hidden="true"></span>
+     <span aria-hidden="true"></span>
+    </a>
+   </div>
+   <div id="touchMenu"></div>
+   <div class="navbar-menu column is-hidden-touch" id="navMenu">
+    <!-- <div class="navbar-end">
+            <div class="navbar-item">
+                <a class="button is-white" onclick="Auth.logout()">
+                    <span class="icon">
+                        <i class="fa fa-bell"></i>
+                    </span>
+                </a>
+            </div>
+            <div class="navbar-item">
+                <a class="button is-white" onclick="Auth.logout()">
+                    <span class="icon">
+                        <i class="fa fa-sign-out"></i>
+                    </span>
+                </a>
+            </div>
+        </div> -->
+    <div class="navbar-end">
+     <div class="navbar-item">
+      <a class="button is-white" onclick="Auth.logout()">
+       <span class="icon">
+        <i class="fa fa-lg fa-bell"></i>
+       </span>
+      </a>
+     </div>
+     <div class="navbar-item">
+      <a class="button is-white" onclick="Auth.logout()">
+       <span class="icon">
+        <i class="fa fa-lg fa-power-off"></i>
+       </span>
+      </a>
+     </div>
+     <div class="navbar-item has-dropdown">
+      <a class="navbar-link">
+       <figure class="image avatar is-32x32">
+        <img class="is-rounded" src="[%[=URL('static/tte/images/user1.png') ]]"/>
+       </figure>
+       Hi, nafplann
+      </a>
+      <div class="navbar-dropdown is-right">
+       <a class="navbar-item">Overview</a>
+       <a class="navbar-item">Elements</a>
+       <a class="navbar-item">Components</a>
+       <hr class="navbar-divider"/>
+       <div class="navbar-item">Version 0.7.1</div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </nav>
+  <!-- END NAV -->
+  <div class="columns" id="app-content">
+   <div class="column is-2 is-fullheight is-hidden-touch" id="navigation">
+    <aside class="menu">
+     <p class="menu-label is-hidden-touch">General</p>
+     <ul class="menu-list">
+      <li>
+       <a class="" href="[%[=URL('index') ]]">
+        <span class="icon">
+         <i class="fa fa-home"></i>
+        </span>
+        Dashboard
+       </a>
+      </li>
+      <li>
+       <a class="" href="[%[=URL('forms') ]]">
+        <span class="icon">
+         <i class="fa fa-edit"></i>
+        </span>
+        Forms
+       </a>
+      </li>
+      <li>
+       <a class="" href="[%[=URL('elements') ]]">
+        <span class="icon">
+         <i class="fa fa-desktop"></i>
+        </span>
+        UI Elements
+       </a>
+      </li>
+      <li>
+       <a class="is-active" href="[%[=URL('datatables') ]]">
+        <span class="icon">
+         <i class="fa fa-table"></i>
+        </span>
+        Datatables
+       </a>
+      </li>
+     </ul>
+     <p class="menu-label is-hidden-touch">Sample Pages</p>
+     <ul class="menu-list">
+      <li>
+       <a class="" href="[%[=URL('login') ]]">
+        <span class="icon">
+         <i class="fa fa-lock"></i>
+        </span>
+        Login
+       </a>
+      </li>
+     </ul>
+    </aside>
+   </div>
+   <div class="column is-10" id="page-content">
+    <div class="content-header">
+     <h4 class="title is-4">Datatables</h4>
+     <span class="separator"></span>
+     <nav aria-label="breadcrumbs" class="breadcrumb has-bullet-separator">
+      <ul>
+       <li>
+        <a href="#">General</a>
+       </li>
+       <li class="is-active">
+        <a aria-current="page" href="#">Datatables</a>
+       </li>
+      </ul>
+     </nav>
+    </div>
+    <div class="content-body">
+     <div class="card">
+      <div class="card-filter">
+       <div class="field">
+        <div class="control has-icons-left has-icons-right">
+         
+
+<!-- BEGIN view: fdatatables0, db_table: dfdatatables0 -->
+<div>
+[%[= fdatatables0.custom['begin'] ]]
+ [%[ fdatatables0.custom['widgets']['f0']['_class']= 'input'  ]]
+ [%[ fdatatables0.custom['widgets']['f0']['_id']= 'table-search'  ]]
+ [%[ fdatatables0.custom['widgets']['f0']['_placeholder']= 'Search for records..._p4w'  ]]
+ [%[ fdatatables0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fdatatables0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fdatatables0.custom['errors']['f0'] if 'f0' in fdatatables0.custom['errors'] else '' ]]</span>
+
+ [%[ fdatatables0.custom['submit']['_class']= 'input mysubmit_cls'  ]]
+ [%[ fdatatables0.custom['submit']['_id']= 'table-search'  ]]
+ [%[ fdatatables0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fdatatables0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fdatatables0.custom['submit']['_rows']= '1'  ]]
+ [%[ fdatatables0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fdatatables0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fdatatables0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fdatatables0.custom['hidden_widgets'].keys(): ]]
+     [%[= fdatatables0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfdatatables0 flashdiv"> <span class="flashspan">fdatatables0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfdatatables0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fdatatables0.custom['end'] ]]
+</div>
+<!-- END fdatatables0-->
+
+
+         <span class="icon is-left">
+          <i class="fa fa-search"></i>
+         </span>
+        </div>
+       </div>
+       <div class="field">
+        <div class="select">
+         <select id="table-length">
+          <option>
+           10
+          </option>
+          <option>
+           25
+          </option>
+          <option>
+           50
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="field has-addons">
+        <p class="control">
+         <a class="button" href="#">
+          <span class="icon is-small">
+           <i class="fa fa-plus"></i>
+          </span>
+          <span>Create Record</span>
+         </a>
+        </p>
+        <p class="control">
+         <a class="button" id="table-reload">
+          <span class="icon is-small">
+           <i class="fa fa-refresh"></i>
+          </span>
+          <span>Reload</span>
+         </a>
+        </p>
+       </div>
+      </div>
+      <div class="card-content">
+       
+<!--view: rows_tdatatables0, db_table: tdatatables0 -->
+  <table class="table is-hoverable is-bordered is-fullwidth" id="datatable">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Name</th>
+        <th class="has-text-centered">Action</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row0 in rows_tdatatables0: ]]
+        <tr>
+            <td>[%[= XML(row0.f0) ]]</td>
+            <td>[%[= XML(row0.f1) ]]</td>
+            <td class="has-text-centered">[%[= XML(row0.f2) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tdatatables0 -->
+
+
+<div class="divtdatatables0 flashdiv"> <span class="flashspan">tdatatables0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtdatatables0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+      </div>
+     </div>
+    </div>
+   </div>
+   <script src="[%[=URL('static/tte/js/app.js') ]]"></script>
+   <script>
+    $(document).ready(function() {
+    var table = $('#datatable').DataTable({
+        dom: "<'columns table-wrapper'<'column is-12'tr>><'columns table-footer-wrapper'<'column is-5'i><'column is-7'p>>"
+    });
+
+    $('#table-search').on('keyup', function() {
+        let value = $(this).val();
+        table.search(value).draw();
+    });
+
+    $('#table-length').on('change', function() {
+        let value = $(this).val();
+        table.page.len(value).draw();
+    });
+
+    $('#table-reload').on('click', function() {
+        table.draw();
+    });
+});
+   </script>
+   <!-- Global site tag (gtag.js) - Google Analytics -->
+   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-89250524-7"></script>
+   <script>
+    window.dataLayer = window.dataLayer || [];
+
+function gtag() {
+    dataLayer.push(arguments);
+}
+gtag('js', new Date());
+
+gtag('config', 'UA-89250524-7');
+   </script>
+   <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+   <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-7864475889913507",
+    enable_page_level_ads: true
+});
+   </script>
+   <script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "url": "https://www.nafplann.com/",
+    "name": "Abdul Manaaf | Fullstack Web Developer",
+    "author": "Abdul Manaaf",
+    "image": "https://avatars3.githubusercontent.com/u/7114259?s=460&v=4",
+    "description": "Abdul Manaaf is a Fullstack Web Developer from Indonesia",
+    "sameAs": ["https://www.facebook.com/nafplann", "https://instagram.com/nafplann", "https://twitter.com/nafplann", "https://id.linkedin.com/in/nafplann", "https://github.com/nafplann"]
+}</script>
+   <script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "Person",
+    "email": "mailto:nafplann@gmail.com",
+    "image": "https://avatars3.githubusercontent.com/u/7114259?s=460&v=4",
+    "jobTitle": "Fullstack Web Developer",
+    "name": "Abdul Manaaf",
+    "url": "https://www.nafplann.com/",
+    "sameAs": ["https://www.facebook.com/nafplann", "https://instagram.com/nafplann", "https://twitter.com/nafplann", "https://id.linkedin.com/in/nafplann", "https://github.com/nafplann"]
+}</script>
+   <script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+                "@id": "https://nafplann.com/",
+                "name": "Home",
+                "image": "https://avatars3.githubusercontent.com/u/7114259?s=460&v=4"
+            }
+        }, {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+                "@id": "https://nafplann.com/bulma-admin/",
+                "name": "free-bulma-admin-dashboard-template",
+                "image": "https://avatars3.githubusercontent.com/u/7114259?s=460&v=4"
+            }
+        }
+    }]
+}</script>
+  </div>
+ </body>
+ <!-- Mirrored from nafplann.bulma-admin.dev/datatables by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 31 Jul 2019 05:38:02 GMT -->
+</html>

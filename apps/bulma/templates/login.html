@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+ <head>
+            <!-- 08.12.2020 08:51:35 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet"> -->
+  <link href="https://fonts.googleapis.com/css?family=Questrial&amp;display=swap" rel="stylesheet"/>
+  <!-- Bulma Version 0.9.0-->
+  <link href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/login.css') ]]" rel="stylesheet" type="text/css"/>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <section class="hero is-success is-fullheight">
+   <div class="hero-body">
+    <div class="container has-text-centered">
+     <div class="column is-4 is-offset-4">
+      <h3 class="title has-text-black">Login</h3>
+      <hr class="login-hr"/>
+      <p class="subtitle has-text-black">Please login to proceed.</p>
+      <div class="box">
+       <figure class="avatar">
+        <img src="https://placehold.it/128x128"/>
+       </figure>
+       
+<!-- BEGIN view: flogin0, db_table: dflogin0 -->
+<div>
+[%[= flogin0.custom['begin'] ]]
+<div class="field">
+ <div class="control">
+ [%[ flogin0.custom['widgets']['f0']['_class']= 'input is-large'  ]]
+ [%[ flogin0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ flogin0.custom['widgets']['f0']['_placeholder']= 'Your Email_p4w'  ]]
+ [%[ flogin0.custom['widgets']['f0']['_autofocus']= '==0'  ]]
+ [%[= flogin0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= flogin0.custom['errors']['f0'] if 'f0' in flogin0.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="field">
+ <div class="control">
+ [%[ flogin0.custom['widgets']['f1']['_class']= 'input is-large'  ]]
+ [%[ flogin0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ flogin0.custom['widgets']['f1']['_placeholder']= 'Your Password_p4w'  ]]
+ [%[= flogin0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= flogin0.custom['errors']['f1'] if 'f1' in flogin0.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="field">
+ <label class="checkbox">
+ [%[ flogin0.custom['widgets']['f2']['_type']= 'checkbox'  ]]
+ [%[ flogin0.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= flogin0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= flogin0.custom['errors']['f2'] if 'f2' in flogin0.custom['errors'] else '' ]]</span>
+
+  Remember me
+ </label>
+</div>
+
+ [%[ flogin0.custom['submit']['_class']= 'button is-block is-info is-large is-fullwidth'  ]]
+ [%[ flogin0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ flogin0.custom['submit']['_type']= 'submit'  ]]
+ [%[ flogin0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ flogin0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= flogin0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in flogin0.custom['hidden_widgets'].keys(): ]]
+     [%[= flogin0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">flogin0</span></div>
+
+
+[%[= flogin0.custom['end'] ]]
+</div>
+<!-- END flogin0-->
+
+      </div>
+      <p class="has-text-grey">
+       <a href="[%[=URL('index') ]]">Sign Up</a>
+       ·
+       <a href="[%[=URL('index') ]]">Forgot Password</a>
+       ·
+       <a href="[%[=URL('index') ]]">Need Help?</a>
+      </p>
+     </div>
+    </div>
+   </div>
+  </section>
+  <script async="" src="[%[=URL('static/tte/js/bulma.js') ]]" type="text/javascript"></script>
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 9000); }
+     }();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,426 @@
+// SIZES
+// -----------------------------------------------------------------------------
+.text-xs {
+	@include font-size( 10 );
+}
+
+.text-sm {
+	@include font-size( 13 );
+}
+
+.text-md {
+	@include font-size( 16 );
+}
+
+.text-lg {
+	@include font-size( 19 );
+}
+
+.text-xl {
+	@include font-size( 22 );
+}
+
+// STATES
+// -----------------------------------------------------------------------------
+.text-muted {
+	color: $color-muted !important;
+}
+
+html.dark {
+	.text-muted {
+		color: darken( $dark-default-text, 20% ) !important;
+	}
+}
+
+@each $color in $colors-list {
+	.text-#{nth($color,1)} {
+		color: #{nth($color,2)} !important;
+	}
+}
+
+@each $color in $colors-list {
+	.text-#{nth($color,1)}-inverse {
+		color: #{nth($color,3)} !important;
+	}
+}
+
+// WEIGHTS
+// -----------------------------------------------------------------------------
+/* weights */
+.text-light {
+	font-weight: $font-weight-light;
+}
+
+.text-normal {
+	font-weight: $font-weight-normal;
+}
+
+.text-semibold {
+	font-weight: $font-weight-semibold;
+}
+
+.text-bold {
+	font-weight: $font-weight-bold;
+}
+
+// TEXT OTHERS
+// -----------------------------------------------------------------------------
+.text-uppercase {
+	text-transform: uppercase;
+}
+
+.text-lowercase {
+	text-transform: lowercase;
+}
+
+.text-capitalize {
+	text-transform: capitalize;
+}
+
+// BORDERS
+// -----------------------------------------------------------------------------
+.rounded {
+	border-radius: $border-radius;
+}
+
+.b-thin {
+	border-width: $border-thin;
+}
+
+.b-normal {
+	border-width: $border-normal;
+}
+
+.b-thick {
+	border-width: $border-thick;
+}
+
+// SPACEMENTS
+// -----------------------------------------------------------------------------
+/* Spacements */
+/* spacement top & bottom */
+.m-none {
+	margin: 0 !important;
+}
+
+.m-auto {
+	margin: 0 auto !important;
+}
+
+.m-xs {
+	margin: $spacement-xs !important;
+}
+
+.m-sm {
+	margin: $spacement-sm !important;
+}
+
+.m-md {
+	margin: $spacement-md !important;
+}
+
+.m-lg {
+	margin: $spacement-lg !important;
+}
+
+.m-xl {
+	margin: $spacement-xl !important;
+}
+
+.m-xlg {
+	margin: $spacement-xlg !important;
+}
+
+/* spacement top  */
+.mt-none {
+	margin-top: 0 !important;
+}
+
+.mt-xs {
+	margin-top: $spacement-xs !important;
+}
+
+.mt-sm {
+	margin-top: $spacement-sm !important;
+}
+
+.mt-md {
+	margin-top: $spacement-md !important;
+}
+
+.mt-lg {
+	margin-top: $spacement-lg !important;
+}
+
+.mt-xl {
+	margin-top: $spacement-xl !important;
+}
+
+.mt-xlg {
+	margin-top: $spacement-xlg !important;
+}
+
+/* spacement bottom  */
+.mb-none {
+	margin-bottom: 0 !important;
+}
+
+.mb-xs {
+	margin-bottom: $spacement-xs !important;
+}
+
+.mb-sm {
+	margin-bottom: $spacement-sm !important;
+}
+
+.mb-md {
+	margin-bottom: $spacement-md !important;
+}
+
+.mb-lg {
+	margin-bottom: $spacement-lg !important;
+}
+
+.mb-xl {
+	margin-bottom: $spacement-xl !important;
+}
+
+.mb-xlg {
+	margin-bottom: $spacement-xlg !important;
+}
+
+/* spacement left  */
+.mr-none {
+	margin-left: 0 !important;
+}
+
+.ml-xs {
+	margin-left: $spacement-xs !important;
+}
+
+.ml-sm {
+	margin-left: $spacement-sm !important;
+}
+
+.ml-md {
+	margin-left: $spacement-md !important;
+}
+
+.ml-lg {
+	margin-left: $spacement-lg !important;
+}
+
+.ml-xl {
+	margin-left: $spacement-xl !important;
+}
+
+.ml-xlg {
+	margin-left: $spacement-xlg !important;
+}
+
+/* spacement right  */
+.mr-none {
+	margin-right: 0 !important;
+}
+
+.mr-xs {
+	margin-right: $spacement-xs !important;
+}
+
+.mr-sm {
+	margin-right: $spacement-sm !important;
+}
+
+.mr-md {
+	margin-right: $spacement-md !important;
+}
+
+.mr-lg {
+	margin-right: $spacement-lg !important;
+}
+
+.mr-xl {
+	margin-right: $spacement-xl !important;
+}
+
+.mr-xlg {
+	margin-right: $spacement-xlg !important;
+}
+
+/* Spacement Padding */
+.p-none {
+	padding: 0 !important;
+}
+
+.p-xs {
+	padding: $spacement-xs !important;
+}
+
+.p-sm {
+	padding: $spacement-sm !important;
+}
+
+.p-md {
+	padding: $spacement-md !important;
+}
+
+.p-lg {
+	padding: $spacement-lg !important;
+}
+
+.p-xl {
+	padding: $spacement-xl !important;
+}
+
+.p-xlg {
+	padding: $spacement-xlg !important;
+}
+
+/* spacement top  */
+.pt-none {
+	padding-top: 0 !important;
+}
+
+.pt-xs {
+	padding-top: $spacement-xs !important;
+}
+
+.pt-sm {
+	padding-top: $spacement-sm !important;
+}
+
+.pt-md {
+	padding-top: $spacement-md !important;
+}
+
+.pt-lg {
+	padding-top: $spacement-lg !important;
+}
+
+.pt-xl {
+	padding-top: $spacement-xl !important;
+}
+
+.pt-xlg {
+	padding-top: $spacement-xlg !important;
+}
+
+/* spacement bottom  */
+.pb-none {
+	padding-bottom: 0 !important;
+}
+
+.pb-xs {
+	padding-bottom: $spacement-xs !important;
+}
+
+.pb-sm {
+	padding-bottom: $spacement-sm !important;
+}
+
+.pb-md {
+	padding-bottom: $spacement-md !important;
+}
+
+.pb-lg {
+	padding-bottom: $spacement-lg !important;
+}
+
+.pb-xl {
+	padding-bottom: $spacement-xl !important;
+}
+
+.pb-xlg {
+	padding-bottom: $spacement-xlg !important;
+}
+
+/* spacement left  */
+.pr-none {
+	padding-left: 0 !important;
+}
+
+.pl-xs {
+	padding-left: $spacement-xs !important;
+}
+
+.pl-sm {
+	padding-left: $spacement-sm !important;
+}
+
+.pl-md {
+	padding-left: $spacement-md !important;
+}
+
+.pl-lg {
+	padding-left: $spacement-lg !important;
+}
+
+.pl-xl {
+	padding-left: $spacement-xl !important;
+}
+
+.pl-xlg {
+	padding-left: $spacement-xlg !important;
+}
+
+/* spacement right  */
+.pr-none {
+	padding-right: 0 !important;
+}
+
+.pr-xs {
+	padding-right: $spacement-xs !important;
+}
+
+.pr-sm {
+	padding-right: $spacement-sm !important;
+}
+
+.pr-md {
+	padding-right: $spacement-md !important;
+}
+
+.pr-lg {
+	padding-right: $spacement-lg !important;
+}
+
+.pr-xl {
+	padding-right: $spacement-xl !important;
+}
+
+.pr-xlg {
+	padding-right: $spacement-xlg !important;
+}
+
+// HELPERS
+// -----------------------------------------------------------------------------
+.ib {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.va-middle {
+	vertical-align: middle;
+}
+
+.ws-nowrap {
+	white-space: nowrap;
+}
+
+.ws-normal {
+	white-space: normal;
+}
+
+// BG STATES
+// -----------------------------------------------------------------------------
+.bg-default {
+	background: $color-default;
+	color: $color-default-inverse;
+}
+
+@each $color in $colors-list {
+	.bg-#{nth($color,1)} {
+		background: #{nth($color,2)};
+		color: #{nth($color,3)};
+	}
+}

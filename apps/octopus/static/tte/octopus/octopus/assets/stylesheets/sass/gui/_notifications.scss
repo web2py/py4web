@@ -1,0 +1,248 @@
+// NOTIFICATIONS
+// -----------------------------------------------------------------------------
+/* Notifications */
+.notifications {
+	display: inline-block;
+	list-style: none;
+	margin: 4px -10px 0 0;
+	padding: 0;
+	vertical-align: middle;
+
+	& > li {
+		float: left;
+		margin: 0 10px 0 0;
+		position: relative;
+
+		.notification-icon {
+			background: #FFF;
+			border-radius: 50%;
+			box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.3);
+			display: inline-block;
+			height: 30px;
+			position: relative;
+			width: 30px;
+			text-align: center;
+
+			i {
+				color: #777;
+				line-height: 30px;
+				vertical-align: middle;
+
+				&.fa-tasks {
+					line-height: 32px;
+				}
+			}
+
+			.badge {
+				background: #D2312D;
+				color: #FFF;
+				font-size: 10px;
+				font-weight: normal;
+				height: 16px;
+				padding: 3px 5px 3px 5px;
+				position: absolute;
+				right: -8px;
+				top: -3px;
+			}
+		}
+
+		& > a {
+			border: none;
+			display: inline-block;
+		}
+	}
+
+	.notification-menu {
+		border: none;
+		box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+		left: auto;
+		margin: 10px 0 0 0;
+		padding: 0;
+		right: -5px;
+		width: $header-notification-menu-width;
+
+		&.large {
+			width: 325px;
+		}
+
+		.notification-title {
+			background: $header-notification-menu-title-background;
+			border-radius: $header-notification-menu-border-radius;
+			color: $header-notification-menu-title-color;
+			@include font-size($header-notification-menu-title-size);
+			@include line-height($header-notification-menu-title-size + 4);
+			padding: $header-notification-menu-title-padding;
+			text-transform: uppercase;
+
+			.label {
+				@include font-size($header-notification-menu-title-size - 1);
+				font-weight: 200;
+				line-height: 14px;
+				margin-left: 10px;
+				margin-top: -2px;
+				min-width: 35px;
+			}
+
+			.label-default {
+				background: $header-notification-menu-label-background;
+				color: #FFF;
+			}
+		}
+
+		.content {
+			padding: $header-notification-menu-padding;
+		}
+
+		hr {
+			background: $header-notification-menu-hr-background;
+			height: 1px;
+			margin: $header-notification-menu-hr-margin;
+		}
+
+		.view-more {
+			color: $header-notification-menu-view-more-color;
+			@include font-size($header-notification-menu-view-more-size);
+			@include line-height($header-notification-menu-view-more-size);
+			text-transform: uppercase;
+		}
+	}
+}
+
+// NOTIFICATION MENU - PIN
+// -----------------------------------------------------------------------------
+/* notification menu - pin */
+.notifications .notification-menu,
+.notifications .notification-icon {
+	&:before {
+		border: {
+			bottom: $header-notification-menu-pin-width solid $header-notification-menu-title-background;
+			left: $header-notification-menu-pin-width solid transparent;
+			right: $header-notification-menu-pin-width solid transparent;
+		}
+		content: '';
+		height: 0;
+		margin-right: -( $header-notification-menu-pin-width / 2);
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+	}
+}
+
+.notifications .notification-menu:before {
+	bottom: 100%;
+	right: 16px;
+}
+
+.notifications .notification-icon:before {
+	display: none;
+	right: 11px;
+	top: 35px;
+	z-index: 9999;
+}
+
+// NOTIFICATION MENU - EMAILS
+// -----------------------------------------------------------------------------
+/* notification menu - emails */
+.notification-menu {
+	color: $notification-menu-email-message-color;
+
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	li {
+		margin: 0 0 12px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	a {
+		display: block;
+		text-decoration: none;
+	}
+
+	.image {
+		float: left;
+		margin: 0 10px 0 0;
+
+		i {
+			border-radius: 35px;
+			height: 35px;
+			line-height: 35px;
+			text-align: center;
+			width: 35px;
+		}
+	}
+
+	.truncate {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.title {
+		color: $notification-menu-email-name-color;
+		display: block;
+		@include font-size($notification-menu-email-name-size);
+		@include line-height($notification-menu-email-name-size + 4);
+		padding: $notification-menu-email-name-padding;
+	}
+
+	.message {
+		color: $notification-menu-email-message-color;
+		display: block;
+		@include font-size($notification-menu-email-message-size);
+		@include line-height($notification-menu-email-message-size + 4);
+		padding: $notification-menu-email-message-padding;
+	}
+}
+
+// HEADER DARK AND DARK VERSION
+// -----------------------------------------------------------------------------
+html.dark,
+html.header-dark {
+	.notifications {
+		> li .notification-icon {
+			background: lighten( $sidebar-background, 5% );
+
+			i {
+				color: $page-header-color;
+			}
+		}
+	}
+}
+
+// NOTIFICATIONS
+// -----------------------------------------------------------------------------
+/* Notifications Mobile */
+@media only screen and (max-width: 767px) {
+	.notifications {
+		float: right;
+		margin: 16px 8px 0 0;
+
+		> li {
+			position: static;
+
+			&.open {
+				.notification-icon:before {
+					display: block;
+				}
+			}
+
+			.notification-menu {
+				left: 15px;
+				right: 15px;
+				top: auto;
+				width: auto !important;
+
+				&:before {
+					display: none;
+				}
+			}
+		}
+	}
+}

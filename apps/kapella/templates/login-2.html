@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 26.04.2021 17:25:08 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- base:css -->
+  <link href="[%[=URL('static/tte/vendors/mdi/css/materialdesignicons.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/vendors/base/vendor.bundle.base.css') ]]" rel="stylesheet"/>
+  <!-- endinject -->
+  <!-- plugin css for this page -->
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link href="[%[=URL('static/tte/css/style.css') ]]" rel="stylesheet"/>
+  <!-- endinject -->
+  <link href="[%[=URL('static/tte/images/favicon.png') ]]" rel="shortcut icon"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <div class="container-scroller">
+   <div class="container-fluid page-body-wrapper full-page-wrapper">
+    <div class="content-wrapper d-flex align-items-stretch auth auth-img-bg">
+     <div class="row flex-grow">
+      <div class="col-lg-6 d-flex align-items-center justify-content-center">
+       <div class="auth-form-transparent text-left p-3">
+        <div class="brand-logo">
+         <img alt="logo" src="[%[=URL('static/tte/images/logo.svg') ]]"/></div>
+        <h4>Welcome back!</h4>
+        <h6 class="font-weight-light">Happy to see you again!</h6>
+        
+<!-- BEGIN view: floginX20, db_table: dfloginX20 -->
+<div class="pt-3">
+[%[= floginX20.custom['begin'] ]]
+<div class="form-group">
+ <label for="exampleInputEmail">
+  Username
+ </label>
+ <div class="input-group">
+  <div class="input-group-prepend bg-transparent">
+   <span class="input-group-text bg-transparent border-right-0">
+    <i class="mdi mdi-account-outline text-primary">
+    </i>
+   </span>
+  </div>
+ [%[ floginX20.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ floginX20.custom['widgets']['f0']['_class']= 'form-control form-control-lg border-left-0'  ]]
+ [%[ floginX20.custom['widgets']['f0']['_id']= 'exampleInputEmail'  ]]
+ [%[ floginX20.custom['widgets']['f0']['_placeholder']= 'Username'  ]]
+ [%[= floginX20.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= floginX20.custom['errors']['f0'] if 'f0' in floginX20.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label for="exampleInputPassword">
+  Password
+ </label>
+ <div class="input-group">
+  <div class="input-group-prepend bg-transparent">
+   <span class="input-group-text bg-transparent border-right-0">
+    <i class="mdi mdi-lock-outline text-primary">
+    </i>
+   </span>
+  </div>
+ [%[ floginX20.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ floginX20.custom['widgets']['f1']['_class']= 'form-control form-control-lg border-left-0'  ]]
+ [%[ floginX20.custom['widgets']['f1']['_id']= 'exampleInputPassword'  ]]
+ [%[ floginX20.custom['widgets']['f1']['_placeholder']= 'Password'  ]]
+ [%[= floginX20.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= floginX20.custom['errors']['f1'] if 'f1' in floginX20.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="my-2 d-flex justify-content-between align-items-center">
+ <div class="form-check">
+  <label class="form-check-label text-muted">
+ [%[ floginX20.custom['widgets']['f2']['_type']= 'checkbox'  ]]
+ [%[ floginX20.custom['widgets']['f2']['_class']= 'form-check-input'  ]]
+ [%[ floginX20.custom['widgets']['f2']['_placeholder']= ''  ]]
+ [%[= floginX20.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= floginX20.custom['errors']['f2'] if 'f2' in floginX20.custom['errors'] else '' ]]</span>
+
+   Keep me signed in
+  </label>
+ </div>
+ <a class="auth-link text-black" href="#">
+  Forgot password?
+ </a>
+</div>
+
+<div class="my-3">
+ <a class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" href="[%[=URL('index')]]">
+  LOGIN
+ </a>
+</div>
+
+<div class="mb-2 d-flex">
+ [%[ floginX20.custom['submit']['_type']= 'submit'  ]]
+ [%[ floginX20.custom['submit']['_class']= 'btn btn-facebook auth-form-btn flex-grow mr-1'  ]]
+ [%[ floginX20.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ floginX20.custom['submit']['_value']= 'Submit'  ]]
+ [%[ floginX20.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= floginX20.custom['submit'] ]]
+
+ <button class="btn btn-google auth-form-btn flex-grow ml-1" type="button">
+  <i class="mdi mdi-google mr-2">
+  </i>
+  Google
+ </button>
+</div>
+
+<div class="text-center mt-4 font-weight-light">
+ Don't have an account?
+ <a class="text-primary" href="[%[=URL('index')]]">
+  Create
+ </a>
+</div>
+
+ [%[ for hidden_widget in floginX20.custom['hidden_widgets'].keys(): ]]
+     [%[= floginX20.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">floginX20</span></div>
+
+
+[%[= floginX20.custom['end'] ]]
+</div>
+<!-- END floginX20-->
+
+       </div>
+      </div>
+      <div class="col-lg-6 login-half-bg d-flex flex-row">
+       <p class="text-white font-weight-medium text-center flex-grow align-self-end">
+        Copyright © 2020  All rights reserved.
+       </p>
+      </div>
+     </div>
+    </div>
+    <!-- content-wrapper ends -->
+   </div>
+   <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- base:js -->
+  <script src="[%[=URL('static/tte/vendors/base/vendor.bundle.base.js') ]]"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page-->
+  <!-- End plugin js for this page-->
+  <!-- inject:js -->
+  <script src="[%[=URL('static/tte/js/template.js') ]]"></script>
+  <!-- endinject -->
+  <!-- plugin js for this page -->
+  <!-- End plugin js for this page -->
+  <!-- Custom js for this page-->
+  <!-- End custom js for this page-->
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

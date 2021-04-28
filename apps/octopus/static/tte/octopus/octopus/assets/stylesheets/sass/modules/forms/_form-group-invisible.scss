@@ -1,0 +1,54 @@
+// FORM GROUP INVISIBLE
+// -----------------------------------------------------------------------------
+/* Form Group Invisible */
+.form-group-invisible {
+	position: relative;
+
+	&.focus {
+		.control-label-invisible {
+			color: #0088cc;
+		}
+	}
+
+	.control-label-invisible {
+		bottom: 0;
+		display: block;
+		float: none;
+		left: 0;
+		line-height: 64px;
+		margin: 0;
+		padding-left: 50px;
+		position: absolute;
+		right: 0;
+		top: -15px;
+		@include transition( color ease-in-out .15s );
+		width: auto;
+	}
+
+	.form-control-invisible {
+		&,
+		&:focus,
+		&:active,
+		& + .bootstrap-tagsinput {
+			background: transparent !important;
+			border-color: transparent !important;
+			box-shadow: none !important;
+		}
+
+		& + .bootstrap-tagsinput {
+			margin-bottom: 4px;
+		}
+	}
+}
+
+
+
+@media only screen and (max-width: 767px) {
+	.form-group-invisible {
+		padding-top: 30px;
+
+		.control-label-invisible {
+			padding-left: 27px;
+		}
+	}
+}

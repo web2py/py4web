@@ -1,0 +1,139 @@
+// MAGNIFIC POPUP CONFIG
+// -----------------------------------------------------------------------------
+.mfp-bg {
+	z-index: 10000;
+}
+.mfp-wrap {
+	z-index: 10001;
+}
+
+// MODAL
+// -----------------------------------------------------------------------------
+.modal-block {
+	background: transparent;
+	padding: 0;
+	text-align: left;
+	max-width: 600px;
+	margin: 40px auto;
+	position: relative;
+	&.modal-block-xs {
+		max-width: 200px;
+	}
+	&.modal-block-sm {
+		max-width: 400px;
+	}
+	&.modal-block-md {
+		max-width: 600px;
+	}
+	&.modal-block-lg {
+		max-width: 900px;
+	}
+	&.modal-block-full {
+		max-width: 98%;
+	}
+	&.modal-header-color {
+		.panel-heading {
+			h2 {
+				color: #FFF;
+			}
+		}
+	}
+	&.modal-full-color {
+		.panel-heading {
+			border: 0;
+			h2 {
+				color: #FFF;
+			}
+		}
+		.panel-footer {
+			border: 0;
+		}
+		.panel-body {
+			background-color: transparent;
+		}
+		.fa {
+			color: #FFF !important;
+		}
+		color: #FFF;
+	}
+}
+
+/* Modal Wrapper */
+.modal-wrapper {
+	position: relative;
+	padding: 25px 0;
+}
+
+/* Modal Icon */
+.modal-icon {
+	float: left;
+	width: 20%;
+	text-align: center;
+	.fa {
+		font-size: 52px;
+		position: relative;
+		top: -10px;
+		color: $color-primary;
+	}
+	&.center {
+		float: none;
+		width: auto;
+		padding-top: 20px;
+		+ .modal-text {
+			float: none;
+			width: auto;
+		}
+	}
+	+ .modal-text {
+		float: left;
+		width: 80%;
+	}
+}
+
+/* Modal Text */
+.modal-text {
+	padding: 0 5px;
+	h1, h2, h3, h4, h5, h6 {
+		padding: 0;
+		margin: -7px 0 4px 0;
+	}
+}
+
+// STATES
+// -----------------------------------------------------------------------------
+@each $state in $states {
+	.modal-block-#{nth($state,1)} {
+		.fa {
+			color: #{nth($state,2)};
+		}
+		&.modal-header-color {
+			.panel-heading {
+				background-color: #{nth($state,2)};
+			}
+		}
+		&.modal-full-color {
+			.panel {
+				background-color: lighten(nth($state,2), 8%);
+			}
+			.panel-heading {
+				background-color: #{nth($state,2)};
+			}
+			.panel-footer {
+				background-color: lighten(nth($state,2), 8%);
+			}
+		}
+	}
+}
+
+// DARK
+// -----------------------------------------------------------------------------
+html.dark {
+	.modal-content {
+		background-color: $dark-bg;
+	}
+
+	.modal-header,
+	.modal-footer {
+		border-color: $dark-color-3;
+	}
+}

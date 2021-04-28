@@ -1,0 +1,42 @@
+/* Word Rotate */
+.word-rotate {
+	visibility: hidden;
+	width: 100px;
+	height: 0px;
+	margin-bottom: -7px;
+	display: inline-block;
+	overflow: hidden;
+	text-align: center;
+	position: relative;
+	top: -1px;
+	&.active {
+		visibility: visible;
+		width: auto;
+	}
+	.word-rotate-items {
+		position: relative;
+		top: 0;
+		width: 100%;
+		span {
+			display: block;
+			white-space: nowrap;
+		}
+	}
+	&.highlight {
+		top: 1px;
+	}
+}
+
+/* Word Rotate - Titles */
+h1 .word-rotate {
+	margin-bottom: -12px;
+}
+
+h2 {
+	.word-rotate {
+		margin-bottom: -12px;
+	}
+	&.word-rotator-title {
+		line-height: 54px;
+	}
+}

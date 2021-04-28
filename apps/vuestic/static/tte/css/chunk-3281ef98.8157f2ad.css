@@ -1,0 +1,26 @@
+.va-chart {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center
+}
+
+.va-chart,
+.va-chart>* {
+    width: 100%;
+    height: 100%
+}
+
+.va-chart canvas {
+    width: 100%;
+    height: auto
+}
+
+.chart-widget .va-card__body {
+    height: 550px
+}

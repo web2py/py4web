@@ -1,0 +1,142 @@
+// PAGE HEADER
+// -----------------------------------------------------------------------------
+/* Page Header */
+.page-header {
+	z-index: $page-header-z-index;
+
+	h2 {
+		color: #FFF;
+		border-bottom: $page-header-border-bottom-width solid $page-header-title-border-color;
+		@include box-sizing(content-box);
+		display: inline-block;
+		float: left;
+		height: $page-header-height;
+		@include font-size($page-header-title-font-size);
+		letter-spacing: normal;
+		line-height: $page-header-height;
+		margin: 0 0 0 -1px;
+		padding: 0 ($page-header-title-padding + 2px) 0 $page-header-title-padding;
+	}
+
+	.right-wrapper {
+		float: right;
+	}
+
+	.breadcrumbs {
+		display: inline-block;
+		font-size: 0;
+		line-height: $page-header-height;
+		margin: 0;
+		padding: 0;
+
+		li {
+			color: $page-header-color;
+			display: inline-block;
+			font-weight: 300;
+
+			&:after {
+				content: '/';
+				display: inline-block;
+				@include font-size($page-header-breadcrumb-separator-size);
+				margin: $page-header-breadcrumb-separator-margin;
+				vertical-align: middle;
+			}
+
+			&:last-child {
+				&:after {
+					display: none;
+				}
+			}
+		}
+
+		.fa-home {
+			@include font-size($page-header-breadcrumb-home-size);
+		}
+
+		i {
+			vertical-align: middle;
+		}
+
+		a,
+		span {
+			color: $page-header-color;
+			display: inline-block;
+			@include font-size($page-header-breadcrumb-size);
+			line-height: $page-header-breadcrumb-home-size + px;
+			vertical-align: middle;
+		}
+	}
+
+	.sidebar-right-toggle {
+		cursor: pointer;
+		color: $page-header-color;
+		display: inline-block;
+		font-size: 17px;
+		margin: $page-header-sidebar-toggle-margin;
+		height: $page-header-height;
+		width: $page-header-height;
+		vertical-align: top;
+		text-align: center;
+		@include transition(all 0.15s ease-in-out);
+
+		i {
+			line-height: $page-header-height + 3;
+			vertical-align: middle;
+		}
+
+		&:hover {
+			color: $page-header-sidebar-toggle-hover-color;
+		}
+	}
+}
+
+// HEADER DARK AND DARK VERSION
+// -----------------------------------------------------------------------------
+/* Header Dark - Page Header */
+html.dark,
+html.header-dark {
+	.page-header {
+		border-left-color: $page-header-background;
+		box-shadow: 1px 3px 0 1px #2f3139;
+	}
+}
+
+// SIDEBAR RIGHT OPENED
+// -----------------------------------------------------------------------------
+html.sidebar-right-opened .page-header {
+	.sidebar-right-toggle {
+		i {
+			&:before {
+				content: "\f054";
+			}
+		}
+	}
+}
+
+// PAGE HEADER - MOBILE
+// -----------------------------------------------------------------------------
+/* Page Header - Mobile */
+@media only screen and (max-width: 767px) {
+	.page-header {
+		padding-right: 80px;
+
+		.breadcrumbs {
+			display: none;
+		}
+
+		h2 {
+			font-size: 16px;
+			padding: 0 15px 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			max-width: 100%;
+		}
+
+		.sidebar-right-toggle {
+			position: absolute;
+			right: 0;
+			top: 0;
+		}
+	}
+}

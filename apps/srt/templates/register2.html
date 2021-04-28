@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+ <head>
+            <!-- 21.12.2020 09:47:17 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+  <title>biorex title text</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <link href="[%[=URL('static/tte/favicon.ico') ]]" rel="shortcut icon" type="image/png"/>
+  <link href="[%[=URL('static/tte/assets/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/font-awesome.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/themify-icons.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/metisMenu.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/owl.carousel.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/slicknav.min.css') ]]" rel="stylesheet"/>
+  <!-- amchart css -->
+  <link href="https://www.amcharts.com/lib/3/plugins/export/export.css" media="all" rel="stylesheet" type="text/css"/>
+  <!-- others css -->
+  <link href="[%[=URL('static/tte/assets/css/typography.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/default-css.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/styles.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/responsive.css') ]]" rel="stylesheet"/>
+  <!-- modernizr css -->
+  <script src="[%[=URL('static/tte/assets/js/vendor/modernizr-2.8.3.min.js') ]]"></script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+  <!-- preloader area start -->
+  <div id="preloader">
+   <div class="loader"></div>
+  </div>
+  <!-- preloader area end -->
+  <!-- login area start -->
+  <div class="login-area login-s2">
+   <div class="container">
+    <div class="login-box ptb--100">
+     
+<!-- BEGIN view: fregister20, db_table: dfregister20 -->
+<div>
+[%[= fregister20.custom['begin'] ]]
+<div class="login-form-head">
+ <h4>
+  Sign up
+ </h4>
+ <p>
+  Hello there, Sign up and Join with Us
+ </p>
+</div>
+
+<div class="login-form-body">
+ <div class="form-gp">
+  <label for="exampleInputName1">
+   Full Name
+  </label>
+ [%[ fregister20.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fregister20.custom['widgets']['f0']['_id']= 'exampleInputName1'  ]]
+ [%[ fregister20.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fregister20.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fregister20.custom['errors']['f0'] if 'f0' in fregister20.custom['errors'] else '' ]]</span>
+
+  <i class="ti-user">
+  </i>
+  <div class="text-danger">
+  </div>
+ </div>
+ <div class="form-gp">
+  <label for="exampleInputEmail1">
+   Email address
+  </label>
+ [%[ fregister20.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fregister20.custom['widgets']['f1']['_id']= 'exampleInputEmail1'  ]]
+ [%[ fregister20.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fregister20.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fregister20.custom['errors']['f1'] if 'f1' in fregister20.custom['errors'] else '' ]]</span>
+
+  <i class="ti-email">
+  </i>
+  <div class="text-danger">
+  </div>
+ </div>
+ <div class="form-gp">
+  <label for="exampleInputPassword1">
+   Password
+  </label>
+ [%[ fregister20.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fregister20.custom['widgets']['f2']['_id']= 'exampleInputPassword1'  ]]
+ [%[ fregister20.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fregister20.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fregister20.custom['errors']['f2'] if 'f2' in fregister20.custom['errors'] else '' ]]</span>
+
+  <i class="ti-lock">
+  </i>
+  <div class="text-danger">
+  </div>
+ </div>
+ <div class="form-gp">
+  <label for="exampleInputPassword2">
+   Confirm Password
+  </label>
+ [%[ fregister20.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fregister20.custom['widgets']['f3']['_id']= 'exampleInputPassword2'  ]]
+ [%[ fregister20.custom['widgets']['f3']['_placeholder']= '_p4w'  ]]
+ [%[= fregister20.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fregister20.custom['errors']['f3'] if 'f3' in fregister20.custom['errors'] else '' ]]</span>
+
+  <i class="ti-lock">
+  </i>
+  <div class="text-danger">
+  </div>
+ </div>
+ <div class="submit-btn-area">
+ [%[ fregister20.custom['submit']['_id']= 'form_submit'  ]]
+ [%[ fregister20.custom['submit']['_type']= 'submit'  ]]
+ [%[ fregister20.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fregister20.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fregister20.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fregister20.custom['submit'] ]]
+
+  <div class="login-other row mt-4">
+   <div class="col-6">
+    <a class="fb-login" href="#">
+     Sign up with
+     <i class="fa fa-facebook">
+     </i>
+    </a>
+   </div>
+   <div class="col-6">
+    <a class="google-login" href="#">
+     Sign up with
+     <i class="fa fa-google">
+     </i>
+    </a>
+   </div>
+  </div>
+ </div>
+ <div class="form-footer text-center mt-5">
+  <p class="text-muted">
+   Don't have an account?
+   <a href="[%[=URL('index')]]">
+    Sign in
+   </a>
+  </p>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fregister20.custom['hidden_widgets'].keys(): ]]
+     [%[= fregister20.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fregister20</span></div>
+
+
+[%[= fregister20.custom['end'] ]]
+</div>
+<!-- END fregister20-->
+
+    </div>
+   </div>
+  </div>
+  <!-- login area end -->
+  <!-- jquery latest version -->
+  <script src="[%[=URL('static/tte/assets/js/vendor/jquery-2.2.4.min.js') ]]"></script>
+  <!-- bootstrap 4 js -->
+  <script src="[%[=URL('static/tte/assets/js/popper.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/bootstrap.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/owl.carousel.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/metisMenu.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/jquery.slimscroll.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/jquery.slicknav.min.js') ]]"></script>
+  <!-- others plugins -->
+  <script src="[%[=URL('static/tte/assets/js/plugins.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/scripts.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+    const forms_url = [%[ =XML( page_url ) ]];
+
+    for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, 
+                 { method: 'POST', 
+                   body: new FormData( document.forms[i] ) 
+                 });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: '3 sec & will hide',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+    }
+</script>
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 9000); }
+     }();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 08:47:38 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- Bootstrap CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/circular-std/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/libs/css/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') ]]" rel="stylesheet"/>
+  <style>
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+  </style>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!-- ============================================================== -->
+  <!-- login page  -->
+  <!-- ============================================================== -->
+  <div class="splash-container">
+   <div class="card">
+    <div class="card-header text-center">
+     <a href="[%[=URL('index') ]]">
+      <img alt="logo" class="logo-img" src="[%[=URL('static/tte/assets/images/logo.png') ]]"/></a>
+     <span class="splash-description">Please enter your user information.</span>
+    </div>
+    <div class="card-body">
+     
+<!-- BEGIN view: floginA0, db_table: dfloginA0 -->
+<div>
+[%[= floginA0.custom['begin'] ]]
+<div class="form-group">
+ [%[ floginA0.custom['widgets']['f0']['_class']= 'form-control form-control-lg'  ]]
+ [%[ floginA0.custom['widgets']['f0']['_id']= 'username'  ]]
+ [%[ floginA0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ floginA0.custom['widgets']['f0']['_placeholder']= 'Username'  ]]
+ [%[ floginA0.custom['widgets']['f0']['_autocomplete']= 'off'  ]]
+ [%[= floginA0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= floginA0.custom['errors']['f0'] if 'f0' in floginA0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="form-group">
+ [%[ floginA0.custom['widgets']['f1']['_class']= 'form-control form-control-lg'  ]]
+ [%[ floginA0.custom['widgets']['f1']['_id']= 'password'  ]]
+ [%[ floginA0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ floginA0.custom['widgets']['f1']['_placeholder']= 'Password'  ]]
+ [%[= floginA0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= floginA0.custom['errors']['f1'] if 'f1' in floginA0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="form-group">
+ <label class="custom-control custom-checkbox">
+ [%[ floginA0.custom['widgets']['f2']['_class']= 'custom-control-input'  ]]
+ [%[ floginA0.custom['widgets']['f2']['_type']= 'checkbox'  ]]
+ [%[ floginA0.custom['widgets']['f2']['_placeholder']= ''  ]]
+ [%[= floginA0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= floginA0.custom['errors']['f2'] if 'f2' in floginA0.custom['errors'] else '' ]]</span>
+
+  <span class="custom-control-label">
+   Remember Me
+  </span>
+ </label>
+</div>
+
+ [%[ floginA0.custom['submit']['_type']= 'submit'  ]]
+ [%[ floginA0.custom['submit']['_class']= 'btn btn-primary btn-lg btn-block'  ]]
+ [%[ floginA0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ floginA0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ floginA0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= floginA0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in floginA0.custom['hidden_widgets'].keys(): ]]
+     [%[= floginA0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">floginA0</span></div>
+
+
+[%[= floginA0.custom['end'] ]]
+</div>
+<!-- END floginA0-->
+
+    </div>
+    <div class="card-footer bg-white p-0">
+     <div class="card-footer-item card-footer-item-bordered">
+      <a class="footer-link" href="#">Create An Account</a>
+     </div>
+     <div class="card-footer-item card-footer-item-bordered">
+      <a class="footer-link" href="#">Forgot Password</a>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- ============================================================== -->
+  <!-- end login page  -->
+  <!-- ============================================================== -->
+  <!-- Optional JavaScript -->
+  <script src="[%[=URL('static/tte/assets/vendor/jquery/jquery-3.3.1.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap/js/bootstrap.bundle.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+@gradient: 'false';
+
+.gradientBar(@primaryColor, @secondaryColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.25)) {
+	color: @textColor;
+	text-shadow: @textShadow;
+	.gradient(@primaryColor, @secondaryColor, @gradient);
+	border-color: @primaryColor;
+}
+
+// Gradients
+.gradient(@startColor: #555, @endColor: #333, @gradient) when not (@gradient) {
+	background-color: @startColor;
+}
+
+.gradient(@startColor: #555, @endColor: #333, @gradient) when (@gradient) {
+	background-color: mix(@startColor, @endColor, 60%);
+	background-image: -moz-linear-gradient(top, @startColor, @endColor);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), to(@endColor));
+	background-image: -webkit-linear-gradient(top, @startColor, @endColor);
+	background-image: -o-linear-gradient(top, @startColor, @endColor);
+	background-image: linear-gradient(to bottom, @startColor, @endColor);
+	background-repeat: repeat-x;
+	filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor)));
+}
+
+// Button Background
+.buttonBackground(@startColor, @endColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.25)) when not (@gradient) {
+	.gradientBar(@startColor, @endColor, @textColor, @textShadow);
+
+	&:hover {
+		border-color: lighten(@startColor, 5%) !important;
+		background-color: lighten(@startColor, 5%);
+	}
+
+	&:active, &:focus {
+		border-color: darken(@startColor, 5%) !important;
+		background-color: darken(@startColor, 5%);
+	}
+
+	&[disabled] {
+		border-color: lighten(@startColor, 20%) !important;
+		background-color: lighten(@startColor, 20%);
+	}
+}
+
+.buttonBackground(@startColor, @endColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.25)) when (@gradient) {
+	.gradientBar(@startColor, @endColor, @textColor, @textShadow);
+
+	border-color: transparent !important;
+
+	&:hover {
+		.gradientBar(lighten(@startColor, 5%), lighten(@endColor, 5%), lighten(@textColor, 5%), @textShadow);
+	}
+
+	&:active, &:focus {
+		.gradientBar(darken(@startColor, 5%), darken(@endColor, 5%), darken(@textColor, 5%), @textShadow);
+	}
+
+	&[disabled] {
+		.gradientBar(lighten(@startColor, 20%), lighten(@endColor, 20%), lighten(@textColor, 20%), @textShadow) !important;
+	}
+}

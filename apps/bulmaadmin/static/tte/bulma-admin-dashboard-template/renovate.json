@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "automerge": true,
+  "packageRules": [{
+    "packagePatterns": ["^core-js"],
+    "excludePackageNames": ["core-js"]
+  }]
+}

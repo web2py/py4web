@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 01.12.2020 12:11:11 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>biorex title text</title>
+  <meta content="David Grzyb" name="author"/>
+  <meta content="" name="description"/>
+  <!-- Tailwind -->
+  <link href="https://unpkg.com/tailwindcss/dist/tailwind.min.css" rel="stylesheet"/>
+  <style>@import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
+
+.font-family-karla {
+    font-family: karla;
+}
+
+.bg-sidebar {
+    background: #3d68ff;
+}
+
+.cta-btn {
+    color: #3d68ff;
+}
+
+.upgrade-btn {
+    background: #1947ee;
+}
+
+.upgrade-btn:hover {
+    background: #0038fd;
+}
+
+.active-nav-link {
+    background: #1947ee;
+}
+
+.nav-item:hover {
+    background: #1947ee;
+}
+
+.account-link:hover {
+    background: #3d68ff;
+}
+  </style>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    background-color: LightGray;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-weight: bold;
+    border: 1px dashed black;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body class="bg-gray-100 font-family-karla flex">
+  <aside class="relative bg-sidebar h-screen w-64 hidden sm:block shadow-xl">
+   <div class="p-6">
+    <a class="text-white text-3xl font-semibold uppercase hover:text-gray-300" href="[%[=URL('index') ]]">Admin</a>
+    <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
+     <i class="fas fa-plus mr-3"></i>
+     New Report
+    </button>
+   </div>
+   <nav class="text-white text-base font-semibold pt-3">
+    <a class="flex items-center active-nav-link text-white py-4 pl-6 nav-item" href="[%[=URL('index') ]]">
+     <i class="fas fa-tachometer-alt mr-3"></i>
+     Dashboard
+    </a>
+    <a class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item" href="[%[=URL('blank') ]]">
+     <i class="fas fa-sticky-note mr-3"></i>
+     Blank Page
+    </a>
+    <a class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item" href="[%[=URL('tables') ]]">
+     <i class="fas fa-table mr-3"></i>
+     Tables
+    </a>
+    <a class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item" href="[%[=URL('forms') ]]">
+     <i class="fas fa-align-left mr-3"></i>
+     Forms
+    </a>
+    <a class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item" href="[%[=URL('tabs') ]]">
+     <i class="fas fa-tablet-alt mr-3"></i>
+     Tabbed Content
+    </a>
+    <a class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item" href="[%[=URL('calendar') ]]">
+     <i class="fas fa-calendar mr-3"></i>
+     Calendar
+    </a>
+   </nav>
+   <a class="absolute w-full upgrade-btn bottom-0 active-nav-link text-white flex items-center justify-center py-4" href="#">
+    <i class="fas fa-arrow-circle-up mr-3"></i>
+    Upgrade to Pro!
+   </a>
+  </aside>
+  <div class="w-full flex flex-col h-screen overflow-y-hidden">
+   <!-- Desktop Header -->
+   <header class="w-full flex items-center bg-white py-2 px-6 hidden sm:flex">
+    <div class="w-1/2"></div>
+    <div class="relative w-1/2 flex justify-end" x-data="{ isOpen: false }">
+     <button class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
+      <img src="https://source.unsplash.com/uJ8LNVCBjFQ/400x400"/></button>
+     <button class="h-full w-full fixed inset-0 cursor-default" false="" x-show="isOpen"></button>
+     <div class="absolute w-32 bg-white rounded-lg shadow-lg py-2 mt-16" x-show="isOpen">
+      <a class="block px-4 py-2 account-link hover:text-white" href="#">Account</a>
+      <a class="block px-4 py-2 account-link hover:text-white" href="#">Support</a>
+      <a class="block px-4 py-2 account-link hover:text-white" href="#">Sign Out</a>
+     </div>
+    </div>
+   </header>
+   <!-- Mobile Header & Nav -->
+   <header class="w-full bg-sidebar py-5 px-6 sm:hidden" x-data="{ isOpen: false }">
+    <div class="flex items-center justify-between">
+     <a class="text-white text-3xl font-semibold uppercase hover:text-gray-300" href="[%[=URL('index') ]]">Admin</a>
+     <button class="text-white text-3xl focus:outline-none">
+      <i class="fas fa-bars" x-show="!isOpen"></i>
+      <i class="fas fa-times" x-show="isOpen"></i>
+     </button>
+    </div>
+    <!-- Dropdown Nav -->
+    <nav :class="isOpen ? 'flex': 'hidden'" class="flex flex-col pt-4">
+     <a class="flex items-center active-nav-link text-white py-2 pl-4 nav-item" href="[%[=URL('index') ]]">
+      <i class="fas fa-tachometer-alt mr-3"></i>
+      Dashboard
+     </a>
+     <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item" href="[%[=URL('blank') ]]">
+      <i class="fas fa-sticky-note mr-3"></i>
+      Blank Page
+     </a>
+     <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item" href="[%[=URL('tables') ]]">
+      <i class="fas fa-table mr-3"></i>
+      Tables
+     </a>
+     <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item" href="[%[=URL('forms') ]]">
+      <i class="fas fa-align-left mr-3"></i>
+      Forms
+     </a>
+     <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item" href="[%[=URL('tabs') ]]">
+      <i class="fas fa-tablet-alt mr-3"></i>
+      Tabbed Content
+     </a>
+     <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item" href="[%[=URL('calendar') ]]">
+      <i class="fas fa-calendar mr-3"></i>
+      Calendar
+     </a>
+     <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item" href="#">
+      <i class="fas fa-cogs mr-3"></i>
+      Support
+     </a>
+     <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item" href="#">
+      <i class="fas fa-user mr-3"></i>
+      My Account
+     </a>
+     <a class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item" href="#">
+      <i class="fas fa-sign-out-alt mr-3"></i>
+      Sign Out
+     </a>
+     <button class="w-full bg-white cta-btn font-semibold py-2 mt-3 rounded-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
+      <i class="fas fa-arrow-circle-up mr-3"></i>
+      Upgrade to Pro!
+     </button>
+    </nav>
+    <!-- <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
+                <i class="fas fa-plus mr-3"></i> New Report
+            </button> -->
+   </header>
+   <div class="w-full overflow-x-hidden border-t flex flex-col">
+    <main class="w-full flex-grow p-6">
+     <h1 class="text-3xl text-black pb-6">Dashboard</h1>
+     <div class="flex flex-wrap mt-6">
+      <div class="w-full lg:w-1/2 pr-0 lg:pr-2">
+       <p class="text-xl pb-3 flex items-center">
+        <i class="fas fa-plus mr-3"></i>
+        Monthly Reports
+       </p>
+       <div class="p-6 bg-white">
+        <canvas height="200" id="chartOne" width="400"></canvas>
+       </div>
+      </div>
+      <div class="w-full lg:w-1/2 pl-0 lg:pl-2 mt-12 lg:mt-0">
+       <p class="text-xl pb-3 flex items-center">
+        <i class="fas fa-check mr-3"></i>
+        Resolved Reports
+       </p>
+       <div class="p-6 bg-white">
+        <canvas height="200" id="chartTwo" width="400"></canvas>
+       </div>
+      </div>
+     </div>
+     <div class="w-full mt-12">
+      <p class="text-xl pb-3 flex items-center">
+       <i class="fas fa-list mr-3"></i>
+       Latest Reports
+      </p>
+      <div class="bg-white overflow-auto">
+       
+<!--view: rows_tindex0, db_table: tindex0 -->
+  <table class="min-w-full bg-white">
+    <thead class="bg-gray-800 text-white">
+      <tr>
+        <th class="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">Name</th>
+        <th class="w-1/3 text-left py-3 px-4 uppercase font-semibold text-sm">Last name</th>
+        <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Phone</th>
+        <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Email</th>
+      </tr>
+    </thead>
+  <tbody class="text-gray-700">
+        [%[ for row0 in rows_tindex0: ]]
+        <tr>
+            <td class="w-1/3 text-left py-3 px-4">[%[= XML(row0.f0) ]]</td>
+            <td class="w-1/3 text-left py-3 px-4">[%[= XML(row0.f1) ]]</td>
+            <td class="text-left py-3 px-4">[%[= XML(row0.f2) ]]</td>
+            <td class="text-left py-3 px-4">[%[= XML(row0.f3) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tindex0 -->
+
+
+<div class="divtindex0 flashdiv"> <span class="flashspan">tindex0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtindex0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+      </div>
+     </div>
+    </main>
+    <footer class="w-full bg-white text-right p-4">
+     Built by
+     <a class="underline" href="https://davidgrzyb.com" target="_blank">David Grzyb</a>
+     .
+    </footer>
+   </div>
+  </div>
+  <!-- AlpineJS -->
+  <script defer="" src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+  <!-- Font Awesome -->
+  <script crossorigin="anonymous" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
+  <!-- ChartJS -->
+  <script crossorigin="anonymous" integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+  <script>
+   var chartOne = document.getElementById('chartOne');
+var myChart = new Chart(chartOne, {
+    type: 'bar',
+    data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+
+var chartTwo = document.getElementById('chartTwo');
+var myLineChart = new Chart(chartTwo, {
+    type: 'line',
+    data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+  </script>
+ </body>
+</html>

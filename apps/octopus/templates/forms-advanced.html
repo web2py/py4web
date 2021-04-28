@@ -1,0 +1,2237 @@
+<!DOCTYPE html>
+<html class="fixed">
+ <head>
+            <!-- 01.12.2020 12:03:31 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Basic -->
+  <meta charset="utf-8"/>
+  <title>biorex title text</title>
+  <meta content="HTML5 Admin Template" name="keywords"/>
+  <meta content="Porto Admin - Responsive HTML5 Template" name="description"/>
+  <meta content="okler.net" name="author"/>
+  <!-- Mobile Metas -->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <!-- Web Fonts  -->
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css"/>
+  <!-- Vendor CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/font-awesome/css/font-awesome.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/magnific-popup/magnific-popup.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap-datepicker/css/datepicker3.css') ]]" rel="stylesheet"/>
+  <!-- Specific Page Vendor CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/select2/select2.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap-colorpicker/css/bootstrap-colorpicker.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/dropzone/css/basic.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/dropzone/css/dropzone.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap-markdown/css/bootstrap-markdown.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/summernote/summernote.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/summernote/summernote-bs3.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/codemirror/lib/codemirror.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/codemirror/theme/monokai.css') ]]" rel="stylesheet"/>
+  <!-- Theme CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/theme.css') ]]" rel="stylesheet"/>
+  <!-- Skin CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/skins/default.css') ]]" rel="stylesheet"/>
+  <!-- Theme Custom CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/theme-custom.css') ]]" rel="stylesheet"/>
+  <!-- Head Libs -->
+  <script src="[%[=URL('static/tte/assets/vendor/modernizr/modernizr.js') ]]"></script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    background-color: LightGray;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-weight: bold;
+    border: 1px dashed black;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <section class="body">
+   <!-- start: header -->
+   <header class="header">
+    <div class="logo-container">
+     <a class="logo" href="../">
+      <img alt="Porto Admin" height="35" src="[%[=URL('static/tte/assets/images/logo.png') ]]"/></a>
+     <div class="visible-xs toggle-sidebar-left" data-fire-event="sidebar-left-opened" data-target="html" data-toggle-class="sidebar-left-opened">
+      <i aria-label="Toggle sidebar" class="fa fa-bars"></i>
+     </div>
+    </div>
+    <!-- start: search & user box -->
+    <div class="header-right">
+     
+<!-- BEGIN view: fformsXadvanced0, db_table: dfformsXadvanced0 -->
+<div class="search nav-form">
+[%[= fformsXadvanced0.custom['begin'] ]]
+<div class="input-group input-search">
+ [%[ fformsXadvanced0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformsXadvanced0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced0.custom['widgets']['f0']['_id']= 'q'  ]]
+ [%[ fformsXadvanced0.custom['widgets']['f0']['_placeholder']= 'Search..._p4w'  ]]
+ [%[= fformsXadvanced0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced0.custom['errors']['f0'] if 'f0' in fformsXadvanced0.custom['errors'] else '' ]]</span>
+
+ <span class="input-group-btn">
+ [%[ fformsXadvanced0.custom['submit']['_class']= 'btn btn-default'  ]]
+ [%[ fformsXadvanced0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXadvanced0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fformsXadvanced0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXadvanced0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fformsXadvanced0.custom['submit'] ]]
+
+ </span>
+</div>
+
+ [%[ for hidden_widget in fformsXadvanced0.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced0 flashdiv"> <span class="flashspan">fformsXadvanced0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced0.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced0-->
+
+     <span class="separator"></span>
+     <ul class="notifications">
+      <li>
+       <a class="dropdown-toggle notification-icon" data-toggle="dropdown" href="#">
+        <i class="fa fa-tasks"></i>
+        <span class="badge">3</span>
+       </a>
+       <div class="dropdown-menu notification-menu large">
+        <div class="notification-title">
+         <span class="pull-right label label-default">3</span>
+         Tasks
+        </div>
+        <div class="content">
+         <ul>
+          <li>
+           <p class="clearfix mb-xs">
+            <span class="message pull-left">Generating Sales Report</span>
+            <span class="message pull-right text-dark">60%</span>
+           </p>
+           <div class="progress progress-xs light">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="60" class="progress-bar" role="progressbar" style="width: 60%;"></div>
+           </div>
+          </li>
+          <li>
+           <p class="clearfix mb-xs">
+            <span class="message pull-left">Importing Contacts</span>
+            <span class="message pull-right text-dark">98%</span>
+           </p>
+           <div class="progress progress-xs light">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="98" class="progress-bar" role="progressbar" style="width: 98%;"></div>
+           </div>
+          </li>
+          <li>
+           <p class="clearfix mb-xs">
+            <span class="message pull-left">Uploading something big</span>
+            <span class="message pull-right text-dark">33%</span>
+           </p>
+           <div class="progress progress-xs light mb-xs">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="33" class="progress-bar" role="progressbar" style="width: 33%;"></div>
+           </div>
+          </li>
+         </ul>
+        </div>
+       </div>
+      </li>
+      <li>
+       <a class="dropdown-toggle notification-icon" data-toggle="dropdown" href="#">
+        <i class="fa fa-envelope"></i>
+        <span class="badge">4</span>
+       </a>
+       <div class="dropdown-menu notification-menu">
+        <div class="notification-title">
+         <span class="pull-right label label-default">230</span>
+         Messages
+        </div>
+        <div class="content">
+         <ul>
+          <li>
+           <a class="clearfix" href="#">
+            <figure class="image">
+             <img alt="Joseph Doe Junior" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <span class="title">Joseph Doe</span>
+            <span class="message">Lorem ipsum dolor sit.</span>
+           </a>
+          </li>
+          <li>
+           <a class="clearfix" href="#">
+            <figure class="image">
+             <img alt="Joseph Junior" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <span class="title">Joseph Junior</span>
+            <span class="message truncate">Truncated message. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet lacinia orci. Proin vestibulum eget risus non luctus. Nunc cursus lacinia lacinia. Nulla molestie malesuada est ac tincidunt. Quisque eget convallis diam, nec venenatis risus. Vestibulum blandit faucibus est et malesuada. Sed interdum cursus dui nec venenatis. Pellentesque non nisi lobortis, rutrum eros ut, convallis nisi. Sed tellus turpis, dignissim sit amet tristique quis, pretium id est. Sed aliquam diam diam, sit amet faucibus tellus ultricies eu. Aliquam lacinia nibh a metus bibendum, eu commodo eros commodo. Sed commodo molestie elit, a molestie lacus porttitor id. Donec facilisis varius sapien, ac fringilla velit porttitor et. Nam tincidunt gravida dui, sed pharetra odio pharetra nec. Duis consectetur venenatis pharetra. Vestibulum egestas nisi quis elementum elementum.</span>
+           </a>
+          </li>
+          <li>
+           <a class="clearfix" href="#">
+            <figure class="image">
+             <img alt="Joe Junior" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <span class="title">Joe Junior</span>
+            <span class="message">Lorem ipsum dolor sit.</span>
+           </a>
+          </li>
+          <li>
+           <a class="clearfix" href="#">
+            <figure class="image">
+             <img alt="Joseph Junior" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <span class="title">Joseph Junior</span>
+            <span class="message">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet lacinia orci. Proin vestibulum eget risus non luctus. Nunc cursus lacinia lacinia. Nulla molestie malesuada est ac tincidunt. Quisque eget convallis diam.</span>
+           </a>
+          </li>
+         </ul>
+         <hr/>
+         <div class="text-right">
+          <a class="view-more" href="#">View All</a>
+         </div>
+        </div>
+       </div>
+      </li>
+      <li>
+       <a class="dropdown-toggle notification-icon" data-toggle="dropdown" href="#">
+        <i class="fa fa-bell"></i>
+        <span class="badge">3</span>
+       </a>
+       <div class="dropdown-menu notification-menu">
+        <div class="notification-title">
+         <span class="pull-right label label-default">3</span>
+         Alerts
+        </div>
+        <div class="content">
+         <ul>
+          <li>
+           <a class="clearfix" href="#">
+            <div class="image">
+             <i class="fa fa-thumbs-down bg-danger"></i>
+            </div>
+            <span class="title">Server is Down!</span>
+            <span class="message">Just now</span>
+           </a>
+          </li>
+          <li>
+           <a class="clearfix" href="#">
+            <div class="image">
+             <i class="fa fa-lock bg-warning"></i>
+            </div>
+            <span class="title">User Locked</span>
+            <span class="message">15 minutes ago</span>
+           </a>
+          </li>
+          <li>
+           <a class="clearfix" href="#">
+            <div class="image">
+             <i class="fa fa-signal bg-success"></i>
+            </div>
+            <span class="title">Connection Restaured</span>
+            <span class="message">10/10/2014</span>
+           </a>
+          </li>
+         </ul>
+         <hr/>
+         <div class="text-right">
+          <a class="view-more" href="#">View All</a>
+         </div>
+        </div>
+       </div>
+      </li>
+     </ul>
+     <span class="separator"></span>
+     <div class="userbox" id="userbox">
+      <a data-toggle="dropdown" href="#">
+       <figure class="profile-picture">
+        <img alt="Joseph Doe" class="img-circle" data-lock-picture="[%[=URL('static/tte/assets/images/!logged-user.jpg') ]]" src="[%[=URL('static/tte/assets/images/!logged-user.jpg') ]]"/>
+       </figure>
+       <div class="profile-info" data-lock-email="johndoe@okler.com" data-lock-name="John Doe">
+        <span class="name">John Doe Junior</span>
+        <span class="role">administrator</span>
+       </div>
+       <i class="fa custom-caret"></i>
+      </a>
+      <div class="dropdown-menu">
+       <ul class="list-unstyled">
+        <li class="divider"></li>
+        <li>
+         <a href="[%[=URL('pagesXuserXprofile') ]]" role="menuitem" tabindex="-1">
+          <i class="fa fa-user"></i>
+          My Profile
+         </a>
+        </li>
+        <li>
+         <a data-lock-screen="true" href="#" role="menuitem" tabindex="-1">
+          <i class="fa fa-lock"></i>
+          Lock Screen
+         </a>
+        </li>
+        <li>
+         <a href="[%[=URL('pagesXsignin') ]]" role="menuitem" tabindex="-1">
+          <i class="fa fa-power-off"></i>
+          Logout
+         </a>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+    <!-- end: search & user box -->
+   </header>
+   <!-- end: header -->
+   <div class="inner-wrapper">
+    <!-- start: sidebar -->
+    <aside class="sidebar-left" id="sidebar-left">
+     <div class="sidebar-header">
+      <div class="sidebar-title">Navigation</div>
+      <div class="sidebar-toggle hidden-xs" data-fire-event="sidebar-left-toggle" data-target="html" data-toggle-class="sidebar-left-collapsed">
+       <i aria-label="Toggle sidebar" class="fa fa-bars"></i>
+      </div>
+     </div>
+     <div class="nano">
+      <div class="nano-content">
+       <nav class="nav-main" id="menu" role="navigation">
+        <ul class="nav nav-main">
+         <li>
+          <a href="[%[=URL('index') ]]">
+           <i aria-hidden="true" class="fa fa-home"></i>
+           <span>Dashboard</span>
+          </a>
+         </li>
+         <li>
+          <a href="[%[=URL('mailboxXfolder') ]]">
+           <span class="pull-right label label-primary">182</span>
+           <i aria-hidden="true" class="fa fa-envelope"></i>
+           <span>Mailbox</span>
+          </a>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-copy"></i>
+           <span>Pages</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a href="[%[=URL('pagesXsignup') ]]">Sign Up</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXsignin') ]]">Sign In</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXrecoverXpassword') ]]">Recover Password</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXlockXscreen') ]]">Locked Screen</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXuserXprofile') ]]">User Profile</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXsessionXtimeout') ]]">Session Timeout</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXcalendar') ]]">Calendar</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXtimeline') ]]">Timeline</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXmediaXgallery') ]]">Media Gallery</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXinvoice') ]]">Invoice</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXblank') ]]">Blank Page</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesX404') ]]">404</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesX500') ]]">500</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXlogXviewer') ]]">Log Viewer</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pagesXsearchXresults') ]]">Search Results</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-tasks"></i>
+           <span>UI Elements</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a href="[%[=URL('uiXelementsXtypography') ]]">Typography</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXicons') ]]">Icons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXtabs') ]]">Tabs</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXpanels') ]]">Panels</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXwidgets') ]]">Widgets</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXportlets') ]]">Portlets</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXbuttons') ]]">Buttons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXalerts') ]]">Alerts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXnotifications') ]]">Notifications</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXmodals') ]]">Modals</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXlightbox') ]]">Lightbox</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXprogressbars') ]]">Progress Bars</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXsliders') ]]">Sliders</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXcarousels') ]]">Carousels</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXaccordions') ]]">Accordions</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXnestable') ]]">Nestable</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXtreeXview') ]]">Tree View</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXgridXsystem') ]]">Grid System</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXcharts') ]]">Charts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXanimations') ]]">Animations</a>
+           </li>
+           <li>
+            <a href="[%[=URL('uiXelementsXextra') ]]">Extra</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent nav-expanded nav-active">
+          <a>
+           <i aria-hidden="true" class="fa fa-list-alt"></i>
+           <span>Forms</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a href="[%[=URL('formsXbasic') ]]">Basic</a>
+           </li>
+           <li class="nav-active">
+            <a href="[%[=URL('formsXadvanced') ]]">Advanced</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formsXvalidation') ]]">Validation</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formsXlayouts') ]]">Layouts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formsXwizard') ]]">Wizard</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formsXcodeXeditor') ]]">Code Editor</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-table"></i>
+           <span>Tables</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a href="[%[=URL('tablesXbasic') ]]">Basic</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXadvanced') ]]">Advanced</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXresponsive') ]]">Responsive</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXeditable') ]]">Editable</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXajax') ]]">Ajax</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXpricing') ]]">Pricing</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-map-marker"></i>
+           <span>Maps</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a href="[%[=URL('mapsXgoogleXmaps') ]]">Basic</a>
+           </li>
+           <li>
+            <a href="[%[=URL('mapsXgoogleXmapsXbuilder') ]]">Map Builder</a>
+           </li>
+           <li>
+            <a href="[%[=URL('mapsXvector') ]]">Vector</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-columns"></i>
+           <span>Layouts</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a href="[%[=URL('layoutsXdefault') ]]">Default</a>
+           </li>
+           <li>
+            <a href="[%[=URL('layoutsXboxed') ]]">Boxed</a>
+           </li>
+           <li>
+            <a href="[%[=URL('layoutsXmenuXcollapsed') ]]">Menu Collapsed</a>
+           </li>
+           <li>
+            <a href="[%[=URL('layoutsXscroll') ]]">Scroll</a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-parent">
+          <a>
+           <i aria-hidden="true" class="fa fa-align-left"></i>
+           <span>Menu Levels</span>
+          </a>
+          <ul class="nav nav-children">
+           <li>
+            <a>First Level</a>
+           </li>
+           <li class="nav-parent">
+            <a>Second Level</a>
+            <ul class="nav nav-children">
+             <li class="nav-parent">
+              <a>Third Level</a>
+              <ul class="nav nav-children">
+               <li>
+                <a>Third Level Link #1</a>
+               </li>
+               <li>
+                <a>Third Level Link #2</a>
+               </li>
+              </ul>
+             </li>
+             <li>
+              <a>Second Level Link #1</a>
+             </li>
+             <li>
+              <a>Second Level Link #2</a>
+             </li>
+            </ul>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a href="http://themeforest.net/item/porto-responsive-html5-template/4106987?ref=Okler" target="_blank">
+           <i aria-hidden="true" class="fa fa-external-link"></i>
+           <span>
+            Front-End
+            <em class="not-included">(Not Included)</em>
+           </span>
+          </a>
+         </li>
+        </ul>
+       </nav>
+       <hr class="separator"/>
+       <div class="sidebar-widget widget-tasks">
+        <div class="widget-header">
+         <h6>Projects</h6>
+         <div class="widget-toggle">+</div>
+        </div>
+        <div class="widget-content">
+         <ul class="list-unstyled m-none">
+          <li>
+           <a href="#">Porto HTML5 Template</a>
+          </li>
+          <li>
+           <a href="#">Tucson Template</a>
+          </li>
+          <li>
+           <a href="#">Porto Admin</a>
+          </li>
+         </ul>
+        </div>
+       </div>
+       <hr class="separator"/>
+       <div class="sidebar-widget widget-stats">
+        <div class="widget-header">
+         <h6>Company Stats</h6>
+         <div class="widget-toggle">+</div>
+        </div>
+        <div class="widget-content">
+         <ul>
+          <li>
+           <span class="stats-title">Stat 1</span>
+           <span class="stats-complete">85%</span>
+           <div class="progress">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="85" class="progress-bar progress-bar-primary progress-without-number" role="progressbar" style="width: 85%;">
+             <span class="sr-only">85% Complete</span>
+            </div>
+           </div>
+          </li>
+          <li>
+           <span class="stats-title">Stat 2</span>
+           <span class="stats-complete">70%</span>
+           <div class="progress">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="70" class="progress-bar progress-bar-primary progress-without-number" role="progressbar" style="width: 70%;">
+             <span class="sr-only">70% Complete</span>
+            </div>
+           </div>
+          </li>
+          <li>
+           <span class="stats-title">Stat 3</span>
+           <span class="stats-complete">2%</span>
+           <div class="progress">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="2" class="progress-bar progress-bar-primary progress-without-number" role="progressbar" style="width: 2%;">
+             <span class="sr-only">2% Complete</span>
+            </div>
+           </div>
+          </li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </div>
+    </aside>
+    <!-- end: sidebar -->
+    <section class="content-body" role="main">
+     <header class="page-header">
+      <h2>Advanced Forms</h2>
+      <div class="right-wrapper pull-right">
+       <ol class="breadcrumbs">
+        <li>
+         <a href="[%[=URL('index') ]]">
+          <i class="fa fa-home"></i>
+         </a>
+        </li>
+        <li>
+         <span>Forms</span>
+        </li>
+        <li>
+         <span>Advanced</span>
+        </li>
+       </ol>
+       <a class="sidebar-right-toggle" data-open="sidebar-right">
+        <i class="fa fa-chevron-left"></i>
+       </a>
+      </div>
+     </header>
+     <!-- start: page -->
+     <div class="row">
+      <div class="col-xs-12">
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Select Replacement</h2>
+        </header>
+        <div class="panel-body">
+         
+<!-- BEGIN view: fformsXadvanced1, db_table: dfformsXadvanced1 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXadvanced1.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Basic select
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced1.custom['widgets']['f0']['_data-plugin-selecttwo']= '==0'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f0']['_class']= 'form-control populate'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f0']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f0']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced1.custom['errors']['f0'] if 'f0' in fformsXadvanced1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Multi-Value Select
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced1.custom['widgets']['f1']['_multiple']= '==0'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f1']['_data-plugin-selecttwo']= '==0'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f1']['_class']= 'form-control populate'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f1']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f1']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced1.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced1.custom['errors']['f1'] if 'f1' in fformsXadvanced1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Placeholders
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced1.custom['widgets']['f2']['_data-plugin-selecttwo']= '==0'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f2']['_class']= 'form-control populate placeholder'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f2']['_data-plugin-options']= '{ placeholder: Select a State, allowClear: true }'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f2']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f2']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced1.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced1.custom['errors']['f2'] if 'f2' in fformsXadvanced1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Minimum Input
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced1.custom['widgets']['f3']['_data-plugin-selecttwo']= '==0'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f3']['_class']= 'form-control populate'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f3']['_data-plugin-options']= '{ minimumInputLength: 2 }'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f3']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced1.custom['widgets']['f3']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced1.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced1.custom['errors']['f3'] if 'f3' in fformsXadvanced1.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXadvanced1.custom['submit']['_data-plugin-selecttwo']= '==0'  ]]
+ [%[ fformsXadvanced1.custom['submit']['_class']= 'form-control populate mysubmit_cls'  ]]
+ [%[ fformsXadvanced1.custom['submit']['_data-plugin-options']= '{ minimumInputLength: 2 }'  ]]
+ [%[ fformsXadvanced1.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXadvanced1.custom['submit']['_style']= 'color:red;'  ]]
+ [%[ fformsXadvanced1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXadvanced1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXadvanced1.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXadvanced1.custom['submit'] ]]
+
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXadvanced1.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced1 flashdiv"> <span class="flashspan">fformsXadvanced1</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced1');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced1.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced1-->
+
+        </div>
+       </section>
+      </div>
+     </div>
+     <div class="row">
+      <div class="col-xs-12">
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Multi-select</h2>
+        </header>
+        <div class="panel-body">
+         
+<!-- BEGIN view: fformsXadvanced2, db_table: dfformsXadvanced2 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXadvanced2.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Basic Multi-select
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced2.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f0']['_multiple']= 'multiple'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f0']['_data-plugin-multiselect']= '==0'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f0']['_id']= 'ms_example0'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f0']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f0']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced2.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced2.custom['errors']['f0'] if 'f0' in fformsXadvanced2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Basic Multi-select (Only One)
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced2.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f1']['_data-plugin-multiselect']= '==0'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f1']['_id']= 'ms_example1'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f1']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f1']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced2.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced2.custom['errors']['f1'] if 'f1' in fformsXadvanced2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  With Preselected Options
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced2.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f2']['_multiple']= 'multiple'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f2']['_data-plugin-multiselect']= '==0'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f2']['_id']= 'ms_example2'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f2']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f2']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced2.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced2.custom['errors']['f2'] if 'f2' in fformsXadvanced2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Link button
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced2.custom['widgets']['f3']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f3']['_multiple']= 'multiple'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f3']['_data-plugin-multiselect']= '==0'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f3']['_data-plugin-options']= '{ buttonClass: btn btn-link }'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f3']['_id']= 'ms_example3'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f3']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f3']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced2.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced2.custom['errors']['f3'] if 'f3' in fformsXadvanced2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  With icon
+ </label>
+ <div class="col-md-6">
+  <div class="input-group btn-group">
+   <span class="input-group-addon">
+    <i class="fa fa-th-list">
+    </i>
+   </span>
+ [%[ fformsXadvanced2.custom['widgets']['f4']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f4']['_multiple']= 'multiple'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f4']['_data-plugin-multiselect']= '==0'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f4']['_id']= 'ms_example4'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f4']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f4']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced2.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced2.custom['errors']['f4'] if 'f4' in fformsXadvanced2.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Select All Option
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced2.custom['widgets']['f5']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f5']['_multiple']= 'multiple'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f5']['_data-plugin-multiselect']= '==0'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f5']['_data-plugin-options']= '{ includeSelectAllOption: true }'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f5']['_id']= 'ms_example5'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f5']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f5']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced2.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced2.custom['errors']['f5'] if 'f5' in fformsXadvanced2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  With Search
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced2.custom['widgets']['f6']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f6']['_multiple']= 'multiple'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f6']['_data-plugin-multiselect']= '==0'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f6']['_data-plugin-options']= '{ enableCaseInsensitiveFiltering: true }'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f6']['_id']= 'ms_example6'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f6']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f6']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced2.custom['widgets']['f6'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced2.custom['errors']['f6'] if 'f6' in fformsXadvanced2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Toggle All Button
+ </label>
+ <div class="col-md-6">
+  <div class="btn-group">
+ [%[ fformsXadvanced2.custom['widgets']['f7']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f7']['_multiple']= 'multiple'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f7']['_data-plugin-multiselect']= '==0'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f7']['_data-multiselect-toggle-all']= 'true'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f7']['_id']= 'ms_example7'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f7']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced2.custom['widgets']['f7']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced2.custom['widgets']['f7'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced2.custom['errors']['f7'] if 'f7' in fformsXadvanced2.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXadvanced2.custom['submit']['_id']= 'ms_example7-toggle'  ]]
+ [%[ fformsXadvanced2.custom['submit']['_class']= 'btn btn-primary'  ]]
+ [%[ fformsXadvanced2.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fformsXadvanced2.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXadvanced2.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXadvanced2.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fformsXadvanced2.custom['submit'] ]]
+
+  </div>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXadvanced2.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced2.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced2 flashdiv"> <span class="flashspan">fformsXadvanced2</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced2');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced2.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced2-->
+
+        </div>
+       </section>
+      </div>
+     </div>
+     <div class="row">
+      <div class="col-xs-12">
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Tag Autocomplete</h2>
+        </header>
+        <div class="panel-body">
+         
+<!-- BEGIN view: fformsXadvanced3, db_table: dfformsXadvanced3 -->
+<div class="form-horizontal form-bordered form-bordered">
+[%[= fformsXadvanced3.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label" for="tags-input">
+  Input Tags
+ </label>
+ <div class="col-md-7">
+ [%[ fformsXadvanced3.custom['widgets']['f0']['_id']= 'tags-input'  ]]
+ [%[ fformsXadvanced3.custom['widgets']['f0']['_data-role']= 'tagsinput'  ]]
+ [%[ fformsXadvanced3.custom['widgets']['f0']['_data-tag-class']= 'label label-primary'  ]]
+ [%[ fformsXadvanced3.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced3.custom['widgets']['f0']['_value']= 'Amsterdam,Washington,Sydney,Beijing,Cairo'  ]]
+ [%[ fformsXadvanced3.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[ fformsXadvanced3.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fformsXadvanced3.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced3.custom['errors']['f0'] if 'f0' in fformsXadvanced3.custom['errors'] else '' ]]</span>
+
+  <p>
+   Just add
+   <code>
+    data-role="tagsinput"
+   </code>
+   to your input field to automatically change it to a tags input field.
+  </p>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="tags-input-multiple">
+  True multi value
+ </label>
+ <div class="col-md-7">
+ [%[ fformsXadvanced3.custom['widgets']['f1']['_id']= 'tags-input-multiple'  ]]
+ [%[ fformsXadvanced3.custom['widgets']['f1']['_multiple']= '==0'  ]]
+ [%[ fformsXadvanced3.custom['widgets']['f1']['_data-role']= 'tagsinput'  ]]
+ [%[ fformsXadvanced3.custom['widgets']['f1']['_data-tag-class']= 'label label-primary'  ]]
+ [%[ fformsXadvanced3.custom['widgets']['f1']['_placeholder']= 'it was select'  ]]
+ [%[ fformsXadvanced3.custom['widgets']['f1']['_style']= 'color:red;'  ]]
+ [%[= fformsXadvanced3.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced3.custom['errors']['f1'] if 'f1' in fformsXadvanced3.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXadvanced3.custom['submit']['_id']= 'tags-input-multiple'  ]]
+ [%[ fformsXadvanced3.custom['submit']['_multiple']= '==0'  ]]
+ [%[ fformsXadvanced3.custom['submit']['_data-role']= 'tagsinput'  ]]
+ [%[ fformsXadvanced3.custom['submit']['_data-tag-class']= 'label label-primary'  ]]
+ [%[ fformsXadvanced3.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXadvanced3.custom['submit']['_style']= 'color:red;'  ]]
+ [%[ fformsXadvanced3.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXadvanced3.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fformsXadvanced3.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXadvanced3.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXadvanced3.custom['submit'] ]]
+
+  <p>
+   Use a
+   <code>
+    &lt;select multiple /&gt;
+   </code>
+   as your input element for a tags input, to gain true multivalue support. Instead of a comma separated string, the values will be set in an array. Existing
+   <code>
+    &lt;option /&gt;
+   </code>
+   elements will automatically be set as tags. This makes it also possible to create tags containing a comma.
+  </p>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXadvanced3.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced3.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced3 flashdiv"> <span class="flashspan">fformsXadvanced3</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced3');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced3.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced3-->
+
+        </div>
+       </section>
+      </div>
+     </div>
+     <div class="row">
+      <div class="col-xs-12">
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Toggle Switches</h2>
+        </header>
+        <div class="panel-body">
+         
+<!-- BEGIN view: fformsXadvanced4, db_table: dfformsXadvanced4 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXadvanced4.custom['begin'] ]]
+<div class="form-group">
+ <label class="control-label col-md-3">
+  Large
+ </label>
+ <div class="col-md-9">
+  <div class="switch switch-lg switch-primary">
+ [%[ fformsXadvanced4.custom['widgets']['f0']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f0']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f0']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f0'] if 'f0' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-lg switch-success">
+ [%[ fformsXadvanced4.custom['widgets']['f1']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f1']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f1']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f1'] if 'f1' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-lg switch-warning">
+ [%[ fformsXadvanced4.custom['widgets']['f2']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f2']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f2']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f2'] if 'f2' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-lg switch-danger">
+ [%[ fformsXadvanced4.custom['widgets']['f3']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f3']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f3']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f3']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f3'] if 'f3' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-lg switch-info">
+ [%[ fformsXadvanced4.custom['widgets']['f4']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f4']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f4']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f4']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f4'] if 'f4' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-lg switch-dark">
+ [%[ fformsXadvanced4.custom['widgets']['f5']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f5']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f5']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f5']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f5'] if 'f5' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="control-label col-md-3">
+  Default
+ </label>
+ <div class="col-md-9">
+  <div class="switch switch-primary">
+ [%[ fformsXadvanced4.custom['widgets']['f6']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f6']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f6']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f6']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f6'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f6'] if 'f6' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-success">
+ [%[ fformsXadvanced4.custom['widgets']['f7']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f7']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f7']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f7']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f7'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f7'] if 'f7' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-warning">
+ [%[ fformsXadvanced4.custom['widgets']['f8']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f8']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f8']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f8']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f8'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f8'] if 'f8' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-danger">
+ [%[ fformsXadvanced4.custom['widgets']['f9']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f9']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f9']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f9']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f9'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f9'] if 'f9' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-info">
+ [%[ fformsXadvanced4.custom['widgets']['f10']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f10']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f10']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f10']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f10'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f10'] if 'f10' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-dark">
+ [%[ fformsXadvanced4.custom['widgets']['f11']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f11']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f11']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f11']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f11'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f11'] if 'f11' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="control-label col-md-3">
+  Small
+ </label>
+ <div class="col-md-9">
+  <div class="switch switch-sm switch-primary">
+ [%[ fformsXadvanced4.custom['widgets']['f12']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f12']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f12']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f12']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f12'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f12'] if 'f12' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-sm switch-success">
+ [%[ fformsXadvanced4.custom['widgets']['f13']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f13']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f13']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f13']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f13'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f13'] if 'f13' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-sm switch-warning">
+ [%[ fformsXadvanced4.custom['widgets']['f14']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f14']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f14']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f14']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f14'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f14'] if 'f14' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-sm switch-danger">
+ [%[ fformsXadvanced4.custom['widgets']['f15']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f15']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f15']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f15']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f15'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f15'] if 'f15' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-sm switch-info">
+ [%[ fformsXadvanced4.custom['widgets']['f16']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f16']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f16']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f16']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f16'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f16'] if 'f16' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="switch switch-sm switch-dark">
+ [%[ fformsXadvanced4.custom['widgets']['f17']['_type']= 'checkbox'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f17']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f17']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['widgets']['f17']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced4.custom['widgets']['f17'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced4.custom['errors']['f17'] if 'f17' in fformsXadvanced4.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXadvanced4.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXadvanced4.custom['submit']['_data-plugin-ios-switch']= '==0'  ]]
+ [%[ fformsXadvanced4.custom['submit']['_checked']= 'checked'  ]]
+ [%[ fformsXadvanced4.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXadvanced4.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fformsXadvanced4.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXadvanced4.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXadvanced4.custom['submit'] ]]
+
+  </div>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXadvanced4.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced4.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced4 flashdiv"> <span class="flashspan">fformsXadvanced4</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced4');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced4.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced4-->
+
+        </div>
+       </section>
+      </div>
+     </div>
+     <div class="row">
+      <div class="col-xs-12">
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Slider Range</h2>
+        </header>
+        <div class="panel-body">
+         
+<!-- BEGIN view: fformsXadvanced5, db_table: dfformsXadvanced5 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXadvanced5.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  One Value
+ </label>
+ <div class="col-md-6">
+  <div class="m-md slider-primary" data-plugin-options='{ "value": 50, "range": "min", "max": 100 }' data-plugin-slider="" data-plugin-slider-output="#listenSlider">
+ [%[ fformsXadvanced5.custom['widgets']['f0']['_id']= 'listenSlider'  ]]
+ [%[ fformsXadvanced5.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformsXadvanced5.custom['widgets']['f0']['_value']= '50'  ]]
+ [%[ fformsXadvanced5.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced5.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced5.custom['errors']['f0'] if 'f0' in fformsXadvanced5.custom['errors'] else '' ]]</span>
+
+  </div>
+  <p class="output">
+   The current
+   <code>
+    value
+   </code>
+   is:
+   <b>
+    50
+   </b>
+  </p>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Range
+ </label>
+ <div class="col-md-6">
+  <div class="m-md slider-primary" data-plugin-options='{ "values": [ 25, 75 ], "range": true, "max": 100 }' data-plugin-slider="" data-plugin-slider-output="#listenSlider2">
+ [%[ fformsXadvanced5.custom['widgets']['f1']['_id']= 'listenSlider2'  ]]
+ [%[ fformsXadvanced5.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformsXadvanced5.custom['widgets']['f1']['_value']= '25, 75'  ]]
+ [%[ fformsXadvanced5.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced5.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced5.custom['errors']['f1'] if 'f1' in fformsXadvanced5.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXadvanced5.custom['submit']['_id']= 'listenSlider2'  ]]
+ [%[ fformsXadvanced5.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXadvanced5.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXadvanced5.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXadvanced5.custom['submit']['_rows']= '1'  ]]
+ [%[ fformsXadvanced5.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fformsXadvanced5.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXadvanced5.custom['submit'] ]]
+
+  </div>
+  <p class="output2">
+   The
+   <code>
+    min
+   </code>
+   is:
+   <b class="min">
+    25
+   </b>
+   and the
+   <code>
+    max
+   </code>
+   is:
+   <b class="max">
+    75
+   </b>
+  </p>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXadvanced5.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced5.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced5 flashdiv"> <span class="flashspan">fformsXadvanced5</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced5');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced5.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced5-->
+
+        </div>
+       </section>
+      </div>
+     </div>
+     <div class="row">
+      <div class="col-xs-12">
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Spinners</h2>
+        </header>
+        <div class="panel-body">
+         <!-- tidy: bad form -->
+        </div>
+       </section>
+      </div>
+     </div>
+     <div class="row">
+      <div class="col-xs-12">
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Masked Inputs</h2>
+         <p class="panel-subtitle">Input masks allows a user to more easily enter fixed width input where you would like them to enter the data in a certain format (dates,phones, etc).</p>
+        </header>
+        <div class="panel-body"></div>
+       </section>
+      </div>
+     </div>
+     <div class="row">
+      <div class="col-lg-12">
+       <section class="panel">
+        <header class="panel-heading">
+         <div class="panel-actions">
+          <a class="fa fa-caret-down" href="#"></a>
+          <a class="fa fa-times" href="#"></a>
+         </div>
+         <h2 class="panel-title">Date Picker</h2>
+        </header>
+        <div class="panel-body">
+         
+<!-- BEGIN view: fformsXadvanced6, db_table: dfformsXadvanced6 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXadvanced6.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Default Datepicker
+ </label>
+ <div class="col-md-6">
+  <div class="input-group">
+   <span class="input-group-addon">
+    <i class="fa fa-calendar">
+    </i>
+   </span>
+ [%[ fformsXadvanced6.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformsXadvanced6.custom['widgets']['f0']['_data-plugin-datepicker']= '==0'  ]]
+ [%[ fformsXadvanced6.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced6.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced6.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced6.custom['errors']['f0'] if 'f0' in fformsXadvanced6.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Date range
+ </label>
+ <div class="col-md-6">
+  <div class="input-daterange input-group" data-plugin-datepicker="">
+   <span class="input-group-addon">
+    <i class="fa fa-calendar">
+    </i>
+   </span>
+ [%[ fformsXadvanced6.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformsXadvanced6.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced6.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced6.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced6.custom['errors']['f1'] if 'f1' in fformsXadvanced6.custom['errors'] else '' ]]</span>
+
+   <span class="input-group-addon">
+    to
+   </span>
+ [%[ fformsXadvanced6.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fformsXadvanced6.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced6.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced6.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced6.custom['errors']['f2'] if 'f2' in fformsXadvanced6.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Multiple dates
+ </label>
+ <div class="col-md-6">
+  <div class="input-group">
+   <span class="input-group-addon">
+    <i class="fa fa-calendar">
+    </i>
+   </span>
+ [%[ fformsXadvanced6.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fformsXadvanced6.custom['widgets']['f3']['_data-plugin-datepicker']= '==0'  ]]
+ [%[ fformsXadvanced6.custom['widgets']['f3']['_data-plugin-options']= '{ multidate: true }'  ]]
+ [%[ fformsXadvanced6.custom['widgets']['f3']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced6.custom['widgets']['f3']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced6.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced6.custom['errors']['f3'] if 'f3' in fformsXadvanced6.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXadvanced6.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXadvanced6.custom['submit']['_data-plugin-datepicker']= '==0'  ]]
+ [%[ fformsXadvanced6.custom['submit']['_data-plugin-options']= '{ multidate: true }'  ]]
+ [%[ fformsXadvanced6.custom['submit']['_class']= 'form-control mysubmit_cls'  ]]
+ [%[ fformsXadvanced6.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXadvanced6.custom['submit']['_rows']= '1'  ]]
+ [%[ fformsXadvanced6.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXadvanced6.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXadvanced6.custom['submit'] ]]
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Inline
+ </label>
+ <div class="col-md-3">
+  <div data-plugin-datepicker="" data-plugin-skin="primary">
+  </div>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXadvanced6.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced6.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced6 flashdiv"> <span class="flashspan">fformsXadvanced6</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced6');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced6.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced6-->
+
+        </div>
+       </section>
+      </div>
+      <div class="row">
+       <div class="col-lg-12">
+        <section class="panel">
+         <header class="panel-heading">
+          <div class="panel-actions">
+           <a class="fa fa-caret-down" href="#"></a>
+           <a class="fa fa-times" href="#"></a>
+          </div>
+          <h2 class="panel-title">Time Pickers</h2>
+         </header>
+         <div class="panel-body">
+          
+<!-- BEGIN view: fformsXadvanced7, db_table: dfformsXadvanced7 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXadvanced7.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Default Time Picker
+ </label>
+ <div class="col-md-6">
+  <div class="input-group">
+   <span class="input-group-addon">
+    <i class="fa fa-clock-o">
+    </i>
+   </span>
+ [%[ fformsXadvanced7.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformsXadvanced7.custom['widgets']['f0']['_data-plugin-timepicker']= '==0'  ]]
+ [%[ fformsXadvanced7.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced7.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced7.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced7.custom['errors']['f0'] if 'f0' in fformsXadvanced7.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  24 Hour Mode Time Picker
+ </label>
+ <div class="col-md-6">
+  <div class="input-group">
+   <span class="input-group-addon">
+    <i class="fa fa-clock-o">
+    </i>
+   </span>
+ [%[ fformsXadvanced7.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformsXadvanced7.custom['widgets']['f1']['_data-plugin-timepicker']= '==0'  ]]
+ [%[ fformsXadvanced7.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced7.custom['widgets']['f1']['_data-plugin-options']= '{ showMeridian: false }'  ]]
+ [%[ fformsXadvanced7.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced7.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced7.custom['errors']['f1'] if 'f1' in fformsXadvanced7.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Specify a step for the minute field
+ </label>
+ <div class="col-md-6">
+  <div class="input-group">
+   <span class="input-group-addon">
+    <i class="fa fa-clock-o">
+    </i>
+   </span>
+ [%[ fformsXadvanced7.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fformsXadvanced7.custom['widgets']['f2']['_data-plugin-timepicker']= '==0'  ]]
+ [%[ fformsXadvanced7.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced7.custom['widgets']['f2']['_data-plugin-options']= '{ minuteStep: 15 }'  ]]
+ [%[ fformsXadvanced7.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced7.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced7.custom['errors']['f2'] if 'f2' in fformsXadvanced7.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXadvanced7.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXadvanced7.custom['submit']['_data-plugin-timepicker']= '==0'  ]]
+ [%[ fformsXadvanced7.custom['submit']['_class']= 'form-control mysubmit_cls'  ]]
+ [%[ fformsXadvanced7.custom['submit']['_data-plugin-options']= '{ minuteStep: 15 }'  ]]
+ [%[ fformsXadvanced7.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXadvanced7.custom['submit']['_rows']= '1'  ]]
+ [%[ fformsXadvanced7.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXadvanced7.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXadvanced7.custom['submit'] ]]
+
+  </div>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXadvanced7.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced7.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced7 flashdiv"> <span class="flashspan">fformsXadvanced7</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced7');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced7.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced7-->
+
+         </div>
+        </section>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-lg-12">
+        <section class="panel">
+         <header class="panel-heading">
+          <div class="panel-actions">
+           <a class="fa fa-caret-down" href="#"></a>
+           <a class="fa fa-times" href="#"></a>
+          </div>
+          <h2 class="panel-title">Color Pickers</h2>
+         </header>
+         <div class="panel-body">
+          
+<!-- BEGIN view: fformsXadvanced8, db_table: dfformsXadvanced8 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXadvanced8.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Default
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced8.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f0']['_data-plugin-colorpicker']= '==0'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f0']['_class']= 'colorpicker-default form-control'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f0']['_value']= '#8fff00'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced8.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced8.custom['errors']['f0'] if 'f0' in fformsXadvanced8.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  RGBA
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced8.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f1']['_data-plugin-colorpicker']= '==0'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f1']['_class']= 'colorpicker-rgba form-control'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f1']['_value']= 'rgb(0,194,255,0.78)'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f1']['_data-color-format']= 'rgba'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced8.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced8.custom['errors']['f1'] if 'f1' in fformsXadvanced8.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Horizontal
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced8.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f2']['_data-plugin-colorpicker']= '==0'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f2']['_class']= 'colorpicker-rgba form-control'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f2']['_value']= '#8fff00'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f2']['_data-horizontal']= 'true'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced8.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced8.custom['errors']['f2'] if 'f2' in fformsXadvanced8.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Component
+ </label>
+ <div class="col-md-6">
+  <div class="input-group color" data-color="rgb(255, 146, 180)" data-color-format="rgb" data-plugin-colorpicker="">
+   <span class="input-group-addon">
+    <i>
+    </i>
+   </span>
+ [%[ fformsXadvanced8.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f3']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced8.custom['widgets']['f3']['_placeholder']= '_p4w'  ]]
+ [%[= fformsXadvanced8.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced8.custom['errors']['f3'] if 'f3' in fformsXadvanced8.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Button
+ </label>
+ <div class="col-md-6 col-xs-11">
+ [%[ fformsXadvanced8.custom['submit']['_class']= 'btn btn-sm btn-primary'  ]]
+ [%[ fformsXadvanced8.custom['submit']['_data-plugin-colorpicker']= '==0'  ]]
+ [%[ fformsXadvanced8.custom['submit']['_data-color-format']= 'hex'  ]]
+ [%[ fformsXadvanced8.custom['submit']['_data-color']= 'rgb(255, 255, 255)'  ]]
+ [%[ fformsXadvanced8.custom['submit']['_title']= 'mysubmit from a'  ]]
+ [%[ fformsXadvanced8.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXadvanced8.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXadvanced8.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fformsXadvanced8.custom['submit'] ]]
+
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXadvanced8.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced8.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced8 flashdiv"> <span class="flashspan">fformsXadvanced8</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced8');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced8.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced8-->
+
+         </div>
+        </section>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-lg-12">
+        <section class="panel">
+         <header class="panel-heading">
+          <div class="panel-actions">
+           <a class="fa fa-caret-down" href="#"></a>
+           <a class="fa fa-times" href="#"></a>
+          </div>
+          <h2 class="panel-title">MaxLength Control</h2>
+         </header>
+         <div class="panel-body">
+          
+<!-- BEGIN view: fformsXadvanced9, db_table: dfformsXadvanced9 -->
+<div class="form-horizontal form-bordered form-bordered">
+[%[= fformsXadvanced9.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label" for="textareaDefault">
+  Input
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced9.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced9.custom['widgets']['f0']['_data-plugin-maxlength']= '==0'  ]]
+ [%[ fformsXadvanced9.custom['widgets']['f0']['_maxlength']= '20'  ]]
+ [%[ fformsXadvanced9.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[ fformsXadvanced9.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fformsXadvanced9.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced9.custom['errors']['f0'] if 'f0' in fformsXadvanced9.custom['errors'] else '' ]]</span>
+
+  <p>
+   <code>
+    max-length
+   </code>
+   set to 20.
+  </p>
+ </div>
+</div>
+
+<div class="form-group">
+ <label class="col-md-3 control-label" for="textareaDefault">
+  Textarea
+ </label>
+ <div class="col-md-6">
+ [%[ fformsXadvanced9.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformsXadvanced9.custom['widgets']['f1']['_rows']= '3'  ]]
+ [%[ fformsXadvanced9.custom['widgets']['f1']['_data-plugin-maxlength']= '==0'  ]]
+ [%[ fformsXadvanced9.custom['widgets']['f1']['_maxlength']= '140'  ]]
+ [%[ fformsXadvanced9.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[= fformsXadvanced9.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced9.custom['errors']['f1'] if 'f1' in fformsXadvanced9.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXadvanced9.custom['submit']['_class']= 'form-control mysubmit_cls'  ]]
+ [%[ fformsXadvanced9.custom['submit']['_rows']= '1'  ]]
+ [%[ fformsXadvanced9.custom['submit']['_data-plugin-maxlength']= '==0'  ]]
+ [%[ fformsXadvanced9.custom['submit']['_maxlength']= '140'  ]]
+ [%[ fformsXadvanced9.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXadvanced9.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXadvanced9.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXadvanced9.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXadvanced9.custom['submit'] ]]
+
+ [%[ for hidden_widget in fformsXadvanced9.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced9.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced9 flashdiv"> <span class="flashspan">fformsXadvanced9</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced9');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced9.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced9-->
+
+         </div>
+        </section>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-xs-12">
+        <section class="panel">
+         <header class="panel-heading">
+          <div class="panel-actions">
+           <a class="fa fa-caret-down" href="#"></a>
+           <a class="fa fa-times" href="#"></a>
+          </div>
+          <h2 class="panel-title">File Upload Drag'n Drop</h2>
+         </header>
+         <div class="panel-body">
+          
+<!-- BEGIN view: fformsXadvanced10, db_table: dfformsXadvanced10 -->
+<div class="dropzone dz-square" id="dropzone-example">
+[%[= fformsXadvanced10.custom['begin'] ]]
+
+ [%[ for hidden_widget in fformsXadvanced10.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced10.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced10 flashdiv"> <span class="flashspan">fformsXadvanced10</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced10');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced10.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced10-->
+
+         </div>
+        </section>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-xs-12">
+        <section class="panel">
+         <header class="panel-heading">
+          <div class="panel-actions">
+           <a class="fa fa-caret-down" href="#"></a>
+           <a class="fa fa-times" href="#"></a>
+          </div>
+          <h2 class="panel-title">WYSIWYG Editors</h2>
+         </header>
+         <div class="panel-body">
+          
+<!-- BEGIN view: fformsXadvanced11, db_table: dfformsXadvanced11 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXadvanced11.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Summernote
+ </label>
+ <div class="col-md-9">
+  <div class="summernote" data-plugin-options='{ "height": 180, "codemirror": { "theme": "ambiance" } }' data-plugin-summernote="">
+   Start typing...
+  </div>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformsXadvanced11.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced11.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced11 flashdiv"> <span class="flashspan">fformsXadvanced11</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced11');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced11.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced11-->
+
+         </div>
+        </section>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-xs-12">
+        <section class="panel">
+         <header class="panel-heading">
+          <div class="panel-actions">
+           <a class="fa fa-caret-down" href="#"></a>
+           <a class="fa fa-times" href="#"></a>
+          </div>
+          <h2 class="panel-title">Markdown Editor</h2>
+         </header>
+         <div class="panel-body">
+          
+<!-- BEGIN view: fformsXadvanced12, db_table: dfformsXadvanced12 -->
+<div class="form-horizontal form-bordered">
+[%[= fformsXadvanced12.custom['begin'] ]]
+<div class="form-group">
+ <label class="col-md-3 control-label">
+  Bootstrap Markdown
+ </label>
+ <div class="col-md-9">
+ [%[ fformsXadvanced12.custom['widgets']['f0']['_data-plugin-markdown-editor']= '==0'  ]]
+ [%[ fformsXadvanced12.custom['widgets']['f0']['_rows']= '10'  ]]
+ [%[ fformsXadvanced12.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fformsXadvanced12.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformsXadvanced12.custom['errors']['f0'] if 'f0' in fformsXadvanced12.custom['errors'] else '' ]]</span>
+
+ [%[ fformsXadvanced12.custom['submit']['_data-plugin-markdown-editor']= '==0'  ]]
+ [%[ fformsXadvanced12.custom['submit']['_rows']= '1'  ]]
+ [%[ fformsXadvanced12.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformsXadvanced12.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fformsXadvanced12.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformsXadvanced12.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformsXadvanced12.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformsXadvanced12.custom['submit'] ]]
+
+ [%[ for hidden_widget in fformsXadvanced12.custom['hidden_widgets'].keys(): ]]
+     [%[= fformsXadvanced12.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformsXadvanced12 flashdiv"> <span class="flashspan">fformsXadvanced12</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformsXadvanced12');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformsXadvanced12.custom['end'] ]]
+</div>
+<!-- END fformsXadvanced12-->
+
+         </div>
+        </section>
+       </div>
+      </div>
+      <!-- end: page -->
+     </div>
+     <aside class="sidebar-right" id="sidebar-right">
+      <div class="nano">
+       <div class="nano-content">
+        <a class="mobile-close visible-xs" href="#">
+         Collapse
+         <i class="fa fa-chevron-right"></i>
+        </a>
+        <div class="sidebar-right-wrapper">
+         <div class="sidebar-widget widget-calendar">
+          <h6>Upcoming Tasks</h6>
+          <div data-plugin-datepicker="" data-plugin-skin="dark"></div>
+          <ul>
+           <li>
+            <time datetime="2014-04-19T00:00+00:00">
+             04/19/2014
+            </time>
+            <span>Company Meeting</span>
+           </li>
+          </ul>
+         </div>
+         <div class="sidebar-widget widget-friends">
+          <h6>Friends</h6>
+          <ul>
+           <li class="status-online">
+            <figure class="profile-picture">
+             <img alt="Joseph Doe" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <div class="profile-info">
+             <span class="name">Joseph Doe Junior</span>
+             <span class="title">Hey, how are you?</span>
+            </div>
+           </li>
+           <li class="status-online">
+            <figure class="profile-picture">
+             <img alt="Joseph Doe" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <div class="profile-info">
+             <span class="name">Joseph Doe Junior</span>
+             <span class="title">Hey, how are you?</span>
+            </div>
+           </li>
+           <li class="status-offline">
+            <figure class="profile-picture">
+             <img alt="Joseph Doe" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <div class="profile-info">
+             <span class="name">Joseph Doe Junior</span>
+             <span class="title">Hey, how are you?</span>
+            </div>
+           </li>
+           <li class="status-offline">
+            <figure class="profile-picture">
+             <img alt="Joseph Doe" class="img-circle" src="[%[=URL('static/tte/assets/images/!sample-user.jpg') ]]"/>
+            </figure>
+            <div class="profile-info">
+             <span class="name">Joseph Doe Junior</span>
+             <span class="title">Hey, how are you?</span>
+            </div>
+           </li>
+          </ul>
+         </div>
+        </div>
+       </div>
+      </div>
+     </aside>
+    </section>
+    <!-- Vendor -->
+    <script src="[%[=URL('static/tte/assets/vendor/jquery/jquery.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/bootstrap/js/bootstrap.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/nanoscroller/nanoscroller.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/magnific-popup/magnific-popup.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/jquery-placeholder/jquery.placeholder.js') ]]"></script>
+    <!-- Specific Page Vendor -->
+    <script src="[%[=URL('static/tte/assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/select2/select2.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/jquery-maskedinput/jquery.maskedinput.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/bootstrap-timepicker/js/bootstrap-timepicker.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/fuelux/js/spinner.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/dropzone/dropzone.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/bootstrap-markdown/js/markdown.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/bootstrap-markdown/js/to-markdown.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/bootstrap-markdown/js/bootstrap-markdown.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/codemirror/lib/codemirror.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/codemirror/addon/selection/active-line.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/codemirror/addon/edit/matchbrackets.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/codemirror/mode/javascript/javascript.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/codemirror/mode/xml/xml.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/codemirror/mode/htmlmixed/htmlmixed.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/codemirror/mode/css/css.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/summernote/summernote.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/bootstrap-maxlength/bootstrap-maxlength.js') ]]"></script>
+    <script src="[%[=URL('static/tte/assets/vendor/ios7-switch/ios7-switch.js') ]]"></script>
+    <!-- Theme Base, Components and Settings -->
+    <script src="[%[=URL('static/tte/assets/javascripts/theme.js') ]]"></script>
+    <!-- Theme Custom -->
+    <script src="[%[=URL('static/tte/assets/javascripts/theme.custom.js') ]]"></script>
+    <!-- Theme Initialization Files -->
+    <script src="[%[=URL('static/tte/assets/javascripts/theme.init.js') ]]"></script>
+    <!-- Examples -->
+    <script src="[%[=URL('static/tte/assets/javascripts/forms/examples.advanced.form.js') ]]"></script>
+   </div>
+  </section>
+  
+<!-- forms ajax -->
+<script>
+    const forms_url = [%[ =XML( page_url ) ]];
+
+    for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, 
+                 { method: 'POST', 
+                   body: new FormData( document.forms[i] ) 
+                 });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: '3 sec & will hide',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+  }
+</script>
+
+
+ </body>
+</html>

@@ -1,0 +1,263 @@
+<!--
+
+=========================================================
+* Volt Free - Bootstrap 5 Dashboard
+=========================================================
+
+* Product Page: https://themesberg.com/product/admin-dashboard/volt-premium-bootstrap-5-dashboard
+* Copyright 2020 Themesberg (https://www.themesberg.com)
+* License (https://themes.getbootstrap.com/licenses/)
+
+* Designed and coded by https://themesberg.com
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. Please contact us to request a removal.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 26.04.2021 14:45:46 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <!-- Primary Meta Tags -->
+  <title>biorex title text</title>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <meta content="Volt Free Bootstrap Dashboard - Lock Page" name="title"/>
+  <meta content="Themesberg" name="author"/>
+  <meta content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS." name="description"/>
+  <meta content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, themesberg, themesberg dashboard, themesberg admin dashboard" name="keywords"/>
+  <link href="https://themesberg.com/product/admin-dashboard/volt-premium-bootstrap-5-dashboard" rel="canonical"/>
+  <!-- Open Graph / Facebook -->
+  <meta content="website" property="og:type"/>
+  <meta content="https://demo.themesberg.com/volt-pro" property="og:url"/>
+  <meta content="Volt Free Bootstrap Dashboard - Lock Page" property="og:title"/>
+  <meta content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS." property="og:description"/>
+  <meta content="https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-pro-bootstrap-5-dashboard/volt-pro-preview.jpg" property="og:image"/>
+  <!-- Twitter -->
+  <meta content="summary_large_image" property="twitter:card"/>
+  <meta content="https://demo.themesberg.com/volt-pro" property="twitter:url"/>
+  <meta content="Volt Free Bootstrap Dashboard - Lock Page" property="twitter:title"/>
+  <meta content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS." property="twitter:description"/>
+  <meta content="https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-pro-bootstrap-5-dashboard/volt-pro-preview.jpg" property="twitter:image"/>
+  <!-- Favicon -->
+  <link href="[%[=URL('static/tte/assets/img/favicon/apple-touch-icon.png') ]]" rel="apple-touch-icon" sizes="120x120"/>
+  <link href="[%[=URL('static/tte/assets/img/favicon/favicon-32x32.png') ]]" rel="icon" sizes="32x32" type="image/png"/>
+  <link href="[%[=URL('static/tte/assets/img/favicon/favicon-16x16.png') ]]" rel="icon" sizes="16x16" type="image/png"/>
+  <link href="[%[=URL('static/tte/assets/img/favicon/site.webmanifest') ]]" rel="manifest"/>
+  <link color="#ffffff" href="[%[=URL('static/tte/assets/img/favicon/safari-pinned-tab.svg') ]]" rel="mask-icon"/>
+  <meta content="#ffffff" name="msapplication-TileColor"/>
+  <meta content="#ffffff" name="theme-color"/>
+  <!-- Fontawesome -->
+  <link href="[%[=URL('static/tte/vendor/@fortawesome/fontawesome-free/css/all.min.css') ]]" rel="stylesheet" type="text/css"/>
+  <!-- Sweet Alert -->
+  <link href="[%[=URL('static/tte/vendor/sweetalert2/dist/sweetalert2.min.css') ]]" rel="stylesheet" type="text/css"/>
+  <!-- Notyf -->
+  <link href="[%[=URL('static/tte/vendor/notyf/notyf.min.css') ]]" rel="stylesheet" type="text/css"/>
+  <!-- Volt CSS -->
+  <link href="[%[=URL('static/tte/css/volt.css') ]]" rel="stylesheet" type="text/css"/>
+  <!-- NOTICE: You can use the _analytics.html partial to include production code specific code & trackers -->
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!-- NOTICE: You can use the _analytics.html partial to include production code specific code & trackers -->
+  <main>
+   <!-- Section -->
+   <section class="vh-lg-100 bg-soft d-flex align-items-center my-4">
+    <div class="container">
+     <p class="text-center">
+      <a class="text-gray-700" href="[%[=URL('dashboard') ]]">
+       <i class="fas fa-angle-left me-2"></i>
+       Back to homepage
+      </a>
+     </p>
+     <div class="row justify-content-center form-bg-image" data-background-lg="[%[=URL('static/tte/assets/img/illustrations/signin.svg') ]]">
+      <div class="col-12 d-flex align-items-center justify-content-center">
+       <div class="bg-white shadow-soft border border-light rounded p-4 p-lg-5 w-100 fmxw-500">
+        <div class="text-center text-md-center mb-4 mt-md-0">
+         <div class="user-avatar large-avatar mx-auto mb-3 border-dark p-2">
+          <img alt="Image placeholder" class="rounded-circle" src="[%[=URL('static/tte/assets/img/team/profile-picture-3.jpg') ]]"/></div>
+         <h1 class="h3">Bonnie Green</h1>
+         <p class="text-gray">Better to be safe than sorry.</p>
+        </div>
+        
+<!-- BEGIN view: flock0, db_table: dflock0 -->
+<div class="mt-5">
+[%[= flock0.custom['begin'] ]]
+<div class="mb-4">
+ <label for="exampleInputPasswordCard4">
+  Your Password
+ </label>
+ <div class="input-group">
+  <span class="input-group-text">
+   <span class="fas fa-unlock-alt">
+   </span>
+  </span>
+ [%[ flock0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ flock0.custom['widgets']['f0']['_placeholder']= 'Password'  ]]
+ [%[ flock0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ flock0.custom['widgets']['f0']['_id']= 'exampleInputPasswordCard4'  ]]
+ [%[= flock0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= flock0.custom['errors']['f0'] if 'f0' in flock0.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="d-grid mt-3">
+ [%[ flock0.custom['submit']['_type']= 'submit'  ]]
+ [%[ flock0.custom['submit']['_class']= 'btn btn-dark'  ]]
+ [%[ flock0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ flock0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ flock0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= flock0.custom['submit'] ]]
+
+</div>
+
+ [%[ for hidden_widget in flock0.custom['hidden_widgets'].keys(): ]]
+     [%[= flock0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">flock0</span></div>
+
+
+[%[= flock0.custom['end'] ]]
+</div>
+<!-- END flock0-->
+
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+  </main>
+  <!-- Core -->
+  <script src="[%[=URL('static/tte/vendor/@popperjs/core/dist/umd/popper.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/vendor/bootstrap/dist/js/bootstrap.min.js') ]]"></script>
+  <!-- Vendor JS -->
+  <script src="[%[=URL('static/tte/vendor/onscreen/dist/on-screen.umd.min.js') ]]"></script>
+  <!-- Slider -->
+  <script src="[%[=URL('static/tte/vendor/nouislider/distribute/nouislider.min.js') ]]"></script>
+  <!-- Smooth scroll -->
+  <script src="[%[=URL('static/tte/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js') ]]"></script>
+  <!-- Charts -->
+  <script src="[%[=URL('static/tte/vendor/chartist/dist/chartist.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js') ]]"></script>
+  <!-- Datepicker -->
+  <script src="[%[=URL('static/tte/vendor/vanillajs-datepicker/dist/js/datepicker.min.js') ]]"></script>
+  <!-- Sweet Alerts 2 -->
+  <script src="[%[=URL('static/tte/vendor/sweetalert2/dist/sweetalert2.all.min.js') ]]"></script>
+  <!-- Moment JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+  <!-- Vanilla JS Datepicker -->
+  <script src="[%[=URL('static/tte/vendor/vanillajs-datepicker/dist/js/datepicker.min.js') ]]"></script>
+  <!-- Notyf -->
+  <script src="[%[=URL('static/tte/vendor/notyf/notyf.min.js') ]]"></script>
+  <!-- Simplebar -->
+  <script src="[%[=URL('static/tte/vendor/simplebar/dist/simplebar.min.js') ]]"></script>
+  <!-- Github buttons -->
+  <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+  <!-- Volt JS -->
+  <script src="[%[=URL('static/tte/assets/js/volt.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

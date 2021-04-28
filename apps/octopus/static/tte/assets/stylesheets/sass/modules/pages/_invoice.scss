@@ -1,0 +1,207 @@
+// INVOICE BASIC
+// -----------------------------------------------------------------------------
+/* Invoice */
+.invoice {
+	padding: 0 15px 15px;
+}
+
+// ADDRESS FORMAT
+// -----------------------------------------------------------------------------
+/* Invoice Address Tag */
+.invoice {
+	address {
+		color: #7F8597;
+		line-height: 1.5em;
+	}
+}
+
+// HEADER
+// -----------------------------------------------------------------------------
+/* Invoice header */
+.invoice {
+	header {
+		border-bottom: 1px solid #DADADA;
+		margin-bottom: 15px;
+
+		.h2,
+		.h4 {
+			letter-spacing: 0;
+		}
+	}
+}
+
+// BILL INFO
+// -----------------------------------------------------------------------------
+/* Invoice Billing Information */
+.invoice {
+	.bill-to,
+	.bill-data {
+		padding: 15px 0;
+	}
+
+	.bill-data {
+		.value {
+			display: inline-block;
+			margin-left: 10px;
+			width: 90px;
+		}
+	}
+}
+
+// TABLE
+// -----------------------------------------------------------------------------
+/* Invoice table */
+.invoice {
+	table.table {
+		table-layout: fixed;
+
+		> thead:first-child {
+			> tr {
+				> th {
+					background-color: #F8F8F8;
+					border: {
+						bottom: 1px solid #DADADA;
+						top: 1px solid #DADADA;
+					}
+				}
+			}
+		}
+
+		> tbody tr > td {
+			border-color: #DADADA;
+		}
+	}
+
+}
+
+// TABLE ITEMS
+// -----------------------------------------------------------------------------
+/* Invoice table items */
+.invoice {
+	.invoice-items {
+		> tbody tr:last-child > td {
+			border-bottom: 1px solid #DADADA;
+		}
+
+		#cell-id {
+			width: 10%;
+		}
+
+		#cell-item {
+			width: 20%;
+		}
+
+		#cell-desc {
+			width: 20%;
+		}
+
+		#cell-price {
+			width: 10%;
+		}
+
+		#cell-qty {
+			width: 10%;
+		}
+
+		#cell-total {
+			width: 10%;
+		}
+	}
+}
+
+// SUMMARY
+// -----------------------------------------------------------------------------
+/* Invoice summary */
+.invoice-summary {
+	.col-sm-4 {
+		padding-left: 0;
+	}
+}
+
+// RESPONSIVE
+// -----------------------------------------------------------------------------
+/* Invoice Responsiveness */
+@media only screen and (max-width: 991px) {
+	.invoice {
+		.table-responsive > table.table {
+			table-layout: auto;
+		}
+	}
+
+	.invoice-summary {
+		.col-sm-4 {
+			padding-left: 15px;
+		}
+	}
+}
+
+// PRINT
+// -----------------------------------------------------------------------------
+/* Invoice Print */
+@media print {
+	.invoice {
+		.table-responsive {
+			border: none !important;
+			overflow: visible !important;
+			width: auto !important;
+		}
+
+		table.table.invoice-items {
+			table-layout: auto;
+		}
+
+		header .col-sm-6:first-child,
+		header .col-sm-6:last-child,
+		.bill-info .col-md-6 {
+			float: left !important;
+		}
+
+		header .col-sm-6:first-child {
+			width: 25% !important;
+		}
+
+		header .col-sm-6:last-child {
+			width: 75% !important;
+		}
+
+		.bill-info .col-md-6 {
+			width: 50% !important;
+		}
+
+		.invoice-summary {
+			.col-sm-4 {
+				float: right;
+				padding: 0;
+				width: 40%;
+			}
+		}
+	}
+}
+
+// DARK SKIN
+// -----------------------------------------------------------------------------\
+/* dark */
+html.dark {
+	.invoice {
+		header {
+			border-bottom-color: $dark-color-3;
+		}
+
+		table.table {
+			> thead:first-child {
+				> tr {
+					> th {
+						background-color: $dark-color-3;
+						border-bottom-color: $dark-color-3;
+						border-top-color: $dark-color-3;
+					}
+				}
+			}
+
+			> tbody tr > td {
+				border-color: $dark-color-3;
+			}
+		}
+	}
+
+}

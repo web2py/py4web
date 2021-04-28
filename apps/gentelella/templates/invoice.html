@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 25.11.2020 16:43:09 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- Bootstrap -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/bootstrap/dist/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <!-- Font Awesome -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/font-awesome/css/font-awesome.min.css') ]]" rel="stylesheet"/>
+  <!-- NProgress -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/nprogress/nprogress.css') ]]" rel="stylesheet"/>
+  <!-- Custom styling plus plugins -->
+  <link href="[%[=URL('static/tte/gentelella/build/css/custom.min.css') ]]" rel="stylesheet"/>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+</head>
+ <body class="nav-md">
+  <div class="container body">
+   <div class="main_container">
+    <div class="col-md-3 left_col">
+     <div class="left_col scroll-view">
+      <div class="navbar nav_title" style="border: 0;">
+       <a class="site_title" href="[%[=URL('index') ]]">
+        <i class="fa fa-paw"></i>
+        <span>Gentelella Alela!</span>
+       </a>
+      </div>
+      <div class="clearfix"></div>
+      <!-- menu profile quick info -->
+      <div class="profile clearfix">
+       <div class="profile_pic">
+        <img alt="..." class="img-circle profile_img" src="[%[=URL('static/tte/images/img.jpg') ]]"/></div>
+       <div class="profile_info">
+        <span>Welcome,</span>
+        <h2>John Doe</h2>
+       </div>
+      </div>
+      <!-- /menu profile quick info -->
+      <br/>
+      <!-- sidebar menu -->
+      <div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
+       <div class="menu_section">
+        <h3>General</h3>
+        <ul class="nav side-menu">
+         <li>
+          <a>
+           <i class="fa fa-home"></i>
+           Home
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('index') ]]">Dashboard</a>
+           </li>
+           <li>
+            <a href="[%[=URL('index2') ]]">Dashboard2</a>
+           </li>
+           <li>
+            <a href="[%[=URL('index3') ]]">Dashboard3</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-edit"></i>
+           Forms
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('form') ]]">General Form</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXadvanced') ]]">Advanced Components</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXvalidation') ]]">Form Validation</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXwizards') ]]">Form Wizard</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXupload') ]]">Form Upload</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXbuttons') ]]">Form Buttons</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-desktop"></i>
+           UI Elements
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('generalXelements') ]]">General Elements</a>
+           </li>
+           <li>
+            <a href="[%[=URL('mediaXgallery') ]]">Media Gallery</a>
+           </li>
+           <li>
+            <a href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li>
+            <a href="[%[=URL('icons') ]]">Icons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('glyphicons') ]]">Glyphicons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+           <li>
+            <a href="[%[=URL('invoice') ]]">Invoice</a>
+           </li>
+           <li>
+            <a href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li>
+            <a href="[%[=URL('calendar') ]]">Calendar</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-table"></i>
+           Tables
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('tables') ]]">Tables</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXdynamic') ]]">Table Dynamic</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-bar-chart-o"></i>
+           Data Presentation
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('chartjs') ]]">Chart JS</a>
+           </li>
+           <li>
+            <a href="[%[=URL('chartjs2') ]]">Chart JS2</a>
+           </li>
+           <li>
+            <a href="[%[=URL('morisjs') ]]">Moris JS</a>
+           </li>
+           <li>
+            <a href="[%[=URL('echarts') ]]">ECharts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('otherXcharts') ]]">Other Charts</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-clone"></i>
+           Layouts
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('fixedXsidebar') ]]">Fixed Sidebar</a>
+           </li>
+           <li>
+            <a href="[%[=URL('fixedXfooter') ]]">Fixed Footer</a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+       <div class="menu_section">
+        <h3>Live On</h3>
+        <ul class="nav side-menu">
+         <li>
+          <a>
+           <i class="fa fa-bug"></i>
+           Additional Pages
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('eXcommerce') ]]">E-commerce</a>
+           </li>
+           <li>
+            <a href="[%[=URL('projects') ]]">Projects</a>
+           </li>
+           <li>
+            <a href="[%[=URL('projectXdetail') ]]">Project Detail</a>
+           </li>
+           <li>
+            <a href="[%[=URL('contacts') ]]">Contacts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('profile') ]]">Profile</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-windows"></i>
+           Extras
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('pageX403') ]]">403 Error</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pageX404') ]]">404 Error</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pageX500') ]]">500 Error</a>
+           </li>
+           <li>
+            <a href="[%[=URL('plainXpage') ]]">Plain Page</a>
+           </li>
+           <li>
+            <a href="[%[=URL('login') ]]">Login Page</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pricingXtables') ]]">Pricing Tables</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-sitemap"></i>
+           Multilevel Menu
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="#level1_1">Level One</a>
+           </li>
+           <li>
+            <a>
+             Level One
+             <span class="fa fa-chevron-down"></span>
+            </a>
+            <ul class="nav child_menu">
+             <li class="sub_menu">
+              <a href="[%[=URL('level2') ]]">Level Two</a>
+             </li>
+             <li>
+              <a href="#level2_1">Level Two</a>
+             </li>
+             <li>
+              <a href="#level2_2">Level Two</a>
+             </li>
+            </ul>
+           </li>
+           <li>
+            <a href="#level1_2">Level One</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a href="javascript:void(0)">
+           <i class="fa fa-laptop"></i>
+           Landing Page
+           <span class="label label-success pull-right">Coming Soon</span>
+          </a>
+         </li>
+        </ul>
+       </div>
+      </div>
+      <!-- /sidebar menu -->
+      <!-- /menu footer buttons -->
+      <div class="sidebar-footer hidden-small">
+       <a data-placement="top" data-toggle="tooltip" title="Settings">
+        <span aria-hidden="true" class="glyphicon glyphicon-cog"></span>
+       </a>
+       <a data-placement="top" data-toggle="tooltip" title="FullScreen">
+        <span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span>
+       </a>
+       <a data-placement="top" data-toggle="tooltip" title="Lock">
+        <span aria-hidden="true" class="glyphicon glyphicon-eye-close"></span>
+       </a>
+       <a data-placement="top" data-toggle="tooltip" href="[%[=URL('login') ]]" title="Logout">
+        <span aria-hidden="true" class="glyphicon glyphicon-off"></span>
+       </a>
+      </div>
+      <!-- /menu footer buttons -->
+     </div>
+    </div>
+    <!-- top navigation -->
+    <div class="top_nav">
+     <div class="nav_menu">
+      <div class="nav toggle">
+       <a id="menu_toggle">
+        <i class="fa fa-bars"></i>
+       </a>
+      </div>
+      <nav class="nav navbar-nav">
+       <ul class="navbar-right">
+        <li class="nav-item dropdown open" style="padding-left: 15px;">
+         <a aria-expanded="false" aria-haspopup="true" class="user-profile dropdown-toggle" data-toggle="dropdown" href="javascript:;" id="navbarDropdown">
+          <img alt="" src="[%[=URL('static/tte/images/img.jpg') ]]"/>John Doe</a>
+         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-usermenu pull-right">
+          <a class="dropdown-item" href="javascript:;">Profile</a>
+          <a class="dropdown-item" href="javascript:;">
+           <span class="badge bg-red pull-right">50%</span>
+           <span>Settings</span>
+          </a>
+          <a class="dropdown-item" href="javascript:;">Help</a>
+          <a class="dropdown-item" href="[%[=URL('login') ]]">
+           <i class="fa fa-sign-out pull-right"></i>
+           Log Out
+          </a>
+         </div>
+        </li>
+        <li class="nav-item dropdown open" role="presentation">
+         <a aria-expanded="false" class="dropdown-toggle info-number" data-toggle="dropdown" href="javascript:;" id="navbarDropdown1">
+          <i class="fa fa-envelope-o"></i>
+          <span class="badge bg-green">6</span>
+         </a>
+         <ul aria-labelledby="navbarDropdown1" class="dropdown-menu list-unstyled msg_list" role="menu">
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <div class="text-center">
+            <a class="dropdown-item">
+             <strong>See All Alerts</strong>
+             <i class="fa fa-angle-right"></i>
+            </a>
+           </div>
+          </li>
+         </ul>
+        </li>
+       </ul>
+      </nav>
+     </div>
+    </div>
+    <!-- /top navigation -->
+    <!-- page content -->
+    <div class="right_col" role="main">
+     <div class="">
+      <div class="page-title">
+       <div class="title_left">
+        <h3>
+         Invoice
+         <small>Some examples to get you started</small>
+        </h3>
+       </div>
+       <div class="title_right">
+        <div class="col-md-5 col-sm-5 form-group pull-right top_search">
+         <div class="input-group">
+          <input class="form-control" placeholder="Search for..." type="text"/>
+          <span class="input-group-btn">
+           <button class="btn btn-secondary" type="button">Go!</button>
+          </span>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="row">
+       <div class="col-md-12">
+        <div class="x_panel">
+         <div class="x_title">
+          <h2>
+           Invoice Design
+           <small>Sample user invoice design</small>
+          </h2>
+          <ul class="nav navbar-right panel_toolbox">
+           <li>
+            <a class="collapse-link">
+             <i class="fa fa-chevron-up"></i>
+            </a>
+           </li>
+           <li class="dropdown">
+            <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+             <i class="fa fa-wrench"></i>
+            </a>
+            <div aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+             <a class="dropdown-item" href="#">Settings 1</a>
+             <a class="dropdown-item" href="#">Settings 2</a>
+            </div>
+           </li>
+           <li>
+            <a class="close-link">
+             <i class="fa fa-close"></i>
+            </a>
+           </li>
+          </ul>
+          <div class="clearfix"></div>
+         </div>
+         <div class="x_content">
+          <section class="content invoice">
+           <!-- title row -->
+           <div class="row">
+            <div class="invoice-header">
+             <h1>
+              <i class="fa fa-globe"></i>
+              Invoice.
+              <small class="pull-right">Date: 16/08/2016</small>
+             </h1>
+            </div>
+            <!-- /.col -->
+           </div>
+           <!-- info row -->
+           <div class="row invoice-info">
+            <div class="col-sm-4 invoice-col">
+             From
+             <address>
+              <strong>Iron Admin, Inc.</strong>
+              <br/>
+              795 Freedom Ave, Suite 600
+              <br/>
+              New York, CA 94107
+              <br/>
+              Phone: 1 (804) 123-9876
+              <br/>
+              Email: ironadmin.com
+             </address>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-4 invoice-col">
+             To
+             <address>
+              <strong>John Doe</strong>
+              <br/>
+              795 Freedom Ave, Suite 600
+              <br/>
+              New York, CA 94107
+              <br/>
+              Phone: 1 (804) 123-9876
+              <br/>
+              Email: jon@ironadmin.com
+             </address>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-4 invoice-col">
+             <b>Invoice #007612</b>
+             <br/>
+             <br/>
+             <b>Order ID:</b>
+             4F3S8J
+             <br/>
+             <b>Payment Due:</b>
+             2/22/2014
+             <br/>
+             <b>Account:</b>
+             968-34567
+            </div>
+            <!-- /.col -->
+           </div>
+           <!-- /.row -->
+           <!-- Table row -->
+           <div class="row">
+            <div class="table">
+             
+<!--view: rows_tinvoice0, db_table: tinvoice0 -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Qty</th>
+        <th>Product</th>
+        <th>Serial #</th>
+        <th style="width: 59%">Description</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row0 in rows_tinvoice0: ]]
+        <tr>
+            <td>[%[= XML(row0.f0) ]]</td>
+            <td>[%[= XML(row0.f1) ]]</td>
+            <td>[%[= XML(row0.f2) ]]</td>
+            <td>[%[= XML(row0.f3) ]]</td>
+            <td>[%[= XML(row0.f4) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tinvoice0 -->
+
+
+<div  class='divtinvoice0' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">tinvoice0</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtinvoice0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+            </div>
+            <!-- /.col -->
+           </div>
+           <!-- /.row -->
+           <div class="row">
+            <!-- accepted payments column -->
+            <div class="col-md-6">
+             <p class="lead">Payment Methods:</p>
+             <img alt="Visa" src="[%[=URL('static/tte/images/visa.png') ]]"/>
+             <img alt="Mastercard" src="[%[=URL('static/tte/images/mastercard.png') ]]"/>
+             <img alt="American Express" src="[%[=URL('static/tte/images/american-express.png') ]]"/>
+             <img alt="Paypal" src="[%[=URL('static/tte/images/paypal.png') ]]"/>
+             <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem plugg dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.</p>
+            </div>
+            <!-- /.col -->
+            <div class="col-md-6">
+             <p class="lead">Amount Due 2/22/2014</p>
+             <div class="table-responsive">
+              
+<!--view: rows_tinvoice1, db_table: tinvoice1 -->
+  <table class="table">
+  <tbody>
+        [%[ for row1 in rows_tinvoice1: ]]
+        <tr>
+            <td>[%[= XML(row1.f0) ]]</td>
+            <td>[%[= XML(row1.f1) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tinvoice1 -->
+
+
+<div  class='divtinvoice1' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">tinvoice1</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtinvoice1');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+             </div>
+            </div>
+            <!-- /.col -->
+           </div>
+           <!-- /.row -->
+           <!-- this row will not appear when printing -->
+           <div class="row no-print">
+            <div class="">
+             <button class="btn btn-default" onclick="window.print();">
+              <i class="fa fa-print"></i>
+              Print
+             </button>
+             <button class="btn btn-success pull-right">
+              <i class="fa fa-credit-card"></i>
+              Submit Payment
+             </button>
+             <button class="btn btn-primary pull-right" style="margin-right: 5px;">
+              <i class="fa fa-download"></i>
+              Generate PDF
+             </button>
+            </div>
+           </div>
+          </section>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- /page content -->
+    <!-- footer content -->
+    <footer>
+     <div class="pull-right">
+      Gentelella - Bootstrap Admin Template by
+      <a href="https://colorlib.com">Colorlib</a>
+     </div>
+     <div class="clearfix"></div>
+    </footer>
+    <!-- /footer content -->
+   </div>
+  </div>
+  <!-- jQuery -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/jquery/dist/jquery.min.js') ]]"></script>
+  <!-- Bootstrap -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/bootstrap/dist/js/bootstrap.bundle.min.js') ]]"></script>
+  <!-- FastClick -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/fastclick/lib/fastclick.js') ]]"></script>
+  <!-- NProgress -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/nprogress/nprogress.js') ]]"></script>
+  <!-- Custom Theme Scripts -->
+  <script src="[%[=URL('static/tte/gentelella/build/js/custom.min.js') ]]"></script>
+ </body>
+</html>

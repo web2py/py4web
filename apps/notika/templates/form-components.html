@@ -1,0 +1,2267 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+ <head>
+            <!-- 01.12.2020 12:08:04 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+  <title>biorex title text</title>
+  <meta content="" name="description"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- favicon
+		============================================ -->
+  <link href="[%[=URL('static/tte/img/favicon.ico') ]]" rel="shortcut icon" type="image/x-icon"/>
+  <!-- Google Fonts
+		============================================ -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet"/>
+  <!-- Bootstrap CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <!-- font awesome CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/font-awesome.min.css') ]]" rel="stylesheet"/>
+  <!-- owl.carousel CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/owl.carousel.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/owl.theme.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/owl.transitions.css') ]]" rel="stylesheet"/>
+  <!-- meanmenu CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/meanmenu/meanmenu.min.css') ]]" rel="stylesheet"/>
+  <!-- animate CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/animate.css') ]]" rel="stylesheet"/>
+  <!-- summernote CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/summernote/summernote.css') ]]" rel="stylesheet"/>
+  <!-- Range Slider CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/themesaller-forms.css') ]]" rel="stylesheet"/>
+  <!-- normalize CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/normalize.css') ]]" rel="stylesheet"/>
+  <!-- mCustomScrollbar CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/scrollbar/jquery.mCustomScrollbar.min.css') ]]" rel="stylesheet"/>
+  <!-- Notika icon CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/notika-custom-icon.css') ]]" rel="stylesheet"/>
+  <!-- bootstrap select CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/bootstrap-select/bootstrap-select.css') ]]" rel="stylesheet"/>
+  <!-- datapicker CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/datapicker/datepicker3.css') ]]" rel="stylesheet"/>
+  <!-- Color Picker CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/color-picker/farbtastic.css') ]]" rel="stylesheet"/>
+  <!-- main CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/chosen/chosen.css') ]]" rel="stylesheet"/>
+  <!-- notification CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/notification/notification.css') ]]" rel="stylesheet"/>
+  <!-- dropzone CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/dropzone/dropzone.css') ]]" rel="stylesheet"/>
+  <!-- wave CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/wave/waves.min.css') ]]" rel="stylesheet"/>
+  <!-- main CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/main.css') ]]" rel="stylesheet"/>
+  <!-- style CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/style.css') ]]" rel="stylesheet"/>
+  <!-- responsive CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/responsive.css') ]]" rel="stylesheet"/>
+  <!-- modernizr JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/vendor/modernizr-2.8.3.min.js') ]]"></script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    background-color: LightGray;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-weight: bold;
+    border: 1px dashed black;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+  <!-- Start Header Top Area -->
+  <div class="header-top-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+      <div class="logo-area">
+       <a href="#">
+        <img alt="" src="[%[=URL('static/tte/img/logo/logo.png') ]]"/></a>
+      </div>
+     </div>
+     <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+      <div class="header-top-menu">
+       <ul class="nav navbar-nav notika-top-nav">
+        <li class="nav-item dropdown">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-search"></i>
+          </span>
+         </a>
+         <div class="dropdown-menu search-dd animated flipInX" role="menu">
+          <div class="search-input">
+           <i class="notika-icon notika-left-arrow"></i>
+           <input type="text"/></div>
+         </div>
+        </li>
+        <li class="nav-item dropdown">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-mail"></i>
+          </span>
+         </a>
+         <div class="dropdown-menu message-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Messages</h2>
+          </div>
+          <div class="hd-message-info">
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Jonathan Morris</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/4.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Fredric Mitchell</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Glenn Jecobs</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+        <li class="nav-item nc-al">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-alarm"></i>
+          </span>
+          <div class="spinner4 spinner-4"></div>
+          <div class="ntd-ctn">
+           <span>3</span>
+          </div>
+         </a>
+         <div class="dropdown-menu message-dd notification-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Notification</h2>
+          </div>
+          <div class="hd-message-info">
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Jonathan Morris</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/4.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Fredric Mitchell</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Glenn Jecobs</h3>
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes</p>
+             </div>
+            </div>
+           </a>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-menus"></i>
+          </span>
+          <div class="spinner4 spinner-4"></div>
+          <div class="ntd-ctn">
+           <span>2</span>
+          </div>
+         </a>
+         <div class="dropdown-menu message-dd task-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Tasks</h2>
+          </div>
+          <div class="hd-message-info hd-task-info">
+           <div class="skill">
+            <div class="progress">
+             <div class="lead-content">
+              <p>HTML5 Validation Report</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="95%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 95%;">
+              <span>95%</span>
+             </div>
+            </div>
+            <div class="progress">
+             <div class="lead-content">
+              <p>Google Chrome Extension</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="85%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 85%;">
+              <span>85%</span>
+             </div>
+            </div>
+            <div class="progress">
+             <div class="lead-content">
+              <p>Social Internet Projects</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="75%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 75%;">
+              <span>75%</span>
+             </div>
+            </div>
+            <div class="progress">
+             <div class="lead-content">
+              <p>Bootstrap Admin</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="65%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 65%;">
+              <span>65%</span>
+             </div>
+            </div>
+            <div class="progress progress-bt">
+             <div class="lead-content">
+              <p>Youtube App</p>
+             </div>
+             <div class="progress-bar wow fadeInLeft" data-progress="55%" data-wow-delay="1.2s" data-wow-duration="1.5s" style="width: 55%;">
+              <span>55%</span>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-expanded="false" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+          <span>
+           <i class="notika-icon notika-chat"></i>
+          </span>
+         </a>
+         <div class="dropdown-menu message-dd chat-dd animated zoomIn" role="menu">
+          <div class="hd-mg-tt">
+           <h2>Chat</h2>
+          </div>
+          <div class="search-people">
+           <i class="notika-icon notika-left-arrow"></i>
+           <input placeholder="Search People" type="text"/></div>
+          <div class="hd-message-info">
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/>
+              <div class="chat-avaible">
+               <i class="notika-icon notika-dot"></i>
+              </div>
+             </div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Available</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Jonathan Morris</h3>
+              <p>Last seen 3 hours ago</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/4.jpg') ]]"/></div>
+             <div class="hd-mg-ctn">
+              <h3>Fredric Mitchell</h3>
+              <p>Last seen 2 minutes ago</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/1.jpg') ]]"/>
+              <div class="chat-avaible">
+               <i class="notika-icon notika-dot"></i>
+              </div>
+             </div>
+             <div class="hd-mg-ctn">
+              <h3>David Belle</h3>
+              <p>Available</p>
+             </div>
+            </div>
+           </a>
+           <a href="#">
+            <div class="hd-message-sn">
+             <div class="hd-message-img chat-img">
+              <img alt="" src="[%[=URL('static/tte/img/post/2.jpg') ]]"/>
+              <div class="chat-avaible">
+               <i class="notika-icon notika-dot"></i>
+              </div>
+             </div>
+             <div class="hd-mg-ctn">
+              <h3>Glenn Jecobs</h3>
+              <p>Available</p>
+             </div>
+            </div>
+           </a>
+          </div>
+          <div class="hd-mg-va">
+           <a href="#">View All</a>
+          </div>
+         </div>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- End Header Top Area -->
+  <!-- Mobile Menu start -->
+  <div class="mobile-menu-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="mobile-menu">
+       <nav id="dropdown">
+        <ul class="mobile-menu-nav">
+         <li>
+          <a data-target="#Charts" data-toggle="collapse" href="#">Home</a>
+          <ul class="collapse dropdown-header-top">
+           <li>
+            <a href="[%[=URL('index') ]]">Dashboard One</a>
+           </li>
+           <li>
+            <a href="[%[=URL('indexX2') ]]">Dashboard Two</a>
+           </li>
+           <li>
+            <a href="[%[=URL('indexX3') ]]">Dashboard Three</a>
+           </li>
+           <li>
+            <a href="[%[=URL('indexX4') ]]">Dashboard Four</a>
+           </li>
+           <li>
+            <a href="[%[=URL('analytics') ]]">Analytics</a>
+           </li>
+           <li>
+            <a href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demoevent" data-toggle="collapse" href="#">Email</a>
+          <ul class="collapse dropdown-header-top" id="demoevent">
+           <li>
+            <a href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li>
+            <a href="[%[=URL('viewXemail') ]]">View Email</a>
+           </li>
+           <li>
+            <a href="[%[=URL('composeXemail') ]]">Compose Email</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#democrou" data-toggle="collapse" href="#">Interface</a>
+          <ul class="collapse dropdown-header-top" id="democrou">
+           <li>
+            <a href="[%[=URL('animations') ]]">Animations</a>
+           </li>
+           <li>
+            <a href="[%[=URL('googleXmap') ]]">Google Map</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dataXmap') ]]">Data Maps</a>
+           </li>
+           <li>
+            <a href="[%[=URL('codeXeditor') ]]">Code Editor</a>
+           </li>
+           <li>
+            <a href="[%[=URL('imageXcropper') ]]">Images Cropper</a>
+           </li>
+           <li>
+            <a href="[%[=URL('wizard') ]]">Wizard</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demolibra" data-toggle="collapse" href="#">Charts</a>
+          <ul class="collapse dropdown-header-top" id="demolibra">
+           <li>
+            <a href="[%[=URL('flotXcharts') ]]">Flot Charts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('barXcharts') ]]">Bar Charts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('lineXcharts') ]]">Line Charts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('areaXcharts') ]]">Area Charts</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demodepart" data-toggle="collapse" href="#">Tables</a>
+          <ul class="collapse dropdown-header-top" id="demodepart">
+           <li>
+            <a href="[%[=URL('normalXtable') ]]">Normal Table</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dataXtable') ]]">Data Table</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#demo" data-toggle="collapse" href="#">Forms</a>
+          <ul class="collapse dropdown-header-top" id="demo">
+           <li>
+            <a href="[%[=URL('formXelements') ]]">Form Elements</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXcomponents') ]]">Form Components</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXexamples') ]]">Form Examples</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#Miscellaneousmob" data-toggle="collapse" href="#">App views</a>
+          <ul class="collapse dropdown-header-top" id="Miscellaneousmob">
+           <li>
+            <a href="[%[=URL('notification') ]]">Notifications</a>
+           </li>
+           <li>
+            <a href="[%[=URL('alert') ]]">Alerts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('modals') ]]">Modals</a>
+           </li>
+           <li>
+            <a href="[%[=URL('buttons') ]]">Buttons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tabs') ]]">Tabs</a>
+           </li>
+           <li>
+            <a href="[%[=URL('accordion') ]]">Accordion</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dialog') ]]">Dialogs</a>
+           </li>
+           <li>
+            <a href="[%[=URL('popovers') ]]">Popovers</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tooltips') ]]">Tooltips</a>
+           </li>
+           <li>
+            <a href="[%[=URL('dropdown') ]]">Dropdowns</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a data-target="#Pagemob" data-toggle="collapse" href="#">Pages</a>
+          <ul class="collapse dropdown-header-top" id="Pagemob">
+           <li>
+            <a href="[%[=URL('contact') ]]">Contact</a>
+           </li>
+           <li>
+            <a href="[%[=URL('invoice') ]]">Invoice</a>
+           </li>
+           <li>
+            <a href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li>
+            <a href="[%[=URL('color') ]]">Color</a>
+           </li>
+           <li>
+            <a href="[%[=URL('loginXregister') ]]">Login Register</a>
+           </li>
+           <li>
+            <a href="[%[=URL('X404') ]]">404 Page</a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </nav>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Mobile Menu end -->
+  <!-- Main Menu area start-->
+  <div class="main-menu-area mg-tb-40">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <ul class="nav nav-tabs notika-menu-wrap menu-it-icon-pro">
+       <li>
+        <a data-toggle="tab" href="#Home">
+         <i class="notika-icon notika-house"></i>
+         Home
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#mailbox">
+         <i class="notika-icon notika-mail"></i>
+         Email
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Interface">
+         <i class="notika-icon notika-edit"></i>
+         Interface
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Charts">
+         <i class="notika-icon notika-bar-chart"></i>
+         Charts
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Tables">
+         <i class="notika-icon notika-windows"></i>
+         Tables
+        </a>
+       </li>
+       <li class="active">
+        <a data-toggle="tab" href="#Forms">
+         <i class="notika-icon notika-form"></i>
+         Forms
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Appviews">
+         <i class="notika-icon notika-app"></i>
+         App views
+        </a>
+       </li>
+       <li>
+        <a data-toggle="tab" href="#Page">
+         <i class="notika-icon notika-support"></i>
+         Pages
+        </a>
+       </li>
+      </ul>
+      <div class="tab-content custom-menu-content">
+       <div class="tab-pane in notika-tab-menu-bg animated flipInX" id="Home">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('index') ]]">Dashboard One</a>
+         </li>
+         <li>
+          <a href="[%[=URL('indexX2') ]]">Dashboard Two</a>
+         </li>
+         <li>
+          <a href="[%[=URL('indexX3') ]]">Dashboard Three</a>
+         </li>
+         <li>
+          <a href="[%[=URL('indexX4') ]]">Dashboard Four</a>
+         </li>
+         <li>
+          <a href="[%[=URL('analytics') ]]">Analytics</a>
+         </li>
+         <li>
+          <a href="[%[=URL('widgets') ]]">Widgets</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="mailbox">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('inbox') ]]">Inbox</a>
+         </li>
+         <li>
+          <a href="[%[=URL('viewXemail') ]]">View Email</a>
+         </li>
+         <li>
+          <a href="[%[=URL('composeXemail') ]]">Compose Email</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Interface">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('animations') ]]">Animations</a>
+         </li>
+         <li>
+          <a href="[%[=URL('googleXmap') ]]">Google Map</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dataXmap') ]]">Data Maps</a>
+         </li>
+         <li>
+          <a href="[%[=URL('codeXeditor') ]]">Code Editor</a>
+         </li>
+         <li>
+          <a href="[%[=URL('imageXcropper') ]]">Images Cropper</a>
+         </li>
+         <li>
+          <a href="[%[=URL('wizard') ]]">Wizard</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Charts">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('flotXcharts') ]]">Flot Charts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('barXcharts') ]]">Bar Charts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('lineXcharts') ]]">Line Charts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('areaXcharts') ]]">Area Charts</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Tables">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('normalXtable') ]]">Normal Table</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dataXtable') ]]">Data Table</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane active notika-tab-menu-bg animated flipInX" id="Forms">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('formXelements') ]]">Form Elements</a>
+         </li>
+         <li>
+          <a href="[%[=URL('formXcomponents') ]]">Form Components</a>
+         </li>
+         <li>
+          <a href="[%[=URL('formXexamples') ]]">Form Examples</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Appviews">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('notification') ]]">Notifications</a>
+         </li>
+         <li>
+          <a href="[%[=URL('alert') ]]">Alerts</a>
+         </li>
+         <li>
+          <a href="[%[=URL('modals') ]]">Modals</a>
+         </li>
+         <li>
+          <a href="[%[=URL('buttons') ]]">Buttons</a>
+         </li>
+         <li>
+          <a href="[%[=URL('tabs') ]]">Tabs</a>
+         </li>
+         <li>
+          <a href="[%[=URL('accordion') ]]">Accordion</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dialog') ]]">Dialogs</a>
+         </li>
+         <li>
+          <a href="[%[=URL('popovers') ]]">Popovers</a>
+         </li>
+         <li>
+          <a href="[%[=URL('tooltips') ]]">Tooltips</a>
+         </li>
+         <li>
+          <a href="[%[=URL('dropdown') ]]">Dropdowns</a>
+         </li>
+        </ul>
+       </div>
+       <div class="tab-pane notika-tab-menu-bg animated flipInX" id="Page">
+        <ul class="notika-main-menu-dropdown">
+         <li>
+          <a href="[%[=URL('contact') ]]">Contact</a>
+         </li>
+         <li>
+          <a href="[%[=URL('invoice') ]]">Invoice</a>
+         </li>
+         <li>
+          <a href="[%[=URL('typography') ]]">Typography</a>
+         </li>
+         <li>
+          <a href="[%[=URL('color') ]]">Color</a>
+         </li>
+         <li>
+          <a href="[%[=URL('loginXregister') ]]">Login Register</a>
+         </li>
+         <li>
+          <a href="[%[=URL('X404') ]]">404 Page</a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Main Menu area End-->
+  <!-- Breadcomb area Start-->
+  <div class="breadcomb-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="breadcomb-list">
+       <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="breadcomb-wp">
+          <div class="breadcomb-icon">
+           <i class="notika-icon notika-form"></i>
+          </div>
+          <div class="breadcomb-ctn">
+           <h2>Form Components</h2>
+           <p>
+            Welcome to Notika
+            <span class="bread-ntd">Admin Template</span>
+           </p>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-3">
+         <div class="breadcomb-report">
+          <button class="btn" data-placement="left" data-toggle="tooltip" title="Download Report">
+           <i class="notika-icon notika-sent"></i>
+          </button>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Breadcomb area End-->
+  <!-- Form Element area Start-->
+  <div class="form-element-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="form-element-list">
+       <div class="basic-tb-hd">
+        <h2>Input Text</h2>
+        <p>Text Inputs with different sizes by height and column.</p>
+       </div>
+       <div class="cmp-tb-hd bcs-hd">
+        <h2>Basic Example</h2>
+        <p>Place one add-on or button on either side of an input. You may also place one on both sides of an input.</p>
+       </div>
+       <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-support"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Full Name" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-mail"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Email Address" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-phone"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Contact Number" type="text"/></div>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-map"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Location" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-next"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Postal Code" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-mail"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Message" type="text"/></div>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-star"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Notification" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-travel"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Flight" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-dollar"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Dollar" type="text"/></div>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int form-elet-mg res-mg-fcs">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-wifi"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Internet" type="text"/></div>
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-cloud"></i>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int form-elet-mg res-mg-fcs">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-house"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Home Address" type="text"/></div>
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-success"></i>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int form-elet-mg">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-edit"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Layer" type="text"/></div>
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-chat"></i>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="form-element-list mg-t-30">
+       <div class="cmp-tb-hd">
+        <h2>Floating Labels</h2>
+        <p>Basic example for input groups with floating labels</p>
+       </div>
+       <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int float-lb floating-lb">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-support"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" type="text"/>
+           <label class="nk-label">
+            Full Name
+           </label>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int float-lb floating-lb">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-mail"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" type="text"/>
+           <label class="nk-label">
+            Email Address
+           </label>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int float-lb floating-lb">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-phone"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" type="text"/>
+           <label class="nk-label">
+            Contact Number
+           </label>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int float-lb form-elet-mg">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-wifi"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" type="text"/>
+           <label class="nk-label">
+            Internet
+           </label>
+          </div>
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-cloud"></i>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int float-lb form-elet-mg">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-house"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" type="text"/>
+           <label class="nk-label">
+            Home Address
+           </label>
+          </div>
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-success"></i>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group ic-cmp-int float-lb form-elet-mg">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-edit"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" type="text"/>
+           <label class="nk-label">
+            Layer
+           </label>
+          </div>
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-chat"></i>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="form-element-list mg-t-30">
+       <div class="cmp-tb-hd">
+        <h2>Different Sizes</h2>
+        <p>
+         You may use the extra sizing classes (
+         <code>
+          .input-sm, .input-lg
+         </code>
+         ) to change size of the feilds.
+        </p>
+       </div>
+       <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-wifi"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control input-sm" placeholder="Internet" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-wifi"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" placeholder="Internet" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+         <div class="form-group ic-cmp-int int-bg-it form-elet-mg">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-wifi"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control input-lg" placeholder="Internet" type="text"/></div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="form-element-list mg-t-30">
+       <div class="cmp-tb-hd">
+        <h2>Input Mask</h2>
+        <p>An input mask helps the user with the input. This can be useful for dates, numerics, phone numbers etc...</p>
+       </div>
+       <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-int-mk">
+          <h2>ISBN 1</h2>
+         </div>
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-support"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" data-mask="999-99-999-9999-9" placeholder="ISBN" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-int-mk">
+          <h2>IPV4</h2>
+         </div>
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-mail"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" data-mask="999.999.999.9999" placeholder="IPV4" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-int-mk">
+          <h2>Tax ID</h2>
+         </div>
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-tax"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" data-mask="99-9999999" placeholder="Tax ID" type="text"/></div>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-int-mk">
+          <h2>Phone</h2>
+         </div>
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-phone"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" data-mask="(999) 999-9999" placeholder="Phone" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-int-mk">
+          <h2>Currency</h2>
+         </div>
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-dollar"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" data-mask="$ 999,999,999.99" placeholder="Currency" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-int-mk">
+          <h2>Date</h2>
+         </div>
+         <div class="form-group ic-cmp-int">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-calendar"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" data-mask="99/99/9999" placeholder="dd/mm/yyyy" type="text"/></div>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-int-mk">
+          <h2>Postal Code</h2>
+         </div>
+         <div class="form-group ic-cmp-int form-elet-mg res-mg-fcs">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-star"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" data-mask="9999" placeholder="Postal Code" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-int-mk">
+          <h2>IP Address</h2>
+         </div>
+         <div class="form-group ic-cmp-int form-elet-mg res-mg-fcs">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-ip-locator"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" data-mask="999.999.999.9999" placeholder="IP" type="text"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-int-mk">
+          <h2>Credit Card</h2>
+         </div>
+         <div class="form-group ic-cmp-int form-elet-mg">
+          <div class="form-ic-cmp">
+           <i class="notika-icon notika-credit-card"></i>
+          </div>
+          <div class="nk-int-st">
+           <input class="form-control" data-mask="999 999 999 9999" placeholder="Credit Card" type="text"/></div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="form-element-list mg-t-30">
+       <div class="cmp-tb-hd">
+        <h2>Bootstrap Seelct - Custom Select</h2>
+        <p>Bootstrap-select is a jQuery plugin that utilizes Bootstrap's dropdown.js to style and bring additional functionality to standard select elements.</p>
+       </div>
+       <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn">
+          <h2>Basic Example</h2>
+         </div>
+         <div class="bootstrap-select fm-cmp-mg">
+          <select class="selectpicker">
+           <option>
+            Drama
+           </option>
+           <option>
+            Cariska
+           </option>
+           <option>
+            Cheriska
+           </option>
+           <option>
+            Malias
+           </option>
+           <option>
+            Kamines
+           </option>
+           <option>
+            Austranas
+           </option>
+          </select>
+         </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn sm-res-mg-t-10">
+          <h2>Serach Option</h2>
+         </div>
+         <div class="bootstrap-select fm-cmp-mg">
+          <select class="selectpicker" data-live-search="true">
+           <option>
+            Drama
+           </option>
+           <option>
+            Cariska
+           </option>
+           <option>
+            Cheriska
+           </option>
+           <option>
+            Malias
+           </option>
+           <option>
+            Kamines
+           </option>
+           <option>
+            Austranas
+           </option>
+          </select>
+         </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn sm-res-mg-t-10">
+          <h2>Option Groups</h2>
+         </div>
+         <div class="bootstrap-select fm-cmp-mg">
+          <select class="selectpicker">
+           <optgroup label="Picnic">
+            <option>
+             Drama
+            </option>
+            <option>
+             Cariska
+            </option>
+            <option>
+             Cheriska
+            </option>
+           </optgroup>
+           <optgroup label="Camping">
+            <option>
+             Malias
+            </option>
+            <option>
+             Kamines
+            </option>
+            <option>
+             Austranas
+            </option>
+           </optgroup>
+          </select>
+         </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn sm-res-mg-t-10">
+          <h2>Disabled Options</h2>
+         </div>
+         <div class="bootstrap-select fm-cmp-mg">
+          <select class="selectpicker">
+           <option disabled="disabled">
+            Drama
+           </option>
+           <option>
+            Cariska
+           </option>
+           <option>
+            Kamines
+           </option>
+           <option disabled="disabled">
+            Malias
+           </option>
+           <option>
+            Cheriska
+           </option>
+          </select>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn mg-t-30">
+          <h2>Multi Select</h2>
+         </div>
+         <div class="bootstrap-select">
+          <select class="selectpicker" multiple="">
+           <option>
+            Drama
+           </option>
+           <option>
+            Cariska
+           </option>
+           <option>
+            Cheriska
+           </option>
+           <option>
+            Malias
+           </option>
+           <option>
+            Kamines
+           </option>
+           <option>
+            Austranas
+           </option>
+          </select>
+         </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn mg-t-30">
+          <h2>Limit Selection - Set to 2</h2>
+         </div>
+         <div class="bootstrap-select">
+          <select class="selectpicker" data-max-options="2" multiple="" title="Choose some of...">
+           <option>
+            Drama
+           </option>
+           <option>
+            Cariska
+           </option>
+           <option>
+            Cheriska
+           </option>
+           <option>
+            Malias
+           </option>
+           <option>
+            Kamines
+           </option>
+           <option>
+            Austranas
+           </option>
+          </select>
+         </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn mg-t-30">
+          <h2>Display Count</h2>
+         </div>
+         <div class="bootstrap-select">
+          <select class="selectpicker" data-selected-text-format="count" multiple="">
+           <option>
+            Drama
+           </option>
+           <option>
+            Cariska
+           </option>
+           <option>
+            Cheriska
+           </option>
+           <option>
+            Malias
+           </option>
+           <option>
+            Kamines
+           </option>
+           <option>
+            Austranas
+           </option>
+          </select>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="form-element-list mg-t-30">
+       <div class="cmp-tb-hd">
+        <h2>Chosen</h2>
+        <p>Make long, unwieldy select boxes more user friendly.</p>
+       </div>
+       <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn">
+          <h2>Basic Example</h2>
+         </div>
+         <div class="chosen-select-act fm-cmp-mg">
+          <select class="chosen" data-placeholder="Choose a Country...">
+           <option value="United States">
+            United States
+           </option>
+           <option value="United Kingdom">
+            United Kingdom
+           </option>
+           <option value="Afghanistan">
+            Afghanistan
+           </option>
+           <option value="Aland Islands">
+            Aland Islands
+           </option>
+           <option value="Albania">
+            Albania
+           </option>
+           <option value="Algeria">
+            Algeria
+           </option>
+           <option value="American Samoa">
+            American Samoa
+           </option>
+          </select>
+         </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn sm-res-mg-t-10">
+          <h2>Disabled Items</h2>
+         </div>
+         <div class="chosen-select-act fm-cmp-mg">
+          <select class="chosen" data-placeholder="Choose a Country...">
+           <option value="United States">
+            United States
+           </option>
+           <option value="United Kingdom">
+            United Kingdom
+           </option>
+           <option disabled="" value="Afghanistan">
+            Afghanistan
+           </option>
+           <option disabled="" value="Aland Islands">
+            Aland Islands
+           </option>
+           <option value="Albania">
+            Albania
+           </option>
+           <option disabled="" value="Algeria">
+            Algeria
+           </option>
+           <option value="American Samoa">
+            American Samoa
+           </option>
+          </select>
+         </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn sm-res-mg-t-10">
+          <h2>Multiple Example</h2>
+         </div>
+         <div class="chosen-select-act fm-cmp-mg">
+          <select class="chosen" data-placeholder="Choose a Country..." multiple="">
+           <option value="United States">
+            United States
+           </option>
+           <option value="United Kingdom">
+            United Kingdom
+           </option>
+           <option value="Afghanistan">
+            Afghanistan
+           </option>
+           <option value="Aland Islands">
+            Aland Islands
+           </option>
+           <option value="Albania">
+            Albania
+           </option>
+           <option value="Algeria">
+            Algeria
+           </option>
+           <option value="American Samoa">
+            American Samoa
+           </option>
+          </select>
+         </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn sm-res-mg-t-10">
+          <h2>Option Group</h2>
+         </div>
+         <div class="chosen-select-act">
+          <select class="chosen" data-placeholder="Your Favorite Football Team">
+           <optgroup label="NFC EAST">
+            <option>
+             Dallas Cowboys
+            </option>
+            <option>
+             New York Giants
+            </option>
+            <option>
+             Philadelphia Eagles
+            </option>
+            <option>
+             Washington Redskins
+            </option>
+           </optgroup>
+           <optgroup label="NFC NORTH">
+            <option>
+             Chicago Bears
+            </option>
+            <option>
+             Detroit Lions
+            </option>
+            <option>
+             Green Bay Packers
+            </option>
+            <option>
+             Minnesota Vikings
+            </option>
+           </optgroup>
+          </select>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="form-element-list mg-t-30">
+       <div class="cmp-tb-hd">
+        <h2>Toggle Switch</h2>
+        <p>Material Design look alike Toggle Switches based on Radio Box.</p>
+       </div>
+       <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn tg-dp-mn">
+          <h2>Option Group</h2>
+         </div>
+         <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+           <div class="toggle-select-act fm-cmp-mg">
+            <div class="nk-toggle-switch">
+             <label class="ts-label" for="ts1">
+              Toggle Swith Default
+             </label>
+             <input hidden="hidden" id="ts1" type="checkbox"/>
+             <label class="ts-helper" for="ts1">
+             </label>
+            </div>
+           </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+           <div class="toggle-select-act sm-res-mg-t-10">
+            <div class="nk-toggle-switch disabled">
+             <label class="ts-label" for="tsd">
+              Toggle Swith Disable
+             </label>
+             <input checked="checked" disabled="disabled" hidden="hidden" id="tsd" type="checkbox"/>
+             <label class="ts-helper" for="tsd">
+             </label>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+         <div class="nk-int-mk sl-dp-mn tg-dp-mn mg-t-30">
+          <h2>Optional Color schemes</h2>
+          <p>Use the given data attribute to change the color scheme of the Toggle Switch</p>
+         </div>
+         <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+           <div class="toggle-select-act fm-cmp-mg">
+            <div class="nk-toggle-switch" data-ts-color="red">
+             <label class="ts-label" for="ts2">
+              Toggle Swith Red
+             </label>
+             <input hidden="hidden" id="ts2" type="checkbox"/>
+             <label class="ts-helper" for="ts2">
+             </label>
+            </div>
+           </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+           <div class="toggle-select-act sm-res-mg-t-10">
+            <div class="nk-toggle-switch" data-ts-color="blue">
+             <label class="ts-label" for="ts3">
+              Toggle Swith Blue
+             </label>
+             <input hidden="hidden" id="ts3" type="checkbox"/>
+             <label class="ts-helper" for="ts3">
+             </label>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+           <div class="toggle-select-act mg-t-30">
+            <div class="nk-toggle-switch" data-ts-color="green">
+             <label class="ts-label" for="ts4">
+              Toggle Swith Green
+             </label>
+             <input hidden="hidden" id="ts4" type="checkbox"/>
+             <label class="ts-helper" for="ts4">
+             </label>
+            </div>
+           </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+           <div class="toggle-select-act mg-t-30">
+            <div class="nk-toggle-switch" data-ts-color="cyan">
+             <label class="ts-label" for="ts5">
+              Toggle Swith Cyan
+             </label>
+             <input hidden="hidden" id="ts5" type="checkbox"/>
+             <label class="ts-helper" for="ts5">
+             </label>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+           <div class="toggle-select-act mg-t-30">
+            <div class="nk-toggle-switch" data-ts-color="lime">
+             <label class="ts-label" for="ts6">
+              Toggle Swith Lime
+             </label>
+             <input hidden="hidden" id="ts6" type="checkbox"/>
+             <label class="ts-helper" for="ts6">
+             </label>
+            </div>
+           </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+           <div class="toggle-select-act mg-t-30">
+            <div class="nk-toggle-switch" data-ts-color="amber">
+             <label class="ts-label" for="ts7">
+              Toggle Swith Amber
+             </label>
+             <input hidden="hidden" id="ts7" type="checkbox"/>
+             <label class="ts-helper" for="ts7">
+             </label>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+           <div class="toggle-select-act mg-t-30">
+            <div class="nk-toggle-switch" data-ts-color="purple">
+             <label class="ts-label" for="ts8">
+              Toggle Swith Purple
+             </label>
+             <input hidden="hidden" id="ts8" type="checkbox"/>
+             <label class="ts-helper" for="ts8">
+             </label>
+            </div>
+           </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+           <div class="toggle-select-act mg-t-30">
+            <div class="nk-toggle-switch" data-ts-color="pink">
+             <label class="ts-label" for="ts9">
+              Toggle Swith Pink
+             </label>
+             <input hidden="hidden" id="ts9" type="checkbox"/>
+             <label class="ts-helper" for="ts9">
+             </label>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="range-slider-wrap mg-t-30">
+       <div class="cmp-tb-hd">
+        <h2>Input Slider</h2>
+        <p>Range slider offers a ton off features, and it is as small, lightweight and minimal as possible, which is great for mobile use on the many supported devices.</p>
+       </div>
+       <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="themesaller-forms fm-cmp-mg">
+          <div class="slider-wrapper purple-slider">
+           <div id="slider"></div>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="themesaller-forms sm-res-mg-t-10">
+          <div class="slider-wrapper purple-slider">
+           <div id="slider1"></div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="themesaller-forms mg-t-30">
+          <div class="spacer-b16a">
+           <label for="amountp">
+            Maximum price:
+           </label>
+           <input class="slider-input" id="amountp" type="text"/></div>
+          <div class="slider-wrapper yellow-slider">
+           <div id="slider2"></div>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="themesaller-forms mg-t-30">
+          <div class="spacer-b16a">
+           <label for="bedrooms">
+            Number of bedrooms:
+           </label>
+           <input class="slider-input" id="bedrooms" type="text"/></div>
+          <div class="slider-wrapper blue-slider">
+           <div id="slider3"></div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="themesaller-forms mg-t-30">
+          <div class="spacer-b16a">
+           <label for="budget">
+            Project Budget:
+           </label>
+           <input class="slider-input" id="budget" type="text"/></div>
+          <div class="slider-wrapper purple-slider">
+           <div id="slider8"></div>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="themesaller-forms mg-t-30">
+          <div class="spacer-b16a">
+           <label for="amounts">
+            Price range:
+           </label>
+           <input class="slider-input" id="amounts" type="text"/></div>
+          <div class="slider-wrapper">
+           <div id="slider10"></div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+         <div class="cmp-tb-hd mg-t-20 bcs-hd">
+          <h2>Vertical Range Slider</h2>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="themesaller-forms">
+          <div class="slider-group blue-slider" id="eq">
+           <div class="sliderv-wrapper">
+            <span>77</span>
+           </div>
+           <div class="sliderv-wrapper">
+            <span>55</span>
+           </div>
+           <div class="sliderv-wrapper">
+            <span>40</span>
+           </div>
+           <div class="sliderv-wrapper">
+            <span>55</span>
+           </div>
+           <div class="sliderv-wrapper">
+            <span>77</span>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+         <div class="themesaller-forms">
+          <div class="slider-group purple-slider" id="eq2">
+           <div class="sliderv-wrapper">
+            <span>77</span>
+           </div>
+           <div class="sliderv-wrapper">
+            <span>55</span>
+           </div>
+           <div class="sliderv-wrapper">
+            <span>40</span>
+           </div>
+           <div class="sliderv-wrapper">
+            <span>55</span>
+           </div>
+           <div class="sliderv-wrapper">
+            <span>77</span>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Form Element area End-->
+  <!-- Datepicker area Start-->
+  <div class="datepicker-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="datepicker-int mg-t-30">
+       <div class="cmp-tb-hd">
+        <h2>Date Picker</h2>
+        <p>Date picker widget based on twitter bootstrap</p>
+       </div>
+       <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group nk-datapk-ctm form-elet-mg" id="data_1">
+          <label>
+           Simple data input format
+          </label>
+          <div class="input-group date nk-int-st">
+           <span class="input-group-addon"></span>
+           <input class="form-control" type="text" value="03/19/2018"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group nk-datapk-ctm form-elet-mg" id="data_2">
+          <label>
+           One Year view
+          </label>
+          <div class="input-group date nk-int-st">
+           <span class="input-group-addon"></span>
+           <input class="form-control" type="text" value="03/19/2018"/></div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="form-group nk-datapk-ctm form-elet-mg" id="data_3">
+          <label>
+           Decade view
+          </label>
+          <div class="input-group date nk-int-st">
+           <span class="input-group-addon"></span>
+           <input class="form-control" type="text" value="03/19/2018"/></div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Datepicker area End-->
+  <!-- Color Picker area Start-->
+  <div class="colorpicker-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="colorpicker-int mg-t-30">
+       <div class="cmp-tb-hd">
+        <h2>Color Picker</h2>
+        <p>Simplt HEX and HSL color picker with customizable options</p>
+       </div>
+       <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-container fm-cmp-mg">
+          <div class="input-group form-group form-elet-mg">
+           <span class="input-group-addon">
+            <i class="notika-icon notika-success"></i>
+           </span>
+           <div class="nk-line dropdown nk-int-st">
+            <input class="form-control nk-value" data-toggle="dropdown" type="text" value="#00c292"/>
+            <div class="dropdown-menu">
+             <div class="color-picker" data-cp-default="#00c292"></div>
+            </div>
+            <i class="nk-value"></i>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-container fm-cmp-mg">
+          <div class="input-group form-group form-elet-mg">
+           <span class="input-group-addon">
+            <i class="notika-icon notika-success"></i>
+           </span>
+           <div class="nk-line dropdown nk-int-st">
+            <input class="form-control nk-value" data-toggle="dropdown" type="text" value="#8BC34A"/>
+            <div class="dropdown-menu">
+             <div class="color-picker" data-cp-default="#8BC34A"></div>
+            </div>
+            <i class="nk-value"></i>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+         <div class="nk-container">
+          <div class="input-group form-group form-elet-mg">
+           <span class="input-group-addon">
+            <i class="notika-icon notika-success"></i>
+           </span>
+           <div class="nk-line dropdown nk-int-st">
+            <input class="form-control nk-value" data-toggle="dropdown" type="text" value="#F44336"/>
+            <div class="dropdown-menu">
+             <div class="color-picker" data-cp-default="#F44336"></div>
+            </div>
+            <i class="nk-value"></i>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Color Picker area End-->
+  <!-- Summernote area Start-->
+  <div class="summernote-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="summernote-wrap mg-t-30">
+       <div class="cmp-tb-hd">
+        <h2>HTML Editor</h2>
+        <p>Super Simple WYSIWYG Editor on Bootstrap</p>
+       </div>
+       <div class="cmp-tb-hd bsc-smp-sm">
+        <label>
+         Basic Example
+        </label>
+       </div>
+       <div class="html-editor"></div>
+       <div class="cmp-tb-hd mg-t-20">
+        <h2>Click to edit</h2>
+        <p>You can edit content on the fly</p>
+       </div>
+       <div class="summernote-clickable">
+        <button class="btn btn-primary btn-sm hec-button">Click here to edit the content</button>
+        <button class="btn btn-success btn-sm hec-save" style="display:none;">Save</button>
+       </div>
+       <div class="html-editor-click">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula erat sit amet aliquam vehicula. Aliquam aliquet et risus et consequat. Quisque ultrices nulla eu magna vulputate, quis varius massa tempor. Suspendisse sed condimentum purus, eget consequat dolor. Fusce aliquet ultricies porta. Nunc semper commodo leo at maximus. Duis maximus maximus leo, id lobortis nisi aliquam sit amet. Nullam vel ex id augue scelerisque congue sit amet eget urna.</p>
+       </div>
+       <div class="cmp-tb-hd mg-t-20 air-mode-ctn">
+        <h2>Air-mode</h2>
+        <p>Air-mode gives clearer interface with hiddened toolbar. To reveal toolbar, select a text below where you want to shape up.</p>
+       </div>
+       <div class="html-editor-airmod" contenteditable="true">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce euismod quam vel lacinia facilisis. Sed condimentum nisi vel ante maximus, sit amet vestibulum leo euismod. Curabitur viverra faucibus nisi eu molestie. Donec convallis finibus felis porttitor tristique. Nulla pretium est et ante dignissim.</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Summernote area End-->
+  <!-- Dropzone area Start-->
+  <div class="dropzone-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="dropdone-nk mg-t-30">
+       <div class="cmp-tb-hd">
+        <h2>Drag and Drop File Uploader</h2>
+        <p>DropzoneJS is an open source library that provides Drag and Drop file uploads with image previews. It s lightweight, doesn't depend on any other library (like jQuery) and is highly customizable.</p>
+       </div>
+       <div class="multi-uploader-cs" id="dropzone1">
+        
+<!-- BEGIN view: fformXcomponents0, db_table: dfformXcomponents0 -->
+<div class="dropzone dropzone-nk needsclick" id="demo1-upload">
+[%[= fformXcomponents0.custom['begin'] ]]
+<div class="dz-message needsclick download-custom">
+ <i class="notika-icon notika-cloud">
+ </i>
+ <h2>
+  Drop files here or click to upload.
+ </h2>
+ <p>
+  <span class="note needsclick">
+   (This is just a demo dropzone. Selected files are
+   <strong>
+    not
+   </strong>
+   actually uploaded.)
+  </span>
+ </p>
+</div>
+
+ [%[ for hidden_widget in fformXcomponents0.custom['hidden_widgets'].keys(): ]]
+     [%[= fformXcomponents0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfformXcomponents0 flashdiv"> <span class="flashspan">fformXcomponents0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformXcomponents0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fformXcomponents0.custom['end'] ]]
+</div>
+<!-- END fformXcomponents0-->
+
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Dropzone area End-->
+  <!-- Start Footer area-->
+  <div class="footer-copyright-area">
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="footer-copy-right">
+       <p>
+        Copyright © 2018 
+. All rights reserved. Template by
+        <a href="https://colorlib.com">Colorlib</a>
+        .
+       </p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- End Footer area-->
+  <!-- jquery
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/vendor/jquery-1.12.4.min.js') ]]"></script>
+  <!-- bootstrap JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/bootstrap.min.js') ]]"></script>
+  <!-- wow JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/wow.min.js') ]]"></script>
+  <!-- price-slider JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/jquery-price-slider.js') ]]"></script>
+  <!-- owl.carousel JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/owl.carousel.min.js') ]]"></script>
+  <!-- scrollUp JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/jquery.scrollUp.min.js') ]]"></script>
+  <!-- meanmenu JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/meanmenu/jquery.meanmenu.js') ]]"></script>
+  <!-- counterup JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/counterup/jquery.counterup.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/counterup/waypoints.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/counterup/counterup-active.js') ]]"></script>
+  <!-- mCustomScrollbar JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/scrollbar/jquery.mCustomScrollbar.concat.min.js') ]]"></script>
+  <!-- sparkline JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/sparkline/jquery.sparkline.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/sparkline/sparkline-active.js') ]]"></script>
+  <!-- flot JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/flot/jquery.flot.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/jquery.flot.resize.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/flot-active.js') ]]"></script>
+  <!-- knob JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/knob/jquery.knob.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/knob/jquery.appear.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/knob/knob-active.js') ]]"></script>
+  <!-- Input Mask JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/jasny-bootstrap.min.js') ]]"></script>
+  <!-- icheck JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/icheck/icheck.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/icheck/icheck-active.js') ]]"></script>
+  <!-- rangle-slider JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/rangle-slider/jquery-ui-1.10.4.custom.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/rangle-slider/jquery-ui-touch-punch.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/rangle-slider/rangle-active.js') ]]"></script>
+  <!-- datapicker JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/datapicker/bootstrap-datepicker.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/datapicker/datepicker-active.js') ]]"></script>
+  <!-- bootstrap select JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/bootstrap-select/bootstrap-select.js') ]]"></script>
+  <!--  color-picker JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/color-picker/farbtastic.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/color-picker/color-picker.js') ]]"></script>
+  <!--  notification JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/notification/bootstrap-growl.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/notification/notification-active.js') ]]"></script>
+  <!--  summernote JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/summernote/summernote-updated.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/summernote/summernote-active.js') ]]"></script>
+  <!-- dropzone JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/dropzone/dropzone.js') ]]"></script>
+  <!--  wave JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/wave/waves.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/wave/wave-active.js') ]]"></script>
+  <!--  chosen JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/chosen/chosen.jquery.js') ]]"></script>
+  <!--  Chat JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/chat/jquery.chat.js') ]]"></script>
+  <!--  todo JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/todo/jquery.todo.js') ]]"></script>
+  <!-- plugins JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/plugins.js') ]]"></script>
+  <!-- main JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/main.js') ]]"></script>
+  <!-- tawk chat JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/tawk-chat.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+    const forms_url = [%[ =XML( page_url ) ]];
+
+    for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, 
+                 { method: 'POST', 
+                   body: new FormData( document.forms[i] ) 
+                 });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: '3 sec & will hide',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+  }
+</script>
+
+
+ </body>
+</html>

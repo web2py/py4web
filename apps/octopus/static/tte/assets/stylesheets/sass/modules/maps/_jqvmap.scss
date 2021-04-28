@@ -1,0 +1,19 @@
+.jqvmap-zoomin,
+.jqvmap-zoomout {
+	background: $color-primary;
+	border-radius: 2px;
+	color: $color-primary-inverse;
+	height: 20px;
+	line-height: 20px;
+	padding: 0;
+	width: 20px;
+	text-align: center;
+
+	&:hover {
+		background: darken($color-primary, 5%);
+	}
+}
+
+.jqvmap-zoomout {
+	top: 35px;
+}

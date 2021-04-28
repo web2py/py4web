@@ -1,0 +1,13 @@
+{'basic-table.html': ['corona-free-dark-bootstrap-admin-template/template/pages/tables/basic-table.html'],
+ 'basic_elements.html': ['corona-free-dark-bootstrap-admin-template/template/pages/forms/basic_elements.html'],
+ 'blank-page.html': ['corona-free-dark-bootstrap-admin-template/template/pages/samples/blank-page.html'],
+ 'buttons.html': ['corona-free-dark-bootstrap-admin-template/template/pages/ui-features/buttons.html'],
+ 'chartjs.html': ['corona-free-dark-bootstrap-admin-template/template/pages/charts/chartjs.html'],
+ 'dropdowns.html': ['corona-free-dark-bootstrap-admin-template/template/pages/ui-features/dropdowns.html'],
+ 'error-404.html': ['corona-free-dark-bootstrap-admin-template/template/pages/samples/error-404.html'],
+ 'error-500.html': ['corona-free-dark-bootstrap-admin-template/template/pages/samples/error-500.html'],
+ 'index.html': ['corona-free-dark-bootstrap-admin-template/template/index.html'],
+ 'login.html': ['corona-free-dark-bootstrap-admin-template/template/pages/samples/login.html'],
+ 'mdi.html': ['corona-free-dark-bootstrap-admin-template/template/pages/icons/mdi.html'],
+ 'register.html': ['corona-free-dark-bootstrap-admin-template/template/pages/samples/register.html'],
+ 'typography.html': ['corona-free-dark-bootstrap-admin-template/template/pages/ui-features/typography.html']}

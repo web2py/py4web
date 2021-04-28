@@ -1,0 +1,42 @@
+{
+  "name": "gentelella",
+  "version": "2.0-beta2",
+  "description": "Gentelella Admin is a free to use Bootstrap admin template",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/puikinsh/gentelella.git"
+  },
+  "keywords": [
+    "css",
+    "js",
+    "html",
+    "template",
+    "admin",
+    "bootstrap",
+    "theme",
+    "backend",
+    "responsive"
+  ],
+  "author": "Aigars Silkalns",
+  "contributors": [
+    "Christian Esperar"
+  ],
+  "license": "MIT",
+  "main": "build/js/custom.min.js",
+  "bugs": {
+    "url": "https://github.com/puikinsh/gentelella/issues"
+  },
+  "homepage": "https://github.com/puikinsh/gentelella#readme",
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-ruby-sass": "^4.0.0",
+    "gulp-uglify": "^3.0.2"
+  }
+}

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html class="fixed">
+ <head>
+            <!-- 01.12.2020 12:03:28 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Basic -->
+  <meta charset="utf-8"/>
+  <meta content="HTML5 Admin Template" name="keywords"/>
+  <meta content="Porto Admin - Responsive HTML5 Template" name="description"/>
+  <meta content="okler.net" name="author"/>
+  <!-- Mobile Metas -->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <!-- Web Fonts  -->
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css"/>
+  <!-- Vendor CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/font-awesome/css/font-awesome.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/magnific-popup/magnific-popup.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap-datepicker/css/datepicker3.css') ]]" rel="stylesheet"/>
+  <!-- Theme CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/theme.css') ]]" rel="stylesheet"/>
+  <!-- Skin CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/skins/default.css') ]]" rel="stylesheet"/>
+  <!-- Theme Custom CSS -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/theme-custom.css') ]]" rel="stylesheet"/>
+  <!-- Head Libs -->
+  <script src="[%[=URL('static/tte/assets/vendor/modernizr/modernizr.js') ]]"></script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    background-color: LightGray;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-weight: bold;
+    border: 1px dashed black;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <!-- start: page -->
+  <section class="body-sign">
+   <div class="center-sign">
+    <a class="logo pull-left" href="[%[=URL('index') ]]">
+     <img alt="Porto Admin" height="54" src="[%[=URL('static/tte/assets/images/logo.png') ]]"/></a>
+    <div class="panel panel-sign">
+     <div class="panel-title-sign mt-xl text-right">
+      <h2 class="title text-uppercase text-bold m-none">
+       <i class="fa fa-user mr-xs"></i>
+       Sign Up
+      </h2>
+     </div>
+     <div class="panel-body">
+      
+<!-- BEGIN view: fpagesXsignup0, db_table: dfpagesXsignup0 -->
+<div>
+[%[= fpagesXsignup0.custom['begin'] ]]
+<div class="form-group mb-lg">
+ <label>
+  Name
+ </label>
+ [%[ fpagesXsignup0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fpagesXsignup0.custom['widgets']['f0']['_class']= 'form-control input-lg'  ]]
+ [%[ fpagesXsignup0.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fpagesXsignup0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsignup0.custom['errors']['f0'] if 'f0' in fpagesXsignup0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="form-group mb-lg">
+ <label>
+  E-mail Address
+ </label>
+ [%[ fpagesXsignup0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fpagesXsignup0.custom['widgets']['f1']['_class']= 'form-control input-lg'  ]]
+ [%[ fpagesXsignup0.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fpagesXsignup0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsignup0.custom['errors']['f1'] if 'f1' in fpagesXsignup0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="form-group mb-none">
+ <div class="row">
+  <div class="col-sm-6 mb-lg">
+   <label>
+    Password
+   </label>
+ [%[ fpagesXsignup0.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fpagesXsignup0.custom['widgets']['f2']['_class']= 'form-control input-lg'  ]]
+ [%[ fpagesXsignup0.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fpagesXsignup0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsignup0.custom['errors']['f2'] if 'f2' in fpagesXsignup0.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="col-sm-6 mb-lg">
+   <label>
+    Password Confirmation
+   </label>
+ [%[ fpagesXsignup0.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fpagesXsignup0.custom['widgets']['f3']['_class']= 'form-control input-lg'  ]]
+ [%[ fpagesXsignup0.custom['widgets']['f3']['_placeholder']= '_p4w'  ]]
+ [%[= fpagesXsignup0.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsignup0.custom['errors']['f3'] if 'f3' in fpagesXsignup0.custom['errors'] else '' ]]</span>
+
+  </div>
+ </div>
+</div>
+
+<div class="row">
+ <div class="col-sm-8">
+  <div class="checkbox-custom checkbox-default">
+ [%[ fpagesXsignup0.custom['widgets']['f4']['_id']= 'AgreeTerms'  ]]
+ [%[ fpagesXsignup0.custom['widgets']['f4']['_type']= 'checkbox'  ]]
+ [%[ fpagesXsignup0.custom['widgets']['f4']['_placeholder']= '_p4w'  ]]
+ [%[= fpagesXsignup0.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsignup0.custom['errors']['f4'] if 'f4' in fpagesXsignup0.custom['errors'] else '' ]]</span>
+
+   <label for="AgreeTerms">
+    I agree with
+    <a href="[%[=URL('index')]]">
+     terms of use
+    </a>
+   </label>
+  </div>
+ </div>
+ <div class="col-sm-4 text-right">
+ [%[ fpagesXsignup0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fpagesXsignup0.custom['submit']['_class']= 'btn btn-primary hidden-xs'  ]]
+ [%[ fpagesXsignup0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fpagesXsignup0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fpagesXsignup0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fpagesXsignup0.custom['submit'] ]]
+
+  <button class="btn btn-primary btn-block btn-lg visible-xs mt-lg" type="submit">
+   Sign Up
+  </button>
+ </div>
+</div>
+
+<span class="mt-lg mb-lg line-thru text-center text-uppercase">
+ <span>
+  or
+ </span>
+</span>
+
+<div class="mb-xs text-center">
+ <a class="btn btn-facebook mb-md ml-xs mr-xs">
+  Connect with
+  <i class="fa fa-facebook">
+  </i>
+ </a>
+ <a class="btn btn-twitter mb-md ml-xs mr-xs">
+  Connect with
+  <i class="fa fa-twitter">
+  </i>
+ </a>
+</div>
+
+<p class="text-center">
+ Already have an account?
+ <a href="[%[=URL('index')]]">
+  Sign In!
+ </a>
+</p>
+ [%[ for hidden_widget in fpagesXsignup0.custom['hidden_widgets'].keys(): ]]
+     [%[= fpagesXsignup0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfpagesXsignup0 flashdiv"> <span class="flashspan">fpagesXsignup0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfpagesXsignup0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fpagesXsignup0.custom['end'] ]]
+</div>
+<!-- END fpagesXsignup0-->
+
+     </div>
+    </div>
+    <p class="text-center text-muted mt-md mb-md">
+     © Copyright 2018. All rights reserved. Template by
+     <a href="https://colorlib.com">Colorlib</a>
+     .
+    </p>
+   </div>
+  </section>
+  <!-- end: page -->
+  <!-- Vendor -->
+  <script src="[%[=URL('static/tte/assets/vendor/jquery/jquery.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap/js/bootstrap.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/nanoscroller/nanoscroller.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/magnific-popup/magnific-popup.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/jquery-placeholder/jquery.placeholder.js') ]]"></script>
+  <!-- Theme Base, Components and Settings -->
+  <script src="[%[=URL('static/tte/assets/javascripts/theme.js') ]]"></script>
+  <!-- Theme Custom -->
+  <script src="[%[=URL('static/tte/assets/javascripts/theme.custom.js') ]]"></script>
+  <!-- Theme Initialization Files -->
+  <script src="[%[=URL('static/tte/assets/javascripts/theme.init.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+    const forms_url = [%[ =XML( page_url ) ]];
+
+    for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, 
+                 { method: 'POST', 
+                   body: new FormData( document.forms[i] ) 
+                 });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: '3 sec & will hide',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+  }
+</script>
+
+
+ </body>
+</html>

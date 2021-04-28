@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 26.04.2021 17:49:17 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- plugins:css -->
+  <link href="[%[=URL('static/tte/assets/vendors/mdi/css/materialdesignicons.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendors/css/vendor.bundle.base.css') ]]" rel="stylesheet"/>
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <!-- End Plugin css for this page -->
+  <!-- inject:css -->
+  <!-- endinject -->
+  <!-- Layout styles -->
+  <link href="[%[=URL('static/tte/assets/css/style.css') ]]" rel="stylesheet"/>
+  <!-- End layout styles -->
+  <link href="[%[=URL('static/tte/assets/images/favicon.png') ]]" rel="shortcut icon"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <div class="container-scroller">
+   <!-- partial:../../partials/_sidebar.html -->
+   <nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
+     <a class="sidebar-brand brand-logo" href="[%[=URL('index') ]]">
+      <img alt="logo" src="[%[=URL('static/tte/assets/images/logo.svg') ]]"/></a>
+     <a class="sidebar-brand brand-logo-mini" href="[%[=URL('index') ]]">
+      <img alt="logo" src="[%[=URL('static/tte/assets/images/logo-mini.svg') ]]"/></a>
+    </div>
+    <ul class="nav">
+     <li class="nav-item profile">
+      <div class="profile-desc">
+       <div class="profile-pic">
+        <div class="count-indicator">
+         <img alt="" class="img-xs rounded-circle" src="[%[=URL('static/tte/assets/images/faces/face15.jpg') ]]"/>
+         <span class="count bg-success"></span>
+        </div>
+        <div class="profile-name">
+         <h5 class="mb-0 font-weight-normal">Henry Klein</h5>
+         <span>Gold Member</span>
+        </div>
+       </div>
+       <a data-toggle="dropdown" href="#" id="profile-dropdown">
+        <i class="mdi mdi-dots-vertical"></i>
+       </a>
+       <div aria-labelledby="profile-dropdown" class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list">
+        <a class="dropdown-item preview-item" href="#">
+         <div class="preview-thumbnail">
+          <div class="preview-icon bg-dark rounded-circle">
+           <i class="mdi mdi-settings text-primary"></i>
+          </div>
+         </div>
+         <div class="preview-item-content">
+          <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
+         </div>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item preview-item" href="#">
+         <div class="preview-thumbnail">
+          <div class="preview-icon bg-dark rounded-circle">
+           <i class="mdi mdi-onepassword text-info"></i>
+          </div>
+         </div>
+         <div class="preview-item-content">
+          <p class="preview-subject ellipsis mb-1 text-small">Change Password</p>
+         </div>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item preview-item" href="#">
+         <div class="preview-thumbnail">
+          <div class="preview-icon bg-dark rounded-circle">
+           <i class="mdi mdi-calendar-today text-success"></i>
+          </div>
+         </div>
+         <div class="preview-item-content">
+          <p class="preview-subject ellipsis mb-1 text-small">To-do list</p>
+         </div>
+        </a>
+       </div>
+      </div>
+     </li>
+     <li class="nav-item nav-category">
+      <span class="nav-link">Navigation</span>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="[%[=URL('index') ]]">
+       <span class="menu-icon">
+        <i class="mdi mdi-speedometer"></i>
+       </span>
+       <span class="menu-title">Dashboard</span>
+      </a>
+     </li>
+     <li class="nav-item menu-items">
+      <a aria-controls="ui-basic" aria-expanded="false" class="nav-link" data-toggle="collapse" href="#ui-basic">
+       <span class="menu-icon">
+        <i class="mdi mdi-laptop"></i>
+       </span>
+       <span class="menu-title">Basic UI Elements</span>
+       <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse" id="ui-basic">
+       <ul class="nav flex-column sub-menu">
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('buttons') ]]">Buttons</a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('dropdowns') ]]">Dropdowns</a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('typography') ]]">Typography</a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="[%[=URL('basicXelements') ]]">
+       <span class="menu-icon">
+        <i class="mdi mdi-playlist-play"></i>
+       </span>
+       <span class="menu-title">Form Elements</span>
+      </a>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="[%[=URL('basicXtable') ]]">
+       <span class="menu-icon">
+        <i class="mdi mdi-table-large"></i>
+       </span>
+       <span class="menu-title">Tables</span>
+      </a>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="[%[=URL('chartjs') ]]">
+       <span class="menu-icon">
+        <i class="mdi mdi-chart-bar"></i>
+       </span>
+       <span class="menu-title">Charts</span>
+      </a>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="[%[=URL('mdi') ]]">
+       <span class="menu-icon">
+        <i class="mdi mdi-contacts"></i>
+       </span>
+       <span class="menu-title">Icons</span>
+      </a>
+     </li>
+     <li class="nav-item menu-items">
+      <a aria-controls="auth" aria-expanded="false" class="nav-link" data-toggle="collapse" href="#auth">
+       <span class="menu-icon">
+        <i class="mdi mdi-security"></i>
+       </span>
+       <span class="menu-title">User Pages</span>
+       <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse" id="auth">
+       <ul class="nav flex-column sub-menu">
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('blankXpage') ]]">Blank Page</a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('errorX404') ]]">404</a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('errorX500') ]]">500</a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('loginA') ]]">Login</a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('registerA') ]]">Register</a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li class="nav-item menu-items">
+      <a class="nav-link" href="http://www.bootstrapdash.com/demo/corona-free/jquery/documentation/documentation.html">
+       <span class="menu-icon">
+        <i class="mdi mdi-file-document-box"></i>
+       </span>
+       <span class="menu-title">Documentation</span>
+      </a>
+     </li>
+    </ul>
+   </nav>
+   <!-- partial -->
+   <div class="container-fluid page-body-wrapper">
+    <!-- partial:../../partials/_navbar.html -->
+    <nav class="navbar p-0 fixed-top d-flex flex-row">
+     <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+      <a class="navbar-brand brand-logo-mini" href="[%[=URL('index') ]]">
+       <img alt="logo" src="[%[=URL('static/tte/assets/images/logo-mini.svg') ]]"/></a>
+     </div>
+     <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+      <button class="navbar-toggler navbar-toggler align-self-center" data-toggle="minimize" type="button">
+       <span class="mdi mdi-menu"></span>
+      </button>
+      <ul class="navbar-nav w-100">
+       <li class="nav-item w-100">
+        
+<!-- BEGIN view: fdropdowns0, db_table: dfdropdowns0 -->
+<div class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
+[%[= fdropdowns0.custom['begin'] ]]
+ [%[ fdropdowns0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fdropdowns0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fdropdowns0.custom['widgets']['f0']['_placeholder']= 'Search products'  ]]
+ [%[= fdropdowns0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fdropdowns0.custom['errors']['f0'] if 'f0' in fdropdowns0.custom['errors'] else '' ]]</span>
+
+ [%[ fdropdowns0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fdropdowns0.custom['submit']['_class']= 'form-control mysubmit_cls'  ]]
+ [%[ fdropdowns0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fdropdowns0.custom['submit']['_rows']= '1'  ]]
+ [%[ fdropdowns0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fdropdowns0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fdropdowns0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fdropdowns0.custom['hidden_widgets'].keys(): ]]
+     [%[= fdropdowns0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fdropdowns0</span></div>
+
+
+[%[= fdropdowns0.custom['end'] ]]
+</div>
+<!-- END fdropdowns0-->
+
+       </li>
+      </ul>
+      <ul class="navbar-nav navbar-nav-right">
+       <li class="nav-item dropdown d-none d-lg-block">
+        <a aria-expanded="false" class="nav-link btn btn-success create-new-button" data-toggle="dropdown" href="#" id="createbuttonDropdown">+ Create New Project</a>
+        <div aria-labelledby="createbuttonDropdown" class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list">
+         <h6 class="p-3 mb-0">Projects</h6>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-file-outline text-primary"></i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">Software Development</p>
+          </div>
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-web text-info"></i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">UI Development</p>
+          </div>
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-layers text-danger"></i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">Software Testing</p>
+          </div>
+         </a>
+         <div class="dropdown-divider"></div>
+         <p class="p-3 mb-0 text-center">See all projects</p>
+        </div>
+       </li>
+       <li class="nav-item nav-settings d-none d-lg-block">
+        <a class="nav-link" href="#">
+         <i class="mdi mdi-view-grid"></i>
+        </a>
+       </li>
+       <li class="nav-item dropdown border-left">
+        <a aria-expanded="false" class="nav-link count-indicator dropdown-toggle" data-toggle="dropdown" href="#" id="messageDropdown">
+         <i class="mdi mdi-email"></i>
+         <span class="count bg-success"></span>
+        </a>
+        <div aria-labelledby="messageDropdown" class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list">
+         <h6 class="p-3 mb-0">Messages</h6>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <img alt="image" class="rounded-circle profile-pic" src="[%[=URL('static/tte/assets/images/faces/face4.jpg') ]]"/></div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">Mark send you a message</p>
+           <p class="text-muted mb-0">1 Minutes ago</p>
+          </div>
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <img alt="image" class="rounded-circle profile-pic" src="[%[=URL('static/tte/assets/images/faces/face2.jpg') ]]"/></div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">Cregh send you a message</p>
+           <p class="text-muted mb-0">15 Minutes ago</p>
+          </div>
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <img alt="image" class="rounded-circle profile-pic" src="[%[=URL('static/tte/assets/images/faces/face3.jpg') ]]"/></div>
+          <div class="preview-item-content">
+           <p class="preview-subject ellipsis mb-1">Profile picture updated</p>
+           <p class="text-muted mb-0">18 Minutes ago</p>
+          </div>
+         </a>
+         <div class="dropdown-divider"></div>
+         <p class="p-3 mb-0 text-center">4 new messages</p>
+        </div>
+       </li>
+       <li class="nav-item dropdown border-left">
+        <a class="nav-link count-indicator dropdown-toggle" data-toggle="dropdown" href="#" id="notificationDropdown">
+         <i class="mdi mdi-bell"></i>
+         <span class="count bg-danger"></span>
+        </a>
+        <div aria-labelledby="notificationDropdown" class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list">
+         <h6 class="p-3 mb-0">Notifications</h6>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-calendar text-success"></i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject mb-1">Event today</p>
+           <p class="text-muted ellipsis mb-0">Just a reminder that you have an event today</p>
+          </div>
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-settings text-danger"></i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject mb-1">Settings</p>
+           <p class="text-muted ellipsis mb-0">Update dashboard</p>
+          </div>
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-link-variant text-warning"></i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject mb-1">Launch Admin</p>
+           <p class="text-muted ellipsis mb-0">New admin wow!</p>
+          </div>
+         </a>
+         <div class="dropdown-divider"></div>
+         <p class="p-3 mb-0 text-center">See all notifications</p>
+        </div>
+       </li>
+       <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#" id="profileDropdown">
+         <div class="navbar-profile">
+          <img alt="" class="img-xs rounded-circle" src="[%[=URL('static/tte/assets/images/faces/face15.jpg') ]]"/>
+          <p class="mb-0 d-none d-sm-block navbar-profile-name">Henry Klein</p>
+          <i class="mdi mdi-menu-down d-none d-sm-block"></i>
+         </div>
+        </a>
+        <div aria-labelledby="profileDropdown" class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list">
+         <h6 class="p-3 mb-0">Profile</h6>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-settings text-success"></i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject mb-1">Settings</p>
+          </div>
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item preview-item">
+          <div class="preview-thumbnail">
+           <div class="preview-icon bg-dark rounded-circle">
+            <i class="mdi mdi-logout text-danger"></i>
+           </div>
+          </div>
+          <div class="preview-item-content">
+           <p class="preview-subject mb-1">Log out</p>
+          </div>
+         </a>
+         <div class="dropdown-divider"></div>
+         <p class="p-3 mb-0 text-center">Advanced settings</p>
+        </div>
+       </li>
+      </ul>
+      <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" data-toggle="offcanvas" type="button">
+       <span class="mdi mdi-format-line-spacing"></span>
+      </button>
+     </div>
+    </nav>
+    <!-- partial -->
+    <div class="main-panel">
+     <div class="content-wrapper">
+      <div class="page-header">
+       <h3 class="page-title">Dropdowns</h3>
+       <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+         <li class="breadcrumb-item">
+          <a href="#">UI Elements</a>
+         </li>
+         <li aria-current="page" class="breadcrumb-item active">Dropdowns</li>
+        </ol>
+       </nav>
+      </div>
+      <div class="row">
+       <div class="col-lg-12 grid-margin">
+        <div class="card">
+         <div class="card-body">
+          <h4 class="card-title">Basic dropdown</h4>
+          <p class="card-description">
+           Wrap the dropdown’s toggle (your button or link) and the dropdown menu within
+           <code>
+            .dropdown
+           </code>
+          </p>
+          <div class="template-demo">
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton1" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuButton1" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton2" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuButton2" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton3" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuButton3" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton4" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuButton4" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-success dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton5" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuButton5" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="dropdownMenuButton6" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuButton6" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="card-body">
+          <h4 class="card-title">Dropdown outline</h4>
+          <p class="card-description">
+           Add class
+           <code>
+            .btn-outline-{color}
+           </code>
+           to the button inside
+           <code>
+            .dropdown
+           </code>
+          </p>
+          <div class="template-demo">
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" id="dropdownMenuOutlineButton1" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuOutlineButton1" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" id="dropdownMenuOutlineButton2" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuOutlineButton2" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-outline-danger dropdown-toggle" data-toggle="dropdown" id="dropdownMenuOutlineButton3" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuOutlineButton3" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-outline-warning dropdown-toggle" data-toggle="dropdown" id="dropdownMenuOutlineButton4" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuOutlineButton4" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown" id="dropdownMenuOutlineButton5" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuOutlineButton5" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" id="dropdownMenuOutlineButton6" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuOutlineButton6" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+         <div class="card-body">
+          <h4 class="card-title">Split button dropdowns</h4>
+          <p class="card-description">
+           Wrap two buttons in
+           <code>
+            .btn-group
+           </code>
+           and add
+           <code>
+            .dropdown-toggle-split
+           </code>
+           to the toggling button
+          </p>
+          <div class="template-demo">
+           <div class="btn-group">
+            <button class="btn btn-primary" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropdownMenuSplitButton1" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropdownMenuSplitButton1" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-danger" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropdownMenuSplitButton2" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropdownMenuSplitButton2" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-success" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropdownMenuSplitButton3" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropdownMenuSplitButton3" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-secondary" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropdownMenuSplitButton4" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropdownMenuSplitButton4" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-info" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropdownMenuSplitButton5" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropdownMenuSplitButton5" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-warning" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropdownMenuSplitButton6" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropdownMenuSplitButton6" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+         <div class="card-body">
+          <h4 class="card-title">Icon dropdowns</h4>
+          <p class="card-description">Add icon tags instead of text</p>
+          <div class="row">
+           <div class="col-12">
+            <div class="template-demo d-flex justify-content-between">
+             <div class="dropdown">
+              <button aria-expanded="false" aria-haspopup="true" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" id="dropdownMenuIconButton1" type="button">
+               <i class="mdi mdi-earth"></i>
+              </button>
+              <div aria-labelledby="dropdownMenuIconButton1" class="dropdown-menu">
+               <h6 class="dropdown-header">Settings</h6>
+               <a class="dropdown-item" href="#">Action</a>
+               <a class="dropdown-item" href="#">Another action</a>
+               <a class="dropdown-item" href="#">Something else here</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+             </div>
+             <div class="dropdown">
+              <button aria-expanded="false" aria-haspopup="true" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" id="dropdownMenuIconButton2" type="button">
+               <i class="mdi mdi-trophy-outline"></i>
+              </button>
+              <div aria-labelledby="dropdownMenuIconButton2" class="dropdown-menu">
+               <h6 class="dropdown-header">Settings</h6>
+               <a class="dropdown-item" href="#">Action</a>
+               <a class="dropdown-item" href="#">Another action</a>
+               <a class="dropdown-item" href="#">Something else here</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+             </div>
+             <div class="dropdown">
+              <button aria-expanded="false" aria-haspopup="true" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" id="dropdownMenuIconButton3" type="button">
+               <i class="mdi mdi-clock"></i>
+              </button>
+              <div aria-labelledby="dropdownMenuIconButton3" class="dropdown-menu">
+               <h6 class="dropdown-header">Settings</h6>
+               <a class="dropdown-item" href="#">Action</a>
+               <a class="dropdown-item" href="#">Another action</a>
+               <a class="dropdown-item" href="#">Something else here</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-12">
+            <div class="template-demo d-flex justify-content-between">
+             <div class="dropdown">
+              <button aria-expanded="false" aria-haspopup="true" class="btn btn-success dropdown-toggle" data-toggle="dropdown" id="dropdownMenuIconButton4" type="button">
+               <i class="mdi mdi-heart"></i>
+              </button>
+              <div aria-labelledby="dropdownMenuIconButton4" class="dropdown-menu">
+               <h6 class="dropdown-header">Settings</h6>
+               <a class="dropdown-item" href="#">Action</a>
+               <a class="dropdown-item" href="#">Another action</a>
+               <a class="dropdown-item" href="#">Something else here</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+             </div>
+             <div class="dropdown">
+              <button aria-expanded="false" aria-haspopup="true" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" id="dropdownMenuIconButton5" type="button">
+               <i class="mdi mdi-logout"></i>
+              </button>
+              <div aria-labelledby="dropdownMenuIconButton5" class="dropdown-menu">
+               <h6 class="dropdown-header">Settings</h6>
+               <a class="dropdown-item" href="#">Action</a>
+               <a class="dropdown-item" href="#">Another action</a>
+               <a class="dropdown-item" href="#">Something else here</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+             </div>
+             <div class="dropdown">
+              <button aria-expanded="false" aria-haspopup="true" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="dropdownMenuIconButton6" type="button">
+               <i class="mdi mdi-security"></i>
+              </button>
+              <div aria-labelledby="dropdownMenuIconButton6" class="dropdown-menu">
+               <h6 class="dropdown-header">Settings</h6>
+               <a class="dropdown-item" href="#">Action</a>
+               <a class="dropdown-item" href="#">Another action</a>
+               <a class="dropdown-item" href="#">Something else here</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-12">
+            <div class="template-demo d-flex justify-content-between">
+             <div class="dropdown">
+              <button aria-expanded="false" aria-haspopup="true" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" id="dropdownMenuIconButton7" type="button">
+               <i class="mdi mdi-account"></i>
+              </button>
+              <div aria-labelledby="dropdownMenuIconButton7" class="dropdown-menu">
+               <h6 class="dropdown-header">Settings</h6>
+               <a class="dropdown-item" href="#">Action</a>
+               <a class="dropdown-item" href="#">Another action</a>
+               <a class="dropdown-item" href="#">Something else here</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+             </div>
+             <div class="dropdown">
+              <button aria-expanded="false" aria-haspopup="true" class="btn btn-info dropdown-toggle" data-toggle="dropdown" id="dropdownMenuIconButton8" type="button">
+               <i class="mdi mdi-bell"></i>
+              </button>
+              <div aria-labelledby="dropdownMenuIconButton8" class="dropdown-menu">
+               <h6 class="dropdown-header">Settings</h6>
+               <a class="dropdown-item" href="#">Action</a>
+               <a class="dropdown-item" href="#">Another action</a>
+               <a class="dropdown-item" href="#">Something else here</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+             </div>
+             <div class="dropdown">
+              <button aria-expanded="false" aria-haspopup="true" class="btn btn-success dropdown-toggle" data-toggle="dropdown" id="dropdownMenuIconButton7" type="button">
+               <i class="mdi mdi-account"></i>
+              </button>
+              <div aria-labelledby="dropdownMenuIconButton9" class="dropdown-menu">
+               <h6 class="dropdown-header">Settings</h6>
+               <a class="dropdown-item" href="#">Action</a>
+               <a class="dropdown-item" href="#">Another action</a>
+               <a class="dropdown-item" href="#">Something else here</a>
+               <div class="dropdown-divider"></div>
+               <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+         <div class="card-body">
+          <h4 class="card-title">Dropup variation</h4>
+          <p class="card-description">
+           Add class
+           <code>
+            .dropup
+           </code>
+          </p>
+          <div class="template-demo">
+           <div class="btn-group dropup">
+            <button class="btn btn-primary" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropupMenuSplitButton1" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropupMenuSplitButton1" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group dropup">
+            <button class="btn btn-danger" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropupMenuSplitButton2" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropupMenuSplitButton2" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group dropup">
+            <button class="btn btn-success" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropupMenuSplitButton3" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropupMenuSplitButton3" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group dropup">
+            <button class="btn btn-secondary" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropupMenuSplitButton4" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropupMenuSplitButton4" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group dropup">
+            <button class="btn btn-info" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropupMenuSplitButton5" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropupMenuSplitButton5" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="btn-group dropup">
+            <button class="btn btn-warning" type="button">Dropdown</button>
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-warning dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="dropupMenuSplitButton6" type="button">
+             <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div aria-labelledby="dropupMenuSplitButton6" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+         <div class="card-body">
+          <h4 class="card-title">Dropdown sizes</h4>
+          <p class="card-description">
+           Add class
+           <code>
+            .btn-{size}
+           </code>
+           to dropdown buttons
+          </p>
+          <div class="template-demo mt-5">
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-danger btn-lg dropdown-toggle" data-toggle="dropdown" id="dropdownMenuSizeButton1" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuSizeButton1" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" id="dropdownMenuSizeButton2" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuSizeButton2" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+           <div class="dropdown">
+            <button aria-expanded="false" aria-haspopup="true" class="btn btn-danger btn-sm dropdown-toggle" data-toggle="dropdown" id="dropdownMenuSizeButton3" type="button">Dropdown</button>
+            <div aria-labelledby="dropdownMenuSizeButton3" class="dropdown-menu">
+             <h6 class="dropdown-header">Settings</h6>
+             <a class="dropdown-item" href="#">Action</a>
+             <a class="dropdown-item" href="#">Another action</a>
+             <a class="dropdown-item" href="#">Something else here</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- content-wrapper ends -->
+     <!-- partial:../../partials/_footer.html -->
+     <footer class="footer">
+      <div class="d-sm-flex justify-content-center justify-content-sm-between">
+       <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">
+        Copyright © bootstrapdash.com 2020
+       </span>
+       <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+        Free
+        <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin templates</a>
+        from Bootstrapdash.com
+       </span>
+      </div>
+     </footer>
+     <!-- partial -->
+    </div>
+    <!-- main-panel ends -->
+   </div>
+   <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <script src="[%[=URL('static/tte/assets/vendors/js/vendor.bundle.base.js') ]]"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="[%[=URL('static/tte/assets/js/off-canvas.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/hoverable-collapse.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/misc.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/settings.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/todolist.js') ]]"></script>
+  <!-- endinject -->
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

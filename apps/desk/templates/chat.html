@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html>
+ <head>
+            <!-- 02.01.2021 13:25:04 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Basic Page Info -->
+  <meta charset="utf-8"/>
+  <title>biorex title text</title>
+  <!-- Site favicon -->
+  <link href="[%[=URL('static/tte/vendors/images/apple-touch-icon.png') ]]" rel="apple-touch-icon" sizes="180x180"/>
+  <link href="[%[=URL('static/tte/vendors/images/favicon-32x32.png') ]]" rel="icon" sizes="32x32" type="image/png"/>
+  <link href="[%[=URL('static/tte/vendors/images/favicon-16x16.png') ]]" rel="icon" sizes="16x16" type="image/png"/>
+  <!-- Mobile Specific Metas -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <!-- CSS -->
+  <link href="[%[=URL('static/tte/vendors/styles/core.css') ]]" rel="stylesheet" type="text/css"/>
+  <link href="[%[=URL('static/tte/vendors/styles/icon-font.min.css') ]]" rel="stylesheet" type="text/css"/>
+  <link href="[%[=URL('static/tte/vendors/styles/style.css') ]]" rel="stylesheet" type="text/css"/>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-119386393-1"></script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+
+function gtag() {
+    dataLayer.push(arguments);
+}
+gtag('js', new Date());
+
+gtag('config', 'UA-119386393-1');
+  </script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <div class="pre-loader">
+   <div class="pre-loader-box">
+    <div class="loader-logo">
+     <img alt="" src="[%[=URL('static/tte/vendors/images/deskapp-logo.svg') ]]"/></div>
+    <div class="loader-progress" id="progress_div">
+     <div class="bar" id="bar1"></div>
+    </div>
+    <div class="percent" id="percent1">0%</div>
+    <div class="loading-text">Loading...</div>
+   </div>
+  </div>
+  <div class="header">
+   <div class="header-left">
+    <div class="menu-icon dw dw-menu"></div>
+    <div class="search-toggle-icon dw dw-search2" data-toggle="header_search"></div>
+    <div class="header-search">
+     
+<!-- BEGIN view: fchat0, db_table: dfchat0 -->
+<div>
+[%[= fchat0.custom['begin'] ]]
+<div class="form-group mb-0">
+ <i class="dw dw-search2 search-icon">
+ </i>
+ [%[ fchat0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fchat0.custom['widgets']['f0']['_class']= 'form-control search-input'  ]]
+ [%[ fchat0.custom['widgets']['f0']['_placeholder']= 'Search Here_p4w'  ]]
+ [%[= fchat0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fchat0.custom['errors']['f0'] if 'f0' in fchat0.custom['errors'] else '' ]]</span>
+
+ <div class="dropdown">
+  <a class="dropdown-toggle no-arrow" data-toggle="dropdown" href="#" role="button">
+   <i class="ion-arrow-down-c">
+   </i>
+  </a>
+  <div class="dropdown-menu dropdown-menu-right">
+   <div class="form-group row">
+    <label class="col-sm-12 col-md-2 col-form-label">
+     From
+    </label>
+    <div class="col-sm-12 col-md-10">
+ [%[ fchat0.custom['widgets']['f1']['_class']= 'form-control form-control-sm form-control-line'  ]]
+ [%[ fchat0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fchat0.custom['widgets']['f1']['_placeholder']= '_p4w'  ]]
+ [%[= fchat0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fchat0.custom['errors']['f1'] if 'f1' in fchat0.custom['errors'] else '' ]]</span>
+
+    </div>
+   </div>
+   <div class="form-group row">
+    <label class="col-sm-12 col-md-2 col-form-label">
+     To
+    </label>
+    <div class="col-sm-12 col-md-10">
+ [%[ fchat0.custom['widgets']['f2']['_class']= 'form-control form-control-sm form-control-line'  ]]
+ [%[ fchat0.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fchat0.custom['widgets']['f2']['_placeholder']= '_p4w'  ]]
+ [%[= fchat0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fchat0.custom['errors']['f2'] if 'f2' in fchat0.custom['errors'] else '' ]]</span>
+
+    </div>
+   </div>
+   <div class="form-group row">
+    <label class="col-sm-12 col-md-2 col-form-label">
+     Subject
+    </label>
+    <div class="col-sm-12 col-md-10">
+ [%[ fchat0.custom['widgets']['f3']['_class']= 'form-control form-control-sm form-control-line'  ]]
+ [%[ fchat0.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fchat0.custom['widgets']['f3']['_placeholder']= '_p4w'  ]]
+ [%[= fchat0.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fchat0.custom['errors']['f3'] if 'f3' in fchat0.custom['errors'] else '' ]]</span>
+
+    </div>
+   </div>
+   <div class="text-right">
+ [%[ fchat0.custom['submit']['_class']= 'btn btn-primary'  ]]
+ [%[ fchat0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fchat0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fchat0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fchat0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fchat0.custom['submit'] ]]
+
+   </div>
+  </div>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fchat0.custom['hidden_widgets'].keys(): ]]
+     [%[= fchat0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fchat0</span></div>
+
+
+[%[= fchat0.custom['end'] ]]
+</div>
+<!-- END fchat0-->
+
+    </div>
+   </div>
+   <div class="header-right">
+    <div class="dashboard-setting user-notification">
+     <div class="dropdown">
+      <a class="dropdown-toggle no-arrow" data-toggle="right-sidebar" href="javascript:;">
+       <i class="dw dw-settings2"></i>
+      </a>
+     </div>
+    </div>
+    <div class="user-notification">
+     <div class="dropdown">
+      <a class="dropdown-toggle no-arrow" data-toggle="dropdown" href="#" role="button">
+       <i class="icon-copy dw dw-notification"></i>
+       <span class="badge notification-active"></span>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right">
+       <div class="notification-list mx-h-350 customscroll">
+        <ul>
+         <li>
+          <a href="#">
+           <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+           <h3>John Doe</h3>
+           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed...</p>
+          </a>
+         </li>
+         <li>
+          <a href="#">
+           <img alt="" src="[%[=URL('static/tte/vendors/images/photo1.jpg') ]]"/>
+           <h3>Lea R. Frith</h3>
+           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed...</p>
+          </a>
+         </li>
+         <li>
+          <a href="#">
+           <img alt="" src="[%[=URL('static/tte/vendors/images/photo2.jpg') ]]"/>
+           <h3>Erik L. Richards</h3>
+           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed...</p>
+          </a>
+         </li>
+         <li>
+          <a href="#">
+           <img alt="" src="[%[=URL('static/tte/vendors/images/photo3.jpg') ]]"/>
+           <h3>John Doe</h3>
+           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed...</p>
+          </a>
+         </li>
+         <li>
+          <a href="#">
+           <img alt="" src="[%[=URL('static/tte/vendors/images/photo4.jpg') ]]"/>
+           <h3>Renee I. Hansen</h3>
+           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed...</p>
+          </a>
+         </li>
+         <li>
+          <a href="#">
+           <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+           <h3>Vicki M. Coleman</h3>
+           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed...</p>
+          </a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="user-info-dropdown">
+     <div class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+       <span class="user-icon">
+        <img alt="" src="[%[=URL('static/tte/vendors/images/photo1.jpg') ]]"/></span>
+       <span class="user-name">Ross C. Lopez</span>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+       <a class="dropdown-item" href="[%[=URL('profile') ]]">
+        <i class="dw dw-user1"></i>
+        Profile
+       </a>
+       <a class="dropdown-item" href="[%[=URL('profile') ]]">
+        <i class="dw dw-settings2"></i>
+        Setting
+       </a>
+       <a class="dropdown-item" href="[%[=URL('faq') ]]">
+        <i class="dw dw-help"></i>
+        Help
+       </a>
+       <a class="dropdown-item" href="[%[=URL('login') ]]">
+        <i class="dw dw-logout"></i>
+        Log Out
+       </a>
+      </div>
+     </div>
+    </div>
+    <div class="github-link">
+     <a href="https://github.com/dropways/deskapp" target="_blank">
+      <img alt="" src="[%[=URL('static/tte/vendors/images/github.svg') ]]"/></a>
+    </div>
+   </div>
+  </div>
+  <div class="right-sidebar">
+   <div class="sidebar-title">
+    <h3 class="weight-600 font-16 text-blue">
+     Layout Settings
+     <span class="btn-block font-weight-400 font-12">User Interface Settings</span>
+    </h3>
+    <div class="close-sidebar" data-toggle="right-sidebar-close">
+     <i class="icon-copy ion-close-round"></i>
+    </div>
+   </div>
+   <div class="right-sidebar-body customscroll">
+    <div class="right-sidebar-body-content">
+     <h4 class="weight-600 font-18 pb-10">Header Background</h4>
+     <div class="sidebar-btn-group pb-30 mb-10">
+      <a class="btn btn-outline-primary header-white active" href="javascript:void(0);">White</a>
+      <a class="btn btn-outline-primary header-dark" href="javascript:void(0);">Dark</a>
+     </div>
+     <h4 class="weight-600 font-18 pb-10">Sidebar Background</h4>
+     <div class="sidebar-btn-group pb-30 mb-10">
+      <a class="btn btn-outline-primary sidebar-light" href="javascript:void(0);">White</a>
+      <a class="btn btn-outline-primary sidebar-dark active" href="javascript:void(0);">Dark</a>
+     </div>
+     <h4 class="weight-600 font-18 pb-10">Menu Dropdown Icon</h4>
+     <div class="sidebar-radio-group pb-10 mb-10">
+      <div class="custom-control custom-radio custom-control-inline">
+       <input checked="" class="custom-control-input" id="sidebaricon-1" name="menu-dropdown-icon" type="radio" value="icon-style-1"/>
+       <label class="custom-control-label" for="sidebaricon-1">
+        <i class="fa fa-angle-down"></i>
+       </label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+       <input class="custom-control-input" id="sidebaricon-2" name="menu-dropdown-icon" type="radio" value="icon-style-2"/>
+       <label class="custom-control-label" for="sidebaricon-2">
+        <i class="ion-plus-round"></i>
+       </label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+       <input class="custom-control-input" id="sidebaricon-3" name="menu-dropdown-icon" type="radio" value="icon-style-3"/>
+       <label class="custom-control-label" for="sidebaricon-3">
+        <i class="fa fa-angle-double-right"></i>
+       </label>
+      </div>
+     </div>
+     <h4 class="weight-600 font-18 pb-10">Menu List Icon</h4>
+     <div class="sidebar-radio-group pb-30 mb-10">
+      <div class="custom-control custom-radio custom-control-inline">
+       <input checked="" class="custom-control-input" id="sidebariconlist-1" name="menu-list-icon" type="radio" value="icon-list-style-1"/>
+       <label class="custom-control-label" for="sidebariconlist-1">
+        <i class="ion-minus-round"></i>
+       </label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+       <input class="custom-control-input" id="sidebariconlist-2" name="menu-list-icon" type="radio" value="icon-list-style-2"/>
+       <label class="custom-control-label" for="sidebariconlist-2">
+        <i aria-hidden="true" class="fa fa-circle-o"></i>
+       </label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+       <input class="custom-control-input" id="sidebariconlist-3" name="menu-list-icon" type="radio" value="icon-list-style-3"/>
+       <label class="custom-control-label" for="sidebariconlist-3">
+        <i class="dw dw-check"></i>
+       </label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+       <input checked="" class="custom-control-input" id="sidebariconlist-4" name="menu-list-icon" type="radio" value="icon-list-style-4"/>
+       <label class="custom-control-label" for="sidebariconlist-4">
+        <i class="icon-copy dw dw-next-2"></i>
+       </label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+       <input class="custom-control-input" id="sidebariconlist-5" name="menu-list-icon" type="radio" value="icon-list-style-5"/>
+       <label class="custom-control-label" for="sidebariconlist-5">
+        <i class="dw dw-fast-forward-1"></i>
+       </label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+       <input class="custom-control-input" id="sidebariconlist-6" name="menu-list-icon" type="radio" value="icon-list-style-6"/>
+       <label class="custom-control-label" for="sidebariconlist-6">
+        <i class="dw dw-next"></i>
+       </label>
+      </div>
+     </div>
+     <div class="reset-options pt-30 text-center">
+      <button class="btn btn-danger" id="reset-settings">Reset Settings</button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="left-side-bar">
+   <div class="brand-logo">
+    <a href="[%[=URL('index') ]]">
+     <img alt="" class="dark-logo" src="[%[=URL('static/tte/vendors/images/deskapp-logo.svg') ]]"/>
+     <img alt="" class="light-logo" src="[%[=URL('static/tte/vendors/images/deskapp-logo-white.svg') ]]"/></a>
+    <div class="close-sidebar" data-toggle="left-sidebar-close">
+     <i class="ion-close-round"></i>
+    </div>
+   </div>
+   <div class="menu-block customscroll">
+    <div class="sidebar-menu">
+     <ul id="accordion-menu">
+      <li class="dropdown">
+       <a class="dropdown-toggle" href="javascript:;">
+        <span class="micon dw dw-house-1"></span>
+        <span class="mtext">Home</span>
+       </a>
+       <ul class="submenu">
+        <li>
+         <a href="[%[=URL('index') ]]">Dashboard style 1</a>
+        </li>
+        <li>
+         <a href="[%[=URL('index2') ]]">Dashboard style 2</a>
+        </li>
+        <li>
+         <a href="[%[=URL('index3') ]]">Dashboard style 3</a>
+        </li>
+       </ul>
+      </li>
+      <li class="dropdown">
+       <a class="dropdown-toggle" href="javascript:;">
+        <span class="micon dw dw-edit2"></span>
+        <span class="mtext">Forms</span>
+       </a>
+       <ul class="submenu">
+        <li>
+         <a href="[%[=URL('formXbasic') ]]">Form Basic</a>
+        </li>
+        <li>
+         <a href="[%[=URL('advancedXcomponents') ]]">Advanced Components</a>
+        </li>
+        <li>
+         <a href="[%[=URL('formXwizard') ]]">Form Wizard</a>
+        </li>
+        <li>
+         <a href="[%[=URL('html5Xeditor') ]]">HTML5 Editor</a>
+        </li>
+        <li>
+         <a href="[%[=URL('formXpickers') ]]">Form Pickers</a>
+        </li>
+        <li>
+         <a href="[%[=URL('imageXcropper') ]]">Image Cropper</a>
+        </li>
+        <li>
+         <a href="[%[=URL('imageXdropzone') ]]">Image Dropzone</a>
+        </li>
+       </ul>
+      </li>
+      <li class="dropdown">
+       <a class="dropdown-toggle" href="javascript:;">
+        <span class="micon dw dw-library"></span>
+        <span class="mtext">Tables</span>
+       </a>
+       <ul class="submenu">
+        <li>
+         <a href="[%[=URL('basicXtable') ]]">Basic Tables</a>
+        </li>
+        <li>
+         <a href="[%[=URL('datatable') ]]">DataTables</a>
+        </li>
+       </ul>
+      </li>
+      <li>
+       <a class="dropdown-toggle no-arrow" href="[%[=URL('calendar') ]]">
+        <span class="micon dw dw-calendar1"></span>
+        <span class="mtext">Calendar</span>
+       </a>
+      </li>
+      <li class="dropdown">
+       <a class="dropdown-toggle" href="javascript:;">
+        <span class="micon dw dw-apartment"></span>
+        <span class="mtext">UI Elements</span>
+       </a>
+       <ul class="submenu">
+        <li>
+         <a href="[%[=URL('uiXbuttons') ]]">Buttons</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXcards') ]]">Cards</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXcardsXhover') ]]">Cards Hover</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXmodals') ]]">Modals</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXtabs') ]]">Tabs</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXtooltipXpopover') ]]">Tooltip &amp; Popover</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXsweetXalert') ]]">Sweet Alert</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXnotification') ]]">Notification</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXtimeline') ]]">Timeline</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXprogressbar') ]]">Progressbar</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXtypography') ]]">Typography</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXlistXgroup') ]]">List group</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXrangeXslider') ]]">Range slider</a>
+        </li>
+        <li>
+         <a href="[%[=URL('uiXcarousel') ]]">Carousel</a>
+        </li>
+       </ul>
+      </li>
+      <li class="dropdown">
+       <a class="dropdown-toggle" href="javascript:;">
+        <span class="micon dw dw-paint-brush"></span>
+        <span class="mtext">Icons</span>
+       </a>
+       <ul class="submenu">
+        <li>
+         <a href="[%[=URL('fontXawesome') ]]">FontAwesome Icons</a>
+        </li>
+        <li>
+         <a href="[%[=URL('foundation') ]]">Foundation Icons</a>
+        </li>
+        <li>
+         <a href="[%[=URL('ionicons') ]]">Ionicons Icons</a>
+        </li>
+        <li>
+         <a href="[%[=URL('themify') ]]">Themify Icons</a>
+        </li>
+        <li>
+         <a href="[%[=URL('customXicon') ]]">Custom Icons</a>
+        </li>
+       </ul>
+      </li>
+      <li class="dropdown">
+       <a class="dropdown-toggle" href="javascript:;">
+        <span class="micon dw dw-analytics-21"></span>
+        <span class="mtext">Charts</span>
+       </a>
+       <ul class="submenu">
+        <li>
+         <a href="[%[=URL('highchart') ]]">Highchart</a>
+        </li>
+        <li>
+         <a href="[%[=URL('knobXchart') ]]">jQuery Knob</a>
+        </li>
+        <li>
+         <a href="[%[=URL('jvectormap') ]]">jvectormap</a>
+        </li>
+        <li>
+         <a href="[%[=URL('apexcharts') ]]">Apexcharts</a>
+        </li>
+       </ul>
+      </li>
+      <li class="dropdown">
+       <a class="dropdown-toggle" href="javascript:;">
+        <span class="micon dw dw-right-arrow1"></span>
+        <span class="mtext">Additional Pages</span>
+       </a>
+       <ul class="submenu">
+        <li>
+         <a href="[%[=URL('videoXplayer') ]]">Video Player</a>
+        </li>
+        <li>
+         <a href="[%[=URL('login') ]]">Login</a>
+        </li>
+        <li>
+         <a href="[%[=URL('forgotXpassword') ]]">Forgot Password</a>
+        </li>
+        <li>
+         <a href="[%[=URL('resetXpassword') ]]">Reset Password</a>
+        </li>
+       </ul>
+      </li>
+      <li class="dropdown">
+       <a class="dropdown-toggle" href="javascript:;">
+        <span class="micon dw dw-browser2"></span>
+        <span class="mtext">Error Pages</span>
+       </a>
+       <ul class="submenu">
+        <li>
+         <a href="[%[=URL('X400') ]]">400</a>
+        </li>
+        <li>
+         <a href="[%[=URL('X403') ]]">403</a>
+        </li>
+        <li>
+         <a href="[%[=URL('X404') ]]">404</a>
+        </li>
+        <li>
+         <a href="[%[=URL('X500') ]]">500</a>
+        </li>
+        <li>
+         <a href="[%[=URL('X503') ]]">503</a>
+        </li>
+       </ul>
+      </li>
+      <li class="dropdown">
+       <a class="dropdown-toggle" href="javascript:;">
+        <span class="micon dw dw-copy"></span>
+        <span class="mtext">Extra Pages</span>
+       </a>
+       <ul class="submenu">
+        <li>
+         <a href="[%[=URL('blank') ]]">Blank</a>
+        </li>
+        <li>
+         <a href="[%[=URL('contactXdirectory') ]]">Contact Directory</a>
+        </li>
+        <li>
+         <a href="[%[=URL('blog') ]]">Blog</a>
+        </li>
+        <li>
+         <a href="[%[=URL('blogXdetail') ]]">Blog Detail</a>
+        </li>
+        <li>
+         <a href="[%[=URL('product') ]]">Product</a>
+        </li>
+        <li>
+         <a href="[%[=URL('productXdetail') ]]">Product Detail</a>
+        </li>
+        <li>
+         <a href="[%[=URL('faq') ]]">FAQ</a>
+        </li>
+        <li>
+         <a href="[%[=URL('profile') ]]">Profile</a>
+        </li>
+        <li>
+         <a href="[%[=URL('gallery') ]]">Gallery</a>
+        </li>
+        <li>
+         <a href="[%[=URL('pricingXtable') ]]">Pricing Tables</a>
+        </li>
+       </ul>
+      </li>
+      <li class="dropdown">
+       <a class="dropdown-toggle" href="javascript:;">
+        <span class="micon dw dw-list3"></span>
+        <span class="mtext">Multi Level Menu</span>
+       </a>
+       <ul class="submenu">
+        <li>
+         <a href="javascript:;">Level 1</a>
+        </li>
+        <li>
+         <a href="javascript:;">Level 1</a>
+        </li>
+        <li>
+         <a href="javascript:;">Level 1</a>
+        </li>
+        <li class="dropdown">
+         <a class="dropdown-toggle" href="javascript:;">
+          <span class="micon fa fa-plug"></span>
+          <span class="mtext">Level 2</span>
+         </a>
+         <ul class="submenu child">
+          <li>
+           <a href="javascript:;">Level 2</a>
+          </li>
+          <li>
+           <a href="javascript:;">Level 2</a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a href="javascript:;">Level 1</a>
+        </li>
+        <li>
+         <a href="javascript:;">Level 1</a>
+        </li>
+        <li>
+         <a href="javascript:;">Level 1</a>
+        </li>
+       </ul>
+      </li>
+      <li>
+       <a class="dropdown-toggle no-arrow" href="[%[=URL('sitemap') ]]">
+        <span class="micon dw dw-diagram"></span>
+        <span class="mtext">Sitemap</span>
+       </a>
+      </li>
+      <li>
+       <a class="dropdown-toggle no-arrow" href="[%[=URL('chat') ]]">
+        <span class="micon dw dw-chat3"></span>
+        <span class="mtext">Chat</span>
+       </a>
+      </li>
+      <li>
+       <a class="dropdown-toggle no-arrow" href="[%[=URL('invoice') ]]">
+        <span class="micon dw dw-invoice"></span>
+        <span class="mtext">Invoice</span>
+       </a>
+      </li>
+      <li>
+       <div class="dropdown-divider"></div>
+      </li>
+      <li>
+       <div class="sidebar-small-cap">Extra</div>
+      </li>
+      <li>
+       <a class="dropdown-toggle" href="javascript:;">
+        <span class="micon dw dw-edit-2"></span>
+        <span class="mtext">Documentation</span>
+       </a>
+       <ul class="submenu">
+        <li>
+         <a href="[%[=URL('introduction') ]]">Introduction</a>
+        </li>
+        <li>
+         <a href="[%[=URL('gettingXstarted') ]]">Getting Started</a>
+        </li>
+        <li>
+         <a href="[%[=URL('colorXsettings') ]]">Color Settings</a>
+        </li>
+        <li>
+         <a href="[%[=URL('thirdXpartyXplugins') ]]">Third Party Plugins</a>
+        </li>
+       </ul>
+      </li>
+      <li>
+       <a class="dropdown-toggle no-arrow" href="https://dropways.github.io/deskapp-free-single-page-website-template/" target="_blank">
+        <span class="micon dw dw-paper-plane1"></span>
+        <span class="mtext">
+         Landing Page
+         <img alt="" src="[%[=URL('static/tte/vendors/images/coming-soon.png') ]]" width="25"/></span>
+       </a>
+      </li>
+     </ul>
+    </div>
+   </div>
+  </div>
+  <div class="mobile-menu-overlay"></div>
+  <div class="main-container">
+   <div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+     <div class="page-header">
+      <div class="row">
+       <div class="col-md-6 col-sm-12">
+        <div class="title">
+         <h4>Chat</h4>
+        </div>
+        <nav aria-label="breadcrumb" role="navigation">
+         <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+           <a href="[%[=URL('index') ]]">Home</a>
+          </li>
+          <li aria-current="page" class="breadcrumb-item active">Chat</li>
+         </ol>
+        </nav>
+       </div>
+      </div>
+     </div>
+     <div class="bg-white border-radius-4 box-shadow mb-30">
+      <div class="row no-gutters">
+       <div class="col-lg-3 col-md-4 col-sm-12">
+        <div class="chat-list bg-light-gray">
+         <div class="chat-search">
+          <span class="ti-search"></span>
+          <input placeholder="Search Contact" type="text"/></div>
+         <div class="notification-list chat-notification-list customscroll">
+          <ul>
+           <li>
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-light-green"></i>
+              online
+             </p>
+            </a>
+           </li>
+           <li class="active">
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-light-green"></i>
+              online
+             </p>
+            </a>
+           </li>
+           <li>
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-light-green"></i>
+              online
+             </p>
+            </a>
+           </li>
+           <li>
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-warning"></i>
+              active 5 min
+             </p>
+            </a>
+           </li>
+           <li>
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-warning"></i>
+              active 4 min
+             </p>
+            </a>
+           </li>
+           <li>
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-warning"></i>
+              active 3 min
+             </p>
+            </a>
+           </li>
+           <li>
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-light-orange"></i>
+              offline
+             </p>
+            </a>
+           </li>
+           <li>
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-light-orange"></i>
+              offline
+             </p>
+            </a>
+           </li>
+           <li>
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-light-orange"></i>
+              offline
+             </p>
+            </a>
+           </li>
+           <li>
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-light-orange"></i>
+              offline
+             </p>
+            </a>
+           </li>
+           <li>
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-light-orange"></i>
+              offline
+             </p>
+            </a>
+           </li>
+           <li>
+            <a href="#">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/img.jpg') ]]"/>
+             <h3 class="clearfix">John Doe</h3>
+             <p>
+              <i class="fa fa-circle text-light-orange"></i>
+              offline
+             </p>
+            </a>
+           </li>
+          </ul>
+         </div>
+        </div>
+       </div>
+       <div class="col-lg-9 col-md-8 col-sm-12">
+        <div class="chat-detail">
+         <div class="chat-profile-header clearfix">
+          <div class="left">
+           <div class="clearfix">
+            <div class="chat-profile-photo">
+             <img alt="" src="[%[=URL('static/tte/vendors/images/profile-photo.jpg') ]]"/></div>
+            <div class="chat-profile-name">
+             <h3>Rachel Curtis</h3>
+             <span>New York, USA</span>
+            </div>
+           </div>
+          </div>
+          <div class="right text-right">
+           <div class="dropdown">
+            <a class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" href="#" role="button">Setting</a>
+            <div class="dropdown-menu dropdown-menu-right">
+             <a class="dropdown-item" href="#">Export Chat</a>
+             <a class="dropdown-item" href="#">Search</a>
+             <a class="dropdown-item text-light-orange" href="#">Delete Chat</a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="chat-box">
+          <div class="chat-desc customscroll">
+           <ul>
+            <li class="clearfix admin_chat">
+             <span class="chat-img">
+              <img alt="" src="[%[=URL('static/tte/vendors/images/chat-img2.jpg') ]]"/></span>
+             <div class="chat-body clearfix">
+              <p>Maybe you already have additional info?</p>
+              <div class="chat_time">09:40PM</div>
+             </div>
+            </li>
+            <li class="clearfix admin_chat">
+             <span class="chat-img">
+              <img alt="" src="[%[=URL('static/tte/vendors/images/chat-img2.jpg') ]]"/></span>
+             <div class="chat-body clearfix">
+              <p>It is to early to provide some kind of estimation here. We need user stories.</p>
+              <div class="chat_time">09:40PM</div>
+             </div>
+            </li>
+            <li class="clearfix">
+             <span class="chat-img">
+              <img alt="" src="[%[=URL('static/tte/vendors/images/chat-img1.jpg') ]]"/></span>
+             <div class="chat-body clearfix">
+              <p>We are just writing up the user stories now so will have requirements for you next week. We are just writing up the user stories now so will have requirements for you next week.</p>
+              <div class="chat_time">09:40PM</div>
+             </div>
+            </li>
+            <li class="clearfix">
+             <span class="chat-img">
+              <img alt="" src="[%[=URL('static/tte/vendors/images/chat-img1.jpg') ]]"/></span>
+             <div class="chat-body clearfix">
+              <p>Essentially the brief is for you guys to build an iOS and android app. We will do backend and web app. We have a version one mockup of the UI, please see it attached. As mentioned before, we would simply hand you all the assets for the UI and you guys code. If you have any early questions please do send them on to myself. Ill be in touch in coming days when we have requirements prepared. Essentially the brief is for you guys to build an iOS and android app. We will do backend and web app. We have a version one mockup of the UI, please see it attached. As mentioned before, we would simply hand you all the assets for the UI and you guys code. If you have any early questions please do send them on to myself. Ill be in touch in coming days when we have.</p>
+              <div class="chat_time">09:40PM</div>
+             </div>
+            </li>
+            <li class="clearfix admin_chat">
+             <span class="chat-img">
+              <img alt="" src="[%[=URL('static/tte/vendors/images/chat-img2.jpg') ]]"/></span>
+             <div class="chat-body clearfix">
+              <p>Maybe you already have additional info?</p>
+              <div class="chat_time">09:40PM</div>
+             </div>
+            </li>
+            <li class="clearfix admin_chat">
+             <span class="chat-img">
+              <img alt="" src="[%[=URL('static/tte/vendors/images/chat-img2.jpg') ]]"/></span>
+             <div class="chat-body clearfix">
+              <p>It is to early to provide some kind of estimation here. We need user stories.</p>
+              <div class="chat_time">09:40PM</div>
+             </div>
+            </li>
+            <li class="clearfix">
+             <span class="chat-img">
+              <img alt="" src="[%[=URL('static/tte/vendors/images/chat-img1.jpg') ]]"/></span>
+             <div class="chat-body clearfix">
+              <p>We are just writing up the user stories now so will have requirements for you next week. We are just writing up the user stories now so will have requirements for you next week.</p>
+              <div class="chat_time">09:40PM</div>
+             </div>
+            </li>
+            <li class="clearfix">
+             <span class="chat-img">
+              <img alt="" src="[%[=URL('static/tte/vendors/images/chat-img1.jpg') ]]"/></span>
+             <div class="chat-body clearfix">
+              <p>Essentially the brief is for you guys to build an iOS and android app. We will do backend and web app. We have a version one mockup of the UI, please see it attached. As mentioned before, we would simply hand you all the assets for the UI and you guys code. If you have any early questions please do send them on to myself. Ill be in touch in coming days when we have requirements prepared. Essentially the brief is for you guys to build an iOS and android app. We will do backend and web app. We have a version one mockup of the UI, please see it attached. As mentioned before, we would simply hand you all the assets for the UI and you guys code. If you have any early questions please do send them on to myself. Ill be in touch in coming days when we have.</p>
+              <div class="chat_time">09:40PM</div>
+             </div>
+            </li>
+            <li class="clearfix upload-file">
+             <span class="chat-img">
+              <img alt="" src="[%[=URL('static/tte/vendors/images/chat-img1.jpg') ]]"/></span>
+             <div class="chat-body clearfix">
+              <div class="upload-file-box clearfix">
+               <div class="left">
+                <img alt="" src="[%[=URL('static/tte/vendors/images/upload-file-img.jpg') ]]"/>
+                <div class="overlay">
+                 <a href="#">
+                  <span>
+                   <i class="fa fa-angle-down"></i>
+                  </span>
+                 </a>
+                </div>
+               </div>
+               <div class="right">
+                <h3>Big room.jpg</h3>
+                <a href="#">Download</a>
+               </div>
+              </div>
+              <div class="chat_time">09:40PM</div>
+             </div>
+            </li>
+            <li class="clearfix upload-file admin_chat">
+             <span class="chat-img">
+              <img alt="" src="[%[=URL('static/tte/vendors/images/chat-img2.jpg') ]]"/></span>
+             <div class="chat-body clearfix">
+              <div class="upload-file-box clearfix">
+               <div class="left">
+                <img alt="" src="[%[=URL('static/tte/vendors/images/upload-file-img.jpg') ]]"/>
+                <div class="overlay">
+                 <a href="#">
+                  <span>
+                   <i class="fa fa-angle-down"></i>
+                  </span>
+                 </a>
+                </div>
+               </div>
+               <div class="right">
+                <h3>Big room.jpg</h3>
+                <a href="#">Download</a>
+               </div>
+              </div>
+              <div class="chat_time">09:40PM</div>
+             </div>
+            </li>
+           </ul>
+          </div>
+          <div class="chat-footer">
+           <div class="file-upload">
+            <a href="#">
+             <i class="fa fa-paperclip"></i>
+            </a>
+           </div>
+           <div class="chat_text_area">
+            <textarea placeholder="Type your message…"></textarea>
+           </div>
+           <div class="chat_send">
+            <button class="btn btn-link" type="submit">
+             <i class="icon-copy ion-paper-airplane"></i>
+            </button>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="footer-wrap pd-20 mb-20 card-box">
+     DeskApp - Bootstrap 4 Admin Template By
+     <a href="https://github.com/dropways" target="_blank">Ankit Hingarajiya</a>
+    </div>
+   </div>
+  </div>
+  <!-- js -->
+  <script src="[%[=URL('static/tte/vendors/scripts/core.js') ]]"></script>
+  <script src="[%[=URL('static/tte/vendors/scripts/script.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/vendors/scripts/process.js') ]]"></script>
+  <script src="[%[=URL('static/tte/vendors/scripts/layout-settings.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+    const forms_url = [%[ =XML( page_url ) ]];
+
+    for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, 
+                 { method: 'POST', 
+                   body: new FormData( document.forms[i] ) 
+                 });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: '3 sec & will hide',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+    }
+</script>
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

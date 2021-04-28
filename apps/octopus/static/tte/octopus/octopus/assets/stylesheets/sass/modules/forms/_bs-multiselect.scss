@@ -1,0 +1,17 @@
+// DARK SKIN
+// -----------------------------------------------------------------------------
+html.dark {
+	.multiselect-container {
+		background-color: $dark-color-3;
+
+		> li > a {
+			color: #EEE;
+
+			&:hover,
+			&:focus {
+				background-color: $dark-color-1;
+				color: #FFF;
+			}
+		}
+	}
+}

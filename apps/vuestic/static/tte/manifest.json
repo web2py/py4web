@@ -1,0 +1,17 @@
+{
+    "name": "vuestic",
+    "short_name": "vuestic",
+    "theme_color": "#4DBA87",
+    "icons": [{
+        "src": "/vuestic/static/tte/img/icons/android-chrome-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+    }, {
+        "src": "/vuestic/static/tte/img/icons/android-chrome-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    }],
+    "start_url": "/vuestic/index.html",
+    "display": "standalone",
+    "background_color": "#000000"
+}

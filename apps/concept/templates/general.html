@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 08:47:35 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <!-- Bootstrap CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/circular-std/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/libs/css/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') ]]" rel="stylesheet"/>
+  <title>biorex title text</title>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!-- ============================================================== -->
+  <!-- main wrapper -->
+  <!-- ============================================================== -->
+  <div class="dashboard-main-wrapper">
+   <!-- ============================================================== -->
+   <!-- navbar -->
+   <!-- ============================================================== -->
+   <div class="dashboard-header">
+    <nav class="navbar navbar-expand-lg bg-white fixed-top">
+     <a class="navbar-brand" href="[%[=URL('index') ]]">Concept</a>
+     <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+      <span class="navbar-toggler-icon"></span>
+     </button>
+     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto navbar-right-top">
+       <li class="nav-item">
+        <div class="top-search-bar" id="custom-search">
+         <input class="form-control" placeholder="Search.." type="text"/></div>
+       </li>
+       <li class="nav-item dropdown notification">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-icons" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink1">
+         <i class="fas fa-fw fa-bell"></i>
+         <span class="indicator"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+         <li>
+          <div class="notification-title">Notification</div>
+          <div class="notification-list">
+           <div class="list-group">
+            <a class="list-group-item list-group-item-action active" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jeremy Rakestraw</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">John Abraham</span>
+               is now following you
+               <div class="notification-date">2 days ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Monaan Pechi</span>
+               is watching your main repository
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-5.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jessica Caruso</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="list-footer">
+           <a href="#">View all notifications</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown connection">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown" href="#" id="navbarDropdown" role="button">
+         <i class="fas fa-fw fa-th"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
+         <li class="connection-list">
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/github.png') ]]"/>
+             <span>Github</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dribbble.png') ]]"/>
+             <span>Dribbble</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dropbox.png') ]]"/>
+             <span>Dropbox</span>
+            </a>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/bitbucket.png') ]]"/>
+             <span>Bitbucket</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/mail_chimp.png') ]]"/>
+             <span>Mail chimp</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/slack.png') ]]"/>
+             <span>Slack</span>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="conntection-footer">
+           <a href="#">More</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown nav-user">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-user-img" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink2">
+         <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/></a>
+        <div aria-labelledby="navbarDropdownMenuLink2" class="dropdown-menu dropdown-menu-right nav-user-dropdown">
+         <div class="nav-user-info">
+          <h5 class="mb-0 text-white nav-user-name">John Abraham</h5>
+          <span class="status"></span>
+          <span class="ml-2">Available</span>
+         </div>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-user mr-2"></i>
+          Account
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-cog mr-2"></i>
+          Setting
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-power-off mr-2"></i>
+          Logout
+         </a>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </nav>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end navbar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- left sidebar -->
+   <!-- ============================================================== -->
+   <div class="nav-left-sidebar sidebar-dark">
+    <div class="menu-list">
+     <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+      <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarNav" data-toggle="collapse" type="button">
+       <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+       <ul class="navbar-nav flex-column">
+        <li class="nav-divider">Menu</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-1" aria-expanded="false" class="nav-link active" data-target="#submenu-1" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-user-circle"></i>
+          Dashboard
+          <span class="badge badge-success">6</span>
+         </a>
+         <div class="collapse submenu" id="submenu-1" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a aria-controls="submenu-1-2" aria-expanded="false" class="nav-link" data-target="#submenu-1-2" data-toggle="collapse" href="[%[=URL('index') ]]">E-Commerce</a>
+            <div class="collapse submenu" id="submenu-1-2" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('index') ]]">E Commerce Dashboard</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproduct') ]]">Product List</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXsingle') ]]">Product Single</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXcheckout') ]]">Product Checkout</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXfinance') ]]">Finance</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXsales') ]]">Sales</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-1-1" aria-expanded="false" class="nav-link" data-target="#submenu-1-1" data-toggle="collapse" href="#">Infulencer</a>
+            <div class="collapse submenu" id="submenu-1-1" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('dashboardXinfluencer') ]]">Influencer</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXfinder') ]]">Influencer Finder</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXprofile') ]]">Influencer Profile</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-2" aria-expanded="false" class="nav-link" data-target="#submenu-2" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-rocket"></i>
+          UI Elements
+         </a>
+         <div class="collapse submenu" id="submenu-2" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cards') ]]">
+             Cards
+             <span class="badge badge-secondary">New</span>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('general') ]]">General</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('carousel') ]]">Carousel</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('listgroup') ]]">List Group</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('accordions') ]]">Accordions</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('tabs') ]]">Tabs</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-3" aria-expanded="false" class="nav-link" data-target="#submenu-3" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-chart-pie"></i>
+          Chart
+         </a>
+         <div class="collapse submenu" id="submenu-3" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXc3') ]]">C3 Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXchartist') ]]">Chartist Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXcharts') ]]">Chart</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXmorris') ]]">Morris</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXsparkline') ]]">Sparkline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXgauge') ]]">Guage</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-4" aria-expanded="false" class="nav-link" data-target="#submenu-4" data-toggle="collapse" href="#">
+          <i class="fab fa-fw fa-wpforms"></i>
+          Forms
+         </a>
+         <div class="collapse submenu" id="submenu-4" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXelements') ]]">Form Elements</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXvalidation') ]]">Parsely Validations</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('multiselect') ]]">Multiselect</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-5" aria-expanded="false" class="nav-link" data-target="#submenu-5" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-table"></i>
+          Tables
+         </a>
+         <div class="collapse submenu" id="submenu-5" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('generalXtable') ]]">General Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dataXtables') ]]">Data Tables</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-divider">Features</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-6" aria-expanded="false" class="nav-link" data-target="#submenu-6" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-file"></i>
+          Pages
+         </a>
+         <div class="collapse submenu" id="submenu-6" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('invoice') ]]">Invoice</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpage') ]]">Blank Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpageXheader') ]]">Blank Page Header</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('loginA') ]]">Login</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('X404Xpage') ]]">404 page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('signXup') ]]">Sign up Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('forgotXpassword') ]]">Forgot Password</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('pricing') ]]">Pricing Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('timeline') ]]">Timeline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('calendar') ]]">Calendar</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('sortableXnestableXlists') ]]">Sortable/Nestable List</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mediaXobject') ]]">Media Objects</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cropperXimage') ]]">Cropper</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('colorXpicker') ]]">Color Picker</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-7" aria-expanded="false" class="nav-link" data-target="#submenu-7" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-inbox"></i>
+          Apps
+          <span class="badge badge-secondary">New</span>
+         </a>
+         <div class="collapse submenu" id="submenu-7" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXdetails') ]]">Email Detail</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXcompose') ]]">Email Compose</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('messageXchat') ]]">Message Chat</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-8" aria-expanded="false" class="nav-link" data-target="#submenu-8" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-columns"></i>
+          Icons
+         </a>
+         <div class="collapse submenu" id="submenu-8" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXfontawesome') ]]">FontAwesome Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXmaterial') ]]">Material Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXsimpleXlineicon') ]]">Simpleline Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXthemify') ]]">Themify Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXflag') ]]">Flag Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXweather') ]]">Weather Icon</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-9" aria-expanded="false" class="nav-link" data-target="#submenu-9" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-map-marker-alt"></i>
+          Maps
+         </a>
+         <div class="collapse submenu" id="submenu-9" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXgoogle') ]]">Google Maps</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXvector') ]]">Vector Maps</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-10" aria-expanded="false" class="nav-link" data-target="#submenu-10" data-toggle="collapse" href="#">
+          <i class="fas fa-f fa-folder"></i>
+          Menu Level
+         </a>
+         <div class="collapse submenu" id="submenu-10" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 1</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-11" aria-expanded="false" class="nav-link" data-target="#submenu-11" data-toggle="collapse" href="#">Level 2</a>
+            <div class="collapse submenu" id="submenu-11" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 1</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 2</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 3</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+       </ul>
+      </div>
+     </nav>
+    </div>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end left sidebar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- wrapper  -->
+   <!-- ============================================================== -->
+   <div class="dashboard-wrapper">
+    <div class="container-fluid dashboard-content">
+     <div class="row">
+      <div class="col-xl-10">
+       <!-- ============================================================== -->
+       <!-- pageheader -->
+       <!-- ============================================================== -->
+       <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <div class="page-header" id="top">
+          <h2 class="pageheader-title">General Elements</h2>
+          <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
+          <div class="page-breadcrumb">
+           <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+             <li class="breadcrumb-item">
+              <a class="breadcrumb-link" href="#">Dashboard</a>
+             </li>
+             <li class="breadcrumb-item">
+              <a class="breadcrumb-link" href="#">UI Elements</a>
+             </li>
+             <li aria-current="page" class="breadcrumb-item active">General</li>
+            </ol>
+           </nav>
+          </div>
+         </div>
+        </div>
+       </div>
+       <!-- ============================================================== -->
+       <!-- end pageheader -->
+       <!-- ============================================================== -->
+       <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <!-- ============================================================== -->
+         <!-- overview -->
+         <!-- ============================================================== -->
+         <div class="page-section" id="overview">
+          <div class="row">
+           <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <h2>Overview</h2>
+            <p class="lead">Nam pulvinar interdum turpis a mattis. Etiam augue leo, mollis a massa sagittis, egestas pretium risus. Aliquam auctor nibh mauris, at fringilla elit lobortis sodales. Praesent volutpat felis et placerat elementum.</p>
+            <ul class="list-unstyled arrow">
+             <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+             <li>Mauris bibendum massa ut porttitor congue.</li>
+             <li>Morbi condimentum magna eget facilisis accumsan.</li>
+             <li>Proin euismod eros nec libero efficitur, a dapibus mauris condimentum.</li>
+            </ul>
+           </div>
+          </div>
+         </div>
+         <!-- ============================================================== -->
+         <!-- end overview -->
+         <!-- ============================================================== -->
+        </div>
+       </div>
+       <div class="row">
+        <!-- ============================================================== -->
+        <!-- button  -->
+        <!-- ============================================================== -->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <div class="section-block" id="buttons">
+          <h3 class="section-title">Buttons</h3>
+          <p>Use custom button styles for actions in forms, dialogs, and more with support for multiple sizes, states, and more.</p>
+         </div>
+         <div class="card">
+          <h5 class="card-header">Buttons</h5>
+          <div class="card-body">
+           <h4>Basic Buttons</h4>
+           <a class="btn btn-primary" href="#">Primary</a>
+           <a class="btn btn-brand" href="#">Brand</a>
+           <a class="btn btn-secondary" href="#">Secondary</a>
+           <a class="btn btn-success" href="#">Success</a>
+           <a class="btn btn-danger" href="#">Danger</a>
+           <a class="btn btn-warning" href="#">Warning</a>
+           <a class="btn btn-info" href="#">Info</a>
+           <a class="btn btn-light" href="#">Light</a>
+           <a class="btn btn-dark" href="#">Dark</a>
+          </div>
+          <div class="card-body border-top">
+           <h4>Outline Buttons</h4>
+           <a class="btn btn-outline-primary" href="#">Primary</a>
+           <a class="btn btn-outline-brand" href="#">Brand</a>
+           <a class="btn btn-outline-secondary" href="#">Secondary</a>
+           <a class="btn btn-outline-success" href="#">Success</a>
+           <a class="btn btn-outline-danger" href="#">Danger</a>
+           <a class="btn btn-outline-warning" href="#">Warning</a>
+           <a class="btn btn-outline-info" href="#">Info</a>
+           <a class="btn btn-outline-light" href="#">Light</a>
+           <a class="btn btn-outline-dark" href="#">Dark</a>
+          </div>
+          <div class="card-body border-top">
+           <h4>Rounded Buttons</h4>
+           <a class="btn btn-rounded btn-primary" href="#">Primary</a>
+           <a class="btn btn-rounded btn-brand" href="#">Brand</a>
+           <a class="btn btn-rounded btn-secondary" href="#">Secondary</a>
+           <a class="btn btn-rounded btn-success" href="#">Success</a>
+           <a class="btn btn-rounded btn-danger" href="#">Danger</a>
+           <a class="btn btn-rounded btn-warning" href="#">Warning</a>
+           <a class="btn btn-rounded btn-info" href="#">Info</a>
+           <a class="btn btn-rounded btn-light" href="#">Light</a>
+           <a class="btn btn-rounded btn-dark" href="#">Dark</a>
+          </div>
+          <div class="card-body border-top">
+           <h4>Buttons Sizes</h4>
+           <a class="btn btn-primary btn-lg" href="#">Large button</a>
+           <a class="btn btn-primary" href="#">Default button</a>
+           <a class="btn btn-primary btn-sm" href="#">Small button</a>
+           <a class="btn btn-primary btn-xs" href="#">XSmall button</a>
+          </div>
+          <div class="card-body border-top">
+           <h4>Block Level Buttons</h4>
+           <a class="btn btn-primary btn-block" href="#">Block level button</a>
+           <a class="btn btn-brand btn-block" href="#">Block level button</a>
+          </div>
+          <div class="card-body border-top">
+           <h4>Active State</h4>
+           <a class="btn btn-primary active" href="#">Primary</a>
+           <a class="btn btn-brand active" href="#">Brand</a>
+           <a class="btn btn-secondary active" href="#">Secondary</a>
+           <a class="btn btn-success active" href="#">Success</a>
+           <a class="btn btn-danger active" href="#">Danger</a>
+           <a class="btn btn-warning active" href="#">Warning</a>
+           <a class="btn btn-info active" href="#">Info</a>
+           <a class="btn btn-light active" href="#">Light</a>
+           <a class="btn btn-dark active" href="#">Dark</a>
+          </div>
+          <div class="card-body border-top">
+           <h4>Radio Buttons</h4>
+           <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-primary active">
+             <input checked="" id="option1" name="options" type="radio"/>
+             Active
+            </label>
+            <label class="btn btn-primary">
+             <input id="option2" name="options" type="radio"/>
+             Radio
+            </label>
+            <label class="btn btn-primary">
+             <input id="option3" name="options" type="radio"/>
+             Radio
+            </label>
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end button  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- color  -->
+        <!-- ============================================================== -->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <div class="section-block" id="color">
+          <h3 class="section-title">Color</h3>
+          <p>Similar to the contextual text color classes, easily set the background of an element to any contextual class.</p>
+         </div>
+         <div class="card">
+          <h5 class="card-header">Color</h5>
+          <div class="card-body">
+           <h4>Background Color</h4>
+           <div class="p-3 mb-2 bg-primary text-white">.bg-primary</div>
+           <div class="p-3 mb-2 bg-secondary text-white">.bg-secondary</div>
+           <div class="p-3 mb-2 bg-success text-white">.bg-success</div>
+           <div class="p-3 mb-2 bg-danger text-white">.bg-danger</div>
+           <div class="p-3 mb-2 bg-warning text-dark">.bg-warning</div>
+           <div class="p-3 mb-2 bg-info text-white">.bg-info</div>
+           <div class="p-3 mb-2 bg-light text-dark">.bg-light</div>
+           <div class="p-3 mb-2 bg-dark text-white">.bg-dark</div>
+           <div class="p-3 mb-2 bg-white text-dark">.bg-white</div>
+          </div>
+          <div class="card-body border-top">
+           <h4>Color</h4>
+           <p class="text-primary">.text-primary</p>
+           <p class="text-secondary">.text-secondary</p>
+           <p class="text-success">.text-success</p>
+           <p class="text-danger">.text-danger</p>
+           <p class="text-warning">.text-warning</p>
+           <p class="text-info">.text-info</p>
+           <p class="text-light bg-dark">.text-light</p>
+           <p class="text-dark">.text-dark</p>
+           <p class="text-muted">.text-muted</p>
+           <p class="text-white bg-dark">.text-white</p>
+          </div>
+          <div class="card-body border-top border-boxes">
+           <h4>Borders</h4>
+           <span class="border"></span>
+           <span class="border-top"></span>
+           <span class="border-right"></span>
+           <span class="border-bottom"></span>
+           <span class="border-left"></span>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end color  -->
+        <!-- ============================================================== -->
+       </div>
+       <div class="row">
+        <!-- ============================================================== -->
+        <!-- alerts  -->
+        <!-- ============================================================== -->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <div class="section-block" id="alerts">
+          <h3 class="section-title">Alerts</h3>
+          <p>Provide contextual feedback messages for typical user actions with the handful of available and flexible alert messages.</p>
+         </div>
+         <div class="card">
+          <h5 class="card-header">Alerts Examples</h5>
+          <div class="card-body">
+           <h4>Basic Alerts</h4>
+           <div class="alert alert-primary" role="alert">This is a primary alert check it out!</div>
+           <div class="alert alert-secondary" role="alert">This is a secondary alert check it out!</div>
+           <div class="alert alert-success" role="alert">This is a success alert check it out!</div>
+           <div class="alert alert-danger" role="alert">This is a danger alert check it out!</div>
+           <div class="alert alert-warning" role="alert">This is a warning alert check it out!</div>
+           <div class="alert alert-info" role="alert">This is a info alert check it out!</div>
+           <div class="alert alert-light" role="alert">This is a light alert check it out!</div>
+           <div class="alert alert-dark" role="alert">This is a dark alert check it out!</div>
+          </div>
+          <div class="card-body border-top">
+           <h4>Link Alerts</h4>
+           <div class="alert alert-primary" role="alert">This is a primary alert check it out!</div>
+           <div class="alert alert-secondary" role="alert">This is a secondary alert check it out!</div>
+           <div class="alert alert-success" role="alert">This is a success alert check it out!</div>
+           <div class="alert alert-danger" role="alert">This is a danger alert check it out!</div>
+           <div class="alert alert-warning" role="alert">This is a warning alert check it out!</div>
+           <div class="alert alert-info" role="alert">This is a info alert check it out!</div>
+           <div class="alert alert-light" role="alert">This is a light alert check it out!</div>
+           <div class="alert alert-dark" role="alert">This is a dark alert check it out!</div>
+          </div>
+          <div class="card-body border-top">
+           <h4>Additional Content</h4>
+           <div class="alert alert-primary" role="alert">
+            <h4 class="alert-heading">Well done!</h4>
+            <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
+            <hr/>
+            <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+           </div>
+          </div>
+          <div class="card-body border-top">
+           <h4>Dismissing</h4>
+           <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Holy guacamole!</strong>
+            You should check in on some of those fields below.
+            <a aria-label="Close" class="close" data-dismiss="alert" href="#">
+             <span aria-hidden="true"></span>
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end alerts  -->
+        <!-- ============================================================== -->
+       </div>
+       <div class="row">
+        <!-- ============================================================== -->
+        <!-- badges  -->
+        <!-- ============================================================== -->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <div class="section-block" id="badges">
+          <h3 class="section-title">Badges</h3>
+          <p>Use custom button styles for actions in forms, dialogs, and more with support for multiple sizes, states, and more.</p>
+         </div>
+         <div class="card">
+          <h5 class="card-header">Badges Examples</h5>
+          <div class="">
+           <div class="card-body">
+            <h4>Default Badges</h4>
+            <span class="badge badge-primary">Primary</span>
+            <span class="badge badge-brand">Brand</span>
+            <span class="badge badge-secondary">Secondary</span>
+            <span class="badge badge-success">Success</span>
+            <span class="badge badge-danger">Danger</span>
+            <span class="badge badge-warning">Warning</span>
+            <span class="badge badge-info">Info</span>
+            <span class="badge badge-light">Light</span>
+            <span class="badge badge-dark">Dark</span>
+           </div>
+           <div class="card-body border-top">
+            <h4>Contextual Variations</h4>
+            <span class="badge badge-primary">Primary</span>
+            <span class="badge badge-brand">Brand</span>
+            <span class="badge badge-secondary">Secondary</span>
+            <span class="badge badge-success">Success</span>
+            <span class="badge badge-danger">Danger</span>
+            <span class="badge badge-warning">Warning</span>
+            <span class="badge badge-info">Info</span>
+            <span class="badge badge-light">Light</span>
+            <span class="badge badge-dark">Dark</span>
+           </div>
+           <div class="card-body border-top">
+            <h4>Pill Badges</h4>
+            <span class="badge badge-pill badge-primary">Primary</span>
+            <span class="badge badge-pill badge-brand">Brand</span>
+            <span class="badge badge-pill badge-secondary">Secondary</span>
+            <span class="badge badge-pill badge-success">Success</span>
+            <span class="badge badge-pill badge-danger">Danger</span>
+            <span class="badge badge-pill badge-warning">Warning</span>
+            <span class="badge badge-pill badge-info">Info</span>
+            <span class="badge badge-pill badge-light">Light</span>
+            <span class="badge badge-pill badge-dark">Dark</span>
+           </div>
+           <div class="card-body border-top">
+            <h4>Link Badges</h4>
+            <a class="badge badge-pill badge-primary" href="#">Primary</a>
+            <a class="badge badge-pill badge-brand" href="#">Brand</a>
+            <a class="badge badge-pill badge-secondary" href="#">Secondary</a>
+            <a class="badge badge-pill badge-success" href="#">Success</a>
+            <a class="badge badge-pill badge-danger" href="#">Danger</a>
+            <a class="badge badge-pill badge-warning" href="#">Warning</a>
+            <a class="badge badge-pill badge-info" href="#">Info</a>
+            <a class="badge badge-pill badge-light" href="#">Light</a>
+            <a class="badge badge-pill badge-dark" href="#">Dark</a>
+           </div>
+           <div class="card-body border-top">
+            <h4>Dot Badges</h4>
+            <span class="mr-2">
+             <span class="badge-dot badge-primary"></span>
+             Primary
+            </span>
+            <span class="mr-2">
+             <span class="badge-dot badge-brand"></span>
+             Brand
+            </span>
+            <span class="mr-2">
+             <span class="badge-dot badge-secondary"></span>
+             Secondary
+            </span>
+            <span class="mr-2">
+             <span class="badge-dot badge-success"></span>
+             Success
+            </span>
+            <span class="mr-2">
+             <span class="badge-dot badge-danger"></span>
+             Danger
+            </span>
+            <span class="mr-2">
+             <span class="badge-dot badge-warning"></span>
+             Warning
+            </span>
+            <span class="mr-2">
+             <span class="badge-dot badge-info"></span>
+             Info
+            </span>
+            <span class="mr-2">
+             <span class="badge-dot badge-light"></span>
+             Light
+            </span>
+            <span class="mr-2">
+             <span class="badge-dot badge-dark"></span>
+             Dark
+            </span>
+           </div>
+           <div class="card-body border-top">
+            <h4>Notification Badges</h4>
+            <a class="btn btn-primary" href="#">
+             Notifications
+             <span class="badge badge-light">4</span>
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end badges  -->
+        <!-- ============================================================== -->
+       </div>
+       <div class="row">
+        <!-- ============================================================== -->
+        <!-- tooltip and popperover  -->
+        <!-- ============================================================== -->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <div class="section-block" id="tooltip">
+          <h3 class="section-title">Tooltips &amp; Popover</h3>
+          <p>Use custom button styles for actions in forms, dialogs, and more with support for multiple sizes, states, and more.</p>
+         </div>
+         <div class="card">
+          <h5 class="card-header">Tooltips &amp; Popovers</h5>
+          <div class="card-body">
+           <h4>Tooltip</h4>
+           <button class="btn btn-primary" data-placement="top" data-toggle="tooltip" title="Tooltip on top" type="button">Tooltip on top</button>
+           <button class="btn btn-primary" data-placement="right" data-toggle="tooltip" title="Tooltip on right" type="button">Tooltip on right</button>
+           <button class="btn btn-primary" data-placement="bottom" data-toggle="tooltip" title="Tooltip on bottom" type="button">Tooltip on bottom</button>
+           <button class="btn btn-primary" data-placement="left" data-toggle="tooltip" title="Tooltip on left" type="button">Tooltip on left</button>
+          </div>
+          <div class="card-body border-top">
+           <h4>Popovers</h4>
+           <button class="btn btn-lg btn-primary" data-content="And here's some amazing content. It's very engaging. Right?" data-toggle="popover" title="Popover title" type="button">Click to toggle popover</button>
+          </div>
+          <div class="card-body border-top">
+           <h4>Four Directions</h4>
+           <button class="btn btn-primary" data-container="body" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-placement="top" data-toggle="popover" type="button">Popover on top</button>
+           <button class="btn btn-primary" data-container="body" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-placement="right" data-toggle="popover" type="button">Popover on right</button>
+           <button class="btn btn-primary" data-container="body" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-placement="bottom" data-toggle="popover" type="button">Popover on bottom</button>
+           <button class="btn btn-primary" data-container="body" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-placement="left" data-toggle="popover" type="button">Popover on left</button>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end tooltip and popperover  -->
+        <!-- ============================================================== -->
+       </div>
+       <div class="row">
+        <!-- ============================================================== -->
+        <!-- modal  -->
+        <!-- ============================================================== -->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <div class="section-block" id="modal">
+          <h3 class="section-title">Modals</h3>
+          <p>Use Bootstrap s JavaScript modal plugin to add dialogs to your site for lightboxes, user notifications, or completely custom content.</p>
+         </div>
+         <div class="card">
+          <h5 class="card-header">Examples</h5>
+          <div class="card-body">
+           <div class="">
+            <h4>Live Demo</h4>
+            <!-- Button trigger modal -->
+            <a class="btn btn-primary" data-target="#exampleModal" data-toggle="modal" href="#">Launch demo modal</a>
+            <!-- Modal -->
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" role="dialog" tabindex="-1">
+             <div class="modal-dialog" role="document">
+              <div class="modal-content">
+               <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <a aria-label="Close" class="close" data-dismiss="modal" href="#">
+                 <span aria-hidden="true"></span>
+                </a>
+               </div>
+               <div class="modal-body">
+                <p>Woohoo, You are readng this text in a modal! Use Bootstrap s JavaScript modal plugin to add dialogs to your site for lightboxes, user notifications, or completely custom content.</p>
+               </div>
+               <div class="modal-footer">
+                <a class="btn btn-secondary" data-dismiss="modal" href="#">Close</a>
+                <a class="btn btn-primary" href="#">Save changes</a>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- modal  -->
+        <!-- ============================================================== -->
+       </div>
+       <div class="row">
+        <!-- ============================================================== -->
+        <!-- paginations  -->
+        <!-- ============================================================== -->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <div class="section-block" id="pagination">
+          <h3 class="section-title">Paginations</h3>
+          <p>Examples for showing pagination to indicate a series of related content exists across multiple pages.</p>
+         </div>
+         <div class="card">
+          <h5 class="card-header">Pagination</h5>
+          <div class="card-body">
+           <h4>Default Pagination</h4>
+           <nav aria-label="Page navigation example">
+            <ul class="pagination">
+             <li class="page-item">
+              <a class="page-link" href="#">Previous</a>
+             </li>
+             <li class="page-item">
+              <a class="page-link" href="#">1</a>
+             </li>
+             <li class="page-item active">
+              <a class="page-link" href="#">2</a>
+             </li>
+             <li class="page-item">
+              <a class="page-link" href="#">3</a>
+             </li>
+             <li class="page-item">
+              <a class="page-link" href="#">Next</a>
+             </li>
+            </ul>
+           </nav>
+          </div>
+          <div class="card-body border-top">
+           <h4>Sizing</h4>
+           <nav aria-label="...">
+            <ul class="pagination pagination-lg">
+             <li class="page-item">
+              <a class="page-link" href="#" tabindex="-1">1</a>
+             </li>
+             <li class="page-item active">
+              <a class="page-link" href="#">2</a>
+             </li>
+             <li class="page-item">
+              <a class="page-link" href="#">3</a>
+             </li>
+            </ul>
+           </nav>
+           <nav aria-label="...">
+            <ul class="pagination pagination-sm">
+             <li class="page-item">
+              <a class="page-link" href="#" tabindex="-1">1</a>
+             </li>
+             <li class="page-item active">
+              <a class="page-link" href="#">2</a>
+             </li>
+             <li class="page-item">
+              <a class="page-link" href="#">3</a>
+             </li>
+            </ul>
+           </nav>
+          </div>
+          <div class="card-body border-top">
+           <h4>Working with icon</h4>
+           <nav aria-label="Page navigation example">
+            <ul class="pagination">
+             <li class="page-item">
+              <a aria-label="Previous" class="page-link" href="#">
+               <span aria-hidden="true"></span>
+               <span class="sr-only">Previous</span>
+              </a>
+             </li>
+             <li class="page-item active">
+              <a class="page-link" href="#">1</a>
+             </li>
+             <li class="page-item">
+              <a class="page-link" href="#">2</a>
+             </li>
+             <li class="page-item">
+              <a class="page-link" href="#">3</a>
+             </li>
+             <li class="page-item">
+              <a aria-label="Next" class="page-link" href="#">
+               <span aria-hidden="true"></span>
+               <span class="sr-only">Next</span>
+              </a>
+             </li>
+            </ul>
+           </nav>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- pagination  -->
+        <!-- ============================================================== -->
+       </div>
+       <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <!-- ============================================================== -->
+         <!-- images  -->
+         <!-- ============================================================== -->
+         <div class="card" id="images">
+          <h5 class="card-header">Images</h5>
+          <div class="card-body">
+           <img alt="Responsive image" class="img-fluid mr-3" src="http://via.placeholder.com/200x150"/>
+           <img alt="Responsive image" class="img-thumbnail mr-3" src="http://via.placeholder.com/150x150"/>
+           <img alt="Responsive image" class="rounded-circle mr-3" src="http://via.placeholder.com/150x150"/></div>
+         </div>
+         <!-- ============================================================== -->
+         <!-- end images -->
+         <!-- ============================================================== -->
+        </div>
+       </div>
+       <!-- ============================================================== -->
+       <!-- progressbar  -->
+       <!-- ============================================================== -->
+       <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <div class="card" id="pro-bars">
+          <h5 class="card-header">Progress Bars</h5>
+          <div class="card-body">
+           <div class="progress mb-3">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="progress-bar" role="progressbar" style="width: 25%"></div>
+           </div>
+           <div class="progress mb-3">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="65" class="progress-bar" role="progressbar" style="width: 65%;">65%</div>
+           </div>
+           <div class="progress mb-3">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" class="progress-bar progress-bar-striped" role="progressbar" style="width: 10%"></div>
+           </div>
+           <div class="progress mb-3">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 25%"></div>
+           </div>
+           <div class="progress mb-3">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="50" class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 50%"></div>
+           </div>
+           <div class="progress mb-3">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 75%"></div>
+           </div>
+           <div class="progress mb-3">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%"></div>
+           </div>
+           <div class="progress">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 75%"></div>
+           </div>
+          </div>
+          <div class="card-body border-top">
+           <div class="row">
+            <div class="col-md-3">
+             <h5>Progress sm</h5>
+             <div class="progress progress-sm">
+              <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="progress-bar" role="progressbar" style="width: 35%"></div>
+             </div>
+            </div>
+            <div class="col-md-3">
+             <h5>Progress md</h5>
+             <div class="progress progress-md">
+              <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="progress-bar" role="progressbar" style="width: 35%"></div>
+             </div>
+            </div>
+            <div class="col-md-3">
+             <h5>Progress lg</h5>
+             <div class="progress progress-lg">
+              <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="progress-bar" role="progressbar" style="width: 35%"></div>
+             </div>
+            </div>
+            <div class="col-md-3">
+             <h5>Progress xl</h5>
+             <div class="progress progress-xl">
+              <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="progress-bar" role="progressbar" style="width: 35%"></div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <!-- ============================================================== -->
+       <!-- end progressbar  -->
+       <!-- ============================================================== -->
+       <div class="row">
+        <!-- ============================================================== -->
+        <!-- basic preloader  -->
+        <!-- ============================================================== -->
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 col-lg-6 col-md-6 col-sm-12 col-12">
+         <div class="card" id="loader">
+          <h5 class="card-header">Basic Preloader</h5>
+          <div class="card-body">
+           <span class="dashboard-spinner spinner-xxl"></span>
+           <span class="dashboard-spinner spinner-xl"></span>
+           <span class="dashboard-spinner spinner-lg"></span>
+           <span class="dashboard-spinner spinner-md"></span>
+           <span class="dashboard-spinner spinner-sm"></span>
+           <span class="dashboard-spinner spinner-xs"></span>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end basic preloader  -->
+        <!-- ============================================================== -->
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 col-lg-6 col-md-6 col-sm-12 col-12">
+         <!-- ============================================================== -->
+         <!-- preloader states  -->
+         <!-- ============================================================== -->
+         <div class="card">
+          <h5 class="card-header">Preloader States</h5>
+          <div class="card-body">
+           <span class="dashboard-spinner spinner-primary spinner-xxl"></span>
+           <span class="dashboard-spinner spinner-success spinner-xl"></span>
+           <span class="dashboard-spinner spinner-danger spinner-lg"></span>
+           <span class="dashboard-spinner spinner-info spinner-md"></span>
+           <span class="dashboard-spinner spinner-warning spinner-sm"></span>
+           <span class="dashboard-spinner spinner-secondary spinner-xs"></span>
+          </div>
+         </div>
+         <!-- ============================================================== -->
+         <!-- end preloader states  -->
+         <!-- ============================================================== -->
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- sidebar nav  -->
+      <!-- ============================================================== -->
+      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-12">
+       <div class="sidebar-nav-fixed">
+        <ul class="list-unstyled">
+         <li>
+          <a class="active" href="#overview">Overview</a>
+         </li>
+         <li>
+          <a href="#buttons">Buttons</a>
+         </li>
+         <li>
+          <a href="#color">Color</a>
+         </li>
+         <li>
+          <a href="#alerts">Alerts</a>
+         </li>
+         <li>
+          <a href="#badges">Badges</a>
+         </li>
+         <li>
+          <a href="#tooltip">Tooltip</a>
+         </li>
+         <li>
+          <a href="#modal">Modal</a>
+         </li>
+         <li>
+          <a href="#pagination">Paginations</a>
+         </li>
+         <li>
+          <a href="#images">Images</a>
+         </li>
+         <li>
+          <a href="#pro-bars">Progress Bars</a>
+         </li>
+         <li>
+          <a href="#loader">Loader</a>
+         </li>
+         <li>
+          <a href="#top">Back to Top</a>
+         </li>
+        </ul>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end sidebar nav  -->
+      <!-- ============================================================== -->
+     </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- footer -->
+    <!-- ============================================================== -->
+    <div class="footer">
+     <div class="container-fluid">
+      <div class="row">
+       <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+        Copyright © 2018 Concept. All rights reserved. Dashboard by
+        <a href="https://colorlib.com/wp/">Colorlib</a>
+        .
+       </div>
+       <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+        <div class="text-md-right footer-links d-none d-sm-block">
+         <a href="javascript: void(0);">About</a>
+         <a href="javascript: void(0);">Support</a>
+         <a href="javascript: void(0);">Contact Us</a>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- end footer -->
+    <!-- ============================================================== -->
+   </div>
+  </div>
+  <!-- ============================================================== -->
+  <!-- end main wrapper -->
+  <!-- ============================================================== -->
+  <!-- Optional JavaScript -->
+  <script src="[%[=URL('static/tte/assets/vendor/jquery/jquery-3.3.1.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap/js/bootstrap.bundle.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/slimscroll/jquery.slimscroll.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/libs/js/main-js.js') ]]"></script>
+ </body>
+</html>

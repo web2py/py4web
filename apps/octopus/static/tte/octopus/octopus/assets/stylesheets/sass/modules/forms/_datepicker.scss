@@ -1,0 +1,254 @@
+// DATEPICKER
+// -----------------------------------------------------------------------------
+/* Datepicker - Input Group Addon */
+.input-daterange .input-group-addon {
+	min-width: 36px;
+}
+
+/* Datepicker - Base */
+.datepicker {
+	padding: 10px;
+	margin: 0 auto;
+
+	line-height: 1.1em;
+
+	&.datepicker-inline {
+		line-height: 1.7em;
+		width: 100%;
+	}
+
+	table {
+		width: 100%;
+
+		tr {
+			td {
+				border-radius: 0;
+			}
+		}
+
+		thead {
+			tr {
+				th {
+					cursor: pointer;
+					@include font-size(13);
+					text-align: center;
+					font-weight: normal;
+
+					&.prev {
+						content: '\f0d9';
+						font-family: FontAwesome;
+					}
+
+					&.next {
+						content: '\f0da';
+						font-family: FontAwesome;
+					}
+				}
+			}
+		}
+
+		td {
+			text-align: center;
+			@include font-size(12);
+
+			&.day {
+				@include transition(background-color .1s ease-in .1s, color .1s ease-in .1s);
+				cursor: pointer;
+			}
+		}
+	}
+}
+
+// DATEPICKER SKINS
+// -----------------------------------------------------------------------------
+/* Datepicker - Skin Default */
+.datepicker {
+	thead tr:first-child th:hover,
+	tfoot tr th:hover,
+	table tr td span:hover {
+		background: $color-primary;
+		color: $color-primary-inverse;
+	}
+
+	table {
+		tbody {
+			tr {
+				td {
+					span.old,
+					span.new {
+						color: #CCC;
+
+						&:hover {
+							color: $color-primary-inverse;
+						}
+					}
+
+					&.day {
+						&:hover {
+							background: $color-primary;
+							color: $color-primary-inverse;
+						}
+
+						&.active {
+							background: darken( $color-primary, 10% );
+							color: $color-primary-inverse;
+						}
+
+						&.new {
+							color: $color-default-inverse;
+
+							&:hover {
+								color: $color-primary-inverse;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/* Datepicker - Skin Dark */
+.datepicker.datepicker-dark {
+	background: #33363F;
+
+	table {
+		thead {
+			tr {
+				th {
+					&.datepicker-switch {
+						color: $color-primary-inverse;
+					}
+
+					&.dow {
+						color: $color-default-inverse;
+					}
+				}
+			}
+		}
+
+		tbody {
+			tr {
+				td {
+					span.old,
+					span.new {
+						color: #444;
+
+						&:hover {
+							color: $color-primary-inverse;
+						}
+					}
+
+					&.day {
+						color: $color-primary-inverse;
+
+						&:hover {
+							background: $color-primary;
+							color: $color-primary-inverse;
+						}
+
+						&.active {
+							background: darken( $color-primary, 10% );
+							color: $color-primary-inverse;
+						}
+
+						&.new {
+							color: $color-default-inverse;
+
+							&:hover {
+								color: $color-primary-inverse;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+}
+
+/* Datepicker - Skin Primary */
+.datepicker.datepicker-primary {
+	min-width: 255px;
+
+	&.datepicker-inline {
+		background: #fff;
+		border: 1px solid #eee;
+	}
+
+	table {
+		thead {
+			tr {
+				&:first-child {
+					background-color: $color-primary;
+					color: $color-primary-inverse;
+
+					th {
+						&:hover {
+							background-color: darken($color-primary, 10%);
+						}
+
+						&:first-child {
+							border-radius: 4px 0 0 0;
+						}
+
+						&:last-child {
+							border-radius: 0 4px 0 0;
+						}
+					}
+				}
+
+				&:last-child {
+					background-color: lighten($color-primary, 5%);
+					color: $color-primary-inverse;
+
+					th:hover {
+						background-color: $color-primary;
+					}
+				}
+
+				th {
+					border-radius: 0;
+				}
+			}
+		}
+
+		tbody {
+			tr {
+
+			}
+		}
+	}
+
+}
+
+// DARK
+// -----------------------------------------------------------------------------
+html.dark {
+	.input-daterange .input-group-addon {
+		text-shadow: none;
+	}
+
+	.datepicker-dropdown {
+		color: #EEE;
+		background-color: $dark-color-3;
+
+		&:after {
+			border-bottom-color: $dark-color-3;
+		}
+
+		&.datepicker-orient-bottom {
+			&:before {
+				border-top-color: rgba(0, 0, 0, 0.2);
+			}
+			&:after {
+				border-top-color: $dark-color-3;
+			}
+		}
+	}
+
+	.datepicker.datepicker-primary {
+		border-color: $dark-color-3;
+		background: $dark-color-3;
+	}
+}

@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 25.11.2020 16:43:08 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- Bootstrap -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/bootstrap/dist/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <!-- Font Awesome -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/font-awesome/css/font-awesome.min.css') ]]" rel="stylesheet"/>
+  <!-- NProgress -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/nprogress/nprogress.css') ]]" rel="stylesheet"/>
+  <!-- Custom Theme Style -->
+  <link href="[%[=URL('static/tte/gentelella/build/css/custom.min.css') ]]" rel="stylesheet"/>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+</head>
+ <body class="nav-md">
+  <div class="container body">
+   <div class="main_container">
+    <div class="col-md-3 left_col">
+     <div class="left_col scroll-view">
+      <div class="navbar nav_title" style="border: 0;">
+       <a class="site_title" href="[%[=URL('index') ]]">
+        <i class="fa fa-paw"></i>
+        <span>Gentelella Alela!</span>
+       </a>
+      </div>
+      <div class="clearfix"></div>
+      <!-- menu profile quick info -->
+      <div class="profile clearfix">
+       <div class="profile_pic">
+        <img alt="..." class="img-circle profile_img" src="[%[=URL('static/tte/images/img.jpg') ]]"/></div>
+       <div class="profile_info">
+        <span>Welcome,</span>
+        <h2>John Doe</h2>
+       </div>
+      </div>
+      <!-- /menu profile quick info -->
+      <br/>
+      <!-- sidebar menu -->
+      <div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
+       <div class="menu_section">
+        <h3>General</h3>
+        <ul class="nav side-menu">
+         <li>
+          <a>
+           <i class="fa fa-home"></i>
+           Home
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('index') ]]">Dashboard</a>
+           </li>
+           <li>
+            <a href="[%[=URL('index2') ]]">Dashboard2</a>
+           </li>
+           <li>
+            <a href="[%[=URL('index3') ]]">Dashboard3</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-edit"></i>
+           Forms
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('form') ]]">General Form</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXadvanced') ]]">Advanced Components</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXvalidation') ]]">Form Validation</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXwizards') ]]">Form Wizard</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXupload') ]]">Form Upload</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXbuttons') ]]">Form Buttons</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-desktop"></i>
+           UI Elements
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('generalXelements') ]]">General Elements</a>
+           </li>
+           <li>
+            <a href="[%[=URL('mediaXgallery') ]]">Media Gallery</a>
+           </li>
+           <li>
+            <a href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li>
+            <a href="[%[=URL('icons') ]]">Icons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('glyphicons') ]]">Glyphicons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+           <li>
+            <a href="[%[=URL('invoice') ]]">Invoice</a>
+           </li>
+           <li>
+            <a href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li>
+            <a href="[%[=URL('calendar') ]]">Calendar</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-table"></i>
+           Tables
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('tables') ]]">Tables</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXdynamic') ]]">Table Dynamic</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-bar-chart-o"></i>
+           Data Presentation
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('chartjs') ]]">Chart JS</a>
+           </li>
+           <li>
+            <a href="[%[=URL('chartjs2') ]]">Chart JS2</a>
+           </li>
+           <li>
+            <a href="[%[=URL('morisjs') ]]">Moris JS</a>
+           </li>
+           <li>
+            <a href="[%[=URL('echarts') ]]">ECharts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('otherXcharts') ]]">Other Charts</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-clone"></i>
+           Layouts
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('fixedXsidebar') ]]">Fixed Sidebar</a>
+           </li>
+           <li>
+            <a href="[%[=URL('fixedXfooter') ]]">Fixed Footer</a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+       <div class="menu_section">
+        <h3>Live On</h3>
+        <ul class="nav side-menu">
+         <li>
+          <a>
+           <i class="fa fa-bug"></i>
+           Additional Pages
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('eXcommerce') ]]">E-commerce</a>
+           </li>
+           <li>
+            <a href="[%[=URL('projects') ]]">Projects</a>
+           </li>
+           <li>
+            <a href="[%[=URL('projectXdetail') ]]">Project Detail</a>
+           </li>
+           <li>
+            <a href="[%[=URL('contacts') ]]">Contacts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('profile') ]]">Profile</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-windows"></i>
+           Extras
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('pageX403') ]]">403 Error</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pageX404') ]]">404 Error</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pageX500') ]]">500 Error</a>
+           </li>
+           <li>
+            <a href="[%[=URL('plainXpage') ]]">Plain Page</a>
+           </li>
+           <li>
+            <a href="[%[=URL('login') ]]">Login Page</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pricingXtables') ]]">Pricing Tables</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-sitemap"></i>
+           Multilevel Menu
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="#level1_1">Level One</a>
+           </li>
+           <li>
+            <a>
+             Level One
+             <span class="fa fa-chevron-down"></span>
+            </a>
+            <ul class="nav child_menu">
+             <li class="sub_menu">
+              <a href="[%[=URL('level2') ]]">Level Two</a>
+             </li>
+             <li>
+              <a href="#level2_1">Level Two</a>
+             </li>
+             <li>
+              <a href="#level2_2">Level Two</a>
+             </li>
+            </ul>
+           </li>
+           <li>
+            <a href="#level1_2">Level One</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a href="javascript:void(0)">
+           <i class="fa fa-laptop"></i>
+           Landing Page
+           <span class="label label-success pull-right">Coming Soon</span>
+          </a>
+         </li>
+        </ul>
+       </div>
+      </div>
+      <!-- /sidebar menu -->
+      <!-- /menu footer buttons -->
+      <div class="sidebar-footer hidden-small">
+       <a data-placement="top" data-toggle="tooltip" title="Settings">
+        <span aria-hidden="true" class="glyphicon glyphicon-cog"></span>
+       </a>
+       <a data-placement="top" data-toggle="tooltip" title="FullScreen">
+        <span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span>
+       </a>
+       <a data-placement="top" data-toggle="tooltip" title="Lock">
+        <span aria-hidden="true" class="glyphicon glyphicon-eye-close"></span>
+       </a>
+       <a data-placement="top" data-toggle="tooltip" href="[%[=URL('login') ]]" title="Logout">
+        <span aria-hidden="true" class="glyphicon glyphicon-off"></span>
+       </a>
+      </div>
+      <!-- /menu footer buttons -->
+     </div>
+    </div>
+    <!-- top navigation -->
+    <div class="top_nav">
+     <div class="nav_menu">
+      <div class="nav toggle">
+       <a id="menu_toggle">
+        <i class="fa fa-bars"></i>
+       </a>
+      </div>
+      <nav class="nav navbar-nav">
+       <ul class="navbar-right">
+        <li class="nav-item dropdown open" style="padding-left: 15px;">
+         <a aria-expanded="false" aria-haspopup="true" class="user-profile dropdown-toggle" data-toggle="dropdown" href="javascript:;" id="navbarDropdown">
+          <img alt="" src="[%[=URL('static/tte/images/img.jpg') ]]"/>John Doe</a>
+         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-usermenu pull-right">
+          <a class="dropdown-item" href="javascript:;">Profile</a>
+          <a class="dropdown-item" href="javascript:;">
+           <span class="badge bg-red pull-right">50%</span>
+           <span>Settings</span>
+          </a>
+          <a class="dropdown-item" href="javascript:;">Help</a>
+          <a class="dropdown-item" href="[%[=URL('login') ]]">
+           <i class="fa fa-sign-out pull-right"></i>
+           Log Out
+          </a>
+         </div>
+        </li>
+        <li class="nav-item dropdown open" role="presentation">
+         <a aria-expanded="false" class="dropdown-toggle info-number" data-toggle="dropdown" href="javascript:;" id="navbarDropdown1">
+          <i class="fa fa-envelope-o"></i>
+          <span class="badge bg-green">6</span>
+         </a>
+         <ul aria-labelledby="navbarDropdown1" class="dropdown-menu list-unstyled msg_list" role="menu">
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <div class="text-center">
+            <a class="dropdown-item">
+             <strong>See All Alerts</strong>
+             <i class="fa fa-angle-right"></i>
+            </a>
+           </div>
+          </li>
+         </ul>
+        </li>
+       </ul>
+      </nav>
+     </div>
+    </div>
+    <!-- /top navigation -->
+    <!-- page content -->
+    <div class="right_col" role="main">
+     <div class="">
+      <div class="page-title">
+       <div class="title_left">
+        <h3>Form Wizards</h3>
+       </div>
+       <div class="title_right">
+        <div class="col-md-5 col-sm-5 form-group row pull-right top_search">
+         <div class="input-group">
+          <input class="form-control" placeholder="Search for..." type="text"/>
+          <span class="input-group-btn">
+           <button class="btn btn-secondary" type="button">Go!</button>
+          </span>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="row">
+       <div class="col-md-12 col-sm-12">
+        <div class="x_panel">
+         <div class="x_title">
+          <h2>
+           Form Wizards
+           <small>Sessions</small>
+          </h2>
+          <ul class="nav navbar-right panel_toolbox">
+           <li>
+            <a class="collapse-link">
+             <i class="fa fa-chevron-up"></i>
+            </a>
+           </li>
+           <li class="dropdown">
+            <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+             <i class="fa fa-wrench"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+             <li>
+              <a href="#">Settings 1</a>
+             </li>
+             <li>
+              <a href="#">Settings 2</a>
+             </li>
+            </ul>
+           </li>
+           <li>
+            <a class="close-link">
+             <i class="fa fa-close"></i>
+            </a>
+           </li>
+          </ul>
+          <div class="clearfix"></div>
+         </div>
+         <div class="x_content">
+          <!-- Smart Wizard -->
+          <p>This is a basic form wizard example that inherits the colors from the selected scheme.</p>
+          <div class="form_wizard wizard_horizontal" id="wizard">
+           <ul class="wizard_steps">
+            <li>
+             <a href="#step-1">
+              <span class="step_no">1</span>
+              <span class="step_descr">
+               Step 1
+               <br/>
+               <small>Step 1 description</small>
+              </span>
+             </a>
+            </li>
+            <li>
+             <a href="#step-2">
+              <span class="step_no">2</span>
+              <span class="step_descr">
+               Step 2
+               <br/>
+               <small>Step 2 description</small>
+              </span>
+             </a>
+            </li>
+            <li>
+             <a href="#step-3">
+              <span class="step_no">3</span>
+              <span class="step_descr">
+               Step 3
+               <br/>
+               <small>Step 3 description</small>
+              </span>
+             </a>
+            </li>
+            <li>
+             <a href="#step-4">
+              <span class="step_no">4</span>
+              <span class="step_descr">
+               Step 4
+               <br/>
+               <small>Step 4 description</small>
+              </span>
+             </a>
+            </li>
+           </ul>
+           <div id="step-1">
+            
+<!-- view: fformXwizards0, db_table: dfformXwizards0 -->
+<div class="form-horizontal form-label-left"  style="border: 1px gray dashed;">
+[%[= fformXwizards0.custom['begin'] ]]
+<div class="form-group row">
+ <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">
+  First Name
+  <span class="required">
+   *
+  </span>
+ </label>
+ <div class="col-md-6 col-sm-6">
+ [%[ fformXwizards0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformXwizards0.custom['widgets']['f0']['_id']= 'first-name'  ]]
+ [%[ fformXwizards0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformXwizards0.custom['widgets']['f0']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards0.custom['errors']['f0'] if 'f0' in fformXwizards0.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">
+  Last Name
+  <span class="required">
+   *
+  </span>
+ </label>
+ <div class="col-md-6 col-sm-6">
+ [%[ fformXwizards0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformXwizards0.custom['widgets']['f1']['_id']= 'last-name'  ]]
+ [%[ fformXwizards0.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformXwizards0.custom['widgets']['f1']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards0.custom['errors']['f1'] if 'f1' in fformXwizards0.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-form-label col-md-3 col-sm-3 label-align" for="middle-name">
+  Middle Name / Initial
+ </label>
+ <div class="col-md-6 col-sm-6">
+ [%[ fformXwizards0.custom['widgets']['f2']['_id']= 'middle-name'  ]]
+ [%[ fformXwizards0.custom['widgets']['f2']['_class']= 'form-control col'  ]]
+ [%[ fformXwizards0.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fformXwizards0.custom['widgets']['f2']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards0.custom['errors']['f2'] if 'f2' in fformXwizards0.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-form-label col-md-3 col-sm-3 label-align">
+  Gender
+ </label>
+ <div class="col-md-6 col-sm-6">
+  <div class="btn-group" data-toggle="buttons" id="gender">
+   <label class="btn btn-secondary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-secondary">
+ [%[ fformXwizards0.custom['widgets']['f3']['_type']= 'radio'  ]]
+ [%[ fformXwizards0.custom['widgets']['f3']['_value']= 'male'  ]]
+ [%[ fformXwizards0.custom['widgets']['f3']['_class']= 'join-btn'  ]]
+ [%[ fformXwizards0.custom['widgets']['f3']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards0.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards0.custom['errors']['f3'] if 'f3' in fformXwizards0.custom['errors'] else '' ]]</span>
+
+    Male
+   </label>
+   <label class="btn btn-primary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-secondary">
+ [%[ fformXwizards0.custom['widgets']['f4']['_type']= 'radio'  ]]
+ [%[ fformXwizards0.custom['widgets']['f4']['_value']= 'female'  ]]
+ [%[ fformXwizards0.custom['widgets']['f4']['_class']= 'join-btn'  ]]
+ [%[ fformXwizards0.custom['widgets']['f4']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards0.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards0.custom['errors']['f4'] if 'f4' in fformXwizards0.custom['errors'] else '' ]]</span>
+
+    Female
+   </label>
+  </div>
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-form-label col-md-3 col-sm-3 label-align">
+  Date Of Birth
+  <span class="required">
+   *
+  </span>
+ </label>
+ <div class="col-md-6 col-sm-6">
+ [%[ fformXwizards0.custom['widgets']['f5']['_id']= 'birthday'  ]]
+ [%[ fformXwizards0.custom['widgets']['f5']['_class']= 'date-picker form-control'  ]]
+ [%[ fformXwizards0.custom['widgets']['f5']['_type']= 'text'  ]]
+ [%[ fformXwizards0.custom['widgets']['f5']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards0.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards0.custom['errors']['f5'] if 'f5' in fformXwizards0.custom['errors'] else '' ]]</span>
+
+ [%[ fformXwizards0.custom['submit']['_id']= 'birthday'  ]]
+ [%[ fformXwizards0.custom['submit']['_class']= 'date-picker form-control'  ]]
+ [%[ fformXwizards0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformXwizards0.custom['submit']['_placeholder']= 'sUb:p4w'  ]]
+ [%[ fformXwizards0.custom['submit']['_rows']= '1'  ]]
+ [%[ fformXwizards0.custom['submit']['_style']= 'color:red; border:2px dashed red; text-decoration: underline;'  ]]
+ [%[ fformXwizards0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformXwizards0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformXwizards0.custom['submit'] ]]
+
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformXwizards0.custom['hidden_widgets'].keys(): ]]
+     [%[= fformXwizards0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+[%[= fformXwizards0.custom['end'] ]]
+  
+<div  class='divfformXwizards0' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">fformXwizards0</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformXwizards0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+</div>
+<!-- end fformXwizards0 -->
+
+           </div>
+           <div id="step-2">
+            <h2 class="StepTitle">Step 2 Content</h2>
+            <p>do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+           </div>
+           <div id="step-3">
+            <h2 class="StepTitle">Step 3 Content</h2>
+            <p>sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+           </div>
+           <div id="step-4">
+            <h2 class="StepTitle">Step 4 Content</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+           </div>
+          </div>
+          <!-- End SmartWizard Content -->
+          <h2>Example: Vertical Style</h2>
+          <!-- Tabs -->
+          <div class="form_wizard wizard_verticle" id="wizard_verticle">
+           <ul class="list-unstyled wizard_steps">
+            <li>
+             <a href="#step-11">
+              <span class="step_no">1</span>
+             </a>
+            </li>
+            <li>
+             <a href="#step-22">
+              <span class="step_no">2</span>
+             </a>
+            </li>
+            <li>
+             <a href="#step-33">
+              <span class="step_no">3</span>
+             </a>
+            </li>
+            <li>
+             <a href="#step-44">
+              <span class="step_no">4</span>
+             </a>
+            </li>
+           </ul>
+           <div id="step-11">
+            <h2 class="StepTitle">Step 1 Content</h2>
+            
+<!-- view: fformXwizards1, db_table: dfformXwizards1 -->
+<div class="form-horizontal form-label-left"  style="border: 1px gray dashed;">
+[%[= fformXwizards1.custom['begin'] ]]
+<span class="section">
+ Personal Info
+</span>
+
+<div class="form-group row">
+ <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">
+  First Name
+  <span class="required">
+   *
+  </span>
+ </label>
+ <div class="col-md-6 col-sm-6">
+ [%[ fformXwizards1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformXwizards1.custom['widgets']['f0']['_id']= 'first-name2'  ]]
+ [%[ fformXwizards1.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformXwizards1.custom['widgets']['f0']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards1.custom['errors']['f0'] if 'f0' in fformXwizards1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">
+  Last Name
+  <span class="required">
+   *
+  </span>
+ </label>
+ <div class="col-md-6 col-sm-6">
+ [%[ fformXwizards1.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformXwizards1.custom['widgets']['f1']['_id']= 'last-name2'  ]]
+ [%[ fformXwizards1.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformXwizards1.custom['widgets']['f1']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards1.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards1.custom['errors']['f1'] if 'f1' in fformXwizards1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-form-label col-md-3 col-sm-3 label-align" for="middle-name">
+  Middle Name / Initial
+ </label>
+ <div class="col-md-6 col-sm-6">
+ [%[ fformXwizards1.custom['widgets']['f2']['_id']= 'middle-name2'  ]]
+ [%[ fformXwizards1.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fformXwizards1.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fformXwizards1.custom['widgets']['f2']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards1.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards1.custom['errors']['f2'] if 'f2' in fformXwizards1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-form-label col-md-3 col-sm-3 label-align">
+  Gender
+ </label>
+ <div class="col-md-6 col-sm-6">
+  <div class="btn-group" data-toggle="buttons" id="gender2">
+   <label class="btn btn-secondary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-secondary">
+ [%[ fformXwizards1.custom['widgets']['f3']['_type']= 'radio'  ]]
+ [%[ fformXwizards1.custom['widgets']['f3']['_value']= 'male'  ]]
+ [%[ fformXwizards1.custom['widgets']['f3']['_class']= 'join-btn'  ]]
+ [%[ fformXwizards1.custom['widgets']['f3']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards1.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards1.custom['errors']['f3'] if 'f3' in fformXwizards1.custom['errors'] else '' ]]</span>
+
+    Male
+   </label>
+   <label class="btn btn-primary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-secondary">
+ [%[ fformXwizards1.custom['widgets']['f4']['_type']= 'radio'  ]]
+ [%[ fformXwizards1.custom['widgets']['f4']['_value']= 'female'  ]]
+ [%[ fformXwizards1.custom['widgets']['f4']['_class']= 'join-btn'  ]]
+ [%[ fformXwizards1.custom['widgets']['f4']['_checked']= '==0'  ]]
+ [%[ fformXwizards1.custom['widgets']['f4']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards1.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards1.custom['errors']['f4'] if 'f4' in fformXwizards1.custom['errors'] else '' ]]</span>
+
+    Female
+   </label>
+  </div>
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-form-label col-md-3 col-sm-3 label-align">
+  Date Of Birth
+  <span class="required">
+   *
+  </span>
+ </label>
+ <div class="col-md-6 col-sm-6">
+ [%[ fformXwizards1.custom['widgets']['f5']['_id']= 'birthday2'  ]]
+ [%[ fformXwizards1.custom['widgets']['f5']['_class']= 'date-picker form-control'  ]]
+ [%[ fformXwizards1.custom['widgets']['f5']['_type']= 'text'  ]]
+ [%[ fformXwizards1.custom['widgets']['f5']['_placeholder']= ':p4w'  ]]
+ [%[= fformXwizards1.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformXwizards1.custom['errors']['f5'] if 'f5' in fformXwizards1.custom['errors'] else '' ]]</span>
+
+ [%[ fformXwizards1.custom['submit']['_id']= 'birthday2'  ]]
+ [%[ fformXwizards1.custom['submit']['_class']= 'date-picker form-control'  ]]
+ [%[ fformXwizards1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformXwizards1.custom['submit']['_placeholder']= 'sUb:p4w'  ]]
+ [%[ fformXwizards1.custom['submit']['_rows']= '1'  ]]
+ [%[ fformXwizards1.custom['submit']['_style']= 'color:red; border:2px dashed red; text-decoration: underline;'  ]]
+ [%[ fformXwizards1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformXwizards1.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformXwizards1.custom['submit'] ]]
+
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformXwizards1.custom['hidden_widgets'].keys(): ]]
+     [%[= fformXwizards1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+[%[= fformXwizards1.custom['end'] ]]
+  
+<div  class='divfformXwizards1' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">fformXwizards1</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformXwizards1');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+</div>
+<!-- end fformXwizards1 -->
+
+           </div>
+           <div id="step-22">
+            <h2 class="StepTitle">Step 2 Content</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+           </div>
+           <div id="step-33">
+            <h2 class="StepTitle">Step 3 Content</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+           </div>
+           <div id="step-44">
+            <h2 class="StepTitle">Step 4 Content</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+           </div>
+          </div>
+          <!-- End SmartWizard Content -->
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- /page content -->
+    <!-- footer content -->
+    <footer>
+     <div class="pull-right">
+      Gentelella - Bootstrap Admin Template by
+      <a href="https://colorlib.com">Colorlib</a>
+     </div>
+     <div class="clearfix"></div>
+    </footer>
+    <!-- /footer content -->
+   </div>
+  </div>
+  <!-- jQuery -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/jquery/dist/jquery.min.js') ]]"></script>
+  <!-- Bootstrap -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/bootstrap/dist/js/bootstrap.bundle.min.js') ]]"></script>
+  <!-- FastClick -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/fastclick/lib/fastclick.js') ]]"></script>
+  <!-- NProgress -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/nprogress/nprogress.js') ]]"></script>
+  <!-- jQuery Smart Wizard -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js') ]]"></script>
+  <!-- Custom Theme Scripts -->
+  <script src="[%[=URL('static/tte/gentelella/build/js/custom.min.js') ]]"></script>
+  
+<!-- myadd -->
+<script>
+  const forms_url = [%[ =XML( page_url ) ]];
+
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, { method: 'POST', body: new FormData( document.forms[i] ) });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: 'will hide in 3sec',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+  }
+</script>
+
+
+ </body>
+</html>

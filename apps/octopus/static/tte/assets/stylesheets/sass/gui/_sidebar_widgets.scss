@@ -1,0 +1,276 @@
+.sidebar-right .sidebar-widget {
+	margin: 0;
+}
+
+.sidebar-widget {
+	margin: 0 30px 0 25px;
+
+	.widget-header {
+		position: relative;
+		margin: 0;
+
+		h6 {
+			@include font-size(13);
+			color: #465162;
+			font-weight: 600;
+			margin: 0;
+			padding: 0;
+			text-transform: uppercase;
+		}
+
+		.btn-widget-act {
+			position: relative;
+			top: -2px;
+			border-color: darken($color-dark, 5%);
+			background-color: darken($color-dark, 5%);
+			border-color: darken($color-dark, 5%) darken($color-dark, 15%) darken($color-dark, 15%);
+
+			&:hover {
+				border-color: darken($color-dark, 2%);
+				background-color: darken($color-dark, 2%);
+			}
+
+			&:active,
+			&:focus {
+				border-color: darken($color-dark, 10%);
+				background-color: darken($color-dark, 10%);
+			}
+
+			&.dropdown-toggle {
+				border-left-color: darken($color-dark, 10%);
+			}
+		}
+
+		.widget-toggle {
+			@include font-size(17);
+			@include line-height(13);
+			color: #465162;
+			position: absolute;
+			right: 0;
+			top: 0;
+			cursor: pointer;
+			text-align: center;
+
+			@include transform(rotate(45deg));
+			@include transition-property (transform);
+			@include transition-duration(.2s);
+			@include transition-timing-function(linear);
+		}
+
+	}
+
+	.widget-content {
+		padding: 15px 0 0;
+	}
+
+	&.widget-collapsed {
+
+		.widget-header {
+			.widget-toggle {
+				@include transform(none);
+			}
+		}
+
+		.widget-content {
+			display: none;
+		}
+	}
+
+// WIDGET: TASKS
+// -----------------------------------------------------------------------------
+
+	&.widget-tasks {
+
+		ul {
+			li {
+				position: relative;
+
+				a {
+					color: $menu-item-text-color;
+					display: block;
+					margin: 0 -25px 0 -30px;
+					padding: 10px 0 10px 55px;
+
+					&:hover {
+						background: #21262d;
+						text-decoration: none;
+					}
+				}
+
+				&:before {
+					border: 5px solid $color-primary;
+					border-radius: 100px;
+					content: '';
+					display: inline-block;
+					left: 0;
+					margin: -5px 0 0;
+					position: absolute;
+					top: 50%;
+					z-index: 999;
+				}
+
+				$colors: $widget-tasks-colors;
+				@for $i from 1 through length($colors) {
+					&:nth-child(#{length($colors)}n+#{$i}) {
+						&:before {
+							border-color: nth($colors, $i);
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+// WIDGET: STATS
+// -----------------------------------------------------------------------------
+	&.widget-stats {
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.stats-title {
+			color: #a6a6a6;
+		}
+
+		.stats-complete {
+			float: right;
+			@include font-size(10);
+			color: #666;
+		}
+
+		.progress {
+			height: 7px;
+			background: #474453;
+			box-shadow: 0 1px 0 #585564 inset;
+			margin-bottom: 25px;
+		}
+
+	}
+
+// WIDGET: CALENDAR
+// -----------------------------------------------------------------------------
+	&.widget-calendar {
+		margin: 0 0 25px;
+
+		.datepicker {
+			background: transparent;
+		}
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 20px 0;
+			border-top: 1px solid #000;
+
+			time {
+				display: block;
+				@include font-size(12);
+				line-height: 1.3em;
+				font-weight: 600;
+				color: $color-default-inverse;
+				margin-bottom: 0.1em;
+			}
+
+			span {
+				@include font-size(14);
+				line-height: 1.3em;
+				color: $color-primary-inverse;
+			}
+		}
+	}
+
+// WIDGET: FRIENDS
+// -----------------------------------------------------------------------------
+
+	&.widget-friends {
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 10px 2px;
+
+			li {
+				padding: 10px 0;
+
+				.profile-info,
+				.profile-picture {
+					display: inline-block;
+					vertical-align: middle;
+				}
+
+				.profile-picture {
+					position: relative;
+					width: 35px;
+
+					img {
+						width: 100%;
+						height: auto;
+					}
+				}
+
+				.profile-info {
+					margin: 0 35px 0 10px;
+				}
+
+				span.name {
+					display: block;
+					color: $color-primary-inverse;
+					font-weight: 600;
+					vertical-align: top;
+					line-height: 1.3em;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					overflow: hidden;
+					margin-bottom: 0.2em;
+				}
+
+				span.title {
+					display: block;
+					@include font-size(12);
+					line-height: 1.3em;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					overflow: hidden;
+				}
+
+				&.status-online, &.status-offline {
+					.profile-picture {
+						&:after {
+							display: none;
+							position: absolute;
+							top: -4px;
+							right: -4px;
+							content: '';
+							width: 15px;
+							height: 15px;
+							border: 2px solid #000;
+							border-radius: 50%;
+						}
+					}
+				}
+
+				&.status-online {
+					.profile-picture {
+						&:after {
+							display: block;
+							background-color: #1AAE88;
+						}
+					}
+				}
+
+				&.status-offline {
+					.profile-picture {
+						&:after {
+							display: block;
+							background-color: #D2312D;
+						}
+					}
+				}
+			}
+		}
+	}
+}

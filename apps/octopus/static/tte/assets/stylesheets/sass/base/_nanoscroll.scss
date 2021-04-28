@@ -1,0 +1,123 @@
+// NANO SCROLLER
+// -----------------------------------------------------------------------------
+/* Nano Scroller Plugin */
+html.no-overflowscrolling {
+	.nano {
+		height: 100%;
+		position: relative;
+		overflow: hidden;
+		width: 100%;
+
+		> .nano-content {
+			bottom: 0;
+			left: 0;
+			position: absolute;
+			overflow: hidden;
+			right: 0;
+			top: 0;
+
+			&:focus {
+				outline: none;
+			}
+
+			&::-webkit-scrollbar {
+				display: none;
+				visibility: hidden;
+			}
+		}
+
+		&.has-scrollbar {
+			> .nano-content::-webkit-scrollbar {
+				display: block;
+				visibility: visible;
+			}
+		}
+
+		> .nano-pane {
+			bottom: 0;
+			position: absolute;
+			opacity: .01;
+			right: 0;
+			top: 0;
+			visibility: hidden\9; /* Target only IE7 and IE8 with this hack */
+			width: 4px;
+			-webkit-transition: .2s;
+			-moz-transition: .2s;
+			-o-transition: .2s;
+			transition: .2s;
+
+			> .nano-slider {
+				background: $color-primary;
+				margin: 0;
+				position: relative;
+				visibility: hidden;
+			}
+		}
+
+		&:hover > .nano-pane,
+		.nano-pane.active,
+		.nano-pane.flashed {
+			opacity: 0.99;
+		}
+
+		&:hover {
+			> .nano-pane {
+				> .nano-slider {
+					visibility: visible;
+				}
+			}
+		}
+	}
+
+	&.custom-scroll {
+		.nano {
+			> .nano-content {
+				overflow: scroll;
+				overflow-x: hidden;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	html.no-overflowscrolling {
+		.nano {
+			> .nano-content {
+				overflow: scroll !important;
+				overflow-x: hidden !important;
+			}
+		}
+	}
+}
+
+@media only screen and (min-width: 768px) {
+	html.overflowscrolling.fixed {
+		.sidebar-left,
+		.sidebar-right,
+		.inner-menu {
+			.nano {
+				height: 100%;
+				overflow: hidden;
+				-webkit-overflow-scrolling: touch;
+				> .nano-pane {
+					> .nano-slider {
+						visibility: visible;
+					}
+				}
+			}
+		}
+
+		&.custom-scroll {
+			.sidebar-left,
+			.sidebar-right,
+			.inner-menu {
+				.nano {
+					> .nano-content {
+						overflow-y: scroll;
+						overflow-x: hidden;
+					}
+				}
+			}
+		}
+	}
+}

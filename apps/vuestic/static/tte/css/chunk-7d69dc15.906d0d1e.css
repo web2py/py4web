@@ -1,0 +1,148 @@
+.dashboard-contributors-list[data-v-d10898ac] {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column
+}
+
+.dashboard-contributors-list .inner-loading[data-v-d10898ac] {
+    height: 100%
+}
+
+.chart[data-v-4dcf8e6d] {
+    height: 400px
+}
+
+.row-separated .flex+.flex {
+    border-left: 1px solid #e3eaeb
+}
+
+@media (max-width:575.98px) {
+    .row-separated p:not(.display-2) {
+        font-size: .875rem
+    }
+}
+
+@media (min-width:768px) {
+    .dashboard .va-card__header--over {
+        padding-top: 0 !important
+    }
+}
+
+@media (min-width:768px) {
+    .dashboard .va-card__image {
+        padding-bottom: 0 !important
+    }
+}
+
+.va-icon-vue {
+    display: inline-block;
+    width: 55px;
+    height: 47.8px
+}
+
+.va-icon-vue .cls-1 {
+    fill: #4ae387
+}
+
+.va-icon-vue .cls-2 {
+    fill: #34495e
+}
+
+.va-icon-free {
+    display: inline-block;
+    width: 55px;
+    height: 47.8px
+}
+
+.va-icon-free .cls-1 {
+    fill: #4ae387
+}
+
+.va-icon-free .cls-2 {
+    fill: none;
+    stroke: #34495e;
+    stroke-miterlimit: 10;
+    stroke-width: 3px
+}
+
+.va-icon-free .cls-3 {
+    fill: #34495e
+}
+
+.va-icon-fresh {
+    display: inline-block;
+    width: 51px;
+    height: 48px
+}
+
+.va-icon-fresh .cls-1 {
+    fill: #4ae387
+}
+
+.va-icon-fresh .cls-2 {
+    fill: #34495e
+}
+
+.va-icon-responsive {
+    display: inline-block;
+    width: 47.5px;
+    height: 49px
+}
+
+.va-icon-responsive .cls-1 {
+    fill: #4ae387
+}
+
+.va-icon-responsive .cls-2 {
+    fill: #34495e
+}
+
+.va-icon-rich {
+    display: inline-block;
+    width: 57px;
+    height: 55px
+}
+
+.va-icon-rich .cls-1 {
+    fill: #4ae387
+}
+
+.va-icon-rich .cls-2 {
+    fill: #34495e
+}
+
+.va-icon-clean-code {
+    display: inline-block;
+    width: 56px;
+    height: 50px
+}
+
+.va-icon-clean-code .cls-1 {
+    fill: #4ae387
+}
+
+.va-icon-clean-code .cls-2 {
+    fill: #34495e
+}
+
+.overview-tab__item {
+    height: 55px
+}
+
+.overview-tab__item-icon {
+    min-width: 65px;
+    max-width: 65px
+}
+
+.dashboard-map {
+    height: 380px
+}
+
+.row-equal .flex .va-card {
+    height: 100%
+}
+
+.dashboard .va-card {
+    margin-bottom: 0 !important
+}

@@ -1,0 +1,12 @@
+.progress-bar-primary {
+	background-color: $color-primary;
+}
+
+.progress-bar.progress-without-number[aria-valuenow="1"],
+.progress-bar.progress-without-number[aria-valuenow="2"] {
+  min-width: 0;
+}
+
+.progress-bar.progress-bar-primary[aria-valuenow="0"] {
+	background: transparent;
+}

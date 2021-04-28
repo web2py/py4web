@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 08:47:35 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <!-- Bootstrap CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/circular-std/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/libs/css/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') ]]" rel="stylesheet"/>
+  <title>biorex title text</title>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!-- ============================================================== -->
+  <!-- main wrapper -->
+  <!-- ============================================================== -->
+  <div class="dashboard-main-wrapper">
+   <!-- ============================================================== -->
+   <!-- navbar -->
+   <!-- ============================================================== -->
+   <div class="dashboard-header">
+    <nav class="navbar navbar-expand-lg bg-white fixed-top">
+     <a class="navbar-brand" href="[%[=URL('index') ]]">Concept</a>
+     <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+      <span class="navbar-toggler-icon"></span>
+     </button>
+     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto navbar-right-top">
+       <li class="nav-item">
+        <div class="top-search-bar" id="custom-search">
+         <input class="form-control" placeholder="Search.." type="text"/></div>
+       </li>
+       <li class="nav-item dropdown notification">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-icons" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink1">
+         <i class="fas fa-fw fa-bell"></i>
+         <span class="indicator"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+         <li>
+          <div class="notification-title">Notification</div>
+          <div class="notification-list">
+           <div class="list-group">
+            <a class="list-group-item list-group-item-action active" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jeremy Rakestraw</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">John Abraham</span>
+               is now following you
+               <div class="notification-date">2 days ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Monaan Pechi</span>
+               is watching your main repository
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-5.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jessica Caruso</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="list-footer">
+           <a href="#">View all notifications</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown connection">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown" href="#" id="navbarDropdown" role="button">
+         <i class="fas fa-fw fa-th"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
+         <li class="connection-list">
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/github.png') ]]"/>
+             <span>Github</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dribbble.png') ]]"/>
+             <span>Dribbble</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dropbox.png') ]]"/>
+             <span>Dropbox</span>
+            </a>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/bitbucket.png') ]]"/>
+             <span>Bitbucket</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/mail_chimp.png') ]]"/>
+             <span>Mail chimp</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/slack.png') ]]"/>
+             <span>Slack</span>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="conntection-footer">
+           <a href="#">More</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown nav-user">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-user-img" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink2">
+         <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/></a>
+        <div aria-labelledby="navbarDropdownMenuLink2" class="dropdown-menu dropdown-menu-right nav-user-dropdown">
+         <div class="nav-user-info">
+          <h5 class="mb-0 text-white nav-user-name">John Abraham</h5>
+          <span class="status"></span>
+          <span class="ml-2">Available</span>
+         </div>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-user mr-2"></i>
+          Account
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-cog mr-2"></i>
+          Setting
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-power-off mr-2"></i>
+          Logout
+         </a>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </nav>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end navbar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- left sidebar -->
+   <!-- ============================================================== -->
+   <div class="nav-left-sidebar sidebar-dark">
+    <div class="menu-list">
+     <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+      <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarNav" data-toggle="collapse" type="button">
+       <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+       <ul class="navbar-nav flex-column">
+        <li class="nav-divider">Menu</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-1" aria-expanded="false" class="nav-link active" data-target="#submenu-1" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-user-circle"></i>
+          Dashboard
+          <span class="badge badge-success">6</span>
+         </a>
+         <div class="collapse submenu" id="submenu-1" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a aria-controls="submenu-1-2" aria-expanded="false" class="nav-link" data-target="#submenu-1-2" data-toggle="collapse" href="#">E-Commerce</a>
+            <div class="collapse submenu" id="submenu-1-2" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('index') ]]">E Commerce Dashboard</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproduct') ]]">Product List</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXsingle') ]]">Product Single</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXcheckout') ]]">Product Checkout</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXfinance') ]]">Finance</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXsales') ]]">Sales</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-1-1" aria-expanded="false" class="nav-link" data-target="#submenu-1-1" data-toggle="collapse" href="#">Infulencer</a>
+            <div class="collapse submenu" id="submenu-1-1" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('dashboardXinfluencer') ]]">Influencer</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXfinder') ]]">Influencer Finder</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXprofile') ]]">Influencer Profile</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-2" aria-expanded="false" class="nav-link" data-target="#submenu-2" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-rocket"></i>
+          UI Elements
+         </a>
+         <div class="collapse submenu" id="submenu-2" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cards') ]]">
+             Cards
+             <span class="badge badge-secondary">New</span>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('general') ]]">General</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('carousel') ]]">Carousel</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('listgroup') ]]">List Group</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('accordions') ]]">Accordions</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('tabs') ]]">Tabs</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-3" aria-expanded="false" class="nav-link" data-target="#submenu-3" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-chart-pie"></i>
+          Chart
+         </a>
+         <div class="collapse submenu" id="submenu-3" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXc3') ]]">C3 Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXchartist') ]]">Chartist Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXcharts') ]]">Chart</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXmorris') ]]">Morris</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXsparkline') ]]">Sparkline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXgauge') ]]">Guage</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-4" aria-expanded="false" class="nav-link" data-target="#submenu-4" data-toggle="collapse" href="#">
+          <i class="fab fa-fw fa-wpforms"></i>
+          Forms
+         </a>
+         <div class="collapse submenu" id="submenu-4" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXelements') ]]">Form Elements</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXvalidation') ]]">Parsely Validations</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('multiselect') ]]">Multiselect</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('datepicker') ]]">Date Picker</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('bootstrapXselect') ]]">Bootstrap Select</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-5" aria-expanded="false" class="nav-link" data-target="#submenu-5" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-table"></i>
+          Tables
+         </a>
+         <div class="collapse submenu" id="submenu-5" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('generalXtable') ]]">General Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dataXtables') ]]">Data Tables</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-divider">Features</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-6" aria-expanded="false" class="nav-link" data-target="#submenu-6" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-file"></i>
+          Pages
+         </a>
+         <div class="collapse submenu" id="submenu-6" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpage') ]]">Blank Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpageXheader') ]]">Blank Page Header</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('loginA') ]]">Login</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('X404Xpage') ]]">404 page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('signXup') ]]">Sign up Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('forgotXpassword') ]]">Forgot Password</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('pricing') ]]">Pricing Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('timeline') ]]">Timeline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('calendar') ]]">Calendar</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('sortableXnestableXlists') ]]">Sortable/Nestable List</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mediaXobject') ]]">Media Objects</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cropperXimage') ]]">Cropper</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('colorXpicker') ]]">Color Picker</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-7" aria-expanded="false" class="nav-link" data-target="#submenu-7" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-inbox"></i>
+          Apps
+          <span class="badge badge-secondary">New</span>
+         </a>
+         <div class="collapse submenu" id="submenu-7" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXdetails') ]]">Email Detail</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXcompose') ]]">Email Compose</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('messageXchat') ]]">Message Chat</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-8" aria-expanded="false" class="nav-link" data-target="#submenu-8" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-columns"></i>
+          Icons
+         </a>
+         <div class="collapse submenu" id="submenu-8" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXfontawesome') ]]">FontAwesome Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXmaterial') ]]">Material Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXsimpleXlineicon') ]]">Simpleline Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXthemify') ]]">Themify Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXflag') ]]">Flag Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXweather') ]]">Weather Icon</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-9" aria-expanded="false" class="nav-link" data-target="#submenu-9" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-map-marker-alt"></i>
+          Maps
+         </a>
+         <div class="collapse submenu" id="submenu-9" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXgoogle') ]]">Google Maps</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXvector') ]]">Vector Maps</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-10" aria-expanded="false" class="nav-link" data-target="#submenu-10" data-toggle="collapse" href="#">
+          <i class="fas fa-f fa-folder"></i>
+          Menu Level
+         </a>
+         <div class="collapse submenu" id="submenu-10" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 1</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-11" aria-expanded="false" class="nav-link" data-target="#submenu-11" data-toggle="collapse" href="#">Level 2</a>
+            <div class="collapse submenu" id="submenu-11" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 1</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 2</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 3</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+       </ul>
+      </div>
+     </nav>
+    </div>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end left sidebar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- wrapper  -->
+   <!-- ============================================================== -->
+   <div class="dashboard-wrapper">
+    <div class="influence-finder">
+     <div class="container-fluid dashboard-content">
+      <!-- ============================================================== -->
+      <!-- pageheader -->
+      <!-- ============================================================== -->
+      <div class="row">
+       <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="page-header">
+         <h3 class="mb-2">Influencer Finder</h3>
+         <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
+         <div class="page-breadcrumb">
+          <nav aria-label="breadcrumb">
+           <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+             <a class="breadcrumb-link" href="#">Dashboard</a>
+            </li>
+            <li aria-current="page" class="breadcrumb-item active">Influencer Finder Template</li>
+           </ol>
+          </nav>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end pageheader -->
+      <!-- ============================================================== -->
+      <!-- ============================================================== -->
+      <!-- content -->
+      <!-- ============================================================== -->
+      <div class="row">
+       <!-- ============================================================== -->
+       <!-- search bar  -->
+       <!-- ============================================================== -->
+       <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="card">
+         <div class="card-body">
+          
+<!-- BEGIN view: finfluencerXfinder0, db_table: dfinfluencerXfinder0 -->
+<div>
+[%[= finfluencerXfinder0.custom['begin'] ]]
+ [%[ finfluencerXfinder0.custom['widgets']['f0']['_aria-label']= 'Search'  ]]
+ [%[ finfluencerXfinder0.custom['widgets']['f0']['_class']= 'form-control form-control-lg'  ]]
+ [%[ finfluencerXfinder0.custom['widgets']['f0']['_placeholder']= 'Search'  ]]
+ [%[ finfluencerXfinder0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= finfluencerXfinder0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= finfluencerXfinder0.custom['errors']['f0'] if 'f0' in finfluencerXfinder0.custom['errors'] else '' ]]</span>
+
+
+ [%[ finfluencerXfinder0.custom['submit']['_class']= 'btn btn-primary search-btn'  ]]
+ [%[ finfluencerXfinder0.custom['submit']['_type']= 'submit'  ]]
+ [%[ finfluencerXfinder0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ finfluencerXfinder0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ finfluencerXfinder0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= finfluencerXfinder0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in finfluencerXfinder0.custom['hidden_widgets'].keys(): ]]
+     [%[= finfluencerXfinder0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">finfluencerXfinder0</span></div>
+
+
+[%[= finfluencerXfinder0.custom['end'] ]]
+</div>
+<!-- END finfluencerXfinder0-->
+
+         </div>
+        </div>
+       </div>
+       <!-- ============================================================== -->
+       <!-- end search bar  -->
+       <!-- ============================================================== -->
+       <div class="col-xl-9 col-lg-8 col-md-8 col-sm-12 col-12">
+        <!-- ============================================================== -->
+        <!-- card influencer one -->
+        <!-- ============================================================== -->
+        <div class="card">
+         <div class="card-body">
+          <div class="row align-items-center">
+           <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="user-avatar float-xl-left pr-4 float-none">
+             <img alt="User Avatar" class="rounded-circle user-avatar-xl" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/></div>
+            <div class="pl-xl-3">
+             <div class="m-b-0">
+              <div class="user-avatar-name d-inline-block">
+               <h2 class="font-24 m-b-10">Henry Barbara</h2>
+              </div>
+              <div class="rating-star d-inline-block pl-xl-2 mb-2 mb-xl-0">
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <p class="d-inline-block text-dark">14 Reviews</p>
+              </div>
+             </div>
+             <div class="user-avatar-address">
+              <p class="mb-2">
+               <i class="fa fa-map-marker-alt mr-2 text-primary"></i>
+               Salt Lake City, UT
+               <span class="m-l-10">
+                Male
+                <span class="m-l-20">29 Year Old</span>
+               </span>
+              </p>
+              <div class="mt-3">
+               <a class="mr-1 badge badge-light" href="#">Fitness</a>
+               <a class="mr-1 badge badge-light" href="#">Life Style</a>
+               <a class="mr-1 badge badge-light" href="#">Gym</a>
+               <a class="badge badge-light" href="#">Crossfit</a>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="float-xl-right float-none mt-xl-0 mt-4">
+             <a class="btn-wishlist m-r-10" href="#">
+              <i class="far fa-star"></i>
+             </a>
+             <a class="btn btn-secondary" href="#">Send Messages</a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="border-top user-social-box">
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 twitter-color">
+            <i class="fab fa-twitter-square"></i>
+           </span>
+           <span>13,291</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 pinterest-color">
+            <i class="fab fa-pinterest-square"></i>
+           </span>
+           <span>84,019</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 instagram-color">
+            <i class="fab fa-instagram"></i>
+           </span>
+           <span>12,300</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 facebook-color">
+            <i class="fab fa-facebook-square"></i>
+           </span>
+           <span>92,920</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 medium-color">
+            <i class="fab fa-medium"></i>
+           </span>
+           <span>291</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 youtube-color">
+            <i class="fab fa-youtube"></i>
+           </span>
+           <span>1291</span>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end card influencer one -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- card influencer one -->
+        <!-- ============================================================== -->
+        <div class="card">
+         <div class="card-body">
+          <div class="row align-items-center">
+           <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="user-avatar float-xl-left pr-4 float-none">
+             <img alt="User Avatar" class="rounded-circle user-avatar-xl" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/></div>
+            <div class="pl-xl-3">
+             <div class="m-b-0">
+              <div class="user-avatar-name d-inline-block">
+               <h2 class="font-24 m-b-10">Louis Mstara</h2>
+              </div>
+              <div class="rating-star d-inline-block pl-xl-2 mb-2 mb-xl-0">
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <p class="d-inline-block text-dark">14 Reviews</p>
+              </div>
+             </div>
+             <div class="user-avatar-address">
+              <p class="mb-2">
+               <i class="fa fa-map-marker-alt mr-2 text-primary"></i>
+               Avenal, CA, USA
+               <span class="m-l-10">
+                Female
+                <span class="m-l-20">24 Year Old</span>
+               </span>
+              </p>
+              <div class="mt-3">
+               <a class="mr-1 badge badge-light" href="#">Fitness</a>
+               <a class="mr-1 badge badge-light" href="#">Life Style</a>
+               <a class="mr-1 badge badge-light" href="#">Gym</a>
+               <a class="badge badge-light" href="#">Crossfit</a>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="float-xl-right float-none mt-xl-0 mt-4">
+             <a class="btn-wishlist m-r-10" href="#">
+              <i class="far fa-star"></i>
+             </a>
+             <a class="btn btn-secondary" href="#">Send Messages</a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="border-top user-social-box">
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 twitter-color">
+            <i class="fab fa-twitter-square"></i>
+           </span>
+           <span>13,291</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 pinterest-color">
+            <i class="fab fa-pinterest-square"></i>
+           </span>
+           <span>84,019</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 instagram-color">
+            <i class="fab fa-instagram"></i>
+           </span>
+           <span>12,300</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 facebook-color">
+            <i class="fab fa-facebook-square"></i>
+           </span>
+           <span>92,920</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 medium-color">
+            <i class="fab fa-medium"></i>
+           </span>
+           <span>291</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 youtube-color">
+            <i class="fab fa-youtube"></i>
+           </span>
+           <span>1291</span>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end card influencer one -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- card influencer one -->
+        <!-- ============================================================== -->
+        <div class="card">
+         <div class="card-body">
+          <div class="row align-items-center">
+           <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="user-avatar float-xl-left pr-4 float-none">
+             <img alt="User Avatar" class="rounded-circle user-avatar-xl" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/></div>
+            <div class="pl-xl-3">
+             <div class="m-b-0">
+              <div class="user-avatar-name d-inline-block">
+               <h2 class="font-24 m-b-10">Nichole Oliver</h2>
+              </div>
+              <div class="rating-star d-inline-block pl-xl-2 mb-2 mb-xl-0">
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <p class="d-inline-block text-dark">14 Reviews</p>
+              </div>
+             </div>
+             <div class="user-avatar-address">
+              <p class="mb-2">
+               <i class="fa fa-map-marker-alt mr-2 text-primary"></i>
+               98 Richland Avenue, USA
+               <span class="m-l-10">
+                Male
+                <span class="m-l-20">34 Year Old</span>
+               </span>
+              </p>
+              <div class="mt-3">
+               <a class="mr-1 badge badge-light" href="#">Fitness</a>
+               <a class="mr-1 badge badge-light" href="#">Life Style</a>
+               <a class="mr-1 badge badge-light" href="#">Gym</a>
+               <a class="badge badge-light" href="#">Crossfit</a>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="float-xl-right float-none mt-xl-0 mt-4">
+             <a class="btn-wishlist m-r-10" href="#">
+              <i class="far fa-star"></i>
+             </a>
+             <a class="btn btn-secondary" href="#">Send Messages</a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="border-top user-social-box">
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 twitter-color">
+            <i class="fab fa-twitter-square"></i>
+           </span>
+           <span>13,291</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 pinterest-color">
+            <i class="fab fa-pinterest-square"></i>
+           </span>
+           <span>84,019</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 instagram-color">
+            <i class="fab fa-instagram"></i>
+           </span>
+           <span>12,300</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 facebook-color">
+            <i class="fab fa-facebook-square"></i>
+           </span>
+           <span>92,920</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 medium-color">
+            <i class="fab fa-medium"></i>
+           </span>
+           <span>291</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 youtube-color">
+            <i class="fab fa-youtube"></i>
+           </span>
+           <span>1291</span>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end card influencer one -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- card influencer one -->
+        <!-- ============================================================== -->
+        <div class="card">
+         <div class="card-body">
+          <div class="row align-items-center">
+           <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="user-avatar float-xl-left pr-4 float-none">
+             <img alt="User Avatar" class="rounded-circle user-avatar-xl" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></div>
+            <div class="pl-xl-3">
+             <div class="m-b-0">
+              <div class="user-avatar-name d-inline-block">
+               <h2 class="font-24 m-b-10">Pallavi Johnson</h2>
+              </div>
+              <div class="rating-star d-inline-block pl-xl-2 mb-2 mb-xl-0">
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <p class="d-inline-block text-dark">14 Reviews</p>
+              </div>
+             </div>
+             <div class="user-avatar-address">
+              <p class="mb-2">
+               <i class="fa fa-map-marker-alt mr-2 text-primary"></i>
+               4427 Wines Lane, USA
+               <span class="m-l-10">
+                Female
+                <span class="m-l-20">29 Year Old</span>
+               </span>
+              </p>
+              <div class="mt-3">
+               <a class="mr-1 badge badge-light" href="#">Fitness</a>
+               <a class="mr-1 badge badge-light" href="#">Life Style</a>
+               <a class="mr-1 badge badge-light" href="#">Gym</a>
+               <a class="badge badge-light" href="#">Crossfit</a>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="float-xl-right float-none mt-xl-0 mt-4">
+             <a class="btn-wishlist m-r-10" href="#">
+              <i class="far fa-star"></i>
+             </a>
+             <a class="btn btn-secondary" href="#">Send Messages</a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="border-top user-social-box">
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 twitter-color">
+            <i class="fab fa-twitter-square"></i>
+           </span>
+           <span>13,291</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 pinterest-color">
+            <i class="fab fa-pinterest-square"></i>
+           </span>
+           <span>84,019</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 instagram-color">
+            <i class="fab fa-instagram"></i>
+           </span>
+           <span>12,300</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 facebook-color">
+            <i class="fab fa-facebook-square"></i>
+           </span>
+           <span>92,920</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 medium-color">
+            <i class="fab fa-medium"></i>
+           </span>
+           <span>291</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 youtube-color">
+            <i class="fab fa-youtube"></i>
+           </span>
+           <span>1291</span>
+          </div>
+         </div>
+        </div>
+        <div class="card">
+         <div class="card-body">
+          <div class="row align-items-center">
+           <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="user-avatar float-xl-left pr-4 float-none">
+             <img alt="User Avatar" class="rounded-circle user-avatar-xl" src="[%[=URL('static/tte/assets/images/avatar-5.jpg') ]]"/></div>
+            <div class="pl-xl-3">
+             <div class="m-b-0">
+              <div class="user-avatar-name d-inline-block">
+               <h2 class="font-24 m-b-10">Komal Johnson</h2>
+              </div>
+              <div class="rating-star d-inline-block pl-xl-2 mb-2 mb-xl-0">
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <i class="fa fa-fw fa-star"></i>
+               <p class="d-inline-block text-dark">14 Reviews</p>
+              </div>
+             </div>
+             <div class="user-avatar-address">
+              <p class="mb-2">
+               <i class="fa fa-map-marker-alt mr-2 text-primary"></i>
+               4427 Wines Lane, USA
+               <span class="m-l-10">
+                Female
+                <span class="m-l-20">29 Year Old</span>
+               </span>
+              </p>
+              <div class="mt-3">
+               <a class="mr-1 badge badge-light" href="#">Fitness</a>
+               <a class="mr-1 badge badge-light" href="#">Life Style</a>
+               <a class="mr-1 badge badge-light" href="#">Gym</a>
+               <a class="badge badge-light" href="#">Crossfit</a>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="float-xl-right float-none mt-xl-0 mt-4">
+             <a class="btn-wishlist m-r-10" href="#">
+              <i class="far fa-star"></i>
+             </a>
+             <a class="btn btn-secondary" href="#">Send Messages</a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="border-top user-social-box">
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 twitter-color">
+            <i class="fab fa-twitter-square"></i>
+           </span>
+           <span>13,291</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 pinterest-color">
+            <i class="fab fa-pinterest-square"></i>
+           </span>
+           <span>84,019</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 instagram-color">
+            <i class="fab fa-instagram"></i>
+           </span>
+           <span>12,300</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 facebook-color">
+            <i class="fab fa-facebook-square"></i>
+           </span>
+           <span>92,920</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 medium-color">
+            <i class="fab fa-medium"></i>
+           </span>
+           <span>291</span>
+          </div>
+          <div class="user-social-media d-xl-inline-block">
+           <span class="mr-2 youtube-color">
+            <i class="fab fa-youtube"></i>
+           </span>
+           <span>1291</span>
+          </div>
+         </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end card influencer one -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- end content -->
+        <!-- ============================================================== -->
+       </div>
+       <!-- ============================================================== -->
+       <!-- influencer sidebar  -->
+       <!-- ============================================================== -->
+       <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12 col-12">
+        <div class="card">
+         <div class="card-body">
+          <h3 class="font-16">Sorting By</h3>
+          <select class="form-control">
+           <option>
+            Followers
+           </option>
+           <option>
+            Followers
+           </option>
+          </select>
+         </div>
+         <div class="card-body border-top">
+          <h3 class="font-16">Influncer by Rating</h3>
+          <div class="custom-control custom-radio">
+           <input class="custom-control-input" id="customRadio1" name="customRadio" type="radio"/>
+           <label class="custom-control-label" for="customRadio1">
+            <i class="fas fa-star rating-color fa-xs"></i>
+           </label>
+          </div>
+          <div class="custom-control custom-radio">
+           <input class="custom-control-input" id="customRadio2" name="customRadio" type="radio"/>
+           <label class="custom-control-label" for="customRadio2">
+            <i class="fas fa-star rating-color fa-xs"></i>
+            <i class="fas fa-star rating-color fa-xs"></i>
+           </label>
+          </div>
+          <div class="custom-control custom-radio">
+           <input class="custom-control-input" id="customRadio3" name="customRadio" type="radio"/>
+           <label class="custom-control-label" for="customRadio3">
+            <i class="fas fa-star rating-color fa-xs"></i>
+            <i class="fas fa-star rating-color fa-xs"></i>
+            <i class="fas fa-star rating-color fa-xs"></i>
+           </label>
+          </div>
+          <div class="custom-control custom-radio">
+           <input class="custom-control-input" id="customRadio4" name="customRadio" type="radio"/>
+           <label class="custom-control-label" for="customRadio4">
+            <i class="fas fa-star rating-color fa-xs"></i>
+            <i class="fas fa-star rating-color fa-xs"></i>
+            <i class="fas fa-star rating-color fa-xs"></i>
+            <i class="fas fa-star rating-color fa-xs"></i>
+           </label>
+          </div>
+          <div class="custom-control custom-radio">
+           <input class="custom-control-input" id="customRadio5" name="customRadio" type="radio"/>
+           <label class="custom-control-label" for="customRadio5">
+            <i class="fas fa-star rating-color fa-xs"></i>
+            <i class="fas fa-star rating-color fa-xs fa-xs"></i>
+            <i class="fas fa-star rating-color fa-xs fa-xs"></i>
+            <i class="fas fa-star rating-color fa-xs fa-xs"></i>
+            <i class="fas fa-star rating-color fa-xs fa-xs"></i>
+           </label>
+          </div>
+         </div>
+         <div class="card-body border-top">
+          <h3 class="font-16">Social Media Platform</h3>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck10" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck10">
+            Facebook
+           </label>
+          </div>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck11" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck11">
+            Instagram
+           </label>
+          </div>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck12" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck12">
+            Pinterest
+           </label>
+          </div>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck13" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck13">
+            Twitter
+           </label>
+          </div>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck14" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck14">
+            Youtube
+           </label>
+          </div>
+         </div>
+         <div class="card-body border-top">
+          <h3 class="font-16">Influncer Category</h3>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck15" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck15">
+            Business
+           </label>
+          </div>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck16" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck16">
+            Lifestyle
+           </label>
+          </div>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck17" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck17">
+            Fitness
+           </label>
+          </div>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck18" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck18">
+            Sports
+           </label>
+          </div>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck19" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck19">
+            Clothing
+           </label>
+          </div>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck20" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck20">
+            Pets &amp; Animals
+           </label>
+          </div>
+          <div class="custom-control custom-checkbox">
+           <input class="custom-control-input" id="customCheck21" type="checkbox"/>
+           <label class="custom-control-label" for="customCheck21">
+            Beauty &amp; Makeup
+           </label>
+          </div>
+         </div>
+         <div class="card-body border-top">
+          <h3 class="font-16">Age Demographics</h3>
+          <select class="form-control">
+           <option selected="">
+            Select the Age
+           </option>
+           <option value="20-30">
+            20-30
+           </option>
+           <option value="30-40">
+            30-40
+           </option>
+           <option value="40-50">
+            40-50
+           </option>
+          </select>
+         </div>
+         <div class="card-body border-top">
+          <a class="btn btn-secondary btn-lg btn-block" href="#">Submit</a>
+         </div>
+        </div>
+       </div>
+       <!-- ============================================================== -->
+       <!-- end influencer sidebar  -->
+       <!-- ============================================================== -->
+      </div>
+     </div>
+     <!-- ============================================================== -->
+     <!-- footer -->
+     <!-- ============================================================== -->
+     <div class="footer">
+      <div class="container-fluid">
+       <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+         Copyright © 2018 Concept. All rights reserved. Dashboard by
+         <a href="https://colorlib.com/wp/">Colorlib</a>
+         .
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+         <div class="text-md-right footer-links d-none d-sm-block">
+          <a href="javascript: void(0);">About</a>
+          <a href="javascript: void(0);">Support</a>
+          <a href="javascript: void(0);">Contact Us</a>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- ============================================================== -->
+     <!-- end footer -->
+     <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- end wrapper  -->
+    <!-- ============================================================== -->
+   </div>
+   <!-- ============================================================== -->
+   <!-- end main wrapper  -->
+   <!-- ============================================================== -->
+   <!-- Optional JavaScript -->
+   <!-- jquery 3.3.1 -->
+   <script src="[%[=URL('static/tte/assets/vendor/jquery/jquery-3.3.1.min.js') ]]"></script>
+   <!-- bootstap bundle js -->
+   <script src="[%[=URL('static/tte/assets/vendor/bootstrap/js/bootstrap.bundle.js') ]]"></script>
+   <!-- slimscroll js -->
+   <script src="[%[=URL('static/tte/assets/vendor/slimscroll/jquery.slimscroll.js') ]]"></script>
+   <!-- main js -->
+   <script src="[%[=URL('static/tte/assets/libs/js/main-js.js') ]]"></script>
+  </div>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

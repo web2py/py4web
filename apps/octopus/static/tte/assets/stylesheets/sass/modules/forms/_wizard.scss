@@ -1,0 +1,528 @@
+// WIZARD: TABS
+// -----------------------------------------------------------------------------
+.wizard-tabs {
+
+	.panel-body & {
+		margin: -15px -15px 15px;
+	}
+
+	.panel-body-nopadding & {
+		margin: 0;
+	}
+
+	ul {
+		display: table;
+		width: 100%;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+
+		& > li {
+			display: table-cell;
+			border-bottom: 1px solid $wizard-nav-item-border-color;
+
+			&.active {
+				border-bottom-color: transparent;
+
+				& > a {
+
+					&,
+					&:hover,
+					&:focus {
+						background: $wizard-nav-item-background-active-hover;
+						color: $wizard-nav-default-color;
+					}
+
+					&:after {
+						border-left-color: $wizard-nav-item-background-active-hover;
+					}
+
+				}
+
+				.badge {
+					background-color: $color-primary;
+				}
+			}
+
+			&.disabled {
+				& > a {
+
+					&,
+					&:hover,
+					&:focus {
+						color: $wizard-nav-disabled-color;
+					}
+				}
+
+				.badge {
+					background-color: $wizard-nav-disabled-color;
+				}
+			}
+
+			& > a {
+				position: relative;
+				display: block;
+				padding: 5px;
+				@include font-size($body-font-size);
+				text-decoration: none;
+				color: $wizard-nav-default-color;
+
+				&,
+				&:hover {
+					background: $wizard-nav-item-background;
+					color: $wizard-nav-default-color;
+				}
+
+				&:hover {
+					box-shadow: none;
+				}
+
+				&:active,
+				&:focus {
+					border-bottom: 0;
+				}
+
+				// Chevron
+				&:before,
+				&:after {
+					display: block;
+					content: '';
+					position: absolute;
+					top: 0;
+					right: -10px;
+					z-index: 1;
+					border: 17px solid transparent;
+					border-right: 0;
+					border-left: 10px solid transparent;
+					width: 0;
+					height: 0;
+				}
+
+				&:before {
+					z-index: 1;
+					right: -11px;
+					border-left-color: $wizard-nav-item-chevron-border-color;
+				}
+
+				&:after {
+					z-index: 2;
+					border-left-color: $wizard-nav-item-background;
+				}
+			}
+
+
+			&:last-child {
+				& > a {
+					&:before,
+					&:after {
+						display: none;
+					}
+				}
+			}
+		}
+	}
+
+}
+
+// DARK - WIZARD: TABS
+// -----------------------------------------------------------------------------
+html.dark {
+	.wizard-tabs {
+		ul > li {
+			border-color: $dark-color-3;
+
+			&.active {
+				border-color: $dark-color-4;
+
+				a {
+					&,
+					&:hover,
+					&:active {
+						background: $dark-color-4;
+						color: #EEE;
+
+					}
+
+					&:before {
+						border-left-color: $dark-color-2;
+					}
+
+					&:after {
+						border-left-color: $dark-color-4;
+					}
+				}
+			}
+
+			a {
+				&,
+				&:hover {
+					background: $dark-color-3;
+					color: #EEE;
+				}
+
+				&:before {
+					border-left-color: $dark-color-2;
+				}
+
+				&:after {
+					border-left-color: $dark-color-3;
+				}
+			}
+		}
+	}
+}
+
+// WIZARD: PROGRESS
+// -----------------------------------------------------------------------------
+html,
+html.dark {
+.wizard-progress {
+	margin: 0 15px;
+
+	.steps-progress {
+		height: 2px;
+		margin: 0 38px;
+		position: relative;
+		top: 15px;
+		background: $wizard-progress-default-background;
+
+		.progress-indicator {
+			height: 100%;
+			width: 0;
+			background: $wizard-progress-completed-background;
+			@include transition(width .2s ease-in);
+		}
+	}
+
+	.wizard-steps {
+		list-style: none;
+		margin: 0;
+		padding: 15px 0 0;
+		display: inline-block;
+		width: 100%;
+		font-size: 0;
+		text-align: justify;
+		-ms-text-justify: distribute-all-lines; /* IE8+ */
+
+		&:after {
+			/*
+			* We don't need IE6 and IE7 inline-block hack support here
+			* since they don't support :after anyways (the text-justify
+			* properties for them are above)... IE8 and above have native
+			* inline-block support so for IE8+, both the text-justify and
+			* :after will take effect but it doesn't have any negative
+			* effects since this element is invisible
+			*/
+			display: inline-block;
+			width: 100%;
+			content: '.';
+			font-size: 0;
+			height: 0;
+			line-height: 0;
+			visibility: hidden;
+		}
+
+		li {
+			display: inline-block;
+			vertical-align: top;
+			min-width: 50px;
+			max-width: 100px;
+
+			a {
+				position: relative;
+				display: block;
+				padding: 25px 8px 0;
+				font-size: 11px;
+				color: $wizard-progress-item-color;
+				font-weight: bold;
+				line-height: 1;
+				text-align: center;
+				text-decoration: none;
+				word-break: break-all;
+
+				span {
+					position: absolute;
+					top: 0;
+					left: 50%;
+					display: block;
+					background: $wizard-progress-default-background;
+					color: $wizard-progress-default-color;
+					line-height: 26px;
+					text-align: center;
+					margin-top: -15px;
+					margin-left: -15px;
+					width: 30px;
+					height: 30px;
+					border-radius: 35px;
+					font-size: 13px;
+					text-indent: -1px;
+					border: 2px solid $wizard-progress-default-border-color;
+					@include transition(all .2s ease-in);
+				}
+			}
+
+			// WIZARD PROGRESS ITEM: COMPLETED
+			&.completed {
+
+				a {
+					span {
+						background: $color-primary;
+						color: $wizard-progress-completed-color;
+					}
+				}
+
+			}
+			// WIZARD PROGRESS ITEM: ACTIVE
+			&.active {
+
+				a {
+					span {
+						background: $wizard-progress-active-background;
+						color: $wizard-progress-active-color;
+						border-color: $wizard-progress-active-border-color;
+					}
+				}
+			}
+
+			&.completed.active {
+
+				a {
+					span {
+						color: #FFF;
+					}
+				}
+
+			}
+		}
+	}
+
+	// PROGRESS SIZE: LARGE
+	&.wizard-progress-lg {
+		margin: 0 auto 30px;
+		width: 80%;
+
+		.steps-progress {
+			margin: 0 52px;
+			height: 4px;
+			top: 34px;
+		}
+
+		.wizard-steps {
+			padding-top: 30px;
+		}
+
+		ul {
+			li {
+				max-width: 135px;
+
+				a {
+					padding-top: 40px;
+					font-size: 14px;
+
+					span {
+						width: 60px;
+						height: 60px;
+						margin-top: -30px;
+						margin-left: -30px;
+						border-radius: 60px;
+						line-height: 52px;
+						font-size: 22px;
+						border-width: 4px;
+					}
+				}
+			}
+		}
+	}
+}
+}
+
+// DARK - WIZARD: PROGRESS
+// -----------------------------------------------------------------------------
+html.dark {
+	.wizard-progress .wizard-steps li a {
+		color: $dark-default-text;
+	}
+
+	.wizard-progress.wizard-progress ul li a span {
+		background: darken( $dark-color-3, 2% );
+		border-color: darken( $dark-color-3, 2% );
+	}
+
+	.wizard-progress .wizard-steps li.active a span {
+		background: darken( $dark-color-3, 2% );
+	}
+
+	.wizard-progress .steps-progress {
+		background: darken( $dark-color-3, 2% );
+	}
+}
+
+// WIZARD: PROGRESS RESPONSIVE
+// -----------------------------------------------------------------------------
+@media only screen and (max-width: 991px) {
+	html, html.dark {
+		.wizard-progress {
+			&,
+			&.wizard-progress-lg {
+				width: auto;
+				margin-bottom: 0;
+				margin-left: -15px;
+				margin-right: -15px;
+			}
+
+			// initial values
+			.steps-progress {
+				display: none;
+			}
+
+			.wizard-steps {
+				display: block;
+				font-size: 0;
+				overflow: hidden;
+				white-space: nowrap;
+				text-align: left;
+				width: 100%;
+
+				li {
+					@include transition( margin .5s linear );
+					display: inline-block;
+					float: none;
+					position: relative;
+					width: 100%;
+					min-width: 0;
+					max-width: none;
+
+					a {
+						position: relative;
+						z-index: 2;
+					}
+
+					&:before,
+					&:after {
+						content: '';
+						display: block;
+						height: 2px;
+						position: absolute;
+						top: 0;
+						width: 50%;
+					}
+
+					&:before {
+						background: $wizard-progress-completed-background;
+						left: 0;
+					}
+
+					&:after {
+						background: $wizard-progress-default-background;
+						right: 0;
+					}
+
+					&.active {
+						margin-left: 0;
+					}
+
+					&.completed {
+						margin-left: -100%;
+
+						&:after {
+							background: $wizard-progress-completed-background;
+						}
+					}
+
+					&.completed.active {
+						margin-left: 0;
+					}
+
+					&:first-child {
+						&:before {
+							display: none;
+						}
+					}
+
+					&:last-child {
+						&:after {
+							display: none;
+						}
+					}
+				}
+			}
+		}
+
+		.wizard-progress.wizard-progress-lg {
+			.wizard-steps {
+				li {
+					min-width: 0;
+					max-width: none;
+
+					&:before,
+					&:after {
+						height: 4px;
+					}
+				}
+			}
+		}
+	}
+}
+
+// WIZARD: TAB CONTENT
+// -----------------------------------------------------------------------------
+.form-wizard {
+	margin-bottom: 20px;
+
+	.tabs {
+		margin-bottom: 0;
+	}
+
+	.tab-content {
+		background: none;
+		border: 0 none;
+		box-shadow: none;
+	}
+
+	ul.pager {
+
+		.next,
+		.previous,
+		.first,
+		.last,
+		.finish {
+			a {
+				cursor: pointer;
+			}
+		}
+
+		.disabled {
+			a {
+				cursor: not-allowed;
+			}
+		}
+	}
+}
+
+// DARK - WIZARD PAGER
+// -----------------------------------------------------------------------------
+html.dark {
+	.form-wizard {
+		.pager {
+			li > a,
+			li > a:hover,
+			li > a:focus,
+			li > span {
+				background: $dark-color-4;
+				border-color: $dark-color-3;
+				color: #EEE;
+			}
+
+			.disabled {
+				& > a,
+				& > a:hover,
+				& > a:focus,
+				& > span {
+					background: $dark-color-3;
+					border-color: $dark-color-3;
+					color: #EEE;
+				}
+			}
+		}
+	}
+}

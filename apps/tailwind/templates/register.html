@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 11:31:58 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <link href="[%[=URL('static/tte/dist/styles.css') ]]" rel="stylesheet"/>
+  <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" rel="stylesheet"/>
+  <style>
+.login {
+    background: url([%[=URL('static/tte/dist/images/login-new.jpeg')]])
+}
+  </style>
+  <title>biorex title text</title>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body class="h-screen font-sans login bg-cover">
+  <div class="container mx-auto h-full flex flex-1 justify-center items-center">
+   <div class="w-full max-w-lg">
+    <div class="leading-loose">
+     
+<!-- BEGIN view: fregisterA0, db_table: dfregisterA0 -->
+<div class="max-w-xl m-4 p-10 bg-white rounded shadow-xl">
+[%[= fregisterA0.custom['begin'] ]]
+<p class="text-gray-800 font-medium">
+ Register
+</p>
+
+<div class="">
+ <label class="block text-sm text-gray-00" for="cus_name">
+  Name
+ </label>
+ [%[ fregisterA0.custom['widgets']['f0']['_class']= 'w-full px-5 py-1 text-gray-700 bg-gray-200 rounded'  ]]
+ [%[ fregisterA0.custom['widgets']['f0']['_id']= 'cus_name'  ]]
+ [%[ fregisterA0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fregisterA0.custom['widgets']['f0']['_placeholder']= 'Your Name'  ]]
+ [%[ fregisterA0.custom['widgets']['f0']['_aria-label']= 'Name'  ]]
+ [%[= fregisterA0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fregisterA0.custom['errors']['f0'] if 'f0' in fregisterA0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="mt-2">
+ <label class="block text-sm text-gray-600" for="cus_email">
+  Email
+ </label>
+ [%[ fregisterA0.custom['widgets']['f1']['_class']= 'w-full px-5 py-4 text-gray-700 bg-gray-200 rounded'  ]]
+ [%[ fregisterA0.custom['widgets']['f1']['_id']= 'cus_email'  ]]
+ [%[ fregisterA0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fregisterA0.custom['widgets']['f1']['_placeholder']= 'Your Email'  ]]
+ [%[ fregisterA0.custom['widgets']['f1']['_aria-label']= 'Email'  ]]
+ [%[= fregisterA0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fregisterA0.custom['errors']['f1'] if 'f1' in fregisterA0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="mt-2">
+ <label class="block text-sm text-gray-600" for="cus_email">
+  Address
+ </label>
+ [%[ fregisterA0.custom['widgets']['f2']['_class']= 'w-full px-2 py-2 text-gray-700 bg-gray-200 rounded'  ]]
+ [%[ fregisterA0.custom['widgets']['f2']['_id']= 'cus_email'  ]]
+ [%[ fregisterA0.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fregisterA0.custom['widgets']['f2']['_placeholder']= 'Street'  ]]
+ [%[ fregisterA0.custom['widgets']['f2']['_aria-label']= 'Email'  ]]
+ [%[= fregisterA0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fregisterA0.custom['errors']['f2'] if 'f2' in fregisterA0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="mt-2">
+ <label class="hidden text-sm block text-gray-600" for="cus_email">
+  City
+ </label>
+ [%[ fregisterA0.custom['widgets']['f3']['_class']= 'w-full px-2 py-2 text-gray-700 bg-gray-200 rounded'  ]]
+ [%[ fregisterA0.custom['widgets']['f3']['_id']= 'cus_email'  ]]
+ [%[ fregisterA0.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fregisterA0.custom['widgets']['f3']['_placeholder']= 'City'  ]]
+ [%[ fregisterA0.custom['widgets']['f3']['_aria-label']= 'Email'  ]]
+ [%[= fregisterA0.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fregisterA0.custom['errors']['f3'] if 'f3' in fregisterA0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="inline-block mt-2 w-1/2 pr-1">
+ <label class="hidden block text-sm text-gray-600" for="cus_email">
+  Country
+ </label>
+ [%[ fregisterA0.custom['widgets']['f4']['_class']= 'w-full px-2 py-2 text-gray-700 bg-gray-200 rounded'  ]]
+ [%[ fregisterA0.custom['widgets']['f4']['_id']= 'cus_email'  ]]
+ [%[ fregisterA0.custom['widgets']['f4']['_type']= 'text'  ]]
+ [%[ fregisterA0.custom['widgets']['f4']['_placeholder']= 'Country'  ]]
+ [%[ fregisterA0.custom['widgets']['f4']['_aria-label']= 'Email'  ]]
+ [%[= fregisterA0.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fregisterA0.custom['errors']['f4'] if 'f4' in fregisterA0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="inline-block mt-2 -mx-1 pl-1 w-1/2">
+ <label class="hidden block text-sm text-gray-600" for="cus_email">
+  Zip
+ </label>
+ [%[ fregisterA0.custom['widgets']['f5']['_class']= 'w-full px-2 py-2 text-gray-700 bg-gray-200 rounded'  ]]
+ [%[ fregisterA0.custom['widgets']['f5']['_id']= 'cus_email'  ]]
+ [%[ fregisterA0.custom['widgets']['f5']['_type']= 'text'  ]]
+ [%[ fregisterA0.custom['widgets']['f5']['_placeholder']= 'Zip'  ]]
+ [%[ fregisterA0.custom['widgets']['f5']['_aria-label']= 'Email'  ]]
+ [%[= fregisterA0.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fregisterA0.custom['errors']['f5'] if 'f5' in fregisterA0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="mt-4">
+ [%[ fregisterA0.custom['submit']['_class']= 'px-4 py-1 text-white font-light tracking-wider bg-gray-900 rounded'  ]]
+ [%[ fregisterA0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fregisterA0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fregisterA0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fregisterA0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fregisterA0.custom['submit'] ]]
+
+</div>
+
+<a class="inline-block right-0 align-baseline font-bold text-sm text-500 hover:text-blue-800" href="[%[=URL('index')]]">
+ Already have an account ?
+</a>
+
+ [%[ for hidden_widget in fregisterA0.custom['hidden_widgets'].keys(): ]]
+     [%[= fregisterA0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fregisterA0</span></div>
+
+
+[%[= fregisterA0.custom['end'] ]]
+</div>
+<!-- END fregisterA0-->
+
+    </div>
+   </div>
+  </div>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

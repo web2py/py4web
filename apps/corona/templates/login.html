@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 26.04.2021 17:49:18 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- plugins:css -->
+  <link href="[%[=URL('static/tte/assets/vendors/mdi/css/materialdesignicons.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendors/css/vendor.bundle.base.css') ]]" rel="stylesheet"/>
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <!-- endinject -->
+  <!-- Layout styles -->
+  <link href="[%[=URL('static/tte/assets/css/style.css') ]]" rel="stylesheet"/>
+  <!-- End layout styles -->
+  <link href="[%[=URL('static/tte/assets/images/favicon.png') ]]" rel="shortcut icon"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <div class="container-scroller">
+   <div class="container-fluid page-body-wrapper full-page-wrapper">
+    <div class="row w-100 m-0">
+     <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
+      <div class="card col-lg-4 mx-auto">
+       <div class="card-body px-5 py-5">
+        <h3 class="card-title text-left mb-3">Login</h3>
+        
+<!-- BEGIN view: floginA0, db_table: dfloginA0 -->
+<div>
+[%[= floginA0.custom['begin'] ]]
+<div class="form-group">
+ <label>
+  Username or email *
+ </label>
+ [%[ floginA0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ floginA0.custom['widgets']['f0']['_class']= 'form-control p_input'  ]]
+ [%[ floginA0.custom['widgets']['f0']['_placeholder']= ''  ]]
+ [%[= floginA0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= floginA0.custom['errors']['f0'] if 'f0' in floginA0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="form-group">
+ <label>
+  Password *
+ </label>
+ [%[ floginA0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ floginA0.custom['widgets']['f1']['_class']= 'form-control p_input'  ]]
+ [%[ floginA0.custom['widgets']['f1']['_placeholder']= ''  ]]
+ [%[= floginA0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= floginA0.custom['errors']['f1'] if 'f1' in floginA0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="form-group d-flex align-items-center justify-content-between">
+ <div class="form-check">
+  <label class="form-check-label">
+ [%[ floginA0.custom['widgets']['f2']['_type']= 'checkbox'  ]]
+ [%[ floginA0.custom['widgets']['f2']['_class']= 'form-check-input'  ]]
+ [%[ floginA0.custom['widgets']['f2']['_placeholder']= ''  ]]
+ [%[= floginA0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= floginA0.custom['errors']['f2'] if 'f2' in floginA0.custom['errors'] else '' ]]</span>
+
+   Remember me
+  </label>
+ </div>
+ <a class="forgot-pass" href="#">
+  Forgot password
+ </a>
+</div>
+
+<div class="text-center">
+ [%[ floginA0.custom['submit']['_type']= 'submit'  ]]
+ [%[ floginA0.custom['submit']['_class']= 'btn btn-primary btn-block enter-btn'  ]]
+ [%[ floginA0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ floginA0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ floginA0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= floginA0.custom['submit'] ]]
+
+</div>
+
+<div class="d-flex">
+ <button class="btn btn-facebook mr-2 col">
+  <i class="mdi mdi-facebook">
+  </i>
+  Facebook
+ </button>
+ <button class="btn btn-google col">
+  <i class="mdi mdi-google-plus">
+  </i>
+  Google plus
+ </button>
+</div>
+
+<p class="sign-up">
+ Don't have an Account?
+ <a href="#">
+  Sign Up
+ </a>
+</p>
+
+ [%[ for hidden_widget in floginA0.custom['hidden_widgets'].keys(): ]]
+     [%[= floginA0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">floginA0</span></div>
+
+
+[%[= floginA0.custom['end'] ]]
+</div>
+<!-- END floginA0-->
+
+       </div>
+      </div>
+     </div>
+     <!-- content-wrapper ends -->
+    </div>
+    <!-- row ends -->
+   </div>
+   <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <script src="[%[=URL('static/tte/assets/vendors/js/vendor.bundle.base.js') ]]"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="[%[=URL('static/tte/assets/js/off-canvas.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/hoverable-collapse.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/misc.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/settings.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/todolist.js') ]]"></script>
+  <!-- endinject -->
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

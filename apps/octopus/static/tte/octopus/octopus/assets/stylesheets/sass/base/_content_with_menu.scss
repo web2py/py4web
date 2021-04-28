@@ -1,0 +1,253 @@
+// CONTENT WITH MENU
+// -----------------------------------------------------------------------------
+/* Content With Menu - Menu Faux Column for Scroll and Boxed Layouts Colors */
+@media only screen and (min-width: 768px) {
+	html.scroll,
+	html.boxed {
+		.content-with-menu {
+			&:before {
+				background: $sidebar-background;
+			}
+
+			&:after {
+				background: #000;
+				box-shadow: 0px 0 4px 2px rgba(0, 0, 0, 0.5);
+			}
+		}
+	}
+}
+
+// REMOVE NANO STYLE FOR BOXED AND SCROLL
+// -----------------------------------------------------------------------------
+/* Unstyle nano for non fixed layouts */
+html.scroll,
+html.boxed {
+	.inner-menu,
+	&.no-overflowscrolling.custom-scroll .inner-menu {
+		.nano {
+			position: static;
+			height: auto;
+			overflow: visible;
+			width: auto;
+
+			> .nano-content {
+				position: static;
+				overflow: visible;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	html.fixed {
+		.inner-menu {
+			.nano {
+				position: static;
+				height: auto;
+				overflow: visible;
+				width: auto;
+
+				.nano-content {
+					margin-right: 0;
+					position: static;
+					overflow: visible;
+				}
+			}
+		}
+	}
+}
+
+// FIX PADDING WHEN USING NANO
+// -----------------------------------------------------------------------------
+/* Fix padding when fixed */
+@media only screen and (min-width: 768px) {
+	html.fixed {
+		.inner-menu {
+			padding: 0;
+
+			.nano-content {
+				padding: 35px;
+
+				&:after {
+					display: block;
+					content: '';
+					height: 35px;
+				}
+			}
+		}
+	}
+}
+
+// MENU INNER STYLE
+// -----------------------------------------------------------------------------
+/* Content With Menu - Inner Menu Style */
+.inner-menu {
+	background: $sidebar-background;
+	border-right: 1px solid darken($dark-color-4, 5%);
+	color: #abb4be;
+	padding: 0;
+	margin: 0;
+
+	.title {
+		color: #465162;
+		font-weight: 600;
+		margin: 10px 0;
+		padding: 0;
+		text-transform: uppercase;
+	}
+
+	hr.separator {
+		background-image: -webkit-linear-gradient(left, transparent, rgba(0, 0, 0, 0.4), transparent);
+		background-image: -moz-linear-gradient(left, transparent, rgba(0, 0, 0, 0.4), transparent);
+		background-image: -ms-linear-gradient(left, transparent, rgba(0, 0, 0, 0.4), transparent);
+		background-image: -o-linear-gradient(left, transparent, rgba(0, 0, 0, 0.4), transparent);
+
+		margin: 20px -35px 20px;
+	}
+
+	a,
+	a:hover {
+		color: #abb4be;
+	}
+
+	a.menu-item {
+		color: #abb4be;
+		display: block;
+		margin: 0 -35px 0 -35px;
+		padding: 10px 50px 10px 50px;
+		text-decoration: none;
+
+		&:hover {
+			background: #21262d;
+			color: #abb4be;
+			text-decoration: none;
+		}
+
+		&.active {
+			background: #282d36;
+		}
+
+		.label {
+			font-weight: normal;
+			font-size: 10px;
+			font-size: 1rem;
+			padding: .3em .7em .4em;
+			margin: .2em -1em 0 0;
+		}
+	}
+}
+
+/* Content With Menu - Toggle */
+.inner-menu-toggle,
+.inner-menu .inner-menu-toggle-inside {
+	background: #000;
+	color: #999;
+	left: 0;
+	line-height: 52px;
+	position: relative;
+	overflow: hidden;
+	text-align: left;
+	text-decoration: none;
+
+	&:after {
+		box-shadow: 0 0px 3px 0 rgba(255, 255, 255, 0.7);
+		bottom: -1px;
+		content: '';
+		display: block;
+		height: 1px;
+		left: 0;
+		position: absolute;
+		right: 0;
+	}
+
+	a {
+		display: block;
+		padding-left: 20px;
+		text-decoration: none;
+
+		i {
+			vertical-align: middle;
+		}
+	}
+
+	.inner-menu-collapse {
+		display: none;
+	}
+}
+
+.inner-menu-toggle a i {
+	margin-left: 5px;
+}
+
+.inner-menu-toggle-inside {
+	margin: -35px -35px 15px -35px;
+
+	.inner-menu-collapse i {
+		margin-right: 5px;
+	}
+	.inner-menu-expand i {
+		margin-left: 5px;
+	}
+}
+
+/* Content With Menu - Toggle - Outside */
+.inner-menu-toggle {
+	display: none;
+}
+
+/* Content With Menu - Inner Menu Content */
+.inner-menu-content {
+	display: none;
+}
+
+// TOGGLE OPENED
+// -----------------------------------------------------------------------------
+html.inner-menu-opened {
+	.inner-menu .inner-menu-toggle-inside .inner-menu-collapse {
+		display: block;
+	}
+	.inner-menu-expand {
+		display: none;
+	}
+	.inner-menu-content {
+		display: block;
+	}
+}
+
+/* Content With Menu - Responsive */
+@media only screen and (max-width: 767px) {
+	.inner-menu {
+		.hidden-xs-inline {
+			display: none;
+		}
+		.inner-menu-content {
+			padding: 20px;
+		}
+	}
+	.inner-menu-toggle-inside {
+		margin: 0;
+	}
+}
+
+/* Content With Menu - Toolbar + Layout Fixed */
+@media only screen and (min-width: 768px) {
+	html.fixed {
+		&.inner-menu-opened {
+			left: $sidebar-left-full-width + $inner-menu-width;
+		}
+
+		.inner-menu-toggle {
+			position: fixed;
+			left: $sidebar-left-full-width;
+		}
+	}
+}
+
+// DARK SKIN
+// -----------------------------------------------------------------------------
+html.dark {
+	.inner-menu-toggle:after,
+	.inner-menu .inner-menu-toggle-inside:after {
+		box-shadow: none;
+	}
+}

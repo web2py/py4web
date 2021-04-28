@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+ <head>
+            <!-- 21.12.2020 09:47:16 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+  <title>biorex title text</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <link href="[%[=URL('static/tte/favicon.ico') ]]" rel="shortcut icon" type="image/png"/>
+  <link href="[%[=URL('static/tte/assets/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/font-awesome.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/themify-icons.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/metisMenu.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/owl.carousel.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/slicknav.min.css') ]]" rel="stylesheet"/>
+  <!-- amchart css -->
+  <link href="https://www.amcharts.com/lib/3/plugins/export/export.css" media="all" rel="stylesheet" type="text/css"/>
+  <!-- others css -->
+  <link href="[%[=URL('static/tte/assets/css/typography.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/default-css.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/styles.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/css/responsive.css') ]]" rel="stylesheet"/>
+  <!-- modernizr css -->
+  <script src="[%[=URL('static/tte/assets/js/vendor/modernizr-2.8.3.min.js') ]]"></script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+  <!-- preloader area start -->
+  <div id="preloader">
+   <div class="loader"></div>
+  </div>
+  <!-- preloader area end -->
+  <!-- page container area start -->
+  <div class="page-container">
+   <!-- sidebar menu area start -->
+   <div class="sidebar-menu">
+    <div class="sidebar-header">
+     <div class="logo">
+      <a href="[%[=URL('index') ]]">
+       <img alt="logo" src="[%[=URL('static/tte/assets/images/icon/logo.png') ]]"/></a>
+     </div>
+    </div>
+    <div class="main-menu">
+     <div class="menu-inner">
+      <nav>
+       <ul class="metismenu" id="menu">
+        <li>
+         <a aria-expanded="true" href="javascript:void(0)">
+          <i class="ti-dashboard"></i>
+          <span>dashboard</span>
+         </a>
+         <ul class="collapse">
+          <li>
+           <a href="[%[=URL('index') ]]">ICO dashboard</a>
+          </li>
+          <li>
+           <a href="[%[=URL('index2') ]]">Ecommerce dashboard</a>
+          </li>
+          <li>
+           <a href="[%[=URL('index3') ]]">SEO dashboard</a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a aria-expanded="true" href="javascript:void(0)">
+          <i class="ti-layout-sidebar-left"></i>
+          <span>Sidebar Types</span>
+         </a>
+         <ul class="collapse">
+          <li>
+           <a href="[%[=URL('index') ]]">Left Sidebar</a>
+          </li>
+          <li>
+           <a href="[%[=URL('index3Xhorizontalmenu') ]]">Horizontal Sidebar</a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a aria-expanded="true" href="javascript:void(0)">
+          <i class="ti-pie-chart"></i>
+          <span>Charts</span>
+         </a>
+         <ul class="collapse">
+          <li>
+           <a href="[%[=URL('barchart') ]]">bar chart</a>
+          </li>
+          <li>
+           <a href="[%[=URL('linechart') ]]">line Chart</a>
+          </li>
+          <li>
+           <a href="[%[=URL('piechart') ]]">pie chart</a>
+          </li>
+         </ul>
+        </li>
+        <li class="active">
+         <a aria-expanded="true" href="javascript:void(0)">
+          <i class="ti-palette"></i>
+          <span>UI Features</span>
+         </a>
+         <ul class="collapse">
+          <li>
+           <a href="[%[=URL('accordion') ]]">Accordion</a>
+          </li>
+          <li>
+           <a href="[%[=URL('alert') ]]">Alert</a>
+          </li>
+          <li>
+           <a href="[%[=URL('badge') ]]">Badge</a>
+          </li>
+          <li>
+           <a href="[%[=URL('button') ]]">Button</a>
+          </li>
+          <li>
+           <a href="[%[=URL('buttonXgroup') ]]">Button Group</a>
+          </li>
+          <li>
+           <a href="[%[=URL('cards') ]]">Cards</a>
+          </li>
+          <li>
+           <a href="[%[=URL('dropdown') ]]">Dropdown</a>
+          </li>
+          <li>
+           <a href="[%[=URL('listXgroup') ]]">List Group</a>
+          </li>
+          <li>
+           <a href="[%[=URL('mediaXobject') ]]">Media Object</a>
+          </li>
+          <li>
+           <a href="[%[=URL('modal') ]]">Modal</a>
+          </li>
+          <li>
+           <a href="[%[=URL('pagination') ]]">Pagination</a>
+          </li>
+          <li>
+           <a href="[%[=URL('popovers') ]]">Popover</a>
+          </li>
+          <li>
+           <a href="[%[=URL('progressbar') ]]">Progressbar</a>
+          </li>
+          <li>
+           <a href="[%[=URL('tab') ]]">Tab</a>
+          </li>
+          <li>
+           <a href="[%[=URL('typography') ]]">Typography</a>
+          </li>
+          <li>
+           <a href="[%[=URL('form') ]]">Form</a>
+          </li>
+          <li class="active">
+           <a href="[%[=URL('grid') ]]">grid system</a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a aria-expanded="true" href="javascript:void(0)">
+          <i class="ti-slice"></i>
+          <span>icons</span>
+         </a>
+         <ul class="collapse">
+          <li>
+           <a href="[%[=URL('fontawesome') ]]">fontawesome icons</a>
+          </li>
+          <li>
+           <a href="[%[=URL('themify') ]]">themify icons</a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a aria-expanded="true" href="javascript:void(0)">
+          <i class="fa fa-table"></i>
+          <span>Tables</span>
+         </a>
+         <ul class="collapse">
+          <li>
+           <a href="[%[=URL('tableXbasic') ]]">basic table</a>
+          </li>
+          <li>
+           <a href="[%[=URL('tableXlayout') ]]">table layout</a>
+          </li>
+          <li>
+           <a href="[%[=URL('datatable') ]]">datatable</a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a href="[%[=URL('maps') ]]">
+          <i class="ti-map-alt"></i>
+          <span>maps</span>
+         </a>
+        </li>
+        <li>
+         <a href="[%[=URL('invoice') ]]">
+          <i class="ti-receipt"></i>
+          <span>Invoice Summary</span>
+         </a>
+        </li>
+        <li>
+         <a aria-expanded="true" href="javascript:void(0)">
+          <i class="ti-layers-alt"></i>
+          <span>Pages</span>
+         </a>
+         <ul class="collapse">
+          <li>
+           <a href="[%[=URL('login') ]]">Login</a>
+          </li>
+          <li>
+           <a href="[%[=URL('login2') ]]">Login 2</a>
+          </li>
+          <li>
+           <a href="[%[=URL('login3') ]]">Login 3</a>
+          </li>
+          <li>
+           <a href="[%[=URL('register') ]]">Register</a>
+          </li>
+          <li>
+           <a href="[%[=URL('register2') ]]">Register 2</a>
+          </li>
+          <li>
+           <a href="[%[=URL('register3') ]]">Register 3</a>
+          </li>
+          <li>
+           <a href="[%[=URL('register4') ]]">Register 4</a>
+          </li>
+          <li>
+           <a href="[%[=URL('screenlock') ]]">Lock Screen</a>
+          </li>
+          <li>
+           <a href="[%[=URL('screenlock2') ]]">Lock Screen 2</a>
+          </li>
+          <li>
+           <a href="[%[=URL('resetXpass') ]]">reset password</a>
+          </li>
+          <li>
+           <a href="[%[=URL('pricing') ]]">Pricing</a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a aria-expanded="true" href="javascript:void(0)">
+          <i class="fa fa-exclamation-triangle"></i>
+          <span>Error</span>
+         </a>
+         <ul class="collapse">
+          <li>
+           <a href="[%[=URL('X404') ]]">Error 404</a>
+          </li>
+          <li>
+           <a href="[%[=URL('X403') ]]">Error 403</a>
+          </li>
+          <li>
+           <a href="[%[=URL('X500') ]]">Error 500</a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a aria-expanded="true" href="javascript:void(0)">
+          <i class="fa fa-align-left"></i>
+          <span>Multi level menu</span>
+         </a>
+         <ul class="collapse">
+          <li>
+           <a href="#">Item level (1)</a>
+          </li>
+          <li>
+           <a href="#">Item level (1)</a>
+          </li>
+          <li>
+           <a aria-expanded="true" href="#">Item level (1)</a>
+           <ul class="collapse">
+            <li>
+             <a href="#">Item level (2)</a>
+            </li>
+            <li>
+             <a href="#">Item level (2)</a>
+            </li>
+            <li>
+             <a href="#">Item level (2)</a>
+            </li>
+           </ul>
+          </li>
+          <li>
+           <a href="#">Item level (1)</a>
+          </li>
+         </ul>
+        </li>
+       </ul>
+      </nav>
+     </div>
+    </div>
+   </div>
+   <!-- sidebar menu area end -->
+   <!-- main content area start -->
+   <div class="main-content">
+    <!-- header area start -->
+    <div class="header-area">
+     <div class="row align-items-center">
+      <!-- nav and search button -->
+      <div class="col-md-6 col-sm-8 clearfix">
+       <div class="nav-btn pull-left">
+        <span></span>
+        <span></span>
+        <span></span>
+       </div>
+       <div class="search-box pull-left">
+        
+<!-- BEGIN view: fgrid0, db_table: dfgrid0 -->
+<div>
+[%[= fgrid0.custom['begin'] ]]
+ [%[ fgrid0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fgrid0.custom['widgets']['f0']['_placeholder']= 'Search..._p4w'  ]]
+ [%[= fgrid0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fgrid0.custom['errors']['f0'] if 'f0' in fgrid0.custom['errors'] else '' ]]</span>
+
+ [%[ fgrid0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fgrid0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fgrid0.custom['submit']['_rows']= '1'  ]]
+ [%[ fgrid0.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fgrid0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fgrid0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fgrid0.custom['submit'] ]]
+
+
+<i class="ti-search">
+</i>
+
+ [%[ for hidden_widget in fgrid0.custom['hidden_widgets'].keys(): ]]
+     [%[= fgrid0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fgrid0</span></div>
+
+
+[%[= fgrid0.custom['end'] ]]
+</div>
+<!-- END fgrid0-->
+
+       </div>
+      </div>
+      <!-- profile info & task notification -->
+      <div class="col-md-6 col-sm-4 clearfix">
+       <ul class="notification-area pull-right">
+        <li id="full-view">
+         <i class="ti-fullscreen"></i>
+        </li>
+        <li id="full-view-exit">
+         <i class="ti-zoom-out"></i>
+        </li>
+        <li class="dropdown">
+         <i class="ti-bell dropdown-toggle" data-toggle="dropdown">
+          <span>2</span>
+         </i>
+         <div class="dropdown-menu bell-notify-box notify-box">
+          <span class="notify-title">
+           You have 3 new notifications
+           <a href="#">view all</a>
+          </span>
+          <div class="nofity-list">
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <i class="ti-key btn-danger"></i>
+            </div>
+            <div class="notify-text">
+             <p>You have Changed Your Password</p>
+             <span>Just Now</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <i class="ti-comments-smiley btn-info"></i>
+            </div>
+            <div class="notify-text">
+             <p>New Commetns On Post</p>
+             <span>30 Seconds ago</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <i class="ti-key btn-primary"></i>
+            </div>
+            <div class="notify-text">
+             <p>Some special like you</p>
+             <span>Just Now</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <i class="ti-comments-smiley btn-info"></i>
+            </div>
+            <div class="notify-text">
+             <p>New Commetns On Post</p>
+             <span>30 Seconds ago</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <i class="ti-key btn-primary"></i>
+            </div>
+            <div class="notify-text">
+             <p>Some special like you</p>
+             <span>Just Now</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <i class="ti-key btn-danger"></i>
+            </div>
+            <div class="notify-text">
+             <p>You have Changed Your Password</p>
+             <span>Just Now</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <i class="ti-key btn-danger"></i>
+            </div>
+            <div class="notify-text">
+             <p>You have Changed Your Password</p>
+             <span>Just Now</span>
+            </div>
+           </a>
+          </div>
+         </div>
+        </li>
+        <li class="dropdown">
+         <i class="fa fa-envelope-o dropdown-toggle" data-toggle="dropdown">
+          <span>3</span>
+         </i>
+         <div class="dropdown-menu notify-box nt-enveloper-box">
+          <span class="notify-title">
+           You have 3 new notifications
+           <a href="#">view all</a>
+          </span>
+          <div class="nofity-list">
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <img alt="image" src="[%[=URL('static/tte/assets/images/author/author-img1.jpg') ]]"/></div>
+            <div class="notify-text">
+             <p>Aglae Mayer</p>
+             <span class="msg">Hey I am waiting for you...</span>
+             <span>3:15 PM</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <img alt="image" src="[%[=URL('static/tte/assets/images/author/author-img2.jpg') ]]"/></div>
+            <div class="notify-text">
+             <p>Aglae Mayer</p>
+             <span class="msg">When you can connect with me...</span>
+             <span>3:15 PM</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <img alt="image" src="[%[=URL('static/tte/assets/images/author/author-img3.jpg') ]]"/></div>
+            <div class="notify-text">
+             <p>Aglae Mayer</p>
+             <span class="msg">I missed you so much...</span>
+             <span>3:15 PM</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <img alt="image" src="[%[=URL('static/tte/assets/images/author/author-img4.jpg') ]]"/></div>
+            <div class="notify-text">
+             <p>Aglae Mayer</p>
+             <span class="msg">Your product is completely Ready...</span>
+             <span>3:15 PM</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <img alt="image" src="[%[=URL('static/tte/assets/images/author/author-img2.jpg') ]]"/></div>
+            <div class="notify-text">
+             <p>Aglae Mayer</p>
+             <span class="msg">Hey I am waiting for you...</span>
+             <span>3:15 PM</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <img alt="image" src="[%[=URL('static/tte/assets/images/author/author-img1.jpg') ]]"/></div>
+            <div class="notify-text">
+             <p>Aglae Mayer</p>
+             <span class="msg">Hey I am waiting for you...</span>
+             <span>3:15 PM</span>
+            </div>
+           </a>
+           <a class="notify-item" href="#">
+            <div class="notify-thumb">
+             <img alt="image" src="[%[=URL('static/tte/assets/images/author/author-img3.jpg') ]]"/></div>
+            <div class="notify-text">
+             <p>Aglae Mayer</p>
+             <span class="msg">Hey I am waiting for you...</span>
+             <span>3:15 PM</span>
+            </div>
+           </a>
+          </div>
+         </div>
+        </li>
+        <li class="settings-btn">
+         <i class="ti-settings"></i>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+    <!-- header area end -->
+    <!-- page title area start -->
+    <div class="page-title-area">
+     <div class="row align-items-center">
+      <div class="col-sm-6">
+       <div class="breadcrumbs-area clearfix">
+        <h4 class="page-title pull-left">Dashboard</h4>
+        <ul class="breadcrumbs pull-left">
+         <li>
+          <a href="[%[=URL('index') ]]">Home</a>
+         </li>
+         <li>
+          <span>grid</span>
+         </li>
+        </ul>
+       </div>
+      </div>
+      <div class="col-sm-6 clearfix">
+       <div class="user-profile pull-right">
+        <img alt="avatar" class="avatar user-thumb" src="[%[=URL('static/tte/assets/images/author/avatar.png') ]]"/>
+        <h4 class="user-name dropdown-toggle" data-toggle="dropdown">
+         Kumkum Rai
+         <i class="fa fa-angle-down"></i>
+        </h4>
+        <div class="dropdown-menu">
+         <a class="dropdown-item" href="#">Message</a>
+         <a class="dropdown-item" href="#">Settings</a>
+         <a class="dropdown-item" href="#">Log Out</a>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- page title area end -->
+    <div class="main-content-inner">
+     <div class="row">
+      <!-- Bootstrap Grid start -->
+      <div class="col-12 mt-5">
+       <div class="card">
+        <div class="card-body">
+         <div class="header-title">Bootstrap Grid System</div>
+         <!-- Start 1 column grid system -->
+         <div class="row">
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+          <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6">
+           <div class="grid-col">.col-1</div>
+          </div>
+         </div>
+         <!-- Start 2 column grid system -->
+         <div class="row">
+          <div class="col-lg-2 col-md-4 col-sm-6">
+           <div class="grid-col">.col-2</div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-sm-6">
+           <div class="grid-col">.col-2</div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-sm-6">
+           <div class="grid-col">.col-2</div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-sm-6">
+           <div class="grid-col">.col-2</div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-sm-6">
+           <div class="grid-col">.col-2</div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-sm-6">
+           <div class="grid-col">.col-2</div>
+          </div>
+         </div>
+         <!-- Start 3 column grid system -->
+         <div class="row">
+          <div class="col-lg-3 col-md-6">
+           <div class="grid-col">.col-3</div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+           <div class="grid-col">.col-3</div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+           <div class="grid-col">.col-3</div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+           <div class="grid-col">.col-3</div>
+          </div>
+         </div>
+         <!-- Start 4 column grid system -->
+         <div class="row">
+          <div class="col-md-4">
+           <div class="grid-col">.col-4</div>
+          </div>
+          <div class="col-md-4">
+           <div class="grid-col">.col-4</div>
+          </div>
+          <div class="col-md-4">
+           <div class="grid-col">.col-4</div>
+          </div>
+         </div>
+         <!-- Start 6 column grid system -->
+         <div class="row">
+          <div class="col-md-6">
+           <div class="grid-col">.col-6</div>
+          </div>
+          <div class="col-md-6">
+           <div class="grid-col">.col-6</div>
+          </div>
+         </div>
+         <!-- Start 12 column grid system -->
+         <div class="row">
+          <div class="col-12">
+           <div class="grid-col">.col-12</div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- Bootstrap Grid end -->
+      <!-- No gutters start -->
+      <div class="col-12 mt-5">
+       <div class="card">
+        <div class="card-body">
+         <div class="header-title">No gutters</div>
+         <div class="row no-gutters">
+          <div class="col-sm-5">
+           <div class="grid-col">.col-sm-5</div>
+          </div>
+          <div class="col-sm-7">
+           <div class="grid-col">.col-sm-7</div>
+          </div>
+          <div class="col-sm-3">
+           <div class="grid-col">.col-sm-3</div>
+          </div>
+          <div class="col-sm-3">
+           <div class="grid-col">.col-sm-3</div>
+          </div>
+          <div class="col-sm-3">
+           <div class="grid-col">.col-sm-3</div>
+          </div>
+          <div class="col-sm-3">
+           <div class="grid-col">.col-sm-3</div>
+          </div>
+          <div class="col-sm-4">
+           <div class="grid-col">.col-sm-4</div>
+          </div>
+          <div class="col-sm-8">
+           <div class="grid-col">.col-sm-8</div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- No gutters end -->
+      <!-- Variable width content start -->
+      <div class="col-12 mt-5">
+       <div class="card">
+        <div class="card-body">
+         <div class="header-title">Variable width content</div>
+         <div class="row justify-content-md-center">
+          <div class="col col-lg-2">
+           <div class="grid-col">1 of 3</div>
+          </div>
+          <div class="col-md-auto">
+           <div class="grid-col">Variable width content</div>
+          </div>
+          <div class="col col-lg-2">
+           <div class="grid-col">3 of 3</div>
+          </div>
+         </div>
+         <div class="row">
+          <div class="col">
+           <div class="grid-col">1 of 3</div>
+          </div>
+          <div class="col-md-auto">
+           <div class="grid-col">Variable width content</div>
+          </div>
+          <div class="col col-lg-2">
+           <div class="grid-col">3 of 3</div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- Variable width content end -->
+      <!-- Order classes start -->
+      <div class="col-12 mt-5">
+       <div class="card">
+        <div class="card-body">
+         <div class="header-title">Order classes</div>
+         <div class="row">
+          <div class="col-sm-4">
+           <div class="grid-col">First, but unordered</div>
+          </div>
+          <div class="col-sm-4 order-12">
+           <div class="grid-col">Second, but last</div>
+          </div>
+          <div class="col-sm-4 order-1">
+           <div class="grid-col">Third, but first</div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- Order classes end -->
+     </div>
+    </div>
+   </div>
+   <!-- main content area end -->
+   <!-- footer area start-->
+   <footer>
+    <div class="footer-area">
+     <p>
+      © Copyright 2018. All right reserved. Template by
+      <a href="https://colorlib.com/wp/">Colorlib</a>
+      .
+     </p>
+    </div>
+   </footer>
+   <!-- footer area end-->
+  </div>
+  <!-- page container area end -->
+  <!-- offset area start -->
+  <div class="offset-area">
+   <div class="offset-close">
+    <i class="ti-close"></i>
+   </div>
+   <ul class="nav offset-menu-tab">
+    <li>
+     <a class="active" data-toggle="tab" href="#activity">Activity</a>
+    </li>
+    <li>
+     <a data-toggle="tab" href="#settings">Settings</a>
+    </li>
+   </ul>
+   <div class="offset-content tab-content">
+    <div class="tab-pane fade in show active" id="activity">
+     <div class="recent-activity">
+      <div class="timeline-task">
+       <div class="icon bg1">
+        <i class="fa fa-envelope"></i>
+       </div>
+       <div class="tm-title">
+        <h4>Rashed sent you an email</h4>
+        <span class="time">
+         <i class="ti-time"></i>
+         09:35
+        </span>
+       </div>
+       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse distinctio itaque at.</p>
+      </div>
+      <div class="timeline-task">
+       <div class="icon bg2">
+        <i class="fa fa-check"></i>
+       </div>
+       <div class="tm-title">
+        <h4>Added</h4>
+        <span class="time">
+         <i class="ti-time"></i>
+         7 Minutes Ago
+        </span>
+       </div>
+       <p>Lorem ipsum dolor sit amet consectetur.</p>
+      </div>
+      <div class="timeline-task">
+       <div class="icon bg2">
+        <i class="fa fa-exclamation-triangle"></i>
+       </div>
+       <div class="tm-title">
+        <h4>You missed you Password!</h4>
+        <span class="time">
+         <i class="ti-time"></i>
+         09:20 Am
+        </span>
+       </div>
+      </div>
+      <div class="timeline-task">
+       <div class="icon bg3">
+        <i class="fa fa-bomb"></i>
+       </div>
+       <div class="tm-title">
+        <h4>Member waiting for you Attention</h4>
+        <span class="time">
+         <i class="ti-time"></i>
+         09:35
+        </span>
+       </div>
+       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse distinctio itaque at.</p>
+      </div>
+      <div class="timeline-task">
+       <div class="icon bg3">
+        <i class="ti-signal"></i>
+       </div>
+       <div class="tm-title">
+        <h4>You Added Kaji Patha few minutes ago</h4>
+        <span class="time">
+         <i class="ti-time"></i>
+         01 minutes ago
+        </span>
+       </div>
+       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse distinctio itaque at.</p>
+      </div>
+      <div class="timeline-task">
+       <div class="icon bg1">
+        <i class="fa fa-envelope"></i>
+       </div>
+       <div class="tm-title">
+        <h4>Ratul Hamba sent you an email</h4>
+        <span class="time">
+         <i class="ti-time"></i>
+         09:35
+        </span>
+       </div>
+       <p>Hello sir , where are you, i am egerly waiting for you.</p>
+      </div>
+      <div class="timeline-task">
+       <div class="icon bg2">
+        <i class="fa fa-exclamation-triangle"></i>
+       </div>
+       <div class="tm-title">
+        <h4>Rashed sent you an email</h4>
+        <span class="time">
+         <i class="ti-time"></i>
+         09:35
+        </span>
+       </div>
+       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse distinctio itaque at.</p>
+      </div>
+      <div class="timeline-task">
+       <div class="icon bg2">
+        <i class="fa fa-exclamation-triangle"></i>
+       </div>
+       <div class="tm-title">
+        <h4>Rashed sent you an email</h4>
+        <span class="time">
+         <i class="ti-time"></i>
+         09:35
+        </span>
+       </div>
+      </div>
+      <div class="timeline-task">
+       <div class="icon bg3">
+        <i class="fa fa-bomb"></i>
+       </div>
+       <div class="tm-title">
+        <h4>Rashed sent you an email</h4>
+        <span class="time">
+         <i class="ti-time"></i>
+         09:35
+        </span>
+       </div>
+       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse distinctio itaque at.</p>
+      </div>
+      <div class="timeline-task">
+       <div class="icon bg3">
+        <i class="ti-signal"></i>
+       </div>
+       <div class="tm-title">
+        <h4>Rashed sent you an email</h4>
+        <span class="time">
+         <i class="ti-time"></i>
+         09:35
+        </span>
+       </div>
+       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse distinctio itaque at.</p>
+      </div>
+     </div>
+    </div>
+    <div class="tab-pane fade" id="settings">
+     <div class="offset-settings">
+      <h4>General Settings</h4>
+      <div class="settings-list">
+       <div class="s-settings">
+        <div class="s-sw-title">
+         <h5>Notifications</h5>
+         <div class="s-swtich">
+          <input id="switch1" type="checkbox"/>
+          <label for="switch1">
+           Toggle
+          </label>
+         </div>
+        </div>
+        <p>Keep it 'On' When you want to get all the notification.</p>
+       </div>
+       <div class="s-settings">
+        <div class="s-sw-title">
+         <h5>Show recent activity</h5>
+         <div class="s-swtich">
+          <input id="switch2" type="checkbox"/>
+          <label for="switch2">
+           Toggle
+          </label>
+         </div>
+        </div>
+        <p>The for attribute is necessary to bind our custom checkbox with the input.</p>
+       </div>
+       <div class="s-settings">
+        <div class="s-sw-title">
+         <h5>Show your emails</h5>
+         <div class="s-swtich">
+          <input id="switch3" type="checkbox"/>
+          <label for="switch3">
+           Toggle
+          </label>
+         </div>
+        </div>
+        <p>Show email so that easily find you.</p>
+       </div>
+       <div class="s-settings">
+        <div class="s-sw-title">
+         <h5>Show Task statistics</h5>
+         <div class="s-swtich">
+          <input id="switch4" type="checkbox"/>
+          <label for="switch4">
+           Toggle
+          </label>
+         </div>
+        </div>
+        <p>The for attribute is necessary to bind our custom checkbox with the input.</p>
+       </div>
+       <div class="s-settings">
+        <div class="s-sw-title">
+         <h5>Notifications</h5>
+         <div class="s-swtich">
+          <input id="switch5" type="checkbox"/>
+          <label for="switch5">
+           Toggle
+          </label>
+         </div>
+        </div>
+        <p>Use checkboxes when looking for yes or no answers.</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- offset area end -->
+  <!-- jquery latest version -->
+  <script src="[%[=URL('static/tte/assets/js/vendor/jquery-2.2.4.min.js') ]]"></script>
+  <!-- bootstrap 4 js -->
+  <script src="[%[=URL('static/tte/assets/js/popper.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/bootstrap.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/owl.carousel.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/metisMenu.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/jquery.slimscroll.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/jquery.slicknav.min.js') ]]"></script>
+  <!-- others plugins -->
+  <script src="[%[=URL('static/tte/assets/js/plugins.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/js/scripts.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+    const forms_url = [%[ =XML( page_url ) ]];
+
+    for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, 
+                 { method: 'POST', 
+                   body: new FormData( document.forms[i] ) 
+                 });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: '3 sec & will hide',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+    }
+</script>
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 9000); }
+     }();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 12:04:49 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <meta content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5" name="description"/>
+  <meta content="AdminKit" name="author"/>
+  <meta content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web" name="keywords"/>
+  <link href="[%[=URL('static/tte/img/icons/icon-48x48.png') ]]" rel="shortcut icon"/>
+  <title>biorex title text</title>
+  <link href="[%[=URL('static/tte/css/app.css') ]]" rel="stylesheet"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <main class="d-flex w-100">
+   <div class="container d-flex flex-column">
+    <div class="row vh-100">
+     <div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
+      <div class="d-table-cell align-middle">
+       <div class="text-center mt-4">
+        <h1 class="h2">Welcome back, Charles</h1>
+        <p class="lead">Sign in to your account to continue</p>
+       </div>
+       <div class="card">
+        <div class="card-body">
+         <div class="m-sm-4">
+          <div class="text-center">
+           <img alt="Charles Hall" class="img-fluid rounded-circle" height="132" src="[%[=URL('static/tte/img/avatars/avatar.jpg') ]]" width="132"/></div>
+          
+<!-- BEGIN view: fpagesXsignXin0, db_table: dfpagesXsignXin0 -->
+<div>
+[%[= fpagesXsignXin0.custom['begin'] ]]
+<div class="mb-3">
+ <label class="form-label">
+  Email
+ </label>
+ [%[ fpagesXsignXin0.custom['widgets']['f0']['_class']= 'form-control form-control-lg'  ]]
+ [%[ fpagesXsignXin0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fpagesXsignXin0.custom['widgets']['f0']['_placeholder']= 'Enter your email'  ]]
+ [%[= fpagesXsignXin0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsignXin0.custom['errors']['f0'] if 'f0' in fpagesXsignXin0.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="mb-3">
+ <label class="form-label">
+  Password
+ </label>
+ [%[ fpagesXsignXin0.custom['widgets']['f1']['_class']= 'form-control form-control-lg'  ]]
+ [%[ fpagesXsignXin0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fpagesXsignXin0.custom['widgets']['f1']['_placeholder']= 'Enter your password'  ]]
+ [%[= fpagesXsignXin0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsignXin0.custom['errors']['f1'] if 'f1' in fpagesXsignXin0.custom['errors'] else '' ]]</span>
+
+ <small>
+ [%[ fpagesXsignXin0.custom['submit']['_title']= 'mysubmit from a'  ]]
+ [%[ fpagesXsignXin0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fpagesXsignXin0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fpagesXsignXin0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fpagesXsignXin0.custom['submit'] ]]
+
+ </small>
+</div>
+
+<div>
+ <label class="form-check">
+ [%[ fpagesXsignXin0.custom['widgets']['f2']['_class']= 'form-check-input'  ]]
+ [%[ fpagesXsignXin0.custom['widgets']['f2']['_type']= 'checkbox'  ]]
+ [%[ fpagesXsignXin0.custom['widgets']['f2']['_value']= 'remember-me'  ]]
+ [%[ fpagesXsignXin0.custom['widgets']['f2']['_checked']= '==0'  ]]
+ [%[ fpagesXsignXin0.custom['widgets']['f2']['_placeholder']= ''  ]]
+ [%[= fpagesXsignXin0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsignXin0.custom['errors']['f2'] if 'f2' in fpagesXsignXin0.custom['errors'] else '' ]]</span>
+
+  <span class="form-check-label">
+   Remember me next time
+  </span>
+ </label>
+</div>
+
+<div class="text-center mt-3">
+ <a class="btn btn-lg btn-primary" href="[%[=URL('index')]]">
+  Sign in
+ </a>
+</div>
+
+ [%[ for hidden_widget in fpagesXsignXin0.custom['hidden_widgets'].keys(): ]]
+     [%[= fpagesXsignXin0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fpagesXsignXin0</span></div>
+
+
+[%[= fpagesXsignXin0.custom['end'] ]]
+</div>
+<!-- END fpagesXsignXin0-->
+
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </main>
+  <script src="[%[=URL('static/tte/js/app.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

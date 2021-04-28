@@ -1,0 +1,8 @@
+ratio= 0.55
+   src: assets/stylesheets/sass/modules/forms/_fileupload.scss
+   dst: upload
+
+ratio= 0.69
+   src: assets/vendor/codemirror/addon/hint/show-hint.css
+   dst: something.css
+

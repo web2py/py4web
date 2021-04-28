@@ -1,0 +1,250 @@
+
+////////// COLOR SYSTEM //////////
+
+$blue:              #5E50F9;
+$indigo:            #6610f2;
+$purple:            #6a008a;
+$pink:              #E91E63;
+$red:               #f96868;
+$orange:            #f2a654;
+$yellow:            #f6e84e;
+$green:             #46c35f;
+$teal:              #58d8a3;
+$cyan:              #57c7d4;
+$black:             #000;
+$white:             #ffffff;
+$white-smoke:       #f2f7f8;
+$violet:            #41478a;
+$darkslategray :    #2e383e;
+$dodger-blue :      #3498db;
+
+
+$colors: (
+  blue:             $blue,
+  indigo:           $indigo,
+  purple:           $purple,
+  pink:             $pink,
+  red:              $red,
+  orange:           $orange,
+  yellow:           $yellow,
+  green:            $green,
+  teal:             $teal,
+  cyan:             $cyan,
+  white:            $white,
+  gray:             #434a54,
+  gray-light:       #aab2bd,
+  gray-lighter:     #e8eff4,
+  gray-lightest:    #e6e9ed,
+  gray-dark:        #0f1531,
+  black:            #000000
+);
+
+
+$theme-colors: (
+  primary:         #464dee,
+  secondary:       #d8d8d8,
+  success:         #0ddbb9,
+  info:            #0ad7f7,
+  warning:         #fcd53b,
+  danger:          #ee5b5b,
+  light:           #d8d8d8,
+  dark:            #001737
+);
+
+$theme-gradient-colors: (
+  primary:         linear-gradient(230deg, #759bff, #843cf6),
+  secondary:       linear-gradient(to right, #e7ebf0, #868e96),
+  success:         linear-gradient(45deg, #7bffce, #30c93e),
+  info:            linear-gradient(to bottom, #0e4cfd, #6a8eff),
+  warning:         linear-gradient(135deg, #ffc480, #ff763b),
+  danger:          linear-gradient(316deg, #fc5286, #fbaaa2),
+  light:           linear-gradient(to right, #cfd9df 0%, #e2ebf0 100%),
+  dark:            linear-gradient(to right, #7d7979 0%, #000000 100%)
+);
+
+////////// COLOR SYSTEM //////////
+
+////////// COLOR VARIABLES //////////
+$content-bg: #f0f3f6;
+$border-color: #f1f6f8;
+
+////////// COLOR VARIABLES //////////
+
+
+
+////////// SOCIAL COLORS //////////
+
+$social-colors: (
+  twitter: #2caae1,
+  facebook: #3b579d,
+  google: #dc4a38,
+  linkedin: #0177b5,
+  pinterest: #cc2127,
+  youtube: #e52d27,
+  github: #333333,
+  behance: #1769ff,
+  dribbble: #ea4c89,
+  reddit: #ff4500
+);
+
+////////// SOCIAL COLORS //////////
+
+////////// FONTS//
+
+$type1:     'Source Sans Pro', sans-serif;
+
+$default-font-size: 1rem; // 14px as base font size
+
+$text-muted: #a7afb7;
+$body-color: #6c7293;
+
+////////// FONT VARIABLES //////////
+
+///////// FOOTER ////////
+$footer-height: 75px;
+$footer-bg: #fff;
+$footer-color: color(dark);
+///////// FOOTER ////////
+
+///////// BUTTONS ////////
+
+$button-fixed-width:        150px;
+$btn-padding-y:       0.625rem;
+$btn-padding-x:       1.125rem;
+$btn-line-height:     1;
+
+$btn-padding-y-xs:    .5rem;
+$btn-padding-x-xs:    .75rem;
+
+$btn-padding-y-sm:    .50rem;
+$btn-padding-x-sm:    .81rem;
+
+$btn-padding-y-lg:    1rem;
+$btn-padding-x-lg:    3rem;
+
+$btn-font-size:       .875rem;
+$btn-font-size-xs:    .625rem;
+$btn-font-size-sm:    .875rem;
+$btn-font-size-lg:    .875rem;
+
+$btn-border-radius:         .25rem;
+$btn-border-radius-xs:      .1875rem;
+$btn-border-radius-sm:      .1875rem;
+$btn-border-radius-lg:      .1875rem;
+$btn-outline-color-change: #3380ff;
+
+///////// BUTTONS ////////
+
+
+
+
+
+
+/////////  FORMS /////////
+
+$input-bg:                color(white);
+$input-border-radius:     2px;
+$input-placeholder-color: #c9c8c8;
+$input-font-size: .875rem;
+
+$input-padding-y:       .875rem;
+$input-padding-x:       1.375rem;
+$input-line-height:     1;
+
+$input-padding-y-xs:    .5rem;
+$input-padding-x-xs:    .75rem;
+
+$input-padding-y-sm:    .50rem;
+$input-padding-x-sm:    .81rem;
+
+$input-padding-y-lg:    .94rem;
+$input-padding-x-lg:    1.94rem;
+
+///////// FORMS /////////
+
+////////  DROPDOWNS ///////
+$dropdown-color: $body-color;
+$dropdown-border-color: $border-color;
+$dropdown-divider-bg:   $border-color;
+$dropdown-link-color:   $body-color;
+$dropdown-header-color: $body-color;
+$dropdown-link-hover-bg: #eaeaf1;
+////////  DROPDOWNS ///////
+
+//////// TABLES ////////
+$table-color: $body-color;
+$table-accent-bg: $content-bg;
+$table-hover-bg:  #eaeaf1;
+$table-cell-padding: 1.25rem .9375rem;
+$table-border-color: $border-color;
+
+$table-inverse-bg: #2a2b32;
+$table-inverse-color: color(white);
+
+//////// TABLES ////////
+
+
+
+////////// MEASUREMENT AND PROPERTY VARIABLES //////////
+
+$border-property: 1px solid $border-color;
+$card-spacing-y: 1.875rem;
+$card-padding-y: 1.875rem;
+$card-padding-x: 1.875rem;
+$card-border-radius: 6px;
+$card-border-color: #e7eaed;
+$card-box-shadow: 0 2px 4px 0 rgba(185, 185, 185, 0.5);
+$card-title-color: #001737;
+$card-description-color: #76838f;
+$grid-gutter-width: 30px;
+$action-transition-duration: 0.25s;
+$action-transition-timing-function: ease;
+////////// OTHER VARIABLES //////////
+
+
+
+ 
+
+/////////  TABS VARIABLES //////////
+$nav-tabs-border-color:             #ebedf2;
+$nav-tabs-link-bg:                  #f6f8fa;
+$nav-tabs-link-color:               #000000;
+$nav-tabs-link-hover-border-color:  $nav-tabs-border-color $nav-tabs-border-color $nav-tabs-border-color;
+$nav-tabs-link-active-color:        $body-color;
+$nav-tabs-link-active-bg:           $white;
+$nav-tabs-link-active-border-color: $nav-tabs-border-color $nav-tabs-border-color $nav-tabs-link-active-bg;
+$nav-pills-custom-bg:               #fcfcfd;
+////////   TABS VARIABLES /////////
+
+
+////////   Toggle Switch  //////////////
+$toggle-switch-bg: #e9ecef;
+////////   CALENDAR  //////////////
+
+////////   NAVBAR  //////////////
+$navbar-brand-wrapper-mini-width: 70px;
+$menu-break-point: 1020px;
+$horizontal-navbar-height: 156px;
+$horizontal-top-bg : #ffffff;
+$horizontal-top-navbar-height: 78px;
+$horizontal-menu-padding: 0 1rem;
+$horizontal-menu-height:  78px;
+$horizontal-top-menu-item-color: #d8d8d8;
+$horizontal-top-font-size: 1rem;
+$horizontal-bottom-bg: #ffffff;
+$horizontal-bottom-menu-item-color: #000000;
+$horizontal-bottom-menu-item-icon-color: #000000;
+$horizontal-bottom-menu-item-icon-active-color: #0ddbb9;
+$horizontal-bottom-menu-item-active-border: #0ddbb9;
+$horizontal-bottom-menu-item-active-color: #464dee;
+$horizontal-menu-submenu-color: #202339;
+$horizontal-bottom-menu-item-font-size: 0.937rem;
+$horizontal-bottom-menu-item-hover-bg: transparent;
+$horizontal-bottom-menu-item-hover-color: theme-color(primary);
+$horizontal-menu-item-padding: .75rem 0;
+$horizontal-menu-icon-font-size: 1.125rem;
+$horizontal-menu-submenu-item-padding: .85rem 0;
+$horizontal-menu-box-shadow: 0 19px 34px -15px #f1f6f8;
+$navbar-height: 56px;
+////////   NAVBAR  //////////////
+$pro-banner:linear-gradient(230deg, #7A3EC8, #297FC8),

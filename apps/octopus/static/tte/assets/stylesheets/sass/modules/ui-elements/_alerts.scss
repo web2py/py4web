@@ -1,0 +1,32 @@
+// STATES
+// -----------------------------------------------------------------------------
+/* Alert new states */
+.alert-default {
+	background-color: $color-default;
+	border-color: darken($color-default, 3%);
+	color: darken($color-default, 50%);
+
+	.alert-link {
+		color: darken($color-default, 65%);
+	}
+}
+
+.alert-primary {
+	background-color: $color-primary;
+	border-color: darken($color-primary, 3%);
+	color: $color-primary-inverse;
+
+	.alert-link {
+		color: darken($color-primary, 20%);
+	}
+}
+
+.alert-dark {
+	background-color: lighten($color-dark, 10%);
+	border-color: darken($color-dark, 10%);
+	color: lighten($color-dark, 70%);
+
+	.alert-link {
+		color: lighten($color-dark, 85%);
+	}
+}

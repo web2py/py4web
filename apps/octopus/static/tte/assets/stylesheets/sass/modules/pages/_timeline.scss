@@ -1,0 +1,316 @@
+// TIMELINE
+// -----------------------------------------------------------------------------
+$timeline-line-left: 140px;
+$timeline-simple-line-left: 30px;
+
+.timeline {
+
+	.tm-body {
+		position: relative;
+		padding: 30px 0;
+
+		&:after {
+			background: #505050;
+			background: -moz-linear-gradient(top, rgba(80, 80, 80, 0) 0%, #505050 8%, #505050 92%, rgba(80, 80, 80, 0) 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1e5799), color-stop(100%, #7db9e8));
+			background: -webkit-linear-gradient(top, rgba(80, 80, 80, 0) 0%, #505050 8%, #505050 92%, rgba(80, 80, 80, 0) 100%);
+			background: -o-linear-gradient(top, rgba(80, 80, 80, 0) 0%, #505050 8%, #505050 92%, rgba(80, 80, 80, 0) 100%);
+			background: -ms-linear-gradient(top, rgba(80, 80, 80, 0) 0%, #505050 8%, #505050 92%, rgba(80, 80, 80, 0) 100%);
+			background: linear, to bottom, rgba(80, 80, 80, 0) 0%, #505050 8%, #505050 92%, rgba(80, 80, 80, 0) 100%;
+			content: '';
+			display: block;
+			height: 100%;
+			left: $timeline-line-left;
+			margin-left: -2px;
+			position: absolute;
+			top: 0;
+			width: 3px;
+			z-index: 0;
+			filter: alpha(opacity=35);
+			opacity: 0.35;
+		}
+	}
+
+	.tm-title {
+		position: relative;
+		display: inline-block;
+		text-align: center;
+		min-width: 200px;
+		background-color: #fff;
+		padding: 4px 5px;
+		margin: 0 40px;
+		z-index: 1;
+		-webkit-border-radius: 3px;
+		border-radius: 3px;
+	}
+
+	.tm-items {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+
+		& > li {
+			position: relative;
+			margin: 30px 0;
+			padding: 0 0 0 ($timeline-line-left + 50);
+			min-height: 65px;
+			z-index: 1;
+
+			.tm-datetime {
+				position: absolute;
+				top: 50%;
+				left: 0;
+				width: 100px;
+				height: 48px;
+				margin-top: -24px;
+				text-align: right;
+				z-index: 3;
+
+				.tm-datetime-time {
+					color: $color-primary;
+					@include font-size(24);
+					font-weight: 700;
+					margin: 0;
+					white-space: nowrap;
+				}
+			}
+
+			.tm-icon {
+				position: absolute;
+				top: 50%;
+				left: $timeline-line-left;
+				background-color: $body-color;
+				border: 3px solid $color-primary;
+				color: $color-primary;
+				font-size: 28px;
+				padding: 10px;
+				width: 55px;
+				height: 55px;
+				text-align: center;
+				line-height: 29px;
+				margin-top: -28px;
+				margin-left: -28px;
+				z-index: 2;
+				-webkit-border-radius: 28px;
+				border-radius: 28px;
+			}
+
+			.tm-box {
+				position: relative;
+				background: #fff;
+				min-height: 65px;
+				padding: 10px 20px;
+				border: 1px solid #e9e9e9;
+				-webkit-border-radius: 6px;
+				border-radius: 6px;
+
+				&:after {
+					right: 100%;
+					border: solid transparent;
+					content: ' ';
+					height: 0;
+					width: 0;
+					position: absolute;
+					pointer-events: none;
+					border-right-color: #fff;
+					border-width: 8px;
+					top: 50%;
+					margin-top: -8px;
+					z-index: 2;
+				}
+
+				p:last-child {
+					margin-bottom: 0;
+				}
+
+				.tm-meta {
+					margin: 10px 0 0;
+
+					span {
+						display: inline-block;
+						padding-right: 8px;
+
+						&:last-child,
+						&:last-of-type {
+							padding-right: 0;
+						}
+
+					}
+				}
+			}
+		}
+	}
+
+	&.timeline-simple {
+
+		.tm-body {
+
+			&:after {
+				left: $timeline-simple-line-left;
+			}
+
+			.tm-title {
+				border: 1px solid #e9e9e9;
+				margin: 0 10px;
+			}
+
+			.tm-items {
+
+				& > li {
+					padding: 0 0 0 ($timeline-simple-line-left + 25);
+
+					&:before {
+						display: block;
+						position: absolute;
+						content: ' ';
+						background: none repeat scroll 0 0 $color-primary;
+						border-radius: 50%;
+						box-shadow: 0 0 0 3px #FFF, 0 0 0 6px $color-primary;
+						height: 7px;
+						left: $timeline-simple-line-left;
+						top: 50%;
+						width: 8px;
+						margin-left: -4px;
+						margin-top: -4px;
+					}
+
+					.tm-box {
+
+						&:before {
+							left: -17px;
+							border: solid transparent;
+							content: ' ';
+							height: 0;
+							width: 0;
+							position: absolute;
+							pointer-events: none;
+							border-right-color: #e9e9e9;
+							border-width: 8px;
+							top: 50%;
+							margin-top: -8px;
+							z-index: 1;
+						}
+					}
+				}
+			}
+		}
+
+	}
+}
+
+// TIMELINE - RESPONSIVE
+// -----------------------------------------------------------------------------
+$timeline-responsive-line-left: 20px;
+$timeline-responsive-simple-line-left: 30px;
+
+@media only screen and (max-width: 991px) {
+	.timeline {
+		.tm-body {
+			&:after {
+				left: $timeline-responsive-line-left;
+			}
+		}
+
+		.tm-title {
+			margin: 0;
+		}
+
+		.tm-items {
+			& > li {
+				padding-left: 50px;
+
+				.tm-info {
+					@include clearfix;
+					margin: 0 0 15px;
+				}
+
+				.tm-icon {
+					border-width: 2px;
+					float: left;
+					font-size: 22px;
+					height: 40px;
+					line-height: 36px;
+					margin: 0 15px 0 0;
+					padding: 0;
+					position: static;
+					width: 40px;
+				}
+
+				.tm-datetime {
+					margin: 0;
+					position: static;
+					text-align: left;
+
+					.tm-datetime-date {
+						@include font-size(12);
+						line-height: 1.3;
+					}
+
+					.tm-datetime-time {
+						@include font-size(18);
+						line-height: 1.3;
+					}
+				}
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.timeline {
+		.tm-items > li .tm-box .tm-meta span {
+			display: block;
+		}
+	}
+}
+
+// DARK SKIN
+// -----------------------------------------------------------------------------
+html.dark {
+	.timeline {
+		.tm-items > li {
+			.tm-box {
+				background: $dark-color-3;
+				border-color: $dark-color-2;
+
+				&:after {
+					border-right-color: $dark-color-3;
+				}
+				&:before {
+					border-right-color: $dark-color-2;
+				}
+			}
+			.tm-icon {
+				background-color: $dark-color-1;
+			}
+		}
+		.tm-title {
+			background-color: $dark-color-3;
+			border-color: $dark-color-2;
+		}
+
+		&.timeline-simple {
+
+			.tm-body {
+				.tm-title {
+					background-color: $dark-color-3;
+					border-color: $dark-color-2;
+				}
+				.tm-items > li {
+					&:before {
+						box-shadow: 0 0 0 3px $dark-color-4, 0 0 0 6px $color-primary;
+					}
+
+					.tm-box {
+						&:after {
+							border-right-color: $dark-color-3;
+						}
+						&:before {
+							border-right-color: $dark-color-2;
+						}
+					}
+				}
+			}
+		}
+	}
+}

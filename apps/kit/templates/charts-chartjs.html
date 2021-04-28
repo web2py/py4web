@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 12:04:50 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <meta content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5" name="description"/>
+  <meta content="AdminKit" name="author"/>
+  <meta content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web" name="keywords"/>
+  <link href="[%[=URL('static/tte/img/icons/icon-48x48.png') ]]" rel="shortcut icon"/>
+  <title>biorex title text</title>
+  <link href="[%[=URL('static/tte/css/app.css') ]]" rel="stylesheet"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <div class="wrapper">
+   <nav class="sidebar" id="sidebar">
+    <div class="sidebar-content js-simplebar">
+     <a class="sidebar-brand" href="[%[=URL('index') ]]">
+      <span class="align-middle">AdminKit</span>
+     </a>
+     <ul class="sidebar-nav">
+      <li class="sidebar-header">Pages</li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('index') ]]">
+        <i class="align-middle" data-feather="sliders"></i>
+        <span class="align-middle">Dashboard</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXprofile') ]]">
+        <i class="align-middle" data-feather="user"></i>
+        <span class="align-middle">Profile</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXsettings') ]]">
+        <i class="align-middle" data-feather="settings"></i>
+        <span class="align-middle">Settings</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXinvoice') ]]">
+        <i class="align-middle" data-feather="credit-card"></i>
+        <span class="align-middle">Invoice</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXblank') ]]">
+        <i class="align-middle" data-feather="book"></i>
+        <span class="align-middle">Blank</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link collapsed" data-toggle="collapse" href="#auth">
+        <i class="align-middle" data-feather="users"></i>
+        <span class="align-middle">Auth</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar" id="auth">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('pagesXsignXin') ]]">Sign In</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('pagesXsignXup') ]]">Sign Up</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-header">Tools &amp; Components</li>
+      <li class="sidebar-item">
+       <a class="sidebar-link collapsed" data-target="#ui" data-toggle="collapse">
+        <i class="align-middle" data-feather="briefcase"></i>
+        <span class="align-middle">UI Elements</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar" id="ui">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXalerts') ]]">Alerts</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXbuttons') ]]">Buttons</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXcards') ]]">Cards</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXgeneral') ]]">General</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXgrid') ]]">Grid</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXmodals') ]]">Modals</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXtypography') ]]">Typography</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('iconsXfeather') ]]">
+        <i class="align-middle" data-feather="coffee"></i>
+        <span class="align-middle">Icons</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link collapsed" data-target="#forms" data-toggle="collapse">
+        <i class="align-middle" data-feather="check-circle"></i>
+        <span class="align-middle">Forms</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar" id="forms">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('formsXlayouts') ]]">Form Layouts</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('formsXbasicXinputs') ]]">Basic Inputs</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('tablesXbootstrap') ]]">
+        <i class="align-middle" data-feather="list"></i>
+        <span class="align-middle">Tables</span>
+       </a>
+      </li>
+      <li class="sidebar-header">Plugins &amp; Addons</li>
+      <li class="sidebar-item active">
+       <a class="sidebar-link" href="[%[=URL('chartsXchartjs') ]]">
+        <i class="align-middle" data-feather="bar-chart-2"></i>
+        <span class="align-middle">Charts</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('mapsXgoogle') ]]">
+        <i class="align-middle" data-feather="map"></i>
+        <span class="align-middle">Maps</span>
+       </a>
+      </li>
+     </ul>
+     <div class="sidebar-cta">
+      <div class="sidebar-cta-content">
+       <strong class="d-inline-block mb-2">Upgrade to Pro</strong>
+       <div class="mb-3 text-sm">Are you looking for more components? Check out our premium version.</div>
+       <a class="btn btn-primary btn-block" href="https://adminkit.io/pricing" target="_blank">Upgrade to Pro</a>
+      </div>
+     </div>
+    </div>
+   </nav>
+   <div class="main">
+    <nav class="navbar navbar-expand navbar-light navbar-bg">
+     <a class="sidebar-toggle d-flex">
+      <i class="hamburger align-self-center"></i>
+     </a>
+     
+<!-- BEGIN view: fchartsXchartjs0, db_table: dfchartsXchartjs0 -->
+<div class="d-none d-sm-inline-block">
+[%[= fchartsXchartjs0.custom['begin'] ]]
+<div class="input-group input-group-navbar">
+ [%[ fchartsXchartjs0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fchartsXchartjs0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fchartsXchartjs0.custom['widgets']['f0']['_placeholder']= 'Search'  ]]
+ [%[ fchartsXchartjs0.custom['widgets']['f0']['_aria-label']= 'Search'  ]]
+ [%[= fchartsXchartjs0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fchartsXchartjs0.custom['errors']['f0'] if 'f0' in fchartsXchartjs0.custom['errors'] else '' ]]</span>
+
+ [%[ fchartsXchartjs0.custom['submit']['_class']= 'btn'  ]]
+ [%[ fchartsXchartjs0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fchartsXchartjs0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fchartsXchartjs0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fchartsXchartjs0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fchartsXchartjs0.custom['submit'] ]]
+
+</div>
+
+ [%[ for hidden_widget in fchartsXchartjs0.custom['hidden_widgets'].keys(): ]]
+     [%[= fchartsXchartjs0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fchartsXchartjs0</span></div>
+
+
+[%[= fchartsXchartjs0.custom['end'] ]]
+</div>
+<!-- END fchartsXchartjs0-->
+
+     <div class="navbar-collapse collapse">
+      <ul class="navbar-nav navbar-align">
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle" data-toggle="dropdown" href="#" id="alertsDropdown">
+         <div class="position-relative">
+          <i class="align-middle" data-feather="bell"></i>
+          <span class="indicator">4</span>
+         </div>
+        </a>
+        <div aria-labelledby="alertsDropdown" class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0">
+         <div class="dropdown-menu-header">4 New Notifications</div>
+         <div class="list-group">
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-danger" data-feather="alert-circle"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Update completed</div>
+             <div class="text-muted small mt-1">Restart server 12 to complete the update.</div>
+             <div class="text-muted small mt-1">30m ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-warning" data-feather="bell"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Lorem ipsum</div>
+             <div class="text-muted small mt-1">Aliquam ex eros, imperdiet vulputate hendrerit et.</div>
+             <div class="text-muted small mt-1">2h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-primary" data-feather="home"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Login from 192.186.1.8</div>
+             <div class="text-muted small mt-1">5h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-success" data-feather="user-plus"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">New connection</div>
+             <div class="text-muted small mt-1">Christina accepted your request.</div>
+             <div class="text-muted small mt-1">14h ago</div>
+            </div>
+           </div>
+          </a>
+         </div>
+         <div class="dropdown-menu-footer">
+          <a class="text-muted" href="#">Show all notifications</a>
+         </div>
+        </div>
+       </li>
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle" data-toggle="dropdown" href="#" id="messagesDropdown">
+         <div class="position-relative">
+          <i class="align-middle" data-feather="message-square"></i>
+         </div>
+        </a>
+        <div aria-labelledby="messagesDropdown" class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0">
+         <div class="dropdown-menu-header">
+          <div class="position-relative">4 New Messages</div>
+         </div>
+         <div class="list-group">
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Vanessa Tucker" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-5.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Vanessa Tucker</div>
+             <div class="text-muted small mt-1">Nam pretium turpis et arcu. Duis arcu tortor.</div>
+             <div class="text-muted small mt-1">15m ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="William Harris" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-2.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">William Harris</div>
+             <div class="text-muted small mt-1">Curabitur ligula sapien euismod vitae.</div>
+             <div class="text-muted small mt-1">2h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Christina Mason" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-4.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Christina Mason</div>
+             <div class="text-muted small mt-1">Pellentesque auctor neque nec urna.</div>
+             <div class="text-muted small mt-1">4h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Sharon Lessman" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-3.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Sharon Lessman</div>
+             <div class="text-muted small mt-1">Aenean tellus metus, bibendum sed, posuere ac, mattis non.</div>
+             <div class="text-muted small mt-1">5h ago</div>
+            </div>
+           </div>
+          </a>
+         </div>
+         <div class="dropdown-menu-footer">
+          <a class="text-muted" href="#">Show all messages</a>
+         </div>
+        </div>
+       </li>
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" data-toggle="dropdown" href="#">
+         <i class="align-middle" data-feather="settings"></i>
+        </a>
+        <a class="nav-link dropdown-toggle d-none d-sm-inline-block" data-toggle="dropdown" href="#">
+         <img alt="Charles Hall" class="avatar img-fluid rounded mr-1" src="[%[=URL('static/tte/img/avatars/avatar.jpg') ]]"/>
+         <span class="text-dark">Charles Hall</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+         <a class="dropdown-item" href="[%[=URL('pagesXprofile') ]]">
+          <i class="align-middle mr-1" data-feather="user"></i>
+          Profile
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="align-middle mr-1" data-feather="pie-chart"></i>
+          Analytics
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item" href="[%[=URL('pagesXsettings') ]]">
+          <i class="align-middle mr-1" data-feather="settings"></i>
+          Settings &amp; Privacy
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="align-middle mr-1" data-feather="help-circle"></i>
+          Help Center
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item" href="#">Log out</a>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </nav>
+    <main class="content">
+     <div class="container-fluid p-0">
+      <h1 class="h3 mb-3">Chart.js</h1>
+      <div class="row">
+       <div class="col-12 col-lg-6">
+        <div class="card flex-fill w-100">
+         <div class="card-header">
+          <h5 class="card-title">Line Chart</h5>
+          <h6 class="card-subtitle text-muted">A line chart is a way of plotting data points on a line.</h6>
+         </div>
+         <div class="card-body">
+          <div class="chart">
+           <canvas id="chartjs-line"></canvas>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Bar Chart</h5>
+          <h6 class="card-subtitle text-muted">A bar chart provides a way of showing data values represented as vertical bars.</h6>
+         </div>
+         <div class="card-body">
+          <div class="chart">
+           <canvas id="chartjs-bar"></canvas>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Doughnut Chart</h5>
+          <h6 class="card-subtitle text-muted">Doughnut charts are excellent at showing the relational proportions between data.</h6>
+         </div>
+         <div class="card-body">
+          <div class="chart chart-sm">
+           <canvas id="chartjs-doughnut"></canvas>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Pie Chart</h5>
+          <h6 class="card-subtitle text-muted">Pie charts are excellent at showing the relational proportions between data.</h6>
+         </div>
+         <div class="card-body">
+          <div class="chart chart-sm">
+           <canvas id="chartjs-pie"></canvas>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Radar Chart</h5>
+          <h6 class="card-subtitle text-muted">A radar chart is a way of showing multiple data points and the variation between them.</h6>
+         </div>
+         <div class="card-body">
+          <div class="chart">
+           <canvas id="chartjs-radar"></canvas>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-12 col-lg-6">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title">Polar Area Chart</h5>
+          <h6 class="card-subtitle text-muted">Polar area charts are similar to pie charts, but each segment has the same angle.</h6>
+         </div>
+         <div class="card-body">
+          <div class="chart">
+           <canvas id="chartjs-polar-area"></canvas>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </main>
+    <footer class="footer">
+     <div class="container-fluid">
+      <div class="row text-muted">
+       <div class="col-6 text-left">
+        <p class="mb-0">
+         <a class="text-muted" href="[%[=URL('index') ]]">
+          <strong>AdminKit Demo</strong>
+         </a>
+         ©
+        </p>
+       </div>
+       <div class="col-6 text-right">
+        <ul class="list-inline">
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Support</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Help Center</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Privacy</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Terms</a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </footer>
+   </div>
+  </div>
+  <script src="[%[=URL('static/tte/js/app.js') ]]"></script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    // Line chart
+    new Chart(document.getElementById("chartjs-line"), {
+        type: "line",
+        data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: [{
+                label: "Sales ($)",
+                fill: true,
+                backgroundColor: "transparent",
+                borderColor: window.theme.primary,
+                data: [2115, 1562, 1584, 1892, 1487, 2223, 2966, 2448, 2905, 3838, 2917, 3327]
+            }, {
+                label: "Orders",
+                fill: true,
+                backgroundColor: "transparent",
+                borderColor: "#adb5bd",
+                borderDash: [4, 4],
+                data: [958, 724, 629, 883, 915, 1214, 1476, 1212, 1554, 2128, 1466, 1827]
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                intersect: false
+            },
+            hover: {
+                intersect: true
+            },
+            plugins: {
+                filler: {
+                    propagate: false
+                }
+            },
+            scales: {
+                xAxes: [{
+                    reverse: true,
+                    gridLines: {
+                        color: "rgba(0,0,0,0.05)"
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        stepSize: 500
+                    },
+                    display: true,
+                    borderDash: [5, 5],
+                    gridLines: {
+                        color: "rgba(0,0,0,0)",
+                        fontColor: "#fff"
+                    }
+                }]
+            }
+        }
+    });
+});
+  </script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    // Bar chart
+    new Chart(document.getElementById("chartjs-bar"), {
+        type: "bar",
+        data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: [{
+                label: "Last year",
+                backgroundColor: window.theme.primary,
+                borderColor: window.theme.primary,
+                hoverBackgroundColor: window.theme.primary,
+                hoverBorderColor: window.theme.primary,
+                data: [54, 67, 41, 55, 62, 45, 55, 73, 60, 76, 48, 79],
+                barPercentage: .75,
+                categoryPercentage: .5
+            }, {
+                label: "This year",
+                backgroundColor: "#dee2e6",
+                borderColor: "#dee2e6",
+                hoverBackgroundColor: "#dee2e6",
+                hoverBorderColor: "#dee2e6",
+                data: [69, 66, 24, 48, 52, 51, 44, 53, 62, 79, 51, 68],
+                barPercentage: .75,
+                categoryPercentage: .5
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+            },
+            scales: {
+                yAxes: [{
+                    gridLines: {
+                        display: false
+                    },
+                    stacked: false,
+                    ticks: {
+                        stepSize: 20
+                    }
+                }],
+                xAxes: [{
+                    stacked: false,
+                    gridLines: {
+                        color: "transparent"
+                    }
+                }]
+            }
+        }
+    });
+});
+  </script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    // Doughnut chart
+    new Chart(document.getElementById("chartjs-doughnut"), {
+        type: "doughnut",
+        data: {
+            labels: ["Social", "Search Engines", "Direct", "Other"],
+            datasets: [{
+                data: [260, 125, 54, 146],
+                backgroundColor: [
+                    window.theme.primary,
+                    window.theme.success,
+                    window.theme.warning,
+                    "#dee2e6"
+                ],
+                borderColor: "transparent"
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            cutoutPercentage: 65,
+            legend: {
+                display: false
+            }
+        }
+    });
+});
+  </script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    // Pie chart
+    new Chart(document.getElementById("chartjs-pie"), {
+        type: "pie",
+        data: {
+            labels: ["Social", "Search Engines", "Direct", "Other"],
+            datasets: [{
+                data: [260, 125, 54, 146],
+                backgroundColor: [
+                    window.theme.primary,
+                    window.theme.warning,
+                    window.theme.danger,
+                    "#dee2e6"
+                ],
+                borderColor: "transparent"
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+            }
+        }
+    });
+});
+  </script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    // Radar chart
+    new Chart(document.getElementById("chartjs-radar"), {
+        type: "radar",
+        data: {
+            labels: ["Speed", "Reliability", "Comfort", "Safety", "Efficiency"],
+            datasets: [{
+                label: "Model X",
+                backgroundColor: "rgba(0, 123, 255, 0.2)",
+                borderColor: window.theme.primary,
+                pointBackgroundColor: window.theme.primary,
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: window.theme.primary,
+                data: [70, 53, 82, 60, 33]
+            }, {
+                label: "Model S",
+                backgroundColor: "rgba(220, 53, 69, 0.2)",
+                borderColor: window.theme.danger,
+                pointBackgroundColor: window.theme.danger,
+                pointBorderColor: "#fff",
+                pointHoverBackgroundColor: "#fff",
+                pointHoverBorderColor: window.theme.danger,
+                data: [35, 38, 65, 85, 84]
+            }]
+        },
+        options: {
+            maintainAspectRatio: false
+        }
+    });
+});
+  </script>
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    // Polar Area chart
+    new Chart(document.getElementById("chartjs-polar-area"), {
+        type: "polarArea",
+        data: {
+            labels: ["Speed", "Reliability", "Comfort", "Safety", "Efficiency"],
+            datasets: [{
+                label: "Model S",
+                data: [35, 38, 65, 70, 24],
+                backgroundColor: [
+                    window.theme.primary,
+                    window.theme.success,
+                    window.theme.danger,
+                    window.theme.warning,
+                    window.theme.info
+                ]
+            }]
+        },
+        options: {
+            maintainAspectRatio: false
+        }
+    });
+});
+  </script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

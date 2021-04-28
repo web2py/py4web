@@ -1,0 +1,152 @@
+body {
+	// BUTTON
+	// -----------------------------------------------------------------------------
+	/* Button Basic */
+	.btn:focus,
+	.btn:active:focus,
+	.btn.active:focus {
+		outline: none;
+	}
+
+	.btn {
+		white-space: normal;
+	}
+
+	// SOCIAL BUTTONS
+	// -----------------------------------------------------------------------------
+	/* Buttons - Social */
+	.btn-facebook,
+	.btn-twitter,
+	.btn-gplus {
+		&,
+		&:active,
+		&:hover,
+		&:focus {
+			color: #FFF;
+			font-weight: 300;
+			padding-left: 30px;
+			padding-right: 30px;
+			text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+		}
+	}
+
+	.btn-facebook {
+		&,
+		&:focus {
+			background: #3B5998;
+			border: 1px solid #37538D;
+		}
+
+		&:hover {
+			background: lighten( #3B5998, 4% );
+			border-color: lighten( #37538D, 4% );
+		}
+
+		&:active {
+			background: darken( #3B5998, 3% );
+			border-color: darken( #37538D, 3% );
+		}
+	}
+
+	.btn-twitter {
+		&,
+		&:focus {
+			background: #55ACEE;
+			border: 1px solid #47A5ED;
+		}
+
+		&:hover {
+			background: lighten( #55ACEE, 3% );
+			border-color: lighten( #47A5ED, 3% );
+		}
+
+		&:active {
+			background: darken( #55ACEE, 3% );
+			border-color: darken( #47A5ED, 3% );
+		}
+	}
+
+	.btn-gplus {
+		&,
+		&:focus {
+			background: #D95232;
+			border: 1px solid #D44927;
+		}
+
+		&:hover {
+			background: lighten( #D95232, 4% );
+			border-color: lighten( #D44927, 4% );
+		}
+
+		&:active {
+			background: darken( #D95232, 4% );
+			border-color: darken( #D44927, 4% );
+		}
+	}
+
+	// STATES
+	// -----------------------------------------------------------------------------
+	/* Buttons - States */
+	@each $state in $states {
+		.btn-#{nth($state,1)} {
+			border-color: #{nth($state,2)};
+			background-color: #{nth($state,2)};
+			border-color: #{nth($state,2)} #{nth($state,2)} darken(nth($state,2), 10%);
+			color: #{nth($state,3)};
+			text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+
+			&:hover {
+				border-color: lighten(nth($state,2), 5%);
+				background-color: lighten(nth($state,2), 5%);
+				color: #{nth($state,3)};
+			}
+
+			&:active,
+			&:focus {
+				border-color: darken(nth($state,2), 5%);
+				background-color: darken(nth($state,2), 5%);
+				color: #{nth($state,3)};
+			}
+
+			&.dropdown-toggle {
+				border-left-color: darken(nth($state,2), 5%);
+			}
+
+			&[disabled] {
+				border-color: lighten(nth($state,2), 20%);
+				background-color: lighten(nth($state,2), 20%);
+			}
+		}
+	}
+}
+
+// DARK
+// -----------------------------------------------------------------------------
+html.dark {
+	.btn-default {
+		background-color: $dark-color-3;
+		border-color: $dark-color-3;
+		color: #EEE;
+
+		&:hover {
+			background-color: lighten($dark-color-3, 1%);
+			border-color: lighten($dark-color-3, 1%);
+		}
+
+		&:focus,
+		&:active {
+			background-color: darken($dark-color-3, 2%);
+			border-color: darken($dark-color-3, 2%);
+		}
+	}
+
+	.btn-default:hover,
+	.btn-default:focus,
+	.btn-default:active,
+	.btn-default.active,
+	.open > .dropdown-toggle.btn-default {
+		color: #EEE;
+		background-color: darken($dark-color-3, 2%);
+		border-color: darken($dark-color-3, 2%);
+	}
+}

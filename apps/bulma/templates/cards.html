@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 08.12.2020 08:51:34 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <link href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" rel="stylesheet"/>
+  <script crossorigin="anonymous" src="https://kit.fontawesome.com/7dc3015a44.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <link href="[%[=URL('static/tte/css/cards.css') ]]" rel="stylesheet"/>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!-- START NAV -->
+  <nav class="navbar">
+   <div class="container">
+    <div class="navbar-brand">
+     <a class="navbar-item" href="#">
+      <img alt="Logo" src="https://cdn.emk.dev/templates/bulma-logo-light.png"/></a>
+     <span class="navbar-burger burger" data-target="navbarMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+     </span>
+    </div>
+    <div class="navbar-menu" id="navbarMenu">
+     <div class="navbar-end">
+      <a class="navbar-item is-active">Home</a>
+      <a class="navbar-item">Examples</a>
+      <a class="navbar-item">Features</a>
+      <a class="navbar-item">Team</a>
+      <a class="navbar-item">Archives</a>
+      <a class="navbar-item">Help</a>
+     </div>
+    </div>
+   </div>
+  </nav>
+  <!-- END NAV -->
+  <div class="container">
+   <div class="section">
+    <div class="columns">
+     <div class="column has-text-centered">
+      <h1 class="title" style="color: ghostwhite;">Bulma Card Layout Template</h1>
+      <br/></div>
+    </div>
+    <div class="row columns is-multiline" id="app">
+     <div class="column is-4" key="card.id" v-for="card in cardData">
+      <div class="card large">
+       <div class="card-image">
+        <figure class="image is-16by9">
+         <img :src="card.image" alt="Image"/>
+        </figure>
+       </div>
+       <div class="card-content">
+        <div class="media">
+         <div class="media-left">
+          <figure class="image is-48x48">
+           <img :src="card.avatar" alt="Image"/>
+          </figure>
+         </div>
+         <div class="media-content">
+          <p class="title is-4 no-padding">{{card.user.title}}</p>
+          <p>
+           <span class="title is-6">
+            <a :href="`http://twitter.com/${card.user.handle}`">{{card.user.handle}}</a>
+           </span>
+          </p>
+          <p class="subtitle is-6">{{card.user.title}}</p>
+         </div>
+        </div>
+        <div class="content">
+         {{card.content}}
+         <div class="background-icon">
+          <span class="icon-twitter"></span>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <footer class="footer">
+   <div class="container">
+    <div class="content has-text-centered">
+     <div class="soc">
+      <a href="#">
+       <i aria-hidden="true" class="fa fa-github-alt fa-lg"></i>
+      </a>
+      <a href="#">
+       <i aria-hidden="true" class="fa fa-youtube fa-lg"></i>
+      </a>
+      <a href="#">
+       <i aria-hidden="true" class="fa fa-facebook fa-lg"></i>
+      </a>
+      <a href="#">
+       <i aria-hidden="true" class="fa fa-twitter fa-lg"></i>
+      </a>
+     </div>
+     <p>
+      <strong>Bulma</strong>
+      by
+      <a href="http://jgthms.com">Jeremy Thomas</a>
+      .
+            The source code is licensed
+      <a href="http://opensource.org/licenses/mit-license.php">MIT</a>
+      .
+      <br/></p>
+    </div>
+   </div>
+  </footer>
+  <script src="[%[=URL('static/tte/js/cardsData.js') ]]"></script>
+  <!-- Using Vue to populate cards to reduce redundant code -->
+  <script>
+   var app = new Vue({
+    el: '#app',
+    data: {
+        cardData: cardsData
+    }
+})
+  </script>
+ </body>
+</html>

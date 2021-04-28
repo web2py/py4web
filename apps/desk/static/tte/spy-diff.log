@@ -1,0 +1,12 @@
+ratio= 0.53
+   src: src/images/modal-img3.jpg
+   dst: modal
+
+ratio= 0.40
+   src: vendors/scripts/dashboard.js
+   dst: task-add
+
+ratio= 0.50
+   src: src/plugins/select2/dist/js/i18n/vi.js
+   dst: ils
+

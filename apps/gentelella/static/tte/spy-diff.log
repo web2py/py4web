@@ -1,0 +1,8 @@
+ratio= 0.73
+   src: gentelella/docs/fonts/less/spinning.less
+   dst: examples/#spinning
+
+ratio= 0.94
+   src: gentelella/vendors/datatables.net/js/jquery.dataTables.min.js
+   dst: cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css
+

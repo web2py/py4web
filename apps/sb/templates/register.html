@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 26.11.2020 10:31:08 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <meta content="" name="description"/>
+  <meta content="" name="author"/>
+  <title>biorex title text</title>
+  <!-- Bootstrap core CSS-->
+  <link href="[%[=URL('static/tte/vendor/bootstrap/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <!-- Custom fonts for this template-->
+  <link href="[%[=URL('static/tte/vendor/fontawesome-free/css/all.min.css') ]]" rel="stylesheet" type="text/css"/>
+  <!-- Custom styles for this template-->
+  <link href="[%[=URL('static/tte/css/sb-admin.css') ]]" rel="stylesheet"/>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+</head>
+ <body class="bg-dark">
+  <div class="container">
+   <div class="card card-register mx-auto mt-5">
+    <div class="card-header">Register an Account</div>
+    <div class="card-body">
+     
+<!-- view: fregister0, db_table: dfregister0 -->
+<div  style="border: 1px gray dashed;">
+[%[= fregister0.custom['begin'] ]]
+<div class="form-group">
+ <div class="form-row">
+  <div class="col-md-6">
+   <div class="form-label-group">
+ [%[ fregister0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fregister0.custom['widgets']['f0']['_id']= 'firstName'  ]]
+ [%[ fregister0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fregister0.custom['widgets']['f0']['_placeholder']= 'First name:p4w'  ]]
+ [%[ fregister0.custom['widgets']['f0']['_autofocus']= 'autofocus'  ]]
+ [%[= fregister0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fregister0.custom['errors']['f0'] if 'f0' in fregister0.custom['errors'] else '' ]]</span>
+
+    <label for="firstName">
+     First name
+    </label>
+   </div>
+  </div>
+  <div class="col-md-6">
+   <div class="form-label-group">
+ [%[ fregister0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fregister0.custom['widgets']['f1']['_id']= 'lastName'  ]]
+ [%[ fregister0.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fregister0.custom['widgets']['f1']['_placeholder']= 'Last name:p4w'  ]]
+ [%[= fregister0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fregister0.custom['errors']['f1'] if 'f1' in fregister0.custom['errors'] else '' ]]</span>
+
+    <label for="lastName">
+     Last name
+    </label>
+   </div>
+  </div>
+ </div>
+</div>
+
+<div class="form-group">
+ <div class="form-label-group">
+ [%[ fregister0.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fregister0.custom['widgets']['f2']['_id']= 'inputEmail'  ]]
+ [%[ fregister0.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fregister0.custom['widgets']['f2']['_placeholder']= 'Email address:p4w'  ]]
+ [%[= fregister0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fregister0.custom['errors']['f2'] if 'f2' in fregister0.custom['errors'] else '' ]]</span>
+
+  <label for="inputEmail">
+   Email address
+  </label>
+ </div>
+</div>
+
+<div class="form-group">
+ <div class="form-row">
+  <div class="col-md-6">
+   <div class="form-label-group">
+ [%[ fregister0.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fregister0.custom['widgets']['f3']['_id']= 'inputPassword'  ]]
+ [%[ fregister0.custom['widgets']['f3']['_class']= 'form-control'  ]]
+ [%[ fregister0.custom['widgets']['f3']['_placeholder']= 'Password:p4w'  ]]
+ [%[= fregister0.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fregister0.custom['errors']['f3'] if 'f3' in fregister0.custom['errors'] else '' ]]</span>
+
+    <label for="inputPassword">
+     Password
+    </label>
+   </div>
+  </div>
+  <div class="col-md-6">
+   <div class="form-label-group">
+ [%[ fregister0.custom['widgets']['f4']['_type']= 'text'  ]]
+ [%[ fregister0.custom['widgets']['f4']['_id']= 'confirmPassword'  ]]
+ [%[ fregister0.custom['widgets']['f4']['_class']= 'form-control'  ]]
+ [%[ fregister0.custom['widgets']['f4']['_placeholder']= 'Confirm password:p4w'  ]]
+ [%[= fregister0.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fregister0.custom['errors']['f4'] if 'f4' in fregister0.custom['errors'] else '' ]]</span>
+
+    <label for="confirmPassword">
+     Confirm password
+    </label>
+   </div>
+  </div>
+ </div>
+</div>
+
+ [%[ fregister0.custom['submit']['_class']= 'btn btn-primary btn-block'  ]]
+ [%[ fregister0.custom['submit']['_title']= 'mysubmit from <a'  ]]
+ [%[ fregister0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fregister0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fregister0.custom['submit']['_style']= 'border:2px dashed red; text-decoration: underline;'  ]]
+ [%[= fregister0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fregister0.custom['hidden_widgets'].keys(): ]]
+     [%[= fregister0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+[%[= fregister0.custom['end'] ]]
+  
+<div  class='divfregister0' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">fregister0</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfregister0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+</div>
+<!-- end fregister0 -->
+
+     <div class="text-center">
+      <a class="d-block small mt-3" href="[%[=URL('login') ]]">Login Page</a>
+      <a class="d-block small" href="[%[=URL('forgotXpassword') ]]">Forgot Password?</a>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Bootstrap core JavaScript-->
+  <script src="[%[=URL('static/tte/vendor/jquery/jquery.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/vendor/bootstrap/js/bootstrap.bundle.min.js') ]]"></script>
+  <!-- Core plugin JavaScript-->
+  <script src="[%[=URL('static/tte/vendor/jquery-easing/jquery.easing.min.js') ]]"></script>
+  
+<!-- myadd -->
+<script>
+  const forms_url = [%[ =XML( page_url ) ]];
+
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, { method: 'POST', body: new FormData( document.forms[i] ) });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: 'will hide in 3sec',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+  }
+</script>
+
+
+ </body>
+</html>

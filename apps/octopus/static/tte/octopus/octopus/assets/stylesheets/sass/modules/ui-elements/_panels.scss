@@ -1,0 +1,411 @@
+// PANEL
+// -----------------------------------------------------------------------------
+.panel {
+	background: transparent;
+	-webkit-box-shadow: none;
+			box-shadow: none;
+	border: none;
+	/* WHY?
+	+ .panel {
+		margin-top: 35px;
+	}*/
+}
+
+// PANEL HEADING
+// -----------------------------------------------------------------------------
+.panel-heading {
+	background: $panel-heading-background;
+	border-radius: $border-radius $border-radius 0 0;
+	border-bottom: 1px solid #DADADA;
+	padding: $panel-heading-padding;
+	position: relative;
+}
+
+// PANEL HEADING BGS
+// -----------------------------------------------------------------------------
+.panel-heading {
+	@each $color in $colors-list {
+		&.bg-#{nth($color,1)} {
+			background: #{nth($color,2)};
+			color: #{nth($color,3)};
+			border-bottom: 0 none;
+			border-right: 0 none;
+		}
+	}
+}
+
+.panel-heading.bg-white {
+	background: #fff;
+	border-bottom: 0 none;
+	border-right: 0 none;
+}
+
+// PANEL ACTIONS
+// -----------------------------------------------------------------------------
+.panel-actions {
+	right: 15px;
+	position: absolute;
+	top: 15px;
+
+	a {
+		background-color: $panel-action-background;
+		border-radius: $panel-action-border-radius;
+		color: $panel-action-color;
+		font-size: $panel-action-size;
+		height: $panel-action-height;
+		line-height: $panel-action-height;
+		text-align: center;
+		width: $panel-action-width;
+
+		&:hover {
+			background-color: $panel-action-background-hover;
+			color: $panel-action-color-hover;
+			text-decoration: none
+		}
+		&,
+		&:focus,
+		&:hover,
+		&:active,
+		&:visited {
+			outline: none !important;
+			text-decoration: none !important;
+		}
+	}
+}
+
+// PANEL TITLE AND SUBTITLE
+// -----------------------------------------------------------------------------
+.panel-title {
+	color: $panel-title-color;
+	font-size: $panel-title-size;
+	font-weight: $font-weight-normal;
+	line-height: $panel-title-size;
+	padding: 0;
+	text-transform: none;
+}
+
+.panel-subtitle {
+	color: $panel-subtitle-color;
+	font-size: $panel-subtitle-size;
+	line-height: 1.2em;
+	margin: 7px 0 0;
+	padding: 0;
+}
+
+// PANEL BODY
+// -----------------------------------------------------------------------------
+.panel-body {
+	background: #fdfdfd;
+	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+	border-radius: $border-radius;
+}
+
+.panel-body-nopadding {
+	padding: 0;
+}
+
+.panel-heading + .panel-body {
+	border-radius: 0 0 $border-radius $border-radius;
+}
+
+
+// PANEL FOOTER
+// -----------------------------------------------------------------------------
+.panel-footer {
+	border-radius: 0 0 $border-radius $border-radius;
+	margin-top: -$border-radius;
+}
+
+.panel-footer-btn-group {
+	display: table;
+	width: 100%;
+	padding: 0;
+
+	a {
+		background-color: #f5f5f5;
+		display: table-cell;
+		width: 1%;
+		border-left: 1px solid #ddd;
+		padding: 10px 15px;
+		text-decoration: none;
+
+		&:hover {
+			background-color: darken(#f5f5f5, 2%);
+			box-shadow: 0 0 7px rgba(0, 0, 0, 0.1) inset;
+		}
+
+		&:first-child {
+			border-left: none;
+		}
+	}
+}
+
+// PANEL BODY BGS
+// -----------------------------------------------------------------------------
+.panel-body {
+	@each $color in $colors-list {
+		&.bg-#{nth($color,1)} {
+			background: #{nth($color,2)};
+			color: #{nth($color,3)};
+		}
+	}
+}
+
+// PANEL FEATURED
+// -----------------------------------------------------------------------------
+.panel-featured {
+	border-top: $panel-featured-border-width solid $panel-title-color;
+
+	.panel-heading {
+		border-radius: 0;
+	}
+}
+
+@each $side in top, right, bottom, left {
+	.panel-featured-#{nth($side,1)} {
+		border-#{nth($side,1)}: $panel-featured-border-width solid $panel-title-color;
+	}
+}
+
+@each $color in $colors-list {
+	.panel-featured-#{nth($color,1)} {
+		border-color: #{nth($color,2)};
+
+		.panel-title {
+			color: #{nth($color,2)};
+		}
+	}
+}
+
+// PANEL HIGHLIGHT
+// -----------------------------------------------------------------------------
+.panel-highlight {
+
+	.panel-heading {
+		background-color: $color-primary;
+		border-color: $color-primary;
+		color: #fff;
+	}
+
+	.panel-title {
+		color: #fff;
+	}
+
+	.panel-subtitle {
+		color: #fff;
+		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.panel-actions a {
+		background-color: rgba(0, 0, 0, 0.1);
+		color: #fff;
+	}
+
+	.panel-body {
+		background-color: $color-primary;
+		color: #fff;
+	}
+
+}
+
+.panel-highlight-title {
+
+	.panel-heading {
+		background-color: #2BAAB1;
+	}
+
+	.panel-title {
+		color: #fff;
+	}
+
+	.panel-subtitle {
+		color: #fff;
+		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.panel-actions a {
+		background-color: rgba(0, 0, 0, 0.1);
+		color: #fff;
+	}
+
+}
+// PANEL HEADING ICON
+// -----------------------------------------------------------------------------
+.panel-heading-icon {
+	margin: 0 auto;
+	@include font-size(42);
+	width: 90px;
+	height: 90px;
+	line-height: 90px;
+	text-align: center;
+	color: #fff;
+	background-color: rgba(0, 0, 0, 0.1);
+	-webkit-border-radius: 55px;
+	border-radius: 55px;
+}
+
+.panel-heading-icon {
+	@each $color in $colors-list {
+		&.bg-#{nth($color,1)} {
+			background: #{nth($color,2)};
+			color: #{nth($color,3)};
+		}
+	}
+}
+
+// PANEL HEADING PROFILE PICTURE
+// -----------------------------------------------------------------------------
+.panel-heading-profile-picture {
+	img {
+		display: block;
+		margin: 0 auto;
+		width: 100px;
+		height: 100px;
+		border: 4px solid #fff;
+		-webkit-border-radius: 50px;
+		border-radius: 50px;
+	}
+}
+
+// PANEL ICON
+// -----------------------------------------------------------------------------
+.panel-icon {
+	color: #fff;
+	font-size: 42px;
+	float: left;
+
+	& ~ .panel-title,
+	& ~ .panel-subtitle {
+		margin-left: 64px;
+	}
+}
+
+// PANELS
+// -----------------------------------------------------------------------------
+/* Dark - Panels */
+html.dark {
+	.panel-heading {
+		background: $dark-color-3;
+		border-bottom-color: darken( $dark-color-3, 5% );
+	}
+
+	.panel-actions {
+		a {
+			&:hover {
+				background-color: darken( $dark-color-3, 2% );
+			}
+		}
+	}
+
+	.panel-body {
+		background: $dark-color-4;
+	}
+
+	.panel-footer {
+		background: $dark-color-5;
+		border-top-color: darken( $dark-color-3, 7% );
+	}
+}
+
+// CONTEXTUAL ALTERNATIVE
+// -----------------------------------------------------------------------------
+@each $color in $colors-list {
+	html {
+		.panel-#{nth($color,1)} {
+
+			.panel-heading {
+				background: #{nth($color,2)};
+			}
+
+			.panel-subtitle {
+				opacity: 0.8;
+				color: #{nth($color,3)};
+			}
+
+			.panel-title {
+				color: #{nth($color,3)};
+			}
+
+			.panel-actions a {
+				background-color: transparent !important;
+				color: #{nth($color,3)};
+			}
+		}
+	}
+}
+
+// PANEL TRANSPARENT
+// -----------------------------------------------------------------------------
+@mixin panel-heading-transparent() {
+	background: none;
+	border: 0;
+	padding-left: 0;
+	padding-right: 0;
+	.panel-actions {
+		right: 0;
+	}
+	+ .panel-body {
+		border-radius: $border-radius;
+	}
+}
+
+html .panel-transparent {
+	> .panel-heading {
+		@include panel-heading-transparent();
+	}
+	> .panel-body {
+		padding: 0;
+		border-radius: 0;
+		background: transparent;
+		-webkit-box-shadow: none;
+				box-shadow: none;
+	}
+}
+
+html .panel .panel-heading-transparent {
+	@include panel-heading-transparent();
+}
+
+// PANEL HORIZONTAL
+// -----------------------------------------------------------------------------
+.panel-horizontal {
+	display: table;
+	width: 100%;
+
+	.panel-heading,
+	.panel-body,
+	.panel-footer {
+		display: table-cell;
+		vertical-align: middle;
+	}
+
+	.panel-heading {
+		border-radius: $border-radius 0 0 $border-radius;
+	}
+
+	.panel-heading + .panel-body {
+		border-radius: 0 $border-radius $border-radius 0;
+	}
+
+	.panel-footer {
+		border-radius: 0 $border-radius $border-radius 0;
+		margin-top: 0;
+	}
+
+}
+
+// RESPONSIVE
+// -----------------------------------------------------------------------------
+@media only screen and (max-width: 767px) {
+	.panel-actions {
+		float: none;
+		margin-bottom: 15px;
+		position: static;
+		text-align: right;
+
+		a {
+			vertical-align: top;
+		}
+	}
+}

@@ -1,0 +1,177 @@
+<html>
+ <head>
+            <!-- 01.12.2020 12:03:33 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <title>biorex title text</title>
+  <!-- Web Fonts  -->
+  <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet" type="text/css"/>
+  <!-- Vendor CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.css') ]]" rel="stylesheet"/>
+  <!-- Invoice Print Style -->
+  <link href="[%[=URL('static/tte/assets/stylesheets/invoice-print.css') ]]" rel="stylesheet"/>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    background-color: LightGray;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-weight: bold;
+    border: 1px dashed black;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <div class="invoice">
+   <header class="clearfix">
+    <div class="row">
+     <div class="col-sm-6 mt-md">
+      <h2 class="h2 mt-none mb-sm text-dark text-bold">INVOICE</h2>
+      <h4 class="h4 m-none text-dark text-bold">#76598345</h4>
+     </div>
+     <div class="col-sm-6 text-right mt-md mb-md">
+      <address class="ib mr-xlg">
+       Okler Themes Ltd
+       <br/>
+       24 Henrietta Street, London, England
+       <br/>
+       Phone: +12 3 4567-8901
+       <br/>
+       okler@okler.net
+      </address>
+      <div class="ib">
+       <img alt="OKLER Themes" src="[%[=URL('static/tte/assets/images/invoice-logo.png') ]]"/></div>
+     </div>
+    </div>
+   </header>
+   <div class="bill-info">
+    <div class="row">
+     <div class="col-md-6">
+      <div class="bill-to">
+       <p class="h5 mb-xs text-dark text-semibold">To:</p>
+       <address>
+        Envato
+        <br/>
+        121 King Street, Melbourne, Australia
+        <br/>
+        Phone: +61 3 8376 6284
+        <br/>
+        info@envato.com
+       </address>
+      </div>
+     </div>
+     <div class="col-md-6">
+      <div class="bill-data text-right">
+       <p class="mb-none">
+        <span class="text-dark">Invoice Date:</span>
+        <span class="value">05/20/2014</span>
+       </p>
+       <p class="mb-none">
+        <span class="text-dark">Due Date:</span>
+        <span class="value">06/20/2014</span>
+       </p>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="table-responsive">
+    
+<!--view: rows_tpagesXinvoiceXprint0, db_table: tpagesXinvoiceXprint0 -->
+  <table class="table invoice-items">
+    <thead>
+      <tr>
+        <th id="cell-id" class="text-semibold">#</th>
+        <th id="cell-item" class="text-semibold">Item</th>
+        <th id="cell-desc" class="text-semibold">Description</th>
+        <th id="cell-price" class="text-center text-semibold">Price</th>
+        <th id="cell-qty" class="text-center text-semibold">Quantity</th>
+        <th id="cell-total" class="text-center text-semibold">Total</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row0 in rows_tpagesXinvoiceXprint0: ]]
+        <tr>
+            <td>[%[= XML(row0.f0) ]]</td>
+            <td class="text-semibold text-dark">[%[= XML(row0.f1) ]]</td>
+            <td>[%[= XML(row0.f2) ]]</td>
+            <td class="text-center">[%[= XML(row0.f3) ]]</td>
+            <td class="text-center">[%[= XML(row0.f4) ]]</td>
+            <td class="text-center">[%[= XML(row0.f5) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tpagesXinvoiceXprint0 -->
+
+
+<div class="divtpagesXinvoiceXprint0 flashdiv"> <span class="flashspan">tpagesXinvoiceXprint0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtpagesXinvoiceXprint0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+   </div>
+   <div class="invoice-summary">
+    <div class="row">
+     <div class="col-sm-4 col-sm-offset-8">
+      
+<!--view: rows_tpagesXinvoiceXprint1, db_table: tpagesXinvoiceXprint1 -->
+  <table class="table h5 text-dark">
+  <tbody>
+        [%[ for row1 in rows_tpagesXinvoiceXprint1: ]]
+        <tr>
+            <td colspan="2">[%[= XML(row1.f0) ]]</td>
+            <td class="text-left">[%[= XML(row1.f1) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tpagesXinvoiceXprint1 -->
+
+
+<div class="divtpagesXinvoiceXprint1 flashdiv"> <span class="flashspan">tpagesXinvoiceXprint1</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtpagesXinvoiceXprint1');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+   window.print();
+  </script>
+ </body>
+</html>

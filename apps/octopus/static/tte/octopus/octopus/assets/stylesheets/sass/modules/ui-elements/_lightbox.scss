@@ -1,0 +1,191 @@
+/* Close */
+.mfp-close,
+.mfp-close-btn-in .mfp-close {
+	font-family: $font-primary;
+	font-weight: $font-weight-semibold;
+	font-size: 22px;
+	color: #838383;
+}
+
+/* No Margins */
+.mfp-no-margins {
+	img.mfp-img {
+		padding: 0;
+	}
+	.mfp-figure:after {
+		top: 0;
+		bottom: 0;
+	}
+	.mfp-container {
+		padding: 0;
+	}
+}
+
+/* Zoom */
+.mfp-with-zoom {
+	.mfp-container, &.mfp-bg {
+		opacity: 0.001;
+		-webkit-backface-visibility: hidden;
+		-webkit-transition: all 0.3s ease-out;
+		-moz-transition: all 0.3s ease-out;
+		-o-transition: all 0.3s ease-out;
+		transition: all 0.3s ease-out;
+	}
+	&.mfp-ready {
+		.mfp-container {
+			opacity: 1;
+		}
+		&.mfp-bg {
+			opacity: 0.8;
+		}
+	}
+	&.mfp-removing {
+		.mfp-container, &.mfp-bg {
+			opacity: 0;
+		}
+	}
+}
+
+/* Animnate */
+.my-mfp-zoom-in {
+	.zoom-anim-dialog {
+		opacity: 0;
+		-webkit-transition: all 0.2s ease-in-out;
+		-moz-transition: all 0.2s ease-in-out;
+		-o-transition: all 0.2s ease-in-out;
+		transition: all 0.2s ease-in-out;
+		-webkit-transform: scale(0.8);
+		-moz-transform: scale(0.8);
+		-ms-transform: scale(0.8);
+		-o-transform: scale(0.8);
+		transform: scale(0.8);
+	}
+	&.mfp-ready .zoom-anim-dialog {
+		opacity: 1;
+		-webkit-transform: scale(1);
+		-moz-transform: scale(1);
+		-ms-transform: scale(1);
+		-o-transform: scale(1);
+		transform: scale(1);
+	}
+	&.mfp-removing .zoom-anim-dialog {
+		-webkit-transform: scale(0.8);
+		-moz-transform: scale(0.8);
+		-ms-transform: scale(0.8);
+		-o-transform: scale(0.8);
+		transform: scale(0.8);
+		opacity: 0;
+	}
+	&.mfp-bg {
+		opacity: 0.001;
+		/* Chrome opacity transition bug */
+		-webkit-transition: opacity 0.3s ease-out;
+		-moz-transition: opacity 0.3s ease-out;
+		-o-transition: opacity 0.3s ease-out;
+		transition: opacity 0.3s ease-out;
+	}
+	&.mfp-ready.mfp-bg {
+		opacity: 0.8;
+	}
+	&.mfp-removing.mfp-bg {
+		opacity: 0;
+	}
+}
+
+.my-mfp-slide-bottom {
+	.zoom-anim-dialog {
+		opacity: 0;
+		-webkit-transition: all 0.2s ease-out;
+		-moz-transition: all 0.2s ease-out;
+		-o-transition: all 0.2s ease-out;
+		transition: all 0.2s ease-out;
+		-webkit-transform: translateY(-20px) perspective(600px) rotateX(10deg);
+		-moz-transform: translateY(-20px) perspective(600px) rotateX(10deg);
+		-ms-transform: translateY(-20px) perspective(600px) rotateX(10deg);
+		-o-transform: translateY(-20px) perspective(600px) rotateX(10deg);
+		transform: translateY(-20px) perspective(600px) rotateX(10deg);
+	}
+	&.mfp-ready .zoom-anim-dialog {
+		opacity: 1;
+		-webkit-transform: translateY(0) perspective(600px) rotateX(0);
+		-moz-transform: translateY(0) perspective(600px) rotateX(0);
+		-ms-transform: translateY(0) perspective(600px) rotateX(0);
+		-o-transform: translateY(0) perspective(600px) rotateX(0);
+		transform: translateY(0) perspective(600px) rotateX(0);
+	}
+	&.mfp-removing .zoom-anim-dialog {
+		opacity: 0;
+		-webkit-transform: translateY(-10px) perspective(600px) rotateX(10deg);
+		-moz-transform: translateY(-10px) perspective(600px) rotateX(10deg);
+		-ms-transform: translateY(-10px) perspective(600px) rotateX(10deg);
+		-o-transform: translateY(-10px) perspective(600px) rotateX(10deg);
+		transform: translateY(-10px) perspective(600px) rotateX(10deg);
+	}
+	&.mfp-bg {
+		opacity: 0.01;
+		-webkit-transition: opacity 0.3s ease-out;
+		-moz-transition: opacity 0.3s ease-out;
+		-o-transition: opacity 0.3s ease-out;
+		transition: opacity 0.3s ease-out;
+	}
+	&.mfp-ready.mfp-bg {
+		opacity: 0.8;
+	}
+	&.mfp-removing.mfp-bg {
+		opacity: 0;
+	}
+}
+
+/* Dialog */
+.dialog {
+	background: white;
+	padding: 20px 30px;
+	text-align: left;
+	margin: 40px auto;
+	position: relative;
+	max-width: 600px;
+	&.dialog-xs {
+		max-width: 200px;
+	}
+	&.dialog-sm {
+		max-width: 400px;
+	}
+	&.dialog-md {
+		max-width: 600px;
+	}
+	&.dialog-lg {
+		max-width: 900px;
+	}
+}
+
+/* White Popup Block */
+.white-popup-block {
+	background: #FFF;
+	padding: 20px 30px;
+	text-align: left;
+	max-width: 600px;
+	margin: 40px auto;
+	position: relative;
+	&.white-popup-block-xs {
+		max-width: 200px;
+	}
+	&.white-popup-block-sm {
+		max-width: 400px;
+	}
+	&.white-popup-block-md {
+		max-width: 600px;
+	}
+	&.white-popup-block-lg {
+		max-width: 900px;
+	}
+}
+
+// DARK
+// -----------------------------------------------------------------------------
+/* Dark */
+html.dark {
+	.white-popup-block,
+	.dialog {
+		background: $dark-bg;
+	}
+}

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 12:04:48 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <meta content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5" name="description"/>
+  <meta content="AdminKit" name="author"/>
+  <meta content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web" name="keywords"/>
+  <link href="[%[=URL('static/tte/img/icons/icon-48x48.png') ]]" rel="shortcut icon"/>
+  <title>biorex title text</title>
+  <link href="[%[=URL('static/tte/css/app.css') ]]" rel="stylesheet"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <div class="wrapper">
+   <nav class="sidebar" id="sidebar">
+    <div class="sidebar-content js-simplebar">
+     <a class="sidebar-brand" href="[%[=URL('index') ]]">
+      <span class="align-middle">AdminKit</span>
+     </a>
+     <ul class="sidebar-nav">
+      <li class="sidebar-header">Pages</li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('index') ]]">
+        <i class="align-middle" data-feather="sliders"></i>
+        <span class="align-middle">Dashboard</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXprofile') ]]">
+        <i class="align-middle" data-feather="user"></i>
+        <span class="align-middle">Profile</span>
+       </a>
+      </li>
+      <li class="sidebar-item active">
+       <a class="sidebar-link" href="[%[=URL('pagesXsettings') ]]">
+        <i class="align-middle" data-feather="settings"></i>
+        <span class="align-middle">Settings</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXinvoice') ]]">
+        <i class="align-middle" data-feather="credit-card"></i>
+        <span class="align-middle">Invoice</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('pagesXblank') ]]">
+        <i class="align-middle" data-feather="book"></i>
+        <span class="align-middle">Blank</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link collapsed" data-toggle="collapse" href="#auth">
+        <i class="align-middle" data-feather="users"></i>
+        <span class="align-middle">Auth</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar" id="auth">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('pagesXsignXin') ]]">Sign In</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('pagesXsignXup') ]]">Sign Up</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-header">Tools &amp; Components</li>
+      <li class="sidebar-item">
+       <a class="sidebar-link collapsed" data-target="#ui" data-toggle="collapse">
+        <i class="align-middle" data-feather="briefcase"></i>
+        <span class="align-middle">UI Elements</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar" id="ui">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXalerts') ]]">Alerts</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXbuttons') ]]">Buttons</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXcards') ]]">Cards</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXgeneral') ]]">General</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXgrid') ]]">Grid</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXmodals') ]]">Modals</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('uiXtypography') ]]">Typography</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('iconsXfeather') ]]">
+        <i class="align-middle" data-feather="coffee"></i>
+        <span class="align-middle">Icons</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link collapsed" data-target="#forms" data-toggle="collapse">
+        <i class="align-middle" data-feather="check-circle"></i>
+        <span class="align-middle">Forms</span>
+       </a>
+       <ul class="sidebar-dropdown list-unstyled collapse" data-parent="#sidebar" id="forms">
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('formsXlayouts') ]]">Form Layouts</a>
+        </li>
+        <li class="sidebar-item">
+         <a class="sidebar-link" href="[%[=URL('formsXbasicXinputs') ]]">Basic Inputs</a>
+        </li>
+       </ul>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('tablesXbootstrap') ]]">
+        <i class="align-middle" data-feather="list"></i>
+        <span class="align-middle">Tables</span>
+       </a>
+      </li>
+      <li class="sidebar-header">Plugins &amp; Addons</li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('chartsXchartjs') ]]">
+        <i class="align-middle" data-feather="bar-chart-2"></i>
+        <span class="align-middle">Charts</span>
+       </a>
+      </li>
+      <li class="sidebar-item">
+       <a class="sidebar-link" href="[%[=URL('mapsXgoogle') ]]">
+        <i class="align-middle" data-feather="map"></i>
+        <span class="align-middle">Maps</span>
+       </a>
+      </li>
+     </ul>
+     <div class="sidebar-cta">
+      <div class="sidebar-cta-content">
+       <strong class="d-inline-block mb-2">Upgrade to Pro</strong>
+       <div class="mb-3 text-sm">Are you looking for more components? Check out our premium version.</div>
+       <a class="btn btn-primary btn-block" href="https://adminkit.io/pricing" target="_blank">Upgrade to Pro</a>
+      </div>
+     </div>
+    </div>
+   </nav>
+   <div class="main">
+    <nav class="navbar navbar-expand navbar-light navbar-bg">
+     <a class="sidebar-toggle d-flex">
+      <i class="hamburger align-self-center"></i>
+     </a>
+     
+<!-- BEGIN view: fpagesXsettings0, db_table: dfpagesXsettings0 -->
+<div class="d-none d-sm-inline-block">
+[%[= fpagesXsettings0.custom['begin'] ]]
+<div class="input-group input-group-navbar">
+ [%[ fpagesXsettings0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fpagesXsettings0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings0.custom['widgets']['f0']['_placeholder']= 'Search'  ]]
+ [%[ fpagesXsettings0.custom['widgets']['f0']['_aria-label']= 'Search'  ]]
+ [%[= fpagesXsettings0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings0.custom['errors']['f0'] if 'f0' in fpagesXsettings0.custom['errors'] else '' ]]</span>
+
+ [%[ fpagesXsettings0.custom['submit']['_class']= 'btn'  ]]
+ [%[ fpagesXsettings0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fpagesXsettings0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fpagesXsettings0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fpagesXsettings0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fpagesXsettings0.custom['submit'] ]]
+
+</div>
+
+ [%[ for hidden_widget in fpagesXsettings0.custom['hidden_widgets'].keys(): ]]
+     [%[= fpagesXsettings0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fpagesXsettings0</span></div>
+
+
+[%[= fpagesXsettings0.custom['end'] ]]
+</div>
+<!-- END fpagesXsettings0-->
+
+     <div class="navbar-collapse collapse">
+      <ul class="navbar-nav navbar-align">
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle" data-toggle="dropdown" href="#" id="alertsDropdown">
+         <div class="position-relative">
+          <i class="align-middle" data-feather="bell"></i>
+          <span class="indicator">4</span>
+         </div>
+        </a>
+        <div aria-labelledby="alertsDropdown" class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0">
+         <div class="dropdown-menu-header">4 New Notifications</div>
+         <div class="list-group">
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-danger" data-feather="alert-circle"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Update completed</div>
+             <div class="text-muted small mt-1">Restart server 12 to complete the update.</div>
+             <div class="text-muted small mt-1">30m ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-warning" data-feather="bell"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Lorem ipsum</div>
+             <div class="text-muted small mt-1">Aliquam ex eros, imperdiet vulputate hendrerit et.</div>
+             <div class="text-muted small mt-1">2h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-primary" data-feather="home"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">Login from 192.186.1.8</div>
+             <div class="text-muted small mt-1">5h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <i class="text-success" data-feather="user-plus"></i>
+            </div>
+            <div class="col-10">
+             <div class="text-dark">New connection</div>
+             <div class="text-muted small mt-1">Christina accepted your request.</div>
+             <div class="text-muted small mt-1">14h ago</div>
+            </div>
+           </div>
+          </a>
+         </div>
+         <div class="dropdown-menu-footer">
+          <a class="text-muted" href="#">Show all notifications</a>
+         </div>
+        </div>
+       </li>
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle" data-toggle="dropdown" href="#" id="messagesDropdown">
+         <div class="position-relative">
+          <i class="align-middle" data-feather="message-square"></i>
+         </div>
+        </a>
+        <div aria-labelledby="messagesDropdown" class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0">
+         <div class="dropdown-menu-header">
+          <div class="position-relative">4 New Messages</div>
+         </div>
+         <div class="list-group">
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Vanessa Tucker" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-5.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Vanessa Tucker</div>
+             <div class="text-muted small mt-1">Nam pretium turpis et arcu. Duis arcu tortor.</div>
+             <div class="text-muted small mt-1">15m ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="William Harris" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-2.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">William Harris</div>
+             <div class="text-muted small mt-1">Curabitur ligula sapien euismod vitae.</div>
+             <div class="text-muted small mt-1">2h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Christina Mason" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-4.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Christina Mason</div>
+             <div class="text-muted small mt-1">Pellentesque auctor neque nec urna.</div>
+             <div class="text-muted small mt-1">4h ago</div>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item" href="#">
+           <div class="row g-0 align-items-center">
+            <div class="col-2">
+             <img alt="Sharon Lessman" class="avatar img-fluid rounded-circle" src="[%[=URL('static/tte/img/avatars/avatar-3.jpg') ]]"/></div>
+            <div class="col-10 pl-2">
+             <div class="text-dark">Sharon Lessman</div>
+             <div class="text-muted small mt-1">Aenean tellus metus, bibendum sed, posuere ac, mattis non.</div>
+             <div class="text-muted small mt-1">5h ago</div>
+            </div>
+           </div>
+          </a>
+         </div>
+         <div class="dropdown-menu-footer">
+          <a class="text-muted" href="#">Show all messages</a>
+         </div>
+        </div>
+       </li>
+       <li class="nav-item dropdown">
+        <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" data-toggle="dropdown" href="#">
+         <i class="align-middle" data-feather="settings"></i>
+        </a>
+        <a class="nav-link dropdown-toggle d-none d-sm-inline-block" data-toggle="dropdown" href="#">
+         <img alt="Charles Hall" class="avatar img-fluid rounded mr-1" src="[%[=URL('static/tte/img/avatars/avatar.jpg') ]]"/>
+         <span class="text-dark">Charles Hall</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+         <a class="dropdown-item" href="[%[=URL('pagesXprofile') ]]">
+          <i class="align-middle mr-1" data-feather="user"></i>
+          Profile
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="align-middle mr-1" data-feather="pie-chart"></i>
+          Analytics
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item" href="[%[=URL('pagesXsettings') ]]">
+          <i class="align-middle mr-1" data-feather="settings"></i>
+          Settings &amp; Privacy
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="align-middle mr-1" data-feather="help-circle"></i>
+          Help Center
+         </a>
+         <div class="dropdown-divider"></div>
+         <a class="dropdown-item" href="#">Log out</a>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </nav>
+    <main class="content">
+     <div class="container-fluid p-0">
+      <h1 class="h3 mb-3">Settings</h1>
+      <div class="row">
+       <div class="col-md-3 col-xl-2">
+        <div class="card">
+         <div class="card-header">
+          <h5 class="card-title mb-0">Profile Settings</h5>
+         </div>
+         <div class="list-group list-group-flush" role="tablist">
+          <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account" role="tab">Account</a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#password" role="tab">Password</a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#" role="tab">Privacy and safety</a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#" role="tab">Email notifications</a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#" role="tab">Web notifications</a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#" role="tab">Widgets</a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#" role="tab">Your data</a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#" role="tab">Delete account</a>
+         </div>
+        </div>
+       </div>
+       <div class="col-md-9 col-xl-10">
+        <div class="tab-content">
+         <div class="tab-pane fade show active" id="account" role="tabpanel">
+          <div class="card">
+           <div class="card-header">
+            <h5 class="card-title mb-0">Public info</h5>
+           </div>
+           <div class="card-body">
+            
+<!-- BEGIN view: fpagesXsettings1, db_table: dfpagesXsettings1 -->
+<div>
+[%[= fpagesXsettings1.custom['begin'] ]]
+<div class="row">
+ <div class="col-md-8">
+  <div class="mb-3">
+   <label class="form-label" for="inputUsername">
+    Username
+   </label>
+ [%[ fpagesXsettings1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fpagesXsettings1.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings1.custom['widgets']['f0']['_id']= 'inputUsername'  ]]
+ [%[ fpagesXsettings1.custom['widgets']['f0']['_placeholder']= 'Username'  ]]
+ [%[= fpagesXsettings1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings1.custom['errors']['f0'] if 'f0' in fpagesXsettings1.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="mb-3">
+   <label class="form-label" for="inputUsername">
+    Biography
+   </label>
+ [%[ fpagesXsettings1.custom['widgets']['f1']['_rows']= '2'  ]]
+ [%[ fpagesXsettings1.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings1.custom['widgets']['f1']['_id']= 'inputBio'  ]]
+ [%[ fpagesXsettings1.custom['widgets']['f1']['_placeholder']= 'Tell something about yourself'  ]]
+ [%[ fpagesXsettings1.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[= fpagesXsettings1.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings1.custom['errors']['f1'] if 'f1' in fpagesXsettings1.custom['errors'] else '' ]]</span>
+
+ [%[ fpagesXsettings1.custom['submit']['_rows']= '1'  ]]
+ [%[ fpagesXsettings1.custom['submit']['_class']= 'form-control mysubmit_cls'  ]]
+ [%[ fpagesXsettings1.custom['submit']['_id']= 'inputBio'  ]]
+ [%[ fpagesXsettings1.custom['submit']['_placeholder']= ''  ]]
+ [%[ fpagesXsettings1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fpagesXsettings1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fpagesXsettings1.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fpagesXsettings1.custom['submit'] ]]
+
+ [%[ for hidden_widget in fpagesXsettings1.custom['hidden_widgets'].keys(): ]]
+     [%[= fpagesXsettings1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fpagesXsettings1</span></div>
+
+
+[%[= fpagesXsettings1.custom['end'] ]]
+</div>
+<!-- END fpagesXsettings1-->
+
+           </div>
+          </div>
+          <div class="card">
+           <div class="card-header">
+            <h5 class="card-title mb-0">Private info</h5>
+           </div>
+           <div class="card-body">
+            
+<!-- BEGIN view: fpagesXsettings2, db_table: dfpagesXsettings2 -->
+<div>
+[%[= fpagesXsettings2.custom['begin'] ]]
+<div class="row">
+ <div class="mb-3 col-md-6">
+  <label class="form-label" for="inputFirstName">
+   First name
+  </label>
+ [%[ fpagesXsettings2.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f0']['_id']= 'inputFirstName'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f0']['_placeholder']= 'First name'  ]]
+ [%[= fpagesXsettings2.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings2.custom['errors']['f0'] if 'f0' in fpagesXsettings2.custom['errors'] else '' ]]</span>
+
+ </div>
+ <div class="mb-3 col-md-6">
+  <label class="form-label" for="inputLastName">
+   Last name
+  </label>
+ [%[ fpagesXsettings2.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f1']['_id']= 'inputLastName'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f1']['_placeholder']= 'Last name'  ]]
+ [%[= fpagesXsettings2.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings2.custom['errors']['f1'] if 'f1' in fpagesXsettings2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="mb-3">
+ <label class="form-label" for="inputEmail4">
+  Email
+ </label>
+ [%[ fpagesXsettings2.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f2']['_id']= 'inputEmail4'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f2']['_placeholder']= 'Email'  ]]
+ [%[= fpagesXsettings2.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings2.custom['errors']['f2'] if 'f2' in fpagesXsettings2.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="mb-3">
+ <label class="form-label" for="inputAddress">
+  Address
+ </label>
+ [%[ fpagesXsettings2.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f3']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f3']['_id']= 'inputAddress'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f3']['_placeholder']= '1234 Main St'  ]]
+ [%[= fpagesXsettings2.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings2.custom['errors']['f3'] if 'f3' in fpagesXsettings2.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="mb-3">
+ <label class="form-label" for="inputAddress2">
+  Address 2
+ </label>
+ [%[ fpagesXsettings2.custom['widgets']['f4']['_type']= 'text'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f4']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f4']['_id']= 'inputAddress2'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f4']['_placeholder']= 'Apartment, studio, or floor'  ]]
+ [%[= fpagesXsettings2.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings2.custom['errors']['f4'] if 'f4' in fpagesXsettings2.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="row">
+ <div class="mb-3 col-md-6">
+  <label class="form-label" for="inputCity">
+   City
+  </label>
+ [%[ fpagesXsettings2.custom['widgets']['f5']['_type']= 'text'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f5']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f5']['_id']= 'inputCity'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f5']['_placeholder']= ''  ]]
+ [%[= fpagesXsettings2.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings2.custom['errors']['f5'] if 'f5' in fpagesXsettings2.custom['errors'] else '' ]]</span>
+
+ </div>
+ <div class="mb-3 col-md-4">
+  <label class="form-label" for="inputState">
+   State
+  </label>
+ [%[ fpagesXsettings2.custom['widgets']['f6']['_id']= 'inputState'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f6']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f6']['_placeholder']= 'it was select'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f6']['_style']= 'color:red;'  ]]
+ [%[= fpagesXsettings2.custom['widgets']['f6'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings2.custom['errors']['f6'] if 'f6' in fpagesXsettings2.custom['errors'] else '' ]]</span>
+
+ </div>
+ <div class="mb-3 col-md-2">
+  <label class="form-label" for="inputZip">
+   Zip
+  </label>
+ [%[ fpagesXsettings2.custom['widgets']['f7']['_type']= 'text'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f7']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f7']['_id']= 'inputZip'  ]]
+ [%[ fpagesXsettings2.custom['widgets']['f7']['_placeholder']= ''  ]]
+ [%[= fpagesXsettings2.custom['widgets']['f7'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings2.custom['errors']['f7'] if 'f7' in fpagesXsettings2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+ [%[ fpagesXsettings2.custom['submit']['_type']= 'submit'  ]]
+ [%[ fpagesXsettings2.custom['submit']['_class']= 'btn btn-primary'  ]]
+ [%[ fpagesXsettings2.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fpagesXsettings2.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fpagesXsettings2.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fpagesXsettings2.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fpagesXsettings2.custom['hidden_widgets'].keys(): ]]
+     [%[= fpagesXsettings2.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fpagesXsettings2</span></div>
+
+
+[%[= fpagesXsettings2.custom['end'] ]]
+</div>
+<!-- END fpagesXsettings2-->
+
+           </div>
+          </div>
+         </div>
+         <div class="tab-pane fade" id="password" role="tabpanel">
+          <div class="card">
+           <div class="card-body">
+            <h5 class="card-title">Password</h5>
+            
+<!-- BEGIN view: fpagesXsettings3, db_table: dfpagesXsettings3 -->
+<div>
+[%[= fpagesXsettings3.custom['begin'] ]]
+<div class="mb-3">
+ <label class="form-label" for="inputPasswordCurrent">
+  Current password
+ </label>
+ [%[ fpagesXsettings3.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fpagesXsettings3.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings3.custom['widgets']['f0']['_id']= 'inputPasswordCurrent'  ]]
+ [%[ fpagesXsettings3.custom['widgets']['f0']['_placeholder']= ''  ]]
+ [%[= fpagesXsettings3.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings3.custom['errors']['f0'] if 'f0' in fpagesXsettings3.custom['errors'] else '' ]]</span>
+
+ <small>
+  <a href="#">
+   Forgot your password?
+  </a>
+ </small>
+</div>
+
+<div class="mb-3">
+ <label class="form-label" for="inputPasswordNew">
+  New password
+ </label>
+ [%[ fpagesXsettings3.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fpagesXsettings3.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings3.custom['widgets']['f1']['_id']= 'inputPasswordNew'  ]]
+ [%[ fpagesXsettings3.custom['widgets']['f1']['_placeholder']= ''  ]]
+ [%[= fpagesXsettings3.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings3.custom['errors']['f1'] if 'f1' in fpagesXsettings3.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="mb-3">
+ <label class="form-label" for="inputPasswordNew2">
+  Verify password
+ </label>
+ [%[ fpagesXsettings3.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fpagesXsettings3.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fpagesXsettings3.custom['widgets']['f2']['_id']= 'inputPasswordNew2'  ]]
+ [%[ fpagesXsettings3.custom['widgets']['f2']['_placeholder']= ''  ]]
+ [%[= fpagesXsettings3.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fpagesXsettings3.custom['errors']['f2'] if 'f2' in fpagesXsettings3.custom['errors'] else '' ]]</span>
+
+</div>
+
+ [%[ fpagesXsettings3.custom['submit']['_type']= 'submit'  ]]
+ [%[ fpagesXsettings3.custom['submit']['_class']= 'btn btn-primary'  ]]
+ [%[ fpagesXsettings3.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fpagesXsettings3.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fpagesXsettings3.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fpagesXsettings3.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fpagesXsettings3.custom['hidden_widgets'].keys(): ]]
+     [%[= fpagesXsettings3.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fpagesXsettings3</span></div>
+
+
+[%[= fpagesXsettings3.custom['end'] ]]
+</div>
+<!-- END fpagesXsettings3-->
+
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </main>
+    <footer class="footer">
+     <div class="container-fluid">
+      <div class="row text-muted">
+       <div class="col-6 text-left">
+        <p class="mb-0">
+         <a class="text-muted" href="[%[=URL('index') ]]">
+          <strong>AdminKit Demo</strong>
+         </a>
+         ©
+        </p>
+       </div>
+       <div class="col-6 text-right">
+        <ul class="list-inline">
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Support</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Help Center</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Privacy</a>
+         </li>
+         <li class="list-inline-item">
+          <a class="text-muted" href="#">Terms</a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </footer>
+   </div>
+  </div>
+  <script src="[%[=URL('static/tte/js/app.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

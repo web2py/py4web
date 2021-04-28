@@ -1,0 +1,22 @@
+.bootstrap-tagsinput {
+	width: 100%;
+}
+
+.form-group-invisible {
+
+	.bootstrap-tagsinput {
+		border: 0 none;
+		box-shadow: none;
+		background-color: transparent;
+	}
+
+}
+
+// DARK SKIN
+// -----------------------------------------------------------------------------
+html.dark {
+	.bootstrap-tagsinput {
+		background: $dark-color-3;
+		border-color: $dark-color-3;
+	}
+}

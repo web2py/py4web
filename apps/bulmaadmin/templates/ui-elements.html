@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 03.12.2020 12:09:11 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta content="index, follow" name="robots"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=7" name="viewport"/>
+  <meta content="en-EN" name="language"/>
+  <meta content="Irfan Maulana" name="author"/>
+  <title>biorex title text</title>
+  <!-- Font Awesome -->
+  <!-- See docs on: https://fontawesome.com/v4.7.0/icons/ -->
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <!-- Font Awesome -->
+  <link href="[%[=URL('static/tte/css/main.css') ]]" rel="stylesheet"/>
+  <script async="" src="[%[=URL('static/tte/js/module-event.js') ]]"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-25065548-2"></script>
+  <script>
+   window.dataLayer = window.dataLayer || []
+
+function gtag() {
+    dataLayer.push(arguments)
+}
+gtag('js', new Date())
+gtag('config', 'UA-25065548-2')
+  </script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    margin: 0.2em auto 0.2em auto !important;
+    padding: 0 0 0 0 !important;
+    border: 1px dashed black;
+    color: black;
+    background-color: LightGray;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <header class="hero">
+   <div class="hero-head">
+    <nav aria-label="main navigation" class="navbar has-shadow" role="navigation">
+     <div class="navbar-brand">
+      <a class="navbar-item is--brand">
+       <img alt="Bulma Admin Template logo" class="navbar-brand-logo" src="[%[=URL('static/tte/img/logo.png') ]]"/></a>
+      <!-- <a class="navbar-item is-tab is-hidden-mobile is-active"><span class="icon is-medium"><i
+							class="fa fa-home"></i></span>Home</a>
+				<a class="navbar-item is-tab is-hidden-mobile"
+					href="https://github.com/mazipan/bulma-admin-dashboard-template">Github</a>
+				<a class="navbar-item is-tab is-hidden-mobile" href="[%[=URL('index') ]]">Resume Template</a>
+				<a class="navbar-item is-tab is-hidden-mobile" href="#about">About</a> -->
+      <button class="button navbar-burger" data-target="navMenu">
+       <span></span>
+       <span></span>
+       <span></span>
+      </button>
+     </div>
+     <div class="navbar-menu navbar-end" id="navMenu">
+      <a class="navbar-item nav-tag">
+       <span class="icon is-small">
+        <i class="fa fa-envelope-o animated"></i>
+       </span>
+       <span class="tag is-success counter">2</span>
+      </a>
+      <a class="navbar-item nav-tag">
+       <span class="icon is-small">
+        <i class="fa fa-bell-o animated"></i>
+       </span>
+       <span class="tag is-danger counter">6</span>
+      </a>
+      <div class="navbar-item has-dropdown is-hoverable">
+       <a class="navbar-link" href="https://mazipan.space/">
+        <figure class="image is-32x32" style="margin-right: 0.5em">
+         <img src="https://avatars1.githubusercontent.com/u/7221389?v=4&amp;s=32"/>
+        </figure>
+        mazipan
+       </a>
+       <div class="navbar-dropdown is-right">
+        <a class="navbar-item">
+         <span class="icon is-small">
+          <i class="fa fa-user-o"></i>
+         </span>
+         Profile
+        </a>
+        <hr class="navbar-divider"/>
+        <a class="navbar-item">
+         <span class="icon is-small">
+          <i class="fa fa-power-off"></i>
+         </span>
+         Logout
+        </a>
+       </div>
+      </div>
+     </div>
+    </nav>
+   </div>
+  </header>
+  <div class="wrapper">
+   <div class="columns">
+    <aside class="column is-2 aside" id="main-sidebar">
+     <nav class="menu active-menu--ui-elements">
+      <p class="menu-label">General</p>
+      <ul class="menu-list">
+       <li>
+        <a class="" href="[%[=URL('index') ]]">
+         <span class="icon is-small">
+          <i class="fa fa-tachometer"></i>
+         </span>
+         <span class="menu-text">Dashboard</span>
+        </a>
+       </li>
+      </ul>
+      <p class="menu-label">Administration</p>
+      <ul class="menu-list">
+       <li>
+        <a class="" href="[%[=URL('forms') ]]">
+         <span class="icon is-small">
+          <i class="fa fa-pencil-square-o"></i>
+         </span>
+         <span class="menu-text">Forms</span>
+        </a>
+       </li>
+       <li>
+        <a class="is-active" href="[%[=URL('uiXelements') ]]">
+         <span class="icon is-small">
+          <i class="fa fa-desktop"></i>
+         </span>
+         <span class="menu-text">UI Elements</span>
+        </a>
+       </li>
+       <li>
+        <a class="" href="[%[=URL('tables') ]]">
+         <span class="icon is-small">
+          <i class="fa fa-table"></i>
+         </span>
+         <span class="menu-text">Tables</span>
+        </a>
+       </li>
+       <li>
+        <a class="" href="[%[=URL('presentations') ]]">
+         <span class="icon is-small">
+          <i class="fa fa-bar-chart"></i>
+         </span>
+         <span class="menu-text">Presentations</span>
+        </a>
+       </li>
+       <li class="has-children">
+        <a class="">
+         <span class="icon is-small">
+          <i class="fa fa-cog"></i>
+         </span>
+         <span class="menu-text">Layouts</span>
+        </a>
+        <ul>
+         <li>
+          <a>Members</a>
+         </li>
+         <li>
+          <a>Plugins</a>
+         </li>
+         <li>
+          <a>Add a member</a>
+         </li>
+        </ul>
+       </li>
+      </ul>
+      <p class="menu-label">Live On</p>
+      <ul class="menu-list">
+       <li>
+        <a class="" href="[%[=URL('additional') ]]">
+         <span class="icon is-small">
+          <i class="fa fa-bug"></i>
+         </span>
+         <span class="menu-text">Additional Pages</span>
+        </a>
+       </li>
+       <li>
+        <a class="" href="[%[=URL('extras') ]]">
+         <span class="icon is-small">
+          <i class="fa fa-windows"></i>
+         </span>
+         <span class="menu-text">Extras</span>
+        </a>
+       </li>
+      </ul>
+      <div class="ads-square">
+       <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+       <ins class="adsbygoogle" data-ad-client="ca-pub-5442972248172818" data-ad-format="fluid" data-ad-layout-key="-gw-3+1f-3d+2z" data-ad-slot="9533807764" style="display: block">
+       </ins>
+       <script>
+        ;
+(adsbygoogle = window.adsbygoogle || []).push({})
+       </script>
+      </div>
+     </nav>
+     <div id="sidebar-toggler">
+      <span class="icon is-small">
+       <i class="fa fa-angle-double-left"></i>
+      </span>
+     </div>
+    </aside>
+    <main class="column main">
+     <nav aria-label="breadcrumbs" class="breadcrumb is-small">
+      <ul>
+       <li>
+        <a href="[%[=URL('index') ]]">Home</a>
+       </li>
+       <li class="is-active">
+        <a aria-current="page" href="#">UI Elements</a>
+       </li>
+      </ul>
+     </nav>
+     <div class="level mt-2 mr-2 content-title">
+      <div class="level-left">
+       <div class="level-item">
+        <div class="title has-text-primary">
+         <span class="icon is-small icon-title">
+          <i class="fa fa-desktop"></i>
+         </span>
+         <span>UI Elements</span>
+        </div>
+       </div>
+      </div>
+      <div class="level-right">
+       <div class="level-item">
+        <button class="button is-small" type="button">March 8, 2017 - April 6, 2017</button>
+       </div>
+      </div>
+     </div>
+     <div class="columns is-multiline">
+      <section class="m-4">
+       <a class="button is-primary">Primary</a>
+       <a class="button is-link">Link</a>
+       <a class="button is-info">Info</a>
+       <a class="button is-success">Success</a>
+       <a class="button is-warning">Warning</a>
+       <a class="button is-danger">Danger</a>
+      </section>
+      <section class="m-4">
+       <a class="button is-outlined">Outlined</a>
+       <a class="button is-primary is-outlined">Outlined</a>
+       <a class="button is-link is-outlined">Outlined</a>
+       <a class="button is-info is-outlined">Outlined</a>
+       <a class="button is-success is-outlined">Outlined</a>
+       <a class="button is-danger is-outlined">Outlined</a>
+      </section>
+      <section class="m-4">
+       <div class="notification is-primary">
+        <button class="delete"></button>
+        Primar lorem ipsum dolor sit amet, consectetur adipiscing elit lorem ipsum dolor.
+        <strong>Pellentesque risus mi</strong>
+        , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac
+                ex sit amet fringilla. Nullam gravida purus diam, et dictum
+        <a>felis venenatis</a>
+        efficitur. Sit amet,
+                consectetur adipiscing elit
+       </div>
+       <div class="notification is-link">
+        <button class="delete"></button>
+        Primar lorem ipsum dolor sit amet, consectetur adipiscing elit lorem ipsum dolor.
+        <strong>Pellentesque risus mi</strong>
+        , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac
+                ex sit amet fringilla. Nullam gravida purus diam, et dictum
+        <a>felis venenatis</a>
+        efficitur. Sit amet,
+                consectetur adipiscing elit
+       </div>
+       <div class="notification is-info">
+        <button class="delete"></button>
+        Primar lorem ipsum dolor sit amet, consectetur adipiscing elit lorem ipsum dolor.
+        <strong>Pellentesque risus mi</strong>
+        , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac
+                ex sit amet fringilla. Nullam gravida purus diam, et dictum
+        <a>felis venenatis</a>
+        efficitur. Sit amet,
+                consectetur adipiscing elit
+       </div>
+       <div class="notification is-success">
+        <button class="delete"></button>
+        Primar lorem ipsum dolor sit amet, consectetur adipiscing elit lorem ipsum dolor.
+        <strong>Pellentesque risus mi</strong>
+        , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac
+                ex sit amet fringilla. Nullam gravida purus diam, et dictum
+        <a>felis venenatis</a>
+        efficitur. Sit amet,
+                consectetur adipiscing elit
+       </div>
+       <div class="notification is-warning">
+        <button class="delete"></button>
+        Primar lorem ipsum dolor sit amet, consectetur adipiscing elit lorem ipsum dolor.
+        <strong>Pellentesque risus mi</strong>
+        , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac
+                ex sit amet fringilla. Nullam gravida purus diam, et dictum
+        <a>felis venenatis</a>
+        efficitur. Sit amet,
+                consectetur adipiscing elit
+       </div>
+       <div class="notification is-danger">
+        <button class="delete"></button>
+        Primar lorem ipsum dolor sit amet, consectetur adipiscing elit lorem ipsum dolor.
+        <strong>Pellentesque risus mi</strong>
+        , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac
+                ex sit amet fringilla. Nullam gravida purus diam, et dictum
+        <a>felis venenatis</a>
+        efficitur. Sit amet,
+                consectetur adipiscing elit
+       </div>
+      </section>
+      <section class="m-4">
+       <progress class="progress is-primary" max="100" value="15">
+        15%
+       </progress>
+       <progress class="progress is-link" max="100" value="30">
+        30%
+       </progress>
+       <progress class="progress is-info" max="100" value="45">
+        45%
+       </progress>
+       <progress class="progress is-success" max="100" value="60">
+        60%
+       </progress>
+       <progress class="progress is-warning" max="100" value="75">
+        75%
+       </progress>
+       <progress class="progress is-danger" max="100" value="90">
+        90%
+       </progress>
+      </section>
+      <section class="m-4">
+       <div class="tags">
+        <span class="tag is-black">Black</span>
+        <span class="tag is-dark">Dark</span>
+        <span class="tag is-light">Light</span>
+        <span class="tag is-white">White</span>
+        <span class="tag is-primary">Primary</span>
+        <span class="tag is-link">Link</span>
+        <span class="tag is-info">Info</span>
+        <span class="tag is-success">Success</span>
+        <span class="tag is-warning">Warning</span>
+        <span class="tag is-danger">Danger</span>
+       </div>
+      </section>
+      <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- Horizontal Ads Banner -->
+      <ins class="adsbygoogle" data-ad-client="ca-pub-5442972248172818" data-ad-slot="7319719723" style="display: inline-block; width: 728px; height: 90px">
+      </ins>
+      <script>
+       ;
+(adsbygoogle = window.adsbygoogle || []).push({})
+      </script>
+      <section class="m-4">
+       <div class="tile is-ancestor">
+        <div class="tile is-vertical is-8">
+         <div class="tile">
+          <div class="tile is-parent is-vertical">
+           <article class="tile is-child notification is-primary">
+            <p class="title">Vertical...</p>
+            <p class="subtitle">Top tile</p>
+           </article>
+           <article class="tile is-child notification is-warning">
+            <p class="title">...tiles</p>
+            <p class="subtitle">Bottom tile</p>
+           </article>
+          </div>
+          <div class="tile is-parent">
+           <article class="tile is-child notification is-info">
+            <p class="title">Middle tile</p>
+            <p class="subtitle">With an image</p>
+            <figure class="image is-4by3">
+             <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+             <ins class="adsbygoogle" data-ad-client="ca-pub-5442972248172818" data-ad-format="fluid" data-ad-layout-key="-ef+6k-30-ac+ty" data-ad-slot="1822838709" style="display: block">
+             </ins>
+             <script>
+              ;
+(adsbygoogle = window.adsbygoogle || []).push({})
+             </script>
+            </figure>
+           </article>
+          </div>
+         </div>
+         <div class="tile is-parent">
+          <article class="tile is-child notification is-danger">
+           <p class="title">Wide tile</p>
+           <p class="subtitle">Aligned with the right tile</p>
+           <div class="content">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.</p>
+           </div>
+          </article>
+         </div>
+        </div>
+        <div class="tile is-parent">
+         <article class="tile is-child notification is-success">
+          <div class="content">
+           <p class="title">Tall tile</p>
+           <p class="subtitle">With even more content</p>
+           <div class="content">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam semper diam at erat pulvinar, at pulvinar felis blandit. Vestibulum volutpat tellus diam, consequat gravida libero rhoncus ut. Morbi maximus, leo sit amet vehicula eleifend, nunc dui porta orci, quis semper odio felis ut quam.</p>
+            <p>Suspendisse varius ligula in molestie lacinia. Maecenas varius eget ligula a sagittis. Pellentesque interdum, nisl nec interdum maximus, augue diam porttitor lorem, et sollicitudin felis neque sit amet erat. Maecenas imperdiet felis nisi, fringilla luctus felis hendrerit sit amet. Aenean vitae gravida diam, finibus dignissim turpis. Sed eget varius ligula, at volutpat tortor.</p>
+            <p>Integer sollicitudin, tortor a mattis commodo, velit urna rhoncus erat, vitae congue lectus dolor consequat libero. Donec leo ligula, maximus et pellentesque sed, gravida a metus. Cras ullamcorper a nunc ac porta. Aliquam ut aliquet lacus, quis faucibus libero. Quisque non semper leo.</p>
+           </div>
+          </div>
+         </article>
+        </div>
+       </div>
+      </section>
+      <section class="m-4">
+       <article class="message is-dark">
+        <div class="message-header">
+         <p>Dark</p>
+         <button aria-label="delete" class="delete"></button>
+        </div>
+        <div class="message-body">
+         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+         <strong>Pellentesque risus mi</strong>
+         , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus
+                  ac ex sit amet fringilla. Nullam gravida purus diam, et dictum
+         <a>felis venenatis</a>
+         efficitur.
+                  Aenean ac
+         <em>eleifend lacus</em>
+         , in mollis lectus. Donec sodales, arcu et sollicitudin porttitor,
+                  tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget,
+                  facilisis sodales sem.
+        </div>
+       </article>
+       <article class="message is-primary">
+        <div class="message-header">
+         <p>Primary</p>
+         <button aria-label="delete" class="delete"></button>
+        </div>
+        <div class="message-body">
+         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+         <strong>Pellentesque risus mi</strong>
+         , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus
+                  ac ex sit amet fringilla. Nullam gravida purus diam, et dictum
+         <a>felis venenatis</a>
+         efficitur.
+                  Aenean ac
+         <em>eleifend lacus</em>
+         , in mollis lectus. Donec sodales, arcu et sollicitudin porttitor,
+                  tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget,
+                  facilisis sodales sem.
+        </div>
+       </article>
+       <article class="message is-link">
+        <div class="message-header">
+         <p>Link</p>
+         <button aria-label="delete" class="delete"></button>
+        </div>
+        <div class="message-body">
+         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+         <strong>Pellentesque risus mi</strong>
+         , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus
+                  ac ex sit amet fringilla. Nullam gravida purus diam, et dictum
+         <a>felis venenatis</a>
+         efficitur.
+                  Aenean ac
+         <em>eleifend lacus</em>
+         , in mollis lectus. Donec sodales, arcu et sollicitudin porttitor,
+                  tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget,
+                  facilisis sodales sem.
+        </div>
+       </article>
+       <article class="message is-info">
+        <div class="message-header">
+         <p>Info</p>
+         <button aria-label="delete" class="delete"></button>
+        </div>
+        <div class="message-body">
+         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+         <strong>Pellentesque risus mi</strong>
+         , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus
+                  ac ex sit amet fringilla. Nullam gravida purus diam, et dictum
+         <a>felis venenatis</a>
+         efficitur.
+                  Aenean ac
+         <em>eleifend lacus</em>
+         , in mollis lectus. Donec sodales, arcu et sollicitudin porttitor,
+                  tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget,
+                  facilisis sodales sem.
+        </div>
+       </article>
+       <article class="message is-success">
+        <div class="message-header">
+         <p>Success</p>
+         <button aria-label="delete" class="delete"></button>
+        </div>
+        <div class="message-body">
+         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+         <strong>Pellentesque risus mi</strong>
+         , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus
+                  ac ex sit amet fringilla. Nullam gravida purus diam, et dictum
+         <a>felis venenatis</a>
+         efficitur.
+                  Aenean ac
+         <em>eleifend lacus</em>
+         , in mollis lectus. Donec sodales, arcu et sollicitudin porttitor,
+                  tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget,
+                  facilisis sodales sem.
+        </div>
+       </article>
+       <article class="message is-warning">
+        <div class="message-header">
+         <p>Warning</p>
+         <button aria-label="delete" class="delete"></button>
+        </div>
+        <div class="message-body">
+         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+         <strong>Pellentesque risus mi</strong>
+         , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus
+                  ac ex sit amet fringilla. Nullam gravida purus diam, et dictum
+         <a>felis venenatis</a>
+         efficitur.
+                  Aenean ac
+         <em>eleifend lacus</em>
+         , in mollis lectus. Donec sodales, arcu et sollicitudin porttitor,
+                  tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget,
+                  facilisis sodales sem.
+        </div>
+       </article>
+       <article class="message is-danger">
+        <div class="message-header">
+         <p>Danger</p>
+         <button aria-label="delete" class="delete"></button>
+        </div>
+        <div class="message-body">
+         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+         <strong>Pellentesque risus mi</strong>
+         , tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus
+                  ac ex sit amet fringilla. Nullam gravida purus diam, et dictum
+         <a>felis venenatis</a>
+         efficitur.
+                  Aenean ac
+         <em>eleifend lacus</em>
+         , in mollis lectus. Donec sodales, arcu et sollicitudin porttitor,
+                  tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget,
+                  facilisis sodales sem.
+        </div>
+       </article>
+      </section>
+      <section class="m-4">
+       <div class="box">
+        <article class="media">
+         <div class="media-left">
+          <figure class="image is-64x64">
+           <img alt="Image" src="https://versions.bulma.io/0.7.0/images/placeholders/128x128.png"/>
+          </figure>
+         </div>
+         <div class="media-content">
+          <div class="content">
+           <p>
+            <strong>John Smith</strong>
+            <small>@johnsmith</small>
+            <small>31m</small>
+            <br/>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur sit amet massa fringilla egestas. Nullam condimentum luctus turpis.</p>
+          </div>
+          <nav class="level is-mobile">
+           <div class="level-left">
+            <a aria-label="reply" class="level-item">
+             <span class="icon is-small">
+              <i aria-hidden="true" class="fas fa-reply"></i>
+             </span>
+            </a>
+            <a aria-label="retweet" class="level-item">
+             <span class="icon is-small">
+              <i aria-hidden="true" class="fas fa-retweet"></i>
+             </span>
+            </a>
+            <a aria-label="like" class="level-item">
+             <span class="icon is-small">
+              <i aria-hidden="true" class="fas fa-heart"></i>
+             </span>
+            </a>
+           </div>
+          </nav>
+         </div>
+        </article>
+       </div>
+      </section>
+      <section class="m-4">
+       <article class="media">
+        <figure class="media-left">
+         <p class="image is-64x64">
+          <img src="https://versions.bulma.io/0.7.0/images/placeholders/128x128.png"/></p>
+        </figure>
+        <div class="media-content">
+         <div class="content">
+          <p>
+           <strong>Barbara Middleton</strong>
+           <br/>
+           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis porta eros lacus, nec ultricies elit
+                      blandit non. Suspendisse pellentesque mauris sit amet dolor blandit rutrum. Nunc in tempus turpis.
+           <br/>
+           <small>
+            <a>Like</a>
+            ·
+            <a>Reply</a>
+            · 3 hrs
+           </small>
+          </p>
+         </div>
+         <article class="media">
+          <figure class="media-left">
+           <p class="image is-48x48">
+            <img src="https://versions.bulma.io/0.7.0/images/placeholders/96x96.png"/></p>
+          </figure>
+          <div class="media-content">
+           <div class="content">
+            <p>
+             <strong>Sean Brown</strong>
+             <br/>
+             Donec sollicitudin urna eget eros malesuada sagittis. Pellentesque habitant morbi tristique
+                          senectus et netus et malesuada fames ac turpis egestas. Aliquam blandit nisl a nulla sagittis,
+                          a lobortis leo feugiat.
+             <br/>
+             <small>
+              <a>Like</a>
+              ·
+              <a>Reply</a>
+              · 2 hrs
+             </small>
+            </p>
+           </div>
+           <article class="media">
+            Vivamus quis semper metus, non tincidunt dolor. Vivamus in mi eu lorem cursus ullamcorper sit
+                        amet nec massa.
+           </article>
+           <article class="media">
+            Morbi vitae diam et purus tincidunt porttitor vel vitae augue. Praesent malesuada metus sed
+                        pharetra euismod. Cras tellus odio, tincidunt iaculis diam non, porta aliquet tortor.
+           </article>
+          </div>
+         </article>
+         <article class="media">
+          <figure class="media-left">
+           <p class="image is-48x48">
+            <img src="https://versions.bulma.io/0.7.0/images/placeholders/96x96.png"/></p>
+          </figure>
+          <div class="media-content">
+           <div class="content">
+            <p>
+             <strong>Kayli Eunice</strong>
+             <br/>
+             Sed convallis scelerisque mauris, non pulvinar nunc mattis vel. Maecenas varius felis sit amet
+                          magna vestibulum euismod malesuada cursus libero. Vestibulum ante ipsum primis in faucibus
+                          orci luctus et ultrices posuere cubilia Curae; Phasellus lacinia non nisl id feugiat.
+             <br/>
+             <small>
+              <a>Like</a>
+              ·
+              <a>Reply</a>
+              · 2 hrs
+             </small>
+            </p>
+           </div>
+          </div>
+         </article>
+        </div>
+       </article>
+       <article class="media">
+        <figure class="media-left">
+         <p class="image is-64x64">
+          <img src="https://versions.bulma.io/0.7.0/images/placeholders/128x128.png"/></p>
+        </figure>
+        <div class="media-content">
+         <div class="field">
+          <p class="control">
+           
+
+<!-- BEGIN view: fuiXelements0, db_table: dfuiXelements0 -->
+<div>
+[%[= fuiXelements0.custom['begin'] ]]
+ [%[ fuiXelements0.custom['widgets']['f0']['_class']= 'textarea'  ]]
+ [%[ fuiXelements0.custom['widgets']['f0']['_placeholder']= 'Add a comment...'  ]]
+ [%[ fuiXelements0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fuiXelements0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fuiXelements0.custom['errors']['f0'] if 'f0' in fuiXelements0.custom['errors'] else '' ]]</span>
+
+ [%[ fuiXelements0.custom['submit']['_class']= 'textarea mysubmit_cls'  ]]
+ [%[ fuiXelements0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fuiXelements0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fuiXelements0.custom['submit']['_rows']= '1'  ]]
+ [%[ fuiXelements0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fuiXelements0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fuiXelements0.custom['submit'] ]]
+
+ [%[ for hidden_widget in fuiXelements0.custom['hidden_widgets'].keys(): ]]
+     [%[= fuiXelements0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfuiXelements0 flashdiv"> <span class="flashspan">fuiXelements0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfuiXelements0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fuiXelements0.custom['end'] ]]
+</div>
+<!-- END fuiXelements0-->
+
+
+          </p>
+         </div>
+         <div class="field">
+          <p class="control">
+           <button class="button">Post comment</button>
+          </p>
+         </div>
+        </div>
+       </article>
+      </section>
+     </div>
+     <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+     <!-- Horizontal Ads Banner -->
+     <ins class="adsbygoogle" data-ad-client="ca-pub-5442972248172818" data-ad-slot="7319719723" style="display: inline-block; width: 728px; height: 90px">
+     </ins>
+     <script>
+      ;
+(adsbygoogle = window.adsbygoogle || []).push({})
+     </script>
+    </main>
+   </div>
+  </div>
+  <script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "url": "https://www.mazipan.github.io/",
+    "name": "Irfan Maulana | Front End Developer",
+    "author": "Irfan Maulana",
+    "image": "http://mazipan.github.io/images/irfan-maulana.jpg",
+    "description": "Irfan Maulana is Front End Developer from Indonesia - Man that craft some code to build a beauty and readable code, experienced in web and desktop technology.",
+    "sameAs": ["https://www.facebook.com/mazipanneh", "https://instagram.com/maz_ipan", "https://twitter.com/Maz_Ipan", "https://id.linkedin.com/in/irfanmaulanamazipan", "https://www.slideshare.net/IrfanMaulana21", "https://github.com/mazipan"]
+}</script>
+  <script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "Person",
+    "email": "mailto:mazipanneh@gmail.com",
+    "image": "http://mazipan.github.io/images/irfan-maulana.jpg",
+    "jobTitle": "Software Engineer",
+    "name": "Irfan Maulana",
+    "url": "https://www.mazipan.github.io/",
+    "sameAs": ["https://www.facebook.com/mazipanneh", "https://instagram.com/maz_ipan", "https://twitter.com/Maz_Ipan", "https://id.linkedin.com/in/irfanmaulanamazipan", "https://www.slideshare.net/IrfanMaulana21", "https://github.com/mazipan"]
+}</script>
+  <script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+            "@id": "http://mazipan.github.io/",
+            "name": "Home",
+            "image": "http://mazipan.github.io/images/irfan-maulana.jpg"
+        }
+    }, {
+        "@type": "ListItem",
+        "position": 2,
+        "item": {
+            "@id": "http://mazipan.github.io/demo/",
+            "name": "Demo",
+            "image": "http://mazipan.github.io/images/irfan-maulana.jpg"
+        }
+    }, {
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+            "@id": "http://mazipan.github.io/bulma-admin-dashboard-template",
+            "name": "bulma-admin-dashboard-template",
+            "image": "https://mazipan.github.io/bulma-admin-dashboard-template/logo.png"
+        }
+    }]
+}</script>
+ </body>
+</html>

@@ -1,0 +1,16 @@
+ratio= 0.30
+   src: js/flot/flot-active.js
+   dst: upload
+
+ratio= 0.17
+   src: img/blog/1.jpg
+   dst: 99/99/9999
+
+ratio= 0.42
+   src: sr_in_html.yml
+   dst: print
+
+ratio= 0.47
+   src: js/login/login-action.js
+   dst: nk-login-switch
+

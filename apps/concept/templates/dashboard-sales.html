@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 08:47:35 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <!-- Bootstrap CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/circular-std/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/libs/css/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/vector-map/jqvmap.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/jvectormap/jquery-jvectormap-2.0.2.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/flag-icon-css/flag-icon.min.css') ]]" rel="stylesheet"/>
+  <title>biorex title text</title>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!-- ============================================================== -->
+  <!-- main wrapper -->
+  <!-- ============================================================== -->
+  <div class="dashboard-main-wrapper">
+   <!-- ============================================================== -->
+   <!-- navbar -->
+   <!-- ============================================================== -->
+   <div class="dashboard-header">
+    <nav class="navbar navbar-expand-lg bg-white fixed-top">
+     <a class="navbar-brand" href="[%[=URL('index') ]]">Concept</a>
+     <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+      <span class="navbar-toggler-icon"></span>
+     </button>
+     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto navbar-right-top">
+       <li class="nav-item">
+        <div class="top-search-bar" id="custom-search">
+         <input class="form-control" placeholder="Search.." type="text"/></div>
+       </li>
+       <li class="nav-item dropdown notification">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-icons" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink1">
+         <i class="fas fa-fw fa-bell"></i>
+         <span class="indicator"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+         <li>
+          <div class="notification-title">Notification</div>
+          <div class="notification-list">
+           <div class="list-group">
+            <a class="list-group-item list-group-item-action active" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jeremy Rakestraw</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">John Abraham</span>
+               is now following you
+               <div class="notification-date">2 days ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Monaan Pechi</span>
+               is watching your main repository
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-5.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jessica Caruso</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="list-footer">
+           <a href="#">View all notifications</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown connection">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown" href="#" id="navbarDropdown" role="button">
+         <i class="fas fa-fw fa-th"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
+         <li class="connection-list">
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/github.png') ]]"/>
+             <span>Github</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dribbble.png') ]]"/>
+             <span>Dribbble</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dropbox.png') ]]"/>
+             <span>Dropbox</span>
+            </a>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/bitbucket.png') ]]"/>
+             <span>Bitbucket</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/mail_chimp.png') ]]"/>
+             <span>Mail chimp</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/slack.png') ]]"/>
+             <span>Slack</span>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="conntection-footer">
+           <a href="#">More</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown nav-user">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-user-img" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink2">
+         <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/></a>
+        <div aria-labelledby="navbarDropdownMenuLink2" class="dropdown-menu dropdown-menu-right nav-user-dropdown">
+         <div class="nav-user-info">
+          <h5 class="mb-0 text-white nav-user-name">John Abraham</h5>
+          <span class="status"></span>
+          <span class="ml-2">Available</span>
+         </div>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-user mr-2"></i>
+          Account
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-cog mr-2"></i>
+          Setting
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-power-off mr-2"></i>
+          Logout
+         </a>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </nav>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end navbar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- left sidebar -->
+   <!-- ============================================================== -->
+   <div class="nav-left-sidebar sidebar-dark">
+    <div class="menu-list">
+     <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+      <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarNav" data-toggle="collapse" type="button">
+       <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+       <ul class="navbar-nav flex-column">
+        <li class="nav-divider">Menu</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-1" aria-expanded="false" class="nav-link active" data-target="#submenu-1" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-user-circle"></i>
+          Dashboard
+          <span class="badge badge-success">6</span>
+         </a>
+         <div class="collapse submenu" id="submenu-1" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a aria-controls="submenu-1-2" aria-expanded="false" class="nav-link" data-target="#submenu-1-2" data-toggle="collapse" href="#">E-Commerce</a>
+            <div class="collapse submenu" id="submenu-1-2" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('index') ]]">E Commerce Dashboard</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproduct') ]]">Product List</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXsingle') ]]">Product Single</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXcheckout') ]]">Product Checkout</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXfinance') ]]">Finance</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXsales') ]]">Sales</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-1-1" aria-expanded="false" class="nav-link" data-target="#submenu-1-1" data-toggle="collapse" href="#">Infulencer</a>
+            <div class="collapse submenu" id="submenu-1-1" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('dashboardXinfluencer') ]]">Influencer</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXfinder') ]]">Influencer Finder</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXprofile') ]]">Influencer Profile</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-2" aria-expanded="false" class="nav-link" data-target="#submenu-2" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-rocket"></i>
+          UI Elements
+         </a>
+         <div class="collapse submenu" id="submenu-2" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cards') ]]">
+             Cards
+             <span class="badge badge-secondary">New</span>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('general') ]]">General</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('carousel') ]]">Carousel</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('listgroup') ]]">List Group</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('accordions') ]]">Accordions</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('tabs') ]]">Tabs</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-3" aria-expanded="false" class="nav-link" data-target="#submenu-3" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-chart-pie"></i>
+          Chart
+         </a>
+         <div class="collapse submenu" id="submenu-3" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXc3') ]]">C3 Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXchartist') ]]">Chartist Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXcharts') ]]">Chart</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXmorris') ]]">Morris</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXsparkline') ]]">Sparkline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXgauge') ]]">Guage</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-4" aria-expanded="false" class="nav-link" data-target="#submenu-4" data-toggle="collapse" href="#">
+          <i class="fab fa-fw fa-wpforms"></i>
+          Forms
+         </a>
+         <div class="collapse submenu" id="submenu-4" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXelements') ]]">Form Elements</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXvalidation') ]]">Parsely Validations</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('multiselect') ]]">Multiselect</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('datepicker') ]]">Date Picker</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('bootstrapXselect') ]]">Bootstrap Select</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-5" aria-expanded="false" class="nav-link" data-target="#submenu-5" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-table"></i>
+          Tables
+         </a>
+         <div class="collapse submenu" id="submenu-5" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('generalXtable') ]]">General Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dataXtables') ]]">Data Tables</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-divider">Features</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-6" aria-expanded="false" class="nav-link" data-target="#submenu-6" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-file"></i>
+          Pages
+         </a>
+         <div class="collapse submenu" id="submenu-6" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpage') ]]">Blank Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpageXheader') ]]">Blank Page Header</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('loginA') ]]">Login</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('X404Xpage') ]]">404 page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('signXup') ]]">Sign up Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('forgotXpassword') ]]">Forgot Password</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('pricing') ]]">Pricing Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('timeline') ]]">Timeline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('calendar') ]]">Calendar</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('sortableXnestableXlists') ]]">Sortable/Nestable List</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mediaXobject') ]]">Media Objects</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cropperXimage') ]]">Cropper</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('colorXpicker') ]]">Color Picker</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-7" aria-expanded="false" class="nav-link" data-target="#submenu-7" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-inbox"></i>
+          Apps
+          <span class="badge badge-secondary">New</span>
+         </a>
+         <div class="collapse submenu" id="submenu-7" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXdetails') ]]">Email Detail</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXcompose') ]]">Email Compose</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('messageXchat') ]]">Message Chat</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-8" aria-expanded="false" class="nav-link" data-target="#submenu-8" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-columns"></i>
+          Icons
+         </a>
+         <div class="collapse submenu" id="submenu-8" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXfontawesome') ]]">FontAwesome Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXmaterial') ]]">Material Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXsimpleXlineicon') ]]">Simpleline Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXthemify') ]]">Themify Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXflag') ]]">Flag Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXweather') ]]">Weather Icon</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-9" aria-expanded="false" class="nav-link" data-target="#submenu-9" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-map-marker-alt"></i>
+          Maps
+         </a>
+         <div class="collapse submenu" id="submenu-9" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXgoogle') ]]">Google Maps</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXvector') ]]">Vector Maps</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-10" aria-expanded="false" class="nav-link" data-target="#submenu-10" data-toggle="collapse" href="#">
+          <i class="fas fa-f fa-folder"></i>
+          Menu Level
+         </a>
+         <div class="collapse submenu" id="submenu-10" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 1</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-11" aria-expanded="false" class="nav-link" data-target="#submenu-11" data-toggle="collapse" href="#">Level 2</a>
+            <div class="collapse submenu" id="submenu-11" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 1</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 2</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 3</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+       </ul>
+      </div>
+     </nav>
+    </div>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end left sidebar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- wrapper  -->
+   <!-- ============================================================== -->
+   <div class="dashboard-wrapper">
+    <div class="container-fluid dashboard-content">
+     <!-- ============================================================== -->
+     <!-- pagehader  -->
+     <!-- ============================================================== -->
+     <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+       <div class="page-header">
+        <h3 class="mb-2">Sales Dashboard Template</h3>
+        <p class="pageheader-text">Lorem ipsum dolor sit ametllam fermentum ipsum eu porta consectetur adipiscing elit.Nullam vehicula nulla ut egestas rhoncus.</p>
+        <div class="page-breadcrumb">
+         <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+           <li class="breadcrumb-item">
+            <a class="breadcrumb-link" href="#">Dashboard</a>
+           </li>
+           <li aria-current="page" class="breadcrumb-item active">Sales Dashboard Template</li>
+          </ol>
+         </nav>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- ============================================================== -->
+     <!-- pagehader  -->
+     <!-- ============================================================== -->
+     <div class="row">
+      <!-- metric -->
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+       <div class="card">
+        <div class="card-body">
+         <h5 class="text-muted">Customers</h5>
+         <div class="metric-value d-inline-block">
+          <h1 class="mb-1 text-primary">32,100</h1>
+         </div>
+         <div class="metric-label d-inline-block float-right text-success">
+          <i class="fa fa-fw fa-caret-up"></i>
+          <span>5.27%</span>
+         </div>
+        </div>
+        <div id="sparkline-1"></div>
+       </div>
+      </div>
+      <!-- /. metric -->
+      <!-- metric -->
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+       <div class="card">
+        <div class="card-body">
+         <h5 class="text-muted">Order</h5>
+         <div class="metric-value d-inline-block">
+          <h1 class="mb-1 text-primary">4,200</h1>
+         </div>
+         <div class="metric-label d-inline-block float-right text-danger">
+          <i class="fa fa-fw fa-caret-down"></i>
+          <span>1.08%</span>
+         </div>
+        </div>
+        <div id="sparkline-2"></div>
+       </div>
+      </div>
+      <!-- /. metric -->
+      <!-- metric -->
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+       <div class="card">
+        <div class="card-body">
+         <h5 class="text-muted">Revenue</h5>
+         <div class="metric-value d-inline-block">
+          <h1 class="mb-1 text-primary">$5,656</h1>
+         </div>
+         <div class="metric-label d-inline-block float-right text-danger">
+          <i class="fa fa-fw fa-caret-down"></i>
+          <span>7.00%</span>
+         </div>
+        </div>
+        <div id="sparkline-3"></div>
+       </div>
+      </div>
+      <!-- /. metric -->
+      <!-- metric -->
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12">
+       <div class="card">
+        <div class="card-body">
+         <h5 class="text-muted">Growth</h5>
+         <div class="metric-value d-inline-block">
+          <h1 class="mb-1 text-primary">+28.45%</h1>
+         </div>
+         <div class="metric-label d-inline-block float-right text-success">
+          <i class="fa fa-fw fa-caret-up"></i>
+          <span>4.87%</span>
+         </div>
+        </div>
+        <div id="sparkline-4"></div>
+       </div>
+      </div>
+      <!-- /. metric -->
+     </div>
+     <!-- ============================================================== -->
+     <!-- revenue  -->
+     <!-- ============================================================== -->
+     <div class="row">
+      <div class="col-xl-8 col-lg-12 col-md-8 col-sm-12 col-12">
+       <div class="card">
+        <h5 class="card-header">Revenue</h5>
+        <div class="card-body">
+         <canvas height="150" id="revenue" width="400"></canvas>
+        </div>
+        <div class="card-body border-top">
+         <div class="row">
+          <div class="offset-xl-1 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 p-3">
+           <h4>Today's Earning: $2,800.30</h4>
+           <p>Suspendisse potenti. Done csit amet rutrum.</p>
+          </div>
+          <div class="offset-xl-1 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+           <h2 class="font-weight-normal mb-3">
+            <span>$48,325</span>
+           </h2>
+           <div class="mb-0 mt-3 legend-item">
+            <span class="fa-xs text-primary mr-1 legend-title">
+             <i class="fa fa-fw fa-square-full"></i>
+            </span>
+            <span class="legend-text">Current Week</span>
+           </div>
+          </div>
+          <div class="offset-xl-1 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 p-3">
+           <h2 class="font-weight-normal mb-3">
+            <span>$59,567</span>
+           </h2>
+           <div class="text-muted mb-0 mt-3 legend-item">
+            <span class="fa-xs text-secondary mr-1 legend-title">
+             <i class="fa fa-fw fa-square-full"></i>
+            </span>
+            <span class="legend-text">Previous Week</span>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end reveune  -->
+      <!-- ============================================================== -->
+      <!-- ============================================================== -->
+      <!-- total sale  -->
+      <!-- ============================================================== -->
+      <div class="col-xl-4 col-lg-12 col-md-4 col-sm-12 col-12">
+       <div class="card">
+        <h5 class="card-header">Total Sale</h5>
+        <div class="card-body">
+         <canvas height="155" id="total-sale" width="220"></canvas>
+         <div class="chart-widget-list">
+          <p>
+           <span class="fa-xs text-primary mr-1 legend-title">
+            <i class="fa fa-fw fa-square-full"></i>
+           </span>
+           <span class="legend-text">Direct</span>
+           <span class="float-right">$300.56</span>
+          </p>
+          <p>
+           <span class="fa-xs text-secondary mr-1 legend-title">
+            <i class="fa fa-fw fa-square-full"></i>
+           </span>
+           <span class="legend-text">Affilliate</span>
+           <span class="float-right">$135.18</span>
+          </p>
+          <p>
+           <span class="fa-xs text-brand mr-1 legend-title">
+            <i class="fa fa-fw fa-square-full"></i>
+           </span>
+           <span class="legend-text">Sponsored</span>
+           <span class="float-right">$48.96</span>
+          </p>
+          <p class="mb-0">
+           <span class="fa-xs text-info mr-1 legend-title">
+            <i class="fa fa-fw fa-square-full"></i>
+           </span>
+           <span class="legend-text">E-mail</span>
+           <span class="float-right">$154.02</span>
+          </p>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end total sale  -->
+      <!-- ============================================================== -->
+     </div>
+     <div class="row">
+      <!-- ============================================================== -->
+      <!-- top selling products  -->
+      <!-- ============================================================== -->
+      <div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 col-12">
+       <div class="card">
+        <h5 class="card-header">Top Selling Products</h5>
+        <div class="card-body p-0">
+         <div class="table-responsive">
+          
+<!--view: rows_tdashboardXsales0, db_table: tdashboardXsales0 -->
+  <table class="table">
+    <thead class="bg-light">
+      <tr>
+        <th class="border-0">#</th>
+        <th class="border-0">Image</th>
+        <th class="border-0">Product Name</th>
+        <th class="border-0">Product Id</th>
+        <th class="border-0">Quantity</th>
+        <th class="border-0">Price</th>
+        <th class="border-0">Order Time</th>
+        <th class="border-0">Customer</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row0 in rows_tdashboardXsales0: ]]
+        <tr>
+            <td>[%[= XML(row0.f0) ]]</td>
+            <td>[%[= XML(row0.f1) ]]</td>
+            <td>[%[= XML(row0.f2) ]]</td>
+            <td>[%[= XML(row0.f3) ]]</td>
+            <td>[%[= XML(row0.f4) ]]</td>
+            <td>[%[= XML(row0.f5) ]]</td>
+            <td>[%[= XML(row0.f6) ]]</td>
+            <td>[%[= XML(row0.f7) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tdashboardXsales0 -->
+
+<div class="flashdiv"><span class="flashspan">tdashboardXsales0</span></div>
+
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end top selling products  -->
+      <!-- ============================================================== -->
+      <!-- ============================================================== -->
+      <!-- revenue locations  -->
+      <!-- ============================================================== -->
+      <div class="col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12">
+       <div class="card">
+        <h5 class="card-header">Revenue by Location</h5>
+        <div class="card-body">
+         <div id="locationmap" style="width:100%; height:200px"></div>
+        </div>
+        <div class="card-body border-top">
+         <div class="row">
+          <div class="col-xl-6">
+           <div class="sell-ratio">
+            <h5 class="mb-1 mt-0 font-weight-normal">New York</h5>
+            <div class="progress-w-percent">
+             <span class="progress-value">72k</span>
+             <div class="progress progress-sm">
+              <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="72" class="progress-bar" role="progressbar" style="width: 72%;"></div>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="col-xl-6">
+           <div class="sell-ratio">
+            <h5 class="mb-1 mt-0 font-weight-normal">San Francisco</h5>
+            <div class="progress-w-percent">
+             <span class="progress-value">39k</span>
+             <div class="progress progress-sm">
+              <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="39" class="progress-bar" role="progressbar" style="width: 39%;"></div>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="col-xl-6">
+           <div class="sell-ratio">
+            <h5 class="mb-1 mt-0 font-weight-normal">Sydney</h5>
+            <div class="progress-w-percent">
+             <span class="progress-value">25k</span>
+             <div class="progress progress-sm">
+              <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="39" class="progress-bar" role="progressbar" style="width: 39%;"></div>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="col-xl-6">
+           <div class="sell-ratio">
+            <h5 class="mb-1 mt-0 font-weight-normal">Singapore</h5>
+            <div class="progress-w-percent mb-0">
+             <span class="progress-value">61k</span>
+             <div class="progress progress-sm">
+              <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="61" class="progress-bar" role="progressbar" style="width: 61%;"></div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end revenue locations  -->
+      <!-- ============================================================== -->
+     </div>
+     <div class="row">
+      <div class="col-xl-5 col-lg-6 col-md-6 col-sm-12 col-12">
+       <!-- ============================================================== -->
+       <!-- social source  -->
+       <!-- ============================================================== -->
+       <div class="card">
+        <h5 class="card-header">Sales By Social Source</h5>
+        <div class="card-body p-0">
+         <ul class="social-sales list-group list-group-flush">
+          <li class="list-group-item social-sales-content">
+           <span class="social-sales-icon-circle facebook-bgcolor mr-2">
+            <i class="fab fa-facebook-f"></i>
+           </span>
+           <span class="social-sales-name">Facebook</span>
+           <span class="social-sales-count text-dark">120 Sales</span>
+          </li>
+          <li class="list-group-item social-sales-content">
+           <span class="social-sales-icon-circle twitter-bgcolor mr-2">
+            <i class="fab fa-twitter"></i>
+           </span>
+           <span class="social-sales-name">Twitter</span>
+           <span class="social-sales-count text-dark">99 Sales</span>
+          </li>
+          <li class="list-group-item social-sales-content">
+           <span class="social-sales-icon-circle instagram-bgcolor mr-2">
+            <i class="fab fa-instagram"></i>
+           </span>
+           <span class="social-sales-name">Instagram</span>
+           <span class="social-sales-count text-dark">76 Sales</span>
+          </li>
+          <li class="list-group-item social-sales-content">
+           <span class="social-sales-icon-circle pinterest-bgcolor mr-2">
+            <i class="fab fa-pinterest-p"></i>
+           </span>
+           <span class="social-sales-name">Pinterest</span>
+           <span class="social-sales-count text-dark">56 Sales</span>
+          </li>
+          <li class="list-group-item social-sales-content">
+           <span class="social-sales-icon-circle googleplus-bgcolor mr-2">
+            <i class="fab fa-google-plus-g"></i>
+           </span>
+           <span class="social-sales-name">Google Plus</span>
+           <span class="social-sales-count text-dark">36 Sales</span>
+          </li>
+         </ul>
+        </div>
+        <div class="card-footer text-center">
+         <a class="btn-primary-link" href="#">View Details</a>
+        </div>
+       </div>
+       <!-- ============================================================== -->
+       <!-- end social source  -->
+       <!-- ============================================================== -->
+      </div>
+      <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12">
+       <!-- ============================================================== -->
+       <!-- sales traffice source  -->
+       <!-- ============================================================== -->
+       <div class="card">
+        <h5 class="card-header">Sales By Traffic Source</h5>
+        <div class="card-body p-0">
+         <ul class="traffic-sales list-group list-group-flush">
+          <li class="traffic-sales-content list-group-item">
+           <span class="traffic-sales-name">Direct</span>
+           <span class="traffic-sales-amount">
+            $4000.00
+            <span class="icon-circle-small icon-box-xs text-success ml-4 bg-success-light">
+             <i class="fa fa-fw fa-arrow-up"></i>
+            </span>
+            <span class="ml-1 text-success">5.86%</span>
+           </span>
+          </li>
+          <li class="traffic-sales-content list-group-item">
+           <span class="traffic-sales-name">
+            Search
+            <span class="traffic-sales-amount">
+             $3123.00
+             <span class="icon-circle-small icon-box-xs text-success ml-4 bg-success-light">
+              <i class="fa fa-fw fa-arrow-up"></i>
+             </span>
+             <span class="ml-1 text-success">5.86%</span>
+            </span>
+           </span>
+          </li>
+          <li class="traffic-sales-content list-group-item">
+           <span class="traffic-sales-name">
+            Social
+            <span class="traffic-sales-amount">
+             $3099.00
+             <span class="icon-circle-small icon-box-xs text-success ml-4 bg-success-light">
+              <i class="fa fa-fw fa-arrow-up"></i>
+             </span>
+             <span class="ml-1 text-success">5.86%</span>
+            </span>
+           </span>
+          </li>
+          <li class="traffic-sales-content list-group-item">
+           <span class="traffic-sales-name">
+            Referrals
+            <span class="traffic-sales-amount">
+             $2220.00
+             <span class="icon-circle-small icon-box-xs text-danger ml-4 bg-danger-light">
+              <i class="fa fa-fw fa-arrow-down"></i>
+             </span>
+             <span class="ml-1 text-danger">4.02%</span>
+            </span>
+           </span>
+          </li>
+          <li class="traffic-sales-content list-group-item">
+           <span class="traffic-sales-name">
+            Email
+            <span class="traffic-sales-amount">
+             $1567.00
+             <span class="icon-circle-small icon-box-xs text-danger ml-4 bg-danger-light">
+              <i class="fa fa-fw fa-arrow-down"></i>
+             </span>
+             <span class="ml-1 text-danger">3.86%</span>
+            </span>
+           </span>
+          </li>
+         </ul>
+        </div>
+        <div class="card-footer text-center">
+         <a class="btn-primary-link" href="#">View Details</a>
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end sales traffice source  -->
+      <!-- ============================================================== -->
+      <!-- ============================================================== -->
+      <!-- sales traffic country source  -->
+      <!-- ============================================================== -->
+      <div class="col-xl-3 col-lg-12 col-md-6 col-sm-12 col-12">
+       <div class="card">
+        <h5 class="card-header">Sales By Country Traffic Source</h5>
+        <div class="card-body p-0">
+         <ul class="country-sales list-group list-group-flush">
+          <li class="country-sales-content list-group-item">
+           <span class="mr-2">
+            <i class="flag-icon flag-icon-us" id="us" title="us"></i>
+           </span>
+           <span class="">United States</span>
+           <span class="float-right text-dark">78%</span>
+          </li>
+          <li class="list-group-item country-sales-content">
+           <span class="mr-2">
+            <i class="flag-icon flag-icon-ca" id="ca" title="ca"></i>
+           </span>
+           <span class="">Canada</span>
+           <span class="float-right text-dark">7%</span>
+          </li>
+          <li class="list-group-item country-sales-content">
+           <span class="mr-2">
+            <i class="flag-icon flag-icon-ru" id="ru" title="ru"></i>
+           </span>
+           <span class="">Russia</span>
+           <span class="float-right text-dark">4%</span>
+          </li>
+          <li class="list-group-item country-sales-content">
+           <span class="mr-2">
+            <i class="flag-icon flag-icon-in" id="in" title="in"></i>
+           </span>
+           <span class="">India</span>
+           <span class="float-right text-dark">12%</span>
+          </li>
+          <li class="list-group-item country-sales-content">
+           <span class="mr-2">
+            <i class="flag-icon flag-icon-fr" id="fr" title="fr"></i>
+           </span>
+           <span class="">France</span>
+           <span class="float-right text-dark">16%</span>
+          </li>
+         </ul>
+        </div>
+        <div class="card-footer text-center">
+         <a class="btn-primary-link" href="#">View Details</a>
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end sales traffice country source  -->
+      <!-- ============================================================== -->
+     </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- footer -->
+    <!-- ============================================================== -->
+    <div class="footer">
+     <div class="container-fluid">
+      <div class="row">
+       <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        Copyright © 2018 Concept. All rights reserved. Dashboard by
+        <a href="https://colorlib.com/wp/">Colorlib</a>
+        .
+       </div>
+       <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        <div class="text-md-right footer-links d-none d-sm-block">
+         <a href="javascript: void(0);">About</a>
+         <a href="javascript: void(0);">Support</a>
+         <a href="javascript: void(0);">Contact Us</a>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- end footer -->
+    <!-- ============================================================== -->
+   </div>
+   <!-- ============================================================== -->
+   <!-- end wrapper  -->
+   <!-- ============================================================== -->
+  </div>
+  <!-- ============================================================== -->
+  <!-- end main wrapper  -->
+  <!-- ============================================================== -->
+  <!-- Optional JavaScript -->
+  <!-- jquery 3.3.1 js-->
+  <script src="[%[=URL('static/tte/assets/vendor/jquery/jquery-3.3.1.min.js') ]]"></script>
+  <!-- bootstrap bundle js-->
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap/js/bootstrap.bundle.js') ]]"></script>
+  <!-- slimscroll js-->
+  <script src="[%[=URL('static/tte/assets/vendor/slimscroll/jquery.slimscroll.js') ]]"></script>
+  <!-- chartjs js-->
+  <script src="[%[=URL('static/tte/assets/vendor/charts/charts-bundle/Chart.bundle.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/charts/charts-bundle/chartjs.js') ]]"></script>
+  <!-- main js-->
+  <script src="[%[=URL('static/tte/assets/libs/js/main-js.js') ]]"></script>
+  <!-- jvactormap js-->
+  <script src="[%[=URL('static/tte/assets/vendor/jvectormap/jquery-jvectormap-2.0.2.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/jvectormap/jquery-jvectormap-world-mill-en.js') ]]"></script>
+  <!-- sparkline js-->
+  <script src="[%[=URL('static/tte/assets/vendor/charts/sparkline/jquery.sparkline.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/charts/sparkline/spark-js.js') ]]"></script>
+  <!-- dashboard sales js-->
+  <script src="[%[=URL('static/tte/assets/libs/js/dashboard-sales.js') ]]"></script>
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

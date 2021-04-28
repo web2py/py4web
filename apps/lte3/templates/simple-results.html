@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 26.04.2021 15:09:11 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;display=fallback" rel="stylesheet"/>
+  <!-- Font Awesome -->
+  <link href="[%[=URL('static/tte/plugins/fontawesome-free/css/all.min.css') ]]" rel="stylesheet"/>
+  <!-- Theme style -->
+  <link href="[%[=URL('static/tte/dist/css/adminlte.min.css') ]]" rel="stylesheet"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body class="hold-transition sidebar-mini">
+  <div class="wrapper">
+   <!-- Navbar -->
+   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+     <li class="nav-item">
+      <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+       <i class="fas fa-bars"></i>
+      </a>
+     </li>
+     <li class="nav-item d-none d-sm-inline-block">
+      <a class="nav-link" href="[%[=URL('index3') ]]">Home</a>
+     </li>
+     <li class="nav-item d-none d-sm-inline-block">
+      <a class="nav-link" href="#">Contact</a>
+     </li>
+    </ul>
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+     <!-- Navbar Search -->
+     <li class="nav-item">
+      <a class="nav-link" data-widget="navbar-search" href="#" role="button">
+       <i class="fas fa-search"></i>
+      </a>
+      <div class="navbar-search-block">
+       
+<!-- BEGIN view: fsimpleXresults0, db_table: dfsimpleXresults0 -->
+<div class="form-inline">
+[%[= fsimpleXresults0.custom['begin'] ]]
+<div class="input-group input-group-sm">
+ [%[ fsimpleXresults0.custom['widgets']['f0']['_class']= 'form-control form-control-navbar'  ]]
+ [%[ fsimpleXresults0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fsimpleXresults0.custom['widgets']['f0']['_placeholder']= 'Search'  ]]
+ [%[ fsimpleXresults0.custom['widgets']['f0']['_aria-label']= 'Search'  ]]
+ [%[= fsimpleXresults0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fsimpleXresults0.custom['errors']['f0'] if 'f0' in fsimpleXresults0.custom['errors'] else '' ]]</span>
+
+ <div class="input-group-append">
+ [%[ fsimpleXresults0.custom['submit']['_class']= 'btn btn-navbar'  ]]
+ [%[ fsimpleXresults0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fsimpleXresults0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fsimpleXresults0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fsimpleXresults0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fsimpleXresults0.custom['submit'] ]]
+
+  <button class="btn btn-navbar" data-widget="navbar-search" type="button">
+   <i class="fas fa-times">
+   </i>
+  </button>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fsimpleXresults0.custom['hidden_widgets'].keys(): ]]
+     [%[= fsimpleXresults0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fsimpleXresults0</span></div>
+
+
+[%[= fsimpleXresults0.custom['end'] ]]
+</div>
+<!-- END fsimpleXresults0-->
+
+      </div>
+     </li>
+     <!-- Messages Dropdown Menu -->
+     <li class="nav-item dropdown">
+      <a class="nav-link" data-toggle="dropdown" href="#">
+       <i class="far fa-comments"></i>
+       <span class="badge badge-danger navbar-badge">3</span>
+      </a>
+      <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+       <a class="dropdown-item" href="#">
+        <!-- Message Start -->
+        <div class="media">
+         <img alt="User Avatar" class="img-size-50 mr-3 img-circle" src="[%[=URL('static/tte/dist/img/user1-128x128.jpg') ]]"/>
+         <div class="media-body">
+          <h3 class="dropdown-item-title">
+           Brad Diesel
+           <span class="float-right text-sm text-danger">
+            <i class="fas fa-star"></i>
+           </span>
+          </h3>
+          <p class="text-sm">Call me whenever you can...</p>
+          <p class="text-sm text-muted">
+           <i class="far fa-clock mr-1"></i>
+           4 Hours Ago
+          </p>
+         </div>
+        </div>
+        <!-- Message End -->
+       </a>
+       <div class="dropdown-divider"></div>
+       <a class="dropdown-item" href="#">
+        <!-- Message Start -->
+        <div class="media">
+         <img alt="User Avatar" class="img-size-50 img-circle mr-3" src="[%[=URL('static/tte/dist/img/user8-128x128.jpg') ]]"/>
+         <div class="media-body">
+          <h3 class="dropdown-item-title">
+           John Pierce
+           <span class="float-right text-sm text-muted">
+            <i class="fas fa-star"></i>
+           </span>
+          </h3>
+          <p class="text-sm">I got your message bro</p>
+          <p class="text-sm text-muted">
+           <i class="far fa-clock mr-1"></i>
+           4 Hours Ago
+          </p>
+         </div>
+        </div>
+        <!-- Message End -->
+       </a>
+       <div class="dropdown-divider"></div>
+       <a class="dropdown-item" href="#">
+        <!-- Message Start -->
+        <div class="media">
+         <img alt="User Avatar" class="img-size-50 img-circle mr-3" src="[%[=URL('static/tte/dist/img/user3-128x128.jpg') ]]"/>
+         <div class="media-body">
+          <h3 class="dropdown-item-title">
+           Nora Silvester
+           <span class="float-right text-sm text-warning">
+            <i class="fas fa-star"></i>
+           </span>
+          </h3>
+          <p class="text-sm">The subject goes here</p>
+          <p class="text-sm text-muted">
+           <i class="far fa-clock mr-1"></i>
+           4 Hours Ago
+          </p>
+         </div>
+        </div>
+        <!-- Message End -->
+       </a>
+       <div class="dropdown-divider"></div>
+       <a class="dropdown-item dropdown-footer" href="#">See All Messages</a>
+      </div>
+     </li>
+     <!-- Notifications Dropdown Menu -->
+     <li class="nav-item dropdown">
+      <a class="nav-link" data-toggle="dropdown" href="#">
+       <i class="far fa-bell"></i>
+       <span class="badge badge-warning navbar-badge">15</span>
+      </a>
+      <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+       <span class="dropdown-item dropdown-header">15 Notifications</span>
+       <div class="dropdown-divider"></div>
+       <a class="dropdown-item" href="#">
+        <i class="fas fa-envelope mr-2"></i>
+        4 new messages
+        <span class="float-right text-muted text-sm">3 mins</span>
+       </a>
+       <div class="dropdown-divider"></div>
+       <a class="dropdown-item" href="#">
+        <i class="fas fa-users mr-2"></i>
+        8 friend requests
+        <span class="float-right text-muted text-sm">12 hours</span>
+       </a>
+       <div class="dropdown-divider"></div>
+       <a class="dropdown-item" href="#">
+        <i class="fas fa-file mr-2"></i>
+        3 new reports
+        <span class="float-right text-muted text-sm">2 days</span>
+       </a>
+       <div class="dropdown-divider"></div>
+       <a class="dropdown-item dropdown-footer" href="#">See All Notifications</a>
+      </div>
+     </li>
+     <li class="nav-item">
+      <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+       <i class="fas fa-expand-arrows-alt"></i>
+      </a>
+     </li>
+     <li class="nav-item">
+      <a class="nav-link" data-slide="true" data-widget="control-sidebar" href="#" role="button">
+       <i class="fas fa-th-large"></i>
+      </a>
+     </li>
+    </ul>
+   </nav>
+   <!-- /.navbar -->
+   <!-- Main Sidebar Container -->
+   <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a class="brand-link" href="[%[=URL('index3') ]]">
+     <img alt="AdminLTE Logo" class="brand-image img-circle elevation-3" src="[%[=URL('static/tte/dist/img/AdminLTELogo.png') ]]" style="opacity: .8"/>
+     <span class="brand-text font-weight-light">AdminLTE 3</span>
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+     <!-- Sidebar user (optional) -->
+     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+       <img alt="User Image" class="img-circle elevation-2" src="[%[=URL('static/tte/dist/img/user2-160x160.jpg') ]]"/></div>
+      <div class="info">
+       <a class="d-block" href="#">Alexander Pierce</a>
+      </div>
+     </div>
+     <!-- SidebarSearch Form -->
+     <div class="form-inline">
+      <div class="input-group" data-widget="sidebar-search">
+       <input aria-label="Search" class="form-control form-control-sidebar" placeholder="Search" type="search"/>
+       <div class="input-group-append">
+        <button class="btn btn-sidebar">
+         <i class="fas fa-search fa-fw"></i>
+        </button>
+       </div>
+      </div>
+     </div>
+     <!-- Sidebar Menu -->
+     <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-accordion="false" data-widget="treeview" role="menu">
+       <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon fas fa-tachometer-alt"></i>
+         <p>
+          Dashboard
+          <i class="right fas fa-angle-left"></i>
+         </p>
+        </a>
+        <ul class="nav nav-treeview">
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('index') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Dashboard v1</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('index2') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Dashboard v2</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('index3') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Dashboard v3</p>
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="[%[=URL('widgets') ]]">
+         <i class="nav-icon fas fa-th"></i>
+         <p>
+          Widgets
+          <span class="right badge badge-danger">New</span>
+         </p>
+        </a>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon fas fa-copy"></i>
+         <p>
+          Layout Options
+          <i class="fas fa-angle-left right"></i>
+          <span class="badge badge-info right">6</span>
+         </p>
+        </a>
+        <ul class="nav nav-treeview">
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('topXnav') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Top Navigation</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('topXnavXsidebar') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Top Navigation + Sidebar</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('boxed') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Boxed</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('fixedXsidebar') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Fixed Sidebar</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('fixedXsidebarXcustom') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>
+            Fixed Sidebar
+            <small>+ Custom Area</small>
+           </p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('fixedXtopnav') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Fixed Navbar</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('fixedXfooter') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Fixed Footer</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('collapsedXsidebar') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Collapsed Sidebar</p>
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon fas fa-chart-pie"></i>
+         <p>
+          Charts
+          <i class="right fas fa-angle-left"></i>
+         </p>
+        </a>
+        <ul class="nav nav-treeview">
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('chartjs') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>ChartJS</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('flot') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Flot</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('inline') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Inline</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('uplot') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>uPlot</p>
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon fas fa-tree"></i>
+         <p>
+          UI Elements
+          <i class="fas fa-angle-left right"></i>
+         </p>
+        </a>
+        <ul class="nav nav-treeview">
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('general') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>General</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('icons') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Icons</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('buttons') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Buttons</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('sliders') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Sliders</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('modals') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Modals &amp; Alerts</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('navbar') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Navbar &amp; Tabs</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('timeline') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Timeline</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('ribbons') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Ribbons</p>
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon fas fa-edit"></i>
+         <p>
+          Forms
+          <i class="fas fa-angle-left right"></i>
+         </p>
+        </a>
+        <ul class="nav nav-treeview">
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('general') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>General Elements</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('advanced') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Advanced Elements</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('editors') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Editors</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('validation') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Validation</p>
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon fas fa-table"></i>
+         <p>
+          Tables
+          <i class="fas fa-angle-left right"></i>
+         </p>
+        </a>
+        <ul class="nav nav-treeview">
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('simple') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Simple Tables</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('data') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>DataTables</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('jsgrid') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>jsGrid</p>
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-header">EXAMPLES</li>
+       <li class="nav-item">
+        <a class="nav-link" href="[%[=URL('calendar') ]]">
+         <i class="nav-icon far fa-calendar-alt"></i>
+         <p>
+          Calendar
+          <span class="badge badge-info right">2</span>
+         </p>
+        </a>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="[%[=URL('gallery') ]]">
+         <i class="nav-icon far fa-image"></i>
+         <p>Gallery</p>
+        </a>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="[%[=URL('kanban') ]]">
+         <i class="nav-icon fas fa-columns"></i>
+         <p>Kanban Board</p>
+        </a>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon far fa-envelope"></i>
+         <p>
+          Mailbox
+          <i class="fas fa-angle-left right"></i>
+         </p>
+        </a>
+        <ul class="nav nav-treeview">
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('mailbox') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Inbox</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('compose') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Compose</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('readXmail') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Read</p>
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon fas fa-book"></i>
+         <p>
+          Pages
+          <i class="fas fa-angle-left right"></i>
+         </p>
+        </a>
+        <ul class="nav nav-treeview">
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('invoice') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Invoice</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('profileA') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Profile</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('eXcommerce') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>E-commerce</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('projects') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Projects</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('projectXadd') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Project Add</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('projectXedit') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Project Edit</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('projectXdetail') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Project Detail</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('contacts') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Contacts</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('faq') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>FAQ</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('contactXus') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Contact us</p>
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon far fa-plus-square"></i>
+         <p>
+          Extras
+          <i class="fas fa-angle-left right"></i>
+         </p>
+        </a>
+        <ul class="nav nav-treeview">
+         <li class="nav-item">
+          <a class="nav-link" href="#">
+           <i class="far fa-circle nav-icon"></i>
+           <p>
+            Login &amp; Register v1
+            <i class="fas fa-angle-left right"></i>
+           </p>
+          </a>
+          <ul class="nav nav-treeview">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('loginA') ]]">
+             <i class="far fa-circle nav-icon"></i>
+             <p>Login v1</p>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('registerA') ]]">
+             <i class="far fa-circle nav-icon"></i>
+             <p>Register v1</p>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('forgotXpassword') ]]">
+             <i class="far fa-circle nav-icon"></i>
+             <p>Forgot Password v1</p>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('recoverXpassword') ]]">
+             <i class="far fa-circle nav-icon"></i>
+             <p>Recover Password v1</p>
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="#">
+           <i class="far fa-circle nav-icon"></i>
+           <p>
+            Login &amp; Register v2
+            <i class="fas fa-angle-left right"></i>
+           </p>
+          </a>
+          <ul class="nav nav-treeview">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('loginXv2') ]]">
+             <i class="far fa-circle nav-icon"></i>
+             <p>Login v2</p>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('registerXv2') ]]">
+             <i class="far fa-circle nav-icon"></i>
+             <p>Register v2</p>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('forgotXpasswordXv2') ]]">
+             <i class="far fa-circle nav-icon"></i>
+             <p>Forgot Password v2</p>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('recoverXpasswordXv2') ]]">
+             <i class="far fa-circle nav-icon"></i>
+             <p>Recover Password v2</p>
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('lockscreen') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Lockscreen</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('legacyXuserXmenu') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Legacy User Menu</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('languageXmenu') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Language Menu</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('X404') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Error 404</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('X500') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Error 500</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('pace') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Pace</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('blank') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Blank Page</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('starter') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Starter Page</p>
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item menu-open">
+        <a class="nav-link active" href="#">
+         <i class="nav-icon fas fa-search"></i>
+         <p>
+          Search
+          <i class="fas fa-angle-left right"></i>
+         </p>
+        </a>
+        <ul class="nav nav-treeview">
+         <li class="nav-item">
+          <a class="nav-link active" href="[%[=URL('simple') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Simple Search</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="[%[=URL('enhanced') ]]">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Enhanced</p>
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-header">MISCELLANEOUS</li>
+       <li class="nav-item">
+        <a class="nav-link" href="[%[=URL('iframe') ]]">
+         <i class="nav-icon fas fa-ellipsis-h"></i>
+         <p>Tabbed IFrame Plugin</p>
+        </a>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="https://adminlte.io/docs/3.1/">
+         <i class="nav-icon fas fa-file"></i>
+         <p>Documentation</p>
+        </a>
+       </li>
+       <li class="nav-header">MULTI LEVEL EXAMPLE</li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="fas fa-circle nav-icon"></i>
+         <p>Level 1</p>
+        </a>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon fas fa-circle"></i>
+         <p>
+          Level 1
+          <i class="right fas fa-angle-left"></i>
+         </p>
+        </a>
+        <ul class="nav nav-treeview">
+         <li class="nav-item">
+          <a class="nav-link" href="#">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Level 2</p>
+          </a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="#">
+           <i class="far fa-circle nav-icon"></i>
+           <p>
+            Level 2
+            <i class="right fas fa-angle-left"></i>
+           </p>
+          </a>
+          <ul class="nav nav-treeview">
+           <li class="nav-item">
+            <a class="nav-link" href="#">
+             <i class="far fa-dot-circle nav-icon"></i>
+             <p>Level 3</p>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="#">
+             <i class="far fa-dot-circle nav-icon"></i>
+             <p>Level 3</p>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="#">
+             <i class="far fa-dot-circle nav-icon"></i>
+             <p>Level 3</p>
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="#">
+           <i class="far fa-circle nav-icon"></i>
+           <p>Level 2</p>
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="fas fa-circle nav-icon"></i>
+         <p>Level 1</p>
+        </a>
+       </li>
+       <li class="nav-header">LABELS</li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon far fa-circle text-danger"></i>
+         <p class="text">Important</p>
+        </a>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon far fa-circle text-warning"></i>
+         <p>Warning</p>
+        </a>
+       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">
+         <i class="nav-icon far fa-circle text-info"></i>
+         <p>Informational</p>
+        </a>
+       </li>
+      </ul>
+     </nav>
+     <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+   </aside>
+   <!-- Content Wrapper. Contains page content -->
+   <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+     <div class="container-fluid">
+      <h2 class="text-center display-4">Search</h2>
+     </div>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+     <div class="container-fluid">
+      <div class="row">
+       <div class="col-md-8 offset-md-2">
+        
+<!-- BEGIN view: fsimpleXresults1, db_table: dfsimpleXresults1 -->
+<div>
+[%[= fsimpleXresults1.custom['begin'] ]]
+<div class="input-group input-group-lg">
+ [%[ fsimpleXresults1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fsimpleXresults1.custom['widgets']['f0']['_class']= 'form-control form-control-lg'  ]]
+ [%[ fsimpleXresults1.custom['widgets']['f0']['_placeholder']= 'Type your keywords here'  ]]
+ [%[ fsimpleXresults1.custom['widgets']['f0']['_value']= 'Lorem ipsum'  ]]
+ [%[= fsimpleXresults1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fsimpleXresults1.custom['errors']['f0'] if 'f0' in fsimpleXresults1.custom['errors'] else '' ]]</span>
+
+ <div class="input-group-append">
+ [%[ fsimpleXresults1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fsimpleXresults1.custom['submit']['_class']= 'btn btn-lg btn-default'  ]]
+ [%[ fsimpleXresults1.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fsimpleXresults1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fsimpleXresults1.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fsimpleXresults1.custom['submit'] ]]
+
+ </div>
+</div>
+
+ [%[ for hidden_widget in fsimpleXresults1.custom['hidden_widgets'].keys(): ]]
+     [%[= fsimpleXresults1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fsimpleXresults1</span></div>
+
+
+[%[= fsimpleXresults1.custom['end'] ]]
+</div>
+<!-- END fsimpleXresults1-->
+
+       </div>
+      </div>
+      <div class="row mt-3">
+       <div class="col-md-10 offset-md-1">
+        <div class="list-group">
+         <div class="list-group-item">
+          <div class="row">
+           <div class="col px-4">
+            <div>
+             <div class="float-right">2021-04-20 04:04pm</div>
+             <h3>Lorem ipsum dolor sit amet</h3>
+             <p class="mb-0">consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="list-group-item">
+          <div class="row">
+           <div class="col-auto">
+            <img alt="Photo" class="img-fluid" src="[%[=URL('static/tte/dist/img/photo1.png') ]]" style="max-height: 160px;"/></div>
+           <div class="col px-4">
+            <div>
+             <div class="float-right">2021-04-20 10:14pm</div>
+             <h3>Lorem ipsum dolor sit amet</h3>
+             <p class="mb-0">consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="list-group-item">
+          <div class="row">
+           <div class="col-auto">
+            <iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" class="border-0" height="160" src="https://www.youtube.com/embed/WEkSYw3o5is?controls=0" width="240">
+            </iframe>
+           </div>
+           <div class="col px-4">
+            <div>
+             <div class="float-right">2021-04-20 11:54pm</div>
+             <h3>Lorem ipsum dolor sit amet</h3>
+             <p class="mb-0">consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+   </div>
+   <!-- Main footer -->
+   <footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+     <b>Version</b>
+     3.1.0
+    </div>
+    <strong>
+     Copyright © 2014-2021
+     <a href="https://adminlte.io">AdminLTE.io</a>
+     .
+    </strong>
+    All rights reserved.
+   </footer>
+   <!-- Control Sidebar -->
+   <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+   </aside>
+   <!-- /.control-sidebar -->
+  </div>
+  <!-- ./wrapper -->
+  <!-- jQuery -->
+  <script src="[%[=URL('static/tte/plugins/jquery/jquery.min.js') ]]"></script>
+  <!-- Bootstrap 4 -->
+  <script src="[%[=URL('static/tte/plugins/bootstrap/js/bootstrap.bundle.min.js') ]]"></script>
+  <!-- AdminLTE App -->
+  <script src="[%[=URL('static/tte/dist/js/adminlte.min.js') ]]"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="[%[=URL('static/tte/dist/js/demo.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

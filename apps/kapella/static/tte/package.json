@@ -1,0 +1,47 @@
+{
+  "name": "Kapella_admin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "dependencies": {
+    "@mdi/font": "^3.8.95",
+    "bootstrap": "^4.3.1",
+    "chart.js": "^2.8.0",
+    "chartjs-plugin-datalabels": "^0.6.0",
+    "del": "^5.0.0",
+    "gulp-sourcemaps": "^2.6.3",
+    "jquery": "^3.4.1",
+    "jquery-file-upload": "^4.0.11",
+    "justgage": "1.2.2",
+    "jvectormap": "2.0.4",
+    "perfect-scrollbar": "^1.4.0",
+    "popper.js": "^1.15.0",
+    "progressbar.js": "1.0.1",
+    "raphael": "^2.2.8",
+    "select2": "^4.0.7",
+    "select2-bootstrap-theme": "0.1.0-beta.10",
+    "typeahead.js": "^0.11.1"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "compass-mixins": "^0.12.10",
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-inject": "^5.0.2",
+    "gulp-inject-partials": "^1.0.3",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^1.0.0",
+    "gulp-sass": "^4.0.2",
+    "merge-stream": "^2.0.0",
+    "minimatch": "^3.0.4",
+    "node-sass": "^4.12.0",
+    "run-sequence": "^2.2.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "bootstrapdash",
+  "url": "http://www.bootstrapdash.com/",
+  "copyright": "",
+  "license": ""
+}

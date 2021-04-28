@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 08:47:38 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- Bootstrap CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/circular-std/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/libs/css/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') ]]" rel="stylesheet"/>
+  <style>
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+  </style>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <!-- ============================================================== -->
+ <!-- signup form  -->
+ <!-- ============================================================== -->
+ <body>
+  <!-- ============================================================== -->
+  <!-- signup form  -->
+  <!-- ============================================================== -->
+  
+<!-- BEGIN view: fsignXup0, db_table: dfsignXup0 -->
+<div class="splash-container">
+[%[= fsignXup0.custom['begin'] ]]
+<div class="card">
+ <div class="card-header">
+  <h3 class="mb-1">
+   Registrations Form
+  </h3>
+  <p>
+   Please enter your user information.
+  </p>
+ </div>
+ <div class="card-body">
+  <div class="form-group">
+ [%[ fsignXup0.custom['widgets']['f0']['_class']= 'form-control form-control-lg'  ]]
+ [%[ fsignXup0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fsignXup0.custom['widgets']['f0']['_placeholder']= 'Username'  ]]
+ [%[ fsignXup0.custom['widgets']['f0']['_autocomplete']= 'off'  ]]
+ [%[= fsignXup0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fsignXup0.custom['errors']['f0'] if 'f0' in fsignXup0.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="form-group">
+ [%[ fsignXup0.custom['widgets']['f1']['_class']= 'form-control form-control-lg'  ]]
+ [%[ fsignXup0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fsignXup0.custom['widgets']['f1']['_placeholder']= 'E-mail'  ]]
+ [%[ fsignXup0.custom['widgets']['f1']['_autocomplete']= 'off'  ]]
+ [%[= fsignXup0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fsignXup0.custom['errors']['f1'] if 'f1' in fsignXup0.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="form-group">
+ [%[ fsignXup0.custom['widgets']['f2']['_class']= 'form-control form-control-lg'  ]]
+ [%[ fsignXup0.custom['widgets']['f2']['_id']= 'pass1'  ]]
+ [%[ fsignXup0.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fsignXup0.custom['widgets']['f2']['_placeholder']= 'Password'  ]]
+ [%[= fsignXup0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fsignXup0.custom['errors']['f2'] if 'f2' in fsignXup0.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="form-group">
+ [%[ fsignXup0.custom['widgets']['f3']['_class']= 'form-control form-control-lg'  ]]
+ [%[ fsignXup0.custom['widgets']['f3']['_placeholder']= 'Confirm'  ]]
+ [%[ fsignXup0.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[= fsignXup0.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fsignXup0.custom['errors']['f3'] if 'f3' in fsignXup0.custom['errors'] else '' ]]</span>
+
+  </div>
+  <div class="form-group pt-2">
+ [%[ fsignXup0.custom['submit']['_class']= 'btn btn-block btn-primary'  ]]
+ [%[ fsignXup0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fsignXup0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fsignXup0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fsignXup0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fsignXup0.custom['submit'] ]]
+
+  </div>
+  <div class="form-group">
+   <label class="custom-control custom-checkbox">
+ [%[ fsignXup0.custom['widgets']['f4']['_class']= 'custom-control-input'  ]]
+ [%[ fsignXup0.custom['widgets']['f4']['_type']= 'checkbox'  ]]
+ [%[ fsignXup0.custom['widgets']['f4']['_placeholder']= ''  ]]
+ [%[= fsignXup0.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fsignXup0.custom['errors']['f4'] if 'f4' in fsignXup0.custom['errors'] else '' ]]</span>
+
+    <span class="custom-control-label">
+     By creating an account, you agree the
+     <a href="#">
+      terms and conditions
+     </a>
+    </span>
+   </label>
+  </div>
+  <div class="form-group row pt-0">
+   <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-2">
+    <button class="btn btn-block btn-social btn-facebook" type="button">
+     Facebook
+    </button>
+   </div>
+   <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <button class="btn btn-block btn-social btn-twitter" type="button">
+     Twitter
+    </button>
+   </div>
+  </div>
+ </div>
+ <div class="card-footer bg-white">
+  <p>
+   Already member?
+   <a class="text-secondary" href="#">
+    Login Here.
+   </a>
+  </p>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fsignXup0.custom['hidden_widgets'].keys(): ]]
+     [%[= fsignXup0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fsignXup0</span></div>
+
+
+[%[= fsignXup0.custom['end'] ]]
+</div>
+<!-- END fsignXup0-->
+
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

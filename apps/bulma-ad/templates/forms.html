@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html>
+ <!-- Mirrored from nafplann.bulma-admin.dev/forms by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 31 Jul 2019 05:38:01 GMT -->
+ <!-- Added by HTTrack -->
+ <head>
+            <!-- 03.12.2020 11:33:22 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta content="text/html;charset=utf-8" http-equiv="content-type"/>
+  <!-- /Added by HTTrack -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <meta charset="utf-8"/>
+  <meta content="Free Admin Dashboard Template Build with Bulma.io By nafplann" name="description"/>
+  <meta content="Bulma,CSS,Admin,Template,Free,Download" name="keywords"/>
+  <meta content="en-EN" name="language"/>
+  <meta content="Abdul Manaaf" name="author"/>
+  <link href="https://fonts.googleapis.com/icon?family=Poppins" rel="stylesheet"/>
+  <link href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/app.css') ]]" rel="stylesheet"/>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    margin: 0.2em auto 0.2em auto !important;
+    padding: 0 0 0 0 !important;
+    border: 1px dashed black;
+    color: black;
+    background-color: LightGray;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <!-- START NAV -->
+  <nav aria-label="main navigation" class="navbar columns is-fixed-top" id="app-header" role="navigation">
+   <div class="navbar-brand column is-2 is-paddingless">
+    <a class="navbar-item" href="[%[=URL('index') ]]">BULMA ADMIN</a>
+    <a aria-expanded="false" aria-label="menu" class="navbar-burger" data-target="touchMenu" role="button">
+     <span aria-hidden="true"></span>
+     <span aria-hidden="true"></span>
+     <span aria-hidden="true"></span>
+    </a>
+   </div>
+   <div id="touchMenu"></div>
+   <div class="navbar-menu column is-hidden-touch" id="navMenu">
+    <!-- <div class="navbar-end">
+            <div class="navbar-item">
+                <a class="button is-white" onclick="Auth.logout()">
+                    <span class="icon">
+                        <i class="fa fa-bell"></i>
+                    </span>
+                </a>
+            </div>
+            <div class="navbar-item">
+                <a class="button is-white" onclick="Auth.logout()">
+                    <span class="icon">
+                        <i class="fa fa-sign-out"></i>
+                    </span>
+                </a>
+            </div>
+        </div> -->
+    <div class="navbar-end">
+     <div class="navbar-item">
+      <a class="button is-white" onclick="Auth.logout()">
+       <span class="icon">
+        <i class="fa fa-lg fa-bell"></i>
+       </span>
+      </a>
+     </div>
+     <div class="navbar-item">
+      <a class="button is-white" onclick="Auth.logout()">
+       <span class="icon">
+        <i class="fa fa-lg fa-power-off"></i>
+       </span>
+      </a>
+     </div>
+     <div class="navbar-item has-dropdown">
+      <a class="navbar-link">
+       <figure class="image avatar is-32x32">
+        <img class="is-rounded" src="[%[=URL('static/tte/images/user1.png') ]]"/>
+       </figure>
+       Hi, nafplann
+      </a>
+      <div class="navbar-dropdown is-right">
+       <a class="navbar-item">Overview</a>
+       <a class="navbar-item">Elements</a>
+       <a class="navbar-item">Components</a>
+       <hr class="navbar-divider"/>
+       <div class="navbar-item">Version 0.7.1</div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </nav>
+  <!-- END NAV -->
+  <div class="columns" id="app-content">
+   <div class="column is-2 is-fullheight is-hidden-touch" id="navigation">
+    <aside class="menu">
+     <p class="menu-label is-hidden-touch">General</p>
+     <ul class="menu-list">
+      <li>
+       <a class="" href="[%[=URL('index') ]]">
+        <span class="icon">
+         <i class="fa fa-home"></i>
+        </span>
+        Dashboard
+       </a>
+      </li>
+      <li>
+       <a class="is-active" href="[%[=URL('forms') ]]">
+        <span class="icon">
+         <i class="fa fa-edit"></i>
+        </span>
+        Forms
+       </a>
+      </li>
+      <li>
+       <a class="" href="[%[=URL('elements') ]]">
+        <span class="icon">
+         <i class="fa fa-desktop"></i>
+        </span>
+        UI Elements
+       </a>
+      </li>
+      <li>
+       <a class="" href="[%[=URL('datatables') ]]">
+        <span class="icon">
+         <i class="fa fa-table"></i>
+        </span>
+        Datatables
+       </a>
+      </li>
+     </ul>
+     <p class="menu-label is-hidden-touch">Sample Pages</p>
+     <ul class="menu-list">
+      <li>
+       <a class="" href="[%[=URL('login') ]]">
+        <span class="icon">
+         <i class="fa fa-lock"></i>
+        </span>
+        Login
+       </a>
+      </li>
+     </ul>
+    </aside>
+   </div>
+   <div class="column is-10" id="page-content">
+    <div class="content-header">
+     <h4 class="title is-4">Forms</h4>
+     <span class="separator"></span>
+     <nav aria-label="breadcrumbs" class="breadcrumb has-bullet-separator">
+      <ul>
+       <li>
+        <a href="#">General</a>
+       </li>
+       <li class="is-active">
+        <a aria-current="page" href="#">Forms</a>
+       </li>
+      </ul>
+     </nav>
+    </div>
+    <div class="content-body">
+     <div class="columns">
+      <div class="column">
+       <div class="card">
+        <div class="card-content">
+         <p class="title is-4">General</p>
+         <div class="field">
+          <label class="label">
+           Name
+          </label>
+          <div class="control">
+           
+
+<!-- BEGIN view: fforms0, db_table: dfforms0 -->
+<div>
+[%[= fforms0.custom['begin'] ]]
+ [%[ fforms0.custom['widgets']['f0']['_class']= 'input'  ]]
+ [%[ fforms0.custom['widgets']['f0']['_placeholder']= 'Text input_p4w'  ]]
+ [%[ fforms0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms0.custom['errors']['f0'] if 'f0' in fforms0.custom['errors'] else '' ]]</span>
+
+ [%[ fforms0.custom['submit']['_class']= 'input mysubmit_cls'  ]]
+ [%[ fforms0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms0.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms0.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms0 flashdiv"> <span class="flashspan">fforms0</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms0.custom['end'] ]]
+</div>
+<!-- END fforms0-->
+
+</div>
+         </div>
+         <div class="field">
+          <label class="label">
+           Username
+          </label>
+          <div class="control has-icons-left has-icons-right">
+           
+
+<!-- BEGIN view: fforms1, db_table: dfforms1 -->
+<div>
+[%[= fforms1.custom['begin'] ]]
+ [%[ fforms1.custom['widgets']['f0']['_class']= 'input is-success'  ]]
+ [%[ fforms1.custom['widgets']['f0']['_placeholder']= 'Text input_p4w'  ]]
+ [%[ fforms1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fforms1.custom['widgets']['f0']['_value']= 'bulma'  ]]
+ [%[= fforms1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms1.custom['errors']['f0'] if 'f0' in fforms1.custom['errors'] else '' ]]</span>
+
+ [%[ fforms1.custom['submit']['_class']= 'input is-success mysubmit_cls'  ]]
+ [%[ fforms1.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms1.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms1.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms1.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms1.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms1 flashdiv"> <span class="flashspan">fforms1</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms1');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms1.custom['end'] ]]
+</div>
+<!-- END fforms1-->
+
+
+           <span class="icon is-small is-left">
+            <i class="fa fa-user"></i>
+           </span>
+           <span class="icon is-small is-right">
+            <i class="fa fa-check"></i>
+           </span>
+          </div>
+          <p class="help is-success">This username is available</p>
+         </div>
+         <div class="field">
+          <label class="label">
+           Email
+          </label>
+          <div class="control has-icons-left has-icons-right">
+           
+
+<!-- BEGIN view: fforms2, db_table: dfforms2 -->
+<div>
+[%[= fforms2.custom['begin'] ]]
+ [%[ fforms2.custom['widgets']['f0']['_class']= 'input is-danger'  ]]
+ [%[ fforms2.custom['widgets']['f0']['_placeholder']= 'Email input_p4w'  ]]
+ [%[ fforms2.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fforms2.custom['widgets']['f0']['_value']= 'hello@'  ]]
+ [%[= fforms2.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms2.custom['errors']['f0'] if 'f0' in fforms2.custom['errors'] else '' ]]</span>
+
+ [%[ fforms2.custom['submit']['_class']= 'input is-danger mysubmit_cls'  ]]
+ [%[ fforms2.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms2.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms2.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms2.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms2.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms2.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms2.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms2.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms2 flashdiv"> <span class="flashspan">fforms2</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms2');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms2.custom['end'] ]]
+</div>
+<!-- END fforms2-->
+
+
+           <span class="icon is-small is-left">
+            <i class="fa fa-envelope"></i>
+           </span>
+           <span class="icon is-small is-right">
+            <i class="fa fa-exclamation-triangle"></i>
+           </span>
+          </div>
+          <p class="help is-danger">This email is invalid</p>
+         </div>
+         <div class="field">
+          <label class="label">
+           Subject
+          </label>
+          <div class="control">
+           <div class="select">
+            <select>
+             <option>
+              Select dropdown
+             </option>
+             <option>
+              With options
+             </option>
+            </select>
+           </div>
+          </div>
+         </div>
+         <div class="field">
+          <label class="label">
+           Message
+          </label>
+          <div class="control">
+           
+
+<!-- BEGIN view: fforms3, db_table: dfforms3 -->
+<div>
+[%[= fforms3.custom['begin'] ]]
+ [%[ fforms3.custom['widgets']['f0']['_class']= 'textarea'  ]]
+ [%[ fforms3.custom['widgets']['f0']['_placeholder']= 'Textarea'  ]]
+ [%[ fforms3.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms3.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms3.custom['errors']['f0'] if 'f0' in fforms3.custom['errors'] else '' ]]</span>
+
+ [%[ fforms3.custom['submit']['_class']= 'textarea mysubmit_cls'  ]]
+ [%[ fforms3.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms3.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms3.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms3.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms3.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms3.custom['submit'] ]]
+
+ [%[ for hidden_widget in fforms3.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms3.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms3 flashdiv"> <span class="flashspan">fforms3</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms3');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms3.custom['end'] ]]
+</div>
+<!-- END fforms3-->
+
+
+          </div>
+         </div>
+         <div class="field">
+          <div class="control">
+           <label class="checkbox">
+            
+
+<!-- BEGIN view: fforms4, db_table: dfforms4 -->
+<div>
+[%[= fforms4.custom['begin'] ]]
+ [%[ fforms4.custom['widgets']['f0']['_type']= 'checkbox'  ]]
+ [%[ fforms4.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fforms4.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms4.custom['errors']['f0'] if 'f0' in fforms4.custom['errors'] else '' ]]</span>
+
+ [%[ fforms4.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms4.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms4.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fforms4.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms4.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms4.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms4.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms4.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms4 flashdiv"> <span class="flashspan">fforms4</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms4');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms4.custom['end'] ]]
+</div>
+<!-- END fforms4-->
+
+
+            I agree to the
+            <a href="#">terms and conditions</a>
+           </label>
+          </div>
+         </div>
+         <div class="field">
+          <div class="control">
+           <label class="radio">
+            
+
+<!-- BEGIN view: fforms5, db_table: dfforms5 -->
+<div>
+[%[= fforms5.custom['begin'] ]]
+ [%[ fforms5.custom['widgets']['f0']['_type']= 'radio'  ]]
+ [%[ fforms5.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fforms5.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms5.custom['errors']['f0'] if 'f0' in fforms5.custom['errors'] else '' ]]</span>
+
+ [%[ fforms5.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms5.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms5.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fforms5.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms5.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms5.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms5.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms5.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms5 flashdiv"> <span class="flashspan">fforms5</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms5');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms5.custom['end'] ]]
+</div>
+<!-- END fforms5-->
+
+
+            Yes
+           </label>
+           <label class="radio">
+            
+
+<!-- BEGIN view: fforms6, db_table: dfforms6 -->
+<div>
+[%[= fforms6.custom['begin'] ]]
+ [%[ fforms6.custom['widgets']['f0']['_type']= 'radio'  ]]
+ [%[ fforms6.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fforms6.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms6.custom['errors']['f0'] if 'f0' in fforms6.custom['errors'] else '' ]]</span>
+
+ [%[ fforms6.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms6.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms6.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fforms6.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms6.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms6.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms6.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms6.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms6 flashdiv"> <span class="flashspan">fforms6</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms6');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms6.custom['end'] ]]
+</div>
+<!-- END fforms6-->
+
+
+            No
+           </label>
+          </div>
+         </div>
+         <div class="field is-grouped">
+          <div class="control">
+           <button class="button is-link">Submit</button>
+          </div>
+          <div class="control">
+           <button class="button is-text">Cancel</button>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-content">
+         <p class="title is-4">Loading</p>
+         <div class="field">
+          <div class="control is-small is-loading">
+           
+
+<!-- BEGIN view: fforms7, db_table: dfforms7 -->
+<div>
+[%[= fforms7.custom['begin'] ]]
+ [%[ fforms7.custom['widgets']['f0']['_class']= 'input is-small'  ]]
+ [%[ fforms7.custom['widgets']['f0']['_placeholder']= 'Small loading input_p4w'  ]]
+ [%[ fforms7.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms7.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms7.custom['errors']['f0'] if 'f0' in fforms7.custom['errors'] else '' ]]</span>
+
+ [%[ fforms7.custom['submit']['_class']= 'input is-small mysubmit_cls'  ]]
+ [%[ fforms7.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms7.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms7.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms7.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms7.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms7.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms7.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms7.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms7 flashdiv"> <span class="flashspan">fforms7</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms7');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms7.custom['end'] ]]
+</div>
+<!-- END fforms7-->
+
+</div>
+         </div>
+         <div class="field">
+          <div class="control is-loading">
+           
+
+<!-- BEGIN view: fforms8, db_table: dfforms8 -->
+<div>
+[%[= fforms8.custom['begin'] ]]
+ [%[ fforms8.custom['widgets']['f0']['_class']= 'input'  ]]
+ [%[ fforms8.custom['widgets']['f0']['_placeholder']= 'Normal loading input_p4w'  ]]
+ [%[ fforms8.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms8.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms8.custom['errors']['f0'] if 'f0' in fforms8.custom['errors'] else '' ]]</span>
+
+ [%[ fforms8.custom['submit']['_class']= 'input mysubmit_cls'  ]]
+ [%[ fforms8.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms8.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms8.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms8.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms8.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms8.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms8.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms8.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms8 flashdiv"> <span class="flashspan">fforms8</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms8');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms8.custom['end'] ]]
+</div>
+<!-- END fforms8-->
+
+</div>
+         </div>
+         <div class="field">
+          <div class="control is-medium is-loading">
+           
+
+<!-- BEGIN view: fforms9, db_table: dfforms9 -->
+<div>
+[%[= fforms9.custom['begin'] ]]
+ [%[ fforms9.custom['widgets']['f0']['_class']= 'input is-medium'  ]]
+ [%[ fforms9.custom['widgets']['f0']['_placeholder']= 'Medium loading input_p4w'  ]]
+ [%[ fforms9.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms9.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms9.custom['errors']['f0'] if 'f0' in fforms9.custom['errors'] else '' ]]</span>
+
+ [%[ fforms9.custom['submit']['_class']= 'input is-medium mysubmit_cls'  ]]
+ [%[ fforms9.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms9.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms9.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms9.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms9.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms9.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms9.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms9.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms9 flashdiv"> <span class="flashspan">fforms9</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms9');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms9.custom['end'] ]]
+</div>
+<!-- END fforms9-->
+
+</div>
+         </div>
+         <div class="field">
+          <div class="control is-large is-loading">
+           
+
+<!-- BEGIN view: fforms10, db_table: dfforms10 -->
+<div>
+[%[= fforms10.custom['begin'] ]]
+ [%[ fforms10.custom['widgets']['f0']['_class']= 'input is-large'  ]]
+ [%[ fforms10.custom['widgets']['f0']['_placeholder']= 'Large loading input_p4w'  ]]
+ [%[ fforms10.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms10.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms10.custom['errors']['f0'] if 'f0' in fforms10.custom['errors'] else '' ]]</span>
+
+ [%[ fforms10.custom['submit']['_class']= 'input is-large mysubmit_cls'  ]]
+ [%[ fforms10.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms10.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms10.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms10.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms10.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms10.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms10.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms10.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms10 flashdiv"> <span class="flashspan">fforms10</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms10');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms10.custom['end'] ]]
+</div>
+<!-- END fforms10-->
+
+</div>
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-content">
+         <p class="title is-4">Checkboxes &amp; Radios</p>
+         <div class="field">
+          <label class="checkbox">
+           
+
+<!-- BEGIN view: fforms11, db_table: dfforms11 -->
+<div>
+[%[= fforms11.custom['begin'] ]]
+ [%[ fforms11.custom['widgets']['f0']['_type']= 'checkbox'  ]]
+ [%[ fforms11.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fforms11.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms11.custom['errors']['f0'] if 'f0' in fforms11.custom['errors'] else '' ]]</span>
+
+ [%[ fforms11.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms11.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms11.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fforms11.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms11.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms11.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms11.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms11.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms11 flashdiv"> <span class="flashspan">fforms11</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms11');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms11.custom['end'] ]]
+</div>
+<!-- END fforms11-->
+
+
+           Remember me
+          </label>
+         </div>
+         <div class="field">
+          <div class="control">
+           <label class="radio">
+            
+
+<!-- BEGIN view: fforms12, db_table: dfforms12 -->
+<div>
+[%[= fforms12.custom['begin'] ]]
+ [%[ fforms12.custom['widgets']['f0']['_type']= 'radio'  ]]
+ [%[ fforms12.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fforms12.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms12.custom['errors']['f0'] if 'f0' in fforms12.custom['errors'] else '' ]]</span>
+
+ [%[ fforms12.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms12.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms12.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fforms12.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms12.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms12.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms12.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms12.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms12 flashdiv"> <span class="flashspan">fforms12</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms12');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms12.custom['end'] ]]
+</div>
+<!-- END fforms12-->
+
+
+            Going
+           </label>
+           <label class="radio">
+            
+
+<!-- BEGIN view: fforms13, db_table: dfforms13 -->
+<div>
+[%[= fforms13.custom['begin'] ]]
+ [%[ fforms13.custom['widgets']['f0']['_type']= 'radio'  ]]
+ [%[ fforms13.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fforms13.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms13.custom['errors']['f0'] if 'f0' in fforms13.custom['errors'] else '' ]]</span>
+
+ [%[ fforms13.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms13.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms13.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fforms13.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms13.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms13.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms13.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms13.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms13 flashdiv"> <span class="flashspan">fforms13</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms13');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms13.custom['end'] ]]
+</div>
+<!-- END fforms13-->
+
+
+            Not going
+           </label>
+           <label class="radio" disabled="">
+            
+
+<!-- BEGIN view: fforms14, db_table: dfforms14 -->
+<div>
+[%[= fforms14.custom['begin'] ]]
+ [%[ fforms14.custom['widgets']['f0']['_type']= 'radio'  ]]
+ [%[ fforms14.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fforms14.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms14.custom['errors']['f0'] if 'f0' in fforms14.custom['errors'] else '' ]]</span>
+
+ [%[ fforms14.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms14.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms14.custom['submit']['_class']= 'mysubmit_cls'  ]]
+ [%[ fforms14.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms14.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms14.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms14.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms14.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms14 flashdiv"> <span class="flashspan">fforms14</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms14');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms14.custom['end'] ]]
+</div>
+<!-- END fforms14-->
+
+
+            Maybe
+           </label>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="column">
+       <div class="card">
+        <div class="card-content">
+         <p class="title is-4">Colors</p>
+         <div class="field">
+          <div class="control">
+           
+
+<!-- BEGIN view: fforms15, db_table: dfforms15 -->
+<div>
+[%[= fforms15.custom['begin'] ]]
+ [%[ fforms15.custom['widgets']['f0']['_class']= 'input is-primary'  ]]
+ [%[ fforms15.custom['widgets']['f0']['_placeholder']= 'Primary input_p4w'  ]]
+ [%[ fforms15.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms15.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms15.custom['errors']['f0'] if 'f0' in fforms15.custom['errors'] else '' ]]</span>
+
+ [%[ fforms15.custom['submit']['_class']= 'input is-primary mysubmit_cls'  ]]
+ [%[ fforms15.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms15.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms15.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms15.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms15.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms15.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms15.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms15.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms15 flashdiv"> <span class="flashspan">fforms15</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms15');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms15.custom['end'] ]]
+</div>
+<!-- END fforms15-->
+
+</div>
+         </div>
+         <div class="field">
+          <div class="control">
+           
+
+<!-- BEGIN view: fforms16, db_table: dfforms16 -->
+<div>
+[%[= fforms16.custom['begin'] ]]
+ [%[ fforms16.custom['widgets']['f0']['_class']= 'input is-info'  ]]
+ [%[ fforms16.custom['widgets']['f0']['_placeholder']= 'Info input_p4w'  ]]
+ [%[ fforms16.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms16.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms16.custom['errors']['f0'] if 'f0' in fforms16.custom['errors'] else '' ]]</span>
+
+ [%[ fforms16.custom['submit']['_class']= 'input is-info mysubmit_cls'  ]]
+ [%[ fforms16.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms16.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms16.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms16.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms16.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms16.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms16.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms16.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms16 flashdiv"> <span class="flashspan">fforms16</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms16');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms16.custom['end'] ]]
+</div>
+<!-- END fforms16-->
+
+</div>
+         </div>
+         <div class="field">
+          <div class="control">
+           
+
+<!-- BEGIN view: fforms17, db_table: dfforms17 -->
+<div>
+[%[= fforms17.custom['begin'] ]]
+ [%[ fforms17.custom['widgets']['f0']['_class']= 'input is-success'  ]]
+ [%[ fforms17.custom['widgets']['f0']['_placeholder']= 'Success input_p4w'  ]]
+ [%[ fforms17.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms17.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms17.custom['errors']['f0'] if 'f0' in fforms17.custom['errors'] else '' ]]</span>
+
+ [%[ fforms17.custom['submit']['_class']= 'input is-success mysubmit_cls'  ]]
+ [%[ fforms17.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms17.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms17.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms17.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms17.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms17.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms17.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms17.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms17 flashdiv"> <span class="flashspan">fforms17</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms17');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms17.custom['end'] ]]
+</div>
+<!-- END fforms17-->
+
+</div>
+         </div>
+         <div class="field">
+          <div class="control">
+           
+
+<!-- BEGIN view: fforms18, db_table: dfforms18 -->
+<div>
+[%[= fforms18.custom['begin'] ]]
+ [%[ fforms18.custom['widgets']['f0']['_class']= 'input is-warning'  ]]
+ [%[ fforms18.custom['widgets']['f0']['_placeholder']= 'Warning input_p4w'  ]]
+ [%[ fforms18.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms18.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms18.custom['errors']['f0'] if 'f0' in fforms18.custom['errors'] else '' ]]</span>
+
+ [%[ fforms18.custom['submit']['_class']= 'input is-warning mysubmit_cls'  ]]
+ [%[ fforms18.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms18.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms18.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms18.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms18.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms18.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms18.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms18.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms18 flashdiv"> <span class="flashspan">fforms18</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms18');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms18.custom['end'] ]]
+</div>
+<!-- END fforms18-->
+
+</div>
+         </div>
+         <div class="field">
+          <div class="control">
+           
+
+<!-- BEGIN view: fforms19, db_table: dfforms19 -->
+<div>
+[%[= fforms19.custom['begin'] ]]
+ [%[ fforms19.custom['widgets']['f0']['_class']= 'input is-danger'  ]]
+ [%[ fforms19.custom['widgets']['f0']['_placeholder']= 'Danger input_p4w'  ]]
+ [%[ fforms19.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms19.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms19.custom['errors']['f0'] if 'f0' in fforms19.custom['errors'] else '' ]]</span>
+
+ [%[ fforms19.custom['submit']['_class']= 'input is-danger mysubmit_cls'  ]]
+ [%[ fforms19.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms19.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms19.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms19.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms19.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms19.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms19.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms19.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms19 flashdiv"> <span class="flashspan">fforms19</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms19');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms19.custom['end'] ]]
+</div>
+<!-- END fforms19-->
+
+</div>
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-content">
+         <p class="title is-4">Sizes</p>
+         <div class="field">
+          <div class="control">
+           
+
+<!-- BEGIN view: fforms20, db_table: dfforms20 -->
+<div>
+[%[= fforms20.custom['begin'] ]]
+ [%[ fforms20.custom['widgets']['f0']['_class']= 'input is-small'  ]]
+ [%[ fforms20.custom['widgets']['f0']['_placeholder']= 'Small input_p4w'  ]]
+ [%[ fforms20.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms20.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms20.custom['errors']['f0'] if 'f0' in fforms20.custom['errors'] else '' ]]</span>
+
+ [%[ fforms20.custom['submit']['_class']= 'input is-small mysubmit_cls'  ]]
+ [%[ fforms20.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms20.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms20.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms20.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms20.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms20.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms20.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms20.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms20 flashdiv"> <span class="flashspan">fforms20</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms20');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms20.custom['end'] ]]
+</div>
+<!-- END fforms20-->
+
+</div>
+         </div>
+         <div class="field">
+          <div class="control">
+           
+
+<!-- BEGIN view: fforms21, db_table: dfforms21 -->
+<div>
+[%[= fforms21.custom['begin'] ]]
+ [%[ fforms21.custom['widgets']['f0']['_class']= 'input'  ]]
+ [%[ fforms21.custom['widgets']['f0']['_placeholder']= 'Normal input_p4w'  ]]
+ [%[ fforms21.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms21.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms21.custom['errors']['f0'] if 'f0' in fforms21.custom['errors'] else '' ]]</span>
+
+ [%[ fforms21.custom['submit']['_class']= 'input mysubmit_cls'  ]]
+ [%[ fforms21.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms21.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms21.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms21.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms21.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms21.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms21.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms21.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms21 flashdiv"> <span class="flashspan">fforms21</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms21');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms21.custom['end'] ]]
+</div>
+<!-- END fforms21-->
+
+</div>
+         </div>
+         <div class="field">
+          <div class="control">
+           
+
+<!-- BEGIN view: fforms22, db_table: dfforms22 -->
+<div>
+[%[= fforms22.custom['begin'] ]]
+ [%[ fforms22.custom['widgets']['f0']['_class']= 'input is-medium'  ]]
+ [%[ fforms22.custom['widgets']['f0']['_placeholder']= 'Medium input_p4w'  ]]
+ [%[ fforms22.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms22.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms22.custom['errors']['f0'] if 'f0' in fforms22.custom['errors'] else '' ]]</span>
+
+ [%[ fforms22.custom['submit']['_class']= 'input is-medium mysubmit_cls'  ]]
+ [%[ fforms22.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms22.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms22.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms22.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms22.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms22.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms22.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms22.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms22 flashdiv"> <span class="flashspan">fforms22</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms22');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms22.custom['end'] ]]
+</div>
+<!-- END fforms22-->
+
+</div>
+         </div>
+         <div class="field">
+          <div class="control">
+           
+
+<!-- BEGIN view: fforms23, db_table: dfforms23 -->
+<div>
+[%[= fforms23.custom['begin'] ]]
+ [%[ fforms23.custom['widgets']['f0']['_class']= 'input is-large'  ]]
+ [%[ fforms23.custom['widgets']['f0']['_placeholder']= 'Large input_p4w'  ]]
+ [%[ fforms23.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforms23.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms23.custom['errors']['f0'] if 'f0' in fforms23.custom['errors'] else '' ]]</span>
+
+ [%[ fforms23.custom['submit']['_class']= 'input is-large mysubmit_cls'  ]]
+ [%[ fforms23.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms23.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms23.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms23.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms23.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms23.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms23.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms23.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms23 flashdiv"> <span class="flashspan">fforms23</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms23');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms23.custom['end'] ]]
+</div>
+<!-- END fforms23-->
+
+</div>
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-content">
+         <p class="title is-4">Select</p>
+         <div class="field">
+          <div class="control">
+           <div class="select is-small">
+            <select>
+             <option>
+              Select dropdown
+             </option>
+             <option>
+              With options
+             </option>
+            </select>
+           </div>
+          </div>
+         </div>
+         <div class="field">
+          <div class="control">
+           <div class="select">
+            <select>
+             <option>
+              Select dropdown
+             </option>
+             <option>
+              With options
+             </option>
+            </select>
+           </div>
+          </div>
+         </div>
+         <div class="field">
+          <div class="control">
+           <div class="select is-medium">
+            <select>
+             <option>
+              Select dropdown
+             </option>
+             <option>
+              With options
+             </option>
+            </select>
+           </div>
+          </div>
+         </div>
+         <div class="field">
+          <div class="control">
+           <div class="select is-large">
+            <select>
+             <option>
+              Select dropdown
+             </option>
+             <option>
+              With options
+             </option>
+            </select>
+           </div>
+          </div>
+         </div>
+         <div class="field">
+          <div class="control has-icons-left">
+           <div class="select is-small">
+            <select>
+             <option selected="">
+              Country
+             </option>
+             <option>
+              Select dropdown
+             </option>
+             <option>
+              With options
+             </option>
+            </select>
+           </div>
+           <span class="icon is-small is-left">
+            <i class="fa fa-globe"></i>
+           </span>
+          </div>
+         </div>
+         <div class="field">
+          <div class="control has-icons-left">
+           <div class="select">
+            <select>
+             <option selected="">
+              Country
+             </option>
+             <option>
+              Select dropdown
+             </option>
+             <option>
+              With options
+             </option>
+            </select>
+           </div>
+           <span class="icon is-left">
+            <i class="fa fa-globe"></i>
+           </span>
+          </div>
+         </div>
+         <div class="field">
+          <div class="control has-icons-left">
+           <div class="select is-medium">
+            <select>
+             <option selected="">
+              Country
+             </option>
+             <option>
+              Select dropdown
+             </option>
+             <option>
+              With options
+             </option>
+            </select>
+           </div>
+           <span class="icon is-medium is-left">
+            <i class="fa fa-globe"></i>
+           </span>
+          </div>
+         </div>
+         <div class="field">
+          <div class="control has-icons-left">
+           <div class="select is-large">
+            <select>
+             <option selected="">
+              Country
+             </option>
+             <option>
+              Select dropdown
+             </option>
+             <option>
+              With options
+             </option>
+            </select>
+           </div>
+           <span class="icon is-large is-left">
+            <i class="fa fa-globe"></i>
+           </span>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-content">
+         <p class="title is-4">File Input</p>
+         <div class="field">
+          <div class="file is-primary">
+           <label class="file-label">
+            
+
+<!-- BEGIN view: fforms24, db_table: dfforms24 -->
+<div>
+[%[= fforms24.custom['begin'] ]]
+ [%[ fforms24.custom['widgets']['f0']['_class']= 'file-input'  ]]
+ [%[ fforms24.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fforms24.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fforms24.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms24.custom['errors']['f0'] if 'f0' in fforms24.custom['errors'] else '' ]]</span>
+
+ [%[ fforms24.custom['submit']['_class']= 'file-input mysubmit_cls'  ]]
+ [%[ fforms24.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms24.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms24.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms24.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms24.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms24.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms24.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms24.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms24 flashdiv"> <span class="flashspan">fforms24</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms24');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms24.custom['end'] ]]
+</div>
+<!-- END fforms24-->
+
+
+            <span class="file-cta">
+             <span class="file-icon">
+              <i class="fa fa-upload"></i>
+             </span>
+             <span class="file-label">Primary file</span>
+            </span>
+           </label>
+          </div>
+         </div>
+         <div class="field">
+          <div class="file is-info has-name">
+           <label class="file-label">
+            
+
+<!-- BEGIN view: fforms25, db_table: dfforms25 -->
+<div>
+[%[= fforms25.custom['begin'] ]]
+ [%[ fforms25.custom['widgets']['f0']['_class']= 'file-input'  ]]
+ [%[ fforms25.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fforms25.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fforms25.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms25.custom['errors']['f0'] if 'f0' in fforms25.custom['errors'] else '' ]]</span>
+
+ [%[ fforms25.custom['submit']['_class']= 'file-input mysubmit_cls'  ]]
+ [%[ fforms25.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms25.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms25.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms25.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms25.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms25.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms25.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms25.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms25 flashdiv"> <span class="flashspan">fforms25</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms25');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms25.custom['end'] ]]
+</div>
+<!-- END fforms25-->
+
+
+            <span class="file-cta">
+             <span class="file-icon">
+              <i class="fa fa-upload"></i>
+             </span>
+             <span class="file-label">Info file</span>
+            </span>
+            <span class="file-name">Screen Shot 2017-07-29 at 15.54.25.png</span>
+           </label>
+          </div>
+         </div>
+         <div class="field">
+          <div class="file is-warning is-boxed">
+           <label class="file-label">
+            
+
+<!-- BEGIN view: fforms26, db_table: dfforms26 -->
+<div>
+[%[= fforms26.custom['begin'] ]]
+ [%[ fforms26.custom['widgets']['f0']['_class']= 'file-input'  ]]
+ [%[ fforms26.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fforms26.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fforms26.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms26.custom['errors']['f0'] if 'f0' in fforms26.custom['errors'] else '' ]]</span>
+
+ [%[ fforms26.custom['submit']['_class']= 'file-input mysubmit_cls'  ]]
+ [%[ fforms26.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms26.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms26.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms26.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms26.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms26.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms26.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms26.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms26 flashdiv"> <span class="flashspan">fforms26</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms26');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms26.custom['end'] ]]
+</div>
+<!-- END fforms26-->
+
+
+            <span class="file-cta">
+             <span class="file-icon">
+              <i class="fa fa-cloud-upload"></i>
+             </span>
+             <span class="file-label">Warning file</span>
+            </span>
+           </label>
+          </div>
+         </div>
+         <div class="field">
+          <div class="file is-danger has-name is-boxed">
+           <label class="file-label">
+            
+
+<!-- BEGIN view: fforms27, db_table: dfforms27 -->
+<div>
+[%[= fforms27.custom['begin'] ]]
+ [%[ fforms27.custom['widgets']['f0']['_class']= 'file-input'  ]]
+ [%[ fforms27.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fforms27.custom['widgets']['f0']['_placeholder']= '_p4w'  ]]
+ [%[= fforms27.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforms27.custom['errors']['f0'] if 'f0' in fforms27.custom['errors'] else '' ]]</span>
+
+ [%[ fforms27.custom['submit']['_class']= 'file-input mysubmit_cls'  ]]
+ [%[ fforms27.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforms27.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforms27.custom['submit']['_rows']= '1'  ]]
+ [%[ fforms27.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforms27.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforms27.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforms27.custom['hidden_widgets'].keys(): ]]
+     [%[= fforms27.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  
+<div class="divfforms27 flashdiv"> <span class="flashspan">fforms27</span> </div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfforms27');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+
+[%[= fforms27.custom['end'] ]]
+</div>
+<!-- END fforms27-->
+
+
+            <span class="file-cta">
+             <span class="file-icon">
+              <i class="fa fa-cloud-upload"></i>
+             </span>
+             <span class="file-label">Danger file</span>
+            </span>
+            <span class="file-name">Screen Shot 2017-07-29 at 15.54.25.png</span>
+           </label>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script src="[%[=URL('static/tte/js/app.js') ]]"></script>
+  <script>
+   $(document).ready(function() {
+    let bar = {
+        type: 'bar',
+        height: 40,
+        barWidth: 4,
+        barColor: '#fff',
+        barSpacing: 3
+    };
+
+    let line = {
+        type: 'line',
+        width: 150, //73
+        height: 36,
+        lineColor: '#fff',
+        fillColor: 'rgba(0,0,0,0)',
+        lineWidth: 2,
+        maxSpotColor: 'rgba(255,255,255,0.4)',
+        minSpotColor: 'rgba(255,255,255,0.4)',
+        spotColor: 'rgba(255,255,255,0.4)',
+        spotRadius: 3,
+        highlightSpotColor: '#fff',
+        highlightLineColor: 'rgba(255,255,255,0.4)'
+    };
+    // $(item).find('.sparkline-bar-stats').sparkline('html', chart === 'bar' ? bar : line);
+
+    function data() {
+        return Array.from({
+            length: 22
+        }, () => Math.floor(Math.random() * 40));
+    }
+
+    $('.inlinesparkline-bar').each(function() {
+        $(this).sparkline(data(), bar);
+    });
+
+    $('.inlinesparkline-line').each(function() {
+        $(this).sparkline(data(), line);
+    });
+
+    var ctx1 = document.getElementById('chart2').getContext('2d');
+    window.myBar = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            "labels": ["January", "February", "March", "April", "May", "June", "July"],
+            "datasets": [{
+                "label": "Dataset 1",
+                "backgroundColor": "rgb(255, 99, 132)",
+                "stack": "Stack 0",
+                "data": [-49, -7, -21, 23, 76, -29, 0]
+            }, {
+                "label": "Dataset 2",
+                "backgroundColor": "rgb(54, 162, 235)",
+                "stack": "Stack 0",
+                "data": [25, -77, -35, -77, -81, 2, 54]
+            }, {
+                "label": "Dataset 3",
+                "backgroundColor": "rgb(75, 192, 192)",
+                "stack": "Stack 1",
+                "data": [43, -6, -98, -22, 24, -51, 6]
+            }]
+        },
+        options: {
+            title: {
+                display: false,
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false
+            },
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    stacked: true,
+                }],
+                yAxes: [{
+                    stacked: true
+                }]
+            },
+            legend: {
+                display: false
+            },
+        }
+    });
+
+    var ctx2 = document.getElementById('chart1').getContext('2d');
+    window.myLine = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+            datasets: [{
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [-60.21, 67.03, -66.63, 97.27, -39.65, 6.71, 6.14, 98.68],
+                label: 'Dataset',
+                fill: 'start'
+            }]
+        },
+        options: {
+            title: {
+                display: false
+            },
+            legend: {
+                display: false
+            },
+        }
+    });
+});
+  </script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-89250524-7"></script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+
+function gtag() {
+    dataLayer.push(arguments);
+}
+gtag('js', new Date());
+
+gtag('config', 'UA-89250524-7');
+  </script>
+  <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+   (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-7864475889913507",
+    enable_page_level_ads: true
+});
+  </script>
+  <script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "url": "https://www.nafplann.com/",
+    "name": "Abdul Manaaf | Fullstack Web Developer",
+    "author": "Abdul Manaaf",
+    "image": "https://avatars3.githubusercontent.com/u/7114259?s=460&v=4",
+    "description": "Abdul Manaaf is a Fullstack Web Developer from Indonesia",
+    "sameAs": ["https://www.facebook.com/nafplann", "https://instagram.com/nafplann", "https://twitter.com/nafplann", "https://id.linkedin.com/in/nafplann", "https://github.com/nafplann"]
+}</script>
+  <script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "Person",
+    "email": "mailto:nafplann@gmail.com",
+    "image": "https://avatars3.githubusercontent.com/u/7114259?s=460&v=4",
+    "jobTitle": "Fullstack Web Developer",
+    "name": "Abdul Manaaf",
+    "url": "https://www.nafplann.com/",
+    "sameAs": ["https://www.facebook.com/nafplann", "https://instagram.com/nafplann", "https://twitter.com/nafplann", "https://id.linkedin.com/in/nafplann", "https://github.com/nafplann"]
+}</script>
+  <script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+                "@id": "https://nafplann.com/",
+                "name": "Home",
+                "image": "https://avatars3.githubusercontent.com/u/7114259?s=460&v=4"
+            }
+        }, {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+                "@id": "https://nafplann.com/bulma-admin/",
+                "name": "free-bulma-admin-dashboard-template",
+                "image": "https://avatars3.githubusercontent.com/u/7114259?s=460&v=4"
+            }
+        }
+    }]
+}</script>
+ </body>
+ <!-- Mirrored from nafplann.bulma-admin.dev/forms by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 31 Jul 2019 05:38:01 GMT -->
+</html>

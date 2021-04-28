@@ -1,0 +1,2164 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 25.11.2020 16:43:08 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- Bootstrap -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/bootstrap/dist/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <!-- Font Awesome -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/font-awesome/css/font-awesome.min.css') ]]" rel="stylesheet"/>
+  <!-- NProgress -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/nprogress/nprogress.css') ]]" rel="stylesheet"/>
+  <!-- bootstrap-daterangepicker -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/bootstrap-daterangepicker/daterangepicker.css') ]]" rel="stylesheet"/>
+  <!-- bootstrap-datetimepicker -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css') ]]" rel="stylesheet"/>
+  <!-- Ion.RangeSlider -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/normalize-css/normalize.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/gentelella/vendors/ion.rangeSlider/css/ion.rangeSlider.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/gentelella/vendors/ion.rangeSlider/css/ion.rangeSlider.skinFlat.css') ]]" rel="stylesheet"/>
+  <!-- Bootstrap Colorpicker -->
+  <link href="[%[=URL('static/tte/gentelella/vendors/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/gentelella/vendors/cropper/dist/cropper.min.css') ]]" rel="stylesheet"/>
+  <!-- Custom Theme Style -->
+  <link href="[%[=URL('static/tte/gentelella/build/css/custom.min.css') ]]" rel="stylesheet"/>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+</head>
+ <body class="nav-md">
+  <div class="container body">
+   <div class="main_container">
+    <div class="col-md-3 left_col">
+     <div class="left_col scroll-view">
+      <div class="navbar nav_title" style="border: 0;">
+       <a class="site_title" href="[%[=URL('index') ]]">
+        <i class="fa fa-paw"></i>
+        <span>Gentelella Alela!</span>
+       </a>
+      </div>
+      <div class="clearfix"></div>
+      <!-- menu profile quick info -->
+      <div class="profile clearfix">
+       <div class="profile_pic">
+        <img alt="..." class="img-circle profile_img" src="[%[=URL('static/tte/images/img.jpg') ]]"/></div>
+       <div class="profile_info">
+        <span>Welcome,</span>
+        <h2>John Doe</h2>
+       </div>
+      </div>
+      <!-- /menu profile quick info -->
+      <br/>
+      <!-- sidebar menu -->
+      <div class="main_menu_side hidden-print main_menu" id="sidebar-menu">
+       <div class="menu_section">
+        <h3>General</h3>
+        <ul class="nav side-menu">
+         <li>
+          <a>
+           <i class="fa fa-home"></i>
+           Home
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('index') ]]">Dashboard</a>
+           </li>
+           <li>
+            <a href="[%[=URL('index2') ]]">Dashboard2</a>
+           </li>
+           <li>
+            <a href="[%[=URL('index3') ]]">Dashboard3</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-edit"></i>
+           Forms
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('form') ]]">General Form</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXadvanced') ]]">Advanced Components</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXvalidation') ]]">Form Validation</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXwizards') ]]">Form Wizard</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXupload') ]]">Form Upload</a>
+           </li>
+           <li>
+            <a href="[%[=URL('formXbuttons') ]]">Form Buttons</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-desktop"></i>
+           UI Elements
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('generalXelements') ]]">General Elements</a>
+           </li>
+           <li>
+            <a href="[%[=URL('mediaXgallery') ]]">Media Gallery</a>
+           </li>
+           <li>
+            <a href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li>
+            <a href="[%[=URL('icons') ]]">Icons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('glyphicons') ]]">Glyphicons</a>
+           </li>
+           <li>
+            <a href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+           <li>
+            <a href="[%[=URL('invoice') ]]">Invoice</a>
+           </li>
+           <li>
+            <a href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li>
+            <a href="[%[=URL('calendar') ]]">Calendar</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-table"></i>
+           Tables
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('tables') ]]">Tables</a>
+           </li>
+           <li>
+            <a href="[%[=URL('tablesXdynamic') ]]">Table Dynamic</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-bar-chart-o"></i>
+           Data Presentation
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('chartjs') ]]">Chart JS</a>
+           </li>
+           <li>
+            <a href="[%[=URL('chartjs2') ]]">Chart JS2</a>
+           </li>
+           <li>
+            <a href="[%[=URL('morisjs') ]]">Moris JS</a>
+           </li>
+           <li>
+            <a href="[%[=URL('echarts') ]]">ECharts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('otherXcharts') ]]">Other Charts</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-clone"></i>
+           Layouts
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('fixedXsidebar') ]]">Fixed Sidebar</a>
+           </li>
+           <li>
+            <a href="[%[=URL('fixedXfooter') ]]">Fixed Footer</a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+       <div class="menu_section">
+        <h3>Live On</h3>
+        <ul class="nav side-menu">
+         <li>
+          <a>
+           <i class="fa fa-bug"></i>
+           Additional Pages
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('eXcommerce') ]]">E-commerce</a>
+           </li>
+           <li>
+            <a href="[%[=URL('projects') ]]">Projects</a>
+           </li>
+           <li>
+            <a href="[%[=URL('projectXdetail') ]]">Project Detail</a>
+           </li>
+           <li>
+            <a href="[%[=URL('contacts') ]]">Contacts</a>
+           </li>
+           <li>
+            <a href="[%[=URL('profile') ]]">Profile</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-windows"></i>
+           Extras
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="[%[=URL('pageX403') ]]">403 Error</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pageX404') ]]">404 Error</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pageX500') ]]">500 Error</a>
+           </li>
+           <li>
+            <a href="[%[=URL('plainXpage') ]]">Plain Page</a>
+           </li>
+           <li>
+            <a href="[%[=URL('login') ]]">Login Page</a>
+           </li>
+           <li>
+            <a href="[%[=URL('pricingXtables') ]]">Pricing Tables</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a>
+           <i class="fa fa-sitemap"></i>
+           Multilevel Menu
+           <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+           <li>
+            <a href="#level1_1">Level One</a>
+           </li>
+           <li>
+            <a>
+             Level One
+             <span class="fa fa-chevron-down"></span>
+            </a>
+            <ul class="nav child_menu">
+             <li class="sub_menu">
+              <a href="[%[=URL('level2') ]]">Level Two</a>
+             </li>
+             <li>
+              <a href="#level2_1">Level Two</a>
+             </li>
+             <li>
+              <a href="#level2_2">Level Two</a>
+             </li>
+            </ul>
+           </li>
+           <li>
+            <a href="#level1_2">Level One</a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a href="javascript:void(0)">
+           <i class="fa fa-laptop"></i>
+           Landing Page
+           <span class="label label-success pull-right">Coming Soon</span>
+          </a>
+         </li>
+        </ul>
+       </div>
+      </div>
+      <!-- /sidebar menu -->
+      <!-- /menu footer buttons -->
+      <div class="sidebar-footer hidden-small">
+       <a data-placement="top" data-toggle="tooltip" title="Settings">
+        <span aria-hidden="true" class="glyphicon glyphicon-cog"></span>
+       </a>
+       <a data-placement="top" data-toggle="tooltip" title="FullScreen">
+        <span aria-hidden="true" class="glyphicon glyphicon-fullscreen"></span>
+       </a>
+       <a data-placement="top" data-toggle="tooltip" title="Lock">
+        <span aria-hidden="true" class="glyphicon glyphicon-eye-close"></span>
+       </a>
+       <a data-placement="top" data-toggle="tooltip" href="[%[=URL('login') ]]" title="Logout">
+        <span aria-hidden="true" class="glyphicon glyphicon-off"></span>
+       </a>
+      </div>
+      <!-- /menu footer buttons -->
+     </div>
+    </div>
+    <!-- top navigation -->
+    <div class="top_nav">
+     <div class="nav_menu">
+      <div class="nav toggle">
+       <a id="menu_toggle">
+        <i class="fa fa-bars"></i>
+       </a>
+      </div>
+      <nav class="nav navbar-nav">
+       <ul class="navbar-right">
+        <li class="nav-item dropdown open" style="padding-left: 15px;">
+         <a aria-expanded="false" aria-haspopup="true" class="user-profile dropdown-toggle" data-toggle="dropdown" href="javascript:;" id="navbarDropdown">
+          <img alt="" src="[%[=URL('static/tte/images/img.jpg') ]]"/>John Doe</a>
+         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-usermenu pull-right">
+          <a class="dropdown-item" href="javascript:;">Profile</a>
+          <a class="dropdown-item" href="javascript:;">
+           <span class="badge bg-red pull-right">50%</span>
+           <span>Settings</span>
+          </a>
+          <a class="dropdown-item" href="javascript:;">Help</a>
+          <a class="dropdown-item" href="[%[=URL('login') ]]">
+           <i class="fa fa-sign-out pull-right"></i>
+           Log Out
+          </a>
+         </div>
+        </li>
+        <li class="nav-item dropdown open" role="presentation">
+         <a aria-expanded="false" class="dropdown-toggle info-number" data-toggle="dropdown" href="javascript:;" id="navbarDropdown1">
+          <i class="fa fa-envelope-o"></i>
+          <span class="badge bg-green">6</span>
+         </a>
+         <ul aria-labelledby="navbarDropdown1" class="dropdown-menu list-unstyled msg_list" role="menu">
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <a class="dropdown-item">
+            <span class="image">
+             <img alt="Profile Image" src="[%[=URL('static/tte/images/img.jpg') ]]"/></span>
+            <span>
+             <span>John Smith</span>
+             <span class="time">3 mins ago</span>
+            </span>
+            <span class="message">Film festivals used to be do-or-die moments for movie makers. They were where...</span>
+           </a>
+          </li>
+          <li class="nav-item">
+           <div class="text-center">
+            <a class="dropdown-item">
+             <strong>See All Alerts</strong>
+             <i class="fa fa-angle-right"></i>
+            </a>
+           </div>
+          </li>
+         </ul>
+        </li>
+       </ul>
+      </nav>
+     </div>
+    </div>
+    <!-- /top navigation -->
+    <!-- page content -->
+    <div class="right_col" role="main">
+     <div class="">
+      <div class="page-title">
+       <div class="title_left">
+        <h3>Form advanced</h3>
+       </div>
+       <div class="title_right">
+        <div class="col-md-5 col-sm-5 form-group row pull-right top_search">
+         <div class="input-group">
+          <input class="form-control" placeholder="Search for..." type="text"/>
+          <span class="input-group-btn">
+           <button class="btn btn-default" type="button">Go!</button>
+          </span>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="row">
+       <!-- form input mask -->
+       <div class="col-md-6 col-sm-12">
+        <div class="x_panel">
+         <div class="x_title">
+          <h2>Input Mask</h2>
+          <ul class="nav navbar-right panel_toolbox">
+           <li>
+            <a class="collapse-link">
+             <i class="fa fa-chevron-up"></i>
+            </a>
+           </li>
+           <li class="dropdown">
+            <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+             <i class="fa fa-wrench"></i>
+            </a>
+            <div aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+             <a class="dropdown-item" href="#">Settings 1</a>
+             <a class="dropdown-item" href="#">Settings 2</a>
+            </div>
+           </li>
+           <li>
+            <a class="close-link">
+             <i class="fa fa-close"></i>
+            </a>
+           </li>
+          </ul>
+          <div class="clearfix"></div>
+         </div>
+         <div class="x_content">
+          <br/>
+          
+<!-- view: fformXadvanced0, db_table: dfformXadvanced0 -->
+<div class="form-horizontal form-label-left"  style="border: 1px gray dashed;">
+[%[= fformXadvanced0.custom['begin'] ]]
+<div class="form-group row">
+ <label class="control-label col-md-3 col-sm-3 col-xs-3">
+  Date Mask
+ </label>
+ <div class="col-md-9 col-sm-9 col-xs-9">
+ [%[ fformXadvanced0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f0']['_data-inputmask']= 'mask: 99/99/9999'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f0']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced0.custom['errors']['f0'] if 'f0' in fformXadvanced0.custom['errors'] else '' ]]</span>
+
+  <span aria-hidden="true" class="fa fa-user form-control-feedback right">
+  </span>
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="control-label col-md-3 col-sm-3 col-xs-3">
+  Phone mask
+ </label>
+ <div class="col-md-9 col-sm-9 col-xs-9">
+ [%[ fformXadvanced0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f1']['_data-inputmask']= 'mask : (999) 999-9999'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f1']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced0.custom['errors']['f1'] if 'f1' in fformXadvanced0.custom['errors'] else '' ]]</span>
+
+  <span aria-hidden="true" class="fa fa-user form-control-feedback right">
+  </span>
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="control-label col-md-3 col-sm-3 col-xs-3">
+  Custom Mask
+ </label>
+ <div class="col-md-9 col-sm-9 col-xs-9">
+ [%[ fformXadvanced0.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f2']['_data-inputmask']= 'mask: 99-999999'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f2']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced0.custom['errors']['f2'] if 'f2' in fformXadvanced0.custom['errors'] else '' ]]</span>
+
+  <span aria-hidden="true" class="fa fa-user form-control-feedback right">
+  </span>
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="control-label col-md-3 col-sm-3 col-xs-3">
+  Serial Number
+ </label>
+ <div class="col-md-9 col-sm-9 col-xs-9">
+ [%[ fformXadvanced0.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f3']['_class']= 'form-control'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f3']['_data-inputmask']= 'mask : ****-****-****-****-****-***'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f3']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced0.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced0.custom['errors']['f3'] if 'f3' in fformXadvanced0.custom['errors'] else '' ]]</span>
+
+  <span aria-hidden="true" class="fa fa-user form-control-feedback right">
+  </span>
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="control-label col-md-3 col-sm-3 col-xs-3">
+  TaxID Mask
+ </label>
+ <div class="col-md-9 col-sm-9 col-xs-9">
+ [%[ fformXadvanced0.custom['widgets']['f4']['_type']= 'text'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f4']['_class']= 'form-control'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f4']['_data-inputmask']= 'mask : 99-99999999'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f4']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced0.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced0.custom['errors']['f4'] if 'f4' in fformXadvanced0.custom['errors'] else '' ]]</span>
+
+  <span aria-hidden="true" class="fa fa-user form-control-feedback right">
+  </span>
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="control-label col-md-3 col-sm-3 col-xs-3">
+  Credit Card Mask
+ </label>
+ <div class="col-md-9 col-sm-9 col-xs-9">
+ [%[ fformXadvanced0.custom['widgets']['f5']['_type']= 'text'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f5']['_class']= 'form-control'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f5']['_data-inputmask']= 'mask : 9999-9999-9999-9999'  ]]
+ [%[ fformXadvanced0.custom['widgets']['f5']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced0.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced0.custom['errors']['f5'] if 'f5' in fformXadvanced0.custom['errors'] else '' ]]</span>
+
+  <span aria-hidden="true" class="fa fa-user form-control-feedback right">
+  </span>
+ </div>
+</div>
+
+<div class="ln_solid">
+</div>
+
+<div class="form-group row">
+ <div class="col-md-9 offset-md-3">
+ [%[ fformXadvanced0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformXadvanced0.custom['submit']['_class']= 'btn btn-primary'  ]]
+ [%[ fformXadvanced0.custom['submit']['_title']= 'mysubmit from B'  ]]
+ [%[ fformXadvanced0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformXadvanced0.custom['submit']['_style']= 'border:2px dashed red; text-decoration: underline;'  ]]
+ [%[= fformXadvanced0.custom['submit'] ]]
+
+  <button class="btn btn-success" type="submit">
+   Submit
+  </button>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformXadvanced0.custom['hidden_widgets'].keys(): ]]
+     [%[= fformXadvanced0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+[%[= fformXadvanced0.custom['end'] ]]
+  
+<div  class='divfformXadvanced0' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">fformXadvanced0</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformXadvanced0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+</div>
+<!-- end fformXadvanced0 -->
+
+         </div>
+        </div>
+       </div>
+       <!-- /form input mask -->
+       <!-- form color picker -->
+       <div class="col-md-6 col-sm-12">
+        <div class="x_panel">
+         <div class="x_title">
+          <h2>Color Picker</h2>
+          <ul class="nav navbar-right panel_toolbox">
+           <li>
+            <a class="collapse-link">
+             <i class="fa fa-chevron-up"></i>
+            </a>
+           </li>
+           <li class="dropdown">
+            <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+             <i class="fa fa-wrench"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+             <li>
+              <a href="#">Settings 1</a>
+             </li>
+             <li>
+              <a href="#">Settings 2</a>
+             </li>
+            </ul>
+           </li>
+           <li>
+            <a class="close-link">
+             <i class="fa fa-close"></i>
+            </a>
+           </li>
+          </ul>
+          <div class="clearfix"></div>
+         </div>
+         <div class="x_content">
+          <br/>
+          
+<!-- view: fformXadvanced1, db_table: dfformXadvanced1 -->
+<div class="form-horizontal form-label-left"  style="border: 1px gray dashed;">
+[%[= fformXadvanced1.custom['begin'] ]]
+<div class="form-group row">
+ <label class="control-label col-md-3 col-sm-3">
+  Default Input
+ </label>
+ <div class="col-md-9 col-sm-9">
+ [%[ fformXadvanced1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f0']['_class']= 'demo1 form-control'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f0']['_value']= '#5367ce'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f0']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced1.custom['errors']['f0'] if 'f0' in fformXadvanced1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="control-label col-md-3 col-sm-3">
+  Styled
+ </label>
+ <div class="col-md-9 col-sm-9">
+  <div class="input-group demo2">
+ [%[ fformXadvanced1.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f1']['_value']= '#e01ab5'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f1']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced1.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced1.custom['errors']['f1'] if 'f1' in fformXadvanced1.custom['errors'] else '' ]]</span>
+
+   <span class="input-group-addon">
+    <i>
+    </i>
+   </span>
+  </div>
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="control-label col-md-3 col-sm-3">
+  Horizontal bar
+ </label>
+ <div class="col-md-9 col-sm-9">
+ [%[ fformXadvanced1.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f2']['_class']= 'form-control demo colorpicker-element'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f2']['_data-horizontal']= 'true'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f2']['_id']= 'demo_forceformat'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f2']['_value']= '#8fff00'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f2']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced1.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced1.custom['errors']['f2'] if 'f2' in fformXadvanced1.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="control-label col-md-3 col-sm-3">
+  Vertical bar
+ </label>
+ <div class="col-md-9 col-sm-9">
+ [%[ fformXadvanced1.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f3']['_class']= 'form-control demo colorpicker-element'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f3']['_id']= 'demo_forceformat3'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f3']['_value']= '#8fff00'  ]]
+ [%[ fformXadvanced1.custom['widgets']['f3']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced1.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced1.custom['errors']['f3'] if 'f3' in fformXadvanced1.custom['errors'] else '' ]]</span>
+
+ [%[ fformXadvanced1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformXadvanced1.custom['submit']['_class']= 'form-control demo colorpicker-element'  ]]
+ [%[ fformXadvanced1.custom['submit']['_id']= 'demo_forceformat3'  ]]
+ [%[ fformXadvanced1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformXadvanced1.custom['submit']['_placeholder']= 'sUb:p4w'  ]]
+ [%[ fformXadvanced1.custom['submit']['_rows']= '1'  ]]
+ [%[ fformXadvanced1.custom['submit']['_style']= 'color:red; border:2px dashed red; text-decoration: underline;'  ]]
+ [%[ fformXadvanced1.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformXadvanced1.custom['submit'] ]]
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="control-label col-md-3 col-sm-3">
+  Inline picker
+ </label>
+ <div class="col-md-9 col-sm-9">
+  <div class="well">
+   <div class="demo demo-auto inl-bl colorpicker-element" data-color="rgba(150,216,62,0.55)" data-container="#demo_cont" data-inline="true" id="demo_cont">
+   </div>
+   <div class="demo demo-auto inl-bl colorpicker-element" data-color="rgb(50,216,62)" data-container="true" data-inline="true" style="margin-left:20px;">
+   </div>
+  </div>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformXadvanced1.custom['hidden_widgets'].keys(): ]]
+     [%[= fformXadvanced1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+[%[= fformXadvanced1.custom['end'] ]]
+  
+<div  class='divfformXadvanced1' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">fformXadvanced1</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformXadvanced1');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+</div>
+<!-- end fformXadvanced1 -->
+
+         </div>
+        </div>
+       </div>
+       <!-- /form color picker -->
+       <!-- form input knob -->
+       <div class="col-md-12">
+        <div class="x_panel">
+         <div class="x_title">
+          <h2>Input knob</h2>
+          <ul class="nav navbar-right panel_toolbox">
+           <li>
+            <a class="collapse-link">
+             <i class="fa fa-chevron-up"></i>
+            </a>
+           </li>
+           <li class="dropdown">
+            <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+             <i class="fa fa-wrench"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+             <li>
+              <a href="#">Settings 1</a>
+             </li>
+             <li>
+              <a href="#">Settings 2</a>
+             </li>
+            </ul>
+           </li>
+           <li>
+            <a class="close-link">
+             <i class="fa fa-close"></i>
+            </a>
+           </li>
+          </ul>
+          <div class="clearfix"></div>
+         </div>
+         <div class="x_content">
+          <div class="col-md-2">
+           <p>Display value</p>
+           <input class="knob" data-displayprevious="true" data-fgcolor="#26B99A" data-height="120" data-min="-100" data-width="100" value="44"/></div>
+          <div class="col-md-2">
+           <p>'cursor' mode</p>
+           <input class="knob" data-cursor="true" data-fgcolor="#34495E" data-height="120" data-width="100" value="29"/></div>
+          <div class="col-md-2">
+           <p>Step 0.1</p>
+           <input class="knob" data-displayprevious="true" data-fgcolor="#26B99A" data-height="120" data-max="10000" data-min="-10000" data-step="1" data-width="100" value="0"/></div>
+          <div class="col-md-2">
+           <p>Angle arc</p>
+           <input class="knob" data-anglearc="250" data-angleoffset="-125" data-fgcolor="#34495E" data-height="120" data-rotation="anticlockwise" data-width="100" value="35"/></div>
+          <div class="col-md-2">
+           <p>Alternate design</p>
+           <input class="knob" data-displayprevious="true" data-fgcolor="#26B99A" data-height="120" data-skin="tron" data-thickness="2" data-width="110" value="75"/></div>
+          <div class="col-md-2">
+           <p>Angle offset</p>
+           <input class="knob" data-angleoffset="90" data-fgcolor="#26B99A" data-height="120" data-linecap="round" data-width="100" value="35"/></div>
+         </div>
+        </div>
+       </div>
+       <!-- /form input knob -->
+      </div>
+      <div class="row">
+       <div class="col-md-12">
+        <!-- form date pickers -->
+        <div class="x_panel" style="">
+         <div class="x_title">
+          <h2>
+           Date Pickers
+           <small>Available with multiple designs</small>
+          </h2>
+          <ul class="nav navbar-right panel_toolbox">
+           <li>
+            <a class="collapse-link">
+             <i class="fa fa-chevron-up"></i>
+            </a>
+           </li>
+           <li class="dropdown">
+            <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+             <i class="fa fa-wrench"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+             <li>
+              <a href="#">Settings 1</a>
+             </li>
+             <li>
+              <a href="#">Settings 2</a>
+             </li>
+            </ul>
+           </li>
+           <li>
+            <a class="close-link">
+             <i class="fa fa-close"></i>
+            </a>
+           </li>
+          </ul>
+          <div class="clearfix"></div>
+         </div>
+         <div class="x_content">
+          <div class="well" style="overflow: auto">
+           <div class="col-md-4">
+            <div class="pull-left" id="reportrange_right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+             <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+             <span>December 30, 2014 - January 28, 2015</span>
+             <b class="caret"></b>
+            </div>
+           </div>
+           <div class="col-md-4">
+            <p>Date Range Picker with opening to right and left</p>
+           </div>
+           <div class="col-md-4">
+            <div class="pull-right" id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+             <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+             <span>December 30, 2014 - January 28, 2015</span>
+             <b class="caret"></b>
+            </div>
+           </div>
+          </div>
+          <div class="well" style="overflow: auto">
+           <div class="col-md-4">
+            Date Range Picker
+            
+<!-- view: fformXadvanced2, db_table: dfformXadvanced2 -->
+<div class=""  style="border: 1px gray dashed;">
+[%[= fformXadvanced2.custom['begin'] ]]
+<fieldset>
+ <div class="control-group">
+  <div class="controls">
+   <div class="input-prepend input-group">
+    <span class="add-on input-group-addon">
+     <i class="glyphicon glyphicon-calendar fa fa-calendar">
+     </i>
+    </span>
+ [%[ fformXadvanced2.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformXadvanced2.custom['widgets']['f0']['_style']= 'width: 200px'  ]]
+ [%[ fformXadvanced2.custom['widgets']['f0']['_id']= 'reservation'  ]]
+ [%[ fformXadvanced2.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformXadvanced2.custom['widgets']['f0']['_value']= '01/01/2016 - 01/25/2016'  ]]
+ [%[ fformXadvanced2.custom['widgets']['f0']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced2.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced2.custom['errors']['f0'] if 'f0' in fformXadvanced2.custom['errors'] else '' ]]</span>
+
+ [%[ fformXadvanced2.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformXadvanced2.custom['submit']['_style']= 'color:red; border:2px dashed red; text-decoration: underline;'  ]]
+ [%[ fformXadvanced2.custom['submit']['_id']= 'reservation'  ]]
+ [%[ fformXadvanced2.custom['submit']['_class']= 'form-control'  ]]
+ [%[ fformXadvanced2.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformXadvanced2.custom['submit']['_placeholder']= 'sUb:p4w'  ]]
+ [%[ fformXadvanced2.custom['submit']['_rows']= '1'  ]]
+ [%[ fformXadvanced2.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformXadvanced2.custom['submit'] ]]
+
+   </div>
+  </div>
+ </div>
+</fieldset>
+
+ [%[ for hidden_widget in fformXadvanced2.custom['hidden_widgets'].keys(): ]]
+     [%[= fformXadvanced2.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+[%[= fformXadvanced2.custom['end'] ]]
+  
+<div  class='divfformXadvanced2' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">fformXadvanced2</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformXadvanced2');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+</div>
+<!-- end fformXadvanced2 -->
+
+           </div>
+           <div class="col-md-5">
+            Date and Time
+            
+<!-- view: fformXadvanced3, db_table: dfformXadvanced3 -->
+<div class=""  style="border: 1px gray dashed;">
+[%[= fformXadvanced3.custom['begin'] ]]
+<fieldset>
+ <div class="control-group">
+  <div class="controls">
+   <div class="input-prepend input-group">
+    <span class="add-on input-group-addon">
+     <i class="glyphicon glyphicon-calendar fa fa-calendar">
+     </i>
+    </span>
+ [%[ fformXadvanced3.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformXadvanced3.custom['widgets']['f0']['_id']= 'reservation-time'  ]]
+ [%[ fformXadvanced3.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformXadvanced3.custom['widgets']['f0']['_value']= '01/01/2016 - 01/25/2016'  ]]
+ [%[ fformXadvanced3.custom['widgets']['f0']['_placeholder']= ':p4w'  ]]
+ [%[= fformXadvanced3.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformXadvanced3.custom['errors']['f0'] if 'f0' in fformXadvanced3.custom['errors'] else '' ]]</span>
+
+ [%[ fformXadvanced3.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformXadvanced3.custom['submit']['_id']= 'reservation-time'  ]]
+ [%[ fformXadvanced3.custom['submit']['_class']= 'form-control'  ]]
+ [%[ fformXadvanced3.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformXadvanced3.custom['submit']['_placeholder']= 'sUb:p4w'  ]]
+ [%[ fformXadvanced3.custom['submit']['_rows']= '1'  ]]
+ [%[ fformXadvanced3.custom['submit']['_style']= 'color:red; border:2px dashed red; text-decoration: underline;'  ]]
+ [%[ fformXadvanced3.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformXadvanced3.custom['submit'] ]]
+
+   </div>
+  </div>
+ </div>
+</fieldset>
+
+ [%[ for hidden_widget in fformXadvanced3.custom['hidden_widgets'].keys(): ]]
+     [%[= fformXadvanced3.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+[%[= fformXadvanced3.custom['end'] ]]
+  
+<div  class='divfformXadvanced3' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">fformXadvanced3</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divfformXadvanced3');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+</div>
+<!-- end fformXadvanced3 -->
+
+           </div>
+          </div>
+          <div class="calendar-exibit">
+           <div class="col-md-3">
+            <div class="daterangepicker dropdown-menu ltr single opensright show-calendar picker_1 xdisplay">
+             <div class="calendar left single" style="display: block;">
+              <div class="daterangepicker_input">
+               <input class="input-mini form-control active" name="daterangepicker_start" style="display: none;" type="text" value=""/>
+               <i class="fa fa-calendar glyphicon glyphicon-calendar" style="display: none;"></i>
+               <div class="calendar-time" style="display: none;">
+                <div></div>
+                <i class="fa fa-clock-o glyphicon glyphicon-time"></i>
+               </div>
+              </div>
+              <div class="calendar-table">
+               
+<!--view: rows_tformXadvanced0, db_table: tformXadvanced0 -->
+  <table class="table-condensed">
+    <thead>
+      <tr>
+        <th class="prev available">==0</th>
+        <th colspan="5" class="month">Oct 2016</th>
+        <th class="next available">==0</th>
+        <th>Su</th>
+        <th>Mo</th>
+        <th>Tu</th>
+        <th>We</th>
+        <th>Th</th>
+        <th>Fr</th>
+        <th>Sa</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row0 in rows_tformXadvanced0: ]]
+        <tr>
+            <td class="weekend off available" data-title="r0c0">[%[= XML(row0.f0) ]]</td>
+            <td class="off available" data-title="r0c1">[%[= XML(row0.f1) ]]</td>
+            <td class="off available" data-title="r0c2">[%[= XML(row0.f2) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tformXadvanced0 -->
+
+
+<div  class='divtformXadvanced0' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">tformXadvanced0</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtformXadvanced0');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+              </div>
+             </div>
+             <div class="calendar right" style="display: none;">
+              <div class="daterangepicker_input">
+               <input class="input-mini form-control" name="daterangepicker_end" style="display: none;" type="text" value=""/>
+               <i class="fa fa-calendar glyphicon glyphicon-calendar" style="display: none;"></i>
+               <div class="calendar-time" style="display: none;">
+                <div></div>
+                <i class="fa fa-clock-o glyphicon glyphicon-time"></i>
+               </div>
+              </div>
+              <div class="calendar-table">
+               
+<!--view: rows_tformXadvanced1, db_table: tformXadvanced1 -->
+  <table class="table-condensed">
+    <thead>
+      <tr>
+        <th>==0</th>
+        <th colspan="5" class="month">Nov 2016</th>
+        <th class="next available">==0</th>
+        <th>Su</th>
+        <th>Mo</th>
+        <th>Tu</th>
+        <th>We</th>
+        <th>Th</th>
+        <th>Fr</th>
+        <th>Sa</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row1 in rows_tformXadvanced1: ]]
+        <tr>
+            <td class="weekend off available" data-title="r0c0">[%[= XML(row1.f0) ]]</td>
+            <td class="off available" data-title="r0c1">[%[= XML(row1.f1) ]]</td>
+            <td class="available" data-title="r0c2">[%[= XML(row1.f2) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tformXadvanced1 -->
+
+
+<div  class='divtformXadvanced1' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">tformXadvanced1</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtformXadvanced1');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+              </div>
+             </div>
+             <div class="ranges" style="display: none;">
+              <div class="range_inputs">
+               <button class="applyBtn btn btn-sm btn-success" type="button">Apply</button>
+               <button class="cancelBtn btn btn-sm btn-default" type="button">Cancel</button>
+              </div>
+             </div>
+            </div>
+            <fieldset>
+             <div class="control-group">
+              <div class="controls">
+               <div class="col-md-11 xdisplay_inputx form-group row has-feedback">
+                <input aria-describedby="inputSuccess2Status" class="form-control has-feedback-left" id="single_cal1" placeholder="First Name" type="text"/>
+                <span aria-hidden="true" class="fa fa-calendar-o form-control-feedback left"></span>
+                <span class="sr-only" id="inputSuccess2Status">(success)</span>
+               </div>
+              </div>
+             </div>
+            </fieldset>
+           </div>
+           <div class="col-md-3">
+            <div class="daterangepicker dropdown-menu ltr single opensright show-calendar picker_2 xdisplay">
+             <div class="calendar left single" style="display: block;">
+              <div class="daterangepicker_input">
+               <input class="input-mini form-control active" name="daterangepicker_start" style="display: none;" type="text" value=""/>
+               <i class="fa fa-calendar glyphicon glyphicon-calendar" style="display: none;"></i>
+               <div class="calendar-time" style="display: none;">
+                <div></div>
+                <i class="fa fa-clock-o glyphicon glyphicon-time"></i>
+               </div>
+              </div>
+              <div class="calendar-table">
+               
+<!--view: rows_tformXadvanced2, db_table: tformXadvanced2 -->
+  <table class="table-condensed">
+    <thead>
+      <tr>
+        <th class="prev available">==0</th>
+        <th colspan="5" class="month">Oct 2016</th>
+        <th class="next available">==0</th>
+        <th>Su</th>
+        <th>Mo</th>
+        <th>Tu</th>
+        <th>We</th>
+        <th>Th</th>
+        <th>Fr</th>
+        <th>Sa</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row2 in rows_tformXadvanced2: ]]
+        <tr>
+            <td class="weekend off available" data-title="r0c0">[%[= XML(row2.f0) ]]</td>
+            <td class="off available" data-title="r0c1">[%[= XML(row2.f1) ]]</td>
+            <td class="off available" data-title="r0c2">[%[= XML(row2.f2) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tformXadvanced2 -->
+
+
+<div  class='divtformXadvanced2' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">tformXadvanced2</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtformXadvanced2');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+              </div>
+             </div>
+             <div class="calendar right" style="display: none;">
+              <div class="daterangepicker_input">
+               <input class="input-mini form-control" name="daterangepicker_end" style="display: none;" type="text" value=""/>
+               <i class="fa fa-calendar glyphicon glyphicon-calendar" style="display: none;"></i>
+               <div class="calendar-time" style="display: none;">
+                <div></div>
+                <i class="fa fa-clock-o glyphicon glyphicon-time"></i>
+               </div>
+              </div>
+              <div class="calendar-table">
+               
+<!--view: rows_tformXadvanced3, db_table: tformXadvanced3 -->
+  <table class="table-condensed">
+    <thead>
+      <tr>
+        <th>==0</th>
+        <th colspan="5" class="month">Nov 2016</th>
+        <th class="next available">==0</th>
+        <th>Su</th>
+        <th>Mo</th>
+        <th>Tu</th>
+        <th>We</th>
+        <th>Th</th>
+        <th>Fr</th>
+        <th>Sa</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row3 in rows_tformXadvanced3: ]]
+        <tr>
+            <td class="weekend off available" data-title="r0c0">[%[= XML(row3.f0) ]]</td>
+            <td class="off available" data-title="r0c1">[%[= XML(row3.f1) ]]</td>
+            <td class="available" data-title="r0c2">[%[= XML(row3.f2) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tformXadvanced3 -->
+
+
+<div  class='divtformXadvanced3' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">tformXadvanced3</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtformXadvanced3');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+              </div>
+             </div>
+             <div class="ranges" style="display: none;">
+              <div class="range_inputs">
+               <button class="applyBtn btn btn-sm btn-success" type="button">Apply</button>
+               <button class="cancelBtn btn btn-sm btn-default" type="button">Cancel</button>
+              </div>
+             </div>
+            </div>
+            <fieldset>
+             <div class="control-group">
+              <div class="controls">
+               <div class="col-md-11 xdisplay_inputx form-group row has-feedback">
+                <input aria-describedby="inputSuccess2Status2" class="form-control has-feedback-left" id="single_cal2" placeholder="First Name" type="text"/>
+                <span aria-hidden="true" class="fa fa-calendar-o form-control-feedback left"></span>
+                <span class="sr-only" id="inputSuccess2Status2">(success)</span>
+               </div>
+              </div>
+             </div>
+            </fieldset>
+           </div>
+           <div class="col-md-3">
+            <div class="daterangepicker dropdown-menu ltr single opensright show-calendar picker_3 xdisplay">
+             <div class="calendar left single" style="display: block;">
+              <div class="daterangepicker_input">
+               <input class="input-mini form-control active" name="daterangepicker_start" style="display: none;" type="text" value=""/>
+               <i class="fa fa-calendar glyphicon glyphicon-calendar" style="display: none;"></i>
+               <div class="calendar-time" style="display: none;">
+                <div></div>
+                <i class="fa fa-clock-o glyphicon glyphicon-time"></i>
+               </div>
+              </div>
+              <div class="calendar-table">
+               
+<!--view: rows_tformXadvanced4, db_table: tformXadvanced4 -->
+  <table class="table-condensed">
+    <thead>
+      <tr>
+        <th class="prev available">==0</th>
+        <th colspan="5" class="month">Oct 2016</th>
+        <th class="next available">==0</th>
+        <th>Su</th>
+        <th>Mo</th>
+        <th>Tu</th>
+        <th>We</th>
+        <th>Th</th>
+        <th>Fr</th>
+        <th>Sa</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row4 in rows_tformXadvanced4: ]]
+        <tr>
+            <td class="weekend off available" data-title="r0c0">[%[= XML(row4.f0) ]]</td>
+            <td class="off available" data-title="r0c1">[%[= XML(row4.f1) ]]</td>
+            <td class="off available" data-title="r0c2">[%[= XML(row4.f2) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tformXadvanced4 -->
+
+
+<div  class='divtformXadvanced4' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">tformXadvanced4</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtformXadvanced4');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+              </div>
+             </div>
+             <div class="calendar right" style="display: none;">
+              <div class="daterangepicker_input">
+               <input class="input-mini form-control" name="daterangepicker_end" style="display: none;" type="text" value=""/>
+               <i class="fa fa-calendar glyphicon glyphicon-calendar" style="display: none;"></i>
+               <div class="calendar-time" style="display: none;">
+                <div></div>
+                <i class="fa fa-clock-o glyphicon glyphicon-time"></i>
+               </div>
+              </div>
+              <div class="calendar-table">
+               
+<!--view: rows_tformXadvanced5, db_table: tformXadvanced5 -->
+  <table class="table-condensed">
+    <thead>
+      <tr>
+        <th>==0</th>
+        <th colspan="5" class="month">Nov 2016</th>
+        <th class="next available">==0</th>
+        <th>Su</th>
+        <th>Mo</th>
+        <th>Tu</th>
+        <th>We</th>
+        <th>Th</th>
+        <th>Fr</th>
+        <th>Sa</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row5 in rows_tformXadvanced5: ]]
+        <tr>
+            <td class="weekend off available" data-title="r0c0">[%[= XML(row5.f0) ]]</td>
+            <td class="off available" data-title="r0c1">[%[= XML(row5.f1) ]]</td>
+            <td class="available" data-title="r0c2">[%[= XML(row5.f2) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tformXadvanced5 -->
+
+
+<div  class='divtformXadvanced5' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">tformXadvanced5</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtformXadvanced5');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+              </div>
+             </div>
+             <div class="ranges" style="display: none;">
+              <div class="range_inputs">
+               <button class="applyBtn btn btn-sm btn-success" type="button">Apply</button>
+               <button class="cancelBtn btn btn-sm btn-default" type="button">Cancel</button>
+              </div>
+             </div>
+            </div>
+            <fieldset>
+             <div class="control-group">
+              <div class="controls">
+               <div class="col-md-11 xdisplay_inputx form-group row has-feedback">
+                <input aria-describedby="inputSuccess2Status3" class="form-control has-feedback-left" id="single_cal3" placeholder="First Name" type="text"/>
+                <span aria-hidden="true" class="fa fa-calendar-o form-control-feedback left"></span>
+                <span class="sr-only" id="inputSuccess2Status3">(success)</span>
+               </div>
+              </div>
+             </div>
+            </fieldset>
+           </div>
+           <div class="col-md-3">
+            <div class="daterangepicker dropdown-menu ltr single opensright show-calendar picker_4 xdisplay">
+             <div class="calendar left single" style="display: block;">
+              <div class="daterangepicker_input">
+               <input class="input-mini form-control active" name="daterangepicker_start" style="display: none;" type="text" value=""/>
+               <i class="fa fa-calendar glyphicon glyphicon-calendar" style="display: none;"></i>
+               <div class="calendar-time" style="display: none;">
+                <div></div>
+                <i class="fa fa-clock-o glyphicon glyphicon-time"></i>
+               </div>
+              </div>
+              <div class="calendar-table">
+               
+<!--view: rows_tformXadvanced6, db_table: tformXadvanced6 -->
+  <table class="table-condensed">
+    <thead>
+      <tr>
+        <th class="prev available">==0</th>
+        <th colspan="5" class="month">Oct 2016</th>
+        <th class="next available">==0</th>
+        <th>Su</th>
+        <th>Mo</th>
+        <th>Tu</th>
+        <th>We</th>
+        <th>Th</th>
+        <th>Fr</th>
+        <th>Sa</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row6 in rows_tformXadvanced6: ]]
+        <tr>
+            <td class="weekend off available" data-title="r0c0">[%[= XML(row6.f0) ]]</td>
+            <td class="off available" data-title="r0c1">[%[= XML(row6.f1) ]]</td>
+            <td class="off available" data-title="r0c2">[%[= XML(row6.f2) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tformXadvanced6 -->
+
+
+<div  class='divtformXadvanced6' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">tformXadvanced6</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtformXadvanced6');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+              </div>
+             </div>
+             <div class="calendar right" style="display: none;">
+              <div class="daterangepicker_input">
+               <input class="input-mini form-control" name="daterangepicker_end" style="display: none;" type="text" value=""/>
+               <i class="fa fa-calendar glyphicon glyphicon-calendar" style="display: none;"></i>
+               <div class="calendar-time" style="display: none;">
+                <div></div>
+                <i class="fa fa-clock-o glyphicon glyphicon-time"></i>
+               </div>
+              </div>
+              <div class="calendar-table">
+               
+<!--view: rows_tformXadvanced7, db_table: tformXadvanced7 -->
+  <table class="table-condensed">
+    <thead>
+      <tr>
+        <th>==0</th>
+        <th colspan="5" class="month">Nov 2016</th>
+        <th class="next available">==0</th>
+        <th>Su</th>
+        <th>Mo</th>
+        <th>Tu</th>
+        <th>We</th>
+        <th>Th</th>
+        <th>Fr</th>
+        <th>Sa</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row7 in rows_tformXadvanced7: ]]
+        <tr>
+            <td class="weekend off available" data-title="r0c0">[%[= XML(row7.f0) ]]</td>
+            <td class="off available" data-title="r0c1">[%[= XML(row7.f1) ]]</td>
+            <td class="available" data-title="r0c2">[%[= XML(row7.f2) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tformXadvanced7 -->
+
+
+<div  class='divtformXadvanced7' style="text-align: center; position:absolute;">
+  <div style="position:relative; z-index:100; display:inline-block; background-color:#F0FFF0; color:black; border:2px dashed red; padding: 0.2em 1em 0.2em 1em;">tformXadvanced7</div>
+</div>
+<script>
+  !function() { const elems = document.querySelectorAll('.divtformXadvanced7');
+      for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+  }();
+</script>
+
+              </div>
+             </div>
+             <div class="ranges" style="display: none;">
+              <div class="range_inputs">
+               <button class="applyBtn btn btn-sm btn-success" type="button">Apply</button>
+               <button class="cancelBtn btn btn-sm btn-default" type="button">Cancel</button>
+              </div>
+             </div>
+            </div>
+            <fieldset>
+             <div class="control-group">
+              <div class="controls">
+               <div class="col-md-11 xdisplay_inputx form-group row has-feedback">
+                <input aria-describedby="inputSuccess2Status4" class="form-control has-feedback-left" id="single_cal4" placeholder="First Name" type="text"/>
+                <span aria-hidden="true" class="fa fa-calendar-o form-control-feedback left"></span>
+                <span class="sr-only" id="inputSuccess2Status4">(success)</span>
+               </div>
+              </div>
+             </div>
+            </fieldset>
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- /form datepicker -->
+        <!-- form datetimepicker -->
+        <div class="x_panel" style="">
+         <div class="x_title">
+          <h2>
+           Date Pickers
+           <small>Available with multiple designs</small>
+          </h2>
+          <ul class="nav navbar-right panel_toolbox">
+           <li>
+            <a class="collapse-link">
+             <i class="fa fa-chevron-up"></i>
+            </a>
+           </li>
+           <li class="dropdown">
+            <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+             <i class="fa fa-wrench"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+             <li>
+              <a href="#">Settings 1</a>
+             </li>
+             <li>
+              <a href="#">Settings 2</a>
+             </li>
+            </ul>
+           </li>
+           <li>
+            <a class="close-link">
+             <i class="fa fa-close"></i>
+            </a>
+           </li>
+          </ul>
+          <div class="clearfix"></div>
+         </div>
+         <div class="x_content">
+          <div class="container">
+           <div class="row">
+            <div class="col-sm-4">
+             Basic Example
+             <div class="form-group">
+              <div class="input-group date" id="myDatepicker">
+               <input class="form-control" type="text"/>
+               <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+               </span>
+              </div>
+             </div>
+            </div>
+            <div class="col-sm-4">
+             Only Date Picker
+             <div class="form-group">
+              <div class="input-group date" id="myDatepicker2">
+               <input class="form-control" type="text"/>
+               <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+               </span>
+              </div>
+             </div>
+            </div>
+            <div class="col-sm-4">
+             Only Time Picker
+             <small>For 24H format use format: 'HH:mm'</small>
+             <div class="form-group">
+              <div class="input-group date" id="myDatepicker3">
+               <input class="form-control" type="text"/>
+               <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+               </span>
+              </div>
+             </div>
+            </div>
+            <div class="col-sm-4">
+             Using ReadOnly
+             <div class="form-group">
+              <div class="input-group date" id="myDatepicker4">
+               <input class="form-control" readonly="readonly" type="text"/>
+               <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+               </span>
+              </div>
+             </div>
+            </div>
+            <div class="col-sm-4">
+             Linked Picker Parent
+             <div class="form-group">
+              <div class="input-group date" id="datetimepicker6">
+               <input class="form-control" type="text"/>
+               <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+               </span>
+              </div>
+             </div>
+            </div>
+            <div class="col-sm-4">
+             Linked Picker Children
+             <div class="form-group">
+              <div class="input-group date" id="datetimepicker7">
+               <input class="form-control" type="text"/>
+               <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+               </span>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- /form datetimepicker -->
+        <!-- form grid slider -->
+        <div class="x_panel" style="">
+         <div class="x_title">
+          <h2>Grid Slider</h2>
+          <ul class="nav navbar-right panel_toolbox">
+           <li>
+            <a class="collapse-link">
+             <i class="fa fa-chevron-up"></i>
+            </a>
+           </li>
+           <li class="dropdown">
+            <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+             <i class="fa fa-wrench"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+             <li>
+              <a href="#">Settings 1</a>
+             </li>
+             <li>
+              <a href="#">Settings 2</a>
+             </li>
+            </ul>
+           </li>
+           <li>
+            <a class="close-link">
+             <i class="fa fa-close"></i>
+            </a>
+           </li>
+          </ul>
+          <div class="clearfix"></div>
+         </div>
+         <div class="x_content">
+          <div class="row grid_slider">
+           <div class="col-md-6 col-sm-6">
+            <p>Default grid slider with min and max values</p>
+            <input id="range" name="range" type="text" value=""/></div>
+           <div class="col-md-6 col-sm-6">
+            <p>Grid with slider labels are far away outside it's container</p>
+            <input id="range_25" name="range" type="text" value=""/></div>
+           <div class="col-md-6 col-sm-6">
+            <p>Grid with labels inside container using force_edges attribute</p>
+            <input id="range_27" name="range" type="text" value=""/></div>
+           <div class="col-md-6 col-sm-6">
+            <p>Create Grid with pre-defined steps</p>
+            <input id="range_26" name="range" type="text" value=""/></div>
+           <div class="col-md-6 col-sm-6">
+            <p>Prevent one from dragging the labels</p>
+            <input id="range_31" name="range" type="text" value=""/></div>
+           <div class="col-md-6 col-sm-6">
+            <p>Grid with minimum and maximum values</p>
+            <input class="range_min_max" name="range" type="text" value=""/></div>
+           <div>
+            <p>Grid With time in 24 hour format</p>
+            <input class="range_time24" name="range" type="text" value=""/></div>
+          </div>
+         </div>
+        </div>
+        <br/>
+        <br/>
+        <!-- /form grid slider -->
+        <!-- image cropping -->
+        <div class="container cropper">
+         <div class="row">
+          <div class="col-md-9">
+           <div class="img-container">
+            <img alt="Picture" id="image" src="[%[=URL('static/tte/images/cropper.jpg') ]]"/></div>
+          </div>
+          <div class="col-md-3">
+           <div class="docs-preview clearfix">
+            <div class="img-preview preview-lg"></div>
+            <div class="img-preview preview-md"></div>
+            <div class="img-preview preview-sm"></div>
+            <div class="img-preview preview-xs"></div>
+           </div>
+           <div class="docs-data">
+            <div class="input-group input-group-sm">
+             <label class="input-group-addon" for="dataX">
+              X
+             </label>
+             <input class="form-control" id="dataX" placeholder="x" type="text"/>
+             <span class="input-group-addon">px</span>
+            </div>
+            <div class="input-group input-group-sm">
+             <label class="input-group-addon" for="dataY">
+              Y
+             </label>
+             <input class="form-control" id="dataY" placeholder="y" type="text"/>
+             <span class="input-group-addon">px</span>
+            </div>
+            <div class="input-group input-group-sm">
+             <label class="input-group-addon" for="dataWidth">
+              Width
+             </label>
+             <input class="form-control" id="dataWidth" placeholder="width" type="text"/>
+             <span class="input-group-addon">px</span>
+            </div>
+            <div class="input-group input-group-sm">
+             <label class="input-group-addon" for="dataHeight">
+              Height
+             </label>
+             <input class="form-control" id="dataHeight" placeholder="height" type="text"/>
+             <span class="input-group-addon">px</span>
+            </div>
+            <div class="input-group input-group-sm">
+             <label class="input-group-addon" for="dataRotate">
+              Rotate
+             </label>
+             <input class="form-control" id="dataRotate" placeholder="rotate" type="text"/>
+             <span class="input-group-addon">deg</span>
+            </div>
+            <div class="input-group input-group-sm">
+             <label class="input-group-addon" for="dataScaleX">
+              ScaleX
+             </label>
+             <input class="form-control" id="dataScaleX" placeholder="scaleX" type="text"/></div>
+            <div class="input-group input-group-sm">
+             <label class="input-group-addon" for="dataScaleY">
+              ScaleY
+             </label>
+             <input class="form-control" id="dataScaleY" placeholder="scaleY" type="text"/></div>
+           </div>
+          </div>
+         </div>
+         <div class="row">
+          <div class="col-md-9 docs-buttons">
+           <!-- <h3 class="page-header">Toolbar:</h3> -->
+           <div class="btn-group">
+            <button class="btn btn-primary" data-method="setDragMode" data-option="move" title="Move" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("setDragMode", "move")'>
+              <span class="fa fa-arrows"></span>
+             </span>
+            </button>
+            <button class="btn btn-primary" data-method="setDragMode" data-option="crop" title="Crop" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("setDragMode", "crop")'>
+              <span class="fa fa-crop"></span>
+             </span>
+            </button>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-primary" data-method="zoom" data-option="0.1" title="Zoom In" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("zoom", 0.1)'>
+              <span class="fa fa-search-plus"></span>
+             </span>
+            </button>
+            <button class="btn btn-primary" data-method="zoom" data-option="-0.1" title="Zoom Out" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("zoom", -0.1)'>
+              <span class="fa fa-search-minus"></span>
+             </span>
+            </button>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-primary" data-method="move" data-option="-10" data-second-option="0" title="Move Left" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("move", -10, 0)'>
+              <span class="fa fa-arrow-left"></span>
+             </span>
+            </button>
+            <button class="btn btn-primary" data-method="move" data-option="10" data-second-option="0" title="Move Right" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("move", 10, 0)'>
+              <span class="fa fa-arrow-right"></span>
+             </span>
+            </button>
+            <button class="btn btn-primary" data-method="move" data-option="0" data-second-option="-10" title="Move Up" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("move", 0, -10)'>
+              <span class="fa fa-arrow-up"></span>
+             </span>
+            </button>
+            <button class="btn btn-primary" data-method="move" data-option="0" data-second-option="10" title="Move Down" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("move", 0, 10)'>
+              <span class="fa fa-arrow-down"></span>
+             </span>
+            </button>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-primary" data-method="rotate" data-option="-45" title="Rotate Left" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("rotate", -45)'>
+              <span class="fa fa-rotate-left"></span>
+             </span>
+            </button>
+            <button class="btn btn-primary" data-method="rotate" data-option="45" title="Rotate Right" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("rotate", 45)'>
+              <span class="fa fa-rotate-right"></span>
+             </span>
+            </button>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-primary" data-method="scaleX" data-option="-1" title="Flip Horizontal" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("scaleX", -1)'>
+              <span class="fa fa-arrows-h"></span>
+             </span>
+            </button>
+            <button class="btn btn-primary" data-method="scaleY" data-option="-1" title="Flip Vertical" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("scaleY", -1)'>
+              <span class="fa fa-arrows-v"></span>
+             </span>
+            </button>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-primary" data-method="crop" title="Crop" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("crop")'>
+              <span class="fa fa-check"></span>
+             </span>
+            </button>
+            <button class="btn btn-primary" data-method="clear" title="Clear" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("clear")'>
+              <span class="fa fa-remove"></span>
+             </span>
+            </button>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-primary" data-method="disable" title="Disable" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("disable")'>
+              <span class="fa fa-lock"></span>
+             </span>
+            </button>
+            <button class="btn btn-primary" data-method="enable" title="Enable" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("enable")'>
+              <span class="fa fa-unlock"></span>
+             </span>
+            </button>
+           </div>
+           <div class="btn-group">
+            <button class="btn btn-primary" data-method="reset" title="Reset" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("reset")'>
+              <span class="fa fa-refresh"></span>
+             </span>
+            </button>
+            <label class="btn btn-primary btn-upload" for="inputImage" title="Upload image file">
+             <input accept="image/*" class="sr-only" id="inputImage" name="file" type="file"/>
+             <span class="docs-tooltip" data-toggle="tooltip" title="Import image with Blob URLs">
+              <span class="fa fa-upload"></span>
+             </span>
+            </label>
+            <button class="btn btn-primary" data-method="destroy" title="Destroy" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("destroy")'>
+              <span class="fa fa-power-off"></span>
+             </span>
+            </button>
+           </div>
+           <div class="btn-group btn-group-crop">
+            <button class="btn btn-primary" data-method="getCroppedCanvas" type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("getCroppedCanvas")'>Get Cropped Canvas</span>
+            </button>
+            <button class="btn btn-primary" data-method="getCroppedCanvas" data-option='{ "width": 160, "height": 90 }' type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("getCroppedCanvas", { width: 160, height: 90 })'>160 90</span>
+            </button>
+            <button class="btn btn-primary" data-method="getCroppedCanvas" data-option='{ "width": 320, "height": 180 }' type="button">
+             <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("getCroppedCanvas", { width: 320, height: 180 })'>320 180</span>
+            </button>
+           </div>
+           <!-- Show the cropped image in modal -->
+           <div aria-hidden="true" aria-labelledby="getCroppedCanvasTitle" class="modal fade docs-cropped" id="getCroppedCanvasModal" role="dialog" tabindex="-1">
+            <div class="modal-dialog">
+             <div class="modal-content">
+              <div class="modal-header">
+               <button aria-hidden="true" class="close" data-dismiss="modal" type="button"></button>
+               <h4 class="modal-title" id="getCroppedCanvasTitle">Cropped</h4>
+              </div>
+              <div class="modal-body"></div>
+              <div class="modal-footer">
+               <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+               <a class="btn btn-primary" download="cropped.png" href="javascript:void(0);" id="download">Download</a>
+              </div>
+             </div>
+            </div>
+           </div>
+           <!-- /.modal -->
+           <button class="btn btn-primary" data-method="getData" data-option="" data-target="#putData" type="button">
+            <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("getData")'>Get Data</span>
+           </button>
+           <button class="btn btn-primary" data-method="setData" data-target="#putData" type="button">
+            <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("setData", data)'>Set Data</span>
+           </button>
+           <button class="btn btn-primary" data-method="getContainerData" data-option="" data-target="#putData" type="button">
+            <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("getContainerData")'>Get Container Data</span>
+           </button>
+           <button class="btn btn-primary" data-method="getImageData" data-option="" data-target="#putData" type="button">
+            <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("getImageData")'>Get Image Data</span>
+           </button>
+           <button class="btn btn-primary" data-method="getCanvasData" data-option="" data-target="#putData" type="button">
+            <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("getCanvasData")'>Get Canvas Data</span>
+           </button>
+           <button class="btn btn-primary" data-method="setCanvasData" data-target="#putData" type="button">
+            <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("setCanvasData", data)'>Set Canvas Data</span>
+           </button>
+           <button class="btn btn-primary" data-method="getCropBoxData" data-option="" data-target="#putData" type="button">
+            <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("getCropBoxData")'>Get Crop Box Data</span>
+           </button>
+           <button class="btn btn-primary" data-method="setCropBoxData" data-target="#putData" type="button">
+            <span class="docs-tooltip" data-toggle="tooltip" title='$().cropper("setCropBoxData", data)'>Set Crop Box Data</span>
+           </button>
+           <button class="btn btn-primary" data-method="moveTo" data-option="0" type="button">
+            <span class="docs-tooltip" data-toggle="tooltip" title="cropper.moveTo(0)">0,0</span>
+           </button>
+           <button class="btn btn-primary" data-method="zoomTo" data-option="1" type="button">
+            <span class="docs-tooltip" data-toggle="tooltip" title="cropper.zoomTo(1)">100%</span>
+           </button>
+           <button class="btn btn-primary" data-method="rotateTo" data-option="180" type="button">
+            <span class="docs-tooltip" data-toggle="tooltip" title="cropper.rotateTo(180)">180</span>
+           </button>
+           <input class="form-control" id="putData" placeholder="Get data to here or set data with this value" type="text"/></div>
+          <!-- /.docs-buttons -->
+          <div class="col-md-3 docs-toggles">
+           <!-- <h3 class="page-header">Toggles:</h3> -->
+           <div class="btn-group btn-group-justified" data-toggle="buttons">
+            <label class="btn btn-primary active">
+             <input class="sr-only" id="aspectRatio0" name="aspectRatio" type="radio" value="1.7777777777777777"/>
+             <span class="docs-tooltip" data-toggle="tooltip" title="aspectRatio: 16 / 9">16:9</span>
+            </label>
+            <label class="btn btn-primary">
+             <input class="sr-only" id="aspectRatio1" name="aspectRatio" type="radio" value="1.3333333333333333"/>
+             <span class="docs-tooltip" data-toggle="tooltip" title="aspectRatio: 4 / 3">4:3</span>
+            </label>
+            <label class="btn btn-primary">
+             <input class="sr-only" id="aspectRatio2" name="aspectRatio" type="radio" value="1"/>
+             <span class="docs-tooltip" data-toggle="tooltip" title="aspectRatio: 1 / 1">1:1</span>
+            </label>
+            <label class="btn btn-primary">
+             <input class="sr-only" id="aspectRatio3" name="aspectRatio" type="radio" value="0.6666666666666666"/>
+             <span class="docs-tooltip" data-toggle="tooltip" title="aspectRatio: 2 / 3">2:3</span>
+            </label>
+            <label class="btn btn-primary">
+             <input class="sr-only" id="aspectRatio4" name="aspectRatio" type="radio" value="NaN"/>
+             <span class="docs-tooltip" data-toggle="tooltip" title="aspectRatio: NaN">Free</span>
+            </label>
+           </div>
+           <div class="btn-group btn-group-justified" data-toggle="buttons">
+            <label class="btn btn-primary active">
+             <input checked="" class="sr-only" id="viewMode0" name="viewMode" type="radio" value="0"/>
+             <span class="docs-tooltip" data-toggle="tooltip" title="View Mode 0">VM0</span>
+            </label>
+            <label class="btn btn-primary">
+             <input class="sr-only" id="viewMode1" name="viewMode" type="radio" value="1"/>
+             <span class="docs-tooltip" data-toggle="tooltip" title="View Mode 1">VM1</span>
+            </label>
+            <label class="btn btn-primary">
+             <input class="sr-only" id="viewMode2" name="viewMode" type="radio" value="2"/>
+             <span class="docs-tooltip" data-toggle="tooltip" title="View Mode 2">VM2</span>
+            </label>
+            <label class="btn btn-primary">
+             <input class="sr-only" id="viewMode3" name="viewMode" type="radio" value="3"/>
+             <span class="docs-tooltip" data-toggle="tooltip" title="View Mode 3">VM3</span>
+            </label>
+           </div>
+           <div class="dropup docs-options">
+            <button aria-expanded="true" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" id="toggleOptions" type="button">
+             Toggle Options
+             <span class="caret"></span>
+            </button>
+            <ul aria-labelledby="toggleOptions" class="dropdown-menu" role="menu">
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="responsive" type="checkbox"/>
+               responsive
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="restore" type="checkbox"/>
+               restore
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="checkCrossOrigin" type="checkbox"/>
+               checkCrossOrigin
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="checkOrientation" type="checkbox"/>
+               checkOrientation
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="modal" type="checkbox"/>
+               modal
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="guides" type="checkbox"/>
+               guides
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="center" type="checkbox"/>
+               center
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="highlight" type="checkbox"/>
+               highlight
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="background" type="checkbox"/>
+               background
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="autoCrop" type="checkbox"/>
+               autoCrop
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="movable" type="checkbox"/>
+               movable
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="rotatable" type="checkbox"/>
+               rotatable
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="scalable" type="checkbox"/>
+               scalable
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="zoomable" type="checkbox"/>
+               zoomable
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="zoomOnTouch" type="checkbox"/>
+               zoomOnTouch
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="zoomOnWheel" type="checkbox"/>
+               zoomOnWheel
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="cropBoxMovable" type="checkbox"/>
+               cropBoxMovable
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="cropBoxResizable" type="checkbox"/>
+               cropBoxResizable
+              </label>
+             </li>
+             <li role="presentation">
+              <label class="checkbox-inline">
+               <input checked="" name="toggleDragModeOnDblclick" type="checkbox"/>
+               toggleDragModeOnDblclick
+              </label>
+             </li>
+            </ul>
+           </div>
+           <!-- /.dropdown -->
+           <a class="btn btn-default btn-block" data-toggle="tooltip" href="https://fengyuanchen.github.io/cropperjs" title="Cropper without jQuery">Cropper.js</a>
+          </div>
+          <!-- /.docs-toggles -->
+         </div>
+        </div>
+        <!-- /image cropping -->
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- /page content -->
+    <!-- footer content -->
+    <footer>
+     <div class="pull-right">
+      Gentelella - Bootstrap Admin Template by
+      <a href="https://colorlib.com">Colorlib</a>
+     </div>
+     <div class="clearfix"></div>
+    </footer>
+    <!-- /footer content -->
+   </div>
+  </div>
+  <!-- jQuery -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/jquery/dist/jquery.min.js') ]]"></script>
+  <!-- Bootstrap -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/bootstrap/dist/js/bootstrap.bundle.min.js') ]]"></script>
+  <!-- FastClick -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/fastclick/lib/fastclick.js') ]]"></script>
+  <!-- NProgress -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/nprogress/nprogress.js') ]]"></script>
+  <!-- bootstrap-daterangepicker -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/moment/min/moment.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/gentelella/vendors/bootstrap-daterangepicker/daterangepicker.js') ]]"></script>
+  <!-- bootstrap-datetimepicker -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') ]]"></script>
+  <!-- Ion.RangeSlider -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/ion.rangeSlider/js/ion.rangeSlider.min.js') ]]"></script>
+  <!-- Bootstrap Colorpicker -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js') ]]"></script>
+  <!-- jquery.inputmask -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js') ]]"></script>
+  <!-- jQuery Knob -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/jquery-knob/dist/jquery.knob.min.js') ]]"></script>
+  <!-- Cropper -->
+  <script src="[%[=URL('static/tte/gentelella/vendors/cropper/dist/cropper.min.js') ]]"></script>
+  <!-- Custom Theme Scripts -->
+  <script src="[%[=URL('static/tte/gentelella/build/js/custom.min.js') ]]"></script>
+  <!-- Initialize datetimepicker -->
+  <script type="text/javascript">$(function() {
+    $('#myDatepicker').datetimepicker();
+});
+$('#myDatepicker2').datetimepicker({
+    format: 'DD.MM.YYYY'
+});
+$('#myDatepicker3').datetimepicker({
+    format: 'hh:mm A'
+});
+$('#myDatepicker4').datetimepicker({
+    ignoreReadonly: true,
+    allowInputToggle: true
+});
+$('#datetimepicker6').datetimepicker();
+$('#datetimepicker7').datetimepicker({
+    useCurrent: false
+});
+$("#datetimepicker6").on("dp.change", function(e) {
+    $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+});
+$("#datetimepicker7").on("dp.change", function(e) {
+    $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+});</script>
+  
+<!-- myadd -->
+<script>
+  const forms_url = [%[ =XML( page_url ) ]];
+
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, { method: 'POST', body: new FormData( document.forms[i] ) });
+
+            let result = await response.json();
+            swal({
+                  type: (result.messages.startsWith('error') ? "error" : "info") ,
+                  title: result.messages,
+                  animation : false,
+                  timer: 3000,
+                  text: 'will hide in 3sec',
+                  showCancelButton: false,
+                  showConfirmButton: false
+                 });
+        };
+  }
+</script>
+
+
+ </body>
+</html>

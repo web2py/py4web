@@ -1,0 +1,9 @@
+{'404.html': ['admin/404.html'],
+ 'buttons.html': ['admin/buttons.html'],
+ 'forms.html': ['admin/forms.html'],
+ 'index.html': ['admin/index.html'],
+ 'login.html': ['admin/login.html'],
+ 'modals.html': ['admin/modals.html'],
+ 'register.html': ['admin/register.html'],
+ 'tables.html': ['admin/tables.html'],
+ 'ui.html': ['admin/ui.html']}

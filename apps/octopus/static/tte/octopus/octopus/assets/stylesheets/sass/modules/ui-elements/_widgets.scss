@@ -1,0 +1,964 @@
+// THUMBNAIL WITH LABEL
+// -----------------------------------------------------------------------------
+.thumb-info {
+	position: relative;
+
+	.thumb-info-title {
+		-webkit-transition: all 0.3s;
+		-moz-transition: all 0.3s;
+		transition: all 0.3s;
+		background: rgba(36, 27, 28, 0.9);
+		bottom: 10%;
+		color: #FFF;
+		font-size: 18px;
+		font-weight: 700;
+		left: 0;
+		letter-spacing: -1px;
+		padding: 9px 11px 9px;
+		position: absolute;
+		text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+		text-transform: uppercase;
+		z-index: 1;
+	}
+
+	.thumb-info-inner {
+		-webkit-transition: all 0.3s;
+		-moz-transition: all 0.3s;
+		transition: all 0.3s;
+		display: block;
+		white-space: nowrap;
+	}
+
+	.thumb-info-type {
+		background-color: $color-primary;
+		border-radius: 2px;
+		display: inline-block;
+		float: left;
+		font-size: 12px;
+		font-weight: 400;
+		letter-spacing: 0;
+		margin: 8px -2px -15px -2px;
+		padding: 2px 9px;
+		text-transform: none;
+	}
+}
+
+// WIDGET EXPAND
+// -----------------------------------------------------------------------------
+/* Widget - Widget Toggle/Expand */
+.widget-toggle-expand {
+
+	.widget-header {
+		position: relative;
+		margin: 0;
+		padding: 5px 0;
+
+		h6 {
+			@include font-size(13);
+			margin: 0;
+			padding: 0;
+		}
+
+		.widget-toggle {
+			@include font-size(21);
+			@include line-height(21);
+			position: absolute;
+			right: 0;
+			top: 0;
+			cursor: pointer;
+			text-align: center;
+			color: #b4b4b4;
+
+			@include transform(rotate(45deg));
+			@include transition-property (transform);
+			@include transition-duration(.2s);
+			@include transition-timing-function(linear);
+
+		}
+
+	}
+
+	&.widget-collapsed {
+
+		.widget-content-expanded {
+			display: none;
+		}
+
+		.widget-header {
+			.widget-toggle {
+				@include transform(none);
+			}
+		}
+	}
+
+}
+
+// USER LIST
+// -----------------------------------------------------------------------------
+/* Widget - Simple User List */
+ul.simple-user-list {
+	list-style: none;
+	padding: 0;
+
+	li {
+		margin: 0 0 20px;
+
+		.image {
+			float: left;
+			margin: 0 10px 0 0;
+		}
+
+		.title {
+			color: #000011;
+			display: block;
+			line-height: 1.334;
+		}
+
+		.message {
+			display: block;
+			@include font-size(11);
+			line-height: 1.334;
+		}
+	}
+}
+
+// SIMPLE POST LIST
+// -----------------------------------------------------------------------------
+/* Widget - Simple Post List */
+ul.simple-post-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+
+	li {
+		@include clearfix;
+		border-bottom: 1px dotted #E2E2E2;
+		padding: 15px 0;
+
+		&::last-child {
+			border-bottom: 0;
+		}
+
+		.post-image {
+			float: left;
+			margin-right: 12px;
+		}
+
+		.post-meta {
+			color: #888;
+			font-size: 0.8em;
+		}
+
+		&:last-child {
+			border-bottom: none;
+		}
+
+	}
+}
+
+// TODO LIST
+// -----------------------------------------------------------------------------
+/* Widget - Simple Todo List */
+ul.simple-todo-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+
+	li {
+		position: relative;
+		padding: 0 0 0 20px;
+
+		&.completed {
+			color: #A7A7A7;
+
+			&:before {
+				position: absolute;
+				top: 3px;
+				left: 0;
+				font-family: FontAwesome;
+				content: "\f00c";
+				z-index: 1;
+			}
+		}
+	}
+
+}
+
+// SOCIAL ICONS
+// -----------------------------------------------------------------------------
+/* Widget - Social Icons */
+.social-icons-list {
+	display: block;
+	margin: 0;
+	padding: 0;
+
+	a {
+		background: $color-primary;
+		border-radius: 25px;
+		display: inline-block;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		width: 30px;
+
+		&:hover {
+			text-decoration: none;
+		}
+
+		span {
+			display: none;
+		}
+
+		i {
+			@include font-size(13.5);
+			color: #FFF;
+			font-weight: normal;
+		}
+	}
+}
+
+// COMPOSE BOX
+// -----------------------------------------------------------------------------
+/* Widget - Simple Compose Box */
+.simple-compose-box {
+	border: 1px solid #d1d1d1;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #fff;
+
+	textarea {
+		background-color: transparent;
+		display: block;
+		width: 100%;
+		padding: 10px 10px 5px;
+		border: 0;
+		resize: none;
+		-webkit-border-radius: 3px;
+		border-radius: 3px;
+
+		&:focus {
+			border: 0 none;
+			outline: none;
+		}
+	}
+
+	.compose-box-footer {
+		@include clearfix;
+		background-color: #F6F7F8;
+		-webkit-border-radius: 0 0 5px 5px;
+		border-radius: 0 0 5px 5px;
+
+		.compose-toolbar {
+			list-style: none;
+			margin: 0;
+			padding: 0 3px;
+			float: left;
+
+			li {
+				display: inline-block;
+
+				a {
+					display: block;
+					text-align: center;
+					font-size: 16px;
+					line-height: 30px;
+					width: 30px;
+					color: #B3B7BD;
+
+					&:hover {
+						background-color: darken(#F6F7F8, 5%);
+					}
+				}
+			}
+		}
+
+		.compose-btn {
+			list-style: none;
+			margin: 0;
+			padding: 3px;
+			float: right;
+		}
+	}
+}
+
+
+// SIMPLE CARD LIST
+// -----------------------------------------------------------------------------
+/* Widget - Simple Card List */
+ul.simple-card-list {
+	list-style: none;
+	padding: 0;
+
+	li {
+		padding: 10px 15px;
+		margin: 15px 0;
+		-webkit-border-radius: 7px;
+		border-radius: 7px;
+
+		h3 {
+			@include font-size(26);
+			font-weight: 600;
+			margin: 0;
+		}
+
+		p {
+			margin: 0;
+			opacity: .7;
+		}
+	}
+}
+
+@each $state in $states {
+	.simple-card-list {
+		li.#{nth($state,1)} {
+			background: #{nth($state,2)};
+			color: #{nth($state,3)};
+		}
+	}
+}
+
+div.simple-card-list {
+	display: table;
+	width: 100%;
+
+	.card {
+		display: table-cell;
+
+		.card-content {
+			background-color: rgba(0, 0, 0, 0.1);
+			-webkit-border-radius: 3px;
+			border-radius: 3px;
+			margin: 0 7px;
+			padding: 5px;
+		}
+
+		h3 {
+			@include font-size(26);
+			font-weight: 600;
+			margin: 0;
+		}
+
+		p {
+			margin: 0;
+			opacity: .7;
+		}
+	}
+}
+
+
+// SIMPLE BULLET LIST
+// -----------------------------------------------------------------------------
+/* Widget - Simple Button List */
+ul.simple-bullet-list {
+	list-style: none;
+	padding: 0;
+
+	li {
+		position: relative;
+		padding: 0 0 0 20px;
+		margin: 0 0 10px;
+
+		&:before {
+			border: 6px solid $color-primary;
+			border-radius: 100px;
+			content: '';
+			display: inline-block;
+			left: 0;
+			margin: 0;
+			position: absolute;
+			top: 5px;
+			z-index: 2;
+		}
+
+		.title {
+			display: block;
+			font-weight: 700;
+			@include font-size(14);
+			line-height: 1.4;
+			color: $color-dark;
+		}
+
+		.description {
+			display: block;
+			color: $color-muted;
+			@include font-size(11);
+			line-height: 1.334;
+		}
+
+		&.red:before {
+			border-color: #d64b4b;
+		}
+
+		&.green:before {
+			border-color: #4dd79c;
+		}
+
+		&.blue:before {
+			border-color: #0090d9;
+		}
+
+		&.orange:before {
+			border-color: #E2A917;
+		}
+
+	}
+}
+
+// SUMMARY
+// -----------------------------------------------------------------------------
+/* Widget - Summary */
+.widget-summary {
+	@include clearfix;
+	display: table;
+	width: 100%;
+
+	.widget-summary-col {
+		display: table-cell;
+		vertical-align: top;
+		width: 100%;
+
+		&.widget-summary-col-icon {
+			width: 1%;
+		}
+	}
+
+	.summary-icon {
+		margin-right: 15px;
+		@include font-size(42);
+		width: 90px;
+		height: 90px;
+		line-height: 90px;
+		text-align: center;
+		color: #fff;
+		-webkit-border-radius: 55px;
+		border-radius: 55px;
+	}
+
+	.summary {
+		min-height: 65px;
+		word-break: break-all;
+
+		.title {
+			margin: 0;
+			@include font-size(16);
+			@include line-height(22);
+			color: $color-black;
+			font-weight: 500;
+		}
+
+		.info {
+			@include font-size(14);
+			@include line-height(30);
+
+			span {
+				vertical-align: middle;
+			}
+		}
+
+		.amount {
+			margin-right: .2em;
+			@include font-size(24);
+			font-weight: 600;
+			color: $color-black;
+			vertical-align: middle;
+		}
+
+	}
+
+	.summary-footer {
+		padding: 5px 0 0;
+		border-top: 1px dotted #ddd;
+		text-align: right;
+	}
+
+	@each $color in $colors-list {
+		.bg-#{nth($color,1)} & {
+
+			.summary-icon {
+				background-color: rgba(0, 0, 0, 0.1);
+			}
+
+			.summary {
+				.title,
+				.amount {
+					color: #{nth($color,3)};
+				}
+			}
+
+			.summary-footer {
+				border-top: 1px solid #fff;
+				border-top-color: rgba(255, 255, 255, 0.2);
+
+				a {
+					color: #{nth($color,3)};
+					opacity: 0.6;
+				}
+			}
+		}
+	}
+
+}
+
+@media only screen and (min-width: 480px) {
+	.widget-summary.widget-summary-xlg {
+		padding: 5px 0;
+
+		.summary-icon {
+			width: 110px;
+			height: 110px;
+			line-height: 110px;
+			@include font-size(48);
+		}
+
+		.summary {
+			min-height: 80px;
+
+			.title {
+				@include font-size(20);
+				@include line-height(28);
+			}
+
+			.info {
+				@include font-size(16);
+				@include line-height(30);
+			}
+
+			.amount {
+				@include font-size(28);
+			}
+		}
+	}
+}
+
+.widget-summary.widget-summary-lg {
+	padding: 0;
+
+	.summary-icon {
+		width: 90px;
+		height: 90px;
+		line-height: 90px;
+		@include font-size(42);
+	}
+
+	.summary {
+		min-height: 65px;
+
+		.title {
+			@include font-size(16);
+			@include line-height(22);
+		}
+
+		.info {
+			@include font-size(14);
+			@include line-height(30);
+		}
+
+		.amount {
+			@include font-size(24);
+		}
+	}
+
+}
+
+.widget-summary.widget-summary-md {
+	padding: 0;
+
+	.summary-icon {
+		width: 70px;
+		height: 70px;
+		line-height: 70px;
+		@include font-size(32);
+	}
+
+	.summary {
+		min-height: 0;
+		margin-top: 12px;
+
+		.title {
+			@include font-size(12);
+			@include line-height(18);
+		}
+
+		.info {
+			@include font-size(11);
+			@include line-height(22);
+		}
+
+		.amount {
+			@include font-size(18);
+			font-weight: 700;
+		}
+	}
+
+	.summary-footer {
+		display: none;
+	}
+
+}
+
+.widget-summary.widget-summary-sm {
+	padding: 0;
+
+	.summary-icon {
+		width: 50px;
+		height: 50px;
+		line-height: 50px;
+		@include font-size(22);
+	}
+
+	.summary {
+		min-height: 0;
+		margin-top: 4px;
+
+		.title {
+			@include font-size(12);
+			@include line-height(18);
+		}
+
+		.info {
+			@include font-size(11);
+			@include line-height(18);
+		}
+
+		.amount {
+			@include font-size(16);
+			font-weight: 700;
+		}
+	}
+
+	.summary-footer {
+		display: none;
+	}
+
+}
+
+.widget-summary.widget-summary-xs {
+	padding: 0;
+
+	.summary-icon {
+		width: 40px;
+		height: 40px;
+		line-height: 40px;
+		@include font-size(18);
+	}
+
+	.summary {
+		min-height: 0;
+
+		.title {
+			@include font-size(12);
+			line-height: 40px;
+		}
+
+		.info {
+			display: none;
+		}
+	}
+
+	.summary-footer {
+		display: none;
+	}
+
+}
+
+// TO-DO LIST
+// -----------------------------------------------------------------------------
+/* Widget - Todo List */
+ul.widget-todo-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	position: relative;
+
+	li {
+		border-bottom: 1px dotted #ddd;
+		padding: 15px 15px 15px 0;
+		position: relative;
+
+		label.line-through span {
+			text-decoration: line-through;
+		}
+
+		.checkbox-custom {
+			margin-bottom: 0;
+
+			label {
+				padding-left: 10px;
+			}
+		}
+
+		.todo-actions {
+			position: absolute;
+			top: 14px;
+			right: 0;
+			bottom: 14px;
+
+			.todo-remove {
+				font-size: 10px;
+				vertical-align: middle;
+				color: $color-muted;
+			}
+		}
+
+		&:last-child {
+			border-bottom: 0 none;
+		}
+	}
+}
+
+
+// PROFILE INFO
+// -----------------------------------------------------------------------------
+/* Widget - Profile Info */
+.widget-profile-info {
+	display: table;
+	width: 100%;
+
+	.profile-picture {
+		display: table-cell;
+		vertical-align: middle;
+		width: 1%;
+
+		img {
+			display: block;
+			width: 100px;
+			height: 100px;
+			margin-right: 15px;
+			border: 4px solid #fff;
+			-webkit-border-radius: 50px;
+			border-radius: 50px;
+		}
+	}
+
+	.profile-info {
+		display: table-cell;
+		vertical-align: bottom;
+		width: 100%;
+
+		.profile-footer {
+			padding: 5px 0 0;
+			border-top: 1px solid rgba(255, 255, 255, 0.6);
+			text-align: right;
+
+			a {
+				color: #fff;
+				opacity: 0.6;
+			}
+		}
+	}
+
+}
+
+
+// TWITTER PROFILE
+// -----------------------------------------------------------------------------
+/* Widget - Twitter Profile */
+.widget-twitter-profile {
+	background-color: $color-primary;
+	border-radius: $border-radius;
+	color: #fff;
+
+	.top-image {
+		img {
+			width: 100%;
+			border-radius: $border-radius $border-radius 0 0;
+		}
+	}
+
+	.profile-info {
+		@include clearfix;
+		padding: 15px;
+		min-height: 75px;
+
+		.profile-picture {
+			float: left;
+			margin-right: 15px;
+			position: relative;
+
+			img {
+				display: block;
+				width: 100px;
+				height: 100px;
+				margin: -25px 0;
+				border: 4px solid #fff;
+				-webkit-border-radius: 50px;
+				border-radius: 50px;
+			}
+
+		}
+
+		.profile-account {
+			float: left;
+
+			.name {
+				margin: 0;
+			}
+
+			.account {
+				color: lighten($color-primary, 50%);
+				margin: 0;
+				line-height: 1.4;
+			}
+
+		}
+
+		.profile-stats {
+			float: right;
+			list-style: none;
+			padding: 5px 0;
+			margin: 0;
+
+			li {
+				float: left;
+				padding: 0 10px;
+
+				.stat {
+					@include font-size(10);
+					margin: 0;
+				}
+
+				.count {
+					display: block;
+					margin: 0;
+					line-height: 1.4;
+					font-weight: 600;
+				}
+			}
+		}
+
+	}
+
+	.profile-quote {
+		background-color: lighten($color-primary, 4%);
+		border-radius: 0 0 $border-radius $border-radius;
+		padding: 15px 10px 15px 150px;
+
+		blockquote {
+			padding: 0;
+			margin: 0;
+			border: 0;
+
+			p {
+				position: relative;
+				font-style: italic;
+				@include font-size(18);
+				line-height: 1.6;
+				padding: 15px 0;
+				margin: 0 0 10px;
+				font-family: Georgia, serif;
+
+				&:before {
+					position: absolute;
+					top: 0;
+					left: -45px;
+					content: '\201C';
+					@include font-size(80);
+					line-height: 1;
+					font-family: Georgia, serif;
+					font-style: normal;
+				}
+			}
+		}
+
+		.quote-footer {
+			border-top: 1px solid lighten($color-primary, 10%);
+			padding: 5px 0;
+			text-align: right;
+			color: lighten($color-primary, 50%);
+
+			a {
+				color: lighten($color-primary, 50%);
+			}
+
+		}
+	}
+}
+
+/* Widget - Twitter Profile Responsive */
+@media only screen and (max-width: 479px) {
+	.widget-twitter-profile {
+		.profile-info {
+			.profile-stats {
+				clear: both;
+				float: none;
+				padding: 45px 0 0;
+				text-align: center;
+
+				li {
+					display: inline-block;
+					float: none;
+				}
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.widget-twitter-profile {
+		.profile-quote {
+			padding-left: 10px;
+
+			blockquote {
+				padding-left: 45px;
+			}
+		}
+	}
+}
+
+// DARK SKIN
+// -----------------------------------------------------------------------------\
+html.dark {
+	/* Widget Summary */
+	.widget-summary {
+		.summary {
+			.title,
+			.amount {
+				color: #EEE;
+			}
+		}
+		.summary-footer {
+			border-color: #4C4C4C;
+		}
+
+	}
+
+	/* Panel Footer - Button Group */
+	.panel-footer-btn-group a {
+		background-color: $dark-color-3;
+		border-color: $dark-color-2;
+
+		&:hover {
+			background-color: $dark-color-4;
+		}
+	}
+
+	/* To-do List */
+	ul.widget-todo-list li {
+		border-color: $dark-color-5;
+	}
+
+	/* Simple Post List */
+	ul.simple-post-list li {
+		border-color: #4c4c4c;
+	}
+
+	/* Simple User List */
+	ul.simple-user-list li .title {
+		color: #EEE;
+	}
+
+	/* Simple Bullet List */
+	ul.simple-bullet-list li .title {
+		color: #EEE;
+	}
+
+	/* Simple Compose Box */
+	.simple-compose-box {
+		background-color: $dark-color-3;
+		border-color: $dark-color-3;
+
+		.compose-box-footer {
+			background-color: $dark-color-2;
+		}
+	}
+}

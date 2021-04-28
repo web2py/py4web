@@ -1,0 +1,29 @@
+// NAV PILLS
+// -----------------------------------------------------------------------------
+/* Buttons - States */
+@each $state in $states {
+	.nav-pills-#{nth($state,1)} {
+		> li {
+			a:hover,
+			a:focus {
+				color: nth($state,2);
+				@if nth($state,1) == 'primary' {
+					background-color: lighten(nth($state,2), 50%);
+				} @else {
+					background-color: lighten(adjust-hue(nth($state,2), -5), 35%);
+				}
+			}
+		}
+
+		> li.active {
+			> a {
+				&,
+				&:hover,
+				&:active,
+				&:focus {
+					background-color: nth($state,2);
+				}
+			}
+		}
+	}
+}

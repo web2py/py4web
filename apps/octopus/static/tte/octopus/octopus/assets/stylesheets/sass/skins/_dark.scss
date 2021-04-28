@@ -1,0 +1,138 @@
+// CONTENT BACKGROUND
+// -----------------------------------------------------------------------------
+/* Dark - Background */
+html.dark {
+	&,
+	body {
+		background-color: $dark-bg;
+	}
+
+	&.boxed {
+		.content-body {
+			background-color: $dark-bg;
+		}
+	}
+}
+
+html.dark {
+	body {
+		color: $dark-default-text;
+	}
+}
+
+// ELEMENTS
+// -----------------------------------------------------------------------------
+/* Dark - Titles */
+html.dark {
+	h1,
+	.h1,
+	h2,
+	.h2,
+	h3,
+	.h3,
+	h4,
+	.h4,
+	h5,
+	.h5,
+	h6,
+	.h6 {
+		color: #FFF;
+	}
+}
+
+/* Dark - Alerts */
+html.dark {
+	.alert h1,
+	.alert .h1,
+	.alert h2,
+	.alert .h2,
+	.alert h3,
+	.alert .h3,
+	.alert h4,
+	.alert .h4,
+	.alert h5,
+	.alert .h5,
+	.alert h6,
+	.alert .h6 {
+		color: #111;
+	}
+}
+
+/* Dark - Blockquote */
+html.dark {
+	blockquote {
+		border-color: $dark-color-3;
+	}
+}
+
+/* Dark - Helpers */
+html.dark {
+	.text-dark {
+		color: #FFF !important;
+	}
+}
+
+// NAV LIST
+// -----------------------------------------------------------------------------
+html.dark {
+	ul.nav-list.primary > li a {
+		border-bottom-color: #282d36;
+
+		&:hover {
+			background-color: #282d36;
+		}
+	}
+}
+
+// PAGINATION
+// -----------------------------------------------------------------------------
+html.dark {
+	.pagination > li > a,
+	.pagination > li > span {
+		background-color: $dark-color-3;
+		border-color: $dark-color-5;
+	}
+
+	.pagination > li.active > a,
+	.pagination > li.active > span {
+		background-color: $color-primary;
+		border-color: $dark-color-5;
+	}
+}
+
+// DROP-DOWN MENU
+// -----------------------------------------------------------------------------
+html.dark {
+	.dropdown-menu {
+		background-color: $dark-color-3;
+
+		> li > a {
+			color: #EEE;
+
+			&:hover,
+			&:focus {
+				background-color: $dark-color-1;
+				color: #FFF;
+			}
+		}
+	}
+}
+
+// HR
+// -----------------------------------------------------------------------------
+html.dark {
+	hr.dotted,
+	hr.solid {
+		border-color: #4C4C4C;
+	}
+}
+
+// THUMBS
+// -----------------------------------------------------------------------------
+html.dark {
+	.img-thumbnail,
+	.thumbnail {
+		background-color: $dark-color-2;
+		border-color: $dark-color-3;
+	}
+}

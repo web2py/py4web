@@ -1,0 +1,60 @@
+:root {
+  --bg: #071e36;
+  --card-bg: #041221;
+}
+
+body {
+  background: var(--bg);
+}
+
+.box {
+
+  background: var(--card-bg);
+}
+
+
+input::placeholder {
+  color: antiquewhite;
+}
+
+.navbar {
+  background: var(--card-bg);
+}
+
+.navbar-item {
+  color: ghostwhite;
+}
+
+/* Card start*/
+.card {
+  overflow: hidden;
+  background: ghostwhite;
+  color: var(--bg);
+}
+
+.card.large {
+  border-radius: 5px;
+}
+
+.title.no-padding {
+  margin-bottom: 0 !important;
+}
+
+.footer {
+  background: var(--card-bg);
+  color: ghostwhite;
+}
+
+.footer p,
+strong {
+  color: ghostwhite
+}
+
+.footer a:hover {
+  color: crimson;
+}
+
+.fa {
+  color: ghostwhite;
+  margin: 10px
+}

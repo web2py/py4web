@@ -1,0 +1,913 @@
+<!--
+
+=========================================================
+* Volt Free - Bootstrap 5 Dashboard
+=========================================================
+
+* Product Page: https://themesberg.com/product/admin-dashboard/volt-premium-bootstrap-5-dashboard
+* Copyright 2020 Themesberg (https://www.themesberg.com)
+* License (https://themesberg.com/licensing)
+
+* Designed and coded by https://themesberg.com
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. Please contact us to request a removal.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 26.04.2021 14:45:47 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <!-- Primary Meta Tags -->
+  <title>biorex title text</title>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <meta content="Volt Free Bootstrap Dashboard - Buttons" name="title"/>
+  <meta content="Themesberg" name="author"/>
+  <meta content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS." name="description"/>
+  <meta content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, themesberg, themesberg dashboard, themesberg admin dashboard" name="keywords"/>
+  <link href="https://themesberg.com/product/admin-dashboard/volt-premium-bootstrap-5-dashboard" rel="canonical"/>
+  <!-- Open Graph / Facebook -->
+  <meta content="website" property="og:type"/>
+  <meta content="https://demo.themesberg.com/volt-pro" property="og:url"/>
+  <meta content="Volt Free Bootstrap Dashboard - Buttons" property="og:title"/>
+  <meta content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS." property="og:description"/>
+  <meta content="https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-pro-bootstrap-5-dashboard/volt-pro-preview.jpg" property="og:image"/>
+  <!-- Twitter -->
+  <meta content="summary_large_image" property="twitter:card"/>
+  <meta content="https://demo.themesberg.com/volt-pro" property="twitter:url"/>
+  <meta content="Volt Free Bootstrap Dashboard - Buttons" property="twitter:title"/>
+  <meta content="Volt Pro is a Premium Bootstrap 5 Admin Dashboard featuring over 800 components, 10+ plugins and 20 example pages using Vanilla JS." property="twitter:description"/>
+  <meta content="https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-pro-bootstrap-5-dashboard/volt-pro-preview.jpg" property="twitter:image"/>
+  <!-- Favicon -->
+  <link href="[%[=URL('static/tte/assets/img/favicon/apple-touch-icon.png') ]]" rel="apple-touch-icon" sizes="120x120"/>
+  <link href="[%[=URL('static/tte/assets/img/favicon/favicon-32x32.png') ]]" rel="icon" sizes="32x32" type="image/png"/>
+  <link href="[%[=URL('static/tte/assets/img/favicon/favicon-16x16.png') ]]" rel="icon" sizes="16x16" type="image/png"/>
+  <link href="[%[=URL('static/tte/assets/img/favicon/site.webmanifest') ]]" rel="manifest"/>
+  <link color="#ffffff" href="[%[=URL('static/tte/assets/img/favicon/safari-pinned-tab.svg') ]]" rel="mask-icon"/>
+  <meta content="#ffffff" name="msapplication-TileColor"/>
+  <meta content="#ffffff" name="theme-color"/>
+  <!-- Fontawesome -->
+  <link href="[%[=URL('static/tte/vendor/@fortawesome/fontawesome-free/css/all.min.css') ]]" rel="stylesheet" type="text/css"/>
+  <!-- Sweet Alert -->
+  <link href="[%[=URL('static/tte/vendor/sweetalert2/dist/sweetalert2.min.css') ]]" rel="stylesheet" type="text/css"/>
+  <!-- Notyf -->
+  <link href="[%[=URL('static/tte/vendor/notyf/notyf.min.css') ]]" rel="stylesheet" type="text/css"/>
+  <!-- Volt CSS -->
+  <link href="[%[=URL('static/tte/css/volt.css') ]]" rel="stylesheet" type="text/css"/>
+  <!-- NOTICE: You can use the _analytics.html partial to include production code specific code & trackers -->
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!-- NOTICE: You can use the _analytics.html partial to include production code specific code & trackers -->
+  <nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-md-none">
+   <a class="navbar-brand me-lg-5" href="[%[=URL('index') ]]">
+    <img alt="Volt logo" class="navbar-brand-dark" src="[%[=URL('static/tte/assets/img/brand/light.svg') ]]"/>
+    <img alt="Volt logo" class="navbar-brand-light" src="[%[=URL('static/tte/assets/img/brand/dark.svg') ]]"/></a>
+   <div class="d-flex align-items-center">
+    <button aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler d-md-none collapsed" data-bs-target="#sidebarMenu" data-bs-toggle="collapse" type="button">
+     <span class="navbar-toggler-icon"></span>
+    </button>
+   </div>
+  </nav>
+  <nav class="sidebar d-md-block bg-dark text-white collapse" data-simplebar="" id="sidebarMenu">
+   <div class="sidebar-inner px-4 pt-3">
+    <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
+     <div class="d-flex align-items-center">
+      <div class="user-avatar lg-avatar me-4">
+       <img alt="Bonnie Green" class="card-img-top rounded-circle border-white" src="[%[=URL('static/tte/assets/img/team/profile-picture-3.jpg') ]]"/></div>
+      <div class="d-block">
+       <h2 class="h6">Hi, Jane</h2>
+       <a class="btn btn-secondary text-dark btn-xs" href="[%[=URL('signXin') ]]">
+        <span class="me-2">
+         <span class="fas fa-sign-out-alt"></span>
+        </span>
+        Sign Out
+       </a>
+      </div>
+     </div>
+     <div class="collapse-close d-md-none">
+      <a aria-controls="sidebarMenu" aria-expanded="true" aria-label="Toggle navigation" class="fas fa-times" data-bs-target="#sidebarMenu" data-bs-toggle="collapse" href="#sidebarMenu"></a>
+     </div>
+    </div>
+    <ul class="nav flex-column pt-3 pt-md-0">
+     <li class="nav-item">
+      <a class="nav-link d-flex align-items-center" href="[%[=URL('index') ]]">
+       <span class="sidebar-icon">
+        <img alt="Volt Logo" height="20" src="[%[=URL('static/tte/assets/img/brand/light.svg') ]]" width="20"/></span>
+       <span class="mt-1 ms-1 sidebar-text">Volt Overview</span>
+      </a>
+     </li>
+     <li class="nav-item">
+      <a class="nav-link" href="[%[=URL('dashboard') ]]">
+       <span class="sidebar-icon">
+        <span class="fas fa-chart-pie"></span>
+       </span>
+       <span class="sidebar-text">Dashboard</span>
+      </a>
+     </li>
+     <li class="nav-item">
+      <a class="nav-link d-flex justify-content-between" href="https://demo.themesberg.com/volt-pro/pages/kanban.html" target="_blank">
+       <span>
+        <span class="sidebar-icon">
+         <span class="fas fa-th"></span>
+        </span>
+        <span class="sidebar-text">Kanban</span>
+       </span>
+       <span>
+        <span class="badge badge-md bg-secondary ms-1 text-dark">Pro</span>
+       </span>
+      </a>
+     </li>
+     <li class="nav-item">
+      <a class="nav-link" href="[%[=URL('transactions') ]]">
+       <span class="sidebar-icon">
+        <span class="fas fa-hand-holding-usd"></span>
+       </span>
+       <span class="sidebar-text">Transactions</span>
+      </a>
+     </li>
+     <li class="nav-item">
+      <a class="nav-link" href="[%[=URL('settings') ]]">
+       <span class="sidebar-icon">
+        <span class="fas fa-cog"></span>
+       </span>
+       <span class="sidebar-text">Settings</span>
+      </a>
+     </li>
+     <li class="nav-item">
+      <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-target="#submenu-app" data-bs-toggle="collapse">
+       <span>
+        <span class="sidebar-icon">
+         <span class="fas fa-table"></span>
+        </span>
+        <span class="sidebar-text">Tables</span>
+       </span>
+       <span class="link-arrow">
+        <span class="fas fa-chevron-right"></span>
+       </span>
+      </span>
+      <div aria-expanded="false" class="multi-level collapse" id="submenu-app" role="list">
+       <ul class="flex-column nav">
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('bootstrapXtables') ]]">
+          <span class="sidebar-text">Bootstrap Tables</span>
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li class="nav-item">
+      <span class="nav-link collapsed d-flex justify-content-between align-items-center" data-bs-target="#submenu-pages" data-bs-toggle="collapse">
+       <span>
+        <span class="sidebar-icon">
+         <span class="far fa-file-alt"></span>
+        </span>
+        <span class="sidebar-text">Page examples</span>
+       </span>
+       <span class="link-arrow">
+        <span class="fas fa-chevron-right"></span>
+       </span>
+      </span>
+      <div aria-expanded="false" class="multi-level collapse" id="submenu-pages" role="list">
+       <ul class="flex-column nav">
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('signXin') ]]">
+          <span class="sidebar-text">Sign In</span>
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('signXup') ]]">
+          <span class="sidebar-text">Sign Up</span>
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('forgotXpassword') ]]">
+          <span class="sidebar-text">Forgot password</span>
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('resetXpassword') ]]">
+          <span class="sidebar-text">Reset password</span>
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('lock') ]]">
+          <span class="sidebar-text">Lock</span>
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('X404') ]]">
+          <span class="sidebar-text">404 Not Found</span>
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('X500') ]]">
+          <span class="sidebar-text">500 Not Found</span>
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li class="nav-item">
+      <span class="nav-link d-flex justify-content-between align-items-center" data-bs-target="#submenu-components" data-bs-toggle="collapse">
+       <span>
+        <span class="sidebar-icon">
+         <span class="fas fa-box-open"></span>
+        </span>
+        <span class="sidebar-text">Components</span>
+       </span>
+       <span class="link-arrow">
+        <span class="fas fa-chevron-right"></span>
+       </span>
+      </span>
+      <div aria-expanded="false" class="multi-level collapse show" id="submenu-components" role="list">
+       <ul class="flex-column nav">
+        <li class="nav-item">
+         <a class="nav-link" href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/accordions/" target="_blank">
+          <span class="sidebar-text">All Components</span>
+         </a>
+        </li>
+        <li class="nav-item active">
+         <a class="nav-link" href="[%[=URL('buttons') ]]">
+          <span class="sidebar-text">Buttons</span>
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('notifications') ]]">
+          <span class="sidebar-text">Notifications</span>
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('forms') ]]">
+          <span class="sidebar-text">Forms</span>
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('modals') ]]">
+          <span class="sidebar-text">Modals</span>
+         </a>
+        </li>
+        <li class="nav-item">
+         <a class="nav-link" href="[%[=URL('typography') ]]">
+          <span class="sidebar-text">Typography</span>
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li class="dropdown-divider mt-4 mb-3 border-black" role="separator"></li>
+     <li class="nav-item">
+      <a class="nav-link d-flex align-items-center" href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/getting-started/quick-start/" target="_blank">
+       <span class="sidebar-icon">
+        <span class="fas fa-book"></span>
+       </span>
+       <span class="sidebar-text">
+        Documentation
+        <span class="badge badge-md bg-secondary ms-1 text-dark">v1.3</span>
+       </span>
+      </a>
+     </li>
+     <li class="nav-item">
+      <a class="nav-link d-flex align-items-center" href="https://themesberg.com" target="_blank">
+       <span class="sidebar-icon">
+        <img alt="Themesberg Logo" height="20" src="[%[=URL('static/tte/assets/img/themesberg.svg') ]]" width="20"/></span>
+       <span class="sidebar-text">Themesberg</span>
+      </a>
+     </li>
+     <li class="nav-item">
+      <a class="btn btn-secondary d-flex align-items-center justify-content-center btn-upgrade-pro" href="[%[=URL('upgradeXtoXpro') ]]">
+       <span class="sidebar-icon">
+        <span class="fas fa-rocket me-2"></span>
+       </span>
+       <span>Upgrade to Pro</span>
+      </a>
+     </li>
+    </ul>
+   </div>
+  </nav>
+  <main class="content">
+   <nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
+    <div class="container-fluid px-0">
+     <div class="d-flex justify-content-between w-100" id="navbarSupportedContent">
+      <div class="d-flex align-items-center">
+       <!-- Search form -->
+       
+<!-- BEGIN view: fbuttons0, db_table: dfbuttons0 -->
+<div class="navbar-search form-inline" id="navbar-search-main">
+[%[= fbuttons0.custom['begin'] ]]
+<div class="input-group input-group-merge search-bar">
+ <span class="input-group-text" id="topbar-addon">
+  <span class="fas fa-search">
+  </span>
+ </span>
+ [%[ fbuttons0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fbuttons0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fbuttons0.custom['widgets']['f0']['_id']= 'topbarInputIconLeft'  ]]
+ [%[ fbuttons0.custom['widgets']['f0']['_placeholder']= 'Search'  ]]
+ [%[ fbuttons0.custom['widgets']['f0']['_aria-label']= 'Search'  ]]
+ [%[ fbuttons0.custom['widgets']['f0']['_aria-describedby']= 'topbar-addon'  ]]
+ [%[= fbuttons0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fbuttons0.custom['errors']['f0'] if 'f0' in fbuttons0.custom['errors'] else '' ]]</span>
+
+ [%[ fbuttons0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fbuttons0.custom['submit']['_class']= 'form-control mysubmit_cls'  ]]
+ [%[ fbuttons0.custom['submit']['_id']= 'topbarInputIconLeft'  ]]
+ [%[ fbuttons0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fbuttons0.custom['submit']['_rows']= '1'  ]]
+ [%[ fbuttons0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fbuttons0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fbuttons0.custom['submit'] ]]
+
+</div>
+
+ [%[ for hidden_widget in fbuttons0.custom['hidden_widgets'].keys(): ]]
+     [%[= fbuttons0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fbuttons0</span></div>
+
+
+[%[= fbuttons0.custom['end'] ]]
+</div>
+<!-- END fbuttons0-->
+
+      </div>
+      <!-- Navbar links -->
+      <ul class="navbar-nav align-items-center">
+       <li class="nav-item dropdown">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link text-dark me-lg-3 icon-notifications dropdown-toggle" data-bs-toggle="dropdown" data-unread-notifications="true" href="#" role="button">
+         <span class="icon icon-sm">
+          <span class="fas fa-bell bell-shake"></span>
+          <span class="icon-badge rounded-circle unread-notifications"></span>
+         </span>
+        </a>
+        <div class="dropdown-menu dashboard-dropdown dropdown-menu-lg dropdown-menu-center mt-2 py-0">
+         <div class="list-group list-group-flush">
+          <a class="text-center text-primary fw-bold border-bottom border-light py-3" href="#">Notifications</a>
+          <a class="list-group-item list-group-item-action border-bottom border-light" href="#">
+           <div class="row align-items-center">
+            <div class="col-auto">
+             <!-- Avatar -->
+             <img alt="Image placeholder" class="user-avatar lg-avatar rounded-circle" src="[%[=URL('static/tte/assets/img/team/profile-picture-1.jpg') ]]"/></div>
+            <div class="col ps-0 ms-2">
+             <div class="d-flex justify-content-between align-items-center">
+              <div>
+               <h4 class="h6 mb-0 text-small">Jose Leos</h4>
+              </div>
+              <div class="text-end">
+               <small class="text-danger">a few moments ago</small>
+              </div>
+             </div>
+             <p class="font-small mt-1 mb-0">Added you to an event "Project stand-up" tomorrow at 12:30 AM.</p>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item list-group-item-action border-bottom border-light" href="#">
+           <div class="row align-items-center">
+            <div class="col-auto">
+             <!-- Avatar -->
+             <img alt="Image placeholder" class="user-avatar lg-avatar rounded-circle" src="[%[=URL('static/tte/assets/img/team/profile-picture-2.jpg') ]]"/></div>
+            <div class="col ps-0 ms-2">
+             <div class="d-flex justify-content-between align-items-center">
+              <div>
+               <h4 class="h6 mb-0 text-small">Neil Sims</h4>
+              </div>
+              <div class="text-end">
+               <small class="text-danger">2 hrs ago</small>
+              </div>
+             </div>
+             <p class="font-small mt-1 mb-0">You've been assigned a task for "Awesome new project".</p>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item list-group-item-action border-bottom border-light" href="#">
+           <div class="row align-items-center">
+            <div class="col-auto">
+             <!-- Avatar -->
+             <img alt="Image placeholder" class="user-avatar lg-avatar rounded-circle" src="[%[=URL('static/tte/assets/img/team/profile-picture-3.jpg') ]]"/></div>
+            <div class="col ps-0 m-2">
+             <div class="d-flex justify-content-between align-items-center">
+              <div>
+               <h4 class="h6 mb-0 text-small">Roberta Casas</h4>
+              </div>
+              <div class="text-end">
+               <small>5 hrs ago</small>
+              </div>
+             </div>
+             <p class="font-small mt-1 mb-0">Tagged you in a document called "First quarter financial plans",</p>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item list-group-item-action border-bottom border-light" href="#">
+           <div class="row align-items-center">
+            <div class="col-auto">
+             <!-- Avatar -->
+             <img alt="Image placeholder" class="user-avatar lg-avatar rounded-circle" src="[%[=URL('static/tte/assets/img/team/profile-picture-4.jpg') ]]"/></div>
+            <div class="col ps-0 ms-2">
+             <div class="d-flex justify-content-between align-items-center">
+              <div>
+               <h4 class="h6 mb-0 text-small">Joseph Garth</h4>
+              </div>
+              <div class="text-end">
+               <small>1 d ago</small>
+              </div>
+             </div>
+             <p class="font-small mt-1 mb-0">New message: "Hey, what's up? All set for the presentation?"</p>
+            </div>
+           </div>
+          </a>
+          <a class="list-group-item list-group-item-action border-bottom border-light" href="#">
+           <div class="row align-items-center">
+            <div class="col-auto">
+             <!-- Avatar -->
+             <img alt="Image placeholder" class="user-avatar lg-avatar rounded-circle" src="[%[=URL('static/tte/assets/img/team/profile-picture-5.jpg') ]]"/></div>
+            <div class="col ps-0 ms-2">
+             <div class="d-flex justify-content-between align-items-center">
+              <div>
+               <h4 class="h6 mb-0 text-small">Bonnie Green</h4>
+              </div>
+              <div class="text-end">
+               <small>2 hrs ago</small>
+              </div>
+             </div>
+             <p class="font-small mt-1 mb-0">New message: "We need to improve the UI/UX for the landing page."</p>
+            </div>
+           </div>
+          </a>
+          <a class="dropdown-item text-center text-primary fw-bold rounded-bottom py-3" href="#">View all</a>
+         </div>
+        </div>
+       </li>
+       <li class="nav-item dropdown">
+        <a aria-expanded="false" class="nav-link dropdown-toggle pt-1 px-0" data-bs-toggle="dropdown" href="#" role="button">
+         <div class="media d-flex align-items-center">
+          <img alt="Image placeholder" class="user-avatar md-avatar rounded-circle" src="[%[=URL('static/tte/assets/img/team/profile-picture-3.jpg') ]]"/>
+          <div class="media-body ms-2 text-dark align-items-center d-none d-lg-block">
+           <span class="mb-0 font-small fw-bold">Bonnie Green</span>
+          </div>
+         </div>
+        </a>
+        <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-0">
+         <a class="dropdown-item rounded-top fw-bold" href="#">
+          <span class="far fa-user-circle"></span>
+          My Profile
+         </a>
+         <a class="dropdown-item fw-bold" href="#">
+          <span class="fas fa-cog"></span>
+          Settings
+         </a>
+         <a class="dropdown-item fw-bold" href="#">
+          <span class="fas fa-envelope-open-text"></span>
+          Messages
+         </a>
+         <a class="dropdown-item fw-bold" href="#">
+          <span class="fas fa-user-shield"></span>
+          Support
+         </a>
+         <div class="dropdown-divider my-0" role="separator"></div>
+         <a class="dropdown-item rounded-bottom fw-bold" href="#">
+          <span class="fas fa-sign-out-alt text-danger"></span>
+          Logout
+         </a>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </nav>
+   <div class="py-4">
+    <nav aria-label="breadcrumb">
+     <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+      <li class="breadcrumb-item">
+       <a href="#">
+        <span class="fas fa-home"></span>
+       </a>
+      </li>
+      <li class="breadcrumb-item">
+       <a href="#">Components</a>
+      </li>
+      <li aria-current="page" class="breadcrumb-item active">Buttons</li>
+     </ol>
+    </nav>
+    <div class="d-flex justify-content-between w-100 flex-wrap">
+     <div class="mb-3 mb-lg-0">
+      <h1 class="h4">Buttons</h1>
+      <p class="mb-0">Dozens of reusable components built to provide buttons, alerts, popovers, and more.</p>
+     </div>
+     <div>
+      <a class="btn btn-outline-gray" href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/components/buttons/">
+       <i class="far fa-question-circle me-1"></i>
+       Buttons Docs
+      </a>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-12 mb-4">
+     <div class="card border-light shadow-sm components-section">
+      <div class="card-body">
+       <div class="mb-3">
+        <h2 class="h5">Sizes</h2>
+       </div>
+       <!--Buttons-->
+       <button class="btn btn-sm btn-dark" type="button">Small</button>
+       <button class="btn btn-dark" type="button">Regular</button>
+       <button class="btn btn-lg btn-dark" type="button">Large Button</button>
+       <h2 class="h5 fw-bold mt-4 mb-3">With Icons</h2>
+       <button class="btn btn-dark" type="button">
+        <span class="far fa-paper-plane me-2"></span>
+        Left Icon
+       </button>
+       <button class="btn btn-dark" type="button">
+        Right Icon
+        <span class="fas fa-angle-right ms-2"></span>
+       </button>
+       <h2 class="h5 fw-bold mt-4 mb-3">Dropdown buttons</h2>
+       <div class="dropdown">
+        <div class="btn-group me-2 mb-2">
+         <button class="btn btn-dark" type="button">Primary</button>
+         <button aria-expanded="false" aria-haspopup="true" class="btn btn-dark dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" type="button">
+          <span class="fas fa-angle-down dropdown-arrow"></span>
+          <span class="sr-only">Toggle Dropdown</span>
+         </button>
+         <div class="dropdown-menu">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Separated link</a>
+         </div>
+        </div>
+        <div class="btn-group mb-2 me-2">
+         <button aria-expanded="false" aria-haspopup="true" class="btn btn-tertiary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" type="button">
+          <span class="fas fa-angle-down dropdown-arrow"></span>
+          <span class="sr-only">Toggle Dropdown</span>
+         </button>
+         <div class="dropdown-menu">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Separated link</a>
+         </div>
+        </div>
+       </div>
+       <div class="mb-3 mt-5">
+        <h2 class="h5">Link Buttons</h2>
+       </div>
+       <!--Buttons-->
+       <a class="text-default fw-bold me-3" href="#">Primary</a>
+       <a class="text-primary me-3" href="#">
+        <span class="me-1">
+         <span class="fas fa-link"></span>
+        </span>
+        Icon Left
+       </a>
+       <a class="text-primary" href="#">
+        Icon Right
+        <span class="ms-1">
+         <span class="fas fa-link"></span>
+        </span>
+       </a>
+       <!--End of Buttons-->
+       <!-- Button colors -->
+       <div class="mb-3 mt-5">
+        <h2 class="h5">Choose your color</h2>
+       </div>
+       <div class="mb-3 mt-5">
+        <small class="text-uppercase fw-bold">Main</small>
+       </div>
+       <!--Buttons-->
+       <button class="btn btn-dark" type="button">Primary</button>
+       <button class="btn btn-secondary" type="button">Secondary</button>
+       <button class="btn btn-tertiary" type="button">Tertiary</button>
+       <button class="btn btn-info" type="button">Info</button>
+       <button class="btn btn-success" type="button">Success</button>
+       <button class="btn btn-warning" type="button">Warning</button>
+       <button class="btn btn-danger" type="button">Danger</button>
+       <button class="btn btn-dark" type="button">Dark</button>
+       <button class="btn btn-gray" type="button">Gray</button>
+       <button class="btn btn-light" type="button">Light</button>
+       <button class="btn btn-white" type="button">White</button>
+       <!--End Of Buttons-->
+       <div class="mb-3 mt-5">
+        <small class="text-uppercase fw-bold">Outline</small>
+       </div>
+       <!--Buttons-->
+       <button class="btn btn-outline-primary" type="button">Primary</button>
+       <button class="btn btn-outline-secondary" type="button">Secondary</button>
+       <button class="btn btn-outline-tertiary" type="button">Tertiary</button>
+       <button class="btn btn-outline-info" type="button">Info</button>
+       <button class="btn btn-outline-success" type="button">Success</button>
+       <button class="btn btn-outline-danger" type="button">Danger</button>
+       <button class="btn btn-outline-dark" type="button">Dark</button>
+       <button class="btn btn-outline-gray" type="button">Gray</button>
+       <!--End Of Buttons-->
+       <div class="mb-3 mt-5">
+        <small class="text-uppercase fw-bold">Round Outline</small>
+       </div>
+       <!--Buttons-->
+       <button class="btn btn-pill btn-outline-primary" type="button">Primary</button>
+       <button class="btn btn-pill btn-outline-secondary" type="button">Secondary</button>
+       <button class="btn btn-pill btn-outline-tertiary" type="button">Tertiary</button>
+       <button class="btn btn-pill btn-outline-info" type="button">Info</button>
+       <button class="btn btn-pill btn-outline-success" type="button">Success</button>
+       <button class="btn btn-pill btn-outline-danger" type="button">Danger</button>
+       <button class="btn btn-pill btn-outline-dark" type="button">Dark</button>
+       <button class="btn btn-pill btn-outline-gray" type="button">Gray</button>
+       <!--End Of Buttons-->
+       <!-- Button links -->
+       <div class="mb-3 mt-5">
+        <small class="text-uppercase fw-bold">Links</small>
+       </div>
+       <!--Buttons-->
+       <a class="text-default me-3" href="#">Default</a>
+       <a class="text-primary me-3" href="#">Primary</a>
+       <a class="text-secondary me-3" href="#">Secondary</a>
+       <a class="text-tertiary me-3" href="#">Tertiary</a>
+       <a class="text-info me-3" href="#">Info</a>
+       <a class="text-success me-3" href="#">Success</a>
+       <a class="text-danger me-3" href="#">Danger</a>
+       <a class="text-dark me-3" href="#">Dark</a>
+       <a class="text-gray" href="#">Gray</a>
+       <!--End Of Buttons-->
+       <div class="row">
+        <div class="col-lg-4 col-md-6">
+         <!-- Button Social -->
+         <div class="mb-4 mt-5">
+          <h2 class="h5 fw-bold">Social Buttons</h2>
+         </div>
+         <button class="btn btn-facebook" type="button">
+          <span class="me-1">
+           <span class="fab fa-facebook-f"></span>
+          </span>
+          Login with Facebook
+         </button>
+         <br/>
+         <button class="btn btn-pinterest" type="button">
+          <span class="me-1">
+           <span class="fab fa-pinterest-p"></span>
+          </span>
+          Share on Pinterest
+         </button>
+         <br/>
+         <button class="btn btn-youtube" type="button">
+          <span class="me-1">
+           <span class="fab fa-youtube"></span>
+          </span>
+          Watch on YouTube
+         </button>
+         <br/>
+         <button class="btn btn-github" type="button">
+          <span class="me-1">
+           <span class="fab fa-github-alt"></span>
+          </span>
+          Login with GitHub
+         </button>
+         <br/>
+         <button class="btn btn-twitch" type="button">
+          <span class="me-1">
+           <span class="fab fa-twitch"></span>
+          </span>
+          Subscribe Now
+         </button>
+         <br/>
+         <button class="btn btn-paypal" type="button">
+          <span class="me-1">
+           <span class="fab fa-paypal"></span>
+          </span>
+          Donate with PayPal
+         </button>
+         <br/>
+         <button class="btn btn-behance" type="button">
+          <span class="me-1">
+           <span class="fab fa-behance"></span>
+          </span>
+          Follow us
+         </button>
+        </div>
+        <div class="col-12 col-lg-6">
+         <!-- Square -->
+         <div class="mb-4 mt-5">
+          <h2 class="h5">Only Icon</h2>
+         </div>
+         <button aria-label="facebook button" class="btn btn-icon-only btn-facebook" title="facebook button" type="button">
+          <span aria-hidden="true" class="fab fa-facebook"></span>
+         </button>
+         <button aria-label="pinterest button" class="btn btn-icon-only btn-pinterest" title="pinterest button" type="button">
+          <span aria-hidden="true" class="fab fa-pinterest-p"></span>
+         </button>
+         <button aria-label="youtube button" class="btn btn-icon-only btn-youtube" title="youtube button" type="button">
+          <span aria-hidden="true" class="fab fa-youtube"></span>
+         </button>
+         <button aria-label="github button" class="btn btn-icon-only btn-github" title="github button" type="button">
+          <span aria-hidden="true" class="fab fa-github-alt"></span>
+         </button>
+         <button aria-label="twitch button" class="btn btn-icon-only btn-twitch" title="twitch button" type="button">
+          <span aria-hidden="true" class="fab fa-twitch"></span>
+         </button>
+         <button aria-label="paypal button" class="btn btn-icon-only btn-paypal" title="paypal button" type="button">
+          <span aria-hidden="true" class="fab fa-paypal"></span>
+         </button>
+         <button aria-label="behance button" class="btn btn-icon-only btn-behance" title="behance button" type="button">
+          <span aria-hidden="true" class="fab fa-behance"></span>
+         </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="theme-settings card pt-2 collapse" id="theme-settings">
+    <div class="card-body pt-4">
+     <button aria-controls="theme-settings" aria-expanded="false" aria-label="Close" class="btn-close theme-settings-close" data-bs-toggle="collapse" href="#theme-settings" role="button" type="button"></button>
+     <div class="d-flex justify-content-between align-items-center mb-3">
+      <p class="m-0 mb-1 me-4 fs-7">
+       Open source
+       <span aria-label="gratitude" role="img"></span>
+      </p>
+      <a aria-label="Star themesberg/volt-bootstrap-5-dashboard on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: light; dark: light;" data-icon="octicon-star" data-show-count="true" data-size="large" href="https://github.com/themesberg/volt-bootstrap-5-dashboard">Star</a>
+     </div>
+     <a class="btn btn-primary mb-3 w-100" href="https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard" target="_blank">
+      Download
+      <i class="fas fa-download ms-2"></i>
+     </a>
+     <p class="fs-7 text-gray-700 text-center">Available in the following technologies:</p>
+     <div class="d-flex justify-content-center">
+      <a class="me-3" href="https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard" target="_blank">
+       <img class="image image-xs" src="[%[=URL('static/tte/assets/img/technologies/bootstrap-5-logo.svg') ]]"/></a>
+      <a href="https://demo.themesberg.com/volt-react-dashboard/#/" target="_blank">
+       <img class="image image-xs" src="[%[=URL('static/tte/assets/img/technologies/react-logo.svg') ]]"/></a>
+     </div>
+    </div>
+   </div>
+   <div class="card theme-settings theme-settings-expand" id="theme-settings-expand">
+    <div class="card-body p-3 py-2">
+     <span class="fw-bold h6">
+      <i class="fas fa-cogs me-1 fs-7"></i>
+      Settings
+     </span>
+    </div>
+   </div>
+   <footer class="footer section py-5">
+    <div class="row">
+     <div class="col-12 col-lg-6 mb-4 mb-lg-0">
+      <p class="mb-0 text-center text-xl-left">
+       Copyright © 2019-
+       <span class="current-year"></span>
+       <a class="text-primary fw-normal" href="https://themesberg.com" target="_blank">Themesberg</a>
+      </p>
+     </div>
+     <div class="col-12 col-lg-6">
+      <!-- List -->
+      <ul class="list-inline list-group-flush list-group-borderless text-center text-xl-right mb-0">
+       <li class="list-inline-item px-0 px-sm-2">
+        <a href="https://themesberg.com/about">About</a>
+       </li>
+       <li class="list-inline-item px-0 px-sm-2">
+        <a href="https://themesberg.com/themes">Themes</a>
+       </li>
+       <li class="list-inline-item px-0 px-sm-2">
+        <a href="https://themesberg.com/blog">Blog</a>
+       </li>
+       <li class="list-inline-item px-0 px-sm-2">
+        <a href="https://themesberg.com/contact">Contact</a>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </footer>
+  </main>
+  <!-- Core -->
+  <script src="[%[=URL('static/tte/vendor/@popperjs/core/dist/umd/popper.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/vendor/bootstrap/dist/js/bootstrap.min.js') ]]"></script>
+  <!-- Vendor JS -->
+  <script src="[%[=URL('static/tte/vendor/onscreen/dist/on-screen.umd.min.js') ]]"></script>
+  <!-- Slider -->
+  <script src="[%[=URL('static/tte/vendor/nouislider/distribute/nouislider.min.js') ]]"></script>
+  <!-- Smooth scroll -->
+  <script src="[%[=URL('static/tte/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js') ]]"></script>
+  <!-- Charts -->
+  <script src="[%[=URL('static/tte/vendor/chartist/dist/chartist.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js') ]]"></script>
+  <!-- Datepicker -->
+  <script src="[%[=URL('static/tte/vendor/vanillajs-datepicker/dist/js/datepicker.min.js') ]]"></script>
+  <!-- Sweet Alerts 2 -->
+  <script src="[%[=URL('static/tte/vendor/sweetalert2/dist/sweetalert2.all.min.js') ]]"></script>
+  <!-- Moment JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+  <!-- Vanilla JS Datepicker -->
+  <script src="[%[=URL('static/tte/vendor/vanillajs-datepicker/dist/js/datepicker.min.js') ]]"></script>
+  <!-- Notyf -->
+  <script src="[%[=URL('static/tte/vendor/notyf/notyf.min.js') ]]"></script>
+  <!-- Simplebar -->
+  <script src="[%[=URL('static/tte/vendor/simplebar/dist/simplebar.min.js') ]]"></script>
+  <!-- Github buttons -->
+  <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+  <!-- Volt JS -->
+  <script src="[%[=URL('static/tte/assets/js/volt.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

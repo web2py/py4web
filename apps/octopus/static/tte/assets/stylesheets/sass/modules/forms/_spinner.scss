@@ -1,0 +1,29 @@
+.spinner-buttons {
+	
+	&.btn-group-vertical .btn {
+		height: 18px;
+		margin: 0 0 0 -1px;
+		padding-left: 6px;
+		padding-right: 6px;
+		text-align: center;
+		width: 22px;
+		line-height: 14px;
+	}
+
+	&.btn-group-vertical .btn i {
+		margin-top: -2px;
+	}
+
+	&.btn-group-vertical .btn:first-child {
+		border-radius: 0 4px 0 0 !important;
+		-webkit-border-radius: 0 4px 0 0 !important;
+	}
+
+	&.btn-group-vertical .btn:last-child {
+		border-radius: 0 0 4px !important;
+		-webkit-border-radius:  0 0 4px !important;
+		margin-top: -1px;
+		height: 17px;
+	}
+
+}

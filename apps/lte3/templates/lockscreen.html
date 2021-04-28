@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 26.04.2021 15:09:10 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;display=fallback" rel="stylesheet"/>
+  <!-- Font Awesome -->
+  <link href="[%[=URL('static/tte/plugins/fontawesome-free/css/all.min.css') ]]" rel="stylesheet"/>
+  <!-- Theme style -->
+  <link href="[%[=URL('static/tte/dist/css/adminlte.min.css') ]]" rel="stylesheet"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body class="hold-transition lockscreen">
+  <!-- Automatic element centering -->
+  <div class="lockscreen-wrapper">
+   <div class="lockscreen-logo">
+    <a href="[%[=URL('index2') ]]">
+     <b>Admin</b>
+     LTE
+    </a>
+   </div>
+   <!-- User name -->
+   <div class="lockscreen-name">John Doe</div>
+   <!-- START LOCK SCREEN ITEM -->
+   <div class="lockscreen-item">
+    <!-- lockscreen image -->
+    <div class="lockscreen-image">
+     <img alt="User Image" src="[%[=URL('static/tte/dist/img/user1-128x128.jpg') ]]"/></div>
+    <!-- /.lockscreen-image -->
+    <!-- lockscreen credentials (contains the form) -->
+    
+<!-- BEGIN view: flockscreen0, db_table: dflockscreen0 -->
+<div class="lockscreen-credentials">
+[%[= flockscreen0.custom['begin'] ]]
+<div class="input-group">
+ [%[ flockscreen0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ flockscreen0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ flockscreen0.custom['widgets']['f0']['_placeholder']= 'password'  ]]
+ [%[= flockscreen0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= flockscreen0.custom['errors']['f0'] if 'f0' in flockscreen0.custom['errors'] else '' ]]</span>
+
+ <div class="input-group-append">
+ [%[ flockscreen0.custom['submit']['_type']= 'submit'  ]]
+ [%[ flockscreen0.custom['submit']['_class']= 'btn'  ]]
+ [%[ flockscreen0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ flockscreen0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ flockscreen0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= flockscreen0.custom['submit'] ]]
+
+ </div>
+</div>
+
+ [%[ for hidden_widget in flockscreen0.custom['hidden_widgets'].keys(): ]]
+     [%[= flockscreen0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">flockscreen0</span></div>
+
+
+[%[= flockscreen0.custom['end'] ]]
+</div>
+<!-- END flockscreen0-->
+
+    <!-- /.lockscreen credentials -->
+   </div>
+   <!-- /.lockscreen-item -->
+   <div class="help-block text-center">Enter your password to retrieve your session</div>
+   <div class="text-center">
+    <a href="[%[=URL('loginA') ]]">Or sign in as a different user</a>
+   </div>
+   <div class="lockscreen-footer text-center">
+    Copyright © 2014-2021
+    <b>
+     <a class="text-black" href="https://adminlte.io">AdminLTE.io</a>
+    </b>
+    <br/>All rights reserved</div>
+  </div>
+  <!-- /.center -->
+  <!-- jQuery -->
+  <script src="[%[=URL('static/tte/plugins/jquery/jquery.min.js') ]]"></script>
+  <!-- Bootstrap 4 -->
+  <script src="[%[=URL('static/tte/plugins/bootstrap/js/bootstrap.bundle.min.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+// =========================================================
+// * Vue Material Dashboard - v1.4.0
+// =========================================================
+//
+// * Product Page: https://www.creative-tim.com/product/vue-material-dashboard
+// * Copyright 2019 Creative Tim (https://www.creative-tim.com)
+// * Licensed under MIT (https://github.com/creativetimofficial/vue-material-dashboard/blob/master/LICENSE.md)
+//
+// * Coded by Creative Tim
+//
+// =========================================================
+//
+// * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+//variables and mixins
+@import "md/variables";
+@import "md/mixins";
+@import "md/shadows";
+
+//plugin css
+@import "md/plugins/_perfect-scrollbar";
+
+// Core CSS
+@import "md/typography";
+@import "md/sidebar-and-main-panel";
+@import "md/buttons";
+@import "md/misc";
+@import "md/inputs";
+@import "md/fixed-plugin";
+@import "md/forms";
+@import "md/alerts";
+@import "md/tables";
+@import "md/layout";
+@import "md/checkboxes";
+@import "md/togglebutton";
+@import "md/ripples";
+@import "md/pagination";
+@import "md/pills";
+@import "md/dialogs";
+@import "md/navbars";
+@import "md/popups";
+@import "md/footers";
+
+// Fancy Stuff
+@import "md/dropdown";
+@import "md/cards";
+@import "md/tabs";
+@import "md/chartist";
+@import "md/responsive";

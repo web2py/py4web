@@ -1,0 +1,80 @@
+.made-by-component,
+svg[data-v-7fba59f2] {
+    position: absolute;
+    bottom: 0;
+    width: 100%
+}
+
+.va-page-not-found {
+    min-height: 100vh;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding-top: 10%;
+    position: relative
+}
+
+@media (max-width:767.98px) {
+    .va-page-not-found {
+        padding-top: 8%
+    }
+}
+
+.va-page-not-found__inner {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column
+}
+
+.va-page-not-found__inner .va-icon-vuestic {
+    width: 19rem;
+    height: 2rem;
+    margin-bottom: 13%
+}
+
+.va-page-not-found__title {
+    font-size: 3rem;
+    line-height: 1.25em;
+    font-weight: 500
+}
+
+@media (max-width:575.98px) {
+    .va-page-not-found__title {
+        font-size: 1.5rem
+    }
+}
+
+.va-page-not-found__text {
+    margin-bottom: 2.5rem
+}
+
+.va-page-not-found__wallpaper {
+    position: absolute;
+    bottom: 0;
+    left: 1rem;
+    width: 30%;
+    height: 40%
+}
+
+@media (max-width:575.98px) {
+    .va-page-not-found__wallpaper {
+        display: none
+    }
+}
+
+.va-page-not-found-custom__image {
+    width: 150%;
+    margin: 0 -25%;
+    min-width: 20rem
+}
+
+@media (max-width:767.98px) {
+    .va-page-not-found-custom__image {
+        margin: 0;
+        width: 100%
+    }
+}

@@ -1,0 +1,29 @@
+language: node_js
+node_js: '12'
+branches:
+  only:
+  - master
+  - /^greenkeeper/.*$/
+
+cache:
+  directories:
+    - node_modules
+
+before_install:
+  - npm install -g pnpm
+
+install:
+  - pnpm install
+
+script:
+  - pnpm run build
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  keep-history: true
+  local-dir: dist
+  verbose: true
+  on:
+    branch: master

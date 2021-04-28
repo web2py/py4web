@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 28.04.2021 08:47:37 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <!-- Required meta tags -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- Bootstrap CSS -->
+  <link href="[%[=URL('static/tte/assets/vendor/bootstrap/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/circular-std/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/libs/css/style.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') ]]" rel="stylesheet"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!-- ============================================================== -->
+  <!-- main wrapper -->
+  <!-- ============================================================== -->
+  <div class="dashboard-main-wrapper">
+   <!-- ============================================================== -->
+   <!-- navbar -->
+   <!-- ============================================================== -->
+   <div class="dashboard-header">
+    <nav class="navbar navbar-expand-lg bg-white fixed-top">
+     <a class="navbar-brand" href="[%[=URL('index') ]]">Concept</a>
+     <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+      <span class="navbar-toggler-icon"></span>
+     </button>
+     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto navbar-right-top">
+       <li class="nav-item">
+        <div class="top-search-bar" id="custom-search">
+         <input class="form-control" placeholder="Search.." type="text"/></div>
+       </li>
+       <li class="nav-item dropdown notification">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-icons" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink1">
+         <i class="fas fa-fw fa-bell"></i>
+         <span class="indicator"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+         <li>
+          <div class="notification-title">Notification</div>
+          <div class="notification-list">
+           <div class="list-group">
+            <a class="list-group-item list-group-item-action active" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-2.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jeremy Rakestraw</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-3.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">John Abraham</span>
+               is now following you
+               <div class="notification-date">2 days ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-4.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Monaan Pechi</span>
+               is watching your main repository
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+            <a class="list-group-item list-group-item-action" href="#">
+             <div class="notification-info">
+              <div class="notification-list-user-img">
+               <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-5.jpg') ]]"/></div>
+              <div class="notification-list-user-block">
+               <span class="notification-list-user-name">Jessica Caruso</span>
+               accepted your invitation to join the team.
+               <div class="notification-date">2 min ago</div>
+              </div>
+             </div>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="list-footer">
+           <a href="#">View all notifications</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown connection">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link" data-toggle="dropdown" href="#" id="navbarDropdown" role="button">
+         <i class="fas fa-fw fa-th"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
+         <li class="connection-list">
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/github.png') ]]"/>
+             <span>Github</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dribbble.png') ]]"/>
+             <span>Dribbble</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/dropbox.png') ]]"/>
+             <span>Dropbox</span>
+            </a>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/bitbucket.png') ]]"/>
+             <span>Bitbucket</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/mail_chimp.png') ]]"/>
+             <span>Mail chimp</span>
+            </a>
+           </div>
+           <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+            <a class="connection-item" href="#">
+             <img alt="" src="[%[=URL('static/tte/assets/images/slack.png') ]]"/>
+             <span>Slack</span>
+            </a>
+           </div>
+          </div>
+         </li>
+         <li>
+          <div class="conntection-footer">
+           <a href="#">More</a>
+          </div>
+         </li>
+        </ul>
+       </li>
+       <li class="nav-item dropdown nav-user">
+        <a aria-expanded="false" aria-haspopup="true" class="nav-link nav-user-img" data-toggle="dropdown" href="#" id="navbarDropdownMenuLink2">
+         <img alt="" class="user-avatar-md rounded-circle" src="[%[=URL('static/tte/assets/images/avatar-1.jpg') ]]"/></a>
+        <div aria-labelledby="navbarDropdownMenuLink2" class="dropdown-menu dropdown-menu-right nav-user-dropdown">
+         <div class="nav-user-info">
+          <h5 class="mb-0 text-white nav-user-name">John Abraham</h5>
+          <span class="status"></span>
+          <span class="ml-2">Available</span>
+         </div>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-user mr-2"></i>
+          Account
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-cog mr-2"></i>
+          Setting
+         </a>
+         <a class="dropdown-item" href="#">
+          <i class="fas fa-power-off mr-2"></i>
+          Logout
+         </a>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </nav>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end navbar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- left sidebar -->
+   <!-- ============================================================== -->
+   <div class="nav-left-sidebar sidebar-dark">
+    <div class="menu-list">
+     <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+      <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbarNav" data-toggle="collapse" type="button">
+       <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+       <ul class="navbar-nav flex-column">
+        <li class="nav-divider">Menu</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-1" aria-expanded="false" class="nav-link active" data-target="#submenu-1" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-user-circle"></i>
+          Dashboard
+          <span class="badge badge-success">6</span>
+         </a>
+         <div class="collapse submenu" id="submenu-1" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a aria-controls="submenu-1-2" aria-expanded="false" class="nav-link" data-target="#submenu-1-2" data-toggle="collapse" href="[%[=URL('index') ]]">E-Commerce</a>
+            <div class="collapse submenu" id="submenu-1-2" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('index') ]]">E Commerce Dashboard</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproduct') ]]">Product List</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXsingle') ]]">Product Single</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('ecommerceXproductXcheckout') ]]">Product Checkout</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXfinance') ]]">Finance</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dashboardXsales') ]]">Sales</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-1-1" aria-expanded="false" class="nav-link" data-target="#submenu-1-1" data-toggle="collapse" href="#">Infulencer</a>
+            <div class="collapse submenu" id="submenu-1-1" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('dashboardXinfluencer') ]]">Influencer</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXfinder') ]]">Influencer Finder</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="[%[=URL('influencerXprofile') ]]">Influencer Profile</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-2" aria-expanded="false" class="nav-link" data-target="#submenu-2" data-toggle="collapse" href="#">
+          <i class="fa fa-fw fa-rocket"></i>
+          UI Elements
+         </a>
+         <div class="collapse submenu" id="submenu-2" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cards') ]]">
+             Cards
+             <span class="badge badge-secondary">New</span>
+            </a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('general') ]]">General</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('carousel') ]]">Carousel</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('listgroup') ]]">List Group</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('typography') ]]">Typography</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('accordions') ]]">Accordions</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('tabs') ]]">Tabs</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-3" aria-expanded="false" class="nav-link" data-target="#submenu-3" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-chart-pie"></i>
+          Chart
+         </a>
+         <div class="collapse submenu" id="submenu-3" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXc3') ]]">C3 Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXchartist') ]]">Chartist Charts</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXcharts') ]]">Chart</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXmorris') ]]">Morris</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXsparkline') ]]">Sparkline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('chartXgauge') ]]">Guage</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-4" aria-expanded="false" class="nav-link" data-target="#submenu-4" data-toggle="collapse" href="#">
+          <i class="fab fa-fw fa-wpforms"></i>
+          Forms
+         </a>
+         <div class="collapse submenu" id="submenu-4" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXelements') ]]">Form Elements</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('formXvalidation') ]]">Parsely Validations</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('multiselect') ]]">Multiselect</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-5" aria-expanded="false" class="nav-link" data-target="#submenu-5" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-table"></i>
+          Tables
+         </a>
+         <div class="collapse submenu" id="submenu-5" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('generalXtable') ]]">General Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('dataXtables') ]]">Data Tables</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-divider">Features</li>
+        <li class="nav-item">
+         <a aria-controls="submenu-6" aria-expanded="false" class="nav-link" data-target="#submenu-6" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-file"></i>
+          Pages
+         </a>
+         <div class="collapse submenu" id="submenu-6" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('invoice') ]]">Invoice</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpage') ]]">Blank Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('blankXpageXheader') ]]">Blank Page Header</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('loginA') ]]">Login</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('X404Xpage') ]]">404 page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('signXup') ]]">Sign up Page</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('forgotXpassword') ]]">Forgot Password</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('pricing') ]]">Pricing Tables</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('timeline') ]]">Timeline</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('calendar') ]]">Calendar</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('sortableXnestableXlists') ]]">Sortable/Nestable List</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('widgets') ]]">Widgets</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mediaXobject') ]]">Media Objects</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('cropperXimage') ]]">Cropper</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('colorXpicker') ]]">Color Picker</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-7" aria-expanded="false" class="nav-link" data-target="#submenu-7" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-inbox"></i>
+          Apps
+          <span class="badge badge-secondary">New</span>
+         </a>
+         <div class="collapse submenu" id="submenu-7" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('inbox') ]]">Inbox</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXdetails') ]]">Email Detail</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('emailXcompose') ]]">Email Compose</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('messageXchat') ]]">Message Chat</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-8" aria-expanded="false" class="nav-link" data-target="#submenu-8" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-columns"></i>
+          Icons
+         </a>
+         <div class="collapse submenu" id="submenu-8" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXfontawesome') ]]">FontAwesome Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXmaterial') ]]">Material Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXsimpleXlineicon') ]]">Simpleline Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXthemify') ]]">Themify Icon</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXflag') ]]">Flag Icons</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('iconXweather') ]]">Weather Icon</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-9" aria-expanded="false" class="nav-link" data-target="#submenu-9" data-toggle="collapse" href="#">
+          <i class="fas fa-fw fa-map-marker-alt"></i>
+          Maps
+         </a>
+         <div class="collapse submenu" id="submenu-9" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXgoogle') ]]">Google Maps</a>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="[%[=URL('mapXvector') ]]">Vector Maps</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+        <li class="nav-item">
+         <a aria-controls="submenu-10" aria-expanded="false" class="nav-link" data-target="#submenu-10" data-toggle="collapse" href="#">
+          <i class="fas fa-f fa-folder"></i>
+          Menu Level
+         </a>
+         <div class="collapse submenu" id="submenu-10" style="">
+          <ul class="nav flex-column">
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 1</a>
+           </li>
+           <li class="nav-item">
+            <a aria-controls="submenu-11" aria-expanded="false" class="nav-link" data-target="#submenu-11" data-toggle="collapse" href="#">Level 2</a>
+            <div class="collapse submenu" id="submenu-11" style="">
+             <ul class="nav flex-column">
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 1</a>
+              </li>
+              <li class="nav-item">
+               <a class="nav-link" href="#">Level 2</a>
+              </li>
+             </ul>
+            </div>
+           </li>
+           <li class="nav-item">
+            <a class="nav-link" href="#">Level 3</a>
+           </li>
+          </ul>
+         </div>
+        </li>
+       </ul>
+      </div>
+     </nav>
+    </div>
+   </div>
+   <!-- ============================================================== -->
+   <!-- end left sidebar -->
+   <!-- ============================================================== -->
+   <!-- ============================================================== -->
+   <!-- wrapper  -->
+   <!-- ============================================================== -->
+   <div class="dashboard-wrapper">
+    <div class="container-fluid dashboard-content">
+     <!-- ============================================================== -->
+     <!-- pageheader -->
+     <!-- ============================================================== -->
+     <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+       <div class="page-header">
+        <h2 class="pageheader-title">Form Validations</h2>
+        <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
+        <div class="page-breadcrumb">
+         <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+           <li class="breadcrumb-item">
+            <a class="breadcrumb-link" href="#">Dashboard</a>
+           </li>
+           <li class="breadcrumb-item">
+            <a class="breadcrumb-link" href="#">Forms</a>
+           </li>
+           <li aria-current="page" class="breadcrumb-item active">Form Validations</li>
+          </ol>
+         </nav>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- ============================================================== -->
+     <!-- end pageheader -->
+     <!-- ============================================================== -->
+     <div class="row">
+      <!-- ============================================================== -->
+      <!-- validation form -->
+      <!-- ============================================================== -->
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+       <div class="card">
+        <h5 class="card-header">Bootstrap Validation Form</h5>
+        <div class="card-body">
+         
+<!-- BEGIN view: fformXvalidation0, db_table: dfformXvalidation0 -->
+<div class="needs-validation">
+[%[= fformXvalidation0.custom['begin'] ]]
+<div class="row">
+ <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+  <label for="validationCustom01">
+   First name
+  </label>
+ [%[ fformXvalidation0.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f0']['_id']= 'validationCustom01'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f0']['_placeholder']= 'First name'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f0']['_value']= 'Mark'  ]]
+ [%[= fformXvalidation0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation0.custom['errors']['f0'] if 'f0' in fformXvalidation0.custom['errors'] else '' ]]</span>
+
+  <div class="valid-feedback">
+   Looks good!
+  </div>
+ </div>
+ <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+  <label for="validationCustom02">
+   Last name
+  </label>
+ [%[ fformXvalidation0.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f1']['_id']= 'validationCustom02'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f1']['_placeholder']= 'Last name'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f1']['_value']= 'Otto'  ]]
+ [%[= fformXvalidation0.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation0.custom['errors']['f1'] if 'f1' in fformXvalidation0.custom['errors'] else '' ]]</span>
+
+  <div class="valid-feedback">
+   Looks good!
+  </div>
+ </div>
+ <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+  <label for="validationCustomUsername">
+   Username
+  </label>
+  <div class="input-group">
+   <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroupPrepend">
+     @
+    </span>
+   </div>
+ [%[ fformXvalidation0.custom['widgets']['f2']['_aria-describedby']= 'inputGroupPrepend'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f2']['_id']= 'validationCustomUsername'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f2']['_placeholder']= 'Username'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[= fformXvalidation0.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation0.custom['errors']['f2'] if 'f2' in fformXvalidation0.custom['errors'] else '' ]]</span>
+
+   <div class="invalid-feedback">
+    Please choose a username.
+   </div>
+  </div>
+ </div>
+</div>
+
+<div class="form-row">
+ <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
+  <label for="validationCustom03">
+   City
+  </label>
+ [%[ fformXvalidation0.custom['widgets']['f3']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f3']['_id']= 'validationCustom03'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f3']['_placeholder']= 'City'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[= fformXvalidation0.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation0.custom['errors']['f3'] if 'f3' in fformXvalidation0.custom['errors'] else '' ]]</span>
+
+  <div class="invalid-feedback">
+   Please provide a valid city.
+  </div>
+ </div>
+ <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
+  <label for="validationCustom04">
+   State
+  </label>
+ [%[ fformXvalidation0.custom['widgets']['f4']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f4']['_id']= 'validationCustom04'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f4']['_placeholder']= 'State'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f4']['_type']= 'text'  ]]
+ [%[= fformXvalidation0.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation0.custom['errors']['f4'] if 'f4' in fformXvalidation0.custom['errors'] else '' ]]</span>
+
+  <div class="invalid-feedback">
+   Please provide a valid state.
+  </div>
+ </div>
+ <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
+  <label for="validationCustom05">
+   Zip
+  </label>
+ [%[ fformXvalidation0.custom['widgets']['f5']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f5']['_id']= 'validationCustom05'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f5']['_placeholder']= 'Zip'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f5']['_type']= 'text'  ]]
+ [%[= fformXvalidation0.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation0.custom['errors']['f5'] if 'f5' in fformXvalidation0.custom['errors'] else '' ]]</span>
+
+  <div class="invalid-feedback">
+   Please provide a valid zip.
+  </div>
+ </div>
+ <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+  <div class="form-group">
+   <div class="form-check">
+ [%[ fformXvalidation0.custom['widgets']['f6']['_class']= 'form-check-input'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f6']['_id']= 'invalidCheck'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f6']['_type']= 'checkbox'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f6']['_value']= '==0'  ]]
+ [%[ fformXvalidation0.custom['widgets']['f6']['_placeholder']= ''  ]]
+ [%[= fformXvalidation0.custom['widgets']['f6'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation0.custom['errors']['f6'] if 'f6' in fformXvalidation0.custom['errors'] else '' ]]</span>
+
+    <label class="form-check-label" for="invalidCheck">
+     Agree to terms and conditions
+    </label>
+    <div class="invalid-feedback">
+     You must agree before submitting.
+    </div>
+   </div>
+  </div>
+ </div>
+ <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+ [%[ fformXvalidation0.custom['submit']['_class']= 'btn btn-primary'  ]]
+ [%[ fformXvalidation0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformXvalidation0.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fformXvalidation0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformXvalidation0.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fformXvalidation0.custom['submit'] ]]
+
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformXvalidation0.custom['hidden_widgets'].keys(): ]]
+     [%[= fformXvalidation0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fformXvalidation0</span></div>
+
+
+[%[= fformXvalidation0.custom['end'] ]]
+</div>
+<!-- END fformXvalidation0-->
+
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end validation form -->
+      <!-- ============================================================== -->
+     </div>
+     <div class="row">
+      <!-- ============================================================== -->
+      <!-- basic form -->
+      <!-- ============================================================== -->
+      <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+       <div class="card">
+        <h5 class="card-header">Basic Form</h5>
+        <div class="card-body">
+         
+<!-- BEGIN view: fformXvalidation1, db_table: dfformXvalidation1 -->
+<div data-parsley-validate="==0" id="basicform">
+[%[= fformXvalidation1.custom['begin'] ]]
+<div class="form-group">
+ <label for="inputUserName">
+  User Name
+ </label>
+ [%[ fformXvalidation1.custom['widgets']['f0']['_autocomplete']= 'off'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f0']['_data-parsley-trigger']= 'change'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f0']['_id']= 'inputUserName'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f0']['_placeholder']= 'Enter user name'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fformXvalidation1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation1.custom['errors']['f0'] if 'f0' in fformXvalidation1.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="form-group">
+ <label for="inputEmail">
+  Email address
+ </label>
+ [%[ fformXvalidation1.custom['widgets']['f1']['_autocomplete']= 'off'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f1']['_data-parsley-trigger']= 'change'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f1']['_id']= 'inputEmail'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f1']['_placeholder']= 'Enter email'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[= fformXvalidation1.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation1.custom['errors']['f1'] if 'f1' in fformXvalidation1.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="form-group">
+ <label for="inputPassword">
+  Password
+ </label>
+ [%[ fformXvalidation1.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f2']['_id']= 'inputPassword'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f2']['_placeholder']= 'Password'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[= fformXvalidation1.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation1.custom['errors']['f2'] if 'f2' in fformXvalidation1.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="form-group">
+ <label for="inputRepeatPassword">
+  Repeat Password
+ </label>
+ [%[ fformXvalidation1.custom['widgets']['f3']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f3']['_data-parsley-equalto']= '#inputPassword'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f3']['_id']= 'inputRepeatPassword'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f3']['_placeholder']= 'Password'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[= fformXvalidation1.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation1.custom['errors']['f3'] if 'f3' in fformXvalidation1.custom['errors'] else '' ]]</span>
+
+</div>
+
+<div class="row">
+ <div class="col-sm-6 pb-2 pb-sm-4 pb-lg-0 pr-0">
+  <label class="be-checkbox custom-control custom-checkbox">
+ [%[ fformXvalidation1.custom['widgets']['f4']['_class']= 'custom-control-input'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f4']['_type']= 'checkbox'  ]]
+ [%[ fformXvalidation1.custom['widgets']['f4']['_placeholder']= ''  ]]
+ [%[= fformXvalidation1.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation1.custom['errors']['f4'] if 'f4' in fformXvalidation1.custom['errors'] else '' ]]</span>
+
+   <span class="custom-control-label">
+    Remember me
+   </span>
+  </label>
+ </div>
+ <div class="col-sm-6 pl-0">
+  <p class="text-right">
+ [%[ fformXvalidation1.custom['submit']['_class']= 'btn btn-space btn-primary'  ]]
+ [%[ fformXvalidation1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformXvalidation1.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fformXvalidation1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformXvalidation1.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fformXvalidation1.custom['submit'] ]]
+
+   <button class="btn btn-space btn-secondary">
+    Cancel
+   </button>
+  </p>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformXvalidation1.custom['hidden_widgets'].keys(): ]]
+     [%[= fformXvalidation1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fformXvalidation1</span></div>
+
+
+[%[= fformXvalidation1.custom['end'] ]]
+</div>
+<!-- END fformXvalidation1-->
+
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end basic form -->
+      <!-- ============================================================== -->
+      <!-- ============================================================== -->
+      <!-- horizontal form -->
+      <!-- ============================================================== -->
+      <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+       <div class="card">
+        <h5 class="card-header">Horizontal Form</h5>
+        <div class="card-body">
+         
+<!-- BEGIN view: fformXvalidation2, db_table: dfformXvalidation2 -->
+<div data-parsley-validate="==0" id="form">
+[%[= fformXvalidation2.custom['begin'] ]]
+<div class="form-group row">
+ <label class="col-3 col-lg-2 col-form-label text-right" for="inputEmail2">
+  Email
+ </label>
+ <div class="col-9 col-lg-10">
+ [%[ fformXvalidation2.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f0']['_data-parsley-type']= 'email'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f0']['_id']= 'inputEmail2'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f0']['_placeholder']= 'Email'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fformXvalidation2.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation2.custom['errors']['f0'] if 'f0' in fformXvalidation2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-3 col-lg-2 col-form-label text-right" for="inputPassword2">
+  Password
+ </label>
+ <div class="col-9 col-lg-10">
+ [%[ fformXvalidation2.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f1']['_id']= 'inputPassword2'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f1']['_placeholder']= 'Password'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[= fformXvalidation2.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation2.custom['errors']['f1'] if 'f1' in fformXvalidation2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-3 col-lg-2 col-form-label text-right" for="inputWebSite">
+  Web Site
+ </label>
+ <div class="col-9 col-lg-10">
+ [%[ fformXvalidation2.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f2']['_data-parsley-type']= 'url'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f2']['_id']= 'inputWebSite'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f2']['_placeholder']= 'URL'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[= fformXvalidation2.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation2.custom['errors']['f2'] if 'f2' in fformXvalidation2.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="row pt-2 pt-sm-5 mt-1">
+ <div class="col-sm-6 pb-2 pb-sm-4 pb-lg-0 pr-0">
+  <label class="be-checkbox custom-control custom-checkbox">
+ [%[ fformXvalidation2.custom['widgets']['f3']['_class']= 'custom-control-input'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f3']['_type']= 'checkbox'  ]]
+ [%[ fformXvalidation2.custom['widgets']['f3']['_placeholder']= ''  ]]
+ [%[= fformXvalidation2.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation2.custom['errors']['f3'] if 'f3' in fformXvalidation2.custom['errors'] else '' ]]</span>
+
+   <span class="custom-control-label">
+    Remember me
+   </span>
+  </label>
+ </div>
+ <div class="col-sm-6 pl-0">
+  <p class="text-right">
+ [%[ fformXvalidation2.custom['submit']['_class']= 'btn btn-space btn-primary'  ]]
+ [%[ fformXvalidation2.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformXvalidation2.custom['submit']['_title']= 'mysubmit from button'  ]]
+ [%[ fformXvalidation2.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformXvalidation2.custom['submit']['_style']= 'text-decoration: underline; font-weight: bold;'  ]]
+ [%[= fformXvalidation2.custom['submit'] ]]
+
+   <button class="btn btn-space btn-secondary">
+    Cancel
+   </button>
+  </p>
+ </div>
+</div>
+
+ [%[ for hidden_widget in fformXvalidation2.custom['hidden_widgets'].keys(): ]]
+     [%[= fformXvalidation2.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fformXvalidation2</span></div>
+
+
+[%[= fformXvalidation2.custom['end'] ]]
+</div>
+<!-- END fformXvalidation2-->
+
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end horizontal form -->
+      <!-- ============================================================== -->
+     </div>
+     <div class="row">
+      <!-- ============================================================== -->
+      <!-- valifation types -->
+      <!-- ============================================================== -->
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+       <div class="card">
+        <h5 class="card-header">Validation Types</h5>
+        <div class="card-body">
+         
+<!-- BEGIN view: fformXvalidation3, db_table: dfformXvalidation3 -->
+<div data-parsley-validate="==0" id="validationform">
+[%[= fformXvalidation3.custom['begin'] ]]
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Required
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f0']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f0']['_placeholder']= 'Type something'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f0'] if 'f0' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Min Length
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f1']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f1']['_data-parsley-minlength']= '6'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f1']['_placeholder']= 'Min 6 chars.'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f1']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f1'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f1'] if 'f1' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Max Length
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f2']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f2']['_data-parsley-maxlength']= '6'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f2']['_placeholder']= 'Max 6 chars.'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f2']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f2'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f2'] if 'f2' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Range Length
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f3']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f3']['_data-parsley-length']= '[5,10]'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f3']['_placeholder']= 'Text between 5 - 10 chars length'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f3']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f3'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f3'] if 'f3' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Min Value
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f4']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f4']['_data-parsley-min']= '6'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f4']['_placeholder']= 'Min value is 6'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f4']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f4'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f4'] if 'f4' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Max Value
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f5']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f5']['_data-parsley-max']= '6'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f5']['_placeholder']= 'Max value is 6'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f5']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f5'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f5'] if 'f5' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Range Value
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f6']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f6']['_max']= '100'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f6']['_min']= '6'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f6']['_placeholder']= 'Number between 6 - 100'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f6']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f6'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f6'] if 'f6' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Regular Exp
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f7']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f7']['_data-parsley-pattern']= '#[A-Fa-f0-9]{6}'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f7']['_placeholder']= 'Hex. Color'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f7']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f7'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f7'] if 'f7' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Equal To
+ </label>
+ <div class="col-sm-4 col-lg-3 mb-3 mb-sm-0">
+ [%[ fformXvalidation3.custom['widgets']['f8']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f8']['_id']= 'pass2'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f8']['_placeholder']= 'Password'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f8']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f8'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f8'] if 'f8' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+ <div class="col-sm-4 col-lg-3">
+ [%[ fformXvalidation3.custom['widgets']['f9']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f9']['_data-parsley-equalto']= '#pass2'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f9']['_placeholder']= 'Re-Type Password'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f9']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f9'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f9'] if 'f9' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-sm-3 col-form-label text-sm-right">
+  Min check
+ </label>
+ <div class="col-sm-6">
+  <div class="custom-controls-stacked">
+   <label class="custom-control custom-checkbox">
+ [%[ fformXvalidation3.custom['widgets']['f10']['_class']= 'custom-control-input'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f10']['_data-parsley-errors-container']= '#error-container1'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f10']['_data-parsley-mincheck']= '2'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f10']['_data-parsley-multiple']= 'groups'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f10']['_id']= 'ck1'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f10']['_type']= 'checkbox'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f10']['_value']= 'bar'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f10']['_placeholder']= ''  ]]
+ [%[= fformXvalidation3.custom['widgets']['f10'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f10'] if 'f10' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+    <span class="custom-control-label">
+     Option 1
+    </span>
+   </label>
+   <label class="custom-control custom-checkbox">
+ [%[ fformXvalidation3.custom['widgets']['f11']['_class']= 'custom-control-input'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f11']['_data-parsley-errors-container']= '#error-container1'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f11']['_data-parsley-mincheck']= '2'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f11']['_data-parsley-multiple']= 'groups'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f11']['_id']= 'ck2'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f11']['_type']= 'checkbox'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f11']['_value']= 'bar2'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f11']['_placeholder']= ''  ]]
+ [%[= fformXvalidation3.custom['widgets']['f11'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f11'] if 'f11' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+    <span class="custom-control-label">
+     Option 2
+    </span>
+   </label>
+   <label class="custom-control custom-checkbox">
+ [%[ fformXvalidation3.custom['widgets']['f12']['_class']= 'custom-control-input'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f12']['_data-parsley-errors-container']= '#error-container1'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f12']['_data-parsley-mincheck']= '2'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f12']['_data-parsley-multiple']= 'groups'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f12']['_id']= 'ck3'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f12']['_type']= 'checkbox'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f12']['_value']= 'bar3'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f12']['_placeholder']= ''  ]]
+ [%[= fformXvalidation3.custom['widgets']['f12'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f12'] if 'f12' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+    <span class="custom-control-label">
+     Option 3
+    </span>
+   </label>
+   <div id="error-container1">
+   </div>
+  </div>
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-sm-3 col-form-label text-sm-right">
+  Max check
+ </label>
+ <div class="col-sm-6">
+  <div class="custom-controls-stacked">
+   <label class="custom-control custom-checkbox">
+ [%[ fformXvalidation3.custom['widgets']['f13']['_class']= 'custom-control-input'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f13']['_data-parsley-errors-container']= '#error-container2'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f13']['_data-parsley-multiple']= 'group1'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f13']['_id']= 'e1'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f13']['_type']= 'checkbox'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f13']['_value']= 'bar'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f13']['_placeholder']= ''  ]]
+ [%[= fformXvalidation3.custom['widgets']['f13'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f13'] if 'f13' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+    <span class="custom-control-label">
+     Option 1
+    </span>
+   </label>
+   <label class="custom-control custom-checkbox">
+ [%[ fformXvalidation3.custom['widgets']['f14']['_class']= 'custom-control-input'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f14']['_data-parsley-errors-container']= '#error-container2'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f14']['_data-parsley-multiple']= 'group1'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f14']['_id']= 'e2'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f14']['_type']= 'checkbox'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f14']['_value']= 'bar'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f14']['_placeholder']= ''  ]]
+ [%[= fformXvalidation3.custom['widgets']['f14'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f14'] if 'f14' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+    <span class="custom-control-label">
+     Option 2
+    </span>
+   </label>
+   <label class="custom-control custom-checkbox">
+ [%[ fformXvalidation3.custom['widgets']['f15']['_class']= 'custom-control-input'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f15']['_data-parsley-errors-container']= '#error-container2'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f15']['_data-parsley-maxcheck']= '1'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f15']['_data-parsley-multiple']= 'group1'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f15']['_id']= 'e3'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f15']['_type']= 'checkbox'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f15']['_value']= 'bar'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f15']['_placeholder']= ''  ]]
+ [%[= fformXvalidation3.custom['widgets']['f15'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f15'] if 'f15' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+    <span class="custom-control-label">
+     Option 3
+    </span>
+   </label>
+   <div id="error-container2">
+   </div>
+  </div>
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  E-Mail
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f16']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f16']['_data-parsley-type']= 'email'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f16']['_placeholder']= 'Enter a valid e-mail'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f16']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f16'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f16'] if 'f16' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  URL
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f17']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f17']['_data-parsley-type']= 'url'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f17']['_placeholder']= 'URL'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f17']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f17'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f17'] if 'f17' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Digits
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f18']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f18']['_data-parsley-type']= 'digits'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f18']['_placeholder']= 'Enter only digits'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f18']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f18'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f18'] if 'f18' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Number
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f19']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f19']['_data-parsley-type']= 'number'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f19']['_placeholder']= 'Enter only numbers'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f19']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f19'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f19'] if 'f19' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Alphanumeric
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f20']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f20']['_data-parsley-type']= 'alphanum'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f20']['_placeholder']= 'Enter alphanumeric value'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f20']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f20'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f20'] if 'f20' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ </div>
+</div>
+
+<div class="form-group row">
+ <label class="col-12 col-sm-3 col-form-label text-sm-right">
+  Textarea
+ </label>
+ <div class="col-12 col-sm-8 col-lg-6">
+ [%[ fformXvalidation3.custom['widgets']['f21']['_class']= 'form-control'  ]]
+ [%[ fformXvalidation3.custom['widgets']['f21']['_type']= 'text'  ]]
+ [%[= fformXvalidation3.custom['widgets']['f21'] ]]
+
+ <span style="color:#ff0000">[%[= fformXvalidation3.custom['errors']['f21'] if 'f21' in fformXvalidation3.custom['errors'] else '' ]]</span>
+
+ [%[ fformXvalidation3.custom['submit']['_class']= 'form-control mysubmit_cls'  ]]
+ [%[ fformXvalidation3.custom['submit']['_type']= 'submit'  ]]
+ [%[ fformXvalidation3.custom['submit']['_rows']= '1'  ]]
+ [%[ fformXvalidation3.custom['submit']['_placeholder']= ''  ]]
+ [%[ fformXvalidation3.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fformXvalidation3.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fformXvalidation3.custom['submit'] ]]
+
+ [%[ for hidden_widget in fformXvalidation3.custom['hidden_widgets'].keys(): ]]
+     [%[= fformXvalidation3.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fformXvalidation3</span></div>
+
+
+[%[= fformXvalidation3.custom['end'] ]]
+</div>
+<!-- END fformXvalidation3-->
+
+        </div>
+       </div>
+      </div>
+      <!-- ============================================================== -->
+      <!-- end valifation types -->
+      <!-- ============================================================== -->
+     </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- footer -->
+    <!-- ============================================================== -->
+    <div class="footer">
+     <div class="container-fluid">
+      <div class="row">
+       <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+        Copyright © 2018 Concept. All rights reserved. Dashboard by
+        <a href="https://colorlib.com/wp/">Colorlib</a>
+        .
+       </div>
+       <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+        <div class="text-md-right footer-links d-none d-sm-block">
+         <a href="javascript: void(0);">About</a>
+         <a href="javascript: void(0);">Support</a>
+         <a href="javascript: void(0);">Contact Us</a>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- end footer -->
+    <!-- ============================================================== -->
+   </div>
+  </div>
+  <!-- ============================================================== -->
+  <!-- end main wrapper -->
+  <!-- ============================================================== -->
+  <!-- Optional JavaScript -->
+  <script src="[%[=URL('static/tte/assets/vendor/jquery/jquery-3.3.1.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/bootstrap/js/bootstrap.bundle.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/slimscroll/jquery.slimscroll.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/vendor/parsley/parsley.js') ]]"></script>
+  <script src="[%[=URL('static/tte/assets/libs/js/main-js.js') ]]"></script>
+  <script>
+   $('#form').parsley();
+  </script>
+  <script>
+   // Example starter JavaScript for disabling form submissions if there are invalid fields
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+  </script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

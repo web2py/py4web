@@ -1,0 +1,31 @@
+.pagination {
+	> li {
+
+		a {
+			color: $color-primary;
+			&:hover,
+			&:focus {
+				color: lighten($color-primary, 5%);
+			}
+		}
+
+		&.active {
+
+			a,
+			span {
+				&,
+				&:hover,
+				&:focus {
+					background-color: $color-primary;
+					border-color: $color-primary;
+				}
+			}
+
+			a {
+				background-color: $color-primary;
+			}
+
+		}
+
+	}
+}

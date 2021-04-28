@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+ <head>
+            <!-- 01.12.2020 12:08:07 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+  <title>biorex title text</title>
+  <meta content="" name="description"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- favicon
+		============================================ -->
+  <link href="[%[=URL('static/tte/img/favicon.ico') ]]" rel="shortcut icon" type="image/x-icon"/>
+  <!-- Google Fonts
+		============================================ -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet"/>
+  <!-- Bootstrap CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/bootstrap.min.css') ]]" rel="stylesheet"/>
+  <!-- font awesome CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/font-awesome.min.css') ]]" rel="stylesheet"/>
+  <!-- owl.carousel CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/owl.carousel.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/owl.theme.css') ]]" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/owl.transitions.css') ]]" rel="stylesheet"/>
+  <!-- animate CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/animate.css') ]]" rel="stylesheet"/>
+  <!-- normalize CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/normalize.css') ]]" rel="stylesheet"/>
+  <!-- mCustomScrollbar CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/scrollbar/jquery.mCustomScrollbar.min.css') ]]" rel="stylesheet"/>
+  <!-- wave CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/wave/waves.min.css') ]]" rel="stylesheet"/>
+  <!-- Notika icon CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/notika-custom-icon.css') ]]" rel="stylesheet"/>
+  <!-- main CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/main.css') ]]" rel="stylesheet"/>
+  <!-- style CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/style.css') ]]" rel="stylesheet"/>
+  <!-- responsive CSS
+		============================================ -->
+  <link href="[%[=URL('static/tte/css/responsive.css') ]]" rel="stylesheet"/>
+  <!-- modernizr JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/vendor/modernizr-2.8.3.min.js') ]]"></script>
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js" async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+
+<!-- mysubmit button -->
+<style>.mysubmit_cls {
+    width: 6em;
+    background-color: LightGray;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-weight: bold;
+    border: 1px dashed black;
+    text-decoration: underline;
+}
+
+.mysubmit_cls:hover {
+    background-color: LightCyan;
+    cursor: pointer;
+}
+
+
+.flashdiv {
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+}
+
+.flashspan {
+    position: relative;
+    z-index: 100;
+    background-color: #F0FFF0;
+    color: black;
+    border: 2px dashed red;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+
+</style>
+
+</head>
+ <body>
+  <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+  <!-- 404 Page area Start-->
+  <div class="error-page-area">
+   <div class="error-page-wrap">
+    <i class="notika-icon notika-close"></i>
+    <h2>
+     ERROR
+     <span class="counter">404</span>
+    </h2>
+    <p>Sorry, but the page you are looking for has note been found. Try checking the URL for an error, then hit the refresh button on your browser or try found something else in our app.</p>
+    <a class="btn" href="[%[=URL('index') ]]">Dashboard</a>
+    <a class="btn error-btn-mg" href="#">Report Problem</a>
+   </div>
+  </div>
+  <!-- 404 Page area End-->
+  <!-- jquery
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/vendor/jquery-1.12.4.min.js') ]]"></script>
+  <!-- bootstrap JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/bootstrap.min.js') ]]"></script>
+  <!-- wow JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/wow.min.js') ]]"></script>
+  <!-- price-slider JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/jquery-price-slider.js') ]]"></script>
+  <!-- owl.carousel JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/owl.carousel.min.js') ]]"></script>
+  <!-- scrollUp JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/jquery.scrollUp.min.js') ]]"></script>
+  <!-- meanmenu JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/meanmenu/jquery.meanmenu.js') ]]"></script>
+  <!-- counterup JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/counterup/jquery.counterup.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/counterup/waypoints.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/counterup/counterup-active.js') ]]"></script>
+  <!-- mCustomScrollbar JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/scrollbar/jquery.mCustomScrollbar.concat.min.js') ]]"></script>
+  <!-- sparkline JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/sparkline/jquery.sparkline.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/sparkline/sparkline-active.js') ]]"></script>
+  <!-- flot JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/flot/jquery.flot.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/jquery.flot.resize.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/flot/flot-active.js') ]]"></script>
+  <!-- knob JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/knob/jquery.knob.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/knob/jquery.appear.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/knob/knob-active.js') ]]"></script>
+  <!--  wave JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/wave/waves.min.js') ]]"></script>
+  <script src="[%[=URL('static/tte/js/wave/wave-active.js') ]]"></script>
+  <!--  Chat JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/chat/jquery.chat.js') ]]"></script>
+  <!--  todo JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/todo/jquery.todo.js') ]]"></script>
+  <!-- plugins JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/plugins.js') ]]"></script>
+  <!-- main JS
+		============================================ -->
+  <script src="[%[=URL('static/tte/js/main.js') ]]"></script>
+ </body>
+</html>

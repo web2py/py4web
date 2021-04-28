@@ -1,0 +1,72 @@
+// ACCORDION
+// -----------------------------------------------------------------------------
+.panel-group {
+	.panel-accordion {
+		border: 1px solid #DDD;
+		.panel-heading {
+			border-radius: $border-radius;
+			padding: 0;
+
+			a {
+				color: $color-primary;
+				display: block;
+				padding: 15px;
+				font-size: 16px;
+				border-radius: $border-radius;
+				&:hover, &:focus {
+					text-decoration: none;
+				}
+				.fa {
+					margin-right: 4px;
+				}
+			}
+		}
+		.panel-body {
+			border-radius: 0 0 $border-radius $border-radius;
+		}
+
+		&.panel-accordion-first {
+			border-radius: 0 0 $border-radius $border-radius;
+
+			.panel-heading {
+				border-radius: 0 0 $border-radius $border-radius;
+			}
+		}
+	}
+}
+
+// STATES
+// -----------------------------------------------------------------------------
+@each $state in $states {
+	.panel-group .panel-accordion-#{nth($state,1)} {
+		.panel-heading .panel-title a {
+			background: #{nth($state,2)};
+			color: #FFF;
+		}
+	}
+}
+
+// DARK
+// -----------------------------------------------------------------------------
+html.dark {
+	.panel-group {
+		.panel-accordion {
+			border-color: $dark-color-3;
+
+			.panel {
+				background-color: $dark-color-3;
+			}
+			.panel-default {
+				border-color: $dark-color-3;
+			}
+			.panel-heading {
+				background-color: $dark-color-4;
+			}
+
+			.form-control {
+				background-color: $dark-color-2;
+				border-color: $dark-color-2;
+			}
+		}
+	}
+}

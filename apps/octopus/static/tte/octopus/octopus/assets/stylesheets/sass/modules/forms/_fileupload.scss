@@ -1,0 +1,31 @@
+// FILE UPLOAD
+// -----------------------------------------------------------------------------
+.fileupload {
+	.uneditable-input {
+		.fa {
+			position: absolute;
+			top: 12px;
+		}
+
+		.fileupload-preview {
+			display: inline-block;
+			float: left;
+			overflow: hidden;
+			padding: 0 0 0 17px;
+			text-overflow: ellipsis;
+			width: 100%;
+		}
+	}
+
+	.btn {
+		border-radius: 0;
+	}
+}
+
+@media only screen and (max-width: 479px) {
+	.fileupload {
+		.uneditable-input {
+			width: 170px;
+		}
+	}
+}

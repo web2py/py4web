@@ -1,0 +1,772 @@
+/* Blockquote */
+blockquote.primary {
+	border-color: @skinColor;
+}
+
+/* Nav Pills */
+.nav-pills-primary {
+	> li {
+		a:hover,
+		a:focus {
+			color: @skinColor;
+			background-color: lighten(@skinColor, 50%);
+		}
+	}
+
+	> li.active {
+		> a {
+			&,
+			&:hover,
+			&:active,
+			&:focus {
+				background-color: @skinColor;
+			}
+		}
+	}
+}
+
+/* Dropdown Menu */
+.dropdown-menu & >.active & > a,
+.dropdown-menu & >.active & > a:hover,
+.dropdown-menu & >.active & > a:focus {
+	background-color: @skinColor;
+}
+
+.open > .dropdown-toggle.btn-primary {
+	background: @skinColor;
+	border-color: darken(@skinColor, 5%);
+}
+
+body .btn-primary.dropdown-toggle {
+	border-left-color: lighten(@skinColor, 8%);
+}
+
+/* Buttons */
+body {
+
+	.btn-primary {
+		.buttonBackground(@color-primary, spin(@color-primary, 20%));
+	}
+
+	.btn-success {
+		.buttonBackground(@color-success, spin(@color-success, 20%));
+	}
+
+	.btn-warning {
+		.buttonBackground(@color-warning, spin(@color-warning, 20%));
+	}
+
+	.btn-danger {
+		.buttonBackground(@color-danger, spin(@color-danger, 20%));
+	}
+
+	.btn-info {
+		.buttonBackground(@color-info, spin(@color-info, 20%));
+	}
+
+	.btn-dark {
+		.buttonBackground(@color-dark, spin(@color-dark, 20%));
+	}
+
+}
+
+/* Switch*/
+.switch {
+	&.switch-primary {
+		.ios-switch .on-background {
+			background: @skinColor;
+		}
+	}
+}
+
+/* Label */
+.label-primary {
+	background: @skinColor;
+}
+
+/* Text Primary */
+.text-primary {
+	color: @skinColor !important;
+}
+
+/* BG Primary */
+.bg-primary {
+	background: @skinColor;
+}
+
+/* Alternative Font Style */
+.alternative-font {
+	color: @skinColor;
+}
+
+/* Hightlight */
+.highlight {
+	background-color: @skinColor;
+}
+
+/* Drop Caps */
+p.drop-caps {
+	&.colored:first-child:first-letter {
+		color: @skinColor;
+	}
+	&.colored.secundary:first-child:first-letter {
+		background-color: @skinColor;
+	}
+}
+
+/* Well */
+.well.primary {
+	background: @skinColor;
+	border-color: darken( @skinColor, 10% );
+}
+
+/* Form */
+.form-control:focus {
+	border-color: lighten(@skinColor, 20%);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(red(@skinColor), green(@skinColor), blue(@skinColor), 0.3);
+}
+
+/* Header */
+.header {
+	.toggle-sidebar-left {
+		background: @skinColor;
+	}
+}
+
+/* Page Header */
+.page-header {
+	h2 {
+		border-bottom-color: @skinColor;
+	}
+	.sidebar-right-toggle {
+		&:hover {
+			color: @skinColor;
+		}
+	}
+}
+
+/* Navigation */
+ul.nav-main {
+
+	& > li {
+		&.nav-active {
+			> a {
+				box-shadow: 2px 0 0 @skinColor inset;
+			}
+			& > i {
+				color: @skinColor;
+			}
+		}
+	}
+
+	li {
+
+		.nav-children {
+
+			li {
+				&.nav-active {
+					> a {
+						color: @skinColor;
+					}
+
+				}
+
+			}
+		}
+
+	}
+
+}
+
+/* Nano Scroller Plugin */
+html.no-overflowscrolling {
+	.nano {
+		> .nano-pane {
+
+			> .nano-slider {
+				background: @skinColor;
+			}
+		}
+	}
+}
+
+/* Nav Pills */
+.nav-pills > .active {
+	a {
+		&,
+		&:hover,
+		&:focus {
+			background-color: @skinColor;
+		}
+	}
+}
+
+/* Pagination */
+.pagination {
+	> li {
+		a {
+			color: @skinColor;
+			&:hover,
+			&:focus {
+				color: lighten(@skinColor, 5%);
+			}
+		}
+
+		&.active {
+			a,
+			span {
+				&,
+				&:hover,
+				&:focus {
+					background-color: @skinColor;
+					border-color: @skinColor;
+				}
+			}
+
+			a {
+				background-color: @skinColor;
+			}
+		}
+	}
+}
+
+html,
+html.dark {
+	.pagination > li.active {
+		a,
+		span {
+			&,
+			&:hover,
+			&:focus {
+				background-color: @skinColor;
+				border-color: @skinColor;
+			}
+		}
+
+		a {
+			background-color: @skinColor;
+		}
+	}
+}
+
+/* Fullcalendar */
+.fc {
+
+	.fc-widget-header {
+		background: @skinColor;
+		border-color: @skinColor;
+	}
+
+	.fc-header-title {
+		h2 {
+
+			&:before {
+				color: @skinColor;
+			}
+		}
+	}
+}
+
+.fc-event {
+	background: @skinColor;
+	border-color: @skinColor;
+}
+
+.fc-event.fc-event-primary {
+	background: @skinColor;
+	border-color: @skinColor;
+}
+
+/* Maps */
+.jqvmap-zoomin,
+.jqvmap-zoomout {
+	background: @skinColor;
+}
+
+/* Timeline */
+.timeline {
+
+	.tm-items {
+
+		& > li {
+
+			.tm-datetime {
+
+				.tm-datetime-time {
+					color: @skinColor;
+				}
+			}
+
+			.tm-icon {
+				border-color: @skinColor;
+				color: @skinColor;
+			}
+		}
+	}
+
+	&.timeline-simple {
+
+		.tm-body {
+
+			.tm-items {
+
+				& > li {
+
+					&:before {
+						background: @skinColor;
+						box-shadow: 0 0 0 3px #FFF, 0 0 0 6px @skinColor;
+					}
+
+				}
+			}
+		}
+
+	}
+}
+
+html.dark .timeline.timeline-simple .tm-body .tm-items > li:before {
+	background: @skinColor;
+	box-shadow: 0 0 0 3px lighten(#1d2127, 8%), 0 0 0 6px @skinColor;
+}
+
+/* Princing Table */
+.pricing-table {
+	h3 {
+		span {
+			color: @skinColor;
+		}
+	}
+
+
+	.most-popular {
+		h3 {
+			background-color: @skinColor !important;
+			color: #FFF !important
+		}
+	}
+}
+
+/* Data Tables Loading */
+.dataTables_processing {
+	background-color: @skinColor;
+}
+
+/* Accordion */
+.panel-group {
+	.panel-accordion {
+		.panel-heading {
+
+			a {
+				color: @skinColor;
+			}
+
+		}
+	}
+}
+
+/* Alerts */
+.alert-primary {
+	background-color: @skinColor;
+	border-color: darken(@skinColor, 3%);
+
+	.alert-link {
+		color: darken(@skinColor, 20%);
+	}
+}
+
+/* Nestable */
+.dd-handle {
+	&:hover {
+		color: @skinColor !important;
+	}
+}
+
+.dd-placeholder {
+	background: lighten(@skinColor, 55%);
+	border-color: @skinColor;
+}
+
+/* Panels */
+.panel-highlight {
+
+	.panel-heading {
+		background-color: @skinColor;
+		border-color: @skinColor;
+	}
+
+	.panel-body {
+		background-color: @skinColor;
+	}
+}
+
+html .panel-primary {
+	.panel-heading {
+		background: @skinColor;
+		border-color: @skinColor;
+	}
+}
+
+.panel-heading {
+	&.bg-primary {
+		background: @skinColor;
+	}
+}
+
+.panel-body {
+	&.bg-primary {
+		background: @skinColor;
+	}
+}
+
+.panel-featured-primary {
+	border-color: @skinColor;
+
+	.panel-title {
+		color: @skinColor;
+	}
+}
+
+.panel-heading-icon {
+	&.bg-primary {
+		background: @skinColor;
+	}
+}
+
+.panel-group .panel-accordion-primary {
+	.panel-heading .panel-title a {
+		background: @skinColor;
+	}
+}
+
+/* Progress Bar */
+.progress-bar {
+	background-color: @skinColor;
+}
+
+.progress {
+	.progress-bar-primary {
+		background-color: @skinColor;
+	}
+}
+
+/* Toggle */
+.toggle {
+	&> {
+		label {
+			border-left-color: @skinColor;
+			color: @skinColor;
+		}
+	}
+	&.active {
+		> label {
+			background: @skinColor !important;
+			border-color: @skinColor;
+		}
+	}
+}
+
+/* Treeview */
+.jstree-default {
+	.jstree-hovered {
+		background-color: lighten(@skinColor, 55%) !important;
+	}
+	.jstree-clicked {
+		background-color: lighten(@skinColor, 45%) !important;
+	}
+	.colored {
+		color: @skinColor !important;
+		.jstree-icon {
+			color: @skinColor !important;
+		}
+	}
+	.colored-icon {
+		.jstree-icon {
+			color: @skinColor !important;
+		}
+	}
+}
+
+/* Widgets */
+.sidebar-widget {
+
+	&.widget-tasks {
+
+		ul {
+			li {
+
+				&:before {
+					border-color: @skinColor;
+				}
+
+			}
+		}
+	}
+}
+
+.widget-twitter-profile {
+	background-color: @skinColor;
+	.profile-quote {
+		background-color: lighten(@skinColor, 4%);
+		.quote-footer {
+			border-top-color: rgba(red(lighten(@skinColor, 10%)), green(lighten(@skinColor, 10%)), blue(lighten(@skinColor, 10%)), 0.7);
+		}
+	}
+}
+
+.widget-profile-info {
+	.profile-info {
+		.profile-footer {
+			border-top-color: rgba(red(lighten(@skinColor, 10%)), green(lighten(@skinColor, 10%)), blue(lighten(@skinColor, 10%)), 0.7);
+		}
+	}
+}
+
+/* Thumb Info */
+.thumb-info {
+	.thumb-info-type {
+		background-color: @skinColor;
+	}
+}
+
+/* Social Icons */
+.social-icons-list {
+	a {
+		background: @skinColor;
+	}
+}
+
+/* Notifications */
+.notifications {
+	.notification-menu {
+		.notification-title {
+			background: @skinColor;
+			.label-default {
+				background-color: darken(@skinColor, 10%);
+			}
+		}
+	}
+}
+
+.notifications .notification-menu,
+.notifications .notification-icon {
+	&:before {
+		border-bottom-color: @skinColor;
+	}
+}
+
+.ui-pnotify {
+	.notification-primary {
+		background: rgba(red(@skinColor), green(@skinColor), blue(@skinColor), 0.95);
+	}
+
+	&.stack-bar-top,
+	&.stack-bar-bottom {
+		.notification-primary {
+			background: @skinColor;
+		}
+	}
+}
+
+.ui-pnotify.notification-primary {
+	.notification,
+	.notification-primary {
+		background: rgba(red(@skinColor), green(@skinColor), blue(@skinColor), 0.95);
+	}
+
+	&.stack-bar-top,
+	&.stack-bar-bottom {
+		.notification,
+		.notification-primary {
+			background: @skinColor;
+		}
+	}
+}
+
+/* Modal */
+.modal-block-primary {
+	.fa {
+		color: @skinColor;
+	}
+	&.modal-header-color {
+		.panel-heading {
+			background-color: @skinColor;
+		}
+	}
+	&.modal-full-color {
+		.panel {
+			background-color: lighten(@skinColor, 8%);
+		}
+		.panel-heading {
+			background-color: @skinColor;
+		}
+		.panel-footer {
+			background-color: lighten(@skinColor, 8%);
+		}
+	}
+}
+
+/* Modal Icon */
+.modal-block-primary .modal-icon {
+	.fa {
+		color: @skinColor;
+	}
+}
+
+/* Tabs */
+html,
+html.dark {
+	body {
+		.tabs-primary {
+			.nav-tabs {
+				&,
+				&.nav-justified {
+					li {
+						a {
+							&,
+							&:hover {
+								color: @skinColor;
+							}
+
+							&:hover {
+								border-top-color: @skinColor;
+							}
+						}
+
+						&.active {
+							a,
+							a:hover,
+							a:focus {
+								border-top-color: @skinColor;
+								color: @skinColor;
+							}
+						}
+					}
+				}
+			}
+
+			&.tabs-bottom {
+				.nav-tabs {
+					&,
+					&.nav-justified {
+						li {
+							a {
+								&:hover {
+									border-bottom-color: @skinColor;
+								}
+							}
+
+							&.active {
+								a,
+								a:hover,
+								a:focus {
+									border-top-color: #FFF;
+									border-bottom-color: @skinColor;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			&.tabs-vertical {
+				&.tabs-left {
+					li {
+						a {
+							&:hover {
+								border-left-color: @skinColor;
+							}
+						}
+
+						&.active {
+							a,
+							a:hover,
+							a:focus {
+								border-left-color: @skinColor;
+							}
+						}
+					}
+				}
+
+				&.tabs-right {
+					li {
+						a {
+							&:hover {
+								border-right-color: @skinColor;
+							}
+						}
+
+						&.active {
+							a,
+							a:hover,
+							a:focus {
+								border-right-color: @skinColor;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/* Simple List */
+ul.simple-bullet-list {
+	li {
+		&:before {
+			border-color: @skinColor;
+		}
+	}
+}
+
+/* Simple Card List */
+.simple-card-list {
+	li.primary {
+		background: @skinColor;
+	}
+}
+
+/* Search Results */
+.search-content {
+	.search-toolbar {
+		.nav-pills {
+			li.active {
+				a {
+					color: @skinColor;
+					border-bottom-color: @skinColor;
+				}
+			}
+		}
+	}
+}
+
+.search-results-list {
+	.result-thumb {
+		.fa {
+			background: @skinColor;
+		}
+	}
+}
+
+html.dark {
+	.search-content {
+		.search-toolbar {
+			.nav-pills {
+				li.active {
+					a {
+						&,
+						&:hover,
+						&:focus {
+							color: @skinColor;
+							border-bottom-color: @skinColor;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/* Time Picker */
+.bootstrap-timepicker-widget table td a:hover {
+	background-color: @skinColor;
+}

@@ -1,0 +1,40 @@
+// COMMON IMPORTS
+// -----------------------------------------------------------------------------
+@import "config/imports";
+
+// BASIC
+// -----------------------------------------------------------------------------
+@import "base/bootstrap_extend";
+@import "base/helpers";
+@import "base/form";
+
+// GUI
+// -----------------------------------------------------------------------------
+
+
+// MODULES
+// -----------------------------------------------------------------------------
+@import "modules/ui-elements/panels";
+@import "modules/ui-elements/charts";
+@import "modules/ui-elements/sliders";
+@import "modules/tables/tables";
+@import "modules/tables/datatables";
+@import "modules/forms/fileupload";
+@import "modules/forms/datepicker";
+@import "modules/forms/select2";
+@import "modules/forms/wizard";
+@import "modules/forms/ios7-switch";
+@import "modules/forms/summernote";
+@import "modules/forms/bs-markdown";
+@import "modules/forms/bs-maxlength";
+@import "modules/forms/bs-tagsinput";
+@import "modules/forms/bs-timepicker";
+@import "modules/forms/bs-colorpicker";
+@import "modules/forms/bs-multiselect";
+@import "modules/forms/spinner";
+@import "modules/forms/form-group-invisible";
+@import "modules/forms/codemirror";
+
+// PAGES
+// -----------------------------------------------------------------------------
+@import "modules/pages/invoice";

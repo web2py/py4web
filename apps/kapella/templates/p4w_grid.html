@@ -1,0 +1,23 @@
+[[extend 'p4w_layout.html']]
+
+
+<a role="button" href="[[=URL(  'index'  )]]">goto index</a>
+<a role="button" href="[[=URL(  'tabinfo'  )]]">goto tabinfo</a>
+
+<div class="section">
+  <div class="vars">
+     <h6> [[=message]] </h6>
+  </div>
+</div>
+
+
+<div class="container" style="padding-top: 1em;">
+    [[if 'action' in request.url_args and request.url_args['action'] in ['details', 'edit']:]]
+        [[form = grid.render()]]
+        [[=form]]
+    [[else:]]
+        [[=grid.render()]]
+    [[pass]]
+</div>
+
+
