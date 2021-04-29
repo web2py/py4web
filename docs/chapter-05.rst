@@ -375,6 +375,30 @@ agnostic to your choice of JS and CSS, but with some exceptions. The
 ``auth.html`` which handles registration/login/etc. uses a vue.js
 component. Hence if you want to use that, you should not remove it.
 
+
+.. _copying-the-scaffold-app:
+
+Copying the \_scaffold app
+--------------------------
+
+The scaffold app is really useful, and you will surely use it a lot as
+a starting point for testing and even developing full features new apps.
+
+It's better not to work directly on it: always create new apps copying it.
+You can do it in two ways:
+
+-  using the command line: copy the whole apps/_dashboard folder to another one
+   (/apps/my_app for example). Then reload py4web and it will automatically loaded.
+-  using the Dashboard: select the button ``Create/Upload App`` under the "Installed
+   Applications" upper section. Just give the new app a name and check that "Scaffold"
+   is selected as the source. 
+   Finally press the ``Create`` button and the dashboard will be automatically reloaded,
+   along with the new app.
+
+   .. image:: images/dashboard_new_app.png
+
+
+
 Watch for files change
 ----------------------
 
