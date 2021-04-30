@@ -375,6 +375,7 @@ def tornadoSioWsServer():
 # pip install autobahn
 # pip install Twisted
 
+
 from autobahn.twisted.websocket import WebSocketServerFactory, WebSocketServerProtocol
 from autobahn.twisted.resource import WebSocketResource, WSGIRootResource
 
@@ -394,18 +395,20 @@ class Hello(Resource):
         return "<html>its my-favicon-robots</html>".encode("utf-8")
 
 
+ws_debug = False
+
 class WsEcho(WebSocketServerProtocol):
     def onMessage(self, payload, isBinary):
         self.sendMessage(payload, isBinary)
 
     def onClose(self, wasClean, code, reason):
-        sio_ws_debug and print("WebSocket connection closed: ")
+        ws_debug and print("WebSocket connection closed: ")
 
     def onConnect(self, request):
-        sio_ws_debug and print("Client connecting: {0}".format(request.peer))
+        ws_debug and print("Client connecting: {0}".format(request.peer))
 
     def onOpen(self):
-        sio_ws_debug and print("WebSocket connection open.")
+        ws_debug and print("WebSocket connection open.")
 
     def connectionLost(self, reason):
         """
