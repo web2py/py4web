@@ -382,6 +382,7 @@ class Grid:
         self.use_tablename = self.is_join()
         self.formatters = {}
         self.formatters_by_type = copy.copy(Grid.FORMATTERS_BY_TYPE)
+        self.attributes_plugin = {}
 
         if auto_process:
             self.process()
@@ -450,15 +451,9 @@ class Grid:
                         db[self.tablename][field.name].readable = False
                         db[self.tablename][field.name].writable = False
 
-            attrs = (
-                {
-                    "_hx-post": request.url,
-                    "_hx-target": self.param.htmx_target,
-                    "_hx-swap": "innerHTML",
-                }
-                if self.param.htmx_target
-                else {}
-            )
+            attrs = {}
+            if 'form' in self.attributes_plugin:
+                self.attributes_plugin['form'](attrs)
             self.form = Form(
                 db[self.tablename],
                 record=self.record_id,
@@ -620,7 +615,7 @@ class Grid:
         row_id=None,
         name="grid-button",
         row=None,
-        **attr,
+        **attrs,
     ):
         separator = "?"
         if row_id:
@@ -646,12 +641,9 @@ class Grid:
         if callable(url):
             url = url(row)
 
-        if self.param.htmx_target:
-            attr["_hx-get"] = url
-            attr["_hx-target"] = self.param.htmx_target
-            attr["_hx-swap"] = "innerHTML"
-        else:
-            attr["_href"] = url
+        attrs["href"] = url # todo
+        if 'link' in self.attributes_plugin:
+            self.attributes_plugin['link'](attrs)
         link = A(
             I(_class="fa %s" % icon),
             _role="button",
@@ -659,7 +651,7 @@ class Grid:
             _message=message,
             _title=button_text,
             _style=styles,
-            **attr,
+            **attrs,
         )
         if self.param.include_action_button_text:
             link.append(
@@ -683,14 +675,9 @@ class Grid:
             for key in request.query
             if not key in ("search_type", "search_string")
         ]
-        if self.param.htmx_target:
-            attrs = {
-                "_hx-post": self.endpoint,
-                "_hx-target": self.param.htmx_target,
-                "_hx-swap": "innerHTML",
-            }
-        else:
-            attrs = {"_method": "GET", "_action": self.endpoint}
+        attrs = {"_method": "GET", "_action": self.endpoint}
+        if 'search_form' in self.attributes_plugin:
+            self.attributes_plugin['search_form'](attrs)
         form = FORM(*hidden_fields, **attrs)
         select = SELECT(
             *options,
@@ -788,33 +775,21 @@ class Grid:
                 #  add the sort order query parm
                 sort_query_parms = dict(self.query_parms)
 
-                attr = {}
-                if self.param.htmx_target:
-                    attr["_hx-target"] = self.param.htmx_target
-                    attr["_hx-swap"] = "innerHTML"
-
+                attrs = {}
                 if key == sort_order:
                     sort_query_parms["orderby"] = "~" + key
                     url = URL(self.endpoint, vars=sort_query_parms)
-                    if self.param.htmx_target:
-                        rf = parse_referer(request)
-                        if rf and rf.query:
-                            url += "?%s" % rf.query
-                        attr["_hx-get"] = url
-                    else:
-                        attr["_href"] = url
-                    col = A(heading, up, **attr)
+                    attrs["_href"] = url
+                    col = A(heading, up, **attrs)
+                    if 'button_sort_up' in self.attributes_plugin:
+                        self.attributes_plugin['button_sort_up'](attrs)
                 else:
                     sort_query_parms["orderby"] = key
                     url = URL(self.endpoint, vars=sort_query_parms)
-                    if self.param.htmx_target:
-                        rf = parse_referer(request)
-                        if rf and rf.query:
-                            url += "?%s" % rf.query
-                        attr["_hx-get"] = url
-                    else:
-                        attr["_href"] = url
-                    col = A(heading, dw if "~" + key == sort_order else "", **attr)
+                    attrs["_href"] = url
+                    col = A(heading, dw if "~" + key == sort_order else "", **attrs)
+                    if 'button_sort_down' in self.attributes_plugin:
+                        self.attributes_plugin['button_sort_down'](attrs)
                 columns.append((key, col))
 
         thead = THEAD(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
@@ -984,12 +959,11 @@ class Grid:
                     else:
                         delete_url = self.endpoint + "/delete"
                     delete_url += "/%s?%s" % (row_id, self.referrer)
-                    if self.param.htmx_target:
-                        attrs = {"_hx-confirm": "Are you sure you want to delete?"}
-                    else:
-                        attrs = {
-                            "_onclick": "if(!confirm('Are you sure you want to delete?')) return false;"
-                        }
+                    attrs = {
+                        "_onclick": "if(!confirm('Are you sure you want to delete?')) return false;"
+                    }
+                    if 'button_delete' in self.attributes_plugin:
+                        self.attributes_plugin['button_delete'](attrs)
                     td.append(
                         self.render_action_button(
                             url=delete_url,
@@ -1039,15 +1013,9 @@ class Grid:
                 if is_current
                 else "grid-pagination-button"
             )
-            attrs = (
-                {
-                    "_hx-get": URL(self.endpoint, vars=pager_query_parms),
-                    "_hx-target": self.param.htmx_target,
-                    "_hx-swap": "innerHTML",
-                }
-                if self.param.htmx_target
-                else {"_href": URL(self.endpoint, vars=pager_query_parms)}
-            )
+            attrs = {"_href": URL(self.endpoint, vars=pager_query_parms)}
+            if 'button_page_number' in self.attributes_plugin:
+                self.attributes_plugin['button_page_number'](attrs)
             pager.append(
                 A(
                     page_number,
