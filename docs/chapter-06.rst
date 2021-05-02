@@ -78,7 +78,7 @@ fixture for it.
    @action.uses(Template('index.html', delimiters='[[ ]]'))
    def index(): 
        return dict(message="Hello world")
-
+  
 Note: this example assumes that you created the application from the
 scaffolding app, so that the template index.html is already created for
 you.
@@ -95,7 +95,8 @@ syntactic sugar, and the two following lines are equivalent:
 .. code:: python
 
    @action.uses('index.html')
-   @action.uses(Template('index.html', delimiters='[[ ]]')
+   @action.uses(Template('index.html', delimiters='[[ ]]'))
+
 
 Notice that py4web template files are cached in RAM. The py4web caching
 object is described later on :ref:`Caching and Memoize`.

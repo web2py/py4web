@@ -342,6 +342,11 @@ changes to files of that application, you can:
 -  for reloading on any first incoming request to the application has
    been changed (lazy-mode): ``py4web run --watch=lazy``
 
+.. note::
+    The optional ``--watch`` directive looks for any changes occurring to the python files under the
+    /apps folder only. Any modifications to the standard py4web programs will always require a full
+    restart of the framework. 
+
 
 The default web server used is currently Tornado, but you can change this behaviour with the ``server`` option.
 

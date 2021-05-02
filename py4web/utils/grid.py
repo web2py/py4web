@@ -79,6 +79,7 @@ class GridClassStyle:
         "grid-cell-type-text": "grid-cell-type-text",
         "grid-cell-type-boolean": "grid-cell-type-boolean",
         "grid-cell-type-float": "grid-cell-type-float",
+        "grid-cell-type-decimal": "grid-cell-type-decimal",
         "grid-cell-type-int": "grid-cell-type-int",
         "grid-cell-type-date": "grid-cell-type-date",
         "grid-cell-type-time": "grid-cell-type-time",
@@ -119,6 +120,7 @@ class GridClassStyle:
         "grid-cell-type-text": "vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px",
         "grid-cell-type-boolean": "white-space: nowrap; vertical-align: middle; text-align: center",
         "grid-cell-type-float": "white-space: nowrap; vertical-align: middle; text-align: right",
+        "grid-cell-type-decimal": "white-space: nowrap; vertical-align: middle; text-align: right",
         "grid-cell-type-int": "white-space: nowrap; vertical-align: middle; text-align: right",
         "grid-cell-type-date": "white-space: nowrap; vertical-align: middle; text-align: right",
         "grid-cell-type-time": "white-space: nowrap; vertical-align: middle; text-align: right",
@@ -147,11 +149,11 @@ class GridClassStyleBulma(GridClassStyle):
 
     classes = {
         "grid-wrapper": "grid-wrapper field",
-        "grid-header": "grid-header pb-2",
+        "grid-header": "grid-header pb-2 is-clearfix",
         "grid-new-button": "grid-new-button button",
         "grid-search": "grid-search is-pulled-right pb-2",
-        "grid-table-wrapper": "grid-table-wrapper table_wrapper responsive-table",
-        "grid-table": "grid-table table is-bordered is-striped is-hoverable is-fullwidth",
+        "grid-table-wrapper": "grid-table-wrapper table_wrapper table-container mb-1",
+        "grid-table": "grid-table table is-bordered is-striped is-hoverable is-fullwidth is-clearfix",
         "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up is-pulled-right",
         "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down is-pulled-right",
         "grid-th-action-button": "grid-col-action-button is-narrow",
@@ -163,7 +165,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-details-button": "grid-details-button button is-small",
         "grid-edit-button": "grid-edit-button button is-small",
         "grid-delete-button": "grid-delete-button button is-small",
-        "grid-footer": "grid-footer",
+        "grid-footer": "grid-footer pb-4",
         "grid-info": "grid-info is-pulled-left",
         "grid-pagination": "grid-pagination is-pulled-right",
         "grid-pagination-button": "grid-pagination-button button is-small",
@@ -172,6 +174,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-cell-type-text": "grid-cell-type-text",
         "grid-cell-type-boolean": "grid-cell-type-boolean has-text-centered",
         "grid-cell-type-float": "grid-cell-type-float",
+        "grid-cell-type-decimal": "grid-cell-type-decimal",
         "grid-cell-type-int": "grid-cell-type-int",
         "grid-cell-type-date": "grid-cell-type-date",
         "grid-cell-type-time": "grid-cell-type-time",
@@ -208,16 +211,19 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-pagination": "",
         "grid-pagination-button": "margin-left: .25em;",
         "grid-pagination-button-current": "margin-left: .25em;",
-        "grid-cell-type-string": "",
-        "grid-cell-type-text": "",
-        "grid-cell-type-boolean": "",
-        "grid-cell-type-float": "",
-        "grid-cell-type-int": "",
-        "grid-cell-type-date": "",
-        "grid-cell-type-time": "",
-        "grid-cell-type-datetime": "",
-        "grid-cell-type-upload": "",
-        "grid-cell-type-list": "",
+        "grid-cell-type-string": "vertical-align: top; text-align: left; text-overflow: ellipsis;",
+        "grid-cell-type-text": "vertical-align: top; text-align: left; text-overflow: ellipsis;",
+        "grid-cell-type-boolean": "vertical-align: top; text-align: center",
+        "grid-cell-type-float": "vertical-align: top; text-align: right",
+        "grid-cell-type-decimal": "vertical-align: top; text-align: right",
+        "grid-cell-type-int": "vertical-align: top; text-align: center;",
+        "grid-cell-type-integer": "vertical-align: top; text-align: center;",
+        "grid-cell-type-reference": "vertical-align: top; text-align: center;",
+        "grid-cell-type-date": "vertical-align: top; text-align: center",
+        "grid-cell-type-time": "vertical-align: top; text-align: center",
+        "grid-cell-type-datetime": "vertical-align: top; text-align: center",
+        "grid-cell-type-upload": "vertical-align: top; text-align: center",
+        "grid-cell-type-list": "vertical-align: top; text-align: left",
         # specific for custom form
         "search_form": "",
         "search_form_table": "",
@@ -301,6 +307,8 @@ class Grid:
         :param search_queries: future use - pass a dict of name and a search query
         :param fields: list of fields to display on the list page, if blank, glean tablename from first query
         :              and use all fields of that table
+        :param field_id: the id field of the primary table for the grid - if there are multiple tables (joined)
+                            then the table for this field is used as the table for edit/details/delete
         :param show_id: show the record id field on list page - default = False
         :param orderby: pydal orderby field or list of fields
         :param left: if joining other tables, specify the pydal left expression here
@@ -374,6 +382,7 @@ class Grid:
         self.use_tablename = self.is_join()
         self.formatters = {}
         self.formatters_by_type = copy.copy(Grid.FORMATTERS_BY_TYPE)
+        self.attributes_plugin = {}
 
         if auto_process:
             self.process()
@@ -442,15 +451,9 @@ class Grid:
                         db[self.tablename][field.name].readable = False
                         db[self.tablename][field.name].writable = False
 
-            attrs = (
-                {
-                    "_hx-post": request.url,
-                    "_hx-target": self.param.htmx_target,
-                    "_hx-swap": "innertHTML",
-                }
-                if self.param.htmx_target
-                else {}
-            )
+            attrs = {}
+            if 'form' in self.attributes_plugin:
+                self.attributes_plugin['form'](attrs)
             self.form = Form(
                 db[self.tablename],
                 record=self.record_id,
@@ -491,7 +494,7 @@ class Grid:
         elif self.action == "delete":
             db(db[self.tablename].id == self.record_id).delete()
 
-            url = parse_referer()
+            url = parse_referer(request)
             if url and url.query:
                 self.endpoint += "?%s" % url.query
             redirect(self.endpoint)
@@ -612,7 +615,7 @@ class Grid:
         row_id=None,
         name="grid-button",
         row=None,
-        **attr,
+        **attrs,
     ):
         separator = "?"
         if row_id:
@@ -638,12 +641,9 @@ class Grid:
         if callable(url):
             url = url(row)
 
-        if self.param.htmx_target:
-            attr["_hx-get"] = url
-            attr["_hx-target"] = self.param.htmx_target
-            attr["_hx-swap"] = "innertHTML"
-        else:
-            attr["_href"] = url
+        attrs["href"] = url # todo
+        if 'link' in self.attributes_plugin:
+            self.attributes_plugin['link'](attrs)
         link = A(
             I(_class="fa %s" % icon),
             _role="button",
@@ -651,7 +651,7 @@ class Grid:
             _message=message,
             _title=button_text,
             _style=styles,
-            **attr,
+            **attrs,
         )
         if self.param.include_action_button_text:
             link.append(
@@ -675,14 +675,9 @@ class Grid:
             for key in request.query
             if not key in ("search_type", "search_string")
         ]
-        if self.param.htmx_target:
-            attrs = {
-                "_hx-post": self.endpoint,
-                "_hx-target": self.param.htmx_target,
-                "_hx-swap": "innertHTML",
-            }
-        else:
-            attrs = {"_method": "GET", "_action": self.endpoint}
+        attrs = {"_method": "GET", "_action": self.endpoint}
+        if 'search_form' in self.attributes_plugin:
+            self.attributes_plugin['search_form'](attrs)
         form = FORM(*hidden_fields, **attrs)
         select = SELECT(
             *options,
@@ -780,14 +775,21 @@ class Grid:
                 #  add the sort order query parm
                 sort_query_parms = dict(self.query_parms)
 
+                attrs = {}
                 if key == sort_order:
                     sort_query_parms["orderby"] = "~" + key
-                    href = URL(self.endpoint, vars=sort_query_parms)
-                    col = A(heading, up, _href=href)
+                    url = URL(self.endpoint, vars=sort_query_parms)
+                    attrs["_href"] = url
+                    col = A(heading, up, **attrs)
+                    if 'button_sort_up' in self.attributes_plugin:
+                        self.attributes_plugin['button_sort_up'](attrs)
                 else:
                     sort_query_parms["orderby"] = key
-                    href = URL(self.endpoint, vars=sort_query_parms)
-                    col = A(heading, dw if "~" + key == sort_order else "", _href=href)
+                    url = URL(self.endpoint, vars=sort_query_parms)
+                    attrs["_href"] = url
+                    col = A(heading, dw if "~" + key == sort_order else "", **attrs)
+                    if 'button_sort_down' in self.attributes_plugin:
+                        self.attributes_plugin['button_sort_down'](attrs)
                 columns.append((key, col))
 
         thead = THEAD(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
@@ -842,7 +844,7 @@ class Grid:
         class_type = "grid-cell-type-%s" % str(field.type).split(":")[0].split("(")[0]
         class_col = " grid-col-%s" % key
         td = TD(
-            formatter(field_value),
+            format_field(formatter, field_value, row),
             _class=(
                 self.param.grid_class_style.classes.get("grid-td", "")
                 + " "
@@ -929,9 +931,9 @@ class Grid:
                     details_url += "/%s?%s" % (row_id, self.referrer)
                     td.append(
                         self.render_action_button(
-                            details_url,
-                            self.param.details_action_button_text,
-                            "fa-id-card",
+                            url=details_url,
+                            button_text=self.param.details_action_button_text,
+                            icon="fa-id-card",
                             name="grid-details-button",
                         )
                     )
@@ -944,9 +946,9 @@ class Grid:
                     edit_url += "/%s?%s" % (row_id, self.referrer)
                     td.append(
                         self.render_action_button(
-                            edit_url,
-                            self.param.edit_action_button_text,
-                            "fa-edit",
+                            url=edit_url,
+                            button_text=self.param.edit_action_button_text,
+                            icon="fa-edit",
                             name="grid-edit-button",
                         )
                     )
@@ -957,15 +959,20 @@ class Grid:
                     else:
                         delete_url = self.endpoint + "/delete"
                     delete_url += "/%s?%s" % (row_id, self.referrer)
+                    attrs = {
+                        "_onclick": "if(!confirm('Are you sure you want to delete?')) return false;"
+                    }
+                    if 'button_delete' in self.attributes_plugin:
+                        self.attributes_plugin['button_delete'](attrs)
                     td.append(
                         self.render_action_button(
-                            delete_url,
-                            self.param.delete_action_button_text,
-                            "fa-trash",
+                            url=delete_url,
+                            button_text=self.param.delete_action_button_text,
+                            icon="fa-trash",
                             additional_classes="confirmation",
                             message="Delete record",
                             name="grid-delete-button",
-                            _onclick="if(!confirm('sure you want to delete')) return false;",
+                            **attrs,
                         )
                     )
                 if self.param.post_action_buttons:
@@ -1006,15 +1013,9 @@ class Grid:
                 if is_current
                 else "grid-pagination-button"
             )
-            attrs = (
-                {
-                    "_hx-get": URL(self.endpoint, vars=pager_query_parms),
-                    "_hx-target": self.param.htmx_target,
-                    "_hx-swap": "innertHTML",
-                }
-                if self.param.htmx_target
-                else {"_href": URL(self.endpoint, vars=pager_query_parms)}
-            )
+            attrs = {"_href": URL(self.endpoint, vars=pager_query_parms)}
+            if 'button_page_number' in self.attributes_plugin:
+                self.attributes_plugin['button_page_number'](attrs)
             pager.append(
                 A(
                     page_number,
@@ -1159,3 +1160,55 @@ def parse_referer(r):
             url = urlparse(url_string)
 
     return url
+
+
+def get_parent(path, parent_field):
+    """
+    try to find the parent id for a parent/child table relationship
+
+    :param path: the path var from the method calling the grid
+    :param child_table: the child table of the parent/child relationship ex. db.child_table
+    :param parent_field_name: this is the name of the field in the child table that points to the parent table
+                              this is a string value
+
+    :return parent_id: the id of the parent record
+    """
+    parent_id = request.query.get("parent_id")
+
+    child_table = parent_field._table
+    fn = parent_field.name
+
+    #  find the record id of the parent from the child table record
+    if path:
+        parts = path.split("/")
+        record_id = parts[1] if len(parts) > 1 else None
+        if record_id:
+            r = child_table(record_id)
+            if r:
+                parent_id = r[fn]
+
+    #  not passed in, check in the form
+    if not parent_id:
+        parent_id = request.forms.get(fn)
+
+    #  not found yet, check in the referer
+    if not parent_id:
+        referrer = request.query.get("_referrer")
+        if referrer:
+            kvp = base64.b16decode(referrer.encode("utf8")).decode("utf8")
+            if "parent_id" in kvp:
+                parent_id = kvp.split("parent_id=")[1]
+
+    try:
+        parent_id = parent_id.split("&")[0]
+    except:
+        pass
+
+    return parent_id
+
+
+def format_field(formatter, value, row):
+    try:
+        return formatter(value, row)
+    except:
+        return formatter(value)

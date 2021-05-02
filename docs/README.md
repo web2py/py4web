@@ -45,6 +45,7 @@ Once you've finished your work with the PO files, just make a PR to the main py4
 The current official translators are listed here:
 
 * Portuguese: Carlos José da Costa (https://github.com/yamandu)
+* Spanish:    Ricardo Strusberg (strusberg@gmail.com)
 
 
 ## New translation
