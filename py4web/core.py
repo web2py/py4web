@@ -209,9 +209,13 @@ class Cache:
                 )
             else:
                 self.free -= 1
-        m = monitor and monitor()
+        # check if something may invalidate cache
+        m = monitor() if monitor else None
+        # check if cache expired
         if node and node.t + expiration < t0:
+            # if cache should always be invalidated or m changed
             if m is None or node.m != m:
+                # ignore the value found
                 node = None
         if node is None:
             value, t = callback(), t0
