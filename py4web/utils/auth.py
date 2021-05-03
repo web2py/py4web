@@ -457,6 +457,11 @@ class Auth(Fixture):
 
     def login(self, email, password):
         db = self.db
+        
+        # Default incase they are None or an error will occur.
+        email = '' if email is None else email
+        password = '' if password is None else password
+        
         if "email_auth" in self.plugins:
             email = email.lower()
             if self.plugins["email_auth"].validate_credentials(email, password):
