@@ -209,9 +209,13 @@ class Cache:
                 )
             else:
                 self.free -= 1
-        m = monitor and monitor()
+        # check if something may invalidate cache
+        m = monitor() if monitor else None
+        # check if cache expired
         if node and node.t + expiration < t0:
+            # if cache should always be invalidated or m changed
             if m is None or node.m != m:
+                # ignore the value found
                 node = None
         if node is None:
             value, t = callback(), t0
@@ -1291,7 +1295,7 @@ def watch(apps_folder, server_config, mode="sync"):
         Reloader.install_reloader_hook()
 
 
-def start_server(kwargs):
+def start_server(kwargs, ctrl_c_orig):
     host = kwargs["host"]
     port = int(kwargs["port"])
     apps_folder = kwargs["apps_folder"]
@@ -1302,6 +1306,13 @@ def start_server(kwargs):
         server=None if kwargs["server"] == "default" else kwargs["server"],
         number_workers=number_workers,
     )
+
+    if server_config["server"]:
+        for e in ("rocket", "Twisted"):
+            if e in server_config["server"]:
+                signal.signal(signal.SIGINT, ctrl_c_orig)
+                break
+
     if not server_config["server"]:
         if server_config["platform"] == "windows":
             server_config["server"] = "tornado"
@@ -1697,11 +1708,12 @@ def run(**kwargs):
             )
 
     # Catch interrupts like Ctrl-C
+    orig_ctrl_c_handler = signal.getsignal(signal.SIGINT)
     signal.signal(signal.SIGINT, keyboardInterruptHandler)
 
     # Start
     Reloader.import_apps()
-    start_server(kwargs)
+    start_server(kwargs, orig_ctrl_c_handler)
 
 
 if __name__ == "__main__":
