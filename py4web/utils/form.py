@@ -321,6 +321,14 @@ class FormStyleFactory:
 
                 field_value = None
                 field_type = 'file'
+                
+            elif get_options(field.requires) is not None and field.writable==True and field.widget=="radio":
+                multiple = field.type.startswith("list:")
+                control=DIV()
+                value = list(map(str, value if isinstance(value, list) else [value]))
+                for k, v in get_options(field.requires)[1:]:
+                    control.append(INPUT(v, _value=k, _label=k,_name=field.name, _type="radio", _checked=(not k is None and k in value)))
+                    control.append(LABEL(k, _for=k))
 
             elif get_options(field.requires) is not None and field.writable == True:
                 multiple = field.type.startswith("list:")
