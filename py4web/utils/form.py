@@ -86,10 +86,7 @@ class FormStyleFactory:
         form_enctype = "multipart/form-data"
 
         form = FORM(
-            _method=form_method,
-            _action=form_action,
-            _enctype=form_enctype,
-            **kwargs
+            _method=form_method, _action=form_action, _enctype=form_enctype, **kwargs
         )
 
         controls = Param(
@@ -107,12 +104,12 @@ class FormStyleFactory:
         )
 
         json_controls = dict(
-            form_fields = [],
-            form_values = dict(),
-            form_buttons = [],
-            form_method = form_method,
-            form_action = form_action,
-            form_enctype = form_enctype,
+            form_fields=[],
+            form_values=dict(),
+            form_buttons=[],
+            form_method=form_method,
+            form_action=form_action,
+            form_enctype=form_enctype,
             **kwargs
         )
 
@@ -123,21 +120,22 @@ class FormStyleFactory:
         class_info = self.classes["info"]
 
         for field in table:
-            
+
             # Reset the json control fields.
-            field_attributes = dict()   
-            field_value = None         
-            
-            
+            field_attributes = dict()
+            field_value = None
+
             field_name = field.name
-            field_type = field.type            
+            field_type = field.type
             field_comment = field.comment if field.comment else ""
             field_label = field.label
             input_id = "%s_%s" % (field.tablename, field.name)
             value = vars.get(field.name, field.default)
             error = errors.get(field.name)
             field_class = "type-" + field.type.split()[0].replace(":", "-")
-            placeholder = (field._placeholder if "_placeholder" in field.__dict__ else None)
+            placeholder = (
+                field._placeholder if "_placeholder" in field.__dict__ else None
+            )
             title = field._title if "_title" in field.__dict__ else None
             field_disabled = False
 
@@ -167,9 +165,9 @@ class FormStyleFactory:
             # if the form is readonly or this is an id type field, display it as readonly
             if readonly or not field.writable or field.type == "id":
                 if field.type == "boolean":
-                    
+
                     field_value = value
-                    field_type = "checkbox"                    
+                    field_type = "checkbox"
 
                     control = INPUT(
                         _type=field_type,
@@ -181,12 +179,14 @@ class FormStyleFactory:
                         _title=title,
                     )
                 else:
-                    
-                    field_value = field.represent and field.represent(value) or value or ""           
-                    field_type = 'represent'
+
+                    field_value = (
+                        field.represent and field.represent(value) or value or ""
+                    )
+                    field_type = "represent"
 
                     control = DIV(field_value)
-                
+
                 field_disabled = True
 
             # if we have a widget for the field use it
@@ -195,28 +195,28 @@ class FormStyleFactory:
 
                 # Grab the custom widget attributes.
                 field_attributes = control.attributes
-                field_type = 'widget' 
+                field_type = "widget"
                 field_value = value
 
             # else pick the proper default widget
             elif field.type == "text":
 
                 field_value = value or ""
-                field_type = 'text'
-                
+                field_type = "text"
+
                 control = TEXTAREA(
                     field_value,
                     _id=input_id,
                     _name=field_name,
                     _placeholder=placeholder,
                     _title=title,
-                )                
+                )
 
             elif field.type == "date":
 
                 field_value = value
-                field_type = 'date'
-                
+                field_type = "date"
+
                 control = INPUT(
                     _value=field_value,
                     _type="date",
@@ -227,11 +227,11 @@ class FormStyleFactory:
                 )
 
             elif field.type == "datetime":
-                helpervalue=str(value)
+                helpervalue = str(value)
                 helpervalue = helpervalue.replace(" ", "T")
 
                 field_value = helpervalue
-                field_type = 'datetime-local'
+                field_type = "datetime-local"
 
                 control = INPUT(
                     _value=helpervalue,
@@ -244,7 +244,7 @@ class FormStyleFactory:
             elif field.type == "time":
 
                 field_value = value
-                field_type = 'time'
+                field_type = "time"
 
                 control = INPUT(
                     _value=value,
@@ -258,14 +258,14 @@ class FormStyleFactory:
             elif field.type == "boolean":
 
                 field_value = value
-                field_type = 'checkbox'
-                field_attributes['_value'] = 'ON'
+                field_type = "checkbox"
+                field_attributes["_value"] = "ON"
 
                 control = INPUT(
                     _type="checkbox",
                     _id=input_id,
                     _name=field_name,
-                    _value=field_attributes['_value'],
+                    _value=field_attributes["_value"],
                     _checked=value,
                     _title=title,
                 )
@@ -275,21 +275,25 @@ class FormStyleFactory:
                 if value and not error:
                     download_div = DIV()
 
-                    download_div.append(LABEL("Currently:  ",))
-                    if getattr(field, 'download_url', None):
+                    download_div.append(
+                        LABEL(
+                            "Currently:  ",
+                        )
+                    )
+                    if getattr(field, "download_url", None):
                         url = field.download_url(value)
                     else:
-                        url = '#'
-                    download_div.append(
-                        A(" download ", _href=url)
+                        url = "#"
+                    download_div.append(A(" download ", _href=url))
+
+                    # Set the download url.
+                    field_attributes["_download_url"] = url
+
+                    # Set the flag determining whether the file is an image.
+                    field_attributes["_is_image"] = (url != "#") and Form.is_image(
+                        value
                     )
 
-                    # Set the download url.                    
-                    field_attributes['_download_url'] = url
-                    
-                    # Set the flag determining whether the file is an image.
-                    field_attributes['_is_image'] = (url != '#') and Form.is_image(value)
-                    
                     delete_checkbox_name = "_delete_" + field_name
 
                     download_div.append(
@@ -299,35 +303,39 @@ class FormStyleFactory:
                             _name=delete_checkbox_name,
                             _title=title,
                         )
-                    )                    
+                    )
                     download_div.append(" (check to remove)")
 
-                    delete_field_attributes = dict()                   
+                    delete_field_attributes = dict()
 
-                    delete_field_attributes['_label'] = 'Remove'
-                    delete_field_attributes['_value'] = 'ON'
-                    delete_field_attributes['_type'] = 'checkbox'
-                    delete_field_attributes['_name'] = delete_checkbox_name
+                    delete_field_attributes["_label"] = "Remove"
+                    delete_field_attributes["_value"] = "ON"
+                    delete_field_attributes["_type"] = "checkbox"
+                    delete_field_attributes["_name"] = delete_checkbox_name
 
-                    json_controls['form_fields'] += [delete_field_attributes]
-                    json_controls['form_values'][delete_checkbox_name] = None
+                    json_controls["form_fields"] += [delete_field_attributes]
+                    json_controls["form_values"][delete_checkbox_name] = None
 
                     control.append(download_div)
 
                 control.append(LABEL("Change: "))
-                control.append(INPUT(_type="file", 
-                                     _id=input_id,
-                                     _name=field_name))
+                control.append(INPUT(_type="file", _id=input_id, _name=field_name))
 
                 field_value = None
-                field_type = 'file'
+                field_type = "file"
 
             elif get_options(field.requires) is not None and field.writable == True:
                 multiple = field.type.startswith("list:")
                 value = list(map(str, value if isinstance(value, list) else [value]))
-                
-                field_options = [[k, v, (not k is None and k in value)] for k, v in get_options(field.requires)]
-                option_tags = [OPTION(v, _value=k, _selected=_selected) for (k, v, _selected) in field_options]
+
+                field_options = [
+                    [k, v, (not k is None and k in value)]
+                    for k, v in get_options(field.requires)
+                ]
+                option_tags = [
+                    OPTION(v, _value=k, _selected=_selected)
+                    for (k, v, _selected) in field_options
+                ]
 
                 control = SELECT(
                     *option_tags,
@@ -338,17 +346,17 @@ class FormStyleFactory:
                 )
 
                 field_value = value
-                field_type = 'options'
-                field_attributes['_multiple'] = multiple
-                field_attributes['_options'] = field_options                
+                field_type = "options"
+                field_attributes["_multiple"] = multiple
+                field_attributes["_options"] = field_options
 
             else:
-                
+
                 field_type = "password" if field.type == "password" else "text"
 
                 if field.type.startswith("list:"):
                     value = json.dumps(value or [])
-                
+
                 field_value = None if field.type == "password" else value
                 field_autocomplete = "off" if field_type == "password" else "on"
 
@@ -363,14 +371,16 @@ class FormStyleFactory:
                     _autocomplete=field_autocomplete,
                 )
 
-                field_attributes['_autocomplete'] = field_autocomplete
+                field_attributes["_autocomplete"] = field_autocomplete
 
             key = control.name.rstrip("/")
 
             if key == "input":
                 key += "[type=%s]" % (control["_type"] or "text")
 
-            control["_class"] = (control.attributes.get("_class", "") + " " + self.classes.get(key, "")).strip()
+            control["_class"] = (
+                control.attributes.get("_class", "") + " " + self.classes.get(key, "")
+            ).strip()
 
             # Set the form controls.
             controls["labels"][field_name] = field_label
@@ -380,20 +390,20 @@ class FormStyleFactory:
             controls["placeholders"][field_name] = placeholder
 
             # Set the remain json field attributes.
-            field_attributes['_title'] = title
-            field_attributes['_label'] = field_label
-            field_attributes['_comment'] = field_comment
-            field_attributes['_id'] = input_id
-            field_attributes['_class'] = field_class
-            field_attributes['_name'] = field_name
-            field_attributes['_type'] = field_type
-            field_attributes['_placeholder'] = placeholder
-            field_attributes['_error'] = error
-            field_attributes['_disabled'] = field_disabled
+            field_attributes["_title"] = title
+            field_attributes["_label"] = field_label
+            field_attributes["_comment"] = field_comment
+            field_attributes["_id"] = input_id
+            field_attributes["_class"] = field_class
+            field_attributes["_name"] = field_name
+            field_attributes["_type"] = field_type
+            field_attributes["_placeholder"] = placeholder
+            field_attributes["_error"] = error
+            field_attributes["_disabled"] = field_disabled
 
             # Add to the json controls.
-            json_controls['form_fields'] += [field_attributes]
-            json_controls['form_values'][field_name] = field_value 
+            json_controls["form_fields"] += [field_attributes]
+            json_controls["form_values"][field_name] = field_value
 
             if error:
                 controls["errors"][field.name] = error
@@ -439,20 +449,20 @@ class FormStyleFactory:
             deletable_field_name = "_delete"
             deletable_field_type = "checkbox"
 
-            # Set the deletable json field attributes.            
-            deletable_record_attributes['_label'] = " check to delete"
-            deletable_record_attributes['_name'] = deletable_field_name
-            deletable_record_attributes['_type'] = deletable_field_type
-            deletable_record_attributes['_class'] = self.classes["input[type=checkbox]"]
-            deletable_record_attributes['_value'] = "ON"
+            # Set the deletable json field attributes.
+            deletable_record_attributes["_label"] = " check to delete"
+            deletable_record_attributes["_name"] = deletable_field_name
+            deletable_record_attributes["_type"] = deletable_field_type
+            deletable_record_attributes["_class"] = self.classes["input[type=checkbox]"]
+            deletable_record_attributes["_value"] = "ON"
 
             # Add to the json controls.
-            json_controls['form_fields'] += [deletable_record_attributes]
-            json_controls['form_values'][deletable_field_name] = None 
-            
+            json_controls["form_fields"] += [deletable_record_attributes]
+            json_controls["form_values"][deletable_field_name] = None
+
             controls["delete"] = INPUT(
                 _type=deletable_field_type,
-                _value=deletable_record_attributes['_value'],
+                _value=deletable_record_attributes["_value"],
                 _name=deletable_field_name,
                 _class=self.classes["input[type=checkbox]"],
             )
@@ -465,7 +475,7 @@ class FormStyleFactory:
                         _stye="vertical-align: middle;",
                     ),
                     P(
-                        deletable_record_attributes['_label'],
+                        deletable_record_attributes["_label"],
                         _class="help",
                         _style="display: inline !important",
                     ),
@@ -473,18 +483,17 @@ class FormStyleFactory:
                 )
             )
 
-
         submit_button_attributes = dict()
 
         submit_button_field_type = "submit"
 
-        # Set the deletable json field attributes.            
-        submit_button_attributes['_label'] = "Submit"
-        submit_button_attributes['_type'] = submit_button_field_type
-        submit_button_attributes['_class'] = self.classes["input[type=submit]"]        
+        # Set the deletable json field attributes.
+        submit_button_attributes["_label"] = "Submit"
+        submit_button_attributes["_type"] = submit_button_field_type
+        submit_button_attributes["_class"] = self.classes["input[type=submit]"]
 
         # Add to the json controls.
-        json_controls['form_buttons'] += [submit_button_attributes]
+        json_controls["form_buttons"] += [submit_button_attributes]
 
         controls["submit"] = INPUT(
             _type=submit_button_field_type,
@@ -500,10 +509,8 @@ class FormStyleFactory:
             _class=class_outer,
         )
         form.append(submit)
-        
-        return dict(form=form,
-                    controls=controls,
-                    json_controls=json_controls)
+
+        return dict(form=form, controls=controls, json_controls=json_controls)
 
 
 FormStyleDefault = FormStyleFactory().produce
@@ -516,7 +523,7 @@ def FormStyleBulma(table, vars, errors, readonly, deletable, noncreate, kwargs=N
         "label": "label",
         "info": "help",
         "error": "help is-danger py4web-validation-error",
-        "submit": "button",
+        "submit": "button is-primary",
         "input": "input",
         "input[type=text]": "input",
         "input[type=date]": "input",
@@ -524,7 +531,7 @@ def FormStyleBulma(table, vars, errors, readonly, deletable, noncreate, kwargs=N
         "input[type=datetime-local]": "input",
         "input[type=radio]": "radio",
         "input[type=checkbox]": "checkbox",
-        "input[type=submit]": "button",
+        "input[type=submit]": "button is-primary",
         "input[type=password]": "input password",
         "input[type=file]": "file",
         "select": "control select",
@@ -543,7 +550,9 @@ def FormStyleBulma(table, vars, errors, readonly, deletable, noncreate, kwargs=N
     )
 
 
-def FormStyleBootstrap4(table, vars, errors, readonly, deletable, noncreate, kwargs=None):
+def FormStyleBootstrap4(
+    table, vars, errors, readonly, deletable, noncreate, kwargs=None
+):
     classes = {
         "outer": "form-group",
         "inner": "",
@@ -564,7 +573,9 @@ def FormStyleBootstrap4(table, vars, errors, readonly, deletable, noncreate, kwa
         "select": "form-control",
         "textarea": "form-control",
     }
-    return FormStyleDefault(table, vars, errors, readonly, deletable,noncreate, classes, kwargs)
+    return FormStyleDefault(
+        table, vars, errors, readonly, deletable, noncreate, classes, kwargs
+    )
 
 
 # ################################################################
@@ -587,7 +598,7 @@ class Form(object):
     :param table: a DAL table or a list of fields (equivalent to old SQLFORM.factory)
     :param record: a DAL record or record id
     :param readonly: set to True to make a readonly form
-    :param noncreate: make sure when you use a form with a list of fields that does not contain the id field, does not always render the create form. 
+    :param noncreate: make sure when you use a form with a list of fields that does not contain the id field, does not always render the create form.
     :param deletable: set to False to disallow deletion of record
     :param formstyle: a function that renders the form using helpers (FormStyleDefault)
     :param dbio: set to False to prevent any DB writes
@@ -659,7 +670,7 @@ class Form(object):
         self.vars = {}
         self.errors = {}
         self.readonly = readonly
-        self.noncreate= noncreate
+        self.noncreate = noncreate
         self.submitted = False
         self.deleted = False
         self.accepted = False
@@ -715,7 +726,9 @@ class Form(object):
                                     validated_vars[field.name] = value
                                 elif self.record:
                                     if not delete:
-                                        validated_vars[field.name] = self.record.get(field.name)
+                                        validated_vars[field.name] = self.record.get(
+                                            field.name
+                                        )
                                     else:
                                         validated_vars[field.name] = None
                             elif field.type == "boolean":
@@ -831,9 +844,13 @@ class Form(object):
                 helper["form"][-1][-1].append(item)
 
                 button_attributes = item.attributes
-                button_attributes['_label'] = item.children[0]
-                button_attributes['_type'] = button_attributes.pop('_role') if '_role' in button_attributes else None
-                helper['json_controls']['form_buttons'] += [button_attributes]
+                button_attributes["_label"] = item.children[0]
+                button_attributes["_type"] = (
+                    button_attributes.pop("_role")
+                    if "_role" in button_attributes
+                    else None
+                )
+                helper["json_controls"]["form_buttons"] += [button_attributes]
 
             if self.action:
                 helper["form"]["_action"] = self.action
@@ -844,10 +861,10 @@ class Form(object):
             if self.form_name:
                 helper["controls"]["hidden_widgets"]["formname"] = INPUT(
                     _type="hidden", _name="_formname", _value=self.form_name
-                )                
+                )
                 helper["form"].append(helper["controls"]["hidden_widgets"]["formname"])
 
-                helper['json_controls']['form_values']['_formname'] = self.form_name
+                helper["json_controls"]["form_values"]["_formname"] = self.form_name
 
             if self.formkey:
                 helper["controls"]["hidden_widgets"]["formkey"] = INPUT(
@@ -855,7 +872,7 @@ class Form(object):
                 )
                 helper["form"].append(helper["controls"]["hidden_widgets"]["formkey"])
 
-                helper['json_controls']['form_values']['_formkey'] = self.formkey
+                helper["json_controls"]["form_values"]["_formkey"] = self.formkey
 
             for key in self.param.hidden or {}:
                 helper["controls"]["hidden_widgets"][key] = INPUT(
@@ -887,7 +904,7 @@ class Form(object):
         """
 
         (_, extension) = os.path.splitext(value)
-        if extension in ['.gif', '.png', '.jpg', '.jpeg', '.bmp']:
+        if extension in [".gif", ".png", ".jpg", ".jpeg", ".bmp"]:
             return True
         return False
 

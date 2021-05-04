@@ -1203,8 +1203,7 @@ class AttributesPlugin:
 
     def form(self, url):
         attrs = copy.copy(self.default_attrs)
-        attrs["_method"] = "GET"
-        attrs["_action"] = url
+        # attrs["_action"] = url
         return attrs
 
     def link(self, url):
