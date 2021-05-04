@@ -96,7 +96,7 @@ class FormStyleFactory:
         for field in table:
 
             input_id = "%s_%s" % (field.tablename, field.name)
-            value = vars.get(field.name, field.default)
+            value = vars.get(field.name, field.default() if callable(field.default) else field.default)
             error = errors.get(field.name)
             field_class = "type-" + field.type.split()[0].replace(":", "-")
             placeholder = (
@@ -607,7 +607,7 @@ class Form(object):
         if not self.record and not self.keep_values:
             self.vars.clear()
             for field in self.table:
-                self.vars[field.name] = field.default
+                self.vars[field.name] = field.default() if callable(field.default) else field.default
 
     def helper(self):
         if self.accepted:
