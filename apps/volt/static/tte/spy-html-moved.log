@@ -1,0 +1,17 @@
+pages/dashboard/dashboard.html
+pages/examples/sign-in.html
+pages/examples/sign-up.html
+pages/examples/lock.html
+pages/transactions.html
+pages/settings.html
+pages/examples/forgot-password.html
+pages/examples/reset-password.html
+pages/examples/404.html
+pages/examples/500.html
+pages/tables/bootstrap-tables.html
+pages/components/buttons.html
+pages/components/notifications.html
+pages/components/forms.html
+pages/components/modals.html
+pages/components/typography.html
+pages/upgrade-to-pro.html
