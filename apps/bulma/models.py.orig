@@ -1,0 +1,124 @@
+import datetime
+
+from .common import db, Field, Tags, groups
+from pydal.validators import *
+from py4web.utils.populate import populate
+
+# py4web app, AI-biorex ported 05.05.2021 10:35:11 UTC+3, src: https://github.com/BulmaTemplates/bulma-templates
+
+
+#import pydal
+#from py4web import *
+#from apps.myapp.models import db
+
+if not db(db.auth_user).count():
+    u1 = {
+        "username": "anil",
+        "email": "anil@nil.com",
+        "password": str(CRYPT()("xyz12345")[0]),
+        "first_name": "Anil_first",
+        "last_name": "Anil_Last",
+    }
+
+    u2 = {
+        "username": "bnil",
+        "email": "bnil@nil.com",
+        "password": str(CRYPT()("xyz12345")[0]),
+        "first_name": "Bnil_first",
+        "last_name": "Bnil_Last",
+    }
+
+    u3 = {
+        "username": "cnil",
+        "email": "cnil@nil.com",
+        "password": str(CRYPT()("xyz12345")[0]),
+        "first_name": "Cnil_first",
+        "last_name": "Cnil_Last",
+    }
+
+    for e in [u1, u2, u3]: db.auth_user.insert(**db.auth_user._filter_fields(e) )
+    db.commit()
+
+    #groups = Tags(db.auth_user)
+
+    groups.add(1, 'manager')
+    groups.add(2, ['dancer', 'teacher'])
+    groups.add(3, 'dancer')
+    db.commit()
+
+db.define_table(
+    'test_table',
+    Field( 'f0', 'string', label='l0'),
+    Field( 'f1', 'string', label='l1'),
+    Field( 'f2', 'string', label='l2'),
+    )
+db.commit()
+
+if not db(db.test_table).count():
+    populate(db.test_table, n=50)
+    db.commit()
+
+db.define_table( 'uploaded_files',
+    Field('orig_file_name', requires=IS_NOT_EMPTY(),  ),
+    Field("remark",'text',),
+    Field('uniq_file_name', requires=IS_NOT_EMPTY(),  ),
+    Field('time', 'datetime', editable=False, default = datetime.datetime.now(), requires = IS_DATETIME( )),
+    )
+
+db.commit()
+#
+db.define_table( 'app_images',
+    Field('f0', requires=IS_NOT_EMPTY(),  ),
+    )
+    
+if not db(db.app_images).count():
+    db.app_images.insert(f0='images/admin.png', )
+    db.app_images.insert(f0='images/band.png', )
+    db.app_images.insert(f0='images/blog.png', )
+    db.app_images.insert(f0='images/cards.png', )
+    db.app_images.insert(f0='images/cheatsheet.png', )
+    db.app_images.insert(f0='images/cover.png', )
+    db.app_images.insert(f0='images/documentation.jpg', )
+    db.app_images.insert(f0='images/forum.png', )
+    db.app_images.insert(f0='images/hello-parallax.png', )
+    db.app_images.insert(f0='images/ghost-blog.png', )
+    db.app_images.insert(f0='images/hero.png', )
+    db.app_images.insert(f0='images/inbox.png', )
+    db.app_images.insert(f0='images/instaalbum.png', )
+    db.app_images.insert(f0='images/kanban.png', )
+    db.app_images.insert(f0='images/kanban2.png', )
+    db.app_images.insert(f0='images/landing.png', )
+    db.app_images.insert(f0='images/login.png', )
+    db.app_images.insert(f0='images/modalcards.png', )
+    db.app_images.insert(f0='images/neumorphic-login.png', )
+    db.app_images.insert(f0='images/personal.png', )
+    db.app_images.insert(f0='images/showcase.png', )
+    db.app_images.insert(f0='images/register.png', )
+    db.app_images.insert(f0='images/tabs.png', )
+    db.app_images.insert(f0='images/contact.png', )
+    db.app_images.insert(f0='images/blog2.png', )
+    db.app_images.insert(f0='images/absurd2.png', )
+    db.app_images.insert(f0='images/fav_icon.png', )
+    db.app_images.insert(f0='images/favicon.png', )
+    db.app_images.insert(f0='images/bulma.png', )
+    db.app_images.insert(f0='images/first-post.png', )
+    db.app_images.insert(f0='images/undraw_Camera_re_cnp4.svg', )
+
+db.commit()
+
+db.define_table( 'app_css_js',
+    Field('f0', requires=IS_NOT_EMPTY(),  ),
+    )
+
+db.define_table( 'app_js_script',
+    Field('f0', requires=IS_NOT_EMPTY(),  ),
+    Field('in_html', ),
+    )
+
+db.define_table( 'app_html_text',
+    Field('f0', requires=IS_NOT_EMPTY(), ),
+    Field('key',requires=IS_NOT_EMPTY(), ),
+    Field('in_html', ),
+    )
+
+db.commit()

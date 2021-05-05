@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 05.05.2021 10:01:22 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <title>biorex title text</title>
+  <link href="[%[=URL('static/tte/images/favicon.png') ]]" rel="icon" sizes="32x32" type="image/png"/>
+  <!-- Bulma Version 0.9.0-->
+  <link href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/kanban.css') ]]" rel="stylesheet"/>
+  <script crossorigin="anonymous" src="https://kit.fontawesome.com/7dc3015a44.js"></script>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <nav class="navbar has-shadow">
+   <div class="container">
+    <div class="navbar-brand">
+     <a class="navbar-item" href="[%[=URL('index') ]]">
+      <img alt="Bulma: a modern CSS framework based on Flexbox" src="http://bulma.io/images/bulma-logo.png"/></a>
+     <div class="navbar-burger burger" data-target="navMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+     </div>
+    </div>
+    <div class="navbar-menu" id="navMenu">
+     <div class="navbar-end">
+      <div class="navbar-item has-dropdown is-hoverable">
+       <a class="navbar-link">Account</a>
+       <div class="navbar-dropdown">
+        <a class="navbar-item">Dashboard</a>
+        <a class="navbar-item">Profile</a>
+        <a class="navbar-item">Settings</a>
+        <hr class="navbar-divider"/>
+        <div class="navbar-item">Logout</div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </nav>
+  <section class="hero is-info">
+   <div class="hero-body">
+    <div class="container">
+     <div class="card">
+      <div class="card-content">
+       <div class="content">
+        <div class="control has-icons-left has-icons-right">
+         
+
+<!-- BEGIN view: fkanban0, db_table: dfkanban0 -->
+<div>
+[%[= fkanban0.custom['begin'] ]]
+ [%[ fkanban0.custom['widgets']['f0']['_class']= 'input is-large'  ]]
+ [%[ fkanban0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[ fkanban0.custom['widgets']['f0']['_placeholder']= ''  ]]
+ [%[= fkanban0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fkanban0.custom['errors']['f0'] if 'f0' in fkanban0.custom['errors'] else '' ]]</span>
+
+ [%[ fkanban0.custom['submit']['_class']= 'input is-large mysubmit_cls'  ]]
+ [%[ fkanban0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fkanban0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fkanban0.custom['submit']['_rows']= '1'  ]]
+ [%[ fkanban0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fkanban0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fkanban0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fkanban0.custom['hidden_widgets'].keys(): ]]
+     [%[= fkanban0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fkanban0</span></div>
+
+
+[%[= fkanban0.custom['end'] ]]
+</div>
+<!-- END fkanban0-->
+
+
+         <span class="icon is-medium is-left">
+          <i class="fa fa-search"></i>
+         </span>
+         <span class="icon is-medium is-right">
+          <i class="fa fa-empire"></i>
+         </span>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section>
+  <div class="box cta">
+   <div class="columns is-mobile is-centered">
+    <div class="field is-grouped is-grouped-multiline">
+     <div class="control">
+      <span class="tag is-link is-large">Link</span>
+     </div>
+     <div class="control">
+      <span class="tag is-success is-large">Success</span>
+     </div>
+     <div class="control">
+      <span class="tag is-black is-large">Black</span>
+     </div>
+     <div class="control">
+      <span class="tag is-warning is-large">Warning</span>
+     </div>
+     <div class="control">
+      <span class="tag is-danger is-large">Danger</span>
+     </div>
+     <div class="control">
+      <span class="tag is-info is-large">Info</span>
+     </div>
+    </div>
+   </div>
+  </div>
+  <section class="container">
+   <div class="level-item">
+    <div class="columns is-multiline is-centered cards-container" id="sectioncontainer">
+     <div class="column is-narrow">
+      <article class="message is-black">
+       <div class="message-header">
+        <p>Season 1</p>
+        <button aria-label="delete" class="delete"></button>
+       </div>
+       <div class="message-body">
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>The Fort</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Fist Like a bullet</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>White Stork Spreads Wings</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Two Tigers Subdue Dragons</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Snake Creeps Down</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Hand of Five Poisons</span>
+         </div>
+        </div>
+       </div>
+      </article>
+     </div>
+     <div class="column is-narrow">
+      <article class="message is-primary">
+       <div class="message-header">
+        <p>Season 2</p>
+        <button aria-label="delete" class="delete"></button>
+       </div>
+       <div class="message-body">
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Tiger Pushes Mountain</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Force of Eagle's Claw</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Red Sun, Silver Moon</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Palm of the Iron Fox</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Monkey Leaps Through Mist</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Leopard Stalks in Snow</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Black Heart, White Mountain</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Sting of the Scorpion's Tail</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Nightingale Sings No More</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Wolf's Breath, Dragon Fire</span>
+         </div>
+        </div>
+       </div>
+      </article>
+     </div>
+     <div class="column is-narrow">
+      <article class="message is-link">
+       <div class="message-header">
+        <p>Season 3</p>
+        <button aria-label="delete" class="delete"></button>
+       </div>
+       <div class="message-body">
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Enter the Phoenix</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Moon Rises, Raven Seeks</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Leopard Snares Rabbit</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Blind Cannibal Assassins</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Carry Tiger to Mountain</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Black Wind Howls</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Dragonfly's Last Dance</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Leopard Catches Cloud</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Chamber of the Scorpion</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Raven's Feather, Phoenix Blood</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>The Boar And The Butterfly</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Cobra Fang, Panther Claw</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Black Lothus, White Rose</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Curse of the Red Rain</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Requiem for the Fallen</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Seven Strike as One</span>
+         </div>
+        </div>
+       </div>
+      </article>
+     </div>
+     <div class="column is-narrow">
+      <article class="message is-info">
+       <div class="message-header">
+        <p>Info</p>
+        <button aria-label="delete" class="delete"></button>
+       </div>
+       <div class="message-body">
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Bronchy</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Aorta</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Alveolae</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>TALISMAN</span>
+         </div>
+        </div>
+       </div>
+      </article>
+     </div>
+     <div class="column is-narrow">
+      <article class="message is-success">
+       <div class="message-header">
+        <p>Success</p>
+        <button aria-label="delete" class="delete"></button>
+       </div>
+       <div class="message-body">
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>signature</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>weasel</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>solana</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>hydro</span>
+         </div>
+        </div>
+       </div>
+      </article>
+     </div>
+     <div class="column is-narrow">
+      <article class="message is-warning">
+       <div class="message-header">
+        <p>Warning</p>
+        <button aria-label="delete" class="delete"></button>
+       </div>
+       <div class="message-body">
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Ganimede</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Europa</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Tycho</span>
+         </div>
+        </div>
+        <div class="board-item">
+         <div class="board-item-content">
+          <span>Io</span>
+         </div>
+        </div>
+       </div>
+      </article>
+     </div>
+    </div>
+   </div>
+  </section>
+  <div class="columns is-mobile is-centered">
+   <div class="column is-half is-narrow"></div>
+  </div>
+  <footer>
+   <div class="box cta">
+    <div class="columns is-mobile is-centered">
+     <div class="field is-grouped is-grouped-multiline">
+      <div class="control">
+       <div class="tags has-addons">
+        <a class="tag is-link" href="https://github.com/BulmaTemplates/bulma-templates">Bulma Templates</a>
+        <span class="tag is-light">Daniel Supernault</span>
+       </div>
+      </div>
+      <div class="control">
+       <div class="tags has-addons">
+        <a class="tag is-link">The source code is licensed</a>
+        <span class="tag is-light">
+         MIT
+         <i class="fa fa-github"></i>
+        </span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </footer>
+  <script src="[%[=URL('static/tte/js/bulma.js') ]]"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

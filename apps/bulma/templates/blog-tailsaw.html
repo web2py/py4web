@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 05.05.2021 11:21:31 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="ie=edge" http-equiv="X-UA-Compatible"/>
+  <title>biorex title text</title>
+  <link href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" rel="stylesheet"/>
+  <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/bulma-divider.min.css') ]]" rel="stylesheet"/>
+  <style>
+nav.navbar {
+    height: 6rem !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06) !important;
+}
+  </style>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <!-- START NAV -->
+  <nav class="navbar">
+   <div class="container">
+    <div class="navbar-brand">
+     <a class="navbar-item" href="[%[=URL('index') ]]">
+      <img alt="Logo" src="[%[=URL('static/tte/images/bulma.png') ]]"/></a>
+     <span class="navbar-burger burger" data-target="navbarMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+     </span>
+    </div>
+    <div class="navbar-menu" id="navbarMenu">
+     <div class="navbar-end">
+      <div class="navbar-item">
+       <div class="control has-icons-left">
+        
+
+<!-- BEGIN view: fblogXtailsaw0, db_table: dfblogXtailsaw0 -->
+<div>
+[%[= fblogXtailsaw0.custom['begin'] ]]
+ [%[ fblogXtailsaw0.custom['widgets']['f0']['_class']= 'input is-rounded'  ]]
+ [%[ fblogXtailsaw0.custom['widgets']['f0']['_placeholder']= 'Search'  ]]
+ [%[ fblogXtailsaw0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fblogXtailsaw0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fblogXtailsaw0.custom['errors']['f0'] if 'f0' in fblogXtailsaw0.custom['errors'] else '' ]]</span>
+
+ [%[ fblogXtailsaw0.custom['submit']['_class']= 'input is-rounded mysubmit_cls'  ]]
+ [%[ fblogXtailsaw0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fblogXtailsaw0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fblogXtailsaw0.custom['submit']['_rows']= '1'  ]]
+ [%[ fblogXtailsaw0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fblogXtailsaw0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fblogXtailsaw0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fblogXtailsaw0.custom['hidden_widgets'].keys(): ]]
+     [%[= fblogXtailsaw0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fblogXtailsaw0</span></div>
+
+
+[%[= fblogXtailsaw0.custom['end'] ]]
+</div>
+<!-- END fblogXtailsaw0-->
+
+
+        <span class="icon is-left">
+         <i class="fa fa-search"></i>
+        </span>
+       </div>
+      </div>
+      <a class="navbar-item is-active is-size-5 has-text-weight-semibold">Home</a>
+      <a class="navbar-item is-size-5 has-text-weight-semibold">Examples</a>
+      <a class="navbar-item is-size-5 has-text-weight-semibold">Features</a>
+     </div>
+    </div>
+   </div>
+  </nav>
+  <!-- END NAV -->
+  <!-- Image -->
+  <section class="hero">
+   <div class="hero-body">
+    <div class="container">
+     <div class="columns">
+      <div class="column is-8 is-offset-2">
+       <figure class="image is-16by9">
+        <img alt="" src="[%[=URL('static/tte/images/first-post.png') ]]"/>
+       </figure>
+      </div>
+     </div>
+     <section class="section">
+      <div class="columns">
+       <div class="column is-8 is-offset-2">
+        <div class="content is-medium">
+         <h2 class="subtitle is-4">December 25, 2018</h2>
+         <h1 class="title">Getting Started</h1>
+         <p>This is a starter template for creating a beautiful, customizable blog with minimal effort. You ll only have to change a few settings and you re ready to go. As with all Jigsaw sites, configuration settings can be found in config</p>
+        </div>
+       </div>
+      </div>
+     </section>
+     <div class="is-divider"></div>
+     <section class="section">
+      <div class="columns">
+       <div class="column is-8 is-offset-2">
+        <div class="content is-medium">
+         <h2 class="subtitle is-4">December 25, 2018</h2>
+         <h1 class="title">Getting Started</h1>
+         <p>This is a starter template for creating a beautiful, customizable blog with minimal effort. You ll only have to change a few settings and you re ready to go. As with all Jigsaw sites, configuration settings can be found in config</p>
+        </div>
+       </div>
+      </div>
+     </section>
+    </div>
+   </div>
+  </section>
+  <!-- newsletter -->
+  <section class="section">
+   <div class="columns">
+    <div class="column is-10 is-offset-1">
+     <div class="container has-text-centered is-fluid">
+      <div class="hero is-light">
+       <div class="hero-body">
+        <h2 class="title is-4">Sign up for our newsletter</h2>
+        <div class="column is-6 is-offset-3">
+         <div class="field has-addons has-addons-centered">
+          <div class="control is-expanded">
+           
+
+<!-- BEGIN view: fblogXtailsaw1, db_table: dfblogXtailsaw1 -->
+<div>
+[%[= fblogXtailsaw1.custom['begin'] ]]
+ [%[ fblogXtailsaw1.custom['widgets']['f0']['_class']= 'input'  ]]
+ [%[ fblogXtailsaw1.custom['widgets']['f0']['_placeholder']= 'Email address'  ]]
+ [%[ fblogXtailsaw1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fblogXtailsaw1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fblogXtailsaw1.custom['errors']['f0'] if 'f0' in fblogXtailsaw1.custom['errors'] else '' ]]</span>
+
+ [%[ fblogXtailsaw1.custom['submit']['_class']= 'input mysubmit_cls'  ]]
+ [%[ fblogXtailsaw1.custom['submit']['_placeholder']= ''  ]]
+ [%[ fblogXtailsaw1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fblogXtailsaw1.custom['submit']['_rows']= '1'  ]]
+ [%[ fblogXtailsaw1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fblogXtailsaw1.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fblogXtailsaw1.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fblogXtailsaw1.custom['hidden_widgets'].keys(): ]]
+     [%[= fblogXtailsaw1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fblogXtailsaw1</span></div>
+
+
+[%[= fblogXtailsaw1.custom['end'] ]]
+</div>
+<!-- END fblogXtailsaw1-->
+
+</div>
+          <div class="control">
+           <a class="button is-info">Subscribe</a>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section>
+  <!-- Articles -->
+  <section class="hero">
+   <div class="hero-body">
+    <div class="container">
+     <section class="section">
+      <div class="columns is-variable is-8">
+       <div class="column is-5 is-offset-1">
+        <div class="content is-medium">
+         <h2 class="subtitle is-5 has-text-grey">December 23, 2018</h2>
+         <h1 class="title has-text-black is-3">Custom 404 Pages</h1>
+         <p class="has-text-dark">This starter template includes a custom 404 Not Found error page, located at /source/404.blade.php. To preview the 404 page, you can visit /404 in your browser. Depending...</p>
+        </div>
+       </div>
+       <div class="column is-5">
+        <div class="content is-medium">
+         <h2 class="subtitle is-5 has-text-grey">December 25, 2018</h2>
+         <h1 class="title has-text-black is-3">Fuse Search</h1>
+         <p class="has-text-dark">To provide fast, local search of your blog, this starter template comes with a pre-built Vue.js component that uses Fuse.js. Fuse.js is a "lightweight fuzzy-search library with no...</p>
+        </div>
+       </div>
+      </div>
+     </section>
+     <div class="is-divider"></div>
+     <section class="section">
+      <div class="columns is-variable is-8">
+       <div class="column is-5 is-offset-1">
+        <div class="content is-medium">
+         <h2 class="subtitle is-5 has-text-grey">December 25, 2018</h2>
+         <h1 class="title has-text-black is-3">Getting Started</h1>
+         <p class="has-text-dark">This is a starter template for creating a beautiful, customizable blog with minimal effort. You ll only have to change a few settings and you re ready to go. As with all Jigsaw sites, configuration settings can be found in config</p>
+        </div>
+       </div>
+       <div class="column is-5">
+        <div class="content is-medium">
+         <h2 class="subtitle is-5 has-text-grey">December 25, 2018</h2>
+         <h1 class="title has-text-black is-3">Getting Started</h1>
+         <p class="has-text-dark">This is a starter template for creating a beautiful, customizable blog with minimal effort. You ll only have to change a few settings and you re ready to go. As with all Jigsaw sites, configuration settings can be found in config</p>
+        </div>
+       </div>
+      </div>
+     </section>
+    </div>
+   </div>
+  </section>
+  <footer class="footer">
+   <div class="content has-text-centered">
+    <p>
+     <strong>Bulma - Blog theme</strong>
+     by
+     <a href="https://py4web.com">py4web.com</a>
+     . Based on the
+     <a href="http://jigsaw-blog-staging.tighten.co/">jigsaw-blog</a>
+     . The source code is licensed
+     <a href="http://opensource.org/licenses/mit-license.php">MIT</a>
+    </p>
+   </div>
+  </footer>
+  <script>
+   document.addEventListener('DOMContentLoaded', () => {
+
+    // Get all "navbar-burger" elements
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+    // Check if there are any navbar burgers
+    if ($navbarBurgers.length > 0) {
+
+        // Add a click event on each of them
+        $navbarBurgers.forEach(el => {
+            el.addEventListener('click', () => {
+
+                // Get the target from the "data-target" attribute
+                const target = el.dataset.target;
+                const $target = document.getElementById(target);
+
+                // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                el.classList.toggle('is-active');
+                $target.classList.toggle('is-active');
+
+            });
+        });
+    }
+
+});
+  </script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

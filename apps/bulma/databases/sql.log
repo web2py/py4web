@@ -1,0 +1,267 @@
+timestamp: 2021-05-05T11:25:11.643028
+CREATE TABLE "auth_user"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "username" CHAR(512) UNIQUE,
+    "email" CHAR(512) UNIQUE,
+    "password" CHAR(512),
+    "first_name" CHAR(512),
+    "last_name" CHAR(512),
+    "sso_id" CHAR(512),
+    "action_token" CHAR(512),
+    "last_password_change" TIMESTAMP,
+    "past_passwords_hash" TEXT
+);
+success!
+timestamp: 2021-05-05T11:25:11.655578
+CREATE TABLE "auth_user_tag_groups"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "path" CHAR(512),
+    "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
+);
+success!
+timestamp: 2021-05-05T11:25:12.113722
+CREATE TABLE "test_table"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(512),
+    "f1" CHAR(512),
+    "f2" CHAR(512)
+);
+success!
+timestamp: 2021-05-05T11:25:12.170568
+CREATE TABLE "uploaded_files"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "orig_file_name" CHAR(512),
+    "remark" TEXT,
+    "uniq_file_name" CHAR(512),
+    "time" TIMESTAMP
+);
+success!
+timestamp: 2021-05-05T11:25:12.180567
+CREATE TABLE "app_images"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(512)
+);
+success!
+timestamp: 2021-05-05T11:25:12.205370
+CREATE TABLE "app_css_js"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(512)
+);
+success!
+timestamp: 2021-05-05T11:25:12.216857
+CREATE TABLE "app_js_script"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(512),
+    "in_html" CHAR(512)
+);
+success!
+timestamp: 2021-05-05T11:25:12.227570
+CREATE TABLE "app_html_text"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(512),
+    "key" CHAR(512),
+    "in_html" CHAR(512)
+);
+success!
+timestamp: 2021-05-05T11:25:12.238301
+CREATE TABLE "dfadmin0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.248756
+CREATE TABLE "dfadmin1"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.260011
+CREATE TABLE "dfband0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024),
+    "f1" CHAR(1024),
+    "f2" TEXT
+);
+success!
+timestamp: 2021-05-05T11:25:12.271492
+CREATE TABLE "dfdocumentation0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.281819
+CREATE TABLE "dfforum0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.292557
+CREATE TABLE "dfhelloXparallax0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.302528
+CREATE TABLE "dfhelloXparallax1"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.312481
+CREATE TABLE "dfinstaAlbum0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.323145
+CREATE TABLE "dfinstaAlbum1"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.332839
+CREATE TABLE "dfinstaAlbum2"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.342440
+CREATE TABLE "dfinstaAlbum3"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.351900
+CREATE TABLE "dfkanban0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.361873
+CREATE TABLE "dfkanbanXsearchX0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.371598
+CREATE TABLE "dflanding0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.381610
+CREATE TABLE "dfloginA0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024),
+    "f1" CHAR(1024),
+    "f2" CHAR(1)
+);
+success!
+timestamp: 2021-05-05T11:25:12.391492
+CREATE TABLE "dfneumorphicXlogin0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024),
+    "f1" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.401292
+CREATE TABLE "dfpersonal0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.411731
+CREATE TABLE "dfpersonal1"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.421558
+CREATE TABLE "dfpersonal2"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" TEXT
+);
+success!
+timestamp: 2021-05-05T11:25:12.431733
+CREATE TABLE "dfshowcase0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT
+);
+success!
+timestamp: 2021-05-05T11:25:12.441712
+CREATE TABLE "dfshowcase1"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT
+);
+success!
+timestamp: 2021-05-05T11:25:12.452397
+CREATE TABLE "dfshowcase2"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024),
+    "f1" CHAR(1024),
+    "f2" TEXT
+);
+success!
+timestamp: 2021-05-05T11:25:12.463012
+CREATE TABLE "dfregisterA0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024),
+    "f1" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.473497
+CREATE TABLE "dfcontact0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.484690
+CREATE TABLE "dfcontact1"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.495439
+CREATE TABLE "dfcontact2"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" TEXT
+);
+success!
+timestamp: 2021-05-05T11:25:12.505911
+CREATE TABLE "dfblogXtailsaw0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.515893
+CREATE TABLE "dfblogXtailsaw1"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.526344
+CREATE TABLE "dfsearch0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.537457
+CREATE TABLE "tadmin0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024),
+    "f1" CHAR(1024),
+    "f2" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.549242
+CREATE TABLE "tpersonal0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024),
+    "f1" CHAR(1024)
+);
+success!
+timestamp: 2021-05-05T11:25:12.560424
+CREATE TABLE "ttabs0"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "f0" CHAR(1024),
+    "f1" CHAR(1024)
+);
+success!

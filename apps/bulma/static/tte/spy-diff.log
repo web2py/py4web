@@ -1,0 +1,24 @@
+ratio= 0.48
+   src: images/cards.png
+   dst: `http://twitter.com/${card.user.handle}`
+
+ratio= 0.63
+   src: images/cards.png
+   dst: card.image
+
+ratio= 0.61
+   src: js/cardsData.js
+   dst: card.avatar
+
+ratio= 0.67
+   src: js/bulma.js
+   dst: js/wild.js
+
+ratio= 0.48
+   src: index.css
+   dst: example.docs
+
+ratio= 0.42
+   src: css/cheatsheet.css
+   dst: tweet
+

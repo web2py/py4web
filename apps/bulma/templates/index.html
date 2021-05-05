@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html>
+ <head>
+            <!-- 05.05.2021 11:21:30 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <link href="https://cdn.rawgit.com/jgthms/bulma/master/docs/favicons/favicon-32x32.png" rel="shortcut icon" type="image/x-icon"/>
+  <meta content="Free bulma templates" name="description"/>
+  <!-- Bulma Version 0.9.0 -->
+  <link href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/index.css') ]]" rel="stylesheet" type="text/css"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <section class="hero is-info is-bold">
+   <div class="hero-body">
+    <div class="container has-text-centered">
+     <h1 class="title">Free Bulma Templates</h1>
+     <h2 class="subtitle">
+      Based on the
+      <a href="http://bulma.io">Bulma</a>
+      CSS Framework
+     </h2>
+     <a aria-label="View BulmaTemplates/bulma-templates on GitHub" class="github-button" data-size="large" href="https://github.com/BulmaTemplates/bulma-templates">View on Github</a>
+     <a aria-label="Star BulmaTemplates/bulma-templates on GitHub" class="github-button" data-icon="octicon-star" data-show-count="true" data-size="large" href="https://github.com/BulmaTemplates/bulma-templates">Star</a>
+     <a aria-label="Fork BulmaTemplates/bulma-templates on GitHub" class="github-button" data-show-count="true" data-size="large" href="https://github.com/BulmaTemplates/bulma-templates/fork">Fork</a>
+    </div>
+   </div>
+  </section>
+  <br/>
+  <div class="container content-wrapper">
+   <div class="columns is-multiline">
+    <!-- admin -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>
+         Admin
+         <small>(Light)</small>
+        </span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('admin') ]]">
+         <img alt="Admin template screenshot" src="[%[=URL('static/tte/images/admin.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('admin') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/admin.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- band -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Band</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('band') ]]">
+         <img alt="Band template screenshot" src="[%[=URL('static/tte/images/band.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('band') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/band.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- blog -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Blog</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('blog') ]]">
+         <img alt="Blog template screenshot" src="[%[=URL('static/tte/images/blog.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('blog') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/blog.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- cards -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Cards</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('cards') ]]">
+         <img alt="Cards template screenshot" src="[%[=URL('static/tte/images/cards.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('cards') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/cards.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- cheatsheet -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Cheatsheet</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('cheatsheet') ]]">
+         <img alt="Cheatsheet template screenshot" src="[%[=URL('static/tte/images/cheatsheet.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('cheatsheet') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/cheatsheet.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- cover -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Cover</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('cover') ]]">
+         <img alt="Cover template screenshot" src="[%[=URL('static/tte/images/cover.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('cover') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/cover.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- documentation -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Documentation</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.2">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.2</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('documentation') ]]">
+         <img alt="Documentation template screenshot" src="[%[=URL('static/tte/images/documentation.jpg') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('documentation') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/documentation.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- forum -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Forum</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('forum') ]]">
+         <img alt="Hero template screenshot" src="[%[=URL('static/tte/images/forum.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('forum') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/forum.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- hello parallax -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Hello Parallax</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('helloXparallax') ]]">
+         <img alt="Hello Parallax template screenshot" src="[%[=URL('static/tte/images/hello-parallax.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('helloXparallax') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/hello-parallax.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- Ghost Blog Template -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Ghost Blog "Casper"</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('ghostXblog') ]]">
+         <img alt="Ghost Blog template screenshot" src="[%[=URL('static/tte/images/ghost-blog.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('ghostXblog') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/ghost-blog.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- hero -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Hero</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('hero') ]]">
+         <img alt="Hero template screenshot" src="[%[=URL('static/tte/images/hero.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('hero') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/hero.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!--inbox -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Inbox</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('inbox') ]]">
+         <img alt="Inbox template screenshot" src="[%[=URL('static/tte/images/inbox.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('inbox') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/inbox.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- insta album -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Image Timeline</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('instaAlbum') ]]">
+         <img alt="Landing template screenshot" src="[%[=URL('static/tte/images/instaalbum.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('instaAlbum') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/instaAlbum.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!--kanban -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Kanban</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('kanban') ]]">
+         <img alt="Kanban template screenshot" src="[%[=URL('static/tte/images/kanban.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('kanban') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/kanban.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Kanban.js</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('kanbanXsearchX') ]]">
+         <img alt="Kanban template screenshot" src="[%[=URL('static/tte/images/kanban2.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('kanbanXsearchX') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/kanban[search].html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- landing -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Landing</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('landing') ]]">
+         <img alt="Landing template screenshot" src="[%[=URL('static/tte/images/landing.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('landing') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/landing.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- login -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Login</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('loginA') ]]">
+         <img alt="Login template screenshot" src="[%[=URL('static/tte/images/login.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('loginA') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/login.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- modal cards -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Modal Cards</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('modalXcards') ]]">
+         <img alt="modal-cards template screenshot" src="[%[=URL('static/tte/images/modalcards.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('modalXcards') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/modal-cards.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- neumorphic login -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Neumorphic Login</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('neumorphicXlogin') ]]">
+         <img alt="modal-cards template screenshot" src="[%[=URL('static/tte/images/neumorphic-login.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('neumorphicXlogin') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/neumorphic-login.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- Personal/Portfolio template -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Portfolio</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('personal') ]]">
+         <img alt="personal portfolio template screenshot" src="[%[=URL('static/tte/images/personal.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('personal') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/personal.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- Personal/Portfolio template -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Showcase</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('showcase') ]]">
+         <img alt="showcase portfolio template screenshot" src="[%[=URL('static/tte/images/showcase.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('showcase') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/showcase.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- register template -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Registration Form</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('registerA') ]]">
+         <img alt="register template screenshot" src="[%[=URL('static/tte/images/register.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('registerA') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/register.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- tabs -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Tabs</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('tabs') ]]">
+         <img alt="tabs template screenshot" src="[%[=URL('static/tte/images/tabs.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('tabs') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/tabs.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- Contact Page -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Contact Page</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('contact') ]]">
+         <img alt="tabs template screenshot" src="[%[=URL('static/tte/images/contact.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('contact') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/contact.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- Blog 2 Page -->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Blog 2</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.0">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.0</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('blogXtailsaw') ]]">
+         <img alt="tabs template screenshot" src="[%[=URL('static/tte/images/blog2.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('blogXtailsaw') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/blog-tailsaw.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- Absurd Designs Clone-->
+    <div class="column is-4-desktop is-3-widescreen is-half-tablet">
+     <div class="card">
+      <header class="card-header">
+       <p class="card-header-title">
+        <span>Absurd.design Landing</span>
+        <span class="is-pulled-right">
+         <a href="https://github.com/jgthms/bulma/releases/tag/0.9.1">
+          <span class="tag is-default is-primary" title="Current Version">v0.9.1</span>
+         </a>
+         <span class="tag is-default is-info">
+          <i class="fas fa-desktop" title="Desktop Support"></i>
+         </span>
+         <span class="tag is-default is-info">
+          <i class="fas fa-mobile-alt" title="Mobile Support"></i>
+         </span>
+        </span>
+       </p>
+      </header>
+      <div class="card-content">
+       <figure class="image">
+        <a href="[%[=URL('absurd') ]]">
+         <img alt="tabs template screenshot" src="[%[=URL('static/tte/images/absurd2.png') ]]"/></a>
+       </figure>
+      </div>
+      <footer class="card-footer">
+       <a class="card-footer-item" href="[%[=URL('absurd') ]]">
+        <i class="fas fa-search"></i>
+        Preview
+       </a>
+       <a class="card-footer-item" href="https://github.com/BulmaTemplates/bulma-templates/blob/master/templates/absurd.html">
+        <i class="fas fa-code"></i>
+        Source Code
+       </a>
+      </footer>
+     </div>
+    </div>
+    <!-- coming soon -->
+    <div class="column">
+     <center>
+      <div class="box">
+       <p class="has-text-centered">More templates are waiting for you to make them! So, give it a go.</p>
+      </div>
+     </center>
+    </div>
+   </div>
+  </div>
+  <footer class="footer">
+   <div class="container">
+    <div class="content has-text-centered">
+     <p>
+      <strong>Bulma Templates</strong>
+      by
+      <a href="https://github.com/dansup">Daniel Supernault</a>
+      and
+      <a href="https://github.com/BulmaTemplates/bulma-templates/graphs/contributors">many</a>
+      contributors. The Source Code is licensed
+      <a href="http://opensource.org/licenses/mit-license.php">MIT</a>
+      .
+     </p>
+     <p>
+      <a class="icon" href="https://github.com/BulmaTemplates/bulma-templates">
+       <svg height="16" viewbox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">
+        </path>
+       </svg>
+      </a>
+     </p>
+    </div>
+   </div>
+  </footer>
+  <script crossorigin="anonymous" src="https://kit.fontawesome.com/7dc3015a44.js"></script>
+  <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+ </body>
+</html>

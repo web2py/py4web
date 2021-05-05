@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+ <head>
+            <!-- 05.05.2021 11:21:30 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <link href="[%[=URL('static/tte/images/favicon.png') ]]" rel="shortcut icon" type="image/x-icon"/>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet"/>
+  <!-- Bulma Version 0.9.0-->
+  <link href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/forum.css') ]]" rel="stylesheet" type="text/css"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <nav class="navbar is-white topNav">
+   <div class="container">
+    <div class="navbar-brand">
+     <a class="navbar-item" href="[%[=URL('index') ]]">
+      <img height="28" src="[%[=URL('static/tte/images/bulma.png') ]]" width="112"/></a>
+     <div class="navbar-burger burger" data-target="topNav">
+      <span></span>
+      <span></span>
+      <span></span>
+     </div>
+    </div>
+    <div class="navbar-menu" id="topNav">
+     <div class="navbar-start">
+      <a class="navbar-item" href="[%[=URL('cover') ]]">Home</a>
+      <a class="navbar-item" href="[%[=URL('landing') ]]">Landing</a>
+      <a class="navbar-item" href="[%[=URL('blog') ]]">Blog</a>
+      <a class="navbar-item" href="[%[=URL('instaAlbum') ]]">Album</a>
+      <a class="navbar-item" href="[%[=URL('kanbanXsearchX') ]]">Kanban</a>
+      <a class="navbar-item" href="[%[=URL('search') ]]">Search</a>
+      <a class="navbar-item" href="[%[=URL('tabs') ]]">Tabs</a>
+     </div>
+     <div class="navbar-end">
+      <div class="navbar-item">
+       <div class="field is-grouped">
+        <p class="control">
+         <a class="button is-small">
+          <span class="icon">
+           <i class="fa fa-user-plus"></i>
+          </span>
+          <span>Register</span>
+         </a>
+        </p>
+        <p class="control">
+         <a class="button is-small is-info is-outlined">
+          <span class="icon">
+           <i class="fa fa-user"></i>
+          </span>
+          <span>Login</span>
+         </a>
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </nav>
+  <nav class="navbar is-white">
+   <div class="container">
+    <div class="navbar-menu">
+     <div class="navbar-start">
+      <a class="navbar-item is-active" href="#">Popular</a>
+      <a class="navbar-item" href="#">Recent</a>
+      <a class="navbar-item" href="#">Rising</a>
+     </div>
+     <div class="navbar-end">
+      <div class="navbar-item">
+       
+
+<!-- BEGIN view: fforum0, db_table: dfforum0 -->
+<div>
+[%[= fforum0.custom['begin'] ]]
+ [%[ fforum0.custom['widgets']['f0']['_class']= 'input'  ]]
+ [%[ fforum0.custom['widgets']['f0']['_placeholder']= 'Search forum...'  ]]
+ [%[ fforum0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fforum0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fforum0.custom['errors']['f0'] if 'f0' in fforum0.custom['errors'] else '' ]]</span>
+
+ [%[ fforum0.custom['submit']['_class']= 'input mysubmit_cls'  ]]
+ [%[ fforum0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fforum0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fforum0.custom['submit']['_rows']= '1'  ]]
+ [%[ fforum0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fforum0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fforum0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fforum0.custom['hidden_widgets'].keys(): ]]
+     [%[= fforum0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fforum0</span></div>
+
+
+[%[= fforum0.custom['end'] ]]
+</div>
+<!-- END fforum0-->
+
+</div>
+     </div>
+    </div>
+   </div>
+  </nav>
+  <section class="container">
+   <div class="columns">
+    <div class="column is-3">
+     <a class="button is-primary is-block is-alt is-large" href="#">New Post</a>
+     <aside class="menu">
+      <p class="menu-label">Tags</p>
+      <ul class="menu-list">
+       <li>
+        <span class="tag is-primary is-medium">Dashboard</span>
+       </li>
+       <li>
+        <span class="tag is-link is-medium">Customers</span>
+       </li>
+       <li>
+        <span class="tag is-light is-danger is-medium">Authentication</span>
+       </li>
+       <li>
+        <span class="tag is-dark is-medium">Payments</span>
+       </li>
+       <li>
+        <span class="tag is-success is-medium">Transfers</span>
+       </li>
+       <li>
+        <span class="tag is-warning is-medium">Balance</span>
+       </li>
+       <li>
+        <span class="tag is-medium">Question</span>
+       </li>
+      </ul>
+     </aside>
+    </div>
+    <div class="column is-9">
+     <div class="box content">
+      <article class="post">
+       <h4>Bulma: How do you center a button in a box?</h4>
+       <div class="media">
+        <div class="media-left">
+         <p class="image is-32x32">
+          <img src="http://bulma.io/images/placeholders/128x128.png"/></p>
+        </div>
+        <div class="media-content">
+         <div class="content">
+          <p>
+           <a href="#">@jsmith</a>
+           replied 34 minutes ago
+           <span class="tag">Question</span>
+          </p>
+         </div>
+        </div>
+        <div class="media-right">
+         <span class="has-text-grey-light">
+          <i class="fa fa-comments"></i>
+          1
+         </span>
+        </div>
+       </div>
+      </article>
+      <article class="post">
+       <h4>How can I make a bulma button go full width?</h4>
+       <div class="media">
+        <div class="media-left">
+         <p class="image is-32x32">
+          <img src="http://bulma.io/images/placeholders/128x128.png"/></p>
+        </div>
+        <div class="media-content">
+         <div class="content">
+          <p>
+           <a href="#">@red</a>
+           replied 40 minutes ago
+           <span class="tag">Question</span>
+          </p>
+         </div>
+        </div>
+        <div class="media-right">
+         <span class="has-text-grey-light">
+          <i class="fa fa-comments"></i>
+          0
+         </span>
+        </div>
+       </div>
+      </article>
+      <article class="post">
+       <h4>TypeError: Data must be a string or a buffer when trying touse vue-bulma-tabs</h4>
+       <div class="media">
+        <div class="media-left">
+         <p class="image is-32x32">
+          <img src="http://bulma.io/images/placeholders/128x128.png"/></p>
+        </div>
+        <div class="media-content">
+         <div class="content">
+          <p>
+           <a href="#">@jsmith</a>
+           replied 53 minutes ago
+           <span class="tag">Question</span>
+          </p>
+         </div>
+        </div>
+        <div class="media-right">
+         <span class="has-text-grey-light">
+          <i class="fa fa-comments"></i>
+          13
+         </span>
+        </div>
+       </div>
+      </article>
+      <article class="post">
+       <h4>How to vertically center elements in Bulma?</h4>
+       <div class="media">
+        <div class="media-left">
+         <p class="image is-32x32">
+          <img src="http://bulma.io/images/placeholders/128x128.png"/></p>
+        </div>
+        <div class="media-content">
+         <div class="content">
+          <p>
+           <a href="#">@brown</a>
+           replied 3 hours ago
+           <span class="tag">Question</span>
+          </p>
+         </div>
+        </div>
+        <div class="media-right">
+         <span class="has-text-grey-light">
+          <i class="fa fa-comments"></i>
+          2
+         </span>
+        </div>
+       </div>
+      </article>
+      <article class="post">
+       <h4>I'm trying to use hamburger menu on bulma css, but it doesn't work. What is wrong?</h4>
+       <div class="media">
+        <div class="media-left">
+         <p class="image is-32x32">
+          <img src="http://bulma.io/images/placeholders/128x128.png"/></p>
+        </div>
+        <div class="media-content">
+         <div class="content">
+          <p>
+           <a href="#">@hamburgler</a>
+           replied 5 hours ago
+           <span class="tag">Question</span>
+          </p>
+         </div>
+        </div>
+        <div class="media-right">
+         <span class="has-text-grey-light">
+          <i class="fa fa-comments"></i>
+          2
+         </span>
+        </div>
+       </div>
+      </article>
+      <article class="post">
+       <h4>How to make tiles wrap with Bulma CSS?</h4>
+       <div class="media">
+        <div class="media-left">
+         <p class="image is-32x32">
+          <img src="http://bulma.io/images/placeholders/128x128.png"/></p>
+        </div>
+        <div class="media-content">
+         <div class="content">
+          <p>
+           <a href="#">@rapper</a>
+           replied 3 hours ago
+           <span class="tag">Question</span>
+          </p>
+         </div>
+        </div>
+        <div class="media-right">
+         <span class="has-text-grey-light">
+          <i class="fa fa-comments"></i>
+          2
+         </span>
+        </div>
+       </div>
+      </article>
+     </div>
+    </div>
+   </div>
+  </section>
+  <footer class="footer">
+   <div class="container">
+    <div class="content has-text-centered">
+     <div class="columns is-mobile is-centered">
+      <div class="field is-grouped is-grouped-multiline">
+       <div class="control">
+        <div class="tags has-addons">
+         <a class="tag is-link" href="https://github.com/BulmaTemplates/bulma-templates">Bulma Templates</a>
+         <span class="tag is-light">Daniel Supernault</span>
+        </div>
+       </div>
+       <div class="control">
+        <div class="tags has-addons">
+         <a class="tag is-link">The source code is licensed</a>
+         <span class="tag is-light">
+          MIT
+          <i class="fa fa-github"></i>
+         </span>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </footer>
+  <script async="" src="[%[=URL('static/tte/js/bulma.js') ]]" type="text/javascript"></script>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>

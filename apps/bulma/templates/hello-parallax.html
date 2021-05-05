@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+ <head>
+            <!-- 05.05.2021 11:21:30 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;800&amp;display=swap" rel="stylesheet"/>
+  <script crossorigin="anonymous" src="https://kit.fontawesome.com/15181efa86.js"></script>
+  <link href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" rel="stylesheet"/>
+  <link href="[%[=URL('static/tte/css/hello-parallax.css') ]]" rel="stylesheet" type="text/css"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <section class="hero is-medium">
+   <div class="hero-body">
+    <div class="container">
+     <h1 class="title is-1">Hello Parallax</h1>
+     <h2 class="subtitle">
+      A simple boilerplate for setting up parallax
+      <br/>using the Bulma Hero container.</h2>
+     <a class="button is-white is-medium is-inverted" href="#">
+      Learn More
+      <i class="fad fa-chevron-right"></i>
+     </a>
+    </div>
+   </div>
+  </section>
+  <section class="hero is-large" id="parallax-1">
+   <div class="hero-body">
+    <div class="container">
+     <div class="columns">
+      <div class="column is-6 is-offset-6">
+       <h1 class="title is-1">Lorem Ipsum</h1>
+       <hr class="content-divider"/>
+       <h2 class="subtitle">Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit explicabo amet magni illum eum voluptate! Eveniet voluptatem nam magnam necessitatibus.</h2>
+       <a class="button is-white is-inverted" href="#">
+        Next
+        <i class="fad fa-chevron-right"></i>
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="hero is-large" id="parallax-2">
+   <div class="hero-body">
+    <div class="container">
+     <div class="columns">
+      <div class="column is-6">
+       <h1 class="title is-1">Dolor Sit</h1>
+       <hr class="content-divider"/>
+       <h2 class="subtitle">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Doloremque veritatis sequi natus minima distinctio ullam deleniti quasi quisquam autem deserunt.</h2>
+       <a class="button is-white is-inverted" href="#">
+        Next
+        <i class="fad fa-chevron-right"></i>
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="hero is-large" id="parallax-3">
+   <div class="hero-body">
+    <div class="container">
+     <div class="columns">
+      <div class="column is-6 is-offset-6">
+       <h1 class="title is-1">Amet Consectetur</h1>
+       <hr class="content-divider"/>
+       <h2 class="subtitle">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iure minus nam necessitatibus neque in perferendis eveniet dolorum assumenda dolores accusamus.</h2>
+       <a class="button is-white is-inverted" href="#">
+        Next
+        <i class="fad fa-chevron-right"></i>
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section class="cta va">
+   <div class="container">
+    <div class="columns">
+     <div class="column is-6">
+      <h1 class="title is-1">Adipisicing Elit</h1>
+      <hr class="content-divider"/>
+      <h2 class="subtitle">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quas ut nulla maiores, beatae voluptas sunt excepturi deserunt vero. Beatae est ratione quia neque molestias, cum asperiores quibusdam rem illum, debitis dolorem natus, eos fuga eveniet numquam ab officia reiciendis inventore. Tempore repudiandae exercitationem quisquam? Fugiat!</h2>
+     </div>
+     <div class="column is-6">
+      <div class="field">
+       <label class="label">
+        Name
+       </label>
+       <div class="control">
+        
+
+<!-- BEGIN view: fhelloXparallax0, db_table: dfhelloXparallax0 -->
+<div>
+[%[= fhelloXparallax0.custom['begin'] ]]
+ [%[ fhelloXparallax0.custom['widgets']['f0']['_class']= 'input is-medium'  ]]
+ [%[ fhelloXparallax0.custom['widgets']['f0']['_placeholder']= 'Jon Snow'  ]]
+ [%[ fhelloXparallax0.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fhelloXparallax0.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fhelloXparallax0.custom['errors']['f0'] if 'f0' in fhelloXparallax0.custom['errors'] else '' ]]</span>
+
+ [%[ fhelloXparallax0.custom['submit']['_class']= 'input is-medium mysubmit_cls'  ]]
+ [%[ fhelloXparallax0.custom['submit']['_placeholder']= ''  ]]
+ [%[ fhelloXparallax0.custom['submit']['_type']= 'submit'  ]]
+ [%[ fhelloXparallax0.custom['submit']['_rows']= '1'  ]]
+ [%[ fhelloXparallax0.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fhelloXparallax0.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fhelloXparallax0.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fhelloXparallax0.custom['hidden_widgets'].keys(): ]]
+     [%[= fhelloXparallax0.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fhelloXparallax0</span></div>
+
+
+[%[= fhelloXparallax0.custom['end'] ]]
+</div>
+<!-- END fhelloXparallax0-->
+
+</div>
+      </div>
+      <br/>
+      <div class="field">
+       <label class="label">
+        Email
+       </label>
+       <div class="control">
+        
+
+<!-- BEGIN view: fhelloXparallax1, db_table: dfhelloXparallax1 -->
+<div>
+[%[= fhelloXparallax1.custom['begin'] ]]
+ [%[ fhelloXparallax1.custom['widgets']['f0']['_class']= 'input is-medium'  ]]
+ [%[ fhelloXparallax1.custom['widgets']['f0']['_placeholder']= 'jon@winterfell.com'  ]]
+ [%[ fhelloXparallax1.custom['widgets']['f0']['_type']= 'text'  ]]
+ [%[= fhelloXparallax1.custom['widgets']['f0'] ]]
+
+ <span style="color:#ff0000">[%[= fhelloXparallax1.custom['errors']['f0'] if 'f0' in fhelloXparallax1.custom['errors'] else '' ]]</span>
+
+ [%[ fhelloXparallax1.custom['submit']['_class']= 'input is-medium mysubmit_cls'  ]]
+ [%[ fhelloXparallax1.custom['submit']['_placeholder']= ''  ]]
+ [%[ fhelloXparallax1.custom['submit']['_type']= 'submit'  ]]
+ [%[ fhelloXparallax1.custom['submit']['_rows']= '1'  ]]
+ [%[ fhelloXparallax1.custom['submit']['_value']= 'Submit'  ]]
+ [%[ fhelloXparallax1.custom['submit']['_title']= 'mysubmit from last element'  ]]
+ [%[= fhelloXparallax1.custom['submit'] ]]
+
+
+ [%[ for hidden_widget in fhelloXparallax1.custom['hidden_widgets'].keys(): ]]
+     [%[= fhelloXparallax1.custom['hidden_widgets'][hidden_widget] ]]
+ [%[ pass ]] 
+
+  <div class="flashdiv"><span class="flashspan">fhelloXparallax1</span></div>
+
+
+[%[= fhelloXparallax1.custom['end'] ]]
+</div>
+<!-- END fhelloXparallax1-->
+
+</div>
+      </div>
+      <br/>
+      <div class="field is-grouped">
+       <div class="control">
+        <button class="button is-white is-rounded is-outlined">Submit</button>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section>
+  <footer class="footer">
+   <div class="content has-text-centered">
+    <p>
+     <strong>Bulma</strong>
+     by
+     <a href="https://jgthms.com">Jeremy Thomas</a>
+     . The source code is licensed
+     <a href="http://opensource.org/licenses/mit-license.php">MIT</a>
+     . The website content
+          is licensed
+     <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>
+     .
+    </p>
+   </div>
+  </footer>
+  
+<!-- forms ajax -->
+<script>
+
+  const forms_url = [%[ =XML(  ctrl_template_url   ) ]]
+  for(let i = 0; i < document.forms.length; i++){
+
+        document.forms[i].onsubmit = async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(forms_url, {
+                method: 'POST',
+                body: new FormData( document.forms[i] )
+            });
+
+
+            let result = await response.json();
+
+            if ( result.js_alert==='sweet2' ) {
+
+                      if (("icon_type" in result)==0) { 
+                         result.icon_type = 'error' ;
+                       }
+          
+                      //----------------------------------------------------------
+                      Swal.fire({
+                            //position: 'top-end',
+                            icon: result.icon_type,
+                            title: result.messages,
+                            showConfirmButton: false,
+                            timer: 2000,
+                       
+                            showClass: {
+                              popup: '',
+                              icon: ''
+                            },
+                            hideClass: {
+                               popup: '',
+                            }
+                      })
+                     //----------------------------------------------------------
+            } else {
+                     alert(result.messages);
+            }
+
+        };
+  }
+
+</script>
+
+
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>
