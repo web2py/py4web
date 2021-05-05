@@ -1,0 +1,12 @@
+ratio= 0.46
+   src: plugins/codemirror/mode/dart/dart.js
+   dst: data:,
+
+ratio= 0.29
+   src: docs/faq.md
+   dst: dd/mm/yyyy
+
+ratio= 0.27
+   src: plugins/codemirror/mode/dtd/dtd.js
+   dst: mm/dd/yyyy
+

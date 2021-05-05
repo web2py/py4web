@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+            <!-- 05.05.2021 12:21:16 py4web app, ported by AI-biorex, tidylib_check = True -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>biorex title text</title>
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;display=fallback" rel="stylesheet"/>
+  <!-- Font Awesome -->
+  <link href="[%[=URL('static/tte/plugins/fontawesome-free/css/all.min.css') ]]" rel="stylesheet"/>
+  <!-- Theme style -->
+  <link href="[%[=URL('static/tte/dist/css/adminlte.min.css') ]]" rel="stylesheet"/>
+ 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"  async defer></script>
+<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/>
+
+   <!-- disable google analytics -->
+   <script>window['ga-disable-UA-119386393-1'] = true;</script>
+
+<style>
+     .mysubmit_cls {
+         width: 6em;
+         margin: 0.2em auto 0.2em auto !important;
+         padding-left: 0 !important;
+         padding-right: 0 !important;
+         border: 1px dashed black;
+         color: black;
+         background-color: LightGray;
+         font-weight: bold;
+         text-decoration: underline;
+     }
+
+     .mysubmit_cls:hover {
+         background-color: LightCyan;
+         cursor: pointer;
+     }
+
+     .flashdiv {
+         text-align: center;
+         position: absolute;
+         display: inline-block;
+     }
+
+     .flashspan {
+         position: relative;
+         z-index: 100;
+         background-color: #F0FFF0;
+         color: black;
+         border: 2px dashed red;
+         padding: 0.2em 1em 0.2em 1em;
+     }
+
+</style>
+
+</head>
+ <body>
+  <div class="wrapper">
+   <!-- Main content -->
+   <section class="invoice">
+    <!-- title row -->
+    <div class="row">
+     <div class="col-12">
+      <h2 class="page-header">
+       <i class="fas fa-globe"></i>
+       AdminLTE, Inc.
+       <small class="float-right">Date: 2/10/2014</small>
+      </h2>
+     </div>
+     <!-- /.col -->
+    </div>
+    <!-- info row -->
+    <div class="row invoice-info">
+     <div class="col-sm-4 invoice-col">
+      From
+      <address>
+       <strong>Admin, Inc.</strong>
+       <br/>
+       795 Folsom Ave, Suite 600
+       <br/>
+       San Francisco, CA 94107
+       <br/>
+       Phone: (804) 123-5432
+       <br/>
+       Email: info@almasaeedstudio.com
+      </address>
+     </div>
+     <!-- /.col -->
+     <div class="col-sm-4 invoice-col">
+      To
+      <address>
+       <strong>John Doe</strong>
+       <br/>
+       795 Folsom Ave, Suite 600
+       <br/>
+       San Francisco, CA 94107
+       <br/>
+       Phone: (555) 539-1037
+       <br/>
+       Email: john.doe@example.com
+      </address>
+     </div>
+     <!-- /.col -->
+     <div class="col-sm-4 invoice-col">
+      <b>Invoice #007612</b>
+      <br/>
+      <br/>
+      <b>Order ID:</b>
+      4F3S8J
+      <br/>
+      <b>Payment Due:</b>
+      2/22/2014
+      <br/>
+      <b>Account:</b>
+      968-34567
+     </div>
+     <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    <!-- Table row -->
+    <div class="row">
+     <div class="col-12 table-responsive">
+      
+<!--view: rows_tinvoiceXprint0, db_table: tinvoiceXprint0 -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Qty</th>
+        <th>Product</th>
+        <th>Serial #</th>
+        <th>Description</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+  <tbody>
+        [%[ for row0 in rows_tinvoiceXprint0: ]]
+        <tr>
+            <td>[%[= XML(row0.f0) ]]</td>
+            <td>[%[= XML(row0.f1) ]]</td>
+            <td>[%[= XML(row0.f2) ]]</td>
+            <td>[%[= XML(row0.f3) ]]</td>
+            <td>[%[= XML(row0.f4) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tinvoiceXprint0 -->
+
+<div class="flashdiv"><span class="flashspan">tinvoiceXprint0</span></div>
+
+     </div>
+     <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+     <!-- accepted payments column -->
+     <div class="col-6">
+      <p class="lead">Payment Methods:</p>
+      <img alt="Visa" src="[%[=URL('static/tte/dist/img/credit/visa.png') ]]"/>
+      <img alt="Mastercard" src="[%[=URL('static/tte/dist/img/credit/mastercard.png') ]]"/>
+      <img alt="American Express" src="[%[=URL('static/tte/dist/img/credit/american-express.png') ]]"/>
+      <img alt="Paypal" src="[%[=URL('static/tte/dist/img/credit/paypal2.png') ]]"/>
+      <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem plugg dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.</p>
+     </div>
+     <!-- /.col -->
+     <div class="col-6">
+      <p class="lead">Amount Due 2/22/2014</p>
+      <div class="table-responsive">
+       
+<!--view: rows_tinvoiceXprint1, db_table: tinvoiceXprint1 -->
+  <table class="table">
+  <tbody>
+        [%[ for row1 in rows_tinvoiceXprint1: ]]
+        <tr>
+            <td>[%[= XML(row1.f0) ]]</td>
+            <td>[%[= XML(row1.f1) ]]</td>
+        </tr>
+        [%[pass ]]
+  </tbody>
+</table>
+<!-- end rows_tinvoiceXprint1 -->
+
+<div class="flashdiv"><span class="flashspan">tinvoiceXprint1</span></div>
+
+      </div>
+     </div>
+     <!-- /.col -->
+    </div>
+    <!-- /.row -->
+   </section>
+   <!-- /.content -->
+  </div>
+  <!-- ./wrapper -->
+  <!-- Page specific script -->
+  <script>
+   window.addEventListener("load", window.print());
+  </script>
+ <!-- rm_flashdiv -->
+<script>
+     !function() { 
+         const elems = document.querySelectorAll('.flashdiv');
+         for (const e of elems) { setTimeout(function() {e.remove();}, 15000); }
+     }();
+</script>
+
+</body>
+</html>
