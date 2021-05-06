@@ -34,11 +34,11 @@ def downloader(db, path, filename, download_filename=None):
     fieldname = items.group("field")
     try:
         field = db[tablename][fieldname]
-        
+
         # Functionality to handle uploadseparate Field declaration.
         if field.uploadseparate:
             uuidname = items.group("uuidkey")
-            path = os.path.join(path, *[f'{tablename}.{fieldname}', uuidname[:2]])
+            path = os.path.join(path, *[f"{tablename}.{fieldname}", uuidname[:2]])
 
     except (AttributeError, KeyError):
         raise HTTP(404)
