@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Forms &mdash; py4web 1.20210328.2 documentation</title>
+  <title>Forms &mdash; py4web 1.20210426.1 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.20210328.2
+                1.20210426.1
               </div>
             
           
@@ -104,6 +104,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Forms</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#form-validation">Form validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#form-structure-manipulation">Form Structure Manipulation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
@@ -270,6 +271,16 @@ displayed to the user, and no database I/O will take place.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="form-structure-manipulation">
+<h2>Form Structure Manipulation<a class="headerlink" href="#form-structure-manipulation" title="Permalink to this headline">¶</a></h2>
+<p>Like in web2py, in py4web a form is rendered by helpers. Unlike web2py, it uses yatl helpers. This means the tree structure of a form can be manilupated before the form is serialized in HTML. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;paint&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">))</span>
+<span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">paint</span><span class="p">)</span>
+<span class="n">form</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;[name=color]&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;my-class&#39;</span>
+</pre></div>
+</div>
+<p>Notice that a form does not make an HTML tree until form structure is accessed. Once accessed you can use <cite>.find(…)</cite> to find matching elements. The argument of <cite>find</cite> is a string following the filter syntax of jQuery. In the above case there is a single match <cite>[0]</cite> and we modify the <cite>_class</cite> attribute of that element. Attribute names of HTML elements must be preceded by an underscore.</p>
+</div>
 </div>
 
 
@@ -326,7 +337,7 @@ displayed to the user, and no database I/O will take place.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210328.2
+      v: 1.20210426.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

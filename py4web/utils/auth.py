@@ -175,11 +175,11 @@ class Auth(Fixture):
         registration_requires_confirmation=True,
         registration_requires_approval=False,
         inject=True,
-        extra_fields=[],
+        extra_fields=None,
         login_expiration_time=3600,  # seconds
-        password_complexity={"entropy": 50},
+        password_complexity="default",
         block_previous_password_num=None,
-        allowed_actions=["all"],
+        allowed_actions=None,
         use_appname_in_redirects=None,
     ):
 
@@ -188,9 +188,11 @@ class Auth(Fixture):
             registration_requires_approval=registration_requires_approval,
             login_after_registration=False,
             login_expiration_time=login_expiration_time,  # seconds
-            password_complexity=password_complexity,
+            password_complexity={"entropy": 50}
+            if password_complexity == "default"
+            else password_complexity,
             block_previous_password_num=block_previous_password_num,
-            allowed_actions=allowed_actions,
+            allowed_actions=allowed_actions or ["all"],
             use_appname_in_redirects=use_appname_in_redirects,
             formstyle=FormStyleDefault,
             messages=copy.deepcopy(self.MESSAGES),
@@ -216,9 +218,8 @@ class Auth(Fixture):
         self.use_username = use_username  # if False, uses email only
         self.use_phone_number = use_phone_number
         # The self._link variable is not thread safe (only intended for testing)
-        self.extra_auth_user_fields = extra_fields
+        self.extra_auth_user_fields = extra_fields or []
         self._link = None
-        self.extra_auth_user_fields = extra_fields
         if db and define_tables:
             self.define_tables()
         self.plugins = {}
@@ -312,7 +313,7 @@ class Auth(Fixture):
                         readable=False,
                     )
                 )
-            db.define_table("auth_user", *auth_fields, *self.extra_auth_user_fields)
+            db.define_table("auth_user", *(auth_fields + self.extra_auth_user_fields))
 
     @property
     def signature(self):
@@ -457,11 +458,11 @@ class Auth(Fixture):
 
     def login(self, email, password):
         db = self.db
-        
+
         # Default incase they are None or an error will occur.
-        email = '' if email is None else email
-        password = '' if password is None else password
-        
+        email = "" if email is None else email
+        password = "" if password is None else password
+
         if "email_auth" in self.plugins:
             email = email.lower()
             if self.plugins["email_auth"].validate_credentials(email, password):

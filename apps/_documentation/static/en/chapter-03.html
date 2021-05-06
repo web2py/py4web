@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation and Startup &mdash; py4web 1.20210328.2 documentation</title>
+  <title>Installation and Startup &mdash; py4web 1.20210426.1 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                1.20210328.2
+                1.20210426.1
               </div>
             
           
@@ -226,7 +226,7 @@ release and it is quite difficult to add other functionalities to it.</p>
 ZIP file from <a class="reference external" href="https://github.com/nicozanf/py4web-pyinstaller">this external
 repository</a>. Unzip it
 on a local folder and open a command line there. Finally run</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web-start set_password
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web-start set_password
 py4web-start run apps
 </pre></div>
 </div>
@@ -250,7 +250,7 @@ procedures is highly reccomended.</p>
 <p>Using <em>pip</em> is the standard installation procedure for py4web, since it will
 quickly install the latest stable release of py4web.</p>
 <p>From the command line</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web --no-cache-dir --user
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web --no-cache-dir --user
 </pre></div>
 </div>
 <p>but do <strong>not</strong> type the <em>–user</em> option with virtualenv or a standard
@@ -261,7 +261,7 @@ instead.</p>
 only. The assets folder (that contains the py4web’s system apps) will
 also be created. After the installation you’ll be able to start py4web
 on any given working folder with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web setup apps
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web setup apps
 py4web set_password
 py4web run apps
 </pre></div>
@@ -278,10 +278,10 @@ on Linux and MacOS (Windows does not normally support the <cite>make</cite> util
 All the requirements will be installed on the
 system’s path along with links to the py4web.py program on the local
 folder</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
-<span class="nb">cd</span> py4web
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
+cd py4web
 make assets
-make <span class="nb">test</span>
+make test
 make install
 py4web run apps
 </pre></div>
@@ -300,14 +300,14 @@ one. Also, installing from sources (locally or globally) will
 install all the latest changes present on the master branch of py4web - hence
 you will gain the latest (but potentially untested) code.</p>
 <p>From the command line, go to a given working folder and then run</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
-<span class="nb">cd</span> py4web
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
+cd py4web
 python3 -m pip install  --upgrade -r requirements.txt
 </pre></div>
 </div>
 <p>Once installed, you should always start it from there with:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-TGludXggYW5kIE1hY09T" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tab" tabindex="0">Linux and MacOS</button><button aria-controls="panel-0-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-0-TGludXggYW5kIE1hY09T" class="sphinx-tabs-panel group-tab" id="panel-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./py4web.py setup apps
+<div aria-label="Tabbed content" role="tablist"><button aria-controls="panel-0-TGludXggYW5kIE1hY09T" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tab" tabindex="0">Linux and MacOS</button><button aria-controls="panel-0-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-0-TGludXggYW5kIE1hY09T" class="sphinx-tabs-panel group-tab" id="panel-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./py4web.py setup apps
 ./py4web.py set_password
 ./py4web.py run apps
 </pre></div>
@@ -315,7 +315,7 @@ python3 -m pip install  --upgrade -r requirements.txt
 <p>If you have installed py4web both globally and locally, notice the
 <strong>./</strong> ; it forces the run of the local folder’s py4web and not the
 globally installed one.</p>
-</div><div aria-labelledby="tab-0-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 py4web.py setup apps
+</div><div aria-labelledby="tab-0-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 py4web.py setup apps
 python3 py4web.py set_password
 python3 py4web.py run apps
 </pre></div>
@@ -330,7 +330,7 @@ python3/python command.</p>
 <div class="section" id="upgrading">
 <h2>Upgrading<a class="headerlink" href="#upgrading" title="Permalink to this headline">¶</a></h2>
 <p>If you installed py4web from pip you can simple upgrade it with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -338,7 +338,7 @@ python3/python command.</p>
 <p>This will not automatically upgrade the standard apps like <strong>Dashboard</strong>
 and <strong>Default</strong>.
 You have to manually remove these apps and then run</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web setup apps
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web setup apps
 </pre></div>
 </div>
 <p>in order to re-install them. This is a safety precaution, in case you
@@ -407,6 +407,7 @@ Usage: py4web.py call [OPTIONS] APPS_FOLDER FUNC
   Call a function inside apps_folder
 
 Options:
+  -Y, --yes          No prompt, assume yes to questions  [default: False]
   --args TEXT        Arguments passed to the program/function  [default: {}]
   -help, -h, --help  Show this message and exit.
 </pre></div>
@@ -420,6 +421,9 @@ Usage: py4web.py new_app [OPTIONS] APPS_FOLDER APP_NAME
   Create a new app copying the scaffolding one
 
 Options:
+  -Y, --yes                No prompt, assume yes to questions  [default:
+                           False]
+
   -s, --scaffold_zip TEXT  Path to the zip with the scaffolding app
   -help, -h, --help        Show this message and exit.
 </pre></div>
@@ -430,13 +434,13 @@ Options:
 <div class="section" id="run-command-option">
 <span id="id3"></span><h3><code class="docutils literal notranslate"><span class="pre">run</span></code> command option<a class="headerlink" href="#run-command-option" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web run -h
-Usage: py4web.py run [OPTIONS] [APPS_FOLDER]
+Usage: py4web.py run [OPTIONS] APPS_FOLDER
 
   Run all the applications on apps_folder
 
 Options:
-  -Y, --yes                     No prompt, assume yes to questions  [default:
-                                False]
+  -Y, --yes                     No prompt, assume yes to questions
+                                [default: False]
 
   -H, --host TEXT               Host name  [default: 127.0.0.1]
   -P, --port INTEGER            Port number  [default: 8000]
@@ -466,15 +470,21 @@ changes to files of that application, you can:</p>
 <li><p>for reloading on any first incoming request to the application has
 been changed (lazy-mode): <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--watch=lazy</span></code></p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">--watch</span></code> directive looks for any changes occurring to the python files under the
+/apps folder only. Any modifications to the standard py4web programs will always require a full
+restart of the framework.</p>
+</div>
 <p>The default web server used is currently Tornado, but you can change this behaviour with the <code class="docutils literal notranslate"><span class="pre">server</span></code> option.</p>
-<p>Also, for advanced users, you can specify the optional ‘’usegevent’’ directive like in this example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web usegevent run -s geventWebSocketServer apps
+<p>Also, for advanced users, you can specify the optional <code class="docutils literal notranslate"><span class="pre">--usegevent</span></code> directive like in this example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web --usegevent run -s geventWebSocketServer apps
 </pre></div>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The optional ‘’usegevent’’ directive must be used with ‘’gevent’’ or ‘’geventWebSocketServer’’ webservers (in order to apply monkey patching)
-and shouldn’t be used with ‘’tornado’’ and ‘’waitress’’.</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">--usegevent</span></code> directive must be used with <code class="docutils literal notranslate"><span class="pre">gevent</span></code> or <code class="docutils literal notranslate"><span class="pre">geventWebSocketServer</span></code> webservers (in order to apply monkey patching)
+and shouldn’t be used with <code class="docutils literal notranslate"><span class="pre">tornado</span></code> and <code class="docutils literal notranslate"><span class="pre">waitress</span></code>.</p>
 </div>
 </div>
 <div class="section" id="set-password-command-option">
@@ -496,20 +506,20 @@ Options:
 py4web starts, it asks for a one-time password for you to access the
 dashboard. This is annoying. You can avoid it by storing a pdkdf2 hashed
 password in a file (by default called password.txt) with the command</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web set_password
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web set_password
 </pre></div>
 </div>
 <p>It will not ask again unless the file is deleted. You can also use a
 custom file name with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web set_password my_password_file.txt
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web set_password my_password_file.txt
 </pre></div>
 </div>
 <p>and then ask py4web to re-use that password at runtime with</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4webt run -p my_password_file.txt apps
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4webt run -p my_password_file.txt apps
 </pre></div>
 </div>
 <p>Finally you can manually create the file yourself with:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ python3 -c &quot;from pydal.validators import CRYPT; open(&#39;password.txt&#39;,&#39;w&#39;).write(str(CRYPT()(input(&#39;password:&#39;))[0]))&quot;
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -c &quot;from pydal.validators import CRYPT; open(&#39;password.txt&#39;,&#39;w&#39;).write(str(CRYPT()(input(&#39;password:&#39;))[0]))&quot;
 password: *****
 </pre></div>
 </div>
@@ -517,7 +527,7 @@ password: *****
 <div class="section" id="setup-command-option">
 <span id="id5"></span><h3><code class="docutils literal notranslate"><span class="pre">setup</span></code> command option<a class="headerlink" href="#setup-command-option" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web setup -h
-Usage: py4web.py setup [OPTIONS] [APPS_FOLDER]
+Usage: py4web.py setup [OPTIONS] APPS_FOLDER
 
   Setup new apps folder or reinstall it
 
@@ -536,11 +546,12 @@ the new one.</p>
 <div class="section" id="shell-command-option">
 <span id="id6"></span><h3><code class="docutils literal notranslate"><span class="pre">shell</span></code> command option<a class="headerlink" href="#shell-command-option" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web shell -h
-Usage: py4web.py shell [OPTIONS] [APPS_FOLDER]
+Usage: py4web.py shell [OPTIONS] APPS_FOLDER
 
-  Open a python shell with apps_folder added to the path
+  Open a python shell with apps_folder&#39;s parent added to the path
 
 Options:
+  -Y, --yes          No prompt, assume yes to questions  [default: False]
   -h, -help, --help  Show this message and exit.
 </pre></div>
 </div>
@@ -567,7 +578,7 @@ Options:
   -h, -help, --help  Show this message and exit.
 </pre></div>
 </div>
-<p>With the <em>-a</em> option you’ll get the version of all the available python
+<p>With the <code class="docutils literal notranslate"><span class="pre">-all</span></code> option you’ll get the version of all the available python
 modules, too.</p>
 </div>
 </div>
@@ -584,7 +595,7 @@ create a pyton file:</p>
 </pre></div>
 </div>
 <p>and then start the application using cli:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ gunicorn -w <span class="m">4</span> py4web_wsgi:myapp
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>gunicorn -w 4 py4web_wsgi:application
 </pre></div>
 </div>
 <p>The wsgi function takes arguments with the same name as the command line arguments.</p>
@@ -595,8 +606,8 @@ create a pyton file:</p>
 create a new project. You will obtain a project id that looks like
 “{project_name}-{number}”.</p>
 <p>In your local file system make a new working folder and cd into it:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir gae
-<span class="nb">cd</span> gae
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mkdir gae
+cd gae
 </pre></div>
 </div>
 <p>Copy the example files from py4web (assuming you have the source from
@@ -618,16 +629,16 @@ main.py
 </pre></div>
 </div>
 <p>Install the Google SDK, py4web and setup the working folder:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make install-gcloud-linux
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>make install-gcloud-linux
 make setup
-gcloud config <span class="nb">set</span> <span class="o">{</span>your email<span class="o">}</span>
-gcloud config <span class="nb">set</span> <span class="o">{</span>project id<span class="o">}</span>
+gcloud config set {your email}
+gcloud config set {project id}
 </pre></div>
 </div>
 <p>(replace {your email} with your google email account and {project id}
 with the project id obtained from Google).</p>
 <p>Now every time you want to deploy your apps, simply do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make deploy
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>make deploy
 </pre></div>
 </div>
 <p>You may want to customize the Makefile and app.yaml to suit your needs.
@@ -697,7 +708,7 @@ tutorial</a>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210328.2
+      v: 1.20210426.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

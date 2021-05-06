@@ -11,7 +11,7 @@ __all__ = [
     "geventWebSocketServer",
     "wsgirefThreadingServer",
     "rocketServer",
-] + wsservers_list 
+] + wsservers_list
 
 
 def geventWebSocketServer():
