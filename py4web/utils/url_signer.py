@@ -118,6 +118,7 @@ class URLSigner(Fixture):
         """Gets the signing key, creating it if necessary."""
         if self.session is None:
             key = self.key
+            assert self.key is not None, "You need to specify a signing key"
         else:
             key = self.session.get("_signature_key")
             if key is None:
