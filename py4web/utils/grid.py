@@ -359,7 +359,6 @@ class Grid:
             edit_submit_value=None,
             edit_action_button_text="Edit",
             delete_action_button_text="Delete",
-            htmx_target=None,
         )
 
         #  instance variables that will be computed
@@ -382,7 +381,7 @@ class Grid:
         self.use_tablename = self.is_join()
         self.formatters = {}
         self.formatters_by_type = copy.copy(Grid.FORMATTERS_BY_TYPE)
-        self.attributes_plugin = {}
+        self.attributes_plugin = AttributesPlugin(request)
 
         if auto_process:
             self.process()
@@ -451,9 +450,7 @@ class Grid:
                         db[self.tablename][field.name].readable = False
                         db[self.tablename][field.name].writable = False
 
-            attrs = {}
-            if 'form' in self.attributes_plugin:
-                self.attributes_plugin['form'](attrs)
+            attrs = self.attributes_plugin.form(url=request.url)
             self.form = Form(
                 db[self.tablename],
                 record=self.record_id,
@@ -641,9 +638,7 @@ class Grid:
         if callable(url):
             url = url(row)
 
-        attrs["href"] = url # todo
-        if 'link' in self.attributes_plugin:
-            self.attributes_plugin['link'](attrs)
+        attrs.update(self.attributes_plugin.link(url=url))
         link = A(
             I(_class="fa %s" % icon),
             _role="button",
@@ -675,9 +670,7 @@ class Grid:
             for key in request.query
             if not key in ("search_type", "search_string")
         ]
-        attrs = {"_method": "GET", "_action": self.endpoint}
-        if 'search_form' in self.attributes_plugin:
-            self.attributes_plugin['search_form'](attrs)
+        attrs = self.attributes_plugin.form(url=self.endpoint)
         form = FORM(*hidden_fields, **attrs)
         select = SELECT(
             *options,
@@ -779,17 +772,13 @@ class Grid:
                 if key == sort_order:
                     sort_query_parms["orderby"] = "~" + key
                     url = URL(self.endpoint, vars=sort_query_parms)
-                    attrs["_href"] = url
+                    attrs = self.attributes_plugin.link(url=url)
                     col = A(heading, up, **attrs)
-                    if 'button_sort_up' in self.attributes_plugin:
-                        self.attributes_plugin['button_sort_up'](attrs)
                 else:
                     sort_query_parms["orderby"] = key
                     url = URL(self.endpoint, vars=sort_query_parms)
-                    attrs["_href"] = url
+                    attrs = self.attributes_plugin.link(url=url)
                     col = A(heading, dw if "~" + key == sort_order else "", **attrs)
-                    if 'button_sort_down' in self.attributes_plugin:
-                        self.attributes_plugin['button_sort_down'](attrs)
                 columns.append((key, col))
 
         thead = THEAD(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
@@ -844,7 +833,9 @@ class Grid:
         class_type = "grid-cell-type-%s" % str(field.type).split(":")[0].split("(")[0]
         class_col = " grid-col-%s" % key
         td = TD(
-            format_field(formatter, field_value, row),
+            formatter(field_value)
+            if formatter.__code__.co_argcount == 1  # if formatter has only 1 argument
+            else formatter(field_value, row),
             _class=(
                 self.param.grid_class_style.classes.get("grid-td", "")
                 + " "
@@ -959,11 +950,9 @@ class Grid:
                     else:
                         delete_url = self.endpoint + "/delete"
                     delete_url += "/%s?%s" % (row_id, self.referrer)
-                    attrs = {
-                        "_onclick": "if(!confirm('Are you sure you want to delete?')) return false;"
-                    }
-                    if 'button_delete' in self.attributes_plugin:
-                        self.attributes_plugin['button_delete'](attrs)
+                    attrs = self.attributes_plugin.confirm(
+                        message="Are you sure you want to delete?"
+                    )
                     td.append(
                         self.render_action_button(
                             url=delete_url,
@@ -1013,9 +1002,9 @@ class Grid:
                 if is_current
                 else "grid-pagination-button"
             )
-            attrs = {"_href": URL(self.endpoint, vars=pager_query_parms)}
-            if 'button_page_number' in self.attributes_plugin:
-                self.attributes_plugin['button_page_number'](attrs)
+            attrs = self.attributes_plugin.link(
+                url=URL(self.endpoint, vars=pager_query_parms)
+            )
             pager.append(
                 A(
                     page_number,
@@ -1207,8 +1196,46 @@ def get_parent(path, parent_field):
     return parent_id
 
 
-def format_field(formatter, value, row):
-    try:
-        return formatter(value, row)
-    except:
-        return formatter(value)
+class AttributesPlugin:
+    def __init__(self, target_element=None):
+        self.target_element = target_element
+        self.default_attrs = {}
+
+    def form(self, url):
+        attrs = copy.copy(self.default_attrs)
+        # attrs["_action"] = url
+        return attrs
+
+    def link(self, url):
+        attrs = copy.copy(self.default_attrs)
+        attrs["_href"] = url
+        return attrs
+
+    def confirm(self, message):
+        attrs = copy.copy(self.default_attrs)
+        attrs["_onclick"] = "if(!confirm('%s')) return false;" % message
+        return attrs
+
+
+class AttributesPluginHtmx(AttributesPlugin):
+    def __init__(self, target_element):
+        super().__init__(target_element)
+        self.default_attrs = {
+            "_hx-target": self.target_element,
+            "_hx-swap": "innerHTML",
+        }
+
+    def form(self, url):
+        attrs = copy.copy(self.default_attrs)
+        attrs["_hx-post"] = url
+        return attrs
+
+    def link(self, url):
+        attrs = copy.copy(self.default_attrs)
+        attrs["_hx-get"] = url
+        return attrs
+
+    def confirm(self, message):
+        attrs = copy.copy(self.default_attrs)
+        attrs["_hx-confirm"] = message
+        return attrs
