@@ -1959,7 +1959,7 @@ you can extract its values using multiple equivalent expressions:
    >>> row('person.name')
    Alex
 
-The latter syntax is particularly handy when selecting en expression
+The latter syntax is particularly handy when selecting an expression
 instead of a column. We will show this later.
 
 You can also do
@@ -2619,7 +2619,7 @@ dictionaries using the ``as_list()`` method. Here are some examples:
 
 These methods are convenient for passing Rows to generic views and or to
 store Rows in sessions (Rows objects themselves cannot be
-serialized because contain a reference to an open DB connection):
+serialized because they contain a reference to an open DB connection):
 
 .. code:: python
 
