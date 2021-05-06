@@ -328,7 +328,7 @@ class DAL(pydal.DAL, Fixture):
 # make sure some variables in pydal are thread safe
 def thread_safe_pydal_patch():
     Field = pydal.DAL.Field
-    tsafe_attrs = ["readable", "writable", "default", "update", "requires"]
+    tsafe_attrs = ["readable", "writable", "default", "update", "requires","widget"]
     for a in tsafe_attrs:
         setattr(Field, a, threadsafevariable.ThreadSafeVariable())
 
