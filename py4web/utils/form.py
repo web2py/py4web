@@ -4,6 +4,9 @@ import time
 import uuid
 import copy
 import os
+
+from pydal.objects import FieldVirtual
+
 from py4web import request, response, HTTP
 from py4web.utils.param import Param
 from pydal._compat import to_native
@@ -119,7 +122,10 @@ class FormStyleFactory:
         class_error = self.classes["error"]
         class_info = self.classes["info"]
 
-        for field in table:
+        all_fields = [x for x in table]
+        if "_virtual_fields" in dir(table):
+            all_fields += table._virtual_fields
+        for field in all_fields:
 
             # Reset the json control fields.
             field_attributes = dict()
@@ -130,10 +136,13 @@ class FormStyleFactory:
             field_comment = field.comment if field.comment else ""
             field_label = field.label
             input_id = "%s_%s" % (field.tablename, field.name)
-            value = vars.get(
-                field.name,
-                field.default() if callable(field.default) else field.default,
-            )
+            if isinstance(field, FieldVirtual):
+                value = None
+            else:
+                value = vars.get(
+                    field.name,
+                    field.default() if callable(field.default) else field.default,
+                )
             error = errors.get(field.name)
             field_class = "type-" + field.type.split()[0].replace(":", "-")
             placeholder = (
@@ -166,7 +175,12 @@ class FormStyleFactory:
                 continue
 
             # if the form is readonly or this is an id type field, display it as readonly
-            if readonly or not field.writable or field.type == "id":
+            if (
+                readonly
+                or not field.writable
+                or field.type == "id"
+                or isinstance(field, FieldVirtual)
+            ):
                 if field.type == "boolean":
 
                     field_value = value
@@ -182,10 +196,12 @@ class FormStyleFactory:
                         _title=title,
                     )
                 else:
-
-                    field_value = (
-                        field.represent and field.represent(value) or value or ""
-                    )
+                    if isinstance(field, FieldVirtual):
+                        field_value = field.f(vars)
+                    else:
+                        field_value = (
+                            field.represent and field.represent(value) or value or ""
+                        )
                     field_type = "represent"
 
                     control = DIV(field_value)

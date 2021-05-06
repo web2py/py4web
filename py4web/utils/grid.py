@@ -506,7 +506,8 @@ class Grid:
             key_is_missing = True
             for field in self.param.fields:
                 if (
-                    field.table._tablename == pt._tablename
+                    not isinstance(field, FieldVirtual)
+                    and field.table._tablename == pt._tablename
                     and field.name == pt._id.name
                 ):
                     key_is_missing = False
@@ -560,7 +561,10 @@ class Grid:
                 self.page_end = self.total_number_of_rows
 
             if self.param.fields:
-                self.rows = db(query).select(*self.param.fields, **select_params)
+                param_fields = [
+                    x for x in self.param.fields if not isinstance(x, FieldVirtual)
+                ]  # don't send virtual fields to DAL select - will calculate them later
+                self.rows = db(query).select(*param_fields, **select_params)
             else:
                 self.rows = db(query).select(**select_params)
 
@@ -769,7 +773,9 @@ class Grid:
                 sort_query_parms = dict(self.query_parms)
 
                 attrs = {}
-                if key == sort_order:
+                if isinstance(field, FieldVirtual):
+                    col = DIV(heading)
+                elif key == sort_order:
                     sort_query_parms["orderby"] = "~" + key
                     url = URL(self.endpoint, vars=sort_query_parms)
                     attrs = self.attributes_plugin.link(url=url)
@@ -819,7 +825,13 @@ class Grid:
         :param field:
         :return:
         """
-        if self.use_tablename:
+        if isinstance(field, FieldVirtual):
+            #  handle virtual fields in table display
+            if self.use_tablename:
+                field_value = field.f(row[field.tablename])
+            else:
+                field_value = field.f(row)
+        elif self.use_tablename:
             field_value = row[field.tablename][field.name]
         else:
             field_value = row[field.name]
@@ -1203,7 +1215,6 @@ class AttributesPlugin:
 
     def form(self, url):
         attrs = copy.copy(self.default_attrs)
-        # attrs["_action"] = url
         return attrs
 
     def link(self, url):
