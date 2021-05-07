@@ -34,8 +34,10 @@ import types
 import urllib.parse
 import uuid
 import zipfile
-import asyncio
-from watchgod import awatch
+#import asyncio
+import subprocess
+
+#from watchgod import awatch
 from . import server_adapters
 
 # Optional web servers for speed
@@ -84,6 +86,8 @@ __all__ = [
     "required_folder",
     "wsgi",
 ]
+
+PY4WEB_CLI_ROUTE = '/py4web_cli'
 
 PY4WEB_CMD = sys.argv[0]
 
@@ -1030,6 +1034,9 @@ class Reloader:
         routes = app.routes[:]
         app.routes.clear()
         app.router = bottle.Router()
+        for route in routes:
+            if route.rule.startswith(PY4WEB_CLI_ROUTE + '/'):
+                app.add_route(route)
         if app_name:
             for route in routes:
                 if route.rule.rstrip("<:re:/?>")[1:].split("/")[0] != app_name:
@@ -1237,58 +1244,98 @@ def try_app_watch_tasks():
             del APP_WATCH["tasks"][handler]
 
 
-def watch(apps_folder, server_config, mode="sync"):
-    def watch_folder_event_loop(apps_folder):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(watch_folder(apps_folder))
+def track_changes(apps_folder, changes, mode="sync"):
+    apps = []
+    for subpath in [pathlib.Path(pair[1]) for pair in changes]:
+        name = subpath.relative_to(apps_folder).parts[0]
+        if subpath.suffix == ".py":
+            apps.append(name)
+        ## manage `app_watch_handler` decorators
+        elif subpath.as_posix() in APP_WATCH["files"]:
+            handlers = APP_WATCH["files"][subpath.as_posix()]
+            for handler in handlers:
+                if handler not in APP_WATCH["tasks"]:
+                    APP_WATCH["tasks"][handler] = {}
+                APP_WATCH["tasks"][handler][subpath.as_posix()] = True
 
-    async def watch_folder(apps_folder):
+    for name in apps:
+        if mode == "lazy":
+            DIRTY_APPS[name] = True
+        else:
+            Reloader.import_app(name)
+    ## in 'lazy' mode it's done in bottle's 'before_request' hook
+    if mode != "lazy":
+        try_app_watch_tasks()
+
+# simple CLI over http
+class HTTPCLI:
+    commands = dict()
+    cli_key = str(uuid.uuid4())
+    mounted = False
+
+    @classmethod
+    def mount(cls):
+        if cls.mounted:
+            return
+        bottle.post(f"{PY4WEB_CLI_ROUTE}/<cmd>")(cls.cli)
+        cls.mounted = True
+
+    @classmethod
+    def cli(cls, cmd):
+        if cls.cli_key != request.environ.get('HTTP_X_PY4WEB_CLI_KEY'):
+            abort(401)
+        cmd = cls.commands.get(cmd)
+        if not cmd:
+            abort(404)
+        ret = None
+        try:
+            ret = cmd(*request.json.get('args', []), **request.json.get('vars', {}))
+        except Exception:
+            logging.error(traceback.format_exc())
+            abort(500)
+        return ret
+
+    @classmethod
+    def command(cls, name, fun = None):
+        if callable(name):
+            fun = name
+            name = None
+        if not fun:
+            return lambda fun: cls.command(name, fun)
+        cls.commands[name or fun.__name__] = fun
+        return fun
+
+
+def watch(apps_folder, server_config, mode="sync"):
+    def run_watcher():
         click.echo(
             "watching (%s-mode) python file changes in: %s" % (mode, apps_folder)
         )
-        async for changes in awatch(os.path.join(apps_folder)):
-            apps = []
-            for subpath in [pathlib.Path(pair[1]) for pair in changes]:
-                name = subpath.relative_to(apps_folder).parts[0]
-                if subpath.suffix == ".py":
-                    apps.append(name)
-                ## manage `app_watch_handler` decorators
-                elif subpath.as_posix() in APP_WATCH["files"]:
-                    handlers = APP_WATCH["files"][subpath.as_posix()]
-                    for handler in handlers:
-                        if not handler in APP_WATCH["tasks"]:
-                            APP_WATCH["tasks"][handler] = {}
-                        APP_WATCH["tasks"][handler][subpath.as_posix()] = True
 
-            for name in apps:
-                if mode == "lazy":
-                    DIRTY_APPS[name] = True
-                else:
-                    Reloader.import_app(name)
-            ## in 'lazy' mode it's done in bottle's 'before_request' hook
-            if mode != "lazy":
-                try_app_watch_tasks()
+        @HTTPCLI.command
+        def files_changed(changes):
+            track_changes(apps_folder, changes, mode)
+
+        HTTPCLI.mount()
+
+        if mode == "lazy":
+            Reloader.install_reloader_hook()
+
+        subprocess.Popen([
+            sys.executable,
+            'py4web/watcher.py',
+            '--host',
+            server_config['host'],
+            '--port',
+            str(server_config['port']),
+            HTTPCLI.cli_key
+        ])
+
 
     if server_config["number_workers"] > 1:
         click.echo("--watch option has no effect in multi-process environment \n")
         return
-    elif server_config["server"].startswith(("wsgiref", "waitress", "rocket")):
-        # these servers block the main thread so we open a new thread for the file watcher
-        threading.Thread(
-            target=watch_folder_event_loop, args=(apps_folder,), daemon=True
-        ).start()
-    elif server_config["server"] == "tornado":
-        # tornado delegate to asyncio so we add a future into the event loop
-        asyncio.ensure_future(watch_folder(apps_folder))
-    elif server_config["server"].startswith("gevent"):
-        watch_folder_event_loop(apps_folder)
-    else:
-        # should never happen
-        return
-
-    if mode == "lazy":
-        Reloader.install_reloader_hook()
+    run_watcher()
 
 
 def start_server(kwargs):
@@ -1301,6 +1348,7 @@ def start_server(kwargs):
         platform=platform.system().lower(),
         server=None if kwargs["server"] == "default" else kwargs["server"],
         number_workers=number_workers,
+        **params
     )
     if not server_config["server"]:
         if server_config["platform"] == "windows":
@@ -1309,7 +1357,8 @@ def start_server(kwargs):
                 3,
                 8,
             ):  # see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on windows
-                asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+                pass
+                #asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         elif number_workers <= 1:
             server_config["server"] = "tornado"
         else:
