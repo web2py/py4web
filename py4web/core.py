@@ -34,10 +34,8 @@ import types
 import urllib.parse
 import uuid
 import zipfile
-#import asyncio
 import subprocess
 
-#from watchgod import awatch
 from . import server_adapters
 
 # Optional web servers for speed
@@ -1225,7 +1223,7 @@ def app_watch_handler(watched_app_subpaths):
         APP_WATCH["handlers"][handler] = func
         for subpath in watched_app_subpaths:
             app_path = apps_path.joinpath(app, subpath).as_posix()
-            if not app_path in APP_WATCH["files"]:
+            if app_path not in APP_WATCH["files"]:
                 APP_WATCH["files"][app_path] = []
             APP_WATCH["files"][app_path].append(handler)
         return func
@@ -1270,6 +1268,7 @@ def track_changes(apps_folder, changes, mode="sync"):
     ## in 'lazy' mode it's done in bottle's 'before_request' hook
     if mode != "lazy":
         try_app_watch_tasks()
+
 
 # simple CLI over http
 class HTTPCLI:
@@ -1328,15 +1327,11 @@ def watch(apps_folder, server_config, mode="sync"):
         subprocess.Popen([
             sys.executable,
             'py4web/watcher.py',
-            '--host',
-            server_config['host'],
-            '--port',
-            str(server_config['port']),
-            '--apps',
-            apps_folder,
+            '--host', server_config['host'],
+            '--port', str(server_config['port']),
+            '--apps', apps_folder,
             HTTPCLI.cli_key
         ])
-
 
     if server_config["number_workers"] > 1:
         click.echo("--watch option has no effect in multi-process environment \n")
@@ -1366,12 +1361,6 @@ def start_server(kwargs, ctrl_c_orig):
     if not server_config["server"]:
         if server_config["platform"] == "windows":
             server_config["server"] = "tornado"
-            if sys.version_info >= (
-                3,
-                8,
-            ):  # see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on windows
-                pass
-                #asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         elif number_workers <= 1:
             server_config["server"] = "tornado"
         else:
