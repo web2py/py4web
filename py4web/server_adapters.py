@@ -2,15 +2,16 @@ import logging
 from bottle import ServerAdapter
 
 try:
-    from .anyservers import *
+    from .utils.wsservers import *
 except ImportError:
-    anyservers_list = []
+    wsservers_list = []
+
 
 __all__ = [
     "geventWebSocketServer",
     "wsgirefThreadingServer",
     "rocketServer",
-] + anyservers_list
+] + wsservers_list
 
 
 def geventWebSocketServer():

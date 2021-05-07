@@ -13,6 +13,10 @@ from .settings import SESSION_SECRET_KEY
 
 from .common import db, session, T, flash, cache, authenticated, unauthenticated, auth
 
+# import websocket examples
+from .ws import *
+from .socketio import *
+
 # exposes services necessary to access the db.thing via ajax
 publisher = Publisher(db, policy=ALLOW_ALL_POLICY)
 

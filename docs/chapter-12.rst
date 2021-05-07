@@ -105,7 +105,7 @@ Here is an example:
        return dict(form=form)
 
 Form Structure Manipulation
------------------
+---------------------------
 
 Like in web2py, in py4web a form is rendered by helpers. Unlike web2py, it uses yatl helpers. This means the tree structure of a form can be manilupated before the form is serialized in HTML. For example:
 

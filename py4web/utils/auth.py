@@ -62,9 +62,12 @@ class AuthEnforcer(Fixture):
 
     def abort_or_redirect(self, page, message=""):
         """
-        return HTTP 403 if 'application/json' in HTTP_ACCEPT
-        else redirects to page"""
-        if re.search(REGEX_APPJSON, request.headers.get("accept", "")):
+        return HTTP 403 if 'application/json' in HTTP_ACCEPT and HTTP_JSON_REDIRECTS flag is not set in the request to 'on'
+        else redirects to page
+        """
+        if re.search(REGEX_APPJSON, request.headers.get("accept", "")) and (
+            request.headers.get("json-redirects", "") != "on"
+        ):
             abort(403)
         redirect_next = request.fullpath
         if request.query_string:
@@ -172,11 +175,11 @@ class Auth(Fixture):
         registration_requires_confirmation=True,
         registration_requires_approval=False,
         inject=True,
-        extra_fields=[],
+        extra_fields=None,
         login_expiration_time=3600,  # seconds
-        password_complexity={"entropy": 50},
+        password_complexity="default",
         block_previous_password_num=None,
-        allowed_actions=["all"],
+        allowed_actions=None,
         use_appname_in_redirects=None,
     ):
 
@@ -185,9 +188,11 @@ class Auth(Fixture):
             registration_requires_approval=registration_requires_approval,
             login_after_registration=False,
             login_expiration_time=login_expiration_time,  # seconds
-            password_complexity=password_complexity,
+            password_complexity={"entropy": 50}
+            if password_complexity == "default"
+            else password_complexity,
             block_previous_password_num=block_previous_password_num,
-            allowed_actions=allowed_actions,
+            allowed_actions=allowed_actions or ["all"],
             use_appname_in_redirects=use_appname_in_redirects,
             formstyle=FormStyleDefault,
             messages=copy.deepcopy(self.MESSAGES),
@@ -213,9 +218,8 @@ class Auth(Fixture):
         self.use_username = use_username  # if False, uses email only
         self.use_phone_number = use_phone_number
         # The self._link variable is not thread safe (only intended for testing)
-        self.extra_auth_user_fields = extra_fields
+        self.extra_auth_user_fields = extra_fields or []
         self._link = None
-        self.extra_auth_user_fields = extra_fields
         if db and define_tables:
             self.define_tables()
         self.plugins = {}
@@ -309,7 +313,7 @@ class Auth(Fixture):
                         readable=False,
                     )
                 )
-            db.define_table("auth_user", *auth_fields, *self.extra_auth_user_fields)
+            db.define_table("auth_user", *(auth_fields + self.extra_auth_user_fields))
 
     @property
     def signature(self):
@@ -454,6 +458,11 @@ class Auth(Fixture):
 
     def login(self, email, password):
         db = self.db
+
+        # Default incase they are None or an error will occur.
+        email = "" if email is None else email
+        password = "" if password is None else password
+
         if "email_auth" in self.plugins:
             email = email.lower()
             if self.plugins["email_auth"].validate_credentials(email, password):
@@ -832,12 +841,7 @@ class AuthAPI:
         "request_reset_password",
         "reset_password",
     ]
-    private_api = [
-        "profile",
-        "change_password",
-        "change_email",
-        "unsubscribe"
-    ]
+    private_api = ["profile", "change_password", "change_email", "unsubscribe"]
 
     @staticmethod
     @api_wrapper
@@ -859,15 +863,15 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def register(auth):
-        if not request.json:
-            return auth._error("no json post payload")       
+        if request.json is None:
+            return auth._error("no json post payload")
         return auth.register(request.json, send=True).as_dict()
 
     @staticmethod
     @api_wrapper
     def login(auth):
-        if not request.json:
-            return auth._error("no json post payload")       
+        if request.json is None:
+            return auth._error("no json post payload")
         username, password = request.json.get("email"), request.json.get("password")
         if not all(isinstance(_, str) for _ in [username, password]):
             return auth._error("Invalid Credentials")
@@ -905,7 +909,7 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def request_reset_password(auth):
-        if not request.json:
+        if request.json is None:
             return auth._error("no json post payload")
         if not auth.request_reset_password(**request.json):
             return auth._error("invalid user")
@@ -915,8 +919,8 @@ class AuthAPI:
     @api_wrapper
     def reset_password(auth):
         # check the new_password2 only if passed
-        if not request.json:
-            return auth._error("no json post payload")       
+        if request.json is None:
+            return auth._error("no json post payload")
         res = auth.reset_password(
             request.json.get("token"),
             request.json.get("new_password"),
@@ -942,8 +946,8 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def change_password(auth):
-        if not request.json:
-            return auth._error("no json post payload")       
+        if request.json is None:
+            return auth._error("no json post payload")
         return auth.change_password(
             auth.get_user(safe=False),  # refactor make faster
             request.json.get("new_password"),
@@ -953,8 +957,8 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def change_email(auth):
-        if not request.json:
-            return auth._error("no json post payload")       
+        if request.json is None:
+            return auth._error("no json post payload")
         return auth.change_email(
             auth.get_user(safe=False),
             request.json.get("new_email"),
@@ -966,8 +970,8 @@ class AuthAPI:
     def profile(auth):
         if request.method == "GET":
             return {"user": auth.get_user()}
-        if not request.json:
-            return auth._error("no json post payload")       
+        if request.json is None:
+            return auth._error("no json post payload")
         else:
             return auth.update_profile(auth.get_user(), **request.json)
 
@@ -1071,7 +1075,12 @@ class DefaultAuthForms:
             url = "../auth/plugin/" + name + "/login"
             if self.auth.next["login"]:
                 url = url + "?next=" + self.auth.next["login"]
-            top_buttons.append(A(plugin.label + " Login", _href=url, _role="button"))
+            if (
+                name != "email_auth"
+            ):  #  do not add the top button for the email auth plugin
+                top_buttons.append(
+                    A(plugin.label + " Login", _href=url, _role="button")
+                )
 
         if self.auth.allows("register"):
             form.param.sidecar.append(

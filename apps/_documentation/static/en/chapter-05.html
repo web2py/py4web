@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Creating your first app &mdash; py4web 1.20210328.2 documentation</title>
+  <title>Creating your first app &mdash; py4web 1.20210426.1 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.20210328.2
+                1.20210426.1
               </div>
             
           
@@ -105,6 +105,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#the-scaffold-app">The _scaffold app</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#copying-the-scaffold-app">Copying the _scaffold app</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#watch-for-files-change">Watch for files change</a></li>
 </ul>
 </li>
@@ -497,6 +498,24 @@ agnostic to your choice of JS and CSS, but with some exceptions. The
 <code class="docutils literal notranslate"><span class="pre">auth.html</span></code> which handles registration/login/etc. uses a vue.js
 component. Hence if you want to use that, you should not remove it.</p>
 </div>
+<div class="section" id="copying-the-scaffold-app">
+<span id="id1"></span><h2>Copying the _scaffold app<a class="headerlink" href="#copying-the-scaffold-app" title="Permalink to this headline">¶</a></h2>
+<p>The scaffold app is really useful, and you will surely use it a lot as
+a starting point for testing and even developing full features new apps.</p>
+<p>It’s better not to work directly on it: always create new apps copying it.
+You can do it in two ways:</p>
+<ul>
+<li><p>using the command line: copy the whole apps/_dashboard folder to another one
+(/apps/my_app for example). Then reload py4web and it will be automatically loaded.</p></li>
+<li><p>using the Dashboard: select the button <code class="docutils literal notranslate"><span class="pre">Create/Upload</span> <span class="pre">App</span></code> under the “Installed
+Applications” upper section. Just give the new app a name and check that “Scaffold”
+is selected as the source.
+Finally press the <code class="docutils literal notranslate"><span class="pre">Create</span></code> button and the dashboard will be automatically reloaded,
+along with the new app.</p>
+<img alt="_images/dashboard_new_app.png" src="_images/dashboard_new_app.png" />
+</li>
+</ul>
+</div>
 <div class="section" id="watch-for-files-change">
 <h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Permalink to this headline">¶</a></h2>
 <p>As described in the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>, Py4web facilitates a
@@ -601,7 +620,7 @@ exceptions inside handlers are printed in terminal.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210328.2
+      v: 1.20210426.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
