@@ -1332,6 +1332,8 @@ def watch(apps_folder, server_config, mode="sync"):
             server_config['host'],
             '--port',
             str(server_config['port']),
+            '--apps',
+            apps_folder,
             HTTPCLI.cli_key
         ])
 
