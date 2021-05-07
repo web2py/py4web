@@ -1326,7 +1326,7 @@ def watch(apps_folder, server_config, mode="sync"):
 
         subprocess.Popen([
             sys.executable,
-            'py4web/watcher.py',
+            os.path.join(os.path.dirname(__file__), 'watcher.py'),
             '--host', server_config['host'],
             '--port', str(server_config['port']),
             '--apps', apps_folder,
