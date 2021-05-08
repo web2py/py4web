@@ -37,11 +37,10 @@ Transcripts of them are then available on the mailing list.
 Tutorials and video
 -------------------
 
-There are many tutorials and videos if you like them. Generally, you can search for them on `YouTube <https://www.youtube.com/results?search_query=py4web>`__.
+There are many tutorials and videos available. Here are some of them:
 
-Here are some of them:
-
-- the free video `course by Luca de Alfaro <https://sites.google.com/a/ucsc.edu/luca/classes/cmps-183-hypermedia-and-the-web/cse-183-spring-2020>`__ at UC Santa Cruz. 
+- the `Learn Py4Web site <https://learn-py4web.github.io>`__ by Luca de Alfaro (with lots of excellent training videos)
+- the free video `course 2020 by Luca de Alfaro <https://sites.google.com/a/ucsc.edu/luca/classes/cmps-183-hypermedia-and-the-web/cse-183-spring-2020>`__ at UC Santa Cruz
 - the `py4web blog app <https://github.com/agavgavi/py4web-blog-app.git>`__ by Andrew Gavgavian,  which uses py4web to replicate the famous Corey Schafer's tutorial series on creating a blog app in Django
 
 

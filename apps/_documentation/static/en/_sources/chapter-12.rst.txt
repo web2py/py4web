@@ -103,3 +103,16 @@ Here is an example:
            # Do something with form.vars['product_name'] and form.vars['product_quantity']
            redirect(URL('index'))
        return dict(form=form)
+
+Form Structure Manipulation
+---------------------------
+
+Like in web2py, in py4web a form is rendered by helpers. Unlike web2py, it uses yatl helpers. This means the tree structure of a form can be manilupated before the form is serialized in HTML. For example:
+
+.. code:: python
+
+    db.define_table('paint', Field('color'))
+    form = Form(db.paint)
+    form.structure.find('[name=color]')[0]['_class'] = 'my-class'
+
+Notice that a form does not make an HTML tree until form structure is accessed. Once accessed you can use `.find(...)` to find matching elements. The argument of `find` is a string following the filter syntax of jQuery. In the above case there is a single match `[0]` and we modify the `_class` attribute of that element. Attribute names of HTML elements must be preceded by an underscore.
