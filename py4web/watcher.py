@@ -8,13 +8,14 @@ import click
 
 HTTP = urllib3.PoolManager()
 
+
 class Params:
     host_port = None
     cli_key = None
     apps_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '../apps'))
 
 
-def watch(apps_folder, mode="sync"):
+def watch(apps_folder):
     def watch_folder_event_loop(apps_folder):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -34,7 +35,7 @@ def notify(changes):
         'POST',
         f'http://{Params.host_port}/py4web_cli/files_changed',
         body = changes,
-        headers={
+        headers = {
             'Content-Type': 'application/json',
             'X-Py4web-Cli-Key': Params.cli_key
         }
