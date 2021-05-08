@@ -55,7 +55,7 @@ def downloader(db, path, filename, download_filename=None):
     except IOError:
         raise HTTP(404)
     if not request.query.get("attachment"):
-        download_name = None
-    elif not download_name:
-        download_name = original_name
-    return static_file(filename, root=path, download=download_name)
+        download_filename = None
+    elif not download_filename:
+        download_filename = original_name
+    return static_file(filename, root=path, download=download_filename)
