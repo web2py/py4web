@@ -29,11 +29,11 @@ def watch(apps_folder):
 
 
 def notify(changes):
-    changes = dict(args = [list(changes)])
+    changes = {'$args': [list(changes)]}
     changes = json.dumps(changes).encode('utf-8')
     HTTP.request(
         'POST',
-        f'http://{Params.host_port}/py4web_cli/files_changed',
+        f'http://{Params.host_port}/py4web_cli/track_changes',
         body = changes,
         headers = {
             'Content-Type': 'application/json',

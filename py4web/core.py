@@ -1246,7 +1246,7 @@ def try_app_watch_tasks():
             del APP_WATCH["tasks"][handler]
 
 
-def track_changes(apps_folder, changes, mode="sync"):
+def process_changes(apps_folder, changes, mode="sync"):
     apps = []
     for subpath in [pathlib.Path(pair[1]) for pair in changes]:
         name = subpath.relative_to(apps_folder).parts[0]
@@ -1291,8 +1291,10 @@ class HTTPCLI:
         if not cmd:
             abort(404)
         ret = None
+        data = request.json or request.POST or {}
+        args = data.pop('$args', [])
         try:
-            ret = cmd(*request.json.get('args', []), **request.json.get('vars', {}))
+            ret = cmd(*args, **data)
         except Exception:
             logging.error(traceback.format_exc())
             abort(500)
@@ -1316,8 +1318,8 @@ def watch(apps_folder, server_config, mode="sync"):
         )
 
         @HTTPCLI.command
-        def files_changed(changes):
-            track_changes(apps_folder, changes, mode)
+        def track_changes(changes):
+            process_changes(apps_folder, changes, mode)
 
         HTTPCLI.mount()
 
