@@ -4,6 +4,7 @@ colorama
 tornado
 gunicorn
 gevent
+gevent-websocket
 requests
 threadsafevariable >= 1.1
 pyjwt >= 2.0.1
