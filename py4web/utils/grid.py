@@ -1006,6 +1006,8 @@ class Grid:
                                 # if None was returned, no button is available for this row: ignore this value in the
                                 # list
                                 continue
+                        if btn.onclick:
+                            btn.url = None
                         td.append(
                             self.render_action_button(
                                 btn.url,
