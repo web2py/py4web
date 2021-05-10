@@ -24,6 +24,7 @@ apps/_documentation/static/*/*.pdf
 apps/_documentation/static/*/*.epub
 apps/*
 !apps/todo/*
+!apps/xtodo/*
 !apps/examples/*
 !apps/_dashboard/*
 !apps/_scaffold/*
