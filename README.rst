@@ -150,8 +150,12 @@ Tell me more
 Contributors
 ############
 
-py4web is supported by a growing community of developers and even simple users.
-Many thanks to everybody, and especially:
+Special thanks to Sam de Alfaro, that designed the official logo of py4web. We friendly call the logo "Axel the axolotl": it magically represents the sense of kindness
+and inclusion we believe it's the cornerstone of our growing community.
+
+.. image:: docs/images/logo.png
+
+Many thanks to everyone who has contributed to the project, and especially:
 
 .. inclusion-marker-do-not-remove
 
