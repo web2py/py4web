@@ -95,6 +95,7 @@ class FormStyleFactory:
         controls = Param(
             labels=dict(),
             widgets=dict(),
+            wrapped_widgets=dict(),
             comments=dict(),
             hidden_widgets=dict(),
             placeholders=dict(),
@@ -210,7 +211,7 @@ class FormStyleFactory:
 
             # if we have a widget for the field use it
             elif field.widget:
-                control = field.widget(table, value)
+                control = field.widget(field, vars)
 
                 # Grab the custom widget attributes.
                 field_attributes = control.attributes
@@ -442,6 +443,9 @@ class FormStyleFactory:
                         _class=class_outer,
                     )
                 )
+                controls["wrapped_widgets"][field_name] = SPAN(
+                    control, _class=class_inner
+                )
             else:
                 form.append(
                     DIV(
@@ -456,6 +460,10 @@ class FormStyleFactory:
                         P(field.comment or "", _class=class_info),
                         _class=class_outer,
                     )
+                )
+                controls["wrapped_widgets"][field_name] = DIV(
+                    control,
+                    _class=self.class_inner_exceptions.get(control.name, class_inner),
                 )
 
         if vars.get("id"):
