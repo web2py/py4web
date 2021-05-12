@@ -630,6 +630,18 @@ class Grid:
                 " ".join(items) if isinstance(items, (list, tuple)) else " %s" % items
             )
 
+        if callable(additional_classes):
+            additional_classes = additional_classes(row)
+
+        if callable(additional_styles):
+            additional_styles = additional_styles(row)
+
+        if callable(override_classes):
+            override_classes = override_classes(row)
+
+        if callable(override_styles):
+            override_styles = override_styles(row)
+
         if override_classes:
             classes = join(override_classes)
         elif additional_classes:
@@ -912,6 +924,14 @@ class Grid:
                 td = TD(_class=classes, _style=styles)
                 if self.param.pre_action_buttons:
                     for btn in self.param.pre_action_buttons:
+                        if callable(btn):
+                            # a button can be a callable, to indicate whether or not a button should
+                            # be displayed. call the function with the row object
+                            btn = btn(row)
+                            if btn is None:
+                                # if None was returned, no button is available for this row: ignore this value in the
+                                # list
+                                continue
                         if btn.onclick:
                             btn.url = None
                         td.append(
@@ -978,6 +998,14 @@ class Grid:
                     )
                 if self.param.post_action_buttons:
                     for btn in self.param.post_action_buttons:
+                        if callable(btn):
+                            # a button can be a callable, to indicate whether or not a button should
+                            # be displayed. call the function with the row object
+                            btn = btn(row)
+                            if btn is None:
+                                # if None was returned, no button is available for this row: ignore this value in the
+                                # list
+                                continue
                         if btn.onclick:
                             btn.url = None
                         td.append(
