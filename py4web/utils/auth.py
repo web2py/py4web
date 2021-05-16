@@ -645,15 +645,21 @@ class Auth(Fixture):
         email = "%s@example.com" % token
         return db(db.auth_user.email == email).count() > 0
 
+    def get_or_delete_existing_unverified_account(self, email):
+        db = self.db
+        row = db(db.auth_user.email == email).select(limitby=(0,1)).first()
+        # if we have a user with this email and incomplete registration delete it
+        if row and row.action_token.startswith("pending-registration:"):
+            row.delete_record()
+            return None
+        return row 
+    
     def get_or_register_user(self, user):
         db = self.db
         # if the we have an email for the user
         if 'email' in user:
-            row = db(db.auth_user.email == user["email"]).select(limitby=(0,1)).first()
-            # if we have a user with this email and incomplete registration delete it
-            if row and row.action_token.startswith("pending-registration:"):
-                row.delete_record()
-                row = None
+            # return a user if exists and has a verified email
+            row = self.get_or_delete_existing_unverified_account(user['email'])
         # else retrieve the user from the sso_id
         else:
             row = db(db.auth_user.sso_id == user["sso_id"]).select(limitby=(0, 1)).first()
@@ -887,6 +893,7 @@ class AuthAPI:
     def register(auth):
         if request.json is None:
             return auth._error("no json post payload")
+        auth.get_or_delete_existing_unverified_account(request.json.get('email'))
         return auth.register(request.json, send=True).as_dict()
 
     @staticmethod
@@ -1027,6 +1034,12 @@ class DefaultAuthForms:
                 )
                 break
         button_name = self.auth.param.messages["buttons"]["sign-up"]
+        # if the form is submitted, before any validation
+        # delete any unverified account with the same email
+        if request.method == 'POST':
+            email = request.forms.get('email')
+            if email:
+                self.auth.get_or_delete_existing_unverified_account(email)
         form = Form(fields, submit_value=button_name, formstyle=self.formstyle)
         user = None
         if form.accepted:
