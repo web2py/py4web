@@ -197,6 +197,7 @@ class Auth(Fixture):
             formstyle=FormStyleDefault,
             messages=copy.deepcopy(self.MESSAGES),
             button_classes=copy.deepcopy(self.BUTTON_CLASSES),
+            default_login_enabled=True,
         )
 
         """Creates and Auth object responsible for handling
@@ -646,15 +647,36 @@ class Auth(Fixture):
 
     def get_or_register_user(self, user):
         db = self.db
-        row = db(db.auth_user.sso_id == user["sso_id"]).select(limitby=(0, 1)).first()
-        data = user
-        if row:
-            if any(user[key] != row[key] for key in user):
-                row.update_record(**user)
-            data["id"] = row["id"]
+        # if the we have an email for the user
+        if 'email' in user:
+            row = db(db.auth_user.email == user["email"]).select(limitby=(0,1)).first()
+            # if we have a user with this email and incomplete registration delete it
+            if row and row.action_token.startswith("pending-registration:"):
+                row.delete_record()
+                row = None
+        # else retrieve the user from the sso_id
         else:
-            data["id"] = db.auth_user.insert(**db.auth_user._filter_fields(user))
-        return data
+            row = db(db.auth_user.sso_id == user["sso_id"]).select(limitby=(0, 1)).first()
+        # if we have found a candidate user
+        if row:
+            # we expect the email to match if provided
+            if 'email' in user and row.email != user['email']:
+                return None
+            # we can update all the other information provided by the SSO
+            if any(user[key] != row[key] for key in user if not key == 'username'):
+                row.update_record(**user)
+            user["id"] = row["id"]
+        # if we do not have a candidate user we need to create one
+        else:
+            # we expect an email to unable to create account
+            if not 'email' in user:
+                return None
+            # if we expect a username but not provided, user email as username
+            if self.use_username and 'username' not in user:
+                user['username'] = user['email']
+            # create the user
+            user["id"] = db.auth_user.insert(**db.auth_user._filter_fields(user))
+        return user
 
     # Private methods
 
@@ -1036,7 +1058,30 @@ class DefaultAuthForms:
             )
         return form
 
+    def login_buttons(self):
+
+        top_buttons = []
+
+        for name, plugin in self.auth.plugins.items():
+            url = "../auth/plugin/" + name + "/login"
+            if request.query.get("next"):
+                url = url + "?next=" + request.query.get("next")
+            if (
+                name != "email_auth"
+            ):  #  do not add the top button for the email auth plugin
+                top_buttons.append(
+                    A(plugin.label + " Login", _href=url, _role="button")
+                )
+        return top_buttons
+
     def login(self):
+
+        top_buttons = self.login_buttons()
+
+        # if we do not allow we only display the plugin login buttons
+        if not self.auth.param.default_login_enabled:
+            return DIV(*top_buttons)
+
         fields = [
             Field(
                 "username",
@@ -1052,7 +1097,7 @@ class DefaultAuthForms:
         else:
             fields[0].label = self.auth.db.auth_user.email.label
         fields[1].label = self.auth.db.auth_user.password.label
-
+        
         button_name = self.auth.param.messages["buttons"]["sign-in"]
         form = Form(
             fields,
@@ -1067,21 +1112,10 @@ class DefaultAuthForms:
             )
             form.accepted = not error
             form.errors["username"] = error
-            if user:
-                self.auth.store_user_in_session(user["id"])
-                self._postprocessing("login", form, user)
-        top_buttons = []
-        for name, plugin in self.auth.plugins.items():
-            url = "../auth/plugin/" + name + "/login"
-            if self.auth.next["login"]:
-                url = url + "?next=" + self.auth.next["login"]
-            if (
-                name != "email_auth"
-            ):  #  do not add the top button for the email auth plugin
-                top_buttons.append(
-                    A(plugin.label + " Login", _href=url, _role="button")
-                )
-
+        if user:
+            self.auth.store_user_in_session(user["id"])
+            self._postprocessing("login", form, user)
+            
         if self.auth.allows("register"):
             form.param.sidecar.append(
                 A(
