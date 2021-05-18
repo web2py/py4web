@@ -1,6 +1,8 @@
 import os
-from py4web import action, request, DAL, Field, Session, Cache
+from py4web import action, request, DAL, Field, Session, Cache, HTTP
+from py4web.utils.xapi import DefaultAPIContext
 from .api import todo_api
+
 
 
 # define session and cache objects
@@ -33,5 +35,9 @@ def uuid():
 
 
 # xtodo/api mount
-todo_api.context.provide(db=db, session=session)
-todo_api.mount('api')
+# create api context
+api_ctx = DefaultAPIContext(request, HTTP)
+# pass fixtures used by api to context
+api_ctx.provide(db=db, session=session)
+# mount api
+todo_api.mount('api', mounter=action, ctx=api_ctx)

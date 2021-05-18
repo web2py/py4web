@@ -1,11 +1,8 @@
-
 # example of GET/POST/PUT/DELETE RESTful APIs
-from py4web import action, HTTP, request
 from py4web.utils.xapi import API, DefaultAPIContext
 import datetime
 
-api = API.factory(mounter=action)
-api.set_context(DefaultAPIContext(request))
+api = API.factory()
 
 P = api.make_filter('path', allow_extra = False)
 # Q = api.make_filter('query', allow_extra = False)
