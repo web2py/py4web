@@ -74,8 +74,8 @@ class FormStyleFactory:
         vars,
         errors,
         readonly,
-        noncreate,
         deletable,
+        noncreate,
         classes=None,
         class_inner_exceptions=None,
         kwargs=None,
@@ -569,8 +569,8 @@ def FormStyleBulma(table, vars, errors, readonly, deletable, noncreate, kwargs=N
         vars,
         errors,
         readonly,
-        noncreate,
         deletable,
+        noncreate,
         classes=classes,
         class_inner_exceptions={"select": "select"},
         kwargs=kwargs,
@@ -625,8 +625,8 @@ class Form(object):
     :param table: a DAL table or a list of fields (equivalent to old SQLFORM.factory)
     :param record: a DAL record or record id
     :param readonly: set to True to make a readonly form
-    :param noncreate: make sure when you use a form with a list of fields that does not contain the id field, does not always render the create form.
     :param deletable: set to False to disallow deletion of record
+    :param noncreate: make sure when you use a form with a list of fields that does not contain the id field, does not always render the create form.
     :param formstyle: a function that renders the form using helpers (FormStyleDefault)
     :param dbio: set to False to prevent any DB writes
     :param keep_values: if set to true, it remembers the values of the previously submitted form
@@ -865,8 +865,8 @@ class Form(object):
                 self.vars,
                 self.errors,
                 self.readonly,
-                self.noncreate,
                 self.deletable,
+                self.noncreate,
                 kwargs=self.kwargs,
             )
             for item in self.param.sidecar:

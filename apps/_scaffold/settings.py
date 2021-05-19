@@ -56,6 +56,9 @@ LOGGERS = [
     "warning:stdout"
 ]  # syntax "severity:filename" filename can be stderr or stdout
 
+# Disable default login when using OAuth
+DEFAULT_LOGIN_ENABLED = False
+
 # single sign on Google (will be used if provided)
 OAUTH2GOOGLE_CLIENT_ID = None
 OAUTH2GOOGLE_CLIENT_SECRET = None

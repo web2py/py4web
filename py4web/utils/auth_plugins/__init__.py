@@ -162,7 +162,10 @@ class OAuth2(SSO):
             # Lets not get the  user attributes via the userinfo endpoint
             # but lets take the userinfo directly extracted from the token
             # res = requests.get(self.userinfo_url, headers=headers)
-            data = jwt.decode(token, verify=False, algorithms=self.algorithms)
+            data = jwt.decode(token, algorithms=self.algorithms,
+                              # because of this open issue
+                              # https://github.com/jpadilla/pyjwt/issues/359
+                              options={"verify_signature": False})
         else:
             # fallback to old approach if "id_token" is not in the response
             token = output.get("access_token")
