@@ -727,7 +727,6 @@ class Grid:
                 sb.append(field.label)
                 td.append(sb)
             else:
-                td.append(self.param.search_form.custom["widgets"][field.name])
                 td.append(self.param.search_form.custom["wrapped_widgets"][field.name])
             if (
                 field.name in self.param.search_form.custom["errors"]
