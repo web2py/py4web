@@ -4,13 +4,14 @@ install-gcloud-linux:
 upgrade-gcloud:
 	gcloud components update
 setup:
-        mkdir -p lib
-        pip-compile requirements.in
-        python3 -m pip install -U --no-deps -r requirements.txt -t lib/
-        rm -rf lib/gevent*
-        rm -rf lib/gunicorn*
-        rm -rf lib/zope*
-        rm requirements.txt
+	mkdir -p lib
+	rm -rf lib/*
+	pip-compile requirements.in
+	python3 -m pip install -U --no-deps -r requirements.txt -t lib/
+	rm -rf lib/gevent*
+	rm -rf lib/gunicorn*
+	rm -rf lib/zope*
+	rm requirements.txt
 deploy:
 	gcloud config set account ${email}
 	gcloud config set project ${project}
