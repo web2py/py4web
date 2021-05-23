@@ -5,3 +5,5 @@ handlers:
 
 - url: .*  # This regex directs all routes to main.bottle
   script: auto
+  secure: always
+
