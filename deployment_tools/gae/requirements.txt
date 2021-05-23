@@ -1,10 +1,15 @@
 bottle >= 0.12
 click
+colorama
+cryptography
 requests
-PyJWT>=1.7.1
-threadsafevariable
-pluralize >= 0.1.5
-yatl >= 20200430.1
-pydal >= 20200531.3
+threadsafevariable >= 1.1
+pyjwt >= 2.0.1
+pluralize >= 0.1.6
+yatl >= 20210326.1
+pydal >= 20200910.1
 watchgod >= 0.6
+
+### for documentation only ###
+# use also docs/requirements.txt
 mysqlclient
