@@ -731,7 +731,10 @@ class Form(object):
                             if field.type.startswith("list:") and isinstance(
                                 original_value, str
                             ):
-                                original_value = json.loads(original_value or "[]")
+                                try:
+                                    original_value = json.loads(original_value or "[]")
+                                except json.decoder.JSONDecodeError:
+                                    original_value = json.loads('"%s"' % original_value)
                             (value, error) = field.validate(original_value, record_id)
                             if field.type == "password" and record_id and value is None:
                                 continue
