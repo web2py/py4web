@@ -649,11 +649,11 @@ class Auth(Fixture):
         db = self.db
         row = db(db.auth_user.email == email).select(limitby=(0,1)).first()
         # if we have a user with this email and incomplete registration delete it
-        if row and row.action_token.startswith("pending-registration:"):
+        if row and row.action_token and row.action_token.startswith("pending-registration:"):
             row.delete_record()
             return None
-        return row 
-    
+        return row
+
     def get_or_register_user(self, user):
         db = self.db
         # if the we have an email for the user
@@ -1110,7 +1110,7 @@ class DefaultAuthForms:
         else:
             fields[0].label = self.auth.db.auth_user.email.label
         fields[1].label = self.auth.db.auth_user.password.label
-        
+
         button_name = self.auth.param.messages["buttons"]["sign-in"]
         form = Form(
             fields,
@@ -1128,7 +1128,7 @@ class DefaultAuthForms:
         if user:
             self.auth.store_user_in_session(user["id"])
             self._postprocessing("login", form, user)
-            
+
         if self.auth.allows("register"):
             form.param.sidecar.append(
                 A(

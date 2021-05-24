@@ -4,6 +4,9 @@ install-gcloud-linux:
 upgrade-gcloud:
 	gcloud components update
 setup:
+	mkdir -p lib
+	rm -rf lib/*
+	#
 	cat ../../requirements.txt \
 	| grep -v gevent \
 	| grep -v tornado \
