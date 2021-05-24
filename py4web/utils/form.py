@@ -214,7 +214,7 @@ class FormStyleFactory:
                 control = field.widget(field, vars)
 
                 # Grab the custom widget attributes.
-                field_attributes = control.attributes
+                field_attributes = copy.copy(control.attributes)
                 field_type = "widget"
                 field_value = value
 
