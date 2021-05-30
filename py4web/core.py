@@ -44,12 +44,7 @@ try:
 except ImportError:
     gunicorn = None
 
-try:
-    from enum import Enum
-except:
-    # for python < 3.4
-    class Enum:
-        pass
+from enum import Enum
 
 
 # Third party modules
