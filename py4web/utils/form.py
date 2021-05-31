@@ -30,6 +30,10 @@ from yatl.helpers import (
 )
 
 
+def to_id(field):
+    return "%s_%s" % (getattr(field, "_tablename", "no_table"), field.name)
+
+
 def get_options(validators):
     options = None
     if validators:
@@ -44,31 +48,209 @@ def get_options(validators):
     return options
 
 
-class FormStyleFactory:
-    def __init__(self):
-        self.classes = {
-            "outer": "",
-            "inner": "",
-            "label": "",
-            "info": "",
-            "error": "py4web-validation-error",
-            "submit": "",
-            "input": "",
-            "input[type=text]": "",
-            "input[type=date]": "",
-            "input[type=time]": "",
-            "input[type=datetime-local]": "",
-            "input[type=radio]": "",
-            "input[type=checkbox]": "",
-            "input[type=submit]": "",
-            "input[type=password]": "",
-            "input[type=file]": "",
-            "select": "",
-            "textarea": "",
-        }
-        self.class_inner_exceptions = {}
+class Widget:
+    type_map = {
+        "string": "text",
+        "date": "date",
+        "time": "time",
+    }
 
-    def produce(
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        return INPUT(
+            _value=value,
+            _type=self.type_map.get(field.type, "text"),
+            _id=to_id(field),
+            _name=field.name,
+            _placeholder=placeholder,
+            _title=title,
+            _readonly=readonly,
+        )
+
+
+class DateTimeWidget:
+    def __init__(self, input_type="datetime-local"):
+        self.input_type = input_type
+
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        return INPUT(
+            _value=str(value).replace(" ", "T"),
+            _type=self.input_type,
+            _id=to_id(field),
+            _name=field.name,
+            _placeholder=placeholder,
+            _title=title,
+            _readonly=readonly,
+        )
+
+
+class TextareaWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        return TEXTAREA(
+            value,
+            _id=to_id(field),
+            _name=field.name,
+            _placeholder=placeholder,
+            _title=title,
+            _readonly=readonly,
+        )
+
+
+class CheckboxWidget:
+    def make(self, field, value, error, title, placeholder=None, readonly=False):
+        return INPUT(
+            _type="checkbox",
+            _id=to_id(field),
+            _name=field.name,
+            _value="ON",
+            _disabled="",
+            _checked=value,
+            _readonly=readonly,
+        )
+
+
+class ListWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        return INPUT(
+            _value=json.dumps(value or []),
+            _type="text",
+            _id=to_id(field),
+            _name=field.name,
+            _placeholder=placeholder,
+            _title=title,
+            _readonly=readonly,
+        )
+
+
+class PasswordWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        return INPUT(
+            _value=value,
+            _type="password",
+            _id=to_id(field),
+            _name=field.name,
+            _placeholder=placeholder,
+            _title=title,
+            _autocomplete="OFF",
+            _readonly=readonly,
+        )
+
+
+class SelectWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        multiple = field.type.startswith("list:")
+        value = list(map(str, value if isinstance(value, list) else [value]))
+
+        field_options = [
+            [k, v, (not k is None and k in value)]
+            for k, v in get_options(field.requires)
+        ]
+        option_tags = [
+            OPTION(v, _value=k, _selected=_selected)
+            for (k, v, _selected) in field_options
+        ]
+
+        control = SELECT(
+            *option_tags,
+            _id=to_id(field),
+            _name=field.name,
+            _multiple=multiple,
+            _title=title,
+            _readonly=readonly
+        )
+
+        return control
+
+
+class RadioWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        control = DIV()
+        field_id = to_id(field)
+        value = list(map(str, value if isinstance(value, list) else [value]))
+        field_options = [
+            [k, v, (not k is None and k in value)]
+            for k, v in get_options(field.requires)
+            if k is not ""
+        ]
+        for k, v, selected in field_options:
+            control.append(
+                INPUT(
+                    v,
+                    _id=field_id,
+                    _value=k,
+                    _label=v,
+                    _name=field.name,
+                    _type="radio",
+                    _checked=selected,
+                )
+            )
+            control.append(LABEL(v, _for=field_id))
+        return control
+
+
+class FileUploadWidget:
+    def make(self, field, value, error, title, placeholder="", readonly=False):
+        field_id = to_id(field)
+        control = DIV()
+        if value and not error:
+            download_div = DIV()
+
+            if not readonly:
+                download_div.append(
+                    LABEL(
+                        "Currently:  ",
+                    )
+                )
+            url = getattr(field, "download_url", lambda value: "#")(value)
+            download_div.append(A(" download ", _href=url))
+
+            if not readonly:
+                download_div.append(
+                    INPUT(
+                        _type="checkbox",
+                        _value="ON",
+                        _name="_delete_" + field.name,
+                        _title=title,
+                    )
+                )
+                download_div.append(" (check to remove)")
+
+            control.append(download_div)
+
+        control.append(LABEL("Change: "))
+        control.append(INPUT(_type="file", _id=field_id, _name=field.name))
+        return control
+
+
+class FormStyleFactory:
+    _classes = {
+        "outer": "",
+        "inner": "",
+        "label": "",
+        "info": "",
+        "error": "py4web-validation-error",
+        "submit": "",
+        "input": "",
+        "input[type=text]": "",
+        "input[type=date]": "",
+        "input[type=time]": "",
+        "input[type=datetime-local]": "",
+        "input[type=radio]": "",
+        "input[type=checkbox]": "",
+        "input[type=submit]": "",
+        "input[type=password]": "",
+        "input[type=file]": "",
+        "select": "",
+        "textarea": "",
+    }
+    _class_inner_exceptions = {}
+    _widgets = {}
+
+    def __init__(self):
+        self.classes = copy.copy(self._classes)
+        self.class_inner_exceptions = copy.copy(self._class_inner_exceptions)
+        self.widgets = copy.copy(self._widgets)
+
+    def __call__(
         self,
         table,
         vars,
@@ -76,12 +258,8 @@ class FormStyleFactory:
         readonly,
         deletable,
         noncreate,
-        classes=None,
-        class_inner_exceptions=None,
         kwargs=None,
     ):
-        self.classes.update(classes or {})
-        self.class_inner_exceptions.update(class_inner_exceptions or {})
         kwargs = kwargs if kwargs else {}
 
         form_method = "POST"
@@ -95,6 +273,7 @@ class FormStyleFactory:
         controls = Param(
             labels=dict(),
             widgets=dict(),
+            wrappers=dict(),
             comments=dict(),
             hidden_widgets=dict(),
             placeholders=dict(),
@@ -148,6 +327,7 @@ class FormStyleFactory:
             placeholder = (
                 field._placeholder if "_placeholder" in field.__dict__ else None
             )
+
             title = field._title if "_title" in field.__dict__ else None
             field_disabled = False
 
@@ -181,20 +361,13 @@ class FormStyleFactory:
                 or field.type == "id"
                 or isinstance(field, FieldVirtual)
             ):
+                # for boolean readonly we use a readonly checbox
                 if field.type == "boolean":
 
-                    field_value = value
-                    field_type = "checkbox"
-
-                    control = INPUT(
-                        _type=field_type,
-                        _id=input_id,
-                        _name=field_name,
-                        _value="ON",
-                        _disabled="",
-                        _checked=value,
-                        _title=title,
+                    control = CheckboxWidget().make(
+                        field, value, error, title, readonly=True
                     )
+                # for all othe readonly fields we use represent or a string
                 else:
                     if isinstance(field, FieldVirtual):
                         field_value = field.f(vars)
@@ -203,194 +376,50 @@ class FormStyleFactory:
                             field.represent and field.represent(value) or value or ""
                         )
                     field_type = "represent"
-
                     control = DIV(field_value)
 
                 field_disabled = True
 
-            # if we have a widget for the field use it
+            # if we have a field.widget for the field use it but this logic is deprecated
             elif field.widget:
-                control = field.widget(table, value)
-
-                # Grab the custom widget attributes.
-                field_attributes = control.attributes
-                field_type = "widget"
-                field_value = value
-
-            # else pick the proper default widget
-            elif field.type == "text":
-
-                field_value = value or ""
-                field_type = "text"
-
-                control = TEXTAREA(
-                    field_value,
-                    _id=input_id,
-                    _name=field_name,
-                    _placeholder=placeholder,
-                    _title=title,
-                )
-
-            elif field.type == "date":
-
-                field_value = value
-                field_type = "date"
-
-                control = INPUT(
-                    _value=field_value,
-                    _type="date",
-                    _id=input_id,
-                    _name=field_name,
-                    _placeholder=placeholder,
-                    _title=title,
-                )
-
-            elif field.type == "datetime":
-                helpervalue = str(value)
-                helpervalue = helpervalue.replace(" ", "T")
-
-                field_value = helpervalue
-                field_type = "datetime-local"
-
-                control = INPUT(
-                    _value=helpervalue,
-                    _type="datetime-local",
-                    _id=input_id,
-                    _name=field_name,
-                    _placeholder=placeholder,
-                    _title=title,
-                )
-            elif field.type == "time":
-
-                field_value = value
-                field_type = "time"
-
-                control = INPUT(
-                    _value=value,
-                    _type="time",
-                    _id=input_id,
-                    _name=field_name,
-                    _placeholder=placeholder,
-                    _title=title,
-                )
-
-            elif field.type == "boolean":
-
-                field_value = value
-                field_type = "checkbox"
-                field_attributes["_value"] = "ON"
-
-                control = INPUT(
-                    _type="checkbox",
-                    _id=input_id,
-                    _name=field_name,
-                    _value=field_attributes["_value"],
-                    _checked=value,
-                    _title=title,
-                )
-
-            elif field.type == "upload":
-                control = DIV()
-                if value and not error:
-                    download_div = DIV()
-
-                    download_div.append(
-                        LABEL(
-                            "Currently:  ",
-                        )
-                    )
-                    if getattr(field, "download_url", None):
-                        url = field.download_url(value)
-                    else:
-                        url = "#"
-                    download_div.append(A(" download ", _href=url))
-
+                control = field.widget(table, vars)
+            # else we pick the right widget
+            else:
+                if field.name in self.widgets:
+                    widget = self.widgets[field.name]
+                elif field.type == "text":
+                    widget = TextareaWidget()
+                elif field.type == "datetime":
+                    widget = DateTimeWidget()
+                elif field.type == "boolean":
+                    widget = CheckboxWidget()
+                elif field.type == "upload":
+                    widget = FileUploadWidget()
+                    url = getattr(field, "download_url", lambda value: "#")(value)
                     # Set the download url.
                     field_attributes["_download_url"] = url
-
                     # Set the flag determining whether the file is an image.
                     field_attributes["_is_image"] = (url != "#") and Form.is_image(
                         value
                     )
-
-                    delete_checkbox_name = "_delete_" + field_name
-
-                    download_div.append(
-                        INPUT(
-                            _type="checkbox",
-                            _value="ON",
-                            _name=delete_checkbox_name,
-                            _title=title,
-                        )
-                    )
-                    download_div.append(" (check to remove)")
-
+                    # do we need the variables below?
                     delete_field_attributes = dict()
-
                     delete_field_attributes["_label"] = "Remove"
                     delete_field_attributes["_value"] = "ON"
                     delete_field_attributes["_type"] = "checkbox"
-                    delete_field_attributes["_name"] = delete_checkbox_name
-
+                    delete_field_attributes["_name"] = "_delete_" + field.name
                     json_controls["form_fields"] += [delete_field_attributes]
-                    json_controls["form_values"][delete_checkbox_name] = None
+                    json_controls["form_values"]["_delete_" + field.name] = None
+                elif get_options(field.requires) is not None:
+                    widget = SelectWidget()
+                elif field.type == "password":
+                    widget = PasswordWidget()
+                elif field.type.startswith("list:"):
+                    widget = ListWidget()
+                else:
+                    widget = Widget()
 
-                    control.append(download_div)
-
-                control.append(LABEL("Change: "))
-                control.append(INPUT(_type="file", _id=input_id, _name=field_name))
-
-                field_value = None
-                field_type = "file"
-
-            elif get_options(field.requires) is not None and field.writable == True:
-                multiple = field.type.startswith("list:")
-                value = list(map(str, value if isinstance(value, list) else [value]))
-
-                field_options = [
-                    [k, v, (not k is None and k in value)]
-                    for k, v in get_options(field.requires)
-                ]
-                option_tags = [
-                    OPTION(v, _value=k, _selected=_selected)
-                    for (k, v, _selected) in field_options
-                ]
-
-                control = SELECT(
-                    *option_tags,
-                    _id=input_id,
-                    _name=field_name,
-                    _multiple=multiple,
-                    _title=title
-                )
-
-                field_value = value
-                field_type = "options"
-                field_attributes["_multiple"] = multiple
-                field_attributes["_options"] = field_options
-
-            else:
-
-                field_type = "password" if field.type == "password" else "text"
-
-                if field.type.startswith("list:"):
-                    value = json.dumps(value or [])
-
-                field_value = None if field.type == "password" else value
-                field_autocomplete = "off" if field_type == "password" else "on"
-
-                control = INPUT(
-                    _type=field_type,
-                    _id=input_id,
-                    _name=field_name,
-                    _value=field_value,
-                    _class=field_class,
-                    _placeholder=placeholder,
-                    _title=title,
-                    _autocomplete=field_autocomplete,
-                )
-
-                field_attributes["_autocomplete"] = field_autocomplete
+                control = widget.make(field, value, error, title, placeholder)
 
             key = control.name.rstrip("/")
 
@@ -412,10 +441,10 @@ class FormStyleFactory:
             field_attributes["_title"] = title
             field_attributes["_label"] = field_label
             field_attributes["_comment"] = field_comment
-            field_attributes["_id"] = input_id
+            field_attributes["_id"] = to_id(field)
             field_attributes["_class"] = field_class
-            field_attributes["_name"] = field_name
-            field_attributes["_type"] = field_type
+            field_attributes["_name"] = field.name
+            field_attributes["_type"] = field.type
             field_attributes["_placeholder"] = placeholder
             field_attributes["_error"] = error
             field_attributes["_disabled"] = field_disabled
@@ -428,9 +457,12 @@ class FormStyleFactory:
                 controls["errors"][field.name] = error
 
             if field.type == "boolean":
+                controls.wrappers[field.name] = wrapped = SPAN(
+                    control, _class=class_inner
+                )
                 form.append(
                     DIV(
-                        SPAN(control, _class=class_inner),
+                        wrapped,
                         LABEL(
                             " " + field.label,
                             _for=input_id,
@@ -443,15 +475,15 @@ class FormStyleFactory:
                     )
                 )
             else:
+                controls.wrappers[field.name] = wrapped = DIV(
+                    control,
+                    _class=self.class_inner_exceptions.get(control.name, class_inner),
+                )
+
                 form.append(
                     DIV(
                         LABEL(field.label, _for=input_id, _class=class_label),
-                        DIV(
-                            control,
-                            _class=self.class_inner_exceptions.get(
-                                control.name, class_inner
-                            ),
-                        ),
+                        wrapped,
                         P(error, _class=class_error) if error else "",
                         P(field.comment or "", _class=class_info),
                         _class=class_outer,
@@ -532,11 +564,11 @@ class FormStyleFactory:
         return dict(form=form, controls=controls, json_controls=json_controls)
 
 
-FormStyleDefault = FormStyleFactory().produce
+FormStyleDefault = FormStyleFactory()
 
-
-def FormStyleBulma(table, vars, errors, readonly, deletable, noncreate, kwargs=None):
-    classes = {
+FormStyleBulma = FormStyleFactory()
+FormStyleBulma.classes.update(
+    {
         "outer": "field",
         "inner": "control",
         "label": "label",
@@ -556,23 +588,13 @@ def FormStyleBulma(table, vars, errors, readonly, deletable, noncreate, kwargs=N
         "select": "control select",
         "textarea": "textarea",
     }
-    return FormStyleDefault(
-        table,
-        vars,
-        errors,
-        readonly,
-        deletable,
-        noncreate,
-        classes=classes,
-        class_inner_exceptions={"select": "select"},
-        kwargs=kwargs,
-    )
+)
+FormStyleBulma.class_inner_exceptions = {"select": "select"}
 
 
-def FormStyleBootstrap4(
-    table, vars, errors, readonly, deletable, noncreate, kwargs=None
-):
-    classes = {
+FormStyleBootstrap4 = FormStyleFactory()
+FormStyleBootstrap4.classes.update(
+    {
         "outer": "form-group",
         "inner": "",
         "label": "h4",
@@ -592,9 +614,7 @@ def FormStyleBootstrap4(
         "select": "form-control",
         "textarea": "form-control",
     }
-    return FormStyleDefault(
-        table, vars, errors, readonly, deletable, noncreate, classes, kwargs
-    )
+)
 
 
 # ################################################################
@@ -752,7 +772,7 @@ class Form(object):
                                             field.name
                                         )
                                     else:
-                                        validated_vars[field.name] = None
+                                        validated_vars[field.name] = value = None
                             elif field.type == "boolean":
                                 validated_vars[field.name] = value is not None
                             else:
