@@ -36,8 +36,15 @@ FOLDER = os.environ["PY4WEB_APPS_FOLDER"]
 APP_FOLDER = os.path.dirname(__file__)
 T_FOLDER = os.path.join(APP_FOLDER, "translations")
 T = Translator(T_FOLDER)
+
+# in demo mode cannot access the local tickets db
+if MODE == 'demo':
+
+    class ErrorStorage():
+        def clear(self): pass
+        def get(self, *args, **kwargs): return None
+
 error_storage = ErrorStorage()
-db = error_storage.db
 session = Session()
 
 
@@ -302,7 +309,7 @@ if MODE in ("demo", "readonly", "full"):
     @action.uses("ticket.html")
     @session_secured
     def error_ticket(ticket_uuid):
-        return dict(ticket=ErrorStorage().get(ticket_uuid=ticket_uuid))
+        return dict(ticket=error_storage.get(ticket_uuid=ticket_uuid))
 
     @action("rest/<path:path>", method=["GET", "POST", "PUT", "DELETE"])
     @session_secured
