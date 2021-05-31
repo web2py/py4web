@@ -16,7 +16,6 @@ from .core import (
     HTTP,  # bottle
     DAL,
     Field,  # pydal
-    render,  # yatl
     Translator,  # from pluralize
     Session,
     Cache,

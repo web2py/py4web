@@ -12,7 +12,7 @@ from py4web import redirect, request, response, abort, URL, action, Field, HTTP
 from py4web.core import Fixture, Template, Flash, REGEX_APPJSON
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
-from yatl.helpers import INPUT, A, DIV
+from .html import INPUT, A, DIV
 
 from pydal.validators import (
     IS_EMAIL,

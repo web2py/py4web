@@ -2,17 +2,17 @@ bottle >= 0.12
 click
 colorama
 cryptography
-tornado
-gunicorn
 gevent
 gevent-websocket
+gunicorn
+pluralize >= 0.1.6
+pydal >= 20200910.1
+pyjwt >= 2.0.1
+python-memcached # used for testing or for optionally actually accessing memcache
+renoir >= 1.4.0
 requests
 threadsafevariable >= 1.1
-pyjwt >= 2.0.1
-pluralize >= 0.1.6
-yatl >= 20210326.1
-pydal >= 20200910.1
-python-memcached # used for testing or for optionally actually accessing memcache
+tornado
 watchgod >= 0.6
 
 ### for documentation only ###

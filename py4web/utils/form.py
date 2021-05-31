@@ -12,7 +12,7 @@ from py4web.utils.param import Param
 from pydal._compat import to_native
 from pydal.validators import Validator
 
-from yatl.helpers import (
+from .html import (
     A,
     TEXTAREA,
     INPUT,

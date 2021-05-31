@@ -3,29 +3,26 @@
 """PY4WEB - a web framework for rapid development of efficient database driven web applications"""
 
 # Standard modules
-import argparse
+import asyncio
 import cgitb
 import code
 import copy
 import datetime
 import functools
-import importlib.util
-import importlib.machinery
-import inspect
-import json
 import http.client
 import http.cookies
+import importlib.machinery
+import importlib.util
+import inspect
+import json
 import linecache
 import logging
 import numbers
 import os
-import getpass
 import pathlib
 import platform
 import re
 import signal
-import site
-import shutil
 import sys
 import threading
 import time
@@ -34,9 +31,25 @@ import types
 import urllib.parse
 import uuid
 import zipfile
-import asyncio
+
+from enum import Enum
+
+# Third party modules
+import bottle
+import click
+import jwt  # this is PyJWT
+import pluralize
+import pydal
+import threadsafevariable
+
+from pydal._compat import to_native, to_bytes
+from renoir import Renoir
 from watchgod import awatch
+
+# Relative imports
 from . import server_adapters
+from .utils import html as html_helpers
+from .utils.sanitizer import xmlescape
 
 # Optional web servers for speed
 try:
@@ -44,39 +57,25 @@ try:
 except ImportError:
     gunicorn = None
 
-from enum import Enum
-
-
-# Third party modules
-import click
-import bottle
-import jwt  # this is PyJWT
-import yatl
-import pydal
-import pluralize
-from pydal._compat import to_native, to_bytes
-import threadsafevariable
-
 bottle.BaseRequest.MEMFILE_MAX = 16 * 1024 * 1024
 
 __all__ = [
-    "render",
+    "abort",
+    "action",
+    "Cache",
+    "check_compatible",
     "DAL",
     "Field",
-    "action",
-    "request",
-    "response",
-    "redirect",
-    "abort",
-    "HTTP",
-    "Session",
-    "Cache",
     "Flash",
-    "user_in",
+    "HTTP",
+    "redirect",
+    "request",
+    "required_folder",
+    "response",
+    "Session",
     "Translator",
     "URL",
-    "check_compatible",
-    "required_folder",
+    "user_in",
     "wsgi",
 ]
 
@@ -90,7 +89,7 @@ DEFAULTS = dict(
     PY4WEB_SERVICE_DB_URI="sqlite://service.storage",
 )
 
-HELPERS = {name: getattr(yatl.helpers, name) for name in yatl.helpers.__all__}
+HELPERS = {name: getattr(html_helpers, name) for name in html_helpers.__all__}
 
 ART = r"""
 ██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗
@@ -103,7 +102,6 @@ Is still experimental...
 """
 
 Field = pydal.Field
-render = yatl.render
 request = bottle.request
 response = bottle.response
 abort = bottle.abort
@@ -392,7 +390,7 @@ class Flash(Fixture):
     def set(self, message, _class="", sanitize=True):
         # we set a flash message
         if sanitize:
-            message = yatl.sanitizer.xmlescape(message)
+            message = xmlescape(message)
         Flash.local.flash = {"message": message, "class": _class}
 
     def transform(self, data, shared_data=None):
@@ -412,52 +410,62 @@ class Flash(Fixture):
 #########################################################################################
 
 
-class Template(Fixture):
-
-    cache = Cache(100)
-
-    def __init__(self, filename, path=None, delimiters="[[ ]]"):
-        self.filename = filename
-        self.path = path
-        self.delimiters = delimiters
-
-    @staticmethod
-    def reader(filename):
-        """Cached file reader, only reads template if it has changed"""
-
-        def raw_read():
-            with open(filename, encoding="utf8") as stream:
-                return stream.read()
-
-        return Template.cache.get(
-            filename, raw_read, expiration=1, monitor=lambda: os.path.getmtime(filename)
-        )
-
+class BaseTemplate(Fixture):
     def transform(self, output, shared_data=None):
         if not isinstance(output, dict):
             return output
-        context = dict(request=request)
-        context.update(HELPERS)
-        context.update(URL=URL)
+        context = {
+            "__vars__": output,
+            "request": request,
+            "URL": URL,
+            **HELPERS
+        }
         if shared_data:
             context.update(shared_data.get("template_context", {}))
         context.update(output)
-        context["__vars__"] = output
-        app_folder = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], request.app_name)
-        path = self.path or os.path.join(app_folder, "templates")
+        return self.engine.render(self.get_filepath(), context)
+
+    def _app_filepath(self):
+        path = os.path.join(request.app_name, "templates")
         filename = os.path.join(path, self.filename)
         if not os.path.exists(filename):
             generic_filename = os.path.join(path, "generic.html")
             if os.path.exists(generic_filename):
                 filename = generic_filename
-        output = yatl.render(
-            Template.reader(filename),
+        return filename
+
+
+class Template(BaseTemplate):
+    def __init__(self, filename, path=None, delimiters="[[ ]]"):
+        self.filename = filename
+        if path:
+            self.get_filepath = self._fixed_filepath
+        else:
+            path = os.path.abspath(os.environ["PY4WEB_APPS_FOLDER"])
+            self.get_filepath = self._app_filepath
+        self.engine = Renoir(
             path=path,
-            context=context,
-            delimiters=self.delimiters,
-            reader=Template.reader,
+            delimiters=delimiters.split(" "),
+            reload=True
         )
-        return output
+
+    def _fixed_filepath(self):
+        if not os.path.exists(os.path.join(self.engine.path, self.filename)):
+            if os.path.exists(os.path.join(self.engine.path, "generic.html")):
+                return "generic.html"
+        return self.filename
+
+
+class AutoTemplate(BaseTemplate):
+    engine = Renoir(
+        path=os.path.abspath(os.environ["PY4WEB_APPS_FOLDER"]),
+        delimiters=("[[", "]]"),
+        reload=True
+    )
+
+    def __init__(self, filename):
+        self.filename = filename
+        self.get_filepath = self._app_filepath
 
 
 #########################################################################################
@@ -724,7 +732,7 @@ class action:
             stack.extend(getattr(fixture, "__prerequisites__", ()))
         for fixture in reversed(reversed_fixtures):
             if isinstance(fixture, str):
-                fixture = Template(fixture)
+                fixture = AutoTemplate(fixture)
             if not fixture in fixtures:
                 fixtures.append(fixture)
 
@@ -1158,10 +1166,9 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
         response.status = code
         return json.dumps(context)
     # else - return html error-page
-    return yatl.render(
+    return AutoTemplate.engine._render(
         '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>',
-        context=context,
-        delimiters="[[ ]]",
+        context=context
     )
 
 
