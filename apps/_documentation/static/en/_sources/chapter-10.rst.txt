@@ -2,7 +2,10 @@
 YATL helpers
 ============
 
-Consider the following code in a view:
+Helpers overview
+----------------
+
+Consider the following code in a template:
 
 ::
 
@@ -14,14 +17,23 @@ it is rendered as:
 
    <div id="123" class="myclass">thisisatest</div>
 
-``DIV`` is a helper class, i.e., something that can be used to build
+You can easily test the rendering of these commands by copying the _scaffold app (see
+:ref:`copying-the-scaffold-app`) and then editing the file
+``new_app/template/index.html``. 
+
+``DIV`` is a **helper class**, i.e., something that can be used to build
 HTML programmatically. It corresponds to the HTML ``<div>`` tag.
 
-Positional arguments are interpreted as objects contained between the
-open and close tags. Named arguments that start with an underscore are
-interpreted as HTML tag attributes (without the underscore). Some
-helpers also have named arguments that do not start with underscore;
-these arguments are tag-specific.
+Helpers can have:
+
+- **positional arguments** interpreted as objects contained between the
+  open and close tags, like ``thisisatest`` in the previous example
+- **named arguments** (start with an underscore) 
+  interpreted as HTML tag attributes (without the underscore), like ``_class``
+  and ``_id`` in the previous example
+- **named arguments** (start without an underscore), in this case these
+  arguments are tag-specific
+
 
 Instead of a set of unnamed arguments, a helper can also take a single
 list or tuple as its set of components using the ``*`` notation and it
@@ -38,7 +50,8 @@ for example:
 
 (produces the same output as before).
 
-The following set of helpers:
+The following are the current set of helpers available within the YATL
+module:
 
 ``A``, ``BEAUTIFY``, ``BODY``, ``CAT``, ``CODE``, ``DIV``, ``EM``,
 ``FORM``, ``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``, ``HEAD``,
@@ -48,7 +61,7 @@ The following set of helpers:
 ``TEXTAREA``, ``TH``, ``TT``, ``TR``, ``UL``, ``XML``, ``xmlescape``,
 ``I``, ``META``, ``LINK``, ``TITLE``, ``STYLE``, ``SCRIPT``
 
-can be used to build complex expressions that can then be serialized to
+Helpers can be used to build complex expressions, that can then be serialized to
 XML. For example:
 
 ::
@@ -62,14 +75,19 @@ is rendered:
    <div class="myclass"><strong><i>hello &lt;world&gt;</i></strong></div>
 
 Helpers can also be serialized into strings, equivalently, with the
-``__str__`` and the ``xml`` methods:
+``__str__`` and the ``xml`` methods. This can be manually tested directly
+with a Python shell or by using the :ref:`shell command option` of py4web
+and then:
 
 .. code:: python
 
+   >>> from yatl.helpers import *
+   >>> 
    >>> str(DIV("hello world"))
    '<div>hello world</div>'
    >>> DIV("hello world").xml()
    '<div>hello world</div>'
+
 
 The helpers mechanism in py4web is more than a system to generate HTML
 without concatenating strings. It provides a server-side representation
@@ -135,11 +153,16 @@ You can also dynamically create special TAGs:
    <soap:Body xmlns:m="http://www.example.org">whatever</soap:Body>
 
 
-``XML``
--------
+Built-in helpers
+----------------
 
-``XML`` is an object used to encapsulate text that should not be
-escaped. The text may or may not contain valid XML. For example, it
+.. _XML:
+
+``XML``
+~~~~~~~
+
+``XML`` is an helper object used to encapsulate text that should **not** be
+escaped. The text may or may not contain valid XML; for example it
 could contain JavaScript.
 
 The text in this example is escaped:
@@ -168,8 +191,7 @@ Un-escaped executable input such as this (for example, entered in the
 body of a comment in a blog) is unsafe, because it can be used to
 generate cross site scripting (XSS) attacks against other visitors to
 the page.
-
-The py4web ``XML`` helper can sanitize our text to prevent injections
+In this case the py4web ``XML`` helper can sanitize our text to prevent injections
 and escape all tags except those that you explicitly allow. Here is an
 example:
 
@@ -194,9 +216,6 @@ helper.
        allowed_attributes={'a': ['href', 'title', 'target'],
            'img': ['src', 'alt'], 'blockquote': ['type'], 'td': ['colspan']})
 
-
-Built-in helpers
-----------------
 
 ``A``
 ~~~~~
@@ -252,8 +271,8 @@ Emphasizes its content.
 ``FORM``
 ~~~~~~~~
 
-Use this helper to make a FORM for user input. Forms will be discussed
-in detail in `Chapter 12 <#chapter-12>`__.
+Use this helper to make a FORM for user input. Forms will be later discussed
+in detail in the dedicated :ref:`Forms` chapter.
 
 .. code:: python
 
@@ -590,8 +609,8 @@ Custom helpers
 ``TAG``
 ~~~~~~~
 
-Sometimes you need to generate custom XML tags. py4web provides ``TAG``,
-a universal tag generator.
+Sometimes you need to generate **custom XML tags***. For this purpose py4web
+provides ``TAG``, a universal tag generator.
 
 ::
 
@@ -629,7 +648,7 @@ Notice that ``TAG`` is an object, and ``TAG.name`` or ``TAG['name']`` is
 a function that returns an helper instance.
 
 ``BEAUTIFY``
-------------
+~~~~~~~~~~~~
 
 ``BEAUTIFY`` is used to build HTML representations of compound objects,
 including lists, tuples and dictionaries:
@@ -657,6 +676,8 @@ will render as:
 
 Server-side *DOM*
 -----------------
+
+As we've already seen the helpers mechanism in py4web also provides a server-side representation of the document object model (DOM).
 
 ``children``
 ~~~~~~~~~~~~
@@ -779,554 +800,3 @@ that match the specified attributes will be searched for text.
    >>> b = a.find('span.efg', text=re.compile('x|y|z'), replace='hello')
    >>> print(a)
    <div><div><span class="abc">x</span><div><span class="efg">hello</span><span class="abc">z</span></div></div></div>
-
-Page layout
------------
-
-.. FIXME: review needed
-
-Views can extend and include other views in a tree-like structure.
-
-For example, we can think of a view “index.html” that extends
-“layout.html” and includes “body.html”. At the same time, “layout.html”
-may include “header.html” and “footer.html”.
-
-The root of the tree is what we call a layout view. Just like any other
-HTML template file, you can edit it using the py4web administrative
-interface. The file name “layout.html” is just a convention.
-
-Here is a minimalist page that extends the “layout.html” view and
-includes the “page.html” view:
-
-.. code:: python
-
-   [[extend 'layout.html']]
-   <h1>Hello World</h1>
-   [[include 'page.html']]
-
-The extended layout file must contain an ``[[include]]`` directive,
-something like:
-
-.. code:: python
-
-   <html>
-     <head>
-       <title>Page Title</title>
-     </head>
-     <body>
-       [[include]]
-     </body>
-   </html>
-
-When the view is called, the extended (layout) view is loaded, and the
-calling view replaces the ``[[include]]`` directive inside the layout.
-Processing continues recursively until all ``extend`` and ``include``
-directives have been processed. The resulting template is then
-translated into Python code. Note, when an application is bytecode
-compiled, it is this Python code that is compiled, not the original view
-files themselves. So, the bytecode compiled version of a given view is a
-single .pyc file that includes the Python code not just for the original
-view file, but for its entire tree of extended and included views.
-
-   ``extend``, ``include``, ``block`` and ``super`` are special template
-   directives, not Python commands.
-
-Any content or code that precedes the ``[[extend ...]]`` directive will
-be inserted (and therefore executed) before the beginning of the
-extended view’s content/code. Although this is not typically used to
-insert actual HTML content before the extended view’s content, it can be
-useful as a means to define variables or functions that you want to make
-available to the extended view. For example, consider a view
-“index.html”:
-
-.. code:: python
-
-   [[sidebar_enabled=True]]
-   [[extend 'layout.html']]
-   <h1>Home Page</h1>
-
-and an excerpt from “layout.html”:
-
-.. code:: python
-
-   [[if sidebar_enabled:]]
-       <div id="sidebar">
-           Sidebar Content
-       </div>
-   [[pass]]
-
-Because the ``sidebar_enabled`` assignment in “index.html” comes before
-the ``extend``, that line gets inserted before the beginning of
-“layout.html”, making ``sidebar_enabled`` available anywhere within the
-“layout.html” code (a somewhat more sophisticated version of this is
-used in the **welcome** app).
-
-It is also worth pointing out that the variables returned by the
-controller function are available not only in the function’s main view,
-but in all of its extended and included views as well.
-
-The argument of an ``extend`` or ``include`` (i.e., the extended or
-included view name) can be a Python variable (though not a Python
-expression). However, this imposes a limitation – views that use
-variables in ``extend`` or ``include`` statements cannot be bytecode
-compiled. As noted above, bytecode-compiled views include the entire
-tree of extended and included views, so the specific extended and
-included views must be known at compile time, which is not possible if
-the view names are variables (whose values are not determined until run
-time). Because bytecode compiling views can provide a significant speed
-boost, using variables in ``extend`` and ``include`` should generally be
-avoided if possible.
-
-In some cases, an alternative to using a variable in an ``include`` is
-simply to place regular ``[[include ...]]`` directives inside an
-``if...else`` block.
-
-.. code:: html
-
-   [[if some_condition:]]
-   [[include 'this_view.html']]
-   [[else:]]
-   [[include 'that_view.html']]
-   [[pass]]
-
-The above code does not present any problem for bytecode compilation
-because no variables are involved. Note, however, that the bytecode
-compiled view will actually include the Python code for both
-“this_view.html” and “that_view.html”, though only the code for one of
-those views will be executed, depending on the value of
-``some_condition``.
-
-Keep in mind, this only works for ``include`` – you cannot place
-``[[extend ...]]`` directives inside ``if...else`` blocks.
-
-Layouts are used to encapsulate page commonality (headers, footers,
-menus), and though they are not mandatory, they will make your
-application easier to write and maintain. In particular, we suggest
-writing layouts that take advantage of the following variables that can
-be set in the controller. Using these well known variables will help
-make your layouts interchangeable:
-
-::
-
-   response.title
-   response.subtitle
-   response.meta.author
-   response.meta.keywords
-   response.meta.description
-   response.flash
-   response.menu
-   response.files
-
-Except for ``menu`` and ``files``, these are all strings and their
-meaning should be obvious.
-
-``response.menu`` menu is a list of 3-tuples or 4-tuples. The three
-elements are: the link name, a boolean representing whether the link is
-active (is the current link), and the URL of the linked page. For
-example:
-
-.. code:: python
-
-   response.menu = [('Google', False, 'http://www.google.com', []),
-                    ('Index',  True,  URL('index'), [])]
-
-The fourth tuple element is an optional sub-menu.
-
-``response.files`` is a list of CSS and JS files that are needed by your
-page.
-
-We also recommend that you use:
-
-.. code:: html
-
-   [[include 'py4web_ajax.html']]
-
-in the HTML head, since this will include the jQuery libraries and
-define some backward-compatible JavaScript functions for special effects
-and Ajax. “py4web_ajax.html” includes the ``response.meta`` tags in the
-view, jQuery base, the calendar datepicker, and all required CSS and JS
-``response.files``.
-
-Default page layout
-~~~~~~~~~~~~~~~~~~~
-
-The “views/layout.html” that ships with the py4web scaffolding
-application **welcome** (stripped down of some optional parts) is quite
-complex but it has the following structure:
-
-.. code:: html
-
-   <!DOCTYPE html>
-   <head>
-     <meta charset="utf-8" />
-     <title>[[=response.title or request.application]]</title>
-     ...
-     <script src="[[=URL('static', 'js/modernizr.custom.js')]]"></script>
-
-     [[
-     response.files.append(URL('static', 'css/py4web.css'))
-     response.files.append(URL('static', 'css/bootstrap.min.css'))
-     response.files.append(URL('static', 'css/bootstrap-responsive.min.css'))
-     response.files.append(URL('static', 'css/py4web_bootstrap.css'))
-     ]]
-
-     [[include 'py4web_ajax.html']]
-
-     [[
-     # using sidebars need to know what sidebar you want to use
-     left_sidebar_enabled = globals().get('left_sidebar_enabled', False)
-     right_sidebar_enabled = globals().get('right_sidebar_enabled', False)
-     middle_columns = {0:'span12', 1:'span9', 2:'span6'}[
-       (left_sidebar_enabled and 1 or 0)+(right_sidebar_enabled and 1 or 0)]
-     ]]
-
-     [[block head]][[end]]
-   </head>
-
-   <body>
-     <!-- Navbar ================================================== -->
-     <div class="navbar navbar-inverse navbar-fixed-top">
-       <div class="flash">[[=response.flash or '']]</div>
-       <div class="navbar-inner">
-         <div class="container">
-           [[=response.logo or '']]
-           <ul id="navbar" class="nav pull-right">
-             [[='auth' in globals() and auth.navbar(mode="dropdown") or '']]
-           </ul>
-           <div class="nav-collapse">
-             [[if response.menu:]]
-             [[=MENU(response.menu)]]
-             [[pass]]
-           </div><!--/.nav-collapse -->
-         </div>
-       </div>
-     </div><!--/top navbar -->
-
-     <div class="container">
-       <!-- Masthead ================================================== -->
-       <header class="mastheader row" id="header">
-           <div class="span12">
-               <div class="page-header">
-                   <h1>
-                       [[=response.title or request.application]]
-                       <small>[[=response.subtitle or '']]</small>
-                   </h1>
-               </div>
-           </div>
-       </header>
-
-       <section id="main" class="main row">
-           [[if left_sidebar_enabled:]]
-           <div class="span3 left-sidebar">
-               [[block left_sidebar]]
-               <h3>Left Sidebar</h3>
-               <p></p>
-               [[end]]
-           </div>
-           [[pass]]
-
-           <div class="[[=middle_columns]]">
-               [[block center]]
-               [[include]]
-               [[end]]
-           </div>
-
-           [[if right_sidebar_enabled:]]
-           <div class="span3">
-               [[block right_sidebar]]
-               <h3>Right Sidebar</h3>
-               <p></p>
-               [[end]]
-           </div>
-           [[pass]]
-       </section><!--/main-->
-
-       <!-- Footer ================================================== -->
-       <div class="row">
-           <footer class="footer span12" id="footer">
-               <div class="footer-content">
-                   [[block footer]] <!-- this is default footer -->
-                   ...
-                   [[end]]
-               </div>
-           </footer>
-       </div>
-
-     </div> <!-- /container -->
-
-     <!-- The javascript =============================================
-          (Placed at the end of the document so the pages load faster) -->
-     <script src="[[=URL('static', 'js/bootstrap.min.js')]]"></script>
-     <script src="[[=URL('static', 'js/py4web_bootstrap.js')]]"></script>
-     [[if response.google_analytics_id:]]
-       <script src="[[=URL('static', 'js/analytics.js')]]"></script>
-       <script type="text/javascript">
-       analytics.initialize({
-         'Google Analytics':{trackingId:'[[=response.google_analytics_id]]'}
-       });</script>
-     [[pass]]
-   </body>
-   </html>
-
-There are a few features of this default layout that make it very easy
-to use and customize:
-
--  It is written in HTML5 and uses the “modernizr” library for backward
-   compatibility. The actual layout includes some extra conditional
-   statements required by IE and they are omitted for brevity.
--  It displays both ``response.title`` and ``response.subtitle`` which
-   can be set in a model or a controller. If they are not set, it adopts
-   the application name as title.
--  It includes the ``py4web_ajax.html`` file in the header which
-   generated all the link and script import statements.
--  It uses a modified version of Twitter Bootstrap for flexible layouts
-   which works on mobile devices and re-arranges columns to fit small
-   screens.
--  It uses “analytics.js” to connect to Google Analytics.
--  The ``[[=auth.navbar(...)]]`` displays a welcome to the current user
-   and links to the auth functions like login, logout, register, change
-   password, etc. depending on context. ``auth.navbar`` is a helper
-   factory and its output can be manipulated as any other helper. It is
-   placed in an expression to check for auth definition, the expression
-   evaluates to ’’ in case auth is undefined.
--  The ``[[=MENU(response.menu)]]`` displays the menu structure as
-   ``<ul>...</ul>``.
--  ``[[include]]`` is replaced by the content of the extending view when
-   the page is rendered.
--  By default it uses a conditional three column (the left and right
-   sidebars can be turned off by the extending views)
--  It uses the following classes: page-header, main, footer.
--  It contains the following blocks: head, left_sidebar, center,
-   right_sidebar, footer.
-
-In views, you can turn on and customize sidebars as follows:
-
-.. code:: html
-
-   [[left_sidebar_enabled=True]]
-   [[extend 'layout.html']]
-
-   This text goes in center
-
-   [[block left_sidebar]]
-   This text goes in sidebar
-   [[end]]
-
-Customizing the default layout
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Customizing the default layout without editing is easy because the
-welcome application is based on Twitter Bootstrap which is well
-documented and supports themes. In py4web four static files which are
-relevant to style:
-
--  “css/py4web.css” contains py4web specific styles
--  “css/bootstrap.min.css” contains the Twitter Bootstrap CSS style
--  “css/py4web_bootstrap.css” which overrides some Bootstrap styles to
-   conform to py4web needs.
--  “js/bootstrap.min.js” which includes the libraries for menu effects,
-   modals, panels.
-
-To change colors and background images, try append the following code to
-layout.html header:
-
-.. code:: css
-
-   <style>
-   body { background: url('images/background.png') repeat-x #3A3A3A; }
-   a { color: #349C01; }
-   .page-header h1 { color: #349C01; }
-   .page-header h2 { color: white; font-style: italic; font-size: 14px;}
-   .statusbar { background: #333333; border-bottom: 5px #349C01 solid; }
-   .statusbar a { color: white; }
-   .footer { border-top: 5px #349C01 solid; }
-   </style>
-
-Of course you can also completely replace the “layout.html” and
-“py4web.css” files with your own.
-
-Mobile development
-~~~~~~~~~~~~~~~~~~
-
-Although the default layout.html is designed to be mobile-friendly, one
-may sometimes need to use different views when a page is visited by a
-mobile device.
-
-To make developing for desktop and mobile devices easier, py4web
-includes the ``@mobilize`` decorator. This decorator is applied to
-actions that should have a normal view and a mobile view. This is
-demonstrated here:
-
-.. code:: python
-
-   from gluon.contrib.user_agent_parser import mobilize
-   @mobilize
-   def index():
-       return dict()
-
-Notice that the decorator must be imported before using it in a
-controller. When the “index” function is called from a regular browser
-(desktop computer), py4web will render the returned dictionary using the
-view “[controller]/index.html”. However, when it is called by a mobile
-device, the dictionary will be rendered by
-“[controller]/index.mobile.html”. Notice that mobile views have the
-“mobile.html” extension.
-
-Alternatively you can apply the following logic to make all views mobile
-friendly:
-
-.. code:: python
-
-   if request.user_agent().is_mobile:
-       response.view.replace('.html', '.mobile.html')
-
-The task of creating the “\*.mobile.html” views is left to the developer
-but we strongly suggest using the “jQuery Mobile” plugin which makes the
-task very easy.
-
-Functions in views
-------------------
-
-Consider this “layout.html”:
-
-.. code:: python
-
-   <html>
-     <body>
-       [[include]]
-       <div class="sidebar">
-         [[if 'mysidebar' in globals():]][[mysidebar()]][[else:]]
-           my default sidebar
-         [[pass]]
-       </div>
-     </body>
-   </html>
-
-and this extending view
-
-.. code:: html
-
-   [[def mysidebar():]]
-   my new sidebar!!!
-   [[return]]
-   [[extend 'layout.html']]
-   Hello World!!!
-
-Notice the function is defined before the ``[[extend...]]`` statement –
-this results in the function being created before the “layout.html” code
-is executed, so the function can be called anywhere within
-“layout.html”, even before the ``[[include]]``. Also notice the function
-is included in the extended view without the ``=`` prefix.
-
-The code generates the following output:
-
-.. code:: html
-
-   <html>
-     <body>
-       Hello World!!!
-       <div class="sidebar">
-         my new sidebar!!!
-       </div>
-     </body>
-   </html>
-
-Notice that the function is defined in HTML (although it could also
-contain Python code) so that ``response.write`` is used to write its
-content (the function does not return the content). This is why the
-layout calls the view function using ``[[mysidebar()]]`` rather than
-``[[=mysidebar()]]``. Functions defined in this way can take arguments.
-
-Blocks in views
----------------
-
-The main way to make a view more modular is by using
-``[[block ...]]``\ s and this mechanism is an alternative to the
-mechanism discussed in the previous section.
-
-To understand how this works, consider apps based on the scaffolding app
-welcome, which has a view layout.html. This view is extended by the view
-``default/index.html`` via ``[[extend 'layout.html']]``. The contents of
-layout.html predefine certain blocks with certain default content, and
-these are therefore included into default/index.html.
-
-You can override these default content blocks by enclosing your new
-content inside the same block name. The location of the block in the
-layout.html is not changed, but the contents is.
-
-Here is a simplifed version. Imagine this is “layout.html”:
-
-.. code:: python
-
-   <html>
-     <body>
-       [[include]]
-       <div class="sidebar">
-         [[block mysidebar]]
-           my default sidebar (this content to be replaced)
-         [[end]]
-       </div>
-     </body>
-   </html>
-
-and this is a simple extending view ``default/index.html``:
-
-.. code:: html
-
-   [[extend 'layout.html']]
-   Hello World!!!
-   [[block mysidebar]]
-   my new sidebar!!!
-   [[end]]
-
-It generates the following output, where the content is provided by the
-over-riding block in the extending view, yet the enclosing DIV and class
-comes from layout.html. This allows consistency across views:
-
-.. code:: html
-
-   <html>
-     <body>
-       Hello World!!!
-       <div class="sidebar">
-           my new sidebar!!!
-       </div>
-     </body>
-   </html>
-
-The real layout.html defines a number of useful blocks, and you can
-easily add more to match the layout your desire.
-
-You can have many blocks, and if a block is present in the extended view
-but not in the extending view, the content of the extended view is used.
-Also, notice that unlike with functions, it is not necessary to define
-blocks before the ``[[extend ...]]`` – even if defined after the
-``extend``, they can be used to make substitutions anywhere in the
-extended view.
-
-Inside a block, you can use the expression ``[[super]]`` to include the
-content of the parent. For example, if we replace the above extending
-view with:
-
-.. code:: html
-
-   [[extend 'layout.html']]
-   Hello World!!!
-   [[block mysidebar]]
-   [[super]]
-   my new sidebar!!!
-   [[end]]
-
-we get:
-
-.. code:: html
-
-   <html>
-     <body>
-       Hello World!!!
-       <div class="sidebar">
-           my default sidebar
-           my new sidebar!
-       </div>
-     </body>
-   </html>

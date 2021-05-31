@@ -3,22 +3,29 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>YATL Template Language &mdash; py4web 1.20210426.1 documentation</title>
+  <title>YATL Template Language &mdash; py4web 1.20210522.2 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
 
   
   
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   
+
+  
+  
+
   
 
   
@@ -28,6 +35,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -53,9 +61,12 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> py4web
+            <a href="index.html" class="icon icon-home"> py4web
           
 
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -63,7 +74,7 @@
             
             
               <div class="version">
-                1.20210426.1
+                1.20210522.2
               </div>
             
           
@@ -105,6 +116,18 @@
 <li class="toctree-l3"><a class="reference internal" href="#if-elif-else"><code class="docutils literal notranslate"><span class="pre">if...elif...else</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#try-except-else-finally"><code class="docutils literal notranslate"><span class="pre">try...except...else...finally</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#def-return"><code class="docutils literal notranslate"><span class="pre">def...return</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#information-workflow">Information workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#extend-and-include"><code class="docutils literal notranslate"><span class="pre">extend</span></code> and <code class="docutils literal notranslate"><span class="pre">include</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extending-using-variables">Extending using variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#template-functions">Template Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#block-and-super"><code class="docutils literal notranslate"><span class="pre">block</span></code> and <code class="docutils literal notranslate"><span class="pre">super</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#page-layout-standard-structure">Page layout standard structure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#default-page-layout">Default page layout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mobile-development">Mobile development</a></li>
 </ul>
 </li>
 </ul>
@@ -155,6 +178,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -166,7 +191,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-09.rst" class="fa fa-github"> Edit on GitHub</a>
             
@@ -184,24 +209,35 @@
             
   <div class="section" id="yatl-template-language">
 <h1>YATL Template Language<a class="headerlink" href="#yatl-template-language" title="Permalink to this headline">¶</a></h1>
-<p>py4web uses Python for its models, controllers, and views, although it
-uses a slightly modified Python syntax in the views to allow more
-readable code without imposing any restrictions on proper Python usage.</p>
-<p>py4web uses <code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">...</span> <span class="pre">]]</span></code> to escape Python code embedded in HTML. The
+<p>py4web uses an external Python module called <strong>YATL</strong> (Yet Another Template
+Language, see <a class="reference external" href="https://github.com/web2py/yatl">here</a>) for rendering dynamic HTML
+pages that contain Python code.</p>
+<p>py4web uses double square brackets <code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">...</span> <span class="pre">]]</span></code> to escape Python code embedded in HTML. The
 advantage of using square brackets instead of angle brackets is that
 it’s transparent to all common HTML editors. This allows the developer
-to use those editors to create py4web views.</p>
+to use those editors to create py4web templates.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Be careful not to mix Python code square brackets with other square brackets!
+For example, you’ll soon see syntax like this:</p>
+<blockquote>
+<div><div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[items = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]]] # this gives &quot;Internal Server Error&quot;
+[[items = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;] ]] # this works
+</pre></div>
+</div>
+</div></blockquote>
+<p>It’s mandatory to add a space after the first closed bracket for
+separating the list from the Python code square brackets.</p>
+</div>
 <p>Since the developer is embedding Python code into HTML, the document
 should be indented according to HTML rules, and not Python rules.
 Therefore, we allow unindented Python inside the <code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">...</span> <span class="pre">]]</span></code> tags.
-Since Python normally uses indentation to delimit blocks of code, we
+But since Python normally uses indentation to delimit blocks of code, we
 need a different way to delimit them; this is why the py4web template
 language makes use of the Python keyword <code class="docutils literal notranslate"><span class="pre">pass</span></code>.</p>
-<blockquote>
-<div><p>A code block starts with a line ending with a colon and ends with a
+<p>A <strong>code block</strong> starts with a line ending with a colon and ends with a
 line beginning with <code class="docutils literal notranslate"><span class="pre">pass</span></code>. The keyword <code class="docutils literal notranslate"><span class="pre">pass</span></code> is not necessary
 when the end of the block is obvious from the context.</p>
-</div></blockquote>
 <p>Here is an example:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[
 if i == 0:
@@ -218,21 +254,21 @@ division of blocks and use it to re-indent code automatically.</p>
 <p>The py4web template language does exactly the same. When it finds
 something like:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
-[[for x in range(10):]][[=x]]hello<span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>[[pass]]
+[[for x in range(10):]][[=x]] hello <span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>[[pass]]
 <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </pre></div>
 </div>
 <p>it translates it into a program:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;&lt;html&gt;&lt;body&gt;&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">escape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;hello&lt;br /&gt;&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">escape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">response</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;&lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">escape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>response.write(&quot;&quot;&quot;<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;&lt;</span><span class="nt">body</span><span class="p">&gt;</span>&quot;&quot;&quot;, escape=False)
+for x in range(10):
+    response.write(x)
+    response.write(&quot;&quot;&quot; hello <span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>&quot;&quot;&quot;, escape=False)
+response.write(&quot;&quot;&quot;<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>&quot;&quot;&quot;, escape=False)
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">response.write</span></code> writes to the <code class="docutils literal notranslate"><span class="pre">response.body</span></code>.</p>
-<p>When there is an error in a py4web view, the error report shows the
-generated view code, not the actual view as written by the developer.
+<p>When there is an error in a py4web template, the error report shows the
+generated template code, not the actual template as written by the developer.
 This helps the developer debug the code by highlighting the actual code
 that is executed (which is something that can be debugged with an HTML
 editor or the DOM inspector of the browser).</p>
@@ -246,7 +282,7 @@ editor or the DOM inspector of the browser).</p>
 </div>
 <p>Variables injected into the HTML in this way are escaped by default. The
 escaping is ignored if <code class="docutils literal notranslate"><span class="pre">x</span></code> is an <code class="docutils literal notranslate"><span class="pre">XML</span></code> object, even if escape is set
-to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+to <code class="docutils literal notranslate"><span class="pre">True</span></code> (see <a class="reference internal" href="chapter-10.html#xml"><span class="std std-ref">XML</span></a> later for details).</p>
 <p>Here is an example that introduces the <code class="docutils literal notranslate"><span class="pre">H1</span></code> helper:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=H1(i)]]
 </pre></div>
@@ -269,17 +305,28 @@ ignored). Otherwise it uses the object’s <code class="docutils literal notrans
 it and, if the escape argument is <code class="docutils literal notranslate"><span class="pre">True</span></code>, escapes it. All built-in
 helper objects (<code class="docutils literal notranslate"><span class="pre">H1</span></code> in the example) are objects that know how to
 serialize themselves via the <code class="docutils literal notranslate"><span class="pre">.xml()</span></code> method.</p>
-<p>This is all done transparently. You never need to (and never should)
-call the <code class="docutils literal notranslate"><span class="pre">response.write</span></code> method explicitly.</p>
+<p>This is all done transparently.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While the response object used inside the controllers is a
+full <code class="docutils literal notranslate"><span class="pre">bottle.response</span></code> object, inside the yatl templates it is
+replaced by a dummy object (<code class="docutils literal notranslate"><span class="pre">yatl.template.DummyResponse</span></code>).
+This object is quite different, and much simpler: it only has a write method!
+Also, you never need to (and never should) call the <code class="docutils literal notranslate"><span class="pre">response.write</span></code>
+method explicitly.</p>
+</div>
 <div class="section" id="basic-syntax">
 <h2>Basic syntax<a class="headerlink" href="#basic-syntax" title="Permalink to this headline">¶</a></h2>
 <p>The py4web template language supports all Python control structures.
 Here we provide some examples of each of them. They can be nested
-according to usual programming practice.</p>
+according to usual programming practice.
+You can easily test them by copying the _scaffold app (see
+<a class="reference internal" href="chapter-05.html#copying-the-scaffold-app"><span class="std std-ref">Copying the _scaffold app</span></a>) and then editing the file
+<code class="docutils literal notranslate"><span class="pre">new_app/template/index.html</span></code>.</p>
 <div class="section" id="for-in">
 <h3><code class="docutils literal notranslate"><span class="pre">for...in</span></code><a class="headerlink" href="#for-in" title="Permalink to this headline">¶</a></h3>
 <p>In templates you can loop over any iterable object:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[items = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]]]
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[items = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;] ]]
 <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
 [[for item in items:]]<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=item]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>[[pass]]
 <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
@@ -361,7 +408,7 @@ k = random.randint(0, 100)
 </div>
 <div class="section" id="try-except-else-finally">
 <h3><code class="docutils literal notranslate"><span class="pre">try...except...else...finally</span></code><a class="headerlink" href="#try-except-else-finally" title="Permalink to this headline">¶</a></h3>
-<p>It is also possible to use <code class="docutils literal notranslate"><span class="pre">try...except</span></code> statements in views with one
+<p>It is also possible to use <code class="docutils literal notranslate"><span class="pre">try...except</span></code> statements in templates with one
 caveat. Consider the following example:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[try:]]
 Hello [[= 1 / 0]]
@@ -416,8 +463,350 @@ the location where the function is called.</p>
 py4web tag where the function is called. Notice that there is no ‘=’ in
 front of the call to <code class="docutils literal notranslate"><span class="pre">itemize2</span></code>, since the function does not return
 the text, but it writes it directly into the response.</p>
-<p>There is one caveat: functions defined inside a view must terminate with
+<p>There is one caveat: functions defined inside a template must terminate with
 a <code class="docutils literal notranslate"><span class="pre">return</span></code> statement, or the automatic indentation will fail.</p>
+</div>
+</div>
+<div class="section" id="information-workflow">
+<h2>Information workflow<a class="headerlink" href="#information-workflow" title="Permalink to this headline">¶</a></h2>
+<p>For dynamically modifying the workflow of the information there are custom commands available:
+<code class="docutils literal notranslate"><span class="pre">extend</span></code>, <code class="docutils literal notranslate"><span class="pre">include</span></code>, <code class="docutils literal notranslate"><span class="pre">block</span></code> and <code class="docutils literal notranslate"><span class="pre">super</span></code>. Note that they are special template
+directives, not Python commands.</p>
+<p>In addition, you can use normal Python functions inside templates.</p>
+<div class="section" id="extend-and-include">
+<h3><code class="docutils literal notranslate"><span class="pre">extend</span></code> and <code class="docutils literal notranslate"><span class="pre">include</span></code><a class="headerlink" href="#extend-and-include" title="Permalink to this headline">¶</a></h3>
+<p>Templates can extend and include other templates in a tree-like structure.</p>
+<p>For example, we can think of a template “index.html” that extends
+“layout.html” and includes “body.html”. At the same time, “layout.html”
+may include “header.html” and “footer.html”.</p>
+<p>The root of the tree is what we call a <strong>layout template</strong>. Just like any other
+HTML template file, you can edit it from the command line or using the py4web Dashboard.
+The file name “layout.html” is just a convention.</p>
+<p>Here is a minimalist page that extends the “layout.html” template and
+includes the “page.html” template:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="c">&lt;!--minimalist_page.html--&gt;</span>
+[[extend &#39;layout.html&#39;]]
+<span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Hello World<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+[[include &#39;page.html&#39;]]
+</pre></div>
+</div>
+<p>The extended layout file must contain an <code class="docutils literal notranslate"><span class="pre">[[include]]</span></code> directive,
+something like:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="c">&lt;!--layout.html--&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Page Title<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    [[include]]
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>When the template is called, the extended (layout) template is loaded, and the
+calling template replaces the <code class="docutils literal notranslate"><span class="pre">[[include]]</span></code> directive inside the layout.
+If you don’t write the <code class="docutils literal notranslate"><span class="pre">[[include]]</span></code> directive inside the layout, then it will
+be included at the beginning of the file. Also, if you use multiple <code class="docutils literal notranslate"><span class="pre">[[extend]]</span></code>
+directives only the last one will be processed.
+Processing continues recursively until all <code class="docutils literal notranslate"><span class="pre">extend</span></code> and <code class="docutils literal notranslate"><span class="pre">include</span></code>
+directives have been processed. The resulting template is then
+translated into Python code.</p>
+<p>Note, when an application is bytecode
+compiled, it is this Python code that is compiled, not the original template
+files themselves. So, the bytecode compiled version of a given template is a
+single .pyc file that includes the Python code not just for the original
+template file, but for its entire tree of extended and included templates.</p>
+<p>Any content or code that <strong>precedes</strong> the <code class="docutils literal notranslate"><span class="pre">[[extend</span> <span class="pre">...]]</span></code> directive will
+be inserted (and therefore executed) before the beginning of the
+extended template’s content/code. Although this is not typically used to
+insert actual HTML content before the extended template’s content, it can be
+useful as a means to define variables or functions that you want to make
+available to the extended template. For example, consider a template
+“index.html”:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="c">&lt;!--index.html--&gt;</span>
+[[sidebar_enabled=True]]
+[[extend &#39;layout.html&#39;]]
+<span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Home Page<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>and an excerpt from “layout.html”:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="c">&lt;!--layout.html--&gt;</span>
+[[include]]
+[[if sidebar_enabled:]]
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;sidebar&quot;</span><span class="p">&gt;</span>
+        Sidebar Content
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+[[pass]]
+</pre></div>
+</div>
+<p>Because the <code class="docutils literal notranslate"><span class="pre">sidebar_enabled</span></code> assignment in “index.html” comes before
+the <code class="docutils literal notranslate"><span class="pre">extend</span></code>, that line gets inserted before the beginning of
+“layout.html”, making <code class="docutils literal notranslate"><span class="pre">sidebar_enabled</span></code> available anywhere within the
+“layout.html” code.</p>
+<p>It is also worth pointing out that the variables returned by the
+controller function are available not only in the function’s main template,
+but in all of its extended and included templates as well.</p>
+</div>
+<div class="section" id="extending-using-variables">
+<h3>Extending using variables<a class="headerlink" href="#extending-using-variables" title="Permalink to this headline">¶</a></h3>
+<p>The argument of an <code class="docutils literal notranslate"><span class="pre">extend</span></code> or <code class="docutils literal notranslate"><span class="pre">include</span></code> (i.e., the extended or
+included template name) can be a Python variable (though not a Python
+expression). However, this imposes a limitation – templates that use
+variables in <code class="docutils literal notranslate"><span class="pre">extend</span></code> or <code class="docutils literal notranslate"><span class="pre">include</span></code> statements cannot be bytecode
+compiled. As noted above, bytecode-compiled templates include the entire
+tree of extended and included templates, so the specific extended and
+included templates must be known at compile time, which is not possible if
+the template names are variables (whose values are not determined until run
+time). Because bytecode compiling templates can provide a significant speed
+boost, using variables in <code class="docutils literal notranslate"><span class="pre">extend</span></code> and <code class="docutils literal notranslate"><span class="pre">include</span></code> should generally be
+avoided if possible.</p>
+<p>In some cases, an alternative to using a variable in an <code class="docutils literal notranslate"><span class="pre">include</span></code> is
+simply to place regular <code class="docutils literal notranslate"><span class="pre">[[include</span> <span class="pre">...]]</span></code> directives inside an
+<code class="docutils literal notranslate"><span class="pre">if...else</span></code> block.</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[if some_condition:]]
+   [[include &#39;this_template.html&#39;]]
+[[else:]]
+   [[include &#39;that_template.html&#39;]]
+[[pass]]
+</pre></div>
+</div>
+<p>The above code does not present any problem for bytecode compilation
+because no variables are involved. Note, however, that the bytecode
+compiled template will actually include the Python code for both
+“this_template.html” and “that_template.html”, though only the code for one of
+those templates will be executed, depending on the value of
+<code class="docutils literal notranslate"><span class="pre">some_condition</span></code>.</p>
+<p>Keep in mind, this only works for <code class="docutils literal notranslate"><span class="pre">include</span></code> – you cannot place
+<code class="docutils literal notranslate"><span class="pre">[[extend</span> <span class="pre">...]]</span></code> directives inside <code class="docutils literal notranslate"><span class="pre">if...else</span></code> blocks.</p>
+<p>Layouts are used to encapsulate page commonality (headers, footers,
+menus), and though they are not mandatory, they will make your
+application easier to write and maintain.</p>
+</div>
+<div class="section" id="template-functions">
+<h3>Template Functions<a class="headerlink" href="#template-functions" title="Permalink to this headline">¶</a></h3>
+<p>Consider this “layout.html”:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="c">&lt;!--layout.html--&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    [[include]]
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;sidebar&quot;</span><span class="p">&gt;</span>
+      [[if &#39;mysidebar&#39; in globals():]][[mysidebar()]][[else:]]
+        my default sidebar
+      [[pass]]
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>and this extending template</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[def mysidebar():]]
+   my new sidebar!!!
+[[return]]
+[[extend &#39;layout.html&#39;]]
+   Hello World!!!
+</pre></div>
+</div>
+<p>Notice the function is defined before the <code class="docutils literal notranslate"><span class="pre">[[extend...]]</span></code> statement –
+this results in the function being created before the “layout.html” code
+is executed, so the function can be called anywhere within
+“layout.html”, even before the <code class="docutils literal notranslate"><span class="pre">[[include]]</span></code>. Also notice the function
+is included in the extended template without the <code class="docutils literal notranslate"><span class="pre">=</span></code> prefix.</p>
+<p>The code generates the following output:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    Hello World!!!
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;sidebar&quot;</span><span class="p">&gt;</span>
+      my new sidebar!!!
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Notice that the function is defined in HTML (although it could also
+contain Python code) so that <code class="docutils literal notranslate"><span class="pre">response.write</span></code> is used to write its
+content (the function does not return the content). This is why the
+layout calls the template function using <code class="docutils literal notranslate"><span class="pre">[[mysidebar()]]</span></code> rather than
+<code class="docutils literal notranslate"><span class="pre">[[=mysidebar()]]</span></code>. Functions defined in this way can take arguments.</p>
+</div>
+<div class="section" id="block-and-super">
+<h3><code class="docutils literal notranslate"><span class="pre">block</span></code> and <code class="docutils literal notranslate"><span class="pre">super</span></code><a class="headerlink" href="#block-and-super" title="Permalink to this headline">¶</a></h3>
+<p>The main way to make a template more modular is by using
+<code class="docutils literal notranslate"><span class="pre">[[block</span> <span class="pre">...]]</span></code>s and this mechanism is an alternative to the
+mechanism discussed in the previous section.</p>
+<p>To understand how this works, consider apps based on the scaffolding app
+welcome, which has a template layout.html. This template is extended by the template
+<code class="docutils literal notranslate"><span class="pre">default/index.html</span></code> via <code class="docutils literal notranslate"><span class="pre">[[extend</span> <span class="pre">'layout.html']]</span></code>. The contents of
+layout.html predefine certain blocks with certain default content, and
+these are therefore included into default/index.html.</p>
+<p>You can override these default content blocks by enclosing your new
+content inside the same block name. The location of the block in the
+layout.html is not changed, but the contents is.</p>
+<p>Here is a simplifed version. Imagine this is “layout.html”:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    [[include]]
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;sidebar&quot;</span><span class="p">&gt;</span>
+      [[block mysidebar]]
+        my default sidebar (this content to be replaced)
+      [[end]]
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>and this is a simple extending template <code class="docutils literal notranslate"><span class="pre">default/index.html</span></code>:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+Hello World!!!
+[[block mysidebar]]
+my new sidebar!!!
+[[end]]
+</pre></div>
+</div>
+<p>It generates the following output, where the content is provided by the
+over-riding block in the extending template, yet the enclosing DIV and class
+comes from layout.html. This allows consistency across templates:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    Hello World!!!
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;sidebar&quot;</span><span class="p">&gt;</span>
+        my new sidebar!!!
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>The real layout.html defines a number of useful blocks, and you can
+easily add more to match the layout your desire.</p>
+<p>You can have many blocks, and if a block is present in the extended template
+but not in the extending template, the content of the extended template is used.
+Also, notice that unlike with functions, it is not necessary to define
+blocks before the <code class="docutils literal notranslate"><span class="pre">[[extend</span> <span class="pre">...]]</span></code> – even if defined after the
+<code class="docutils literal notranslate"><span class="pre">extend</span></code>, they can be used to make substitutions anywhere in the
+extended template.</p>
+<p>Inside a block, you can use the expression <code class="docutils literal notranslate"><span class="pre">[[super]]</span></code> to include the
+content of the parent. For example, if we replace the above extending
+template with:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+Hello World!!!
+[[block mysidebar]]
+[[super]]
+my new sidebar!!!
+[[end]]
+</pre></div>
+</div>
+<p>we get:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    Hello World!!!
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;sidebar&quot;</span><span class="p">&gt;</span>
+        my default sidebar
+        my new sidebar!
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="page-layout-standard-structure">
+<h2>Page layout standard structure<a class="headerlink" href="#page-layout-standard-structure" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="default-page-layout">
+<h3>Default page layout<a class="headerlink" href="#default-page-layout" title="Permalink to this headline">¶</a></h3>
+<p>The “templates/layout.html” that currently ships with the py4web <strong>_scaffold</strong>
+application is quite complex but it has the following structure:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span> <span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="linenos"> 2</span> <span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="linenos"> 3</span>   <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="linenos"> 4</span>     <span class="p">&lt;</span><span class="nt">base</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;static&#39;)]]/&quot;</span><span class="p">&gt;</span>
+<span class="linenos"> 5</span>     <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;viewport&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;width=device-width, initial-scale=1&quot;</span><span class="p">&gt;</span>
+<span class="linenos"> 6</span>     <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;shortcut icon&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA==&quot;</span><span class="p">/&gt;</span>
+<span class="linenos"> 7</span>     <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;css/no.css&quot;</span><span class="p">&gt;</span>
+<span class="linenos"> 8</span>     <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css&quot;</span> <span class="na">integrity</span><span class="o">=</span><span class="s">&quot;sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==&quot;</span> <span class="na">crossorigin</span><span class="o">=</span><span class="s">&quot;anonymous&quot;</span> <span class="p">/&gt;</span>
+<span class="linenos"> 9</span>     <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;.</span><span class="nc">py4web-validation-error</span><span class="p">{</span><span class="k">margin-top</span><span class="p">:</span><span class="mi">-16</span><span class="kt">px</span><span class="p">;</span> <span class="k">font-size</span><span class="p">:</span><span class="mf">0.8</span><span class="kt">em</span><span class="p">;</span><span class="k">color</span><span class="p">:</span><span class="kc">red</span><span class="p">}&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="linenos">10</span>     [[block page_head]]<span class="c">&lt;!-- individual pages can customize header here --&gt;</span>[[end]]
+<span class="linenos">11</span>   <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="linenos">12</span>   <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="linenos">13</span>     <span class="p">&lt;</span><span class="nt">header</span><span class="p">&gt;</span>
+<span class="linenos">14</span>       <span class="c">&lt;!-- Navigation bar --&gt;</span>
+<span class="linenos">15</span>       <span class="p">&lt;</span><span class="nt">nav</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;black&quot;</span><span class="p">&gt;</span>
+<span class="linenos">16</span>         <span class="c">&lt;!-- Logo --&gt;</span>
+<span class="linenos">17</span>         <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;index&#39;)]]&quot;</span><span class="p">&gt;</span>
+<span class="linenos">18</span>           <span class="p">&lt;</span><span class="nt">b</span><span class="p">&gt;</span>py4web <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mf">3</span><span class="p">]);&lt;/</span><span class="nt">script</span><span class="p">&gt;&lt;/</span><span class="nt">b</span><span class="p">&gt;</span>
+<span class="linenos">19</span>         <span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="linenos">20</span>         <span class="c">&lt;!-- Do not touch this --&gt;</span>
+<span class="linenos">21</span>         <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;hamburger&quot;</span><span class="p">&gt;</span>☰<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+<span class="linenos">22</span>         <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;hamburger&quot;</span><span class="p">&gt;</span>
+<span class="linenos">23</span>         <span class="c">&lt;!-- Left menu ul/li --&gt;</span>
+<span class="linenos">24</span>         [[block page_left_menu]][[end]]
+<span class="linenos">25</span>         <span class="c">&lt;!-- Right menu ul/li --&gt;</span>
+<span class="linenos">26</span>         <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">27</span>           [[if globals().get(&#39;user&#39;):]]
+<span class="linenos">28</span>           <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">29</span>             <span class="p">&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;navbar-link is-primary&quot;</span><span class="p">&gt;</span>
+<span class="linenos">30</span>               [[=globals().get(&#39;user&#39;,{}).get(&#39;email&#39;)]]
+<span class="linenos">31</span>             <span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="linenos">32</span>             <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">33</span>               <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/profile&#39;)]]&quot;</span><span class="p">&gt;</span>Edit Profile<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">34</span>               <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/change_password&#39;)]]&quot;</span><span class="p">&gt;</span>Change Password<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">35</span>               <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/logout&#39;)]]&quot;</span><span class="p">&gt;</span>Logout<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">36</span>             <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">37</span>           <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">38</span>           [[else:]]
+<span class="linenos">39</span>           <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">40</span>             Login
+<span class="linenos">41</span>             <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">42</span>               <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/register&#39;)]]&quot;</span><span class="p">&gt;</span>Sign up<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">43</span>               <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/login&#39;)]]&quot;</span><span class="p">&gt;</span>Log in<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">44</span>             <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">45</span>           <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">46</span>           [[pass]]
+<span class="linenos">47</span>         <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">48</span>       <span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+<span class="linenos">49</span>     <span class="p">&lt;/</span><span class="nt">header</span><span class="p">&gt;</span>
+<span class="linenos">50</span>     <span class="c">&lt;!-- beginning of HTML inserted by extending template --&gt;</span>
+<span class="linenos">51</span>     <span class="p">&lt;</span><span class="nt">center</span><span class="p">&gt;</span>
+<span class="linenos">52</span>       <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="linenos">53</span>         <span class="c">&lt;!-- Flash alert messages, first optional one in data-alert --&gt;</span>
+<span class="linenos">54</span>         <span class="p">&lt;</span><span class="nt">flash-alerts</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;padded&quot;</span> <span class="na">data-alert</span><span class="o">=</span><span class="s">&quot;[[=globals().get(&#39;flash&#39;,&#39;&#39;)]]&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">flash-alerts</span><span class="p">&gt;</span>
+<span class="linenos">55</span>       <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="linenos">56</span>       <span class="p">&lt;</span><span class="nt">main</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;padded&quot;</span><span class="p">&gt;</span>
+<span class="linenos">57</span>         <span class="c">&lt;!-- contect injected by extending page --&gt;</span>
+<span class="linenos">58</span>         [[include]]
+<span class="linenos">59</span>       <span class="p">&lt;/</span><span class="nt">main</span><span class="p">&gt;</span>
+<span class="linenos">60</span>     <span class="p">&lt;/</span><span class="nt">center</span><span class="p">&gt;</span>
+<span class="linenos">61</span>     <span class="c">&lt;!-- end of HTML inserted by extending template --&gt;</span>
+<span class="linenos">62</span>     <span class="p">&lt;</span><span class="nt">footer</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;black padded&quot;</span><span class="p">&gt;</span>
+<span class="linenos">63</span>       <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+<span class="linenos">64</span>         Made with py4web
+<span class="linenos">65</span>       <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+<span class="linenos">66</span>     <span class="p">&lt;/</span><span class="nt">footer</span><span class="p">&gt;</span>
+<span class="linenos">67</span>   <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="linenos">68</span>   <span class="c">&lt;!-- You&#39;ve gotta have utils.js --&gt;</span>
+<span class="linenos">69</span>   <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;js/utils.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="linenos">70</span>   [[block page_scripts]]<span class="c">&lt;!-- individual pages can add scripts here --&gt;</span>[[end]]
+<span class="linenos">71</span> <span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>There are a few features of this default layout that make it very easy
+to use and customize:</p>
+<ul class="simple">
+<li><p>it is written in HTML5</p></li>
+<li><p>on line 7 it’s used the <code class="docutils literal notranslate"><span class="pre">no.css</span></code> stylesheet, see
+<a class="reference external" href="https://github.com/mdipierro/no.css/">here</a></p></li>
+<li><p>on line 58 <code class="docutils literal notranslate"><span class="pre">[[include]]</span></code> is replaced by the content of the extending template when
+the page is rendered</p></li>
+<li><p>it contains the following blocks: page_head, page_left_menu, page_scripts</p></li>
+<li><p>on line 30 it checks if the user is logged on and changes the menu accordingly</p></li>
+<li><p>on line 54 it checks for flash alert messages</p></li>
+</ul>
+<p>Of course you can also completely replace the “layout.html” and
+the stylesheet with your own.</p>
+</div>
+<div class="section" id="mobile-development">
+<h3>Mobile development<a class="headerlink" href="#mobile-development" title="Permalink to this headline">¶</a></h3>
+<p>Although the default layout.html is designed to be mobile-friendly, one
+may sometimes need to use different templates when a page is visited by a
+mobile device.</p>
 </div>
 </div>
 </div>
@@ -427,37 +816,29 @@ a <code class="docutils literal notranslate"><span class="pre">return</span></co
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="chapter-10.html" class="btn btn-neutral float-right" title="YATL helpers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="chapter-08.html" class="btn btn-neutral float-left" title="The RESTAPI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="chapter-10.html" class="btn btn-neutral float-right" title="YATL helpers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="chapter-08.html" class="btn btn-neutral float-left" title="The RESTAPI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, BSDv3 License
+        &#169; Copyright 2020, BSDv3 License.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -476,7 +857,7 @@ a <code class="docutils literal notranslate"><span class="pre">return</span></co
      <label for="switch"></label>
      </span>
       
-      v: 1.20210426.1
+      v: 1.20210522.2
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

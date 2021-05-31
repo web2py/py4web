@@ -3,22 +3,29 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>YATL helpers &mdash; py4web 1.20210426.1 documentation</title>
+  <title>YATL helpers &mdash; py4web 1.20210522.2 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
 
   
   
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   
+
+  
+  
+
   
 
   
@@ -28,6 +35,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -53,9 +61,12 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> py4web
+            <a href="index.html" class="icon icon-home"> py4web
           
 
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -63,7 +74,7 @@
             
             
               <div class="version">
-                1.20210426.1
+                1.20210522.2
               </div>
             
           
@@ -100,8 +111,9 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">YATL helpers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#xml"><code class="docutils literal notranslate"><span class="pre">XML</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#helpers-overview">Helpers overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#built-in-helpers">Built-in helpers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xml"><code class="docutils literal notranslate"><span class="pre">XML</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#a"><code class="docutils literal notranslate"><span class="pre">A</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#body"><code class="docutils literal notranslate"><span class="pre">BODY</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cat"><code class="docutils literal notranslate"><span class="pre">CAT</span></code></a></li>
@@ -137,22 +149,14 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-helpers">Custom helpers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#tag"><code class="docutils literal notranslate"><span class="pre">TAG</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#beautify"><code class="docutils literal notranslate"><span class="pre">BEAUTIFY</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#beautify"><code class="docutils literal notranslate"><span class="pre">BEAUTIFY</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#server-side-dom">Server-side <em>DOM</em></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#children"><code class="docutils literal notranslate"><span class="pre">children</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#find"><code class="docutils literal notranslate"><span class="pre">find</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#page-layout">Page layout</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#default-page-layout">Default page layout</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#customizing-the-default-layout">Customizing the default layout</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#mobile-development">Mobile development</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#functions-in-views">Functions in views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#blocks-in-views">Blocks in views</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
@@ -200,6 +204,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -211,7 +217,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-10.rst" class="fa fa-github"> Edit on GitHub</a>
             
@@ -229,7 +235,9 @@
             
   <div class="section" id="yatl-helpers">
 <h1>YATL helpers<a class="headerlink" href="#yatl-helpers" title="Permalink to this headline">¶</a></h1>
-<p>Consider the following code in a view:</p>
+<div class="section" id="helpers-overview">
+<h2>Helpers overview<a class="headerlink" href="#helpers-overview" title="Permalink to this headline">¶</a></h2>
+<p>Consider the following code in a template:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=DIV(&#39;this&#39;, &#39;is&#39;, &#39;a&#39;, &#39;test&#39;, _id=&#39;123&#39;, _class=&#39;myclass&#39;)]]
 </pre></div>
 </div>
@@ -237,13 +245,21 @@
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;123&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;myclass&quot;</span><span class="p">&gt;</span>thisisatest<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">DIV</span></code> is a helper class, i.e., something that can be used to build
+<p>You can easily test the rendering of these commands by copying the _scaffold app (see
+<a class="reference internal" href="chapter-05.html#copying-the-scaffold-app"><span class="std std-ref">Copying the _scaffold app</span></a>) and then editing the file
+<code class="docutils literal notranslate"><span class="pre">new_app/template/index.html</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">DIV</span></code> is a <strong>helper class</strong>, i.e., something that can be used to build
 HTML programmatically. It corresponds to the HTML <code class="docutils literal notranslate"><span class="pre">&lt;div&gt;</span></code> tag.</p>
-<p>Positional arguments are interpreted as objects contained between the
-open and close tags. Named arguments that start with an underscore are
-interpreted as HTML tag attributes (without the underscore). Some
-helpers also have named arguments that do not start with underscore;
-these arguments are tag-specific.</p>
+<p>Helpers can have:</p>
+<ul class="simple">
+<li><p><strong>positional arguments</strong> interpreted as objects contained between the
+open and close tags, like <code class="docutils literal notranslate"><span class="pre">thisisatest</span></code> in the previous example</p></li>
+<li><p><strong>named arguments</strong> (start with an underscore)
+interpreted as HTML tag attributes (without the underscore), like <code class="docutils literal notranslate"><span class="pre">_class</span></code>
+and <code class="docutils literal notranslate"><span class="pre">_id</span></code> in the previous example</p></li>
+<li><p><strong>named arguments</strong> (start without an underscore), in this case these
+arguments are tag-specific</p></li>
+</ul>
 <p>Instead of a set of unnamed arguments, a helper can also take a single
 list or tuple as its set of components using the <code class="docutils literal notranslate"><span class="pre">*</span></code> notation and it
 can take a single dictionary as its set of attributes using the <code class="docutils literal notranslate"><span class="pre">**</span></code>,
@@ -256,7 +272,8 @@ attributes = {&#39;_id&#39;:&#39;123&#39;, &#39;_class&#39;:&#39;myclass&#39;}
 </pre></div>
 </div>
 <p>(produces the same output as before).</p>
-<p>The following set of helpers:</p>
+<p>The following are the current set of helpers available within the YATL
+module:</p>
 <p><code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">BEAUTIFY</span></code>, <code class="docutils literal notranslate"><span class="pre">BODY</span></code>, <code class="docutils literal notranslate"><span class="pre">CAT</span></code>, <code class="docutils literal notranslate"><span class="pre">CODE</span></code>, <code class="docutils literal notranslate"><span class="pre">DIV</span></code>, <code class="docutils literal notranslate"><span class="pre">EM</span></code>,
 <code class="docutils literal notranslate"><span class="pre">FORM</span></code>, <code class="docutils literal notranslate"><span class="pre">H1</span></code>, <code class="docutils literal notranslate"><span class="pre">H2</span></code>, <code class="docutils literal notranslate"><span class="pre">H3</span></code>, <code class="docutils literal notranslate"><span class="pre">H4</span></code>, <code class="docutils literal notranslate"><span class="pre">H5</span></code>, <code class="docutils literal notranslate"><span class="pre">H6</span></code>, <code class="docutils literal notranslate"><span class="pre">HEAD</span></code>,
 <code class="docutils literal notranslate"><span class="pre">HTML</span></code>, <code class="docutils literal notranslate"><span class="pre">IMG</span></code>, <code class="docutils literal notranslate"><span class="pre">INPUT</span></code>, <code class="docutils literal notranslate"><span class="pre">LABEL</span></code>, <code class="docutils literal notranslate"><span class="pre">LI</span></code>, <code class="docutils literal notranslate"><span class="pre">METATAG</span></code>,
@@ -264,7 +281,7 @@ attributes = {&#39;_id&#39;:&#39;123&#39;, &#39;_class&#39;:&#39;myclass&#39;}
 <code class="docutils literal notranslate"><span class="pre">TABLE</span></code>, <code class="docutils literal notranslate"><span class="pre">TAG</span></code>, <code class="docutils literal notranslate"><span class="pre">TAGGER</span></code>, <code class="docutils literal notranslate"><span class="pre">THEAD</span></code>, <code class="docutils literal notranslate"><span class="pre">TBODY</span></code>, <code class="docutils literal notranslate"><span class="pre">TD</span></code>,
 <code class="docutils literal notranslate"><span class="pre">TEXTAREA</span></code>, <code class="docutils literal notranslate"><span class="pre">TH</span></code>, <code class="docutils literal notranslate"><span class="pre">TT</span></code>, <code class="docutils literal notranslate"><span class="pre">TR</span></code>, <code class="docutils literal notranslate"><span class="pre">UL</span></code>, <code class="docutils literal notranslate"><span class="pre">XML</span></code>, <code class="docutils literal notranslate"><span class="pre">xmlescape</span></code>,
 <code class="docutils literal notranslate"><span class="pre">I</span></code>, <code class="docutils literal notranslate"><span class="pre">META</span></code>, <code class="docutils literal notranslate"><span class="pre">LINK</span></code>, <code class="docutils literal notranslate"><span class="pre">TITLE</span></code>, <code class="docutils literal notranslate"><span class="pre">STYLE</span></code>, <code class="docutils literal notranslate"><span class="pre">SCRIPT</span></code></p>
-<p>can be used to build complex expressions that can then be serialized to
+<p>Helpers can be used to build complex expressions, that can then be serialized to
 XML. For example:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=DIV(STRONG(I(&quot;hello &quot;, &quot;&lt;world&gt;&quot;)), _class=&quot;myclass&quot;)]]
 </pre></div>
@@ -274,8 +291,12 @@ XML. For example:</p>
 </pre></div>
 </div>
 <p>Helpers can also be serialized into strings, equivalently, with the
-<code class="docutils literal notranslate"><span class="pre">__str__</span></code> and the <code class="docutils literal notranslate"><span class="pre">xml</span></code> methods:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="s2">&quot;hello world&quot;</span><span class="p">))</span>
+<code class="docutils literal notranslate"><span class="pre">__str__</span></code> and the <code class="docutils literal notranslate"><span class="pre">xml</span></code> methods. This can be manually tested directly
+with a Python shell or by using the <a class="reference internal" href="chapter-03.html#shell-command-option"><span class="std std-ref">shell command option</span></a> of py4web
+and then:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="s2">&quot;hello world&quot;</span><span class="p">))</span>
 <span class="go">&#39;&lt;div&gt;hello world&lt;/div&gt;&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">DIV</span><span class="p">(</span><span class="s2">&quot;hello world&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xml</span><span class="p">()</span>
 <span class="go">&#39;&lt;div&gt;hello world&lt;/div&gt;&#39;</span>
@@ -331,10 +352,13 @@ of (key:value) pairs into a set of keyword arguments:</p>
 <span class="go">&lt;soap:Body xmlns:m=&quot;http://www.example.org&quot;&gt;whatever&lt;/soap:Body&gt;</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="built-in-helpers">
+<h2>Built-in helpers<a class="headerlink" href="#built-in-helpers" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="xml">
-<h2><code class="docutils literal notranslate"><span class="pre">XML</span></code><a class="headerlink" href="#xml" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">XML</span></code> is an object used to encapsulate text that should not be
-escaped. The text may or may not contain valid XML. For example, it
+<span id="id1"></span><h3><code class="docutils literal notranslate"><span class="pre">XML</span></code><a class="headerlink" href="#xml" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">XML</span></code> is an helper object used to encapsulate text that should <strong>not</strong> be
+escaped. The text may or may not contain valid XML; for example it
 could contain JavaScript.</p>
 <p>The text in this example is escaped:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="s2">&quot;&lt;strong&gt;hello&lt;/strong&gt;&quot;</span><span class="p">))</span>
@@ -355,8 +379,8 @@ contain unsafe tags such as scripts:</p>
 <p>Un-escaped executable input such as this (for example, entered in the
 body of a comment in a blog) is unsafe, because it can be used to
 generate cross site scripting (XSS) attacks against other visitors to
-the page.</p>
-<p>The py4web <code class="docutils literal notranslate"><span class="pre">XML</span></code> helper can sanitize our text to prevent injections
+the page.
+In this case the py4web <code class="docutils literal notranslate"><span class="pre">XML</span></code> helper can sanitize our text to prevent injections
 and escape all tags except those that you explicitly allow. Here is an
 example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">XML</span><span class="p">(</span><span class="s1">&#39;&lt;script&gt;alert(&quot;unsafe!&quot;)&lt;/script&gt;&#39;</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
@@ -378,8 +402,6 @@ helper.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="built-in-helpers">
-<h2>Built-in helpers<a class="headerlink" href="#built-in-helpers" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="a">
 <h3><code class="docutils literal notranslate"><span class="pre">A</span></code><a class="headerlink" href="#a" title="Permalink to this headline">¶</a></h3>
 <p>This helper is used to build links.</p>
@@ -423,8 +445,8 @@ helper.</p>
 </div>
 <div class="section" id="form">
 <h3><code class="docutils literal notranslate"><span class="pre">FORM</span></code><a class="headerlink" href="#form" title="Permalink to this headline">¶</a></h3>
-<p>Use this helper to make a FORM for user input. Forms will be discussed
-in detail in <a class="reference external" href="#chapter-12">Chapter 12</a>.</p>
+<p>Use this helper to make a FORM for user input. Forms will be later discussed
+in detail in the dedicated <a class="reference internal" href="chapter-12.html#forms"><span class="std std-ref">Forms</span></a> chapter.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">FORM</span><span class="p">(</span><span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s1">&#39;submit&#39;</span><span class="p">),</span> <span class="n">_action</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">_method</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">))</span>
 <span class="go">&lt;form action=&quot;&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;submit&quot;/&gt;&lt;/form&gt;</span>
 </pre></div>
@@ -689,9 +711,9 @@ header or footer rows. It is optional.</p>
 <div class="section" id="custom-helpers">
 <h2>Custom helpers<a class="headerlink" href="#custom-helpers" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="tag">
-<span id="id1"></span><h3><code class="docutils literal notranslate"><span class="pre">TAG</span></code><a class="headerlink" href="#tag" title="Permalink to this headline">¶</a></h3>
-<p>Sometimes you need to generate custom XML tags. py4web provides <code class="docutils literal notranslate"><span class="pre">TAG</span></code>,
-a universal tag generator.</p>
+<span id="id2"></span><h3><code class="docutils literal notranslate"><span class="pre">TAG</span></code><a class="headerlink" href="#tag" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes you need to generate <strong>custom XML tags*</strong>. For this purpose py4web
+provides <code class="docutils literal notranslate"><span class="pre">TAG</span></code>, a universal tag generator.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=TAG.name(&#39;a&#39;, &#39;b&#39;, _c=&#39;d&#39;)]]
 </pre></div>
 </div>
@@ -718,9 +740,8 @@ must end with a “/”.</p>
 <p>Notice that <code class="docutils literal notranslate"><span class="pre">TAG</span></code> is an object, and <code class="docutils literal notranslate"><span class="pre">TAG.name</span></code> or <code class="docutils literal notranslate"><span class="pre">TAG['name']</span></code> is
 a function that returns an helper instance.</p>
 </div>
-</div>
 <div class="section" id="beautify">
-<h2><code class="docutils literal notranslate"><span class="pre">BEAUTIFY</span></code><a class="headerlink" href="#beautify" title="Permalink to this headline">¶</a></h2>
+<h3><code class="docutils literal notranslate"><span class="pre">BEAUTIFY</span></code><a class="headerlink" href="#beautify" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">BEAUTIFY</span></code> is used to build HTML representations of compound objects,
 including lists, tuples and dictionaries:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=BEAUTIFY({&quot;a&quot;: [&quot;hello&quot;, STRONG(&quot;world&quot;)], &quot;b&quot;: (1, 2)})]]
@@ -740,8 +761,10 @@ XML representation of:</p>
 </pre></div>
 </div>
 </div>
+</div>
 <div class="section" id="server-side-dom">
 <h2>Server-side <em>DOM</em><a class="headerlink" href="#server-side-dom" title="Permalink to this headline">¶</a></h2>
+<p>As we’ve already seen the helpers mechanism in py4web also provides a server-side representation of the document object model (DOM).</p>
 <div class="section" id="children">
 <h3><code class="docutils literal notranslate"><span class="pre">children</span></code><a class="headerlink" href="#children" title="Permalink to this headline">¶</a></h3>
 <p>Each helper object keep the list of its components into the <code class="docutils literal notranslate"><span class="pre">children</span></code>
@@ -845,490 +868,6 @@ that match the specified attributes will be searched for text.</p>
 </div>
 </div>
 </div>
-<div class="section" id="page-layout">
-<h2>Page layout<a class="headerlink" href="#page-layout" title="Permalink to this headline">¶</a></h2>
-<p>Views can extend and include other views in a tree-like structure.</p>
-<p>For example, we can think of a view “index.html” that extends
-“layout.html” and includes “body.html”. At the same time, “layout.html”
-may include “header.html” and “footer.html”.</p>
-<p>The root of the tree is what we call a layout view. Just like any other
-HTML template file, you can edit it using the py4web administrative
-interface. The file name “layout.html” is just a convention.</p>
-<p>Here is a minimalist page that extends the “layout.html” view and
-includes the “page.html” view:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">extend</span> <span class="s1">&#39;layout.html&#39;</span><span class="p">]]</span>
-<span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">Hello</span> <span class="n">World</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-<span class="p">[[</span><span class="n">include</span> <span class="s1">&#39;page.html&#39;</span><span class="p">]]</span>
-</pre></div>
-</div>
-<p>The extended layout file must contain an <code class="docutils literal notranslate"><span class="pre">[[include]]</span></code> directive,
-something like:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">html</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="n">head</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">title</span><span class="o">&gt;</span><span class="n">Page</span> <span class="n">Title</span><span class="o">&lt;/</span><span class="n">title</span><span class="o">&gt;</span>
-  <span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
-    <span class="p">[[</span><span class="n">include</span><span class="p">]]</span>
-  <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
-<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<p>When the view is called, the extended (layout) view is loaded, and the
-calling view replaces the <code class="docutils literal notranslate"><span class="pre">[[include]]</span></code> directive inside the layout.
-Processing continues recursively until all <code class="docutils literal notranslate"><span class="pre">extend</span></code> and <code class="docutils literal notranslate"><span class="pre">include</span></code>
-directives have been processed. The resulting template is then
-translated into Python code. Note, when an application is bytecode
-compiled, it is this Python code that is compiled, not the original view
-files themselves. So, the bytecode compiled version of a given view is a
-single .pyc file that includes the Python code not just for the original
-view file, but for its entire tree of extended and included views.</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">extend</span></code>, <code class="docutils literal notranslate"><span class="pre">include</span></code>, <code class="docutils literal notranslate"><span class="pre">block</span></code> and <code class="docutils literal notranslate"><span class="pre">super</span></code> are special template
-directives, not Python commands.</p>
-</div></blockquote>
-<p>Any content or code that precedes the <code class="docutils literal notranslate"><span class="pre">[[extend</span> <span class="pre">...]]</span></code> directive will
-be inserted (and therefore executed) before the beginning of the
-extended view’s content/code. Although this is not typically used to
-insert actual HTML content before the extended view’s content, it can be
-useful as a means to define variables or functions that you want to make
-available to the extended view. For example, consider a view
-“index.html”:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">sidebar_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">]]</span>
-<span class="p">[[</span><span class="n">extend</span> <span class="s1">&#39;layout.html&#39;</span><span class="p">]]</span>
-<span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">Home</span> <span class="n">Page</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<p>and an excerpt from “layout.html”:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="k">if</span> <span class="n">sidebar_enabled</span><span class="p">:]]</span>
-    <span class="o">&lt;</span><span class="n">div</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;sidebar&quot;</span><span class="o">&gt;</span>
-        <span class="n">Sidebar</span> <span class="n">Content</span>
-    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
-<span class="p">[[</span><span class="k">pass</span><span class="p">]]</span>
-</pre></div>
-</div>
-<p>Because the <code class="docutils literal notranslate"><span class="pre">sidebar_enabled</span></code> assignment in “index.html” comes before
-the <code class="docutils literal notranslate"><span class="pre">extend</span></code>, that line gets inserted before the beginning of
-“layout.html”, making <code class="docutils literal notranslate"><span class="pre">sidebar_enabled</span></code> available anywhere within the
-“layout.html” code (a somewhat more sophisticated version of this is
-used in the <strong>welcome</strong> app).</p>
-<p>It is also worth pointing out that the variables returned by the
-controller function are available not only in the function’s main view,
-but in all of its extended and included views as well.</p>
-<p>The argument of an <code class="docutils literal notranslate"><span class="pre">extend</span></code> or <code class="docutils literal notranslate"><span class="pre">include</span></code> (i.e., the extended or
-included view name) can be a Python variable (though not a Python
-expression). However, this imposes a limitation – views that use
-variables in <code class="docutils literal notranslate"><span class="pre">extend</span></code> or <code class="docutils literal notranslate"><span class="pre">include</span></code> statements cannot be bytecode
-compiled. As noted above, bytecode-compiled views include the entire
-tree of extended and included views, so the specific extended and
-included views must be known at compile time, which is not possible if
-the view names are variables (whose values are not determined until run
-time). Because bytecode compiling views can provide a significant speed
-boost, using variables in <code class="docutils literal notranslate"><span class="pre">extend</span></code> and <code class="docutils literal notranslate"><span class="pre">include</span></code> should generally be
-avoided if possible.</p>
-<p>In some cases, an alternative to using a variable in an <code class="docutils literal notranslate"><span class="pre">include</span></code> is
-simply to place regular <code class="docutils literal notranslate"><span class="pre">[[include</span> <span class="pre">...]]</span></code> directives inside an
-<code class="docutils literal notranslate"><span class="pre">if...else</span></code> block.</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[if some_condition:]]
-[[include &#39;this_view.html&#39;]]
-[[else:]]
-[[include &#39;that_view.html&#39;]]
-[[pass]]
-</pre></div>
-</div>
-<p>The above code does not present any problem for bytecode compilation
-because no variables are involved. Note, however, that the bytecode
-compiled view will actually include the Python code for both
-“this_view.html” and “that_view.html”, though only the code for one of
-those views will be executed, depending on the value of
-<code class="docutils literal notranslate"><span class="pre">some_condition</span></code>.</p>
-<p>Keep in mind, this only works for <code class="docutils literal notranslate"><span class="pre">include</span></code> – you cannot place
-<code class="docutils literal notranslate"><span class="pre">[[extend</span> <span class="pre">...]]</span></code> directives inside <code class="docutils literal notranslate"><span class="pre">if...else</span></code> blocks.</p>
-<p>Layouts are used to encapsulate page commonality (headers, footers,
-menus), and though they are not mandatory, they will make your
-application easier to write and maintain. In particular, we suggest
-writing layouts that take advantage of the following variables that can
-be set in the controller. Using these well known variables will help
-make your layouts interchangeable:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>response.title
-response.subtitle
-response.meta.author
-response.meta.keywords
-response.meta.description
-response.flash
-response.menu
-response.files
-</pre></div>
-</div>
-<p>Except for <code class="docutils literal notranslate"><span class="pre">menu</span></code> and <code class="docutils literal notranslate"><span class="pre">files</span></code>, these are all strings and their
-meaning should be obvious.</p>
-<p><code class="docutils literal notranslate"><span class="pre">response.menu</span></code> menu is a list of 3-tuples or 4-tuples. The three
-elements are: the link name, a boolean representing whether the link is
-active (is the current link), and the URL of the linked page. For
-example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span><span class="o">.</span><span class="n">menu</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Google&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;http://www.google.com&#39;</span><span class="p">,</span> <span class="p">[]),</span>
-                 <span class="p">(</span><span class="s1">&#39;Index&#39;</span><span class="p">,</span>  <span class="kc">True</span><span class="p">,</span>  <span class="n">URL</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">),</span> <span class="p">[])]</span>
-</pre></div>
-</div>
-<p>The fourth tuple element is an optional sub-menu.</p>
-<p><code class="docutils literal notranslate"><span class="pre">response.files</span></code> is a list of CSS and JS files that are needed by your
-page.</p>
-<p>We also recommend that you use:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[include &#39;py4web_ajax.html&#39;]]
-</pre></div>
-</div>
-<p>in the HTML head, since this will include the jQuery libraries and
-define some backward-compatible JavaScript functions for special effects
-and Ajax. “py4web_ajax.html” includes the <code class="docutils literal notranslate"><span class="pre">response.meta</span></code> tags in the
-view, jQuery base, the calendar datepicker, and all required CSS and JS
-<code class="docutils literal notranslate"><span class="pre">response.files</span></code>.</p>
-<div class="section" id="default-page-layout">
-<h3>Default page layout<a class="headerlink" href="#default-page-layout" title="Permalink to this headline">¶</a></h3>
-<p>The “views/layout.html” that ships with the py4web scaffolding
-application <strong>welcome</strong> (stripped down of some optional parts) is quite
-complex but it has the following structure:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
-<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span> <span class="p">/&gt;</span>
-  <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>[[=response.title or request.application]]<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
-  ...
-  <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;static&#39;, &#39;js/modernizr.custom.js&#39;)]]&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-
-  [[
-  response.files.append(URL(&#39;static&#39;, &#39;css/py4web.css&#39;))
-  response.files.append(URL(&#39;static&#39;, &#39;css/bootstrap.min.css&#39;))
-  response.files.append(URL(&#39;static&#39;, &#39;css/bootstrap-responsive.min.css&#39;))
-  response.files.append(URL(&#39;static&#39;, &#39;css/py4web_bootstrap.css&#39;))
-  ]]
-
-  [[include &#39;py4web_ajax.html&#39;]]
-
-  [[
-  # using sidebars need to know what sidebar you want to use
-  left_sidebar_enabled = globals().get(&#39;left_sidebar_enabled&#39;, False)
-  right_sidebar_enabled = globals().get(&#39;right_sidebar_enabled&#39;, False)
-  middle_columns = {0:&#39;span12&#39;, 1:&#39;span9&#39;, 2:&#39;span6&#39;}[
-    (left_sidebar_enabled and 1 or 0)+(right_sidebar_enabled and 1 or 0)]
-  ]]
-
-  [[block head]][[end]]
-<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
-
-<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
-  <span class="c">&lt;!-- Navbar ================================================== --&gt;</span>
-  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;navbar navbar-inverse navbar-fixed-top&quot;</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;flash&quot;</span><span class="p">&gt;</span>[[=response.flash or &#39;&#39;]]<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;navbar-inner&quot;</span><span class="p">&gt;</span>
-      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;container&quot;</span><span class="p">&gt;</span>
-        [[=response.logo or &#39;&#39;]]
-        <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;navbar&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;nav pull-right&quot;</span><span class="p">&gt;</span>
-          [[=&#39;auth&#39; in globals() and auth.navbar(mode=&quot;dropdown&quot;) or &#39;&#39;]]
-        <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
-        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;nav-collapse&quot;</span><span class="p">&gt;</span>
-          [[if response.menu:]]
-          [[=MENU(response.menu)]]
-          [[pass]]
-        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span><span class="c">&lt;!--/.nav-collapse --&gt;</span>
-      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span><span class="c">&lt;!--/top navbar --&gt;</span>
-
-  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;container&quot;</span><span class="p">&gt;</span>
-    <span class="c">&lt;!-- Masthead ================================================== --&gt;</span>
-    <span class="p">&lt;</span><span class="nt">header</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;mastheader row&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;header&quot;</span><span class="p">&gt;</span>
-        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;span12&quot;</span><span class="p">&gt;</span>
-            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;page-header&quot;</span><span class="p">&gt;</span>
-                <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>
-                    [[=response.title or request.application]]
-                    <span class="p">&lt;</span><span class="nt">small</span><span class="p">&gt;</span>[[=response.subtitle or &#39;&#39;]]<span class="p">&lt;/</span><span class="nt">small</span><span class="p">&gt;</span>
-                <span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
-            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-    <span class="p">&lt;/</span><span class="nt">header</span><span class="p">&gt;</span>
-
-    <span class="p">&lt;</span><span class="nt">section</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;main&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;main row&quot;</span><span class="p">&gt;</span>
-        [[if left_sidebar_enabled:]]
-        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;span3 left-sidebar&quot;</span><span class="p">&gt;</span>
-            [[block left_sidebar]]
-            <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;</span>Left Sidebar<span class="p">&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
-            <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-            [[end]]
-        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-        [[pass]]
-
-        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;[[=middle_columns]]&quot;</span><span class="p">&gt;</span>
-            [[block center]]
-            [[include]]
-            [[end]]
-        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-
-        [[if right_sidebar_enabled:]]
-        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;span3&quot;</span><span class="p">&gt;</span>
-            [[block right_sidebar]]
-            <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;</span>Right Sidebar<span class="p">&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
-            <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-            [[end]]
-        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-        [[pass]]
-    <span class="p">&lt;/</span><span class="nt">section</span><span class="p">&gt;</span><span class="c">&lt;!--/main--&gt;</span>
-
-    <span class="c">&lt;!-- Footer ================================================== --&gt;</span>
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;row&quot;</span><span class="p">&gt;</span>
-        <span class="p">&lt;</span><span class="nt">footer</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;footer span12&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;footer&quot;</span><span class="p">&gt;</span>
-            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;footer-content&quot;</span><span class="p">&gt;</span>
-                [[block footer]] <span class="c">&lt;!-- this is default footer --&gt;</span>
-                ...
-                [[end]]
-            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-        <span class="p">&lt;/</span><span class="nt">footer</span><span class="p">&gt;</span>
-    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-
-  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> <span class="c">&lt;!-- /container --&gt;</span>
-
-  <span class="c">&lt;!-- The javascript =============================================</span>
-<span class="c">       (Placed at the end of the document so the pages load faster) --&gt;</span>
-  <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;static&#39;, &#39;js/bootstrap.min.js&#39;)]]&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;static&#39;, &#39;js/py4web_bootstrap.js&#39;)]]&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-  [[if response.google_analytics_id:]]
-    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;static&#39;, &#39;js/analytics.js&#39;)]]&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span><span class="p">&gt;</span>
-    <span class="nx">analytics</span><span class="p">.</span><span class="nx">initialize</span><span class="p">({</span>
-      <span class="s1">&#39;Google Analytics&#39;</span><span class="o">:</span><span class="p">{</span><span class="nx">trackingId</span><span class="o">:</span><span class="s1">&#39;[[=response.google_analytics_id]]&#39;</span><span class="p">}</span>
-    <span class="p">});&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-  [[pass]]
-<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
-</pre></div>
-</div>
-<p>There are a few features of this default layout that make it very easy
-to use and customize:</p>
-<ul class="simple">
-<li><p>It is written in HTML5 and uses the “modernizr” library for backward
-compatibility. The actual layout includes some extra conditional
-statements required by IE and they are omitted for brevity.</p></li>
-<li><p>It displays both <code class="docutils literal notranslate"><span class="pre">response.title</span></code> and <code class="docutils literal notranslate"><span class="pre">response.subtitle</span></code> which
-can be set in a model or a controller. If they are not set, it adopts
-the application name as title.</p></li>
-<li><p>It includes the <code class="docutils literal notranslate"><span class="pre">py4web_ajax.html</span></code> file in the header which
-generated all the link and script import statements.</p></li>
-<li><p>It uses a modified version of Twitter Bootstrap for flexible layouts
-which works on mobile devices and re-arranges columns to fit small
-screens.</p></li>
-<li><p>It uses “analytics.js” to connect to Google Analytics.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">[[=auth.navbar(...)]]</span></code> displays a welcome to the current user
-and links to the auth functions like login, logout, register, change
-password, etc. depending on context. <code class="docutils literal notranslate"><span class="pre">auth.navbar</span></code> is a helper
-factory and its output can be manipulated as any other helper. It is
-placed in an expression to check for auth definition, the expression
-evaluates to ’’ in case auth is undefined.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">[[=MENU(response.menu)]]</span></code> displays the menu structure as
-<code class="docutils literal notranslate"><span class="pre">&lt;ul&gt;...&lt;/ul&gt;</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">[[include]]</span></code> is replaced by the content of the extending view when
-the page is rendered.</p></li>
-<li><p>By default it uses a conditional three column (the left and right
-sidebars can be turned off by the extending views)</p></li>
-<li><p>It uses the following classes: page-header, main, footer.</p></li>
-<li><p>It contains the following blocks: head, left_sidebar, center,
-right_sidebar, footer.</p></li>
-</ul>
-<p>In views, you can turn on and customize sidebars as follows:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[left_sidebar_enabled=True]]
-[[extend &#39;layout.html&#39;]]
-
-This text goes in center
-
-[[block left_sidebar]]
-This text goes in sidebar
-[[end]]
-</pre></div>
-</div>
-</div>
-<div class="section" id="customizing-the-default-layout">
-<h3>Customizing the default layout<a class="headerlink" href="#customizing-the-default-layout" title="Permalink to this headline">¶</a></h3>
-<p>Customizing the default layout without editing is easy because the
-welcome application is based on Twitter Bootstrap which is well
-documented and supports themes. In py4web four static files which are
-relevant to style:</p>
-<ul class="simple">
-<li><p>“css/py4web.css” contains py4web specific styles</p></li>
-<li><p>“css/bootstrap.min.css” contains the Twitter Bootstrap CSS style</p></li>
-<li><p>“css/py4web_bootstrap.css” which overrides some Bootstrap styles to
-conform to py4web needs.</p></li>
-<li><p>“js/bootstrap.min.js” which includes the libraries for menu effects,
-modals, panels.</p></li>
-</ul>
-<p>To change colors and background images, try append the following code to
-layout.html header:</p>
-<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="nt">style</span><span class="o">&gt;</span>
-<span class="nt">body</span> <span class="p">{</span> <span class="k">background</span><span class="p">:</span> <span class="nb">url</span><span class="p">(</span><span class="s1">&#39;images/background.png&#39;</span><span class="p">)</span> <span class="kc">repeat-x</span> <span class="mh">#3A3A3A</span><span class="p">;</span> <span class="p">}</span>
-<span class="nt">a</span> <span class="p">{</span> <span class="k">color</span><span class="p">:</span> <span class="mh">#349C01</span><span class="p">;</span> <span class="p">}</span>
-<span class="p">.</span><span class="nc">page-header</span> <span class="nt">h1</span> <span class="p">{</span> <span class="k">color</span><span class="p">:</span> <span class="mh">#349C01</span><span class="p">;</span> <span class="p">}</span>
-<span class="p">.</span><span class="nc">page-header</span> <span class="nt">h2</span> <span class="p">{</span> <span class="k">color</span><span class="p">:</span> <span class="kc">white</span><span class="p">;</span> <span class="k">font-style</span><span class="p">:</span> <span class="kc">italic</span><span class="p">;</span> <span class="k">font-size</span><span class="p">:</span> <span class="mi">14</span><span class="kt">px</span><span class="p">;}</span>
-<span class="p">.</span><span class="nc">statusbar</span> <span class="p">{</span> <span class="k">background</span><span class="p">:</span> <span class="mh">#333333</span><span class="p">;</span> <span class="k">border-bottom</span><span class="p">:</span> <span class="mi">5</span><span class="kt">px</span> <span class="mh">#349C01</span> <span class="kc">solid</span><span class="p">;</span> <span class="p">}</span>
-<span class="p">.</span><span class="nc">statusbar</span> <span class="nt">a</span> <span class="p">{</span> <span class="k">color</span><span class="p">:</span> <span class="kc">white</span><span class="p">;</span> <span class="p">}</span>
-<span class="p">.</span><span class="nc">footer</span> <span class="p">{</span> <span class="k">border-top</span><span class="p">:</span> <span class="mi">5</span><span class="kt">px</span> <span class="mh">#349C01</span> <span class="kc">solid</span><span class="p">;</span> <span class="p">}</span>
-<span class="o">&lt;/</span><span class="nt">style</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<p>Of course you can also completely replace the “layout.html” and
-“py4web.css” files with your own.</p>
-</div>
-<div class="section" id="mobile-development">
-<h3>Mobile development<a class="headerlink" href="#mobile-development" title="Permalink to this headline">¶</a></h3>
-<p>Although the default layout.html is designed to be mobile-friendly, one
-may sometimes need to use different views when a page is visited by a
-mobile device.</p>
-<p>To make developing for desktop and mobile devices easier, py4web
-includes the <code class="docutils literal notranslate"><span class="pre">&#64;mobilize</span></code> decorator. This decorator is applied to
-actions that should have a normal view and a mobile view. This is
-demonstrated here:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gluon.contrib.user_agent_parser</span> <span class="kn">import</span> <span class="n">mobilize</span>
-<span class="nd">@mobilize</span>
-<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Notice that the decorator must be imported before using it in a
-controller. When the “index” function is called from a regular browser
-(desktop computer), py4web will render the returned dictionary using the
-view “[controller]/index.html”. However, when it is called by a mobile
-device, the dictionary will be rendered by
-“[controller]/index.mobile.html”. Notice that mobile views have the
-“mobile.html” extension.</p>
-<p>Alternatively you can apply the following logic to make all views mobile
-friendly:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user_agent</span><span class="p">()</span><span class="o">.</span><span class="n">is_mobile</span><span class="p">:</span>
-    <span class="n">response</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.html&#39;</span><span class="p">,</span> <span class="s1">&#39;.mobile.html&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The task of creating the “*.mobile.html” views is left to the developer
-but we strongly suggest using the “jQuery Mobile” plugin which makes the
-task very easy.</p>
-</div>
-</div>
-<div class="section" id="functions-in-views">
-<h2>Functions in views<a class="headerlink" href="#functions-in-views" title="Permalink to this headline">¶</a></h2>
-<p>Consider this “layout.html”:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">html</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
-    <span class="p">[[</span><span class="n">include</span><span class="p">]]</span>
-    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sidebar&quot;</span><span class="o">&gt;</span>
-      <span class="p">[[</span><span class="k">if</span> <span class="s1">&#39;mysidebar&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():]][[</span><span class="n">mysidebar</span><span class="p">()]][[</span><span class="k">else</span><span class="p">:]]</span>
-        <span class="n">my</span> <span class="n">default</span> <span class="n">sidebar</span>
-      <span class="p">[[</span><span class="k">pass</span><span class="p">]]</span>
-    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
-  <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
-<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<p>and this extending view</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[def mysidebar():]]
-my new sidebar!!!
-[[return]]
-[[extend &#39;layout.html&#39;]]
-Hello World!!!
-</pre></div>
-</div>
-<p>Notice the function is defined before the <code class="docutils literal notranslate"><span class="pre">[[extend...]]</span></code> statement –
-this results in the function being created before the “layout.html” code
-is executed, so the function can be called anywhere within
-“layout.html”, even before the <code class="docutils literal notranslate"><span class="pre">[[include]]</span></code>. Also notice the function
-is included in the extended view without the <code class="docutils literal notranslate"><span class="pre">=</span></code> prefix.</p>
-<p>The code generates the following output:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
-    Hello World!!!
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;sidebar&quot;</span><span class="p">&gt;</span>
-      my new sidebar!!!
-    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
-</pre></div>
-</div>
-<p>Notice that the function is defined in HTML (although it could also
-contain Python code) so that <code class="docutils literal notranslate"><span class="pre">response.write</span></code> is used to write its
-content (the function does not return the content). This is why the
-layout calls the view function using <code class="docutils literal notranslate"><span class="pre">[[mysidebar()]]</span></code> rather than
-<code class="docutils literal notranslate"><span class="pre">[[=mysidebar()]]</span></code>. Functions defined in this way can take arguments.</p>
-</div>
-<div class="section" id="blocks-in-views">
-<h2>Blocks in views<a class="headerlink" href="#blocks-in-views" title="Permalink to this headline">¶</a></h2>
-<p>The main way to make a view more modular is by using
-<code class="docutils literal notranslate"><span class="pre">[[block</span> <span class="pre">...]]</span></code>s and this mechanism is an alternative to the
-mechanism discussed in the previous section.</p>
-<p>To understand how this works, consider apps based on the scaffolding app
-welcome, which has a view layout.html. This view is extended by the view
-<code class="docutils literal notranslate"><span class="pre">default/index.html</span></code> via <code class="docutils literal notranslate"><span class="pre">[[extend</span> <span class="pre">'layout.html']]</span></code>. The contents of
-layout.html predefine certain blocks with certain default content, and
-these are therefore included into default/index.html.</p>
-<p>You can override these default content blocks by enclosing your new
-content inside the same block name. The location of the block in the
-layout.html is not changed, but the contents is.</p>
-<p>Here is a simplifed version. Imagine this is “layout.html”:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">html</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
-    <span class="p">[[</span><span class="n">include</span><span class="p">]]</span>
-    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;sidebar&quot;</span><span class="o">&gt;</span>
-      <span class="p">[[</span><span class="n">block</span> <span class="n">mysidebar</span><span class="p">]]</span>
-        <span class="n">my</span> <span class="n">default</span> <span class="n">sidebar</span> <span class="p">(</span><span class="n">this</span> <span class="n">content</span> <span class="n">to</span> <span class="n">be</span> <span class="n">replaced</span><span class="p">)</span>
-      <span class="p">[[</span><span class="n">end</span><span class="p">]]</span>
-    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
-  <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
-<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<p>and this is a simple extending view <code class="docutils literal notranslate"><span class="pre">default/index.html</span></code>:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
-Hello World!!!
-[[block mysidebar]]
-my new sidebar!!!
-[[end]]
-</pre></div>
-</div>
-<p>It generates the following output, where the content is provided by the
-over-riding block in the extending view, yet the enclosing DIV and class
-comes from layout.html. This allows consistency across views:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
-    Hello World!!!
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;sidebar&quot;</span><span class="p">&gt;</span>
-        my new sidebar!!!
-    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
-</pre></div>
-</div>
-<p>The real layout.html defines a number of useful blocks, and you can
-easily add more to match the layout your desire.</p>
-<p>You can have many blocks, and if a block is present in the extended view
-but not in the extending view, the content of the extended view is used.
-Also, notice that unlike with functions, it is not necessary to define
-blocks before the <code class="docutils literal notranslate"><span class="pre">[[extend</span> <span class="pre">...]]</span></code> – even if defined after the
-<code class="docutils literal notranslate"><span class="pre">extend</span></code>, they can be used to make substitutions anywhere in the
-extended view.</p>
-<p>Inside a block, you can use the expression <code class="docutils literal notranslate"><span class="pre">[[super]]</span></code> to include the
-content of the parent. For example, if we replace the above extending
-view with:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
-Hello World!!!
-[[block mysidebar]]
-[[super]]
-my new sidebar!!!
-[[end]]
-</pre></div>
-</div>
-<p>we get:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
-    Hello World!!!
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;sidebar&quot;</span><span class="p">&gt;</span>
-        my default sidebar
-        my new sidebar!
-    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
-</pre></div>
-</div>
-</div>
 </div>
 
 
@@ -1336,37 +875,29 @@ my new sidebar!!!
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="chapter-11.html" class="btn btn-neutral float-right" title="Internationalization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="chapter-09.html" class="btn btn-neutral float-left" title="YATL Template Language" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="chapter-11.html" class="btn btn-neutral float-right" title="Internationalization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="chapter-09.html" class="btn btn-neutral float-left" title="YATL Template Language" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, BSDv3 License
+        &#169; Copyright 2020, BSDv3 License.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -1385,7 +916,7 @@ my new sidebar!!!
      <label for="switch"></label>
      </span>
       
-      v: 1.20210426.1
+      v: 1.20210522.2
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
