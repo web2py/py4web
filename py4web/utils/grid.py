@@ -455,6 +455,7 @@ class Grid:
                 db[self.tablename],
                 record=self.record_id,
                 readonly=readonly,
+                deletable=self.param.deletable,
                 formstyle=self.param.formstyle,
                 **attrs,
             )
