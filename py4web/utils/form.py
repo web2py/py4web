@@ -169,7 +169,7 @@ class RadioWidget:
         field_options = [
             [k, v, (not k is None and k in value)]
             for k, v in get_options(field.requires)
-            if k is not ""
+            if k != ""
         ]
         for k, v, selected in field_options:
             control.append(
