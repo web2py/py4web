@@ -19,6 +19,7 @@ class SSO(object):
 
     def __init__(self, **parameters):
         self.parameters = parameters
+        self.next = URL('index') # Destination after login succeeds
 
     def get_login_url(self):
         """returns the url for login"""
@@ -26,6 +27,7 @@ class SSO(object):
 
     def handle_request(self, auth, path, get_vars, post_vars):
         if path == "login":
+            self.next = request.query.get('next') or URL('index')
             redirect(self.get_login_url())
         elif path == "callback":
             self._handle_callback(auth, get_vars)
@@ -68,7 +70,7 @@ class SSO(object):
                 data["id"] = data.get("username") or data.get("email")
         user_id = data.get("id")
         auth.store_user_in_session(user_id)
-        redirect(URL("index"))
+        redirect(self.next)
 
     @staticmethod
     def _build_url(base, data):
