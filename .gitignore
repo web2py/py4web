@@ -41,6 +41,7 @@ logs/
 password.txt
 deployment_tools/gae/lib
 deployment_tools/gae/apps
+deployment_tools/gae/requirements.txt
 py4web/assets
 workspace.code-workspace
 venv
