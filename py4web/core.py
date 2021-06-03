@@ -410,7 +410,31 @@ class Flash(Fixture):
 #########################################################################################
 
 
-class BaseTemplate(Fixture):
+class Template(Fixture):
+    base_path = os.path.abspath(os.environ["PY4WEB_APPS_FOLDER"])
+    engines = {
+        (base_path, "[[ ]]"): Renoir(path=base_path, delimiters=("[[","]]"))
+    }
+
+    @classmethod
+    def default_engine(cls):
+         return cls.engines[(cls.base_path, "[[ ]]")]
+
+    def __init__(self, filename, path=None, delimiters="[[ ]]"):
+        self.filename = filename
+        self.path = path
+        self.delimiters = delimiters
+
+    def engine(self, path):
+        engine_specs = (path, self.delimiters)
+        if engine_specs not in self.engines:
+            self.engines[engine_specs] = Renoir(
+                path=path,
+                delimiters=self.delimiters.split(" "),
+                reload=True
+            )
+        return self.engines[engine_specs]
+
     def transform(self, output, shared_data=None):
         if not isinstance(output, dict):
             return output
@@ -423,49 +447,13 @@ class BaseTemplate(Fixture):
         if shared_data:
             context.update(shared_data.get("template_context", {}))
         context.update(output)
-        return self.engine.render(self.get_filepath(), context)
-
-    def _app_filepath(self):
-        path = os.path.join(request.app_name, "templates")
+        path = self.path or os.path.join(self.base_path, request.app_name, "templates")
         filename = os.path.join(path, self.filename)
         if not os.path.exists(filename):
             generic_filename = os.path.join(path, "generic.html")
             if os.path.exists(generic_filename):
                 filename = generic_filename
-        return filename
-
-
-class Template(BaseTemplate):
-    def __init__(self, filename, path=None, delimiters="[[ ]]"):
-        self.filename = filename
-        if path:
-            self.get_filepath = self._fixed_filepath
-        else:
-            path = os.path.abspath(os.environ["PY4WEB_APPS_FOLDER"])
-            self.get_filepath = self._app_filepath
-        self.engine = Renoir(
-            path=path,
-            delimiters=delimiters.split(" "),
-            reload=True
-        )
-
-    def _fixed_filepath(self):
-        if not os.path.exists(os.path.join(self.engine.path, self.filename)):
-            if os.path.exists(os.path.join(self.engine.path, "generic.html")):
-                return "generic.html"
-        return self.filename
-
-
-class AutoTemplate(BaseTemplate):
-    engine = Renoir(
-        path=os.path.abspath(os.environ["PY4WEB_APPS_FOLDER"]),
-        delimiters=("[[", "]]"),
-        reload=True
-    )
-
-    def __init__(self, filename):
-        self.filename = filename
-        self.get_filepath = self._app_filepath
+        return self.engine(path).render(filename, context)
 
 
 #########################################################################################
@@ -732,7 +720,7 @@ class action:
             stack.extend(getattr(fixture, "__prerequisites__", ()))
         for fixture in reversed(reversed_fixtures):
             if isinstance(fixture, str):
-                fixture = AutoTemplate(fixture)
+                fixture = Template(fixture)
             if not fixture in fixtures:
                 fixtures.append(fixture)
 
@@ -1166,7 +1154,7 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
         response.status = code
         return json.dumps(context)
     # else - return html error-page
-    return AutoTemplate.engine._render(
+    return Template.default_engine()._render(
         '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>',
         context=context
     )
