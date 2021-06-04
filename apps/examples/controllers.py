@@ -39,7 +39,7 @@ def page_with_template():
 
 
 @action("page_with_error")
-def page_with_errorr():
+def page_with_error():
     1 / 0
 
 
@@ -55,7 +55,7 @@ def page_with_redirect():
 
 @action("target")
 def target():
-    return "tagret"
+    return "target"
 
 
 @action("page_with_parameters/<x>/<y>/<z>")
@@ -292,7 +292,7 @@ def show_a_button():
 @action.uses("auth_forms.html", db, session, T, auth)
 def auth_forms():
     disabled = False
-    # this is experimntal, we must disabld forms that rquired a logged in user
+    # this is experimntal, we must disable forms that require a logged in user
     if not auth.is_logged_in:
         disabled = "disabled"
     return dict(
