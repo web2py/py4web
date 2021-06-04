@@ -41,15 +41,13 @@ import jwt  # this is PyJWT
 import pluralize
 import pydal
 import threadsafevariable
+import yatl
 
-from pydal._compat import to_native, to_bytes
 from renoir import Renoir
 from watchgod import awatch
 
 # Relative imports
 from . import server_adapters
-from .utils import html as html_helpers
-from .utils.sanitizer import xmlescape
 
 # Optional web servers for speed
 try:
@@ -69,6 +67,7 @@ __all__ = [
     "Flash",
     "HTTP",
     "redirect",
+    "render",
     "request",
     "required_folder",
     "response",
@@ -89,7 +88,7 @@ DEFAULTS = dict(
     PY4WEB_SERVICE_DB_URI="sqlite://service.storage",
 )
 
-HELPERS = {name: getattr(html_helpers, name) for name in html_helpers.__all__}
+HELPERS = {name: getattr(yatl.helpers, name) for name in yatl.helpers.__all__}
 
 ART = r"""
 ██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗
@@ -102,6 +101,7 @@ Is still experimental...
 """
 
 Field = pydal.Field
+render = yatl.render  # TODO: port this to Renoir
 request = bottle.request
 response = bottle.response
 abort = bottle.abort
@@ -390,7 +390,7 @@ class Flash(Fixture):
     def set(self, message, _class="", sanitize=True):
         # we set a flash message
         if sanitize:
-            message = xmlescape(message)
+            message = yatl.sanitizer.xmlescape(message)
         Flash.local.flash = {"message": message, "class": _class}
 
     def transform(self, data, shared_data=None):
@@ -510,7 +510,9 @@ class Session(Fixture):
                 request.json and request.json.get("_session_token")
             )
         if raw_token:
-            token_data = to_bytes(raw_token)
+            token_data = raw_token
+            if isinstance(token_data, str):
+                token_data = token_data.encode()
             try:
                 if self.storage:
                     json_data = self.storage.get(token_data)
@@ -542,10 +544,11 @@ class Session(Fixture):
             cookie_data = jwt.encode(
                 self.local.data, self.secret, algorithm=self.algorithm
             )
-
+        if isinstance(cookie_data, bytes):
+            cookie_data = cookie_data.decode()
         response.set_cookie(
             self.local.session_cookie_name,
-            to_native(cookie_data),
+            cookie_data,
             path="/",
             secure=self.local.secure,
             same_site=self.same_site,

@@ -9,6 +9,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "--usegevent":
 
 from .core import (
     action,  # main py4web decorator
+    render,  # yatl
     request,
     response,
     redirect,
