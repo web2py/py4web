@@ -52,7 +52,8 @@ GET and for the POST of the form:
    from py4web.utils.dbstore import DBStore
    from py4web.utils.form import Form, FormStyleBulma
 
-   db = DAL('sqlite:memory')
+   DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
+   db = DAL('sqlite://storage.sqlite', folder=DB_FOLDER)
    session =  Session(storage=DBStore(db))
 
    @action('form_example', method=['GET', 'POST'])
