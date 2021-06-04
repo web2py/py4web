@@ -1212,7 +1212,7 @@ class DefaultAuthForms:
             formstyle=self.formstyle,
             submit_value=self.auth.param.messages["buttons"]["submit"],
         )
-        self._process_change_password_form(form, user)
+        self._process_change_password_form(form, user, False)
         if form.accepted:
             self._set_flash("password-changed")
             self._postprocessing("reset_password", form, user)
@@ -1244,13 +1244,13 @@ class DefaultAuthForms:
             formstyle=self.formstyle,
             submit_value=self.auth.param.messages["buttons"]["submit"],
         )
-        self._process_change_password_form(form, user)
+        self._process_change_password_form(form, user, True)
         if form.accepted:
             self._set_flash("password-changed")
             self._postprocessing("change_password", form, user)
         return form
 
-    def _process_change_password_form(self, form, user):
+    def _process_change_password_form(self, form, user, check_old_password):
         if form.accepted:
             old_password = request.forms.get("old_password")
             new_password = request.forms.get("new_password")
@@ -1259,7 +1259,7 @@ class DefaultAuthForms:
                 new_password,
                 old_password,
                 check=True,
-                check_old_password=False,
+                check_old_password=check_old_password,
             )
             form.errors = res.get("errors", {})
             form.accepted = not form.errors
