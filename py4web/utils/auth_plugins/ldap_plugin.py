@@ -15,6 +15,7 @@ ldap.set_option(ldap.OPT_REFERRALS, 0)
 class LDAPPlugin(object):
 
     name = "ldap"
+    label = "LDAP"
 
     """
     to use ldap login with MS Active Directory:

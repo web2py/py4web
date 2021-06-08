@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>The Dashboard &mdash; py4web 1.20210522.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Creating your first app" href="chapter-05.html" />
+    <link rel="prev" title="Installation and Startup" href="chapter-03.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> py4web
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.20210522.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The Dashboard</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-main-web-page">The main Web page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#login-into-the-dashboard">Login into the Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>The Dashboard</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-04.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-dashboard">
+<h1>The Dashboard<a class="headerlink" href="#the-dashboard" title="Permalink to this headline">¶</a></h1>
+<p>The Dashboard is the standard web based IDE; you will surely use it
+extensively to manage the applications and check databases.
+Looking at its interface is a good way to start exploring py4web and
+its components.</p>
+<div class="section" id="the-main-web-page">
+<h2>The main Web page<a class="headerlink" href="#the-main-web-page" title="Permalink to this headline">¶</a></h2>
+<p>When you run the standard py4web program, it starts a web server with a
+main web page listening on <a class="reference external" href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> (which means that it is
+listening on the TCP port 8000 on your local PC, using the HTTP protocol).</p>
+<p>You can connect to this main page only from your local pc, using a web
+browser like Firefox or Google Chrome:</p>
+<img alt="_images/main_page.png" src="_images/main_page.png" />
+<p>The buttons are:</p>
+<ul class="simple">
+<li><p>Dashboard (<a class="reference external" href="http://127.0.0.1:8000/_dashboard">http://127.0.0.1:8000/_dashboard</a>), which we’ll describe
+in this chapter.</p></li>
+<li><p>Documentation (<a class="reference external" href="http://127.0.0.1:8000/_documentation?version=1.20201112.1">http://127.0.0.1:8000/_documentation?version=1.20201112.1</a>),
+for browsing the local copy of this Manual.</p></li>
+<li><p>Source (<a class="reference external" href="https://github.com/web2py/py4web">https://github.com/web2py/py4web</a>), pointing to the
+GitHub repository.</p></li>
+<li><p>Discuss (<a class="reference external" href="https://groups.google.com/forum/#!forum/py4web">https://groups.google.com/forum/#!forum/py4web</a>), pointing
+to the Google mail group.</p></li>
+</ul>
+</div>
+<div class="section" id="login-into-the-dashboard">
+<h2>Login into the Dashboard<a class="headerlink" href="#login-into-the-dashboard" title="Permalink to this headline">¶</a></h2>
+<p>Pressing the Dashboard button will forward you to the Dashboard login.
+Here you must insert the password that you’ve already setup (see
+<a class="reference internal" href="chapter-03.html#set-password-command-option"><span class="std std-ref">set_password command option</span></a>).
+If you don’t remember the password, you have to stop the program with
+CTRL-C, setup a new one and run the py4web again.</p>
+<img alt="_images/dashboard_login.png" src="_images/dashboard_login.png" />
+<p>After inserting the right Dashboard’s password, it will be displayed with
+all the tabs compressed.</p>
+<img alt="_images/dashboard.png" src="_images/dashboard.png" />
+<p>Click on a tab title to expand. Tabs are context dependent. For example,
+open tab “Installed Applications” and click on an installed application
+to select it.</p>
+<p>This will create new tabs “Routes”, “Files”, and “Model”
+for the selected app.</p>
+<img alt="_images/dashboard_main.png" src="_images/dashboard_main.png" />
+<p>The “Files” tab allows you to browse the folder that contains the
+selected app and edit any file that comprises the app. If you edit a
+file you must click on “Reload Apps” under the “Installed Applications”
+tab for the change to take effect (except if you use <em>watch</em> with the
+<a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>).
+If an app fails to load, its corresponding button is displayed in red.
+Click on it to see the corresponding error.</p>
+<img alt="_images/dashboard_edit.png" src="_images/dashboard_edit.png" />
+<p>The Dashboard exposes the db of all the apps using pydal RESTAPI. It
+also provides a web interface to perform search and CRUD operations.</p>
+<img alt="_images/dashboard_restapi.png" src="_images/dashboard_restapi.png" />
+<p>If a user visits an app and triggers a bug, the user is issued a
+ticket.</p>
+<img alt="_images/dashboard_error.png" src="_images/dashboard_error.png" />
+<p>The ticket is logged in py4web database. The Dashboard displays the most
+common recent issues and allows searching tickets.</p>
+<img alt="_images/dashboard_ticket.png" src="_images/dashboard_ticket.png" />
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="chapter-05.html" class="btn btn-neutral float-right" title="Creating your first app" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="chapter-03.html" class="btn btn-neutral float-left" title="Installation and Startup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, BSDv3 License.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20210522.2
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Languages</dt>
+        
+           <strong> 
+          <dd><a href="../en/index.html">en</a></dd> </strong>
+          
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+          <dd><a href="py4web_en.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_en.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ 
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

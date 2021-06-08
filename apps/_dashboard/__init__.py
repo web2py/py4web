@@ -1,30 +1,50 @@
 import base64
-import os
-import sys
-import shutil
-import zipfile
-import subprocess
-import io
 import copy
 import datetime
-import requests
+import io
+import os
+import shutil
+import subprocess
+import sys
+import uuid
+import zipfile
 
-import py4web
-from py4web import __version__, action, abort, request, response, redirect, Translator, HTTP, URL
-from py4web.core import Reloader, dumps, ErrorStorage, Session, Fixture
-from py4web.utils.factories import ActionFactory
+import requests
 from pydal.validators import CRYPT
 from yatl.helpers import BEAUTIFY
-from .utils import *
+
+import py4web
+from py4web import (
+    HTTP,
+    URL,
+    Translator,
+    __version__,
+    abort,
+    action,
+    redirect,
+    request,
+    response,
+)
+from py4web.core import ErrorStorage, Fixture, Reloader, Session, dumps
+from py4web.utils.factories import ActionFactory
+
 from .diff2kryten import diff2kryten
+from .utils import *
 
 MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 FOLDER = os.environ["PY4WEB_APPS_FOLDER"]
 APP_FOLDER = os.path.dirname(__file__)
 T_FOLDER = os.path.join(APP_FOLDER, "translations")
 T = Translator(T_FOLDER)
+
+# in demo mode cannot access the local tickets db
+if MODE == 'demo':
+
+    class ErrorStorage():
+        def clear(self): pass
+        def get(self, *args, **kwargs): return None
+
 error_storage = ErrorStorage()
-db = error_storage.db
 session = Session()
 
 
@@ -54,14 +74,13 @@ def get_commits(project):
     return commits
 
 
-
 def get_branches(project):
     """dictionary of git local branches for the project"""
     output = run("git branch", project)
-    branches = {"current" : "", "other" : []}
+    branches = {"current": "", "other": []}
     for line in output.split("\n"):
         if line.startswith("* "):
-            branches["current"] = line[2: ]
+            branches["current"] = line[2:]
         elif not line == "":
             branches["other"].append(line[2:])
     return branches
@@ -85,9 +104,11 @@ class Logged(Fixture):
 authenticated = ActionFactory(Logged(session))
 session_secured = action.uses(Logged(session))
 
-@action('version')
+
+@action("version")
 def version():
     return __version__
+
 
 if MODE in ("demo", "readonly", "full"):
 
@@ -95,7 +116,7 @@ if MODE in ("demo", "readonly", "full"):
     @action.uses("index.html", session, T)
     def index():
         return dict(
-            languages=dumps(T.local.language),
+            languages=dumps(getattr(T.local, 'language', {})),
             mode=MODE,
             user_id=(session.get("user") or {}).get("id"),
         )
@@ -126,7 +147,7 @@ if MODE in ("demo", "readonly", "full"):
     @action("dbadmin")
     @action.uses(Logged(session), "dbadmin.html")
     def dbadmin():
-        return dict(languages=dumps(T.local.language))
+        return dict(languages=dumps(getattr(T.local, 'language', {})))
 
     @action("info")
     @session_secured
@@ -187,18 +208,18 @@ if MODE in ("demo", "readonly", "full"):
         if not os.path.exists(path):
             return {"status": "success", "payload": "App does not exist"}
         full_path = os.path.join(path, file_name)
-        if not full_path.startswith(path+os.sep):
+        if not full_path.startswith(path + os.sep):
             return {"status": "success", "payload": "Invalid path"}
         if os.path.exists(full_path):
             return {"status": "success", "payload": "File already exists"}
         parent = os.path.dirname(full_path)
         if not os.path.exists(parent):
             os.makedirs(parent)
-        with open(full_path, 'w') as fp:
+        with open(full_path, "w") as fp:
             if full_path.endswith(".html"):
                 fp.write('[[extend "layout.html"]]\nHello World!')
             elif full_path.endswith(".py"):
-                fp.write('# -*- coding: utf-8 -*-')
+                fp.write("# -*- coding: utf-8 -*-")
         return {"status": "success"}
 
     @action("walk/<path:path>")
@@ -256,7 +277,7 @@ if MODE in ("demo", "readonly", "full"):
         appname = sanitize(appname)
         app_dir = os.path.join(FOLDER, appname)
         store = io.BytesIO()
-        zip = zipfile.ZipFile(store, mode="w")
+        zip = zipfile.ZipFile(store, mode="w", compression=zipfile.ZIP_DEFLATED)
         for root, dirs, files in os.walk(app_dir, topdown=False):
             if not root.startswith("."):
                 for name in files:
@@ -288,7 +309,7 @@ if MODE in ("demo", "readonly", "full"):
     @action.uses("ticket.html")
     @session_secured
     def error_ticket(ticket_uuid):
-        return dict(ticket=ErrorStorage().get(ticket_uuid=ticket_uuid))
+        return dict(ticket=error_storage.get(ticket_uuid=ticket_uuid))
 
     @action("rest/<path:path>", method=["GET", "POST", "PUT", "DELETE"])
     @session_secured
@@ -332,12 +353,19 @@ if MODE in ("demo", "readonly", "full"):
             id = args[3] if len(args) == 4 else None
             policy = Policy()
             for table in db:
-                policy.set(table._tablename, 'GET', authorize=True,
-                           allowed_patterns=["**"], allow_lookup=True,
-                           fields=table.fields)
-                policy.set(table._tablename,'PUT', authorize=True, fields=table.fields)
-                policy.set(table._tablename,'POST', authorize=True, fields=table.fields)
-                policy.set(table._tablename,'DELETE', authorize=True)
+                policy.set(
+                    table._tablename,
+                    "GET",
+                    authorize=True,
+                    allowed_patterns=["**"],
+                    allow_lookup=True,
+                    fields=table.fields,
+                )
+                policy.set(table._tablename, "PUT", authorize=True, fields=table.fields)
+                policy.set(
+                    table._tablename, "POST", authorize=True, fields=table.fields
+                )
+                policy.set(table._tablename, "DELETE", authorize=True)
             data = action.uses(db, T)(
                 lambda: RestAPI(db, policy)(
                     request.method, args[2], id, request.query, request.json
@@ -408,7 +436,8 @@ if MODE == "full":
         form = request.json
         # Directory for zipped assets
         assets_dir = os.path.join(os.path.dirname(py4web.__file__), "assets")
-        target_dir = safe_join(FOLDER, form["name"])
+        app_name = form['name']
+        target_dir = safe_join(FOLDER, app_name)
         if form["type"] == "minimal":
             source = os.path.join(assets_dir, "py4web.app._minimal.zip")
             source_dir = safe_join(FOLDER, "_minimal")
@@ -443,6 +472,14 @@ if MODE == "full":
             zfile.close()
         else:
             abort(500)
+        settings = os.path.join(target_dir, "settings.py")
+        if os.path.exists(settings):
+            with open(settings) as fp:
+                data = fp.read()
+            data = data.replace("<session-secret-key>", str(uuid.uuid4()))
+            with open(settings, "w") as fp:
+                fp.write(data)
+        Reloader.import_app(app_name)
         return {"status": "success"}
 
     #
@@ -456,7 +493,9 @@ if MODE == "full":
             return "Project is not a GIT repo"
         branches = get_branches(project)
         commits = get_commits(project)
-        return dict(commits=commits, checkout=checkout, project=project, branches=branches)
+        return dict(
+            commits=commits, checkout=checkout, project=project, branches=branches
+        )
 
     @authenticated.callback()
     def checkout(project, commit):
@@ -466,26 +505,26 @@ if MODE == "full":
         run("git checkout " + commit, project)
         Reloader.import_app(project)
 
-    @action("swapbranch/<project>" , method="POST")
+    @action("swapbranch/<project>", method="POST")
     @action.uses(Logged(session))
     def swapbranch(project):
         if not is_git_repo(project):
             raise HTTP(400)
 
-        branch = request.forms.get("branches") if request.forms.get("branches") else "master"
+        branch = (
+            request.forms.get("branches") if request.forms.get("branches") else "master"
+        )
         # swap branches then go back to gitlog so new commits load
-        checkout(project,branch)
-        redirect(URL('gitlog', project))
+        checkout(project, branch)
+        redirect(URL("gitlog", project))
         return diff2kryten(patch)
-
-
 
     @action("gitshow/<project>/<commit>")
     @action.uses(Logged(session), "gitshow.html")
     def gitshow(project, commit):
         if not is_git_repo(project):
             raise HTTP(400)
-        flag = request.params.get('showfull')
+        flag = request.params.get("showfull")
         opt = ""
         if flag == "true":
             opt = " -U9999"

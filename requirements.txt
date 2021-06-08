@@ -1,13 +1,19 @@
 bottle >= 0.12
 click
+colorama
+cryptography
 tornado
 gunicorn
-gevent<=1.4.0
+gevent
+gevent-websocket
 requests
-threadsafevariable
-pyjwt >= 1.7.1
-pluralize >= 0.1.5
-yatl >= 20200711.1
-pydal >= 20200714.1
+threadsafevariable >= 1.1
+pyjwt >= 2.0.1
+pluralize >= 0.1.6
+yatl >= 20210326.1
+pydal >= 20200910.1
 python-memcached # used for testing or for optionally actually accessing memcache
 watchgod >= 0.6
+
+### for documentation only ###
+# use also docs/requirements.txt

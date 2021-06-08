@@ -1,0 +1,252 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20201127.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-02 20:25-0300\n"
+"PO-Revision-Date: 2020-12-08 10:41-0300\n"
+"Last-Translator: potranslator 1.1.5\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Translated-By: potranslator 1.1.5\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.4.2\n"
+
+#: ../../chapter-08.rst:3
+msgid "The RESTAPI"
+msgstr "A RESTAPI"
+
+#: ../../chapter-08.rst:5
+msgid ""
+"Since version 19.5.10 PyDAL includes a restful API called RestAPI. It is "
+"inspired by GraphQL but it’s not quite the same because it is less powerful "
+"but, in the spirit of web2py, more practical and easier to use. Like "
+"GraphSQL RestAPI allows a client to query for information using the GET "
+"method and allows to specify some details about the format of the response "
+"(which references to follow, and how to denormalize the data). Unlike "
+"GraphSQL it allows the server to specify a policy and restrict which "
+"queries are allowed and which one are not. They can be evaluated "
+"dynamically per request based on the user and the state of the server. As "
+"the name implied RestAPI allows all stardard methods GET, POST, PUT, and "
+"DELETE. Each of them can be enabled or disabled based on the policy, for "
+"individual tables and individual fields."
+msgstr ""
+"Desde a versão 19.5.10 PyDAL inclui uma API RESTful chamado RestAPI. É "
+"inspirado por GraphQL mas não é bem a mesma coisa, porque é menos poderoso, "
+"mas, no espírito do web2py, mais prático e mais fácil de usar. Como "
+"GraphSQL RestAPI permite que um cliente para consulta de informações usando "
+"o método GET e permite especificar alguns detalhes sobre o formato da "
+"resposta (que referências a seguir, e como desnormalizar os dados). Ao "
+"contrário GraphSQL ele permite que o servidor para especificar uma política "
+"e restringir quais consultas são permitidas e quais não são. Eles podem ser "
+"avaliados de forma dinâmica por solicitação com base no usuário e o estado "
+"do servidor. Como o nome implica RestAPI permite que todos os métodos "
+"stardard GET, POST, PUT e DELETE. Cada um deles pode ser ativado ou "
+"desativado com base na política, para tabelas individuais e campos "
+"individuais."
+
+#: ../../chapter-08.rst:18
+msgid ""
+"In the examples below we assume an app called “superheroes” and the "
+"following model:"
+msgstr ""
+"Nos exemplos abaixo assumimos um aplicativo chamado “super-heróis” e o "
+"seguinte modelo:"
+
+#: ../../chapter-08.rst:43
+msgid "We also assume the following controller ``rest.py``:"
+msgstr "Também assumimos o seguinte controlador `` rest.py``:"
+
+#: ../../chapter-08.rst:68
+msgid ""
+"The policy is per table (or \\* for all tables and per method. authorize "
+"can be True (allow), False (deny) or a function with the signature (method, "
+"tablename, record_id, get_vars, post_vars) which returns True/False. For "
+"the GET policy one can specify a list of allowed query patterns (\\* for "
+"all). A query pattern will be matched against the keys in the query string."
+msgstr ""
+"A política é por tabela (ou \\ * para todas as tabelas e por método. "
+"Autorizar pode ser verdade (permitir), False (negar) ou uma função com a "
+"assinatura (método, tablename, record_id, get_vars, post_vars) que retorna "
+"Verdadeiro / Falso . para a política GET pode especificar uma lista de "
+"padrões de consulta permitidos (\\ * para todos). um padrão de consulta "
+"será comparado com as chaves na cadeia de consulta."
+
+#: ../../chapter-08.rst:75
+msgid "The above action is exposed as:"
+msgstr "A acção acima referida é exposto como:"
+
+#: ../../chapter-08.rst:81
+msgid ""
+"**About request.POST**: keep in mind that **request.POST** only contains "
+"the form data that is posted using a **regular HTML-form** or javascript "
+"**FormData** object. If you post just plain object (e.g. ``axios."
+"post( 'path/to/api', {field:'some'} )``) you should pass **request.json** "
+"instead of request.POST, since latter will contain just raw request-body "
+"which is string, not json. See bottle.py documentation for more details."
+msgstr ""
+"** Sobre request.POST **: Manter em mente que ** ** request.POST contém "
+"apenas os dados do formulário que é publicado utilizando um formulário HTML "
+"normal ** ** ou javascript ** FormData ** objeto. Se você postar apenas "
+"objeto simples (por exemplo, `` axios.post ( 'path / to / api', {campo: "
+"'alguns'}) ``) você deve passar request.json ** ** em vez de request.POST, "
+"desde Este último irá conter request-corpo apenas cru que é corda, não "
+"json. Consulte a documentação bottle.py para mais detalhes."
+
+#: ../../chapter-08.rst:90
+msgid "RestAPI GET"
+msgstr "RestAPI GET"
+
+#: ../../chapter-08.rst:92
+msgid ""
+"The general query has the form ``{something}.eq=value`` where ``eq=`` "
+"stands for “equal”, ``gt=`` stands for “greater than”, etc. The expression "
+"can be prepended by ``not.``."
+msgstr ""
+"A consulta geral tem a forma `` {} algo .eq = value`` onde `` eq = `` "
+"significa “igual”, `` gt = `` significa “maior que”, etc. A expressão pode "
+"ser prefixado por `` not.``."
+
+#: ../../chapter-08.rst:96
+msgid ""
+"``{something}`` can be the name of a field in the table been queried as in:"
+msgstr ""
+"`` {Algo} `` pode ser o nome de um campo na tabela foi consultado como em:"
+
+#: ../../chapter-08.rst:99
+msgid "**All superheroes called “Superman”**"
+msgstr "** Todos os super-heróis chamado de “Superman” **"
+
+#: ../../chapter-08.rst:105
+msgid ""
+"It can be a the name of a field of a table referred by the table been "
+"queried as in:"
+msgstr ""
+"Pode ser um nome de um campo de uma tabela referida pela tabela foi "
+"consultado como em:"
+
+#: ../../chapter-08.rst:108
+msgid "**All superheroes with real identity “Clark Kent”**"
+msgstr "** Todos os super-heróis com a identidade real “Clark Kent” **"
+
+#: ../../chapter-08.rst:114
+msgid ""
+"It can be the name of a field of a table that refers to the table neen "
+"queried as in:"
+msgstr ""
+"Pode ser o nome de um campo de uma tabela que se refere ao neen tabela "
+"consultada como em:"
+
+#: ../../chapter-08.rst:117
+msgid "**All superheroes with any tag superpower with strength > 90**"
+msgstr ""
+"** Todos os super-heróis com qualquer superpotência tag com força> 90 **"
+
+#: ../../chapter-08.rst:123
+msgid ""
+"(here tag is the name of the link table, the preceding ``superhero`` is the "
+"name of the field that refers to the selected table and ``strength`` is the "
+"name of the field used to filter)"
+msgstr ""
+"(Aqui tag é o nome da tabela de ligação, o anterior `` superhero`` é o nome "
+"do campo que faz referência ao quadro seleccionado e `` strength`` é o nome "
+"do campo utilizado para filtro)"
+
+#: ../../chapter-08.rst:127
+msgid ""
+"It can also be a field of the table referenced by a many-to-many linked "
+"table as in:"
+msgstr ""
+"Ele também pode ser um campo da tabela referenciada por uma tabela de "
+"muitos-para-muitos ligado como em:"
+
+#: ../../chapter-08.rst:130
+msgid "**All superheroes with the flight power**"
+msgstr "** Todos os super-heróis com o poder de vôo **"
+
+#: ../../chapter-08.rst:136
+msgid "The key to understand the syntax above is to break it as follows:"
+msgstr ""
+"A chave para entender a sintaxe acima é para quebrá-lo da seguinte forma:"
+
+#: ../../chapter-08.rst:142
+msgid "and read it as:"
+msgstr "e lê-lo como:"
+
+#: ../../chapter-08.rst:144
+msgid ""
+"select records of table **superhero** referred by field **superhero** of "
+"table **tag** when the **superpower** field of said table points to a "
+"record with **description** **eq**\\ ual to “Flight”."
+msgstr ""
+"selecionar registros da tabela ** super-herói ** referido pelo campo ** "
+"super-herói ** da tabela ** tag ** quando a superpotência ** ** campo dos "
+"ditos pontos de mesa para um recorde com a descrição ** ** ** ** eq \\ ual "
+"para “Flight”."
+
+#: ../../chapter-08.rst:148
+msgid "The query allows additional modifiers for example"
+msgstr "A consulta permite modificadores adicionais, por exemplo"
+
+#: ../../chapter-08.rst:158
+msgid ""
+"The first 3 are obvious. @model returns a JSON description of database "
+"model. Lookup denormalizes the linked field."
+msgstr ""
+"Os 3 primeiros são óbvias. @model retorna uma descrição JSON do modelo de "
+"banco de dados. Lookup desnormaliza o campo vinculado."
+
+#: ../../chapter-08.rst:161
+msgid "Here are some practical examples:"
+msgstr "Aqui estão alguns exemplos práticos:"
+
+#: ../../chapter-08.rst:163 ../../chapter-08.rst:198 ../../chapter-08.rst:273
+#: ../../chapter-08.rst:320 ../../chapter-08.rst:372 ../../chapter-08.rst:413
+#: ../../chapter-08.rst:514 ../../chapter-08.rst:912 ../../chapter-08.rst:937
+#: ../../chapter-08.rst:962 ../../chapter-08.rst:992
+msgid "URL:"
+msgstr "URL:"
+
+#: ../../chapter-08.rst:169 ../../chapter-08.rst:204 ../../chapter-08.rst:279
+#: ../../chapter-08.rst:328 ../../chapter-08.rst:381 ../../chapter-08.rst:419
+#: ../../chapter-08.rst:520 ../../chapter-08.rst:652 ../../chapter-08.rst:754
+#: ../../chapter-08.rst:837 ../../chapter-08.rst:918 ../../chapter-08.rst:943
+#: ../../chapter-08.rst:968 ../../chapter-08.rst:998
+msgid "OUTPUT:"
+msgstr "RESULTADO:"
+
+#: ../../chapter-08.rst:326
+msgid "(denormalize the real_identity and rename it identity)"
+msgstr "(Desnormalizar o real_identity e renomeá-lo de identidade)"
+
+#: ../../chapter-08.rst:378
+msgid ""
+"(denormalize the real_identity [but only fields name and job], collapse the "
+"with the identity prefix)"
+msgstr ""
+"(Desnormalizar o real_identity [mas apenas campos nome e trabalho], "
+"recolher a com o prefixo de identidade)"
+
+#: ../../chapter-08.rst:645 ../../chapter-08.rst:747 ../../chapter-08.rst:829
+msgid "URL (it's a single line, splitted for readability):"
+msgstr "URL (que é uma linha única, dividida para facilitar a leitura):"
+
+#: ../../chapter-08.rst:1017
+msgid "Notice all RestAPI response have the fields"
+msgstr "Note todas resposta RestAPI ter os campos"
+
+#: ../../chapter-08.rst:1028
+msgid "and some optional fields:"
+msgstr "e alguns campos opcionais:"
+
+#: ../../chapter-08.rst:1040
+msgid "The exact specs are subject to change since this is a new feature."
+msgstr ""
+"As especificações exatas estão sujeitos a mudança uma vez que este é um "
+"novo recurso."

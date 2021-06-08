@@ -6,6 +6,9 @@ from py4web.core import request, abort, DAL, Field
 
 
 class OAuthServer(object):
+
+    algorithms = ["HS256", "RS256"]
+
     def __init__(self, auth, secret):
         self.secret = secret
         self.auth = auth
@@ -50,7 +53,7 @@ class OAuthServer(object):
             return dict(access_token=access_token)
         elif path == "profile":
             access_token = request.environ.get("HTTP_AUTHORIZATION", "")[7:]
-            info = jwt.decode(access_token, self.secret, algorithms=["HS256"])
+            info = jwt.decode(access_token, self.secret, algorithms=self.algorithms)
             return info
         else:
             abort(404)

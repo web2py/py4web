@@ -39,7 +39,7 @@ let init = (app) => {
     };
     app.activate_editor = (path, payload) => {
         app.vue.files[path] = payload;
-        app.editor.setValue(payload);
+        app.editor.session.setValue(payload);
         var mode = app.modelist.getModeForPath(path).mode
         app.editor.session.setMode(mode);
     }
@@ -136,7 +136,7 @@ let init = (app) => {
             });
     }; 
     app.handle_upload_file = () => {
-        utils.upload_helper('upload-file', (name, data)=>{app.vue.modal.form.file=data;});
+        Q.upload_helper('upload-file', (name, data)=>{app.vue.modal.form.file=data;});
     };
     app.upload_new_app = ()=> {
         app.vue.modal = {

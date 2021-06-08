@@ -89,6 +89,7 @@ def saml2_handler(session, request, config_filename=None, entityid=None):
 
 class Saml2Plugin:
     name = "saml2"
+    label = "SAMLv2"
 
     def __init__(
         self,

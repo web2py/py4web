@@ -1,76 +1,10 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/bulma.css">
-    <link href="css/prism.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic" type="text/css" rel="stylesheet">
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-  </head>
-  <body>    
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="navbar-item" href=".">
-          <strong>PY4WEB DOCS</strong>
-        </a>
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="left-navbar"
-           onclick="this.classList.toggle('is-active');document.getElementById(this.dataset.target).classList.toggle('is-active');">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-      <div id="left-navbar" class="navbar-menu">
-        <div class="navbar-start">       
-          <a class="navbar-item" href="https://py4web.com">Home</a>
-          <a class="navbar-item" href="/_dashboard">Dashboard</a>
-        </div>
-      </div>
-    </nav>
-    <section class="section">
-      <div class="columns">
-        <div class="column is-one-quarter">
-          <div class="padded">
-            <h2>Table of Content</h2>
-            <div class="toc"></div>
-          </div>
-        </div>
-        <div class="column is-light">
-          <div class="padded">
-            <div class="page mm"></div>
-          </div>
-        </div>
-      </div>      
-    </section>
-    <footer class="footer">
-      <div class="content has-text-centered">
-        Made with py4web, about py4web, for py4web users. BSDv3 License.
-      </div>
-    </footer>
-    <script src="js/jquery.js"></script>
-    <script src="js/prism.js"></script>
-    <script src="js/markmin.js"></script>
-    <script>
-    var chapters = {};
-    var display = function(target, chapter) {
-         jQuery(target).markmin(chapters[chapter]);
-         Prism.highlightAll();
-    };
-    var go = function(target, chapter) {
-       chapter = chapter || window.location.hash.substr(1) || 'chapter-00';
-       if(chapter in chapters) {
-         display(target, chapter);
-       } else {
-         jQuery.get('chapters/en/'+chapter+'.mm').done(function(data){
-           chapters[chapter] = data;
-           display(target, chapter);
-         });
-       }
-    };
-    go('.page');
-    go('.toc','toc');
-    window.onhashchange = function(){ go('.page') };
-    </script>
-  </body>
+   <head>
+      <title>py4web Docs</title>
+      <meta http-equiv = "refresh" content="0; url='en/index.html'" />
+   </head>
+   <body>
+      <p>Please wait while you're redirected to our documentation.</p>
+   </body>
 </html>

@@ -22,6 +22,7 @@ from functools import reduce
 class x509Plugin:
 
     name = "x509"
+    label = "x509"
 
     """
     Login using x509 cert from client.

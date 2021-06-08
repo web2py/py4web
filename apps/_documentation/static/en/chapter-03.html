@@ -1,0 +1,779 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Installation and Startup &mdash; py4web 1.20210522.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/tabs.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The Dashboard" href="chapter-04.html" />
+    <link rel="prev" title="Help, resources and hints" href="chapter-02.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> py4web
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.20210522.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation and Startup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#supported-platforms-and-prerequisites">Supported platforms and prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-procedures">Setup procedures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-binaries">Installing from binaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hint-use-a-virtual-environment-virtualenv">Hint: use a virtual environment (virtualenv)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-pip">Installing from pip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-source-globally">Installing from source (globally)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-source-locally">Installing from source (locally)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#upgrading">Upgrading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-run">First run</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-options">Command line options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#call-command-option"><code class="docutils literal notranslate"><span class="pre">call</span></code> command option</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new-app-command-option"><code class="docutils literal notranslate"><span class="pre">new_app</span></code> command option</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-command-option"><code class="docutils literal notranslate"><span class="pre">run</span></code> command option</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-password-command-option"><code class="docutils literal notranslate"><span class="pre">set_password</span></code> command option</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setup-command-option"><code class="docutils literal notranslate"><span class="pre">setup</span></code> command option</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shell-command-option"><code class="docutils literal notranslate"><span class="pre">shell</span></code> command option</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-command-option"><code class="docutils literal notranslate"><span class="pre">version</span></code> command option</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#special-deployments">Special deployments</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#wsgi">WSGI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deployment-on-gcloud-aka-google-app-engine">Deployment on GCloud (aka Google App Engine)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deployment-on-pythonanywhere-com">Deployment on PythonAnywhere.com</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Installation and Startup</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-03.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation-and-startup">
+<h1>Installation and Startup<a class="headerlink" href="#installation-and-startup" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="supported-platforms-and-prerequisites">
+<h2>Supported platforms and prerequisites<a class="headerlink" href="#supported-platforms-and-prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is
+Python 3.6+, which must be installed in advance (except if you use
+binaries).</p>
+</div>
+<div class="section" id="setup-procedures">
+<h2>Setup procedures<a class="headerlink" href="#setup-procedures" title="Permalink to this headline">¶</a></h2>
+<p>There are four alternative ways of running py4web, with different level
+of difficulty and flexibility. Let’s look at the pros and cons.</p>
+<div class="section" id="installing-from-binaries">
+<h3>Installing from binaries<a class="headerlink" href="#installing-from-binaries" title="Permalink to this headline">¶</a></h3>
+<p>This is not a real installation, because you just copy a bunch of files
+on your system without modifying it anyhow. Hence this is the simplest
+solution, especially for newbies or students, because it does not
+require Python pre-installed on your system nor administrative rights.
+On the other hand, it’s experimental, it could contain an old py4web
+release and it is quite difficult to add other functionalities to it.</p>
+<p>In order to use it you just need to download the latest Windows or MacOS
+ZIP file from <a class="reference external" href="https://github.com/nicozanf/py4web-pyinstaller">this external
+repository</a>. Unzip it
+on a local folder and open a command line there. Finally run</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web-start set_password
+py4web-start run apps
+</pre></div>
+</div>
+<p>With this type of installation, remember to always use <strong>py4web-start</strong>
+instead of ‘py4web’ or ‘py4web.py’ in the following documentation.</p>
+</div>
+<div class="section" id="hint-use-a-virtual-environment-virtualenv">
+<h3>Hint: use a virtual environment (virtualenv)<a class="headerlink" href="#hint-use-a-virtual-environment-virtualenv" title="Permalink to this headline">¶</a></h3>
+<p>A full installation of any complex python application like py4web will
+surely modify the python environment of your system. In order to prevent
+any unwanted change, it’s a good habit to use a python virtual
+environment (also called <strong>virtualenv</strong>, see
+<a class="reference external" href="https://docs.python.org/3.7/tutorial/venv.html">here</a> for an
+introduction). This is a standard python feature; if you still don’t
+know virtualenv it’s a good time to start its discovery!</p>
+<p>Activate it before using any of the following <em>real</em> installation
+procedures is highly reccomended.</p>
+</div>
+<div class="section" id="installing-from-pip">
+<h3>Installing from pip<a class="headerlink" href="#installing-from-pip" title="Permalink to this headline">¶</a></h3>
+<p>Using <em>pip</em> is the standard installation procedure for py4web, since it will
+quickly install the latest stable release of py4web.</p>
+<p>From the command line</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web --no-cache-dir --user
+</pre></div>
+</div>
+<p>but do <strong>not</strong> type the <em>–user</em> option with virtualenv or a standard
+Windows installation which is already per-user.</p>
+<p>Also, if <em>python3</em> does not work, try with the simple <em>python</em> command
+instead.</p>
+<p>This will install py4web and all its dependencies on the system’s path
+only. The assets folder (that contains the py4web’s system apps) will
+also be created. After the installation you’ll be able to start py4web
+on any given working folder with</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web setup apps
+py4web set_password
+py4web run apps
+</pre></div>
+</div>
+<p>If the command py4web is not accepted, it means it’s not in the system’s
+path. On Windows, a special py4web.exe file (pointing to py4web.py) will
+be created by <em>pip</em> on the system’s path, but not if you type the
+<em>–user</em> option by mistake.</p>
+</div>
+<div class="section" id="installing-from-source-globally">
+<h3>Installing from source (globally)<a class="headerlink" href="#installing-from-source-globally" title="Permalink to this headline">¶</a></h3>
+<p>This is the traditional way for installing a program, but it works only
+on Linux and MacOS (Windows does not normally support the <cite>make</cite> utility).
+All the requirements will be installed on the
+system’s path along with links to the py4web.py program on the local
+folder</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
+cd py4web
+make assets
+make test
+make install
+py4web run apps
+</pre></div>
+</div>
+<p>Also notice that when installing in this way the content of
+<code class="docutils literal notranslate"><span class="pre">py4web/assets</span></code> folder is missing at first but it is manually created
+later with the <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">assets</span></code> command.</p>
+</div>
+<div class="section" id="installing-from-source-locally">
+<h3>Installing from source (locally)<a class="headerlink" href="#installing-from-source-locally" title="Permalink to this headline">¶</a></h3>
+<p>In this way all the requirements will be installed or upgraded on the
+system’s path, but py4web itself will only be copied
+on a local folder. This is especially useful if you already have a
+working py4web installation but you want to test a different
+one. Also, installing from sources (locally or globally) will
+install all the latest changes present on the master branch of py4web - hence
+you will gain the latest (but potentially untested) code.</p>
+<p>From the command line, go to a given working folder and then run</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/web2py/py4web.git
+cd py4web
+python3 -m pip install  --upgrade -r requirements.txt
+</pre></div>
+</div>
+<p>Once installed, you should always start it from there with:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-TGludXggYW5kIE1hY09T" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tab" tabindex="0">Linux and MacOS</button><button aria-controls="panel-0-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-0-TGludXggYW5kIE1hY09T" class="sphinx-tabs-panel group-tab" id="panel-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./py4web.py setup apps
+./py4web.py set_password
+./py4web.py run apps
+</pre></div>
+</div>
+<p>If you have installed py4web both globally and locally, notice the
+<strong>./</strong> ; it forces the run of the local folder’s py4web and not the
+globally installed one.</p>
+</div><div aria-labelledby="tab-0-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 py4web.py setup apps
+python3 py4web.py set_password
+python3 py4web.py run apps
+</pre></div>
+</div>
+<p>On Windows, the programs on the local folder are always executed before
+the ones in the path (hence you don’t need the <strong>./</strong> as on Linux).
+But running .py files directly it’s not usual and you’ll need an explicit
+python3/python command.</p>
+</div></div>
+</div>
+</div>
+<div class="section" id="upgrading">
+<h2>Upgrading<a class="headerlink" href="#upgrading" title="Permalink to this headline">¶</a></h2>
+<p>If you installed py4web from pip you can simple upgrade it with</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This will not automatically upgrade the standard apps like <strong>Dashboard</strong>
+and <strong>Default</strong>.
+You have to manually remove these apps and then run</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web setup apps
+</pre></div>
+</div>
+<p>in order to re-install them. This is a safety precaution, in case you
+made changes to those apps.</p>
+</div>
+<p>If you installed py4web in any other way, you must upgrade it manually.
+First you have to make a backup of any personal py4web work you’ve done,
+then delete the old installation folder and re-install the framework
+again.</p>
+</div>
+<div class="section" id="first-run">
+<h2>First run<a class="headerlink" href="#first-run" title="Permalink to this headline">¶</a></h2>
+<p>Running py4web using any of the previous procedure should produce an
+output like this:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web run apps
+</pre></div>
+</div>
+<img alt="_images/first_run.png" class="with-shadow" src="_images/first_run.png" />
+<p>Generally <code class="docutils literal notranslate"><span class="pre">apps</span></code> is the name of the folder where you keep all your
+apps, and can be explicitly set wit the <code class="docutils literal notranslate"><span class="pre">run</span></code> command. If that
+folder does not exist, it is created. PY4WEB expects to find at least
+two apps in this folder: <strong>Dashboard</strong> (_dashboard) and <strong>Default</strong>
+(_default). If it does not find them, it installs them.</p>
+<p><strong>Dashboard</strong> is a web based IDE. It will be described in the next chapter.</p>
+<p><strong>Default</strong> is an app that does nothing other than welcome the user.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some apps - like <strong>Dashboard</strong> and <strong>Default</strong> - have a special role in py4web and therefore their actual name starts with <code class="docutils literal notranslate"><span class="pre">_</span></code>
+to avoid conflicts with apps created by you.</p>
+</div>
+<p>Once py4web is running you can access a specific app at the following
+urls:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http://localhost:8000
+http://localhost:8000/_dashboard
+http://localhost:8000/{yourappname}/index
+</pre></div>
+</div>
+<p>In order to stop py4web, you need to hit <kbd class="kbd compound docutils literal notranslate"><kbd class="kbd docutils literal notranslate">Control</kbd>-<kbd class="kbd docutils literal notranslate">C</kbd></kbd> on the window where you run it.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>ONLY the <strong>Default</strong> app is special because if does not require the “{appname}/” prefix in the path, like all the other apps do.
+In general you may want to symlink <code class="docutils literal notranslate"><span class="pre">apps/_default</span></code> to your default app.</p>
+</div>
+<p>For all apps the trailing <code class="docutils literal notranslate"><span class="pre">/index</span></code> is optional.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For Windows: it could be that <code class="docutils literal notranslate"><span class="pre">Ctrl-C</span></code> does not work in order to stop py4web.
+In this case, try with <code class="docutils literal notranslate"><span class="pre">Ctrl-Break</span></code> or <code class="docutils literal notranslate"><span class="pre">Ctrl-Fn-Pause</span></code>.</p>
+</div>
+</div>
+<div class="section" id="command-line-options">
+<h2>Command line options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h2>
+<p>py4web provides multiple command line options which can be listed by
+running it without any argument</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web
+</pre></div>
+</div>
+<img alt="_images/command.png" class="with-shadow" src="_images/command.png" />
+<p>You can have additional help for a specific command line option by running it
+with the <strong>–help</strong> or <strong>-h</strong> argument.</p>
+<div class="section" id="call-command-option">
+<span id="id1"></span><h3><code class="docutils literal notranslate"><span class="pre">call</span></code> command option<a class="headerlink" href="#call-command-option" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web call -h
+Usage: py4web.py call [OPTIONS] APPS_FOLDER FUNC
+
+  Call a function inside apps_folder
+
+Options:
+  -Y, --yes          No prompt, assume yes to questions  [default: False]
+  --args TEXT        Arguments passed to the program/function  [default: {}]
+  -help, -h, --help  Show this message and exit.
+</pre></div>
+</div>
+</div>
+<div class="section" id="new-app-command-option">
+<span id="id2"></span><h3><code class="docutils literal notranslate"><span class="pre">new_app</span></code> command option<a class="headerlink" href="#new-app-command-option" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web new_app -h
+Usage: py4web.py new_app [OPTIONS] APPS_FOLDER APP_NAME
+
+  Create a new app copying the scaffolding one
+
+Options:
+  -Y, --yes                No prompt, assume yes to questions  [default:
+                           False]
+
+  -s, --scaffold_zip TEXT  Path to the zip with the scaffolding app
+  -help, -h, --help        Show this message and exit.
+</pre></div>
+</div>
+<p>This currently gives an error on binaries installations and from source installation
+(locally), because they miss the asset zip file.</p>
+</div>
+<div class="section" id="run-command-option">
+<span id="id3"></span><h3><code class="docutils literal notranslate"><span class="pre">run</span></code> command option<a class="headerlink" href="#run-command-option" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web run -h
+Usage: py4web.py run [OPTIONS] APPS_FOLDER
+
+  Run all the applications on apps_folder
+
+Options:
+  -Y, --yes                     No prompt, assume yes to questions
+                                [default: False]
+
+  -H, --host TEXT               Host name  [default: 127.0.0.1]
+  -P, --port INTEGER            Port number  [default: 8000]
+  -p, --password_file TEXT      File for the encrypted password  [default:
+                                password.txt]
+
+  -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|
+                geventWebSocketServer|wsgirefThreadingServer|rocketServer]
+                                server to use  [default: default]
+  -w, --number_workers INTEGER  Number of workers  [default: 0]
+  -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
+                                [default: full]
+
+  --watch [off|sync|lazy]       Watch python changes and reload apps
+                                automatically, modes: off, sync, lazy
+                                [default: off]
+
+  --ssl_cert PATH               SSL certificate file for HTTPS
+  --ssl_key PATH                SSL key file for HTTPS
+  -help, -h, --help             Show this message and exit.
+</pre></div>
+</div>
+<p>If you want py4web to automatically reload an application upon any
+changes to files of that application, you can:</p>
+<ul class="simple">
+<li><p>for immediate reloading (sync-mode): <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--watch=sync</span></code></p></li>
+<li><p>for reloading on any first incoming request to the application has
+been changed (lazy-mode): <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--watch=lazy</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">--watch</span></code> directive looks for any changes occurring to the python files under the
+/apps folder only. Any modifications to the standard py4web programs will always require a full
+restart of the framework.</p>
+</div>
+<p>The default web server used is currently Tornado, but you can change this behaviour with the <code class="docutils literal notranslate"><span class="pre">server</span></code> option.</p>
+<p>Also, for advanced users, you can specify the optional <code class="docutils literal notranslate"><span class="pre">--usegevent</span></code> directive like in this example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web --usegevent run -s geventWebSocketServer apps
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">--usegevent</span></code> directive must be used with <code class="docutils literal notranslate"><span class="pre">gevent</span></code> or <code class="docutils literal notranslate"><span class="pre">geventWebSocketServer</span></code> webservers (in order to apply monkey patching)
+and shouldn’t be used with <code class="docutils literal notranslate"><span class="pre">tornado</span></code> and <code class="docutils literal notranslate"><span class="pre">waitress</span></code>.</p>
+</div>
+</div>
+<div class="section" id="set-password-command-option">
+<span id="id4"></span><h3><code class="docutils literal notranslate"><span class="pre">set_password</span></code> command option<a class="headerlink" href="#set-password-command-option" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web set_password -h
+Usage: py4web.py set_password [OPTIONS]
+
+  Set administrator&#39;s password for the Dashboard
+
+Options:
+  --password TEXT           Password value (asked if missing)
+  -p, --password_file TEXT  File for the encrypted password  [default:
+                            password.txt]
+
+  -h, -help, --help         Show this message and exit.
+</pre></div>
+</div>
+<p>If the <code class="docutils literal notranslate"><span class="pre">--dashboard_mode</span></code> is not <code class="docutils literal notranslate"><span class="pre">demo</span></code> or <code class="docutils literal notranslate"><span class="pre">none</span></code>, every time
+py4web starts, it asks for a one-time password for you to access the
+dashboard. This is annoying. You can avoid it by storing a pdkdf2 hashed
+password in a file (by default called password.txt) with the command</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web set_password
+</pre></div>
+</div>
+<p>It will not ask again unless the file is deleted. You can also use a
+custom file name with</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web set_password my_password_file.txt
+</pre></div>
+</div>
+<p>and then ask py4web to re-use that password at runtime with</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4webt run -p my_password_file.txt apps
+</pre></div>
+</div>
+<p>Finally you can manually create the file yourself with:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -c &quot;from pydal.validators import CRYPT; open(&#39;password.txt&#39;,&#39;w&#39;).write(str(CRYPT()(input(&#39;password:&#39;))[0]))&quot;
+password: *****
+</pre></div>
+</div>
+</div>
+<div class="section" id="setup-command-option">
+<span id="id5"></span><h3><code class="docutils literal notranslate"><span class="pre">setup</span></code> command option<a class="headerlink" href="#setup-command-option" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web setup -h
+Usage: py4web.py setup [OPTIONS] APPS_FOLDER
+
+  Setup new apps folder or reinstall it
+
+Options:
+  -Y, --yes          No prompt, assume yes to questions  [default: False]
+  -help, -h, --help  Show this message and exit.
+</pre></div>
+</div>
+<p>This option create a new apps folder (or reinstall it). If needed, it
+will ask for the confirmation of the new folder’s creation and then for
+copying every standard py4web apps from the assets folder. It currently
+does nothing on binaries installations and from source installation
+(locally) - for them you can manually copy the existing apps folder to
+the new one.</p>
+</div>
+<div class="section" id="shell-command-option">
+<span id="id6"></span><h3><code class="docutils literal notranslate"><span class="pre">shell</span></code> command option<a class="headerlink" href="#shell-command-option" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web shell -h
+Usage: py4web.py shell [OPTIONS] APPS_FOLDER
+
+  Open a python shell with apps_folder&#39;s parent added to the path
+
+Options:
+  -Y, --yes          No prompt, assume yes to questions  [default: False]
+  -h, -help, --help  Show this message and exit.
+</pre></div>
+</div>
+<p>Py4web’s shell is just the regular python shell with apps added to the
+search path. Notice that the shell is for all the apps, not a single
+one. You can then import the needed modules from the apps you need to
+access.</p>
+<p>For example, inside a shell you can</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">apps.myapp</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Cache</span><span class="p">,</span> <span class="n">Translator</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.auth</span> <span class="kn">import</span> <span class="n">Auth</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="version-command-option">
+<span id="id7"></span><h3><code class="docutils literal notranslate"><span class="pre">version</span></code> command option<a class="headerlink" href="#version-command-option" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web version -h
+Usage: py4web.py version [OPTIONS]
+
+  Show versions and exit
+
+Options:
+  -a, --all          List version of all modules
+  -h, -help, --help  Show this message and exit.
+</pre></div>
+</div>
+<p>With the <code class="docutils literal notranslate"><span class="pre">-all</span></code> option you’ll get the version of all the available python
+modules, too.</p>
+</div>
+</div>
+<div class="section" id="special-deployments">
+<h2>Special deployments<a class="headerlink" href="#special-deployments" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="wsgi">
+<h3>WSGI<a class="headerlink" href="#wsgi" title="Permalink to this headline">¶</a></h3>
+<p>py4web is a standard WSGI application. So, if a full program installation it’s not
+feasible you can simply run py4web as a WSGI app. For example, using gunicorn-cli,
+create a pyton file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># py4web_wsgi.py</span>
+<span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">wsgi</span>
+<span class="n">application</span> <span class="o">=</span> <span class="n">wsgi</span><span class="p">(</span><span class="n">apps_folder</span><span class="o">=</span><span class="s2">&quot;apps&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and then start the application using cli:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>gunicorn -w 4 py4web_wsgi:application
+</pre></div>
+</div>
+<p>The wsgi function takes arguments with the same name as the command line arguments.</p>
+</div>
+<div class="section" id="deployment-on-gcloud-aka-google-app-engine">
+<h3>Deployment on GCloud (aka Google App Engine)<a class="headerlink" href="#deployment-on-gcloud-aka-google-app-engine" title="Permalink to this headline">¶</a></h3>
+<p>Login into the <a class="reference external" href="https://console.cloud.google.com/">Gcloud console</a> and
+create a new project. You will obtain a project id that looks like
+“{project_name}-{number}”.</p>
+<p>In your local file system make a new working folder and cd into it:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mkdir gae
+cd gae
+</pre></div>
+</div>
+<p>Copy the example files from py4web (assuming you have the source from
+github)</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cp /path/to/py4web/development_tools/gcloud/* ./
+</pre></div>
+</div>
+<p>Copy or symlink your <code class="docutils literal notranslate"><span class="pre">apps</span></code> folder into the gae folder, or maybe make
+a new apps folder containing an empty <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> and symlink the
+individual apps you want to deploy. You should see the following
+files/folders:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Makefile
+apps
+  __init__.py
+  ... your apps ...
+lib
+app.yaml
+main.py
+</pre></div>
+</div>
+<p>Install the Google SDK, py4web and setup the working folder:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>make install-gcloud-linux
+make setup
+gcloud config set {your email}
+gcloud config set {project id}
+</pre></div>
+</div>
+<p>(replace {your email} with your google email account and {project id}
+with the project id obtained from Google).</p>
+<p>Now every time you want to deploy your apps, simply do:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>make deploy
+</pre></div>
+</div>
+<p>You may want to customize the Makefile and app.yaml to suit your needs.
+You should not need to edit <code class="docutils literal notranslate"><span class="pre">main.py</span></code>.</p>
+</div>
+<div class="section" id="deployment-on-pythonanywhere-com">
+<h3>Deployment on PythonAnywhere.com<a class="headerlink" href="#deployment-on-pythonanywhere-com" title="Permalink to this headline">¶</a></h3>
+<p>Watch the <a class="reference external" href="https://youtu.be/Wxjl_vkLAEY">YouTube video</a> and follow the <a class="reference external" href="https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-source-pythonanywhere.md">detailed
+tutorial</a>
+. The bottle_app.py script is in
+<code class="docutils literal notranslate"><span class="pre">py4web/deployment_tools/pythonanywhere.com/bottle_app.py</span></code></p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="chapter-04.html" class="btn btn-neutral float-right" title="The Dashboard" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="chapter-02.html" class="btn btn-neutral float-left" title="Help, resources and hints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, BSDv3 License.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20210522.2
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Languages</dt>
+        
+           <strong> 
+          <dd><a href="../en/index.html">en</a></dd> </strong>
+          
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+          <dd><a href="py4web_en.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_en.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ 
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

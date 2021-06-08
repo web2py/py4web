@@ -1,0 +1,757 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20201127.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-02 20:25-0300\n"
+"PO-Revision-Date: 2020-12-08 10:19-0300\n"
+"Last-Translator: potranslator 1.1.5\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Translated-By: potranslator 1.1.5\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.4.2\n"
+
+#: ../../chapter-06.rst:3
+msgid "Fixtures"
+msgstr "Fixures"
+
+#: ../../chapter-06.rst:5
+msgid ""
+"A fixture is defined as “a piece of equipment or furniture which is fixed "
+"in position in a building or vehicle”. In our case a fixture is something "
+"attached to the action that processes an HTTP request in order to produce a "
+"response."
+msgstr ""
+"Um fixture é definido como “uma peça de equipamento ou de mobiliário, que é "
+"fixa em posição num edifício ou veículo”. No nosso caso, um dispositivo "
+"elétrico é algo ligado à ação que processa um pedido HTTP, a fim de "
+"produzir uma resposta."
+
+#: ../../chapter-06.rst:10
+msgid ""
+"When processing any HTTP requests there are some optional operations we may "
+"want to perform. For example parse the cookie to look for session "
+"information, commit a database transaction, determine the preferred "
+"language from the HTTP header and lookup proper internationalization, etc. "
+"These operations are optional. Some actions need them and some actions do "
+"not. They may also depend on each other. For example, if sessions are "
+"stored in the database and our action needs it, we may need to parse the "
+"session cookie from the header, pick up a connection from the database "
+"connection pool, and - after the action has been executed - save the "
+"session back in the database if data has changed."
+msgstr ""
+"Ao processar qualquer solicitações HTTP existem algumas operações opcionais "
+"que pode desejar executar. Por exemplo parse o cookie para procurar "
+"informações sessão, confirmar uma transação de banco de dados, determinar o "
+"idioma preferido do cabeçalho HTTP e lookup internacionalização adequada, "
+"etc. Essas operações são opcionais. Algumas ações precisam deles e algumas "
+"ações não. Eles também podem depender um do outro. Por exemplo, se as "
+"sessões são armazenadas no banco de dados e nossa ação precisa dele, talvez "
+"seja necessário analisar o cookie de sessão a partir do cabeçalho, pegar "
+"uma conexão do pool de conexão do banco de dados, e - após a ação foi "
+"executada - salvar a sessão de volta no banco de dados se os dados foram "
+"alterados."
+
+#: ../../chapter-06.rst:21
+msgid ""
+"PY4WEB fixtures provide a mechanism to specify what an action needs so that "
+"py4web can accomplish the required tasks (and skip non required ones) in "
+"the most efficient manner. Fixtures make the code efficient and reduce the "
+"need for boilerplate code."
+msgstr ""
+"Fixtures PY4WEB fornecem um mecanismo para especificar o que uma ação "
+"necessidades para que py4web pode realizar as tarefas necessárias (e "
+"ignorar os não necessários) da maneira mais eficiente. Fixures tornar o "
+"código eficiente e reduzir a necessidade de código clichê."
+
+#: ../../chapter-06.rst:26
+msgid ""
+"PY4WEB fixtures are similar to WSGI middleware and BottlePy plugin except "
+"that they apply to individual actions, not to all of them, and can depend "
+"on each other."
+msgstr ""
+"Fixtures PY4WEB são semelhantes aos middleware WSGI e BottlePy plug-in, "
+"exceto que eles se aplicam a ações individuais, não para todos eles, e pode "
+"dependem uns dos outros."
+
+#: ../../chapter-06.rst:30
+msgid ""
+"PY4WEB comes with some pre-defined fixtures for actions that need sessions, "
+"database connections, internationalization, authentication, and templates. "
+"Their usage will be explained in this chapter. The Developer is also free "
+"to add fixtures, for example, to handle a third party template language or "
+"third party session logic."
+msgstr ""
+"PY4WEB vem com alguns jogos pré-definidos para as ações que precisam "
+"sessões, conexões de banco de dados, internacionalização, autenticação e "
+"templates. A sua utilização será explicado neste capítulo. O desenvolvedor "
+"também é livre para adicionar Fixtures, por exemplo, para lidar com uma "
+"terceira língua template do partido ou a lógica sessão de terceiros."
+
+#: ../../chapter-06.rst:37
+msgid "Important about Fixtures"
+msgstr "Importante sobre Fixures"
+
+#: ../../chapter-06.rst:39
+msgid ""
+"In the examples below we will explain how to apply individual fixtures. In "
+"practice fixtures can be applied in groups. For example:"
+msgstr ""
+"Nos exemplos a seguir vamos explicar como aplicar fixtures individuais. Na "
+"prática fixtures podem ser aplicadas em grupos. Por exemplo:"
+
+#: ../../chapter-06.rst:46
+msgid "Then you can apply all of the at once with:"
+msgstr "Então você pode aplicar todo o ao mesmo tempo com:"
+
+#: ../../chapter-06.rst:56
+msgid "Py4web templates"
+msgstr "Templates Py4web"
+
+#: ../../chapter-06.rst:58
+msgid ""
+"PY4WEB, by default uses the yatl template language and provides a fixture "
+"for it."
+msgstr ""
+"PY4WEB, por padrão utiliza a linguagem de template yatl e fornece um "
+"dispositivo elétrico para ele."
+
+#: ../../chapter-06.rst:71
+msgid ""
+"Note: This example assumes that you created the application from the "
+"scaffolding app, so that the template index.html is already created for you."
+msgstr ""
+"Nota: Este exemplo assume que você criou o aplicativo da App andaimes, para "
+"que o index.html template já é criado para você."
+
+#: ../../chapter-06.rst:75
+msgid ""
+"The Template object is a Fixture. It transforms the ``dict()`` returned by "
+"the action into a string by using the ``index.html`` template file. In a "
+"later chapter we will provide an example of how to define a custom fixture "
+"to use a different template language, for example Jinja2."
+msgstr ""
+"O objeto template é um dispositivo elétrico. Ele transforma o `` dict () ' "
+"`retornado pela ação em uma string usando o arquivo` `template index."
+"html``. Em um capítulo posterior iremos fornecer um exemplo de como definir "
+"um fixture personalizado para usar uma linguagem de template diferente, por "
+"exemplo Jinja2."
+
+#: ../../chapter-06.rst:80
+msgid ""
+"Notice that since the use of templates is very common and since, most "
+"likely, every action uses a different template, we provide some syntactic "
+"sugar, and the two following lines are equivalent:"
+msgstr ""
+"Tenha em conta que uma vez que o uso de templates é muito comum e uma vez "
+"que, muito provavelmente, cada ação usa um template diferente, nós "
+"fornecemos um pouco de açúcar sintático, e as duas linhas a seguir são "
+"equivalentes:"
+
+#: ../../chapter-06.rst:89
+msgid ""
+"Notice that py4web template files are cached in RAM. The py4web caching "
+"object is described later."
+msgstr ""
+"Observe que arquivos de template py4web são armazenados em cache na memória "
+"RAM. O objecto py4web cache é descrito mais tarde."
+
+#: ../../chapter-06.rst:93
+msgid "Sessions"
+msgstr "Sessões"
+
+#: ../../chapter-06.rst:95
+msgid ""
+"The session object is also a Fixture. Here is a typical example of usage to "
+"implement a counter."
+msgstr ""
+"O objeto da sessão é também um dispositivo elétrico. Aqui está um exemplo "
+"típico de uso para implementar um contador."
+
+#: ../../chapter-06.rst:111
+msgid ""
+"Notice that the session object has the same interface as a Python "
+"dictionary."
+msgstr ""
+"Observe que o objeto da sessão tem a mesma interface como um dicionário "
+"Python."
+
+#: ../../chapter-06.rst:114
+msgid ""
+"By default the session object is stored in a cookie called, signed and "
+"encrypted, using the provided secret. If the secret changes existing "
+"sessions are invalidated. If the user switches from HTTP to HTTPS or vice "
+"versa, the user session is invalidated. Session in cookies have a small "
+"size limit (4Kbytes after being serialized and encrypted) so do not put too "
+"much into them."
+msgstr ""
+"Por padrão, o objeto da sessão é armazenado em um cookie chamado, assinadas "
+"e criptografadas, utilizando o segredo fornecido. Se as mudanças secretas "
+"as sessões existentes são invalidados. Se o usuário muda de HTTP para HTTPS "
+"ou vice-versa, a sessão do usuário é invalidado. Sessão em cookies tem um "
+"pequeno limite de tamanho (4Kbytes depois de ser serializados e "
+"criptografados) para não colocar demasiada para eles."
+
+#: ../../chapter-06.rst:121
+msgid ""
+"In py4web sessions are dictionaries but they are stored using JSON (JWT "
+"specifically) therefore you should only store objects that are JSON "
+"serializable. If the object is not JSON serializable, it will be serialized "
+"using the ``__str__`` operator and some information may be lost."
+msgstr ""
+"Em py4web sessões são dicionários, mas eles são armazenados usando JSON "
+"(JWT especificamente), portanto, você só deve armazenar objetos que são "
+"JSON serializado. Se o objeto não é JSON serializado, ele vai ser "
+"serializado usando o `` operador __str__`` e algumas informações podem ser "
+"perdidas."
+
+#: ../../chapter-06.rst:127
+msgid ""
+"By default py4web sessions never expire (unless they contain login "
+"information, but that is another story) even if an expiration can be set. "
+"Other parameters can be specified as well:"
+msgstr ""
+"Por padrão sessões py4web nunca expiram (a menos que contenham informações "
+"de login, mas isso é outra história), mesmo se uma expiração pode ser "
+"definido. Outros parâmetros podem ser especificados, bem como:"
+
+#: ../../chapter-06.rst:139
+msgid ""
+"Here ``algorithm`` is the algorithm to be used for the JWT token signature."
+msgstr ""
+"Aqui `` algorithm`` é o algoritmo a ser usado para a assinatura de token "
+"JWT."
+
+#: ../../chapter-06.rst:141
+msgid ""
+"``storage`` is a parameter that allows to specify an alternate session "
+"storage method (for example redis, or database)."
+msgstr ""
+"`` Storage`` é um parâmetro que permite especificar um método alternativo "
+"de armazenamento de sessão (por exemplo, redis, ou base de dados)."
+
+#: ../../chapter-06.rst:143
+msgid ""
+"``same_site`` is an option that prevents CSRF attacks and is enabled by "
+"default. You can read more about it `here <https://www.owasp.org/index.php/"
+"SameSite>`__."
+msgstr ""
+"`` Same_site`` é uma opção que impede CSRF ataques e é ativado por padrão. "
+"Você pode ler mais sobre ele `aqui <https://www.owasp.org/index.php/"
+"SameSite>` __."
+
+#: ../../chapter-06.rst:148
+msgid "Session in memcache"
+msgstr "Sessão em memcache"
+
+#: ../../chapter-06.rst:156
+msgid ""
+"Notice that a secret is not required when storing cookies in memcache "
+"because in this case the cookie only contains the UUID of the session."
+msgstr ""
+"Observe que um segredo não é necessária quando o armazenamento de cookies "
+"no memcache porque neste caso o cookie contém apenas o UUID da sessão."
+
+#: ../../chapter-06.rst:160
+msgid "Session in redis"
+msgstr "Sessão em Redis"
+
+#: ../../chapter-06.rst:169
+msgid ""
+"Notice: a storage object must have ``get`` and ``set`` methods and the "
+"``set`` method must allow to specify an expiration. The redis connection "
+"object has a ``ttl`` method to specify the expiration, hence we monkey "
+"patch the ``set`` method to have the expected signature and functionality."
+msgstr ""
+"Aviso: um objecto de armazenamento deve ter `` `` GET`` e métodos set`` e "
+"do método `set`` deve permitir especificar uma expiração. O objecto de "
+"ligação redis tem um método `ttl`` para especificar a expiração, remendo, "
+"portanto, que o macaco` `método set`` ter a assinatura esperada e "
+"funcionalidade."
+
+#: ../../chapter-06.rst:176
+msgid "Session in database"
+msgstr "Sessão no banco de dados"
+
+#: ../../chapter-06.rst:185
+msgid ""
+"A secret is not required when storing cookies in the database because in "
+"this case the cookie only contains the UUID of the session."
+msgstr ""
+"Um segredo não é necessária quando o armazenamento de cookies no banco de "
+"dados porque, neste caso, o cookie contém apenas o UUID da sessão."
+
+#: ../../chapter-06.rst:188
+msgid ""
+"Also this is one case when the a fixture (session) requires another fixture "
+"(db). This is handled automatically by py4web and the following are "
+"equivalent:"
+msgstr ""
+"Além disso, este é um caso em que o fixture uma (sessão) requer um outro "
+"suporte (db). Isso é feito automaticamente pelo py4web e os seguintes são "
+"equivalentes:"
+
+#: ../../chapter-06.rst:198
+msgid "Session anywhere"
+msgstr "Sessão em qualquer lugar"
+
+#: ../../chapter-06.rst:200
+msgid ""
+"You can easily store sessions in any place you want. All you need to do is "
+"provide to the ``Session`` object a ``storage`` object with both ``get`` "
+"and ``set`` methods. For example, imagine you want to store sessions on "
+"your local filesystem:"
+msgstr ""
+"Você pode facilmente armazenar sessões em qualquer lugar que você quer. "
+"Tudo que você precisa fazer é fornecer ao objeto `` Session`` um objeto `` "
+"storage`` com ambos os `` GET`` e `` métodos set``. Por exemplo, imagine "
+"que você deseja armazenar sessões no seu sistema de arquivos local:"
+
+#: ../../chapter-06.rst:226
+msgid ""
+"We leave to you as an exercise to implement expiration, limit the number of "
+"files per folder by using subfolders, and implement file locking. Yet we do "
+"not recomment storing sessions on the filesystem: it is inefficient and "
+"does not scale well."
+msgstr ""
+"Deixamos-lhe como um exercício para implementar validade, limitar o número "
+"de arquivos por pasta usando subpastas, e implementar o bloqueio de "
+"arquivos. No entanto, nós não recomment armazenar sessões no sistema de "
+"arquivos: é ineficiente e não escala bem."
+
+#: ../../chapter-06.rst:232
+msgid "Translator"
+msgstr "Tradutor"
+
+#: ../../chapter-06.rst:234
+msgid "Here is an example of usage:"
+msgstr "Aqui está um exemplo de uso:"
+
+#: ../../chapter-06.rst:248
+msgid ""
+"The string ’hello world\\` will be translated based on the "
+"internationalization file in the specified “translations” folder that best "
+"matches the HTTP ``accept-language`` header."
+msgstr ""
+"A string ‘Olá mundo \\` será traduzido com base no arquivo de "
+"internacionalização em ‘traduções’ especificados pasta que melhor "
+"corresponde ao HTTP `` aceitar-language`` cabeçalho."
+
+#: ../../chapter-06.rst:252
+msgid ""
+"Here ``Translator`` is a py4web class that extends ``pluralize.Translator`` "
+"and also implements the ``Fixture`` interface."
+msgstr ""
+"Aqui `` Translator`` é uma classe py4web que se estende `` pluralize."
+"Translator`` e também implementa a interface de `` Fixture``."
+
+#: ../../chapter-06.rst:255
+msgid ""
+"We can easily combine multiple fixtures. Here, as example, we make action "
+"with a counter that counts “visits”."
+msgstr ""
+"Podemos facilmente combinar vários Fixtures. Aqui, como exemplo, podemos "
+"tornar a acção com um contador que conta “visitas”."
+
+#: ../../chapter-06.rst:276
+msgid "Now create the following translation file ``translations/en.json``:"
+msgstr "Agora crie o seguinte arquivo de tradução `` traduções / en.json``:"
+
+#: ../../chapter-06.rst:290
+msgid ""
+"When visiting this site with the browser language preference set to english "
+"and reloading multiple times you will get the following messages:"
+msgstr ""
+"Ao visitar este site com o navegador preferência de idioma definida para "
+"Inglês e recarregar várias vezes você receberá as seguintes mensagens:"
+
+#: ../../chapter-06.rst:304
+msgid "Now try create a file called ``translations/it.json`` which contains:"
+msgstr ""
+"Agora tente criar um arquivo chamado `` traduções / it.json`` que contém:"
+
+#: ../../chapter-06.rst:318
+msgid "and set your browser preference to Italian."
+msgstr "e definir preferência seu navegador para Italiano."
+
+#: ../../chapter-06.rst:321
+msgid "The Flash fixture"
+msgstr "O fixture flash"
+
+#: ../../chapter-06.rst:323
+msgid ""
+"It is common to want to display “alerts” to the suers. Here we refer to "
+"them as flash messeges. There is a little more to it than just displaying a "
+"message to the view because flash messages can have state that must be "
+"preserved after redirection. Also they can be generated both server side "
+"and client side, there can be only one at the time, they may have a type, "
+"and they should be dismissible."
+msgstr ""
+"É comum querer exibir “alertas” para os suers. Aqui nos referimos a eles "
+"como messeges de flash. Há um pouco mais do que apenas exibir uma mensagem "
+"para o ponto de vista porque as mensagens flash podem ter estado que deve "
+"ser preservado após o redirecionamento. Também podem ser gerados lado "
+"servidor e do lado do cliente, pode haver apenas um no momento, eles podem "
+"ter um tipo, e eles devem ser descartável."
+
+#: ../../chapter-06.rst:330
+msgid "The Flash helper handles the server side of them. Here is an example:"
+msgstr ""
+"O auxiliar o Flash lida com o lado do servidor deles. Aqui está um exemplo:"
+
+#: ../../chapter-06.rst:344
+msgid "and in the template:"
+msgstr "e no template:"
+
+#: ../../chapter-06.rst:354
+msgid ""
+"By setting the value of the message in the flash helper, a flash variable "
+"is returned by the action and this trigger the JS in the template to inject "
+"the message in the ``#py4web-flash`` DIV which you can position at your "
+"convenience. Also the optional class is applied to the injected HTML."
+msgstr ""
+"Ao definir o valor da mensagem do ajudante flash, uma variável flash é "
+"retornado pela ação e o gatilho os JS no template para injetar a mensagem "
+"na `` DIV # py4web-flash`` que você pode posicionar a sua conveniência . "
+"Também a classe opcional é aplicada ao HTML injetado."
+
+#: ../../chapter-06.rst:360
+msgid ""
+"If a page is redirected after a flash is set, the flash is remembered. This "
+"is achieved by asking the browser to keep the message temporarily in a one-"
+"time cookie. After redirection the message is sent back by the browser to "
+"the server and the server sets it again automatically before returning "
+"content, unless it is overwritten by another set."
+msgstr ""
+"Se uma página é redirecionada depois de um flash está definido, o flash é "
+"lembrado. Isto é conseguido por pedir o navegador para manter a mensagem "
+"temporariamente em um cookie de uma só vez. Depois de redirecionamento a "
+"mensagem é enviada de volta pelo navegador para o servidor e os conjuntos "
+"de servidor ele novamente automaticamente antes de retornar o conteúdo, a "
+"menos que seja substituído por um outro conjunto."
+
+#: ../../chapter-06.rst:366
+msgid "The client can also set/add flash messages by calling:"
+msgstr "O cliente também pode definir / adicionar mensagens flash chamando:"
+
+#: ../../chapter-06.rst:372
+msgid ""
+"py4web defaults to an alert class called ``default`` and most CSS "
+"frameworks define classes for alerts called ``success``, ``error``, "
+"``warning``, ``default``, and ``info``. Yet, there is nothing in py4web "
+"that hardcodes those names. You can use your own class names."
+msgstr ""
+"defaults py4web para uma classe de alerta chamado `` default`` ea maioria "
+"dos quadros CSS definir classes para alertas chamado `` success``, `` "
+"error``, `` warning``, `` default``, e `` info` `. No entanto, não há nada "
+"em py4web que hardcodes esses nomes. Você pode usar seus próprios nomes de "
+"classe."
+
+#: ../../chapter-06.rst:378
+msgid "The DAL fixture"
+msgstr "O fixture DAL"
+
+#: ../../chapter-06.rst:380
+msgid ""
+"We have already used the ``DAL`` fixture in the context of sessions but "
+"maybe you want direct access to the DAL object for the purpose of accessing "
+"the database, not just sessions."
+msgstr ""
+"Nós já usou o `` dispositivo elétrico DAL`` no contexto das sessões, mas "
+"talvez você queira ter acesso direto ao objeto DAL com a finalidade de "
+"acessar o banco de dados, e não apenas sessões."
+
+#: ../../chapter-06.rst:384
+msgid ""
+"PY4WEB, by default, uses the PyDAL (Python Database Abstraction Layer) "
+"which is documented in a later chapter. Here is an example, please remember "
+"to create the ``databases`` folder under your project in case it doesn’t "
+"exist:"
+msgstr ""
+"PY4WEB, por padrão, usa o PyDAL (Python abstração de dados Layer) que está "
+"documentado em um capítulo posterior. Aqui está um exemplo, lembre-se de "
+"criar o `` databases`` pasta em seu projeto caso ele não existe:"
+
+#: ../../chapter-06.rst:407
+msgid ""
+"Notice that the database fixture defines (creates/re-creates tables) "
+"automatically when py4web starts (and every time it reloads this app) and "
+"picks a connection from the connection pool at every HTTP request. Also "
+"each call to the ``index()`` action is wrapped into a transaction and it "
+"commits ``on_success`` and rolls back ``on_error``."
+msgstr ""
+"Observe que as define fixação de banco de dados (cria / recria tabelas) "
+"automaticamente quando começa py4web (e cada vez que recarrega este app) e "
+"pega uma conexão do pool de conexão em cada solicitação HTTP. Além disso, "
+"cada chamada para o índice `` () `` acção é envolvido numa transacção e que "
+"compromete `` on_success`` e reverte `` on_error``."
+
+#: ../../chapter-06.rst:414
+msgid "Caveats about Fixtures"
+msgstr "Advertências sobre Fixures"
+
+#: ../../chapter-06.rst:416
+msgid ""
+"Since fixtures are shared by multiple actions you are not allowed to change "
+"their state because it would not be thread safe. There is one exception to "
+"this rule. Actions can change some attributes of database fields:"
+msgstr ""
+"Desde fixtures são compartilhados por várias ações que você não tem "
+"permissão para alterar seu estado, porque não seria seguro para threads. Há "
+"uma exceção a esta regra. As ações podem alterar alguns atributos de campos "
+"de banco de dados:"
+
+#: ../../chapter-06.rst:439
+msgid ""
+"Note thas this code will only be able to display a form, to process it "
+"after submit, additional code needs to be added, as we will see later on. "
+"This example is assuming that you created the application from the "
+"scaffolding app, so that a generic.html is already created for you."
+msgstr ""
+"Nota thas este código só será capaz de exibir um formulário, para processá-"
+"lo depois de apresentar, necessidades código adicional para ser adicionado, "
+"como veremos mais tarde. Este exemplo supõe que você criou o aplicativo da "
+"App andaimes, de modo que um generic.html já é criado para você."
+
+#: ../../chapter-06.rst:444
+msgid ""
+"The ``readable``, ``writable``, ``default``, ``update``, and ``require`` "
+"attributes of ``db.{table}.{field}`` are special objects of class "
+"``ThreadSafeVariable`` defined the ``threadsafevariable`` module. These "
+"objects are very much like Python thread local objects but they are re-"
+"initialized at every request using the value specified outside of the "
+"action. This means that actions can safely change the values of these "
+"attributes."
+msgstr ""
+"A `` readable``, `` writable``, `` default``, `` update``, e atributos `` "
+"`` require`` de db. {Tabela}. {Campo} `` são objectos especiais de classe "
+"`` ThreadSafeVariable`` definido a `` threadsafevariable`` módulo. Esses "
+"objetos são muito parecidos com Python rosca objetos locais, mas eles estão "
+"em todos os pedidos utilizando o valor fora da ação especificada "
+"inicializado-re. Isto significa que as ações podem mudar com segurança os "
+"valores desses atributos."
+
+#: ../../chapter-06.rst:453
+msgid "Custom fixtures"
+msgstr "Fixtures personalizados"
+
+#: ../../chapter-06.rst:455
+msgid "A fixture is an object with the following minimal structure:"
+msgstr "Um fixture é um objecto com a seguinte estrutura mínima:"
+
+#: ../../chapter-06.rst:467
+msgid "if an action uses this fixture:"
+msgstr "se uma ação usa este equipamento:"
+
+#: ../../chapter-06.rst:475
+msgid ""
+"Then ``on_request()`` is guaranteed to be called before the ``index()`` "
+"function is called. The ``on_success()`` is guaranteed to be called if the "
+"``index()`` function returns successfully or raises ``HTTP`` or performs a "
+"``redirect``. The ``on_error()`` is guaranteed to be called when the "
+"``index()`` function raises any exception other than ``HTTP``. The "
+"``transform`` function is called to perform any desired transformation of "
+"the value returned by the ``index()`` function."
+msgstr ""
+"Em seguida, `` on_request () `` é garantida para ser chamado antes do "
+"índice `` () `` função é chamada. A `` on_success () `` é garantida para "
+"ser accionado se os `` índice () `` função retorna com sucesso ou aumentos "
+"`` HTTP`` ou executa um `` redirect``. A `` on_error () `` é garantida para "
+"ser chamado quando o índice `` () `` função levanta qualquer outra excepção "
+"para além `` HTTP``. A função `` transform`` é chamado para executar "
+"qualquer transformação desejada do valor devolvido pelo `` índice) `` "
+"função (."
+
+#: ../../chapter-06.rst:484
+msgid "Auth and Auth.user"
+msgstr "Auth e Auth.user"
+
+#: ../../chapter-06.rst:486
+msgid ""
+"``auth`` and ``auth.user`` are both fixtures. They depend on ``session``. "
+"The role of access is to provide the action with authentication "
+"information. It is used as follows:"
+msgstr ""
+"`` Auth`` e `` auth.user`` são ambos os jogos. Eles dependem de `` "
+"session``. O papel do acesso é fornecer a ação com informações de "
+"autenticação. Ele é utilizado como segue:"
+
+#: ../../chapter-06.rst:508
+msgid ""
+"The constructor of the ``Auth`` object defines the ``auth_user`` table with "
+"the following fields: username, email, password, first_name, last_name, "
+"sso_id, and action_token (the last two are mostly for internal use)."
+msgstr ""
+"O construtor do objeto `` Auth`` define a tabela `` auth_user`` com os "
+"seguintes campos: nome de usuário, e-mail, senha, first_name, last_name, "
+"sso_id e action_token (os dois últimos são principalmente para uso interno)."
+
+#: ../../chapter-06.rst:513
+msgid ""
+"``auth.enable()`` registers multiple actions including ``{appname}/auth/"
+"login`` and it requires the presence of the ``auth.html`` template and the "
+"``auth`` value component provided by the ``_scaffold`` app."
+msgstr ""
+"`` Auth.enable () `` registadoras múltiplas acções incluindo `` "
+"{nomeaplic} / auth / login`` e que exige a presença de a `` auth.html`` "
+"molde e a `` auth`` componente valor fornecido pela o `` aplicativo "
+"_scaffold``."
+
+#: ../../chapter-06.rst:518
+msgid ""
+"The ``auth`` object is the fixture. It manages the user information. It "
+"exposes a single method:"
+msgstr ""
+"O objeto `` auth`` é a fixure. Ele gerencia as informações do usuário. Ela "
+"expõe um único método:"
+
+#: ../../chapter-06.rst:525
+msgid ""
+"which returns a python dictionary containing the information of the "
+"currently logged in user. If the user is not logged-in, it returns "
+"``None``. The code of the example redirects to the ‘auth/login’ page if "
+"there is no user."
+msgstr ""
+"que retorna um dicionário pitão contendo a informação do utilizador "
+"actualmente em sessão. Se o usuário não está conectado, ele retorna `` "
+"None``. O código do exemplo redireciona para a 'auth / login A página se "
+"não houver usuário."
+
+#: ../../chapter-06.rst:530
+msgid ""
+"Since this check is very common, py4web provides an additional fixture "
+"``auth.user``:"
+msgstr ""
+"Desde essa verificação é muito comum, py4web fornece um fixture adicional "
+"`` auth.user``:"
+
+#: ../../chapter-06.rst:541
+msgid ""
+"This fixture automatically redirects to the ``auth/login`` page if user is "
+"not logged-in. It depends on ``auth``, which depends on ``db`` and "
+"``session``."
+msgstr ""
+"Este fixture redireciona automaticamente para a página login`` `` auth / se "
+"o usuário não está conectado. Depende de `` auth``, que depende `` db`` e "
+"`` session``."
+
+#: ../../chapter-06.rst:545
+msgid ""
+"The ``Auth`` fixture is plugin based and supports multiple plugin methods. "
+"They include Oauth2 (Google, Facebook, Twitter), PAM, LDAP, and SMAL2."
+msgstr ""
+"A `` fixação Auth`` é baseado plug-in e suporta vários métodos de plug-in. "
+"Eles incluem oauth2 (Google, Facebook, Twitter), PAM, LDAP, e SMAL2."
+
+#: ../../chapter-06.rst:549
+msgid "Here is an example of using the Google Oauth2 plugin:"
+msgstr "Aqui está um exemplo de como usar o plugin Google oauth2:"
+
+#: ../../chapter-06.rst:559
+msgid ""
+"The ``client_id`` and ``client_secret`` are provided by google. The "
+"callback url is the default option for py4web and it must be whitelisted "
+"with Google. All ``Auth`` plugins are objects. Different plugins are "
+"configured in different ways but they are registered using ``auth."
+"register_plugin(...)``. Examples are provided in ``_scaffold/common.py``."
+msgstr ""
+"A `` `` client_id`` e client_secret`` são fornecidos pelo Google. O URL de "
+"retorno é a opção padrão para py4web e deve ser na lista de autorizações "
+"com o Google. Todos os `` plugins Auth`` são objetos. Diferentes plugins "
+"são configurados de diferentes maneiras, mas eles são registrados usando `` "
+"auth.register_plugin (...) ``. Os exemplos são fornecidos no `` _scaffold / "
+"common.py``."
+
+#: ../../chapter-06.rst:567
+msgid "Caching and Memoize"
+msgstr "Caching e Memoize"
+
+#: ../../chapter-06.rst:569
+msgid ""
+"py4web provides a cache in ram object that implements the Last Recently "
+"Used (LRU) Algorithm. It can be used to cache any function via a decorator:"
+msgstr ""
+"py4web fornece um cache no objeto ram que implementa a Última Recently Used "
+"(LRU) Algoritmo. Ele pode ser usado para armazenar em cache qualquer função "
+"através de um decorador:"
+
+#: ../../chapter-06.rst:584
+msgid ""
+"It will cache (memoize) the return value of the ``hello`` function, as "
+"function of the input ``name``, for up to 60 seconds. It will store in "
+"cache the 1000 most recently used values. The data is always stored in ram."
+msgstr ""
+"Ele irá armazenar em cache (memoize) o valor de retorno da função `` "
+"hello``, como função da entrada `` name``, durante até 60 segundos. Ele irá "
+"armazenar em cache de 1000 valores mais usados ​​recentemente. Os dados são "
+"sempre armazenados na memória RAM."
+
+#: ../../chapter-06.rst:589
+msgid ""
+"The Cache object is not a fixture and it should not and cannot be "
+"registered using the ``@action.uses`` object but we mention it here because "
+"some of the fixtures use this object internally. For example, template "
+"files are cached in ram to avoid accessing the file system every time a "
+"template needs to be rendered."
+msgstr ""
+"O objeto de cache não é um dispositivo elétrico e não deve e não pode ser "
+"registrado usando o `` @ action.uses`` objeto, mas nós mencioná-lo aqui, "
+"porque alguns dos dispositivos elétricos de usar esse objeto internamente. "
+"Por exemplo, arquivos de template são armazenadas em cache na memória RAM "
+"para evitar acessar o sistema de arquivo de cada vez que um template "
+"precisa ser renderizado."
+
+#: ../../chapter-06.rst:596
+msgid "Convenience Decorators"
+msgstr "Decoradores de conveniência"
+
+#: ../../chapter-06.rst:598
+msgid ""
+"The ``_scaffold`` application, in ``common.py`` defines two special "
+"conveniennce decorators:"
+msgstr ""
+"A `` aplicação _scaffold``, no `` define common.py`` dois decoradores "
+"especiais conveniennce:"
+
+#: ../../chapter-06.rst:607
+msgid "and"
+msgstr "e"
+
+#: ../../chapter-06.rst:609
+msgid "\\`\\ ``@authenticated def index():     return dict()``"
+msgstr "\\ `\\` `@Authenticated def index (): retorno Dict ()` `"
+
+#: ../../chapter-06.rst:611
+msgid ""
+"They apply all of the decorators below, use a template with the same name "
+"as the function (.html), and also register a route with the name of action "
+"followed the number of arguments of the action separated by a slash (/)."
+msgstr ""
+"Aplicam-se todos os decoradores abaixo, utilizar um template com o mesmo "
+"nome que a função (.html), e também registar-se uma via com o nome de acção "
+"seguido o número de argumentos da acção separadas por uma barra (/)."
+
+#: ../../chapter-06.rst:616
+msgid ""
+"@unauthenticated does not require the user to be logged in. @authenticated "
+"required the user to be logged in."
+msgstr ""
+"@unauthenticated não requer que o usuário seja identificado. @authenticated "
+"necessário que o usuário estar logado."
+
+#: ../../chapter-06.rst:619
+msgid ""
+"If can be combined with (and precede) other ``@action.uses(...)`` but they "
+"should not be combined with ``@action(...)`` because they perform that "
+"function automatically."
+msgstr ""
+"Se pode ser combinado com (e preceder) outro `` @ action.uses (...) ``, mas "
+"eles não devem ser combinados com `` @Action (...) ``, porque eles executar "
+"essa função automaticamente."

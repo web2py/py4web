@@ -1,0 +1,385 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Internationalization &mdash; py4web 1.20210522.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Forms" href="chapter-12.html" />
+    <link rel="prev" title="YATL helpers" href="chapter-10.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> py4web
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.20210522.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Internationalization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pluralize">Pluralize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#update-the-translation-files">Update the translation files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Internationalization</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-11.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="internationalization">
+<h1>Internationalization<a class="headerlink" href="#internationalization" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="pluralize">
+<h2>Pluralize<a class="headerlink" href="#pluralize" title="Permalink to this headline">¶</a></h2>
+<p>Pluralize is a Python library for Internationalization (i18n) and
+Pluralization (p10n).</p>
+<p>The library assumes a folder (for exaple “translations”) that contains
+files like:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>it.json
+it-IT.json
+fr.json
+fr-FR.json
+(etc)
+</pre></div>
+</div>
+<p>Each file has the following structure, for example for Italian
+(it.json):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{&quot;dog&quot;: {&quot;0&quot;: &quot;no cane&quot;, &quot;1&quot;: &quot;un cane&quot;, &quot;2&quot;: &quot;{n} cani&quot;, &quot;10&quot;: &quot;tantissimi cani&quot;}}
+</pre></div>
+</div>
+<p>The top level keys are the expressions to be translated and the
+associated value/dictionary maps a number to a translation. Different
+translations correspond to different plural forms of the expression,</p>
+<p>Here is another example for the word “bed” in Czech</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{&quot;bed&quot;: {&quot;0&quot;: &quot;no postel&quot;, &quot;1&quot;: &quot;postel&quot;, &quot;2&quot;: &quot;postele&quot;, &quot;5&quot;: &quot;postelí&quot;}}
+</pre></div>
+</div>
+<p>To translate and pluralize a string “dog” one simply warps the string in
+the T operator as follows:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; from pluralize import Translator
+&gt;&gt;&gt; T = Translator(&#39;translations&#39;)
+&gt;&gt;&gt; dog = T(&quot;dog&quot;)
+&gt;&gt;&gt; print(dog)
+dog
+&gt;&gt;&gt; T.select(&#39;it&#39;)
+&gt;&gt;&gt; print(dog)
+un cane
+&gt;&gt;&gt; print(dog.format(n=0))
+no cane
+&gt;&gt;&gt; print(dog.format(n=1))
+un cane
+&gt;&gt;&gt; print(dog.format(n=5))
+5 cani
+&gt;&gt;&gt; print(dog.format(n=20))
+tantissimi cani
+</pre></div>
+</div>
+<p>The string can contain multiple placeholders but the {n} placeholder is
+special because the variable called “n” is used to determine the
+pluralization by best match (max dict key &lt;= n).</p>
+<p>T(…) objects can be added together with each other and with string, like
+regular strings.</p>
+<p>T.select(s) can parse a string s following the HTTP accept language
+format.</p>
+</div>
+<div class="section" id="update-the-translation-files">
+<h2>Update the translation files<a class="headerlink" href="#update-the-translation-files" title="Permalink to this headline">¶</a></h2>
+<p>Find all strings wrapped in T(…) in .py, .html, and .js files:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>matches = T.find_matches(&#39;path/to/app/folder&#39;)
+</pre></div>
+</div>
+<p>Add newly discovered entries in all supported languages</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>T.update_languages(matches)
+</pre></div>
+</div>
+<p>Add a new supported language (for example german, “de”)</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>T.languages[&#39;de&#39;] = {}
+</pre></div>
+</div>
+<p>Make sure all languages contain the same origin expressions</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>known_expressions = set()
+for language in T.languages.values():
+    for expression in language:
+        known_expressions.add(expression)
+T.update_languages(known_expressions))
+</pre></div>
+</div>
+<p>Finally save the changes:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>T.save(&#39;translations&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="chapter-12.html" class="btn btn-neutral float-right" title="Forms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="chapter-10.html" class="btn btn-neutral float-left" title="YATL helpers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, BSDv3 License.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20210522.2
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Languages</dt>
+        
+           <strong> 
+          <dd><a href="../en/index.html">en</a></dd> </strong>
+          
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+          <dd><a href="py4web_en.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_en.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ 
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

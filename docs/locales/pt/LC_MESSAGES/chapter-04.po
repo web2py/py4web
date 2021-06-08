@@ -1,0 +1,199 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20201127.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-02 20:25-0300\n"
+"PO-Revision-Date: 2020-12-08 10:14-0300\n"
+"Last-Translator: potranslator 1.1.5\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Translated-By: potranslator 1.1.5\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.4.2\n"
+
+#: ../../chapter-04.rst:3
+msgid "The Dashboard"
+msgstr "O Dashboard"
+
+#: ../../chapter-04.rst:5
+msgid ""
+"The Dashboard is the standard web based IDE; you will surely use it "
+"extensively to manage the applications and check databases. Looking at its "
+"interface is a good way to start exploring py4web and its components."
+msgstr ""
+"O Dashboard é o padrão IDE baseado na web; você certamente irá usá-lo "
+"extensivamente para gerir as aplicações e verificar bancos de dados. "
+"Olhando para a sua interface é uma boa maneira de começar a explorar py4web "
+"e seus componentes."
+
+#: ../../chapter-04.rst:9
+msgid "The main Web page"
+msgstr "A página Web principal"
+
+#: ../../chapter-04.rst:11
+msgid ""
+"When you run the standard py4web program, it starts a web server with a "
+"main web page listening on http://127.0.0.1:8000 (which means that it is "
+"listening on the TCP port 8000 on your local PC, using the http protocol)."
+msgstr ""
+"Quando você executar o programa py4web padrão, ele começa um servidor web "
+"com uma página web de audição principal em http://127.0.0.1:8000 (o que "
+"significa que ele está escutando na porta TCP 8000 no seu PC local, usando "
+"o protocolo http )."
+
+#: ../../chapter-04.rst:15
+msgid ""
+"You can connect to this main page only from your local pc, using a web "
+"browser like Firefox or Google Chrome:"
+msgstr ""
+"Você pode conectar-se a esta página apenas a partir de seu PC local, usando "
+"um navegador web como o Firefox ou o Google Chrome:"
+
+#: ../../chapter-04.rst:20
+msgid "The buttons are:"
+msgstr "Os botões são:"
+
+#: ../../chapter-04.rst:22
+msgid ""
+"Dashboard (http://127.0.0.1:8000/_dashboard), which we'll describe in this "
+"chapter"
+msgstr ""
+"Dashboard (http://127.0.0.1:8000/_dashboard), que iremos descrever neste "
+"capítulo"
+
+#: ../../chapter-04.rst:23
+msgid ""
+"Documentation (http://127.0.0.1:8000/_documentation?version=1.20201112.1), "
+"for browsing the local copy of this Manual"
+msgstr ""
+"Documentação (http://127.0.0.1:8000/_documentation?version=1.20201112.1), "
+"para navegar na cópia local deste Manual"
+
+#: ../../chapter-04.rst:24
+msgid ""
+"Source (https://github.com/web2py/py4web), pointing to the GitHub repository"
+msgstr ""
+"Fonte (https://github.com/web2py/py4web), apontando para o repositório "
+"GitHub"
+
+#: ../../chapter-04.rst:25
+msgid ""
+"Discuss (https://groups.google.com/forum/#!forum/py4web), pointing to the "
+"Google mail group"
+msgstr ""
+"Discutir (https://groups.google.com/forum/#!forum/py4web), apontando para o "
+"grupo mail do Google"
+
+#: ../../chapter-04.rst:29
+msgid "Login into the Dashboard"
+msgstr "Sessão no Dashboard"
+
+#: ../../chapter-04.rst:31
+msgid ""
+"Pressing the Dashboard button will forward you to the Dashboard login. Here "
+"you must insert the password that you've already setup (see :ref:"
+"`set_password command option`). If you don't remember the password, you "
+"have to stop the program with CTRL-C, setup a new one and run the py4web "
+"again."
+msgstr ""
+"Pressionando o botão do painel irá transmitir-lhe para o login Dashboard. "
+"Aqui você deve inserir a senha que você já setup (veja: ref: `option` "
+"comando set_password). Se você não se lembre da senha, você tem que parar o "
+"programa com CTRL-C, configurar um novo e execute o py4web novamente."
+
+#: ../../chapter-04.rst:35
+msgid "|image1|"
+msgstr "| Image1 |"
+
+#: ../../chapter-04.rst:37
+msgid ""
+"After inserting the right Dashboard's password, it will be displayed with "
+"all the tabs compressed."
+msgstr ""
+"Depois de inserir a senha do painel direito, será exibido com todas as abas "
+"comprimido."
+
+#: ../../chapter-04.rst:41
+msgid ""
+"Click on a tab title to expand. Tabs are context dependent. For example, "
+"open tab “Installed Applications” and click on an installed application to "
+"select it."
+msgstr ""
+"Clique no título de um guia para expandir. As guias são dependentes do "
+"contexto. Por exemplo, aba aberta “Instalado Aplicativos” e clique em um "
+"aplicativo instalado para selecioná-lo."
+
+#: ../../chapter-04.rst:45
+msgid ""
+"This will create new tabs “Routes”, “Files”, and “Model” for the selected "
+"app."
+msgstr ""
+"Isto irá criar novas guias “Rotas”, “Arquivos” e “Modelo” para o aplicativo "
+"selecionado."
+
+#: ../../chapter-04.rst:48
+msgid "|image2|"
+msgstr "| Image2 |"
+
+#: ../../chapter-04.rst:50
+msgid ""
+"The “Files” tab allows you to browse the folder that contains the selected "
+"app and edit any file that comprises the app. If you edit a file you must "
+"click on “Reload Apps” under the “Installed Applications” tab for the "
+"change to take effect (except if you use *watch* with the :ref:`run command "
+"option`). If an app fails to load, its corresponding button is displayed in "
+"red. Click on it to see the corresponding error."
+msgstr ""
+"A aba “Arquivos” permite que você navegue a pasta que contém o aplicativo "
+"selecionado e editar qualquer arquivo que inclui o aplicativo. Se você "
+"editar um arquivo que você deve clicar em “Recarregar Apps” sob a guia "
+"“Aplicativos instalados” para que a alteração tenha efeito (exceto se você "
+"usar * relógio * com o: ref: `comando de execução option`). Se um "
+"aplicativo não for carregado, o botão correspondente é exibido em vermelho. "
+"Clique na imagem para ver o erro correspondente."
+
+#: ../../chapter-04.rst:57
+msgid "|image3|"
+msgstr "| Image3 |"
+
+#: ../../chapter-04.rst:59
+msgid ""
+"The Dashboard exposes the db of all the apps using pydal RESTAPI. It also "
+"provides a web interface to perform search and CRUD operations."
+msgstr ""
+"O painel expõe o db de todas as aplicações que utilizam RESTAPI pydal. Ele "
+"também fornece uma interface web para realizar operações de busca e CRUD."
+
+#: ../../chapter-04.rst:62
+msgid "|image4|"
+msgstr "| Image4 |"
+
+#: ../../chapter-04.rst:64
+msgid ""
+"If a user visits an app and triggers a bug, the user is issued a ticket."
+msgstr ""
+"Se um usuário visita um aplicativo e desencadeia um erro, o usuário é "
+"emitido um bilhete."
+
+#: ../../chapter-04.rst:67
+msgid "|image5|"
+msgstr "| Image5 |"
+
+#: ../../chapter-04.rst:69
+msgid ""
+"The ticket is logged in py4web database. The Dashboard displays the most "
+"common recent issues and allows searching tickets."
+msgstr ""
+"O bilhete é registrado no banco de dados py4web. O painel exibe as edições "
+"recentes mais comuns e permite pesquisar bilhetes."
+
+#: ../../chapter-04.rst:72
+msgid "|image6|"
+msgstr "| Image6 |"

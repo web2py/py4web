@@ -3,6 +3,7 @@ from yatl.helpers import XML
 from py4web.utils.url_signer import URLSigner
 from py4web.core import Fixture
 
+
 class FileUpload(Fixture):
 
     FILE_UPLOAD = '<fileupload url="{url}"></fileupload>'
@@ -32,7 +33,7 @@ class FileUpload(Fixture):
         @param id: id of the file uploaded.  This can be useful if the uploader
         is used in multiple places in the page.
         """
-        f = request.files.get('file')
+        f = request.files.get("file")
         if f is None:
             print("No file")
         else:

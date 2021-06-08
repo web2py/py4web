@@ -1,0 +1,478 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20201112.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-11-29 10:41+0100\n"
+"PO-Revision-Date: 2020-12-08 10:50-0300\n"
+"Last-Translator: potranslator 1.1.5\n"
+"Language-Team: \n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+"Translated-By: potranslator 1.1.5\n"
+"X-Generator: Poedit 2.4.2\n"
+
+#: ../../chapter-13.rst:3
+msgid "Authentication and Access control"
+msgstr "Autenticação e controle de acesso"
+
+#: ../../chapter-13.rst:5
+msgid ""
+"**Warning: the API described in this chapter is new and subject to changes. "
+"Make sure you keep your code up to date**"
+msgstr ""
+"** Atenção: a API descrito neste capítulo é novo e sujeitas a alterações. "
+"Certifique-se de manter seu código atualizado **"
+
+#: ../../chapter-13.rst:8
+msgid ""
+"py4web comes with a an object Auth and a system of plugins for user "
+"authentication and access control. It has the same name as the "
+"corresponding web2py one and serves the same purpose but the API and "
+"internal design is very different."
+msgstr ""
+"py4web vem com um um objecto Auth e um sistema de encaixes para a "
+"autenticação do utilizador e de controlo de acesso. Ele tem o mesmo nome "
+"que o web2py correspondente e tem a mesma finalidade, mas a API e design "
+"interno é muito diferente."
+
+#: ../../chapter-13.rst:13
+msgid ""
+"To use it, first of all you need to import it, instantiate it, configure "
+"it, and enable it."
+msgstr ""
+"Para usá-lo, em primeiro lugar você precisa importá-lo, instanciá-lo, "
+"configurá-lo, e habilitá-lo."
+
+#: ../../chapter-13.rst:23
+msgid ""
+"The import step is obvious. The second step does not perform any operation "
+"other than telling the Auth object which session object to use and which "
+"database to use. Auth data is stored in ``session['user']`` and, if a user "
+"is logged in, the user id is stored in session[‘user’][‘id’]. The db object "
+"is used to store persistent info about the user in a table ``auth_user`` "
+"with the following fields:"
+msgstr ""
+"A etapa de importação é óbvia. A segunda etapa não executar qualquer "
+"operação que não dizendo o objeto Auth qual objeto sessão para usar e qual "
+"banco de dados para uso. Auth dados são armazenados em `` sessão [ 'user'] "
+"`` e, se um usuário estiver logado, o ID do usuário é armazenado na sessão "
+"[ ‘user’] [ ‘id’]. O objecto dB é utilizado para armazenar informação sobre "
+"o utilizador persistente numa tabela `` auth_user`` com os seguintes campos:"
+
+#: ../../chapter-13.rst:30
+msgid "username"
+msgstr "nome do usuário"
+
+#: ../../chapter-13.rst:31
+msgid "email"
+msgstr "o email"
+
+#: ../../chapter-13.rst:32
+msgid "password"
+msgstr "senha"
+
+#: ../../chapter-13.rst:33
+msgid "first_name"
+msgstr "primeiro nome"
+
+#: ../../chapter-13.rst:34
+msgid "last_name"
+msgstr "último nome"
+
+#: ../../chapter-13.rst:35
+msgid "sso_id (used for single sign on, see later)"
+msgstr "sso_id (usado para single sign on, ver mais adiante)"
+
+#: ../../chapter-13.rst:36
+msgid ""
+"action_token (used to verify email, block users, and other tasks, also see "
+"later)."
+msgstr ""
+"action_token (usado para verificar e-mail, bloquear usuários e outras "
+"tarefas, também ver mais adiante)."
+
+#: ../../chapter-13.rst:39
+msgid "If the ``auth_user`` table does not exist it is created."
+msgstr "Se o `` auth_user`` tabela não existir ele será criado."
+
+#: ../../chapter-13.rst:41
+msgid "The configuration step is optional and discussed later."
+msgstr "A etapa de configuração é opcional e discutida mais tarde."
+
+#: ../../chapter-13.rst:43
+msgid ""
+"The ``auth.enable()`` step creates and exposes the following RESTful APIs:"
+msgstr "A `` auth.enable () `` passo cria e expõe os seguintes APIs RESTful:"
+
+#: ../../chapter-13.rst:46
+msgid "{appname}/auth/api/register (POST)"
+msgstr "{Nomeaplic} / auth / api / registo (POST)"
+
+#: ../../chapter-13.rst:47
+msgid "{appname}/auth/api/login (POST)"
+msgstr "{Nomeaplic} / auth / api / Login (POST)"
+
+#: ../../chapter-13.rst:48
+msgid "{appname}/auth/api/request_reset_password (POST)"
+msgstr "{Nomeaplic} / auth / api / request_reset_password (POST)"
+
+#: ../../chapter-13.rst:49
+msgid "{appname}/auth/api/reset_password (POST)"
+msgstr "{Nomeaplic} / auth / api / reset_password (POST)"
+
+#: ../../chapter-13.rst:50
+msgid "{appname}/auth/api/verify_email (GET, POST)"
+msgstr "{Appname} / auth / api / verify_email (GET, POST)"
+
+#: ../../chapter-13.rst:51
+msgid "{appname}/auth/api/logout (GET, POST) (+)"
+msgstr "{Nomeaplic} / auth / api / Sair (GET, POST) (+)"
+
+#: ../../chapter-13.rst:52
+msgid "{appname}/auth/api/profile (GET, POST) (+)"
+msgstr "{Nomeaplic} / auth / api / perfil (GET, POST) (+)"
+
+#: ../../chapter-13.rst:53
+msgid "{appname}/auth/api/change_password (POST) (+)"
+msgstr "{Nomeaplic} / auth / api / change_password (POST) (+)"
+
+#: ../../chapter-13.rst:54
+msgid "{appname}/auth/api/change_email (POST) (+)"
+msgstr "{Nomeaplic} / auth / api / change_email (POST) (+)"
+
+#: ../../chapter-13.rst:56
+msgid "Those marked with a (+) require a logged in user."
+msgstr "Os que estão marcados com um (+) requerem um usuário conectado."
+
+#: ../../chapter-13.rst:59
+msgid "Auth UI"
+msgstr "Interface de autenticação"
+
+#: ../../chapter-13.rst:61
+msgid ""
+"You can create your own web UI to login users using the above APIs but "
+"py4web provides one as an example, implemented in the following files:"
+msgstr ""
+"Você pode criar sua própria interface do usuário da web para usuários de "
+"login usando as APIs acima, mas py4web fornece um como exemplo, "
+"implementada nos seguintes arquivos:"
+
+#: ../../chapter-13.rst:64
+msgid "\\_scaffold/templates/auth.html"
+msgstr "\\ _Scaffold / templates / auth.html"
+
+#: ../../chapter-13.rst:65
+msgid "\\_scaffold/static/components/auth.js"
+msgstr "\\ _scaffold / static / componentes / auth.js"
+
+#: ../../chapter-13.rst:66
+msgid "\\_scaffold/static/components/auth.html"
+msgstr "\\ _Scaffold / static / componentes / auth.html"
+
+#: ../../chapter-13.rst:68
+msgid ""
+"The component files (js/html) define a Vue component ``<auth/>`` which is "
+"used in the template file auth.html as follows:"
+msgstr ""
+"Os arquivos do componente (js / html) definem um componente Vue `` <auth /> "
+"`` que é usado na auth.html arquivo de modelo da seguinte forma:"
+
+#: ../../chapter-13.rst:87
+msgid ""
+"You can pretty much use this file un-modified. It extends the current "
+"layout and embeds the ``<auth/>`` component into the page. It then uses "
+"``utils.app().start();`` (py4web magic) to render the content of ``<div id="
+"\"vue\">...</div>`` using Vue.js. ``components/auth.js`` also automatically "
+"loads ``components/auth.html`` into the component placeholder (more py4web "
+"magic). The component is responsible for rendering the login/register/etc "
+"forms using reactive html and GETing/POSTing data to the Auth service APIs."
+msgstr ""
+"Você pode muito bem usar esse arquivo modificado-un. Estende-se o layout "
+"atual e incorpora o `` <auth /> `` componente na página. Em seguida, usa `` "
+"utils.app () start ();. `` (Magia py4web) para processar o conteúdo de `` "
+"<div id = \"vue\"> ... </ div> `` usando Vue.js. `` componentes / auth.js`` "
+"também carrega automaticamente `` componentes / auth.html`` para o espaço "
+"reservado componente (mais mágicas py4web). O componente é responsável para "
+"render o login / registo / etc formas usando reactivo html e Geting / dados "
+"de lançamento com a API de serviço de autenticação."
+
+#: ../../chapter-13.rst:96
+msgid ""
+"If you need to change the style of the component you can edit “components/"
+"auth.html” to suit your needs. It is mostly HTML with some special Vue ``v-"
+"*`` tags."
+msgstr ""
+"Se você precisa mudar o estilo do componente que você pode editar "
+"“componentes / auth.html” para atender às suas necessidades. É "
+"principalmente HTML com algum especial Vue `` v- * `` tags."
+
+#: ../../chapter-13.rst:101
+msgid "Using Auth"
+msgstr "Usando o Auth"
+
+#: ../../chapter-13.rst:103
+msgid "There two ways to use the Auth object in an action:"
+msgstr "Há duas maneiras de usar o objeto Auth em uma ação:"
+
+#: ../../chapter-13.rst:113
+msgid ""
+"With ``@action.uses(auth)`` we tell py4web that this action needs to have "
+"information about the user, then try to parse the session for a user "
+"session."
+msgstr ""
+"Com `` @ action.uses (auth) `` nós dizemos py4web que esta ação precisa ter "
+"informações sobre o usuário, em seguida, tentar analisar a sessão para uma "
+"sessão de usuário."
+
+#: ../../chapter-13.rst:125
+msgid ""
+"Here ``@action.uses(auth.user)`` tells py4web that this action requires a "
+"logged in user and should redirect to login if no user is logged in."
+msgstr ""
+"Aqui `` @ action.uses (auth.user) `` diz py4web que essa ação requer um "
+"usuário conectado e deve redirecionar para login se nenhum usuário está "
+"logado."
+
+#: ../../chapter-13.rst:129
+msgid "Auth Plugins"
+msgstr "Plugins de Autenticação"
+
+#: ../../chapter-13.rst:131
+msgid ""
+"Plugins are defined in “py4web/utils/auth_plugins” and they have a "
+"hierachical structure. Some are exclusive and some are not. For example, "
+"default, LDAP, PAM, and SAML are exclusive (the developer has to pick one). "
+"Default, Google, Facebook, and Twitter OAuth are not exclusive (the "
+"developer can pick them all and the user gets to choose using the UI)."
+msgstr ""
+"Plugins são definidos no “py4web / utils / auth_plugins” e eles têm uma "
+"estrutura hierárquica. Alguns são exclusivos e alguns não são. Por exemplo, "
+"padrão, LDAP, PAM, e SAML são exclusivos (o desenvolvedor tem que escolher "
+"um). Padrão, o Google, Facebook e Twitter OAuth não são exclusivos (o "
+"desenvolvedor pode pegar todos eles e que o usuário começa a escolher "
+"usando a interface do usuário)."
+
+#: ../../chapter-13.rst:138
+msgid ""
+"The ``<auth/>`` components will automatically adapt to display login forms "
+"as required by the installed plugins."
+msgstr ""
+"O `` <auth /> `` componentes irá se adaptar automaticamente para "
+"formulários de login de exibição, conforme exigido pelos plugins instalados."
+
+#: ../../chapter-13.rst:141
+msgid ""
+"**At this time we cannot guarantee that the following plugins work well. "
+"They have been ported from web2py where they do work but testing is still "
+"needed**"
+msgstr ""
+"** Neste momento, não podemos garantir que os seguintes plugins funcionam "
+"bem. Eles foram portados de web2py onde eles não funcionam, mas o teste "
+"ainda é necessária **"
+
+#: ../../chapter-13.rst:146
+msgid "PAM"
+msgstr "PAM"
+
+#: ../../chapter-13.rst:148
+msgid "Configuring PAM is the easiest:"
+msgstr "Configurando PAM é o mais fácil:"
+
+#: ../../chapter-13.rst:155
+msgid ""
+"This one like all plugins must be imported and registered. Once registered "
+"the UI (components/auth) and the RESTful APIs know how to handle it. The "
+"constructor of this plugins does not require any arguments (where other "
+"plugins do)."
+msgstr ""
+"Este, como todos os plugins deve ser importado e registrado. Uma vez "
+"registrado o UI (componentes / auth) e as APIs RESTful sabe como lidar com "
+"isso. O construtor desta plugins não requer quaisquer argumentos (onde "
+"outros plugins fazer)."
+
+#: ../../chapter-13.rst:160
+msgid ""
+"The ``auth.register_plugin(...)`` **must** come before the ``auth."
+"enable()`` since it makes no sense to expose APIs before desired plugins "
+"are mounted."
+msgstr ""
+"O `` auth.register_plugin (...) `` must ** ** vir antes do `` auth.enable "
+"() ``, uma vez que não faz sentido para expor APIs antes de plugins "
+"desejados são montados."
+
+#: ../../chapter-13.rst:165
+msgid "LDAP"
+msgstr "LDAP"
+
+#: ../../chapter-13.rst:178
+msgid "OAuth2 with Google (tested OK)"
+msgstr "OAuth2 com Google (testado OK)"
+
+#: ../../chapter-13.rst:188
+msgid "The client id and client secret must be provided by Google."
+msgstr "O ID de cliente e segredo do cliente deve ser fornecido pelo Google."
+
+#: ../../chapter-13.rst:191
+msgid "OAuth2 with Facebook (tested OK)"
+msgstr "OAuth2 com Facebook (testado OK)"
+
+#: ../../chapter-13.rst:201
+msgid "The client id and client secret must be provided by Facebook."
+msgstr ""
+"O ID de cliente e segredo do cliente deve ser fornecido pelo Facebook."
+
+#: ../../chapter-13.rst:204
+msgid "Tags and Permissions"
+msgstr "Etiquetas e permissões"
+
+#: ../../chapter-13.rst:206
+msgid ""
+"Py4web does not have the concept of groups as web2py does. Experience "
+"showed that while that mechanism is powerful it suffers from two problems: "
+"it is overkill for most apps, and it is not flexible enough for very "
+"complex apps. Py4web provides a general purpose tagging mechanism that "
+"allows the developer to tag any record of any table, check for the "
+"existence of tags, as well as checking for records containing a tag. Group "
+"membership can be thought of a type of tag that we apply to users. "
+"Permissions can also be tags. Developer are free to create their own logic "
+"on top of the tagging system."
+msgstr ""
+"O Py4web não tem o conceito de grupos como web2py. A experiência mostrou "
+"que, enquanto esse mecanismo é poderoso ele sofre de dois problemas: é um "
+"exagero para a maioria dos aplicativos, e não é suficiente flexível para "
+"aplicativos muito complexos. Py4web fornece um mecanismo de marcação de uso "
+"geral que permite ao desenvolvedor tag qualquer registro de qualquer "
+"tabela, verificar a existência de marcas, bem como a verificação de "
+"registros contendo uma tag. associação de grupo pode ser considerado um "
+"tipo de tag que se aplicam aos usuários. As permissões também pode ser "
+"tags. Desenvolvedor é livre para criar sua própria lógica no topo do "
+"sistema de marcação."
+
+#: ../../chapter-13.rst:216
+msgid "To use the tagging system you need to create an object to tag a table:"
+msgstr ""
+"Para usar o sistema de marcação, você precisa criar um objeto para marcar "
+"uma tabela:"
+
+#: ../../chapter-13.rst:222
+msgid ""
+"Then you can add one or more tags to records of the table as well as remove "
+"existing tags:"
+msgstr ""
+"Então você pode adicionar uma ou mais marcas de registros da tabela, bem "
+"como remover existente tags:"
+
+#: ../../chapter-13.rst:231
+msgid ""
+"Here the use case is group based access control where the developer first "
+"checks if a user is a member of the ``'manager'`` group, if the user is not "
+"a manager (or no one is logged in) py4web redirects to the ``'not "
+"authorized url'``. If the user is in the correct group then py4web displays "
+"‘hello manager’:"
+msgstr ""
+"Aqui, o caso de uso é o controle de acesso baseado em grupo, onde o "
+"desenvolvedor primeiro verifica se um usuário é um membro do \"grupo` "
+"`manager'``, se o usuário não é um administrador (ou ninguém está logado) "
+"redirecionamentos py4web ao `` 'não autorizada url'``. Se o usuário estiver "
+"no grupo correto, então manager Olá 'py4web exibe:"
+
+#: ../../chapter-13.rst:246
+msgid ""
+"Here the developer queries the db for all records having the desired tag(s):"
+msgstr ""
+"Aqui o desenvolvedor consulta o banco de dados para todos os registros que "
+"têm a tag desejada (s):"
+
+#: ../../chapter-13.rst:257
+msgid ""
+"We leave it to you as an exercise to create a fixture ``has_membership`` to "
+"enable the following syntax:"
+msgstr ""
+"Deixamos para você como um exercício para criar um dispositivo elétrico `` "
+"has_membership`` para permitir a seguinte sintaxe:"
+
+#: ../../chapter-13.rst:267
+msgid ""
+"**Important:** ``Tags`` are automatically hierarchical. For example, if a "
+"user has a group tag ‘teacher/high-school/physics’, then all the following "
+"seaches will return the user:"
+msgstr ""
+"** Importante: ** `` Tags`` são automaticamente hierárquica. Por exemplo, "
+"se um usuário tem um grupo tag ‘professor /-ensino médio / física’, em "
+"seguida, todas as seguintes seaches retornará o usuário:"
+
+#: ../../chapter-13.rst:271
+msgid "``groups.find('teacher/high-school/physics')``"
+msgstr "`` Groups.find ( 'professor /-ensino médio / física') ``"
+
+#: ../../chapter-13.rst:272
+msgid "``groups.find('teacher/high-school')``"
+msgstr "`` Groups.find ( 'professor /-colegial') ``"
+
+#: ../../chapter-13.rst:273
+msgid "``groups.find('teacher')``"
+msgstr "`` Groups.find ( 'professor') ``"
+
+#: ../../chapter-13.rst:275
+msgid ""
+"This means that slashes have a special meaning for tags. Slahes at the "
+"beginning or the end of a tag are optional. All other chars are allowed on "
+"equal footing."
+msgstr ""
+"Isto significa que as barras têm um significado especial para tags. Slahes "
+"no início ou no final de uma tag são opcionais. Todos os outros caracteres "
+"são permitidos em pé de igualdade."
+
+#: ../../chapter-13.rst:279
+msgid ""
+"Notice that one table can have multiple associated ``Tags`` objects. The "
+"name groups here is completely arbitary but has a specific semantic "
+"meaning. Different ``Tags`` objects are orthogonal to each other. The limit "
+"to their use is your creativity."
+msgstr ""
+"Observe que uma tabela pode ter vários associados `` Tags`` objetos. Os "
+"grupos nome aqui é completamente arbitrária, mas tem um significado "
+"semântico específico. Diferentes `` objectos Tags`` são ortogonais entre "
+"si. O limite para o seu uso é a sua criatividade."
+
+#: ../../chapter-13.rst:284
+msgid "For example you could create a table groups:"
+msgstr "Por exemplo, você poderia criar um grupos de mesa:"
+
+#: ../../chapter-13.rst:290
+msgid "and to Tags:"
+msgstr "e Tags:"
+
+#: ../../chapter-13.rst:297
+msgid ""
+"Then create a zapper group, give it a permission, and make a user member of "
+"the group:"
+msgstr ""
+"Em seguida, crie um grupo zapper, dar-lhe uma permissão, e tornar um membro "
+"do usuário do grupo:"
+
+#: ../../chapter-13.rst:306
+msgid "And you can check for a user permission via an explicit join:"
+msgstr ""
+"E você pode verificar se há uma permissão de utilizador através de uma "
+"junção explícita:"
+
+#: ../../chapter-13.rst:323
+msgid ""
+"Notice here ``permissions.find(permission)`` generates a query for all "
+"groups with the permission and we further filter those groups for those the "
+"current user is member of. We count them and if we find any, then the user "
+"has the permission."
+msgstr ""
+"Aviso aqui `` permissions.find (permissão) `` gera uma consulta para todos "
+"os grupos com a permissão e que ainda filtro desses grupos para aqueles do "
+"utilizador actual é membro da. Contamos eles e se encontrarmos qualquer, "
+"então o usuário tem a permissão."

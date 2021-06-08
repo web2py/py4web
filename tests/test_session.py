@@ -1,3 +1,4 @@
+import io
 import unittest
 import time
 import memcache
@@ -8,24 +9,32 @@ from py4web.utils.dbstore import DBStore
 
 
 class TestSession(unittest.TestCase):
+    def setUp(self):
+        request.environ["wsgi.input"] = io.StringIO()
+        request.cookies.clear()
+        response._cookies = ""
+
     def test_session(self):
         request.app_name = "myapp"
         session = Session(secret="a", expiration=10)
         session.on_request()
         session["key"] = "value"
-        session.on_success()
         cookie_name = session.local.session_cookie_name
+        session.on_success(200)
+        self.assertFalse(hasattr(session.local, "session_cookie_name"))
+        self.assertFalse(hasattr(session.local, "changed"))
+        self.assertFalse(hasattr(session.local, "data"))
 
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
         request.cookies[a] = b
-        request.cookies = response._cookies
-        session.local.data.clear()
 
         session = Session(secret="b", expiration=10)
+        request.cookies[a] = b
         session.on_request()
         self.assertEqual(session.get("key"), None)
 
         session = Session(secret="a", expiration=10)
+        request.cookies[a] = b
         session.on_request()
         self.assertEqual(session.get("key"), "value")
 
@@ -36,20 +45,22 @@ class TestSession(unittest.TestCase):
         request.cookies.clear()
         session.on_request()
         session["key"] = "value"
-        session.on_success()
         cookie_name = session.local.session_cookie_name
+        session.on_success(200)
+        self.assertFalse(hasattr(session.local, "session_cookie_name"))
+        self.assertFalse(hasattr(session.local, "changed"))
+        self.assertFalse(hasattr(session.local, "data"))
 
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
         request.cookies[a] = b
-        request.cookies = response._cookies
-        session.local.data.clear()
 
         session = Session(expiration=10, storage=DBStore(db))
+        request.cookies[a] = b
         session.on_request()
         self.assertEqual(session.get("key"), "value")
 
-        request.cookies[a] = "wrong_cookie"
         session = Session(expiration=10, storage=DBStore(db))
+        request.cookies[a] = "wrong_cookie"
         session.on_request()
         self.assertEqual(session.get("key"), None)
 
@@ -64,8 +75,11 @@ class TestSession(unittest.TestCase):
             request.cookies.clear()
             session.on_request()
             session["key"] = "value"
-            session.on_success()
             cookie_name = session.local.session_cookie_name
+            session.on_success(200)
+            self.assertFalse(hasattr(session.local, "session_cookie_name"))
+            self.assertFalse(hasattr(session.local, "changed"))
+            self.assertFalse(hasattr(session.local, "data"))
 
             a, b = (
                 str(response._cookies)[len("Set-Cookie: ") :]
@@ -73,17 +87,16 @@ class TestSession(unittest.TestCase):
                 .split("=", 1)
             )
             request.cookies[a] = b
-            request.cookies = response._cookies
-            session.local.data.clear()
 
             conn = memcache.Client(["127.0.0.1:11211"], debug=0)
             session = Session(expiration=10, storage=conn)
+            request.cookies[a] = b
             session.on_request()
             self.assertEqual(session.get("key"), "value")
 
-            request.cookies[a] = "wrong_cookie"
             conn = memcache.Client(["127.0.0.1:11211"], debug=0)
             session = Session(expiration=10, storage=conn)
+            request.cookies[a] = "wrong_cookie"
             session.on_request()
             self.assertEqual(session.get("key"), None)
         finally:

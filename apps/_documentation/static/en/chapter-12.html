@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Forms &mdash; py4web 1.20210522.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Authentication and Access control" href="chapter-13.html" />
+    <link rel="prev" title="Internationalization" href="chapter-11.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> py4web
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.20210522.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Forms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#form-validation">Form validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#form-structure-manipulation">Form Structure Manipulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Forms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-12.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="forms">
+<h1>Forms<a class="headerlink" href="#forms" title="Permalink to this headline">¶</a></h1>
+<p>WORK IN PROGRESS</p>
+<p>Just know that <code class="docutils literal notranslate"><span class="pre">py4web.utils.form.Form</span></code> is a pretty much equivalent to
+web2py’s <code class="docutils literal notranslate"><span class="pre">SQLFORM</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Form</span></code> constructor accepts the following arguments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+     <span class="n">table</span><span class="p">,</span>
+     <span class="n">record</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+     <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+     <span class="n">deletable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+     <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span>
+     <span class="n">dbio</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+     <span class="n">keep_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+     <span class="n">form_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+     <span class="n">hidden</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+     <span class="n">before_validate</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">table</span></code>: a DAL table or a list of fields (equivalent to old
+SQLFORM.factory)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">record</span></code>: a DAL record or record id</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">readonly</span></code>: set to True to make a readonly form</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deletable</span></code>: set to False to disallow deletion of record</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">formstyle</span></code>: a function that renders the form using helpers
+(FormStyleDefault)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dbio</span></code>: set to False to prevent any DB writes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">keep_values</span></code>: if set to true, it remembers the values of the
+previously submitted form</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">form_name</span></code>: the optional name of this form</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hidden</span></code>: a dictionary of hidden fields that is added to the form</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">before_validate</span></code>: an optional validator.</p></li>
+</ul>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Here is a simple example of a custom form not using database access. We
+declare an endpoint <code class="docutils literal notranslate"><span class="pre">/form_example</span></code>, which will be used both for the
+GET and for the POST of the form:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.dbstore</span> <span class="kn">import</span> <span class="n">DBStore</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleBulma</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite:memory&#39;</span><span class="p">)</span>
+<span class="n">session</span> <span class="o">=</span>  <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">DBStore</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;form_example&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;form_example.html&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">form_example</span><span class="p">():</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">([</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;product_name&#39;</span><span class="p">),</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;product_quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">)],</span>
+        <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleBulma</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="c1"># Do something with form.vars[&#39;product_name&#39;] and form.vars[&#39;product_quantity&#39;]</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The form can be displayed in the template simply using <code class="docutils literal notranslate"><span class="pre">[[=form]]</span></code>.</p>
+</div>
+<div class="section" id="form-validation">
+<h2>Form validation<a class="headerlink" href="#form-validation" title="Permalink to this headline">¶</a></h2>
+<p>The validation of form input can be done in two ways. One can define
+<code class="docutils literal notranslate"><span class="pre">requires</span></code> attributes of <code class="docutils literal notranslate"><span class="pre">Field</span></code>, or one can define explicitly a
+validation function. To do the latter, we pass to <code class="docutils literal notranslate"><span class="pre">validate</span></code> a
+function that takes the form and returns a dictionary, mapping field
+names to errors. If the dictionary is non-empty, the errors will be
+displayed to the user, and no database I/O will take place.</p>
+<p>Here is an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleBulma</span>
+<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_INT_IN_RANGE</span>
+
+<span class="k">def</span> <span class="nf">check_nonnegative_quantity</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">form</span><span class="o">.</span><span class="n">errors</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">vars</span><span class="p">[</span><span class="s1">&#39;product_quantity&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="s1">&#39;product_quantity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="s1">&#39;The product quantity must be even&#39;</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;form_example&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;form_example.html&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">form_example</span><span class="p">():</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">([</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;product_name&#39;</span><span class="p">),</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;product_quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_INT_IN_RANGE</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">))],</span>
+        <span class="n">validation</span><span class="o">=</span><span class="n">check_nonnegative_quantity</span><span class="p">,</span>
+        <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleBulma</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="c1"># Do something with form.vars[&#39;product_name&#39;] and form.vars[&#39;product_quantity&#39;]</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="form-structure-manipulation">
+<h2>Form Structure Manipulation<a class="headerlink" href="#form-structure-manipulation" title="Permalink to this headline">¶</a></h2>
+<p>Like in web2py, in py4web a form is rendered by helpers. Unlike web2py, it uses yatl helpers. This means the tree structure of a form can be manilupated before the form is serialized in HTML. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;paint&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">))</span>
+<span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">paint</span><span class="p">)</span>
+<span class="n">form</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;[name=color]&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;my-class&#39;</span>
+</pre></div>
+</div>
+<p>Notice that a form does not make an HTML tree until form structure is accessed. Once accessed you can use <cite>.find(…)</cite> to find matching elements. The argument of <cite>find</cite> is a string following the filter syntax of jQuery. In the above case there is a single match <cite>[0]</cite> and we modify the <cite>_class</cite> attribute of that element. Attribute names of HTML elements must be preceded by an underscore.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="chapter-13.html" class="btn btn-neutral float-right" title="Authentication and Access control" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="chapter-11.html" class="btn btn-neutral float-left" title="Internationalization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, BSDv3 License.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20210522.2
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Languages</dt>
+        
+           <strong> 
+          <dd><a href="../en/index.html">en</a></dd> </strong>
+          
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+          <dd><a href="py4web_en.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_en.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ 
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

@@ -1,0 +1,754 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Grid &mdash; py4web 1.20210522.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="From web2py to py4web" href="chapter-15.html" />
+    <link rel="prev" title="Authentication and Access control" href="chapter-13.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> py4web
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.20210522.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">The Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Grid</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#key-features">Key Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-example">Basic Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#signature">Signature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#searching-filtering">Searching / Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#crud">CRUD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-templates">Using templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#customizing-style">Customizing Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-action-buttons">Custom Action Buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sample-action-button-class">Sample Action Button Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reference-fields">Reference Fields</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Grid</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-14.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="grid">
+<h1>Grid<a class="headerlink" href="#grid" title="Permalink to this headline">¶</a></h1>
+<p>py4web comes with a Grid object providing simple grid and CRUD
+capabilities.</p>
+<div class="section" id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Click column heads for sorting - click again for DESC</p></li>
+<li><p>Pagination control</p></li>
+<li><p>Built in Search (can use search_queries OR search_form)</p></li>
+<li><p>Action Buttons - with or without text</p></li>
+<li><p>Full CRUD with Delete Confirmation</p></li>
+<li><p>Pre and Post Action (add your own buttons to each row)</p></li>
+<li><p>Grid dates in local format</p></li>
+<li><p>Default formatting by type plus user overrides</p></li>
+</ul>
+</div>
+<div class="section" id="basic-example">
+<h2>Basic Example<a class="headerlink" href="#basic-example" title="Permalink to this headline">¶</a></h2>
+<p>In this simple example we will make a grid over the company table.</p>
+<p>controllers.py</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.grid</span> <span class="kn">import</span> <span class="n">Grid</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">auth</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;companies&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;companies/&lt;path:path&gt;&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="s1">&#39;grid.html&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">companies</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span>
+                <span class="n">query</span><span class="o">=</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">),</span> <span class="p">[</span><span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]),</span>
+                <span class="n">orderby</span><span class="o">=</span><span class="p">[</span><span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+                <span class="n">search_queries</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;Search by Name&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">val</span><span class="p">)]])</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>grid.html</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+[[=grid.render()]]
+</pre></div>
+</div>
+</div>
+<div class="section" id="signature">
+<h2>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Grid</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">,</span>
+        <span class="n">query</span><span class="p">,</span>
+        <span class="n">search_form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">search_queries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">show_id</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">orderby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">headings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">details</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">deletable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">pre_action_buttons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">post_action_buttons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">auto_process</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">rows_per_page</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+        <span class="n">include_action_button_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">search_button_text</span><span class="o">=</span><span class="s2">&quot;Filter&quot;</span><span class="p">,</span>
+        <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span>
+        <span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyle</span><span class="p">,</span>
+    <span class="p">):</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>path: the route of this request</p></li>
+<li><p>query: pydal query to be processed</p></li>
+<li><p>search_form: py4web FORM to be included as the search form. If
+search_form is passed in then the developer is responsible for
+applying the filter to the query passed in. This differs from
+search_queries.</p></li>
+<li><p>search_queries: list of query lists to use to build the search form.
+Ignored if search_form is used. Format is</p></li>
+<li><p>fields: list of fields to display on the list page, if blank, glean
+tablename from first query and use all fields of that table</p></li>
+<li><p>show_id: show the record id field on list page - default = False</p></li>
+<li><p>orderby: pydal orderby field or list of fields</p></li>
+<li><p>left: if joining other tables, specify the pydal left expression here</p></li>
+<li><p>headings: list of headings to be used for list page - if not provided
+use the field label</p></li>
+<li><p>details: URL to redirect to for displaying records - set to True to
+automatically generate the URL - set to False to not display the
+button</p></li>
+<li><p>create: URL to redirect to for creating records - set to True to
+automatically generate the URL - set to False to not display the
+button</p></li>
+<li><p>editable: URL to redirect to for editing records - set to True to
+automatically generate the URL - set to False to not display the
+button</p></li>
+<li><p>deletable: URL to redirect to for deleting records - set to True to
+automatically generate the URL - set to False to not display the
+button</p></li>
+<li><p>pre_action_buttons: list of action_button instances to include before
+the standard action buttons</p></li>
+<li><p>post_action_buttons: list of action_button instances to include after
+the standard action buttons</p></li>
+<li><p>auto_process: Boolean - whether or not the grid should be processed
+immediately. If False, developer must call grid.process() once all
+params are setup</p></li>
+<li><p>rows_per_page: number of rows to display per page. Default 15</p></li>
+<li><p>include_action_button_text: boolean telling the grid whether or not
+you want text on action buttons within your grid</p></li>
+<li><p>search_button_text: text to appear on the submit button on your
+search form</p></li>
+<li><p>formstyle: py4web Form formstyle used to style your form when
+automatically building CRUD forms</p></li>
+<li><p>grid_class_style: GridClassStyle object used to override defaults for
+styling your rendered grid. Allows you to specify classes or styles
+to apply at certain points in the grid.</p></li>
+</ul>
+</div>
+<div class="section" id="searching-filtering">
+<h2>Searching / Filtering<a class="headerlink" href="#searching-filtering" title="Permalink to this headline">¶</a></h2>
+<p>There are two ways to build a search form.</p>
+<ul class="simple">
+<li><p>Provide a search_queries list</p></li>
+<li><p>Build your own custom search form</p></li>
+</ul>
+<p>If you provide a search_queries list to grid, it will:</p>
+<ul class="simple">
+<li><p>build a search form. If more than one search query in the list, it
+will also generate a dropdown to select which search field to search
+agains</p></li>
+<li><p>gather filter values and filter the grid</p></li>
+</ul>
+<p>However, if this doesn’t give you enough flexibility you can provide
+your own search form and handle all the filtering (building the queries)
+by yourself.</p>
+</div>
+<div class="section" id="crud">
+<h2>CRUD<a class="headerlink" href="#crud" title="Permalink to this headline">¶</a></h2>
+<p>The grid provides CRUD (create, read, update and delete) capabilities
+utilizing py4web Form.</p>
+<p>You can turn off CRUD features by setting
+create/details/editable/deletable during grid instantiation.</p>
+<p>Additionally, you can provide a separate URL to the
+create/details/editable/deletable parameters to bypass the
+auto-generated CRUD pages and handle the detail pages yourself.</p>
+</div>
+<div class="section" id="using-templates">
+<h2>Using templates<a class="headerlink" href="#using-templates" title="Permalink to this headline">¶</a></h2>
+<p>Use the following to render your grid or CRUD forms in your templates.</p>
+<p>Display the grid or a CRUD Form</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=grid.render()]]
+</pre></div>
+</div>
+<p>To allow for customizing CRUD form layout (like with web2py) you can use
+the following</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[form = grid.render() ]]
+[[form.custom[&quot;begin&quot;] ]]
+...
+[[form.custom[&quot;submit&quot;]
+[[form.custom[&quot;end&quot;]
+</pre></div>
+</div>
+<p>When handling custom form layouts you need to know if you are displaying
+the grid or a form. Use the following to decide</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[if &#39;action&#39; in request.url_args and request.url_args[&#39;action&#39;] in [&#39;details&#39;, &#39;edit&#39;]:]]
+    #  Display the custom form
+    [[form = grid.render() ]]
+    [[form.custom[&quot;begin&quot;] ]]
+    ...
+    [[form.custom[&quot;submit&quot;]
+    [[form.custom[&quot;end&quot;]
+[[else:]]
+    [[grid.render() ]]
+[[pass]]
+</pre></div>
+</div>
+</div>
+<div class="section" id="customizing-style">
+<h2>Customizing Style<a class="headerlink" href="#customizing-style" title="Permalink to this headline">¶</a></h2>
+<p>You can provide your own formstyle or grid classes and style to grid.</p>
+<ul class="simple">
+<li><p>formstyle is the same as a Form formstyle, used to style the CRUD
+forms.</p></li>
+<li><p>grid_class_style is a class that provides the classes and/or styles
+used for certain portions of the grid.</p></li>
+</ul>
+<p>The default GridClassStyle - based on no.css, primarily uses styles to
+modify the layout of the grid</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GridClassStyle</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Default grid style</span>
+<span class="sd">    Internal element names match default class name, other classes can be added</span>
+<span class="sd">    Style use should be minimized since it cannot be overridden by CSS</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">classes</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;grid-wrapper&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-wrapper&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-header&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-header&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-new-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-new-button info&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-search&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-search&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-table-wrapper&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-table-wrapper&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-table&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-table&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-sorter-icon-up&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-sort-icon-up fas fa-sort-up&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-sorter-icon-down&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-sort-icon-down fas fa-sort-down&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-th-action-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-col-action-button&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-td-action-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-col-action-button&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-tr&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-th&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-td&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-details-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-details-button info&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-edit-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-edit-button info&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-delete-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-delete-button info&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-footer&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-footer&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-info&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-info&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-pagination&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-pagination-button info&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination-button-current&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-pagination-button-current default&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-string&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-string&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-text&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-text&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-boolean&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-boolean&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-float&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-float&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-int&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-int&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-date&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-date&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-time&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-datetime&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-datetime&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-upload&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-upload&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-list&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-list&quot;</span><span class="p">,</span>
+        <span class="c1"># specific for custom form</span>
+        <span class="s2">&quot;search_form&quot;</span><span class="p">:</span> <span class="s2">&quot;search-form&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_table&quot;</span><span class="p">:</span> <span class="s2">&quot;search-form-table&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_tr&quot;</span><span class="p">:</span> <span class="s2">&quot;search-form-tr&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_td&quot;</span><span class="p">:</span> <span class="s2">&quot;search-form-td&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">styles</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;grid-wrapper&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-header&quot;</span><span class="p">:</span> <span class="s2">&quot;display: table; width: 100%&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-new-button&quot;</span><span class="p">:</span> <span class="s2">&quot;display: table-cell;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-search&quot;</span><span class="p">:</span> <span class="s2">&quot;display: table-cell; float:right&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-table-wrapper&quot;</span><span class="p">:</span> <span class="s2">&quot;overflow-x: auto; width:100%&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-table&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-sorter-icon-up&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-sorter-icon-down&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-th-action-button&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-td-action-button&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-tr&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-th&quot;</span><span class="p">:</span> <span class="s2">&quot;white-space: nowrap; vertical-align: middle&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-td&quot;</span><span class="p">:</span> <span class="s2">&quot;white-space: nowrap; vertical-align: middle&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-details-button&quot;</span><span class="p">:</span> <span class="s2">&quot;margin-bottom: 0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-edit-button&quot;</span><span class="p">:</span> <span class="s2">&quot;margin-bottom: 0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-delete-button&quot;</span><span class="p">:</span> <span class="s2">&quot;margin-bottom: 0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-footer&quot;</span><span class="p">:</span> <span class="s2">&quot;display: table; width:100%&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-info&quot;</span><span class="p">:</span> <span class="s2">&quot;display: table-cell;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination&quot;</span><span class="p">:</span> <span class="s2">&quot;display: table-cell; text-align:right&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination-button&quot;</span><span class="p">:</span> <span class="s2">&quot;min-width: 20px&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination-button-current&quot;</span><span class="p">:</span> <span class="s2">&quot;min-width: 20px; pointer-events:none; opacity: 0.7&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-string&quot;</span><span class="p">:</span> <span class="s2">&quot;white-space: nowrap; vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-text&quot;</span><span class="p">:</span> <span class="s2">&quot;vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-boolean&quot;</span><span class="p">:</span> <span class="s2">&quot;white-space: nowrap; vertical-align: middle; text-align: center&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-float&quot;</span><span class="p">:</span> <span class="s2">&quot;white-space: nowrap; vertical-align: middle; text-align: right&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-int&quot;</span><span class="p">:</span> <span class="s2">&quot;white-space: nowrap; vertical-align: middle; text-align: right&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-date&quot;</span><span class="p">:</span> <span class="s2">&quot;white-space: nowrap; vertical-align: middle; text-align: right&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-time&quot;</span><span class="p">:</span> <span class="s2">&quot;white-space: nowrap; vertical-align: middle; text-align: right&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-datetime&quot;</span><span class="p">:</span> <span class="s2">&quot;white-space: nowrap; vertical-align: middle; text-align: right&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-upload&quot;</span><span class="p">:</span> <span class="s2">&quot;white-space: nowrap; vertical-align: middle; text-align: center&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-list&quot;</span><span class="p">:</span> <span class="s2">&quot;white-space: nowrap; vertical-align: middle; text-align: left&quot;</span><span class="p">,</span>
+        <span class="c1"># specific for custom form</span>
+        <span class="s2">&quot;search_form&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_table&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_tr&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_td&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns a dict with _class and _style for the element name&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;_class&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">element</span><span class="p">),</span>
+            <span class="s2">&quot;_style&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">styles</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">element</span><span class="p">),</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+<p>GridClassStyleBulma - bulma implementation</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GridClassStyleBulma</span><span class="p">(</span><span class="n">GridClassStyle</span><span class="p">):</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;grid-wrapper&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-wrapper field&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-header&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-header pb-2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-new-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-new-button button&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-search&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-search is-pulled-right pb-2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-table-wrapper&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-table-wrapper table_wrapper&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-table&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-table table is-bordered is-striped is-hoverable is-fullwidth&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-sorter-icon-up&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-sort-icon-up fas fa-sort-up is-pulled-right&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-sorter-icon-down&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-sort-icon-down fas fa-sort-down is-pulled-right&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-th-action-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-col-action-button is-narrow&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-td-action-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-col-action-button is-narrow&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-tr&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-th&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-td&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-details-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-details-button button is-small&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-edit-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-edit-button button is-small&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-delete-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-delete-button button is-small&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-footer&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-footer&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-info&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-info is-pulled-left&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-pagination is-pulled-right&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination-button&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-pagination-button button is-small&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination-button-current&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-pagination-button-current button is-primary is-small&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-string&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-string&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-text&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-text&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-boolean&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-boolean has-text-centered&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-float&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-float&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-int&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-int&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-date&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-date&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-time&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-datetime&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-datetime&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-upload&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-upload&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-list&quot;</span><span class="p">:</span> <span class="s2">&quot;grid-cell-type-list&quot;</span><span class="p">,</span>
+        <span class="c1"># specific for custom form</span>
+        <span class="s2">&quot;search_form&quot;</span><span class="p">:</span> <span class="s2">&quot;search-form is-pulled-right pb-2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_table&quot;</span><span class="p">:</span> <span class="s2">&quot;search-form-table&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_tr&quot;</span><span class="p">:</span> <span class="s2">&quot;search-form-tr&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_td&quot;</span><span class="p">:</span> <span class="s2">&quot;search-form-td pr-1&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">styles</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;grid-wrapper&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-header&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-new-button&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-search&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-table-wrapper&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-table&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-sorter-icon-up&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-sorter-icon-down&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-th-action-button&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-td-action-button&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-tr&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-th&quot;</span><span class="p">:</span> <span class="s2">&quot;text-align: center; text-transform: uppercase;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-td&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-details-button&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-edit-button&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-delete-button&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-footer&quot;</span><span class="p">:</span> <span class="s2">&quot;padding-top: .5em;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-info&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination-button&quot;</span><span class="p">:</span> <span class="s2">&quot;margin-left: .25em;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-pagination-button-current&quot;</span><span class="p">:</span> <span class="s2">&quot;margin-left: .25em;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-string&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-text&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-boolean&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-float&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-int&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-date&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-time&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-datetime&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-upload&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;grid-cell-type-list&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="c1"># specific for custom form</span>
+        <span class="s2">&quot;search_form&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_table&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_tr&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_form_td&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>You can build your own class_style to be used with the css framework of
+your choice.</p>
+</div>
+<div class="section" id="custom-action-buttons">
+<h2>Custom Action Buttons<a class="headerlink" href="#custom-action-buttons" title="Permalink to this headline">¶</a></h2>
+<p>As with web2py, you can add additional buttons to each row in your grid.
+You do this by providing pre_action_buttons or post_action_buttons to
+the Grid <strong>init</strong> method.</p>
+<ul class="simple">
+<li><p>pre_action_buttons - list of action_button instances to include
+before the standard action buttons</p></li>
+<li><p>post_action_buttons - list of action_button instances to include
+after the standard action buttons</p></li>
+</ul>
+<p>You can build your own Action Button class to pass to pre/post action
+buttons based on the template below (this is not provided with py4web)</p>
+</div>
+<div class="section" id="sample-action-button-class">
+<h2>Sample Action Button Class<a class="headerlink" href="#sample-action-button-class" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+             <span class="n">url</span><span class="p">,</span>
+             <span class="n">text</span><span class="p">,</span>
+             <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;fa-calendar&quot;</span><span class="p">,</span>
+             <span class="n">additional_classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">message</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">append_id</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>url: the page to navigate to when the button is clicked</p></li>
+<li><p>text: text to display on the button</p></li>
+<li><p>icon: the font-awesome icon to display before the text</p></li>
+<li><p>additional_classes: a space-separated list of classes to include on
+the button element</p></li>
+<li><p>message: confirmation message to display if ‘confirmation’ class is
+added to additional classes</p></li>
+<li><p>append_id: if True, add id_field_name=id_value to the url querystring
+for the button</p></li>
+</ul>
+</div>
+<div class="section" id="reference-fields">
+<h2>Reference Fields<a class="headerlink" href="#reference-fields" title="Permalink to this headline">¶</a></h2>
+<p>When displaying fields in a PyDAL table, you sometimes want to display a
+more descriptive field than a foreign key value. There are a couple of
+ways to handle that with the py4web grid.</p>
+<p>filter_out on PyDAL field definition - here is an example of a foreign
+key field</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;company&#39;</span><span class="p">,</span> <span class="s1">&#39;reference company&#39;</span><span class="p">,</span>
+      <span class="n">requires</span><span class="o">=</span><span class="n">IS_NULL_OR</span><span class="p">(</span><span class="n">IS_IN_DB</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s1">&#39;company.id&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;</span><span class="si">%(name)s</span><span class="s1">&#39;</span><span class="p">,</span>
+                                   <span class="n">zero</span><span class="o">=</span><span class="s1">&#39;..&#39;</span><span class="p">)),</span>
+      <span class="n">filter_out</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+</pre></div>
+</div>
+<p>This will display the company name in the grid instead of the company ID</p>
+<p>The downfall of using this method is that sorting and filtering are
+based on the company field in the employee table and not the name of the
+company</p>
+<p>left join and specify fields from joined table - specified on the left
+parameter of Grid instantiation</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">employee</span><span class="o">.</span><span class="n">company</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can specify a standard PyDAL left join, including a list of joins to
+consider.</p>
+<p>Now the company name field can be included in your fields list can be
+clicked on and sorted.</p>
+<p>Now you can also specify a query such as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">db</span><span class="o">.</span><span class="n">employee</span><span class="o">.</span><span class="n">last_name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">employee</span><span class="o">.</span><span class="n">first_name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span> <span class="o">|</span> <span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">search_text</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>This method allows you to sort and filter, but doesn’t allow you to
+combine fields to be displayed together as the filter_out method would</p>
+<p>You need to determine which method is best for your use case
+understanding the different grids in the same application may need to
+behave differently.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="chapter-15.html" class="btn btn-neutral float-right" title="From web2py to py4web" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="chapter-13.html" class="btn btn-neutral float-left" title="Authentication and Access control" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, BSDv3 License.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20210522.2
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Languages</dt>
+        
+           <strong> 
+          <dd><a href="../en/index.html">en</a></dd> </strong>
+          
+        
+          
+          
+          <dd><a href="../pt/index.html">pt</a></dd> 
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+          <dd><a href="py4web_en.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_en.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ 
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

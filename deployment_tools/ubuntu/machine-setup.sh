@@ -152,6 +152,12 @@ echo 'server {
             expires max;
         }
         location / {
+            proxy_set_header   X-Forwarded-Proto $scheme;
+            proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header   Host $http_host;
+            proxy_set_header   X-Real-IP $remote_addr;
+            proxy_set_header   X-Forwarded-Host $http_host;
+            proxy_redirect off;
             proxy_pass      http://127.0.0.1:8000;
         }
 }
@@ -167,6 +173,12 @@ server {
         ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
         keepalive_timeout    70;
         location / {
+            proxy_set_header   X-Forwarded-Proto $scheme;
+            proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header   Host $http_host;
+            proxy_set_header   X-Real-IP $remote_addr;
+            proxy_set_header   X-Forwarded-Host $http_host;
+            proxy_redirect off;
             proxy_pass      http://127.0.0.1:8000;
         }
         location ~* ^/(\w+)/static(?:/_[\d]+\.[\d]+\.[\d]+)?/(.*)$ {
@@ -193,7 +205,7 @@ then
 fi
 
 if [ ! -f /etc/init.d/py4web ]
-   then:
+then
 
 echo '
 #! /bin/sh
@@ -203,7 +215,7 @@ DESC="py4web process"
 PIDFILE="/var/run/${NAME}.pid"
 LOGFILE="/var/log/${NAME}.log"
 DAEMON="/usr/local/bin/py4web"
-DAEMON_OPTS="--password_file /home/www-data/py4web/password.txt /home/www-data/py4web/apps"
+DAEMON_OPTS="run --password_file /home/www-data/py4web/password.txt /home/www-data/py4web/apps"
 START_OPTS="--start --background --make-pidfile --pidfile ${PIDFILE} --exec ${DAEMON} -- ${DAEMON_OPTS}"
 STOP_OPTS="--stop --pidfile ${PIDFILE}"
 
@@ -238,6 +250,8 @@ esac
 exit 0
 ' > /etc/init.d/py4web
 
-py4web set-password --password_file=/home/www-data/py4web/password.txt
+fi
+
+py4web set_password --password_file=/home/www-data/py4web/password.txt
 /etc/init.d/py4web restart
 /etc/init.d/nginx restart

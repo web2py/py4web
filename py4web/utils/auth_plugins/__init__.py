@@ -1,4 +1,11 @@
 import urllib
+import calendar
+import time
+import uuid
+import json
+import random
+import jwt
+import string
 import requests
 from py4web.core import URL, abort, redirect, request
 
@@ -12,6 +19,7 @@ class SSO(object):
 
     def __init__(self, **parameters):
         self.parameters = parameters
+        self.next = URL('index') # Destination after login succeeds
 
     def get_login_url(self):
         """returns the url for login"""
@@ -19,6 +27,7 @@ class SSO(object):
 
     def handle_request(self, auth, path, get_vars, post_vars):
         if path == "login":
+            self.next = request.query.get('next') or URL('index')
             redirect(self.get_login_url())
         elif path == "callback":
             self._handle_callback(auth, get_vars)
@@ -36,8 +45,11 @@ class SSO(object):
             abort(401)
         error = data.get("error")
         if error:
-            code = error.get("code", 401)
-            msg = error.get("message", "Unknown error")
+            if isinstance(error, str):
+                code, msg = 401, error
+            else:
+                code = error.get("code", 401)
+                msg = error.get("message", "Unknown error")
             abort(code, msg)
         if auth.db:
             # map returned fields into auth_user fields
@@ -48,14 +60,17 @@ class SSO(object):
                     value = value[int(part) if part.isdigit() else part]
                     user[key] = value
             user["sso_id"] = "%s:%s" % (self.name, user["sso_id"])
+            if not "username" in user:
+                user["username"] = user["sso_id"]
             # store or retrieve the user
             data = auth.get_or_register_user(user)
         else:
             # WIP Allow login without DB
             if not "id" in data:
                 data["id"] = data.get("username") or data.get("email")
-        auth.session["user"] = data
-        redirect(URL("index"))
+        user_id = data.get("id")
+        auth.store_user_in_session(user_id)
+        redirect(self.next)
 
     @staticmethod
     def _build_url(base, data):
@@ -74,8 +89,17 @@ class OAuth2(SSO):
     token_url = ""
     userinfo_url = ""
     default_scope = ""
+    algorithms = ["HS256", "RS256"]
 
-    def __init__(self, client_id, client_secret, callback_url, scope=None, scheme=True):
+    def __init__(
+        self,
+        client_id,
+        client_secret,
+        callback_url,
+        scope=None,
+        scheme=True,
+        passed_state=None,
+    ):
         SSO.__init__(self)
         self.parameters = dict(
             client_id=client_id,
@@ -83,7 +107,15 @@ class OAuth2(SSO):
             callback_url=callback_url,
             scope=scope or self.default_scope,
             scheme=scheme,
+            passed_state=passed_state,
         )
+
+    def state_generator(
+        self,
+        size=18,
+        chars=string.ascii_uppercase + string.digits + string.ascii_lowercase,
+    ):
+        return "".join(random.choice(chars) for _ in range(size))
 
     def get_login_url(self, state=None, next=None):
         callback_url = self.parameters.get("callback_url")
@@ -99,6 +131,7 @@ class OAuth2(SSO):
             client_id=self.parameters.get("client_id"),
         )
         scope = self.parameters.get("scope")
+        state = self.state_generator()
         if scope:
             data["scope"] = scope
             data["include_granted_scopes"] = "true"
@@ -108,7 +141,11 @@ class OAuth2(SSO):
 
     def callback(self, query):
         code = query.get("code")
+        statecheck = query.get("state")
         if not code:
+            return False
+        passed_state = self.parameters.get("passed_state")
+        if passed_state is not None and statecheck != passed_state:
             return False
         data = dict(
             code=code,
@@ -121,10 +158,22 @@ class OAuth2(SSO):
             grant_type="authorization_code",
         )
         res = requests.post(self.token_url, data=data)
-        token = res.json().get("access_token")
-        headers = {"Authorization": "Bearer %s" % token}
-        res = requests.get(self.userinfo_url, headers=headers)
-        data = res.json()
+        output = res.json()
+        token = output.get("id_token")
+        if token is not None:
+            # Lets not get the  user attributes via the userinfo endpoint
+            # but lets take the userinfo directly extracted from the token
+            # res = requests.get(self.userinfo_url, headers=headers)
+            data = jwt.decode(token, algorithms=self.algorithms,
+                              # because of this open issue
+                              # https://github.com/jpadilla/pyjwt/issues/359
+                              options={"verify_signature": False})
+        else:
+            # fallback to old approach if "id_token" is not in the response
+            token = output.get("access_token")
+            headers = {"Authorization": "Bearer %s" % token}
+            res = requests.get(self.userinfo_url, headers=headers)
+            data = res.json()
         return data
 
     def revoke(self, token):

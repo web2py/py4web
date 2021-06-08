@@ -1,0 +1,36 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20201127.1\n"
+"\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-02 20:25-0300\n"
+"PO-Revision-Date: 2020-12-02 22:43:52.847029\n"
+"Last-Translator: potranslator 1.1.5\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Translated-By: potranslator 1.1.5\n"
+
+#: ../../chapter-15.rst:3
+msgid "From web2py to py4web"
+msgstr "De web2py para py4web"
+
+#: ../../chapter-15.rst:5
+msgid ""
+"This chapter is dedicated to help users for porting old web2py applications "
+"to py4web."
+msgstr ""
+"Este capítulo é dedicado a ajudar os usuários para portar aplicativos web2py"
+" antigos para py4web."
+
+#: ../../chapter-15.rst:9
+msgid "Work in progress"
+msgstr "Trabalho em progresso"

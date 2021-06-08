@@ -1,0 +1,1823 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20201127.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-02 20:25-0300\n"
+"PO-Revision-Date: 2020-12-08 10:47-0300\n"
+"Last-Translator: potranslator 1.1.5\n"
+"Language-Team: \n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Translated-By: potranslator 1.1.5\n"
+"X-Generator: Poedit 2.4.2\n"
+
+#: ../../chapter-10.rst:3
+msgid "YATL helpers"
+msgstr "Helpers YATL"
+
+#: ../../chapter-10.rst:5
+msgid "Consider the following code in a view:"
+msgstr "Considere o seguinte código em um ponto de vista:"
+
+#: ../../chapter-10.rst:11
+msgid "it is rendered as:"
+msgstr "ele é processado como:"
+
+#: ../../chapter-10.rst:17
+msgid ""
+"``DIV`` is a helper class, i.e., something that can be used to build HTML "
+"programmatically. It corresponds to the HTML ``<div>`` tag."
+msgstr ""
+"`` Div`` é uma classe auxiliar, ou seja, algo que pode ser usado para "
+"construir HTML programaticamente. Corresponde ao HTML `` <div> tag ``."
+
+#: ../../chapter-10.rst:20
+msgid ""
+"Positional arguments are interpreted as objects contained between the open "
+"and close tags. Named arguments that start with an underscore are "
+"interpreted as HTML tag attributes (without the underscore). Some helpers "
+"also have named arguments that do not start with underscore; these "
+"arguments are tag-specific."
+msgstr ""
+"Argumentos posicionais são interpretados como objetos contidos entre as "
+"tags de abrir e fechar. argumentos nomeados que começam com um sublinhado "
+"são interpretados como atributos de tags HTML (sem o sublinhado). Alguns "
+"helpers também têm argumentos nomeados que não começam com sublinhado; "
+"estes argumentos são específicos do tag."
+
+#: ../../chapter-10.rst:26
+msgid ""
+"Instead of a set of unnamed arguments, a helper can also take a single list "
+"or tuple as its set of components using the ``*`` notation and it can take "
+"a single dictionary as its set of attributes using the ``**``, for example:"
+msgstr ""
+"Em vez de um conjunto de argumentos sem nome, um helper também pode ter uma "
+"única lista ou tupla como seu conjunto de componentes usando a notação `` * "
+"`` e pode levar um único dicionário como seu conjunto de atributos usando o "
+"`` ** ` `, por exemplo:"
+
+#: ../../chapter-10.rst:39
+msgid "(produces the same output as before)."
+msgstr "(Produz a mesma saída que antes)."
+
+#: ../../chapter-10.rst:41
+msgid "The following set of helpers:"
+msgstr "O seguinte conjunto de helpers:"
+
+#: ../../chapter-10.rst:43
+msgid ""
+"``A``, ``BEAUTIFY``, ``BODY``, ``CAT``, ``CODE``, ``DIV``, ``EM``, "
+"``FORM``, ``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``, ``HEAD``, "
+"``HTML``, ``I``, ``IMG``, ``INPUT``, ``LABEL``, ``LI``, ``LINK``, ``META``, "
+"``METATAG``, ``OL``, ``OPTION``, ``PRE``, ``SELECT``, ``SPAN``, ``STRONG``, "
+"``TABLE``, ``TAG``, ``TBODY``, ``TD``, ``TEXTAREA``, ``TH``, ``THEAD``, "
+"``TR``, ``UL``, ``XML``, ``sanitize``, ``xmlescape``"
+msgstr ""
+"`` A``, `` BEAUTIFY``, `` BODY``, `` CAT``, `` CODE``, `` div``, `` EM``, "
+"`` Form``, `` H1``, `` h2``, `` H3``, `` H4``, `` H5``, `` H6``, `` HEAD``, "
+"`` HTML``, `` I` `,` `IMG``,` `INPUT``,` `label``,` `LI``,` `LINK``,` "
+"`Meta``,` `METATAG``,` `OL``, `` OPTION``, `` PRE``, `` SELECT``, `` "
+"SPAN``, `` STRONG``, `` TABLE``, `` TAG``, `` TBODY``, `` TD``, `` "
+"TEXTAREA``, `` TH``, `` THEAD``, `` TR``, `` UL``, `` XML``, `` sanitize``, "
+"`` xmlescape` `"
+
+#: ../../chapter-10.rst:51
+msgid ""
+"can be used to build complex expressions that can then be serialized to "
+"XML. For example:"
+msgstr ""
+"pode ser usado para construir expressões complexas que podem então ser "
+"serializado para XML. Por exemplo:"
+
+#: ../../chapter-10.rst:58
+msgid "is rendered:"
+msgstr "é prestado:"
+
+#: ../../chapter-10.rst:64
+msgid ""
+"Helpers can also be serialized into strings, equivalently, with the "
+"``__str__`` and the ``xml`` methods:"
+msgstr ""
+"Ajudantes também podem ser serializados em cordas, de forma equivalente, "
+"com a `` __str__`` e os `` métodos xml``:"
+
+#: ../../chapter-10.rst:74
+msgid ""
+"The helpers mechanism in py4web is more than a system to generate HTML "
+"without concatenating strings. It provides a server-side representation of "
+"the Document Object Model (DOM)."
+msgstr ""
+"O mecanismo de helpers em py4web é mais do que um sistema para gerar HTML "
+"sem concatenar strings. Ele fornece uma representação do lado do servidor "
+"do objecto do modelo de documento (DOM)."
+
+#: ../../chapter-10.rst:78
+msgid ""
+"Components of helpers can be referenced via their position, and helpers act "
+"as lists with respect to their components:"
+msgstr ""
+"Componentes de helpers podem ser referenciados através de sua posição, e "
+"helpers agir como listas com relação aos seus componentes:"
+
+#: ../../chapter-10.rst:92
+msgid ""
+"Attributes of helpers can be referenced by name, and helpers act as "
+"dictionaries with respect to their attributes:"
+msgstr ""
+"Atributos de helpers pode ser referenciado pelo nome, e helpers agir como "
+"dicionários com relação aos seus atributos:"
+
+#: ../../chapter-10.rst:103
+msgid ""
+"Note, the complete set of components can be accessed via a list called ``a."
+"components``, and the complete set of attributes can be accessed via a "
+"dictionary called ``a.attributes``. So, ``a[i]`` is equivalent to ``a."
+"components[i]`` when ``i`` is an integer, and ``a[s]`` is equivalent to ``a."
+"attributes[s]`` when ``s`` is a string."
+msgstr ""
+"Note, o conjunto completo de componentes podem ser acessados ​​através de uma "
+"lista de chamada `` a.components``, eo conjunto completo de atributos podem "
+"ser acessados ​​através de um dicionário chamado `` a.attributes``. Assim, `` "
+"a [i] `` é equivalente a `` a.components [i] `` `` quando i`` é um número "
+"inteiro, e um `` [s] `` é equivalente a `` a.attributes [s] `` `` quando "
+"s`` é uma cadeia de caracteres."
+
+#: ../../chapter-10.rst:109
+msgid ""
+"Notice that helper attributes are passed as keyword arguments to the "
+"helper. In some cases, however, attribute names include special characters "
+"that are not allowed in Python identifiers (e.g., hyphens) and therefore "
+"cannot be used as keyword argument names. For example:"
+msgstr ""
+"Note que atributos auxiliares são passados ​​como argumentos para o auxiliar. "
+"Em alguns casos, no entanto, nomes de atributos incluem caracteres "
+"especiais que não são permitidos em identificadores Python (por exemplo, "
+"hífens) e, portanto, não podem ser usados ​​como nomes de argumentos de "
+"palavra-chave. Por exemplo:"
+
+#: ../../chapter-10.rst:118
+msgid ""
+"will not work because \"_data-role\" includes a hyphen, which will produce "
+"a Python syntax error."
+msgstr ""
+"não vai funcionar porque <quotechar> _data-papel <quotechar> inclui um "
+"hífen, que irá produzir um erro de sintaxe Python."
+
+#: ../../chapter-10.rst:121
+msgid ""
+"In such cases you have a couple of options. You can use the ``data`` "
+"argument (this time without a leading underscore) to pass a dictionary of "
+"related attributes without their leading hyphen, and the output will have "
+"the desired combinations e.g."
+msgstr ""
+"Nesses casos, você tem um par de opções. É possível utilizar a `` data`` "
+"argumento (desta vez sem um sublinhado) para passar um dicionário de "
+"atributos relacionados sem a sua hífen líder, e a saída terá as combinações "
+"desejadas, por exemplo"
+
+#: ../../chapter-10.rst:131
+msgid ""
+"or you can instead pass the attributes as a dictionary and make use of "
+"Python’s ``**`` function arguments notation, which maps a dictionary of "
+"(key:value) pairs into a set of keyword arguments:"
+msgstr ""
+"ou você pode em vez disso passar os atributos como um dicionário e fazer "
+"uso de `` ** notação `` argumentos de função do Python, que mapeia um "
+"dicionário de (key: value) pares em um conjunto de argumentos de palavra-"
+"chave:"
+
+#: ../../chapter-10.rst:140
+msgid ""
+"Note that more elaborate entries will introduce HTML character entities, "
+"but they will work nonetheless e.g."
+msgstr ""
+"Note-se que as entradas mais elaboradas irá introduzir entidades de "
+"caracteres HTML, mas eles vão trabalhar, no entanto, por exemplo,"
+
+#: ../../chapter-10.rst:148
+msgid "You can also dynamically create special TAGs:"
+msgstr "Você também pode criar dinamicamente tags especiais:"
+
+#: ../../chapter-10.rst:156
+msgid "``XML``"
+msgstr "`` XML``"
+
+#: ../../chapter-10.rst:158
+msgid ""
+"``XML`` is an object used to encapsulate text that should not be escaped. "
+"The text may or may not contain valid XML. For example, it could contain "
+"JavaScript."
+msgstr ""
+"`` XML`` é um objeto usado para encapsular texto que não deve ser escapado. "
+"O texto pode ou não conter XML válido. Por exemplo, poderia conter "
+"JavaScript."
+
+#: ../../chapter-10.rst:162
+msgid "The text in this example is escaped:"
+msgstr "O texto neste exemplo é escapado:"
+
+#: ../../chapter-10.rst:169
+msgid "by using ``XML`` you can prevent escaping:"
+msgstr "usando `` XML`` você pode impedir escapar:"
+
+#: ../../chapter-10.rst:176
+msgid ""
+"Sometimes you want to render HTML stored in a variable, but the HTML may "
+"contain unsafe tags such as scripts:"
+msgstr ""
+"Às vezes você quer renderizar HTML armazenado em uma variável, mas o HTML "
+"pode conter tags inseguras como scripts:"
+
+#: ../../chapter-10.rst:184
+msgid ""
+"Un-escaped executable input such as this (for example, entered in the body "
+"of a comment in a blog) is unsafe, because it can be used to generate Cross "
+"Site Scripting (XSS) attacks against other visitors to the page."
+msgstr ""
+"Un-escapou de entrada executável como este (por exemplo, entrou no corpo de "
+"um comentário em um blog) não é seguro, porque pode ser usado para gerar "
+"ataques Cross Site Scripting (XSS) contra outros visitantes da página."
+
+#: ../../chapter-10.rst:189
+msgid ""
+"The py4web ``XML`` helper can sanitize our text to prevent injections and "
+"escape all tags except those that you explicitly allow. Here is an example:"
+msgstr ""
+"O py4web `` helper XML`` pode higienizar nosso texto para evitar injeções e "
+"escapar todas as tags exceto aqueles que você permitir explicitamente. Aqui "
+"está um exemplo:"
+
+#: ../../chapter-10.rst:198
+msgid ""
+"The ``XML`` constructors, by default, consider the content of some tags and "
+"some of their attributes safe. You can override the defaults using the "
+"optional ``permitted_tags`` and ``allowed_attributes`` arguments. Here are "
+"the default values of the optional arguments of the ``XML`` helper."
+msgstr ""
+"Os `` construtores XML``, por padrão, considere o conteúdo de algumas tags "
+"e alguns de seus atributos de segurança. Você pode substituir os padrões "
+"usando os opcionais `` permitted_tags`` e `` allowed_attributes`` "
+"argumentos. Aqui estão os valores padrão dos argumentos opcionais do `` "
+"helper XML``."
+
+#: ../../chapter-10.rst:213
+msgid "Built-in helpers"
+msgstr "Built-in helpers"
+
+#: ../../chapter-10.rst:216
+msgid "``A``"
+msgstr "`` A``"
+
+#: ../../chapter-10.rst:218
+msgid "This helper is used to build links."
+msgstr "Este assistente é usado para construir ligações."
+
+#: ../../chapter-10.rst:227
+msgid "``BODY``"
+msgstr "`` BODY``"
+
+#: ../../chapter-10.rst:229
+msgid "This helper makes the body of a page."
+msgstr "Este assistente faz com que o corpo de uma página."
+
+#: ../../chapter-10.rst:237
+msgid "``CAT``"
+msgstr "`` CAT``"
+
+#: ../../chapter-10.rst:239
+msgid "This helper concatenates other helpers, same as TAG['']."
+msgstr "Este assistente concatena outros helpers, mesmo como TAG [ '']."
+
+#: ../../chapter-10.rst:247
+msgid "``CODE``"
+msgstr "`` CODE``"
+
+#: ../../chapter-10.rst:249
+msgid ""
+"This helper performs syntax highlighting for Python, C, C++, HTML and "
+"py4web code, and is preferable to ``PRE`` for code listings. ``CODE`` also "
+"has the ability to create links to the py4web API documentation."
+msgstr ""
+"Este assistente executa da sintaxe para o Python, C, C ++, o código HTML e "
+"py4web, e é preferível a `` PRE`` para listagens de código. `` CODE`` "
+"também tem a capacidade de criar links para a documentação py4web API."
+
+#: ../../chapter-10.rst:253
+msgid "Here is an example of highlighting sections of Python code."
+msgstr "Aqui está um exemplo de destacar seções de código Python."
+
+#: ../../chapter-10.rst:282
+msgid "Here is a similar example for HTML"
+msgstr "Aqui está um exemplo semelhante para HTML"
+
+#: ../../chapter-10.rst:295
+msgid "These are the default arguments for the ``CODE`` helper:"
+msgstr "Estes são os argumentos padrão para o `` CODE`` helper:"
+
+#: ../../chapter-10.rst:301
+msgid ""
+"Supported values for the ``language`` argument are “python”, “html_plain”, "
+"“c”, “cpp”, “py4web”, and “html”. The “html” language interprets tags as "
+"“py4web” code, while “html_plain” doesn’t."
+msgstr ""
+"Os valores suportados para o argumento `` language`` são “python”, "
+"“html_plain”, “c”, “cpp”, “py4web”, e “html”. Os “HTML” interpreta "
+"linguagem tags como código “py4web”, enquanto “html_plain” não."
+
+#: ../../chapter-10.rst:305
+msgid ""
+"If a ``link`` value is specified, for example “/examples/global/vars/”, "
+"py4web API references in the code are linked to documentation at the link "
+"URL. For example “request” would be linked to “/examples/global/vars/"
+"request”. In the above example, the link URL is handled by the “vars” "
+"action in the “global.py” controller that is distributed as part of the "
+"py4web “examples” application."
+msgstr ""
+"Se um `` valor link`` é especificado, por exemplo “/ examples / global / "
+"vars /”, referências py4web API no código estão ligados a documentação no "
+"link URL. Por exemplo “pedido” estaria ligada à “/ examples / / global "
+"vars / request”. No exemplo acima, o URL de ligação é tratada pelo “vars” "
+"acção na “global.py” controlador que é distribuído como parte do py4web "
+"“exemplos” aplicação."
+
+#: ../../chapter-10.rst:312
+msgid ""
+"The ``counter`` argument is used for line numbering. It can be set to any "
+"of three different values. It can be ``None`` for no line numbers, a "
+"numerical value specifying the start number, or a string. If the counter is "
+"set to a string, it is interpreted as a prompt, and there are no line "
+"numbers."
+msgstr ""
+"O argumento `` counter`` é utilizado para a numeração de linha. Ele pode "
+"ser configurado para qualquer um dos três valores diferentes. Pode ser `` "
+"None`` para não números de linha, um valor numérico especificando o número "
+"inicial, ou uma string. Se o contador está definido para uma cadeia, ele é "
+"interpretado como um aviso, e não há números de linha."
+
+#: ../../chapter-10.rst:318
+msgid ""
+"The ``styles`` argument is a bit tricky. If you look at the generated HTML "
+"above, it contains a table with two columns, and each column has its own "
+"style declared inline using CSS. The ``styles`` attributes allows you to "
+"override those two CSS styles. For example:"
+msgstr ""
+"O `argumento` styles`` é um pouco complicado. Se você olhar para o HTML "
+"gerado acima, que contém uma tabela com duas colunas, e cada coluna tem um "
+"estilo próprio declarou em linha usando CSS. Os `` atributos styles`` "
+"permite substituir esses dois estilos CSS. Por exemplo:"
+
+#: ../../chapter-10.rst:327
+msgid ""
+"The ``styles`` attribute must be a dictionary, and it allows two possible "
+"keys: ``CODE`` for the style of the actual code, and ``LINENUMBERS`` for "
+"the style of the left column, which contains the line numbers. Mind that "
+"these styles completely replace the default styles and are not simply added "
+"to them."
+msgstr ""
+"O atributo `` styles`` deve ser um dicionário, e permite que duas chaves "
+"possíveis: `` CODE`` para o estilo do código atual, e `` LINENUMBERS`` para "
+"o estilo da coluna esquerda, que contém a linha números. Lembre-se que "
+"estes estilos substituir completamente os estilos padrão e não são "
+"simplesmente adicionados a eles."
+
+#: ../../chapter-10.rst:334
+msgid "``DIV``"
+msgstr "`` Div``"
+
+#: ../../chapter-10.rst:336
+msgid ""
+"All helpers apart from ``XML`` are derived from ``DIV`` and inherit its "
+"basic methods."
+msgstr ""
+"Todos os helpers além de `` XML`` são derivados de `` div`` e herdar seus "
+"métodos básicos."
+
+#: ../../chapter-10.rst:345
+msgid "``EM``"
+msgstr "`` EM``"
+
+#: ../../chapter-10.rst:347
+msgid "Emphasizes its content."
+msgstr "Insiste no seu conteúdo."
+
+#: ../../chapter-10.rst:355
+msgid "``FORM``"
+msgstr "`` Form``"
+
+#: ../../chapter-10.rst:357
+msgid ""
+"This is one of the most important helpers. In its simple form, it just "
+"makes a ``<form>...</form>`` tag, but because helpers are objects and have "
+"knowledge of what they contain, they can process submitted forms (for "
+"example, perform validation of the fields). This will be discussed in "
+"detail in `Chapter 12 <#chapter-12>`__."
+msgstr ""
+"Este é um dos mais helpers importantes. Na sua forma mais simples, ele só "
+"faz um `` <form> ... </ form> tag ``, mas porque helpers são objetos e ter "
+"conhecimento do que eles contêm, eles podem processar formulários enviados "
+"(por exemplo, executar a validação de os campos). Isso será discutido em "
+"detalhes no `Capítulo 12 <# capítulo-12>` __."
+
+#: ../../chapter-10.rst:369
+msgid "The “enctype” is “multipart/form-data” by default."
+msgstr "O “enctype” é “multipart / form-data” por padrão."
+
+#: ../../chapter-10.rst:371
+msgid ""
+"The constructor of a ``FORM``, and of ``SQLFORM``, can also take a special "
+"argument called ``hidden``. When a dictionary is passed as ``hidden``, its "
+"items are translated into “hidden” INPUT fields. For example:"
+msgstr ""
+"O construtor de um `` Form``, e de `` SQLFORM``, também pode tomar um "
+"argumento especial chamado `` hidden``. Quando um dicionário é passado como "
+"`` hidden``, seus itens são convertidos em campos de entrada “escondido”. "
+"Por exemplo:"
+
+#: ../../chapter-10.rst:383
+msgid "``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``"
+msgstr "`` H1``, `` h2``, `` H3``, `` H4``, `` H5``, `` H6``"
+
+#: ../../chapter-10.rst:385
+msgid "These helpers are for paragraph headings and subheadings:"
+msgstr "Estes helpers são para títulos dos parágrafos e subtítulos:"
+
+#: ../../chapter-10.rst:393
+msgid "``HEAD``"
+msgstr "`` HEAD``"
+
+#: ../../chapter-10.rst:395
+msgid "For tagging the HEAD of an HTML page."
+msgstr "Para marcar a cabeça de uma página HTML."
+
+#: ../../chapter-10.rst:403
+msgid "``HTML``"
+msgstr "`` HTML``"
+
+#: ../../chapter-10.rst:405
+msgid ""
+"This helper is a little different. In addition to making the ``<html>`` "
+"tags, it prepends the tag with a doctype string."
+msgstr ""
+"Este assistente é um pouco diferente. Além de fazer os `` <html> `` tag, "
+"que precederá a tag com um fio doctype."
+
+#: ../../chapter-10.rst:414
+msgid ""
+"The HTML helper also takes some additional optional arguments that have the "
+"following default:"
+msgstr ""
+"O auxiliar HTML também leva alguns argumentos opcionais adicionais que têm "
+"o seguinte padrão:"
+
+#: ../../chapter-10.rst:421
+msgid ""
+"where doctype can be ‘strict’, ‘transitional’, ‘frameset’, ‘html5’, or a "
+"full doctype string."
+msgstr ""
+"onde DOCTYPE pode ser ‘rigorosa’, ‘transitório’, ‘do conjunto de quadros’, "
+"‘html5’, ou uma corda tipo de documento completo."
+
+#: ../../chapter-10.rst:425
+msgid "``I``"
+msgstr "`` I``"
+
+#: ../../chapter-10.rst:427
+msgid "This helper makes its contents italic."
+msgstr "Este assistente torna o seu conteúdo em itálico."
+
+#: ../../chapter-10.rst:435
+msgid "``IMG``"
+msgstr "`` IMG``"
+
+#: ../../chapter-10.rst:437
+msgid "It can be used to embed images into HTML:"
+msgstr "Ele pode ser usado para imagens incorporar em HTML:"
+
+#: ../../chapter-10.rst:444
+msgid ""
+"Here is a combination of A, IMG, and URL helpers for including a static "
+"image with a link:"
+msgstr ""
+"Aqui é uma combinação de helpers A, IMG, e URL para a inclusão de uma "
+"imagem estática com um link:"
+
+#: ../../chapter-10.rst:457
+msgid "``INPUT``"
+msgstr "`` INPUT``"
+
+#: ../../chapter-10.rst:459
+msgid ""
+"Creates an ``<input.../>`` tag. An input tag may not contain other tags, "
+"and is closed by ``/>`` instead of ``>``. The input tag has an optional "
+"attribute ``_type`` that can be set to “text” (the default), “submit”, "
+"“checkbox”, or “radio”."
+msgstr ""
+"Cria um `` <input ... /> `` tag. Uma tag de entrada não pode conter outras "
+"tags, e é fechada por `` /> `` em vez de ``> ``. A tag de entrada tem um "
+"atributo opcional `` _type`` que pode ser definido como “texto” (o padrão), "
+"“enviar”, “caixa”, ou “rádio”."
+
+#: ../../chapter-10.rst:469
+msgid ""
+"It also takes an optional special argument called “value”, distinct from "
+"\"_value“. The latter sets the default value for the input field; the "
+"former sets its current value. For an input of type”text\", the former "
+"overrides the latter:"
+msgstr ""
+"Ele também leva um argumento especial opcional chamado “valor”, distinto "
+"<quotechar> _value “. Este último define o valor padrão para o campo de "
+"entrada; o ex define seu valor atual. Para uma entrada do tipo”text "
+"<quotechar>, os antigos substitui o último:"
+
+#: ../../chapter-10.rst:479
+msgid "For radio buttons, ``INPUT`` selectively sets the “checked” attribute:"
+msgstr ""
+"Para os botões de rádio, `` INPUT`` define seletivamente o “marcada” "
+"atributo:"
+
+#: ../../chapter-10.rst:490
+msgid "and similarly for checkboxes:"
+msgstr "e similarmente para caixas de seleção:"
+
+#: ../../chapter-10.rst:500
+msgid "``LABEL``"
+msgstr "`` Label``"
+
+#: ../../chapter-10.rst:502
+msgid "It is used to create a LABEL tag for an INPUT field."
+msgstr "Ele é usado para criar uma tag rótulo para um campo de entrada."
+
+#: ../../chapter-10.rst:510
+msgid "``LI``"
+msgstr "`` LI``"
+
+#: ../../chapter-10.rst:512
+msgid ""
+"It makes a list item and should be contained in a ``UL`` or ``OL`` tag."
+msgstr ""
+"Faz um item da lista e deve estar contido em um `` UL`` ou `` tag OL``."
+
+#: ../../chapter-10.rst:520
+msgid "``OL``"
+msgstr "`` OL``"
+
+#: ../../chapter-10.rst:522
+msgid ""
+"It stands for Ordered List. The list should contain LI tags. ``OL`` "
+"arguments that are not ``LI`` objects are automatically enclosed in "
+"``<li>...</li>`` tags."
+msgstr ""
+"Fica para a lista ordenada. A lista deve conter tags LI. `` Argumentos OL`` "
+"que não são `` objetos LI`` são automaticamente fechados em `` <li> ... </ "
+"li> `` tags."
+
+#: ../../chapter-10.rst:532
+msgid "``OPTION``"
+msgstr "`` OPTION``"
+
+#: ../../chapter-10.rst:534
+msgid ""
+"This should only be used as part of a ``SELECT``/``OPTION`` combination."
+msgstr ""
+"Isso só deve ser usado como parte de um `` / `` combinação OPTION`` "
+"SELECT``."
+
+#: ../../chapter-10.rst:541
+msgid ""
+"As in the case of ``INPUT``, py4web make a distinction between \"_value"
+"\" (the value of the OPTION), and “value” (the current value of the "
+"enclosing select). If they are equal, the option is “selected”."
+msgstr ""
+"Como no caso de `` INPUT``, py4web fazer uma distinção entre <quotechar> "
+"_value <quotechar> (o valor da opção), e “valor” (o valor atual do "
+"delimitador selecionar). Se forem iguais, a opção é “selecionado”."
+
+#: ../../chapter-10.rst:554
+msgid "``P``"
+msgstr "`` P``"
+
+#: ../../chapter-10.rst:556
+msgid "This is for tagging a paragraph."
+msgstr "Isto é para marcar um parágrafo."
+
+#: ../../chapter-10.rst:564
+msgid "``PRE``"
+msgstr "`` PRE``"
+
+#: ../../chapter-10.rst:566
+msgid ""
+"Generates a ``<pre>...</pre>`` tag for displaying pre-formatted text. The "
+"``CODE`` helper is generally preferable for code listings."
+msgstr ""
+"Gera um `` <pre> ... </ pre> `` tag para exibir texto pré-formatado. O `` "
+"CODE`` auxiliar é geralmente preferível para listagens de código."
+
+#: ../../chapter-10.rst:575
+msgid "``SCRIPT``"
+msgstr "`` SCRIPT``"
+
+#: ../../chapter-10.rst:577
+msgid ""
+"This is include or link a script, such as JavaScript. The content between "
+"the tags is rendered as an HTML comment, for the benefit of really old "
+"browsers."
+msgstr ""
+"Esta é incluir ou vincular um script, como JavaScript. O conteúdo entre as "
+"tags é processado como um comentário HTML, para o benefício dos navegadores "
+"realmente antigos."
+
+#: ../../chapter-10.rst:589
+msgid "``SELECT``"
+msgstr "`` SELECT``"
+
+#: ../../chapter-10.rst:591
+msgid ""
+"Makes a ``<select>...</select>`` tag. This is used with the ``OPTION`` "
+"helper. Those ``SELECT`` arguments that are not ``OPTION`` objects are "
+"automatically converted to options."
+msgstr ""
+"Faz um `` <selecionar> ... </ select> tag ``. Isto é usado com o `` helper "
+"OPTION``. Esses `` argumentos SELECT`` que não são `` objetos OPTION`` são "
+"automaticamente convertidas em opções."
+
+#: ../../chapter-10.rst:604
+msgid "``SPAN``"
+msgstr "`` SPAN``"
+
+#: ../../chapter-10.rst:606
+msgid "Similar to ``DIV`` but used to tag inline (rather than block) content."
+msgstr ""
+"Semelhante a `` div`` mas utilizado para marcação em linha (em vez de "
+"bloco) conteúdo."
+
+#: ../../chapter-10.rst:614
+msgid "``STYLE``"
+msgstr "`` STYLE``"
+
+#: ../../chapter-10.rst:616
+msgid ""
+"Similar to script, but used to either include or link CSS code. Here the "
+"CSS is included:"
+msgstr ""
+"Semelhante ao script, mas usadas para incluir ou código do link CSS. Aqui, "
+"o CSS está incluído:"
+
+#: ../../chapter-10.rst:626
+msgid "and here it is linked:"
+msgstr "e aqui ela está ligada:"
+
+#: ../../chapter-10.rst:635
+msgid "``TABLE``, ``TR``, ``TD``"
+msgstr "`` TABLE``, `` TR``, `` TD``"
+
+#: ../../chapter-10.rst:637
+msgid ""
+"These tags (along with the optional ``THEAD`` and ``TBODY`` helpers) are "
+"used to build HTML tables."
+msgstr ""
+"Estas tags (juntamente com o opcional `` THEAD`` e `` helpers TBODY``) são "
+"utilizados para tabelas de construção HTML."
+
+#: ../../chapter-10.rst:645
+msgid ""
+"``TR`` expects ``TD`` content; arguments that are not ``TD`` objects are "
+"converted automatically."
+msgstr ""
+"`` `` TR`` espera conteúdo TD``; argumentos que não são `` objetos TD`` são "
+"convertidos automaticamente."
+
+#: ../../chapter-10.rst:653
+msgid ""
+"It is easy to convert a Python array into an HTML table using Python’s "
+"``*`` function arguments notation, which maps list elements to positional "
+"function arguments."
+msgstr ""
+"É fácil converter uma matriz de Python em uma tabela HTML usando `` * `` "
+"notação argumentos de função do Python, que mapeia os elementos da lista "
+"para os argumentos da função posicionais."
+
+#: ../../chapter-10.rst:657
+msgid "Here, we will do it line by line:"
+msgstr "Aqui, vamos fazê-lo linha por linha:"
+
+#: ../../chapter-10.rst:665
+msgid "Here we do all lines at once:"
+msgstr "Aqui nós fazer todas as linhas de uma só vez:"
+
+#: ../../chapter-10.rst:674
+msgid "``TBODY``"
+msgstr "`` TBODY``"
+
+#: ../../chapter-10.rst:676
+msgid ""
+"This is used to tag rows contained in the table body, as opposed to header "
+"or footer rows. It is optional."
+msgstr ""
+"Isto é usado para linhas tag contidos no corpo de mesa, em oposição a "
+"linhas de cabeçalho ou de rodapé. É opcional."
+
+#: ../../chapter-10.rst:685
+msgid "``TEXTAREA``"
+msgstr "`` TEXTAREA``"
+
+#: ../../chapter-10.rst:687
+msgid "This helper makes a ``<textarea>...</textarea>`` tag."
+msgstr "Este assistente faz uma `<textarea> ... </ textarea> tag` ``."
+
+#: ../../chapter-10.rst:694
+msgid ""
+"The only caveat is that its optional “value” overrides its content (inner "
+"HTML)"
+msgstr ""
+"A única ressalva é que o seu “valor” opcional substitui seu conteúdo (HTML "
+"interna)"
+
+#: ../../chapter-10.rst:703
+msgid "``TH``"
+msgstr "`` TH``"
+
+#: ../../chapter-10.rst:705
+msgid "This is used instead of ``TD`` in table headers."
+msgstr "Este é utilizado em vez de `` TD`` em cabeçalhos de tabela."
+
+#: ../../chapter-10.rst:713
+msgid "``THEAD``"
+msgstr "`` THEAD``"
+
+#: ../../chapter-10.rst:715
+msgid "This is used to tag table header rows."
+msgstr "Isto é usado para linhas de cabeçalho da tabela tag."
+
+#: ../../chapter-10.rst:723
+msgid "``TITLE``"
+msgstr "`` TITLE``"
+
+#: ../../chapter-10.rst:725
+msgid "This is used to tag the title of a page in an HTML header."
+msgstr "Isto é usado para marcar o título de uma página em um cabeçalho HTML."
+
+#: ../../chapter-10.rst:733
+msgid "``TR``"
+msgstr "`` TR``"
+
+#: ../../chapter-10.rst:735
+msgid ""
+"Tags a table row. It should be rendered inside a table and contain ``<td>..."
+"</td>`` tags. ``TR`` arguments that are not ``TD`` objects will be "
+"automatically converted."
+msgstr ""
+"Palavras chave uma linha da tabela. Ele deve ser processado dentro de uma "
+"tabela e conter `` <td> ... </ td> `` tags. `` Argumentos TR`` que não são "
+"`` objetos TD`` serão convertidos automaticamente."
+
+#: ../../chapter-10.rst:745
+msgid "``TT``"
+msgstr "`` TT``"
+
+#: ../../chapter-10.rst:747
+msgid "Tags text as typewriter (monospaced) text."
+msgstr "Etiquetas de texto como máquina de escrever texto (monoespaçada)."
+
+#: ../../chapter-10.rst:755
+msgid "``UL``"
+msgstr "`` UL``"
+
+#: ../../chapter-10.rst:757
+msgid ""
+"Signifies an Unordered List and should contain ``LI`` items. If its content "
+"is not tagged as ``LI``, ``UL`` does it automatically."
+msgstr ""
+"Significa uma lista desordenada e deve conter `` itens LI``. Se o seu "
+"conteúdo não é marcado como `` LI``, `` UL`` faz isso automaticamente."
+
+#: ../../chapter-10.rst:766
+msgid "``URL``"
+msgstr "`` URL``"
+
+#: ../../chapter-10.rst:768
+msgid "The URL helper is documented in *Chapter 4 URL ../04*"
+msgstr "O helper URL é documentado em * Capítulo 4 URL ../04*"
+
+#: ../../chapter-10.rst:771
+msgid "Custom helpers"
+msgstr "Helpers personalizados"
+
+#: ../../chapter-10.rst:774
+msgid "``TAG``"
+msgstr "`` TAG``"
+
+#: ../../chapter-10.rst:776
+msgid ""
+"Sometimes you need to generate custom XML tags. py4web provides ``TAG``, a "
+"universal tag generator."
+msgstr ""
+"Às vezes você precisa para gerar tags XML personalizados. py4web fornece `` "
+"TAG``, um gerador de tag universal."
+
+#: ../../chapter-10.rst:783
+msgid "generates the following XML"
+msgstr "gera o seguinte XML"
+
+#: ../../chapter-10.rst:789
+msgid ""
+"Arguments “a”, “b”, and “d” are automatically escaped; use the ``XML`` "
+"helper to suppress this behavior. Using ``TAG`` you can generate HTML/XML "
+"tags not already provided by the API. TAGs can be nested, and are "
+"serialized with ``str().`` An equivalent syntax is:"
+msgstr ""
+"Argumentos “a”, “b” e “d” são automaticamente escapou; usar o `` helper "
+"XML`` para suprimir esse comportamento. Usando `` TAG`` você pode gerar "
+"HTML / XML marcas já não fornecidos pela API. As etiquetas podem ser "
+"aninhados, e são serializados com `` str () `` Uma sintaxe é equivalente.:"
+
+#: ../../chapter-10.rst:798
+msgid ""
+"If the TAG object is created with an empty name, it can be used to "
+"concatenate multiple strings and HTML helpers together without inserting "
+"them into a surrounding tag, but this use is deprecated. Use the ``CAT`` "
+"helper instead."
+msgstr ""
+"Se o objeto TAG é criado com um nome vazio, ele pode ser usado para "
+"concatenar várias cadeias e helpers HTML juntos sem inseri-los em uma tag "
+"ao redor, mas este uso é obsoleto. Use o `` helper CAT`` vez."
+
+#: ../../chapter-10.rst:803
+msgid ""
+"Self-closing tags can be generated with the TAG helper. The tag name must "
+"end with a “/”."
+msgstr ""
+"Tags com auto-fechamento podem ser geradas com o helper TAG. O noma da tag "
+"deve terminar com um “/”."
+
+#: ../../chapter-10.rst:810
+msgid "generates the following XML:"
+msgstr "gera o seguinte XML:"
+
+#: ../../chapter-10.rst:816
+msgid ""
+"Notice that ``TAG`` is an object, and ``TAG.name`` or ``TAG['name']`` is a "
+"function that returns a temporary helper class."
+msgstr ""
+"Note que `` TAG`` é um objecto, e `` `` TAG.name`` ou TAG [ 'nome'] `` é "
+"uma função que retorna uma classe auxiliar temporária."
+
+#: ../../chapter-10.rst:820
+msgid "``MENU``"
+msgstr "`` MENU``"
+
+#: ../../chapter-10.rst:822
+msgid ""
+"The MENU helper takes a list of lists or of tuples of the form of "
+"``response.menu`` and generates a tree-like structure using unordered lists "
+"representing the menu. For example:"
+msgstr ""
+"O auxiliar MENU leva uma lista de listas ou de tuplas da forma de `` "
+"response.menu`` e gera uma árvore-como estrutura usando listas não "
+"ordenadas representam o menu. Por exemplo:"
+
+#: ../../chapter-10.rst:836
+msgid ""
+"The first item in each list/tuple is the text to be displayed for the given "
+"menu item."
+msgstr ""
+"O primeiro item em cada lista / tupla é o texto a ser exibido para o item "
+"de menu dado."
+
+#: ../../chapter-10.rst:839
+msgid ""
+"The second item in each list/tuple is a boolean indicating whether that "
+"particular menu item is active (i.e., the currently selected item). When "
+"set to True, the ``MENU`` helper will add a “py4web-menu-active” class to "
+"the ``<li>`` for that item (you can change the name of that class via the "
+"“li_active” argument to ``MENU``). Another way to specify the active url is "
+"by directly passing it to ``MENU`` via its “active_url” argument."
+msgstr ""
+"O segundo produto em cada lista / tupla é um booleano que indica se o item "
+"de menu particular é activo (isto é, o produto actualmente seleccionada). "
+"Quando definido como verdadeiro, o `` MENU`` helper irá adicionar uma "
+"classe “-py4web-menu ativo” para o `` <li> `` para esse item (você pode "
+"alterar o nome dessa classe, através do argumento “li_active” a `` MENU``). "
+"Outra maneira de especificar o url ativo é passando-o directamente para `` "
+"MENU`` através do seu argumento “active_url”."
+
+#: ../../chapter-10.rst:846
+msgid ""
+"The third item in each list/tuple can be an HTML helper (which could "
+"include nested helpers), and the ``MENU`` helper will simply render that "
+"helper rather than creating its own ``<a>`` tag."
+msgstr ""
+"O terceiro item em cada lista / tupla pode ser um HTML helper (que poderia "
+"incluir helpers aninhados), eo `` MENU`` helper irá simplesmente tornar "
+"esse helper em vez de criar seu próprio `` <a> `` tag."
+
+#: ../../chapter-10.rst:850
+msgid ""
+"Each menu item can have a fourth argument that is a nested submenu (and so "
+"on recursively):"
+msgstr ""
+"Cada item do menu pode ter um quarto argumento que é um submenu aninhado (e "
+"assim por diante de forma recursiva):"
+
+#: ../../chapter-10.rst:865
+msgid ""
+"A menu item can also have an optional 5th element, which is a boolean. When "
+"false, the menu item is ignored by the MENU helper."
+msgstr ""
+"Um item de menu também pode ter um quinto elemento opcional, que é um "
+"boolean. Quando false, o item de menu é ignorado pelo auxiliar MENU."
+
+#: ../../chapter-10.rst:868
+msgid ""
+"The ``MENU`` helper takes the following optional arguments: - ``_class``: "
+"defaults to “py4web-menu py4web-menu-vertical” and sets the class of the "
+"outer UL elements. - ``ul_class``: defaults to “py4web-menu-vertical” and "
+"sets the class of the inner UL elements. - ``li_class``: defaults to "
+"“py4web-menu-expand” and sets the class of the inner LI elements. - "
+"``li_first``: allows to add a class to the first list element. - "
+"``li_last``: allows to add a class to the last list element."
+msgstr ""
+"O `` MENU`` helper leva os seguintes argumentos opcionais: - `` _class``: o "
+"padrão é “menu py4web py4web-menu vertical” e define a classe dos elementos "
+"UL exteriores. - `` ul_class``: o padrão é “py4web-menu vertical” e define "
+"a classe dos elementos UL internos. - `` li_class``: o padrão é “py4web "
+"menu-expandir” e define a classe dos elementos LI internos. - `` "
+"li_first``: permite adicionar uma classe para o primeiro elemento da lista. "
+"- `` li_last``: permite adicionar uma classe para o último elemento da "
+"lista."
+
+#: ../../chapter-10.rst:877
+msgid ""
+"``MENU`` takes an optional argument ``mobile``. When set to ``True`` "
+"instead of building a recursive ``UL`` menu structure it returns a "
+"``SELECT`` dropdown with all the menu options and a ``onchange`` attribute "
+"that redirects to the page corresponding to the selected option. This is "
+"designed an an alternative menu representation that increases usability on "
+"small mobile devices such as phones."
+msgstr ""
+"`` MENU`` leva um argumento opcional `` mobile``. Quando ajustado para `` "
+"True`` em vez de construir um `` estrutura do menu UL`` recursiva ele "
+"retorna um `` suspensa SELECT`` com todas as opções de menu e um atributo "
+"`` onchange`` que redireciona para a página correspondente ao opção "
+"selecionada. Isto é projetado uma representação de um menu alternativo que "
+"aumenta a usabilidade em pequenos dispositivos móveis, como telefones."
+
+#: ../../chapter-10.rst:884
+msgid "Normally the menu is used in a layout with the following syntax:"
+msgstr "Normalmente, o menu é usado em um layout com a seguinte sintaxe:"
+
+#: ../../chapter-10.rst:890
+msgid ""
+"In this way a mobile device is automatically detected and the menu is "
+"rendered accordingly."
+msgstr ""
+"Desta forma, um dispositivo móvel é automaticamente detectado e o menu é "
+"processado em conformidade."
+
+#: ../../chapter-10.rst:894
+msgid "``BEAUTIFY``"
+msgstr "`` BEAUTIFY``"
+
+#: ../../chapter-10.rst:896
+msgid ""
+"``BEAUTIFY`` is used to build HTML representations of compound objects, "
+"including lists, tuples and dictionaries:"
+msgstr ""
+"`` BEAUTIFY`` é usado para representações de construção HTML de objetos "
+"compostos, incluindo listas, tuplas e dicionários:"
+
+#: ../../chapter-10.rst:903
+msgid ""
+"``BEAUTIFY`` returns an XML-like object serializable to XML, with a nice "
+"looking representation of its constructor argument. In this case, the XML "
+"representation of:"
+msgstr ""
+"`` BEAUTIFY`` retorna um objeto serializado XML-like to XML, com uma "
+"representação de vista agradável de seu argumento construtor. Neste caso, a "
+"representação XML:"
+
+#: ../../chapter-10.rst:911
+msgid "will render as:"
+msgstr "retribuirá como:"
+
+#: ../../chapter-10.rst:921
+msgid "Server-side *DOM* and parsing"
+msgstr "Server-side * DOM * e análise"
+
+#: ../../chapter-10.rst:924
+msgid "``elements``"
+msgstr "`` elements``"
+
+#: ../../chapter-10.rst:926
+msgid ""
+"The DIV helper and all derived helpers provide the search methods "
+"``element`` and ``elements``."
+msgstr ""
+"O auxiliar DIV e todos os auxiliares derivados fornecer a métodos de "
+"pesquisa `` element`` e `` elements``."
+
+#: ../../chapter-10.rst:929
+msgid ""
+"``element`` returns the first child element matching a specified condition "
+"(or None if no match)."
+msgstr ""
+"`` Retornos element`` o primeiro elemento filho correspondente a uma "
+"condição especificada (ou nenhum, se não fósforo)."
+
+#: ../../chapter-10.rst:932
+msgid "``elements`` returns a list of all matching children."
+msgstr "`` Elements`` retorna uma lista de todas as crianças correspondentes."
+
+#: ../../chapter-10.rst:934
+msgid ""
+"**element** and **elements** use the same syntax to specify the matching "
+"condition, which allows for three possibilities that can be mixed and "
+"matched: jQuery-like expressions, match by exact attribute value, match "
+"using regular expressions."
+msgstr ""
+"** elemento ** e elementos ** ** usar a mesma sintaxe para especificar a "
+"condição de correspondência, que permite três possibilidades que podem ser "
+"misturados e combinados: jQuery-como expressões, jogo pelo valor do "
+"atributo exato, fósforo usando expressões regulares."
+
+#: ../../chapter-10.rst:939
+msgid "Here is a simple example:"
+msgstr "Aqui está um exemplo simples:"
+
+#: ../../chapter-10.rst:949
+msgid ""
+"The un-named argument of ``elements`` is a string, which may contain: the "
+"name of a tag, the id of a tag preceded by a pound symbol, the class "
+"preceded by a dot, the explicit value of an attribute in square brackets."
+msgstr ""
+"O argumento sem nome de `` elements`` é uma string, que pode conter: o nome "
+"de uma tag, o id de uma tag precedida por um símbolo de libra, a classe "
+"precedido por um ponto, o valor explícito de um atributo em parêntesis "
+"rectos."
+
+#: ../../chapter-10.rst:954
+msgid "Here are 4 equivalent ways to search the previous tag by id:"
+msgstr "Aqui estão 4 maneiras equivalentes para pesquisar a tag anterior id:"
+
+#: ../../chapter-10.rst:963
+msgid "Here are 4 equivalent ways to search the previous tag by class:"
+msgstr ""
+"Aqui estão 4 maneiras equivalentes para pesquisar a tag anterior por classe:"
+
+#: ../../chapter-10.rst:972
+msgid ""
+"Any attribute can be used to locate an element (not just ``id`` and "
+"``class``), including multiple attributes (the function element can take "
+"multiple named arguments), but only the first matching element will be "
+"returned."
+msgstr ""
+"Qualquer atributo pode ser usado para localizar um elemento (e não apenas "
+"`` id`` e `` class``), incluindo vários atributos (o elemento função pode "
+"demorar vários argumentos nomeados), mas apenas o primeiro elemento "
+"correspondente será devolvido."
+
+#: ../../chapter-10.rst:977
+msgid ""
+"Using the jQuery syntax “div#target” it is possible to specify multiple "
+"search criteria separated by a comma:"
+msgstr ""
+"Usando o jQuery sintaxe “div # target” é possível especificar vários "
+"critérios de pesquisa separadas por uma vírgula:"
+
+#: ../../chapter-10.rst:985
+msgid "or equivalently"
+msgstr "ou equivalente"
+
+#: ../../chapter-10.rst:992
+msgid ""
+"If the value of an attribute is specified using a name argument, it can be "
+"a string or a regular expression:"
+msgstr ""
+"Se o valor de um atributo é especificado usando um argumento de nome, pode "
+"ser uma string ou uma expressão regular:"
+
+#: ../../chapter-10.rst:1000
+msgid ""
+"A special named argument of the DIV (and derived) helpers is ``find``. It "
+"can be used to specify a search value or a search regular expression in the "
+"text content of the tag. For example:"
+msgstr ""
+"Um especial chamado argumento do DIV (e derivados) helpers é `` find``. Ele "
+"pode ser usado para especificar um valor de pesquisa ou uma expressão "
+"regular de busca no conteúdo de texto do tag. Por exemplo:"
+
+#: ../../chapter-10.rst:1011
+msgid "or"
+msgstr "ou"
+
+#: ../../chapter-10.rst:1021
+msgid "``components``"
+msgstr "`` Components``"
+
+#: ../../chapter-10.rst:1023
+msgid "Here’s an example of listing all elements in an html string:"
+msgstr "Aqui está um exemplo de listar todos os elementos em uma string html:"
+
+#: ../../chapter-10.rst:1035
+msgid "``parent`` and ``siblings``"
+msgstr "`` `` Parent`` e siblings``"
+
+#: ../../chapter-10.rst:1037
+msgid "``parent`` returns the parent of the current element."
+msgstr "`` Parent`` retorna o pai do elemento de corrente."
+
+#: ../../chapter-10.rst:1051
+msgid "Replacing elements"
+msgstr "Substituir elementos"
+
+#: ../../chapter-10.rst:1053
+msgid ""
+"Elements that are matched can also be replaced or removed by specifying the "
+"``replace`` argument. Notice that a list of the original matching elements "
+"is still returned as usual."
+msgstr ""
+"Elementos que são combinados também podem ser substituídos ou removidos, "
+"especificando o argumento `` replace``. Observe que uma lista dos elementos "
+"correspondentes originais ainda é devolvido como de costume."
+
+#: ../../chapter-10.rst:1064
+msgid ""
+"``replace`` can be a callable. In this case it will be passed the original "
+"element and it is expected to return the replacement element:"
+msgstr ""
+"`` Replace`` pode ser um que pode ser chamado. Neste caso, será passado o "
+"elemento original e é esperado para retornar o elemento de substituição:"
+
+#: ../../chapter-10.rst:1074
+msgid "If ``replace=None``, matching elements will be removed completely."
+msgstr ""
+"Se `` substituir = None``, os elementos correspondentes serão completamente "
+"removidas."
+
+#: ../../chapter-10.rst:1084
+msgid "``flatten``"
+msgstr "`` flatten``"
+
+#: ../../chapter-10.rst:1086
+msgid ""
+"The flatten method recursively serializes the content of the children of a "
+"given element into regular text (without tags):"
+msgstr ""
+"O método flatten recursivamente serializa o conteúdo dos filhos de um "
+"determinado elemento em texto normal (sem etiquetas):"
+
+#: ../../chapter-10.rst:1095
+msgid ""
+"Flatten can be passed an optional argument, ``render``, i.e. a function "
+"that renders/flattens the content using a different protocol. Here is an "
+"example to serialize some tags into Markmin wiki syntax:"
+msgstr ""
+"Nivelar pode ser passado um argumento opcional, `` render``, isto é, uma "
+"função que processa / achata o conteúdo utilizando um protocolo diferente. "
+"Aqui está um exemplo para serializar algumas tags em sintaxe Markmin wiki:"
+
+#: ../../chapter-10.rst:1108
+msgid ""
+"At the time of writing we provide ``markmin_serializer`` and "
+"``markdown_serializer``."
+msgstr ""
+"No momento da escrita nós fornecemos `` markmin_serializer`` e `` "
+"markdown_serializer``."
+
+#: ../../chapter-10.rst:1112
+msgid "Parsing"
+msgstr "Análise"
+
+#: ../../chapter-10.rst:1114
+msgid ""
+"The TAG object is also an XML/HTML parser. It can read text and convert "
+"into a tree structure of helpers. This allows manipulation using the API "
+"above:"
+msgstr ""
+"O objeto TAG é também um XML / HTML parser. Pode ler o texto e converter em "
+"uma estrutura de árvore de helpers. Isto permite a manipulação usando a API "
+"acima:"
+
+#: ../../chapter-10.rst:1127
+msgid "Page layout"
+msgstr "Layout da página"
+
+#: ../../chapter-10.rst:1129
+msgid "Views can extend and include other views in a tree-like structure."
+msgstr ""
+"Visualizações pode estender e incluir outros pontos de vista em uma "
+"estrutura de árvore."
+
+#: ../../chapter-10.rst:1131
+msgid ""
+"For example, we can think of a view “index.html” that extends “layout.html” "
+"and includes “body.html”. At the same time, “layout.html” may include "
+"“header.html” and “footer.html”."
+msgstr ""
+"Por exemplo, podemos pensar em uma visão “index.html” que se estende "
+"“layout.html” e inclui “body.html”. Ao mesmo tempo, “layout.html” pode "
+"incluir “header.html” e “footer.html”."
+
+#: ../../chapter-10.rst:1135
+msgid ""
+"The root of the tree is what we call a layout view. Just like any other "
+"HTML template file, you can edit it using the py4web administrative "
+"interface. The file name “layout.html” is just a convention."
+msgstr ""
+"A raiz da árvore é o que chamamos de exibição de layout. Assim como "
+"qualquer outro arquivo de modelo HTML, você pode editá-lo usando a "
+"interface administrativa py4web. O nome do arquivo “layout.html” é apenas "
+"uma convenção."
+
+#: ../../chapter-10.rst:1139
+msgid ""
+"Here is a minimalist page that extends the “layout.html” view and includes "
+"the “page.html” view:"
+msgstr ""
+"Aqui está uma página minimalista que se estende a visão “layout.html” e "
+"inclui o ponto de vista “page.html”:"
+
+#: ../../chapter-10.rst:1148
+msgid ""
+"The extended layout file must contain an ``[[include]]`` directive, "
+"something like:"
+msgstr ""
+"O arquivo de layout estendido deve conter um `` [[incluir]] `` directiva, "
+"algo como:"
+
+#: ../../chapter-10.rst:1162
+msgid ""
+"When the view is called, the extended (layout) view is loaded, and the "
+"calling view replaces the ``[[include]]`` directive inside the layout. "
+"Processing continues recursively until all ``extend`` and ``include`` "
+"directives have been processed. The resulting template is then translated "
+"into Python code. Note, when an application is bytecode compiled, it is "
+"this Python code that is compiled, not the original view files themselves. "
+"So, the bytecode compiled version of a given view is a single .pyc file "
+"that includes the Python code not just for the original view file, but for "
+"its entire tree of extended and included views."
+msgstr ""
+"Quando o ponto de vista é chamado, o (layout) vista alargada é carregado, e "
+"o ponto de vista chamando substitui a `` [[incluir]] `` directiva dentro da "
+"disposição. O processamento continua de forma recursiva até que todo `` `` "
+"extend`` e directivas include`` tenham sido processados. O modelo "
+"resultante é então traduzido em código Python. Note, quando um aplicativo é "
+"bytecode compilado, é este código Python que é compilado, não a visão "
+"original próprios arquivos. Assim, a versão bytecode compilado de um "
+"determinado ponto de vista é um único arquivo .pyc que inclui o código "
+"Python não apenas para o arquivo de exibição original, mas para toda a sua "
+"árvore de pontos de vista estendidas e incluídos."
+
+#: ../../chapter-10.rst:1172
+msgid ""
+"``extend``, ``include``, ``block`` and ``super`` are special template "
+"directives, not Python commands."
+msgstr ""
+"`` Extend``, `` include``, `` block`` e `` super`` são directivas especiais "
+"do template, e não comandos Python."
+
+#: ../../chapter-10.rst:1175
+msgid ""
+"Any content or code that precedes the ``[[extend ...]]`` directive will be "
+"inserted (and therefore executed) before the beginning of the extended "
+"view’s content/code. Although this is not typically used to insert actual "
+"HTML content before the extended view’s content, it can be useful as a "
+"means to define variables or functions that you want to make available to "
+"the extended view. For example, consider a view “index.html”:"
+msgstr ""
+"Qualquer conteúdo ou código que precede a `` [[estender ...]] `` directiva "
+"será inserido (e, portanto, executado) antes do início do conteúdo / código "
+"da vista estendida. Embora este não é normalmente usado para inserir "
+"conteúdo HTML real antes de o conteúdo da exibição estendida, ele pode ser "
+"útil como um meio para definir variáveis ​​ou funções que você deseja "
+"disponibilizar para a exibição estendida. Por exemplo, considere uma visão "
+"“index.html”:"
+
+#: ../../chapter-10.rst:1189
+msgid "and an excerpt from “layout.html”:"
+msgstr "e um trecho de “layout.html”:"
+
+#: ../../chapter-10.rst:1199
+msgid ""
+"Because the ``sidebar_enabled`` assignment in “index.html” comes before the "
+"``extend``, that line gets inserted before the beginning of “layout.html”, "
+"making ``sidebar_enabled`` available anywhere within the “layout.html” code "
+"(a somewhat more sophisticated version of this is used in the **welcome** "
+"app)."
+msgstr ""
+"Porque o `` atribuição sidebar_enabled`` em “index.html” vem antes do `` "
+"extend``, essa linha é inserido antes do início do “layout.html”, fazendo "
+"com que `` qualquer lugar sidebar_enabled`` disponível dentro do “layout. "
+"html”código (uma versão um pouco mais sofisticada deste é usado no bem-"
+"vindo ** ** app)."
+
+#: ../../chapter-10.rst:1205
+msgid ""
+"It is also worth pointing out that the variables returned by the controller "
+"function are available not only in the function’s main view, but in all of "
+"its extended and included views as well."
+msgstr ""
+"Também é importante ressaltar que as variáveis ​​retornadas pela função de "
+"controlador estão disponíveis não só na vista principal da função, mas em "
+"todos os seus pontos de vista estendidas e incluídos também."
+
+#: ../../chapter-10.rst:1209
+msgid ""
+"The argument of an ``extend`` or ``include`` (i.e., the extended or "
+"included view name) can be a Python variable (though not a Python "
+"expression). However, this imposes a limitation – views that use variables "
+"in ``extend`` or ``include`` statements cannot be bytecode compiled. As "
+"noted above, bytecode-compiled views include the entire tree of extended "
+"and included views, so the specific extended and included views must be "
+"known at compile time, which is not possible if the view names are "
+"variables (whose values are not determined until run time). Because "
+"bytecode compiling views can provide a significant speed boost, using "
+"variables in ``extend`` and ``include`` should generally be avoided if "
+"possible."
+msgstr ""
+"O argumento de um `` `` extend`` ou include`` (isto é, o nome vista "
+"alargada ou incluído) possa ser uma variável Python (embora não uma "
+"expressão Python). No entanto, este impõe uma limitação - vistas que usar "
+"variáveis ​​no `` extend`` ou `` declarações include`` não pode ser bytecode "
+"compilado. Como mencionado acima, vista compilado-bytecode incluem toda a "
+"árvore de pontos de vista estendidas e incluídos, de modo que o específica "
+"estendida e vistas incluídos deve ser conhecido em tempo de compilação, que "
+"não é possível se os nomes de exibição são variáveis ​​(cujos valores não são "
+"determinados até run Tempo). Porque vistas bytecode compilação pode "
+"fornecer um impulso de velocidade significativa, utilizando variáveis ​​em `` "
+"extend`` e `` include`` geralmente deve ser evitada, se possível."
+
+#: ../../chapter-10.rst:1221
+msgid ""
+"In some cases, an alternative to using a variable in an ``include`` is "
+"simply to place regular ``[[include ...]]`` directives inside an ``if..."
+"else`` block."
+msgstr ""
+"Em alguns casos, uma alternativa para usar uma variável em um `` include`` "
+"é simplesmente para colocar regulares `` [[incluem ...]] `` directivas "
+"dentro de um `` se ... bloco else``."
+
+#: ../../chapter-10.rst:1233
+msgid ""
+"The above code does not present any problem for bytecode compilation "
+"because no variables are involved. Note, however, that the bytecode "
+"compiled view will actually include the Python code for both “this_view."
+"html” and “that_view.html”, though only the code for one of those views "
+"will be executed, depending on the value of ``some_condition``."
+msgstr ""
+"O código acima não apresenta qualquer problema para a compilação bytecode "
+"porque há variáveis ​​estão envolvidas. Note, no entanto, que o bytecode "
+"compilado vista realmente irá incluir o código Python para ambos “this_view."
+"html” e “that_view.html”, embora apenas o código para um desses pontos de "
+"vista serão executadas, dependendo do valor de `` some_condition ``."
+
+#: ../../chapter-10.rst:1240
+msgid ""
+"Keep in mind, this only works for ``include`` – you cannot place "
+"``[[extend ...]]`` directives inside ``if...else`` blocks."
+msgstr ""
+"Tenha em mente, isso só funciona para `` include`` - você não pode colocar "
+"`` [[estender ...]] `` directivas dentro `` se ... blocos else``."
+
+#: ../../chapter-10.rst:1243
+msgid ""
+"Layouts are used to encapsulate page commonality (headers, footers, menus), "
+"and though they are not mandatory, they will make your application easier "
+"to write and maintain. In particular, we suggest writing layouts that take "
+"advantage of the following variables that can be set in the controller. "
+"Using these well known variables will help make your layouts "
+"interchangeable:"
+msgstr ""
+"Layouts são usados ​​para página encapsular comunalidade (cabeçalhos, "
+"rodapés, menus), e embora eles não são obrigatórios, eles vão fazer a sua "
+"aplicação mais fácil de escrever e manter. Em particular, sugerimos "
+"escrever layouts que aproveitam as seguintes variáveis ​​que podem ser "
+"definidas no controlador. Usando estas variáveis ​​bem conhecidas irá ajudar "
+"a tornar seus layouts intercambiáveis:"
+
+#: ../../chapter-10.rst:1261
+msgid ""
+"Except for ``menu`` and ``files``, these are all strings and their meaning "
+"should be obvious."
+msgstr ""
+"Exceto para `` menu`` e `` files``, estas são todas as cordas e seu "
+"significado deve ser óbvia."
+
+#: ../../chapter-10.rst:1264
+msgid ""
+"``response.menu`` menu is a list of 3-tuples or 4-tuples. The three "
+"elements are: the link name, a boolean representing whether the link is "
+"active (is the current link), and the URL of the linked page. For example:"
+msgstr ""
+"`` Menu response.menu`` está uma lista de 3-tuplas ou 4-tuplas. Os três "
+"elementos são: o nome do link, um booleano representando se o link está "
+"ativo (é o elo atual), e o URL da página vinculada. Por exemplo:"
+
+#: ../../chapter-10.rst:1274
+msgid "The fourth tuple element is an optional sub-menu."
+msgstr "O quarto elemento tupla é um sub-menu de opcionais."
+
+#: ../../chapter-10.rst:1276
+msgid ""
+"``response.files`` is a list of CSS and JS files that are needed by your "
+"page."
+msgstr ""
+"`` Response.files`` é uma lista de arquivos CSS e JS que são necessários "
+"pelo sua página."
+
+#: ../../chapter-10.rst:1279
+msgid "We also recommend that you use:"
+msgstr "Também recomendamos que você usa:"
+
+#: ../../chapter-10.rst:1285
+msgid ""
+"in the HTML head, since this will include the jQuery libraries and define "
+"some backward-compatible JavaScript functions for special effects and Ajax. "
+"“py4web_ajax.html” includes the ``response.meta`` tags in the view, jQuery "
+"base, the calendar datepicker, and all required CSS and JS ``response."
+"files``."
+msgstr ""
+"na cabeça HTML, uma vez que irá incluir as bibliotecas jQuery e definir "
+"algumas funções JavaScript compatível com versões anteriores para efeitos "
+"especiais e Ajax. “Py4web_ajax.html” inclui os `` tag response.meta`` na "
+"vista, base jQuery, o datepicker calendário, e todos CSS necessário e JS `` "
+"response.files``."
+
+#: ../../chapter-10.rst:1292
+msgid "Default page layout"
+msgstr "Layout de página padrão"
+
+#: ../../chapter-10.rst:1294
+msgid ""
+"The “views/layout.html” that ships with the py4web scaffolding application "
+"**welcome** (stripped down of some optional parts) is quite complex but it "
+"has the following structure:"
+msgstr ""
+"O “views / layout.html” que acompanha o aplicativo andaimes py4web ** boas-"
+"vindas ** (despojado de algumas partes opcionais) é bastante complexa, mas "
+"tem a seguinte estrutura:"
+
+#: ../../chapter-10.rst:1412
+msgid ""
+"There are a few features of this default layout that make it very easy to "
+"use and customize:"
+msgstr ""
+"Existem algumas características deste layout padrão que tornam muito fácil "
+"de usar e personalizar:"
+
+#: ../../chapter-10.rst:1415
+msgid ""
+"It is written in HTML5 and uses the “modernizr” library for backward "
+"compatibility. The actual layout includes some extra conditional statements "
+"required by IE and they are omitted for brevity."
+msgstr ""
+"Ele é escrito em HTML5 e usa a biblioteca “Modernizr” para compatibilidade "
+"com versões anteriores. O layout real inclui algumas declarações "
+"condicionais extras exigidos pelo IE e eles são omitidos por brevidade."
+
+#: ../../chapter-10.rst:1418
+msgid ""
+"It displays both ``response.title`` and ``response.subtitle`` which can be "
+"set in a model or a controller. If they are not set, it adopts the "
+"application name as title."
+msgstr ""
+"Ele exibe tanto `` response.title`` e `` response.subtitle`` que pode ser "
+"definido em um modelo ou um controlador. Se eles não estão definidos, adota "
+"o nome do aplicativo como título."
+
+#: ../../chapter-10.rst:1421
+msgid ""
+"It includes the ``py4web_ajax.html`` file in the header which generated all "
+"the link and script import statements."
+msgstr ""
+"Ele inclui o arquivo `` py4web_ajax.html`` no cabeçalho que gerou todas as "
+"declarações de importação da ligação e de script."
+
+#: ../../chapter-10.rst:1423
+msgid ""
+"It uses a modified version of Twitter Bootstrap for flexible layouts which "
+"works on mobile devices and re-arranges columns to fit small screens."
+msgstr ""
+"Ele usa uma versão modificada do Twitter Bootstrap para layouts flexíveis "
+"que funciona em dispositivos móveis e colunas reorganiza para caber telas "
+"pequenas."
+
+#: ../../chapter-10.rst:1426
+msgid "It uses “analytics.js” to connect to Google Analytics."
+msgstr "Ele usa “analytics.js” para se conectar ao Google Analytics."
+
+#: ../../chapter-10.rst:1427
+msgid ""
+"The ``[[=auth.navbar(...)]]`` displays a welcome to the current user and "
+"links to the auth functions like login, logout, register, change password, "
+"etc. depending on context. ``auth.navbar`` is a helper factory and its "
+"output can be manipulated as any other helper. It is placed in an "
+"expression to check for auth definition, the expression evaluates to ’’ in "
+"case auth is undefined."
+msgstr ""
+"O `` [[= auth.navbar (...)]] `` exibe uma recepção para o usuário atual e "
+"links para as funções de autenticação, como login, logout, registro, "
+"alteração de senha, etc. dependendo do contexto. `` Auth.navbar`` é uma "
+"fábrica auxiliar e a sua saída podem ser manipulados como qualquer outro "
+"auxiliar. É colocado em uma expressão para verificar a existência de auth "
+"definição, as avalia a expressão ‘’ no caso de auth é indefinido."
+
+#: ../../chapter-10.rst:1433
+msgid ""
+"The ``[[=MENU(response.menu)]]`` displays the menu structure as ``<ul>...</"
+"ul>``."
+msgstr ""
+"O `` [[= MENU (response.menu)]] `` exibe a estrutura do menu como `` "
+"<ul> ... </ ul> ``."
+
+#: ../../chapter-10.rst:1435
+msgid ""
+"``[[include]]`` is replaced by the content of the extending view when the "
+"page is rendered."
+msgstr ""
+"`` [[Incluir]] `` é substituído pelo conteúdo da vista que se prolonga, "
+"quando a página é processada."
+
+#: ../../chapter-10.rst:1437
+msgid ""
+"By default it uses a conditional three column (the left and right sidebars "
+"can be turned off by the extending views)"
+msgstr ""
+"Por padrão, ele usa uma de três colunas condicional (a esquerda e barras "
+"laterais direitas pode ser desligado com as vistas que se estendem)"
+
+#: ../../chapter-10.rst:1439
+msgid "It uses the following classes: page-header, main, footer."
+msgstr "Ele usa as seguintes classes: page-header, principal, rodapé."
+
+#: ../../chapter-10.rst:1440
+msgid ""
+"It contains the following blocks: head, left_sidebar, center, "
+"right_sidebar, footer."
+msgstr ""
+"Ele contém os seguintes blocos: cabeça, left_sidebar, centro, "
+"right_sidebar, rodapé."
+
+#: ../../chapter-10.rst:1443
+msgid "In views, you can turn on and customize sidebars as follows:"
+msgstr ""
+"Em vista, você pode ativar e personalizar barras laterais da seguinte forma:"
+
+#: ../../chapter-10.rst:1457
+msgid "Customizing the default layout"
+msgstr "Personalizando o layout padrão"
+
+#: ../../chapter-10.rst:1459
+msgid ""
+"Customizing the default layout without editing is easy because the welcome "
+"application is based on Twitter Bootstrap which is well documented and "
+"supports themes. In py4web four static files which are relevant to style:"
+msgstr ""
+"Personalizando o layout padrão sem edição é fácil, porque a aplicação de "
+"boas-vindas é baseado no Twitter Bootstrap que está bem documentado e "
+"suporta temas. Em py4web quatro arquivos estáticos que são relevantes para "
+"o estilo:"
+
+#: ../../chapter-10.rst:1464
+msgid "“css/py4web.css” contains py4web specific styles"
+msgstr "“Css / py4web.css” contém estilos py4web específicos"
+
+#: ../../chapter-10.rst:1465
+msgid "“css/bootstrap.min.css” contains the Twitter Bootstrap CSS style"
+msgstr "“Css / bootstrap.min.css” contém o estilo CSS Twitter Bootstrap"
+
+#: ../../chapter-10.rst:1466
+msgid ""
+"“css/py4web_bootstrap.css” which overrides some Bootstrap styles to conform "
+"to py4web needs."
+msgstr ""
+"“Css / py4web_bootstrap.css”, que substitui alguns estilos Bootstrap para "
+"se conformar às necessidades py4web."
+
+#: ../../chapter-10.rst:1468
+msgid ""
+"“js/bootstrap.min.js” which includes the libraries for menu effects, "
+"modals, panels."
+msgstr ""
+"“js / bootstrap.min.js”, que inclui as bibliotecas para efeitos de menu, "
+"modais, painéis."
+
+#: ../../chapter-10.rst:1471
+msgid ""
+"To change colors and background images, try append the following code to "
+"layout.html header:"
+msgstr ""
+"Para alterar as cores e imagens de fundo, tente anexar o seguinte código ao "
+"header layout.html:"
+
+#: ../../chapter-10.rst:1486
+msgid ""
+"Of course you can also completely replace the “layout.html” and “py4web."
+"css” files with your own."
+msgstr ""
+"Claro que você também pode substituir completamente o “layout.html” e "
+"arquivos “py4web.css” com o seu próprio."
+
+#: ../../chapter-10.rst:1490
+msgid "Mobile development"
+msgstr "Desenvolvimento móvel"
+
+#: ../../chapter-10.rst:1492
+msgid ""
+"Although the default layout.html is designed to be mobile-friendly, one may "
+"sometimes need to use different views when a page is visited by a mobile "
+"device."
+msgstr ""
+"Embora o layout.html padrão é projetado para ser compatível com telemóvel, "
+"pode-se às vezes é preciso usar diferentes pontos de vista quando uma "
+"página é visitada por um dispositivo móvel."
+
+#: ../../chapter-10.rst:1496
+msgid ""
+"To make developing for desktop and mobile devices easier, py4web includes "
+"the ``@mobilize`` decorator. This decorator is applied to actions that "
+"should have a normal view and a mobile view. This is demonstrated here:"
+msgstr ""
+"Para tornar a desenvolver para desktop e dispositivos móveis mais fáceis, "
+"py4web inclui o `` @ mobilize`` decorador. Este decorador é aplicado a "
+"ações que devem ter uma visão normal e uma exibição móvel. Isso é "
+"demonstrado aqui:"
+
+#: ../../chapter-10.rst:1508
+msgid ""
+"Notice that the decorator must be imported before using it in a controller. "
+"When the “index” function is called from a regular browser (desktop "
+"computer), py4web will render the returned dictionary using the view "
+"“[controller]/index.html”. However, when it is called by a mobile device, "
+"the dictionary will be rendered by “[controller]/index.mobile.html”. Notice "
+"that mobile views have the “mobile.html” extension."
+msgstr ""
+"Observe que o decorador deve ser importada antes de usá-lo em um "
+"controlador. Quando a função “index” é chamado a partir de um browser "
+"normal (computador de mesa), py4web tornará o dicionário retornado usando a "
+"exibição “[controller] /index.html”. No entanto, quando ele é chamado por "
+"um dispositivo móvel, o dicionário vai ser processado por “[controller] /"
+"index.mobile.html”. Observe que visualizações móveis têm a extensão “mobile."
+"html”."
+
+#: ../../chapter-10.rst:1516
+msgid ""
+"Alternatively you can apply the following logic to make all views mobile "
+"friendly:"
+msgstr ""
+"Alternativamente, você pode aplicar a seguinte lógica para fazer todos os "
+"pontos de vista móvel amigável:"
+
+#: ../../chapter-10.rst:1524
+msgid ""
+"The task of creating the \"\\*.mobile.html\" views is left to the developer "
+"but we strongly suggest using the “jQuery Mobile” plugin which makes the "
+"task very easy."
+msgstr ""
+"A tarefa de criar os <quotechar> \\ *. Mobile.html <quotechar> vista é "
+"deixada para o desenvolvedor, mas sugerimos usando o plugin “jQuery Mobile” "
+"que torna a tarefa muito fácil."
+
+#: ../../chapter-10.rst:1529
+msgid "Functions in views"
+msgstr "Funções em vista"
+
+#: ../../chapter-10.rst:1531
+msgid "Consider this “layout.html”:"
+msgstr "Considere isso “layout.html”:"
+
+#: ../../chapter-10.rst:1546
+msgid "and this extending view"
+msgstr "e este ponto de vista que se prolonga"
+
+#: ../../chapter-10.rst:1556
+msgid ""
+"Notice the function is defined before the ``[[extend...]]`` statement – "
+"this results in the function being created before the “layout.html” code is "
+"executed, so the function can be called anywhere within “layout.html”, even "
+"before the ``[[include]]``. Also notice the function is included in the "
+"extended view without the ``=`` prefix."
+msgstr ""
+"Repare que a função é definida antes do `` [[estender ...]] `` declaração - "
+"Isto resulta na função que está sendo criado antes do código “layout.html” "
+"é executado, assim que a função pode ser chamado em qualquer lugar dentro "
+"“layout. html”, mesmo antes do` `[[incluir]]` `. Observe também a função "
+"está incluída na vista alargada sem a `` = `` prefixo."
+
+#: ../../chapter-10.rst:1562
+msgid "The code generates the following output:"
+msgstr "O código gera o seguinte resultado:"
+
+#: ../../chapter-10.rst:1575
+msgid ""
+"Notice that the function is defined in HTML (although it could also contain "
+"Python code) so that ``response.write`` is used to write its content (the "
+"function does not return the content). This is why the layout calls the "
+"view function using ``[[mysidebar()]]`` rather than ``[[=mysidebar()]]``. "
+"Functions defined in this way can take arguments."
+msgstr ""
+"Observe que a função é definida em HTML (embora ele também poderia conter "
+"código Python) para que `` response.write`` é usado para gravar o seu "
+"conteúdo (a função não retornar o conteúdo). É por isso que o layout chama "
+"a função de visão utilizando `` [[mysidebar ()]] `` `` em vez de [[= "
+"mysidebar ()]] ``. Funções definidas desta forma pode ter argumentos."
+
+#: ../../chapter-10.rst:1582
+msgid "Blocks in views"
+msgstr "Blocos em vista"
+
+#: ../../chapter-10.rst:1584
+msgid ""
+"The main way to make a view more modular is by using ``[[block ...]]``\\ s "
+"and this mechanism is an alternative to the mechanism discussed in the "
+"previous section."
+msgstr ""
+"O caminho principal para fazer uma vista mais modular é usando `` "
+"[[bloco ...]] `` \\ s e este mecanismo é uma alternativa para o mecanismo "
+"discutido na secção anterior."
+
+#: ../../chapter-10.rst:1588
+msgid ""
+"To understand how this works, consider apps based on the scaffolding app "
+"welcome, which has a view layout.html. This view is extended by the view "
+"``default/index.html`` via ``[[extend 'layout.html']]``. The contents of "
+"layout.html predefine certain blocks with certain default content, and "
+"these are therefore included into default/index.html."
+msgstr ""
+"Para entender como isso funciona, considere aplicativos baseado no bem-"
+"vindo andaimes aplicativo, que tem um layout.html vista. Este ponto de "
+"vista é estendida pela vista `` padrão / index.html`` via `` [[estender "
+"'layout.html']] ``. O conteúdo do layout.html predefinir certos blocos com "
+"determinado conteúdo padrão, e estes são, portanto, incluídos em default / "
+"index.html."
+
+#: ../../chapter-10.rst:1594
+msgid ""
+"You can override these default content blocks by enclosing your new content "
+"inside the same block name. The location of the block in the layout.html is "
+"not changed, but the contents is."
+msgstr ""
+"Você pode substituir esses blocos de conteúdo padrão, colocando o seu novo "
+"conteúdo dentro do mesmo nome do bloco. A localização do bloco no layout."
+"html não é alterado, mas o conteúdo é."
+
+#: ../../chapter-10.rst:1598
+msgid "Here is a simplifed version. Imagine this is “layout.html”:"
+msgstr "Aqui está uma versão Simplificado. Imagine isto é “layout.html”:"
+
+#: ../../chapter-10.rst:1613
+msgid "and this is a simple extending view ``default/index.html``:"
+msgstr "e isto é um simples que se estende vista `` padrão / index.html``:"
+
+#: ../../chapter-10.rst:1623
+msgid ""
+"It generates the following output, where the content is provided by the "
+"over-riding block in the extending view, yet the enclosing DIV and class "
+"comes from layout.html. This allows consistency across views:"
+msgstr ""
+"Ele gera a saída seguinte, quando o teor é fornecido pelo bloco sobre-"
+"montada na vista estendendo-se, ainda a DIV envolvente e classe vem de "
+"layout.html. Isso permite que a consistência entre os pontos de vista:"
+
+#: ../../chapter-10.rst:1638
+msgid ""
+"The real layout.html defines a number of useful blocks, and you can easily "
+"add more to match the layout your desire."
+msgstr ""
+"O verdadeiro layout.html define um número de blocos úteis, e você pode "
+"facilmente adicionar mais para coincidir com o layout seu desejo."
+
+#: ../../chapter-10.rst:1641
+msgid ""
+"You can have many blocks, and if a block is present in the extended view "
+"but not in the extending view, the content of the extended view is used. "
+"Also, notice that unlike with functions, it is not necessary to define "
+"blocks before the ``[[extend ...]]`` – even if defined after the "
+"``extend``, they can be used to make substitutions anywhere in the extended "
+"view."
+msgstr ""
+"Você pode ter muitos blocos, e se um bloco está presente na exibição "
+"estendida, mas não na visão estendendo, o conteúdo da visão ampliada é "
+"usado. Além disso, observe que, ao contrário com as funções, não é "
+"necessário definir blocos antes do `` [[estender ...]] `` - mesmo se "
+"definido após o `` extend``, eles podem ser usados ​​para fazer substituições "
+"em qualquer lugar a vista estendida."
+
+#: ../../chapter-10.rst:1648
+msgid ""
+"Inside a block, you can use the expression ``[[super]]`` to include the "
+"content of the parent. For example, if we replace the above extending view "
+"with:"
+msgstr ""
+"Dentro de um bloco, você pode usar a expressão `` [[Super]] `` para incluir "
+"o conteúdo do pai. Por exemplo, se substituir o acima estendendo vista com:"
+
+#: ../../chapter-10.rst:1661
+msgid "we get:"
+msgstr "nós temos:"

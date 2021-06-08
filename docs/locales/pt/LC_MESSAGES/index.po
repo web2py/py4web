@@ -1,0 +1,44 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20201127.1\n"
+"\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-02 20:25-0300\n"
+"PO-Revision-Date: 2020-12-02 22:45:27.679887\n"
+"Last-Translator: potranslator 1.1.5\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Translated-By: potranslator 1.1.5\n"
+
+#: ../../index.rst:5 ../../index.rst:5
+msgid "Contents:"
+msgstr "Conteúdo:"
+
+#: ../../index.rst:3
+msgid "py4web: the reference Manual"
+msgstr "py4web: o manual de referência"
+
+#: ../../index.rst:27
+msgid "Indices and tables"
+msgstr "Índices e tabelas"
+
+#: ../../index.rst:29
+msgid ":ref:`genindex`"
+msgstr ": Ref: `genindex`"
+
+#: ../../index.rst:30
+msgid ":ref:`modindex`"
+msgstr ": Ref: `modindex`"
+
+#: ../../index.rst:31
+msgid ":ref:`search`"
+msgstr ": Ref: `search`"

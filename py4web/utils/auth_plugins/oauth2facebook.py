@@ -3,6 +3,8 @@ from . import OAuth2
 
 class OAuth2Facebook(OAuth2):
     name = "oauth2facebook"
+    label = "Facebook"
+
     login_url = "https://www.facebook.com/v3.3/dialog/oauth"
     token_url = "https://graph.facebook.com/v3.3/oauth/access_token"
     userinfo_url = "https://graph.facebook.com/me?fields=id,email,first_name,last_name"

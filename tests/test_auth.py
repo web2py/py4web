@@ -1,8 +1,8 @@
 import os
 import unittest
 import bottle
-from py4web.core import Session, DAL, request, HTTP, Field
-from py4web.utils.auth import Auth
+from py4web.core import Session, DAL, request, HTTP, Field, request
+from py4web.utils.auth import Auth, AuthAPI, DefaultAuthForms
 
 
 class TestAuth(unittest.TestCase):
@@ -13,7 +13,18 @@ class TestAuth(unittest.TestCase):
         self.session.local.data = {}
         self.auth = Auth(self.session, self.db, define_tables=True, password_complexity=None)
         self.auth.enable()
+        self.auth.action = self.action
         request.app_name = "_scaffold"
+
+    def action(self, name, method, query, data):
+        request.environ['REQUEST_METHOD'] = method
+        request.environ['bottle.request.query'] = query
+        request.environ['bottle.request.json'] = data
+        # we break a symmetry below. should fix in auth.py
+        if name.startswith('api/'):
+            return getattr(AuthAPI, name[4:])(self.auth)
+        else:
+            return getattr(self.auth.form_source, name)()
 
     def test_extra_fields(self):
         self.db = DAL("sqlite:memory")
@@ -131,6 +142,7 @@ class TestAuth(unittest.TestCase):
         body = {
             "token": self.auth._link.split("?token=")[1],
             "new_password": "987654321",
+            "new_password2": "987654321",
         }
         self.assertTrue(
             self.auth.action("api/reset_password", "POST", {}, body),

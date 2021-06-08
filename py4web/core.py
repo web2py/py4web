@@ -3,27 +3,27 @@
 """PY4WEB - a web framework for rapid development of efficient database driven web applications"""
 
 # Standard modules
-import argparse
+import asyncio
 import cgitb
 import code
+import copy
 import datetime
+import enum
 import functools
-import importlib
-import importlib.machinery
-import inspect
-import json
 import http.client
 import http.cookies
+import importlib.machinery
+import importlib.util
+import inspect
+import json
 import linecache
 import logging
 import numbers
 import os
-import getpass
 import pathlib
 import platform
 import re
 import signal
-import site
 import sys
 import threading
 import time
@@ -32,42 +32,26 @@ import types
 import urllib.parse
 import uuid
 import zipfile
-import asyncio
+
 from watchgod import awatch
 
-REGEX_APPJSON = r"(^|\s|,)application/json(,|\s|$)"
-
-import click
+from . import server_adapters
 
 # Optional web servers for speed
 try:
     import gunicorn
 except ImportError:
     gunicorn = None
-try:
-    import gevent
-    import gevent.monkey
 
-    gevent.monkey.patch_all()
-except ImportError:
-    gevent = None
-
-try:
-    from enum import Enum
-except:
-    # for python < 3.4
-    class Enum:
-        pass
-
+import bottle
 
 # Third party modules
+import click
 import jwt  # this is PyJWT
-import bottle
-import yatl
-import threadsafevariable
-import pydal
 import pluralize
-from pydal._compat import to_native, to_bytes
+import pydal
+import threadsafevariable
+import yatl
 
 bottle.BaseRequest.MEMFILE_MAX = 16 * 1024 * 1024
 
@@ -83,12 +67,18 @@ __all__ = [
     "HTTP",
     "Session",
     "Cache",
+    "Flash",
     "user_in",
     "Translator",
     "URL",
     "check_compatible",
+    "required_folder",
     "wsgi",
 ]
+
+PY4WEB_CMD = sys.argv[0]
+
+REGEX_APPJSON = r"(^|\s|,)application/json(,|\s|$)"
 
 DEFAULTS = dict(
     PY4WEB_APPS_FOLDER="apps",
@@ -117,7 +107,7 @@ abort = bottle.abort
 os.environ.update(
     {key: value for key, value in DEFAULTS.items() if not key in os.environ}
 )
-os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parent.parent)
+os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parents[1])
 
 
 def module2filename(module):
@@ -128,6 +118,33 @@ def module2filename(module):
         else filename + ".py"
     )
     return filename
+
+
+def required_folder(*parts):
+    """joins the args and creates the folder if not exists"""
+    path = os.path.join(*parts)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    assert os.path.isdir(path), "%s is not a folder as required" % path
+    return path
+
+
+########################################################################################
+# fix request.fullpath for the case of domain mapping to app
+# (request.url will be autofixed, since it is based on request.fullpath)
+#########################################################################################
+def monkey_patch_bottle():
+    urljoin = urllib.parse.urljoin
+
+    @property
+    def fullpath(self):
+        appname = self.environ.get("HTTP_X_PY4WEB_APPNAME", "/")
+        return urljoin(self.script_name, self.path[len(appname) :])
+
+    setattr(bottle.BaseRequest, "fullpath", fullpath)
+
+
+monkey_patch_bottle()
 
 
 ########################################################################################
@@ -167,32 +184,41 @@ class Cache:
         self.head.next = self.tail
         self.tail.prev = self.head
         self.mapping = {}
+        self.lock = threading.Lock()
 
     def get(self, key, callback, expiration=3600, monitor=None):
         """If key not stored or key has expired and monitor == None or monitor() value has changed, returns value = callback()"""
         node, t0 = self.mapping.get(key), time.time()
-        if node:
-            value, t, node.next.prev, node.prev.next = (
-                node.value,
-                node.t,
-                node.prev,
-                node.next,
-            )
-        if not node:
-            self.free -= 1
-        m = monitor and monitor()
+        with self.lock:
+            if node:
+                # if a node was found remove it from storage
+                value, t, node.next.prev, node.prev.next = (
+                    node.value,
+                    node.t,
+                    node.prev,
+                    node.next,
+                )
+            else:
+                self.free -= 1
+        # check if something may invalidate cache
+        m = monitor() if monitor else None
+        # check if cache expired
         if node and node.t + expiration < t0:
+            # if cache should always be invalidated or m changed
             if m is None or node.m != m:
+                # ignore the value found
                 node = None
         if node is None:
             value, t = callback(), t0
-        new_node = Node(key, value, t, m, prev=self.head, next=self.head.next)
-        self.mapping[key] = self.head.next = new_node.next.prev = new_node
-        if self.free < 0:
-            last_node = self.tail.prev
-            self.tail.prev, last_node.prev.next = last_node.prev, self.tail
-            del self.mapping[last_node.key]
-            self.free += 1
+        # add the new node back into storage
+        with self.lock:
+            new_node = Node(key, value, t, m, prev=self.head, next=self.head.next)
+            self.mapping[key] = self.head.next = new_node.next.prev = new_node
+            if self.free < 0:
+                last_node = self.tail.prev
+                self.tail.prev, last_node.prev.next = last_node.prev, self.tail
+                del self.mapping[last_node.key]
+                self.free += 1
         return value
 
     def memoize(self, expiration=3600):
@@ -231,7 +257,7 @@ def objectify(obj):
     elif hasattr(obj, "xml"):
         return obj.xml()
     elif isinstance(
-        obj, Enum
+        obj, enum.Enum
     ):  # Enum class handled specially to address self reference in __dict__
         return dict(name=obj.name, value=obj.value, __class__=obj.__class__.__name__)
     elif hasattr(obj, "__dict__") and hasattr(obj, "__class__"):
@@ -257,7 +283,7 @@ class Fixture:
     def on_error(self):
         pass  # called when a request errors
 
-    def on_success(self):
+    def on_success(self, status):
         pass  # called when a request is successful
 
     def transform(
@@ -270,27 +296,112 @@ class Translator(pluralize.Translator, Fixture):
     def on_request(self):
         self.select(request.headers.get("Accept-Language", "en"))
 
-    def on_success(self):
+    def on_success(self, status):
         response.headers["Content-Language"] = self.local.tag
 
 
 class DAL(pydal.DAL, Fixture):
+
+    reconnect_on_request = True
+
     def on_request(self):
+        if self.reconnect_on_request:
+            self._adapter.reconnect()
         threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
 
     def on_error(self):
         self.rollback()
 
-    def on_success(self):
+    def on_success(self, status):
         self.commit()
 
 
 # make sure some variables in pydal are thread safe
-for _ in ["readable", "writable", "default", "update", "requires"]:
-    setattr(pydal.DAL.Field, _, threadsafevariable.ThreadSafeVariable())
+def thread_safe_pydal_patch():
+    Field = pydal.DAL.Field
+    tsafe_attrs = ["readable", "writable", "default", "update", "requires"]
+    for a in tsafe_attrs:
+        setattr(Field, a, threadsafevariable.ThreadSafeVariable())
+
+    # hack 'copy.copy' behavior, since it makes a shallow copy,
+    # but ThreadSafe-attributes (see above) are class-level, so:
+    # no copy -> no attr in ICECUBE for the fresh one -> gevent-error on try to access to any of ThreadSafe-attributes
+    def field_copy(self):
+        # to prevent infinite recursion
+        # temporarily set __copy__ to None
+        me = self.__class__.__copy__
+        self.__class__.__copy__ = None
+        clone = copy.copy(self)
+        self.__class__.__copy__ = me
+        for a in tsafe_attrs:
+            setattr(clone, a, getattr(self, a))
+        return clone
+
+    # to avoid possible future problems
+    if hasattr(Field, "__copy__"):
+        raise RuntimeError("code fix required!")
+    setattr(Field, "__copy__", field_copy)
+
+
+thread_safe_pydal_patch()
 
 # this global object will be used to store their state to restore it for every http request
 ICECUBE = {}
+
+#########################################################################################
+# Flash Fixture
+#########################################################################################
+
+
+class Flash(Fixture):
+    """
+    flash = Flash()
+
+    @action('index')
+    @action.uses(flash)
+    def index():
+        flash.set('hello', _class='important')
+        return dict()
+
+    Flash messages are added to the dict and, upon redirect, carry forward
+    Also notice all Flash objects share the same threading local so act as singletons
+    """
+
+    local = threading.local()
+
+    def on_request(self):
+        # when a new request arrives we look for a flash message in the cookie
+        flash = request.get_cookie("py4web-flash")
+        if flash:
+            Flash.local.flash = json.loads(flash)
+        else:
+            Flash.local.flash = None
+
+    def on_success(self, status):
+        # if we redirect and have a flash message we move it to the session
+        if status == 303 and Flash.local.flash:
+            response.set_cookie("py4web-flash", json.dumps(Flash.local.flash), path="/")
+            Flash.local.flash = None
+        else:
+            response.delete_cookie("py4web-flash", path="/")
+
+    def set(self, message, _class="", sanitize=True):
+        # we set a flash message
+        if sanitize:
+            message = yatl.sanitizer.xmlescape(message)
+        Flash.local.flash = {"message": message, "class": _class}
+
+    def transform(self, data, shared_data=None):
+        # if we have a valid flash message, we inject it in the response dict
+        if isinstance(data, dict):
+            if not "flash" in data:
+                data["flash"] = Flash.local.flash or ""
+        else:
+            if Flash.local.flash is not None:
+                response.headers["component-flash"] = json.dumps(Flash.local.flash)
+        Flash.local.flash = None
+        return data
+
 
 #########################################################################################
 # The Template Rendered Fixture
@@ -352,7 +463,9 @@ class Template(Fixture):
 
 class Session(Fixture):
 
-    # All apps share the same default secret if not specified. important for _dashboard reload
+    # All apps share the same default secret if not specified.
+    # important for _dashboard reload
+    # the actual value is loaded from a file
     SECRET = None
 
     def __init__(
@@ -361,7 +474,7 @@ class Session(Fixture):
         expiration=None,
         algorithm="HS256",
         storage=None,
-        same_site="Strict",
+        same_site="Lax",
     ):
         """
         secret is the shared key used to encrypt the session (using algorithm)
@@ -369,10 +482,8 @@ class Session(Fixture):
         (optional) storage must have a get(key) and set(key,value,expiration) methods
         if not provided session is stored in jwt cookie else the jwt is stored in storage and its uuid key is stored in the cookie
         """
-        if not secret and not storage:
-            # when no secret is specified: one time sessions
-            secret = Session.SECRET = Session.SECRET or str(uuid.uuid1())
-        self.secret = secret
+        # assert Session.SECRET, "Missing Session.SECRET"
+        self.secret = secret or Session.SECRET
         self.expiration = expiration
         self.algorithm = algorithm
         self.local = threading.local()
@@ -396,10 +507,10 @@ class Session(Fixture):
         ) or request.query.get("_session_token")
         if not raw_token and request.method in ("POST", "PUT", "DELETE"):
             raw_token = (request.forms and request.forms.get("_session_token")) or (
-                request.json and request.json and request.json.get("_session_token")
+                request.json and request.json.get("_session_token")
             )
         if raw_token:
-            token_data = to_bytes(raw_token)
+            token_data = raw_token.encode()
             try:
                 if self.storage:
                     json_data = self.storage.get(token_data)
@@ -413,11 +524,14 @@ class Session(Fixture):
                     assert self.local.data["timestamp"] > time.time() - int(
                         self.expiration
                     )
-                assert self.local.data.get("secure") == self.local.secure
+                assert self.get_data().get("secure") == self.local.secure
             except Exception:
                 pass
-        if not "uuid" in self.local.data:
+        if not "uuid" in self.get_data():
             self.clear()
+
+    def get_data(self):
+        return getattr(self.local, "data", {})
 
     def save(self):
         self.local.data["timestamp"] = time.time()
@@ -431,33 +545,46 @@ class Session(Fixture):
 
         response.set_cookie(
             self.local.session_cookie_name,
-            to_native(cookie_data),
+            cookie_data,
             path="/",
             secure=self.local.secure,
             same_site=self.same_site,
         )
 
     def get(self, key, default=None):
-        return self.local.data.get(key, default)
+        return self.get_data().get(key, default)
 
     def __getitem__(self, key):
-        return self.local.data[key]
+        return self.get_data()[key]
+
+    def __delitem__(self, key):
+        if key in self.get_data():
+            self.local.changed = True
+            del self.local.data[key]
 
     def __setitem__(self, key, value):
         self.local.changed = True
         self.local.data[key] = value
 
     def keys(self):
-        return self.local.data.keys()
+        return self.get_data().keys()
 
     def __iter__(self):
-        return self.local.data.items()
+        for item in self.get_data().items():
+            yield item
 
     def clear(self):
+        """clear a session (to be used before saving it)"""
         self.local.changed = True
         self.local.data.clear()
         self.local.data["uuid"] = str(uuid.uuid1())
         self.local.data["secure"] = self.local.secure
+
+    def erase(self):
+        """for security always erase the session information after saving it"""
+        delattr(self.local, "session_cookie_name")
+        delattr(self.local, "changed")
+        delattr(self.local, "data")
 
     def on_request(self):
         self.load()
@@ -465,10 +592,12 @@ class Session(Fixture):
     def on_error(self):
         if self.local.changed:
             self.save()
+        self.erase()
 
-    def on_success(self):
+    def on_success(self, status):
         if self.local.changed:
             self.save()
+        self.erase()
 
 
 #########################################################################################
@@ -482,43 +611,57 @@ def URL(
     hash=None,
     scheme=False,
     signer=None,
-    use_appname=True,
-    static_version=None
+    use_appname=None,
+    static_version=None,
 ):
     """
     Examples:
-    URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name}/a/b?x=1#y
-    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name}/a/b?x=1
+    URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name?}/a/b?x=1#y
+    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name?}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name?}/a/b?x=1
+    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name?}/a/b?x=1
     URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
     """
+    if use_appname is None:
+        # force use_appname on domain-unmapped apps
+        use_appname = not request.environ.get("HTTP_X_PY4WEB_APPNAME")
+    if use_appname:
+        # app_name is not set by py4web shell
+        app_name = getattr(request, "app_name", None)
+    has_appname = use_appname and app_name
     script_name = (
-        request.environ.get("HTTP_X_SCRIPT_NAME", "")
-        or request.environ.get("SCRIPT_NAME", "")
+        request.environ.get("SCRIPT_NAME", "")
+        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
     ).rstrip("/")
-    prefix = script_name + (
-        "/%s/" % request.app_name
-        if (request.app_name != "_default" and use_appname)
-        else "/"
-    )
+    if parts and parts[0].startswith("/"):
+        prefix = ""
+    elif has_appname and app_name != "_default":
+        prefix = "%s/%s/" % (script_name, app_name)
+    else:
+        prefix = "%s/" % script_name
     broken_parts = []
     for part in parts:
         broken_parts += str(part).rstrip("/").split("/")
     if static_version != "" and broken_parts and broken_parts[0] == "static":
-        if not static_version:  # try to retrieve from __init__.py
-            app_module = "apps.%s" % request.app_name if use_appname else "apps"
-            static_version = getattr(
-                sys.modules[app_module], "__static_version__", None
-            )
+        if not static_version:
+            # try to retrieve from __init__.py
+            app_module = "apps.%s" % app_name if has_appname else "apps"
+            try:
+                static_version = getattr(
+                    sys.modules[app_module], "__static_version__", None
+                )
+            except KeyError:
+                static_version = None
         if static_version:
             broken_parts.insert(1, "_" + static_version)
 
-    url = prefix + "/".join(map(lambda x: urllib.parse.quote(x), broken_parts))
+    url = prefix + "/".join(map(urllib.parse.quote, broken_parts))
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
-    urlvars = {k: v for k, v in vars.items()} if vars else {}
+    urlvars = dict(vars) if vars else {}
     if signer:
-        signer.sign_vars(url, urlvars)
+        # Note that we need to sign the non-urlencoded URL, since
+        # at verification time, it will be already URLdecoded.
+        signer.sign(prefix + "/".join(broken_parts), urlvars)
     if urlvars:
         url += "?" + "&".join(
             "%s=%s" % (k, urllib.parse.quote(str(v))) for k, v in urlvars.items()
@@ -527,10 +670,13 @@ def URL(
         url += "#%s" % hash
     if not scheme is False:
         original_url = request.environ.get("HTTP_ORIGIN") or request.url
-        orig_scheme, _, domain = original_url.split("/")[:3]
-        scheme = (
-            orig_scheme if scheme is True else "" if scheme is None else scheme + ":"
-        )
+        orig_scheme, _, domain = original_url.split("/", 3)[:3]
+        if scheme is True:
+            scheme = orig_scheme
+        elif scheme is None:
+            scheme = ""
+        else:
+            scheme += ":"
         url = "%s//%s%s" % (scheme, domain, url)
     return url
 
@@ -541,11 +687,16 @@ def URL(
 
 
 class HTTP(BaseException):
+    class Type:
+        success = "success"
+        error = "error"
+
     """Our HTTP exception does not delete cookies and headers like the bottle.HTTPResponse does;
     since it is considered a success, not a failure"""
 
-    def __init__(self, status):
+    def __init__(self, status, type=Type.success):
         self.status = status
+        self.type = type
 
 
 def redirect(location):
@@ -575,8 +726,7 @@ class action:
         while stack:
             fixture = stack.pop()
             reversed_fixtures.append(fixture)
-            for other in getattr(fixture, "__prerequisites__", []):
-                stack.append(other)
+            stack.extend(getattr(fixture, "__prerequisites__", ()))
         for fixture in reversed(reversed_fixtures):
             if isinstance(fixture, str):
                 fixture = Template(fixture)
@@ -586,17 +736,23 @@ class action:
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
-                # data shared by all fixtures in the piplined for each request
+                # data shared by all fixtures in the pipeline for each request
                 shared_data = {"template_context": {}}
                 try:
                     [obj.on_request() for obj in fixtures]
                     ret = func(*args, **kwargs)
                     for obj in fixtures:
                         ret = obj.transform(ret, shared_data)
-                    [obj.on_success() for obj in fixtures]
+                    [obj.on_success(200) for obj in fixtures]
                     return ret
-                except HTTP:
-                    [obj.on_success() for obj in fixtures]
+                except HTTP as http:
+                    if http.type == http.Type.success:
+                        [obj.on_success(http.status) for obj in fixtures]
+                    else:
+                        [obj.on_error() for obj in fixtures]
+                        # it should be [obj.on_error(status) for obj in fixtures]
+                        # but it breaks users fixtures
+                        # `def on_error(status = None):` - cost nothing, but we have  `def on_error():`
                     raise
                 except Exception:
                     [obj.on_error() for obj in fixtures]
@@ -637,7 +793,7 @@ class action:
                 return ret
             except HTTP as http:
                 response.status = http.status
-                return ""
+                return getattr(http, "body", "")
             except bottle.HTTPResponse:
                 raise
             except Exception:
@@ -647,23 +803,26 @@ class action:
                 except Exception:
                     logging.error(traceback.format_exc())
                     ticket = "unknown"
-                return error_page(
-                    500, button_text=ticket, href="/_dashboard/ticket/" + ticket
+                raise bottle.HTTPResponse(
+                    body=error_page(
+                        500, button_text=ticket, href="/_dashboard/ticket/" + ticket
+                    ),
+                    status=500,
                 )
 
         return wrapper
 
     def __call__(self, func):
         """Building the decorator"""
+        trailing = "<:re:/?>"
         app_name = action.app_name
-        path = (
-            "/" if app_name == "_default" else "/%s/" % app_name
-        ) + self.path  # the _default app has no prefix
+        base_path = "" if app_name == "_default" else "/%s" % app_name
+        path = (base_path + "/" + self.path).rstrip("/")
         if not func in self.registered:
             func = action.catch_errors(app_name, func)
-        func = bottle.route(path, **self.kwargs)(func)
+        func = bottle.route(path + trailing, **self.kwargs)(func)
         if path.endswith("/index"):  # /index is always optional
-            func = bottle.route(path[:-6] or "/", **self.kwargs)(func)
+            func = bottle.route(path[:-6] + trailing, **self.kwargs)(func)
         self.registered.add(func)
         return func
 
@@ -689,30 +848,28 @@ http.cookies.Morsel._reserved["same-site"] = "SameSite"
 __ssl__ = __import__("ssl")
 _ssl = getattr(__ssl__, "_ssl") or getattr(__ssl__, "_ssl2")
 
-if not hasattr(_ssl, "sslwrap"):
 
-    def new_sslwrap(
-        sock,
-        server_side=False,
-        keyfile=None,
-        certfile=None,
-        cert_reqs=__ssl__.CERT_NONE,
-        ssl_version=__ssl__.PROTOCOL_SSLv23,
-        ca_certs=None,
-        ciphers=None,
-    ):
-        context = __ssl__.SSLContext(ssl_version)
-        context.verify_mode = cert_reqs or __ssl__.CERT_NONE
-        if ca_certs:
-            context.load_verify_locations(ca_certs)
-        if certfile:
-            context.load_cert_chain(certfile, keyfile)
-        if ciphers:
-            context.set_ciphers(ciphers)
-        caller_self = inspect.currentframe().f_back.f_locals["self"]
-        return context._wrap_socket(sock, server_side=server_side, ssl_sock=caller_self)
+def new_sslwrap(
+    sock,
+    server_side=False,
+    keyfile=None,
+    certfile=None,
+    cert_reqs=__ssl__.CERT_NONE,
+    ssl_version=__ssl__.PROTOCOL_SSLv23,
+    ca_certs=None,
+    ciphers=None,
+):
+    context = __ssl__.SSLContext(ssl_version)
+    context.verify_mode = cert_reqs or __ssl__.CERT_NONE
+    if ca_certs:
+        context.load_verify_locations(ca_certs)
+    if certfile:
+        context.load_cert_chain(certfile, keyfile)
+    if ciphers:
+        context.set_ciphers(ciphers)
+    caller_self = inspect.currentframe().f_back.f_locals["self"]
+    return context._wrap_socket(sock, server_side=server_side, ssl_sock=caller_self)
 
-    _ssl.sslwrap = new_sslwrap
 
 #########################################################################################
 # Error Handling
@@ -825,8 +982,9 @@ class ErrorStorage:
         else:
             orderby = ~db.py4web_error.timestamp
             groupby = db.py4web_error.path | db.py4web_error.error
-            query = db.py4web_error.timestamp > datetime.datetime.now() - datetime.timedelta(
-                days=7
+            query = (
+                db.py4web_error.timestamp
+                > datetime.datetime.now() - datetime.timedelta(days=7)
             )
             fields = [field for field in db.py4web_error if not field.type == "json"]
             fields.append(db.py4web_error.id.count())
@@ -858,17 +1016,6 @@ class Reloader:
     ERRORS = {}
 
     @staticmethod
-    def install_reloader_hook():
-        # used by watcher
-        def hook(*a, **k):
-            app_name = request.path.split("/")[1]
-            if app_name in DIRTY_APPS:
-                Reloader.import_app(app_name)
-                del DIRTY_APPS[app_name]
-
-        bottle.default_app().add_hook("before_request", hook)
-
-    @staticmethod
     def clear_routes(app_name=None):
         app = bottle.default_app()
         routes = app.routes[:]
@@ -876,7 +1023,7 @@ class Reloader:
         app.router = bottle.Router()
         if app_name:
             for route in routes:
-                if route.rule[1:].split("/")[0] != app_name:
+                if route.rule.rstrip("<:re:/?>")[1:].split("/")[0] != app_name:
                     app.add_route(route)
 
     @staticmethod
@@ -928,15 +1075,18 @@ class Reloader:
                 module = importlib.machinery.SourceFileLoader(
                     module_name, init
                 ).load_module()
-                click.echo("\x1b[A[X] loaded %s       " % app_name, color="green")
+                click.secho("\x1b[A[X] loaded %s       " % app_name, fg="green")
                 Reloader.MODULES[app_name] = module
                 Reloader.ERRORS[app_name] = None
-            except:
+            except Exception as err:
                 tb = traceback.format_exc()
-                print(tb)
-                click.echo(
-                    "\x1b[A[FAILED] loading %s       \n%s\n" % (app_name, tb),
-                    color="red",
+                try:
+                    ErrorStorage().log(app_name, get_error_snapshot())
+                except:
+                    print(tb)
+                click.secho(
+                    "\x1b[A[FAILED] loading %s (%s)" % (app_name, err),
+                    fg="red",
                 )
                 Reloader.ERRORS[app_name] = tb
                 # clear all files/submodules if the loading fails
@@ -955,6 +1105,8 @@ class Reloader:
                 prefix + "/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>"
             )
             def server_static(filename, static_folder=static_folder, version=None):
+                response.headers.setdefault("Pragma", "cache")
+                response.headers.setdefault("Cache-Control", "private")
                 return bottle.static_file(filename, root=static_folder)
 
         # Register routes list
@@ -962,9 +1114,13 @@ class Reloader:
         routes = []
         for route in app.routes:
             func = route.callback
+            rule = route.rule
+            # remove optional trailing / from rule
+            if rule.endswith("<:re:/?>"):
+                rule = rule[:-8]
             routes.append(
                 {
-                    "rule": route.rule,
+                    "rule": rule,
                     "method": route.method,
                     "filename": module2filename(func.__module__),
                     "action": func.__name__,
@@ -995,15 +1151,30 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
         return json.dumps(context)
     # else - return html error-page
     return yatl.render(
-        '<html><head><style>body{color:white;text-align: center;background-color:{{=color}};font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>{{=code}}</h1><h2>{{=message}}</h2>{{if button_text:}}<a href="{{=href}}">{{=button_text}}</a>{{pass}}</body></html>',
+        '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>',
         context=context,
+        delimiters="[[ ]]",
     )
 
 
 @bottle.error(404)
 def error404(error):
-    guess_app_name = request.path.split("/")[1]
-    return error_page(404, button_text=guess_app_name, href="/" + guess_app_name)
+    guess_app_name = (
+        "index"
+        if request.environ.get("HTTP_X_PY4WEB_APPNAME")
+        else request.path.split("/")[1]
+    )
+    if guess_app_name == "index":
+        href = "/"
+    else:
+        href = "/" + guess_app_name
+    script_name = (
+        request.environ.get("SCRIPT_NAME", "")
+        or request.environ.get("HTTP_X_SCRIPT_NAME", "")
+    ).rstrip("/")
+    if script_name:
+        href = script_name + href
+    return error_page(404, button_text=guess_app_name, href=href)
 
 
 #########################################################################################
@@ -1012,8 +1183,55 @@ def error404(error):
 
 DIRTY_APPS = dict()  #  apps that need to be reloaded (lazy watching)
 
+from collections import OrderedDict
+from inspect import stack
 
-def watch(apps_folder, server="default", mode="sync"):
+APP_WATCH = {"files": dict(), "handlers": OrderedDict(), "tasks": dict()}
+
+""" Decorator that binds a func as an watchdog handler of non-'.py' files.
+Paths to files must be relative to app, w/o app name(folder).
+
+@app_watch_handler(['static/sass/all.sass', 'static/sass/main.sass'])
+def sass_compile(changed_files):
+    print(changed_files); # paths of files that changed, for info
+    sass.compile()
+"""
+
+
+def app_watch_handler(watched_app_subpaths):
+    invoker = pathlib.Path(stack()[1].filename)
+    apps_path = pathlib.Path(os.environ["PY4WEB_APPS_FOLDER"])
+    app = invoker.relative_to(os.environ["PY4WEB_APPS_FOLDER"]).parts[0]
+
+    def decorator(func):
+        handler = "{}.{}".format(func.__module__, func.__name__)
+        APP_WATCH["handlers"][handler] = func
+        for subpath in watched_app_subpaths:
+            app_path = apps_path.joinpath(app, subpath).as_posix()
+            if not app_path in APP_WATCH["files"]:
+                APP_WATCH["files"][app_path] = []
+            APP_WATCH["files"][app_path].append(handler)
+        return func
+
+    return decorator
+
+
+def try_app_watch_tasks():
+    if APP_WATCH["tasks"]:
+        tried_tasks = []
+        for handler in APP_WATCH["tasks"]:
+            changed_files_dict = APP_WATCH["tasks"][handler]
+            try:
+                APP_WATCH["handlers"][handler](changed_files_dict.keys())
+                tried_tasks.append(handler)
+            except Exception:
+                logging.error(traceback.format_exc())
+        ## remove executed tasks from register
+        for handler in tried_tasks:
+            del APP_WATCH["tasks"][handler]
+
+
+def watch(apps_folder, server_config, mode="sync"):
     def watch_folder_event_loop(apps_folder):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -1024,70 +1242,100 @@ def watch(apps_folder, server="default", mode="sync"):
             "watching (%s-mode) python file changes in: %s" % (mode, apps_folder)
         )
         async for changes in awatch(os.path.join(apps_folder)):
-            for app in set(
-                [
-                    p.relative_to(apps_folder).parts[0]
-                    for p in [pathlib.Path(pair[1]) for pair in changes]
-                    if p.suffix == ".py"
-                ]
-            ):
-                if mode == "lazy":
-                    DIRTY_APPS[app] = True
-                else:
-                    Reloader.import_app(app)
+            apps = []
+            for subpath in [pathlib.Path(pair[1]) for pair in changes]:
+                name = subpath.relative_to(apps_folder).parts[0]
+                if subpath.suffix == ".py":
+                    apps.append(name)
+                ## manage `app_watch_handler` decorators
+                elif subpath.as_posix() in APP_WATCH["files"]:
+                    handlers = APP_WATCH["files"][subpath.as_posix()]
+                    for handler in handlers:
+                        if not handler in APP_WATCH["tasks"]:
+                            APP_WATCH["tasks"][handler] = {}
+                        APP_WATCH["tasks"][handler][subpath.as_posix()] = True
 
-    if server == "default":
-        # default wsgi server block the main thread so we open a new thread for the file watcher
+            for name in apps:
+                if mode == "lazy":
+                    DIRTY_APPS[name] = True
+                else:
+                    Reloader.import_app(name)
+            ## in 'lazy' mode it's done in bottle's 'before_request' hook
+            if mode != "lazy":
+                try_app_watch_tasks()
+
+    if server_config["number_workers"] > 1:
+        click.echo("--watch option has no effect in multi-process environment \n")
+        return
+    elif server_config["server"].startswith(("wsgiref", "waitress", "rocket")):
+        # these servers block the main thread so we open a new thread for the file watcher
         threading.Thread(
             target=watch_folder_event_loop, args=(apps_folder,), daemon=True
         ).start()
-    elif server == "tornado":
+    elif server_config["server"] == "tornado":
         # tornado delegate to asyncio so we add a future into the event loop
         asyncio.ensure_future(watch_folder(apps_folder))
-    elif server == "gunicorn":
-        # supposedly number_workers > 1
-        click.echo("--watch option has no effect in multi-process environment \n")
+    elif server_config["server"].startswith("gevent"):
+        watch_folder_event_loop(apps_folder)
+    else:
+        # should never happen
         return
 
     if mode == "lazy":
         Reloader.install_reloader_hook()
 
 
-def start_server(args):
-    host, port, apps_folder = args["host"], int(args["port"]), args["apps_folder"]
-    number_workers = args["number_workers"]
+def start_server(kwargs, ctrl_c_orig):
+    host = kwargs["host"]
+    port = int(kwargs["port"])
+    apps_folder = kwargs["apps_folder"]
+    number_workers = kwargs["number_workers"]
+    params = dict(host=host, port=port, reloader=False)
+    server_config = dict(
+        platform=platform.system().lower(),
+        server=None if kwargs["server"] == "default" else kwargs["server"],
+        number_workers=number_workers,
+    )
 
-    server = None  # need for watcher
-    run = lambda: 0  # main run
-    if platform.system().lower() == "windows":
-        # Tornado fail on windows
-        server = "default"
-        run = lambda: bottle.run(host=host, port=int(port), reloader=False)
-    elif number_workers < 1:
-        server = "tornado"
-        run = lambda: bottle.run(server="tornado", host=host, port=port, reloader=False)
-    else:
-        if not gunicorn:
-            logging.error("gunicorn not installed")
-        elif not gevent:
-            logging.error("gevent not installed")
+    if server_config["server"]:
+        for e in ("rocket", "Twisted"):
+            if e in server_config["server"]:
+                signal.signal(signal.SIGINT, ctrl_c_orig)
+                break
+
+    if not server_config["server"]:
+        if server_config["platform"] == "windows":
+            server_config["server"] = "tornado"
+            if sys.version_info >= (
+                3,
+                8,
+            ):  # see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on windows
+                asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        elif number_workers <= 1:
+            server_config["server"] = "tornado"
         else:
-            server = "gunicorn"
-            sys.argv[:] = sys.argv[:1]  # else break gunicorn
-            run = lambda: bottle.run(
-                server="gunicorn",
-                host=host,
-                port=port,
-                workers=number_workers,
-                worker_class="gevent",
-                reloader=False,
-                certfile=args["ssl_cert"],
-                keyfile=args["ssl_key"],
-            )
+            if not gunicorn:
+                logging.error("gunicorn not installed")
+                return
+            server_config["server"] = "gunicorn"
+    params["server"] = server_config["server"]
+    if params["server"] in server_adapters.__all__:
+        params["server"] = getattr(server_adapters, params["server"])()
+    if number_workers > 1:
+        params["workers"] = number_workers
+    if server_config["server"] == "gunicorn":
+        sys.argv[:] = sys.argv[:1]  # else break gunicorn
+    if kwargs["ssl_cert"] is not None:
+        params["certfile"] = kwargs["ssl_cert"]
+        params["keyfile"] = kwargs["ssl_key"]
 
-    if args["watch"] != "off":
-        watch(apps_folder, server, args["watch"])
-    run()
+    if server_config["server"] == "gevent":
+        if not hasattr(_ssl, "sslwrap"):
+            _ssl.sslwrap = new_sslwrap
+
+    if kwargs["watch"] != "off":
+        watch(apps_folder, server_config, kwargs["watch"])
+    bottle.run(**params)
 
 
 def check_compatible(version):
@@ -1104,25 +1352,76 @@ def check_compatible(version):
 #########################################################################################
 
 
-def install_args(args, reinstall_apps=False):
-    args["service_folder"] = os.path.join(
-        args["apps_folder"], DEFAULTS["PY4WEB_SERVICE_FOLDER"]
+class MetaPathRouter:
+    """
+    Instances of this class makes alias for a package name,
+    in other words instruct the import system to route request
+    for a package alias, i.e.:
+
+        MetaPathRouter("pkg", "pkg_alias")
+        import pkg_alias.sub
+
+    works as
+
+        import pkg.sub
+
+    author: Paolo Pastori
+    """
+
+    def __init__(self, pkg, pkg_alias="apps"):
+        assert pkg_alias
+        assert pkg
+        if pkg != pkg_alias:
+            self.pkg_alias = pkg_alias
+            self.pkg = pkg
+            # register as path finder
+            sys.meta_path.append(self)
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname == self.pkg_alias and path is None:
+            spec = importlib.util.find_spec(self.pkg)
+            if spec:
+                spec.name = fullname
+                spec.loader = importlib.machinery.SourceFileLoader(
+                    fullname, spec.origin
+                )
+                return spec
+
+
+def install_args(kwargs, reinstall_apps=False):
+    # always convert apps_folder to an absolute path
+    apps_folder = kwargs["apps_folder"] = os.path.abspath(kwargs["apps_folder"])
+    kwargs["service_folder"] = os.path.join(
+        kwargs["apps_folder"], DEFAULTS["PY4WEB_SERVICE_FOLDER"]
     )
-    args["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
-    for key in args:
-        os.environ["PY4WEB_" + key.upper()] = str(args[key])
-    apps_folder = args["apps_folder"]
-    yes = args.get("yes", "N")
+    kwargs["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
+    for key, val in kwargs.items():
+        os.environ["PY4WEB_" + key.upper()] = str(val)
+    yes2 = yes = kwargs.get("yes", False)
     # If the apps folder does not exist create it and populate it
     if not os.path.exists(apps_folder):
         if yes or click.confirm("Create missing folder %s?" % apps_folder):
             os.makedirs(apps_folder)
-            init_py = os.path.join(apps_folder, "__init__.py")
-            if not os.path.exists(init_py):
-                with open(init_py, "w") as fp:
-                    fp.write("")
+            yes2 = True
+        else:
+            click.echo("Command aborted")
+            sys.exit(0)
+    init_py = os.path.join(apps_folder, "__init__.py")
+    if not os.path.exists(init_py):
+        if yes2 or click.confirm("Create missing init file %s?" % init_py):
+            with open(init_py, "wb"):
+                pass
+        else:
+            click.echo("Command aborted")
+            sys.exit(0)
+    # ensure that "import apps.someapp" works
+    apps_folder_parent, apps_folder_name = os.path.split(apps_folder)
+    if not apps_folder_parent in sys.path:
+        sys.path.insert(0, apps_folder_parent)
+    if apps_folder_name != "apps":
+        MetaPathRouter(apps_folder_name)
 
-    # Upzip the _dashboard app if it is old or does not exist
+    # Reinstall apps from zipped ones in assets
     if reinstall_apps:
         assets_dir = os.path.join(os.path.dirname(__file__), "assets")
         if os.path.exists(assets_dir):
@@ -1136,28 +1435,25 @@ def install_args(args, reinstall_apps=False):
                 if not os.path.exists(target_dir):
                     if yes or click.confirm("Create app %s?" % app_name):
                         click.echo("[ ] Unzipping app %s" % filename)
-                        zip_file = zipfile.ZipFile(zip_filename, "r")
-                        if not os.path.exists(target_dir):
+                        with zipfile.ZipFile(zip_filename, "r") as zip_file:
                             os.makedirs(target_dir)
                             zip_file.extractall(target_dir)
-                            zip_file.close()
                             click.echo("\x1b[A[X]")
 
-    if not os.path.exists(args["service_folder"]):
-        os.mkdir(args["service_folder"])
-    session_secret_filename = os.path.join(args["service_folder"], "session.secret")
+    if not os.path.exists(kwargs["service_folder"]):
+        os.mkdir(kwargs["service_folder"])
+    session_secret_filename = os.path.join(kwargs["service_folder"], "session.secret")
     if not os.path.exists(session_secret_filename):
         with open(session_secret_filename, "w") as fp:
             fp.write(str(uuid.uuid4()))
 
-    session_secret_filename = os.path.join(args["service_folder"], "session.secret")
     with open(session_secret_filename) as fp:
         Session.SECRET = fp.read()
 
 
-def wsgi(**args):
+def wsgi(**kwargs):
     """Initializes everything, loads apps, returns the wsgi app"""
-    install_args(args)
+    install_args(kwargs)
     Reloader.import_apps()
     return bottle.default_app()
 
@@ -1165,13 +1461,6 @@ def wsgi(**args):
 #########################################################################################
 # CLI
 #########################################################################################
-
-
-def fix_ansi_on_windows():
-    if platform.system().lower() == "windows":  # fix for ANSI on Win7, 8, 10 ...
-        from ctypes import windll
-
-        windll.kernel32.SetConsoleMode(windll.kernel32.GetStdHandle(-11), 7)
 
 
 def keyboardInterruptHandler(signal, frame):
@@ -1182,130 +1471,239 @@ def keyboardInterruptHandler(signal, frame):
     sys.exit(0)
 
 
-@click.group()
+@click.group(
+    context_settings=dict(help_option_names=["-h", "-help", "--help"]),
+    help='%s\n\nType "%s COMMAND -h" for available options on commands'
+    % (__doc__, PY4WEB_CMD),
+)
 def cli():
     pass
 
 
 @cli.command()
-def version():
+@click.option(
+    "-a", "--all", is_flag=True, default=False, help="List version of all modules"
+)
+def version(all):
+    """Show versions and exit"""
     from . import __version__
 
-    click.echo(__version__)
+    click.echo("py4web: %s" % __version__)
+    if all:
+        click.echo("system: %s" % platform.platform())
+        click.echo("python: %s" % sys.version.replace("\n", " "))
+        for name in sorted(sys.modules):
+            if hasattr(sys.modules[name], "__version__"):
+                click.echo("%s: %s" % (name, sys.modules[name].__version__))
 
 
 @cli.command()
-@click.argument("apps_folder", default="apps")
+@click.argument("apps_folder")
 @click.option(
     "-Y",
     "--yes",
     is_flag=True,
     default=False,
     help="No prompt, assume yes to questions",
+    show_default=True,
 )
-def setup(**args):
-    install_args(args, reinstall_apps=True)
+def setup(**kwargs):
+    """Setup new apps folder or reinstall it"""
+    install_args(kwargs, reinstall_apps=True)
 
 
 @cli.command()
-@click.argument("apps_folder", default="apps")
-def shell(apps_folder):
-    install_args(dict(apps_folder=apps_folder))
-    fix_ansi_on_windows()
+@click.argument("apps_folder", type=click.Path(exists=True))
+@click.option(
+    "-Y",
+    "--yes",
+    is_flag=True,
+    default=False,
+    help="No prompt, assume yes to questions",
+    show_default=True,
+)
+def shell(**kwargs):
+    """Open a python shell with apps_folder's parent added to the path"""
+    install_args(kwargs)
     code.interact(local=dict(globals(), **locals()))
 
 
 @cli.command()
-@click.argument("apps_folder")
+@click.argument("apps_folder", type=click.Path(exists=True))
 @click.argument("func")
-@click.option("--args", default="{}")
-def call(apps_folder, func, args):
-    args = json.loads(args)
-    install_args(dict(apps_folder=apps_folder))
-    module, name = ("apps." + func).rsplit(".", 1)
+@click.option(
+    "-Y",
+    "--yes",
+    is_flag=True,
+    default=False,
+    help="No prompt, assume yes to questions",
+    show_default=True,
+)
+@click.option(
+    "--args",
+    default="{}",
+    help="Arguments passed to the program/function",
+    show_default=True,
+)
+def call(apps_folder, func, yes, args):
+    """Call a function inside apps_folder"""
+    kwargs = json.loads(args)
+    install_args(dict(apps_folder=apps_folder, yes=yes))
+    apps_folder_name = os.path.basename(os.environ["PY4WEB_APPS_FOLDER"])
+    module, name = ("%s.%s" % (apps_folder_name, func)).rsplit(".", 1)
     env = {}
-    if not apps_folder in sys.path:
-        sys.path.insert(0, apps_folder)
     exec("from %s import %s" % (module, name), {}, env)
-    env[name](**args)
+    env[name](**kwargs)
 
 
-@cli.command()
-@click.option("--password", prompt=True, confirmation_prompt=True, hide_input=True)
+@cli.command(name="set_password")
+@click.option(
+    "--password",
+    prompt=True,
+    confirmation_prompt=True,
+    hide_input=True,
+    help="Password value (asked if missing)",
+)
 @click.option(
     "-p",
     "--password_file",
     default="password.txt",
     help="File for the encrypted password",
+    show_default=True,
 )
 def set_password(password, password_file):
+    """Set administrator's password for the Dashboard"""
     click.echo('Storing the hashed password in file "%s"\n' % password_file)
     with open(password_file, "w") as fp:
         fp.write(str(pydal.validators.CRYPT()(password)[0]))
 
 
-@cli.command()
-@click.argument("apps_folder", default="apps")
+@cli.command(name="new_app")
+@click.argument("apps_folder")
+@click.argument("app_name")
 @click.option(
     "-Y",
     "--yes",
     is_flag=True,
     default=False,
     help="No prompt, assume yes to questions",
+    show_default=True,
 )
-@click.option("-H", "--host", default="127.0.0.1", help="Host name (default 127.0.0.1)")
-@click.option("-P", "--port", default=8000, type=int, help="Port number (default 8000)")
+@click.option(
+    "-s",
+    "--scaffold_zip",
+    default=None,
+    help="Path to the zip with the scaffolding app",
+    show_default=False,
+)
+def new_app(apps_folder, app_name, yes, scaffold_zip):
+    """Create a new app copying the scaffolding one"""
+    install_args(dict(apps_folder=apps_folder, yes=yes))
+    source = scaffold_zip or os.path.join(
+        os.path.dirname(__file__), "assets", "py4web.app._scaffold.zip"
+    )
+    target_dir = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], app_name)
+    if not os.path.exists(source):
+        click.echo("Source app %s does not exists" % source)
+        sys.exit(1)
+    elif os.path.exists(target_dir):
+        click.echo("Target folder %s already exists" % target_dir)
+        sys.exit(1)
+    else:
+        zfile = zipfile.ZipFile(source, "r")
+        zfile.extractall(target_dir)
+        zfile.close()
+
+
+@cli.command()
+@click.argument("apps_folder", type=click.Path(exists=True))
+@click.option(
+    "-Y",
+    "--yes",
+    is_flag=True,
+    default=False,
+    help="No prompt, assume yes to questions",
+    show_default=True,
+)
+@click.option("-H", "--host", default="127.0.0.1", help="Host name", show_default=True)
+@click.option(
+    "-P", "--port", default=8000, type=int, help="Port number", show_default=True
+)
 @click.option(
     "-p",
     "--password_file",
     default="password.txt",
     help="File for the encrypted password",
+    show_default=True,
 )
-@click.option("-w", "--number_workers", default=0, type=int, help="Number of workers")
+@click.option(
+    "-s",
+    "--server",
+    default="default",
+    type=click.Choice(
+        ["default", "wsgiref", "tornado", "gunicorn", "gevent", "waitress"]
+        + server_adapters.__all__
+    ),
+    help="server to use",
+    show_default=True,
+)
+@click.option(
+    "-w",
+    "--number_workers",
+    default=0,
+    type=int,
+    help="Number of workers",
+    show_default=True,
+)
 @click.option(
     "-d",
     "--dashboard_mode",
     default="full",
-    help="Dashboard mode: demo, readonly, full (default), none",
+    help="Dashboard mode: demo, readonly, full, none",
+    show_default=True,
 )
 @click.option(
     "--watch",
     default="off",
     type=click.Choice(["off", "sync", "lazy"]),
-    help="Watch python changes and reload apps automatically, modes: off (default), sync, lazy",
+    help="Watch python changes and reload apps automatically, modes: off, sync, lazy",
+    show_default=True,
 )
-@click.option("--ssl_cert", help="SSL certificate file for HTTPS")
-@click.option("--ssl_key", help="SSL key file for HTTPS")
-def run(**args):
-    install_args(args)
-    apps_folder = args["apps_folder"]
-    yes = args["yes"]
+@click.option(
+    "--ssl_cert", type=click.Path(exists=True), help="SSL certificate file for HTTPS"
+)
+@click.option("--ssl_key", type=click.Path(exists=True), help="SSL key file for HTTPS")
+def run(**kwargs):
+    """Run all the applications on apps_folder"""
+    install_args(kwargs)
 
     from py4web import __version__
 
-    click.echo(ART, color="blue")
+    click.secho(ART, fg="blue")
     click.echo("Py4web: %s on Python %s\n\n" % (__version__, sys.version))
 
     # If we know where the password is stored, read it, otherwise ask for one
-    if os.path.exists(os.path.join(apps_folder, "_dashboard")):
-        if args["dashboard_mode"] not in ("demo", "none") and not os.path.exists(
-            args["password_file"]
+    if os.path.exists(os.path.join(os.environ["PY4WEB_APPS_FOLDER"], "_dashboard")):
+        if kwargs["dashboard_mode"] not in ("demo", "none") and not os.path.exists(
+            kwargs["password_file"]
         ):
             click.echo(
-                'You have not set a dashboard password. Run "py4web set_password" to do so.'
+                'You have not set a dashboard password. Run "%s set_password" to do so.'
+                % PY4WEB_CMD
             )
         else:
             click.echo(
                 "Dashboard is at: http://%s:%s/_dashboard"
-                % (args["host"], args["port"])
+                % (kwargs["host"], kwargs["port"])
             )
 
     # Catch interrupts like Ctrl-C
+    orig_ctrl_c_handler = signal.getsignal(signal.SIGINT)
     signal.signal(signal.SIGINT, keyboardInterruptHandler)
 
     # Start
     Reloader.import_apps()
-    start_server(args)
+    start_server(kwargs, orig_ctrl_c_handler)
 
 
 if __name__ == "__main__":
