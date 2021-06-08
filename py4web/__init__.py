@@ -20,6 +20,7 @@ from .core import (
     Translator,  # from pluralize
     Session,
     Cache,
+    Current,
     Flash,
     user_in,  # additional fixtures
     URL,  # custom helper

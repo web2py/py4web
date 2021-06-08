@@ -351,6 +351,37 @@ thread_safe_pydal_patch()
 # this global object will be used to store their state to restore it for every http request
 ICECUBE = {}
 
+
+#########################################################################################
+# Current Fixture
+#########################################################################################
+
+class Current(Fixture):
+    """
+    This fixture gives access to a request-local object, that is cleaned
+    after each request.
+    """
+
+    def __init__(self):
+        self.local = None
+
+    def on_request(self):
+        self.local = threading.local()
+        self.local.data = {}
+
+    def finalize(self):
+        self.local = None
+
+    def __setitem__(self, key, value):
+        self.local.data[key] = value
+
+    def __getitem__(self, key):
+        return self.local.data[key]
+
+    def get(self, key, default=None):
+        return self.local.data.get(key, default)
+
+
 #########################################################################################
 # Flash Fixture
 #########################################################################################
