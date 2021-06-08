@@ -356,10 +356,16 @@ ICECUBE = {}
 # Current Fixture
 #########################################################################################
 
+class NotInCurrent(Exception):
+    """This exception is raised when one tries to access a request-local
+    object but one is not in a request-local context."""
+    pass
+
 class Current(Fixture):
     """
     This fixture gives access to a request-local object, that is cleaned
-    after each request.
+    after each request.  Note that the object is thread-local; if the
+    request processing uses multiple threads, this will not be accessible.
     """
 
     def __init__(self):
@@ -373,12 +379,23 @@ class Current(Fixture):
         self.local = None
 
     def __setitem__(self, key, value):
+        if self.local is None:
+            raise NotInCurrent()
         self.local.data[key] = value
 
     def __getitem__(self, key):
+        if self.local is None:
+            raise NotInCurrent()
         return self.local.data[key]
 
+    def __delitem__(self, key):
+        if self.local is None:
+            raise NotInCurrent()
+        del self.local.data[key]
+
     def get(self, key, default=None):
+        if self.local is None:
+            raise NotInCurrent()
         return self.local.data.get(key, default)
 
 
