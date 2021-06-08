@@ -1080,15 +1080,15 @@ class Reloader:
                 Reloader.ERRORS[app_name] = None
             except Exception as err:
                 tb = traceback.format_exc()
+                Reloader.ERRORS[app_name] = tb
                 try:
                     ErrorStorage().log(app_name, get_error_snapshot())
-                except:
-                    print(tb)
+                except Exception:
+                    logging.error(tb)
                 click.secho(
                     "\x1b[A[FAILED] loading %s (%s)" % (app_name, err),
                     fg="red",
                 )
-                Reloader.ERRORS[app_name] = tb
                 # clear all files/submodules if the loading fails
                 clear_modules()
                 return None
