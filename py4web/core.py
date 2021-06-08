@@ -3,29 +3,27 @@
 """PY4WEB - a web framework for rapid development of efficient database driven web applications"""
 
 # Standard modules
-import argparse
+import asyncio
 import cgitb
 import code
 import copy
 import datetime
+import enum
 import functools
-import importlib.util
-import importlib.machinery
-import inspect
-import json
 import http.client
 import http.cookies
+import importlib.machinery
+import importlib.util
+import inspect
+import json
 import linecache
 import logging
 import numbers
 import os
-import getpass
 import pathlib
 import platform
 import re
 import signal
-import site
-import shutil
 import sys
 import threading
 import time
@@ -34,8 +32,9 @@ import types
 import urllib.parse
 import uuid
 import zipfile
-import asyncio
+
 from watchgod import awatch
+
 from . import server_adapters
 
 # Optional web servers for speed
@@ -44,18 +43,15 @@ try:
 except ImportError:
     gunicorn = None
 
-from enum import Enum
-
+import bottle
 
 # Third party modules
 import click
-import bottle
 import jwt  # this is PyJWT
-import yatl
-import pydal
 import pluralize
-from pydal._compat import to_native, to_bytes
+import pydal
 import threadsafevariable
+import yatl
 
 bottle.BaseRequest.MEMFILE_MAX = 16 * 1024 * 1024
 
@@ -261,7 +257,7 @@ def objectify(obj):
     elif hasattr(obj, "xml"):
         return obj.xml()
     elif isinstance(
-        obj, Enum
+        obj, enum.Enum
     ):  # Enum class handled specially to address self reference in __dict__
         return dict(name=obj.name, value=obj.value, __class__=obj.__class__.__name__)
     elif hasattr(obj, "__dict__") and hasattr(obj, "__class__"):
@@ -514,7 +510,7 @@ class Session(Fixture):
                 request.json and request.json.get("_session_token")
             )
         if raw_token:
-            token_data = to_bytes(raw_token)
+            token_data = raw_token.encode()
             try:
                 if self.storage:
                     json_data = self.storage.get(token_data)
@@ -549,7 +545,7 @@ class Session(Fixture):
 
         response.set_cookie(
             self.local.session_cookie_name,
-            to_native(cookie_data),
+            cookie_data,
             path="/",
             secure=self.local.secure,
             same_site=self.same_site,
@@ -578,10 +574,17 @@ class Session(Fixture):
             yield item
 
     def clear(self):
+        """clear a session (to be used before saving it)"""
         self.local.changed = True
         self.local.data.clear()
         self.local.data["uuid"] = str(uuid.uuid1())
         self.local.data["secure"] = self.local.secure
+
+    def erase(self):
+        """for security always erase the session information after saving it"""
+        delattr(self.local, "session_cookie_name")
+        delattr(self.local, "changed")
+        delattr(self.local, "data")
 
     def on_request(self):
         self.load()
@@ -589,10 +592,12 @@ class Session(Fixture):
     def on_error(self):
         if self.local.changed:
             self.save()
+        self.erase()
 
     def on_success(self, status):
         if self.local.changed:
             self.save()
+        self.erase()
 
 
 #########################################################################################
@@ -1011,19 +1016,6 @@ class Reloader:
     ERRORS = {}
 
     @staticmethod
-    def install_reloader_hook():
-        # used by watcher
-        def hook(*a, **k):
-            app_name = request.path.split("/")[1]
-            if app_name in DIRTY_APPS:
-                Reloader.import_app(app_name)
-                del DIRTY_APPS[app_name]
-            ## APP_WATCH tasks, if used by any app
-            try_app_watch_tasks()
-
-        bottle.default_app().add_hook("before_request", hook)
-
-    @staticmethod
     def clear_routes(app_name=None):
         app = bottle.default_app()
         routes = app.routes[:]
@@ -1191,8 +1183,8 @@ def error404(error):
 
 DIRTY_APPS = dict()  #  apps that need to be reloaded (lazy watching)
 
-from inspect import stack
 from collections import OrderedDict
+from inspect import stack
 
 APP_WATCH = {"files": dict(), "handlers": OrderedDict(), "tasks": dict()}
 
