@@ -381,9 +381,13 @@ class Flash(Fixture):
         # if we redirect and have a flash message we move it to the session
         if status == 303 and Flash.local.flash:
             response.set_cookie("py4web-flash", json.dumps(Flash.local.flash), path="/")
-            Flash.local.flash = None
         else:
             response.delete_cookie("py4web-flash", path="/")
+        Flash.local.flash = None
+
+    def on_error(self):
+        """We clear the flash, in any case, to prevent leaking to other users."""
+        Flash.local.flash = None
 
     def set(self, message, _class="", sanitize=True):
         # we set a flash message
@@ -574,17 +578,20 @@ class Session(Fixture):
             yield item
 
     def clear(self):
-        """clear a session (to be used before saving it)"""
+        """clear a session"""
         self.local.changed = True
         self.local.data.clear()
         self.local.data["uuid"] = str(uuid.uuid1())
         self.local.data["secure"] = self.local.secure
 
     def erase(self):
-        """for security always erase the session information after saving it"""
+        """For security always erase the session information at the end
+        of a request.  Otherwise it could leak to other requests that
+        omit the @action.uses(session) initializer."""
         delattr(self.local, "session_cookie_name")
         delattr(self.local, "changed")
         delattr(self.local, "data")
+        delattr(self.local, "secure")
 
     def on_request(self):
         self.load()
