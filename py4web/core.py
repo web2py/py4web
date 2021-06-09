@@ -1023,6 +1023,19 @@ class Reloader:
     ERRORS = {}
 
     @staticmethod
+    def install_reloader_hook():
+        # used by watcher
+        def hook(*a, **k):
+            app_name = request.path.split("/")[1]
+            if app_name in DIRTY_APPS:
+                Reloader.import_app(app_name)
+                del DIRTY_APPS[app_name]
+            ## APP_WATCH tasks, if used by any app
+            try_app_watch_tasks()
+
+        bottle.default_app().add_hook("before_request", hook)
+    
+    @staticmethod
     def clear_routes(app_name=None):
         app = bottle.default_app()
         routes = app.routes[:]
