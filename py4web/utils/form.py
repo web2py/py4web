@@ -86,7 +86,7 @@ class DateTimeWidget:
 class TextareaWidget:
     def make(self, field, value, error, title, placeholder="", readonly=False):
         return TEXTAREA(
-            value,
+            value if value else "",
             _id=to_id(field),
             _name=field.name,
             _placeholder=placeholder,
