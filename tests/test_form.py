@@ -13,6 +13,7 @@ class FormTest(unittest.TestCase):
 
     def test_form(self):
         session = Session()
+        session.initialize()
         table = [Field("name")]
         form_name = 'testing_form'
         f = Form(table,form_name=form_name,csrf_session=session)

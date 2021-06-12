@@ -369,10 +369,11 @@ class Current(Fixture):
     """
 
     def __init__(self):
+        self._local = threading.local()
         self.local = None
 
     def on_request(self):
-        self.local = threading.local()
+        self._local = self._local
         self.local.data = {}
 
     def finalize(self):
@@ -419,11 +420,10 @@ class Flash(Fixture):
     """
 
     def __init__(self):
-        self.local = None
+        self.local = threading.local()
 
     def on_request(self):
         # when a new request arrives we look for a flash message in the cookie
-        self.local = threading.local()
         flash = request.get_cookie("py4web-flash")
         if flash:
             self.local.flash = json.loads(flash)
@@ -548,14 +548,24 @@ class Session(Fixture):
             self.__prerequisites__ = [storage]
         if hasattr(storage, "__prerequisites__"):
             self.__prerequisites__ = storage.__prerequisites__
+        self._local = threading.local()
         self.local = None # We initialize this per-request.
 
+    def initialize(self,
+                   app_name="unknown",
+                   data=None,
+                   changed=False,
+                   secure=False):
+        self.local = self._local
+        self.local.changed = changed
+        self.local.data = data or {}
+        self.local.session_cookie_name = "%s_session" % app_name
+        self.local.secure = secure
+
     def load(self):
-        self.local = threading.local()
-        self.local.changed = False
-        self.local.data = {}
-        self.local.session_cookie_name = "%s_session" % request.app_name
-        self.local.secure = request.url.startswith("https")
+        self.initialize(app_name=request.app_name,
+                        changed=False,
+                        secure=request.url.startswith("https"))
         raw_token = request.get_cookie(
             self.local.session_cookie_name
         ) or request.query.get("_session_token")

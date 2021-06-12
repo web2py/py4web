@@ -21,12 +21,10 @@ class TestSession(unittest.TestCase):
         session["key"] = "value"
         cookie_name = session.local.session_cookie_name
         session.on_success(200)
-        self.assertFalse(hasattr(session.local, "session_cookie_name"))
-        self.assertFalse(hasattr(session.local, "changed"))
-        self.assertFalse(hasattr(session.local, "data"))
-
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
         request.cookies[a] = b
+        session.finalize()
+        self.assertEqual(session.local, None)
 
         session = Session(secret="b", expiration=10)
         request.cookies[a] = b
@@ -47,12 +45,10 @@ class TestSession(unittest.TestCase):
         session["key"] = "value"
         cookie_name = session.local.session_cookie_name
         session.on_success(200)
-        self.assertFalse(hasattr(session.local, "session_cookie_name"))
-        self.assertFalse(hasattr(session.local, "changed"))
-        self.assertFalse(hasattr(session.local, "data"))
-
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
         request.cookies[a] = b
+        session.finalize()
+        self.assertIsNone(session.local)
 
         session = Session(expiration=10, storage=DBStore(db))
         request.cookies[a] = b
@@ -77,9 +73,6 @@ class TestSession(unittest.TestCase):
             session["key"] = "value"
             cookie_name = session.local.session_cookie_name
             session.on_success(200)
-            self.assertFalse(hasattr(session.local, "session_cookie_name"))
-            self.assertFalse(hasattr(session.local, "changed"))
-            self.assertFalse(hasattr(session.local, "data"))
 
             a, b = (
                 str(response._cookies)[len("Set-Cookie: ") :]
@@ -87,6 +80,8 @@ class TestSession(unittest.TestCase):
                 .split("=", 1)
             )
             request.cookies[a] = b
+            session.finalize()
+            self.assertEqual(session.local, None)
 
             conn = memcache.Client(["127.0.0.1:11211"], debug=0)
             session = Session(expiration=10, storage=conn)
