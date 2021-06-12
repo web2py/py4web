@@ -286,6 +286,9 @@ class Fixture:
     def on_success(self, status):
         pass  # called when a request is successful
 
+    def finalize(self):
+        pass # called in any case at the end of a request
+
     def transform(
         self, output, shared_data=None
     ):  # transforms the output, for example to apply template
@@ -348,6 +351,54 @@ thread_safe_pydal_patch()
 # this global object will be used to store their state to restore it for every http request
 ICECUBE = {}
 
+
+#########################################################################################
+# Current Fixture
+#########################################################################################
+
+class NotInCurrent(Exception):
+    """This exception is raised when one tries to access a request-local
+    object but one is not in a request-local context."""
+    pass
+
+class Current(Fixture):
+    """
+    This fixture gives access to a request-local object, that is cleaned
+    after each request.  Note that the object is thread-local; if the
+    request processing uses multiple threads, this will not be accessible.
+    """
+
+    def __init__(self):
+        self.local = None
+
+    def on_request(self):
+        self.local = threading.local()
+        self.local.data = {}
+
+    def finalize(self):
+        self.local = None
+
+    def __setitem__(self, key, value):
+        if self.local is None:
+            raise NotInCurrent()
+        self.local.data[key] = value
+
+    def __getitem__(self, key):
+        if self.local is None:
+            raise NotInCurrent()
+        return self.local.data[key]
+
+    def __delitem__(self, key):
+        if self.local is None:
+            raise NotInCurrent()
+        del self.local.data[key]
+
+    def get(self, key, default=None):
+        if self.local is None:
+            raise NotInCurrent()
+        return self.local.data.get(key, default)
+
+
 #########################################################################################
 # Flash Fixture
 #########################################################################################
@@ -367,43 +418,44 @@ class Flash(Fixture):
     Also notice all Flash objects share the same threading local so act as singletons
     """
 
-    local = threading.local()
+    def __init__(self):
+        self.local = None
 
     def on_request(self):
         # when a new request arrives we look for a flash message in the cookie
+        self.local = threading.local()
         flash = request.get_cookie("py4web-flash")
         if flash:
-            Flash.local.flash = json.loads(flash)
+            self.local.flash = json.loads(flash)
         else:
-            Flash.local.flash = None
+            self.local.flash = None
 
     def on_success(self, status):
         # if we redirect and have a flash message we move it to the session
-        if status == 303 and Flash.local.flash:
-            response.set_cookie("py4web-flash", json.dumps(Flash.local.flash), path="/")
+        if status == 303 and self.local.flash:
+            response.set_cookie("py4web-flash", json.dumps(self.local.flash), path="/")
         else:
             response.delete_cookie("py4web-flash", path="/")
-        Flash.local.flash = None
 
-    def on_error(self):
-        """We clear the flash, in any case, to prevent leaking to other users."""
-        Flash.local.flash = None
+    def finalize(self):
+        """Clears the local to prevent leakage."""
+        self.local = None
 
     def set(self, message, _class="", sanitize=True):
         # we set a flash message
         if sanitize:
             message = yatl.sanitizer.xmlescape(message)
-        Flash.local.flash = {"message": message, "class": _class}
+        self.local.flash = {"message": message, "class": _class}
 
     def transform(self, data, shared_data=None):
         # if we have a valid flash message, we inject it in the response dict
         if isinstance(data, dict):
             if not "flash" in data:
-                data["flash"] = Flash.local.flash or ""
+                data["flash"] = self.local.flash or ""
         else:
-            if Flash.local.flash is not None:
-                response.headers["component-flash"] = json.dumps(Flash.local.flash)
-        Flash.local.flash = None
+            if self.local.flash is not None:
+                response.headers["component-flash"] = json.dumps(self.local.flash)
+        self.local.flash = None
         return data
 
 
@@ -490,22 +542,20 @@ class Session(Fixture):
         self.secret = secret or Session.SECRET
         self.expiration = expiration
         self.algorithm = algorithm
-        self.local = threading.local()
-        self.local.changed = False
-        self.local.secure = None
-        self.local.data = {}
         self.storage = storage
         self.same_site = same_site
         if isinstance(storage, Session):
             self.__prerequisites__ = [storage]
         if hasattr(storage, "__prerequisites__"):
             self.__prerequisites__ = storage.__prerequisites__
+        self.local = None # We initialize this per-request.
 
     def load(self):
-        self.local.session_cookie_name = "%s_session" % request.app_name
+        self.local = threading.local()
         self.local.changed = False
-        self.local.secure = request.url.startswith("https")
         self.local.data = {}
+        self.local.session_cookie_name = "%s_session" % request.app_name
+        self.local.secure = request.url.startswith("https")
         raw_token = request.get_cookie(
             self.local.session_cookie_name
         ) or request.query.get("_session_token")
@@ -578,20 +628,11 @@ class Session(Fixture):
             yield item
 
     def clear(self):
-        """clear a session"""
+        """Produces a brand-new session."""
         self.local.changed = True
         self.local.data.clear()
         self.local.data["uuid"] = str(uuid.uuid1())
         self.local.data["secure"] = self.local.secure
-
-    def erase(self):
-        """For security always erase the session information at the end
-        of a request.  Otherwise it could leak to other requests that
-        omit the @action.uses(session) initializer."""
-        delattr(self.local, "session_cookie_name")
-        delattr(self.local, "changed")
-        delattr(self.local, "data")
-        delattr(self.local, "secure")
 
     def on_request(self):
         self.load()
@@ -599,12 +640,13 @@ class Session(Fixture):
     def on_error(self):
         if self.local.changed:
             self.save()
-        self.erase()
 
     def on_success(self, status):
         if self.local.changed:
             self.save()
-        self.erase()
+
+    def finalize(self):
+        self.local = None # To prevent leakage
 
 
 #########################################################################################
@@ -716,7 +758,6 @@ def redirect(location):
 class action:
     """@action(...) is a decorator for functions to be exposed as actions"""
 
-    current = threading.local()
     registered = set()
     app_name = "_default"
 
@@ -764,6 +805,9 @@ class action:
                 except Exception:
                     [obj.on_error() for obj in fixtures]
                     raise
+                finally:
+                    [obj.finalize() for obj in fixtures]
+                    # Clears the current object to prevent leakage.
 
             return wrapper
 
