@@ -382,6 +382,7 @@ class Grid:
         self.formatters = {}
         self.formatters_by_type = copy.copy(Grid.FORMATTERS_BY_TYPE)
         self.attributes_plugin = AttributesPlugin(request)
+        self.virtual_fields = []
 
         if auto_process:
             self.process()
@@ -423,6 +424,10 @@ class Grid:
             field for field in self.param.fields if not field.writable
         ]
         self.referrer = None
+
+        self.virtual_fields = [
+            x for x in self.param.fields if isinstance(x, FieldVirtual)
+        ]
 
         if not self.tablename:
             raise HTTP(400)
@@ -561,12 +566,19 @@ class Grid:
                     self.page_start = 1
                 self.page_end = self.total_number_of_rows
 
-            if self.param.fields:
+            #  get the data
+            if self.param.fields and len(self.param.fields) - 1 != len(
+                self.virtual_fields
+            ):
+                #  if fields were passed in and not all of them are virtual fields.
+                #  self.param.fields will always have the primary id plus any fields specified so
+                #  we subtract 1 from the total passed in to see if all specified are virtual
                 param_fields = [
                     x for x in self.param.fields if not isinstance(x, FieldVirtual)
                 ]  # don't send virtual fields to DAL select - will calculate them later
                 self.rows = db(query).select(*param_fields, **select_params)
             else:
+                #  fields not provided or all provided are Virtual fields
                 self.rows = db(query).select(**select_params)
 
             self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
@@ -728,7 +740,7 @@ class Grid:
                 sb.append(field.label)
                 td.append(sb)
             else:
-                td.append(self.param.search_form.custom["widgets"][field.name])
+                td.append(self.param.search_form.custom["wrappers"][field.name])
             if (
                 field.name in self.param.search_form.custom["errors"]
                 and self.param.search_form.custom["errors"][field.name]
