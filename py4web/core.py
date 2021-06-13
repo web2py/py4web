@@ -1268,6 +1268,9 @@ class Reloader:
 # Web Server and Reload Logic: Error Handling
 #########################################################################################
 
+ERROR_PAGES = {
+    "*": '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>',
+}
 
 def error_page(code, button_text=None, href="#", color=None, message=None):
     message = http.client.responses[code].upper() if message is None else message
@@ -1284,11 +1287,8 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
         response.status = code
         return json.dumps(context)
     # else - return html error-page
-    return yatl.render(
-        '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>',
-        context=context,
-        delimiters="[[ ]]",
-    )
+    content = ERROR_PAGES.get(code) or ERROR_PAGES["*"]
+    return yatl.render(content, context=context, delimiters="[[ ]]")
 
 
 @bottle.error(404)
