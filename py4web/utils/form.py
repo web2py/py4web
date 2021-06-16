@@ -658,7 +658,7 @@ class Form(object):
         record=None,
         readonly=False,
         deletable=True,
-        noncreate=False,
+        noncreate=True,
         formstyle=FormStyleDefault,
         dbio=True,
         keep_values=False,
