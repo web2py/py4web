@@ -455,7 +455,7 @@ class Flash(Fixture):
 
     def finalize(self):
         """Clears the local to prevent leakage."""
-        self.local = None
+        self.local.__dict__.clear()
 
     def set(self, message, _class="", sanitize=True):
         # we set a flash message

@@ -208,6 +208,8 @@ class Auth(Fixture):
             self.__prerequisites__.append(session)
         if db:
             self.__prerequisites__.append(db)
+        self.flash = Flash()
+        self.__prerequisites__.append(self.flash)
 
         self.onsuccess = {}
         self.next = {}
@@ -225,7 +227,6 @@ class Auth(Fixture):
             self.define_tables()
         self.plugins = {}
         self.form_source = DefaultAuthForms(self)
-        self.flash = Flash()
 
     def allows(self, action_name):
         return (
