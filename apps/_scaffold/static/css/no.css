@@ -230,9 +230,14 @@ fieldset {
   padding: 0;
 }
 
-input[type='checkbox'], input[type='radio'] {
+input[type='checkbox'] {
   display: inline;
 }
+
+input[type="radio"]{
+  margin: 0 10px 0 10px;
+}
+
 
 [disabled] {
   cursor: default;
