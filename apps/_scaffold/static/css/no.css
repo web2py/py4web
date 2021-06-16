@@ -300,7 +300,7 @@ body > center > * {
 .success{background-color:#2ecc40;color:white}
 .warning{background-color:#ffdc00;color:#111}
 .error{background-color:#cc1f00;color:white}
-.info{background-color:#f1f1f1;color:#111}
+.info{background-color:#ffffff;color:#111;padding: 5px;}
 .white{background-color:white;color:#111}
 .black{background-color:#111;color:white}
 
