@@ -435,8 +435,10 @@ class Flash(Fixture):
     Also notice all Flash objects share the same threading local so act as singletons
     """
 
-    def __init__(self):
-        self.local = threading.local()
+    # this essential makes flash a singleton
+    # necessary because auth defines its own flash
+    # possible because flash does not depend on the app
+    local = threading.local()
 
     def on_request(self):
         # when a new request arrives we look for a flash message in the cookie
