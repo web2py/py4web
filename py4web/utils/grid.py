@@ -905,10 +905,18 @@ class Grid:
                 row_id = row["id"]
                 self.use_tablename = False
 
+            key = "%s.%s" % (self.tablename, '__row')
+            if self.formatters.get(key):
+                extra_class = self.formatters.get(key)(row)['_class']
+                extra_style = self.formatters.get(key)(row)['_style']
+            else:
+                extra_class= ''
+                extra_style= '
+
             tr = TR(
                 _role="row",
-                _class=self.param.grid_class_style.classes.get("grid-tr"),
-                _style=self.param.grid_class_style.styles.get("grid-tr"),
+                _class=self.param.grid_class_style.classes.get("grid-tr") + " " + extra_class,
+                _style=self.param.grid_class_style.styles.get("grid-tr") + " " + extra_style,
             )
             #  add all the fields to the row
             for index, field in enumerate(self.param.fields):
