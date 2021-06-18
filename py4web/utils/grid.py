@@ -911,7 +911,7 @@ class Grid:
                 extra_style = self.formatters.get(key)(row)['_style']
             else:
                 extra_class= ''
-                extra_style= '
+                extra_style= ''
 
             tr = TR(
                 _role="row",
