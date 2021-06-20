@@ -35,7 +35,6 @@ def to_id(field):
     return "%s_%s" % (getattr(field, "_tablename", "no_table"), field.name)
 
 
-
 def get_options(validators):
     """given a validator chain, if one has .options, return them"""
     options = None
@@ -49,6 +48,12 @@ def get_options(validators):
         if callable(options):
             options = options()
     return options
+
+
+def join_classes(a, b):
+    a = [] if a is None else a.split() if isinstance(a, str) else a
+    b = [] if b is None else b.split() if isinstance(b, str) else b
+    return [cls for cls in list(sorted(set(a + b))) if cls.strip()]
 
 
 class Widget:
@@ -433,9 +438,9 @@ class FormStyleFactory:
             if key == "input":
                 key += "[type=%s]" % (control["_type"] or "text")
 
-            control["_class"] = (
-                control.attributes.get("_class", "") + " " + self.classes.get(key, "")
-            ).strip()
+            control["_class"] = join_classes(
+                control.attributes.get("_class"), self.classes.get(key)
+            )
 
             # Set the form controls.
             controls["labels"][field_name] = field_label
