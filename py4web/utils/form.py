@@ -31,10 +31,13 @@ from yatl.helpers import (
 
 
 def to_id(field):
+    """get an identified for a field"""
     return "%s_%s" % (getattr(field, "_tablename", "no_table"), field.name)
 
 
+
 def get_options(validators):
+    """given a validator chain, if one has .options, return them"""
     options = None
     if validators:
         if not isinstance(validators, (list, tuple)):
@@ -49,6 +52,9 @@ def get_options(validators):
 
 
 class Widget:
+
+    """Prototype widget object for all form widgets"""
+
     type_map = {
         "string": "text",
         "date": "date",
@@ -56,6 +62,7 @@ class Widget:
     }
 
     def make(self, field, value, error, title, placeholder="", readonly=False):
+        """converts the widget to an HTML helper"""
         return INPUT(
             _value=value,
             _type=self.type_map.get(field.type, "text"),
