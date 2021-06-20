@@ -24,7 +24,7 @@ from yatl.helpers import (
 )
 from pydal.objects import Field, FieldVirtual
 from py4web import request, URL, response, redirect, HTTP
-from py4web.utils.form import Form, FormStyleDefault
+from py4web.utils.form import Form, FormStyleDefault, join_classes
 from py4web.utils.param import Param
 
 NAV = TAG.nav
@@ -425,18 +425,22 @@ class Grid:
             self.tablename = self.get_tablenames(self.param.query)[0]
         self.record_id = safe_int(parts[1] if len(parts) > 1 else None, default=None)
 
+        table = db[self.tablename]
         if not self.param.columns:
-            table = db[self.tablename]
+            # if no column specified use all fields
             self.param.columns = [field for field in table if field.readable]
-
+            self.needed_fields = self.param.columns[:]
+        elif any(isinstance(col, (FieldVirtual, Column)) for col in self.param.columns):
+            # if columns are specified and include custom or virtual fields
+            # we need to fetch all fields from table
+            self.needed_fields = [field for field in table if field.readable]
+        else:
+            # the columns specify with fields are needed
+            self.needed_fields = self.param.columns[:]
+            # except the primary key may be missing and must be fetched even if not displayed
+            if not any(col.name == table._id.name for col in self.needed_fields):
+                self.needed_fields.insert(0, table._id)
         self.referrer = None
-        
-        num_virtual_fields = num_non_field_cols = 0
-        for col in self.param.columns:
-            if isinstance(col, FieldVirtual):
-                num_virtual_fields += 1
-            elif isinstance(col, Column):
-                num_non_field_cols += 1
 
         if not self.tablename:
             raise HTTP(400)
@@ -518,7 +522,7 @@ class Grid:
             pt = db[self.tablename]
             key_is_missing = True
             for field in self.param.columns:
-                if (                    
+                if (
                     isinstance(field, Field)
                     and field.table._tablename == pt._tablename
                     and field.name == pt._id.name
@@ -573,23 +577,8 @@ class Grid:
                     self.page_start = 1
                 self.page_end = self.total_number_of_rows
 
-            #  get the data
-            if (
-                self.param.columns
-                and len(self.param.columns) - 1 != num_virtual_fields
-                and num_non_field_cols == 0
-            ):
-                # if fields were passed in and not all of them are virtual fields
-                # or we have some custom columns
-                # self.param.columns will always have the primary id plus any fields specified so
-                # we subtract 1 from the total passed in to see if all specified are virtual
-                param_fields = [
-                    x for x in self.param.columns if not isinstance(x, FieldVirtual)
-                ]  # don't send virtual fields to DAL select - will calculate them later
-                self.rows = db(query).select(*param_fields, **select_params)
-            else:
-                # we need all fields because we do not know better
-                self.rows = db(query).select(**select_params)
+            # get the data
+            self.rows = db(query).select(*self.needed_fields, **select_params)
 
             self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
             if self.total_number_of_rows % self.param.rows_per_page > 0:
@@ -795,52 +784,25 @@ class Grid:
         columns = []
         sort_order = request.query.get("orderby", "")
 
+        thead = THEAD(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
         for index, column in enumerate(self.param.columns):
+            col = None
             if isinstance(column, (Field, FieldVirtual)):
                 field = column
                 if field.readable and (field.type != "id" or self.param.show_id):
-                    key = "%s.%s" % (field.tablename, field.name)
-                    heading = (
-                        self.param.headings[index]
-                        if index < len(self.param.headings)
-                        else field.label
-                    )
-                    heading = title(heading)
-                    #  add the sort order query parm
-                    sort_query_parms = dict(self.query_parms)
-
-                    attrs = {}
-                    if isinstance(field, FieldVirtual):
-                        col = DIV(heading)
-                    elif key == sort_order:
-                        sort_query_parms["orderby"] = "~" + key
-                        url = URL(self.endpoint, vars=sort_query_parms)
-                        attrs = self.attributes_plugin.link(url=url)
-                        col = A(heading, up, **attrs)
-                    else:
-                        sort_query_parms["orderby"] = key
-                        url = URL(self.endpoint, vars=sort_query_parms)
-                        attrs = self.attributes_plugin.link(url=url)
-                        col = A(heading, dw if "~" + key == sort_order else "", **attrs)
-                    columns.append((key, col))
+                    key, col = self.render_field_header(column, index, sort_order)
             elif isinstance(column, Column):
-                key = "column.%s" % column.name.lower().replace(" ", "_")
+                key = column.name.lower().replace(" ", "-")
                 col = column.name
-                columns.append((key, col))
             else:
                 raise RuntimeError("Invallid Grid Column type")
-
-        thead = THEAD(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
-        for key, col in columns:
-            col_class = " grid-col-%s" % key
-            thead.append(
-                TH(
-                    col,
-                    _class=self.param.grid_class_style.classes.get("grid-th", "")
-                    + col_class,
-                    _style=self.param.grid_class_style.styles.get("grid-th"),
+            if col:
+                classes = join_classes(
+                    self.param.grid_class_style.classes.get("grid-th"),
+                    "grid-col-%s" % key,
                 )
-            )
+                style = self.param.grid_class_style.styles.get("grid-th")
+                thead.append(TH(col, _class=classes, _style=style))
 
         if (
             self.param.details
@@ -854,6 +816,32 @@ class Grid:
             )
 
         return thead
+
+    def render_field_header(self, field, field_index, sort_order):
+        key = "%s.%s" % (field.tablename, field.name)
+        heading = (
+            self.param.headings[field_index]
+            if field_index < len(self.param.headings)
+            else field.label
+        )
+        heading = title(heading)
+        #  add the sort order query parm
+        sort_query_parms = dict(self.query_parms)
+
+        attrs = {}
+        if isinstance(field, FieldVirtual):
+            col = SPAN(heading)
+        elif key == sort_order:
+            sort_query_parms["orderby"] = "~" + key
+            url = URL(self.endpoint, vars=sort_query_parms)
+            attrs = self.attributes_plugin.link(url=url)
+            col = A(heading, up, **attrs)
+        else:
+            sort_query_parms["orderby"] = key
+            url = URL(self.endpoint, vars=sort_query_parms)
+            attrs = self.attributes_plugin.link(url=url)
+            col = A(heading, dw if "~" + key == sort_order else "", **attrs)
+        return key, col
 
     def render_field(self, row, field, field_index):
         """
