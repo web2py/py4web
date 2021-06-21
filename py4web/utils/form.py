@@ -53,7 +53,7 @@ def get_options(validators):
 def join_classes(a, b):
     a = [] if a is None else a.split() if isinstance(a, str) else a
     b = [] if b is None else b.split() if isinstance(b, str) else b
-    return [cls for cls in list(sorted(set(a + b))) if cls.strip()]
+    return " ".join([cls for cls in list(sorted(set(a + b))) if cls.strip()])
 
 
 class Widget:
