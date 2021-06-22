@@ -97,6 +97,9 @@ class TextareaWidget:
 
 class CheckboxWidget:
     def make(self, field, value, error, title, placeholder=None, readonly=False):
+        attrs = {}
+        if readonly:
+            attrs = {"_disabled": True}
         return INPUT(
             _type="checkbox",
             _id=to_id(field),
@@ -104,6 +107,7 @@ class CheckboxWidget:
             _value="ON",
             _checked=value,
             _readonly=readonly,
+            **attrs
         )
 
 
