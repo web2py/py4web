@@ -102,7 +102,6 @@ class CheckboxWidget:
             _id=to_id(field),
             _name=field.name,
             _value="ON",
-            _disabled="",
             _checked=value,
             _readonly=readonly,
         )
