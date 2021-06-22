@@ -24,7 +24,7 @@ from yatl.helpers import (
 )
 from pydal.objects import Field, FieldVirtual
 from py4web import request, URL, response, redirect, HTTP
-from py4web.utils.form import Form, FormStyleDefault
+from py4web.utils.form import Form, FormStyleDefault, join_classes
 from py4web.utils.param import Param
 
 NAV = TAG.nav
@@ -233,6 +233,18 @@ class GridClassStyleBulma(GridClassStyle):
     }
 
 
+class Column:
+    """class used to represent a column in a grid"""
+
+    def __init__(self, name, represent):
+        self.name = name
+        self.represent = represent
+
+    def render(self, row, index=None):
+        """renders a row al position index (optional)"""
+        return self.represent(row)
+
+
 class Grid:
 
     FORMATTERS_BY_TYPE = {
@@ -279,7 +291,7 @@ class Grid:
         query,
         search_form=None,
         search_queries=None,
-        fields=None,
+        columns=None,
         field_id=None,
         show_id=False,
         orderby=None,
@@ -297,6 +309,8 @@ class Grid:
         search_button_text="Filter",
         formstyle=FormStyleDefault,
         grid_class_style=GridClassStyle,
+        # deprecated
+        fields=None,
     ):
         """
         Grid is a searchable/sortable/pageable grid
@@ -305,7 +319,7 @@ class Grid:
         :param query: the query used to filter the data
         :param search_form: py4web FORM to be included as the search form
         :param search_queries: future use - pass a dict of name and a search query
-        :param fields: list of fields to display on the list page, if blank, glean tablename from first query
+        :param columns: list of columns to display on the list page, if blank, glean tablename from first query
         :              and use all fields of that table
         :param field_id: the id field of the primary table for the grid - if there are multiple tables (joined)
                             then the table for this field is used as the table for edit/details/delete
@@ -330,7 +344,7 @@ class Grid:
         self.db = query._db
         self.param = Param(
             query=query,
-            fields=fields,
+            columns=columns or fields,
             field_id=field_id,
             show_id=show_id,
             orderby=orderby,
@@ -373,7 +387,6 @@ class Grid:
         self.page_end = None
         self.page_start = None
         self.query_parms = request.params
-        self.readonly_fields = None
         self.record_id = None
         self.rows = None
         self.tablename = None
@@ -382,7 +395,6 @@ class Grid:
         self.formatters = {}
         self.formatters_by_type = copy.copy(Grid.FORMATTERS_BY_TYPE)
         self.attributes_plugin = AttributesPlugin(request)
-        self.virtual_fields = []
 
         if auto_process:
             self.process()
@@ -413,21 +425,22 @@ class Grid:
             self.tablename = self.get_tablenames(self.param.query)[0]
         self.record_id = safe_int(parts[1] if len(parts) > 1 else None, default=None)
 
-        if self.param.fields:
-            if not isinstance(self.param.fields, list):
-                self.param.fields = [self.param.fields]
+        table = db[self.tablename]
+        if not self.param.columns:
+            # if no column specified use all fields
+            self.param.columns = [field for field in table if field.readable]
+            self.needed_fields = self.param.columns[:]
+        elif any(isinstance(col, (FieldVirtual, Column)) for col in self.param.columns):
+            # if columns are specified and include custom or virtual fields
+            # we need to fetch all fields from table
+            self.needed_fields = [field for field in table if field.readable]
         else:
-            table = db[self.tablename]
-            self.param.fields = [field for field in table if field.readable]
-
-        self.readonly_fields = [
-            field for field in self.param.fields if not field.writable
-        ]
+            # the columns specify with fields are needed
+            self.needed_fields = self.param.columns[:]
+            # except the primary key may be missing and must be fetched even if not displayed
+            if not any(col.name == table._id.name for col in self.needed_fields):
+                self.needed_fields.insert(0, table._id)
         self.referrer = None
-
-        self.virtual_fields = [
-            x for x in self.param.fields if isinstance(x, FieldVirtual)
-        ]
 
         if not self.tablename:
             raise HTTP(400)
@@ -445,8 +458,6 @@ class Grid:
                     redirect(self.endpoint)  ## maybe flash
 
             readonly = self.action == "details"
-            for field in self.readonly_fields:
-                db[field.tablename][field.name].writable = False
 
             if not self.param.show_id:
                 #  if not show id, find the "id" field and set readable/writable to False
@@ -510,16 +521,16 @@ class Grid:
             #  find the primary key of the primary table
             pt = db[self.tablename]
             key_is_missing = True
-            for field in self.param.fields:
+            for field in self.param.columns:
                 if (
-                    not isinstance(field, FieldVirtual)
+                    isinstance(field, Field)
                     and field.table._tablename == pt._tablename
                     and field.name == pt._id.name
                 ):
                     key_is_missing = False
             if key_is_missing:
                 #  primary key wasn't included, add it and set show_id to False so it doesn't display
-                self.param.fields.append(pt._id)
+                self.param.columns.append(pt._id)
                 self.param.show_id = False
 
             self.current_page_number = safe_int(request.query.get("page"), default=1)
@@ -566,20 +577,8 @@ class Grid:
                     self.page_start = 1
                 self.page_end = self.total_number_of_rows
 
-            #  get the data
-            if self.param.fields and len(self.param.fields) - 1 != len(
-                self.virtual_fields
-            ):
-                #  if fields were passed in and not all of them are virtual fields.
-                #  self.param.fields will always have the primary id plus any fields specified so
-                #  we subtract 1 from the total passed in to see if all specified are virtual
-                param_fields = [
-                    x for x in self.param.fields if not isinstance(x, FieldVirtual)
-                ]  # don't send virtual fields to DAL select - will calculate them later
-                self.rows = db(query).select(*param_fields, **select_params)
-            else:
-                #  fields not provided or all provided are Virtual fields
-                self.rows = db(query).select(**select_params)
+            # get the data
+            self.rows = db(query).select(*self.needed_fields, **select_params)
 
             self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
             if self.total_number_of_rows % self.param.rows_per_page > 0:
@@ -785,44 +784,25 @@ class Grid:
         columns = []
         sort_order = request.query.get("orderby", "")
 
-        for index, field in enumerate(self.param.fields):
-            if field.readable and (field.type != "id" or self.param.show_id):
-                key = "%s.%s" % (field.tablename, field.name)
-                heading = (
-                    self.param.headings[index]
-                    if index < len(self.param.headings)
-                    else field.label
-                )
-                heading = title(heading)
-                #  add the sort order query parm
-                sort_query_parms = dict(self.query_parms)
-
-                attrs = {}
-                if isinstance(field, FieldVirtual):
-                    col = DIV(heading)
-                elif key == sort_order:
-                    sort_query_parms["orderby"] = "~" + key
-                    url = URL(self.endpoint, vars=sort_query_parms)
-                    attrs = self.attributes_plugin.link(url=url)
-                    col = A(heading, up, **attrs)
-                else:
-                    sort_query_parms["orderby"] = key
-                    url = URL(self.endpoint, vars=sort_query_parms)
-                    attrs = self.attributes_plugin.link(url=url)
-                    col = A(heading, dw if "~" + key == sort_order else "", **attrs)
-                columns.append((key, col))
-
         thead = THEAD(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
-        for key, col in columns:
-            col_class = " grid-col-%s" % key
-            thead.append(
-                TH(
-                    col,
-                    _class=self.param.grid_class_style.classes.get("grid-th", "")
-                    + col_class,
-                    _style=self.param.grid_class_style.styles.get("grid-th"),
+        for index, column in enumerate(self.param.columns):
+            col = None
+            if isinstance(column, (Field, FieldVirtual)):
+                field = column
+                if field.readable and (field.type != "id" or self.param.show_id):
+                    key, col = self.render_field_header(column, index, sort_order)
+            elif isinstance(column, Column):
+                key = column.name.lower().replace(" ", "-")
+                col = column.name
+            else:
+                raise RuntimeError("Invallid Grid Column type")
+            if col:
+                classes = join_classes(
+                    self.param.grid_class_style.classes.get("grid-th"),
+                    "grid-col-%s" % key,
                 )
-            )
+                style = self.param.grid_class_style.styles.get("grid-th")
+                thead.append(TH(col, _class=classes, _style=style))
 
         if (
             self.param.details
@@ -836,6 +816,32 @@ class Grid:
             )
 
         return thead
+
+    def render_field_header(self, field, field_index, sort_order):
+        key = "%s.%s" % (field.tablename, field.name)
+        heading = (
+            self.param.headings[field_index]
+            if field_index < len(self.param.headings)
+            else field.label
+        )
+        heading = title(heading)
+        #  add the sort order query parm
+        sort_query_parms = dict(self.query_parms)
+
+        attrs = {}
+        if isinstance(field, FieldVirtual):
+            col = SPAN(heading)
+        elif key == sort_order:
+            sort_query_parms["orderby"] = "~" + key
+            url = URL(self.endpoint, vars=sort_query_parms)
+            attrs = self.attributes_plugin.link(url=url)
+            col = A(heading, up, **attrs)
+        else:
+            sort_query_parms["orderby"] = key
+            url = URL(self.endpoint, vars=sort_query_parms)
+            attrs = self.attributes_plugin.link(url=url)
+            col = A(heading, dw if "~" + key == sort_order else "", **attrs)
+        return key, col
 
     def render_field(self, row, field, field_index):
         """
@@ -911,9 +917,13 @@ class Grid:
                 _style=self.param.grid_class_style.styles.get("grid-tr"),
             )
             #  add all the fields to the row
-            for index, field in enumerate(self.param.fields):
-                if field.readable and (field.type != "id" or self.param.show_id):
-                    tr.append(self.render_field(row, field, index))
+            for index, column in enumerate(self.param.columns):
+                if isinstance(column, (Field, FieldVirtual)):
+                    field = column
+                    if field.readable and (field.type != "id" or self.param.show_id):
+                        tr.append(self.render_field(row, field, index))
+                elif isinstance(column, Column):
+                    tr.append(TD(column.render(row, index)))
 
             td = None
 

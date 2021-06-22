@@ -156,12 +156,12 @@ class Auth(Fixture):
     }
 
     BUTTON_CLASSES = {
-        "lost-password": "info",
-        "register": "info",
-        "request": "info",
-        "sign-in": "info",
-        "sign-up": "info",
-        "submit": "info",
+        "lost-password": "white",
+        "register": "white",
+        "request": "white",
+        "sign-in": "white",
+        "sign-up": "white",
+        "submit": "white",
     }
 
     def __init__(
