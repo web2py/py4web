@@ -622,6 +622,8 @@ class Session(Fixture):
             cookie_data = jwt.encode(
                 self.local.data, self.secret, algorithm=self.algorithm
             )
+            if isinstance(cookie_data, bytes):
+                cookie_data = cookie_data.decode()
 
         response.set_cookie(
             self.local.session_cookie_name,
