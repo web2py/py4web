@@ -432,8 +432,27 @@ class Grid:
             self.needed_fields = self.param.columns[:]
         elif any(isinstance(col, (FieldVirtual, Column)) for col in self.param.columns):
             # if columns are specified and include custom or virtual fields
-            # we need to fetch all fields from table
-            self.needed_fields = [field for field in table if field.readable]
+            # we need to fetch all passed fields except for FieldVirtual or Custom
+            self.needed_fields = [
+                x
+                for x in self.param.columns
+                if not isinstance(x, (FieldVirtual, Column))
+            ]
+
+            # for all FieldVirtual or Custom columns, add all columns from their table
+            # as they might be needed for processing
+            for col in [
+                x for x in self.param.columns if isinstance(x, (FieldVirtual, Column))
+            ]:
+                self.needed_fields.extend(
+                    [
+                        field
+                        for field in col.tablename
+                        if field not in self.needed_fields
+                        and not isinstance(field, (FieldVirtual, Column))
+                        and field.readable
+                    ]
+                )
         else:
             # the columns specify with fields are needed
             self.needed_fields = self.param.columns[:]
@@ -913,17 +932,21 @@ class Grid:
                 row_id = row["id"]
                 self.use_tablename = False
 
-            key = "%s.%s" % (self.tablename, '__row')
+            key = "%s.%s" % (self.tablename, "__row")
             if self.formatters.get(key):
-                extra_class = self.formatters.get(key)(row)['_class']
-                extra_style = self.formatters.get(key)(row)['_style']
+                extra_class = self.formatters.get(key)(row)["_class"]
+                extra_style = self.formatters.get(key)(row)["_style"]
             else:
-                extra_class= ''
-                extra_style= ''
+                extra_class = ""
+                extra_style = ""
             tr = TR(
                 _role="row",
-                _class=join_classes(self.param.grid_class_style.classes.get("grid-tr"),extra_class),
-                _style=join_classes(self.param.grid_class_style.styles.get("grid-tr"), extra_style),
+                _class=join_classes(
+                    self.param.grid_class_style.classes.get("grid-tr"), extra_class
+                ),
+                _style=join_classes(
+                    self.param.grid_class_style.styles.get("grid-tr"), extra_style
+                ),
             )
             #  add all the fields to the row
             for index, column in enumerate(self.param.columns):
