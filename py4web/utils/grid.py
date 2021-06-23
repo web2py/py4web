@@ -801,9 +801,6 @@ class Grid:
         return div
 
     def render_table_header(self):
-
-        up = I(**self.param.grid_class_style.get("grid-sorter-icon-up"))
-        dw = I(**self.param.grid_class_style.get("grid-sorter-icon-down"))
         columns = []
         sort_order = request.query.get("orderby", "")
 
@@ -841,6 +838,9 @@ class Grid:
         return thead
 
     def render_field_header(self, field, field_index, sort_order):
+        up = I(**self.param.grid_class_style.get("grid-sorter-icon-up"))
+        dw = I(**self.param.grid_class_style.get("grid-sorter-icon-down"))
+
         key = "%s.%s" % (field.tablename, field.name)
         heading = (
             self.param.headings[field_index]
