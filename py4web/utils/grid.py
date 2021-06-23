@@ -248,7 +248,9 @@ class Column:
 class Grid:
 
     FORMATTERS_BY_TYPE = {
-        "boolean": lambda value: INPUT(_type="checkbox", _checked=value)
+        "boolean": lambda value: INPUT(
+            _type="checkbox", _checked=value, _disabled="disabled"
+        )
         if value
         else "",
         "datetime": lambda value: XML(
