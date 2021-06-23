@@ -437,9 +437,11 @@ class Grid:
         else:
             # the columns specify with fields are needed
             self.needed_fields = self.param.columns[:]
-            # except the primary key may be missing and must be fetched even if not displayed
-            if not any(col.name == table._id.name for col in self.needed_fields):
-                self.needed_fields.insert(0, table._id)
+
+        # except the primary key may be missing and must be fetched even if not displayed
+        if not any(col.name == table._id.name for col in self.needed_fields):
+            self.needed_fields.insert(0, table._id)
+
         self.referrer = None
 
         if not self.tablename:
