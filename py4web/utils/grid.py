@@ -1110,7 +1110,7 @@ class Grid:
                     override_classes=self.param.grid_class_style.classes.get(
                         "grid-new-button", ""
                     ),
-                    override_styles=self.param.grid_class_style.get("new_button"),
+                    override_styles=self.param.grid_class_style.styles.get("grid-new-button"),
                 )
             )
 
