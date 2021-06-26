@@ -79,14 +79,11 @@ details if you come from web2py):
    internationalization. In practice, this exposes an object T very
    similar to web2py’s T but it provides better caching and more
    flexible pluralization capabilities.
--  PY4WEB comes with a Dashboard APP that replaces web2py’s admin. This
    is a web IDE for uploading/managing/editing apps.
 -  PY4WEB’s Dashboard includes a web based database interface. This
    replaces the appadmin functionality of web2py.
--  PY4WEB comes with a Form object that is similar to web2py’s SQLFORM
-   but it is much simpler and faster. The syntax is the same. This has
-   been provided in order to help users port existing apps; but PY4WEB
-   encourages using API based forms over postbacks.
+-  PY4WEB comes with a Form object and a Grid objects that are 
+   similar to web2py’s SQLFORM and SQLFORM.grid.
 -  PY4WEB comes with an Auth object that replaces the web2py one. It is
    more modular and easier to extend. Out of the box, it provides the
    basic functionality of register, login, logout, change password,
