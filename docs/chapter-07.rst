@@ -1002,12 +1002,6 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    be deleted when the record referencing the file is deleted. For
    “upload” fields only. However, records deleted by the database itself
    due to a CASCADE operation will not trigger py4web’s autodelete.
--  ``widget`` must be one of the available widget objects, including
-   custom widgets, for example: ``SQLFORM.widgets.string.widget``. A
-   list of available widgets will be discussed later. Each field type
-   has a default widget.
-
-   .. FIXME: review needed, SQLFORM has gone!
 
 -  ``label`` is a string (or a helper or something that can be
    serialized to a string) that contains the label to be used for this
@@ -1019,13 +1013,6 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
 -  ``readable`` declares whether a field is readable in forms. If a
    field is neither readable nor writable, it will not be displayed in
    create and update forms.
--  ``searchable`` declares whether a field is searchable in grids
-   (``SQLFORM.grid`` and ``SQLFORM.smartgrid``).
-
-   .. FIXME: review needed, SQLFORM has gone, new Grid may behave differently.
-
--  ``listable`` declares whether a field is visible in grids (when
-   listing multiple records)
 -  ``update`` contains the default value for this field when the record
    is updated.
 -  ``compute`` is an optional function. If a record is inserted or
@@ -1040,21 +1027,11 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    field value and returns an alternate representation for the field
    value. Examples:
 
-.. code:: python
+Note not all the attributes are thread safe and most of them
+should only be set globally for an app. The following are guaranteed to be
+thread safe and be set/reset in any action:
+``default``, ``update``, ``readable``, ``writable``.
 
-   db.mytable.name.represent = lambda name, row: name.capitalize()
-   db.mytable.other_id.represent = lambda oid, row: row.myfield
-   db.mytable.some_uploadfield.represent = lambda val, row: A('get it', _href=URL('download', val))
-
--  ``filter_in`` and ``filter_out`` can be set to callables for further
-   processing of field’s value. ``filter_in`` is passed the field’s
-   value to be written to the database before an insert or update while
-   ``filter_out`` is passed the value retrieved from the database before
-   field assignment. The value returned by the callable is then used.
-   See :ref:`filter_in and filter_out`.
--  ``custom_qualifier`` is a custom SQL qualifier for the field to be
-   used at table creation time (cannot use for field of type “id”,
-   “reference”, or “big-reference”).
 
 Field types
 ~~~~~~~~~~~

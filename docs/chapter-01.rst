@@ -79,6 +79,7 @@ details if you come from web2py):
    internationalization. In practice, this exposes an object T very
    similar to web2py’s T but it provides better caching and more
    flexible pluralization capabilities.
+-  PY4WEB comes with a Dashboard APP that replaces web2py’s admin. This
    is a web IDE for uploading/managing/editing apps.
 -  PY4WEB’s Dashboard includes a web based database interface. This
    replaces the appadmin functionality of web2py.
