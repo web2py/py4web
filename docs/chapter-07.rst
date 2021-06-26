@@ -930,18 +930,20 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    records are inserted in a single transaction.
 -  ``required`` tells the DAL that no insert should be allowed on this
    table if a value for this field is not explicitly specified.
--  ``requires`` is a validator or a list of validators. This is not used
-   by the DAL, but it is used by ``Form``. The default validators for
-   the given types are shown in the next section.
+-  ``requires`` is a **validator** or a list of validators. This is not used
+   by the DAL, but instead it is used by ``Form`` (this will be explained
+   better on the :ref:`Forms` chapther). The default validators for
+   the given types are shown in the next section
+   :ref:`Field types and validators`.
 
-..
+   .. note::
 
-   Notice that while ``requires=...`` is enforced at the level of forms,
-   ``required=True`` is enforced at the level of the DAL (insert). In
-   addition, ``notnull``, ``unique`` and ``ondelete`` are enforced at
-   the level of the database. While they sometimes may seem redundant,
-   it is important to maintain the distinction when programming with the
-   DAL.
+      while ``requires=...`` is enforced at the level of forms,
+      ``required=True`` is enforced at the level of the DAL (insert). In
+      addition, ``notnull``, ``unique`` and ``ondelete`` are enforced at
+      the level of the database. While they sometimes may seem redundant,
+      it is important to maintain the distinction when programming with the
+      DAL.
 
 -  ``rname`` provides the field with a “real name”, a name for the field
    known to the database adapter; when the field is used, it is the
@@ -1062,8 +1064,8 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    used at table creation time (cannot use for field of type “id”,
    “reference”, or “big-reference”).
 
-Field types
-~~~~~~~~~~~
+Field types and validators
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ==========================  ==================================================
 Type                        Default validators
@@ -2214,6 +2216,8 @@ i.e. the Set of ``thing``\ s referenced by the current ``person``. This
 syntax breaks down if the referencing table has multiple references to
 the referenced table. In this case one needs to be more explicit and use
 a full Query.
+
+.. _orderby, groupby, limitby:
 
 ``orderby``, ``groupby``, ``limitby``, ``distinct``, ``having``, ``orderby_on_limitby``, ``join``, ``left``, ``cache``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
