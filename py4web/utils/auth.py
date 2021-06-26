@@ -779,7 +779,7 @@ class Auth(Fixture):
                 api_factory = getattr(AuthAPI, api_name)
 
                 @action(route + "/api/" + api_name, method=["GET", "POST"])
-                @action.uses(auth)
+                @action.uses(auth, *uses)
                 def _(auth=auth, api_factory=api_factory):
                     return api_factory(auth)
 
@@ -788,7 +788,7 @@ class Auth(Fixture):
                 api_factory = getattr(AuthAPI, api_name)
 
                 @action(route + "/api/" + api_name, method=["GET", "POST"])
-                @action.uses(auth.user)
+                @action.uses(auth.user, *uses)
                 def _(auth=auth, api_factory=api_factory):
                     return api_factory(auth)
 
@@ -796,7 +796,7 @@ class Auth(Fixture):
         for name in self.plugins:
 
             @action(route + "/plugin/" + name + "/<path:path>", method=["GET", "POST"])
-            @action.uses(auth)
+            @action.uses(auth, *uses)
             def _(path, plugin=self.plugins[name], name=name):
                 return plugin.handle_request(self, path, request.query, request.json)
 
