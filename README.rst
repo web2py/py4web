@@ -1,8 +1,8 @@
 What is py4web?
 ===============
 
-.. image:: https://travis-ci.org/web2py/py4web.svg?branch=master
-    :target: https://travis-ci.org/web2py/py4web
+.. image:: https://travis-ci.com/web2py/py4web.svg?branch=master
+    :target: https://travis-ci.com/web2py/py4web
 
 .. image:: https://img.shields.io/pypi/v/py4web.svg
    :target: https://pypi.org/project/py4web/

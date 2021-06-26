@@ -1023,7 +1023,7 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
 Note not all the attributes are thread safe and most of them
 should only be set globally for an app. The following are guaranteed to be
 thread safe and be set/reset in any action:
-``default``, ``update``, ``readable``, ``writable``.
+``default``, ``update``, ``readable``, ``writable``, ``requires``.
 
 
 Field types and validators
