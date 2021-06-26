@@ -184,7 +184,7 @@ the grid or a form. Use the following to decide
 
 ::
 
-   [[if 'action' in request.url_args and request.url_args['action'] in ['details', 'edit']:]]
+   [[if request.query.get('action') in ('details', 'edit'):]]
        #  Display the custom form
        [[form = grid.render() ]]
        [[form.custom["begin"] ]]

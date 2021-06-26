@@ -967,16 +967,10 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    field within the same table and the value of ``uploadfield`` is the
    name of the blob field. This will be discussed in more detail later
    in `More on uploads`_.
-
-   .. FIXME: “uploads/” folder has gone, is this still applicable?
-
--  ``uploadfolder`` sets the folder for uploaded files. By default, an
-   uploaded file goes into the application’s “uploads/” folder, that is
-   into ``os.path.join(request.folder, 'uploads')`` (this seems not the
-   case for MongoAdapter at present).
-
-   .. FIXME: bottle has not “request.folder”, is this still applicable?
-
+-  ``uploadfolder`` must be set to a location where to store uploaded files.
+   The scaffolding app defines a folder ``settings.UPLOAD_FOLDER``
+   which points to ``apps/{app_name}/uploads`` so you can
+   set, for example, ``Field(... uploadfolder=settings.UPLOAD_FOLDER)``.
 -  ``uploadseparate`` if set to True will upload files under different
    subfolders of the *uploadfolder* folder. This is optimized to avoid
    too many files under the same folder/subfolder. ATTENTION: You cannot
@@ -986,9 +980,6 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    been uploaded will prevent pydal from being able to retrieve those
    files. If this happens it is possible to move files and fix the
    problem but this is not described here.
-
-   .. FIXME: do really py4web make use of uploadseparate?
-
 -  ``uploadfs`` allows you specify a different file system where to
    upload files, including an Amazon S3 storage or a remote SFTP
    storage.
@@ -2526,7 +2517,7 @@ and then call ``update_record()`` without arguments to save the changes:
    Note, you should avoid using ``row.update_record()`` with no
    arguments when the ``row`` object contains fields that have an
    ``update`` attribute (e.g.,
-   ``Field('modified_on', update=request.now)``). Calling
+   ``Field('modified_on', update=datetime.datetime.utcnow)``). Calling
    ``row.update_record()`` will retain *all* of the existing values in
    the ``row`` object, so any fields with ``update`` attributes will
    have no effect in this case. Be particularly mindful of this with
@@ -3847,16 +3838,19 @@ This can be achieved changing the above model into:
 
 .. code:: python
 
+   import datetime
    import uuid
+
+   now = datetime.datetime.utcnow
 
    db.define_table('person',
                    Field('uuid', length=64),
-                   Field('modified_on', 'datetime', default=request.now, update=request.now),
+                   Field('modified_on', 'datetime', default=now, update=now),
                    Field('name'))
 
    db.define_table('thing',
                    Field('uuid', length=64),
-                   Field('modified_on', 'datetime', default=request.now, update=request.now),
+                   Field('modified_on', 'datetime', default=now, update=now),
                    Field('name'),
                    Field('owner_id', length=64))
 
@@ -3882,10 +3876,12 @@ Create a controller action to export the database:
 
 .. code:: python
 
+   from py4web import response
+
    def export():
        s = StringIO.StringIO()
        db.export_to_csv_file(s)
-       response.headers['Content-Type'] = 'text/csv'
+       response.set_header('Content-Type', 'text/csv')
        return s.getvalue()
 
 Create a controller action to import a saved copy of the other database
@@ -4141,11 +4137,13 @@ database in order to reuse it in multiple other places. For example:
 
 .. code:: python
 
+   now = datetime.datetime.utcnow
+
    signature = db.Table(db, 'signature',
                         Field('is_active', 'boolean', default=True),
-                        Field('created_on', 'datetime', default=request.now),
+                        Field('created_on', 'datetime', default=now),
                         Field('created_by', db.auth_user, default=auth.user_id),
-                        Field('modified_on', 'datetime', update=request.now),
+                        Field('modified_on', 'datetime', update=now),
                         Field('modified_by', db.auth_user, update=auth.user_id))
 
    db.define_table('payment', Field('amount', 'double'), signature)
@@ -4335,68 +4333,6 @@ is set to False. The ``is_active`` parameter in the
 ``_enable_record_versioning`` method allows to specify the name of the
 field used by the ``common_filter`` to determine if the field was
 deleted or not.
-
-`Common filters`_ will be discussed later.
-
-Common fields and multi-tenancy
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-``db._common_fields`` is a list of fields that should belong to all the
-tables. This list can also contain tables and it is understood as all
-fields from the table.
-
-For example occasionally you find yourself in need to add a signature to
-all your tables but the ``Auth`` tables. In this case, after you
-``auth.define_tables()`` but before defining any other table, insert:
-
-.. code:: python
-
-   db._common_fields.append(auth.signature)
-
-One field is special: ``request_tenant``, you can set a different name
-in ``db._request_tenant``. This field does not exist but you can create
-it and add it to any of your tables (or all of them):
-
-.. code:: python
-
-   db._common_fields.append(Field('request_tenant',
-                                  default=request.env.http_host,
-                                  writable=False))
-
-For every table with such a field, all records for all queries are
-always automatically filtered by:
-
-.. code:: python
-
-   db.table.request_tenant == db.table.request_tenant.default
-
-and for every record inserted, this field is set to the default value.
-In the example above we have chosen:
-
-.. code:: python
-
-   default = request.env.http_host
-
-this means we have chosen to ask our app to filter all tables in all
-queries with:
-
-.. code:: python
-
-   db.table.request_tenant == request.env.http_host
-
-This simple trick allow us to turn any application into a multi-tenant
-application. Even though we run one instance of the application and we
-use one single database, when the application is accessed under two or
-more domains the visitors will see different data depending on the
-domain (in the example the domain name is retrieved from
-``request.env.http_host``).
-
-You can turn off multi tenancy filters using
-``ignore_common_filters=True`` at ``Set`` creation time:
-
-.. code:: python
-
-   db(query, ignore_common_filters=True)
 
 Common filters
 ~~~~~~~~~~~~~~

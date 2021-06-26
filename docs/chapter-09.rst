@@ -70,7 +70,7 @@ it translates it into a program:
        response.write(""" hello <br />""", escape=False)
    response.write("""</body></html>""", escape=False)
 
-``response.write`` writes to the ``response.body``.
+``response.write`` writes to the response body.
 
 When there is an error in a py4web template, the error report shows the
 generated template code, not the actual template as written by the developer.
