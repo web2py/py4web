@@ -218,6 +218,14 @@ This action can be accessed at:
 
 
 Notice that the request object is a `Bottle request object <https://bottlepy.org/docs/dev/api.html#the-request-object>`__.
+with one additional attribute:
+
+::
+
+   request.app_name
+
+Which you can use the code to identify the name and the folder used for the app.
+
 
 Templates
 ~~~~~~~~~
