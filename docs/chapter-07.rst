@@ -1641,7 +1641,7 @@ database.
 .. code:: python
 
    from py4web import DAL, Field
-   from py4web.utils.tags import Tags
+   from pydal.tools.tags import Tags
 
    db = DAL("sqlite:memory")
    db.define_table("thing", Field("name"))
