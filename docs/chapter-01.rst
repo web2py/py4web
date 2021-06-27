@@ -24,8 +24,7 @@ compatible until today.
 Web2py always suffered from one problem: its monolithic design. The most
 experienced Python developers did not understand how to use its
 components outside of the framework and how to use third party
-components within the framework. This was for good reason, as we did not
-care too much about them. We thought of web2py as a perfect tool that
+components within the framework. We thought of web2py as a perfect tool that
 did not have to be broken into pieces because that would compromise its
 security. It turned out that we were wrong, and playing well with others
 is important. Hence, since 2015 we worked on three fronts:
@@ -35,8 +34,8 @@ is important. Hence, since 2015 we worked on three fronts:
 -  We reassembled some of those modules into a new more modular
    framework … PY4WEB.
 
-PY4WEB is more than a repackaging of those modules. It is a complete
-redesign. It uses some of the web2py modules, but not all of them. In
+PY4WEB is more than a repackaging. It is a complete redesign.
+It uses some of the web2py modules, but not all of them. In
 some cases, it uses other and better modules. Some functionality was
 removed and some was added. We tried to preserve most of the syntax and
 features that experienced web2py users loved. 
@@ -57,19 +56,19 @@ details if you come from web2py):
    the Bottle request object and the Bottle routing mechanism.
 -  PY4WEB, unlike web2py, does not create a new environment at every
    request. It introduces the concept of fixtures to explicitly declare
-   which objects need to be re-initialized when a new http request is
-   processed. This makes it much faster.
+   which objects need to be (re)initialized when a new http request arrives
+   or need cleaup when completed. This makes it much faster than web2py.
 -  PY4WEB, has a new sesson object which, like web2py’s, provides strong
    security and encryption of the session data, but sessions are no
    longer stored in the file system - which created performance issues.
-   It provides sessions in cookies, in redis, in memcache, or in
+   It provides sessions in cookies, in redis, in memcache, or optionally  in
    database. We also limited session data to objects that are json
    serializable.
 -  PY4WEB, like web2py, has a built-in ticketing system but, unlike
    web2py, this system is global and not per app. Tickets are no longer
    stored in the filesystem with the individual apps. They are stored in
    a single database.
--  PY4WEB, like web2py, is based on pydal but uses some new features of
+-  PY4WEB, like web2py, is based on pydal but leverages some new features of
    pydal (RESTAPI).
 -  PY4WEB, like web2py, uses the yatl template language but defaults to
    square brackets delimiters to avoid conflicts with model JS
@@ -90,9 +89,8 @@ details if you come from web2py):
    basic functionality of register, login, logout, change password,
    request change password, edit profile as well as integration with
    PAM, SAML2, LDAP, OAUTH2 (google, facebook, and twitter).
--  PY4WEB comes with some utilites like “tags”, for instance, which
-   allows adding searchable tags to any database table. It can be used,
-   for example, to tag users with groups and search users by groups and
+-  PY4WEB leverages PyDAL'new tags functionality
+   to tag users with groups and search users by groups and
    apply permissions based on membership.
 -  PY4WEB comes with with some custom Vue.js components designed to
    interact with the PyDAL RESTAPI, and with PY4WEB in general. These
