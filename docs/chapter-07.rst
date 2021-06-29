@@ -48,7 +48,7 @@ recent adapters.
 
    In any modern python distribution **SQLite** is actually built-in as a Python library.
    The SQLite driver (sqlite3) is also included: you don't need to install it.
-   Hence this is the most popular database for testing and developement.
+   Hence this is the most popular database for testing and development.
 
 The Windows and the Mac binary distribution work out of the box with SQLite only.
 To use any other database back end, run a full py4web
@@ -186,7 +186,7 @@ that is available using the :ref:`shell command option`.
 .. warning::
 
    Mind that
-   database changes may be persistent. So be carefull and do NOT exitate
+   database changes may be persistent. So be careful and do NOT exitate
    to create a new application for doing testing instead of tampering
    with an existing one.
 
@@ -569,7 +569,7 @@ tables
 ``commit`` and ``rollback``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The insert, truncate, delete, and update operations aren’t actually
+The insert, truncate, delete, and update operations aren't actually
 committed until py4web issues the commit command. The create and drop
 operations may be executed immediately, depending on the database
 engine.
@@ -931,7 +931,7 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    table if a value for this field is not explicitly specified.
 -  ``requires`` is a **validator** or a list of validators. This is not used
    by the DAL, but instead it is used by ``Form`` (this will be explained
-   better on the :ref:`Forms` chapther). The default validators for
+   better on the :ref:`Forms` chapter). The default validators for
    the given types are shown in the next section
    :ref:`Field types and validators`.
 
@@ -2029,7 +2029,7 @@ attribute, you can list them in the “fields” argument:
    repr_row = row.render(0, fields=[db.mytable.myfield])
 
 Note, it returns a transformed copy of the original Row, so there’s no
-update_record (which you wouldn’t want anyway) or delete_record.
+update_record (which you wouldn't want anyway) or delete_record.
 
 Shortcuts
 ~~~~~~~~~
@@ -4272,7 +4272,7 @@ Database cascades
 Database schema can define relationships which trigger deletions of
 related records, known as cascading. The DAL is not informed when a
 record is deleted due to a cascade. So no \*_delete callaback will ever
-be called as conseguence of a cascade-deletion.
+be called as consequence of a cascade-deletion.
 
 Record versioning
 ~~~~~~~~~~~~~~~~~
@@ -4764,7 +4764,7 @@ in the following dictionary also in “dal.py”:
      - pydal.adapters.mssql.Vertica
 
 the uri string is then parsed in more detail by the adapter itself.
-An updated list of adapters can be obtaind as dictionary with
+An updated list of adapters can be obtained as dictionary with
 
 .. code: python
 

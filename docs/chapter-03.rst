@@ -2,7 +2,7 @@
 Installation and Startup
 ========================
 
-Understing the design
+Understanding the design
 ---------------------
 
 Before everything else it is important to understand that unlike other web frameworks,
@@ -11,7 +11,7 @@ is in charge of starting a apps. For this reason you need two things:
 - the py4web module (which you download from out web site, from pypi, from github)
 - one or more folders containing collections of apps you want to run.
 py4web has command line options to create a folder with some example apps,
-to intialize an dexisting folder, and to add scaffolding apps to that folder.
+to initialize an existing folder, and to add scaffolding apps to that folder.
 Once installed you can have multiple apps under the same folder running concurrently
 and served by the same py4web process at the same address and port.
 An apps folder is a python module, and each app is also a python module.
@@ -69,7 +69,7 @@ From the command line
 
    python3 -m pip install --upgrade py4web --no-cache-dir --user
 
-Also, if ``python3`` does not work, try specify a full verion as in ``python3.8``.
+Also, if ``python3`` does not work, try specify a full version as in ``python3.8``.
 
 This will install py4web and all its dependencies on the system’s path
 only. The assets folder (that contains the py4web’s system apps) will
@@ -87,7 +87,7 @@ path. On Windows, a special py4web.exe file (pointing to py4web.py) will
 be created by *pip* on the system’s path, but not if you type the
 *–user* option by mistake.
 
-Istalling using a virtual environment
+Installing using a virtual environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A full installation of any complex python application like py4web will
@@ -208,7 +208,7 @@ If you installed py4web from pip you can simple upgrade it with
    made changes to those apps.
 
 If you installed py4web in any other way, you must upgrade it manually.
-First you have to make a backup of any personal py4web work you’ve done,
+First you have to make a backup of any personal py4web work you've done,
 then delete the old installation folder and re-install the framework
 again.
 
@@ -515,7 +515,7 @@ WSGI
 
 py4web is a standard WSGI application. So, if a full program installation it's not
 feasible you can simply run py4web as a WSGI app. For example, using gunicorn-cli,
-create a pyton file:
+create a python file:
 
 .. code:: python
 

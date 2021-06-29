@@ -47,11 +47,11 @@ Some of the main differences are the following:
 - In web2py the mapping between URLs and file/function names is automatic but it can be
   overwritten in “routes.py” (like in Django). In py4web the mapping is specified in the decorator
   as in `@action('my_url_path')` (like in Bottle and Flask). Notice that if the path starts with
-  “/” it is assumed to be an absolute path. If not, it is assumed to be reative and prepended by
+  “/” it is assumed to be an absolute path. If not, it is assumed to be realive and prepended by
   the “/{appname}/” prefix. Also, if the path ends with “/index”, the latter postfix is assumed
   to be optional.
 
-- In web2py the path extention matters and “http://*.html” is expected to return HTML while
+- In web2py the path extension matters and “http://*.html” is expected to return HTML while
   “http://*.json” is expected to return JSON, etc. In py4web there is no such convention. If the
   action returns a dict() and has a template, the dict() will be rendered by the template, else it
   will be rendered in JSON. More complex behavior can be accomplished using decorators.
@@ -82,7 +82,7 @@ Some of the main differences are the following:
   only variables that can be changed at will are the following field attributes: readable,
   writable, requires, update, default. All the others are for practical purposes to be
   considered global and non thread safe. This is also the reason that makes using
-  :ref:`Lazy Tables` with py4web unuseful and even dangerous.
+  :ref:`Lazy Tables` with py4web useless and even dangerous.
 
 - Both web2py and pyweb have an Auth object which serve the same purpose. Both objects have the
   ability to generate forms pretty much in the same manner. The py4web ones is defined to be more
