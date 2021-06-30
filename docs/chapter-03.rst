@@ -374,18 +374,6 @@ changes to files of that application, you can:
 
 The default web server used is currently Tornado, but you can change this behaviour with the ``server`` option.
 
-Also, for advanced users, you can specify the optional ``--usegevent`` directive like in this example:
-
-::
-
-   py4web --usegevent run -s geventWebSocketServer apps
-
-
-.. warning::
-    The optional ``--usegevent`` directive must be used with ``gevent`` or ``geventWebSocketServer`` webservers (in order to apply monkey patching)
-    and shouldn't be used with ``tornado`` and ``waitress``.
-
-
 
 .. _set_password command option:
 
