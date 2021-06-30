@@ -444,7 +444,9 @@ class Grid:
             # for all FieldVirtual or Custom columns, add all columns from their table
             # as they might be needed for processing
             for col in [
-                x for x in self.param.columns if isinstance(x, (FieldVirtual, Column)) and 'tablename' in dir(x)
+                x
+                for x in self.param.columns
+                if isinstance(x, (FieldVirtual, Column)) and "tablename" in dir(x)
             ]:
                 self.needed_fields.extend(
                     [
@@ -1135,7 +1137,9 @@ class Grid:
                     override_classes=self.param.grid_class_style.classes.get(
                         "grid-new-button", ""
                     ),
-                    override_styles=self.param.grid_class_style.styles.get("grid-new-button"),
+                    override_styles=self.param.grid_class_style.styles.get(
+                        "grid-new-button"
+                    ),
                 )
             )
 
