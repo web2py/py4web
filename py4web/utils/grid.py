@@ -440,9 +440,9 @@ class Grid:
             needed_fields = set()
             for col in self.param.columns:
                 if isinstance(col, Field):
-                    needed_fields.app(col)
-                elif isinstance(col, VirtualField):
-                    for field in col.table:
+                    needed_fields.add(col)
+                elif isinstance(col, FieldVirtual):
+                    for field in db[col.tablename]:
                         needed_fields.add(field)
             self.needed_fields = list(needed_fields)
         else:
