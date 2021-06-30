@@ -42,7 +42,7 @@ There are many tutorials and videos available. Here are some of them:
 The sources on GitHub
 ---------------------
 
-Last but not least, py4web is Open Source, with a BSD v3 licence, hosted on GitHub at https://github.com/web2py/py4web. This means that you can read, study and experiment
+Last but not least, py4web is Open Source, with a BSD v3 license, hosted on GitHub at https://github.com/web2py/py4web. This means that you can read, study and experiment
 with all of its internal details by yourself.
 
 
@@ -63,7 +63,7 @@ A modern python workplace
 
 In the following chapters you will start coding on your computer. We suggest you to setup a modern python workplace if you plan to do it efficiently and safely.
 Even for running simple examples and experimenting a little, we strongly suggest to use an **Integrated Development Environment** (IDE). This will make your programming experience much better, allowing syntax checking, linting and visual debugging.
-Nowadays there are two free and multiplatform main choices: Microsoft Visual Studio Code aka `VScode <https://code.visualstudio.com/>`__ and
+Nowadays there are two free and multi-platform main choices: Microsoft Visual Studio Code aka `VScode <https://code.visualstudio.com/>`__ and
 JetBrains `PyCharm <https://www.jetbrains.com/pycharm/>`__.
 
 When you'll start to deal with more complex programs and need reliability,
@@ -94,7 +94,7 @@ In PyCharm, if you should get gevent errors you need to enable Settings | Build,
 How to contribute
 =================
 
-We need help from everyone: support our efforts! You can just partecipate in the Google group trying to answer other's questions, submit bugs using or create pull requests on the GitHub
+We need help from everyone: support our efforts! You can just participate in the Google group trying to answer other's questions, submit bugs using or create pull requests on the GitHub
 repository.
 
 If you wish to correct and expand this manual, or even translate it in a new foreign language, you can read all the needed information directly on the

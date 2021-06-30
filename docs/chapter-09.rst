@@ -26,7 +26,7 @@ to use those editors to create py4web templates.
     
 Since the developer is embedding Python code into HTML, the document
 should be indented according to HTML rules, and not Python rules.
-Therefore, we allow unindented Python inside the ``[[ ... ]]`` tags.
+Therefore, we allow un-indented Python inside the ``[[ ... ]]`` tags.
 But since Python normally uses indentation to delimit blocks of code, we
 need a different way to delimit them; this is why the py4web template
 language makes use of the Python keyword ``pass``.
@@ -530,7 +530,7 @@ You can override these default content blocks by enclosing your new
 content inside the same block name. The location of the block in the
 layout.html is not changed, but the contents is.
 
-Here is a simplifed version. Imagine this is “layout.html”:
+Here is a simplified version. Imagine this is “layout.html”:
 
 .. code:: html
 

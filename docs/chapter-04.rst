@@ -3,7 +3,7 @@ The Dashboard
 =============
 
 The Dashboard is the standard web based IDE; you will surely use it
-extensively to manage the applications and check databases.
+extensively to manage the applications and check your databases.
 Looking at its interface is a good way to start exploring py4web and
 its components.
 
@@ -15,7 +15,7 @@ When you run the standard py4web program, it starts a web server with a
 main web page listening on http://127.0.0.1:8000 (which means that it is
 listening on the TCP port 8000 on your local PC, using the HTTP protocol).
 
-You can connect to this main page only from your local pc, using a web
+You can connect to this main page only from your local PC, using a web
 browser like Firefox or Google Chrome:
 
 .. FIXME: why do this image fit into the pdf page while the others do not?

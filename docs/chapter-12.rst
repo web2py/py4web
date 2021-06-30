@@ -108,7 +108,7 @@ Note that:
    the form is contained
 
 
-This example it's not so useful because it's not using a database, a template or the session management.
+This example is not so useful because it's not using a database, a template or the session management.
 But it works, and if you try to fill the form with an empty product_quantity, the form will trigger an error
 and the corresponding error page will be shown.
 
@@ -171,12 +171,29 @@ contains the following code:
 
 Reload py4web and visit http://127.0.0.1:8000/form_basic : 
 the result is an input form on the top of the page, and the list of all the
-previuos added entries on the bottom:
+previously added entries on the bottom:
 
 .. image:: images/form2.png
 
 
 The database content can also be fully seen and changed with the Dashboard app.
+
+Form Structure Manipulation
+---------------------------
+
+Like in web2py, in py4web a form is rendered by helpers. Unlike web2py, it uses yatl helpers. This means the
+tree structure of a form can be manipulated before the form is serialized in HTML. For example:
+
+.. code:: python
+
+    db.define_table('paint', Field('color'))
+    form = Form(db.paint)
+    form.structure.find('[name=color]')[0]['_class'] = 'my-class'
+
+Notice that a form does not make an HTML tree until form structure is accessed. Once accessed you can use `.find(...)`
+to find matching elements. The argument of `find` is a string following the filter syntax of jQuery. In the above case
+there is a single match `[0]` and we modify the `_class` attribute of that element. Attribute names of HTML elements
+must be preceded by an underscore.
 
 Form validation
 ---------------
@@ -199,7 +216,7 @@ Here is a simple example of how to require a validator for a table field:
     )
 
 The validator is frequently
- written explicity outside the table definition in this equivalent manner:
+ written explicitly outside the table definition in this equivalent manner:
 
 .. code:: python
 
@@ -236,7 +253,7 @@ Built-in validators have constructors that take an ``error_message`` argument:
     IS_NOT_EMPTY(error_message='cannot be empty!')
 
 
-It'optional and it allows you to override the default error message for any validator.
+It's optional and it allows you to override the default error message for any validator.
 Also, it's the usually fist option of the constructors and you can normally avoid to name it. Hence
 the following syntax is equivalent:
 
@@ -726,7 +743,7 @@ The zero argument is optional and it determines the text of the option selected 
 is not accepted by the ``IS_IN_SET`` validator itself. If you do not want a "choose one" option, set ``zero=None``.
 
 The elements of the set can be combined with a numerical validator, as long as IS_IN_SET is first in the list.
-Doing so wil force conversion by the last validator to the numerical type. So, IS_IN_SET can be followed by
+Doing so will force conversion by the last validator to the numerical type. So, IS_IN_SET can be followed by
 ``IS_INT_IN_RANGE`` (which converts the value to int) or ``IS_FLOAT_IN_RANGE`` (which converts the value to float). For example:
 
 .. code:: python
@@ -804,7 +821,7 @@ where:
    ``^!!@#$%^&*()_+-=?<>,.:;{}[]|`` (you can customize these using ``specials = '...'``)
 -  ``upper`` is the minimum number of upper case characters
   
-other accepected arguments are:
+other accepted arguments are:
 
 -  ``invalid`` for the list of forbidden characters, by default ``invalid=' "'``
 -  ``max`` for the maximum length of the value
@@ -925,7 +942,7 @@ This validator is specifically designed to work with the following field:
 Notice that due to the ``widget`` customization this field will be rendered by a textarea in SQLFORMs (see next [[Widgets #Widgets]]
 section). This let you insert and edit multiple emails in a single input field (very much like normal mail client programs do),
 separating each email address with ``,``, ``;``, and blanks (space, newline, and tab characters).
-As a conseguence now we need a validator which is able to operate on a single value input and a way to split the validated value into
+As a consequence now we need a validator which is able to operate on a single value input and a way to split the validated value into
 a list to be next processed by DAL, these are what the ``requires`` and ``filter_in`` arguments stand for.
 As alternative to ``filter_in``, you can pass the following function to the ``onvalidation`` argument of form ``accepts``, ``process``,
 or ``validate`` method:
@@ -1481,21 +1498,3 @@ Here is an example:
            # Do something with form.vars['product_name'] and form.vars['product_quantity']
            redirect(URL('index'))
        return dict(form=form)
-
-
-Form Structure Manipulation
----------------------------
-
-Like in web2py, in py4web a form is rendered by helpers. Unlike web2py, it uses yatl helpers. This means the
-tree structure of a form can be manipulated before the form is serialized in HTML. For example:
-
-.. code:: python
-
-    db.define_table('paint', Field('color'))
-    form = Form(db.paint)
-    form.structure.find('[name=color]')[0]['_class'] = 'my-class'
-
-Notice that a form does not make an HTML tree until form structure is accessed. Once accessed you can use `.find(...)`
-to find matching elements. The argument of `find` is a string following the filter syntax of jQuery. In the above case
-there is a single match `[0]` and we modify the `_class` attribute of that element. Attribute names of HTML elements
-must be preceded by an underscore.

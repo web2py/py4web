@@ -3,15 +3,15 @@ The RESTAPI
 ===========
 
 Since version 19.5.10 pyDAL includes a restful API called RestAPI. It is
-inspired by GraphQL but it’s not quite the same because it is less
-powerful but, in the spirit of py4web, more practical and easier to use.
+inspired by GraphQL and while it’s not quite the same due to it being less
+powerful, it is in the spirit of py4web where it's more practical and easier to use.
 Like GraphQL RestAPI allows a client to query for information using the
 GET method and allows to specify some details about the format of the
 response (which references to follow, and how to denormalize the data).
 Unlike GraphQL it allows the server to specify a policy and restrict
 which queries are allowed and which one are not. They can be evaluated
 dynamically per request based on the user and the state of the server.
-As the name implied RestAPI allows all stardard methods GET, POST, PUT,
+As the name implied RestAPI allows all standard methods: GET, POST, PUT,
 and DELETE. Each of them can be enabled or disabled based on the policy,
 for individual tables and individual fields.
 
@@ -104,7 +104,7 @@ The general query has the form ``{something}.eq=value`` where ``eq=``
 stands for “equal”, ``gt=`` stands for “greater than”, etc. The
 expression can be prepended by ``not.``.
 
-``{something}`` can be the name of a field in the table been queried as
+``{something}`` can be the name of a field in the table being queried as
 in:
 
 **All superheroes called “Superman”**
@@ -113,7 +113,7 @@ in:
 
    /superheroes/api/superhero?name.eq=Superman
 
-It can be the name of a field of a table referred by the table been
+It can be the name of a field of a table referred by the table being
 queried as in:
 
 **All superheroes with real identity “Clark Kent”**
@@ -122,7 +122,7 @@ queried as in:
 
    /superheroes/api/superhero?real_identity.name.eq=Clark Kent
 
-It can be the name of a field of a table that refers to the table neen
+It can be the name of a field of a table that refers to the table being
 queried as in:
 
 **All superheroes with any tag superpower with strength > 90**
@@ -655,7 +655,7 @@ OUTPUT:
        "api_version": "0.1"
    }
 
-URL (it's a single line, splitted for readability):
+URL (it's a single line, split for readability):
 
 ::
 
@@ -757,7 +757,7 @@ OUTPUT:
        "api_version": "0.1"
    }
 
-URL (it's a single line, splitted for readability):
+URL (it's a single line, split for readability):
 
 ::
 
@@ -839,7 +839,7 @@ OUTPUT:
        "api_version": "0.1"
    }
 
-URL (it's a single line, splitted for readability):
+URL (it's a single line, split for readability):
 
 ::
 

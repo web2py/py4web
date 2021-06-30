@@ -57,8 +57,8 @@ details if you come from web2py):
 -  PY4WEB, unlike web2py, does not create a new environment at every
    request. It introduces the concept of fixtures to explicitly declare
    which objects need to be (re)initialized when a new http request arrives
-   or need cleaup when completed. This makes it much faster than web2py.
--  PY4WEB, has a new sesson object which, like web2py’s, provides strong
+   or need cleanup when completed. This makes it much faster than web2py.
+-  PY4WEB, has a new session object which, like web2py’s, provides strong
    security and encryption of the session data, but sessions are no
    longer stored in the file system - which created performance issues.
    It provides sessions in cookies, in redis, in memcache, or optionally  in
@@ -89,7 +89,7 @@ details if you come from web2py):
    basic functionality of register, login, logout, change password,
    request change password, edit profile as well as integration with
    PAM, SAML2, LDAP, OAUTH2 (google, facebook, and twitter).
--  PY4WEB leverages PyDAL'new tags functionality
+-  PY4WEB leverages PyDAL's new tags functionality
    to tag users with groups and search users by groups and
    apply permissions based on membership.
 -  PY4WEB comes with with some custom Vue.js components designed to

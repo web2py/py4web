@@ -137,7 +137,7 @@ If you provide a search_queries list to grid, it will:
 
 -  build a search form. If more than one search query in the list, it
    will also generate a dropdown to select which search field to search
-   agains
+   against
 -  gather filter values and filter the grid
 
 However, if this doesn’t give you enough flexibility you can provide

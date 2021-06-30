@@ -74,7 +74,13 @@
     mtable.methods.open_create = function () {
         this.populate_reference_options();
         this.item = {};
-        for(var field in this.model) this.item[field.name] = field.default||'';
+        for (var field of this.table.model) {
+            output = field.default != null ? field.default : '';
+            if (field.type == "datetime") {
+                output = output.split('.')[0];
+            }
+            Vue.set(this.item, field.name, output);
+        }
     };
     
     mtable.methods.open_edit = function (item) {
