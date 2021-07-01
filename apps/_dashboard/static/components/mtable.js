@@ -99,7 +99,7 @@
         let self = this;
         for(var field of this.table.model){
             console.log(field.name);
-	    if(field.type == "list:string" || field.type == "list:integer"){
+	    if(field.type == "list:string" || field.type == "list:integer" || field.type.substr(0,14) == "list:reference"){
 		self.string_values[field.name] = mtable.methods.l2s(item[field.name]);
 		console.log(self.string_values[field.name]);
 	    } else if (field.type == "datetime") {
@@ -146,7 +146,7 @@
         let url = this.url;
         self.busy = true;
 	for(var field of this.table.model) {
-	    var is_list_integer = field.type == "list:integer";
+	    var is_list_integer = field.type == "list:integer" || field.type.substr(0,14) == "list:reference";
 	    if(field.type == "list:string" || is_list_integer) {
 		item[field.name] = mtable.methods.s2l(this.string_values[field.name], is_list_integer);
 	    }
