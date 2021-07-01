@@ -125,6 +125,10 @@ class CheckboxWidget:
 
 class ListWidget:
     def make(self, field, value, error, title, placeholder="", readonly=False):
+        if field.type == 'list:string': _class = 'type-list-string'
+        elif field.type == 'list:integer': _class = 'type-list-integer'
+        else: _class = ""
+
         return INPUT(
             _value=json.dumps(value or []),
             _type="text",
@@ -133,6 +137,7 @@ class ListWidget:
             _placeholder=placeholder,
             _title=title,
             _readonly=readonly,
+            _class=_class,
         )
 
 

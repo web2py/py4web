@@ -11,7 +11,9 @@
                     item: null,
                     message: '',
                     reference_options: {},
-                    table: { model: [], items: [], count: 0}};
+                    table: { model: [], items: [], count: 0},
+		    string_values: {}
+		   };
         mtable.methods.load.call(data);
         return data;
     };
@@ -72,28 +74,39 @@
     }
 
     mtable.methods.open_create = function () {
-        this.populate_reference_options();
         this.item = {};
-        for (var field of this.table.model) {
-            output = field.default != null ? field.default : '';
-            if (field.type == "datetime") {
-                output = output.split('.')[0];
-            }
-            Vue.set(this.item, field.name, output);
-        }
-    };
-    
-    mtable.methods.open_edit = function (item) {
-        this.populate_reference_options();
-        this.item = {};
-        this.item = item;
+        this.prepare_fields(this.item);
     };
 
-    mtable.methods.populate_reference_options = function(){
+    mtable.methods.open_edit = function (item) {
+        this.item = {};
+        this.item = item;
+        this.prepare_fields(this.item);
+    };
+
+    mtable.methods.l2s = function(list) {
+	return (list||[]).map(function(x){return ''+x}).join(', ');
+    };
+
+    mtable.methods.s2l = function(string, is_list_integer) {
+	var v = string;
+	v = v && v.split(',').map(function(x){return x.trim();}) || [];
+	if (is_list_integer) v = v.map(parseInt);
+	return v;
+    };
+
+    mtable.methods.prepare_fields = function(item){
         let self = this;
         for(var field of this.table.model){
             console.log(field.name);
-            if(field.type == "reference"){
+	    if(field.type == "list:string" || field.type == "list:integer"){
+		self.string_values[field.name] = mtable.methods.l2s(item[field.name]);
+		console.log(self.string_values[field.name]);
+	    } else if (field.type == "datetime") {
+		output = field.default != null ? field.default : '';
+                output = output.split('.')[0];
+		Vue.set(this.item, field.name, output);
+	    } else if(field.type == "reference"){
                 if (!(field.references in this.reference_options)){
                     Vue.set(this.reference_options, field.references, []);
                     let reference_table_url = self.url.split('/');                    
@@ -132,6 +145,12 @@
     mtable.methods.save = function (item) {
         let url = this.url;
         self.busy = true;
+	for(var field of this.table.model) {
+	    var is_list_integer = field.type == "list:integer";
+	    if(field.type == "list:string" || is_list_integer) {
+		item[field.name] = mtable.methods.s2l(this.string_values[field.name], is_list_integer);
+	    }
+	}
         if (item.id) {
             url += '/' + item.id;
             axios.put(url, item).then(mtable.handle_response('put', this),
@@ -151,16 +170,12 @@
                 console.log(data);
                 mtable.methods.load.call(data);
             }
-            console.log('a');
-            console.log(res);
             if (res.data.status == 'success') {
                 data.clear();
             } else {
-                console.log('b')
                 data.errors = res.data.errors;
                 data.message = res.data.message;
             }
-            console.log('c');
         };
     };
 
