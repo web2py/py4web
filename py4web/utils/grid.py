@@ -162,6 +162,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-tr": "",
         "grid-th": "",
         "grid-td": "",
+        "grid-button": "grid-button button is-small",
         "grid-details-button": "grid-details-button button is-small",
         "grid-edit-button": "grid-edit-button button is-small",
         "grid-delete-button": "grid-delete-button button is-small",
@@ -1125,7 +1126,9 @@ class Grid:
                     override_classes=self.param.grid_class_style.classes.get(
                         "grid-new-button", ""
                     ),
-                    override_styles=self.param.grid_class_style.styles.get("grid-new-button"),
+                    override_styles=self.param.grid_class_style.styles.get(
+                        "grid-new-button"
+                    ),
                 )
             )
 
