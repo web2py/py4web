@@ -7,7 +7,6 @@
 | License: "BSDv3" (https://opensource.org/licenses/BSD-3-Clause)
 """
 
-from __future__ import print_function
 import email.utils
 from email import message_from_string
 import json
@@ -15,6 +14,7 @@ import logging
 import mimetypes
 import os
 import smtplib
+from email.encoders import encode_base64
 
 from pydal._compat import *
 
@@ -448,7 +448,21 @@ class Mailer:
         if (attachments is None) or raw:
             pass
         elif isinstance(attachments, (list, tuple)):
-            for attachment in attachments:
+            for filename in attachments:
+                mimetype, encoding = mimetypes.guess_type(filename)
+                mimetype = mimetype.split("/", 1)
+                fp = open(filename, "rb")
+                attachment = MIMEBase(mimetype[0], mimetype[1])
+                attachment.set_payload(fp.read())
+                fp.close()
+                encode_base64(attachment)
+                import os
+
+                attachment.add_header(
+                    "Content-Disposition",
+                    "attachment",
+                    filename=os.path.basename(filename),
+                )
                 payload_in.attach(attachment)
         else:
             payload_in.attach(attachments)
