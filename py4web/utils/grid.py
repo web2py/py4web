@@ -162,6 +162,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-tr": "",
         "grid-th": "",
         "grid-td": "",
+        "grid-button": "grid-button button is-small",
         "grid-details-button": "grid-details-button button is-small",
         "grid-edit-button": "grid-edit-button button is-small",
         "grid-delete-button": "grid-delete-button button is-small",
@@ -432,29 +433,19 @@ class Grid:
             # if no column specified use all fields
             self.param.columns = [field for field in table if field.readable]
             self.needed_fields = self.param.columns[:]
-        elif any(isinstance(col, (FieldVirtual, Column)) for col in self.param.columns):
-            # if columns are specified and include custom or virtual fields
-            # we need to fetch all passed fields except for FieldVirtual or Custom
-            self.needed_fields = [
-                x
-                for x in self.param.columns
-                if not isinstance(x, (FieldVirtual, Column))
-            ]
-
-            # for all FieldVirtual or Custom columns, add all columns from their table
-            # as they might be needed for processing
-            for col in [
-                x for x in self.param.columns if isinstance(x, (FieldVirtual, Column))
-            ]:
-                self.needed_fields.extend(
-                    [
-                        field
-                        for field in col.tablename
-                        if field not in self.needed_fields
-                        and not isinstance(field, (FieldVirtual, Column))
-                        and field.readable
-                    ]
-                )
+        elif any(isinstance(col, Column) for col in self.param.columns):
+            # if we use columns we have to get all fields and assume a single table
+            self.needed_fields = [field for field in db[self.tablename]]
+        elif any(isinstance(col, FieldVirtual) for col in self.param.columns):
+            # if virtual fields are specified the fields may come from a join
+            needed_fields = set()
+            for col in self.param.columns:
+                if isinstance(col, Field):
+                    needed_fields.add(col)
+                elif isinstance(col, FieldVirtual):
+                    for field in db[col.tablename]:
+                        needed_fields.add(field)
+            self.needed_fields = list(needed_fields)
         else:
             # the columns specify with fields are needed
             self.needed_fields = self.param.columns[:]
@@ -1135,7 +1126,9 @@ class Grid:
                     override_classes=self.param.grid_class_style.classes.get(
                         "grid-new-button", ""
                     ),
-                    override_styles=self.param.grid_class_style.styles.get("grid-new-button"),
+                    override_styles=self.param.grid_class_style.styles.get(
+                        "grid-new-button"
+                    ),
                 )
             )
 
