@@ -217,7 +217,7 @@ class Auth(Fixture):
         self.db = db
         self.session = session
         self.sender = sender
-        self.route = None
+        self.route = "auth"
         self.use_username = use_username  # if False, uses email only
         self.use_phone_number = use_phone_number
         # The self._link variable is not thread safe (only intended for testing)
