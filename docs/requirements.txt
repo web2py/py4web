@@ -1,8 +1,9 @@
 ### optional, used for documentation only ###
 
-docutils==0.16
+docutils
 PyStemmer
 sphinx
 sphinx-tabs
 sphinx_rtd_theme
 rinohtype
+sphinxcontrib-spelling

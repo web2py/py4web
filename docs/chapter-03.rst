@@ -3,13 +3,15 @@ Installation and Startup
 ========================
 
 Understanding the design
----------------------
+------------------------
 
 Before everything else it is important to understand that unlike other web frameworks,
 is not only a python module that can be imported by apps. It is also a program that
 is in charge of starting a apps. For this reason you need two things:
-- the py4web module (which you download from out web site, from pypi, from github)
-- one or more folders containing collections of apps you want to run.
+
+-  the py4web module (which you download from our web site, from pypi, from github)
+-  one or more folders containing collections of apps you want to run.
+
 py4web has command line options to create a folder with some example apps,
 to initialize an existing folder, and to add scaffolding apps to that folder.
 Once installed you can have multiple apps under the same folder running concurrently
@@ -88,7 +90,7 @@ be created by *pip* on the system’s path, but not if you type the
 *–user* option by mistake.
 
 Installing using a virtual environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A full installation of any complex python application like py4web will
 surely modify the python environment of your system. In order to prevent
@@ -300,6 +302,17 @@ with the **–help** or **-h** argument.
      -Y, --yes          No prompt, assume yes to questions  [default: False]
      --args TEXT        Arguments passed to the program/function  [default: {}]
      -help, -h, --help  Show this message and exit.
+
+
+For example:
+
+::
+
+   # py4web call apps examples.test.myfunction --args '{"x": 100}'
+
+where myfunction is the function you want to call in apps/examples/test.py. Note
+that you have to use the single and double quotes just as shown for parameters to
+work.
 
 .. _new_app command option:
 

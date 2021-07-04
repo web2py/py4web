@@ -47,7 +47,7 @@ Some of the main differences are the following:
 - In web2py the mapping between URLs and file/function names is automatic but it can be
   overwritten in “routes.py” (like in Django). In py4web the mapping is specified in the decorator
   as in `@action('my_url_path')` (like in Bottle and Flask). Notice that if the path starts with
-  “/” it is assumed to be an absolute path. If not, it is assumed to be realive and prepended by
+  “/” it is assumed to be an absolute path. If not, it is assumed to be relative and prepended by
   the “/{appname}/” prefix. Also, if the path ends with “/index”, the latter postfix is assumed
   to be optional.
 
@@ -165,7 +165,7 @@ Simple conversion examples
 .. code:: python
 
    @action("index")
-      def index():
+   def index():
       a = request.query.get('a')
       return locals()
 
