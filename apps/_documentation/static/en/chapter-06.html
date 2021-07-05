@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Fixtures &mdash; py4web 1.20210522.2 documentation</title>
+  <title>Fixtures &mdash; py4web 1.20210619.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210522.2
+                1.20210619.1
               </div>
             
           
@@ -137,6 +137,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
             
@@ -351,7 +352,7 @@ action with a counter that counts “visits”.</p>
 </pre></div>
 </div>
 <p>When visiting this site with the browser language preference set to
-english and reloading multiple times you will get the following
+English and reloading multiple times you will get the following
 messages:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>This your first time here
 You have been here once before
@@ -450,12 +451,12 @@ def index():
 </pre></div>
 </div>
 <p>The counter will start from 0; its value will be remembered and
-increased everytime you reload the page.</p>
+increased every time you reload the page.</p>
 <img alt="_images/simple_counter.png" src="_images/simple_counter.png" />
 <p>Opening the page in a new browser tab will give you the updated
 counter value. Closing and reopening the browser, or opening a
 new <em>private window</em>, will instead restart the counter from 0.</p>
-<p>Usually the informations saved in the session object are related
+<p>Usually the information is saved in the session object are related
 to the user - like its username, preferences, last pages visited,
 shopping cart and so on. The session object has the same interface
 as a Python dictionary but in py4web sessions are always stored using
@@ -482,7 +483,7 @@ set. Other parameters can be specified as well:</p>
 </div>
 <p>Here:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">secret</span></code> is the passphrase used to sign the informations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">secret</span></code> is the passphrase used to sign the information</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">expiration</span></code> is the maximum lifetime of the session, in seconds
 (default = None, i.e. no timeout)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code> is the algorithm to be used for the JWT token
@@ -589,7 +590,7 @@ sessions on your local filesystem:</p>
 </div>
 <p>We leave to you as an exercise to implement expiration, limit the number
 of files per folder by using subfolders, and implement file locking. Yet
-we do not recomment storing sessions on the filesystem: it is
+we do not recommend storing sessions on the filesystem: it is
 inefficient and does not scale well.</p>
 </div>
 </div>
@@ -726,7 +727,7 @@ fields:</p>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Note thas this code will only be able to display a form, to process it
+<p>Note that this code will only be able to display a form, to process it
 after submit, additional code needs to be added, as we will see later
 on. This example is assuming that you created the application from the
 scaffolding app, so that a generic.html is already created for you.</p>
@@ -869,7 +870,7 @@ that function automatically.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210522.2
+      v: 1.20210619.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

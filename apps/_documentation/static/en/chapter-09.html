@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>YATL Template Language &mdash; py4web 1.20210522.2 documentation</title>
+  <title>YATL Template Language &mdash; py4web 1.20210619.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210522.2
+                1.20210619.1
               </div>
             
           
@@ -138,6 +138,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
             
@@ -231,7 +232,7 @@ separating the list from the Python code square brackets.</p>
 </div>
 <p>Since the developer is embedding Python code into HTML, the document
 should be indented according to HTML rules, and not Python rules.
-Therefore, we allow unindented Python inside the <code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">...</span> <span class="pre">]]</span></code> tags.
+Therefore, we allow un-indented Python inside the <code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">...</span> <span class="pre">]]</span></code> tags.
 But since Python normally uses indentation to delimit blocks of code, we
 need a different way to delimit them; this is why the py4web template
 language makes use of the Python keyword <code class="docutils literal notranslate"><span class="pre">pass</span></code>.</p>
@@ -266,7 +267,7 @@ for x in range(10):
 response.write(&quot;&quot;&quot;<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>&quot;&quot;&quot;, escape=False)
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">response.write</span></code> writes to the <code class="docutils literal notranslate"><span class="pre">response.body</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">response.write</span></code> writes to the response body.</p>
 <p>When there is an error in a py4web template, the error report shows the
 generated template code, not the actual template as written by the developer.
 This helps the developer debug the code by highlighting the actual code
@@ -641,7 +642,7 @@ these are therefore included into default/index.html.</p>
 <p>You can override these default content blocks by enclosing your new
 content inside the same block name. The location of the block in the
 layout.html is not changed, but the contents is.</p>
-<p>Here is a simplifed version. Imagine this is “layout.html”:</p>
+<p>Here is a simplified version. Imagine this is “layout.html”:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
   <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
     [[include]]
@@ -857,7 +858,7 @@ mobile device.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210522.2
+      v: 1.20210619.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

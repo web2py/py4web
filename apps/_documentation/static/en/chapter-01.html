@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>What is py4web? &mdash; py4web 1.20210522.2 documentation</title>
+  <title>What is py4web? &mdash; py4web 1.20210619.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210522.2
+                1.20210619.1
               </div>
             
           
@@ -102,7 +102,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">What is py4web?</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#acknowledegments">Acknowledegments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#acknowledgments">Acknowledgments</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
@@ -119,6 +119,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
             
@@ -209,8 +210,7 @@ compatible until today.</p>
 <p>Web2py always suffered from one problem: its monolithic design. The most
 experienced Python developers did not understand how to use its
 components outside of the framework and how to use third party
-components within the framework. This was for good reason, as we did not
-care too much about them. We thought of web2py as a perfect tool that
+components within the framework. We thought of web2py as a perfect tool that
 did not have to be broken into pieces because that would compromise its
 security. It turned out that we were wrong, and playing well with others
 is important. Hence, since 2015 we worked on three fronts:</p>
@@ -220,8 +220,8 @@ is important. Hence, since 2015 we worked on three fronts:</p>
 <li><p>We reassembled some of those modules into a new more modular
 framework … PY4WEB.</p></li>
 </ul>
-<p>PY4WEB is more than a repackaging of those modules. It is a complete
-redesign. It uses some of the web2py modules, but not all of them. In
+<p>PY4WEB is more than a repackaging. It is a complete redesign.
+It uses some of the web2py modules, but not all of them. In
 some cases, it uses other and better modules. Some functionality was
 removed and some was added. We tried to preserve most of the syntax and
 features that experienced web2py users loved.</p>
@@ -240,19 +240,19 @@ long as the apps are submodules of the apps module.</p></li>
 the Bottle request object and the Bottle routing mechanism.</p></li>
 <li><p>PY4WEB, unlike web2py, does not create a new environment at every
 request. It introduces the concept of fixtures to explicitly declare
-which objects need to be re-initialized when a new http request is
-processed. This makes it much faster.</p></li>
-<li><p>PY4WEB, has a new sesson object which, like web2py’s, provides strong
+which objects need to be (re)initialized when a new http request arrives
+or need cleanup when completed. This makes it much faster than web2py.</p></li>
+<li><p>PY4WEB, has a new session object which, like web2py’s, provides strong
 security and encryption of the session data, but sessions are no
 longer stored in the file system - which created performance issues.
-It provides sessions in cookies, in redis, in memcache, or in
+It provides sessions in cookies, in redis, in memcache, or optionally  in
 database. We also limited session data to objects that are json
 serializable.</p></li>
 <li><p>PY4WEB, like web2py, has a built-in ticketing system but, unlike
 web2py, this system is global and not per app. Tickets are no longer
 stored in the filesystem with the individual apps. They are stored in
 a single database.</p></li>
-<li><p>PY4WEB, like web2py, is based on pydal but uses some new features of
+<li><p>PY4WEB, like web2py, is based on pydal but leverages some new features of
 pydal (RESTAPI).</p></li>
 <li><p>PY4WEB, like web2py, uses the yatl template language but defaults to
 square brackets delimiters to avoid conflicts with model JS
@@ -266,18 +266,15 @@ flexible pluralization capabilities.</p></li>
 is a web IDE for uploading/managing/editing apps.</p></li>
 <li><p>PY4WEB’s Dashboard includes a web based database interface. This
 replaces the appadmin functionality of web2py.</p></li>
-<li><p>PY4WEB comes with a Form object that is similar to web2py’s SQLFORM
-but it is much simpler and faster. The syntax is the same. This has
-been provided in order to help users port existing apps; but PY4WEB
-encourages using API based forms over postbacks.</p></li>
+<li><p>PY4WEB comes with a Form object and a Grid objects that are
+similar to web2py’s SQLFORM and SQLFORM.grid.</p></li>
 <li><p>PY4WEB comes with an Auth object that replaces the web2py one. It is
 more modular and easier to extend. Out of the box, it provides the
 basic functionality of register, login, logout, change password,
 request change password, edit profile as well as integration with
 PAM, SAML2, LDAP, OAUTH2 (google, facebook, and twitter).</p></li>
-<li><p>PY4WEB comes with some utilites like “tags”, for instance, which
-allows adding searchable tags to any database table. It can be used,
-for example, to tag users with groups and search users by groups and
+<li><p>PY4WEB leverages PyDAL’s new tags functionality
+to tag users with groups and search users by groups and
 apply permissions based on membership.</p></li>
 <li><p>PY4WEB comes with with some custom Vue.js components designed to
 interact with the PyDAL RESTAPI, and with PY4WEB in general. These
@@ -291,8 +288,8 @@ API).</p></li>
 <p>The goal of PY4WEB is and remains the same as web2py’s: to make web
 development easy and accessible, while producing applications that are
 fast and secure.</p>
-<div class="section" id="acknowledegments">
-<h2>Acknowledegments<a class="headerlink" href="#acknowledegments" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="acknowledgments">
+<h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permalink to this headline">¶</a></h2>
 <p>Many thanks to everyone who has contributed to the project, and especially:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/mdipierro">Massimo Di Pierro</a></p></li>
@@ -306,7 +303,7 @@ fast and secure.</p>
 <li><p><a class="reference external" href="https://github.com/Pirsch">Pirsch</a></p></li>
 <li><p><a class="reference external" href="https://github.com/sugizo">sugizo</a></p></li>
 <li><p><a class="reference external" href="https://github.com/valq7711">valq7711</a></p></li>
-<li><p><a class="reference external" href="https://github.com/Kkeller83">Kkeller83</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Kkeller83">Kevin Keller</a></p></li>
 <li><p><a class="reference external" href="mailto:sam&#37;&#52;&#48;dealfaro&#46;com">Sam de Alfaro</a> (logo design)</p></li>
 </ul>
 <p>Special thanks to Sam de Alfaro, who designed the official logo of py4web. We friendly call the logo “Axel the axolotl”: it magically represents the sense of kindness
@@ -361,7 +358,7 @@ and inclusion we believe it’s the cornerstone of our growing community.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210522.2
+      v: 1.20210619.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

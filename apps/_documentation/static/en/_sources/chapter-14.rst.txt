@@ -137,7 +137,7 @@ If you provide a search_queries list to grid, it will:
 
 -  build a search form. If more than one search query in the list, it
    will also generate a dropdown to select which search field to search
-   agains
+   against
 -  gather filter values and filter the grid
 
 However, if this doesn’t give you enough flexibility you can provide
@@ -184,7 +184,7 @@ the grid or a form. Use the following to decide
 
 ::
 
-   [[if 'action' in request.url_args and request.url_args['action'] in ['details', 'edit']:]]
+   [[if request.query.get('action') in ('details', 'edit'):]]
        #  Display the custom form
        [[form = grid.render() ]]
        [[form.custom["begin"] ]]

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>From web2py to py4web &mdash; py4web 1.20210522.2 documentation</title>
+  <title>From web2py to py4web &mdash; py4web 1.20210619.1 documentation</title>
   
 
   
@@ -46,6 +46,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced topics and examples" href="chapter-16.html" />
     <link rel="prev" title="Grid" href="chapter-14.html" /> 
 </head>
 
@@ -73,7 +74,7 @@
             
             
               <div class="version">
-                1.20210522.2
+                1.20210619.1
               </div>
             
           
@@ -129,6 +130,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
             
@@ -238,10 +240,10 @@ admin interface will help you locate where a particular action is defined.</p></
 <li><p>In web2py the mapping between URLs and file/function names is automatic but it can be
 overwritten in “routes.py” (like in Django). In py4web the mapping is specified in the decorator
 as in <cite>&#64;action(‘my_url_path’)</cite> (like in Bottle and Flask). Notice that if the path starts with
-“/” it is assumed to be an absolute path. If not, it is assumed to be reative and prepended by
+“/” it is assumed to be an absolute path. If not, it is assumed to be relative and prepended by
 the “/{appname}/” prefix. Also, if the path ends with “/index”, the latter postfix is assumed
 to be optional.</p></li>
-<li><p>In web2py the path extention matters and “<a class="reference external" href="http://">http://</a><em>.html” is expected to return HTML while
+<li><p>In web2py the path extension matters and “<a class="reference external" href="http://">http://</a><em>.html” is expected to return HTML while
 “http://</em>.json” is expected to return JSON, etc. In py4web there is no such convention. If the
 action returns a dict() and has a template, the dict() will be rendered by the template, else it
 will be rendered in JSON. More complex behavior can be accomplished using decorators.</p></li>
@@ -269,7 +271,7 @@ way that depends on the content of the request object, else the code is not thre
 only variables that can be changed at will are the following field attributes: readable,
 writable, requires, update, default. All the others are for practical purposes to be
 considered global and non thread safe. This is also the reason that makes using
-<a class="reference internal" href="chapter-07.html#lazy-tables"><span class="std std-ref">Lazy Tables</span></a> with py4web unuseful and even dangerous.</p></li>
+<a class="reference internal" href="chapter-07.html#lazy-tables"><span class="std std-ref">Lazy Tables</span></a> with py4web useless and even dangerous.</p></li>
 <li><p>Both web2py and pyweb have an Auth object which serve the same purpose. Both objects have the
 ability to generate forms pretty much in the same manner. The py4web ones is defined to be more
 modular and extensible and support both Forms and APIs, but it lacks the <cite>auth.requires_*</cite>
@@ -333,7 +335,7 @@ web server but this may change.</p></li>
 </div>
 <p>–&gt; <strong>py4web</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
-   <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
    <span class="n">a</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
 </pre></div>
@@ -468,6 +470,7 @@ web server but this may change.</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="chapter-16.html" class="btn btn-neutral float-right" title="Advanced topics and examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="chapter-14.html" class="btn btn-neutral float-left" title="Grid" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
@@ -507,7 +510,7 @@ web server but this may change.</p></li>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210522.2
+      v: 1.20210619.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

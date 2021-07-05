@@ -648,9 +648,13 @@ class Auth(Fixture):
 
     def get_or_delete_existing_unverified_account(self, email):
         db = self.db
-        row = db(db.auth_user.email == email).select(limitby=(0,1)).first()
+        row = db(db.auth_user.email == email).select(limitby=(0, 1)).first()
         # if we have a user with this email and incomplete registration delete it
-        if row and row.action_token and row.action_token.startswith("pending-registration:"):
+        if (
+            row
+            and row.action_token
+            and row.action_token.startswith("pending-registration:")
+        ):
             row.delete_record()
             return None
         return row
@@ -658,29 +662,31 @@ class Auth(Fixture):
     def get_or_register_user(self, user):
         db = self.db
         # if the we have an email for the user
-        if 'email' in user:
+        if "email" in user:
             # return a user if exists and has a verified email
-            row = self.get_or_delete_existing_unverified_account(user['email'])
+            row = self.get_or_delete_existing_unverified_account(user["email"])
         # else retrieve the user from the sso_id
         else:
-            row = db(db.auth_user.sso_id == user["sso_id"]).select(limitby=(0, 1)).first()
+            row = (
+                db(db.auth_user.sso_id == user["sso_id"]).select(limitby=(0, 1)).first()
+            )
         # if we have found a candidate user
         if row:
             # we expect the email to match if provided
-            if 'email' in user and row.email != user['email']:
+            if "email" in user and row.email != user["email"]:
                 return None
             # we can update all the other information provided by the SSO
-            if any(user[key] != row[key] for key in user if not key == 'username'):
+            if any(user[key] != row[key] for key in user if not key == "username"):
                 row.update_record(**user)
             user["id"] = row["id"]
         # if we do not have a candidate user we need to create one
         else:
             # we expect an email to unable to create account
-            if not 'email' in user:
+            if not "email" in user:
                 return None
             # if we expect a username but not provided, user email as username
-            if self.use_username and 'username' not in user:
-                user['username'] = user['email']
+            if self.use_username and "username" not in user:
+                user["username"] = user["email"]
             # create the user
             user["id"] = db.auth_user.insert(**db.auth_user._filter_fields(user))
         return user
@@ -812,8 +818,10 @@ class Auth(Fixture):
                 @action(route + "/" + form_name, method=["GET", "POST"])
                 @action.uses(route + ".html")
                 @action.uses(auth, self.flash, *uses)
-                def _(form_factory=form_factory, path=form_name, env=env):
-                    return dict(form=form_factory(), path=path, **env)
+                def _(auth=auth, form_factory=form_factory, path=form_name, env=env):
+                    return dict(
+                        form=form_factory(), path=path, user=auth.get_user(), **env
+                    )
 
         for form_name in self.form_source.private_forms:
             if allowed(form_name):
@@ -894,7 +902,7 @@ class AuthAPI:
     def register(auth):
         if request.json is None:
             return auth._error("no json post payload")
-        auth.get_or_delete_existing_unverified_account(request.json.get('email'))
+        auth.get_or_delete_existing_unverified_account(request.json.get("email"))
         return auth.register(request.json, send=True).as_dict()
 
     @staticmethod
@@ -1037,8 +1045,8 @@ class DefaultAuthForms:
         button_name = self.auth.param.messages["buttons"]["sign-up"]
         # if the form is submitted, before any validation
         # delete any unverified account with the same email
-        if request.method == 'POST':
-            email = request.forms.get('email')
+        if request.method == "POST":
+            email = request.forms.get("email")
             if email:
                 self.auth.get_or_delete_existing_unverified_account(email)
         form = Form(fields, submit_value=button_name, formstyle=self.formstyle)

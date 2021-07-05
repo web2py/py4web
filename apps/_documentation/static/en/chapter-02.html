@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Help, resources and hints &mdash; py4web 1.20210522.2 documentation</title>
+  <title>Help, resources and hints &mdash; py4web 1.20210619.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210522.2
+                1.20210619.1
               </div>
             
           
@@ -134,6 +134,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
             
@@ -212,16 +213,11 @@ But don’t be scared, in this manual we’ll assist you side by side in this jo
 <h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="this-manual">
 <h3>This manual<a class="headerlink" href="#this-manual" title="Permalink to this headline">¶</a></h3>
-<p>This manual is the Reference Manual for py4web. It’s available online at <a class="reference external" href="https://py4web.com/_documentation/static/index.html">https://py4web.com/_documentation/static/index.html</a>, where you’ll also find the PDF
-and EBOOK version, in multiple languages.
-It was originally written with the MarkMin format (similar to MarkDown) and displayed in HTML with a custom py4web application. In 2020 we decided to
-convert its sources to the RST format which is better suited for technical documentation. Using Sphinx and the ReadTheDocs style we are now able to achieve
-high quality outputs.</p>
+<p>This manual is the Reference Manual for py4web. It’s available online at <a class="reference external" href="https://py4web.com/_documentation/static/index.html">https://py4web.com/_documentation/static/index.html</a>, where you’ll also find the PDF and EBOOK version, in multiple languages. It written in RestructuredText and generated using Sphinx.</p>
 </div>
 <div class="section" id="the-google-group">
 <h3>The Google group<a class="headerlink" href="#the-google-group" title="Permalink to this headline">¶</a></h3>
-<p>There is a dedicated mailing list hosted on Google Groups, see <a class="reference external" href="https://groups.google.com/g/py4web">https://groups.google.com/g/py4web</a>. This is the main source of discussions for developers and
-simple users. For any problem you should face, this is the right place to search for a hint or a solution.</p>
+<p>There is a dedicated mailing list hosted on Google Groups, see <a class="reference external" href="https://groups.google.com/g/py4web">https://groups.google.com/g/py4web</a>. This is the main source of discussions for developers and simple users. For any problem you should face, this is the right place to search for a hint or a solution.</p>
 </div>
 <div class="section" id="the-chat-on-irc">
 <h3>The chat on IRC<a class="headerlink" href="#the-chat-on-irc" title="Permalink to this headline">¶</a></h3>
@@ -240,7 +236,7 @@ Transcripts of them are then available on the mailing list.</p>
 </div>
 <div class="section" id="the-sources-on-github">
 <h3>The sources on GitHub<a class="headerlink" href="#the-sources-on-github" title="Permalink to this headline">¶</a></h3>
-<p>Last but not least, py4web is Open Source, with a BSD v3 licence, hosted on GitHub at <a class="reference external" href="https://github.com/web2py/py4web">https://github.com/web2py/py4web</a>. This means that you can read, study and experiment
+<p>Last but not least, py4web is Open Source, with a BSD v3 license, hosted on GitHub at <a class="reference external" href="https://github.com/web2py/py4web">https://github.com/web2py/py4web</a>. This means that you can read, study and experiment
 with all of its internal details by yourself.</p>
 </div>
 </div>
@@ -256,7 +252,7 @@ The python’s decorators, in particular, are a milestone of any python web fram
 <h3>A modern python workplace<a class="headerlink" href="#a-modern-python-workplace" title="Permalink to this headline">¶</a></h3>
 <p>In the following chapters you will start coding on your computer. We suggest you to setup a modern python workplace if you plan to do it efficiently and safely.
 Even for running simple examples and experimenting a little, we strongly suggest to use an <strong>Integrated Development Environment</strong> (IDE). This will make your programming experience much better, allowing syntax checking, linting and visual debugging.
-Nowadays there are two free and multiplatform main choices: Microsoft Visual Studio Code aka <a class="reference external" href="https://code.visualstudio.com/">VScode</a> and
+Nowadays there are two free and multi-platform main choices: Microsoft Visual Studio Code aka <a class="reference external" href="https://code.visualstudio.com/">VScode</a> and
 JetBrains <a class="reference external" href="https://www.jetbrains.com/pycharm/">PyCharm</a>.</p>
 <p>When you’ll start to deal with more complex programs and need reliability,
 we also suggest to:</p>
@@ -265,15 +261,16 @@ we also suggest to:</p>
 <a class="reference external" href="https://docs.python.org/3.7/tutorial/venv.html">here</a> for an
 introduction). In a complex workplace this will avoid to be messed up
 with other python programs and modules</p></li>
-<li><p>use a Concurrent Versions System (<strong>CVS</strong>). Keeping track of your
-program’s changes is highly valuable - along with backups it will save
-your computing life! Git and GitHub are the current standards.</p></li>
+<li><p>use <strong>git</strong> to keep track of your program’s changes and save
+your changes in a safe place online (GitHub, GitLat, or Bitbucket).</p></li>
+<li><p>use an editor with Syntax Highlighting. We highly recommend
+Visual Studio Code (VScode) or PyCharm.</p></li>
 </ul>
 </div>
 <div class="section" id="debugging-py4web-with-vscode">
 <h3>Debugging py4web with VScode<a class="headerlink" href="#debugging-py4web-with-vscode" title="Permalink to this headline">¶</a></h3>
-<p>In order to run py4web.py directly, you need to add <code class="docutils literal notranslate"><span class="pre">&quot;args&quot;:</span> <span class="pre">[&quot;run&quot;,</span> <span class="pre">&quot;apps&quot;]</span></code> to the vscode launch.json configuration file.
-In addition, if you should get gevent errors you have to add <code class="docutils literal notranslate"><span class="pre">&quot;gevent&quot;:</span> <span class="pre">true</span></code> on the same configuration file.</p>
+<p>In order to run py4web.py within VScode, you need to add <code class="docutils literal notranslate"><span class="pre">&quot;args&quot;:</span> <span class="pre">[&quot;run&quot;,</span> <span class="pre">&quot;apps&quot;]</span></code> to the vscode <code class="docutils literal notranslate"><span class="pre">launch.json</span></code>
+configuration file. In addition, if you should get gevent errors you have to add <code class="docutils literal notranslate"><span class="pre">&quot;gevent&quot;:</span> <span class="pre">true</span></code> on the same configuration file.</p>
 </div>
 <div class="section" id="debugging-py4web-with-pycharm">
 <h3>Debugging py4web with PyCharm<a class="headerlink" href="#debugging-py4web-with-pycharm" title="Permalink to this headline">¶</a></h3>
@@ -282,14 +279,13 @@ In addition, if you should get gevent errors you have to add <code class="docuti
 </div>
 <div class="section" id="how-to-contribute">
 <h2>How to contribute<a class="headerlink" href="#how-to-contribute" title="Permalink to this headline">¶</a></h2>
-<p>We need help from everyone: support our efforts! You can just partecipate in the Google group trying to answer other’s questions, submit bugs using or create pull requests on the GitHub
+<p>We need help from everyone: support our efforts! You can just participate in the Google group trying to answer other’s questions, submit bugs using or create pull requests on the GitHub
 repository.</p>
 <p>If you wish to correct and expand this manual, or even translate it in a new foreign language, you can read all the needed information directly on the
 <a class="reference external" href="https://github.com/web2py/py4web/blob/master/docs/README.md">specific README</a> on GitHub.</p>
-<p>It’s really simple! Just change the .RST files in the /doc folder and create a Push Request on
+<p>It’s really simple! Just change the .RST files in the /doc folder and create a Pull Request on
 the GitHub repository at <a class="reference external" href="https://github.com/web2py/py4web">https://github.com/web2py/py4web</a> - you can even do it within your browser.
-Once the PR is accepted, your changes will be written on the master branch, and will be reflected on the web pages / pdf / epub at
-the next output generation on the branch.</p>
+Once the PR is accepted, your changes will be written on the master branch, and will be reflected on the web pages / pdf / epub at the next output generation on the branch.</p>
 </div>
 </div>
 
@@ -339,7 +335,7 @@ the next output generation on the branch.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210522.2
+      v: 1.20210619.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

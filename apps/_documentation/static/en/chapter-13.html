@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Authentication and Access control &mdash; py4web 1.20210522.2 documentation</title>
+  <title>Authentication and Access control &mdash; py4web 1.20210619.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210522.2
+                1.20210619.1
               </div>
             
           
@@ -128,6 +128,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
             
@@ -309,7 +310,7 @@ a logged in user and should redirect to login if no user is logged in.</p>
 <div class="section" id="auth-plugins">
 <h2>Auth Plugins<a class="headerlink" href="#auth-plugins" title="Permalink to this headline">¶</a></h2>
 <p>Plugins are defined in “py4web/utils/auth_plugins” and they have a
-hierachical structure. Some are exclusive and some are not. For example,
+hierarchical structure. Some are exclusive and some are not. For example,
 default, LDAP, PAM, and SAML are exclusive (the developer has to pick
 one). Default, Google, Facebook, and Twitter OAuth are not exclusive
 (the developer can pick them all and the user gets to choose using the
@@ -423,17 +424,17 @@ to enable the following syntax:</p>
 </div>
 <p><strong>Important:</strong> <code class="docutils literal notranslate"><span class="pre">Tags</span></code> are automatically hierarchical. For example, if
 a user has a group tag ‘teacher/high-school/physics’, then all the
-following seaches will return the user:</p>
+following searches will return the user:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">groups.find('teacher/high-school/physics')</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">groups.find('teacher/high-school')</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">groups.find('teacher')</span></code></p></li>
 </ul>
-<p>This means that slashes have a special meaning for tags. Slahes at the
+<p>This means that slashes have a special meaning for tags. Slashes at the
 beginning or the end of a tag are optional. All other chars are allowed
 on equal footing.</p>
 <p>Notice that one table can have multiple associated <code class="docutils literal notranslate"><span class="pre">Tags</span></code> objects. The
-name groups here is completely arbitary but has a specific semantic
+name groups here is completely arbitrary but has a specific semantic
 meaning. Different <code class="docutils literal notranslate"><span class="pre">Tags</span></code> objects are orthogonal to each other. The
 limit to their use is your creativity.</p>
 <p>For example you could create a table groups:</p>
@@ -520,7 +521,7 @@ the user has the permission.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210522.2
+      v: 1.20210619.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
