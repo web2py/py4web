@@ -265,6 +265,12 @@ def objectify(obj):
         return obj.isoformat()
     elif isinstance(obj, str):
         return obj
+    elif isinstance(obj, dict):
+        return obj
+    elif hasattr(obj, "as_list"):
+        return obj.as_list()
+    elif hasattr(obj, "as_dict"):
+        return obj.as_dict()
     elif hasattr(obj, "__iter__") or isinstance(obj, types.GeneratorType):
         return list(obj)
     elif hasattr(obj, "xml"):
