@@ -186,7 +186,7 @@ that is available using the :ref:`shell command option`.
 .. warning::
 
    Mind that
-   database changes may be persistent. So be careful and do NOT exitate
+   database changes may be persistent. So be careful and do NOT hesitate
    to create a new application for doing testing instead of tampering
    with an existing one.
 
@@ -4271,7 +4271,7 @@ Database cascades
 
 Database schema can define relationships which trigger deletions of
 related records, known as cascading. The DAL is not informed when a
-record is deleted due to a cascade. So no \*_delete callaback will ever
+record is deleted due to a cascade. So no \*_delete callback will ever
 be called as consequence of a cascade-deletion.
 
 Record versioning
@@ -4826,8 +4826,8 @@ This means that any migration process is broken into multiple commits.
 If something happens that causes a failure it is possible to break a
 migration (the py4web metadata are no longer in sync with the actual
 table structure in the database). This is unfortunate but it can be
-prevented (migrate one table at the time) or it can be fixed a
-posteriori (revert the py4web model to what corresponds to the table
+prevented (migrate one table at the time) or it can be fixed in the
+aftermath (revert the py4web model to what corresponds to the table
 structure in database, set ``fake_migrate=True`` and after the metadata
 has been rebuilt, set ``fake_migrate=False`` and migrate the table
 again).
@@ -4842,7 +4842,7 @@ file system. PY4WEB migrations in Google SQL combined with the MySQL
 issue described above can result in metadata corruption. Again, this can
 be prevented (by migrating the table at once and then setting
 migrate=False so that the metadata table is not accessed any more) or it
-can fixed a posteriori (by accessing the database using the Google
+can fixed in the aftermath (by accessing the database using the Google
 dashboard and deleting any corrupted entry from the table called
 ``py4web_filesystem``.
 

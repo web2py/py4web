@@ -107,8 +107,8 @@ fast and secure.
 
 
 
-Acknowledegments
-----------------
+Acknowledgments
+---------------
 
 Many thanks to everyone who has contributed to the project, and especially:
 
