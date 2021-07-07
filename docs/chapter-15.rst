@@ -291,6 +291,24 @@ Simple conversion examples
       rows = db(db.thing).select()
       return locals()
 
+In the template you can access the flash object with
+
+.. code:: html
+
+    <div class="flash">[[=globals().get('flash','')]]</div>
+
+or using the more sophisticated
+
+.. code:: html
+
+   <flash-alerts class="padded " data-alert="[[=globals().get( 'flash', '')]]"></flash-alerts>
+
+The latter requires ``utils.js`` from the scaffolding app to render
+the custom tag into a div with dismissal behavior.
+
+Also notice that ``Flash`` is special: it is a singleton.
+So if you instantiate mutlple Flash objects they share their data.
+
 “grid” example
 ~~~~~~~~~~~~~~
 
@@ -314,3 +332,70 @@ Simple conversion examples
       grid = Grid(db.thing)
       form.param.editable = True
       return locals()
+
+
+“auth” example
+~~~~~~~~~~~~~~
+
+**web2py**
+
+.. code:: python
+
+   auth = Auth()
+   auth.define_tables()
+
+   @requires_login()
+   def index():
+      user_id = auth.user.id
+      user_email = auth.user.email
+      return locals()
+
+   def user():
+       return dict(form=auth())
+
+Access with ``http://.../user/login``.
+
+--> **py4web**
+
+
+.. code:: python
+
+   auth = Auth(define_table=False)
+   auth.define_tables()
+   auth.enable(route='auth')
+
+   @action("index")
+   @action.uses(auth.user)
+   def index():
+      user_id = auth.user_id
+      user_email = auth.get_user().get('email')
+      return locals()
+
+Access with ``http://.../auth/login``.
+Notice that in web2py ``auth.user`` is the current logged-in user
+retrieved from session. In py4web instead ``auth.user`` is a fixture which serves the
+same purpose as ``@requires_login`` in web2py. In py4web only the ``user_id``
+is stored in the session and it can be retrieved using ``auth.user_id``.
+If you need more information about the user, you need to fecth the record
+from the database with ``auth.get_user()`` The latter returns all readable
+fields as a Python dictionary.
+
+Also notice there is a big difference between:
+
+.. code:: python
+
+   @action.uses(auth)
+
+and
+
+.. code:: python
+
+   @action.uses(auth.user)
+
+In the first case the decorated action can access the auth object
+but ``auth.user_id`` may be None if the user is not logged in. In the second
+case we are requiring a valliid logged in user and therefore ``auth.user_id``
+is guaranteed to be a vallid user id.
+
+Also notice that if an action uses auth, than it automatically uses
+its session and its flash objects.
