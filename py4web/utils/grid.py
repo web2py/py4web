@@ -97,7 +97,7 @@ class GridClassStyle:
     styles = {
         "grid-wrapper": "",
         "grid-header": "display: table; width: 100%",
-        "grid-new-button": "display: table-cell;",
+        "grid-new-button": "",
         "grid-search": "display: table-cell; float:right",
         "grid-table-wrapper": "overflow-x: auto; width:100%",
         "grid-table": "",
