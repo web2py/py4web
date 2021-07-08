@@ -212,8 +212,8 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-pagination": "",
         "grid-pagination-button": "margin-left: .25em;",
         "grid-pagination-button-current": "margin-left: .25em;",
-        "grid-cell-type-string": "vertical-align: top; text-align: left; text-overflow: ellipsis;",
-        "grid-cell-type-text": "vertical-align: top; text-align: left; text-overflow: ellipsis;",
+        "grid-cell-type-string": "vertical-align: top; text-overflow: ellipsis;",
+        "grid-cell-type-text": "vertical-align: top; text-overflow: ellipsis;",
         "grid-cell-type-boolean": "vertical-align: top; text-align: center",
         "grid-cell-type-float": "vertical-align: top; text-align: right",
         "grid-cell-type-decimal": "vertical-align: top; text-align: right",
@@ -888,7 +888,7 @@ class Grid:
         )
 
         class_type = "grid-cell-type-%s" % str(field.type).split(":")[0].split("(")[0]
-        class_col = " grid-col-%s" % key
+        class_col = " grid-col-%s" % key.replace(".", "_")
         td = TD(
             formatter(field_value)
             if formatter.__code__.co_argcount == 1  # if formatter has only 1 argument
