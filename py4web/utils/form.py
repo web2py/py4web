@@ -125,9 +125,12 @@ class CheckboxWidget:
 
 class ListWidget:
     def make(self, field, value, error, title, placeholder="", readonly=False):
-        if field.type == 'list:string': _class = 'type-list-string'
-        elif field.type == 'list:integer': _class = 'type-list-integer'
-        else: _class = ""
+        if field.type == "list:string":
+            _class = "type-list-string"
+        elif field.type == "list:integer":
+            _class = "type-list-integer"
+        else:
+            _class = ""
 
         return INPUT(
             _value=json.dumps(value or []),
@@ -739,12 +742,13 @@ class Form(object):
 
         self.kwargs = kwargs if kwargs else {}
 
-        if readonly or request.method == "GET":
-            if self.record:
-                self.vars = self._read_vars_from_record(table)
-        else:
+        if self.record:
+            self.vars = self._read_vars_from_record(table)
+        if not readonly and request.method != "GET":
             post_vars = request.POST
-            self.vars = copy.deepcopy(request.forms)
+            form_vars = copy.deepcopy(request.forms)
+            for k in form_vars:
+                self.vars[k] = form_vars[k]
             self.submitted = True
             process = False
 
