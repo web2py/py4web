@@ -50,10 +50,12 @@ def get_options(validators):
     return options
 
 
-def join_classes(a, b):
-    a = [] if a is None else a.split() if isinstance(a, str) else a
-    b = [] if b is None else b.split() if isinstance(b, str) else b
-    return " ".join([cls for cls in list(sorted(set(a + b))) if cls.strip()])
+def join_classes(*args):
+    lists = [[] if a is None else a.split() if isinstance(a, str) else a for a in args]
+    classes = set(
+        cls.strip() for classlist in lists for cls in classlist if cls.strip()
+    )
+    return " ".join(sorted(classes))
 
 
 class Widget:
@@ -281,6 +283,7 @@ class FormStyleFactory:
         readonly,
         deletable,
         noncreate,
+        show_id,
         kwargs=None,
     ):
         kwargs = kwargs if kwargs else {}
@@ -361,6 +364,10 @@ class FormStyleFactory:
             # if this is a reaonly field only show readable fields
             if readonly:
                 if not field.readable:
+                    continue
+
+                # do not show the id if not desired
+                if field.type == "id" and not show_id:
                     continue
 
             # if this is an create form (unkown id) then only show writable fields. Some if an edit form was made from a list of fields and noncreate=True
@@ -693,6 +700,7 @@ class Form(object):
         lifespan=None,
         signing_info=None,
         submit_value="Submit",
+        show_id=True,
         **kwargs
     ):
         self.param = Param(
@@ -728,6 +736,7 @@ class Form(object):
         self.validation = validation
         self.lifespan = lifespan
         self.csrf_protection = csrf_protection
+        self.show_id = show_id
         # initialized and can change
         self.vars = {}
         self.errors = {}
@@ -906,6 +915,7 @@ class Form(object):
                 self.readonly,
                 self.deletable,
                 self.noncreate,
+                show_id=self.show_id,
                 kwargs=self.kwargs,
             )
             for item in self.param.sidecar:

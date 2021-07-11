@@ -1,9 +1,14 @@
+# TODO:
+# - details, edit, delete URLs should be signed
+#
+#
 import base64
 import copy
 from functools import reduce
 from urllib.parse import urlparse
 
 from yatl.helpers import (
+    CAT,
     DIV,
     TABLE,
     TBODY,
@@ -61,8 +66,6 @@ class GridClassStyle:
         "grid-table": "grid-table",
         "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up",
         "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down",
-        "grid-th-action-button": "grid-col-action-button",
-        "grid-td-action-button": "grid-col-action-button",
         "grid-thead": "",
         "grid-tr": "",
         "grid-th": "",
@@ -70,6 +73,8 @@ class GridClassStyle:
         "grid-details-button": "grid-details-button info",
         "grid-edit-button": "grid-edit-button info",
         "grid-delete-button": "grid-delete-button info",
+        "grid-search-button": "grid-search-button",
+        "grid-clear-button": "grid-clear-button",
         "grid-footer": "grid-footer",
         "grid-info": "grid-info",
         "grid-pagination": "grid-pagination",
@@ -87,52 +92,52 @@ class GridClassStyle:
         "grid-cell-type-upload": "grid-cell-type-upload",
         "grid-cell-type-list": "grid-cell-type-list",
         # specific for custom form
-        "search_form": "search-form",
-        "search_form_table": "search-form-table",
-        "search_form_tr": "search-form-tr",
-        "search_form_td": "search-form-td",
-        "search_boolean": "search-boolean",
+        "grid-search-form": "grid-search-form",
+        "grid-search-form-table": "grid-search-form-table",
+        "grid-search-form-tr": "grid-search-form-tr",
+        "grid-search-form-td": "grid-search-form-td",
+        "grid-search-boolean": "grid-search-boolean",
     }
 
     styles = {
         "grid-wrapper": "",
-        "grid-header": "display: table; width: 100%",
-        "grid-new-button": "",
-        "grid-search": "display: table-cell; float:right",
-        "grid-table-wrapper": "overflow-x: auto; width:100%",
+        "grid-header": "display: table; width: 100%;",
+        "grid-new-button": "margin-top:4px; height:34px; line-height:34px;",
+        "grid-search": "display: table-cell; float:right;",
+        "grid-table-wrapper": "overflow-x: auto; width:100%;",
         "grid-table": "",
         "grid-sorter-icon-up": "",
         "grid-sorter-icon-down": "",
-        "grid-th-action-button": "",
-        "grid-td-action-button": "",
         "grid-tr": "",
-        "grid-th": "white-space: nowrap; vertical-align: middle",
-        "grid-td": "white-space: nowrap; vertical-align: middle",
-        "grid-details-button": "margin-bottom: 0",
-        "grid-edit-button": "margin-bottom: 0",
-        "grid-delete-button": "margin-bottom: 0",
-        "grid-footer": "display: table; width:100%",
+        "grid-th": "white-space: nowrap; vertical-align: middle;",
+        "grid-td": "white-space: nowrap; vertical-align: middle;",
+        "grid-details-button": "margin-bottom: 0;",
+        "grid-edit-button": "margin-bottom: 0;",
+        "grid-delete-button": "margin-bottom: 0;",
+        "grid-search-button": "height: 34px;",
+        "grid-clear-button": "height: 34px;",
+        "grid-footer": "display: table; width:100%;",
         "grid-info": "display: table-cell;",
-        "grid-pagination": "display: table-cell; text-align:right",
-        "grid-pagination-button": "min-width: 20px",
-        "grid-pagination-button-current": "min-width: 20px; pointer-events:none; opacity: 0.7",
-        "grid-cell-type-string": "white-space: nowrap; vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px",
-        "grid-cell-type-text": "vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px",
-        "grid-cell-type-boolean": "white-space: nowrap; vertical-align: middle; text-align: center",
-        "grid-cell-type-float": "white-space: nowrap; vertical-align: middle; text-align: right",
-        "grid-cell-type-decimal": "white-space: nowrap; vertical-align: middle; text-align: right",
-        "grid-cell-type-int": "white-space: nowrap; vertical-align: middle; text-align: right",
-        "grid-cell-type-date": "white-space: nowrap; vertical-align: middle; text-align: right",
-        "grid-cell-type-time": "white-space: nowrap; vertical-align: middle; text-align: right",
-        "grid-cell-type-datetime": "white-space: nowrap; vertical-align: middle; text-align: right",
-        "grid-cell-type-upload": "white-space: nowrap; vertical-align: middle; text-align: center",
-        "grid-cell-type-list": "white-space: nowrap; vertical-align: middle; text-align: left",
+        "grid-pagination": "display: table-cell; text-align:right;",
+        "grid-pagination-button": "min-width: 20px;",
+        "grid-pagination-button-current": "min-width: 20px; pointer-events:none; opacity: 0.7;",
+        "grid-cell-type-string": "white-space: nowrap; vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px;",
+        "grid-cell-type-text": "vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px;",
+        "grid-cell-type-boolean": "white-space: nowrap; vertical-align: middle; text-align: center;",
+        "grid-cell-type-float": "white-space: nowrap; vertical-align: middle; text-align: right;",
+        "grid-cell-type-decimal": "white-space: nowrap; vertical-align: middle; text-align: right;",
+        "grid-cell-type-int": "white-space: nowrap; vertical-align: middle; text-align: right;",
+        "grid-cell-type-date": "white-space: nowrap; vertical-align: middle; text-align: right;",
+        "grid-cell-type-time": "white-space: nowrap; vertical-align: middle; text-align: right;",
+        "grid-cell-type-datetime": "white-space: nowrap; vertical-align: middle; text-align: right;",
+        "grid-cell-type-upload": "white-space: nowrap; vertical-align: middle; text-align: center;",
+        "grid-cell-type-list": "white-space: nowrap; vertical-align: middle; text-align: left;",
         # specific for custom form
-        "search_form": "",
-        "search_form_table": "",
-        "search_form_tr": "",
-        "search_form_td": "",
-        "search_boolean": "",
+        "grid-search-form": "",
+        "grid-search-form-table": "",
+        "grid-search-form-tr": "border-bottom: none;",
+        "grid-search-form-td": "",
+        "grid-search-boolean": "",
     }
 
     @classmethod
@@ -156,16 +161,16 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-table": "grid-table table is-bordered is-striped is-hoverable is-fullwidth is-clearfix",
         "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up is-pulled-right",
         "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down is-pulled-right",
-        "grid-th-action-button": "grid-col-action-button is-narrow",
-        "grid-td-action-button": "grid-col-action-button is-narrow",
         "grid-thead": "",
         "grid-tr": "",
         "grid-th": "",
-        "grid-td": "",
-        "grid-button": "grid-button button is-small",
+        "grid-td": "is-small",
+        "grid-button": "grid-button button",
         "grid-details-button": "grid-details-button button is-small",
         "grid-edit-button": "grid-edit-button button is-small",
         "grid-delete-button": "grid-delete-button button is-small",
+        "grid-search-button": "grid-search-button button",
+        "grid-clear-button": "grid-clear-button button",
         "grid-footer": "grid-footer pb-4",
         "grid-info": "grid-info is-pulled-left",
         "grid-pagination": "grid-pagination is-pulled-right",
@@ -183,11 +188,11 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-cell-type-upload": "grid-cell-type-upload",
         "grid-cell-type-list": "grid-cell-type-list",
         # specific for custom form
-        "search_form": "search-form is-pulled-right pb-2",
-        "search_form_table": "search-form-table",
-        "search_form_tr": "search-form-tr",
-        "search_form_td": "search-form-td pr-1",
-        "search_boolean": "search-boolean",
+        "grid-search-form": "grid-search-form is-pulled-right pb-2",
+        "grid-search-form-table": "grid-search-form-table",
+        "grid-search-form-tr": "grid-search-form-tr",
+        "grid-search-form-td": "grid-search-form-td pr-1",
+        "grid-search-boolean": "grid-search-boolean",
     }
 
     styles = {
@@ -199,14 +204,14 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-table": "",
         "grid-sorter-icon-up": "",
         "grid-sorter-icon-down": "",
-        "grid-th-action-button": "",
-        "grid-td-action-button": "",
         "grid-tr": "",
         "grid-th": "text-align: center; text-transform: uppercase;",
         "grid-td": "",
         "grid-details-button": "",
         "grid-edit-button": "",
         "grid-delete-button": "",
+        "grid-search-button": "",
+        "grid-clear-button": "",
         "grid-footer": "padding-top: .5em;",
         "grid-info": "",
         "grid-pagination": "",
@@ -220,17 +225,17 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-cell-type-int": "vertical-align: top; text-align: center;",
         "grid-cell-type-integer": "vertical-align: top; text-align: center;",
         "grid-cell-type-reference": "vertical-align: top; text-align: center;",
-        "grid-cell-type-date": "vertical-align: top; text-align: center",
-        "grid-cell-type-time": "vertical-align: top; text-align: center",
-        "grid-cell-type-datetime": "vertical-align: top; text-align: center",
-        "grid-cell-type-upload": "vertical-align: top; text-align: center",
-        "grid-cell-type-list": "vertical-align: top; text-align: left",
+        "grid-cell-type-date": "vertical-align: top; text-align: center;",
+        "grid-cell-type-time": "vertical-align: top; text-align: center;",
+        "grid-cell-type-datetime": "vertical-align: top; text-align: center;",
+        "grid-cell-type-upload": "vertical-align: top; text-align: center;",
+        "grid-cell-type-list": "vertical-align: top; text-align: left;",
         # specific for custom form
-        "search_form": "",
-        "search_form_table": "",
-        "search_form_tr": "",
-        "search_form_td": "",
-        "search_boolean": "padding-top: .5rem;",
+        "grid-search-form": "",
+        "grid-search-form-table": "",
+        "grid-search-form-tr": "",
+        "grid-search-form-td": "",
+        "grid-search-boolean": "padding-top: .5rem;",
     }
 
 
@@ -304,14 +309,14 @@ class Grid:
         details=True,
         editable=True,
         deletable=True,
-        pre_action_buttons=None,
-        post_action_buttons=None,
+        validation=None,
         auto_process=True,
         rows_per_page=15,
         include_action_button_text=True,
         search_button_text="Filter",
         formstyle=FormStyleDefault,
         grid_class_style=GridClassStyle,
+        T=lambda text: text,
         # deprecated
         fields=None,
     ):
@@ -333,10 +338,10 @@ class Grid:
         :param create: URL to redirect to for creating records - set to False to not display the button
         :param editable: URL to redirect to for editing records - set to False to not display the button
         :param deletable: URL to redirect to for deleting records - set to False to not display the button
-        :param pre_action_buttons: list of action_button instances to include before the standard action buttons
-        :param post_action_buttons: list of action_button instances to include after the standard action buttons
+        :param validation: optional validation function to pass to create and edit forms
         :param auto_process: True/False - automatically process the sql for the form - if False, user is
                               responsible for calling process().
+        :param T: optional pluralize object
         """
 
         # in case the query is a Table instead
@@ -345,6 +350,7 @@ class Grid:
 
         self.path = path or ""
         self.db = query._db
+        self.T = T
         self.param = Param(
             query=query,
             columns=columns or fields,
@@ -359,8 +365,7 @@ class Grid:
             details=details,
             editable=editable,
             deletable=deletable,
-            pre_action_buttons=pre_action_buttons,
-            post_action_buttons=post_action_buttons,
+            validation=validation,
             rows_per_page=rows_per_page,
             include_action_button_text=include_action_button_text,
             search_button_text=search_button_text,
@@ -401,6 +406,16 @@ class Grid:
 
         if auto_process:
             self.process()
+
+    def is_editable(self, row):
+        if callable(self.param.editable):
+            return self.param.editable(row)
+        return self.param.editable
+
+    def is_deletable(self, row):
+        if callable(self.param.deletable):
+            return self.param.deletable(row)
+        return self.param.deletable
 
     def process(self):
         query = None
@@ -459,37 +474,31 @@ class Grid:
         if not self.tablename:
             raise HTTP(400)
 
-        if self.action in ["new", "details", "edit"]:
+        # SECURITY: if the record does not exist or does not match query, than we are not allowed
+        table = db[self.tablename]
+        if self.record_id:
+            record = table(self.record_id)
+            if not record:
+                redirect(self.endpoint)
+        else:
+            record = None
 
-            # SECURITY: if the record does not exist or does not match query, than we are not allowed
-            if self.record_id:
-                if (
-                    db(
-                        (db[self.tablename]._id == self.record_id) & self.param.query
-                    ).count()
-                    == 0
-                ):
-                    redirect(self.endpoint)  ## maybe flash
+        if self.action in ["new", "details", "edit"]:
 
             readonly = self.action == "details"
 
-            if not self.param.show_id:
-                #  if not show id, find the "id" field and set readable/writable to False
-                for field in db[self.tablename]:
-                    if field.type == "id":
-                        db[self.tablename][field.name].readable = False
-                        db[self.tablename][field.name].writable = False
-
             attrs = self.attributes_plugin.form(url=request.url)
             self.form = Form(
-                db[self.tablename],
-                record=self.record_id,
+                table,
+                record=record,
                 readonly=readonly,
                 deletable=self.param.deletable,
                 formstyle=self.param.formstyle,
+                validation=self.param.validation,
+                show_id=self.param.show_id,
                 **attrs,
             )
-            if self.action == "new":
+            if self.action == "new" and self.param.create:
                 if self.param.new_sidecar:
                     self.form.param.sidecar.append(self.param.new_sidecar)
                 if self.param.new_submit_value:
@@ -499,18 +508,12 @@ class Grid:
                     self.form.param.sidecar.append(self.param.details_sidecar)
                 if self.param.details_submit_value:
                     self.form.param.submit_value = self.param.details_submit_value
-            if self.action == "edit":
+            if self.action == "edit" and self.is_editable(record):
                 if self.param.edit_sidecar:
                     self.form.param.sidecar.append(self.param.edit_sidecar)
                 if self.param.edit_submit_value:
                     self.form.param.submit_value = self.param.edit_submit_value
 
-            # SECURITY: if the new record was created but does not match filter, delete it
-            if self.form.accepted and not self.record_id:
-                new_record = db[self.tablename]._id == self.form.vars["id"]
-                if db(new_record & self.param.query).count() == 0:
-                    db(new_record).delete()
-                    # TODO: SHOULD FLASH SOME MESSAGE
             # redirect to the referrer
             if self.form.accepted or (readonly and request.method == "POST"):
                 referrer = request.query.get("_referrer")
@@ -519,7 +522,7 @@ class Grid:
                 else:
                     redirect(self.endpoint)
 
-        elif self.action == "delete":
+        elif self.action == "delete" and self.is_deletable(record):
             db(db[self.tablename].id == self.record_id).delete()
 
             url = parse_referer(request)
@@ -597,6 +600,9 @@ class Grid:
             self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
             if self.total_number_of_rows % self.param.rows_per_page > 0:
                 self.number_of_pages += 1
+
+        if self.param.details or self.param.editable or self.param.deletable:
+            self.param.columns.append(Column("", self.make_action_buttons))
         else:
             redirect(self.endpoint)
 
@@ -627,7 +633,7 @@ class Grid:
         right_range = set(range(max(1, num_pages - right_edge), num_pages + 1))
         return list(sorted(left_range | mid_range | right_range))
 
-    def render_action_button(
+    def _make_action_button(
         self,
         url,
         button_text,
@@ -651,10 +657,8 @@ class Grid:
         classes = self.param.grid_class_style.classes.get(name, "")
         styles = self.param.grid_class_style.styles.get(name, "")
 
-        def join(items):
-            return (
-                " ".join(items) if isinstance(items, (list, tuple)) else " %s" % items
-            )
+        def join_style(items):
+            return "".join(items) if isinstance(items, (list, tuple)) else " %s" % items
 
         if callable(additional_classes):
             additional_classes = additional_classes(row)
@@ -669,13 +673,13 @@ class Grid:
             override_styles = override_styles(row)
 
         if override_classes:
-            classes = join(override_classes)
+            classes = join_classes(override_classes)
         elif additional_classes:
-            classes += join(additional_classes)
+            classes = join_classes(classes, additional_classes)
         if override_styles:
-            styles = join(override_styles)
+            styles = join_style(override_styles)
         elif additional_styles:
-            styles += join(additional_styles)
+            styles += join_style(additional_styles)
 
         if callable(url):
             url = url(row)
@@ -692,15 +696,12 @@ class Grid:
         )
         if self.param.include_action_button_text:
             link.append(
-                XML(
-                    '<span class="grid-action-button-text">&nbsp;%s</span>'
-                    % button_text
-                )
+                SPAN(XML("&nbsp;"), button_text, _class="grid-action-button-text")
             )
 
         return link
 
-    def render_default_form(self):
+    def _make_default_form(self):
         search_type = safe_int(request.query.get("search_type", 0), default=0)
         search_string = request.query.get("search_string")
         options = [
@@ -725,30 +726,34 @@ class Grid:
             _name="search_string",
             _value=search_string,
         )
-        submit = INPUT(_type="submit", _value="Search")
+        sc = self.param.grid_class_style.get("grid-search-button")
+        submit = INPUT(_type="submit", _value=self.T("Search"), **sc)
         clear_script = "document.querySelector('[name=search_string]').value='';"
-        clear = INPUT(_type="submit", _value="Clear", _onclick=clear_script)
+        sc = self.param.grid_class_style.get("grid-clear-button")
+        clear = INPUT(_type="submit", _value=self.T("Clear"), _onclick=clear_script, **sc)
         div = DIV(_id="grid-search", **self.param.grid_class_style.get("grid-search"))
 
-        # we do not need classes for these elements
-        tr = TR()
+        sc = self.param.grid_class_style.get("grid-search-form-tr")
+        tr = TR(**sc)
+        sc = self.param.grid_class_style.get("grid-search-form-td")
         if len(options) > 1:
-            tr.append(TD(select))
-        tr.append(TD(input))
-        tr.append(TD(submit, clear))
-        form.append(TABLE(tr))
+            tr.append(TD(select, **sc))
+        tr.append(TD(input, **sc))
+        tr.append(TD(submit, clear, **sc))
+        sc = self.param.grid_class_style.get("grid-search-form-table")
+        form.append(TABLE(tr, **sc))
         div.append(form)
         return div
 
-    def render_search_form(self):
+    def _make_search_form(self):
         # TODO: Do we need this?
         div = DIV(_id="grid-search", **self.param.grid_class_style.get("grid-search"))
         div.append(self.param.search_form.custom["begin"])
-        tr = TR(**self.param.grid_class_style.get("search_form_tr"))
+        tr = TR(**self.param.grid_class_style.get("grid-search-form-tr"))
         for field in self.param.search_form.table:
-            td = TD(**self.param.grid_class_style.get("search_form_td"))
+            td = TD(**self.param.grid_class_style.get("grid-search-form-td"))
             if field.type == "boolean":
-                sb = DIV(**self.param.grid_class_style.get("search_boolean"))
+                sb = DIV(**self.param.grid_class_style.get("grid-search-boolean"))
                 sb.append(self.param.search_form.custom["widgets"][field.name])
                 sb.append(field.label)
                 td.append(sb)
@@ -771,19 +776,21 @@ class Grid:
                     INPUT(
                         _class="button",
                         _type="submit",
-                        _value=self.param.search_button_text,
+                        _value=self.T(self.param.search_button_text),
                     ),
-                    **self.param.grid_class_style.get("search_form_td"),
+                    **self.param.grid_class_style.get("grid-search-form-td"),
                 )
             )
         else:
             tr.append(
                 TD(
                     self.param.search_form.custom["submit"],
-                    **self.param.grid_class_style.get("search_form_td"),
+                    **self.param.grid_class_style.get("grid-search-form-td"),
                 )
             )
-        div.append(TABLE(tr, **self.param.grid_class_style.get("search_form_table")))
+        div.append(
+            TABLE(tr, **self.param.grid_class_style.get("grid-search-form-table"))
+        )
         for hidden_widget in self.param.search_form.custom["hidden_widgets"].keys():
             div.append(self.param.search_form.custom["hidden_widgets"][hidden_widget])
 
@@ -791,8 +798,7 @@ class Grid:
 
         return div
 
-    def render_table_header(self):
-        columns = []
+    def _make_table_header(self):
         sort_order = request.query.get("orderby", "")
 
         thead = THEAD(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
@@ -801,13 +807,13 @@ class Grid:
             if isinstance(column, (Field, FieldVirtual)):
                 field = column
                 if field.readable and (field.type != "id" or self.param.show_id):
-                    key, col = self.render_field_header(column, index, sort_order)
+                    key, col = self._make_field_header(column, index, sort_order)
             elif isinstance(column, Column):
                 key = column.name.lower().replace(" ", "-")
                 col = column.name
             else:
-                raise RuntimeError("Invallid Grid Column type")
-            if col:
+                raise RuntimeError("Invalid Grid Column type")
+            if col is not None:
                 classes = join_classes(
                     self.param.grid_class_style.classes.get("grid-th"),
                     "grid-col-%s" % key,
@@ -815,20 +821,9 @@ class Grid:
                 style = self.param.grid_class_style.styles.get("grid-th")
                 thead.append(TH(col, _class=classes, _style=style))
 
-        if (
-            self.param.details
-            or self.param.editable
-            or self.param.deletable
-            or self.param.pre_action_buttons
-            or self.param.post_action_buttons
-        ):
-            thead.append(
-                TH("", **self.param.grid_class_style.get("grid-th-action-button"))
-            )
-
         return thead
 
-    def render_field_header(self, field, field_index, sort_order):
+    def _make_field_header(self, field, field_index, sort_order):
         up = I(**self.param.grid_class_style.get("grid-sorter-icon-up"))
         dw = I(**self.param.grid_class_style.get("grid-sorter-icon-down"))
 
@@ -857,7 +852,7 @@ class Grid:
             col = A(heading, dw if "~" + key == sort_order else "", **attrs)
         return key, col
 
-    def render_field(self, row, field, field_index):
+    def _make_field(self, row, field, field_index):
         """
         Render a field
 
@@ -889,24 +884,16 @@ class Grid:
 
         class_type = "grid-cell-type-%s" % str(field.type).split(":")[0].split("(")[0]
         class_col = " grid-col-%s" % key.replace(".", "_")
+        classes = join_classes(
+            self.param.grid_class_style.classes.get("grid-td"),
+            self.param.grid_class_style.classes.get(class_type),
+            class_col,
+        )
         td = TD(
             formatter(field_value)
             if formatter.__code__.co_argcount == 1  # if formatter has only 1 argument
             else formatter(field_value, row),
-            _class=(
-                self.param.grid_class_style.classes.get("grid-td", "")
-                + " "
-                + class_type
-                if class_type
-                not in self.param.grid_class_style.classes.get(class_type, "").split(
-                    " "
-                )
-                else ""
-                + " "
-                + self.param.grid_class_style.classes.get(class_type, "")
-                + " "
-                + class_col
-            ).strip(),
+            _class=classes,
             _style=(
                 self.param.grid_class_style.styles.get(class_type)
                 or self.param.grid_class_style.styles.get("grid-td")
@@ -915,7 +902,7 @@ class Grid:
 
         return td
 
-    def render_table_body(self):
+    def _make_table_body(self):
         tbody = TBODY()
         for row in self.rows:
             #  find the row id - there may be nested tables....
@@ -946,134 +933,74 @@ class Grid:
                 if isinstance(column, (Field, FieldVirtual)):
                     field = column
                     if field.readable and (field.type != "id" or self.param.show_id):
-                        tr.append(self.render_field(row, field, index))
+                        tr.append(self._make_field(row, field, index))
                 elif isinstance(column, Column):
-                    tr.append(TD(column.render(row, index)))
+                    classes = self.param.grid_class_style.classes.get("grid-td")
+                    style = self.param.grid_class_style.styles.get("grid-td")
+                    tr.append(
+                        TD(column.render(row, index), _class=classes, _style=style)
+                    )
 
             td = None
-
-            #  add the action buttons
-            if (
-                (self.param.details and self.param.details != "")
-                or (self.param.editable and self.param.editable != "")
-                or (self.param.deletable and self.param.deletable != "")
-                or (self.param.post_action_buttons or self.param.pre_action_buttons)
-            ):
-                classes = (
-                    self.param.grid_class_style.classes.get("grid-td", "")
-                    + " "
-                    + self.param.grid_class_style.classes.get("grid-td-action-button")
-                ).strip()
-                styles = (
-                    self.param.grid_class_style.styles.get("grid-td", "")
-                    + " "
-                    + self.param.grid_class_style.styles.get("grid-td-action-button")
-                ).strip()
-                td = TD(_class=classes, _style=styles)
-                if self.param.pre_action_buttons:
-                    for btn in self.param.pre_action_buttons:
-                        if callable(btn):
-                            # a button can be a callable, to indicate whether or not a button should
-                            # be displayed. call the function with the row object
-                            btn = btn(row)
-                            if btn is None:
-                                # if None was returned, no button is available for this row: ignore this value in the
-                                # list
-                                continue
-                        if btn.onclick:
-                            btn.url = None
-                        td.append(
-                            self.render_action_button(
-                                btn.url,
-                                btn.text,
-                                btn.icon,
-                                _onclick=btn.onclick,
-                                additional_classes=btn.additional_classes,
-                                message=btn.message,
-                                row_id=row_id if btn.append_id else None,
-                                row=row,
-                            )
-                        )
-                if self.param.details and self.param.details != "":
-                    if isinstance(self.param.details, str):
-                        details_url = self.param.details
-                    else:
-                        details_url = self.endpoint + "/details"
-                    details_url += "/%s?%s" % (row_id, self.referrer)
-                    td.append(
-                        self.render_action_button(
-                            url=details_url,
-                            button_text=self.param.details_action_button_text,
-                            icon="fa-id-card",
-                            name="grid-details-button",
-                        )
-                    )
-
-                if self.param.editable and self.param.editable != "":
-                    if isinstance(self.param.editable, str):
-                        edit_url = self.param.editable
-                    else:
-                        edit_url = self.endpoint + "/edit"
-                    edit_url += "/%s?%s" % (row_id, self.referrer)
-                    td.append(
-                        self.render_action_button(
-                            url=edit_url,
-                            button_text=self.param.edit_action_button_text,
-                            icon="fa-edit",
-                            name="grid-edit-button",
-                        )
-                    )
-
-                if self.param.deletable and self.param.deletable != "":
-                    if isinstance(self.param.deletable, str):
-                        delete_url = self.param.deletable
-                    else:
-                        delete_url = self.endpoint + "/delete"
-                    delete_url += "/%s?%s" % (row_id, self.referrer)
-                    attrs = self.attributes_plugin.confirm(
-                        message="Are you sure you want to delete?"
-                    )
-                    td.append(
-                        self.render_action_button(
-                            url=delete_url,
-                            button_text=self.param.delete_action_button_text,
-                            icon="fa-trash",
-                            additional_classes="confirmation",
-                            message="Delete record",
-                            name="grid-delete-button",
-                            **attrs,
-                        )
-                    )
-                if self.param.post_action_buttons:
-                    for btn in self.param.post_action_buttons:
-                        if callable(btn):
-                            # a button can be a callable, to indicate whether or not a button should
-                            # be displayed. call the function with the row object
-                            btn = btn(row)
-                            if btn is None:
-                                # if None was returned, no button is available for this row: ignore this value in the
-                                # list
-                                continue
-                        if btn.onclick:
-                            btn.url = None
-                        td.append(
-                            self.render_action_button(
-                                btn.url,
-                                btn.text,
-                                btn.icon,
-                                _onclick=btn.onclick,
-                                additional_classes=btn.additional_classes,
-                                message=btn.message,
-                                row_id=row_id if btn.append_id else None,
-                                row=row,
-                            )
-                        )
-                tr.append(td)
             tbody.append(tr)
 
         return tbody
 
-    def render_table_pager(self):
+    def make_action_buttons(self, row):
+        cat = CAT()
+        if self.param.details:
+            if isinstance(self.param.details, str):
+                details_url = self.param.details
+            else:
+                details_url = self.endpoint + "/details"
+            details_url += "/%s?%s" % (row.id, self.referrer)
+            cat.append(
+                self._make_action_button(
+                    url=details_url,
+                    button_text=self.T(self.param.details_action_button_text),
+                    icon="fa-id-card",
+                    name="grid-details-button",
+                )
+            )
+        if self.param.editable:
+            if isinstance(self.param.editable, str):
+                edit_url = self.param.editable
+            else:
+                edit_url = self.endpoint + "/edit"
+            edit_url += "/%s?%s" % (row.id, self.referrer)
+            cat.append(
+                self._make_action_button(
+                    url=edit_url,
+                    button_text=self.T(self.param.edit_action_button_text),
+                    icon="fa-edit",
+                    name="grid-edit-button",
+                    _disabled=not self.is_editable(row),
+                )
+            )
+        if self.param.deletable:
+            if isinstance(self.param.deletable, str):
+                delete_url = self.param.deletable
+            else:
+                delete_url = self.endpoint + "/delete"
+            delete_url += "/%s?%s" % (row.id, self.referrer)
+            attrs = self.attributes_plugin.confirm(
+                message=self.T("Are you sure you want to delete?")  # FIXME
+            )
+            cat.append(
+                self._make_action_button(
+                    url=delete_url,
+                    button_text=self.T(self.param.delete_action_button_text),
+                    icon="fa-trash",
+                    additional_classes="confirmation",
+                    message="Delete record",
+                    name="grid-delete-button",
+                    _disabled=not self.is_deletable(row),
+                    **attrs,
+                )
+            )
+        return cat
+
+    def _make_table_pager(self):
         pager = DIV(**self.param.grid_class_style.get("grid-pagination"))
         previous_page_number = None
         for page_number in self.iter_pages(
@@ -1104,7 +1031,8 @@ class Grid:
             previous_page_number = page_number
         return pager
 
-    def render_table(self):
+    def _make_table(self):
+
         html = DIV(**self.param.grid_class_style.get("grid-wrapper"))
         grid_header = DIV(**self.param.grid_class_style.get("grid-header"))
 
@@ -1118,9 +1046,9 @@ class Grid:
             create_url += "?%s" % self.referrer
 
             grid_header.append(
-                self.render_action_button(
+                self._make_action_button(
                     create_url,
-                    self.param.new_action_button_text,
+                    self.T(self.param.new_action_button_text),
                     "fa-plus",
                     icon_size="normal",
                     override_classes=self.param.grid_class_style.classes.get(
@@ -1134,19 +1062,19 @@ class Grid:
 
         #  build the search form if provided
         if self.param.search_form:
-            grid_header.append(self.render_search_form())
+            grid_header.append(self._make_search_form())
         elif self.param.search_queries and len(self.param.search_queries) > 0:
-            grid_header.append(self.render_default_form())
+            grid_header.append(self._make_default_form())
 
         html.append(grid_header)
 
         table = TABLE(**self.param.grid_class_style.get("grid-table"))
 
         # build the header
-        table.append(self.render_table_header())
+        table.append(self._make_table_header())
 
         #  build the rows
-        table.append(self.render_table_body())
+        table.append(self._make_table_body())
 
         #  add the table to the html
         html.append(DIV(table, **self.param.grid_class_style.get("grid-table-wrapper")))
@@ -1156,7 +1084,7 @@ class Grid:
 
         row_count = DIV(**self.param.grid_class_style.get("grid-info"))
         row_count.append(
-            "Displaying rows %s thru %s of %s"
+            str(self.T("Displaying rows %s thru %s of %s"))
             % (
                 self.page_start + 1 if self.number_of_pages > 1 else 1,
                 self.page_end
@@ -1169,10 +1097,10 @@ class Grid:
 
         #  build the pager
         if self.number_of_pages > 1:
-            footer.append(self.render_table_pager())
+            footer.append(self._make_table_pager())
 
         html.append(footer)
-        return XML(html)
+        return html
 
     def render(self):
         """
@@ -1181,7 +1109,7 @@ class Grid:
         :return: html representation of the table or the py4web Form object
         """
         if self.action == "select":
-            return self.render_table()
+            return XML(self._make_table())
         elif self.action in ["new", "details", "edit"]:
             return self.form
 

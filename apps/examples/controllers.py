@@ -139,7 +139,7 @@ def tagsinput_form():
 # exposed as /examples/htmlgrid
 @action("html_grid")
 @action("html_grid/<path:path>", method=["POST", "GET"])
-@action.uses(session, db, auth, "html_grid.html")
+@action.uses(session, db, auth, T, "html_grid.html")
 def example_html_grid(path=None):
     #  controllers and used for all grids in the app
     grid_param = dict(
@@ -164,6 +164,8 @@ def example_html_grid(path=None):
                 columns=columns,
                 search_queries=search_queries,
                 orderby=orderby,
+                show_id=False,
+                T=T,
                 **grid_param)
 
     grid.formatters['thing.color'] = lambda color: I(_class="fa fa-circle", _style="color:"+color)
