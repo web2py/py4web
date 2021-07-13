@@ -395,7 +395,7 @@ and
 In the first case the decorated action can access the auth object
 but ``auth.user_id`` may be None if the user is not logged in. In the second
 case we are requiring a valliid logged in user and therefore ``auth.user_id``
-is guaranteed to be a vallid user id.
+is guaranteed to be a valid user id.
 
-Also notice that if an action uses auth, than it automatically uses
+Also notice that if an action uses auth, then it automatically uses
 its session and its flash objects.
