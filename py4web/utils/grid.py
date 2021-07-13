@@ -165,6 +165,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-tr": "",
         "grid-th": "",
         "grid-td": "is-small",
+        "grid-td-buttons": "is-narrow",
         "grid-button": "grid-button button",
         "grid-details-button": "grid-details-button button is-small",
         "grid-edit-button": "grid-edit-button button is-small",
@@ -205,7 +206,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-sorter-icon-up": "",
         "grid-sorter-icon-down": "",
         "grid-tr": "",
-        "grid-th": "text-align: center; text-transform: uppercase;",
+        "grid-th": "text-align: center; text-transform: uppercase; vertical-align: bottom;",
         "grid-td": "",
         "grid-details-button": "",
         "grid-edit-button": "",
@@ -249,6 +250,14 @@ class Column:
     def render(self, row, index=None):
         """renders a row al position index (optional)"""
         return self.represent(row)
+
+
+class ButtonsColumn(Column):
+    def __init__(self, name, represent, position="pre"):
+        Column.__init__(self, name, represent)
+        self.position = position
+
+    pass
 
 
 class Grid:
@@ -441,6 +450,8 @@ class Grid:
             self.tablename = str(self.param.field_id._table)
         else:
             self.tablename = self.get_tablenames(self.param.query)[0]
+            self.param.field_id = db[self.tablename]._id
+
         self.record_id = safe_int(parts[1] if len(parts) > 1 else None, default=None)
 
         table = db[self.tablename]
@@ -602,7 +613,7 @@ class Grid:
                 self.number_of_pages += 1
 
         if self.param.details or self.param.editable or self.param.deletable:
-            self.param.columns.append(Column("", self.make_action_buttons))
+            self.param.columns.append(ButtonsColumn("", self.make_action_buttons))
         else:
             redirect(self.endpoint)
 
@@ -730,7 +741,9 @@ class Grid:
         submit = INPUT(_type="submit", _value=self.T("Search"), **sc)
         clear_script = "document.querySelector('[name=search_string]').value='';"
         sc = self.param.grid_class_style.get("grid-clear-button")
-        clear = INPUT(_type="submit", _value=self.T("Clear"), _onclick=clear_script, **sc)
+        clear = INPUT(
+            _type="submit", _value=self.T("Clear"), _onclick=clear_script, **sc
+        )
         div = DIV(_id="grid-search", **self.param.grid_class_style.get("grid-search"))
 
         sc = self.param.grid_class_style.get("grid-search-form-tr")
@@ -935,8 +948,16 @@ class Grid:
                     if field.readable and (field.type != "id" or self.param.show_id):
                         tr.append(self._make_field(row, field, index))
                 elif isinstance(column, Column):
-                    classes = self.param.grid_class_style.classes.get("grid-td")
-                    style = self.param.grid_class_style.styles.get("grid-td")
+                    if isinstance(column, ButtonsColumn):
+                        classes = self.param.grid_class_style.classes.get(
+                            "grid-td-buttons"
+                        )
+                        style = self.param.grid_class_style.styles.get(
+                            "grid-td-buttons"
+                        )
+                    else:
+                        classes = self.param.grid_class_style.classes.get("grid-td")
+                        style = self.param.grid_class_style.styles.get("grid-td")
                     tr.append(
                         TD(column.render(row, index), _class=classes, _style=style)
                     )
@@ -948,12 +969,14 @@ class Grid:
 
     def make_action_buttons(self, row):
         cat = CAT()
+        row_id = row[self.param.field_id] if self.param.field_id else row.id
+
         if self.param.details:
             if isinstance(self.param.details, str):
                 details_url = self.param.details
             else:
                 details_url = self.endpoint + "/details"
-            details_url += "/%s?%s" % (row.id, self.referrer)
+            details_url += "/%s?%s" % (row_id, self.referrer)
             cat.append(
                 self._make_action_button(
                     url=details_url,
@@ -967,7 +990,7 @@ class Grid:
                 edit_url = self.param.editable
             else:
                 edit_url = self.endpoint + "/edit"
-            edit_url += "/%s?%s" % (row.id, self.referrer)
+            edit_url += "/%s?%s" % (row_id, self.referrer)
             cat.append(
                 self._make_action_button(
                     url=edit_url,
@@ -982,7 +1005,7 @@ class Grid:
                 delete_url = self.param.deletable
             else:
                 delete_url = self.endpoint + "/delete"
-            delete_url += "/%s?%s" % (row.id, self.referrer)
+            delete_url += "/%s?%s" % (row_id, self.referrer)
             attrs = self.attributes_plugin.confirm(
                 message=self.T("Are you sure you want to delete?")  # FIXME
             )

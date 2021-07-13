@@ -357,20 +357,21 @@ class FormStyleFactory:
             title = field._title if "_title" in field.__dict__ else None
             field_disabled = False
 
-            # only diplay field if readable or writable
+            # only display field if readable or writable
             if not field.readable and not field.writable:
                 continue
 
-            # if this is a reaonly field only show readable fields
+            # if this is a readonly field only show readable fields
             if readonly:
                 if not field.readable:
                     continue
 
-                # do not show the id if not desired
-                if field.type == "id" and not show_id:
-                    continue
+            # do not show the id if not desired
+            if field.type == "id" and not show_id:
+                continue
 
-            # if this is an create form (unkown id) then only show writable fields. Some if an edit form was made from a list of fields and noncreate=True
+            #  if this is an create form (unkown id) then only show writable fields.
+            #  Some if an edit form was made from a list of fields and noncreate=True
             elif not vars.get("id") and noncreate:
                 if not field.writable:
                     continue
