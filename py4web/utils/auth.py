@@ -5,7 +5,7 @@ import datetime
 import hashlib
 import re
 import time
-import urllib
+import threading
 import uuid
 
 from py4web import redirect, request, response, abort, URL, action, Field, HTTP
@@ -101,7 +101,11 @@ class AuthEnforcer(Fixture):
             self.auth.session["recent_activity"] = time_now
         self.auth.session["recent_timestamp"] = datetime.datetime.utcnow().isoformat()
         if callable(self.condition) and not self.condition(user):
-            self.abort_or_redirect("not-authorized", "User not authorized")
+            self.abort_or_redirect("not-authorized", "User not authorized")        
+
+    def __getitem__(self, name):
+        """returns the name of the name field of the current logged in user"""
+        return self.auth.get_user(cached=True)[name]
 
 
 class Auth(Fixture):
@@ -227,6 +231,13 @@ class Auth(Fixture):
             self.define_tables()
         self.plugins = {}
         self.form_source = DefaultAuthForms(self)
+        self._data = threading.local()
+
+    def on_request(self):
+        self._data.user = None
+
+    def finalize(self):
+        self._data.user = None
 
     def allows(self, action_name):
         return (
@@ -379,20 +390,26 @@ class Auth(Fixture):
         return AuthEnforcer(self, condition)
 
     # utilities
-    def get_user(self, safe=True):
+    def get_user(self, safe=True, cached=False):
         """extracts the user form the session.
         returns {} if no user in the session.
         If session contains only a user['id']
         retrives the other readable user info from auth_user"""
+        # maybe the user is a cache
+        if cached and getattr(self._data, "user", None):
+            return self._data.user
         user = self.session.get("user")
         if not user or not isinstance(user, dict) or not "id" in user:
-            return {}
-        if len(user) == 1 and self.db:
+            user = {}
+        elif len(user) == 1 and self.db:
             user = self.db.auth_user(user["id"])
             if not user:
-                return {}
-            if safe:
+                user = {}
+            elif safe:
                 user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
+        # if we have a new user we store it in cache
+        if cached:
+            self._data.user = user
         return user
 
     @property

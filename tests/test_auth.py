@@ -66,6 +66,7 @@ class TestAuth(unittest.TestCase):
         user = self.db.auth_user[1]
         self.assertTrue(user.action_token.startswith("pending-registration"))
 
+        self.assertEqual(self.auth.get_user(cached=False), {})
         self.assertEqual(self.auth.get_user(), {})
 
         body = {"email": "pinco.pallino@example.com", "password": "1234567"}
@@ -150,7 +151,7 @@ class TestAuth(unittest.TestCase):
         )
 
         self.assertEqual(
-            self.auth.get_user(),
+            self.auth.get_user(cached=False),
             {
                 "id": 1,
                 "username": "ppallino",
@@ -158,6 +159,10 @@ class TestAuth(unittest.TestCase):
                 "first_name": "Pinco",
                 "last_name": "Pallino",
             },
+        )
+
+        self.assertEqual(
+            self.auth.user["email"], "pinco.pallino@example.com"
         )
 
         body = {}
