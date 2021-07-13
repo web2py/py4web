@@ -243,9 +243,10 @@ class GridClassStyleBulma(GridClassStyle):
 class Column:
     """class used to represent a column in a grid"""
 
-    def __init__(self, name, represent):
+    def __init__(self, name, represent, orderby=None):
         self.name = name
         self.represent = represent
+        self.orderby = orderby
 
     def render(self, row, index=None):
         """renders a row al position index (optional)"""
@@ -253,8 +254,8 @@ class Column:
 
 
 class ButtonsColumn(Column):
-    def __init__(self, name, represent, position="pre"):
-        Column.__init__(self, name, represent)
+    def __init__(self, name, represent, orderby=None, position="pre"):
+        Column.__init__(self, name, represent, orderby)
         self.position = position
 
     pass
@@ -824,6 +825,8 @@ class Grid:
             elif isinstance(column, Column):
                 key = column.name.lower().replace(" ", "-")
                 col = column.name
+                if column.orderby:
+                    key, col = self._make_field_header(column, index, sort_order)
             else:
                 raise RuntimeError("Invalid Grid Column type")
             if col is not None:
@@ -840,11 +843,17 @@ class Grid:
         up = I(**self.param.grid_class_style.get("grid-sorter-icon-up"))
         dw = I(**self.param.grid_class_style.get("grid-sorter-icon-down"))
 
-        key = "%s.%s" % (field.tablename, field.name)
+        if isinstance(field, Column):
+            key = str(field.orderby)
+        else:
+            key = "%s.%s" % (field.tablename, field.name)
+
         heading = (
             self.param.headings[field_index]
             if field_index < len(self.param.headings)
             else field.label
+            if "label" in field.__dict__
+            else field.name
         )
         heading = title(heading)
         #  add the sort order query parm
