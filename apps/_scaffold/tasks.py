@@ -1,7 +1,7 @@
 """
 To use celery tasks:
-1) pip install -U "celery[redis]" 
-2) In settings.py: 
+1) pip install -U "celery[redis]"
+2) In settings.py:
    USE_CELERY = True
    CELERY_BROKER = "redis://localhost:6379/0"
 3) Start "redis-server"
@@ -24,7 +24,7 @@ def my_task():
         db.rollback()
 
 
-# run my_task very 10 seconds
+# run my_task every 10 seconds
 scheduler.conf.beat_schedule = {
     "my_first_task": {
         "task": "apps.%s.tasks.my_task" % settings.APP_NAME,
