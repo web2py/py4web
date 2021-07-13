@@ -489,9 +489,13 @@ class Grid:
                     for field in db[col.tablename]:
                         needed_fields.add(field)
             self.needed_fields = list(needed_fields)
-        else:
-            # the columns specify with fields are needed
-            self.needed_fields = self.param.columns[:]
+
+        # make sure the columns specified with fields are included
+        if self.param.columns:
+            for col in self.param.columns:
+                if not isinstance(col, (Column, FieldVirtual)):
+                    if col.longname not in [x.longname for x in self.needed_fields]:
+                        self.needed_fields.append(col)
 
         # except the primary key may be missing and must be fetched even if not displayed
         if not any(col.name == table._id.name for col in self.needed_fields):
