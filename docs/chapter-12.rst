@@ -3,7 +3,9 @@ Forms
 =====
 
 The Form class provides a high-level API for quickly building CRUD (create, update and delete) forms, 
-especially for working on an existing database table. It is a pretty much equivalent to web2py’s ``SQLFORM``.
+especially for working on an existing database table. I can generate an process a form from a 
+list of desired fields and/or from an existing database table.
+It is a pretty much equivalent to web2py’s ``SQLFORM``.
 
 
 The Form constructor
@@ -48,10 +50,11 @@ Where:
 -  ``signing_info``: information that should not change between when the CSRF token is signed and verified
   
 
-A minimal form example
-----------------------
+A minimal form example without a database
+-----------------------------------------
 
-Let's start with a minimal working form example. Create a new minimal app called ``form_minimal`` :
+Let's start with a minimal working form example.
+Create a new minimal app called ``form_minimal`` :
 
 .. code:: python
 
@@ -108,16 +111,15 @@ Note that:
    the form is contained
 
 
-This example is not so useful because it's not using a database, a template or the session management.
-But it works, and if you try to fill the form with an empty product_quantity, the form will trigger an error
-and the corresponding error page will be shown.
+This example is intentionally not using a database, a template, nor the session management.
+The next example will.
 
 
+Form from a database table
+--------------------------
 
-Form basic example
-------------------
-
-Let's continue with a basic example of a form for adding data to a database. Create a new minimal app called ``form_basic`` :
+In this next minimalist example we generate a form from a database. 
+Create a new minimal app called ``form_basic`` :
 
 
 .. code-block:: python
@@ -139,19 +141,26 @@ Let's continue with a basic example of a form for adding data to a database. Cre
     )
     
     @action("index", method=["GET", "POST"])
+    @action("index/<id:int>", method=["GET", "POST"])
     @action.uses(db, "form_basic.html")
     def index(id=None):
-        form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
+        record = id and db.person[id]
+        if id and not record:
+            raise HTTP(404)
+        form = Form(db.person, record, deletable=False, formstyle=FormStyleDefault)
         rows = db(db.person).select()
         return dict(form=form, rows=rows)
 
-
 After the required import instructions and sqlite database definition,
-on line 16 we declare an endpoint ``form_basic/index``,
-which will be used both for the GET and for the POST of the form.
+in line 16,17 we declare two endpoints :
+- ``form_basic/index`` (a create form)
+- ``form_basic/index/{id}`` (an edit form for the specified record id)
 
-Also, create a new template file inside the app called ``templates/form_basic.html`` that
-contains the following code:
+Because this is a dual purpuse form, in case an ``id`` is passed, we also valdate it
+by checking the corrsponding record exists and raie 404 if not.
+
+To use it we will need a template ``templates/form_basic.html`` that
+contains, for example, the following code:
 
 .. code:: html
 
@@ -168,7 +177,6 @@ contains the following code:
     </ul>
 
 
-
 Reload py4web and visit http://127.0.0.1:8000/form_basic : 
 the result is an input form on the top of the page, and the list of all the
 previously added entries on the bottom:
@@ -181,8 +189,9 @@ The database content can also be fully seen and changed with the Dashboard app.
 Form Structure Manipulation
 ---------------------------
 
-Like in web2py, in py4web a form is rendered by helpers. Unlike web2py, it uses yatl helpers. This means the
-tree structure of a form can be manipulated before the form is serialized in HTML. For example:
+In py4web a form is rendered by YATL helpers. This means the tree structure of a form
+can be manipulated before the form is serialized in HTML. 
+Here is an example of how to manipulate the generate HTML structure:
 
 .. code:: python
 
@@ -216,7 +225,7 @@ Here is a simple example of how to require a validator for a table field:
     )
 
 The validator is frequently
- written explicitly outside the table definition in this equivalent manner:
+written explicitly outside the table definition in this equivalent sytntax:
 
 .. code:: python
 
@@ -228,12 +237,13 @@ The validator is frequently
     db.person.name.requires = IS_NOT_EMPTY()
 
 
-A field can have a single validator or multiple validators. Multiple validators are made part of a list:
+A field can have a single validator or a list of multiple validators:
 
 .. code:: python
 
-    db.person.name.requires = [IS_NOT_EMPTY(),
-                            IS_NOT_IN_DB(db, 'person.name')]
+    db.person.name.requires = [
+        IS_NOT_EMPTY(),
+        IS_NOT_IN_DB(db, 'person.name')]
 
 Mind that the only validators that can be used with ``list:`` type fields are:
 
@@ -243,8 +253,9 @@ Mind that the only validators that can be used with ``list:`` type fields are:
 -  ``IS_LIST_OF_EMAILS()``
 -  ``IS_LIST_OF(...)``
 
-The latter can be used to apply any validator to the individual items in the list. ``multiple=(1, 1000)`` requires a selection of between 1 and 1000 items. This enforces selection of at least one choice. 
-
+The latter can be used to apply any validator to the individual items in the list.
+``multiple=(1, 1000)`` requires a selection of between 1 and 1000 items.
+This enforces selection of at least one choice. 
 
 Built-in validators have constructors that take an ``error_message`` argument:
 
@@ -252,10 +263,13 @@ Built-in validators have constructors that take an ``error_message`` argument:
 
     IS_NOT_EMPTY(error_message='cannot be empty!')
 
+Notice the error message is usually fist option of the constructors and you can normally
+avoid to name it. Hence the following syntax is equivalent:
 
-It's optional and it allows you to override the default error message for any validator.
-Also, it's the usually fist option of the constructors and you can normally avoid to name it. Hence
-the following syntax is equivalent:
+If you want to use internationalization like explained in a previous chapter you need to
+define your own messages and wrap the validator message in the T operator:
+
+    IS_NOT_EMPTY(error_message=T('cannot be empty!'))
 
 .. code:: python
 
@@ -268,7 +282,8 @@ Here is an example of a validator on a database table:
     db.person.name.requires = IS_NOT_EMPTY(error_message=T('fill this!'))
 
 
-where we have used the translation operator ``T`` to allow for internationalization. Notice that default error messages are not translated.
+where we have used the translation operator ``T`` to allow for internationalization.
+Notice that error messages are not translated by default unless you define them explicitely with ``T``.
 
 One can also call validators explicitly for a field:
 
