@@ -70,6 +70,8 @@ class GridClassStyle:
         "grid-tr": "",
         "grid-th": "",
         "grid-td": "",
+        "grid-td-buttons": "",
+        "grid-button": "info",
         "grid-details-button": "grid-details-button info",
         "grid-edit-button": "grid-edit-button info",
         "grid-delete-button": "grid-delete-button info",
@@ -91,6 +93,7 @@ class GridClassStyle:
         "grid-cell-type-datetime": "grid-cell-type-datetime",
         "grid-cell-type-upload": "grid-cell-type-upload",
         "grid-cell-type-list": "grid-cell-type-list",
+        "grid-cell-type-id": "grid-cell-type-id",
         # specific for custom form
         "grid-search-form": "grid-search-form",
         "grid-search-form-table": "grid-search-form-table",
@@ -108,9 +111,12 @@ class GridClassStyle:
         "grid-table": "",
         "grid-sorter-icon-up": "",
         "grid-sorter-icon-down": "",
+        "grid-thead": "",
         "grid-tr": "",
         "grid-th": "white-space: nowrap; vertical-align: middle;",
         "grid-td": "white-space: nowrap; vertical-align: middle;",
+        "grid-td-buttons": "",
+        "grid-button": "margin-bottom: 0;",
         "grid-details-button": "margin-bottom: 0;",
         "grid-edit-button": "margin-bottom: 0;",
         "grid-delete-button": "margin-bottom: 0;",
@@ -132,6 +138,7 @@ class GridClassStyle:
         "grid-cell-type-datetime": "white-space: nowrap; vertical-align: middle; text-align: right;",
         "grid-cell-type-upload": "white-space: nowrap; vertical-align: middle; text-align: center;",
         "grid-cell-type-list": "white-space: nowrap; vertical-align: middle; text-align: left;",
+        "grid-cell-type-int": "white-space: nowrap; vertical-align: middle; text-align: right;",
         # specific for custom form
         "grid-search-form": "",
         "grid-search-form-table": "",
@@ -165,8 +172,8 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-tr": "",
         "grid-th": "",
         "grid-td": "is-small",
-        "grid-td-buttons": "is-narrow",
-        "grid-button": "grid-button button",
+        "grid-td-buttons": "is-small is-narrow",
+        "grid-button": "grid-button button is-small",
         "grid-details-button": "grid-details-button button is-small",
         "grid-edit-button": "grid-edit-button button is-small",
         "grid-delete-button": "grid-delete-button button is-small",
@@ -188,6 +195,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-cell-type-datetime": "grid-cell-type-datetime",
         "grid-cell-type-upload": "grid-cell-type-upload",
         "grid-cell-type-list": "grid-cell-type-list",
+        "grid-cell-type-id": "grid-cell-type-id has-text-centered",
         # specific for custom form
         "grid-search-form": "grid-search-form is-pulled-right pb-2",
         "grid-search-form-table": "grid-search-form-table",
@@ -205,9 +213,12 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-table": "",
         "grid-sorter-icon-up": "",
         "grid-sorter-icon-down": "",
+        "grid-thead": "",
         "grid-tr": "",
         "grid-th": "text-align: center; text-transform: uppercase; vertical-align: bottom;",
         "grid-td": "",
+        "grid-td-buttons": "",
+        "grid-button": "",
         "grid-details-button": "",
         "grid-edit-button": "",
         "grid-delete-button": "",
@@ -224,13 +235,12 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-cell-type-float": "vertical-align: top; text-align: right",
         "grid-cell-type-decimal": "vertical-align: top; text-align: right",
         "grid-cell-type-int": "vertical-align: top; text-align: center;",
-        "grid-cell-type-integer": "vertical-align: top; text-align: center;",
-        "grid-cell-type-reference": "vertical-align: top; text-align: center;",
         "grid-cell-type-date": "vertical-align: top; text-align: center;",
         "grid-cell-type-time": "vertical-align: top; text-align: center;",
         "grid-cell-type-datetime": "vertical-align: top; text-align: center;",
         "grid-cell-type-upload": "vertical-align: top; text-align: center;",
         "grid-cell-type-list": "vertical-align: top; text-align: left;",
+        "grid-cell-type-id": "",
         # specific for custom form
         "grid-search-form": "",
         "grid-search-form-table": "",
@@ -243,22 +253,22 @@ class GridClassStyleBulma(GridClassStyle):
 class Column:
     """class used to represent a column in a grid"""
 
-    def __init__(self, name, represent, orderby=None):
+    def __init__(
+        self,
+        name,
+        represent,
+        orderby=None,
+        td_class_style=None,
+    ):
         self.name = name
         self.represent = represent
         self.orderby = orderby
 
+        self.td_class_style = td_class_style
+
     def render(self, row, index=None):
         """renders a row al position index (optional)"""
         return self.represent(row)
-
-
-class ButtonsColumn(Column):
-    def __init__(self, name, represent, orderby=None, position="pre"):
-        Column.__init__(self, name, represent, orderby)
-        self.position = position
-
-    pass
 
 
 class Grid:
@@ -320,6 +330,8 @@ class Grid:
         editable=True,
         deletable=True,
         validation=None,
+        pre_action_buttons=None,
+        post_action_buttons=None,
         auto_process=True,
         rows_per_page=15,
         include_action_button_text=True,
@@ -349,6 +361,8 @@ class Grid:
         :param editable: URL to redirect to for editing records - set to False to not display the button
         :param deletable: URL to redirect to for deleting records - set to False to not display the button
         :param validation: optional validation function to pass to create and edit forms
+        :param pre_action_buttons: list of Column instances to include before the standard action buttons
+        :param post_action_buttons: list of Column instances to include after the standard action buttons
         :param auto_process: True/False - automatically process the sql for the form - if False, user is
                               responsible for calling process().
         :param T: optional pluralize object
@@ -376,6 +390,8 @@ class Grid:
             editable=editable,
             deletable=deletable,
             validation=validation,
+            pre_action_buttons=pre_action_buttons,
+            post_action_buttons=post_action_buttons,
             rows_per_page=rows_per_page,
             include_action_button_text=include_action_button_text,
             search_button_text=search_button_text,
@@ -614,7 +630,9 @@ class Grid:
                 self.number_of_pages += 1
 
         if self.param.details or self.param.editable or self.param.deletable:
-            self.param.columns.append(ButtonsColumn("", self.make_action_buttons))
+            self.param.columns.append(
+                Column("", self.make_action_buttons, td_class_style="grid-td-buttons")
+            )
         else:
             redirect(self.endpoint)
 
@@ -957,16 +975,14 @@ class Grid:
                     if field.readable and (field.type != "id" or self.param.show_id):
                         tr.append(self._make_field(row, field, index))
                 elif isinstance(column, Column):
-                    if isinstance(column, ButtonsColumn):
-                        classes = self.param.grid_class_style.classes.get(
-                            "grid-td-buttons"
-                        )
-                        style = self.param.grid_class_style.styles.get(
-                            "grid-td-buttons"
-                        )
-                    else:
-                        classes = self.param.grid_class_style.classes.get("grid-td")
-                        style = self.param.grid_class_style.styles.get("grid-td")
+                    classes = self.param.grid_class_style.classes.get(
+                        column.td_class_style,
+                        self.param.grid_class_style.classes.get("grid-td"),
+                    )
+                    style = self.param.grid_class_style.styles.get(
+                        column.td_class_style,
+                        self.param.grid_class_style.styles.get("grid-td"),
+                    )
                     tr.append(
                         TD(column.render(row, index), _class=classes, _style=style)
                     )
@@ -979,6 +995,19 @@ class Grid:
     def make_action_buttons(self, row):
         cat = CAT()
         row_id = row[self.param.field_id] if self.param.field_id else row.id
+
+        if self.param.pre_action_buttons and len(self.param.pre_action_buttons) > 0:
+            for btn in self.param.pre_action_buttons:
+                cat.append(
+                    self._make_action_button(
+                        url=btn.url,
+                        button_text=self.T(btn.text),
+                        icon=btn.icon,
+                        additional_classes=btn.additional_classes,
+                        message=btn.message,
+                        row_id=row_id if btn.append_id else None,
+                    )
+                )
 
         if self.param.details:
             if isinstance(self.param.details, str):
@@ -1030,6 +1059,20 @@ class Grid:
                     **attrs,
                 )
             )
+
+        if self.param.post_action_buttons and len(self.param.post_action_buttons) > 0:
+            for btn in self.param.post_action_buttons:
+                cat.append(
+                    self._make_action_button(
+                        url=btn.url,
+                        button_text=self.T(btn.text),
+                        icon=btn.icon,
+                        additional_classes=btn.additional_classes,
+                        message=btn.message,
+                        row_id=row_id if btn.append_id else None,
+                    )
+                )
+
         return cat
 
     def _make_table_pager(self):
