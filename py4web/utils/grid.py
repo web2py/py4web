@@ -489,6 +489,8 @@ class Grid:
                     for field in db[col.tablename]:
                         needed_fields.add(field)
             self.needed_fields = list(needed_fields)
+        else:
+            self.needed_fields = self.param.columns[:]
 
         # make sure the columns specified with fields are included
         if self.param.columns:
