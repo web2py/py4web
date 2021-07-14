@@ -639,8 +639,6 @@ class Grid:
             self.param.columns.append(
                 Column("", self.make_action_buttons, td_class_style="grid-td-buttons")
             )
-        else:
-            redirect(self.endpoint)
 
     def iter_pages(
         self,
