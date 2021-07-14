@@ -19,7 +19,7 @@ from py4web import (
 )
 from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
-from py4web.utils.tags import Tags
+from pydal.tools.tags import Tags
 from py4web.utils.form import Form
 from py4web.utils.factories import ActionFactory
 from . import settings
