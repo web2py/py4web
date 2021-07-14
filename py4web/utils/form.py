@@ -764,7 +764,10 @@ class Form(object):
                     uploaded_files = []
                     for field in self.table:
                         if field.writable and field.type != "id":
-                            original_value = post_vars.getall(field.name)
+                            if field.name in form_vars:
+                                original_value = post_vars.getall(field.name)
+                            else:
+                                continue
                             if isinstance(original_value, list):
                                 if len(original_value) == 1:
                                     original_value = original_value[0]
