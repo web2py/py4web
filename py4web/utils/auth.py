@@ -9,10 +9,10 @@ import urllib
 import uuid
 
 from py4web import redirect, request, response, abort, URL, action, Field, HTTP
-from py4web.core import Fixture, Template, Flash, REGEX_APPJSON
+from py4web.core import Fixture, Translator, Flash, REGEX_APPJSON
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
-from yatl.helpers import INPUT, A, DIV
+from yatl.helpers import A, DIV
 
 from pydal.validators import (
     IS_EMAIL,
@@ -775,6 +775,14 @@ class Auth(Fixture):
         self.route = route = route.rstrip("/")
         env = env or {}
         auth = self
+
+        translators = [fixture for fixture in uses if isinstance(fixture, Translator)]
+        if translators:
+            T = translators[0]
+            for group in self.param.messages.values():
+                for key, value in group.items():
+                    group[key] = T(value)
+        
 
         def allowed(name):
             return set(self.param.allowed_actions) & set(["all", name])
