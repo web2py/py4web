@@ -257,12 +257,17 @@ class Column:
         self,
         name,
         represent,
+        required_fields=None,
         orderby=None,
         td_class_style=None,
     ):
         self.name = name
         self.represent = represent
         self.orderby = orderby
+        if isinstance(required_fields, list):
+            self.required_fields = required_fields
+        else:
+            self.required_fields = [required_fields]
 
         self.td_class_style = td_class_style
 
@@ -479,6 +484,11 @@ class Grid:
         elif any(isinstance(col, Column) for col in self.param.columns):
             # if we use columns we have to get all fields and assume a single table
             self.needed_fields = [field for field in db[self.tablename]]
+            for col in self.param.columns:
+                if isinstance(col, Column):
+                    for rf in col.required_fields:
+                        if rf.longname not in [x.longname for x in self.needed_fields]:
+                            self.needed_fields.append(rf)
         elif any(isinstance(col, FieldVirtual) for col in self.param.columns):
             # if virtual fields are specified the fields may come from a join
             needed_fields = set()
@@ -492,7 +502,7 @@ class Grid:
         else:
             self.needed_fields = self.param.columns[:]
 
-        # make sure the columns specified with fields are included
+        # make sure all specified fields are available
         if self.param.columns:
             for col in self.param.columns:
                 if not isinstance(col, (Column, FieldVirtual)):
