@@ -13,6 +13,7 @@ from urllib.parse import urljoin
 import jwt
 import requests
 
+
 class OAuth2WPMiniorange(OAuth2):
     """
     Authorized Redirect URI template to be configured in your OAuth2 server
@@ -47,24 +48,22 @@ class OAuth2WPMiniorange(OAuth2):
         # "last_name": "lastname",
     }
 
-    def __init__(self,
+    def __init__(
+        self,
         client_id,
         client_secret,
         server_host,
         name=None,
         label="Wordpress",
         maps=None,
-        login_path='/wp-json/moserver/authorize',
-        token_path='/wp-json/moserver/token',
-        userinfo_path='/wp-json/moserver/resource',
-        **kwargs
+        login_path="/wp-json/moserver/authorize",
+        token_path="/wp-json/moserver/token",
+        userinfo_path="/wp-json/moserver/resource",
+        **kwargs,
     ):
         name = name or self.__class__.__name__.lower()
         super(OAuth2WPMiniorange, self).__init__(
-            client_id,
-            client_secret,
-            f"auth/plugin/{name}/callback",
-            **kwargs
+            client_id, client_secret, f"auth/plugin/{name}/callback", **kwargs
         )
         self.name = name
         self.label = label
@@ -79,7 +78,7 @@ class OAuth2WPMiniorange(OAuth2):
         try:
             data = self.callback(get_vars)
         except jwt.exceptions.InvalidSignatureError as err:
-            #-# In case of invalid signature jwt library raises InvalidSignatureError
+            # -# In case of invalid signature jwt library raises InvalidSignatureError
             # This maybe should be common to all OAuth2 derived classes.
             abort(401, err)
         if not data:
@@ -99,19 +98,28 @@ class OAuth2WPMiniorange(OAuth2):
                 value_, parts = data, value__.split(".")
                 for part in parts:
                     # Thi is specific of the OAuth2 server implementation
-                    value = value_['userinfo'][int(part) if part.isdigit() else part]
+                    value = value_["userinfo"][int(part) if part.isdigit() else part]
 
                     user[key] = value
 
-            #-# In case of different servers username other than id sould result
+            # -# In case of different servers username other than id sould result
             # not unique
 
             sso_id = user["sso_id"]
-            user["sso_id"] = "%s:%s" % (self.name, sso_id,)
+            user["sso_id"] = "%s:%s" % (
+                self.name,
+                sso_id,
+            )
             if not "username" in user:
-                user["username"] = "%s:%s" % (self.name, sso_id,)
+                user["username"] = "%s:%s" % (
+                    self.name,
+                    sso_id,
+                )
             else:
-                user["username"] = "%s:%s" % (self.name, user["username"],)
+                user["username"] = "%s:%s" % (
+                    self.name,
+                    user["username"],
+                )
             # store or retrieve the user
             data = auth.get_or_register_user(user)
 
@@ -123,7 +131,7 @@ class OAuth2WPMiniorange(OAuth2):
         auth.store_user_in_session(user_id)
         redirect(URL("index"))
 
-    #-# This method is an exact copy of the one from original class
+    # -# This method is an exact copy of the one from original class
     # without this subsequent error is raised from the jwt library (don't know why)
     # jwt.exceptions.InvalidSignatureError: Signature verification failed
 
@@ -152,10 +160,13 @@ class OAuth2WPMiniorange(OAuth2):
             # Lets not get the  user attributes via the userinfo endpoint
             # but lets take the userinfo directly extracted from the token
             # res = requests.get(self.userinfo_url, headers=headers)
-            data = jwt.decode(token, algorithms=self.algorithms,
-                              # because of this open issue
-                              # https://github.com/jpadilla/pyjwt/issues/359
-                              options={"verify_signature": False})
+            data = jwt.decode(
+                token,
+                algorithms=self.algorithms,
+                # because of this open issue
+                # https://github.com/jpadilla/pyjwt/issues/359
+                options={"verify_signature": False},
+            )
         else:
             # fallback to old approach if "id_token" is not in the response
             token = output.get("access_token")

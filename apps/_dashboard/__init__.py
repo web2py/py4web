@@ -296,7 +296,7 @@ if MODE in ("demo", "readonly", "full"):
     @session_secured
     def clear_tickets():
         if MODE != "demo":
-            safely(error_logger.databasea_logger.clear)
+            safely(error_logger.database_logger.clear)
 
     @action("ticket/<ticket_uuid>")
     @action.uses("ticket.html")
