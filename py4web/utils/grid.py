@@ -179,7 +179,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-delete-button": "grid-delete-button button is-small",
         "grid-search-button": "grid-search-button button",
         "grid-clear-button": "grid-clear-button button",
-        "grid-footer": "grid-footer pb-4",
+        "grid-footer": "grid-footer pb-8",
         "grid-info": "grid-info is-pulled-left",
         "grid-pagination": "grid-pagination is-pulled-right",
         "grid-pagination-button": "grid-pagination-button button is-small",
@@ -224,7 +224,7 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-delete-button": "",
         "grid-search-button": "",
         "grid-clear-button": "",
-        "grid-footer": "padding-top: .5em;",
+        "grid-footer": "padding-top: .5em; padding-bottom: 2em;",
         "grid-info": "",
         "grid-pagination": "",
         "grid-pagination-button": "margin-left: .25em;",
@@ -264,10 +264,12 @@ class Column:
         self.name = name
         self.represent = represent
         self.orderby = orderby
-        if isinstance(required_fields, list):
-            self.required_fields = required_fields
-        else:
-            self.required_fields = [required_fields]
+        self.required_fields = []
+        if required_fields:
+            if isinstance(required_fields, list):
+                self.required_fields = required_fields
+            else:
+                self.required_fields = [required_fields]
 
         self.td_class_style = td_class_style
 
