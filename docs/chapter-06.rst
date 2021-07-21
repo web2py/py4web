@@ -627,13 +627,13 @@ A fixture is an object with the following minimal structure:
 
 .. code:: python
 
-   from py4web import Fixture
+   from py4web.core import Fixture
 
    class MyFixture(Fixture):
        def on_request(self): pass
-       def on_success(self): pass
+       def on_success(self, status): pass
        def on_error(self): pass
-       def transform(self, data): return data
+       def transform(self, output, shared_data=None): return output
 
 If an action uses this fixture:
 
