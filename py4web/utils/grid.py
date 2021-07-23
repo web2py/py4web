@@ -647,7 +647,13 @@ class Grid:
             if self.total_number_of_rows % self.param.rows_per_page > 0:
                 self.number_of_pages += 1
 
-        if self.param.details or self.param.editable or self.param.deletable:
+        if (
+            self.param.pre_action_buttons
+            or self.param.details
+            or self.param.editable
+            or self.param.deletable
+            or self.param.post_action_buttons
+        ):
             self.param.columns.append(
                 Column("", self.make_action_buttons, td_class_style="grid-td-buttons")
             )
@@ -694,6 +700,7 @@ class Grid:
         row_id=None,
         name="grid-button",
         row=None,
+        ignore_attribute_plugin=False,
         **attrs,
     ):
         separator = "?"
@@ -730,7 +737,11 @@ class Grid:
         if callable(url):
             url = url(row)
 
-        attrs.update(self.attributes_plugin.link(url=url))
+        if ignore_attribute_plugin:
+            attrs.update({"_href": url})
+        else:
+            attrs.update(self.attributes_plugin.link(url=url))
+
         link = A(
             I(_class="fa %s" % icon),
             _role="button",
@@ -1022,6 +1033,9 @@ class Grid:
                         additional_classes=btn.additional_classes,
                         message=btn.message,
                         row_id=row_id if btn.append_id else None,
+                        ignore_attribute_plugin=btn.ignore_attribute_plugin
+                        if "ignore_attribute_plugin" in btn.__dict__
+                        else False,
                     )
                 )
 
@@ -1086,6 +1100,9 @@ class Grid:
                         additional_classes=btn.additional_classes,
                         message=btn.message,
                         row_id=row_id if btn.append_id else None,
+                        ignore_attribute_plugin=btn.ignore_attribute_plugin
+                        if "ignore_attribute_plugin" in btn.__dict__
+                        else False,
                     )
                 )
 
