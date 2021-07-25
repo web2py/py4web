@@ -800,3 +800,22 @@ that match the specified attributes will be searched for text.
    >>> b = a.find('span.efg', text=re.compile('x|y|z'), replace='hello')
    >>> print(a)
    <div><div><span class="abc">x</span><div><span class="efg">hello</span><span class="abc">z</span></div></div></div>
+
+
+Import modules from templates
+-----------------------------
+
+Normally all the code should be called from the controller program, and only the
+necessary data is passed to the template in order to be displayed.
+But sometimes it's useful to use a python function as a helper called from a template.
+
+In this case in templates you can import code from your apps folder. For example,
+if your helper function is called *sidebar_menu* and it's inside <yourappname>/libs/helpers.py
+you could use this in your templates:
+
+.. code:: html
+
+   [[from apps.<Your app name>.libs.helpers import sidebar_menu]]
+
+
+But be careful because it is assuming that your apps folder name and app name never change.
