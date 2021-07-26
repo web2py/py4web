@@ -801,7 +801,6 @@ that match the specified attributes will be searched for text.
    >>> print(a)
    <div><div><span class="abc">x</span><div><span class="efg">hello</span><span class="abc">z</span></div></div></div>
 
-
 Import modules from templates
 -----------------------------
 
@@ -809,13 +808,33 @@ Normally all the code should be called from the controller program, and only the
 necessary data is passed to the template in order to be displayed.
 But sometimes it's useful to use a python function as a helper called from a template.
 
-In this case in templates you can import code from your apps folder. For example,
-if your helper function is called *sidebar_menu* and it's inside <yourappname>/libs/helpers.py
-you could use this in your templates:
+In this case you can use ``Inject``. For example if your helper function is called *sidebar_menu*
+and it's inside the libs/helpers.py module of your app, you could use this in **controllers.py**:
+
+.. code:: python
+
+   from py4web.utils.factories import Inject
+   from .libs.helpers import sidebar_menu
+
+   @action(...)
+   @action.uses(Inject(sidebar_menu=sidebar_menu), "index.html")
+   def index(): ....
+
+OR
+
+.. code:: python
+
+   from py4web.utils.factories import Inject
+   from .libs import helpers
+
+   @action(...)
+   @action.uses(Inject(**vars(helpers)), "index.html")
+   def index(): ....
+
+
+Then you can import the needed code in the index.html template in a clean way:
 
 .. code:: html
 
-   [[from apps.<Your app name>.libs.helpers import sidebar_menu]]
+   [[=sidebar_menu]]
 
-
-But be careful because it is assuming that your apps folder name and app name never change.
