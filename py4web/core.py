@@ -52,6 +52,7 @@ import pluralize
 import pydal
 import threadsafevariable
 import yatl
+import renoir
 
 bottle.BaseRequest.MEMFILE_MAX = 16 * 1024 * 1024
 
@@ -99,7 +100,6 @@ Is still experimental...
 """
 
 Field = pydal.Field
-render = yatl.render
 request = bottle.request
 response = bottle.response
 abort = bottle.abort
@@ -488,6 +488,27 @@ class Flash(Fixture):
 #########################################################################################
 
 
+def render(
+    content=None,
+    filename=None,
+    path=".",
+    context={},
+    delimiters="[[ ]]",
+    cached_renoir_engines=Cache(100),
+):
+    """
+    renders the template using renoire, same API as yatl.render, does caching of
+    both Renoire engine and source files
+    """
+    engine = cached_renoir_engines.get(
+        (path, delimiters),
+        lambda: renoir.Renoir(path=path, delimiters=delimiters.split(" "), reload=True),
+    )
+    if content is not None:
+        return engine._render(content, context=context)
+    return engine.render(filename, context=context)
+
+
 class Template(Fixture):
 
     cache = Cache(100)
@@ -496,18 +517,6 @@ class Template(Fixture):
         self.filename = filename
         self.path = path
         self.delimiters = delimiters
-
-    @staticmethod
-    def reader(filename):
-        """Cached file reader, only reads template if it has changed"""
-
-        def raw_read():
-            with open(filename, encoding="utf8") as stream:
-                return stream.read()
-
-        return Template.cache.get(
-            filename, raw_read, expiration=1, monitor=lambda: os.path.getmtime(filename)
-        )
 
     def transform(self, output, shared_data=None):
         if not isinstance(output, dict):
@@ -526,12 +535,8 @@ class Template(Fixture):
             generic_filename = os.path.join(path, "generic.html")
             if os.path.exists(generic_filename):
                 filename = generic_filename
-        output = yatl.render(
-            Template.reader(filename),
-            path=path,
-            context=context,
-            delimiters=self.delimiters,
-            reader=Template.reader,
+        output = render(
+            filename=filename, path=path, context=context, delimiters=self.delimiters
         )
         return output
 
@@ -1109,7 +1114,7 @@ class ErrorLogger:
         def log(app_name, error_snap_shop):
             ...
             return ticket_uuid
-    
+
     error_logger.plugins['app_name'] = MyLogger()
     """
 
@@ -1282,6 +1287,7 @@ ERROR_PAGES = {
     "*": '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>',
 }
 
+
 def error_page(code, button_text=None, href="#", color=None, message=None):
     message = http.client.responses[code].upper() if message is None else message
     color = (
@@ -1298,7 +1304,7 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
         return json.dumps(context)
     # else - return html error-page
     content = ERROR_PAGES.get(code) or ERROR_PAGES["*"]
-    return yatl.render(content, context=context, delimiters="[[ ]]")
+    return render(content=content, context=context, delimiters="[[ ]]")
 
 
 @bottle.error(404)
