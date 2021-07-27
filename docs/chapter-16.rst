@@ -18,13 +18,22 @@ not all the adapters work with async.
 
 htmx
 ----
-htmx allows you to access AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML,
-using attributes, so you can build modern user interfaces with the simplicity and power of hypertext.
+
+There are many javascript front-end frameworks available today that allow you great flexibility
+over how you design your web client. Vue, React and Angular are just a few.  However, the
+complexity in building one of these systems prevents many developers from reaping those benefits. 
+Add to that the rapid state of change in the ecosystem and you soon have an application that is
+difficult to maintain just a year or two down the road.
+
+As a consequence, there is a growing need to use simple html elements to add reactivity to your web
+pages. htmx is one of the tools emerging as a leader in page reactivity without the complexities of javascript.
+Technically, htmx allows you to access AJAX, CSS Transitions, Web Sockets and Server Sent Events directly
+in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext.
 [CIT1601]_
 
-htmx is a powerful tool that allows you to build interactivity into your web page with little to no javascript.
+Read all about htmx and its capabilities on the official site at https://htmx.org . If you prefer,
+there is also a video tutorial: `Simple, Fast Frontends With htmx <https://www.youtube.com/watch?v=cBfz4W_KvEI>`__ .
 
-Read all about htmx and its capabilities on the htmx site at https://htmx.org
 
 py4web enables htmx integration in a couple of ways.
 
