@@ -53,6 +53,8 @@ import pydal
 import threadsafevariable
 import yatl
 import renoir
+import renoir.constants
+import renoir.writers
 
 bottle.BaseRequest.MEMFILE_MAX = 16 * 1024 * 1024
 
@@ -488,6 +490,34 @@ class Flash(Fixture):
 #########################################################################################
 
 
+class RenoirXMLEscapeMixin:
+    def _escape_data(self, data):
+        body = None
+        if hasattr(data, 'xml') and callable(data.xml):
+            try:
+                body = data.xml()
+            except Exception:
+                pass
+        if body is None:
+            body = self._to_html(self._to_unicode(data))
+        return body
+
+
+class TemplaterWriter(RenoirXMLEscapeMixin, renoir.writers.Writer):
+    ...
+
+
+class TemplaterEscapeAllWriter(RenoirXMLEscapeMixin, renoir.writers.EscapeAllWriter):
+    ...
+
+
+class Templater(renoir.Renoir):
+    _writers = {
+        renoir.constants.ESCAPES.common: TemplaterWriter,
+        renoir.constants.ESCAPES.all: TemplaterEscapeAllWriter
+    }
+
+
 def render(
     content=None,
     filename=None,
@@ -502,7 +532,7 @@ def render(
     """
     engine = cached_renoir_engines.get(
         (path, delimiters),
-        lambda: renoir.Renoir(path=path, delimiters=delimiters.split(" "), reload=True),
+        lambda: Templater(path=path, delimiters=delimiters.split(" "), reload=True),
     )
     if content is not None:
         return engine._render(content, context=context)
