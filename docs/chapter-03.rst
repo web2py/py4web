@@ -427,7 +427,7 @@ and then ask py4web to re-use that password at runtime with
 
 ::
 
-   py4webt run -p my_password_file.txt apps
+   py4web run -p my_password_file.txt apps
 
 Finally you can manually create the file yourself with:
 
