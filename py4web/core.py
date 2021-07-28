@@ -131,7 +131,7 @@ def required_folder(*parts):
     return path
 
 
-def safely(func, exceptions=(Exception,), log=False):
+def safely(func, exceptions=(Exception,), log=False, default=None):
     """
     runs the funnction and returns True on success,
     False if one of the exceptions is raised
@@ -141,7 +141,7 @@ def safely(func, exceptions=(Exception,), log=False):
     except exceptions as err:
         if log:
             logging.warn(str(err))
-        return None
+        return default() if callable(default) else default
 
 
 ########################################################################################
@@ -492,29 +492,25 @@ class Flash(Fixture):
 
 class RenoirXMLEscapeMixin:
     def _escape_data(self, data):
-        body = None
-        if hasattr(data, 'xml') and callable(data.xml):
-            try:
-                body = data.xml()
-            except Exception:
-                pass
-        if body is None:
-            body = self._to_html(self._to_unicode(data))
-        return body
+        """Allows Renoir to convert yatl helpers to strings"""
+        return safely(
+            lambda: data.xml(), default=lambda: self._to_html(self._to_unicode(data))
+        )
 
 
-class TemplaterWriter(RenoirXMLEscapeMixin, renoir.writers.Writer):
+class RenoirCustomWriter(RenoirXMLEscapeMixin, renoir.writers.Writer):
     ...
 
 
-class TemplaterEscapeAllWriter(RenoirXMLEscapeMixin, renoir.writers.EscapeAllWriter):
+class RenoirCustomEscapeAllWriter(RenoirXMLEscapeMixin, renoir.writers.EscapeAllWriter):
     ...
 
 
-class Templater(renoir.Renoir):
+class Renoir(renoir.Renoir):
+    """Custom Renoir Engine that understands yatl helpers"""
     _writers = {
-        renoir.constants.ESCAPES.common: TemplaterWriter,
-        renoir.constants.ESCAPES.all: TemplaterEscapeAllWriter
+        renoir.constants.ESCAPES.common: RenoirCustomWriter,
+        renoir.constants.ESCAPES.all: RenoirCustomEscapeAllWriter,
     }
 
 
@@ -532,7 +528,7 @@ def render(
     """
     engine = cached_renoir_engines.get(
         (path, delimiters),
-        lambda: Templater(path=path, delimiters=delimiters.split(" "), reload=True),
+        lambda: Renoir(path=path, delimiters=delimiters.split(" "), reload=True),
     )
     if content is not None:
         return engine._render(content, context=context)
