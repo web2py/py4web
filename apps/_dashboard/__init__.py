@@ -27,6 +27,8 @@ from py4web import (
 )
 from py4web.core import Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
+from py4web.utils.form import FormStyleDefault
+from py4web.utils.grid import Grid, AttributesPluginHtmx, GridClassStyle
 
 from .diff2kryten import diff2kryten
 from .utils import *
@@ -53,7 +55,8 @@ def get_commits(project):
     commits = []
     for line in output.split("\n"):
         if line.startswith("commit "):
-            commit = {"code": line[7:], "message": "", "author": "", "date": ""}
+            commit = {"code": line[7:], "message": "",
+                      "author": "", "date": ""}
             commits.append(commit)
         elif line.startswith("Author: "):
             commit["author"] = line[8:]
@@ -141,6 +144,73 @@ if MODE in ("demo", "readonly", "full"):
     def dbadmin():
         return dict(languages=dumps(getattr(T.local, "language", {})))
 
+    @action("dbadminhtmx")
+    @action.uses(Logged(session), "dbadminHTMX.html")
+    def dbadminHTMX():
+        args = dict(request.query)
+        app = args.get('app', None)
+        dbname = args.get('dbname', None)
+        tablename = args.get('tablename', None)
+        gridURL = URL("dbadmin_grid", app, dbname, tablename)
+        return dict(languages=dumps(getattr(T.local, "language", {})), gridURL=gridURL)
+
+    @action("dbadmin_grid/<app>/<dbname>/<tablename>", method=["GET", "POST"])
+    @action("dbadmin_grid/<app>/<dbname>/<tablename>/<path:path>", method=["GET", "POST"])
+    @action.uses(Logged(session), "dbadminGrid.html")
+    def dbadmin_grid(app=None, dbname=None, tablename=None, path=None):
+        from py4web.core import Reloader, DAL
+        from yatl.helpers import A
+
+        if MODE != "full":
+            raise HTTP(403)
+        module = Reloader.MODULES[app]
+
+        databases = [
+            name for name in dir(module) if isinstance(getattr(module, name), DAL)
+        ]
+        if dbname not in databases:
+            raise HTTP(403)
+        db = getattr(module, dbname)
+        grid_param = dict(
+            rows_per_page=20,
+            include_action_button_text=True,
+            search_button_text="Filter",
+            formstyle=FormStyleDefault,
+            grid_class_style=GridClassStyleFuture,
+            auto_process=False,
+        )
+        table = getattr(db, tablename)
+        search_queries = [
+            ["By Name", lambda value: table.id == value],
+        ]
+
+        query = table.id > 0
+        orderby = [table.id]
+        columns = [field for field in table if field.readable]
+
+        grid = Grid(
+            path,
+            query,
+            columns=columns,
+            search_queries=search_queries,
+            orderby=orderby,
+            show_id=True,
+            T=T,
+            **grid_param
+        )
+
+        grid.attributes_plugin = AttributesPluginHtmx("#panel")
+        attrs = {
+            "_hx-get": URL("dbadmin_grid", app, dbname, tablename),
+            "_hx-target": "#panel",
+        }
+        grid.param.new_sidecar = A("Cancel", **attrs)
+        grid.param.edit_sidecar = A("Cancel", **attrs)
+
+        grid.process()
+
+        return dict(grid=grid)
+
     @action("info")
     @session_secured
     def info():
@@ -227,7 +297,8 @@ if MODE in ("demo", "readonly", "full"):
                 "dirs": list(
                     sorted(
                         [
-                            {"name": dir, "content": store[os.path.join(root, dir)]}
+                            {"name": dir,
+                                "content": store[os.path.join(root, dir)]}
                             for dir in dirs
                             if dir[0] != "." and dir[:2] != "__"
                         ],
@@ -269,15 +340,17 @@ if MODE in ("demo", "readonly", "full"):
         appname = sanitize(appname)
         app_dir = os.path.join(FOLDER, appname)
         store = io.BytesIO()
-        zip = zipfile.ZipFile(store, mode="w", compression=zipfile.ZIP_DEFLATED)
+        zip = zipfile.ZipFile(
+            store, mode="w", compression=zipfile.ZIP_DEFLATED)
         for root, dirs, files in os.walk(app_dir, topdown=False):
             if not root.startswith("."):
                 for name in files:
                     if not (
-                        name.endswith("~") or name.endswith(".pyc") or name[:1] in "#."
+                        name.endswith("~") or name.endswith(
+                            ".pyc") or name[:1] in "#."
                     ):
                         filename = os.path.join(root, name)
-                        short = filename[len(app_dir + os.path.sep) :]
+                        short = filename[len(app_dir + os.path.sep):]
                         print("added", filename, short)
                         zip.write(filename, short)
         zip.close()
@@ -289,7 +362,8 @@ if MODE in ("demo", "readonly", "full"):
     @session_secured
     def tickets():
         """Returns most recent tickets grouped by path+error"""
-        tickets = safely(error_logger.database_logger.get) if MODE != "DEMO" else None
+        tickets = safely(
+            error_logger.database_logger.get) if MODE != "DEMO" else None
         return {"payload": tickets or []}
 
     @action("clear")
@@ -305,7 +379,8 @@ if MODE in ("demo", "readonly", "full"):
         if MODE != "demo":
             return dict(
                 ticket=safely(
-                    lambda: error_logger.database_logger.get(ticket_uuid=ticket_uuid)
+                    lambda: error_logger.database_logger.get(
+                        ticket_uuid=ticket_uuid)
                 )
             )
         else:
@@ -361,7 +436,8 @@ if MODE in ("demo", "readonly", "full"):
                     allow_lookup=True,
                     fields=table.fields,
                 )
-                policy.set(table._tablename, "PUT", authorize=True, fields=table.fields)
+                policy.set(table._tablename, "PUT",
+                           authorize=True, fields=table.fields)
                 policy.set(
                     table._tablename, "POST", authorize=True, fields=table.fields
                 )
@@ -512,7 +588,8 @@ if MODE == "full":
             raise HTTP(400)
 
         branch = (
-            request.forms.get("branches") if request.forms.get("branches") else "master"
+            request.forms.get("branches") if request.forms.get(
+                "branches") else "master"
         )
         # swap branches then go back to gitlog so new commits load
         checkout(project, branch)

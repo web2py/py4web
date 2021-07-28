@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <base href="[[=URL('static')]]/">
+    <link rel="stylesheet" type="text/css" href="css/future.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+  </head>
+  <body>    
+    <div id="vue">
+      <div class="panel">   
+        <label>
+          App: {{app}}
+          Database: {{dbname}}
+          Table: {{tablename}}
+        </label>
+      </div>      
+      <div id="panel" class="panel">
+        <div hx-get="[[=gridURL]]" hx-trigger="load" hx-target="#panel">
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://unpkg.com/htmx.org@1.3.2"></script>
+  <script src="js/sugar.min.js"></script>
+  <script src="js/vue.min.js"></script>
+  <script src="js/axios.min.js"></script>
+  <script src="js/utils.js"></script>
+  <script>T.languages = [[=languages]];</script>
+  <script src="js/dbadmin.js"></script>
+</html>

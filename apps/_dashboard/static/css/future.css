@@ -53,6 +53,7 @@ td.middle {
 tbody {
    border-bottom: 1px solid #33BFFF;
 }
+.btn,
 button {
    background-color: black;
    color: #33BFFF;   
@@ -72,6 +73,7 @@ button.btn-app {
    padding: 4px 20px 6px 10px;  
    text-align: left;   
 }
+.btn:hover,
 button:hover {
    border: 2px solid #139FDF;
    box-shadow: inset 0 0 0 50px #33BFFF; 
