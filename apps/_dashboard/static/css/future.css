@@ -73,6 +73,8 @@ button.btn-app {
    padding: 4px 20px 6px 10px;  
    text-align: left;   
 }
+
+.btn-filled,
 .btn:hover,
 button:hover {
    border: 2px solid #139FDF;

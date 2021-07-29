@@ -186,7 +186,7 @@ class GridClassStyleFuture(GridClassStyle):
         "grid-info": "grid-info",
         "grid-pagination": "grid-pagination",
         "grid-pagination-button": "grid-pagination-button btn",
-        "grid-pagination-button-current": "grid-pagination-button-current default",
+        "grid-pagination-button-current": "grid-pagination-button-current btn btn-filled",
         "grid-cell-type-string": "grid-cell-type-string",
         "grid-cell-type-text": "grid-cell-type-text",
         "grid-cell-type-boolean": "grid-cell-type-boolean",

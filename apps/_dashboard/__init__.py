@@ -207,6 +207,18 @@ if MODE in ("demo", "readonly", "full"):
         grid.param.new_sidecar = A("Cancel", **attrs)
         grid.param.edit_sidecar = A("Cancel", **attrs)
 
+        grid.formatters_by_type["date"] = (
+            lambda value: value.strftime("%m/%d/%Y") if value else ""
+        )
+
+        grid.formatters_by_type["time"] = (
+            lambda value: value.strftime("%H:%M:%S") if value else ""
+        )
+
+        grid.formatters_by_type["datetime"] = (
+            lambda value: value.strftime("%m/%d/%Y %H:%M:%S") if value else ""
+        )
+
         grid.process()
 
         return dict(grid=grid)
