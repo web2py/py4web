@@ -139,12 +139,12 @@ if MODE in ("demo", "readonly", "full"):
         session["user"] = None
         return dict()
 
-    @action("dbadmin")
-    @action.uses(Logged(session), "dbadmin.html")
-    def dbadmin():
-        return dict(languages=dumps(getattr(T.local, "language", {})))
+    # @action("dbadmin")
+    # @action.uses(Logged(session), "dbadmin.html")
+    # def dbadmin():
+    #     return dict(languages=dumps(getattr(T.local, "language", {})))
 
-    @action("dbadminhtmx")
+    @action("dbadmin")
     @action.uses(Logged(session), "dbadminHTMX.html")
     def dbadminHTMX():
         args = dict(request.query)
@@ -163,6 +163,7 @@ if MODE in ("demo", "readonly", "full"):
 
         if MODE != "full":
             raise HTTP(403)
+
         module = Reloader.MODULES[app]
 
         databases = [
@@ -175,14 +176,11 @@ if MODE in ("demo", "readonly", "full"):
             rows_per_page=20,
             include_action_button_text=True,
             search_button_text="Filter",
-            formstyle=FormStyleDefault,
+            formstyle=FormStyleFuture,
             grid_class_style=GridClassStyleFuture,
             auto_process=False,
         )
         table = getattr(db, tablename)
-        search_queries = [
-            ["By Name", lambda value: table.id == value],
-        ]
 
         query = table.id > 0
         orderby = [table.id]
@@ -192,7 +190,7 @@ if MODE in ("demo", "readonly", "full"):
             path,
             query,
             columns=columns,
-            search_queries=search_queries,
+            search_queries=None,
             orderby=orderby,
             show_id=True,
             T=T,
@@ -203,6 +201,7 @@ if MODE in ("demo", "readonly", "full"):
         attrs = {
             "_hx-get": URL("dbadmin_grid", app, dbname, tablename),
             "_hx-target": "#panel",
+            "_class": "btn"
         }
         grid.param.new_sidecar = A("Cancel", **attrs)
         grid.param.edit_sidecar = A("Cancel", **attrs)

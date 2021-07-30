@@ -137,8 +137,6 @@ input[type=number],
 input[type=date], 
 input[type=time], 
 input[type=datetime-local],
-input[type=file], 
-select,
 textarea {
    background-color: black;
    border: 0;
@@ -288,4 +286,19 @@ label {
 }
 .field-referenced {
   margin-right: 1em;
+}
+
+.field:not(:last-child) {
+   margin-bottom: .75rem;
+}
+
+.label:not(:last-child) {
+   margin-bottom: .5em;
+}
+
+select {
+   cursor: pointer;
+   background-color: black;
+   font-size: 20px;
+   color: #33BFFF;
 }

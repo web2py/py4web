@@ -18,6 +18,7 @@ import logging
 import gzip
 
 from py4web.utils.grid import GridClassStyle
+from py4web.utils.form import FormStyleFactory
 
 
 __all__ = (
@@ -30,7 +31,8 @@ __all__ = (
     "pack",
     "unpack",
     "create_app",
-    "GridClassStyleFuture"
+    "GridClassStyleFuture",
+    "FormStyleFuture"
 )
 
 
@@ -172,7 +174,7 @@ class GridClassStyleFuture(GridClassStyle):
         "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up",
         "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down",
         "grid-thead": "",
-        "grid-tr": "",
+        "grid-tr": "grid-tr",
         "grid-th": "",
         "grid-td": "",
         "grid-td-buttons": "",
@@ -217,7 +219,7 @@ class GridClassStyleFuture(GridClassStyle):
         "grid-sorter-icon-up": "",
         "grid-sorter-icon-down": "",
         "grid-thead": "",
-        "grid-tr": "",
+        "grid-tr": "margin-bottom: 0; vertical-align: middle;",
         "grid-th": "white-space: nowrap; vertical-align: middle;",
         "grid-td": "white-space: nowrap; vertical-align: middle;",
         "grid-td-buttons": "",
@@ -227,7 +229,7 @@ class GridClassStyleFuture(GridClassStyle):
         "grid-delete-button": "margin-bottom: 0;",
         "grid-search-button": "height: 34px;",
         "grid-clear-button": "height: 34px;",
-        "grid-footer": "display: table; width:100%;",
+        "grid-footer": "display: table; width:100%; margin-top: 10;",
         "grid-info": "display: table-cell;",
         "grid-pagination": "display: table-cell; text-align:right;",
         "grid-pagination-button": "min-width: 20px;",
@@ -251,3 +253,31 @@ class GridClassStyleFuture(GridClassStyle):
         "grid-search-form-td": "",
         "grid-search-boolean": "",
     }
+
+
+FormStyleFuture = FormStyleFactory()
+FormStyleFuture.classes.update(
+    {
+        "outer": "field",
+        "inner": "control",
+        "label": "label",
+        "info": "label",
+        "error": "error",
+        "submit": "btn",
+        "input": "input",
+        "input[type=text]": "input",
+        "input[type=date]": "input",
+        "input[type=time]": "input",
+        "input[type=datetime-local]": "input",
+        "input[type=radio]": "radio",
+        "input[type=checkbox]": "checkbox",
+        "input[type=submit]": "btn",
+        "input[type=password]": "input password",
+        "input[type=file]": "file",
+        "select": "control select",
+        "textarea": "textarea",
+        "div": ""
+    }
+)
+
+FormStyleFuture.class_inner_exceptions = {"select": "select"}
