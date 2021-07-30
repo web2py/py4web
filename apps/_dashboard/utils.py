@@ -219,7 +219,7 @@ class GridClassStyleFuture(GridClassStyle):
         "grid-sorter-icon-up": "",
         "grid-sorter-icon-down": "",
         "grid-thead": "",
-        "grid-tr": "margin-bottom: 0; vertical-align: middle;",
+        "grid-tr": "",
         "grid-th": "white-space: nowrap; vertical-align: middle;",
         "grid-td": "white-space: nowrap; vertical-align: middle;",
         "grid-td-buttons": "",

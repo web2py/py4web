@@ -139,20 +139,16 @@ if MODE in ("demo", "readonly", "full"):
         session["user"] = None
         return dict()
 
-    # @action("dbadmin")
-    # @action.uses(Logged(session), "dbadmin.html")
-    # def dbadmin():
-    #     return dict(languages=dumps(getattr(T.local, "language", {})))
-
     @action("dbadmin")
-    @action.uses(Logged(session), "dbadminHTMX.html")
-    def dbadminHTMX():
+    @action.uses(Logged(session), "dbadmin.html")
+    def dbadmin():
         args = dict(request.query)
         app = args.get('app', None)
         dbname = args.get('dbname', None)
         tablename = args.get('tablename', None)
+        error = (app is None or dbname is None or tablename is None)
         gridURL = URL("dbadmin_grid", app, dbname, tablename)
-        return dict(languages=dumps(getattr(T.local, "language", {})), gridURL=gridURL)
+        return dict(languages=dumps(getattr(T.local, "language", {})), gridURL=gridURL, error=error)
 
     @action("dbadmin_grid/<app>/<dbname>/<tablename>", method=["GET", "POST"])
     @action("dbadmin_grid/<app>/<dbname>/<tablename>/<path:path>", method=["GET", "POST"])
@@ -170,8 +166,10 @@ if MODE in ("demo", "readonly", "full"):
             name for name in dir(module) if isinstance(getattr(module, name), DAL)
         ]
         if dbname not in databases:
-            raise HTTP(403)
+            raise HTTP(406)
+
         db = getattr(module, dbname)
+
         grid_param = dict(
             rows_per_page=20,
             include_action_button_text=True,
@@ -180,6 +178,10 @@ if MODE in ("demo", "readonly", "full"):
             grid_class_style=GridClassStyleFuture,
             auto_process=False,
         )
+
+        if tablename not in db:
+            raise HTTP(406)
+
         table = getattr(db, tablename)
 
         query = table.id > 0

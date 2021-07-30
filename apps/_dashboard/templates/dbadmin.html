@@ -5,8 +5,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   </head>
   <body>    
-    <div id="vue" class="my-effects">
-      <!--div class="loading" v-if="loading>0"></div-->
+    <div id="vue">
       <div class="panel">   
         <label>
           App: {{app}}
@@ -14,16 +13,24 @@
           Table: {{tablename}}
         </label>
       </div>      
-      <div class="panel">
-        <mtable :url="url" :filter="filter" :order="order" :editable="true" :create="true" :deletable="true" :render="{}"></mtable>
+      <div id="panel" class="panel">
+        [[if error:]]
+          <div>
+            <p class="error"> An error has occured, please make sure that the query parameters: "app", "dbname", and "tablename" are all filled out.</p>
+            <a class="btn" href="[[=URL('index')]]">Return</a>
+          </div>
+        [[else:]]
+        <div hx-get="[[=gridURL]]" hx-trigger="load" hx-target="#panel">
+        </div>
+        [[pass]]
       </div>
     </div>
   </body>
+  <script src="https://unpkg.com/htmx.org@1.3.2"></script>
   <script src="js/sugar.min.js"></script>
   <script src="js/vue.min.js"></script>
   <script src="js/axios.min.js"></script>
   <script src="js/utils.js"></script>
-  <script src="components/mtable.js"></script>
   <script>T.languages = [[=languages]];</script>
   <script src="js/dbadmin.js"></script>
 </html>
