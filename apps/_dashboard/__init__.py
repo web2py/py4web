@@ -11,7 +11,6 @@ import zipfile
 
 import requests
 from pydal.validators import CRYPT
-from yatl.helpers import BEAUTIFY
 
 import py4web
 from py4web import (
@@ -377,7 +376,6 @@ if MODE in ("demo", "readonly", "full"):
             response.status = data["code"]
         return data
 
-
 if MODE == "full":
 
     @action("reload")
@@ -465,6 +463,7 @@ if MODE == "full":
                 if process.returncode != 0:
                     abort(500)
         elif form["type"] == "upload":
+            print(request.files.keys())
             prepare_target_dir(form, target_dir)
             source_stream = io.BytesIO(base64.b64decode(form["file"]))
             zfile = zipfile.ZipFile(source_stream, "r")
@@ -530,3 +529,41 @@ if MODE == "full":
             opt = " -U9999"
         patch = run("git show " + commit + opt, project)
         return diff2kryten(patch)
+
+# handle internationalization & pluralization files
+#
+
+@action("translations/<name>", method="GET")
+@action.uses(Logged(session), "translations.html")
+def translations(name):
+    """returns a json with all translations for all languages"""
+    t = Translator(os.path.join(FOLDER, name, "translations"))
+    return t.languages
+
+@action("api/translations/<name>", method="GET")
+@action.uses(Logged(session))
+def get_translations(name):
+    """returns a json with all translations for all languages"""
+    t = Translator(os.path.join(FOLDER, name, "translations"))
+    return t.languages
+
+@action("api/translations/<name>", method="POST")
+@action.uses(Logged(session))
+def post_translations(name):
+    """updates all languages"""
+    folder = os.path.join(FOLDER, name, "translations")
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    t = Translator(folder)
+    t.languages = request.json
+    if MODE == "full":
+        t.save()
+
+
+@action("api/translations/<name>/search", method="GET")
+@action.uses(Logged(session))
+def update_translations(name):
+    """find all T(...) decorated strings in the code and returns them"""
+    app_folder = os.path.join(FOLDER, name)
+    strings = Translator.find_matches(app_folder)
+    return {'strings': strings}

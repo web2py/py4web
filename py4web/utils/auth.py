@@ -787,12 +787,13 @@ class Auth(Fixture):
         def allowed(name):
             return set(self.param.allowed_actions) & set(["all", name])
 
+        methods = ["GET", "POST", "OPTIONS"]
         # This exposes all actions as /{app_name}/{route}/api/{name}
         for api_name in AuthAPI.public_api:
             if allowed(api_name):
                 api_factory = getattr(AuthAPI, api_name)
 
-                @action(route + "/api/" + api_name, method=["GET", "POST"])
+                @action(route + "/api/" + api_name, method=methods)
                 @action.uses(auth, *uses)
                 def _(auth=auth, api_factory=api_factory):
                     return api_factory(auth)
@@ -801,7 +802,7 @@ class Auth(Fixture):
             if allowed(api_name):
                 api_factory = getattr(AuthAPI, api_name)
 
-                @action(route + "/api/" + api_name, method=["GET", "POST"])
+                @action(route + "/api/" + api_name, method=methods)
                 @action.uses(auth.user, *uses)
                 def _(auth=auth, api_factory=api_factory):
                     return api_factory(auth)

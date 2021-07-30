@@ -36,6 +36,12 @@ try:
 except ImportError:
     pyme = None
 
+try:
+    import boto3
+    from botocore.exceptions import ClientError
+except ImportError:
+    boto3 = None
+
 
 class Settings:
     pass
@@ -402,12 +408,17 @@ class Mailer:
             text = html = None
         elif isinstance(body, (list, tuple)):
             text, html = body
-        elif body.strip().startswith("<html") and body.strip().endswith("</html>"):
-            text = self.settings.server == "gae" and body or None
-            html = body
         else:
-            text = body
-            html = None
+            if isinstance(body, bytes):
+                body = body.decode()
+            if not isinstance(body, str):
+                body = str(body)
+            if body.lstrip().startswith("<html") and body.rstrip().endswith("</html>"):
+                text = self.settings.server == "gae" and body or None
+                html = body
+            else:
+                text = body
+                html = None
 
         if (text is not None or html is not None) and (not raw):
 
@@ -787,10 +798,7 @@ class Mailer:
                         body=to_unicode(text or "", encoding),
                         **xcc
                     )
-            elif self.settings.server == "aws":
-                import boto3
-                from botocore.exceptions import ClientError
-
+            elif self.settings.server == "aws" and boto3:
                 client = boto3.client("ses")
                 try:
                     raw = {"Data": payload.as_string()}

@@ -124,7 +124,8 @@ if settings.OAUTH2FACEBOOK_CLIENT_ID:
 
 # we enable auth, which requres sessions, T, db and we make T available to
 # the template, although we recommend client-side translations instead
-auth.enable(uses=(session, T, db), env=dict(T=T))
+from py4web.utils.cors import CORS
+auth.enable(uses=(session, T, db, CORS()), env=dict(T=T))
 
 unauthenticated = ActionFactory(db, session, T, auth)
 authenticated = ActionFactory(db, session, T, auth.user)

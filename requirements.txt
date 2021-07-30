@@ -9,7 +9,7 @@ gevent-websocket
 requests
 threadsafevariable >= 1.1
 pyjwt >= 2.0.1
-pluralize >= 0.1.6
+pluralize >= 0.1.7
 yatl >= 20210326.1
 pydal >= 20210626.3
 python-memcached # used for testing or for optionally actually accessing memcache
