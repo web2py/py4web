@@ -406,7 +406,6 @@ if MODE in ("demo", "readonly", "full"):
         args = path.split("/")
         app_name = args[0]
         from py4web.core import Reloader, DAL
-        from pydal.restapi import RestAPI, Policy
 
         if MODE != "full":
             raise HTTP(403)
@@ -436,30 +435,6 @@ if MODE in ("demo", "readonly", "full"):
                     {"name": name, "tables": tables(name)} for name in databases
                 ]
             }
-        elif len(args) > 2 and args[1] in databases:
-            db = getattr(module, args[1])
-            id = args[3] if len(args) == 4 else None
-            policy = Policy()
-            for table in db:
-                policy.set(
-                    table._tablename,
-                    "GET",
-                    authorize=True,
-                    allowed_patterns=["**"],
-                    allow_lookup=True,
-                    fields=table.fields,
-                )
-                policy.set(table._tablename, "PUT",
-                           authorize=True, fields=table.fields)
-                policy.set(
-                    table._tablename, "POST", authorize=True, fields=table.fields
-                )
-                policy.set(table._tablename, "DELETE", authorize=True)
-            data = action.uses(db, T)(
-                lambda: RestAPI(db, policy)(
-                    request.method, args[2], id, request.query, request.json
-                )
-            )()
         else:
             data = {}
         if "code" in data:
