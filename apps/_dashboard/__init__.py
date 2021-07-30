@@ -465,6 +465,7 @@ if MODE == "full":
                 if process.returncode != 0:
                     abort(500)
         elif form["type"] == "upload":
+            print(request.files.keys())
             prepare_target_dir(form, target_dir)
             source_stream = io.BytesIO(base64.b64decode(form["file"]))
             zfile = zipfile.ZipFile(source_stream, "r")

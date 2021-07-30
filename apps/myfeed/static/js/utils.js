@@ -86,7 +86,7 @@ Q.register_vue_component = function (name, src, onload) {
 // Passes binary data to callback on drop of file in elem_id
 Q.upload_helper = function (elem_id, callback) {
     // function from http://jsfiddle.net/eliseosoto/JHQnk/
-    var elem = document.getelemById(elem_id);
+    var elem = document.getElementById(elem_id);
     if (elem) {
         var files = elem.files;
         var reader = new FileReader();
