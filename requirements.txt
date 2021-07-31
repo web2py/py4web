@@ -6,6 +6,7 @@ tornado
 gunicorn
 gevent
 gevent-websocket
+renoir >= 1.4.0
 requests
 threadsafevariable >= 1.1
 pyjwt >= 2.0.1
