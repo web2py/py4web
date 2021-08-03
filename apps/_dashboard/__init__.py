@@ -10,8 +10,7 @@ import uuid
 import zipfile
 
 import requests
-from pydal.validators import CRYPT, validator_caller
-from yatl.helpers import BEAUTIFY
+from pydal.validators import CRYPT
 
 import py4web
 from py4web import (
