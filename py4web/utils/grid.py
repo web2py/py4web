@@ -1022,9 +1022,16 @@ class Grid:
     def make_action_buttons(self, row):
         cat = CAT()
         row_id = row[self.param.field_id] if self.param.field_id else row.id
-
         if self.param.pre_action_buttons and len(self.param.pre_action_buttons) > 0:
             for btn in self.param.pre_action_buttons:
+                if callable(btn):
+                    # a button can be a callable, to indicate whether or not a button should
+                    # be displayed. call the function with the row object
+                    btn = btn(row)
+                    if btn == None:
+                        # if None was returned, no button is available for this row: ignore this value in the
+                        # list
+                        continue
                 cat.append(
                     self._make_action_button(
                         url=btn.url,
@@ -1092,6 +1099,14 @@ class Grid:
 
         if self.param.post_action_buttons and len(self.param.post_action_buttons) > 0:
             for btn in self.param.post_action_buttons:
+                if callable(btn):
+                    # a button can be a callable, to indicate whether or not a button should
+                    # be displayed. call the function with the row object
+                    btn = btn(row)
+                    if btn == None:
+                        # if None was returned, no button is available for this row: ignore this value in the
+                        # list
+                        continue
                 cat.append(
                     self._make_action_button(
                         url=btn.url,
