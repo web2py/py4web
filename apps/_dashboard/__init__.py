@@ -10,7 +10,7 @@ import uuid
 import zipfile
 
 import requests
-from pydal.validators import CRYPT
+from pydal.validators import CRYPT, validator_caller
 from yatl.helpers import BEAUTIFY
 
 import py4web
@@ -27,8 +27,7 @@ from py4web import (
 )
 from py4web.core import Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
-from py4web.utils.form import FormStyleDefault
-from py4web.utils.grid import Grid, AttributesPluginHtmx, GridClassStyle
+from py4web.utils.grid import Grid, AttributesPluginHtmx
 
 from .diff2kryten import diff2kryten
 from .utils import *
@@ -155,7 +154,7 @@ if MODE in ("demo", "readonly", "full"):
     @action.uses(Logged(session), "dbadminGrid.html")
     def dbadmin_grid(app=None, dbname=None, tablename=None, path=None):
         from py4web.core import Reloader, DAL
-        from yatl.helpers import A
+        from yatl.helpers import A, INPUT
 
         if MODE != "full":
             raise HTTP(403)
@@ -187,6 +186,7 @@ if MODE in ("demo", "readonly", "full"):
         query = table.id > 0
         orderby = [table.id]
         columns = [field for field in table if field.readable]
+        columns = columns[:6]
 
         grid = Grid(
             path,
@@ -218,6 +218,10 @@ if MODE in ("demo", "readonly", "full"):
 
         grid.formatters_by_type["datetime"] = (
             lambda value: value.strftime("%m/%d/%Y %H:%M:%S") if value else ""
+        )
+
+        grid.formatters_by_type["boolean"] = (
+            lambda value: INPUT(_type="checkbox", _checked=value, _disabled="disabled") if isinstance(value, bool) else ""
         )
 
         grid.process()
