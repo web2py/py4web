@@ -1040,6 +1040,7 @@ class Grid:
                         additional_classes=btn.additional_classes,
                         message=btn.message,
                         row_id=row_id if btn.append_id else None,
+                        row=row,
                         ignore_attribute_plugin=btn.ignore_attribute_plugin
                         if "ignore_attribute_plugin" in btn.__dict__
                         else False,
@@ -1115,6 +1116,7 @@ class Grid:
                         additional_classes=btn.additional_classes,
                         message=btn.message,
                         row_id=row_id if btn.append_id else None,
+                        row=row,
                         ignore_attribute_plugin=btn.ignore_attribute_plugin
                         if "ignore_attribute_plugin" in btn.__dict__
                         else False,
@@ -1368,6 +1370,7 @@ class AttributesPluginHtmx(AttributesPlugin):
     def form(self, url):
         attrs = copy.copy(self.default_attrs)
         attrs["_hx-post"] = url
+        attrs["_hx-encoding"] = "multipart/form-data"
         return attrs
 
     def link(self, url):
