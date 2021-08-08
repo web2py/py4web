@@ -533,7 +533,7 @@ class Grid:
 
             readonly = self.action == "details"
 
-            attrs = self.attributes_plugin.form(url=request.url)
+            attrs = self.attributes_plugin.form(url=request.url.split(":", 1)[1])
             self.form = Form(
                 table,
                 record=record,
