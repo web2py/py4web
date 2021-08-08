@@ -198,6 +198,7 @@ class Auth(Fixture):
             messages=copy.deepcopy(self.MESSAGES),
             button_classes=copy.deepcopy(self.BUTTON_CLASSES),
             default_login_enabled=True,
+            exclude_extra_fields_in_register=None,
         )
 
         """Creates and Auth object responsible for handling
@@ -782,7 +783,6 @@ class Auth(Fixture):
             for group in self.param.messages.values():
                 for key, value in group.items():
                     group[key] = T(value)
-        
 
         def allowed(name):
             return set(self.param.allowed_actions) & set(["all", name])
@@ -1039,6 +1039,12 @@ class DefaultAuthForms:
     def register(self):
         self.auth.db.auth_user.password.writable = True
         fields = [field for field in self.auth.db.auth_user if field.writable]
+        if self.auth.param.exclude_extra_fields_in_register:
+            fields = [
+                field
+                for field in fields
+                if field.name not in self.auth.param.exclude_extra_fields_in_register
+            ]
         for k, field in enumerate(fields):
             if field.type == "password":
                 fields.insert(
