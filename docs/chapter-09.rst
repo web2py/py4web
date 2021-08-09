@@ -2,12 +2,15 @@
 YATL Template Language
 ======================
 
-py4web uses an external Python module called **YATL** (Yet Another Template
-Language, see `here <https://github.com/web2py/yatl>`__) for rendering dynamic HTML
-pages that contain Python code.
+py4web, by default, uses a template language called **YATL** (Yet Another Template Language) for rendering dynamic HTML pages that contain Python code.
 
-py4web uses double square brackets ``[[ ... ]]`` to escape Python code embedded in HTML. The
-advantage of using square brackets instead of angle brackets is that
+There are two Python modules that implement a renderer from YAML to HTML. One is `yatl <https://pypi.org/project/yatl/>`__ and one is `Renoire <https://pypi.org/project/renoir/>`__. The two implementations should be equivalent but the former is considered the original reference implementation. The latter is a newer and faster implementation with additional fuctionality. ``yatl`` also comes with HTML helpers (see next chapter) which are not included in ``renoir``.
+
+py4web uses the ``yatl`` module for helpers and the ``renoir`` module for rendering templates, and some minor trickery to make them work together seamlessly.
+
+py4web also uses double square brackets ``[[ ... ]]`` to escape Python code embedded in HTML, unless specified otherwise.
+
+The advantage of using square brackets instead of angle brackets is that
 it’s transparent to all common HTML editors. This allows the developer
 to use those editors to create py4web templates.
 

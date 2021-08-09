@@ -1022,9 +1022,16 @@ class Grid:
     def make_action_buttons(self, row):
         cat = CAT()
         row_id = row[self.param.field_id] if self.param.field_id else row.id
-
         if self.param.pre_action_buttons and len(self.param.pre_action_buttons) > 0:
             for btn in self.param.pre_action_buttons:
+                if callable(btn):
+                    # a button can be a callable, to indicate whether or not a button should
+                    # be displayed. call the function with the row object
+                    btn = btn(row)
+                    if btn == None:
+                        # if None was returned, no button is available for this row: ignore this value in the
+                        # list
+                        continue
                 cat.append(
                     self._make_action_button(
                         url=btn.url,
@@ -1033,6 +1040,7 @@ class Grid:
                         additional_classes=btn.additional_classes,
                         message=btn.message,
                         row_id=row_id if btn.append_id else None,
+                        row=row,
                         ignore_attribute_plugin=btn.ignore_attribute_plugin
                         if "ignore_attribute_plugin" in btn.__dict__
                         else False,
@@ -1092,6 +1100,14 @@ class Grid:
 
         if self.param.post_action_buttons and len(self.param.post_action_buttons) > 0:
             for btn in self.param.post_action_buttons:
+                if callable(btn):
+                    # a button can be a callable, to indicate whether or not a button should
+                    # be displayed. call the function with the row object
+                    btn = btn(row)
+                    if btn == None:
+                        # if None was returned, no button is available for this row: ignore this value in the
+                        # list
+                        continue
                 cat.append(
                     self._make_action_button(
                         url=btn.url,
@@ -1100,6 +1116,7 @@ class Grid:
                         additional_classes=btn.additional_classes,
                         message=btn.message,
                         row_id=row_id if btn.append_id else None,
+                        row=row,
                         ignore_attribute_plugin=btn.ignore_attribute_plugin
                         if "ignore_attribute_plugin" in btn.__dict__
                         else False,
@@ -1353,6 +1370,7 @@ class AttributesPluginHtmx(AttributesPlugin):
     def form(self, url):
         attrs = copy.copy(self.default_attrs)
         attrs["_hx-post"] = url
+        attrs["_hx-encoding"] = "multipart/form-data"
         return attrs
 
     def link(self, url):
