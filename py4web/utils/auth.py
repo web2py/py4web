@@ -199,6 +199,7 @@ class Auth(Fixture):
             button_classes=copy.deepcopy(self.BUTTON_CLASSES),
             default_login_enabled=True,
             exclude_extra_fields_in_register=None,
+            exclude_extra_fields_in_profile=None,
         )
 
         """Creates and Auth object responsible for handling
@@ -1296,6 +1297,12 @@ class DefaultAuthForms:
             self.auth.db.auth_user.username.writable = False
         else:
             self.auth.db.auth_user.email.writable = False
+        if self.auth.param.exclude_extra_fields_in_profile:
+            for field in self.auth.extra_auth_user_fields:
+                if field.name in self.auth.param.exclude_extra_fields_in_profile:
+                    field.writable = False
+                    field.readable = False
+
         form = Form(
             self.auth.db.auth_user,
             user,
