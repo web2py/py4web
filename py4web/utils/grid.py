@@ -770,7 +770,7 @@ class Grid:
             for key in request.query
             if not key in ("search_type", "search_string")
         ]
-        attrs = self.attributes_plugin.form(url=self.endpoint)
+        attrs = self.attributes_plugin.link(url=self.endpoint)
         form = FORM(*hidden_fields, **attrs)
         select = SELECT(
             *options,

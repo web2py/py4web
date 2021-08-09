@@ -171,7 +171,7 @@ if MODE in ("demo", "readonly", "full"):
         grid_param = dict(
             rows_per_page=20,
             include_action_button_text=True,
-            search_button_text="Filter",
+            search_button_text=None,
             formstyle=FormStyleFuture,
             grid_class_style=GridClassStyleFuture,
             auto_process=False,
@@ -187,11 +187,19 @@ if MODE in ("demo", "readonly", "full"):
         columns = [field for field in table if field.readable]
         columns = columns[:6]
 
+        def genericSearch(field):
+            query = lambda value: field == value
+            if field.type.lower() == "string":
+                query = lambda value: field.contains(value)
+            return query
+
+        search_queries = [[f"By {field.label}", genericSearch(field)] for field in table if field.readable]
+
         grid = Grid(
             path,
             query,
             columns=columns,
-            search_queries=None,
+            search_queries=search_queries,
             orderby=orderby,
             show_id=True,
             T=T,
