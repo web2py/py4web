@@ -4,6 +4,7 @@
 #
 import base64
 import copy
+import datetime
 from functools import reduce
 from urllib.parse import urlparse
 
@@ -297,12 +298,16 @@ class Grid:
                 value.second,
             )
         )
+        if value and isinstance(value, datetime.datetime)
+        else value
         if value
         else "",
         "time": lambda value: XML(
             "<script>document.write((new Date(0, 0, 0,%s,%s,%s)).toLocaleString().split(', ')[1])</script>"
             % (value.hour, value.minute, value.second)
         )
+        if value and isinstance(value, datetime.time)
+        else value
         if value
         else "",
         "date": lambda value: XML(
@@ -313,6 +318,8 @@ class Grid:
                 value.day,
             )
         )
+        if value and isinstance(value, datetime.date)
+        else value
         if value
         else "",
         "list:string": lambda value: ", ".join(str(x) for x in value) if value else "",
@@ -939,9 +946,15 @@ class Grid:
             else:
                 field_value = field.f(row)
         elif self.use_tablename:
-            field_value = row[field.tablename][field.name]
+            field_value = (
+                field.represent(row[field.tablename][field.name])
+                if field.represent
+                else row[field.tablename][field.name]
+            )
         else:
-            field_value = row[field.name]
+            field_value = (
+                field.represent(row[field.name]) if field.represent else row[field.name]
+            )
         key = "%s.%s" % (field.tablename, field.name)
         formatter = (
             self.formatters.get(key)
