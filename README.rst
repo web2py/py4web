@@ -84,23 +84,20 @@ Launch Arguments
 
    Options:
    -Y, --yes                     No prompt, assume yes to questions  [default:
-                                False]
-
+                                 False]
    -H, --host TEXT               Host name  [default: 127.0.0.1]
    -P, --port INTEGER            Port number  [default: 8000]
    -p, --password_file TEXT      File for the encrypted password  [default:
                                 password.txt]
-
-     -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|
+   -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|
                    geventWebSocketServer|wsgirefThreadingServer|rocketServer]
                                  server to use  [default: default]
    -w, --number_workers INTEGER  Number of workers  [default: 0]
-   -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full
-                                (default), none  [default: full]
-
+   -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full,
+                                 none  [default: full]
    --watch [off|sync|lazy]       Watch python changes and reload apps
-                                automatically, modes: off (default), sync,
-                                lazy
+                                 automatically, modes: off, sync, lazy
+                                 [default: lazy]
    --ssl_cert PATH               SSL certificate file for HTTPS
    --ssl_key PATH                SSL key file for HTTPS
    -help, -h, --help             Show this message and exit.
@@ -127,12 +124,11 @@ Tell me more
 ############
 
 - it is 10-20x faster than web2py
-- this is a work in progress and not stable yet but close to being stable
 - python3.6+ only
-- uses https://github.com/web2py/pydal (same DAL as web2py)
-- uses https://github.com/web2py/yatl (same as web2py but defaults to [[...]] instead of {{...}} delimiters)
+- uses https://github.com/web2py/pydal (same DAL as web2py) for database connection
 - uses the same validators as web2py (they are in pyDAL)
-- uses the very similar helpers to web2py (A, DIV, SPAN, etc.)
+- uses `yatl <https://pypi.org/project/yatl/>`__ (same as web2py but defaults to [[...]] instead of {{...}} delimiters) and `Renoir <https://pypi.org/project/renoir/>`__ for html templates
+- uses the very similar html helpers to web2py (A, DIV, SPAN, etc.)
 - uses https://github.com/web2py/pluralize for i18n and pluralization
 - request, response, abort are from https://bottlepy.org
 - HTTP and redirect are our own objects
@@ -140,12 +136,16 @@ Tell me more
 - implements sessions in cookies (jwt encrypted), db, memcache, redis and custom
 - implements a cache.memoize (Ram cache with O(1) access) `Memoize <https://dbader.org/blog/python-memoization>`__
 - supports multiple apps under apps folder (same as web2py)
-- unlike web2py does not use a custom importer or eval
+- unlike web2py does not use a custom importer or eval (this allow simple debugging with standard IDE)
 - admin has been replaced by a _dashboard
 - appadmin has been replaced by dbadmin (within _dashboard)
 - auth logic is implemented via a "auth" vue.js custom component
-- SQLFORM has been replaced by py4web/utils/form.py
-- it comes with a Grid object providing simple grid and CRUD capabilities
+- it comes with a Form object (like SQLFORM on web2py)
+- it comes with a Grid object providing grid and CRUD capabilities
+- it supports `htmx <https://htmx.org/>`__
+
+
+- this is a work in progress and not stable yet but close to being stable
 - there are not enough tests
 
 

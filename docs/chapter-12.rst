@@ -156,8 +156,8 @@ in line 16,17 we declare two endpoints :
 - ``form_basic/index`` (a create form)
 - ``form_basic/index/{id}`` (an edit form for the specified record id)
 
-Because this is a dual purpuse form, in case an ``id`` is passed, we also valdate it
-by checking the corrsponding record exists and raie 404 if not.
+Because this is a dual purpose form, in case an ``id`` is passed, we also validate it
+by checking if the corresponding record exists and raise 404 if not.
 
 To use it we will need a template ``templates/form_basic.html`` that
 contains, for example, the following code:
@@ -225,7 +225,7 @@ Here is a simple example of how to require a validator for a table field:
     )
 
 The validator is frequently
-written explicitly outside the table definition in this equivalent sytntax:
+written explicitly outside the table definition in this equivalent syntax:
 
 .. code:: python
 
@@ -283,7 +283,7 @@ Here is an example of a validator on a database table:
 
 
 where we have used the translation operator ``T`` to allow for internationalization.
-Notice that error messages are not translated by default unless you define them explicitely with ``T``.
+Notice that error messages are not translated by default unless you define them explicitly with ``T``.
 
 One can also call validators explicitly for a field:
 
