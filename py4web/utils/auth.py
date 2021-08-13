@@ -198,6 +198,8 @@ class Auth(Fixture):
             messages=copy.deepcopy(self.MESSAGES),
             button_classes=copy.deepcopy(self.BUTTON_CLASSES),
             default_login_enabled=True,
+            exclude_extra_fields_in_register=None,
+            exclude_extra_fields_in_profile=None,
         )
 
         """Creates and Auth object responsible for handling
@@ -782,7 +784,6 @@ class Auth(Fixture):
             for group in self.param.messages.values():
                 for key, value in group.items():
                     group[key] = T(value)
-        
 
         def allowed(name):
             return set(self.param.allowed_actions) & set(["all", name])
@@ -1039,6 +1040,12 @@ class DefaultAuthForms:
     def register(self):
         self.auth.db.auth_user.password.writable = True
         fields = [field for field in self.auth.db.auth_user if field.writable]
+        if self.auth.param.exclude_extra_fields_in_register:
+            fields = [
+                field
+                for field in fields
+                if field.name not in self.auth.param.exclude_extra_fields_in_register
+            ]
         for k, field in enumerate(fields):
             if field.type == "password":
                 fields.insert(
@@ -1290,6 +1297,12 @@ class DefaultAuthForms:
             self.auth.db.auth_user.username.writable = False
         else:
             self.auth.db.auth_user.email.writable = False
+        if self.auth.param.exclude_extra_fields_in_profile:
+            for field in self.auth.extra_auth_user_fields:
+                if field.name in self.auth.param.exclude_extra_fields_in_profile:
+                    field.writable = False
+                    field.readable = False
+
         form = Form(
             self.auth.db.auth_user,
             user,

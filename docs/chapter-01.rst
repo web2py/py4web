@@ -4,15 +4,15 @@ What is py4web?
 
 PY4WEB is a web framework for rapid development of efficient database
 driven web applications. It is an evolution of the popular web2py
-framework but much faster and slicker. Its internal design has been much
+framework, but much faster and slicker. Its internal design has been much
 simplified compared to web2py.
 
 PY4WEB can be seen as a competitor of other frameworks like Django or
 Flask, and it can indeed serve the same purpose. Yet PY4WEB aims to
-provide a larger feature set out of the box and reduce the development
+provide a larger feature set out of the box and to reduce the development
 time of new apps.
 
-From a historical perspective our story starts in 2007 when web2py was
+From a historical perspective, our story starts in 2007 when web2py was
 first released. web2py was designed to provide an all-inclusive solution
 for web development: one zip file containing the Python interpreter, the
 framework, a web based IDE, and a collection of battle-tested packages
@@ -45,9 +45,9 @@ Here is a more explicit list (see :ref:`From web2py to py4web` for more
 details if you come from web2py):
 
 -  PY4WEB, unlike web2py, requires Python 3.
--  PY4WEB, unlike web2py, can be installed using pip and its
+-  PY4WEB, unlike web2py, can be installed using pip, and its
    dependencies are managed using requirements.txt.
--  PY4WEB apps are regular Python modules. This is very different to
+-  PY4WEB apps are regular Python modules. This is very different from
    web2py. In particular, we ditched the custom importer, and we rely
    now exclusively on the regular Python import mechanism.
 -  PY4WEB, like web2py, can serve multiple applications concurrently, as
@@ -57,7 +57,7 @@ details if you come from web2py):
 -  PY4WEB, unlike web2py, does not create a new environment at every
    request. It introduces the concept of fixtures to explicitly declare
    which objects need to be (re)initialized when a new http request arrives
-   or need cleanup when completed. This makes it much faster than web2py.
+   or needs cleanup when completed. This makes it much faster than web2py.
 -  PY4WEB, has a new session object which, like web2py’s, provides strong
    security and encryption of the session data, but sessions are no
    longer stored in the file system - which created performance issues.
@@ -82,7 +82,7 @@ details if you come from web2py):
    is a web IDE for uploading/managing/editing apps.
 -  PY4WEB’s Dashboard includes a web based database interface. This
    replaces the appadmin functionality of web2py.
--  PY4WEB comes with a Form object and a Grid objects that are 
+-  PY4WEB comes with Form and Grid objects that are 
    similar to web2py’s SQLFORM and SQLFORM.grid.
 -  PY4WEB comes with an Auth object that replaces the web2py one. It is
    more modular and easier to extend. Out of the box, it provides the
@@ -90,7 +90,7 @@ details if you come from web2py):
    request change password, edit profile as well as integration with
    PAM, SAML2, LDAP, OAUTH2 (google, facebook, and twitter).
 -  PY4WEB leverages PyDAL's new tags functionality
-   to tag users with groups and search users by groups and
+   to tag users with groups, search users by groups, and
    apply permissions based on membership.
 -  PY4WEB comes with with some custom Vue.js components designed to
    interact with the PyDAL RESTAPI, and with PY4WEB in general. These
@@ -119,7 +119,6 @@ Many thanks to everyone who has contributed to the project, and especially:
 .. include:: ../README.rst
   :start-after: inclusion-marker-do-not-remove
 
-Special thanks to Sam de Alfaro, who designed the official logo of py4web. We friendly call the logo "Axel the axolotl": it magically represents the sense of kindness
-and inclusion we believe it's the cornerstone of our growing community.
+Special thanks to Sam de Alfaro, who designed the official logo of py4web. We friendly call the logo "Axel the axolotl": it magically represents the sense of kindness and inclusion. We believe it's the cornerstone of our growing community.
 
 .. image:: images/logo.png
