@@ -23,22 +23,10 @@ setup(
     description="Experimental py4web (a better web2py)",
     packages=["py4web", "py4web.utils", "py4web.utils.auth_plugins"],
     package_data={"py4web": ["assets/*"],},
-    install_requires=[
-        "bottle>=0.12",
-        "click",
-        "colorama",
-        "cryptography",
-        "tornado",
-        "gevent",
-        "gevent-websocket",
-        "requests",
-        "threadsafevariable>=1.1",
-        "pyjwt>=2.0.1",
-        "pluralize>=0.1.6",
-        "yatl>=20210326.1",
-        "pydal>=20200910.1",
-        "watchgod>=0.6",
-    ],
+    install_requires=[line for line in [
+        line.split("#")[0].strip()
+        for line in open("requirements.txt").readlines()        
+    ] if line],
     entry_points={"console_scripts": ["py4web=py4web.core:cli"],},
     zip_safe=False,
     platforms="any",
