@@ -28,6 +28,11 @@ We also use to chat sometime on IRC (Internet Relay Chat, which is an old-style 
 From time to time we also use it to host a scheduled public chat, where you can write and read live questions to developers.
 Transcripts of them are then available on the mailing list.
 
+The Discord server
+-------------------
+
+For quick questions and chats you can also use the free `Discord server dedicated to py4web <https://discord.gg/xCzQ9KTk3W>`__. You could usually find many py4web developers hanging out in the channel. 
+
 
 Tutorials and video
 -------------------
@@ -37,7 +42,8 @@ There are many tutorials and videos available. Here are some of them:
 - the `Learn Py4Web site <https://learn-py4web.github.io>`__ by Luca de Alfaro (with lots of excellent training videos)
 - the free video `course 2020 by Luca de Alfaro <https://sites.google.com/a/ucsc.edu/luca/classes/cmps-183-hypermedia-and-the-web/cse-183-spring-2020>`__ at UC Santa Cruz
 - the `py4web blog app <https://github.com/agavgavi/py4web-blog-app.git>`__ by Andrew Gavgavian,  which uses py4web to replicate the famous Corey Schafer's tutorial series on creating a blog app in Django
-
+- the `South Breeze Enterprises demo app <https://github.com/jpsteil/southbreeze>`__ by `Jim Steil <https://github.com/jpsteil>`__.  It is built around the structure of the Microsoft Northwind database,
+  but converted to SQLite. You can view the final result online `here <https://southbreeze.pythonbench.com>`__
 
 The sources on GitHub
 ---------------------
@@ -82,8 +88,12 @@ we also suggest to:
 Debugging py4web with VScode
 ----------------------------
 
-In order to run py4web.py within VScode, you need to add ``"args": ["run", "apps"]`` to the vscode ``launch.json``
-configuration file. In addition, if you should get gevent errors you have to add ``"gevent": true`` on the same configuration file.
+It's quite simple to run and debug py4web within VScode. You just need to open the main py4web folder (not the apps folder!) and add:
+
+- ``"args": ["run", "apps"],`` 
+- ``"program": "your_full_path_to_py4web.py",``
+
+to the vscode ``launch.json`` configuration file. In addition, if you should get gevent errors you have to also add ``"gevent": true`` on the same configuration file.
 
 Debugging py4web with PyCharm
 -----------------------------

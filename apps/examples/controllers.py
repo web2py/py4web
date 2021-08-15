@@ -136,7 +136,7 @@ def tagsinput_form():
     return dict(form=form)
 
 
-# exposed as /examples/htmlgrid
+# exposed as /examples/html_grid
 @action("html_grid")
 @action("html_grid/<path:path>", method=["POST", "GET"])
 @action.uses(session, db, auth, T, "html_grid.html")
