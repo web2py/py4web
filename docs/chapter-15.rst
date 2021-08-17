@@ -334,6 +334,24 @@ So if you instantiate multiple Flash objects they share their data.
       return locals()
 
 
+“Accessing OS files” example
+~~~~~~~~~~~~~~
+
+**web2py**
+
+.. code:: python
+
+   file_path = os.path.join(request.folder, 'file.csv')
+
+
+--> **py4web**
+   
+.. code:: python
+
+   from .settings import APP_FOLDER
+   file_path = os.path.join(APP_FOLDER, 'file.csv')
+
+
 “auth” example
 ~~~~~~~~~~~~~~
 
