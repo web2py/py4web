@@ -341,7 +341,7 @@ So if you instantiate mutlple Flash objects they share their data.
 
 .. code:: python
 
-   file_path = open(os.path.join(request.folder, 'file.csv'))
+   file_path = os.path.join(request.folder, 'file.csv')
 
 
 --> **py4web**
@@ -349,7 +349,7 @@ So if you instantiate mutlple Flash objects they share their data.
 .. code:: python
 
    from .settings import APP_FOLDER
-   file_path = open(os.path.join(APP_FOLDER, 'file.csv'))
+   file_path = os.path.join(APP_FOLDER, 'file.csv')
 
 
 “auth” example
