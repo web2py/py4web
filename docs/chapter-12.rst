@@ -462,7 +462,7 @@ Custom forms
 Custom forms allow you to granulary control how the form is processed. In the template file, you can execute specific
 instructions before the form is displayed or after its data submission by inserting code among the following statements:
 
-.. code
+.. code:: html
 
     [[=form.custom.begin ]]
     [[=form.custom.submit ]]
