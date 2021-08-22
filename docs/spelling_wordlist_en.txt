@@ -68,6 +68,7 @@ GoogleDatastore
 GoogleMySQL
 GooglePostgres
 GoogleSQL
+granulary
 groupby
 gunicorn
 gz
@@ -187,6 +188,7 @@ sqlite
 sso
 stateful
 stylesheet
+subclassing
 subfolder
 subfolders
 submodules
