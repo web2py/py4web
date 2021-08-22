@@ -101,6 +101,8 @@ kbytes
 kinterbasdb
 kwargs
 lastdot
+lib
+libs
 limitby
 localhost
 lookups
@@ -125,6 +127,7 @@ mysql
 MySQLdb
 natively
 ndb
+Northwind
 NoSQL
 OAuth
 ondelete
@@ -207,6 +210,7 @@ txt
 ual
 un
 unicode
+unneded
 uri
 url
 urls

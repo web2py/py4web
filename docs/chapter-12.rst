@@ -151,6 +151,9 @@ Create a new minimal app called ``form_basic`` :
         return dict(form=form, rows=rows)
 
 
+Because this is a dual purpose form, in case an ``id`` is passed, we also validate it
+by checking if the corresponding record exists and raise 404 if not.
+
 Note the import of two simple validators on top, in order to be used later
 with the ``requires`` parameter. We'll fully explain them
 on the :ref:`Form validation` paragraph.

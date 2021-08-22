@@ -307,7 +307,7 @@ The latter requires ``utils.js`` from the scaffolding app to render
 the custom tag into a div with dismissal behavior.
 
 Also notice that ``Flash`` is special: it is a singleton.
-So if you instantiate mutlple Flash objects they share their data.
+So if you instantiate multiple Flash objects they share their data.
 
 “grid” example
 ~~~~~~~~~~~~~~
@@ -332,6 +332,24 @@ So if you instantiate mutlple Flash objects they share their data.
       grid = Grid(db.thing)
       form.param.editable = True
       return locals()
+
+
+“Accessing OS files” example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**web2py**
+
+.. code:: python
+
+   file_path = os.path.join(request.folder, 'file.csv')
+
+
+--> **py4web**
+   
+.. code:: python
+
+   from .settings import APP_FOLDER
+   file_path = os.path.join(APP_FOLDER, 'file.csv')
 
 
 “auth” example
@@ -376,7 +394,7 @@ Notice that in web2py ``auth.user`` is the current logged-in user
 retrieved from session. In py4web instead ``auth.user`` is a fixture which serves the
 same purpose as ``@requires_login`` in web2py. In py4web only the ``user_id``
 is stored in the session and it can be retrieved using ``auth.user_id``.
-If you need more information about the user, you need to fecth the record
+If you need more information about the user, you need to fetch the record
 from the database with ``auth.get_user()`` The latter returns all readable
 fields as a Python dictionary.
 
@@ -394,7 +412,7 @@ and
 
 In the first case the decorated action can access the auth object
 but ``auth.user_id`` may be None if the user is not logged in. In the second
-case we are requiring a valliid logged in user and therefore ``auth.user_id``
+case we are requiring a valid logged in user and therefore ``auth.user_id``
 is guaranteed to be a valid user id.
 
 Also notice that if an action uses auth, then it automatically uses
