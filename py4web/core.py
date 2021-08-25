@@ -1851,7 +1851,7 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
 )
 @click.option(
     "--watch",
-    default="off",
+    default="lazy",
     type=click.Choice(["off", "sync", "lazy"]),
     help="Watch python changes and reload apps automatically, modes: off, sync, lazy",
     show_default=True,

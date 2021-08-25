@@ -68,6 +68,7 @@ GoogleDatastore
 GoogleMySQL
 GooglePostgres
 GoogleSQL
+granulary
 groupby
 gunicorn
 gz
@@ -100,6 +101,8 @@ kbytes
 kinterbasdb
 kwargs
 lastdot
+lib
+libs
 limitby
 localhost
 lookups
@@ -124,6 +127,7 @@ mysql
 MySQLdb
 natively
 ndb
+Northwind
 NoSQL
 OAuth
 ondelete
@@ -184,6 +188,7 @@ sqlite
 sso
 stateful
 stylesheet
+subclassing
 subfolder
 subfolders
 submodules
@@ -205,6 +210,7 @@ txt
 ual
 un
 unicode
+unneded
 uri
 url
 urls
