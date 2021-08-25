@@ -159,7 +159,7 @@ auto-generated CRUD pages and handle the detail pages yourself.
 Custom Columns
 --------------
 
-If the grid does not involve a join but displayes results from a single table
+If the grid does not involve a join but displays results from a single table
 you can specify a list of columns and columns are highly customizable.
 
 .. code:: python
