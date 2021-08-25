@@ -5,6 +5,7 @@ import uuid
 import copy
 import os
 
+from pluralize import lazyT
 from pydal.objects import FieldVirtual
 
 from py4web import request, response, HTTP
@@ -495,7 +496,7 @@ class FormStyleFactory:
                     DIV(
                         wrapped,
                         LABEL(
-                            " " + field.label,
+                            XML(" " + field.label),
                             _for=input_id,
                             _class=class_label,
                             _style="display: inline !important",
@@ -513,7 +514,13 @@ class FormStyleFactory:
 
                 form.append(
                     DIV(
-                        LABEL(field.label, _for=input_id, _class=class_label),
+                        LABEL(
+                            XML(field.label)
+                            if not isinstance(field.label, lazyT)
+                            else field.label,
+                            _for=input_id,
+                            _class=class_label,
+                        ),
                         wrapped,
                         P(error, _class=class_error) if error else "",
                         P(field.comment or "", _class=class_info),
