@@ -33,6 +33,7 @@ import urllib.parse
 import uuid
 import zipfile
 
+from collections import OrderedDict
 from watchgod import awatch
 
 from . import server_adapters
@@ -43,9 +44,8 @@ try:
 except ImportError:
     gunicorn = None
 
-import bottle
-
 # Third party modules
+import ombott as bottle
 import click
 import jwt  # this is PyJWT
 import pluralize
@@ -56,7 +56,11 @@ import renoir
 import renoir.constants
 import renoir.writers
 
-bottle.BaseRequest.MEMFILE_MAX = 16 * 1024 * 1024
+
+bottle.DefaultConfig.max_memfile_size = 16 * 1024 * 1024
+# apply DefaultConfig changes to default_app
+bottle.default_app().setup()
+
 
 __all__ = [
     "render",
@@ -107,7 +111,7 @@ response = bottle.response
 abort = bottle.abort
 
 os.environ.update(
-    {key: value for key, value in DEFAULTS.items() if not key in os.environ}
+    {key: value for key, value in DEFAULTS.items() if key not in os.environ}
 )
 os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parents[1])
 
@@ -159,27 +163,8 @@ def safely(func, exceptions=(Exception,), log=False, default=None):
 
 
 ########################################################################################
-# fix request.fullpath for the case of domain mapping to app
-# (request.url will be autofixed, since it is based on request.fullpath)
-#########################################################################################
-def monkey_patch_bottle():
-    urljoin = urllib.parse.urljoin
-
-    @property
-    def fullpath(self):
-        appname = self.environ.get("HTTP_X_PY4WEB_APPNAME", "/")
-        return urljoin(self.script_name, self.path[len(appname) :])
-
-    setattr(bottle.BaseRequest, "fullpath", fullpath)
-
-
-monkey_patch_bottle()
-
-
-########################################################################################
 # Implement a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
 #########################################################################################
-
 
 class Node:
     def __init__(self, key=None, value=None, t=None, m=None, prev=None, next=None):
@@ -477,7 +462,7 @@ class Flash(Fixture):
     def transform(self, data, shared_data=None):
         # if we have a valid flash message, we inject it in the response dict
         if isinstance(data, dict):
-            if not "flash" in data:
+            if "flash" not in data:
                 data["flash"] = self.local.flash or ""
         else:
             if self.local.flash is not None:
@@ -651,7 +636,7 @@ class Session(Fixture):
                 assert self.get_data().get("secure") == self_local.secure
             except Exception:
                 pass
-        if not "uuid" in self.get_data():
+        if "uuid" not in self.get_data():
             self.clear()
 
     def get_data(self):
@@ -787,7 +772,7 @@ def URL(
         )
     if hash:
         url += "#%s" % hash
-    if not scheme is False:
+    if scheme is not False:
         original_url = request.environ.get("HTTP_ORIGIN") or request.url
         orig_scheme, _, domain = original_url.split("/", 3)[:3]
         if scheme is True:
@@ -821,7 +806,7 @@ class HTTP(BaseException):
 def redirect(location):
     """our redirect does not delete cookies and headers like bottle.HTTPResponse does;
     it is considered a success, not failure"""
-    response.set_header("Location", location)
+    response.headers["Location"] = location
     raise HTTP(303)
 
 
@@ -848,7 +833,7 @@ class action:
         for fixture in reversed(reversed_fixtures):
             if isinstance(fixture, str):
                 fixture = Template(fixture)
-            if not fixture in fixtures:
+            if fixture not in fixtures:
                 fixtures.append(fixture)
 
         def decorator(func):
@@ -914,7 +899,11 @@ class action:
                 return ret
             except HTTP as http:
                 response.status = http.status
-                return getattr(http, "body", "")
+                ret = getattr(http, "body", "")
+                http_headers = getattr(http, 'headers', None)
+                if http_headers:
+                    response.headers.update(http_headers)
+                return ret
             except bottle.HTTPResponse:
                 raise
             except Exception:
@@ -934,15 +923,14 @@ class action:
 
     def __call__(self, func):
         """Building the decorator"""
-        trailing = "<:re:/?>"
         app_name = action.app_name
         base_path = "" if app_name == "_default" else "/%s" % app_name
         path = (base_path + "/" + self.path).rstrip("/")
-        if not func in self.registered:
+        if func not in self.registered:
             func = action.catch_errors(app_name, func)
-        func = bottle.route(path + trailing, **self.kwargs)(func)
+        func = bottle.route(path, **self.kwargs)(func)
         if path.endswith("/index"):  # /index is always optional
-            func = bottle.route(path[:-6] + trailing, **self.kwargs)(func)
+            func = bottle.route(path[:-6] or '/', **self.kwargs)(func)
         self.registered.add(func)
         return func
 
@@ -1087,7 +1075,7 @@ class DatabaseErrorLogger:
         """store error snapshot (ticket) in the database"""
         ticket_uuid = str(uuid.uuid4())
         try:
-            id = self.db.py4web_error.insert(
+            self.db.py4web_error.insert(
                 uuid=ticket_uuid,
                 app_name=app_name,
                 method=request.method,
@@ -1200,15 +1188,14 @@ class Reloader:
         _REQUEST_HOOKS.before.add(hook)
 
     @staticmethod
-    def clear_routes(app_name=None):
+    def clear_routes(app_name=''):
+        if app_name and app_name[0] != '/':
+            app_name = '/' + app_name
+        routes = app_name + '/*'
         app = bottle.default_app()
-        routes = app.routes[:]
-        app.routes.clear()
-        app.router = bottle.Router()
+        app.router.remove(routes)
         if app_name:
-            for route in routes:
-                if route.rule.rstrip("<:re:/?>")[1:].split("/")[0] != app_name:
-                    app.add_route(route)
+            app.router.remove(app_name)
 
     @staticmethod
     def import_apps():
@@ -1280,11 +1267,9 @@ class Reloader:
             app_name = path.split(os.path.sep)[-1]
             prefix = "" if app_name == "_default" else ("/%s" % app_name)
 
-            @bottle.route(prefix + "/static/<filename:path>")
-            @bottle.route(
-                prefix + "/static/_<version:re:\\d+\\.\\d+\\.\\d+>/<filename:path>"
-            )
-            def server_static(filename, static_folder=static_folder, version=None):
+            @bottle.route(prefix + r"/static/<re((_\d+(\.\d+){2}/)?)><fp.path()>")
+            def server_static(fp, static_folder=static_folder):
+                filename = fp
                 response.headers.setdefault("Pragma", "cache")
                 response.headers.setdefault("Cache-Control", "private")
                 return bottle.static_file(filename, root=static_folder)
@@ -1292,20 +1277,19 @@ class Reloader:
         # Register routes list
         app = bottle.default_app()
         routes = []
-        for route in app.routes:
-            func = route.callback
-            rule = route.rule
-            # remove optional trailing / from rule
-            if rule.endswith("<:re:/?>"):
-                rule = rule[:-8]
-            routes.append(
-                {
-                    "rule": rule,
-                    "method": route.method,
-                    "filename": module2filename(func.__module__),
-                    "action": func.__name__,
-                }
-            )
+        for route in app.routes.values():
+            for method, method_obj in route.methods.items():
+                func = method_obj.handler
+                rule = route.rule
+                # remove optional trailing / from rule
+                routes.append(
+                    {
+                        "rule": rule,
+                        "method": method,
+                        "filename": module2filename(func.__module__),
+                        "action": func.__name__,
+                    }
+                )
         Reloader.ROUTES = sorted(routes, key=lambda item: item["rule"])
         ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
 
@@ -1315,7 +1299,13 @@ class Reloader:
 #########################################################################################
 
 ERROR_PAGES = {
-    "*": '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>',
+    "*": (
+        '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} '
+        'h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} '
+        'a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} '
+        'a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head>'
+        '<body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>'
+    ),
 }
 
 
@@ -1362,10 +1352,7 @@ def error404(error):
 # Web Server and Reload Logic: Operations
 #########################################################################################
 
-DIRTY_APPS = dict()  #  apps that need to be reloaded (lazy watching)
-
-from collections import OrderedDict
-from inspect import stack
+DIRTY_APPS = dict()  # apps that need to be reloaded (lazy watching)
 
 APP_WATCH = {"files": dict(), "handlers": OrderedDict(), "tasks": dict()}
 
@@ -1380,6 +1367,7 @@ def sass_compile(changed_files):
 
 
 def app_watch_handler(watched_app_subpaths):
+    stack = inspect.stack
     invoker = pathlib.Path(stack()[1].filename)
     apps_path = pathlib.Path(os.environ["PY4WEB_APPS_FOLDER"])
     app = invoker.relative_to(os.environ["PY4WEB_APPS_FOLDER"]).parts[0]
@@ -1389,7 +1377,7 @@ def app_watch_handler(watched_app_subpaths):
         APP_WATCH["handlers"][handler] = func
         for subpath in watched_app_subpaths:
             app_path = apps_path.joinpath(app, subpath).as_posix()
-            if not app_path in APP_WATCH["files"]:
+            if app_path not in APP_WATCH["files"]:
                 APP_WATCH["files"][app_path] = []
             APP_WATCH["files"][app_path].append(handler)
         return func
@@ -1432,7 +1420,7 @@ def watch(apps_folder, server_config, mode="sync"):
                 elif subpath.as_posix() in APP_WATCH["files"]:
                     handlers = APP_WATCH["files"][subpath.as_posix()]
                     for handler in handlers:
-                        if not handler in APP_WATCH["tasks"]:
+                        if handler not in APP_WATCH["tasks"]:
                             APP_WATCH["tasks"][handler] = {}
                         APP_WATCH["tasks"][handler][subpath.as_posix()] = True
 
@@ -1597,7 +1585,7 @@ def install_args(kwargs, reinstall_apps=False):
             sys.exit(0)
     # ensure that "import apps.someapp" works
     apps_folder_parent, apps_folder_name = os.path.split(apps_folder)
-    if not apps_folder_parent in sys.path:
+    if apps_folder_parent not in sys.path:
         sys.path.insert(0, apps_folder_parent)
     if apps_folder_name != "apps":
         MetaPathRouter(apps_folder_name)
