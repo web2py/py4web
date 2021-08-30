@@ -129,7 +129,7 @@ Auth Plugins
 ------------
 
 Plugins are defined in “py4web/utils/auth_plugins” and they have a
-hierachical structure. Some are exclusive and some are not. For example,
+hierarchical structure. Some are exclusive and some are not. For example,
 default, LDAP, PAM, and SAML are exclusive (the developer has to pick
 one). Default, Google, Facebook, and Twitter OAuth are not exclusive
 (the developer can pick them all and the user gets to choose using the
@@ -266,18 +266,18 @@ to enable the following syntax:
 
 **Important:** ``Tags`` are automatically hierarchical. For example, if
 a user has a group tag ‘teacher/high-school/physics’, then all the
-following seaches will return the user:
+following searches will return the user:
 
 -  ``groups.find('teacher/high-school/physics')``
 -  ``groups.find('teacher/high-school')``
 -  ``groups.find('teacher')``
 
-This means that slashes have a special meaning for tags. Slahes at the
+This means that slashes have a special meaning for tags. Slashes at the
 beginning or the end of a tag are optional. All other chars are allowed
 on equal footing.
 
 Notice that one table can have multiple associated ``Tags`` objects. The
-name groups here is completely arbitary but has a specific semantic
+name groups here is completely arbitrary but has a specific semantic
 meaning. Different ``Tags`` objects are orthogonal to each other. The
 limit to their use is your creativity.
 

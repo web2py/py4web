@@ -3,7 +3,7 @@ from py4web import action, request, abort, redirect, URL, Field, HTTP
 from yatl.helpers import A, I
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.factories import ActionFactory, Inject
-from py4web.utils.grid import Grid, GridClassStyle
+from py4web.utils.grid import Grid, GridClassStyle, Column
 from py4web.utils.param import Param
 from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
@@ -78,7 +78,7 @@ def page_with_postback():
 
 
 @action("session/counter")
-@action.uses(session, 'session_counter.html')
+@action.uses(session, "session_counter.html")
 def session_counter():
     session["counter"] = session.get("counter", 0) + 1
     return {"counter": session.get("counter")}
@@ -113,7 +113,7 @@ def flash_example_next():
 # exposed as /examples/create_form or /examples/update_form/<id>
 @action("create_form", method=["GET", "POST"])
 @action("update_form/<id>", method=["GET", "POST"])
-@action.uses("form.html", db, session, T)
+@action.uses(db, session, T, "form.html")
 def example_form(id=None):
     form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
     rows = db(db.person).select()
@@ -122,7 +122,7 @@ def example_form(id=None):
 
 # exposed as /examples/custom_form
 @action("custom_form", method=["GET", "POST"])
-@action.uses("custom_form.html", db, session, T)
+@action.uses(db, session, T, "custom_form.html")
 def custom_form(id=None):
     form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
     rows = db(db.person).select()
@@ -130,16 +130,16 @@ def custom_form(id=None):
 
 
 @action("tagsinput_form", method=["GET", "POST"])
-@action.uses("tagsinput_form.html", session)
+@action.uses(session, "tagsinput_form.html")
 def tagsinput_form():
     form = Form([Field('colors', 'list:string')], keep_values=True)
     return dict(form=form)
 
 
-# exposed as /examples/htmlgrid
+# exposed as /examples/html_grid
 @action("html_grid")
 @action("html_grid/<path:path>", method=["POST", "GET"])
-@action.uses(session, db, auth, "html_grid.html")
+@action.uses(session, db, auth, T, "html_grid.html")
 def example_html_grid(path=None):
     #  controllers and used for all grids in the app
     grid_param = dict(
@@ -157,12 +157,15 @@ def example_html_grid(path=None):
 
     query = db.thing.id > 0
     orderby = [db.thing.name]
-
+    columns = [field for field in db.thing if field.readable]
+    columns.insert(0, Column("Custom", lambda row: A("click me")))
     grid = Grid(path,
                 query,
-                fields=[field for field in db.thing if field.readable],
+                columns=columns,
                 search_queries=search_queries,
                 orderby=orderby,
+                show_id=False,
+                T=T,
                 **grid_param)
 
     grid.formatters['thing.color'] = lambda color: I(_class="fa fa-circle", _style="color:"+color)
@@ -193,7 +196,7 @@ def count(number=1):
 
 
 @action("forms", method=["GET", "POST"])
-@action.uses("forms.html", session, db, T)
+@action.uses(session, db, T, "forms.html")
 def example_multiple_forms():
     name = Field("name", requires=IS_NOT_EMPTY())
     forms = [
@@ -289,7 +292,7 @@ def show_a_button():
 
 
 @action("auth_forms", method=["GET", "POST"])
-@action.uses("auth_forms.html", db, session, T, auth)
+@action.uses(db, session, T, auth, "auth_forms.html")
 def auth_forms():
     disabled = False
     # this is experimntal, we must disable forms that require a logged in user
@@ -305,7 +308,7 @@ def auth_forms():
 
 
 @action("auth_form/<name>", method=["GET", "POST"])
-@action.uses("auth_form.html", db, session, T, auth)
+@action.uses(db, session, T, auth, "auth_form.html")
 def auth_form(name):
     form = auth.form(name)
     if form.submitted:

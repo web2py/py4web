@@ -39,8 +39,9 @@
           <input class="input" v-else-if="field.type=='time'" type="time" v-model="item[field.name]" v-bind:readonly="!editable">
           <input class="input" v-else-if="field.type=='datetime'" type="datetime-local" v-model="item[field.name]" v-bind:readonly="!editable">
           <input class="input" v-else-if="field.type=='password'" type="password" v-model="item[field.name]" v-bind:readonly="!editable">
-          <input class="input" v-else-if="field.type=='list:integer'" type="text"  v-model="item[field.name]" v-bind:readonly="true">
-          <input class="input" v-else-if="field.type=='list:string'" type="text"  v-model="item[field.name]" v-bind:readonly="true">
+          <input class="input type-list-integer" v-else-if="field.type=='list:integer'" type="text" v-model="string_values[field.name]" v-bind:readonly="!editable">
+          <input class="input type-list-reference" v-else-if="field.type.substr(0,14)=='list:reference'" type="text" v-model="string_values[field.name]" v-bind:readonly="!editable">
+          <input class="input type-list-string" v-else-if="field.type=='list:string'" type="text" v-model="string_values[field.name]" v-bind:readonly="!editable">
           <input v-else-if="field.type=='upload'" type="text" v-model="item[field.name]" v-bind:readonly="!editable">
           <textarea class="textarea" v-else-if="field.type=='text'" v-model="item[field.name]" v-bind:readonly="!editable"></textarea>
           <select v-else-if="field.type=='reference'" v-model="item[field.name]" v-bind:readonly="!editable">
@@ -95,8 +96,8 @@
             <span v-else-if="field.type=='decimal'" class="field-float">{{item[field.name]}}</span>
             <span v-else-if="field.type=='date'" class="field-date">{{item[field.name]}}</span>
             <span v-else-if="field.type=='time'" class="field-time">{{item[field.name]}}</span>
-            <span v-else-if="field.type=='list:integer'" class="field-string">{{item[field.name]}}</span>
-            <span v-else-if="field.type=='list:string'" class="field-string">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='list:integer'" class="field-string">{{l2s(item[field.name])}}</span>
+            <span v-else-if="field.type=='list:string'" class="field-string">{{l2s(item[field.name])}}</span>
             <span v-else-if="field.type=='datetime'" class="field-datetime">{{(item[field.name]||'').replace('T','@').substr(0,16)}}</span>
             <span v-else-if="field.type=='password'" class="field-password">{{item[field.name]}}</span>
             <span v-else-if="field.type=='boolean'" class="field-boolean">

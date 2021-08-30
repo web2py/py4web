@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>The Database Abstraction Layer (DAL) &mdash; py4web 1.20210522.2 documentation</title>
+  <title>The Database Abstraction Layer (DAL) &mdash; py4web 1.20210619.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210522.2
+                1.20210619.1
               </div>
             
           
@@ -154,7 +154,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#field-constructor">Field constructor</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#field-types">Field types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#field-types-and-validators">Field types and validators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-time-field-and-table-modification">Run-time field and table modification</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#more-on-uploads">More on uploads</a></li>
 </ul>
@@ -252,12 +252,10 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#record-versioning">Record versioning</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#common-fields-and-multi-tenancy">Common fields and multi-tenancy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#common-filters">Common filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#custom-field-types">Custom <code class="docutils literal notranslate"><span class="pre">Field</span></code> types</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-dal-without-define-tables">Using DAL without define tables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#distributed-transaction">Distributed transaction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#postgis-spatialite-and-ms-geo-experimental">PostGIS, SpatiaLite, and MS Geo (experimental)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#copy-data-from-one-db-into-another">Copy data from one db into another</a></li>
 </ul>
 </li>
@@ -281,6 +279,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
             
@@ -393,7 +392,7 @@ recent adapters.</p>
 <p class="admonition-title">Note</p>
 <p>In any modern python distribution <strong>SQLite</strong> is actually built-in as a Python library.
 The SQLite driver (sqlite3) is also included: you don’t need to install it.
-Hence this is the most popular database for testing and developement.</p>
+Hence this is the most popular database for testing and development.</p>
 </div>
 <p>The Windows and the Mac binary distribution work out of the box with SQLite only.
 To use any other database back end, run a full py4web
@@ -528,6 +527,16 @@ it with <code class="docutils literal notranslate"><span class="pre">pip</span><
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Even if you can import modules directly from pydal, this is not
+advisable from within py4web applications. Remember that <code class="docutils literal notranslate"><span class="pre">py4web.DAL</span></code>
+is a fixture, <code class="docutils literal notranslate"><span class="pre">pydal.DAL</span></code> is not. In this context, the last command
+should better be:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="experiment-with-the-py4web-shell">
 <h3>Experiment with the py4web shell<a class="headerlink" href="#experiment-with-the-py4web-shell" title="Permalink to this headline">¶</a></h3>
@@ -536,14 +545,14 @@ that is available using the <a class="reference internal" href="chapter-03.html#
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Mind that
-database changes may be persistent. So be carefull and do NOT exitate
+database changes may be persistent. So be careful and do NOT hesitate
 to create a new application for doing testing instead of tampering
 with an existing one.</p>
 </div>
 <p>Note that most of the code snippets that contain the python prompt
 <code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code> are also directly executable via a py4web shell.</p>
 <p>This is a simple example, using the provided <code class="docutils literal notranslate"><span class="pre">examples</span></code> app:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">apps.examples</span> <span class="kn">import</span> <span class="n">db</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">()</span>
 <span class="go">[&#39;auth_user&#39;, &#39;auth_user_tag_groups&#39;, &#39;person&#39;, &#39;superhero&#39;, &#39;superpower&#39;, &#39;tag&#39;, &#39;product&#39;, &#39;thing&#39;]</span>
@@ -1020,8 +1029,7 @@ keys using the <code class="docutils literal notranslate"><span class="pre">prim
 <h3><code class="docutils literal notranslate"><span class="pre">plural</span></code> and <code class="docutils literal notranslate"><span class="pre">singular</span></code><a class="headerlink" href="#plural-and-singular" title="Permalink to this headline">¶</a></h3>
 <p>As pyDAL is a general DAL, it includes plural and singular attributes to
 refer to the table names so that external elements can use the proper
-name for a table. A use case is in web2py with Smartgrid objects with
-references to external tables.</p>
+name for a table.</p>
 </div>
 <div class="section" id="redefine">
 <h3><code class="docutils literal notranslate"><span class="pre">redefine</span></code><a class="headerlink" href="#redefine" title="Permalink to this headline">¶</a></h3>
@@ -1211,7 +1219,7 @@ only for fields of type “string”. <code class="docutils literal notranslate"
 <code class="docutils literal notranslate"><span class="pre">autodelete</span></code> are relevant only for fields of type “upload”.
 <code class="docutils literal notranslate"><span class="pre">ondelete</span></code> is relevant only for fields of type “reference” and
 “upload”.</p>
-<ul class="simple">
+<ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">length</span></code> sets the maximum length of a “string”, “password” or
 “upload” field. If <code class="docutils literal notranslate"><span class="pre">length</span></code> is not specified a default value is
 used but the default value is not guaranteed to be backward
@@ -1228,19 +1236,21 @@ function is called once for each record inserted, even when multiple
 records are inserted in a single transaction.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">required</span></code> tells the DAL that no insert should be allowed on this
 table if a value for this field is not explicitly specified.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">requires</span></code> is a validator or a list of validators. This is not used
-by the DAL, but it is used by <code class="docutils literal notranslate"><span class="pre">Form</span></code>. The default validators for
-the given types are shown in the next section.</p></li>
-</ul>
-<blockquote>
-<div><p>Notice that while <code class="docutils literal notranslate"><span class="pre">requires=...</span></code> is enforced at the level of forms,
+<li><p><code class="docutils literal notranslate"><span class="pre">requires</span></code> is a <strong>validator</strong> or a list of validators. This is not used
+by the DAL, but instead it is used by <code class="docutils literal notranslate"><span class="pre">Form</span></code> (this will be explained
+better on the <a class="reference internal" href="chapter-12.html#forms"><span class="std std-ref">Forms</span></a> chapter). The default validators for
+the given types are shown in the next section
+<a class="reference internal" href="#field-types-and-validators"><span class="std std-ref">Field types and validators</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>while <code class="docutils literal notranslate"><span class="pre">requires=...</span></code> is enforced at the level of forms,
 <code class="docutils literal notranslate"><span class="pre">required=True</span></code> is enforced at the level of the DAL (insert). In
 addition, <code class="docutils literal notranslate"><span class="pre">notnull</span></code>, <code class="docutils literal notranslate"><span class="pre">unique</span></code> and <code class="docutils literal notranslate"><span class="pre">ondelete</span></code> are enforced at
 the level of the database. While they sometimes may seem redundant,
 it is important to maintain the distinction when programming with the
 DAL.</p>
-</div></blockquote>
-<ul class="simple">
+</div>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">rname</span></code> provides the field with a “real name”, a name for the field
 known to the database adapter; when the field is used, it is the
 rname value which is sent to the database. The py4web name for the
@@ -1261,26 +1271,20 @@ default on the filesystem under the application “uploads/” folder. If
 <code class="docutils literal notranslate"><span class="pre">uploadfield</span></code> is set to True, then the file is stored in a blob
 field within the same table and the value of <code class="docutils literal notranslate"><span class="pre">uploadfield</span></code> is the
 name of the blob field. This will be discussed in more detail later
-in <a class="reference internal" href="#more-on-uploads">More on uploads</a>.</p>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">uploadfolder</span></code> sets the folder for uploaded files. By default, an
-uploaded file goes into the application’s “uploads/” folder, that is
-into <code class="docutils literal notranslate"><span class="pre">os.path.join(request.folder,</span> <span class="pre">'uploads')</span></code> (this seems not the
-case for MongoAdapter at present). For example:
-<code class="docutils literal notranslate"><span class="pre">Field(...,</span> <span class="pre">uploadfolder=os.path.join(request.folder,</span> <span class="pre">'static/temp'))</span></code>
-will upload files to the “web2py/applications/myapp/static/temp”
-folder.</p>
-</li>
+in <a class="reference internal" href="#more-on-uploads">More on uploads</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uploadfolder</span></code> must be set to a location where to store uploaded files.
+The scaffolding app defines a folder <code class="docutils literal notranslate"><span class="pre">settings.UPLOAD_FOLDER</span></code>
+which points to <code class="docutils literal notranslate"><span class="pre">apps/{app_name}/uploads</span></code> so you can
+set, for example, <code class="docutils literal notranslate"><span class="pre">Field(...</span> <span class="pre">uploadfolder=settings.UPLOAD_FOLDER)</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">uploadseparate</span></code> if set to True will upload files under different
 subfolders of the <em>uploadfolder</em> folder. This is optimized to avoid
 too many files under the same folder/subfolder. ATTENTION: You cannot
 change the value of <code class="docutils literal notranslate"><span class="pre">uploadseparate</span></code> from True to False without
-breaking links to existing uploads. web2py either uses the separate
+breaking links to existing uploads. pydal either uses the separate
 subfolders or it does not. Changing the behavior after files have
-been uploaded will prevent web2py from being able to retrieve those
+been uploaded will prevent pydal from being able to retrieve those
 files. If this happens it is possible to move files and fix the
-problem but this is not described here.</p>
-</li>
+problem but this is not described here.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">uploadfs</span></code> allows you specify a different file system where to
 upload files, including an Amazon S3 storage or a remote SFTP
 storage.</p></li>
@@ -1293,17 +1297,10 @@ storage.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">autodelete</span></code> determines if the corresponding uploaded file should
 be deleted when the record referencing the file is deleted. For
 “upload” fields only. However, records deleted by the database itself
-due to a CASCADE operation will not trigger py4web’s autodelete. The
-web2py Google group has workaround discussions.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">widget</span></code> must be one of the available widget objects, including
-custom widgets, for example: <code class="docutils literal notranslate"><span class="pre">SQLFORM.widgets.string.widget</span></code>. A
-list of available widgets will be discussed later. Each field type
-has a default widget.</p>
-</li>
+due to a CASCADE operation will not trigger py4web’s autodelete.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">label</span></code> is a string (or a helper or something that can be
 serialized to a string) that contains the label to be used for this
-field in auto-generated forms.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">comment</span></code> is a string (or a helper or something that can be
+field in auto-generated forms.
 serialized to a string) that contains a comment associated with this
 field, and will be displayed to the right of the input field in the
 autogenerated forms.</p></li>
@@ -1311,11 +1308,6 @@ autogenerated forms.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">readable</span></code> declares whether a field is readable in forms. If a
 field is neither readable nor writable, it will not be displayed in
 create and update forms.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">searchable</span></code> declares whether a field is searchable in grids
-(<code class="docutils literal notranslate"><span class="pre">SQLFORM.grid</span></code> and <code class="docutils literal notranslate"><span class="pre">SQLFORM.smartgrid</span></code>).</p>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">listable</span></code> declares whether a field is visible in grids (when
-listing multiple records)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">update</span></code> contains the default value for this field when the record
 is updated.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">compute</span></code> is an optional function. If a record is inserted or
@@ -1330,24 +1322,12 @@ more in detail in the context of Authentication and Authorization.</p></li>
 field value and returns an alternate representation for the field
 value. Examples:</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">represent</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">name</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
-<span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="o">.</span><span class="n">other_id</span><span class="o">.</span><span class="n">represent</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">oid</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">myfield</span>
-<span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="o">.</span><span class="n">some_uploadfield</span><span class="o">.</span><span class="n">represent</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">val</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">A</span><span class="p">(</span><span class="s1">&#39;get it&#39;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;download&#39;</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">filter_in</span></code> and <code class="docutils literal notranslate"><span class="pre">filter_out</span></code> can be set to callables for further
-processing of field’s value. <code class="docutils literal notranslate"><span class="pre">filter_in</span></code> is passed the field’s
-value to be written to the database before an insert or update while
-<code class="docutils literal notranslate"><span class="pre">filter_out</span></code> is passed the value retrieved from the database before
-field assignment. The value returned by the callable is then used.
-See <a class="reference internal" href="#filter-in-and-filter-out"><span class="std std-ref">filter_in and filter_out</span></a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">custom_qualifier</span></code> is a custom SQL qualifier for the field to be
-used at table creation time (cannot use for field of type “id”,
-“reference”, or “big-reference”).</p></li>
-</ul>
-<div class="section" id="field-types">
-<h3>Field types<a class="headerlink" href="#field-types" title="Permalink to this headline">¶</a></h3>
+<p>Note not all the attributes are thread safe and most of them
+should only be set globally for an app. The following are guaranteed to be
+thread safe and be set/reset in any action:
+<code class="docutils literal notranslate"><span class="pre">default</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code>, <code class="docutils literal notranslate"><span class="pre">readable</span></code>, <code class="docutils literal notranslate"><span class="pre">writable</span></code>, <code class="docutils literal notranslate"><span class="pre">requires</span></code>.</p>
+<div class="section" id="field-types-and-validators">
+<h3>Field types and validators<a class="headerlink" href="#field-types-and-validators" title="Permalink to this headline">¶</a></h3>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 34%" />
@@ -1883,8 +1863,8 @@ will be in <code class="docutils literal notranslate"><span class="pre">ret.erro
 <h3>Tagging records<a class="headerlink" href="#tagging-records" title="Permalink to this headline">¶</a></h3>
 <p>Tags allows to add or find properties attached to records in your
 database.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.tags</span> <span class="kn">import</span> <span class="n">Tags</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">pydal.tools.tags</span> <span class="kn">import</span> <span class="n">Tags</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s2">&quot;sqlite:memory&quot;</span><span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s2">&quot;thing&quot;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">))</span>
@@ -2057,8 +2037,8 @@ SQL generated by the DAL.</p>
 </div>
 <p>It returns an iterable object of class <code class="docutils literal notranslate"><span class="pre">pydal.objects.Rows</span></code> whose
 elements are Row objects. <code class="docutils literal notranslate"><span class="pre">pydal.objects.Row</span></code> objects act like
-dictionaries, but their elements can also be accessed as attributes,
-like <code class="docutils literal notranslate"><span class="pre">gluon.storage.Storage</span></code>.The former differ from the latter because
+dictionaries, but their elements can also be accessed as attributes.
+The former differ from the latter because
 its values are read-only.</p>
 <p>The Rows object allows looping over the result of the select and
 printing the selected field values for each row:</p>
@@ -2300,7 +2280,7 @@ the referenced table. In this case one needs to be more explicit and use
 a full Query.</p>
 </div>
 <div class="section" id="orderby-groupby-limitby-distinct-having-orderby-on-limitby-join-left-cache">
-<h3><code class="docutils literal notranslate"><span class="pre">orderby</span></code>, <code class="docutils literal notranslate"><span class="pre">groupby</span></code>, <code class="docutils literal notranslate"><span class="pre">limitby</span></code>, <code class="docutils literal notranslate"><span class="pre">distinct</span></code>, <code class="docutils literal notranslate"><span class="pre">having</span></code>, <code class="docutils literal notranslate"><span class="pre">orderby_on_limitby</span></code>, <code class="docutils literal notranslate"><span class="pre">join</span></code>, <code class="docutils literal notranslate"><span class="pre">left</span></code>, <code class="docutils literal notranslate"><span class="pre">cache</span></code><a class="headerlink" href="#orderby-groupby-limitby-distinct-having-orderby-on-limitby-join-left-cache" title="Permalink to this headline">¶</a></h3>
+<span id="orderby-groupby-limitby"></span><h3><code class="docutils literal notranslate"><span class="pre">orderby</span></code>, <code class="docutils literal notranslate"><span class="pre">groupby</span></code>, <code class="docutils literal notranslate"><span class="pre">limitby</span></code>, <code class="docutils literal notranslate"><span class="pre">distinct</span></code>, <code class="docutils literal notranslate"><span class="pre">having</span></code>, <code class="docutils literal notranslate"><span class="pre">orderby_on_limitby</span></code>, <code class="docutils literal notranslate"><span class="pre">join</span></code>, <code class="docutils literal notranslate"><span class="pre">left</span></code>, <code class="docutils literal notranslate"><span class="pre">cache</span></code><a class="headerlink" href="#orderby-groupby-limitby-distinct-having-orderby-on-limitby-join-left-cache" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">select</span></code> command takes a number of optional arguments.</p>
 <div class="section" id="orderby">
 <h4>orderby<a class="headerlink" href="#orderby" title="Permalink to this headline">¶</a></h4>
@@ -2574,7 +2554,7 @@ and then call <code class="docutils literal notranslate"><span class="pre">updat
 <div><p>Note, you should avoid using <code class="docutils literal notranslate"><span class="pre">row.update_record()</span></code> with no
 arguments when the <code class="docutils literal notranslate"><span class="pre">row</span></code> object contains fields that have an
 <code class="docutils literal notranslate"><span class="pre">update</span></code> attribute (e.g.,
-<code class="docutils literal notranslate"><span class="pre">Field('modified_on',</span> <span class="pre">update=request.now)</span></code>). Calling
+<code class="docutils literal notranslate"><span class="pre">Field('modified_on',</span> <span class="pre">update=datetime.datetime.utcnow)</span></code>). Calling
 <code class="docutils literal notranslate"><span class="pre">row.update_record()</span></code> will retain <em>all</em> of the existing values in
 the <code class="docutils literal notranslate"><span class="pre">row</span></code> object, so any fields with <code class="docutils literal notranslate"><span class="pre">update</span></code> attributes will
 have no effect in this case. Be particularly mindful of this with
@@ -2875,9 +2855,7 @@ defined:</p>
 <blockquote>
 <div><p>Mind that virtual fields do not have the same attributes as regular
 fields (length, default, required, etc). They do not appear in the
-list of <code class="docutils literal notranslate"><span class="pre">db.table.fields</span></code> and in older versions of web2py they
-require a special approach to display in SQLFORM.grid and
-SQLFORM.smartgrid.</p>
+list of <code class="docutils literal notranslate"><span class="pre">db.table.fields</span></code>.</p>
 </div></blockquote>
 </div>
 <div class="section" id="old-style-virtual-fields">
@@ -3668,16 +3646,19 @@ must: - have a unique id (UUID), - have a last modification time to
 track the most recent among multiple copies, - reference the UUID
 instead of the id.</p>
 <p>This can be achieved changing the above model into:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span>
 
 <span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;uuid&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
-                <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;modified_on&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">now</span><span class="p">),</span>
+                <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;modified_on&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">now</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="n">now</span><span class="p">),</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
 
 <span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;thing&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;uuid&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
-                <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;modified_on&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">now</span><span class="p">),</span>
+                <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;modified_on&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">now</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="n">now</span><span class="p">),</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;owner_id&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">64</span><span class="p">))</span>
 
@@ -3700,10 +3681,12 @@ record inserted, ensuring that each record gets a unique UUID, even
 if multiple records are inserted in a single transaction.</p>
 </div></blockquote>
 <p>Create a controller action to export the database:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">export</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">response</span>
+
+<span class="k">def</span> <span class="nf">export</span><span class="p">():</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
     <span class="n">db</span><span class="o">.</span><span class="n">export_to_csv_file</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;text/csv&#39;</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/csv&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -3917,11 +3900,13 @@ field to <code class="docutils literal notranslate"><span class="pre">define_tab
 </div>
 <p>It is also possible to define a dummy table that is not stored in a
 database in order to reuse it in multiple other places. For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">signature</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s1">&#39;signature&#39;</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span>
+
+<span class="n">signature</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s1">&#39;signature&#39;</span><span class="p">,</span>
                      <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;is_active&#39;</span><span class="p">,</span> <span class="s1">&#39;boolean&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-                     <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;created_on&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">now</span><span class="p">),</span>
+                     <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;created_on&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">now</span><span class="p">),</span>
                      <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;created_by&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">),</span>
-                     <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;modified_on&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">now</span><span class="p">),</span>
+                     <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;modified_on&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="n">now</span><span class="p">),</span>
                      <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;modified_by&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">))</span>
 
 <span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;payment&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;amount&#39;</span><span class="p">,</span> <span class="s1">&#39;double&#39;</span><span class="p">),</span> <span class="n">signature</span><span class="p">)</span>
@@ -4025,8 +4010,8 @@ callbacks.</p>
 <h4>Database cascades<a class="headerlink" href="#database-cascades" title="Permalink to this headline">¶</a></h4>
 <p>Database schema can define relationships which trigger deletions of
 related records, known as cascading. The DAL is not informed when a
-record is deleted due to a cascade. So no *_delete callaback will ever
-be called as conseguence of a cascade-deletion.</p>
+record is deleted due to a cascade. So no *_delete callback will ever
+be called as consequence of a cascade-deletion.</p>
 </div>
 </div>
 <div class="section" id="record-versioning">
@@ -4079,53 +4064,6 @@ is set to False. The <code class="docutils literal notranslate"><span class="pre
 <code class="docutils literal notranslate"><span class="pre">_enable_record_versioning</span></code> method allows to specify the name of the
 field used by the <code class="docutils literal notranslate"><span class="pre">common_filter</span></code> to determine if the field was
 deleted or not.</p>
-<p><a class="reference internal" href="#common-filters">Common filters</a> will be discussed later.</p>
-</div>
-<div class="section" id="common-fields-and-multi-tenancy">
-<h3>Common fields and multi-tenancy<a class="headerlink" href="#common-fields-and-multi-tenancy" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">db._common_fields</span></code> is a list of fields that should belong to all the
-tables. This list can also contain tables and it is understood as all
-fields from the table.</p>
-<p>For example occasionally you find yourself in need to add a signature to
-all your tables but the <code class="docutils literal notranslate"><span class="pre">Auth</span></code> tables. In this case, after you
-<code class="docutils literal notranslate"><span class="pre">auth.define_tables()</span></code> but before defining any other table, insert:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">_common_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>One field is special: <code class="docutils literal notranslate"><span class="pre">request_tenant</span></code>, you can set a different name
-in <code class="docutils literal notranslate"><span class="pre">db._request_tenant</span></code>. This field does not exist but you can create
-it and add it to any of your tables (or all of them):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">_common_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;request_tenant&#39;</span><span class="p">,</span>
-                               <span class="n">default</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">http_host</span><span class="p">,</span>
-                               <span class="n">writable</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>For every table with such a field, all records for all queries are
-always automatically filtered by:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">request_tenant</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">request_tenant</span><span class="o">.</span><span class="n">default</span>
-</pre></div>
-</div>
-<p>and for every record inserted, this field is set to the default value.
-In the example above we have chosen:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">default</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">http_host</span>
-</pre></div>
-</div>
-<p>this means we have chosen to ask our app to filter all tables in all
-queries with:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">request_tenant</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">http_host</span>
-</pre></div>
-</div>
-<p>This simple trick allow us to turn any application into a multi-tenant
-application. Even though we run one instance of the application and we
-use one single database, when the application is accessed under two or
-more domains the visitors will see different data depending on the
-domain (in the example the domain name is retrieved from
-<code class="docutils literal notranslate"><span class="pre">request.env.http_host</span></code>).</p>
-<p>You can turn off multi tenancy filters using
-<code class="docutils literal notranslate"><span class="pre">ignore_common_filters=True</span></code> at <code class="docutils literal notranslate"><span class="pre">Set</span></code> creation time:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">ignore_common_filters</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
 </div>
 <div class="section" id="common-filters">
 <h3>Common filters<a class="headerlink" href="#common-filters" title="Permalink to this headline">¶</a></h3>
@@ -4184,7 +4122,7 @@ define a custom type to store an IP address:</p>
 <span class="gp">... </span>    <span class="n">ov</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">iv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">ov</span><span class="p">))</span>
 <span class="gp">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gluon.dal</span> <span class="kn">import</span> <span class="n">SQLCustomType</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">SQLCustomType</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ipv4</span> <span class="o">=</span> <span class="n">SQLCustomType</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">native</span><span class="o">=</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                     <span class="n">encoder</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ip2int</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">decoder</span><span class="o">=</span><span class="n">int2ip</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;website&#39;</span><span class="p">,</span>
@@ -4215,9 +4153,8 @@ engine. <code class="docutils literal notranslate"><span class="pre">encoder</sp
 the data is stored and <code class="docutils literal notranslate"><span class="pre">decoder</span></code> is the optional reverse
 transformation function.</p>
 <blockquote>
-<div><p>This feature is marked as experimental. In practice it has been in
-web2py for a long time and it works but it can make the code not
-portable, for example when the native type is database specific.</p>
+<div><p>This feature is marked as experimental because can make your code not
+portable across database engines.</p>
 </div></blockquote>
 <p>It does not work on Google App Engine NoSQL.</p>
 </div>
@@ -4235,7 +4172,7 @@ tables we are going to access with <code class="docutils literal notranslate"><s
 <p>If we just need access to the data but not to the py4web table
 attributes, we get away without re-defining the tables but simply asking
 py4web to read the necessary info from the metadata in the .table files:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;path/to/app/databases&#39;</span><span class="p">,</span> <span class="n">auto_import</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -4264,86 +4201,6 @@ separately. This means there is a possibility that one of the commits
 succeeds and one fails. The distributed transaction prevents this from
 happening.</p>
 </div>
-<div class="section" id="postgis-spatialite-and-ms-geo-experimental">
-<h3>PostGIS, SpatiaLite, and MS Geo (experimental)<a class="headerlink" href="#postgis-spatialite-and-ms-geo-experimental" title="Permalink to this headline">¶</a></h3>
-<p>The DAL supports geographical APIs using PostGIS (for PostgreSQL),
-SpatiaLite (for SQLite), and MSSQL and Spatial Extensions. This is a
-feature that was sponsored by the Sahana project and implemented by
-Denes Lengyel.</p>
-<p>DAL provides geometry and geography fields types and the following
-functions:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>st_asgeojson (PostGIS only)
-st_astext
-st_contains
-st_distance
-st_equals
-st_intersects
-st_overlaps
-st_simplify (PostGIS only)
-st_touches
-st_within
-st_x
-st_y
-</pre></div>
-</div>
-<p>Here are some examples:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gluon.dal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">geoPoint</span><span class="p">,</span> <span class="n">geoLine</span><span class="p">,</span> <span class="n">geoPolygon</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s2">&quot;mssql://user:pass@host/db&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;spatial&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;loc&#39;</span><span class="p">,</span> <span class="s1">&#39;geometry()&#39;</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>Below we insert a point, a line, and a polygon:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">geoPoint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">geoLine</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span> <span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">)))</span>
-<span class="go">2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">geoPolygon</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">150</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
-<span class="go">3</span>
-</pre></div>
-</div>
-<p>Notice that</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Always returns the geometry data serialized as text. You can also do the
-same more explicitly using <code class="docutils literal notranslate"><span class="pre">st_astext()</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">loc</span><span class="o">.</span><span class="n">st_astext</span><span class="p">()))</span>
-<span class="go">spatial.id,spatial.loc.STAsText()</span>
-<span class="go">1,&quot;POINT (1 2)&quot;</span>
-<span class="go">2,&quot;LINESTRING (100 100, 20 180, 180 180)&quot;</span>
-<span class="go">3,&quot;POLYGON ((0 0, 150 0, 150 150, 0 150, 0 0))&quot;</span>
-</pre></div>
-</div>
-<p>You can ask for the native representation by using <code class="docutils literal notranslate"><span class="pre">st_asgeojson()</span></code>
-(in PostGIS only):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">loc</span><span class="o">.</span><span class="n">st_asgeojson</span><span class="p">()</span><span class="o">.</span><span class="n">with_alias</span><span class="p">(</span><span class="s1">&#39;loc&#39;</span><span class="p">)))</span>
-<span class="go">spatial.id,loc</span>
-<span class="go">1,[1, 2]</span>
-<span class="go">2,[[100, 100], [20 180], [180, 180]]</span>
-<span class="go">3,[[[0, 0], [150, 0], [150, 150], [0, 150], [0, 0]]]</span>
-</pre></div>
-</div>
-<p>(notice an array is a point, an array of arrays is a line, and an array
-of array of arrays is a polygon).</p>
-<p>Here are example of how to use geographical functions:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">loc</span><span class="o">.</span><span class="n">st_intersects</span><span class="p">(</span><span class="n">geoLine</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">160</span><span class="p">)))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">loc</span><span class="o">.</span><span class="n">st_overlaps</span><span class="p">(</span><span class="n">geoPolygon</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">loc</span><span class="o">.</span><span class="n">st_contains</span><span class="p">(</span><span class="n">geoPoint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">loc</span><span class="p">))</span>
-<span class="go">spatial.id,spatial.loc</span>
-<span class="go">3,&quot;POLYGON ((0 0, 150 0, 150 150, 0 150, 0 0))&quot;</span>
-</pre></div>
-</div>
-<p>Computed distances can also be retrieved as floating point numbers:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">loc</span><span class="o">.</span><span class="n">st_distance</span><span class="p">(</span><span class="n">geoPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">with_alias</span><span class="p">(</span><span class="s1">&#39;dist&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">dist</span><span class="p">))</span>
-<span class="go">spatial.id,dist</span>
-<span class="go">1,2.0</span>
-<span class="go">2,140.714249456</span>
-<span class="go">3,1.0</span>
-</pre></div>
-</div>
-</div>
 <div class="section" id="copy-data-from-one-db-into-another">
 <h3>Copy data from one db into another<a class="headerlink" href="#copy-data-from-one-db-into-another" title="Permalink to this headline">¶</a></h3>
 <p>Consider the situation in which you have been using the following
@@ -4359,24 +4216,6 @@ string:</p>
 <p>Before you switch, you want to move the data and rebuild all the
 metadata for the new database. We assume the new database to exist but
 we also assume it is empty.</p>
-<p>web2py provides a script that does this work for you:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> web2py
-python scripts/cpdb.py <span class="se">\\</span>
-   -f applications/app/databases <span class="se">\\</span>
-   -y <span class="s1">&#39;sqlite://storage.sqlite&#39;</span> <span class="se">\\</span>
-   -Y <span class="s1">&#39;postgres://username:password@localhost/mydb&#39;</span> <span class="se">\\</span>
-   -d ../gluon
-</pre></div>
-</div>
-<p>After running the script you can simply switch the connection string in
-the model and everything should work out of the box. The new data should
-be there.</p>
-<p>This script provides various command line options that allows you to
-move data from one application to another, move all tables or only some
-tables, clear the data in the tables. For more info try:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python scripts/cpdb.py -h
-</pre></div>
-</div>
 </div>
 </div>
 <div class="section" id="gotchas">
@@ -4500,55 +4339,162 @@ ones.</p>
 </div>
 <p>the prefix in the uri string defines the adapter. The mapping is defined
 in the following dictionary also in “dal.py”:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ADAPTERS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;sqlite&#39;</span><span class="p">:</span> <span class="n">SQLiteAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;spatialite&#39;</span><span class="p">:</span> <span class="n">SpatiaLiteAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;sqlite:memory&#39;</span><span class="p">:</span> <span class="n">SQLiteAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;spatialite:memory&#39;</span><span class="p">:</span> <span class="n">SpatiaLiteAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;mysql&#39;</span><span class="p">:</span> <span class="n">MySQLAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;postgres&#39;</span><span class="p">:</span> <span class="n">PostgreSQLAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;postgres:psycopg2&#39;</span><span class="p">:</span> <span class="n">PostgreSQLAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;postgres2:psycopg2&#39;</span><span class="p">:</span> <span class="n">NewPostgreSQLAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;oracle&#39;</span><span class="p">:</span> <span class="n">OracleAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;mssql&#39;</span><span class="p">:</span> <span class="n">MSSQLAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;mssql2&#39;</span><span class="p">:</span> <span class="n">MSSQL2Adapter</span><span class="p">,</span>
-    <span class="s1">&#39;mssql3&#39;</span><span class="p">:</span> <span class="n">MSSQL3Adapter</span><span class="p">,</span>
-    <span class="s1">&#39;mssql4&#39;</span> <span class="p">:</span> <span class="n">MSSQL4Adapter</span><span class="p">,</span>
-    <span class="s1">&#39;vertica&#39;</span><span class="p">:</span> <span class="n">VerticaAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;sybase&#39;</span><span class="p">:</span> <span class="n">SybaseAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;db2&#39;</span><span class="p">:</span> <span class="n">DB2Adapter</span><span class="p">,</span>
-    <span class="s1">&#39;teradata&#39;</span><span class="p">:</span> <span class="n">TeradataAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;informix&#39;</span><span class="p">:</span> <span class="n">InformixAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;informix-se&#39;</span><span class="p">:</span> <span class="n">InformixSEAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;firebird&#39;</span><span class="p">:</span> <span class="n">FireBirdAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;firebird_embedded&#39;</span><span class="p">:</span> <span class="n">FireBirdAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;ingres&#39;</span><span class="p">:</span> <span class="n">IngresAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;ingresu&#39;</span><span class="p">:</span> <span class="n">IngresUnicodeAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;sapdb&#39;</span><span class="p">:</span> <span class="n">SAPDBAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;cubrid&#39;</span><span class="p">:</span> <span class="n">CubridAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;jdbc:sqlite&#39;</span><span class="p">:</span> <span class="n">JDBCSQLiteAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;jdbc:sqlite:memory&#39;</span><span class="p">:</span> <span class="n">JDBCSQLiteAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;jdbc:postgres&#39;</span><span class="p">:</span> <span class="n">JDBCPostgreSQLAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;gae&#39;</span><span class="p">:</span> <span class="n">GoogleDatastoreAdapter</span><span class="p">,</span> <span class="c1"># discouraged, for backward compatibility</span>
-    <span class="s1">&#39;google:datastore&#39;</span><span class="p">:</span> <span class="n">GoogleDatastoreAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;google:datastore+ndb&#39;</span><span class="p">:</span> <span class="n">GoogleDatastoreAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;google:sql&#39;</span><span class="p">:</span> <span class="n">GoogleSQLAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;couchdb&#39;</span><span class="p">:</span> <span class="n">CouchDBAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;mongodb&#39;</span><span class="p">:</span> <span class="n">MongoDBAdapter</span><span class="p">,</span>
-    <span class="s1">&#39;imap&#39;</span><span class="p">:</span> <span class="n">IMAPAdapter</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>the uri string is then parsed in more detail by the adapter itself.</p>
-<p>For any adapter you can replace the driver with a different one:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>couchdb</p></td>
+<td><p>pydal.adapters.couchdb.CouchDB</p></td>
+</tr>
+<tr class="row-even"><td><p>cubrid</p></td>
+<td><p>pydal.adapters.mysql.Cubrid</p></td>
+</tr>
+<tr class="row-odd"><td><p>db2:ibm_db_dbi</p></td>
+<td><p>pydal.adapters.db2.DB2IBM</p></td>
+</tr>
+<tr class="row-even"><td><p>db2:pyodbc</p></td>
+<td><p>pydal.adapters.db2.DB2Pyodbc</p></td>
+</tr>
+<tr class="row-odd"><td><p>firebird</p></td>
+<td><p>pydal.adapters.firebird.FireBird</p></td>
+</tr>
+<tr class="row-even"><td><p>firebird_embedded</p></td>
+<td><p>pydal.adapters.firebird.FireBirdEmbedded</p></td>
+</tr>
+<tr class="row-odd"><td><p>google:MySQLdb</p></td>
+<td><p>pydal.adapters.google.GoogleMySQL</p></td>
+</tr>
+<tr class="row-even"><td><p>google:datastore</p></td>
+<td><p>pydal.adapters.google.GoogleDatastore</p></td>
+</tr>
+<tr class="row-odd"><td><p>google:datastore+ndb</p></td>
+<td><p>pydal.adapters.google.GoogleDatastore</p></td>
+</tr>
+<tr class="row-even"><td><p>google:psycopg2</p></td>
+<td><p>pydal.adapters.google.GooglePostgres</p></td>
+</tr>
+<tr class="row-odd"><td><p>google:sql</p></td>
+<td><p>pydal.adapters.google.GoogleSQL</p></td>
+</tr>
+<tr class="row-even"><td><p>informix</p></td>
+<td><p>pydal.adapters.informix.Informix</p></td>
+</tr>
+<tr class="row-odd"><td><p>informix-se</p></td>
+<td><p>pydal.adapters.informix.InformixSE</p></td>
+</tr>
+<tr class="row-even"><td><p>ingres</p></td>
+<td><p>pydal.adapters.ingres.Ingres</p></td>
+</tr>
+<tr class="row-odd"><td><p>ingresu</p></td>
+<td><p>pydal.adapters.ingres.IngresUnicode</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="jdbc:postgres">jdbc:postgres</a></p></td>
+<td><p>pydal.adapters.postgres.JDBCPostgre</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="jdbc:sqlite">jdbc:sqlite</a></p></td>
+<td><p>pydal.adapters.sqlite.JDBCSQLite</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="jdbc:sqlite:memory">jdbc:sqlite:memory</a></p></td>
+<td><p>pydal.adapters.sqlite.JDBCSQLite</p></td>
+</tr>
+<tr class="row-odd"><td><p>mongodb</p></td>
+<td><p>pydal.adapters.mongo.Mongo</p></td>
+</tr>
+<tr class="row-even"><td><p>mssql</p></td>
+<td><p>pydal.adapters.mssql.MSSQL1</p></td>
+</tr>
+<tr class="row-odd"><td><p>mssql2</p></td>
+<td><p>pydal.adapters.mssql.MSSQL1N</p></td>
+</tr>
+<tr class="row-even"><td><p>mssql3</p></td>
+<td><p>pydal.adapters.mssql.MSSQL3</p></td>
+</tr>
+<tr class="row-odd"><td><p>mssql3n</p></td>
+<td><p>pydal.adapters.mssql.MSSQL3N</p></td>
+</tr>
+<tr class="row-even"><td><p>mssql4</p></td>
+<td><p>pydal.adapters.mssql.MSSQL4</p></td>
+</tr>
+<tr class="row-odd"><td><p>mssql4n</p></td>
+<td><p>pydal.adapters.mssql.MSSQL4N</p></td>
+</tr>
+<tr class="row-even"><td><p>mssqln</p></td>
+<td><p>pydal.adapters.mssql.MSSQL1N</p></td>
+</tr>
+<tr class="row-odd"><td><p>mysql</p></td>
+<td><p>pydal.adapters.mysql.MySQL</p></td>
+</tr>
+<tr class="row-even"><td><p>oracle</p></td>
+<td><p>pydal.adapters.oracle.Oracle</p></td>
+</tr>
+<tr class="row-odd"><td><p>postgres</p></td>
+<td><p>pydal.adapters.postgres.Postgre</p></td>
+</tr>
+<tr class="row-even"><td><p>postgres2</p></td>
+<td><p>pydal.adapters.postgres.PostgreNew</p></td>
+</tr>
+<tr class="row-odd"><td><p>postgres2:psycopg2</p></td>
+<td><p>pydal.adapters.postgres.PostgrePsycoNew</p></td>
+</tr>
+<tr class="row-even"><td><p>postgres3</p></td>
+<td><p>pydal.adapters.postgres.PostgreBoolean</p></td>
+</tr>
+<tr class="row-odd"><td><p>postgres3:psycopg2</p></td>
+<td><p>pydal.adapters.postgres.PostgrePsycoBoolean</p></td>
+</tr>
+<tr class="row-even"><td><p>postgres:psycopg2</p></td>
+<td><p>pydal.adapters.postgres.PostgrePsyco</p></td>
+</tr>
+<tr class="row-odd"><td><p>pytds</p></td>
+<td><p>pydal.adapters.mssql.PyTDS</p></td>
+</tr>
+<tr class="row-even"><td><p>sapdb</p></td>
+<td><p>pydal.adapters.sap.SAPDB</p></td>
+</tr>
+<tr class="row-odd"><td><p>spatialite</p></td>
+<td><p>pydal.adapters.sqlite.Spatialite</p></td>
+</tr>
+<tr class="row-even"><td><p>spatialite:memory</p></td>
+<td><p>pydal.adapters.sqlite.Spatialite</p></td>
+</tr>
+<tr class="row-odd"><td><p>sqlite</p></td>
+<td><p>pydal.adapters.sqlite.SQLite</p></td>
+</tr>
+<tr class="row-even"><td><p>sqlite:memory</p></td>
+<td><p>pydal.adapters.sqlite.SQLite</p></td>
+</tr>
+<tr class="row-odd"><td><p>sybase</p></td>
+<td><p>pydal.adapters.mssql.Sybase</p></td>
+</tr>
+<tr class="row-even"><td><p>teradata</p></td>
+<td><p>pydal.adapters.teradata.Teradata</p></td>
+</tr>
+<tr class="row-odd"><td><p>vertica</p></td>
+<td><p>pydal.adapters.mssql.Vertica</p></td>
+</tr>
+</tbody>
+</table>
+<p>the uri string is then parsed in more detail by the adapter itself.
+An updated list of adapters can be obtained as dictionary with</p>
+<p>For any adapter you can replace the driver with a different one
+globally (not thread safe):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MySQLdb</span> <span class="k">as</span> <span class="nn">mysqldb</span>
-<span class="kn">from</span> <span class="nn">gluon.dal</span> <span class="kn">import</span> <span class="n">MySQLAdapter</span>
-<span class="n">MySQLAdapter</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">mysqldb</span>
+<span class="kn">from</span> <span class="nn">pydal.adapters.mysql</span> <span class="kn">import</span> <span class="n">SQLAdapter</span>
+<span class="n">SQLAdapter</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">mysqldb</span>
 </pre></div>
 </div>
 <p>i.e. <code class="docutils literal notranslate"><span class="pre">mysqldb</span></code> has to be <em>that module</em> with a .connect() method. You
 can specify optional driver arguments and adapter arguments:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">driver_args</span><span class="o">=</span><span class="p">{},</span> <span class="n">adapter_args</span><span class="o">=</span><span class="p">{})</span>
+</pre></div>
+</div>
+<p>For recognized adapters you can also simply specify the name in the
+<code class="docutils literal notranslate"><span class="pre">adapter_args</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal.adapters.mysql</span> <span class="kn">import</span> <span class="n">MySQL</span>
+<span class="k">assert</span> <span class="s2">&quot;mysqldv&quot;</span> <span class="ow">in</span> <span class="n">MySQL</span><span class="o">.</span><span class="n">drivers</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">driver_args</span><span class="o">=</span><span class="p">{},</span> <span class="n">adapter_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;driver&quot;</span><span class="p">:</span> <span class="s2">&quot;mysqldb&quot;</span><span class="p">})</span>
 </pre></div>
 </div>
 </div>
@@ -4578,8 +4524,8 @@ This means that any migration process is broken into multiple commits.
 If something happens that causes a failure it is possible to break a
 migration (the py4web metadata are no longer in sync with the actual
 table structure in the database). This is unfortunate but it can be
-prevented (migrate one table at the time) or it can be fixed a
-posteriori (revert the py4web model to what corresponds to the table
+prevented (migrate one table at the time) or it can be fixed in the
+aftermath (revert the py4web model to what corresponds to the table
 structure in database, set <code class="docutils literal notranslate"><span class="pre">fake_migrate=True</span></code> and after the metadata
 has been rebuilt, set <code class="docutils literal notranslate"><span class="pre">fake_migrate=False</span></code> and migrate the table
 again).</p>
@@ -4593,7 +4539,7 @@ file system. PY4WEB migrations in Google SQL combined with the MySQL
 issue described above can result in metadata corruption. Again, this can
 be prevented (by migrating the table at once and then setting
 migrate=False so that the metadata table is not accessed any more) or it
-can fixed a posteriori (by accessing the database using the Google
+can fixed in the aftermath (by accessing the database using the Google
 dashboard and deleting any corrupted entry from the table called
 <code class="docutils literal notranslate"><span class="pre">py4web_filesystem</span></code>.</p>
 </div>
@@ -4709,7 +4655,7 @@ than on SQL databases.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210522.2
+      v: 1.20210619.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

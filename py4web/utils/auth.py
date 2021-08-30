@@ -9,10 +9,10 @@ import urllib
 import uuid
 
 from py4web import redirect, request, response, abort, URL, action, Field, HTTP
-from py4web.core import Fixture, Template, Flash, REGEX_APPJSON
+from py4web.core import Fixture, Translator, Flash, REGEX_APPJSON
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
-from yatl.helpers import INPUT, A, DIV
+from yatl.helpers import A, DIV
 
 from pydal.validators import (
     IS_EMAIL,
@@ -156,12 +156,12 @@ class Auth(Fixture):
     }
 
     BUTTON_CLASSES = {
-        "lost-password": "info",
-        "register": "info",
-        "request": "info",
-        "sign-in": "info",
-        "sign-up": "info",
-        "submit": "info",
+        "lost-password": "white",
+        "register": "white",
+        "request": "white",
+        "sign-in": "white",
+        "sign-up": "white",
+        "submit": "white",
     }
 
     def __init__(
@@ -198,6 +198,8 @@ class Auth(Fixture):
             messages=copy.deepcopy(self.MESSAGES),
             button_classes=copy.deepcopy(self.BUTTON_CLASSES),
             default_login_enabled=True,
+            exclude_extra_fields_in_register=None,
+            exclude_extra_fields_in_profile=None,
         )
 
         """Creates and Auth object responsible for handling
@@ -208,6 +210,8 @@ class Auth(Fixture):
             self.__prerequisites__.append(session)
         if db:
             self.__prerequisites__.append(db)
+        self.flash = Flash()
+        self.__prerequisites__.append(self.flash)
 
         self.onsuccess = {}
         self.next = {}
@@ -215,7 +219,7 @@ class Auth(Fixture):
         self.db = db
         self.session = session
         self.sender = sender
-        self.route = None
+        self.route = "auth"
         self.use_username = use_username  # if False, uses email only
         self.use_phone_number = use_phone_number
         # The self._link variable is not thread safe (only intended for testing)
@@ -225,7 +229,6 @@ class Auth(Fixture):
             self.define_tables()
         self.plugins = {}
         self.form_source = DefaultAuthForms(self)
-        self.flash = Flash()
 
     def allows(self, action_name):
         return (
@@ -647,9 +650,13 @@ class Auth(Fixture):
 
     def get_or_delete_existing_unverified_account(self, email):
         db = self.db
-        row = db(db.auth_user.email == email).select(limitby=(0,1)).first()
+        row = db(db.auth_user.email == email).select(limitby=(0, 1)).first()
         # if we have a user with this email and incomplete registration delete it
-        if row and row.action_token and row.action_token.startswith("pending-registration:"):
+        if (
+            row
+            and row.action_token
+            and row.action_token.startswith("pending-registration:")
+        ):
             row.delete_record()
             return None
         return row
@@ -657,29 +664,31 @@ class Auth(Fixture):
     def get_or_register_user(self, user):
         db = self.db
         # if the we have an email for the user
-        if 'email' in user:
+        if "email" in user:
             # return a user if exists and has a verified email
-            row = self.get_or_delete_existing_unverified_account(user['email'])
+            row = self.get_or_delete_existing_unverified_account(user["email"])
         # else retrieve the user from the sso_id
         else:
-            row = db(db.auth_user.sso_id == user["sso_id"]).select(limitby=(0, 1)).first()
+            row = (
+                db(db.auth_user.sso_id == user["sso_id"]).select(limitby=(0, 1)).first()
+            )
         # if we have found a candidate user
         if row:
             # we expect the email to match if provided
-            if 'email' in user and row.email != user['email']:
+            if "email" in user and row.email != user["email"]:
                 return None
             # we can update all the other information provided by the SSO
-            if any(user[key] != row[key] for key in user if not key == 'username'):
+            if any(user[key] != row[key] for key in user if not key == "username"):
                 row.update_record(**user)
             user["id"] = row["id"]
         # if we do not have a candidate user we need to create one
         else:
             # we expect an email to unable to create account
-            if not 'email' in user:
+            if not "email" in user:
                 return None
             # if we expect a username but not provided, user email as username
-            if self.use_username and 'username' not in user:
-                user['username'] = user['email']
+            if self.use_username and "username" not in user:
+                user["username"] = user["email"]
             # create the user
             user["id"] = db.auth_user.insert(**db.auth_user._filter_fields(user))
         return user
@@ -769,16 +778,24 @@ class Auth(Fixture):
         env = env or {}
         auth = self
 
+        translators = [fixture for fixture in uses if isinstance(fixture, Translator)]
+        if translators:
+            T = translators[0]
+            for group in self.param.messages.values():
+                for key, value in group.items():
+                    group[key] = T(value)
+
         def allowed(name):
             return set(self.param.allowed_actions) & set(["all", name])
 
+        methods = ["GET", "POST", "OPTIONS"]
         # This exposes all actions as /{app_name}/{route}/api/{name}
         for api_name in AuthAPI.public_api:
             if allowed(api_name):
                 api_factory = getattr(AuthAPI, api_name)
 
-                @action(route + "/api/" + api_name, method=["GET", "POST"])
-                @action.uses(auth)
+                @action(route + "/api/" + api_name, method=methods)
+                @action.uses(auth, *uses)
                 def _(auth=auth, api_factory=api_factory):
                     return api_factory(auth)
 
@@ -786,8 +803,8 @@ class Auth(Fixture):
             if allowed(api_name):
                 api_factory = getattr(AuthAPI, api_name)
 
-                @action(route + "/api/" + api_name, method=["GET", "POST"])
-                @action.uses(auth.user)
+                @action(route + "/api/" + api_name, method=methods)
+                @action.uses(auth.user, *uses)
                 def _(auth=auth, api_factory=api_factory):
                     return api_factory(auth)
 
@@ -795,7 +812,7 @@ class Auth(Fixture):
         for name in self.plugins:
 
             @action(route + "/plugin/" + name + "/<path:path>", method=["GET", "POST"])
-            @action.uses(auth)
+            @action.uses(auth, *uses)
             def _(path, plugin=self.plugins[name], name=name):
                 return plugin.handle_request(self, path, request.query, request.json)
 
@@ -811,8 +828,10 @@ class Auth(Fixture):
                 @action(route + "/" + form_name, method=["GET", "POST"])
                 @action.uses(route + ".html")
                 @action.uses(auth, self.flash, *uses)
-                def _(form_factory=form_factory, path=form_name, env=env):
-                    return dict(form=form_factory(), path=path, **env)
+                def _(auth=auth, form_factory=form_factory, path=form_name, env=env):
+                    return dict(
+                        form=form_factory(), path=path, user=auth.get_user(), **env
+                    )
 
         for form_name in self.form_source.private_forms:
             if allowed(form_name):
@@ -893,7 +912,7 @@ class AuthAPI:
     def register(auth):
         if request.json is None:
             return auth._error("no json post payload")
-        auth.get_or_delete_existing_unverified_account(request.json.get('email'))
+        auth.get_or_delete_existing_unverified_account(request.json.get("email"))
         return auth.register(request.json, send=True).as_dict()
 
     @staticmethod
@@ -1021,6 +1040,12 @@ class DefaultAuthForms:
     def register(self):
         self.auth.db.auth_user.password.writable = True
         fields = [field for field in self.auth.db.auth_user if field.writable]
+        if self.auth.param.exclude_extra_fields_in_register:
+            fields = [
+                field
+                for field in fields
+                if field.name not in self.auth.param.exclude_extra_fields_in_register
+            ]
         for k, field in enumerate(fields):
             if field.type == "password":
                 fields.insert(
@@ -1036,8 +1061,8 @@ class DefaultAuthForms:
         button_name = self.auth.param.messages["buttons"]["sign-up"]
         # if the form is submitted, before any validation
         # delete any unverified account with the same email
-        if request.method == 'POST':
-            email = request.forms.get('email')
+        if request.method == "POST":
+            email = request.forms.get("email")
             if email:
                 self.auth.get_or_delete_existing_unverified_account(email)
         form = Form(fields, submit_value=button_name, formstyle=self.formstyle)
@@ -1272,6 +1297,12 @@ class DefaultAuthForms:
             self.auth.db.auth_user.username.writable = False
         else:
             self.auth.db.auth_user.email.writable = False
+        if self.auth.param.exclude_extra_fields_in_profile:
+            for field in self.auth.extra_auth_user_fields:
+                if field.name in self.auth.param.exclude_extra_fields_in_profile:
+                    field.writable = False
+                    field.readable = False
+
         form = Form(
             self.auth.db.auth_user,
             user,

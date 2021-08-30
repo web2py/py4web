@@ -34,7 +34,7 @@ If you now restart py4web or
 press the “Reload Apps” in the Dashboard, py4web will find this module,
 import it, and recognize it as an app, simply because of its location.
 You can also run py4web in *watch* mode (see the :ref:`run command option`) for
-automatic reloading of the apps wheneve it changes, which is very useful in a development environment.
+automatic reloading of the apps whenever it changes, which is very useful in a development environment.
 In this case, run py4web with a command like this:
 
 
@@ -218,6 +218,14 @@ This action can be accessed at:
 
 
 Notice that the request object is a `Bottle request object <https://bottlepy.org/docs/dev/api.html#the-request-object>`__.
+with one additional attribute:
+
+::
+
+   request.app_name
+
+Which you can use the code to identify the name and the folder used for the app.
+
 
 Templates
 ~~~~~~~~~
@@ -409,7 +417,7 @@ But in fact any other files inside an app can be watched by setting a
 handler function using the ``@app_watch_handler`` decorator.
 
 Two examples of this usage are reported now. Do not worry if you don’t
-fully undestand them: the key point here is that even non-python code
+fully understand them: the key point here is that even non-python code
 could be reloaded automatically if you explicit it with the
 ``@app_watch_handler`` decorator.
 

@@ -10,7 +10,7 @@ class TestAuth(unittest.TestCase):
         os.environ["PY4WEB_APPS_FOLDER"] = "apps"
         self.db = DAL("sqlite:memory")
         self.session = Session(secret="a", expiration=10)
-        self.session.local.data = {}
+        self.session.initialize()
         self.auth = Auth(self.session, self.db, define_tables=True, password_complexity=None)
         self.auth.enable()
         self.auth.action = self.action
@@ -29,7 +29,7 @@ class TestAuth(unittest.TestCase):
     def test_extra_fields(self):
         self.db = DAL("sqlite:memory")
         self.session = Session(secret="a", expiration=10)
-        self.session.local.data = {}
+        self.session.initialize()
         self.auth = Auth(self.session, self.db, define_tables=True, extra_fields=[Field('favorite_color')])
         self.assertEqual(type(self.db.auth_user.favorite_color), Field)
 

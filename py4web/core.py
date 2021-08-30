@@ -52,6 +52,9 @@ import pluralize
 import pydal
 import threadsafevariable
 import yatl
+import renoir
+import renoir.constants
+import renoir.writers
 
 bottle.BaseRequest.MEMFILE_MAX = 16 * 1024 * 1024
 
@@ -99,7 +102,6 @@ Is still experimental...
 """
 
 Field = pydal.Field
-render = yatl.render
 request = bottle.request
 response = bottle.response
 abort = bottle.abort
@@ -127,6 +129,19 @@ def required_folder(*parts):
         os.makedirs(path)
     assert os.path.isdir(path), "%s is not a folder as required" % path
     return path
+
+
+def safely(func, exceptions=(Exception,), log=False, default=None):
+    """
+    runs the funnction and returns True on success,
+    False if one of the exceptions is raised
+    """
+    try:
+        return func()
+    except exceptions as err:
+        if log:
+            logging.warn(str(err))
+        return default() if callable(default) else default
 
 
 ########################################################################################
@@ -249,9 +264,15 @@ def objectify(obj):
     elif isinstance(obj, (numbers.Rational, numbers.Real)):
         return float(obj)
     elif isinstance(obj, (datetime.date, datetime.datetime, datetime.time)):
-        return obj.isoformat()
+        return obj.isoformat().replace("T", " ")
     elif isinstance(obj, str):
         return obj
+    elif isinstance(obj, dict):
+        return obj
+    elif hasattr(obj, "as_list"):
+        return obj.as_list()
+    elif hasattr(obj, "as_dict"):
+        return obj.as_dict()
     elif hasattr(obj, "__iter__") or isinstance(obj, types.GeneratorType):
         return list(obj)
     elif hasattr(obj, "xml"):
@@ -286,6 +307,9 @@ class Fixture:
     def on_success(self, status):
         pass  # called when a request is successful
 
+    def finalize(self):
+        pass  # called in any case at the end of a request
+
     def transform(
         self, output, shared_data=None
     ):  # transforms the output, for example to apply template
@@ -319,7 +343,15 @@ class DAL(pydal.DAL, Fixture):
 # make sure some variables in pydal are thread safe
 def thread_safe_pydal_patch():
     Field = pydal.DAL.Field
-    tsafe_attrs = ["readable", "writable", "default", "update", "requires"]
+    tsafe_attrs = [
+        "readable",
+        "writable",
+        "default",
+        "update",
+        "requires",
+        "widget",
+        "represent",
+    ]
     for a in tsafe_attrs:
         setattr(Field, a, threadsafevariable.ThreadSafeVariable())
 
@@ -348,6 +380,58 @@ thread_safe_pydal_patch()
 # this global object will be used to store their state to restore it for every http request
 ICECUBE = {}
 
+
+#########################################################################################
+# Current Fixture
+#########################################################################################
+
+
+class NotInCurrent(Exception):
+    """This exception is raised when one tries to access a request-local
+    object but one is not in a request-local context."""
+
+    pass
+
+
+class Current(Fixture):
+    """
+    This fixture gives access to a request-local object, that is cleaned
+    after each request.  Note that the object is thread-local; if the
+    request processing uses multiple threads, this will not be accessible.
+    """
+
+    def __init__(self):
+        self._local = threading.local()
+        self.local = None
+
+    def on_request(self):
+        self._local = self._local
+        self.local.data = {}
+
+    def finalize(self):
+        self.local = None
+
+    def __setitem__(self, key, value):
+        if self.local is None:
+            raise NotInCurrent()
+        self.local.data[key] = value
+
+    def __getitem__(self, key):
+        if self.local is None:
+            raise NotInCurrent()
+        return self.local.data[key]
+
+    def __delitem__(self, key):
+        if self.local is None:
+            raise NotInCurrent()
+        del self.local.data[key]
+
+    def get(self, key, default=None):
+        if self.local is None:
+            raise NotInCurrent()
+        return self.local.data.get(key, default)
+
+
 #########################################################################################
 # Flash Fixture
 #########################################################################################
@@ -367,45 +451,96 @@ class Flash(Fixture):
     Also notice all Flash objects share the same threading local so act as singletons
     """
 
+    # this essential makes flash a singleton
+    # necessary because auth defines its own flash
+    # possible because flash does not depend on the app
     local = threading.local()
 
     def on_request(self):
         # when a new request arrives we look for a flash message in the cookie
         flash = request.get_cookie("py4web-flash")
         if flash:
-            Flash.local.flash = json.loads(flash)
+            self.local.flash = json.loads(flash)
         else:
-            Flash.local.flash = None
+            self.local.flash = None
 
     def on_success(self, status):
         # if we redirect and have a flash message we move it to the session
-        if status == 303 and Flash.local.flash:
-            response.set_cookie("py4web-flash", json.dumps(Flash.local.flash), path="/")
-            Flash.local.flash = None
+        if status == 303 and self.local.flash:
+            response.set_cookie("py4web-flash", json.dumps(self.local.flash), path="/")
         else:
             response.delete_cookie("py4web-flash", path="/")
+
+    def finalize(self):
+        """Clears the local to prevent leakage."""
+        self.local.__dict__.clear()
 
     def set(self, message, _class="", sanitize=True):
         # we set a flash message
         if sanitize:
             message = yatl.sanitizer.xmlescape(message)
-        Flash.local.flash = {"message": message, "class": _class}
+        self.local.flash = {"message": message, "class": _class}
 
     def transform(self, data, shared_data=None):
         # if we have a valid flash message, we inject it in the response dict
         if isinstance(data, dict):
             if not "flash" in data:
-                data["flash"] = Flash.local.flash or ""
+                data["flash"] = self.local.flash or ""
         else:
-            if Flash.local.flash is not None:
-                response.headers["component-flash"] = json.dumps(Flash.local.flash)
-        Flash.local.flash = None
+            if self.local.flash is not None:
+                response.headers["component-flash"] = json.dumps(self.local.flash)
+        self.local.flash = None
         return data
 
 
 #########################################################################################
 # The Template Rendered Fixture
 #########################################################################################
+
+
+class RenoirXMLEscapeMixin:
+    def _escape_data(self, data):
+        """Allows Renoir to convert yatl helpers to strings"""
+        return safely(
+            lambda: data.xml(), default=lambda: self._to_html(self._to_unicode(data))
+        )
+
+
+class RenoirCustomWriter(RenoirXMLEscapeMixin, renoir.writers.Writer):
+    ...
+
+
+class RenoirCustomEscapeAllWriter(RenoirXMLEscapeMixin, renoir.writers.EscapeAllWriter):
+    ...
+
+
+class Renoir(renoir.Renoir):
+    """Custom Renoir Engine that understands yatl helpers"""
+    _writers = {
+        renoir.constants.ESCAPES.common: RenoirCustomWriter,
+        renoir.constants.ESCAPES.all: RenoirCustomEscapeAllWriter,
+    }
+
+
+def render(
+    content=None,
+    filename=None,
+    path=".",
+    context={},
+    delimiters="[[ ]]",
+    cached_renoir_engines=Cache(100),
+):
+    """
+    renders the template using renoire, same API as yatl.render, does caching of
+    both Renoire engine and source files
+    """
+    engine = cached_renoir_engines.get(
+        (path, delimiters),
+        lambda: Renoir(path=path, delimiters=delimiters.split(" "), reload=True),
+    )
+    if content is not None:
+        return engine._render(content, context=context)
+    return engine.render(filename, context=context)
 
 
 class Template(Fixture):
@@ -416,18 +551,6 @@ class Template(Fixture):
         self.filename = filename
         self.path = path
         self.delimiters = delimiters
-
-    @staticmethod
-    def reader(filename):
-        """Cached file reader, only reads template if it has changed"""
-
-        def raw_read():
-            with open(filename, encoding="utf8") as stream:
-                return stream.read()
-
-        return Template.cache.get(
-            filename, raw_read, expiration=1, monitor=lambda: os.path.getmtime(filename)
-        )
 
     def transform(self, output, shared_data=None):
         if not isinstance(output, dict):
@@ -446,12 +569,8 @@ class Template(Fixture):
             generic_filename = os.path.join(path, "generic.html")
             if os.path.exists(generic_filename):
                 filename = generic_filename
-        output = yatl.render(
-            Template.reader(filename),
-            path=path,
-            context=context,
-            delimiters=self.delimiters,
-            reader=Template.reader,
+        output = render(
+            filename=filename, path=path, context=context, delimiters=self.delimiters
         )
         return output
 
@@ -486,22 +605,28 @@ class Session(Fixture):
         self.secret = secret or Session.SECRET
         self.expiration = expiration
         self.algorithm = algorithm
-        self.local = threading.local()
-        self.local.changed = False
-        self.local.secure = None
-        self.local.data = {}
         self.storage = storage
         self.same_site = same_site
         if isinstance(storage, Session):
             self.__prerequisites__ = [storage]
         if hasattr(storage, "__prerequisites__"):
             self.__prerequisites__ = storage.__prerequisites__
+        self._local = threading.local()
+        self.local = None  # We initialize this per-request.
+
+    def initialize(self, app_name="unknown", data=None, changed=False, secure=False):
+        self.local = self._local
+        self.local.changed = changed
+        self.local.data = data or {}
+        self.local.session_cookie_name = "%s_session" % app_name
+        self.local.secure = secure
 
     def load(self):
-        self.local.session_cookie_name = "%s_session" % request.app_name
-        self.local.changed = False
-        self.local.secure = request.url.startswith("https")
-        self.local.data = {}
+        self.initialize(
+            app_name=request.app_name,
+            changed=False,
+            secure=request.url.startswith("https"),
+        )
         raw_token = request.get_cookie(
             self.local.session_cookie_name
         ) or request.query.get("_session_token")
@@ -542,6 +667,8 @@ class Session(Fixture):
             cookie_data = jwt.encode(
                 self.local.data, self.secret, algorithm=self.algorithm
             )
+            if isinstance(cookie_data, bytes):
+                cookie_data = cookie_data.decode()
 
         response.set_cookie(
             self.local.session_cookie_name,
@@ -574,17 +701,11 @@ class Session(Fixture):
             yield item
 
     def clear(self):
-        """clear a session (to be used before saving it)"""
+        """Produces a brand-new session."""
         self.local.changed = True
         self.local.data.clear()
         self.local.data["uuid"] = str(uuid.uuid1())
         self.local.data["secure"] = self.local.secure
-
-    def erase(self):
-        """for security always erase the session information after saving it"""
-        delattr(self.local, "session_cookie_name")
-        delattr(self.local, "changed")
-        delattr(self.local, "data")
 
     def on_request(self):
         self.load()
@@ -592,12 +713,13 @@ class Session(Fixture):
     def on_error(self):
         if self.local.changed:
             self.save()
-        self.erase()
 
     def on_success(self, status):
         if self.local.changed:
             self.save()
-        self.erase()
+
+    def finalize(self):
+        self.local = None  # To prevent leakage
 
 
 #########################################################################################
@@ -709,7 +831,6 @@ def redirect(location):
 class action:
     """@action(...) is a decorator for functions to be exposed as actions"""
 
-    current = threading.local()
     registered = set()
     app_name = "_default"
 
@@ -757,6 +878,9 @@ class action:
                 except Exception:
                     [obj.on_error() for obj in fixtures]
                     raise
+                finally:
+                    [obj.finalize() for obj in fixtures]
+                    # Clears the current object to prevent leakage.
 
             return wrapper
 
@@ -797,15 +921,14 @@ class action:
             except bottle.HTTPResponse:
                 raise
             except Exception:
-                logging.error(traceback.format_exc())
-                try:
-                    ticket = ErrorStorage().log(request.app_name, get_error_snapshot())
-                except Exception:
-                    logging.error(traceback.format_exc())
-                    ticket = "unknown"
+                snapshot = get_error_snapshot()
+                logging.error(snapshot["traceback"])
+                ticket_uuid = error_logger.log(request.app_name, snapshot) or "unknown"
                 raise bottle.HTTPResponse(
                     body=error_page(
-                        500, button_text=ticket, href="/_dashboard/ticket/" + ticket
+                        500,
+                        button_text=ticket_uuid,
+                        href="/_dashboard/ticket/" + ticket_uuid,
                     ),
                     status=500,
                 )
@@ -884,7 +1007,7 @@ def get_error_snapshot(depth=5):
         etype = etype.__name__
 
     data = {}
-    data["timestamp"] = datetime.datetime.utcnow().isoformat()
+    data["timestamp"] = datetime.datetime.utcnow().isoformat().replace("T", " ")
     data["python_version"] = sys.version
     platform_keys = [
         "machine",
@@ -937,8 +1060,16 @@ def get_error_snapshot(depth=5):
     return data
 
 
-class ErrorStorage:
+class SimpleErrorLogger:
+    def log(self, app_name, snapshot):
+        """logs the error"""
+        logging.error("%s error:\n%s" % (app_name, snapshot["traceback"]))
+        return None
+
+
+class DatabaseErrorLogger:
     def __init__(self):
+        """creates the py4web_error table in the service database"""
         uri = os.environ["PY4WEB_SERVICE_DB_URI"]
         folder = os.environ["PY4WEB_SERVICE_FOLDER"]
         self.db = DAL(uri, folder=folder)
@@ -956,6 +1087,7 @@ class ErrorStorage:
         self.db.commit()
 
     def log(self, app_name, error_snapshot):
+        """store error snapshot (ticket) in the database"""
         ticket_uuid = str(uuid.uuid4())
         try:
             id = self.db.py4web_error.insert(
@@ -970,11 +1102,13 @@ class ErrorStorage:
             )
             self.db.commit()
             return ticket_uuid
-        except Exception:
+        except Exception as err:
+            logging.error(str(err))
             self.db.rollback()
-            return "internal-error"
+            return None
 
     def get(self, ticket_uuid=None):
+        """retrieve a ticket from error database"""
         db = self.db
         if ticket_uuid:
             query, orderby = db.py4web_error.uuid == ticket_uuid, None
@@ -999,10 +1133,50 @@ class ErrorStorage:
         return rows if not ticket_uuid else rows[0] if rows else None
 
     def clear(self):
+        """erase all tickets from database"""
         db = self.db
         db(db.py4web_error).delete()
         self.db.commit()
 
+
+class ErrorLogger:
+
+    """
+    To create your own custom logger for an app:
+
+    class MyLogger:
+        def log(app_name, error_snap_shop):
+            ...
+            return ticket_uuid
+
+    error_logger.plugins['app_name'] = MyLogger()
+    """
+
+    def __init__(self):
+        self.fallback_logger = SimpleErrorLogger()
+        self.database_logger = None
+        self.plugins = {}
+
+    def initialize(self):
+        """try inizalize database if we have service folder"""
+        self.database_logger = safely(DatabaseErrorLogger, log=True)
+
+    def _get_logger(self, app_name):
+        """get the appropriate logger for the app"""
+        return (
+            self.plugins.get(app_name) or self.database_logger or self.fallback_logger
+        )
+
+    def log(self, app_name, error_snapshot):
+        """log the error snapshot"""
+        logger = self._get_logger(app_name)
+        ticket_uuid = safely(lambda: logger.log(app_name, error_snapshot))
+        if not ticket_uuid:
+            self.fallback_logger.log(app_name, error_snapshot)
+        return ticket_uuid
+
+
+error_logger = ErrorLogger()
 
 #########################################################################################
 # Loading &  Reloading Logic
@@ -1014,6 +1188,19 @@ class Reloader:
     ROUTES = []
     MODULES = {}
     ERRORS = {}
+
+    @staticmethod
+    def install_reloader_hook():
+        # used by watcher
+        def hook(*a, **k):
+            app_name = request.path.split("/")[1]
+            if app_name in DIRTY_APPS:
+                Reloader.import_app(app_name)
+                del DIRTY_APPS[app_name]
+            ## APP_WATCH tasks, if used by any app
+            try_app_watch_tasks()
+
+        bottle.default_app().add_hook("before_request", hook)
 
     @staticmethod
     def clear_routes(app_name=None):
@@ -1079,16 +1266,12 @@ class Reloader:
                 Reloader.MODULES[app_name] = module
                 Reloader.ERRORS[app_name] = None
             except Exception as err:
-                tb = traceback.format_exc()
-                try:
-                    ErrorStorage().log(app_name, get_error_snapshot())
-                except:
-                    print(tb)
+                Reloader.ERRORS[app_name] = traceback.format_exc()
+                error_logger.log(app_name, get_error_snapshot())
                 click.secho(
                     "\x1b[A[FAILED] loading %s (%s)" % (app_name, err),
                     fg="red",
                 )
-                Reloader.ERRORS[app_name] = tb
                 # clear all files/submodules if the loading fails
                 clear_modules()
                 return None
@@ -1134,6 +1317,10 @@ class Reloader:
 # Web Server and Reload Logic: Error Handling
 #########################################################################################
 
+ERROR_PAGES = {
+    "*": '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>',
+}
+
 
 def error_page(code, button_text=None, href="#", color=None, message=None):
     message = http.client.responses[code].upper() if message is None else message
@@ -1150,11 +1337,8 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
         response.status = code
         return json.dumps(context)
     # else - return html error-page
-    return yatl.render(
-        '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head><body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>',
-        context=context,
-        delimiters="[[ ]]",
-    )
+    content = ERROR_PAGES.get(code) or ERROR_PAGES["*"]
+    return render(content=content, context=context, delimiters="[[ ]]")
 
 
 @bottle.error(404)
@@ -1421,6 +1605,19 @@ def install_args(kwargs, reinstall_apps=False):
     if apps_folder_name != "apps":
         MetaPathRouter(apps_folder_name)
 
+    if not os.path.exists(kwargs["service_folder"]):
+        os.mkdir(kwargs["service_folder"])
+    session_secret_filename = os.path.join(kwargs["service_folder"], "session.secret")
+    if not os.path.exists(session_secret_filename):
+        with open(session_secret_filename, "w") as fp:
+            fp.write(str(uuid.uuid4()))
+
+    with open(session_secret_filename) as fp:
+        Session.SECRET = fp.read()
+
+    # after everything is etup but before installing apps, init
+    error_logger.initialize()
+
     # Reinstall apps from zipped ones in assets
     if reinstall_apps:
         assets_dir = os.path.join(os.path.dirname(__file__), "assets")
@@ -1439,16 +1636,6 @@ def install_args(kwargs, reinstall_apps=False):
                             os.makedirs(target_dir)
                             zip_file.extractall(target_dir)
                             click.echo("\x1b[A[X]")
-
-    if not os.path.exists(kwargs["service_folder"]):
-        os.mkdir(kwargs["service_folder"])
-    session_secret_filename = os.path.join(kwargs["service_folder"], "session.secret")
-    if not os.path.exists(session_secret_filename):
-        with open(session_secret_filename, "w") as fp:
-            fp.write(str(uuid.uuid4()))
-
-    with open(session_secret_filename) as fp:
-        Session.SECRET = fp.read()
 
 
 def wsgi(**kwargs):
@@ -1664,7 +1851,7 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
 )
 @click.option(
     "--watch",
-    default="off",
+    default="lazy",
     type=click.Choice(["off", "sync", "lazy"]),
     help="Watch python changes and reload apps automatically, modes: off, sync, lazy",
     show_default=True,

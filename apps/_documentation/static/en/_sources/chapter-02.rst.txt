@@ -13,18 +13,13 @@ Resources
 This manual
 -----------
 
-This manual is the Reference Manual for py4web. It's available online at https://py4web.com/_documentation/static/index.html, where you'll also find the PDF
-and EBOOK version, in multiple languages. 
-It was originally written with the MarkMin format (similar to MarkDown) and displayed in HTML with a custom py4web application. In 2020 we decided to
-convert its sources to the RST format which is better suited for technical documentation. Using Sphinx and the ReadTheDocs style we are now able to achieve
-high quality outputs.
+This manual is the Reference Manual for py4web. It's available online at https://py4web.com/_documentation/static/index.html, where you'll also find the PDF and EBOOK version, in multiple languages. It written in RestructuredText and generated using Sphinx.
 
 
 The Google group
 ----------------
 
-There is a dedicated mailing list hosted on Google Groups, see https://groups.google.com/g/py4web. This is the main source of discussions for developers and
-simple users. For any problem you should face, this is the right place to search for a hint or a solution.
+There is a dedicated mailing list hosted on Google Groups, see https://groups.google.com/g/py4web. This is the main source of discussions for developers and simple users. For any problem you should face, this is the right place to search for a hint or a solution.
 
 The chat on IRC
 ---------------
@@ -47,7 +42,7 @@ There are many tutorials and videos available. Here are some of them:
 The sources on GitHub
 ---------------------
 
-Last but not least, py4web is Open Source, with a BSD v3 licence, hosted on GitHub at https://github.com/web2py/py4web. This means that you can read, study and experiment
+Last but not least, py4web is Open Source, with a BSD v3 license, hosted on GitHub at https://github.com/web2py/py4web. This means that you can read, study and experiment
 with all of its internal details by yourself.
 
 
@@ -68,7 +63,7 @@ A modern python workplace
 
 In the following chapters you will start coding on your computer. We suggest you to setup a modern python workplace if you plan to do it efficiently and safely.
 Even for running simple examples and experimenting a little, we strongly suggest to use an **Integrated Development Environment** (IDE). This will make your programming experience much better, allowing syntax checking, linting and visual debugging.
-Nowadays there are two free and multiplatform main choices: Microsoft Visual Studio Code aka `VScode <https://code.visualstudio.com/>`__ and
+Nowadays there are two free and multi-platform main choices: Microsoft Visual Studio Code aka `VScode <https://code.visualstudio.com/>`__ and
 JetBrains `PyCharm <https://www.jetbrains.com/pycharm/>`__.
 
 When you'll start to deal with more complex programs and need reliability,
@@ -78,16 +73,17 @@ we also suggest to:
   `here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an
   introduction). In a complex workplace this will avoid to be messed up
   with other python programs and modules
-- use a Concurrent Versions System (**CVS**). Keeping track of your
-  program's changes is highly valuable - along with backups it will save
-  your computing life! Git and GitHub are the current standards.
+- use **git** to keep track of your program's changes and save
+  your changes in a safe place online (GitHub, GitLat, or Bitbucket).
+- use an editor with Syntax Highlighting. We highly recommend
+  Visual Studio Code (VScode) or PyCharm.
 
 
 Debugging py4web with VScode
 ----------------------------
 
-In order to run py4web.py directly, you need to add ``"args": ["run", "apps"]`` to the vscode launch.json configuration file.
-In addition, if you should get gevent errors you have to add ``"gevent": true`` on the same configuration file.
+In order to run py4web.py within VScode, you need to add ``"args": ["run", "apps"]`` to the vscode ``launch.json``
+configuration file. In addition, if you should get gevent errors you have to add ``"gevent": true`` on the same configuration file.
 
 Debugging py4web with PyCharm
 -----------------------------
@@ -98,15 +94,13 @@ In PyCharm, if you should get gevent errors you need to enable Settings | Build,
 How to contribute
 =================
 
-We need help from everyone: support our efforts! You can just partecipate in the Google group trying to answer other's questions, submit bugs using or create pull requests on the GitHub
+We need help from everyone: support our efforts! You can just participate in the Google group trying to answer other's questions, submit bugs using or create pull requests on the GitHub
 repository.
 
 If you wish to correct and expand this manual, or even translate it in a new foreign language, you can read all the needed information directly on the
 `specific README <https://github.com/web2py/py4web/blob/master/docs/README.md>`__ on GitHub.
 
-It's really simple! Just change the .RST files in the /doc folder and create a Push Request on
+It's really simple! Just change the .RST files in the /doc folder and create a Pull Request on
 the GitHub repository at https://github.com/web2py/py4web - you can even do it within your browser.
-Once the PR is accepted, your changes will be written on the master branch, and will be reflected on the web pages / pdf / epub at
-the next output generation on the branch. 
-
+Once the PR is accepted, your changes will be written on the master branch, and will be reflected on the web pages / pdf / epub at the next output generation on the branch. 
 

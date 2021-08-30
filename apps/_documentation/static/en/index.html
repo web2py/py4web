@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>py4web: the reference Manual &mdash; py4web 1.20210522.2 documentation</title>
+  <title>py4web: the reference Manual &mdash; py4web 1.20210619.1 documentation</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.20210522.2
+                1.20210619.1
               </div>
             
           
@@ -115,6 +115,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
             
@@ -190,7 +191,7 @@
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter-01.html#acknowledegments">Acknowledegments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-01.html#acknowledgments">Acknowledgments</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a><ul>
@@ -200,6 +201,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Installation and Startup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#understanding-the-design">Understanding the design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-03.html#supported-platforms-and-prerequisites">Supported platforms and prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-03.html#setup-procedures">Setup procedures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-03.html#upgrading">Upgrading</a></li>
@@ -277,9 +279,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#example">Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#form-validation">Form validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#the-form-constructor">The Form constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#a-minimal-form-example">A minimal form example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#form-basic-example">Form basic example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-12.html#form-structure-manipulation">Form Structure Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#form-validation">Form validation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a><ul>
@@ -304,6 +308,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="chapter-15.html#simple-conversion-examples">Simple conversion examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#py4web-and-asyncio">py4web and asyncio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#htmx">htmx</a></li>
 </ul>
 </li>
 </ul>
@@ -363,7 +372,7 @@
      <label for="switch"></label>
      </span>
       
-      v: 1.20210522.2
+      v: 1.20210619.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

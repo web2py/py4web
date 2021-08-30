@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Creating your first app &mdash; py4web 1.20210522.2 documentation</title>
+  <title>Creating your first app &mdash; py4web 1.20210619.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210522.2
+                1.20210619.1
               </div>
             
           
@@ -130,6 +130,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
             
@@ -228,7 +229,7 @@ slashes.</p>
 press the “Reload Apps” in the Dashboard, py4web will find this module,
 import it, and recognize it as an app, simply because of its location.
 You can also run py4web in <em>watch</em> mode (see the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>) for
-automatic reloading of the apps wheneve it changes, which is very useful in a development environment.
+automatic reloading of the apps whenever it changes, which is very useful in a development environment.
 In this case, run py4web with a command like this:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web run apps --watch sync
 </pre></div>
@@ -370,7 +371,12 @@ multiple routes.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http://localhost:8000/myapp/paint?color=red
 </pre></div>
 </div>
-<p>Notice that the request object is a <a class="reference external" href="https://bottlepy.org/docs/dev/api.html#the-request-object">Bottle request object</a>.</p>
+<p>Notice that the request object is a <a class="reference external" href="https://bottlepy.org/docs/dev/api.html#the-request-object">Bottle request object</a>.
+with one additional attribute:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>request.app_name
+</pre></div>
+</div>
+<p>Which you can use the code to identify the name and the folder used for the app.</p>
 </div>
 <div class="section" id="templates">
 <h3>Templates<a class="headerlink" href="#templates" title="Permalink to this headline">¶</a></h3>
@@ -537,7 +543,7 @@ Python source files change (if run with the <code class="docutils literal notran
 But in fact any other files inside an app can be watched by setting a
 handler function using the <code class="docutils literal notranslate"><span class="pre">&#64;app_watch_handler</span></code> decorator.</p>
 <p>Two examples of this usage are reported now. Do not worry if you don’t
-fully undestand them: the key point here is that even non-python code
+fully understand them: the key point here is that even non-python code
 could be reloaded automatically if you explicit it with the
 <code class="docutils literal notranslate"><span class="pre">&#64;app_watch_handler</span></code> decorator.</p>
 <p>Watch SASS files and compile them when edited:</p>
@@ -625,7 +631,7 @@ exceptions inside handlers are printed in terminal.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210522.2
+      v: 1.20210619.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

@@ -1,6 +1,6 @@
 import unittest
 from pydal import DAL, Field
-from py4web.utils.tags import Tags
+from pydal.tools.tags import Tags
 
 
 class TestTags(unittest.TestCase):

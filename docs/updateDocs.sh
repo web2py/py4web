@@ -75,8 +75,14 @@ for current_language in ${languages}; do
 	# make the current language available to conf.py
 	export current_language
 
+	# make spelling if english
+	if [ ${current_language} = 'en' ]
+	then
+	sphinx-build -b spelling docs/ docs/_build/spelling
+	fi	
+
 	# make HTML
-	# NOTE: this affect files in docs/locales/${current_language}/LC_MESSAGES/
+	# NOTE: this affect files in docs/locales/${current_language}/LC_MESSAGES/	sphinx-build -b html -D language="${current_language}" docs/ docs/_build/html/${current_language}
 	sphinx-build -b html -D language="${current_language}" docs/ docs/_build/html/${current_language}
 	mkdir -p "${docroot}/${current_language}"
 

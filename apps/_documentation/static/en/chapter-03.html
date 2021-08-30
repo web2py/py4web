@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Installation and Startup &mdash; py4web 1.20210522.2 documentation</title>
+  <title>Installation and Startup &mdash; py4web 1.20210619.1 documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20210522.2
+                1.20210619.1
               </div>
             
           
@@ -105,11 +105,12 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation and Startup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-the-design">Understanding the design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#supported-platforms-and-prerequisites">Supported platforms and prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#setup-procedures">Setup procedures</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#installing-from-binaries">Installing from binaries</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hint-use-a-virtual-environment-virtualenv">Hint: use a virtual environment (virtualenv)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-from-pip">Installing from pip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-using-a-virtual-environment">Installing using a virtual environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-from-source-globally">Installing from source (globally)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-from-source-locally">Installing from source (locally)</a></li>
 </ul>
@@ -146,6 +147,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
             
@@ -217,11 +219,25 @@
             
   <div class="section" id="installation-and-startup">
 <h1>Installation and Startup<a class="headerlink" href="#installation-and-startup" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="understanding-the-design">
+<h2>Understanding the design<a class="headerlink" href="#understanding-the-design" title="Permalink to this headline">¶</a></h2>
+<p>Before everything else it is important to understand that unlike other web frameworks,
+is not only a python module that can be imported by apps. It is also a program that
+is in charge of starting a apps. For this reason you need two things:</p>
+<ul class="simple">
+<li><p>the py4web module (which you download from our web site, from pypi, from github)</p></li>
+<li><p>one or more folders containing collections of apps you want to run.</p></li>
+</ul>
+<p>py4web has command line options to create a folder with some example apps,
+to initialize an existing folder, and to add scaffolding apps to that folder.
+Once installed you can have multiple apps under the same folder running concurrently
+and served by the same py4web process at the same address and port.
+An apps folder is a python module, and each app is also a python module.</p>
+</div>
 <div class="section" id="supported-platforms-and-prerequisites">
 <h2>Supported platforms and prerequisites<a class="headerlink" href="#supported-platforms-and-prerequisites" title="Permalink to this headline">¶</a></h2>
 <p>PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is
-Python 3.6+, which must be installed in advance (except if you use
-binaries).</p>
+Python 3.7+, which must be installed in advance (except if you use binaries).</p>
 </div>
 <div class="section" id="setup-procedures">
 <h2>Setup procedures<a class="headerlink" href="#setup-procedures" title="Permalink to this headline">¶</a></h2>
@@ -236,27 +252,18 @@ require Python pre-installed on your system nor administrative rights.
 On the other hand, it’s experimental, it could contain an old py4web
 release and it is quite difficult to add other functionalities to it.</p>
 <p>In order to use it you just need to download the latest Windows or MacOS
-ZIP file from <a class="reference external" href="https://github.com/nicozanf/py4web-pyinstaller">this external
-repository</a>. Unzip it
-on a local folder and open a command line there. Finally run</p>
+ZIP file from
+<a class="reference external" href="https://github.com/nicozanf/py4web-pyinstaller">this external repository</a>.
+Unzip it on a local folder and open a command line there. Finally run</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web-start set_password
 py4web-start run apps
 </pre></div>
 </div>
 <p>With this type of installation, remember to always use <strong>py4web-start</strong>
 instead of ‘py4web’ or ‘py4web.py’ in the following documentation.</p>
-</div>
-<div class="section" id="hint-use-a-virtual-environment-virtualenv">
-<h3>Hint: use a virtual environment (virtualenv)<a class="headerlink" href="#hint-use-a-virtual-environment-virtualenv" title="Permalink to this headline">¶</a></h3>
-<p>A full installation of any complex python application like py4web will
-surely modify the python environment of your system. In order to prevent
-any unwanted change, it’s a good habit to use a python virtual
-environment (also called <strong>virtualenv</strong>, see
-<a class="reference external" href="https://docs.python.org/3.7/tutorial/venv.html">here</a> for an
-introduction). This is a standard python feature; if you still don’t
-know virtualenv it’s a good time to start its discovery!</p>
-<p>Activate it before using any of the following <em>real</em> installation
-procedures is highly reccomended.</p>
+<p>Notice the binaries many not correspond to the latest master
+or the latest stable branch of py4web although we do our best to
+keep them up to date.</p>
 </div>
 <div class="section" id="installing-from-pip">
 <h3>Installing from pip<a class="headerlink" href="#installing-from-pip" title="Permalink to this headline">¶</a></h3>
@@ -266,10 +273,7 @@ quickly install the latest stable release of py4web.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web --no-cache-dir --user
 </pre></div>
 </div>
-<p>but do <strong>not</strong> type the <em>–user</em> option with virtualenv or a standard
-Windows installation which is already per-user.</p>
-<p>Also, if <em>python3</em> does not work, try with the simple <em>python</em> command
-instead.</p>
+<p>Also, if <code class="docutils literal notranslate"><span class="pre">python3</span></code> does not work, try specify a full version as in <code class="docutils literal notranslate"><span class="pre">python3.8</span></code>.</p>
 <p>This will install py4web and all its dependencies on the system’s path
 only. The assets folder (that contains the py4web’s system apps) will
 also be created. After the installation you’ll be able to start py4web
@@ -283,6 +287,24 @@ py4web run apps
 path. On Windows, a special py4web.exe file (pointing to py4web.py) will
 be created by <em>pip</em> on the system’s path, but not if you type the
 <em>–user</em> option by mistake.</p>
+</div>
+<div class="section" id="installing-using-a-virtual-environment">
+<h3>Installing using a virtual environment<a class="headerlink" href="#installing-using-a-virtual-environment" title="Permalink to this headline">¶</a></h3>
+<p>A full installation of any complex python application like py4web will
+surely modify the python environment of your system. In order to prevent
+any unwanted change, it’s a good habit to use a python virtual
+environment (also called <strong>virtualenv</strong>, see
+<a class="reference external" href="https://docs.python.org/3.7/tutorial/venv.html">here</a> for an
+introduction). This is a standard python feature; if you still don’t
+know virtualenv it’s a good time to start its discovery!</p>
+<p>Here are the instructions for creating the virtual environment, activating it,
+and installing py4web in it:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m venv venv
+. venv/bin/activate
+python -m pip install --upgrade py4web --no-cache-dir
+</pre></div>
+</div>
+<p>The instructions for starting and running py4web are the same with or without a virtual environment.</p>
 </div>
 <div class="section" id="installing-from-source-globally">
 <h3>Installing from source (globally)<a class="headerlink" href="#installing-from-source-globally" title="Permalink to this headline">¶</a></h3>
@@ -302,6 +324,7 @@ py4web run apps
 <p>Also notice that when installing in this way the content of
 <code class="docutils literal notranslate"><span class="pre">py4web/assets</span></code> folder is missing at first but it is manually created
 later with the <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">assets</span></code> command.</p>
+<p>Notice that you also (and should) install py4web from source inside a virtual environment.</p>
 </div>
 <div class="section" id="installing-from-source-locally">
 <h3>Installing from source (locally)<a class="headerlink" href="#installing-from-source-locally" title="Permalink to this headline">¶</a></h3>
@@ -366,15 +389,17 @@ again.</p>
 <h2>First run<a class="headerlink" href="#first-run" title="Permalink to this headline">¶</a></h2>
 <p>Running py4web using any of the previous procedure should produce an
 output like this:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web run apps
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web run apps
 </pre></div>
 </div>
 <img alt="_images/first_run.png" class="with-shadow" src="_images/first_run.png" />
 <p>Generally <code class="docutils literal notranslate"><span class="pre">apps</span></code> is the name of the folder where you keep all your
-apps, and can be explicitly set wit the <code class="docutils literal notranslate"><span class="pre">run</span></code> command. If that
+apps, and can be explicitly set wit the <code class="docutils literal notranslate"><span class="pre">run</span></code> command.
+(Yet nothing prevents you from grouping apps in multiple folders with
+different names.) If that
 folder does not exist, it is created. PY4WEB expects to find at least
-two apps in this folder: <strong>Dashboard</strong> (_dashboard) and <strong>Default</strong>
-(_default). If it does not find them, it installs them.</p>
+two apps in this folder: <strong>Dashboard</strong> (<code class="docutils literal notranslate"><span class="pre">_dashboard</span></code>) and <strong>Default</strong>
+(<code class="docutils literal notranslate"><span class="pre">_default</span></code>). If it does not find them, it installs them.</p>
 <p><strong>Dashboard</strong> is a web based IDE. It will be described in the next chapter.</p>
 <p><strong>Default</strong> is an app that does nothing other than welcome the user.</p>
 <div class="admonition note">
@@ -395,7 +420,7 @@ http://localhost:8000/{yourappname}/index
 <p>ONLY the <strong>Default</strong> app is special because if does not require the “{appname}/” prefix in the path, like all the other apps do.
 In general you may want to symlink <code class="docutils literal notranslate"><span class="pre">apps/_default</span></code> to your default app.</p>
 </div>
-<p>For all apps the trailing <code class="docutils literal notranslate"><span class="pre">/index</span></code> is optional.</p>
+<p>For all apps the trailing <code class="docutils literal notranslate"><span class="pre">/index</span></code> is also optional.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>For Windows: it could be that <code class="docutils literal notranslate"><span class="pre">Ctrl-C</span></code> does not work in order to stop py4web.
@@ -425,6 +450,13 @@ Options:
   -help, -h, --help  Show this message and exit.
 </pre></div>
 </div>
+<p>For example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web call apps examples.test.myfunction --args &#39;{&quot;x&quot;: 100}&#39;
+</pre></div>
+</div>
+<p>where myfunction is the function you want to call in apps/examples/test.py. Note
+that you have to use the single and double quotes just as shown for parameters to
+work.</p>
 </div>
 <div class="section" id="new-app-command-option">
 <span id="id2"></span><h3><code class="docutils literal notranslate"><span class="pre">new_app</span></code> command option<a class="headerlink" href="#new-app-command-option" title="Permalink to this headline">¶</a></h3>
@@ -486,19 +518,10 @@ been changed (lazy-mode): <code class="docutils literal notranslate"><span class
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The optional <code class="docutils literal notranslate"><span class="pre">--watch</span></code> directive looks for any changes occurring to the python files under the
-/apps folder only. Any modifications to the standard py4web programs will always require a full
+<code class="docutils literal notranslate"><span class="pre">/apps</span></code> folder only. Any modifications to the standard py4web programs will always require a full
 restart of the framework.</p>
 </div>
 <p>The default web server used is currently Tornado, but you can change this behaviour with the <code class="docutils literal notranslate"><span class="pre">server</span></code> option.</p>
-<p>Also, for advanced users, you can specify the optional <code class="docutils literal notranslate"><span class="pre">--usegevent</span></code> directive like in this example:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web --usegevent run -s geventWebSocketServer apps
-</pre></div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The optional <code class="docutils literal notranslate"><span class="pre">--usegevent</span></code> directive must be used with <code class="docutils literal notranslate"><span class="pre">gevent</span></code> or <code class="docutils literal notranslate"><span class="pre">geventWebSocketServer</span></code> webservers (in order to apply monkey patching)
-and shouldn’t be used with <code class="docutils literal notranslate"><span class="pre">tornado</span></code> and <code class="docutils literal notranslate"><span class="pre">waitress</span></code>.</p>
-</div>
 </div>
 <div class="section" id="set-password-command-option">
 <span id="id4"></span><h3><code class="docutils literal notranslate"><span class="pre">set_password</span></code> command option<a class="headerlink" href="#set-password-command-option" title="Permalink to this headline">¶</a></h3>
@@ -601,7 +624,7 @@ modules, too.</p>
 <h3>WSGI<a class="headerlink" href="#wsgi" title="Permalink to this headline">¶</a></h3>
 <p>py4web is a standard WSGI application. So, if a full program installation it’s not
 feasible you can simply run py4web as a WSGI app. For example, using gunicorn-cli,
-create a pyton file:</p>
+create a python file:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># py4web_wsgi.py</span>
 <span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">wsgi</span>
 <span class="n">application</span> <span class="o">=</span> <span class="n">wsgi</span><span class="p">(</span><span class="n">apps_folder</span><span class="o">=</span><span class="s2">&quot;apps&quot;</span><span class="p">)</span>
@@ -713,7 +736,7 @@ tutorial</a>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210522.2
+      v: 1.20210619.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

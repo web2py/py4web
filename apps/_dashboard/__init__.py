@@ -11,7 +11,6 @@ import zipfile
 
 import requests
 from pydal.validators import CRYPT
-from yatl.helpers import BEAUTIFY
 
 import py4web
 from py4web import (
@@ -25,7 +24,7 @@ from py4web import (
     request,
     response,
 )
-from py4web.core import ErrorStorage, Fixture, Reloader, Session, dumps
+from py4web.core import Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
 
 from .diff2kryten import diff2kryten
@@ -37,14 +36,6 @@ APP_FOLDER = os.path.dirname(__file__)
 T_FOLDER = os.path.join(APP_FOLDER, "translations")
 T = Translator(T_FOLDER)
 
-# in demo mode cannot access the local tickets db
-if MODE == 'demo':
-
-    class ErrorStorage():
-        def clear(self): pass
-        def get(self, *args, **kwargs): return None
-
-error_storage = ErrorStorage()
 session = Session()
 
 
@@ -116,7 +107,7 @@ if MODE in ("demo", "readonly", "full"):
     @action.uses("index.html", session, T)
     def index():
         return dict(
-            languages=dumps(getattr(T.local, 'language', {})),
+            languages=dumps(getattr(T.local, "language", {})),
             mode=MODE,
             user_id=(session.get("user") or {}).get("id"),
         )
@@ -147,7 +138,7 @@ if MODE in ("demo", "readonly", "full"):
     @action("dbadmin")
     @action.uses(Logged(session), "dbadmin.html")
     def dbadmin():
-        return dict(languages=dumps(getattr(T.local, 'language', {})))
+        return dict(languages=dumps(getattr(T.local, "language", {})))
 
     @action("info")
     @session_secured
@@ -297,19 +288,27 @@ if MODE in ("demo", "readonly", "full"):
     @session_secured
     def tickets():
         """Returns most recent tickets grouped by path+error"""
-        tickets = error_storage.get()
-        return {"payload": tickets}
+        tickets = safely(error_logger.database_logger.get) if MODE != "DEMO" else None
+        return {"payload": tickets or []}
 
     @action("clear")
     @session_secured
     def clear_tickets():
-        error_storage.clear()
+        if MODE != "demo":
+            safely(error_logger.database_logger.clear)
 
     @action("ticket/<ticket_uuid>")
     @action.uses("ticket.html")
     @session_secured
     def error_ticket(ticket_uuid):
-        return dict(ticket=error_storage.get(ticket_uuid=ticket_uuid))
+        if MODE != "demo":
+            return dict(
+                ticket=safely(
+                    lambda: error_logger.database_logger.get(ticket_uuid=ticket_uuid)
+                )
+            )
+        else:
+            return dict(ticket=None)
 
     @action("rest/<path:path>", method=["GET", "POST", "PUT", "DELETE"])
     @session_secured
@@ -377,7 +376,6 @@ if MODE in ("demo", "readonly", "full"):
             response.status = data["code"]
         return data
 
-
 if MODE == "full":
 
     @action("reload")
@@ -436,7 +434,7 @@ if MODE == "full":
         form = request.json
         # Directory for zipped assets
         assets_dir = os.path.join(os.path.dirname(py4web.__file__), "assets")
-        app_name = form['name']
+        app_name = form["name"]
         target_dir = safe_join(FOLDER, app_name)
         if form["type"] == "minimal":
             source = os.path.join(assets_dir, "py4web.app._minimal.zip")
@@ -465,6 +463,7 @@ if MODE == "full":
                 if process.returncode != 0:
                     abort(500)
         elif form["type"] == "upload":
+            print(request.files.keys())
             prepare_target_dir(form, target_dir)
             source_stream = io.BytesIO(base64.b64decode(form["file"]))
             zfile = zipfile.ZipFile(source_stream, "r")
@@ -530,3 +529,41 @@ if MODE == "full":
             opt = " -U9999"
         patch = run("git show " + commit + opt, project)
         return diff2kryten(patch)
+
+# handle internationalization & pluralization files
+#
+
+@action("translations/<name>", method="GET")
+@action.uses(Logged(session), "translations.html")
+def translations(name):
+    """returns a json with all translations for all languages"""
+    t = Translator(os.path.join(FOLDER, name, "translations"))
+    return t.languages
+
+@action("api/translations/<name>", method="GET")
+@action.uses(Logged(session))
+def get_translations(name):
+    """returns a json with all translations for all languages"""
+    t = Translator(os.path.join(FOLDER, name, "translations"))
+    return t.languages
+
+@action("api/translations/<name>", method="POST")
+@action.uses(Logged(session))
+def post_translations(name):
+    """updates all languages"""
+    folder = os.path.join(FOLDER, name, "translations")
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    t = Translator(folder)
+    t.languages = request.json
+    if MODE == "full":
+        t.save()
+
+
+@action("api/translations/<name>/search", method="GET")
+@action.uses(Logged(session))
+def update_translations(name):
+    """find all T(...) decorated strings in the code and returns them"""
+    app_folder = os.path.join(FOLDER, name)
+    strings = Translator.find_matches(app_folder)
+    return {'strings': strings}

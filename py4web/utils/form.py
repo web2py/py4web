@@ -31,10 +31,12 @@ from yatl.helpers import (
 
 
 def to_id(field):
+    """get an identified for a field"""
     return "%s_%s" % (getattr(field, "_tablename", "no_table"), field.name)
 
 
 def get_options(validators):
+    """given a validator chain, if one has .options, return them"""
     options = None
     if validators:
         if not isinstance(validators, (list, tuple)):
@@ -48,7 +50,18 @@ def get_options(validators):
     return options
 
 
+def join_classes(*args):
+    lists = [[] if a is None else a.split() if isinstance(a, str) else a for a in args]
+    classes = set(
+        cls.strip() for classlist in lists for cls in classlist if cls.strip()
+    )
+    return " ".join(sorted(classes))
+
+
 class Widget:
+
+    """Prototype widget object for all form widgets"""
+
     type_map = {
         "string": "text",
         "date": "date",
@@ -56,6 +69,7 @@ class Widget:
     }
 
     def make(self, field, value, error, title, placeholder="", readonly=False):
+        """converts the widget to an HTML helper"""
         return INPUT(
             _value=value,
             _type=self.type_map.get(field.type, "text"),
@@ -86,7 +100,7 @@ class DateTimeWidget:
 class TextareaWidget:
     def make(self, field, value, error, title, placeholder="", readonly=False):
         return TEXTAREA(
-            value,
+            value if value else "",
             _id=to_id(field),
             _name=field.name,
             _placeholder=placeholder,
@@ -97,19 +111,29 @@ class TextareaWidget:
 
 class CheckboxWidget:
     def make(self, field, value, error, title, placeholder=None, readonly=False):
+        attrs = {}
+        if readonly:
+            attrs = {"_disabled": True}
         return INPUT(
             _type="checkbox",
             _id=to_id(field),
             _name=field.name,
             _value="ON",
-            _disabled="",
             _checked=value,
             _readonly=readonly,
+            **attrs
         )
 
 
 class ListWidget:
     def make(self, field, value, error, title, placeholder="", readonly=False):
+        if field.type == "list:string":
+            _class = "type-list-string"
+        elif field.type == "list:integer":
+            _class = "type-list-integer"
+        else:
+            _class = ""
+
         return INPUT(
             _value=json.dumps(value or []),
             _type="text",
@@ -118,6 +142,7 @@ class ListWidget:
             _placeholder=placeholder,
             _title=title,
             _readonly=readonly,
+            _class=_class,
         )
 
 
@@ -258,12 +283,13 @@ class FormStyleFactory:
         readonly,
         deletable,
         noncreate,
+        show_id,
         kwargs=None,
     ):
         kwargs = kwargs if kwargs else {}
 
         form_method = "POST"
-        form_action = request.url
+        form_action = request.url.split(":", 1)[1]
         form_enctype = "multipart/form-data"
 
         form = FORM(
@@ -331,16 +357,21 @@ class FormStyleFactory:
             title = field._title if "_title" in field.__dict__ else None
             field_disabled = False
 
-            # only diplay field if readable or writable
+            # only display field if readable or writable
             if not field.readable and not field.writable:
                 continue
 
-            # if this is a reaonly field only show readable fields
+            # if this is a readonly field only show readable fields
             if readonly:
                 if not field.readable:
                     continue
 
-            # if this is an create form (unkown id) then only show writable fields. Some if an edit form was made from a list of fields and noncreate=True
+            # do not show the id if not desired
+            if field.type == "id" and not show_id:
+                continue
+
+            #  if this is an create form (unkown id) then only show writable fields.
+            #  Some if an edit form was made from a list of fields and noncreate=True
             elif not vars.get("id") and noncreate:
                 if not field.writable:
                     continue
@@ -426,9 +457,9 @@ class FormStyleFactory:
             if key == "input":
                 key += "[type=%s]" % (control["_type"] or "text")
 
-            control["_class"] = (
-                control.attributes.get("_class", "") + " " + self.classes.get(key, "")
-            ).strip()
+            control["_class"] = join_classes(
+                control.attributes.get("_class"), self.classes.get(key)
+            )
 
             # Set the form controls.
             controls["labels"][field_name] = field_label
@@ -658,7 +689,7 @@ class Form(object):
         record=None,
         readonly=False,
         deletable=True,
-        noncreate=False,
+        noncreate=True,
         formstyle=FormStyleDefault,
         dbio=True,
         keep_values=False,
@@ -670,6 +701,7 @@ class Form(object):
         lifespan=None,
         signing_info=None,
         submit_value="Submit",
+        show_id=True,
         **kwargs
     ):
         self.param = Param(
@@ -705,6 +737,7 @@ class Form(object):
         self.validation = validation
         self.lifespan = lifespan
         self.csrf_protection = csrf_protection
+        self.show_id = show_id
         # initialized and can change
         self.vars = {}
         self.errors = {}
@@ -719,12 +752,13 @@ class Form(object):
 
         self.kwargs = kwargs if kwargs else {}
 
-        if readonly or request.method == "GET":
-            if self.record:
-                self.vars = self._read_vars_from_record(table)
-        else:
+        if self.record:
+            self.vars = self._read_vars_from_record(table)
+        if not readonly and request.method != "GET":
             post_vars = request.POST
-            self.vars = copy.deepcopy(request.forms)
+            form_vars = copy.deepcopy(request.forms)
+            for k in form_vars:
+                self.vars[k] = form_vars[k]
             self.submitted = True
             process = False
 
@@ -882,6 +916,7 @@ class Form(object):
                 self.readonly,
                 self.deletable,
                 self.noncreate,
+                show_id=self.show_id,
                 kwargs=self.kwargs,
             )
             for item in self.param.sidecar:

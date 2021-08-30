@@ -7,7 +7,6 @@
 | License: "BSDv3" (https://opensource.org/licenses/BSD-3-Clause)
 """
 
-from __future__ import print_function
 import email.utils
 from email import message_from_string
 import json
@@ -15,6 +14,7 @@ import logging
 import mimetypes
 import os
 import smtplib
+from email.encoders import encode_base64
 
 from pydal._compat import *
 
@@ -35,6 +35,12 @@ try:
     from pyme.constants.sig import mode as pyme_mode
 except ImportError:
     pyme = None
+
+try:
+    import boto3
+    from botocore.exceptions import ClientError
+except ImportError:
+    boto3 = None
 
 
 class Settings:
@@ -402,12 +408,17 @@ class Mailer:
             text = html = None
         elif isinstance(body, (list, tuple)):
             text, html = body
-        elif body.strip().startswith("<html") and body.strip().endswith("</html>"):
-            text = self.settings.server == "gae" and body or None
-            html = body
         else:
-            text = body
-            html = None
+            if isinstance(body, bytes):
+                body = body.decode()
+            if not isinstance(body, str):
+                body = str(body)
+            if body.lstrip().startswith("<html") and body.rstrip().endswith("</html>"):
+                text = self.settings.server == "gae" and body or None
+                html = body
+            else:
+                text = body
+                html = None
 
         if (text is not None or html is not None) and (not raw):
 
@@ -448,7 +459,21 @@ class Mailer:
         if (attachments is None) or raw:
             pass
         elif isinstance(attachments, (list, tuple)):
-            for attachment in attachments:
+            for filename in attachments:
+                mimetype, encoding = mimetypes.guess_type(filename)
+                mimetype = mimetype.split("/", 1)
+                fp = open(filename, "rb")
+                attachment = MIMEBase(mimetype[0], mimetype[1])
+                attachment.set_payload(fp.read())
+                fp.close()
+                encode_base64(attachment)
+                import os
+
+                attachment.add_header(
+                    "Content-Disposition",
+                    "attachment",
+                    filename=os.path.basename(filename),
+                )
                 payload_in.attach(attachment)
         else:
             payload_in.attach(attachments)
@@ -773,10 +798,7 @@ class Mailer:
                         body=to_unicode(text or "", encoding),
                         **xcc
                     )
-            elif self.settings.server == "aws":
-                import boto3
-                from botocore.exceptions import ClientError
-
+            elif self.settings.server == "aws" and boto3:
                 client = boto3.client("ses")
                 try:
                     raw = {"Data": payload.as_string()}

@@ -48,7 +48,7 @@ recent adapters.
 
    In any modern python distribution **SQLite** is actually built-in as a Python library.
    The SQLite driver (sqlite3) is also included: you don't need to install it.
-   Hence this is the most popular database for testing and developement.
+   Hence this is the most popular database for testing and development.
 
 The Windows and the Mac binary distribution work out of the box with SQLite only.
 To use any other database back end, run a full py4web
@@ -166,6 +166,17 @@ it with ``pip``. Then import the pydal module when needed:
 
    >>> from pydal import DAL, Field
 
+
+.. note::
+
+   Even if you can import modules directly from pydal, this is not
+   advisable from within py4web applications. Remember that ``py4web.DAL``
+   is a fixture, ``pydal.DAL`` is not. In this context, the last command
+   should better be:
+
+   >>> from py4web import DAL, Field
+
+
 Experiment with the py4web shell
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -175,7 +186,7 @@ that is available using the :ref:`shell command option`.
 .. warning::
 
    Mind that
-   database changes may be persistent. So be carefull and do NOT exitate
+   database changes may be persistent. So be careful and do NOT hesitate
    to create a new application for doing testing instead of tampering
    with an existing one.
 
@@ -187,7 +198,7 @@ This is a simple example, using the provided ``examples`` app:
 
 .. code:: python
 
-   >>> from pydal import DAL, Field
+   >>> from py4web import DAL, Field
    >>> from apps.examples import db
    >>> db.tables()
    ['auth_user', 'auth_user_tag_groups', 'person', 'superhero', 'superpower', 'tag', 'product', 'thing']
@@ -558,7 +569,7 @@ tables
 ``commit`` and ``rollback``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The insert, truncate, delete, and update operations aren’t actually
+The insert, truncate, delete, and update operations aren't actually
 committed until py4web issues the commit command. The create and drop
 operations may be executed immediately, depending on the database
 engine.
@@ -678,8 +689,7 @@ keys using the ``primarykey`` parameter.
 
 As pyDAL is a general DAL, it includes plural and singular attributes to
 refer to the table names so that external elements can use the proper
-name for a table. A use case is in web2py with Smartgrid objects with
-references to external tables.
+name for a table.
 
 ``redefine``
 ~~~~~~~~~~~~
@@ -919,18 +929,20 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    records are inserted in a single transaction.
 -  ``required`` tells the DAL that no insert should be allowed on this
    table if a value for this field is not explicitly specified.
--  ``requires`` is a validator or a list of validators. This is not used
-   by the DAL, but it is used by ``Form``. The default validators for
-   the given types are shown in the next section.
+-  ``requires`` is a **validator** or a list of validators. This is not used
+   by the DAL, but instead it is used by ``Form`` (this will be explained
+   better on the :ref:`Forms` chapter). The default validators for
+   the given types are shown in the next section
+   :ref:`Field types and validators`.
 
-..
+   .. note::
 
-   Notice that while ``requires=...`` is enforced at the level of forms,
-   ``required=True`` is enforced at the level of the DAL (insert). In
-   addition, ``notnull``, ``unique`` and ``ondelete`` are enforced at
-   the level of the database. While they sometimes may seem redundant,
-   it is important to maintain the distinction when programming with the
-   DAL.
+      while ``requires=...`` is enforced at the level of forms,
+      ``required=True`` is enforced at the level of the DAL (insert). In
+      addition, ``notnull``, ``unique`` and ``ondelete`` are enforced at
+      the level of the database. While they sometimes may seem redundant,
+      it is important to maintain the distinction when programming with the
+      DAL.
 
 -  ``rname`` provides the field with a “real name”, a name for the field
    known to the database adapter; when the field is used, it is the
@@ -957,31 +969,19 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    field within the same table and the value of ``uploadfield`` is the
    name of the blob field. This will be discussed in more detail later
    in `More on uploads`_.
-
-   .. FIXME: “uploads/” folder has gone, is this still applicable?
-
--  ``uploadfolder`` sets the folder for uploaded files. By default, an
-   uploaded file goes into the application’s “uploads/” folder, that is
-   into ``os.path.join(request.folder, 'uploads')`` (this seems not the
-   case for MongoAdapter at present). For example:
-   ``Field(..., uploadfolder=os.path.join(request.folder, 'static/temp'))``
-   will upload files to the “web2py/applications/myapp/static/temp”
-   folder.
-
-   .. FIXME: bottle has not “request.folder”, is this still applicable?
-
+-  ``uploadfolder`` must be set to a location where to store uploaded files.
+   The scaffolding app defines a folder ``settings.UPLOAD_FOLDER``
+   which points to ``apps/{app_name}/uploads`` so you can
+   set, for example, ``Field(... uploadfolder=settings.UPLOAD_FOLDER)``.
 -  ``uploadseparate`` if set to True will upload files under different
    subfolders of the *uploadfolder* folder. This is optimized to avoid
    too many files under the same folder/subfolder. ATTENTION: You cannot
    change the value of ``uploadseparate`` from True to False without
-   breaking links to existing uploads. web2py either uses the separate
+   breaking links to existing uploads. pydal either uses the separate
    subfolders or it does not. Changing the behavior after files have
-   been uploaded will prevent web2py from being able to retrieve those
+   been uploaded will prevent pydal from being able to retrieve those
    files. If this happens it is possible to move files and fix the
    problem but this is not described here.
-
-   .. FIXME: do really py4web make use of uploadseparate?
-
 -  ``uploadfs`` allows you specify a different file system where to
    upload files, including an Amazon S3 storage or a remote SFTP
    storage.
@@ -994,19 +994,11 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
 -  ``autodelete`` determines if the corresponding uploaded file should
    be deleted when the record referencing the file is deleted. For
    “upload” fields only. However, records deleted by the database itself
-   due to a CASCADE operation will not trigger py4web’s autodelete. The
-   web2py Google group has workaround discussions.
--  ``widget`` must be one of the available widget objects, including
-   custom widgets, for example: ``SQLFORM.widgets.string.widget``. A
-   list of available widgets will be discussed later. Each field type
-   has a default widget.
-
-   .. FIXME: review needed, SQLFORM has gone!
+   due to a CASCADE operation will not trigger py4web’s autodelete.
 
 -  ``label`` is a string (or a helper or something that can be
    serialized to a string) that contains the label to be used for this
    field in auto-generated forms.
--  ``comment`` is a string (or a helper or something that can be
    serialized to a string) that contains a comment associated with this
    field, and will be displayed to the right of the input field in the
    autogenerated forms.
@@ -1014,13 +1006,6 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
 -  ``readable`` declares whether a field is readable in forms. If a
    field is neither readable nor writable, it will not be displayed in
    create and update forms.
--  ``searchable`` declares whether a field is searchable in grids
-   (``SQLFORM.grid`` and ``SQLFORM.smartgrid``).
-
-   .. FIXME: review needed, SQLFORM has gone, new Grid may behave differently.
-
--  ``listable`` declares whether a field is visible in grids (when
-   listing multiple records)
 -  ``update`` contains the default value for this field when the record
    is updated.
 -  ``compute`` is an optional function. If a record is inserted or
@@ -1035,24 +1020,14 @@ only for fields of type “string”. ``uploadfield``, ``authorize``, and
    field value and returns an alternate representation for the field
    value. Examples:
 
-.. code:: python
+Note not all the attributes are thread safe and most of them
+should only be set globally for an app. The following are guaranteed to be
+thread safe and be set/reset in any action:
+``default``, ``update``, ``readable``, ``writable``, ``requires``.
 
-   db.mytable.name.represent = lambda name, row: name.capitalize()
-   db.mytable.other_id.represent = lambda oid, row: row.myfield
-   db.mytable.some_uploadfield.represent = lambda val, row: A('get it', _href=URL('download', val))
 
--  ``filter_in`` and ``filter_out`` can be set to callables for further
-   processing of field’s value. ``filter_in`` is passed the field’s
-   value to be written to the database before an insert or update while
-   ``filter_out`` is passed the value retrieved from the database before
-   field assignment. The value returned by the callable is then used.
-   See :ref:`filter_in and filter_out`.
--  ``custom_qualifier`` is a custom SQL qualifier for the field to be
-   used at table creation time (cannot use for field of type “id”,
-   “reference”, or “big-reference”).
-
-Field types
-~~~~~~~~~~~
+Field types and validators
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ==========================  ==================================================
 Type                        Default validators
@@ -1665,8 +1640,8 @@ database.
 
 .. code:: python
 
-   from pydal import DAL, Field
-   from py4web.utils.tags import Tags
+   from py4web import DAL, Field
+   from pydal.tools.tags import Tags
 
    db = DAL("sqlite:memory")
    db.define_table("thing", Field("name"))
@@ -1876,8 +1851,8 @@ Given a Set, ``s``, you can fetch the records with the command
 
 It returns an iterable object of class ``pydal.objects.Rows`` whose
 elements are Row objects. ``pydal.objects.Row`` objects act like
-dictionaries, but their elements can also be accessed as attributes,
-like ``gluon.storage.Storage``.The former differ from the latter because
+dictionaries, but their elements can also be accessed as attributes.
+The former differ from the latter because
 its values are read-only.
 
 The Rows object allows looping over the result of the select and
@@ -2054,7 +2029,7 @@ attribute, you can list them in the “fields” argument:
    repr_row = row.render(0, fields=[db.mytable.myfield])
 
 Note, it returns a transformed copy of the original Row, so there’s no
-update_record (which you wouldn’t want anyway) or delete_record.
+update_record (which you wouldn't want anyway) or delete_record.
 
 Shortcuts
 ~~~~~~~~~
@@ -2203,6 +2178,8 @@ i.e. the Set of ``thing``\ s referenced by the current ``person``. This
 syntax breaks down if the referencing table has multiple references to
 the referenced table. In this case one needs to be more explicit and use
 a full Query.
+
+.. _orderby, groupby, limitby:
 
 ``orderby``, ``groupby``, ``limitby``, ``distinct``, ``having``, ``orderby_on_limitby``, ``join``, ``left``, ``cache``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2544,7 +2521,7 @@ and then call ``update_record()`` without arguments to save the changes:
    Note, you should avoid using ``row.update_record()`` with no
    arguments when the ``row`` object contains fields that have an
    ``update`` attribute (e.g.,
-   ``Field('modified_on', update=request.now)``). Calling
+   ``Field('modified_on', update=datetime.datetime.utcnow)``). Calling
    ``row.update_record()`` will retain *all* of the existing values in
    the ``row`` object, so any fields with ``update`` attributes will
    have no effect in this case. Be particularly mindful of this with
@@ -2908,9 +2885,7 @@ defined:
 
    Mind that virtual fields do not have the same attributes as regular
    fields (length, default, required, etc). They do not appear in the
-   list of ``db.table.fields`` and in older versions of web2py they
-   require a special approach to display in SQLFORM.grid and
-   SQLFORM.smartgrid.
+   list of ``db.table.fields``.
 
 Old style virtual fields
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3867,16 +3842,19 @@ This can be achieved changing the above model into:
 
 .. code:: python
 
+   import datetime
    import uuid
+
+   now = datetime.datetime.utcnow
 
    db.define_table('person',
                    Field('uuid', length=64),
-                   Field('modified_on', 'datetime', default=request.now, update=request.now),
+                   Field('modified_on', 'datetime', default=now, update=now),
                    Field('name'))
 
    db.define_table('thing',
                    Field('uuid', length=64),
-                   Field('modified_on', 'datetime', default=request.now, update=request.now),
+                   Field('modified_on', 'datetime', default=now, update=now),
                    Field('name'),
                    Field('owner_id', length=64))
 
@@ -3902,10 +3880,12 @@ Create a controller action to export the database:
 
 .. code:: python
 
+   from py4web import response
+
    def export():
        s = StringIO.StringIO()
        db.export_to_csv_file(s)
-       response.headers['Content-Type'] = 'text/csv'
+       response.set_header('Content-Type', 'text/csv')
        return s.getvalue()
 
 Create a controller action to import a saved copy of the other database
@@ -4161,11 +4141,13 @@ database in order to reuse it in multiple other places. For example:
 
 .. code:: python
 
+   now = datetime.datetime.utcnow
+
    signature = db.Table(db, 'signature',
                         Field('is_active', 'boolean', default=True),
-                        Field('created_on', 'datetime', default=request.now),
+                        Field('created_on', 'datetime', default=now),
                         Field('created_by', db.auth_user, default=auth.user_id),
-                        Field('modified_on', 'datetime', update=request.now),
+                        Field('modified_on', 'datetime', update=now),
                         Field('modified_by', db.auth_user, update=auth.user_id))
 
    db.define_table('payment', Field('amount', 'double'), signature)
@@ -4289,8 +4271,8 @@ Database cascades
 
 Database schema can define relationships which trigger deletions of
 related records, known as cascading. The DAL is not informed when a
-record is deleted due to a cascade. So no \*_delete callaback will ever
-be called as conseguence of a cascade-deletion.
+record is deleted due to a cascade. So no \*_delete callback will ever
+be called as consequence of a cascade-deletion.
 
 Record versioning
 ~~~~~~~~~~~~~~~~~
@@ -4355,68 +4337,6 @@ is set to False. The ``is_active`` parameter in the
 ``_enable_record_versioning`` method allows to specify the name of the
 field used by the ``common_filter`` to determine if the field was
 deleted or not.
-
-`Common filters`_ will be discussed later.
-
-Common fields and multi-tenancy
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-``db._common_fields`` is a list of fields that should belong to all the
-tables. This list can also contain tables and it is understood as all
-fields from the table.
-
-For example occasionally you find yourself in need to add a signature to
-all your tables but the ``Auth`` tables. In this case, after you
-``auth.define_tables()`` but before defining any other table, insert:
-
-.. code:: python
-
-   db._common_fields.append(auth.signature)
-
-One field is special: ``request_tenant``, you can set a different name
-in ``db._request_tenant``. This field does not exist but you can create
-it and add it to any of your tables (or all of them):
-
-.. code:: python
-
-   db._common_fields.append(Field('request_tenant',
-                                  default=request.env.http_host,
-                                  writable=False))
-
-For every table with such a field, all records for all queries are
-always automatically filtered by:
-
-.. code:: python
-
-   db.table.request_tenant == db.table.request_tenant.default
-
-and for every record inserted, this field is set to the default value.
-In the example above we have chosen:
-
-.. code:: python
-
-   default = request.env.http_host
-
-this means we have chosen to ask our app to filter all tables in all
-queries with:
-
-.. code:: python
-
-   db.table.request_tenant == request.env.http_host
-
-This simple trick allow us to turn any application into a multi-tenant
-application. Even though we run one instance of the application and we
-use one single database, when the application is accessed under two or
-more domains the visitors will see different data depending on the
-domain (in the example the domain name is retrieved from
-``request.env.http_host``).
-
-You can turn off multi tenancy filters using
-``ignore_common_filters=True`` at ``Set`` creation time:
-
-.. code:: python
-
-   db(query, ignore_common_filters=True)
 
 Common filters
 ~~~~~~~~~~~~~~
@@ -4491,7 +4411,7 @@ define a custom type to store an IP address:
    ...     ov.insert(0, iv[0])
    ...     return '.'.join(map(str, ov))
    ...
-   >>> from gluon.dal import SQLCustomType
+   >>> from pydal import SQLCustomType
    >>> ipv4 = SQLCustomType(type='string', native='integer',
    ...                      encoder=lambda x : str(ip2int(x)), decoder=int2ip)
    >>> db.define_table('website',
@@ -4521,9 +4441,8 @@ engine. ``encoder`` is an optional transformation function applied when
 the data is stored and ``decoder`` is the optional reverse
 transformation function.
 
-   This feature is marked as experimental. In practice it has been in
-   web2py for a long time and it works but it can make the code not
-   portable, for example when the native type is database specific.
+   This feature is marked as experimental because can make your code not
+   portable across database engines.
 
 It does not work on Google App Engine NoSQL.
 
@@ -4549,7 +4468,7 @@ py4web to read the necessary info from the metadata in the .table files:
 
 .. code:: python
 
-   from pydal import DAL, Field
+   from py4web import DAL, Field
    db = DAL('sqlite://storage.sqlite', folder='path/to/app/databases', auto_import=True)
 
 This allows us to access any db.table without need to re-define it.
@@ -4582,103 +4501,6 @@ separately. This means there is a possibility that one of the commits
 succeeds and one fails. The distributed transaction prevents this from
 happening.
 
-PostGIS, SpatiaLite, and MS Geo (experimental)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The DAL supports geographical APIs using PostGIS (for PostgreSQL),
-SpatiaLite (for SQLite), and MSSQL and Spatial Extensions. This is a
-feature that was sponsored by the Sahana project and implemented by
-Denes Lengyel.
-
-DAL provides geometry and geography fields types and the following
-functions:
-
-::
-
-   st_asgeojson (PostGIS only)
-   st_astext
-   st_contains
-   st_distance
-   st_equals
-   st_intersects
-   st_overlaps
-   st_simplify (PostGIS only)
-   st_touches
-   st_within
-   st_x
-   st_y
-
-Here are some examples:
-
-.. code:: python
-
-   >>> from gluon.dal import DAL, Field, geoPoint, geoLine, geoPolygon
-   >>> db = DAL("mssql://user:pass@host/db")
-   >>> sp = db.define_table('spatial', Field('loc', 'geometry()'))
-
-Below we insert a point, a line, and a polygon:
-
-.. code:: python
-
-   >>> sp.insert(loc=geoPoint(1, 1))
-   1
-   >>> sp.insert(loc=geoLine((100, 100), (20, 180), (180, 180)))
-   2
-   >>> sp.insert(loc=geoPolygon((0, 0), (150, 0), (150, 150), (0, 150), (0, 0)))
-   3
-
-Notice that
-
-.. code:: python
-
-   rows = db(sp).select()
-
-Always returns the geometry data serialized as text. You can also do the
-same more explicitly using ``st_astext()``:
-
-.. code:: python
-
-   >>> print(db(sp).select(sp.id, sp.loc.st_astext()))
-   spatial.id,spatial.loc.STAsText()
-   1,"POINT (1 2)"
-   2,"LINESTRING (100 100, 20 180, 180 180)"
-   3,"POLYGON ((0 0, 150 0, 150 150, 0 150, 0 0))"
-
-You can ask for the native representation by using ``st_asgeojson()``
-(in PostGIS only):
-
-.. code:: python
-
-   >>> print(db(sp).select(sp.id, sp.loc.st_asgeojson().with_alias('loc')))
-   spatial.id,loc
-   1,[1, 2]
-   2,[[100, 100], [20 180], [180, 180]]
-   3,[[[0, 0], [150, 0], [150, 150], [0, 150], [0, 0]]]
-
-(notice an array is a point, an array of arrays is a line, and an array
-of array of arrays is a polygon).
-
-Here are example of how to use geographical functions:
-
-.. code:: python
-
-   >>> query = sp.loc.st_intersects(geoLine((20, 120), (60, 160)))
-   >>> query = sp.loc.st_overlaps(geoPolygon((1, 1), (11, 1), (11, 11), (11, 1), (1, 1)))
-   >>> query = sp.loc.st_contains(geoPoint(1, 1))
-   >>> print(db(query).select(sp.id, sp.loc))
-   spatial.id,spatial.loc
-   3,"POLYGON ((0 0, 150 0, 150 150, 0 150, 0 0))"
-
-Computed distances can also be retrieved as floating point numbers:
-
-.. code:: python
-
-   >>> dist = sp.loc.st_distance(geoPoint(-1,2)).with_alias('dist')
-   >>> print(db(sp).select(sp.id, dist))
-   spatial.id,dist
-   1,2.0
-   2,140.714249456
-   3,1.0
 
 Copy data from one db into another
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4700,29 +4522,6 @@ string:
 Before you switch, you want to move the data and rebuild all the
 metadata for the new database. We assume the new database to exist but
 we also assume it is empty.
-
-web2py provides a script that does this work for you:
-
-.. code:: sh
-
-   cd web2py
-   python scripts/cpdb.py \\
-      -f applications/app/databases \\
-      -y 'sqlite://storage.sqlite' \\
-      -Y 'postgres://username:password@localhost/mydb' \\
-      -d ../gluon
-
-After running the script you can simply switch the connection string in
-the model and everything should work out of the box. The new data should
-be there.
-
-This script provides various command line options that allows you to
-move data from one application to another, move all tables or only some
-tables, clear the data in the tables. For more info try:
-
-.. code:: sh
-
-   python scripts/cpdb.py -h
 
 
 Gotchas
@@ -4875,57 +4674,111 @@ in the following dictionary also in “dal.py”:
 
 .. FIXME: “dal.py” has gone! adpaters are now in pydal.adapters (not a dict)
 
-.. code:: python
+.. list-table::
 
-   ADAPTERS = {
-       'sqlite': SQLiteAdapter,
-       'spatialite': SpatiaLiteAdapter,
-       'sqlite:memory': SQLiteAdapter,
-       'spatialite:memory': SpatiaLiteAdapter,
-       'mysql': MySQLAdapter,
-       'postgres': PostgreSQLAdapter,
-       'postgres:psycopg2': PostgreSQLAdapter,
-       'postgres2:psycopg2': NewPostgreSQLAdapter,
-       'oracle': OracleAdapter,
-       'mssql': MSSQLAdapter,
-       'mssql2': MSSQL2Adapter,
-       'mssql3': MSSQL3Adapter,
-       'mssql4' : MSSQL4Adapter,
-       'vertica': VerticaAdapter,
-       'sybase': SybaseAdapter,
-       'db2': DB2Adapter,
-       'teradata': TeradataAdapter,
-       'informix': InformixAdapter,
-       'informix-se': InformixSEAdapter,
-       'firebird': FireBirdAdapter,
-       'firebird_embedded': FireBirdAdapter,
-       'ingres': IngresAdapter,
-       'ingresu': IngresUnicodeAdapter,
-       'sapdb': SAPDBAdapter,
-       'cubrid': CubridAdapter,
-       'jdbc:sqlite': JDBCSQLiteAdapter,
-       'jdbc:sqlite:memory': JDBCSQLiteAdapter,
-       'jdbc:postgres': JDBCPostgreSQLAdapter,
-       'gae': GoogleDatastoreAdapter, # discouraged, for backward compatibility
-       'google:datastore': GoogleDatastoreAdapter,
-       'google:datastore+ndb': GoogleDatastoreAdapter,
-       'google:sql': GoogleSQLAdapter,
-       'couchdb': CouchDBAdapter,
-       'mongodb': MongoDBAdapter,
-       'imap': IMAPAdapter
-   }
+   * - couchdb
+     - pydal.adapters.couchdb.CouchDB
+   * - cubrid
+     - pydal.adapters.mysql.Cubrid
+   * - db2:ibm_db_dbi
+     - pydal.adapters.db2.DB2IBM
+   * - db2:pyodbc
+     - pydal.adapters.db2.DB2Pyodbc
+   * - firebird
+     - pydal.adapters.firebird.FireBird
+   * - firebird_embedded
+     - pydal.adapters.firebird.FireBirdEmbedded
+   * - google:MySQLdb
+     - pydal.adapters.google.GoogleMySQL
+   * - google:datastore
+     - pydal.adapters.google.GoogleDatastore
+   * - google:datastore+ndb
+     - pydal.adapters.google.GoogleDatastore
+   * - google:psycopg2
+     - pydal.adapters.google.GooglePostgres
+   * - google:sql
+     - pydal.adapters.google.GoogleSQL
+   * - informix
+     - pydal.adapters.informix.Informix
+   * - informix-se
+     - pydal.adapters.informix.InformixSE
+   * - ingres
+     - pydal.adapters.ingres.Ingres
+   * - ingresu
+     - pydal.adapters.ingres.IngresUnicode
+   * - jdbc:postgres
+     - pydal.adapters.postgres.JDBCPostgre
+   * - jdbc:sqlite
+     - pydal.adapters.sqlite.JDBCSQLite
+   * - jdbc:sqlite:memory
+     - pydal.adapters.sqlite.JDBCSQLite
+   * - mongodb
+     - pydal.adapters.mongo.Mongo
+   * - mssql
+     - pydal.adapters.mssql.MSSQL1
+   * - mssql2
+     - pydal.adapters.mssql.MSSQL1N
+   * - mssql3
+     - pydal.adapters.mssql.MSSQL3
+   * - mssql3n
+     - pydal.adapters.mssql.MSSQL3N
+   * - mssql4
+     - pydal.adapters.mssql.MSSQL4
+   * - mssql4n
+     - pydal.adapters.mssql.MSSQL4N
+   * - mssqln
+     - pydal.adapters.mssql.MSSQL1N
+   * - mysql
+     - pydal.adapters.mysql.MySQL
+   * - oracle
+     - pydal.adapters.oracle.Oracle
+   * - postgres
+     - pydal.adapters.postgres.Postgre
+   * - postgres2
+     - pydal.adapters.postgres.PostgreNew
+   * - postgres2:psycopg2
+     - pydal.adapters.postgres.PostgrePsycoNew
+   * - postgres3
+     - pydal.adapters.postgres.PostgreBoolean
+   * - postgres3:psycopg2
+     - pydal.adapters.postgres.PostgrePsycoBoolean
+   * - postgres:psycopg2
+     - pydal.adapters.postgres.PostgrePsyco
+   * - pytds
+     - pydal.adapters.mssql.PyTDS
+   * - sapdb
+     - pydal.adapters.sap.SAPDB
+   * - spatialite
+     - pydal.adapters.sqlite.Spatialite
+   * - spatialite:memory
+     - pydal.adapters.sqlite.Spatialite
+   * - sqlite
+     - pydal.adapters.sqlite.SQLite
+   * - sqlite:memory
+     - pydal.adapters.sqlite.SQLite
+   * - sybase
+     - pydal.adapters.mssql.Sybase
+   * - teradata
+     - pydal.adapters.teradata.Teradata
+   * - vertica
+     - pydal.adapters.mssql.Vertica
 
 the uri string is then parsed in more detail by the adapter itself.
+An updated list of adapters can be obtained as dictionary with
 
-For any adapter you can replace the driver with a different one:
+.. code: python
 
-.. FIXME: from gluon.dal?
+   from pydal.adapters import adapters
+   ADAPTERS = adapters.__dict__['_registry_']
+
+For any adapter you can replace the driver with a different one 
+globally (not thread safe):
 
 .. code:: python
 
    import MySQLdb as mysqldb
-   from gluon.dal import MySQLAdapter
-   MySQLAdapter.driver = mysqldb
+   from pydal.adapters.mysql import SQLAdapter
+   SQLAdapter.driver = mysqldb
 
 i.e. ``mysqldb`` has to be *that module* with a .connect() method. You
 can specify optional driver arguments and adapter arguments:
@@ -4933,6 +4786,16 @@ can specify optional driver arguments and adapter arguments:
 .. code:: python
 
    db = DAL(..., driver_args={}, adapter_args={})
+
+For recognized adapters you can also simply specify the name in the
+``adapter_args``:
+
+.. code:: python
+
+   from pydal.adapters.mysql import MySQL
+   assert "mysqldv" in MySQL.drivers
+   db = DAL(..., driver_args={}, adapter_args={"driver": "mysqldb"})
+
 
 SQLite
 ~~~~~~
@@ -4963,8 +4826,8 @@ This means that any migration process is broken into multiple commits.
 If something happens that causes a failure it is possible to break a
 migration (the py4web metadata are no longer in sync with the actual
 table structure in the database). This is unfortunate but it can be
-prevented (migrate one table at the time) or it can be fixed a
-posteriori (revert the py4web model to what corresponds to the table
+prevented (migrate one table at the time) or it can be fixed in the
+aftermath (revert the py4web model to what corresponds to the table
 structure in database, set ``fake_migrate=True`` and after the metadata
 has been rebuilt, set ``fake_migrate=False`` and migrate the table
 again).
@@ -4979,7 +4842,7 @@ file system. PY4WEB migrations in Google SQL combined with the MySQL
 issue described above can result in metadata corruption. Again, this can
 be prevented (by migrating the table at once and then setting
 migrate=False so that the metadata table is not accessed any more) or it
-can fixed a posteriori (by accessing the database using the Google
+can fixed in the aftermath (by accessing the database using the Google
 dashboard and deleting any corrupted entry from the table called
 ``py4web_filesystem``.
 

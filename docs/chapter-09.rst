@@ -2,12 +2,18 @@
 YATL Template Language
 ======================
 
-py4web uses an external Python module called **YATL** (Yet Another Template
-Language, see `here <https://github.com/web2py/yatl>`__) for rendering dynamic HTML
-pages that contain Python code.
+py4web uses two distinct template languages for rendering dynamic HTML pages that contain Python code:
 
-py4web uses double square brackets ``[[ ... ]]`` to escape Python code embedded in HTML. The
-advantage of using square brackets instead of angle brackets is that
+- `yatl (Yet Another Template Language) <https://pypi.org/project/yatl/>`__ , which is considered the original reference implementation
+- `Renoir <https://pypi.org/project/renoir/>`__, which is a newer and faster implementation of yatl with additional functionality
+
+
+Since ``Renoir`` does not include HTML helpers (see next chapter), py4web by default uses the ``Renoir`` module for rendering templates and the ``yatl`` module for helpers,
+plus some minor trickery to make them work together seamlessly.
+
+py4web also uses double square brackets ``[[ ... ]]`` to escape Python code embedded in HTML, unless specified otherwise.
+
+The advantage of using square brackets instead of angle brackets is that
 it’s transparent to all common HTML editors. This allows the developer
 to use those editors to create py4web templates.
 
@@ -26,7 +32,7 @@ to use those editors to create py4web templates.
     
 Since the developer is embedding Python code into HTML, the document
 should be indented according to HTML rules, and not Python rules.
-Therefore, we allow unindented Python inside the ``[[ ... ]]`` tags.
+Therefore, we allow un-indented Python inside the ``[[ ... ]]`` tags.
 But since Python normally uses indentation to delimit blocks of code, we
 need a different way to delimit them; this is why the py4web template
 language makes use of the Python keyword ``pass``.
@@ -70,7 +76,7 @@ it translates it into a program:
        response.write(""" hello <br />""", escape=False)
    response.write("""</body></html>""", escape=False)
 
-``response.write`` writes to the ``response.body``.
+``response.write`` writes to the response body.
 
 When there is an error in a py4web template, the error report shows the
 generated template code, not the actual template as written by the developer.
@@ -530,7 +536,7 @@ You can override these default content blocks by enclosing your new
 content inside the same block name. The location of the block in the
 layout.html is not changed, but the contents is.
 
-Here is a simplifed version. Imagine this is “layout.html”:
+Here is a simplified version. Imagine this is “layout.html”:
 
 .. code:: html
 

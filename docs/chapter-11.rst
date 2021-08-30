@@ -8,7 +8,7 @@ Pluralize
 Pluralize is a Python library for Internationalization (i18n) and
 Pluralization (p10n).
 
-The library assumes a folder (for exaple “translations”) that contains
+The library assumes a folder (for example “translations”) that contains
 files like:
 
 ::
@@ -83,7 +83,7 @@ Add newly discovered entries in all supported languages
 
    T.update_languages(matches)
 
-Add a new supported language (for example german, “de”)
+Add a new supported language (for example German, “de”)
 
 ::
 

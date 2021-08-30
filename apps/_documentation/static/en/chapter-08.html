@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>The RESTAPI &mdash; py4web 1.20210522.2 documentation</title>
+  <title>The RESTAPI &mdash; py4web 1.20210619.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210522.2
+                1.20210619.1
               </div>
             
           
@@ -119,6 +119,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
             
@@ -191,15 +192,15 @@
   <div class="section" id="the-restapi">
 <h1>The RESTAPI<a class="headerlink" href="#the-restapi" title="Permalink to this headline">¶</a></h1>
 <p>Since version 19.5.10 pyDAL includes a restful API called RestAPI. It is
-inspired by GraphQL but it’s not quite the same because it is less
-powerful but, in the spirit of py4web, more practical and easier to use.
+inspired by GraphQL and while it’s not quite the same due to it being less
+powerful, it is in the spirit of py4web where it’s more practical and easier to use.
 Like GraphQL RestAPI allows a client to query for information using the
 GET method and allows to specify some details about the format of the
 response (which references to follow, and how to denormalize the data).
 Unlike GraphQL it allows the server to specify a policy and restrict
 which queries are allowed and which one are not. They can be evaluated
 dynamically per request based on the user and the state of the server.
-As the name implied RestAPI allows all stardard methods GET, POST, PUT,
+As the name implied RestAPI allows all standard methods: GET, POST, PUT,
 and DELETE. Each of them can be enabled or disabled based on the policy,
 for individual tables and individual fields.</p>
 <div class="admonition note">
@@ -280,19 +281,19 @@ just raw request-body which is string, not JSON. See <a class="reference externa
 <p>The general query has the form <code class="docutils literal notranslate"><span class="pre">{something}.eq=value</span></code> where <code class="docutils literal notranslate"><span class="pre">eq=</span></code>
 stands for “equal”, <code class="docutils literal notranslate"><span class="pre">gt=</span></code> stands for “greater than”, etc. The
 expression can be prepended by <code class="docutils literal notranslate"><span class="pre">not.</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">{something}</span></code> can be the name of a field in the table been queried as
+<p><code class="docutils literal notranslate"><span class="pre">{something}</span></code> can be the name of a field in the table being queried as
 in:</p>
 <p><strong>All superheroes called “Superman”</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?name.eq=Superman
 </pre></div>
 </div>
-<p>It can be the name of a field of a table referred by the table been
+<p>It can be the name of a field of a table referred by the table being
 queried as in:</p>
 <p><strong>All superheroes with real identity “Clark Kent”</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?real_identity.name.eq=Clark Kent
 </pre></div>
 </div>
-<p>It can be the name of a field of a table that refers to the table neen
+<p>It can be the name of a field of a table that refers to the table being
 queried as in:</p>
 <p><strong>All superheroes with any tag superpower with strength &gt; 90</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?superhero.tag.strength.gt=90
@@ -782,7 +783,7 @@ the with the identity prefix)</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>URL (it’s a single line, splitted for readability):</p>
+<p>URL (it’s a single line, split for readability):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?
 @lookup=powers:superhero.tag[strength].superpower[description]
 </pre></div>
@@ -880,7 +881,7 @@ the with the identity prefix)</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>URL (it’s a single line, splitted for readability):</p>
+<p>URL (it’s a single line, split for readability):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?
 @lookup=powers!:superhero.tag[strength].superpower[description]
 </pre></div>
@@ -958,7 +959,7 @@ the with the identity prefix)</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>URL (it’s a single line, splitted for readability):</p>
+<p>URL (it’s a single line, split for readability):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/superheroes/api/superhero?
 @lookup=powers!:superhero.tag[strength].superpower[description],
 identity!:real_identity[name]
@@ -1208,7 +1209,7 @@ identity!:real_identity[name]
      <label for="switch"></label>
      </span>
       
-      v: 1.20210522.2
+      v: 1.20210619.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

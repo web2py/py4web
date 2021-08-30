@@ -2,13 +2,27 @@
 Installation and Startup
 ========================
 
+Understanding the design
+------------------------
+
+Before everything else it is important to understand that unlike other web frameworks,
+is not only a python module that can be imported by apps. It is also a program that
+is in charge of starting a apps. For this reason you need two things:
+
+-  the py4web module (which you download from our web site, from pypi, from github)
+-  one or more folders containing collections of apps you want to run.
+
+py4web has command line options to create a folder with some example apps,
+to initialize an existing folder, and to add scaffolding apps to that folder.
+Once installed you can have multiple apps under the same folder running concurrently
+and served by the same py4web process at the same address and port.
+An apps folder is a python module, and each app is also a python module.
+
 Supported platforms and prerequisites
 -------------------------------------
 
 PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is
-Python 3.6+, which must be installed in advance (except if you use
-binaries).
-
+Python 3.7+, which must be installed in advance (except if you use binaries).
 
 
 Setup procedures
@@ -28,9 +42,9 @@ On the other hand, it’s experimental, it could contain an old py4web
 release and it is quite difficult to add other functionalities to it.
 
 In order to use it you just need to download the latest Windows or MacOS
-ZIP file from `this external
-repository <https://github.com/nicozanf/py4web-pyinstaller>`__. Unzip it
-on a local folder and open a command line there. Finally run
+ZIP file from
+`this external repository <https://github.com/nicozanf/py4web-pyinstaller>`__.
+Unzip it on a local folder and open a command line there. Finally run
 
 ::
 
@@ -40,19 +54,10 @@ on a local folder and open a command line there. Finally run
 With this type of installation, remember to always use **py4web-start**
 instead of ‘py4web’ or ‘py4web.py’ in the following documentation.
 
-Hint: use a virtual environment (virtualenv)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Notice the binaries many not correspond to the latest master
+or the latest stable branch of py4web although we do our best to
+keep them up to date.
 
-A full installation of any complex python application like py4web will
-surely modify the python environment of your system. In order to prevent
-any unwanted change, it’s a good habit to use a python virtual
-environment (also called **virtualenv**, see
-`here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an
-introduction). This is a standard python feature; if you still don’t
-know virtualenv it’s a good time to start its discovery!
-
-Activate it before using any of the following *real* installation
-procedures is highly reccomended.
 
 Installing from pip
 ~~~~~~~~~~~~~~~~~~~
@@ -66,11 +71,7 @@ From the command line
 
    python3 -m pip install --upgrade py4web --no-cache-dir --user
 
-but do **not** type the *–user* option with virtualenv or a standard
-Windows installation which is already per-user.
-
-Also, if *python3* does not work, try with the simple *python* command
-instead.
+Also, if ``python3`` does not work, try specify a full version as in ``python3.8``.
 
 This will install py4web and all its dependencies on the system’s path
 only. The assets folder (that contains the py4web’s system apps) will
@@ -87,6 +88,29 @@ If the command py4web is not accepted, it means it’s not in the system’s
 path. On Windows, a special py4web.exe file (pointing to py4web.py) will
 be created by *pip* on the system’s path, but not if you type the
 *–user* option by mistake.
+
+Installing using a virtual environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A full installation of any complex python application like py4web will
+surely modify the python environment of your system. In order to prevent
+any unwanted change, it’s a good habit to use a python virtual
+environment (also called **virtualenv**, see
+`here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an
+introduction). This is a standard python feature; if you still don’t
+know virtualenv it’s a good time to start its discovery!
+
+Here are the instructions for creating the virtual environment, activating it,
+and installing py4web in it:
+
+::
+
+   python3 -m venv venv
+   . venv/bin/activate
+   python -m pip install --upgrade py4web --no-cache-dir
+
+The instructions for starting and running py4web are the same with or without a virtual environment.
+
 
 Installing from source (globally)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,6 +133,8 @@ folder
 Also notice that when installing in this way the content of
 ``py4web/assets`` folder is missing at first but it is manually created
 later with the ``make assets`` command.
+
+Notice that you also (and should) install py4web from source inside a virtual environment.
 
 Installing from source (locally)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -184,7 +210,7 @@ If you installed py4web from pip you can simple upgrade it with
    made changes to those apps.
 
 If you installed py4web in any other way, you must upgrade it manually.
-First you have to make a backup of any personal py4web work you’ve done,
+First you have to make a backup of any personal py4web work you've done,
 then delete the old installation folder and re-install the framework
 again.
 
@@ -196,17 +222,18 @@ output like this:
 
 ::
 
-   # py4web run apps
-
+   py4web run apps
 
 .. image:: images/first_run.png
    :class: with-shadow
 
 Generally ``apps`` is the name of the folder where you keep all your
-apps, and can be explicitly set wit the ``run`` command. If that
+apps, and can be explicitly set wit the ``run`` command.
+(Yet nothing prevents you from grouping apps in multiple folders with
+different names.) If that
 folder does not exist, it is created. PY4WEB expects to find at least
-two apps in this folder: **Dashboard** (_dashboard) and **Default**
-(_default). If it does not find them, it installs them.
+two apps in this folder: **Dashboard** (``_dashboard``) and **Default**
+(``_default``). If it does not find them, it installs them.
 
 **Dashboard** is a web based IDE. It will be described in the next chapter.
 
@@ -233,7 +260,7 @@ In order to stop py4web, you need to hit :kbd:`Control-C` on the window where yo
    ONLY the **Default** app is special because if does not require the “{appname}/” prefix in the path, like all the other apps do.
    In general you may want to symlink ``apps/_default`` to your default app.
 
-For all apps the trailing ``/index`` is optional.
+For all apps the trailing ``/index`` is also optional.
 
 .. warning::
 
@@ -275,6 +302,17 @@ with the **–help** or **-h** argument.
      -Y, --yes          No prompt, assume yes to questions  [default: False]
      --args TEXT        Arguments passed to the program/function  [default: {}]
      -help, -h, --help  Show this message and exit.
+
+
+For example:
+
+::
+
+   # py4web call apps examples.test.myfunction --args '{"x": 100}'
+
+where myfunction is the function you want to call in apps/examples/test.py. Note
+that you have to use the single and double quotes just as shown for parameters to
+work.
 
 .. _new_app command option:
 
@@ -344,24 +382,10 @@ changes to files of that application, you can:
 
 .. note::
     The optional ``--watch`` directive looks for any changes occurring to the python files under the
-    /apps folder only. Any modifications to the standard py4web programs will always require a full
+    ``/apps`` folder only. Any modifications to the standard py4web programs will always require a full
     restart of the framework. 
 
-
 The default web server used is currently Tornado, but you can change this behaviour with the ``server`` option.
-
-
-Also, for advanced users, you can specify the optional ``--usegevent`` directive like in this example:
-
-::
-
-   py4web --usegevent run -s geventWebSocketServer apps
-
-
-.. warning::
-    The optional ``--usegevent`` directive must be used with ``gevent`` or ``geventWebSocketServer`` webservers (in order to apply monkey patching)
-    and shouldn't be used with ``tornado`` and ``waitress``.
-
 
 
 .. _set_password command option:
@@ -492,7 +516,7 @@ WSGI
 
 py4web is a standard WSGI application. So, if a full program installation it's not
 feasible you can simply run py4web as a WSGI app. For example, using gunicorn-cli,
-create a pyton file:
+create a python file:
 
 .. code:: python
 

@@ -1,10 +1,17 @@
 import sys
 
-if len(sys.argv) > 1 and sys.argv[1] == "--usegevent":
-    sys.argv.pop(1)
-    from gevent import monkey
+__author__ = "Massimo Di Pierro <massimo.dipierro@gmail.com>"
+__license__ = "BSDv3"
+__version__ = "1.20210816.1"
 
-    monkey.patch_all()
+
+def _maybe_gevent():
+    for arg in sys.argv[1:]:
+        if 'gevent' in arg.lower():
+            from gevent import monkey
+            monkey.patch_all()
+            break
+_maybe_gevent()
 
 
 from .core import (
@@ -20,12 +27,10 @@ from .core import (
     Translator,  # from pluralize
     Session,
     Cache,
+    Current,
     Flash,
     user_in,  # additional fixtures
     URL,  # custom helper
     check_compatible,
 )  # checks for version compatibility
 
-__author__ = "Massimo Di Pierro <massimo.dipierro@gmail.com>"
-__license__ = "BSDv3"
-__version__ = "1.20210602.1"

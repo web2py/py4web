@@ -46,6 +46,7 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.autosectionlabel',
     'sphinx_tabs.tabs',
+    'sphinxcontrib.spelling',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -180,3 +181,8 @@ rinoh_documents = [(
 
 # -- Options for EPUB output -------------------------------------------------
 epub_basename = 'target'
+
+
+# ---- Options for spelling  -------------------------------------------------
+spelling_lang='en_US'
+spelling_word_list_filename='spelling_wordlist_en.txt'

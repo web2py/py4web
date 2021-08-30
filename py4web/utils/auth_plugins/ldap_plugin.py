@@ -7,7 +7,7 @@ import sys
 import logging
 import ldap  # python-ldap
 import ldap.filter
-from py4web.utils.tags import Tags
+from pydal.tools.tags import Tags
 
 ldap.set_option(ldap.OPT_REFERRALS, 0)
 
