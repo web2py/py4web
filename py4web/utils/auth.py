@@ -176,6 +176,7 @@ class Auth(Fixture):
         registration_requires_approval=False,
         inject=True,
         extra_fields=None,
+        kwargs=None,
         login_expiration_time=3600,  # seconds
         password_complexity="default",
         block_previous_password_num=None,
@@ -224,6 +225,7 @@ class Auth(Fixture):
         self.use_phone_number = use_phone_number
         # The self._link variable is not thread safe (only intended for testing)
         self.extra_auth_user_fields = extra_fields or []
+        self.auth_kwargs = kwargs or {}
         self._link = None
         if db and define_tables:
             self.define_tables()
@@ -317,7 +319,7 @@ class Auth(Fixture):
                         readable=False,
                     )
                 )
-            db.define_table("auth_user", *(auth_fields + self.extra_auth_user_fields))
+            db.define_table("auth_user", *(auth_fields + self.extra_auth_user_fields), **self.auth_kwargs)
 
     @property
     def signature(self):
