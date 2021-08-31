@@ -1,23 +1,25 @@
 import os
-import sys
 import unittest
 import tempfile
-import time
 import signal
-from multiprocessing import Process
-from unittest.mock import patch
 from py4web.core import cli
+from click.testing import CliRunner
 
 
-def patched_cli():
+def run_cli():
     dirpath = tempfile.mkdtemp()
     dir = os.path.join(dirpath, "apps")
-    testargs = ["py4web", 'setup', dir]
-    with patch.object(sys, "argv", testargs):
-        cli()
-    testargs = ["py4web", "run", "-d", "demo", dir]
-    with patch.object(sys, "argv", testargs):
-        cli()
+    runner = CliRunner()
+
+    testargs = ['setup', dir]
+    res = runner.invoke(cli, testargs, input='y')
+    if res.exception:
+        raise res.exception
+
+    testargs = ["run", "-d", "demo", dir]
+    res = runner.invoke(cli, testargs)
+    if res.exception:
+        raise res.exception
 
 
 class MainTest(unittest.TestCase):
@@ -31,6 +33,6 @@ class MainTest(unittest.TestCase):
         signal.signal(signal.SIGALRM, handler)
         signal.alarm(10)
         try:
-            patched_cli()
+            run_cli()
         except MyException:
             pass
