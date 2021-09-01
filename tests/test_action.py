@@ -29,7 +29,7 @@ action.app_name = "tests"
 def index():
     db.thing.insert(name="test")
     session["number"] = session.get("number", 0) + 1
-    
+
     # test copying Field ThreadSafe attr
     db.thing.name.default = "test_clone"
     field_clone = copy.copy(db.thing.name)
@@ -65,6 +65,7 @@ class CacheAction(unittest.TestCase):
 
     def test_local(self):
         # for test coverage
+        Session.__init_request_ctx__()  # mimic before_request-hook
         index()
 
     def test_error_page(self):
