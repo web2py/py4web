@@ -45,3 +45,4 @@ deployment_tools/gae/requirements.txt
 py4web/assets
 workspace.code-workspace
 venv
+docs/_build

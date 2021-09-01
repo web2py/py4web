@@ -200,6 +200,25 @@ OAuth2 with Facebook (tested OK)
 
 The client id and client secret must be provided by Facebook.
 
+OAuth2 with Discord
+~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    from py4web.utils.auth_plugins.oauth2discord import OAuth2Discord
+    auth.register_plugin(OAuth2Discord(
+        client_id=DISCORD_CLIENT_ID,
+        client_secret=DISCORD_CLIENT_SECRET,
+        callback_url="auth/plugin/oauth2discord/callback"))
+
+To obtain a Discord client ID and secret, create an application at https://discord.com/developers/applications.
+You will also have to register your OAuth2 redirect URI in your created application, in the form of
+``http(s)://<your host>/<your app name>/auth/plugin/oauth2discord/callback``
+
+.. note::
+    As Discord users have no concept of first/last name, the user in the auth table will contain the
+    Discord username as the first name and discriminator as the last name.
+
 Tags and Permissions
 --------------------
 
