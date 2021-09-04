@@ -969,15 +969,11 @@ class AuthAPI:
         # check the new_password2 only if passed
         if request.json is None:
             return auth._error("no json post payload")
-        res = auth.reset_password(
+        return auth.reset_password(
             request.json.get("token"),
             request.json.get("new_password"),
             request.json.get("new_password2", request.json.get("new_password")),
         )
-        if res:
-            return res
-        else:
-            return auth._error("invalid token, request expired")
 
     @staticmethod
     @api_wrapper
