@@ -3,14 +3,17 @@ import unittest
 import time
 import memcache
 import subprocess
+import pytest
 
 from py4web import request, response, Session, DAL
+from py4web.core import _before_request
 from py4web.utils.dbstore import DBStore
 
 
 class TestSession(unittest.TestCase):
     def setUp(self):
         request.environ["wsgi.input"] = io.StringIO()
+        _before_request()  # mimic before_request bottle-hook
         request.cookies.clear()
         response._cookies = ""
 
@@ -23,8 +26,11 @@ class TestSession(unittest.TestCase):
         session.on_success(200)
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
         request.cookies[a] = b
-        session.finalize()
-        self.assertEqual(session.local, None)
+
+        _before_request()
+        with pytest.raises(RuntimeError) as err:
+            session.local
+        self.assertTrue('py4web hint' in str(err.value))
 
         session = Session(secret="b", expiration=10)
         request.cookies[a] = b
@@ -47,8 +53,11 @@ class TestSession(unittest.TestCase):
         session.on_success(200)
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
         request.cookies[a] = b
-        session.finalize()
-        self.assertIsNone(session.local)
+
+        _before_request()
+        with pytest.raises(RuntimeError) as err:
+            session.local
+        self.assertTrue('py4web hint' in str(err.value))
 
         session = Session(expiration=10, storage=DBStore(db))
         request.cookies[a] = b
@@ -80,8 +89,11 @@ class TestSession(unittest.TestCase):
                 .split("=", 1)
             )
             request.cookies[a] = b
-            session.finalize()
-            self.assertEqual(session.local, None)
+
+            _before_request()
+            with pytest.raises(RuntimeError) as err:
+                session.local
+            self.assertTrue('py4web hint' in str(err.value))
 
             conn = memcache.Client(["127.0.0.1:11211"], debug=0)
             session = Session(expiration=10, storage=conn)
