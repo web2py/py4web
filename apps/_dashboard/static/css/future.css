@@ -137,6 +137,7 @@ input[type=number],
 input[type=date], 
 input[type=time], 
 input[type=datetime-local],
+.input,
 textarea {
    background-color: black;
    border: 0;
@@ -150,6 +151,7 @@ input[type=number],
 input[type=date], 
 input[type=time], 
 input[type=datetime-local],
+.input,
 select,
 textarea {
    border-bottom: 2px solid #33BFFF;
@@ -301,4 +303,14 @@ select {
    background-color: black;
    font-size: 20px;
    color: #33BFFF;
+}
+.gridPanel {
+   background: transparent;
+   text-align: left;
+   vertical-align: top;
+   border: 0;
+   margin: 5px 15px 5px 5px;
+   padding: 30px 15px 2px 15px;
+   position: relative;
+   text-overflow: ellipsis;
 }

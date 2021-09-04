@@ -201,6 +201,7 @@ class GridClassStyleFuture(GridClassStyle):
         "grid-cell-type-upload": "grid-cell-type-upload",
         "grid-cell-type-list": "grid-cell-type-list",
         "grid-cell-type-id": "grid-cell-type-id",
+        "grid-cell-type-password": "field-password",
         # specific for custom form
         "grid-search-form": "grid-search-form",
         "grid-search-form-table": "grid-search-form-table",
@@ -276,7 +277,7 @@ FormStyleFuture.classes.update(
         "input[type=file]": "file",
         "select": "control select",
         "textarea": "textarea",
-        "div": ""
+        "div": "input"
     }
 )
 

@@ -182,9 +182,13 @@ if MODE in ("demo", "readonly", "full"):
 
         table = getattr(db, tablename)
 
+        for field in table:
+            field.readable = True
+            field.writable = True
+
         query = table.id > 0
         orderby = [table.id]
-        columns = [field for field in table if field.readable]
+        columns = [field for field in table]
         columns = columns[:6]
 
         def genericSearch(field):
@@ -193,7 +197,7 @@ if MODE in ("demo", "readonly", "full"):
                 query = lambda value: field.contains(value)
             return query
 
-        search_queries = [[f"By {field.label}", genericSearch(field)] for field in table if field.readable]
+        search_queries = [[f"By {field.label}", genericSearch(field)] for field in table]
 
         grid = Grid(
             path,
