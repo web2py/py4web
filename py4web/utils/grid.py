@@ -907,7 +907,7 @@ class Grid:
             if "label" in field.__dict__
             else field.name
         )
-        heading = title(heading)
+        heading = XML(title(heading))
         #  add the sort order query parm
         sort_query_parms = dict(self.query_parms)
 

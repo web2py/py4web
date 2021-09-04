@@ -981,10 +981,10 @@ class Form(object):
         Args:
             value: filename
         """
-
-        (_, extension) = os.path.splitext(value)
-        if extension in [".gif", ".png", ".jpg", ".jpeg", ".bmp"]:
-            return True
+        if value:
+            (_, extension) = os.path.splitext(value)
+            if extension in [".gif", ".png", ".jpg", ".jpeg", ".bmp"]:
+                return True
         return False
 
     @property
