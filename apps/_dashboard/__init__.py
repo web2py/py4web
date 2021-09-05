@@ -1,8 +1,10 @@
 import base64
 import copy
 import datetime
+import functools
 import io
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -13,20 +15,11 @@ import requests
 from pydal.validators import CRYPT
 
 import py4web
-from py4web import (
-    HTTP,
-    URL,
-    Translator,
-    __version__,
-    abort,
-    action,
-    redirect,
-    request,
-    response,
-)
+from py4web import (HTTP, URL, Translator, __version__, abort, action,
+                    redirect, request, response)
 from py4web.core import Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
-from py4web.utils.grid import Grid, AttributesPluginHtmx
+from py4web.utils.grid import AttributesPluginHtmx, Grid
 
 from .diff2kryten import diff2kryten
 from .utils import *
@@ -53,8 +46,7 @@ def get_commits(project):
     commits = []
     for line in output.split("\n"):
         if line.startswith("commit "):
-            commit = {"code": line[7:], "message": "",
-                      "author": "", "date": ""}
+            commit = {"code": line[7:], "message": "", "author": "", "date": ""}
             commits.append(commit)
         elif line.startswith("Author: "):
             commit["author"] = line[8:]
@@ -103,6 +95,69 @@ def version():
     return __version__
 
 
+def smart_search(table):
+    """
+    allows search of AND of comma separated expressions
+    where an exexpression can be field operator value
+    and value can be with or without quotes.
+    Examples:
+    "John, Smith"
+    "first_name == John, last_name >= Smith"
+    value of None or NULL without quotes are interpreted as None (NULL in SQL)
+    """
+    parser = re.compile(
+        r"^\s*(%s)\s*(\<\=|\=\=|\!\=|\<\>|\>\=|\<|\>|\=|\~)\s*(.+)\s*$"
+        % "|".join(fn.name for fn in table if not fn.type == "password")
+    )
+    operator = {
+        "<": lambda a, b: a < b,
+        "<=": lambda a, b: a <= b,
+        "==": lambda a, b: a == b,
+        "=": lambda a, b: a == b,
+        "!=": lambda a, b: a != b,
+        "<>": lambda a, b: a != b,
+        ">": lambda a, b: a > b,
+        ">=": lambda a, b: a >= b,
+        "~": lambda a, b: a.startswith(b),
+    }
+
+    def search_in_table(value):
+        if not value.strip():
+            return table._id > 0
+        tokens = [value]
+        while True:
+            i = tokens[-1].lower().find(", ")
+            if i <= 0:
+                break
+            tokens = tokens[:-1] + [tokens[-1][:i], tokens[-1][i + 2 :]]
+        print(tokens)
+        queries = []
+        for token in tokens:
+            match = parser.match(token)
+            if match:
+                fn, op, value = match.groups()
+                query = operator[op](
+                    table[fn], None if value in ("None", "NULL") else value.strip('"')
+                )
+                queries.append(query)
+            else:
+                queries.append(
+                    functools.reduce(
+                        lambda a, b: a | b,
+                        [
+                            f.startswith(token)
+                            for f in table
+                            if f.type in ("string", "text")
+                        ],
+                    )
+                )
+        print(queries)
+        query = functools.reduce(lambda a, b: a & b, queries)
+        return query
+
+    return search_in_table
+
+
 if MODE in ("demo", "readonly", "full"):
 
     @action("index")
@@ -141,19 +196,26 @@ if MODE in ("demo", "readonly", "full"):
     @action.uses(Logged(session), "dbadmin.html")
     def dbadmin():
         args = dict(request.query)
-        app = args.get('app', None)
-        dbname = args.get('dbname', None)
-        tablename = args.get('tablename', None)
-        error = (app is None or dbname is None or tablename is None)
+        app = args.get("app", None)
+        dbname = args.get("dbname", None)
+        tablename = args.get("tablename", None)
+        error = app is None or dbname is None or tablename is None
         gridURL = URL("dbadmin_grid", app, dbname, tablename)
-        return dict(languages=dumps(getattr(T.local, "language", {})), gridURL=gridURL, error=error)
+        return dict(
+            languages=dumps(getattr(T.local, "language", {})),
+            gridURL=gridURL,
+            error=error,
+        )
 
     @action("dbadmin_grid/<app>/<dbname>/<tablename>", method=["GET", "POST"])
-    @action("dbadmin_grid/<app>/<dbname>/<tablename>/<path:path>", method=["GET", "POST"])
+    @action(
+        "dbadmin_grid/<app>/<dbname>/<tablename>/<path:path>", method=["GET", "POST"]
+    )
     @action.uses(Logged(session), "dbadminGrid.html")
     def dbadmin_grid(app=None, dbname=None, tablename=None, path=None):
-        from py4web.core import Reloader, DAL
-        from yatl.helpers import A, INPUT
+        from yatl.helpers import INPUT, A
+
+        from py4web.core import DAL, Reloader
 
         if MODE != "full":
             raise HTTP(403)
@@ -191,13 +253,32 @@ if MODE in ("demo", "readonly", "full"):
         columns = [field for field in table]
         columns = columns[:6]
 
-        def genericSearch(field):
-            query = lambda value: field == value
-            if field.type.lower() == "string":
+        def search_by_field(field):
+            if field.type == "string":
+                query = lambda value: field.startswith(value)
+            if field.type == "boolean":
+                query = lambda value: field == to_bool(value)
+            if field.type.startswith("list:"):
                 query = lambda value: field.contains(value)
+            else:
+                query = lambda value: field == value
             return query
 
-        search_queries = [[f"By {field.label}", genericSearch(field)] for field in table]
+        search_queries = [["Smart", smart_search(table)]]
+        search_queries += [
+            [f"{field.label}", search_by_field(field)]
+            for field in table
+            if field.type.split()[0]
+            in (
+                "string",
+                "integer",
+                "boolean",
+                "reference",
+                "list:string",
+                "list:integer",
+                "list:reference",
+            )
+        ]
 
         grid = Grid(
             path,
@@ -207,14 +288,14 @@ if MODE in ("demo", "readonly", "full"):
             orderby=orderby,
             show_id=True,
             T=T,
-            **grid_param
+            **grid_param,
         )
 
         grid.attributes_plugin = AttributesPluginHtmx("#panel")
         attrs = {
             "_hx-get": URL("dbadmin_grid", app, dbname, tablename),
             "_hx-target": "#panel",
-            "_class": "btn"
+            "_class": "btn",
         }
         grid.param.new_sidecar = A("Cancel", **attrs)
         grid.param.edit_sidecar = A("Cancel", **attrs)
@@ -232,7 +313,9 @@ if MODE in ("demo", "readonly", "full"):
         )
 
         grid.formatters_by_type["boolean"] = (
-            lambda value: INPUT(_type="checkbox", _checked=value, _disabled="disabled") if isinstance(value, bool) else ""
+            lambda value: INPUT(_type="checkbox", _checked=value, _disabled="disabled")
+            if isinstance(value, bool)
+            else ""
         )
 
         grid.process()
@@ -325,8 +408,7 @@ if MODE in ("demo", "readonly", "full"):
                 "dirs": list(
                     sorted(
                         [
-                            {"name": dir,
-                                "content": store[os.path.join(root, dir)]}
+                            {"name": dir, "content": store[os.path.join(root, dir)]}
                             for dir in dirs
                             if dir[0] != "." and dir[:2] != "__"
                         ],
@@ -368,17 +450,15 @@ if MODE in ("demo", "readonly", "full"):
         appname = sanitize(appname)
         app_dir = os.path.join(FOLDER, appname)
         store = io.BytesIO()
-        zip = zipfile.ZipFile(
-            store, mode="w", compression=zipfile.ZIP_DEFLATED)
+        zip = zipfile.ZipFile(store, mode="w", compression=zipfile.ZIP_DEFLATED)
         for root, dirs, files in os.walk(app_dir, topdown=False):
             if not root.startswith("."):
                 for name in files:
                     if not (
-                        name.endswith("~") or name.endswith(
-                            ".pyc") or name[:1] in "#."
+                        name.endswith("~") or name.endswith(".pyc") or name[:1] in "#."
                     ):
                         filename = os.path.join(root, name)
-                        short = filename[len(app_dir + os.path.sep):]
+                        short = filename[len(app_dir + os.path.sep) :]
                         print("added", filename, short)
                         zip.write(filename, short)
         zip.close()
@@ -390,8 +470,7 @@ if MODE in ("demo", "readonly", "full"):
     @session_secured
     def tickets():
         """Returns most recent tickets grouped by path+error"""
-        tickets = safely(
-            error_logger.database_logger.get) if MODE != "DEMO" else None
+        tickets = safely(error_logger.database_logger.get) if MODE != "DEMO" else None
         return {"payload": tickets or []}
 
     @action("clear")
@@ -407,8 +486,7 @@ if MODE in ("demo", "readonly", "full"):
         if MODE != "demo":
             return dict(
                 ticket=safely(
-                    lambda: error_logger.database_logger.get(
-                        ticket_uuid=ticket_uuid)
+                    lambda: error_logger.database_logger.get(ticket_uuid=ticket_uuid)
                 )
             )
         else:
@@ -420,7 +498,7 @@ if MODE in ("demo", "readonly", "full"):
         # this is not final, requires pydal 19.5
         args = path.split("/")
         app_name = args[0]
-        from py4web.core import Reloader, DAL
+        from py4web.core import DAL, Reloader
 
         if MODE != "full":
             raise HTTP(403)
@@ -455,6 +533,7 @@ if MODE in ("demo", "readonly", "full"):
         if "code" in data:
             response.status = data["code"]
         return data
+
 
 if MODE == "full":
 
@@ -591,8 +670,7 @@ if MODE == "full":
             raise HTTP(400)
 
         branch = (
-            request.forms.get("branches") if request.forms.get(
-                "branches") else "master"
+            request.forms.get("branches") if request.forms.get("branches") else "master"
         )
         # swap branches then go back to gitlog so new commits load
         checkout(project, branch)
@@ -611,8 +689,10 @@ if MODE == "full":
         patch = run("git show " + commit + opt, project)
         return diff2kryten(patch)
 
+
 # handle internationalization & pluralization files
 #
+
 
 @action("translations/<name>", method="GET")
 @action.uses(Logged(session), "translations.html")
@@ -621,12 +701,14 @@ def translations(name):
     t = Translator(os.path.join(FOLDER, name, "translations"))
     return t.languages
 
+
 @action("api/translations/<name>", method="GET")
 @action.uses(Logged(session))
 def get_translations(name):
     """returns a json with all translations for all languages"""
     t = Translator(os.path.join(FOLDER, name, "translations"))
     return t.languages
+
 
 @action("api/translations/<name>", method="POST")
 @action.uses(Logged(session))
@@ -647,4 +729,4 @@ def update_translations(name):
     """find all T(...) decorated strings in the code and returns them"""
     app_folder = os.path.join(FOLDER, name)
     strings = Translator.find_matches(app_folder)
-    return {'strings': strings}
+    return {"strings": strings}
