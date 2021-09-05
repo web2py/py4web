@@ -53,6 +53,7 @@ td.middle {
 tbody {
    border-bottom: 1px solid #33BFFF;
 }
+.btn,
 button {
    background-color: black;
    color: #33BFFF;   
@@ -72,6 +73,9 @@ button.btn-app {
    padding: 4px 20px 6px 10px;  
    text-align: left;   
 }
+
+.btn-filled,
+.btn:hover,
 button:hover {
    border: 2px solid #139FDF;
    box-shadow: inset 0 0 0 50px #33BFFF; 
@@ -133,8 +137,7 @@ input[type=number],
 input[type=date], 
 input[type=time], 
 input[type=datetime-local],
-input[type=file], 
-select,
+.input,
 textarea {
    background-color: black;
    border: 0;
@@ -148,6 +151,7 @@ input[type=number],
 input[type=date], 
 input[type=time], 
 input[type=datetime-local],
+.input,
 select,
 textarea {
    border-bottom: 2px solid #33BFFF;
@@ -284,4 +288,29 @@ label {
 }
 .field-referenced {
   margin-right: 1em;
+}
+
+.field:not(:last-child) {
+   margin-bottom: .75rem;
+}
+
+.label:not(:last-child) {
+   margin-bottom: .5em;
+}
+
+select {
+   cursor: pointer;
+   background-color: black;
+   font-size: 20px;
+   color: #33BFFF;
+}
+.gridPanel {
+   background: transparent;
+   text-align: left;
+   vertical-align: top;
+   border: 0;
+   margin: 5px 15px 5px 5px;
+   padding: 30px 15px 2px 15px;
+   position: relative;
+   text-overflow: ellipsis;
 }

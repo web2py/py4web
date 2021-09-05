@@ -26,6 +26,7 @@ from py4web import (
 )
 from py4web.core import Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
+from py4web.utils.grid import Grid, AttributesPluginHtmx
 
 from .diff2kryten import diff2kryten
 from .utils import *
@@ -52,7 +53,8 @@ def get_commits(project):
     commits = []
     for line in output.split("\n"):
         if line.startswith("commit "):
-            commit = {"code": line[7:], "message": "", "author": "", "date": ""}
+            commit = {"code": line[7:], "message": "",
+                      "author": "", "date": ""}
             commits.append(commit)
         elif line.startswith("Author: "):
             commit["author"] = line[8:]
@@ -138,7 +140,104 @@ if MODE in ("demo", "readonly", "full"):
     @action("dbadmin")
     @action.uses(Logged(session), "dbadmin.html")
     def dbadmin():
-        return dict(languages=dumps(getattr(T.local, "language", {})))
+        args = dict(request.query)
+        app = args.get('app', None)
+        dbname = args.get('dbname', None)
+        tablename = args.get('tablename', None)
+        error = (app is None or dbname is None or tablename is None)
+        gridURL = URL("dbadmin_grid", app, dbname, tablename)
+        return dict(languages=dumps(getattr(T.local, "language", {})), gridURL=gridURL, error=error)
+
+    @action("dbadmin_grid/<app>/<dbname>/<tablename>", method=["GET", "POST"])
+    @action("dbadmin_grid/<app>/<dbname>/<tablename>/<path:path>", method=["GET", "POST"])
+    @action.uses(Logged(session), "dbadminGrid.html")
+    def dbadmin_grid(app=None, dbname=None, tablename=None, path=None):
+        from py4web.core import Reloader, DAL
+        from yatl.helpers import A, INPUT
+
+        if MODE != "full":
+            raise HTTP(403)
+
+        module = Reloader.MODULES[app]
+
+        databases = [
+            name for name in dir(module) if isinstance(getattr(module, name), DAL)
+        ]
+        if dbname not in databases:
+            raise HTTP(406)
+
+        db = getattr(module, dbname)
+
+        grid_param = dict(
+            rows_per_page=20,
+            include_action_button_text=True,
+            search_button_text=None,
+            formstyle=FormStyleFuture,
+            grid_class_style=GridClassStyleFuture,
+            auto_process=False,
+        )
+
+        if tablename not in db:
+            raise HTTP(406)
+
+        table = getattr(db, tablename)
+
+        for field in table:
+            field.readable = True
+            field.writable = True
+
+        query = table.id > 0
+        orderby = [table.id]
+        columns = [field for field in table]
+        columns = columns[:6]
+
+        def genericSearch(field):
+            query = lambda value: field == value
+            if field.type.lower() == "string":
+                query = lambda value: field.contains(value)
+            return query
+
+        search_queries = [[f"By {field.label}", genericSearch(field)] for field in table]
+
+        grid = Grid(
+            path,
+            query,
+            columns=columns,
+            search_queries=search_queries,
+            orderby=orderby,
+            show_id=True,
+            T=T,
+            **grid_param
+        )
+
+        grid.attributes_plugin = AttributesPluginHtmx("#panel")
+        attrs = {
+            "_hx-get": URL("dbadmin_grid", app, dbname, tablename),
+            "_hx-target": "#panel",
+            "_class": "btn"
+        }
+        grid.param.new_sidecar = A("Cancel", **attrs)
+        grid.param.edit_sidecar = A("Cancel", **attrs)
+
+        grid.formatters_by_type["date"] = (
+            lambda value: value.strftime("%m/%d/%Y") if value else ""
+        )
+
+        grid.formatters_by_type["time"] = (
+            lambda value: value.strftime("%H:%M:%S") if value else ""
+        )
+
+        grid.formatters_by_type["datetime"] = (
+            lambda value: value.strftime("%m/%d/%Y %H:%M:%S") if value else ""
+        )
+
+        grid.formatters_by_type["boolean"] = (
+            lambda value: INPUT(_type="checkbox", _checked=value, _disabled="disabled") if isinstance(value, bool) else ""
+        )
+
+        grid.process()
+
+        return dict(grid=grid)
 
     @action("info")
     @session_secured
@@ -226,7 +325,8 @@ if MODE in ("demo", "readonly", "full"):
                 "dirs": list(
                     sorted(
                         [
-                            {"name": dir, "content": store[os.path.join(root, dir)]}
+                            {"name": dir,
+                                "content": store[os.path.join(root, dir)]}
                             for dir in dirs
                             if dir[0] != "." and dir[:2] != "__"
                         ],
@@ -268,15 +368,17 @@ if MODE in ("demo", "readonly", "full"):
         appname = sanitize(appname)
         app_dir = os.path.join(FOLDER, appname)
         store = io.BytesIO()
-        zip = zipfile.ZipFile(store, mode="w", compression=zipfile.ZIP_DEFLATED)
+        zip = zipfile.ZipFile(
+            store, mode="w", compression=zipfile.ZIP_DEFLATED)
         for root, dirs, files in os.walk(app_dir, topdown=False):
             if not root.startswith("."):
                 for name in files:
                     if not (
-                        name.endswith("~") or name.endswith(".pyc") or name[:1] in "#."
+                        name.endswith("~") or name.endswith(
+                            ".pyc") or name[:1] in "#."
                     ):
                         filename = os.path.join(root, name)
-                        short = filename[len(app_dir + os.path.sep) :]
+                        short = filename[len(app_dir + os.path.sep):]
                         print("added", filename, short)
                         zip.write(filename, short)
         zip.close()
@@ -288,7 +390,8 @@ if MODE in ("demo", "readonly", "full"):
     @session_secured
     def tickets():
         """Returns most recent tickets grouped by path+error"""
-        tickets = safely(error_logger.database_logger.get) if MODE != "DEMO" else None
+        tickets = safely(
+            error_logger.database_logger.get) if MODE != "DEMO" else None
         return {"payload": tickets or []}
 
     @action("clear")
@@ -304,7 +407,8 @@ if MODE in ("demo", "readonly", "full"):
         if MODE != "demo":
             return dict(
                 ticket=safely(
-                    lambda: error_logger.database_logger.get(ticket_uuid=ticket_uuid)
+                    lambda: error_logger.database_logger.get(
+                        ticket_uuid=ticket_uuid)
                 )
             )
         else:
@@ -317,7 +421,6 @@ if MODE in ("demo", "readonly", "full"):
         args = path.split("/")
         app_name = args[0]
         from py4web.core import Reloader, DAL
-        from pydal.restapi import RestAPI, Policy
 
         if MODE != "full":
             raise HTTP(403)
@@ -347,29 +450,6 @@ if MODE in ("demo", "readonly", "full"):
                     {"name": name, "tables": tables(name)} for name in databases
                 ]
             }
-        elif len(args) > 2 and args[1] in databases:
-            db = getattr(module, args[1])
-            id = args[3] if len(args) == 4 else None
-            policy = Policy()
-            for table in db:
-                policy.set(
-                    table._tablename,
-                    "GET",
-                    authorize=True,
-                    allowed_patterns=["**"],
-                    allow_lookup=True,
-                    fields=table.fields,
-                )
-                policy.set(table._tablename, "PUT", authorize=True, fields=table.fields)
-                policy.set(
-                    table._tablename, "POST", authorize=True, fields=table.fields
-                )
-                policy.set(table._tablename, "DELETE", authorize=True)
-            data = action.uses(db, T)(
-                lambda: RestAPI(db, policy)(
-                    request.method, args[2], id, request.query, request.json
-                )
-            )()
         else:
             data = {}
         if "code" in data:
@@ -511,7 +591,8 @@ if MODE == "full":
             raise HTTP(400)
 
         branch = (
-            request.forms.get("branches") if request.forms.get("branches") else "master"
+            request.forms.get("branches") if request.forms.get(
+                "branches") else "master"
         )
         # swap branches then go back to gitlog so new commits load
         checkout(project, branch)
