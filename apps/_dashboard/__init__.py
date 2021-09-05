@@ -13,10 +13,21 @@ import zipfile
 
 import requests
 from pydal.validators import CRYPT
+from yatl.helpers import INPUT, A
 
 import py4web
-from py4web import (HTTP, URL, Translator, __version__, abort, action,
-                    redirect, request, response)
+from py4web import (
+    HTTP,
+    URL,
+    Translator,
+    __version__,
+    abort,
+    action,
+    redirect,
+    request,
+    response,
+    DAL,
+)
 from py4web.core import Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
 from py4web.utils.grid import AttributesPluginHtmx, Grid
@@ -130,7 +141,6 @@ def smart_search(table):
             if i <= 0:
                 break
             tokens = tokens[:-1] + [tokens[-1][:i], tokens[-1][i + 2 :]]
-        print(tokens)
         queries = []
         for token in tokens:
             match = parser.match(token)
@@ -151,7 +161,6 @@ def smart_search(table):
                         ],
                     )
                 )
-        print(queries)
         query = functools.reduce(lambda a, b: a & b, queries)
         return query
 
@@ -192,31 +201,10 @@ if MODE in ("demo", "readonly", "full"):
         session["user"] = None
         return dict()
 
-    @action("dbadmin")
+    @action("dbadmin/<app>/<dbname>/<tablename>", method=["GET", "POST"])
+    @action("dbadmin/<app>/<dbname>/<tablename>/<path:path>", method=["GET", "POST"])
     @action.uses(Logged(session), "dbadmin.html")
-    def dbadmin():
-        args = dict(request.query)
-        app = args.get("app", None)
-        dbname = args.get("dbname", None)
-        tablename = args.get("tablename", None)
-        error = app is None or dbname is None or tablename is None
-        gridURL = URL("dbadmin_grid", app, dbname, tablename)
-        return dict(
-            languages=dumps(getattr(T.local, "language", {})),
-            gridURL=gridURL,
-            error=error,
-        )
-
-    @action("dbadmin_grid/<app>/<dbname>/<tablename>", method=["GET", "POST"])
-    @action(
-        "dbadmin_grid/<app>/<dbname>/<tablename>/<path:path>", method=["GET", "POST"]
-    )
-    @action.uses(Logged(session), "dbadminGrid.html")
-    def dbadmin_grid(app=None, dbname=None, tablename=None, path=None):
-        from yatl.helpers import INPUT, A
-
-        from py4web.core import DAL, Reloader
-
+    def dbadmin(app, dbname, tablename, path=None):
         if MODE != "full":
             raise HTTP(403)
 
@@ -291,14 +279,8 @@ if MODE in ("demo", "readonly", "full"):
             **grid_param,
         )
 
-        grid.attributes_plugin = AttributesPluginHtmx("#panel")
-        attrs = {
-            "_hx-get": URL("dbadmin_grid", app, dbname, tablename),
-            "_hx-target": "#panel",
-            "_class": "btn",
-        }
-        grid.param.new_sidecar = A("Cancel", **attrs)
-        grid.param.edit_sidecar = A("Cancel", **attrs)
+        grid.param.new_sidecar = A("Cancel")
+        grid.param.edit_sidecar = A("Cancel")
 
         grid.formatters_by_type["date"] = (
             lambda value: value.strftime("%m/%d/%Y") if value else ""
@@ -309,7 +291,7 @@ if MODE in ("demo", "readonly", "full"):
         )
 
         grid.formatters_by_type["datetime"] = (
-            lambda value: value.strftime("%m/%d/%Y %H:%M:%S") if value else ""
+            lambda value: value.isoformat() if value else ""
         )
 
         grid.formatters_by_type["boolean"] = (
@@ -320,7 +302,15 @@ if MODE in ("demo", "readonly", "full"):
 
         grid.process()
 
-        return dict(grid=grid)
+        languages = dumps(getattr(T.local, "language", {}))
+        return dict(
+            grid=grid,
+            error=None,
+            languages=languages,
+            app=app,
+            dbname=dbname,
+            tablename=tablename,
+        )
 
     @action("info")
     @session_secured

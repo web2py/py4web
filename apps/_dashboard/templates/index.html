@@ -124,7 +124,7 @@
                         <tbody v-for="db in databases">
                             <tr v-for="table in db.tables">
                                 <td width="10%">
-                                    <button style="width:100%" v-bind:onclick="'window.open(\'[[=URL('dbadmin')]]?app='+selected_app.name+'&dbname='+db.name+'&tablename='+table.name+'\')'" target="dbadmin">{{db.name}}.{{table.name}}</button>
+                                    <button style="width:100%" v-bind:onclick="'window.open(\'[[=URL('dbadmin')]]/'+selected_app.name+'/'+db.name+'/'+table.name+'\')'" target="dbadmin">{{db.name}}.{{table.name}}</button>
                                 </td>
                                 <td style="padding-top:9px">
                                     <span v-for="name in table.fields" class="tag">{{name}}</span>

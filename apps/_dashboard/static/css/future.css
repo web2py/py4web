@@ -15,6 +15,9 @@ html {
 p {
    margin-bottom: 10px;
 }
+a, a:hover, a:visited {
+   text-decoration: none !important;
+}
 .logo {
    padding: 18px;
    font-size: 64px;
@@ -47,6 +50,9 @@ th {
    background-color: #d1d1d1;
    width: 1%;
 }
+th a, th a:hover, th a:visited {
+   color: black;
+}      
 td.middle {
    vertical-align: middle;
 }
