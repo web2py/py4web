@@ -15,12 +15,13 @@
       </div>
       <div style="padding: 10px" class="my-effects">
         [[if error:]]
-          <div>
-            <p class="error"> An error has occured, please make sure that the query parameters: "app", "dbname", and "tablename" are all filled out.</p>
-          </div>
-        [[else:]]
-	  [[=grid.render()]]
+        <div>
+          <p class="error">Query Error: [[=error]]</p>
+        </div>
         [[pass]]
+	<div style="width:100%; overflow-x: auto">
+	  [[=grid.render()]]
+	</div>
       </div>
     </div>
   </body>

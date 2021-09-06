@@ -281,31 +281,16 @@ if MODE in ("demo", "readonly", "full"):
 
         grid.param.new_sidecar = A("Cancel")
         grid.param.edit_sidecar = A("Cancel")
-
-        grid.formatters_by_type["date"] = (
-            lambda value: value.strftime("%m/%d/%Y") if value else ""
-        )
-
-        grid.formatters_by_type["time"] = (
-            lambda value: value.strftime("%H:%M:%S") if value else ""
-        )
-
-        grid.formatters_by_type["datetime"] = (
-            lambda value: value.isoformat() if value else ""
-        )
-
-        grid.formatters_by_type["boolean"] = (
-            lambda value: INPUT(_type="checkbox", _checked=value, _disabled="disabled")
-            if isinstance(value, bool)
-            else ""
-        )
-
-        grid.process()
-
+        try:
+            grid.process()
+            error = None
+        except Exception as err:
+            error = err
         languages = dumps(getattr(T.local, "language", {}))
+
         return dict(
             grid=grid,
-            error=None,
+            error=error,
             languages=languages,
             app=app,
             dbname=dbname,
