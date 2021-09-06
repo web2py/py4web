@@ -326,7 +326,7 @@ class Fixture:
     def _safe_local(self):
         try:
             ret = self.__request_master_ctx__.request_ctx[self]
-        except KeyError as err:
+        except (KeyError, AttributeError) as err:
             msg = 'py4web hint: check @action.uses() for the missing fixture {}'.format(self)
             raise RuntimeError(msg) from err
         return ret
