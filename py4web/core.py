@@ -1265,9 +1265,10 @@ class Reloader:
                     module = importlib.machinery.SourceFileLoader(
                         module_name, init
                     ).load_module()
-                load_mess_buff = load_module_stdout.getvalue()
-                if len( load_mess_buff ):
-                     click.echo (load_mess_buff)
+                load_module_message = load_module_stdout.getvalue()
+                if len( load_module_message ):
+                     click.secho("\x1b[A    stdout %s     " % app_name, fg="yellow")
+                     click.echo (load_module_message)
 
                 click.secho("\x1b[A[X] loaded %s       " % app_name, fg="green")
                 Reloader.MODULES[app_name] = module
