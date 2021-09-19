@@ -20,6 +20,7 @@ from .core import (
 
 from .fixtures import (
     Template,
+    Session,
 )
 
 __all__ = (
@@ -38,6 +39,7 @@ __all__ = (
     'Cache',
 
     'Template',
+    'Session',
 
     'HTTP',
     'P4WException',

@@ -1,5 +1,6 @@
 import sys
 import os
+from types import SimpleNamespace
 import click
 import uuid
 import zipfile
@@ -29,6 +30,9 @@ class DefaultConfig(SimpleConfig):
 
     dashboard_mode = 'full'
     watch = 'lazy'
+
+
+current_config: DefaultConfig = SimpleNamespace()
 
 
 def install_args(kwargs, reinstall_apps=False):
@@ -82,6 +86,8 @@ def install_args(kwargs, reinstall_apps=False):
     error_logger.initialize()
     if reinstall_apps:
         reinstall_apps(apps_folder, yes)
+
+    current_config.__dict__.update(config.__dict__)
 
 
 def reinstall_apps(apps_folder, confirmed):
