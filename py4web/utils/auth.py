@@ -214,7 +214,6 @@ class Auth(Fixture):
         self.__prerequisites__.append(self.flash)
 
         self.onsuccess = {}
-        self.next = {}
 
         self.db = db
         self.session = session
@@ -1139,7 +1138,7 @@ class DefaultAuthForms:
             formstyle=self.formstyle,
         )
         user = None
-        self.auth.next["login"] = request.query.get("next")
+        self.auth.session["_next_login"] = request.query.get("next")
         if form.submitted:
             user, error = self.auth.login(
                 form.vars.get("username", ""), form.vars.get("login_password", "")
@@ -1328,4 +1327,4 @@ class DefaultAuthForms:
 
     def _postprocessing(self, action, form=None, user=None):
         if not form or form.accepted:
-            redirect(self.auth.next.get(action) or URL("index"))
+            redirect(self.auth.session.get(f"_next_{action}") or URL("index"))
