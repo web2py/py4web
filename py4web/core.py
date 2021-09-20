@@ -32,6 +32,9 @@ import types
 import urllib.parse
 import uuid
 import zipfile
+import io
+from contextlib import redirect_stdout
+
 
 from watchgod import awatch
 
@@ -1256,9 +1259,17 @@ class Reloader:
                     # forget the module
                     del Reloader.MODULES[app_name]
                     clear_modules()
-                module = importlib.machinery.SourceFileLoader(
-                    module_name, init
-                ).load_module()
+
+                load_module_stdout = io.StringIO()
+                with redirect_stdout(load_module_stdout):
+                    module = importlib.machinery.SourceFileLoader(
+                        module_name, init
+                    ).load_module()
+                load_module_message = load_module_stdout.getvalue()
+                if len( load_module_message ):
+                     click.secho("\x1b[A    stdout %s       " % app_name, fg="yellow")
+                     click.echo (load_module_message)
+
                 click.secho("\x1b[A[X] loaded %s       " % app_name, fg="green")
                 Reloader.MODULES[app_name] = module
                 Reloader.ERRORS[app_name] = None
