@@ -61,6 +61,7 @@ formstyle
 fullname
 gae
 GCloud
+gevent
 Gevent
 GiB
 github
@@ -110,6 +111,7 @@ mailto
 Makefile
 maxsize
 md
+memcache
 Memcache
 memoize
 Memoize
