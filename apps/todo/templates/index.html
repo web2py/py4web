@@ -1,0 +1,43 @@
+[[extend "layout.html"]]
+[[
+# notice [[... are yatl tags and they contain pure python code, rendered server side
+# while  {{... are vue tags and they contain vue/js code, rendered client side
+]]
+<section class="section" id="vue">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-half">
+        <div class="notification is-primary">
+          You have been here [[= session.get('counter') ]] times
+        </div>
+      </div>
+      <div class="column is-half">
+        <div class="notification is-info">
+          There are {{ items.length }} todo items
+        </div>
+      </div>
+    </div>          
+    <div class="columns">
+      <div class="column is-three-quarters">
+        <textarea class="textarea" v-model="input" placeholder="something todo?"></textarea>
+      </div>
+      <div class="column">
+        <button class="button is-primary" v-on:click="save()">
+          <i class="fa fa-plus"></i>&nbsp;Add
+        </button>
+      </div>
+    </div>
+    <table class="table" style="width:100%">
+      <tr v-for="item in items">
+        <td width="100%">{{item.info}}</td>
+        <td>
+          <button class="button" v-on:click="remove(item.id)">
+            <i class="fa fa-trash"></i>&nbsp;Done!
+          </button>
+        </td>
+      </tr>
+      <tr>
+    </table>
+  </div>
+</section>
+
