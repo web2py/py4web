@@ -72,22 +72,28 @@ class Reloader:
 
         if os.path.isdir(path) and not path.endswith("__") and os.path.exists(init):
             module_name = f"apps.{app_name}"
-
+            is_loaded = False
             try:
                 module = cls.MODULES.get(app_name)
                 if not module:
-                    click.echo(f"[ ] loading {app_name} ...")
+                    if module_name in sys.modules:
+                        is_loaded = True
+                        click.secho(f"[X] already loaded {app_name}       ", fg="green")
+                    else:
+                        click.echo(f"[ ] loading {app_name} ...")
                 else:
                     click.echo(f"[ ] reloading {app_name} ...")
                     # forget the module
                     del cls.MODULES[app_name]
                     _clear_modules(module_name)
-                module = importlib.machinery.SourceFileLoader(
-                    module_name, init
-                ).load_module()
-                click.secho(f"\x1b[A[X] loaded {app_name}       ", fg="green")
-                cls.MODULES[app_name] = module
-                cls.ERRORS[app_name] = None
+
+                if not is_loaded:
+                    module = importlib.machinery.SourceFileLoader(
+                        module_name, init
+                    ).load_module()
+                    click.secho(f"\x1b[A[X] loaded {app_name}       ", fg="green")
+                    cls.MODULES[app_name] = module
+                    cls.ERRORS[app_name] = None
             except Exception as err:
                 cls.ERRORS[app_name] = traceback.format_exc()
                 error_logger.log(
