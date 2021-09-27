@@ -1,38 +1,15 @@
 import sys
 import os
-from types import SimpleNamespace
 import click
 import uuid
 import zipfile
 
-from ombott import SimpleConfig
-
+from .globs import current_config, DefaultConfig
 from .loggers import error_logger
 from .utils import MetaPathRouter
 
 
 _ASSETS_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), "../assets"))
-
-
-@SimpleConfig.keys_holder
-class DefaultConfig(SimpleConfig):
-    apps_folder = 'apps'
-    service_folder = ".service"
-    service_db_uri = "sqlite://service.storage"
-    password_file = 'password.txt'
-    session_secret = None
-
-    host = '127.0.0.1'
-    port = 8000
-    server = 'default'
-    ssl_cert = None
-    number_workers = 0
-
-    dashboard_mode = 'full'
-    watch = 'lazy'
-
-
-current_config: DefaultConfig = SimpleNamespace()
 
 
 def install_args(kwargs, reinstall_apps=False):

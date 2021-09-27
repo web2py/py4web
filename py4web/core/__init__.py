@@ -7,10 +7,10 @@ from ._core import (
     reload_apps,
     wsgi,
     BaseAction,
+    App,
 )
 
 from .utils import (
-    URL,
     redirect,
     Cache,
 )
@@ -33,6 +33,7 @@ __all__ = (
     'reload_apps',
     'wsgi',
     'BaseAction',
+    'App',
 
     'URL',
     'redirect',

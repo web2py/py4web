@@ -1,4 +1,5 @@
 import sys
+import re
 from .core import (
     request,
     response,
@@ -9,8 +10,8 @@ from .core import (
     reload_apps,
     wsgi,
     BaseAction,
+    App,
 
-    URL,
     redirect,
     Cache,
 
@@ -21,7 +22,13 @@ from .core import (
 from .fixtures import (
     Template,
     Session,
+    DAL,
 )
+from .app_methods import (
+    URL
+)
+
+from pydal import Field
 
 __all__ = (
     'request',
@@ -33,6 +40,7 @@ __all__ = (
     'reload_apps',
     'wsgi',
     'Action',
+    'App',
 
     'URL',
     'redirect',
@@ -40,6 +48,8 @@ __all__ = (
 
     'Template',
     'Session',
+    'DAL',
+    'Field',
 
     'HTTP',
     'P4WException',
@@ -65,6 +75,40 @@ class Action(BaseAction):
             Template(f) if isinstance(f, str) else f
             for f in fixtures
         ]
+
+    def _parse_action_args(self, args, kw):
+        # ('index', 'GET') - path ='index'
+        # (':index', 'GET') - get path from route_map[`index`], name = index, if not passed: is not mounted
+        # ('home: pages/home', 'index', 'GET') - name = home, path = pages/home
+        # (':home: pages/home', 'index', 'GET') - get path from route_map[`home`], if not passed: path ='pages/home', name = home,
+        # (':home:name:pages/home', 'index', 'GET') - get path from route_map[`home`], if not passed: path ='pages/home', name = home,
+
+        path_, name, prop, kw = args[0], None, None, kw
+        method = kw.get('method')
+
+        path = path_
+        prop = re.match(r':(\w+):?', path)
+        if prop:
+            path = path[prop.end():]
+            prop = prop.group(1)
+        name = re.match(r'(\w+):', path)
+        if name:
+            path = path[name.end():]
+            name = name.group(1)
+        path = path.strip()
+        if name and not (path or prop):
+            raise RuntimeError(f'Invalid route: {path_}')
+
+        args = args[1:]
+        if args:
+            if method:
+                raise TypeError(f'Got 2 values for method: {args}, {method}')
+            method = args[0]
+            args = args[1:]
+        if args:
+            raise TypeError(f'Unexpected args: {args}')
+        method = method or 'GET'
+        return path, method, name, prop, kw
 
 
 '''

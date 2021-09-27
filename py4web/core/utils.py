@@ -6,8 +6,13 @@ import importlib
 import threading
 import functools
 import time
+import numbers
+import datetime
+import enum
+import types
+import json
 
-from .globs import request, response
+from .globs import response
 from .exceptions import HTTP
 
 url_quote = urllib.parse.quote
@@ -18,84 +23,6 @@ def redirect(location):
     it is considered a success, not failure"""
     response.headers["Location"] = location
     raise HTTP(303)
-
-
-def URL(
-    *parts,
-    vars=None,
-    hash=None,
-    scheme=False,
-    signer=None,
-    use_appname=None,
-    static_version=None,
-):
-    """
-    Examples:
-    URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name?}/a/b?x=1#y
-    URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name?}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme=True)    -> http://{domain}/{script_name?}/{app_name?}/a/b?x=1
-    URL('a','b',vars=dict(x=1),scheme='https') -> https://{domain}/{script_name?}/{app_name?}/a/b?x=1
-    URL('a','b',vars=dict(x=1),use_appname=False) -> /{script_name?}/a/b?x=1
-    """
-
-    env = request.environ
-
-    if use_appname is None:
-        # force use_appname on domain-unmapped apps
-        use_appname = not env.get("HTTP_X_PY4WEB_APPNAME")
-    if use_appname:
-        # app_name is not set by py4web shell
-        app_name = getattr(request, "app_name", None)
-    has_appname = use_appname and app_name
-    script_name = (
-        env.get("SCRIPT_NAME", "")
-        or env.get("HTTP_X_SCRIPT_NAME", "")
-    ).rstrip("/")
-    if parts and parts[0].startswith("/"):
-        prefix = ""
-    elif has_appname and app_name != "_default":
-        prefix = f"{script_name}/{app_name}/"
-    else:
-        prefix = f"{script_name}/"
-    broken_parts = []
-    [broken_parts.extend(str(part).rstrip("/").split("/")) for part in parts]
-    if static_version != "" and broken_parts and broken_parts[0] == "static":
-        if not static_version:
-            # try to retrieve from __init__.py
-            app_module = f"apps.{app_name}" if has_appname else "apps"
-            try:
-                static_version = getattr(
-                    sys.modules[app_module], "__static_version__", None
-                )
-            except KeyError:
-                static_version = None
-        if static_version:
-            broken_parts.insert(1, f"_{static_version}")
-
-    url = prefix + "/".join(url_quote(p) for p in broken_parts)
-    # Signs the URL if required.  Copy vars into urlvars not to modify it.
-    urlvars = dict(vars) if vars else {}
-    if signer:
-        # Note that we need to sign the non-urlencoded URL, since
-        # at verification time, it will be already URLdecoded.
-        signer.sign(prefix + "/".join(broken_parts), urlvars)
-    if urlvars:
-        url += "?" + "&".join(
-            f"{k}={url_quote(str(v))}" for k, v in urlvars.items()
-        )
-    if hash:
-        url += f"#{hash}"
-    if scheme is not False:
-        original_url = env.get("HTTP_ORIGIN") or request.url
-        orig_scheme, _, domain = original_url.split("/", 3)[:3]
-        if scheme is True:
-            scheme = orig_scheme
-        elif scheme is None:
-            scheme = ""
-        else:
-            scheme += ':'
-        url = f'{scheme}//{domain}{url}'
-    return url
 
 
 class MetaPathRouter:
@@ -245,3 +172,41 @@ class Cache:
             return memoized_func
 
         return decorator
+
+
+#########################################################################################
+# A Better JSON Serializer
+#########################################################################################
+
+
+def objectify(obj):
+    """converts the obj(ect) into a json serializable object"""
+    if isinstance(obj, numbers.Integral):
+        return int(obj)
+    elif isinstance(obj, (numbers.Rational, numbers.Real)):
+        return float(obj)
+    elif isinstance(obj, (datetime.date, datetime.datetime, datetime.time)):
+        return obj.isoformat().replace("T", " ")
+    elif isinstance(obj, (str, dict)):
+        return obj
+    elif isinstance(obj, enum.Enum):  # Enum class handled specially to address self reference in __dict__
+        return dict(name=obj.name, value=obj.value, __class__=obj.__class__.__name__)
+    else:
+        jsonable_meth = (
+            getattr(obj, "as_list", None) or  # noqa
+            getattr(obj, "as_dict", None) or  # noqa
+            getattr(obj, "xml", None)
+        )
+        if jsonable_meth:
+            return jsonable_meth()
+        elif hasattr(obj, "__iter__") or isinstance(obj, types.GeneratorType):
+            return list(obj)
+        elif hasattr(obj, "__dict__") and hasattr(obj, "__class__"):
+            d = dict(obj.__dict__)
+            d["__class__"] = obj.__class__.__name__
+            return d
+    return str(obj)
+
+
+def dumps(obj, sort_keys=True, indent=2, ensure_ascii=False):
+    return json.dumps(obj, default=objectify, sort_keys=sort_keys, indent=indent, ensure_ascii=ensure_ascii)

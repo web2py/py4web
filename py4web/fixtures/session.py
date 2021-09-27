@@ -5,7 +5,7 @@ import jwt
 import time
 
 from omfitt import BaseFixture
-from ..core.install import current_config
+from ..core.globs import current_config
 
 
 class Session(BaseFixture):
@@ -41,6 +41,14 @@ class Session(BaseFixture):
         if hasattr(storage, "__prerequisites__"):
             self.__prerequisites__ = storage.__prerequisites__
 
+    def take_on(self, app_ctx, route_ctx):
+        self.load(app_ctx, route_ctx)
+        route_ctx.provide('session', self)
+
+    def on_finalize(self, app_ctx, route_ctx):
+        if self._safe_local.changed:
+            self.save()
+
     def initialize(self, request, response, app_name="unknown", data=None, changed=False, secure=False):
         local = self._safe_local = SimpleNamespace()
         local.request = request
@@ -55,7 +63,7 @@ class Session(BaseFixture):
         self.initialize(
             request=request,
             response=route_ctx.response,
-            app_name=app_ctx['app_name'],
+            app_name=app_ctx.app_name,
             changed=False,
             secure=request.url.startswith("https"),  # FIXME
         )
@@ -146,10 +154,3 @@ class Session(BaseFixture):
         local.data.clear()
         local.data["uuid"] = str(uuid.uuid1())
         local.data["secure"] = local.secure
-
-    def take_on(self, app_ctx, route_ctx):
-        self.load(app_ctx, route_ctx)
-
-    def on_finalize(self, app_ctx, route_ctx):
-        if self._safe_local.changed:
-            self.save()
