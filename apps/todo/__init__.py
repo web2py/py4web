@@ -59,18 +59,18 @@ def index():
 
 # example of GET/POST/DELETE RESTful APIs
 
-@action("api:api")  # a GET API function
+@action("api:api")  # a GET API function  api:api == route_name:rule
 @action.uses(*requires_user)
 def todo():
     db = shop.db
     return dict(items=db(db.todo).select(orderby=~db.todo.id).as_list())
 
 
-@action("api", method="POST")
+@action("$api", method="POST")  # $api reference named route 'api'
 @action.uses(*requires_user)
-def todo_post(ctx=Ctx()):
+def todo_post():
     db = shop.db
-    return dict(id=db.todo.insert(info=ctx.request.json.get("info")))
+    return dict(id=db.todo.insert(info=app.request.json.get("info")))
 
 
 @action("api/<id:int>", method="DELETE")

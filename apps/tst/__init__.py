@@ -24,9 +24,6 @@ app = App(action, str(Path(__file__).parent))
 @action('index')
 @action.uses('index.html')
 def index():
-    # ctx.app_ctx
-    # ctx.request.method
-    # ctx.response.headers[...] = ...
     session = shop.session
     if 'counter' not in session:
         session['counter'] = 1
@@ -42,7 +39,3 @@ todo_app._action.fitter.shop.fixtures.db = db
 
 ctx = app.mount('tst')
 todo_app.mount('todo', ctx, base_url='todo')
-
-
-#todo_app.shop.fixtures.db = db
-#todo_app.mount(__name__, app_ctx=dict(base_url = 'todo'))

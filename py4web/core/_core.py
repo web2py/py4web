@@ -134,18 +134,24 @@ class App(BaseApp):
     def _mount_route(self, ctx: BaseCtx, fun, route_args):
         path, method, name, prop, kw = route_args
         is_index = False
-        if prop:
-            path = ctx.route_map.get(prop, path)
-        if not path:
+        if name and name[0] == '$':
+            name = name[1:]
+            route = ctx.named_routes[name]
+            route.add_method(method, fun)
             return
-        if path[0] != '/':
-            is_index = path == 'index'
-            path = '/' + '/'.join(p for p in (ctx.root.name, ctx.base_url, path) if p)
-        full_name = None
-        if not name and prop:
-            name = prop
-        if name:
-            full_name = f'{".".join(c.name for c in ctx.mount_stack)}.{name}'
+        else:
+            if prop:
+                path = ctx.route_map.get(prop, path)
+            if not path:
+                return
+            if path[0] != '/':
+                is_index = path == 'index'
+                path = '/' + '/'.join(p for p in (ctx.root.name, ctx.base_url, path) if p)
+            full_name = None
+            if not name and prop:
+                name = prop
+            if name:
+                full_name = f'{".".join(c.name for c in ctx.mount_stack)}.{name}'
         route = globs.app.add_route(path, method, fun, full_name)
         ctx.routes.append(route)
         if is_index:

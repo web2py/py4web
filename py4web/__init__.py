@@ -82,22 +82,27 @@ class Action(BaseAction):
         # ('home: pages/home', 'index', 'GET') - name = home, path = pages/home
         # (':home: pages/home', 'index', 'GET') - get path from route_map[`home`], if not passed: path ='pages/home', name = home,
         # (':home:name:pages/home', 'index', 'GET') - get path from route_map[`home`], if not passed: path ='pages/home', name = home,
+        # ('$index', 'POST') - reference registered route by name index
 
         path_, name, prop, kw = args[0], None, None, kw
         method = kw.get('method')
 
         path = path_
-        prop = re.match(r':(\w+):?', path)
-        if prop:
-            path = path[prop.end():]
-            prop = prop.group(1)
-        name = re.match(r'(\w+):', path)
-        if name:
-            path = path[name.end():]
-            name = name.group(1)
-        path = path.strip()
-        if name and not (path or prop):
-            raise RuntimeError(f'Invalid route: {path_}')
+        ref_name = re.match(r'\$(\w+)$', path)
+        if ref_name:
+            path, name = None, path
+        else:
+            prop = re.match(r':(\w+):?', path)
+            if prop:
+                path = path[prop.end():]
+                prop = prop.group(1)
+            name = re.match(r'(\w+):', path)
+            if name:
+                path = path[name.end():]
+                name = name.group(1)
+            path = path.strip()
+            if name and not (path or prop):
+                raise RuntimeError(f'Invalid route: {path_}')
 
         args = args[1:]
         if args:
