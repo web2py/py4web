@@ -12,7 +12,7 @@ from omfitt import (
 )
 
 from . import globs
-from .globs import request
+from .globs import request, response
 from .core_events import core_event_bus, CoreEvents
 from .error_pages import error_page
 from .install import install_args
@@ -115,7 +115,6 @@ class BaseCtx(_BaseCtx):
         self.base_url = self.props.get('base_url', '')
         self.static_url = self.props.get('static_url', name)
         self.static_version = self.props.get('static_version', '0.0.1')
-        # {':login' : '/main/login'}
 
 
 class App(BaseApp):
@@ -162,14 +161,27 @@ class App(BaseApp):
                 raise KeyError('The route name already in use: {name}')
             ctx.named_routes[name] = route
 
+
     @property
     def request(self):
         return request
 
+    @property
+    def response(self):
+        return response
+
+    @property
+    def shop(self):
+        return self._action.fitter.shop
+
+    @property
+    def shops(self):
+        return self._action.fitter.shops
+
     def setup(self, app_ctx: BaseCtx, route_ctx):
         super().setup(app_ctx, route_ctx)
         route_ctx.request = request
-        route_ctx.response = globs.response
+        route_ctx.response = response
         route_ctx.provide('URL', self.URL)
 
 

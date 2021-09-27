@@ -1,6 +1,7 @@
 from py4web import Action, Session, DAL, Field, App
 from pathlib import Path
 from omfitt import FixtureShop
+from py4web.app_methods import URL as URLMeth
 
 from ..todo import app as todo_app
 
@@ -19,7 +20,9 @@ class shop:
 
 
 action = Action(shop)
-app = App(action, str(Path(__file__).parent))
+app = App(action, app_folder = str(Path(__file__).parent))
+app.URL = URLMeth(app)
+
 
 @action('index')
 @action.uses('index.html')
@@ -35,7 +38,11 @@ def index():
     )
 
 
-todo_app._action.fitter.shop.fixtures.db = db
+# replace db-fixture with our one
+todo_app.shop.fixtures.db = db
 
-ctx = app.mount('tst')
-todo_app.mount('todo', ctx, base_url='todo')
+# mount our app
+this_app_ctx = app.mount('tst')
+
+# mount todo-app as part of this app
+todo_app.mount('todo', this_app_ctx, base_url='todo')

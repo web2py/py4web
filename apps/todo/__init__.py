@@ -1,12 +1,10 @@
 from pathlib import Path
 from py4web import Action, DAL, Field, Session, Cache, abort, App
-from omfitt import FixtureShop, BaseFixture, RouteContext, Ctx, FixtureHolder
+from omfitt import FixtureShop, BaseFixture, RouteContext, FixtureHolder
 from py4web.core.utils import dumps
 from py4web.app_methods import URL as URLMeth
 
 APP_NAME = __name__.split('.')[-1]
-
-
 
 cache = Cache(size=1000)
 
@@ -34,6 +32,10 @@ class UserIn(BaseFixture):
             abort(401)
 
 
+
+# accessing the fixture as a shop attribute avoids
+# the need to declare the fixture in uses()
+# unless order matters or it is guard-fixture
 @FixtureShop.make_from
 class shop:
     db = FixtureHolder(db)
@@ -45,7 +47,8 @@ requires_user = [shop.session, shop.user_in]
 
 action = Action(shop, default_fixtures=([DefaultJson()], []))
 app = App(action, str(Path(__file__).parent))
-URL = app.URL = URLMeth(app)
+app.URL = URLMeth(app)
+
 
 # example index page using session, template and vue.js
 @action("index")  # the function below is exposed as a GET action
@@ -59,14 +62,16 @@ def index():
 
 # example of GET/POST/DELETE RESTful APIs
 
-@action("api:api")  # a GET API function  api:api == route_name:rule
+# named route: <route_name>:<rule>, e.g. home:path/to/home
+@action("api:api")  # a GET API function
 @action.uses(*requires_user)
 def todo():
     db = shop.db
     return dict(items=db(db.todo).select(orderby=~db.todo.id).as_list())
 
 
-@action("$api", method="POST")  # $api reference named route 'api'
+# reference named route 'api' by $<route_name>
+@action("$api", method="POST")
 @action.uses(*requires_user)
 def todo_post():
     db = shop.db
@@ -90,4 +95,5 @@ def uuid():
     return str(uuid.uuid4())
 
 
+# mount app
 app.mount(APP_NAME)
