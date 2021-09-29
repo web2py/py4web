@@ -20,7 +20,7 @@ class shop:
 
 
 action = Action(shop)
-app = App(action, app_folder = str(Path(__file__).parent))
+app = App(__name__, action)
 app.URL = URLMeth(app)
 
 

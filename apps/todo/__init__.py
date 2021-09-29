@@ -4,7 +4,6 @@ from omfitt import FixtureShop, BaseFixture, RouteContext, FixtureHolder
 from py4web.core.utils import dumps
 from py4web.app_methods import URL as URLMeth
 
-APP_NAME = __name__.split('.')[-1]
 
 cache = Cache(size=1000)
 
@@ -46,7 +45,7 @@ class shop:
 requires_user = [shop.session, shop.user_in]
 
 action = Action(shop, default_fixtures=([DefaultJson()], []))
-app = App(action, str(Path(__file__).parent))
+app = App(__name__, action)
 app.URL = URLMeth(app)
 
 
@@ -96,4 +95,4 @@ def uuid():
 
 
 # mount app
-app.mount(APP_NAME)
+app.mount()

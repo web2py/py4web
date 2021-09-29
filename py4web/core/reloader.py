@@ -5,7 +5,7 @@ import click
 import importlib
 import traceback
 
-from .globs import app, request, response, static_file
+from .globs import app, request
 from .loggers import error_logger, get_error_snapshot
 from .utils import module2filename
 
@@ -106,25 +106,6 @@ class Reloader:
                 # clear all files/submodules if the loading fails
                 _clear_modules(module_name)
                 return None
-
-        cls.expose_static(path)
-
-    @classmethod
-    def expose_static(cls, app_path):
-        path = app_path
-        static_folder = os.path.join(path, "static")
-        if not os.path.exists(static_folder):
-            return
-
-        app_name = path.split(os.path.sep)[-1]
-        prefix = "" if app_name == "_default" else ("/%s" % app_name)
-
-        @app.route(prefix + r"/static/<re((_\d+(\.\d+){2}/)?)><fp.path()>")
-        def server_static(fp, static_folder=static_folder):
-            filename = fp
-            response.headers.setdefault("Pragma", "cache")
-            response.headers.setdefault("Cache-Control", "private")
-            return static_file(filename, root=static_folder)
 
     @classmethod
     def register_routes(cls):

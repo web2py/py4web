@@ -14,8 +14,8 @@ class Counter(BaseFixture):
         ctx.provide('client', {app_ctx.name: self.cnt})
 
 
-app = App(Action(), os.path.dirname(__file__))
-ctx = app.mount('client')
+app = App(__name__, Action())
+ctx = app.mount()
 
 reusable_app.shop.fixtures.client_counter = Counter()
 reusable_app.mount('first', ctx, base_url='first')

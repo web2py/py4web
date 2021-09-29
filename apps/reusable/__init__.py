@@ -1,4 +1,3 @@
-import os
 from py4web import Action, App
 from omfitt import FixtureShop, BaseFixture, FixtureHolder
 
@@ -29,7 +28,7 @@ class shop:
 
 
 action = Action(shop)
-app = App(action, app_folder=os.path.dirname(__file__))
+app = App(__name__, action)
 
 
 @action("api/index")

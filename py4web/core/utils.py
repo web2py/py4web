@@ -11,6 +11,7 @@ import datetime
 import enum
 import types
 import json
+from types import SimpleNamespace
 
 from .globs import response
 from .exceptions import HTTP
@@ -210,3 +211,4 @@ def objectify(obj):
 
 def dumps(obj, sort_keys=True, indent=2, ensure_ascii=False):
     return json.dumps(obj, default=objectify, sort_keys=sort_keys, indent=indent, ensure_ascii=ensure_ascii)
+
