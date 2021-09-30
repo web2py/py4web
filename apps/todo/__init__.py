@@ -55,7 +55,7 @@ app.URL = URLMeth(app)
 def index():
     session = shop.session
     session["counter"] = session.get("counter", 0) + 1
-    session["user"] = {"id": 1}  # store a user in session
+    session["user"] = {"id": 4}  # store a user in session
     return dict(session=session)
 
 

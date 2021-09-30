@@ -28,7 +28,8 @@ class Template(BaseFixture):
         context = dict(
             _HELPERS,
             request=route_ctx.request,
-            URL=route_ctx.ask('URL')
+            URL=route_ctx.ask('URL'),
+            app=app_ctx.app
         )
         if shared_data:
             context.update(shared_data.get("template_context", {}))

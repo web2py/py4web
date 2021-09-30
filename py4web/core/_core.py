@@ -419,9 +419,11 @@ class App(BaseApp):
 
     def setup(self, app_ctx: BaseCtx, route_ctx):
         super().setup(app_ctx, route_ctx)
-        route_ctx.request = self.request
-        route_ctx.response = self.response
-        route_ctx.provide('URL', self.URL)
+        # when touched as child route_ctx is None
+        if route_ctx:
+            route_ctx.request = self.request
+            route_ctx.response = self.response
+            route_ctx.provide('URL', self.URL)
 
     def make_static_handler(self, folder):
         response = self.response
