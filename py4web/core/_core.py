@@ -52,7 +52,7 @@ def import_apps():
 
 @core_event_bus.on(CoreEvents.RELOAD_APPS)
 def reload_apps(*app_names):
-    [Reloader.import_app(app) for app in app_names]
+    Reloader.reimport_apps(*app_names)
     core_event_bus.emit(CoreEvents.APPS_LOADED)
 
 
@@ -309,13 +309,16 @@ class App(BaseApp):
 
     def get_all_clients(self, clients = None):
         ret = {}
-        for app in (clients or self._clients):
+        if clients is None:
+            clients = self._clients
+        for app in clients:
             ret[app] = True
             ret.update(self.get_all_clients(app._clients))
         return ret
 
     def _make_ctx(self, name, master_ctx, props):
-        self._clients.add(master_ctx and master_ctx.app)
+        if master_ctx:
+            self._clients.add(master_ctx.app)
         ctx_props = AppConfig()
         self.config_setter.apply(ctx_props, props)
         self.config_setter.extend(ctx_props, self.app_cfg)
@@ -345,30 +348,54 @@ class App(BaseApp):
             ctx_props[f] = pjoin(folder, ctx_props[f])
 
     def _get_abs_url(self, base_url, path):
+        if not path:
+            return base_url
         if path[0] != '/':
             path = f'{base_url}/{path}'
         return path
 
     def _mount_route(self, ctx: BaseCtx, fun, route_args):
         path, method, name, prop, kw = route_args
+        # name and not prop -> define named route
+        # name and prop -> define named route, redefine it with prop if passed
+        # prop -> define named route
+
         is_index = False
-        if name and name[0] == '$':
+        '''
+        if name:
             name = name[1:]
             route = ctx.named_routes[name]
             route.add_method(method, fun)
             return
-        else:
+        '''
+        if prop and (name is None) and path:
+            # ':prop:path/to/here'
+            name = prop
+
+        if name and path:
             if prop:
+                # redefine by config if passed
                 path = ctx.route_map.get(prop, path)
+        elif prop:
+            # if we're here path is None - this is reference
+            # try to get from config
+            path = ctx.route_map.get(prop)
+            # if not path
+            # try to find in named routes - it should be defined before reference
             if not path:
-                return
-            is_index = path == 'index'
-            path = self._get_abs_url(ctx.base_url, path)
-            full_name = None
-            if not name and prop:
-                name = prop
-            if name:
-                full_name = f'{".".join(c.name for c in ctx.mount_stack)}.{name}'
+                if prop in ctx.named_routes:
+                    ctx.named_routes[prop].add_method(method, fun)
+                    return
+                else:
+                    # we are currently unable to determine
+                    # if this route is required or optional.
+                    raise RuntimeError(f'Can`t find path/rule for route: {prop}')
+        is_index = path == 'index'
+        path = self._get_abs_url(ctx.base_url, path)
+        full_name = None
+        if name:
+            full_name = f'{".".join(c.name for c in ctx.mount_stack)}.{name}'
+
         route = self.add_route(path, method, fun, full_name)
         ctx.routes.append(route)
         if is_index:

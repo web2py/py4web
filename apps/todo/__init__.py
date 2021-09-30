@@ -69,8 +69,8 @@ def todo():
     return dict(items=db(db.todo).select(orderby=~db.todo.id).as_list())
 
 
-# reference named route 'api' by $<route_name>
-@action("$api", method="POST")
+# reference named route 'api' by :<route_name>
+@action(":api", method="POST")
 @action.uses(*requires_user)
 def todo_post():
     db = shop.db
