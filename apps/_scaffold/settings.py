@@ -25,18 +25,23 @@ STATIC_FOLDER = required_folder(APP_FOLDER, "static")
 # location where to store uploaded files:
 UPLOAD_FOLDER = required_folder(APP_FOLDER, "uploads")
 
-# send email on regstration
+# send verification email on registration
 VERIFY_EMAIL = True
 
 # account requires to be approved ?
 REQUIRES_APPROVAL = False
 
-# ALLOWED_ACTIONS:
-# ["all"] 
-# ["login", "logout", "request_reset_password", "reset_password", "change_password", "change_email", "update_profile"]
-# if you add "login", add also "logout"
-ALLOWED_ACTIONS = ["all"]
+# auto login after registration
+# requires False VERIFY_EMAIL & REQUIRES_APPROVAL 
+LOGIN_AFTER_REGISTRATION = False
 
+# ALLOWED_ACTIONS in API / default Forms:
+# ["all"] 
+# ["login", "logout", "request_reset_password", "reset_password", \
+#  "change_password", "change_email", "profile", "config", "register",
+#  "verify_email", "unsubscribe"]
+# Note: if you add "login", add also "logout"
+ALLOWED_ACTIONS = ["all"]
 
 # email settings
 SMTP_SSL = False

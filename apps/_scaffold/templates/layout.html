@@ -31,7 +31,9 @@
             </a>
             <ul>
               <li><a href="[[=URL('auth/profile')]]">Edit Profile</a></li>
-              <li><a href="[[=URL('auth/change_password')]]">Change Password</a></li>
+              [[if 'change_password' in globals().get('actions',{}).get('allowed_actions',{}):]]
+                <li><a href="[[=URL('auth/change_password')]]">Change Password</a></li>
+              [[pass]]
               <li><a href="[[=URL('auth/logout')]]">Logout</a></li>
             </ul>
           </li>
