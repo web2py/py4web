@@ -904,9 +904,8 @@ class Grid:
             if field_index < len(self.param.headings)
             else field.label
             if "label" in field.__dict__
-            else field.name
+            else title(field.name)
         )
-        heading = title(heading)
         #  add the sort order query parm
         sort_query_parms = dict(self.query_parms)
 
