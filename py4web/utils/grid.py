@@ -5,9 +5,9 @@
 import base64
 import copy
 import datetime
-from functools import reduce
 from urllib.parse import urlparse
 
+from pydal.objects import Field, FieldVirtual
 from yatl.helpers import (
     CAT,
     DIV,
@@ -20,7 +20,6 @@ from yatl.helpers import (
     SPAN,
     I,
     THEAD,
-    P,
     TAG,
     INPUT,
     XML,
@@ -28,8 +27,8 @@ from yatl.helpers import (
     SELECT,
     OPTION,
 )
-from pydal.objects import Field, FieldVirtual
-from py4web import request, URL, response, redirect, HTTP
+
+from py4web import request, URL, redirect, HTTP
 from py4web.utils.form import Form, FormStyleDefault, join_classes
 from py4web.utils.param import Param
 
