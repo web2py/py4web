@@ -56,7 +56,9 @@ class AuthEnforcer(Fixture):
         self.auth = auth
         self.condition = condition
 
-    def transform(self, output, shared_data):
+    def transform(self, output, shared_data = None):
+        if shared_data is None:
+            shared_data = {}
         return self.auth.transform(output, shared_data)
 
     def abort_or_redirect(self, page, message=""):
@@ -272,7 +274,7 @@ class Auth(Fixture):
         if action_name in self.param.allowed_actions:
             self.param.allowed_actions.remove(action_name)
         
-    def transform(self, output, shared_data):
+    def transform(self, output, shared_data = None):
         if self.inject:
             template_context = shared_data.get("template_context")
             template_context["user"] = self.get_user()

@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - ombott-dev
   pull_request:
     branches:
     - master

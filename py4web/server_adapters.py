@@ -1,11 +1,10 @@
 import logging
-from bottle import ServerAdapter
+from ombott.server_adapters import ServerAdapter
 
 try:
     from .utils.wsservers import *
 except ImportError:
     wsservers_list = []
-
 
 __all__ = [
     "geventWebSocketServer",
@@ -34,7 +33,6 @@ def geventWebSocketServer():
                 server.logger.addHandler(logging.StreamHandler())
 
             server.serve_forever()
-
     return GeventWebSocketServer
 
 

@@ -1,5 +1,5 @@
 wheel
-bottle >= 0.12
+ombott >= 0.0.7
 click
 colorama
 cryptography

@@ -2,7 +2,7 @@ import os
 import re
 import shutil
 import urllib
-from bottle import static_file
+from py4web.core import bottle
 from py4web import request, HTTP
 from pydal.exceptions import NotAuthorizedException, NotFoundException
 from pydal.helpers.regex import REGEX_UPLOAD_PATTERN
@@ -58,4 +58,4 @@ def downloader(db, path, filename, download_filename=None):
         download_filename = None
     elif not download_filename:
         download_filename = original_name
-    return static_file(filename, root=path, download=download_filename)
+    return bottle.static_file(filename, root=path, download=download_filename)
