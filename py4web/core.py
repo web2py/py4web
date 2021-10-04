@@ -61,6 +61,7 @@ import renoir.writers
 
 
 bottle.DefaultConfig.max_memfile_size = 16 * 1024 * 1024
+bottle.DefaultConfig.app_name_header = "HTTP_X_PY4WEB_APPNAME"
 # apply DefaultConfig changes to default_app
 bottle.default_app().setup()
 
