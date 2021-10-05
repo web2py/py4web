@@ -28,11 +28,11 @@ class MainTest(unittest.TestCase):
             pass
 
         def handler(signum, frame):
-            raise MyException
+            raise KeyboardInterrupt
 
         signal.signal(signal.SIGALRM, handler)
         signal.alarm(10)
         try:
             run_cli()
-        except MyException:
+        except KeyboardInterrupt:
             pass
