@@ -23,6 +23,7 @@ import os
 import pathlib
 import platform
 import re
+import rocket3
 import signal
 import sys
 import threading
@@ -64,7 +65,6 @@ bottle.DefaultConfig.max_memfile_size = 16 * 1024 * 1024
 bottle.DefaultConfig.app_name_header = "HTTP_X_PY4WEB_APPNAME"
 # apply DefaultConfig changes to default_app
 bottle.default_app().setup()
-
 
 __all__ = [
     "render",
@@ -130,8 +130,6 @@ def _before_request(*args, **kw):
 
 
 bottle.default_app().add_hook("before_request", _before_request)
-
-
 
 
 def module2filename(module):
@@ -316,7 +314,9 @@ class Fixture:
         try:
             ret = self.__request_master_ctx__.request_ctx[self]
         except (KeyError, AttributeError) as err:
-            msg = 'py4web hint: check @action.uses() for the missing fixture {}'.format(self)
+            msg = "py4web hint: check @action.uses() for the missing fixture {}".format(
+                self
+            )
             raise RuntimeError(msg) from err
         return ret
 
@@ -498,6 +498,7 @@ class RenoirCustomEscapeAllWriter(RenoirXMLEscapeMixin, renoir.writers.EscapeAll
 
 class Renoir(renoir.Renoir):
     """Custom Renoir Engine that understands yatl helpers"""
+
     _writers = {
         renoir.constants.ESCAPES.common: RenoirCustomWriter,
         renoir.constants.ESCAPES.all: RenoirCustomEscapeAllWriter,
@@ -613,14 +614,15 @@ class Session(Fixture):
             secure=request.url.startswith("https"),
         )
         self_local = self.local
-        raw_token = (
-            request.get_cookie(self_local.session_cookie_name)
-            or request.query.get("_session_token")
-        )
+        raw_token = request.get_cookie(
+            self_local.session_cookie_name
+        ) or request.query.get("_session_token")
         if not raw_token and request.method in {"POST", "PUT", "DELETE", "PATCH"}:
             raw_token = (
-                request.forms and request.forms.get("_session_token")
-                or request.json and request.json.get("_session_token")
+                request.forms
+                and request.forms.get("_session_token")
+                or request.json
+                and request.json.get("_session_token")
             )
         if raw_token:
             token_data = raw_token.encode()
@@ -634,8 +636,8 @@ class Session(Fixture):
                         token_data, self.secret, algorithms=[self.algorithm]
                     )
                 if self.expiration is not None and self.storage is None:
-                    assert (
-                        self_local.data["timestamp"] > time.time() - int(self.expiration)
+                    assert self_local.data["timestamp"] > time.time() - int(
+                        self.expiration
                     )
                 assert self.get_data().get("secure") == self_local.secure
             except Exception:
@@ -1254,9 +1256,9 @@ class Reloader:
                         module_name, init
                     ).load_module()
                 load_module_message = load_module_stdout.getvalue()
-                if len( load_module_message ):
-                     click.secho("\x1b[A    stdout %s       " % app_name, fg="yellow")
-                     click.echo (load_module_message)
+                if len(load_module_message):
+                    click.secho("\x1b[A    stdout %s       " % app_name, fg="yellow")
+                    click.echo(load_module_message)
 
                 click.secho("\x1b[A[X] loaded %s       " % app_name, fg="green")
                 Reloader.MODULES[app_name] = module
@@ -1454,6 +1456,9 @@ def watch(apps_folder, server_config, mode="sync"):
             target=watch_folder_event_loop, args=(apps_folder,), daemon=True
         ).start()
     elif server_config["server"] == "tornado":
+        if server_config["platform"] == "windows" and sys.version_info >= (3, 8):
+            # see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on window
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         # tornado delegate to asyncio so we add a future into the event loop
         asyncio.ensure_future(watch_folder(apps_folder))
     elif server_config["server"].startswith("gevent"):
@@ -1466,7 +1471,7 @@ def watch(apps_folder, server_config, mode="sync"):
         Reloader.install_reloader_hook()
 
 
-def start_server(kwargs, ctrl_c_orig):
+def start_server(kwargs):
     host = kwargs["host"]
     port = int(kwargs["port"])
     apps_folder = kwargs["apps_folder"]
@@ -1478,27 +1483,28 @@ def start_server(kwargs, ctrl_c_orig):
         number_workers=number_workers,
     )
 
-    if server_config["server"]:
-        for e in ("rocket", "Twisted"):
-            if e in server_config["server"]:
-                signal.signal(signal.SIGINT, ctrl_c_orig)
-                break
-
     if not server_config["server"]:
-        if server_config["platform"] == "windows":
-            server_config["server"] = "tornado"
-            if sys.version_info >= (
-                3,
-                8,
-            ):  # see  https://bugs.python.org/issue37373 FIX: tornado/py3.8 on windows
-                asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-        elif number_workers <= 1:
-            server_config["server"] = "tornado"
+        if server_config["platform"] == "windows" or number_workers < 2:
+            server_config["server"] = "rocket"
         else:
             if not gunicorn:
                 logging.error("gunicorn not installed")
                 return
             server_config["server"] = "gunicorn"
+
+    # Catch interrupts like Ctrl-C if needed
+    if server_config["server"] not in ("rocket", "Twisted"):
+
+        signal.signal(
+            signal.SIGINT,
+            lambda signal, frame: click.echo(
+                "KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(
+                    signal
+                )
+            )
+            and sys.exit(0),
+        )
+
     params["server"] = server_config["server"]
     if params["server"] in server_adapters.__all__:
         params["server"] = getattr(server_adapters, params["server"])()
@@ -1645,14 +1651,6 @@ def wsgi(**kwargs):
 #########################################################################################
 # CLI
 #########################################################################################
-
-
-def keyboardInterruptHandler(signal, frame):
-    """Catch interrupts like Ctrl-C"""
-    click.echo(
-        "KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal)
-    )
-    sys.exit(0)
 
 
 @click.group(
@@ -1881,13 +1879,9 @@ def run(**kwargs):
                 % (kwargs["host"], kwargs["port"])
             )
 
-    # Catch interrupts like Ctrl-C
-    orig_ctrl_c_handler = signal.getsignal(signal.SIGINT)
-    signal.signal(signal.SIGINT, keyboardInterruptHandler)
-
     # Start
     Reloader.import_apps()
-    start_server(kwargs, orig_ctrl_c_handler)
+    start_server(kwargs)
 
 
 if __name__ == "__main__":
