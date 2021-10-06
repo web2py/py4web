@@ -3,6 +3,7 @@ ombott >= 0.0.7
 click
 colorama
 cryptography
+portalocker
 tornado
 renoir >= 1.4.0
 requests
