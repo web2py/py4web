@@ -310,6 +310,10 @@ class Fixture:
         cls.__request_master_ctx__.request_ctx[self] = storage
 
     @property
+    def _has_safe_local(self):
+        return self in self.__request_master_ctx__.request_ctx
+
+    @property
     def _safe_local(self):
         try:
             ret = self.__request_master_ctx__.request_ctx[self]
@@ -346,10 +350,19 @@ _REQUEST_HOOKS.before.add(Fixture.__init_request_ctx__)
 
 
 class Translator(pluralize.Translator, Fixture):
-    def on_request(self):
+    def setup(self):
+        if self._has_safe_local:
+            return
         self.select(request.headers.get("Accept-Language", "en"))
+        # translator has its own threading.local,
+        # so we only use _safe_local to check that on_request has been called
+        self._safe_local = True
+
+    def on_request(self):
+        self.setup()
 
     def on_success(self, status):
+        self.setup()
         response.headers["Content-Language"] = self.local.tag
 
 
