@@ -355,7 +355,7 @@ The scaffold app contains an example of a more complex action:
 
 
    @action('welcome', method='GET')
-   @action.uses('generic.html', session, db, T, auth.user)
+   @action.uses(session, db, T, auth.user, 'generic.html')
    def index():
        user = auth.get_user()
        message = T('Hello {first_name}'.format(**user))
