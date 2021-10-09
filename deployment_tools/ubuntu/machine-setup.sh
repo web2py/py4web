@@ -1,81 +1,133 @@
 #!/bin/bash
-echo "======================================="
-echo "Configuring IPv6 firewall"
-echo "======================================="
-ip6tables -P INPUT DROP
-ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+#
 
-echo "Starting IPv4 firewall"
-iptables -F
-iptables -X
-iptables -t nat -F
-iptables -t nat -X
-iptables -t mangle -F
-iptables -t mangle -X
- 
-#unlimited 
-iptables -A INPUT -i lo -j ACCEPT
-iptables -A OUTPUT -o lo -j ACCEPT
- 
-# DROP all incomming traffic
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
- 
-# Block sync
-iptables -A INPUT -p tcp ! --syn -m state --state NEW  -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Drop Sync"
-iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
- 
-# Block Fragments
-iptables -A INPUT -f  -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Fragments Packets"
-iptables -A INPUT -f -j DROP
- 
-# Block bad stuff
-iptables  -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
-iptables  -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
- 
-iptables  -A INPUT -p tcp --tcp-flags ALL NONE -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "NULL Packets"
-iptables  -A INPUT -p tcp --tcp-flags ALL NONE -j DROP # NULL packets
- 
-iptables  -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
- 
-iptables  -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "XMAS Packets"
-iptables  -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP #XMAS
- 
-iptables  -A INPUT -p tcp --tcp-flags FIN,ACK FIN -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Fin Packets Scan"
-iptables  -A INPUT -p tcp --tcp-flags FIN,ACK FIN -j DROP # FIN packet scans
- 
-iptables  -A INPUT -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
- 
-# Allow full outgoing connection but no incomming stuff
-iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -o eth0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
- 
-# Allow ssh 
-iptables -A INPUT -p tcp --destination-port 22 -j ACCEPT
- 
-# allow incomming ICMP ping pong stuff
-iptables -A INPUT -p icmp --icmp-type 8 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -p icmp --icmp-type 0 -m state --state ESTABLISHED,RELATED -j ACCEPT
- 
-# Allow port 53 tcp/udp (DNS Server)
-iptables -A INPUT -p udp --dport 53 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -p udp --sport 53 -m state --state ESTABLISHED,RELATED -j ACCEPT
- 
-iptables -A INPUT -p tcp --destination-port 53 -m state --state NEW,ESTABLISHED,RELATED  -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 53 -m state --state ESTABLISHED,RELATED -j ACCEPT
- 
-# Open port 80
-iptables -A INPUT -p tcp --destination-port 80 -j ACCEPT
-iptables -A INPUT -p tcp --destination-port 443 -j ACCEPT
-##### Add your rules below ######
- 
-##### END your rules ############
+# ========================================================================
+#   machine-setup.sh
+#
+# installation script for py4web on Ubuntu server
+#    see https://github.com/web2py/py4web/blob/master/docs/updateDocs.sh
+#
+#   tested with Ubuntu Server 20.04.03 LTS
+#
+# Usage:
+#       copy and run it in any directory with 'sudo ./machine-setup.sh'
+#       
+# ========================================================================
 
-# log everything else and drop
-iptables -A INPUT -j LOG
-iptables -A FORWARD -j LOG
-iptables -A INPUT -j DROP
+# Parameters:
+
+# python_bin is used to state your python version
+# by default python_bin=python3.8
+python_bin=python3.8
+
+# use_iptables is set to yes if
+# you want to setup linux firewall from scratch
+# allowing only ssh and http/https
+use_iptables=yes
+
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root or with sudo"
+  exit
+fi
+
+# iptables persistent configuration in Ubuntu >= 10.04 and Debian >= 6.0
+if [ $use_iptables = 'yes' ]
+then
+    echo "======================================="
+    echo "Configuring iptables firewall"
+    echo "======================================="
+
+    cat > iptables-py4web.sh <<EOF
+
+    ip6tables -P INPUT DROP
+    ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+    # Starting IPv4 firewall
+    iptables -F
+    iptables -X
+    iptables -t nat -F
+    iptables -t nat -X
+    iptables -t mangle -F
+    iptables -t mangle -X
+     
+    #unlimited loopback
+    iptables -A INPUT -i lo -j ACCEPT
+    iptables -A OUTPUT -o lo -j ACCEPT
+    
+    #unlimited output
+    iptables -P OUTPUT ACCEPT
+   
+    # Block sync
+    iptables -A INPUT -p tcp ! --syn -m state --state NEW  -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Drop Sync"
+    iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+     
+    # Block Fragments
+    iptables -A INPUT -f  -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Fragments Packets"
+    iptables -A INPUT -f -j DROP
+     
+    # Block bad stuff
+    iptables  -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
+    iptables  -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+     
+    iptables  -A INPUT -p tcp --tcp-flags ALL NONE -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "NULL Packets"
+    iptables  -A INPUT -p tcp --tcp-flags ALL NONE -j DROP # NULL packets
+     
+    iptables  -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+     
+    iptables  -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "XMAS Packets"
+    iptables  -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP #XMAS
+     
+    iptables  -A INPUT -p tcp --tcp-flags FIN,ACK FIN -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Fin Packets Scan"
+    iptables  -A INPUT -p tcp --tcp-flags FIN,ACK FIN -j DROP # FIN packet scans
+     
+    iptables  -A INPUT -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+     
+    # Allow established connections and outcoming stuff
+    iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+    iptables -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+     
+    # Allow ssh 
+    iptables -A INPUT -p tcp --destination-port 22 -j ACCEPT
+     
+    # allow incomming ICMP ping pong stuff
+    iptables -A INPUT -p icmp --icmp-type 8 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+    iptables -A OUTPUT -p icmp --icmp-type 0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+     
+    # Allow port 53 tcp/udp (DNS Server)
+    iptables -A INPUT -p udp --dport 53 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+    iptables -A OUTPUT -p udp --sport 53 -m state --state ESTABLISHED,RELATED -j ACCEPT
+     
+    iptables -A INPUT -p tcp --destination-port 53 -m state --state NEW,ESTABLISHED,RELATED  -j ACCEPT
+    iptables -A OUTPUT -p tcp --sport 53 -m state --state ESTABLISHED,RELATED -j ACCEPT
+     
+    # Open port 80
+    iptables -A INPUT -p tcp --destination-port 80 -j ACCEPT
+    iptables -A INPUT -p tcp --destination-port 443 -j ACCEPT
+    ##### Add your rules below ######
+     
+    ##### END your rules ############
+
+    # log everything else and drop it
+    iptables -A INPUT -j LOG
+    iptables -A FORWARD -j LOG
+    iptables -A INPUT -j DROP
+
+EOF
+
+    chmod +x iptables-py4web.sh
+    ./iptables-py4web.sh
+    
+    # make ipchain persistent on Ubuntu
+    echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
+    echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
+    sudo apt-get -y install iptables-persistent
+    sudo bash -c 'iptables-save > /etc/iptables/rules.v4'
+    sudo bash -c 'ip6tables-save > /etc/iptables/rules.v6'
+
+
+else
+    echo Skipping iptables
+fi
 
 echo "======================================="
 echo "Installing Packages"
@@ -90,13 +142,14 @@ apt-get -y install sendmail
 apt-get -y install fail2ban
 apt-get -y install supervisor
 apt-get -y install nginx
-apt-get -y install python3.7
-apt-get -y install python3.7-pip
-apt-get -y install python3.7-dev
+apt-get -y install ${python_bin}
+apt-get -y install python3-pip
+apt-get -y install ${python_bin}-dev
 apt-get -y install postgresql-client
 apt-get -y install postgresql-client-common
 apt-get -y install sendmail
 apt-get -y install redis-server
+
 
 echo "======================================="
 echo "Installing Python Packages for py4web"
@@ -111,27 +164,28 @@ psycopg2
 py4web
 EOF
 
-python3.7 -m pip install -r requirements-py4web.txt
+${python_bin} -m pip install -r requirements-py4web.txt
 
 if [ -f requirements.txt ]
 then
     echo "======================================="
     echo "Installing Packages for apps"
     echo "======================================="
-    python3.7 -m pip install -r requirements.txt
+    ${python_bin} -m pip install -r requirements.txt
 fi
 
 echo "======================================="
 echo "configuring database"
 echo "======================================="
-sudo -u postgres createuser default -P --interactive
+echo Postgres password
+sudo -u postgres createuser -s default -P --interactive
 sudo -u postgres createdb default
 
 if [ ! -f /home/www-data/py4web ]
 then
-    echo "======================================="
-    echo "creading missing folder"
-    echo "======================================="
+    echo "========================================="
+    echo "creating missing py4web folders and apps"
+    echo "========================================="
     mkdir -p /home/www-data/py4web
     py4web setup /home/www-data/py4web/apps
     chown -R www-data:www-data /home/www-data/py4web/apps
@@ -197,7 +251,8 @@ then
     echo "======================================="
     mkdir -p /etc/nginx/ssl
     pushd /etc/nginx/ssl
-    openssl genrsa 1024 > py4web.key
+    # a 2048 bit key is needed nowadays
+    openssl genrsa 2048 > py4web.key
     chmod 400 py4web.key
     openssl req -new -x509 -nodes -sha1 -days 1780 -key py4web.key > py4web.crt
     openssl x509 -noout -fingerprint -text < py4web.crt > py4web.info
@@ -217,7 +272,7 @@ LOGFILE="/var/log/${NAME}.log"
 DAEMON="/usr/local/bin/py4web"
 DAEMON_OPTS="run --password_file /home/www-data/py4web/password.txt /home/www-data/py4web/apps"
 START_OPTS="--start --background --make-pidfile --pidfile ${PIDFILE} --exec ${DAEMON} -- ${DAEMON_OPTS}"
-STOP_OPTS="--stop --pidfile ${PIDFILE}"
+STOP_OPTS="--stop --oknodo --pidfile ${PIDFILE}"
 
 test -x $DAEMON || exit 0
 set -e
@@ -239,7 +294,6 @@ restart|force-reload)
   start-stop-daemon $STOP_OPTS
   sleep 1
   start-stop-daemon $START_OPTS >> $LOGFILE
-  echo "$NAME."
   ;;
 *)
   N=/etc/init.d/$NAME
@@ -252,6 +306,8 @@ exit 0
 
 fi
 
+chmod +x /etc/init.d/py4web
+echo Enter the password for py4web Dashboard:
 py4web set_password --password_file=/home/www-data/py4web/password.txt
 /etc/init.d/py4web restart
 /etc/init.d/nginx restart
