@@ -385,7 +385,10 @@ to avoid unneded checks (but you will need to restart py4web for activating any 
     ``/apps`` folder only. Any modifications to the standard py4web programs will always require a full
     restart of the framework. 
 
-The default web server used is currently Tornado, but you can change this behaviour with the ``server`` option.
+The default web server used is currently rocketServer, but you can change this behaviour with the ``server`` option.
+`Rocket3 <https://github.com/web2py/rocket3>`__  is the multi-threaded web server used by web2py stripped of all the
+Python2 logic and dependencies.
+
 
 
 .. _set_password command option:
