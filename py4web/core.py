@@ -23,7 +23,6 @@ import os
 import pathlib
 import platform
 import re
-import rocket3
 import signal
 import sys
 import threading
@@ -930,8 +929,11 @@ class action:
     def __call__(self, func):
         """Building the decorator"""
         app_name = action.app_name
-        base_path = "" if app_name == "_default" else "/%s" % app_name
-        path = (base_path + "/" + self.path).rstrip("/")
+        if self.path[0] == '/':
+            path = self.path.rstrip("/")
+        else:
+            base_path = "" if app_name == "_default" else "/%s" % app_name
+            path = (base_path + "/" + self.path).rstrip("/")
         if func not in self.registered:
             func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
