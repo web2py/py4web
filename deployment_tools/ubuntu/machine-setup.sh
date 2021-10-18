@@ -25,7 +25,7 @@ python_bin=python3.8
 # allowing only ssh and http/https
 use_iptables=yes
 
-if [ "$EUID" -ne 0 ]
+if [ "$EUID" -ne 0 ] 2>/dev/null
   then echo "Please run as root or with sudo"
   exit
 fi
@@ -250,13 +250,15 @@ then
     echo "creating a self signed certificate"
     echo "======================================="
     mkdir -p /etc/nginx/ssl
-    pushd /etc/nginx/ssl
+    # pushd and popd do not work with sudo because it uses sh shell
+    oldpath=`pwd`
+    cd /etc/nginx/ssl
     # a 2048 bit key is needed nowadays
     openssl genrsa 2048 > py4web.key
     chmod 400 py4web.key
     openssl req -new -x509 -nodes -sha1 -days 1780 -key py4web.key > py4web.crt
     openssl x509 -noout -fingerprint -text < py4web.crt > py4web.info
-    popd
+    cd $oldpath
 fi
 
 if [ ! -f /etc/init.d/py4web ]
