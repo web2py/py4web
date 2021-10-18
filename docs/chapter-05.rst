@@ -33,14 +33,15 @@ simple commands in order to create a new empty **myapp** app:
 If you now restart py4web or
 press the “Reload Apps” in the Dashboard, py4web will find this module,
 import it, and recognize it as an app, simply because of its location.
-You can also run py4web in *watch* mode (see the :ref:`run command option`) for
-automatic reloading of the apps whenever it changes, which is very useful in a development environment.
-In this case, run py4web with a command like this:
+By default py4web runs in *lazy watch* mode (see the :ref:`run command option`)
+for automatic reloading of the apps whenever it changes, which is very useful
+in a development environment.
+In production or debugging environment, it's better to run py4web with a command like this:
 
 
 .. code:: bash
 
-    py4web run apps --watch sync
+    py4web run apps --watch off
 
  
 A py4web app is not required to do anything. It could just be a container for
@@ -363,7 +364,9 @@ The scaffold app contains an example of a more complex action:
 
 Notice the following:
 
--  ``request``, ``response``, ``abort`` are defined by Bottle
+-  ``request``, ``response``, ``abort`` are defined by Bottle, using
+   `ombott (One More BOTTle) <https://github.com/valq7711/ombott>`__,
+   which is a fast bottlepy spin-off.
 -  ``redirect`` and ``URL`` are similar to their web2py counterparts
 -  helpers (``A``, ``DIV``, ``SPAN``, ``IMG``, etc) must be imported
    from ``yatl.helpers`` . They work pretty much as in web2py
@@ -412,7 +415,7 @@ Watch for files change
 
 As described in the :ref:`run command option`, Py4web facilitates a
 development server’s setup by automatically reloads an app when its
-Python source files change (if run with the ``--watch`` option).
+Python source files change (by default).
 But in fact any other files inside an app can be watched by setting a
 handler function using the ``@app_watch_handler`` decorator.
 

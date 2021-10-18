@@ -63,9 +63,10 @@ for the selected app.
 
 The “Files” tab allows you to browse the folder that contains the
 selected app and edit any file that comprises the app. If you edit a
-file you must click on “Reload Apps” under the “Installed Applications”
-tab for the change to take effect (except if you use *watch* with the
-:ref:`run command option`).
+file by default it will be automatically reloaded at its first usage 
+(unless you've changed the *watch* option with the :ref:`run command option`; 
+in this case you must click on “Reload Apps” under the “Installed Applications”
+tab for the change to take effect).
 If an app fails to load, its corresponding button is displayed in red.
 Click on it to see the corresponding error.
 
