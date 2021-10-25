@@ -398,8 +398,8 @@ a starting point for testing and even developing full features new apps.
 It's better not to work directly on it: always create new apps copying it.
 You can do it in two ways:
 
--  using the command line: copy the whole apps/_dashboard folder to another one
-   (/apps/my_app for example). Then reload py4web and it will be automatically loaded.
+-  using the command line: copy the whole apps/_scaffold folder to another one
+   (apps/my_app for example). Then reload py4web and it will be automatically loaded.
 -  using the Dashboard: select the button ``Create/Upload App`` under the "Installed
    Applications" upper section. Just give the new app a name and check that "Scaffold"
    is selected as the source. 
