@@ -1497,7 +1497,7 @@ def start_server(kwargs):
             server_config["server"] = "gunicorn"
 
     # Catch interrupts like Ctrl-C if needed
-    if server_config["server"] not in ("rocket", "Twisted"):
+    if server_config["server"] not in ("rocket","wsgirefWsTwistedServer" ):
 
         signal.signal(
             signal.SIGINT,
@@ -1505,8 +1505,8 @@ def start_server(kwargs):
                 "KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(
                     signal
                 )
-            )
             and sys.exit(0),
+            )
         )
 
     params["server"] = server_config["server"]
