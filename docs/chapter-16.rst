@@ -2,8 +2,6 @@
 Advanced topics and examples
 ============================
 
-
-
 py4web and asyncio
 ------------------
 
