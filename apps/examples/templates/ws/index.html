@@ -4,7 +4,7 @@
   <title>WebSocket Echo Test</title>
 </head>
 <body>
-  <h3>tested with tornado, aiohttp  websocket-servers</h3>
+  <h3>tested with tornado, aiohttp, twisted  websocket-servers py4web/utils/wsservers.py.txt</h3>
   <p>for gevent-websocket servers, pls, use _websocket test-example</p>
   <p>original: <a href = "https://www.includehelp.com/python/how-to-implement-a-websocket-server-using-tornado.aspx">
       https://www.includehelp.com/python/how-to-implement-a-websocket-server-using-tornado.aspx
@@ -20,9 +20,9 @@
   
   <script>
     document.addEventListener("DOMContentLoaded", function(event) {
-	var msgs = document.getElementById("messages");
-	var input = document.getElementById("input");
-	var form = document.getElementById("myform");
+	const  msgs = document.getElementById("messages");
+	const input = document.getElementById("input");
+	const form = document.getElementById("myform");
         if (!window.WebSocket) {
             if (window.MozWebSocket) {
                 window.WebSocket = window.MozWebSocket;
@@ -30,7 +30,8 @@
                 msgs.innerHTML += "<li>Your browser doesn't support WebSockets.</li>";
             }
         }
-        ws = new WebSocket('ws://127.0.0.1:8000/');
+        ws = new WebSocket('[[= ws_url ]]');
+        //ws = new WebSocket('ws://127.0.0.1:8000/');
         ws.onopen = function(evt) {
             msgs.innerHTML += '<li>js: WebSocket connection opened.</li>';
         }
@@ -58,7 +59,7 @@
 		console.log('ws closed')
             ws.close();
 	});
-    });  
+  });  
     </script>
 </body>
 </html>

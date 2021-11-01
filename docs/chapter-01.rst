@@ -53,7 +53,9 @@ details if you come from web2py):
 -  PY4WEB, like web2py, can serve multiple applications concurrently, as
    long as the apps are submodules of the apps module.
 -  PY4WEB, unlike web2py, is based on bottlepy and in particular uses
-   the Bottle request object and the Bottle routing mechanism.
+   the Bottle request object and the Bottle routing mechanism. This is
+   achieved with `ombott (One More BOTTle) <https://github.com/valq7711/ombott>`__,
+   which is a fast bottlepy spin-off.
 -  PY4WEB, unlike web2py, does not create a new environment at every
    request. It introduces the concept of fixtures to explicitly declare
    which objects need to be (re)initialized when a new http request arrives

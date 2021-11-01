@@ -23,7 +23,6 @@ import os
 import pathlib
 import platform
 import re
-import rocket3
 import signal
 import sys
 import threading
@@ -167,6 +166,7 @@ def safely(func, exceptions=(Exception,), log=False, default=None):
 ########################################################################################
 # Implement a O(1) LRU cache and memoize with expiration and monitoring (using linked list)
 #########################################################################################
+
 
 class Node:
     def __init__(self, key=None, value=None, t=None, m=None, prev=None, next=None):
@@ -376,6 +376,7 @@ def thread_safe_pydal_patch():
         "readable",
         "writable",
         "default",
+        "label",
         "update",
         "requires",
         "widget",
@@ -906,7 +907,7 @@ class action:
             except HTTP as http:
                 response.status = http.status
                 ret = getattr(http, "body", "")
-                http_headers = getattr(http, 'headers', None)
+                http_headers = getattr(http, "headers", None)
                 if http_headers:
                     response.headers.update(http_headers)
                 return ret
@@ -930,13 +931,16 @@ class action:
     def __call__(self, func):
         """Building the decorator"""
         app_name = action.app_name
-        base_path = "" if app_name == "_default" else "/%s" % app_name
-        path = (base_path + "/" + self.path).rstrip("/")
+        if self.path[0] == "/":
+            path = self.path.rstrip("/")
+        else:
+            base_path = "" if app_name == "_default" else "/%s" % app_name
+            path = (base_path + "/" + self.path).rstrip("/")
         if func not in self.registered:
             func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
         if path.endswith("/index"):  # /index is always optional
-            func = bottle.route(path[:-6] or '/', **self.kwargs)(func)
+            func = bottle.route(path[:-6] or "/", **self.kwargs)(func)
         self.registered.add(func)
         return func
 
@@ -1194,10 +1198,10 @@ class Reloader:
         _REQUEST_HOOKS.before.add(hook)
 
     @staticmethod
-    def clear_routes(app_name=''):
-        if app_name and app_name[0] != '/':
-            app_name = '/' + app_name
-        routes = app_name + '/*'
+    def clear_routes(app_name=""):
+        if app_name and app_name[0] != "/":
+            app_name = "/" + app_name
+        routes = app_name + "/*"
         app = bottle.default_app()
         app.router.remove(routes)
         if app_name:
@@ -1314,10 +1318,10 @@ class Reloader:
 
 ERROR_PAGES = {
     "*": (
-        '<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} '
-        'h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} '
-        'a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} '
-        'a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head>'
+        "<html><head><style>body{color:white;text-align: center;background-color:[[=color]];font-family:serif} "
+        "h1{font-size:6em;margin:16vh 0 8vh 0} h2{font-size:2em;margin:8vh 0} "
+        "a{color:white;text-decoration:none;font-weight:bold;padding:10px 10px;border-radius:10px;border:2px solid #fff;transition: all .5s ease} "
+        "a:hover{background:rgba(0,0,0,0.1);padding:10px 30px}</style></head>"
         '<body><h1>[[=code]]</h1><h2>[[=message]]</h2>[[if button_text:]]<a href="[[=href]]">[[=button_text]]</a>[[pass]]</body></html>'
     ),
 }
@@ -1493,7 +1497,7 @@ def start_server(kwargs):
             server_config["server"] = "gunicorn"
 
     # Catch interrupts like Ctrl-C if needed
-    if server_config["server"] not in ("rocket", "Twisted"):
+    if server_config["server"] not in ("rocket","wsgirefWsTwistedServer" ):
 
         signal.signal(
             signal.SIGINT,
@@ -1501,8 +1505,8 @@ def start_server(kwargs):
                 "KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(
                     signal
                 )
-            )
             and sys.exit(0),
+            )
         )
 
     params["server"] = server_config["server"]

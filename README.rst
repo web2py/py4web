@@ -52,7 +52,7 @@ The **simplest way** to install py4web is using binaries, but it's only availabl
 
 
 
-The **standard installation procedure** for py4web on Windows, MacOS and Linux  is using pip. Its only prerequisite is Python 3.6+.
+The **standard installation procedure** for py4web on Windows, MacOS and Linux  is using pip. Its only prerequisite is Python 3.7+.
 
 .. code:: bash
 
@@ -124,13 +124,14 @@ Tell me more
 ############
 
 - it is 10-20x faster than web2py
-- python3.6+ only
+- python3.7+ only
 - uses https://github.com/web2py/pydal (same DAL as web2py) for database connection
 - uses the same validators as web2py (they are in pyDAL)
 - uses `yatl <https://pypi.org/project/yatl/>`__ (same as web2py but defaults to [[...]] instead of {{...}} delimiters) and `Renoir <https://pypi.org/project/renoir/>`__ for html templates
 - uses the very similar html helpers to web2py (A, DIV, SPAN, etc.)
 - uses https://github.com/web2py/pluralize for i18n and pluralization
-- request, response, abort are from https://bottlepy.org
+- request, response, abort are from https://bottlepy.org, using `ombott (One More BOTTle) <https://github.com/valq7711/ombott>`__,
+  which is a fast bottlepy spin-off
 - HTTP and redirect are our own objects
 - like web2py, it supports static asset management /{appname}/static/_0.0.0/{path}
 - implements sessions in cookies (jwt encrypted), db, memcache, redis and custom
