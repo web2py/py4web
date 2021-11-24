@@ -84,9 +84,9 @@ USE_PAM = False
 # enable LDAP
 USE_LDAP = False
 LDAP_SETTINGS = {
-    "mode": "ad",
-    "server": "my.domain.controller",
-    "base_dn": "ou=Users,dc=domain,dc=com",
+    "mode": "ad",  # Microsoft Active Directory
+    "server": "mydc.domain.com", # FQDN or IP of one Domain Controller
+    "base_dn": "cn=Users,dc=domain,dc=com", # base dn, i.e. where the users are located
 }
 
 # i18n settings
