@@ -376,7 +376,7 @@ This currently gives an error on binaries installations and from source installa
 By default py4web will automatically reload an application upon any changes to the python files of that application.
 The reloading will occur on any first incoming request to the application that has
 been changed (lazy-mode). If you prefer an immediate reloading (sync-mode), use
-``py4web run --watch=sync``. For production servers, it's better to use ``py4web run --watch=off`` in order
+``py4web run --watch sync``. For production servers, it's better to use ``py4web run --watch off`` in order
 to avoid unneded checks (but you will need to restart py4web for activating any change).
 
 
