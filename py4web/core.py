@@ -98,6 +98,8 @@ DEFAULTS = dict(
 
 HELPERS = {name: getattr(yatl.helpers, name) for name in yatl.helpers.__all__}
 
+_DEFAULT_APP_ROOTS = set()
+
 ART = r"""
 ██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗
 ██╔══██╗╚██╗ ██╔╝██║  ██║██║    ██║██╔════╝██╔══██╗
@@ -934,8 +936,12 @@ class action:
         if self.path[0] == "/":
             path = self.path.rstrip("/")
         else:
-            base_path = "" if app_name == "_default" else "/%s" % app_name
-            path = (base_path + "/" + self.path).rstrip("/")
+            if app_name == "_default":
+                base_path = ""
+                _DEFAULT_APP_ROOTS.add(self.path.split("/", 1)[0])
+            else:
+                base_path = f"/{app_name}"
+            path = (f"{base_path}/{self.path}").rstrip("/")
         if func not in self.registered:
             func = action.catch_errors(app_name, func)
         func = bottle.route(path, **self.kwargs)(func)
@@ -1189,9 +1195,11 @@ class Reloader:
         # used by watcher
         def hook(*a, **k):
             app_name = request.path.split("/")[1]
-            if app_name in DIRTY_APPS:
+            if not app_name or app_name in _DEFAULT_APP_ROOTS:
+                app_name = "_default"
+            if DIRTY_APPS.get(app_name):
                 Reloader.import_app(app_name)
-                del DIRTY_APPS[app_name]
+                DIRTY_APPS[app_name] = False
             ## APP_WATCH tasks, if used by any app
             try_app_watch_tasks()
 
@@ -1199,13 +1207,20 @@ class Reloader:
 
     @staticmethod
     def clear_routes(app_name=""):
-        if app_name and app_name[0] != "/":
-            app_name = "/" + app_name
-        routes = app_name + "/*"
-        app = bottle.default_app()
-        app.router.remove(routes)
+        app_root = app_name
+        if app_root and app_root[0] != "/":
+            app_root = f"/{app_root}"
+        routes = f"{app_root}/*"
+        remove_route = bottle.default_app().router.remove
+        remove_route(routes)
         if app_name:
-            app.router.remove(app_name)
+            remove_route(app_root)
+            if app_name == '_default':
+                [(remove_route(f"/{_}"), remove_route(f"/{_}/*")) for _ in _DEFAULT_APP_ROOTS]
+                remove_route("/")
+                _DEFAULT_APP_ROOTS.clear()
+        else:
+            _DEFAULT_APP_ROOTS.clear()
 
     @staticmethod
     def import_apps():
@@ -1283,7 +1298,11 @@ class Reloader:
 
         if os.path.exists(static_folder):
             app_name = path.split(os.path.sep)[-1]
-            prefix = "" if app_name == "_default" else ("/%s" % app_name)
+            if app_name == "_default":
+                prefix = ""
+                _DEFAULT_APP_ROOTS.add('static')
+            else:
+                prefix = f"/{app_name}"
 
             @bottle.route(prefix + r"/static/<re((_\d+(\.\d+){2}/)?)><fp.path()>")
             def server_static(fp, static_folder=static_folder):
@@ -1497,7 +1516,7 @@ def start_server(kwargs):
             server_config["server"] = "gunicorn"
 
     # Catch interrupts like Ctrl-C if needed
-    if server_config["server"] not in ("rocket","wsgirefWsTwistedServer" ):
+    if server_config["server"] not in {"rocket", "wsgirefWsTwistedServer"}:
 
         signal.signal(
             signal.SIGINT,
