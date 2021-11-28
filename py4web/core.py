@@ -378,6 +378,8 @@ def thread_safe_pydal_patch():
         "readable",
         "writable",
         "default",
+        "filter_in",
+        "filter_out",
         "label",
         "update",
         "requires",
@@ -1517,15 +1519,14 @@ def start_server(kwargs):
 
     # Catch interrupts like Ctrl-C if needed
     if server_config["server"] not in {"rocket", "wsgirefWsTwistedServer"}:
-
         signal.signal(
             signal.SIGINT,
             lambda signal, frame: click.echo(
                 "KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(
                     signal
                 )
-            and sys.exit(0),
-            )
+                and sys.exit(0),
+            ),
         )
 
     params["server"] = server_config["server"]
