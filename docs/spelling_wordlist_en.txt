@@ -4,6 +4,8 @@ appname
 args
 async
 Asyncio
+auth
+Auth
 autocomplete
 Autocomplete
 autodelete
@@ -14,10 +16,13 @@ backends
 backported
 behaviour
 Bitbucket
+boolean
 booleans
 bottlepy
 bulma
+bytecode
 cacheable
+cd
 checkboxes
 choosen
 cli
@@ -36,10 +41,12 @@ dal
 datastore
 Datetime
 dbi
+de
 deletable
 denormalization
 denormalize
 denormalizes
+dismissible
 doesn
 dropdown
 dropdowns
@@ -55,7 +62,9 @@ fieldnames
 filepaths
 Filepaths
 filesystem
+firebird
 FireBird
+Firebird
 FireBirdEmbedded
 formstyle
 fullname
@@ -80,6 +89,7 @@ https
 hx
 ibm
 ie
+incrementing
 informix
 Informix
 informixdb
@@ -88,11 +98,14 @@ ingres
 ingresdbi
 ingresu
 IngresUnicode
+instantiation
 IPv
+iterable
 iterables
 javascript
 JDBCPostgre
 JDBCSQLite
+Jinja
 jpg
 jQuery
 js
@@ -102,6 +115,7 @@ kbytes
 kinterbasdb
 kwargs
 lastdot
+ldap
 lib
 libs
 limitby
@@ -117,6 +131,8 @@ memoize
 Memoize
 middleware
 minsize
+mongo
+Mongo
 mongodb
 monospaced
 mssql
@@ -124,6 +140,7 @@ mssqln
 mtable
 multicast
 multiselect
+multiuser
 myfunction
 mysql
 MySQLdb
@@ -143,6 +160,7 @@ pdkdf
 pydal
 PyTDS
 png
+postfix
 Postgre
 PostgreBoolean
 PostgreNew
@@ -152,6 +170,7 @@ PostgrePsycoNew
 postgres
 postprocessing
 pre
+predefine
 prepend
 prepended
 prepending
@@ -178,10 +197,13 @@ readonly
 redis
 resultset
 rname
+rocketServer
+runtime
 sapdb
 Schafer
 se
 selectorN
+serializable
 severities
 somefile
 spatialite
@@ -207,10 +229,12 @@ syntaxes
 tablename
 teradata
 Teradata
+teredo
 textarea
 txt
 ual
 un
+unary
 unicode
 unneded
 uri
