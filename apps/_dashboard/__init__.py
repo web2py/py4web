@@ -1,8 +1,10 @@
 import base64
 import copy
 import datetime
+import functools
 import io
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -11,6 +13,7 @@ import zipfile
 
 import requests
 from pydal.validators import CRYPT
+from yatl.helpers import INPUT, A
 
 import py4web
 from py4web import (
@@ -23,9 +26,11 @@ from py4web import (
     redirect,
     request,
     response,
+    DAL,
 )
 from py4web.core import Fixture, Reloader, Session, dumps, error_logger, safely
 from py4web.utils.factories import ActionFactory
+from py4web.utils.grid import AttributesPluginHtmx, Grid
 
 from .diff2kryten import diff2kryten
 from .utils import *
@@ -101,6 +106,67 @@ def version():
     return __version__
 
 
+def smart_search(table):
+    """
+    allows search of AND of comma separated expressions
+    where an exexpression can be field operator value
+    and value can be with or without quotes.
+    Examples:
+    "John, Smith"
+    "first_name == John, last_name >= Smith"
+    value of None or NULL without quotes are interpreted as None (NULL in SQL)
+    """
+    parser = re.compile(
+        r"^\s*(%s)\s*(\<\=|\=\=|\!\=|\<\>|\>\=|\<|\>|\=|\~)\s*(.+)\s*$"
+        % "|".join(fn.name for fn in table if not fn.type == "password")
+    )
+    operator = {
+        "<": lambda a, b: a < b,
+        "<=": lambda a, b: a <= b,
+        "==": lambda a, b: a == b,
+        "=": lambda a, b: a == b,
+        "!=": lambda a, b: a != b,
+        "<>": lambda a, b: a != b,
+        ">": lambda a, b: a > b,
+        ">=": lambda a, b: a >= b,
+        "~": lambda a, b: a.startswith(b),
+    }
+
+    def search_in_table(value):
+        if not value.strip():
+            return table._id > 0
+        tokens = [value]
+        while True:
+            i = tokens[-1].lower().find(", ")
+            if i <= 0:
+                break
+            tokens = tokens[:-1] + [tokens[-1][:i], tokens[-1][i + 2 :]]
+        queries = []
+        for token in tokens:
+            match = parser.match(token)
+            if match:
+                fn, op, value = match.groups()
+                query = operator[op](
+                    table[fn], None if value in ("None", "NULL") else value.strip('"')
+                )
+                queries.append(query)
+            else:
+                queries.append(
+                    functools.reduce(
+                        lambda a, b: a | b,
+                        [
+                            f.startswith(token)
+                            for f in table
+                            if f.type in ("string", "text")
+                        ],
+                    )
+                )
+        query = functools.reduce(lambda a, b: a & b, queries)
+        return query
+
+    return search_in_table
+
+
 if MODE in ("demo", "readonly", "full"):
 
     @action("index")
@@ -135,10 +201,101 @@ if MODE in ("demo", "readonly", "full"):
         session["user"] = None
         return dict()
 
-    @action("dbadmin")
+    @action("dbadmin/<app>/<dbname>/<tablename>", method=["GET", "POST"])
+    @action("dbadmin/<app>/<dbname>/<tablename>/<path:path>", method=["GET", "POST"])
     @action.uses(Logged(session), "dbadmin.html")
-    def dbadmin():
-        return dict(languages=dumps(getattr(T.local, "language", {})))
+    def dbadmin(app, dbname, tablename, path=None):
+        if MODE != "full":
+            raise HTTP(403)
+
+        module = Reloader.MODULES[app]
+
+        databases = [
+            name for name in dir(module) if isinstance(getattr(module, name), DAL)
+        ]
+        if dbname not in databases:
+            raise HTTP(406)
+
+        db = getattr(module, dbname)
+
+        grid_param = dict(
+            rows_per_page=20,
+            include_action_button_text=True,
+            search_button_text=None,
+            formstyle=FormStyleFuture,
+            grid_class_style=GridClassStyleFuture,
+            auto_process=False,
+        )
+
+        if tablename not in db:
+            raise HTTP(406)
+
+        table = getattr(db, tablename)
+
+        for field in table:
+            field.readable = True
+            field.writable = True
+
+        query = table.id > 0
+        orderby = [table.id]
+        columns = [field for field in table]
+        columns = columns[:6]
+
+        def search_by_field(field):
+            if field.type == "string":
+                query = lambda value: field.startswith(value)
+            if field.type == "boolean":
+                query = lambda value: field == to_bool(value)
+            if field.type.startswith("list:"):
+                query = lambda value: field.contains(value)
+            else:
+                query = lambda value: field == value
+            return query
+
+        search_queries = [["Smart", smart_search(table)]]
+        search_queries += [
+            [f"{field.label}", search_by_field(field)]
+            for field in table
+            if field.type.split()[0]
+            in (
+                "string",
+                "integer",
+                "boolean",
+                "reference",
+                "list:string",
+                "list:integer",
+                "list:reference",
+            )
+        ]
+
+        grid = Grid(
+            path,
+            query,
+            columns=columns,
+            search_queries=search_queries,
+            orderby=orderby,
+            show_id=True,
+            T=T,
+            **grid_param,
+        )
+
+        grid.param.new_sidecar = A("Cancel")
+        grid.param.edit_sidecar = A("Cancel")
+        try:
+            grid.process()
+            error = None
+        except Exception as err:
+            error = err
+        languages = dumps(getattr(T.local, "language", {}))
+
+        return dict(
+            grid=grid,
+            error=error,
+            languages=languages,
+            app=app,
+            dbname=dbname,
+            tablename=tablename,
+        )
 
     @action("info")
     @session_secured
@@ -316,8 +473,7 @@ if MODE in ("demo", "readonly", "full"):
         # this is not final, requires pydal 19.5
         args = path.split("/")
         app_name = args[0]
-        from py4web.core import Reloader, DAL
-        from pydal.restapi import RestAPI, Policy
+        from py4web.core import DAL, Reloader
 
         if MODE != "full":
             raise HTTP(403)
@@ -347,34 +503,12 @@ if MODE in ("demo", "readonly", "full"):
                     {"name": name, "tables": tables(name)} for name in databases
                 ]
             }
-        elif len(args) > 2 and args[1] in databases:
-            db = getattr(module, args[1])
-            id = args[3] if len(args) == 4 else None
-            policy = Policy()
-            for table in db:
-                policy.set(
-                    table._tablename,
-                    "GET",
-                    authorize=True,
-                    allowed_patterns=["**"],
-                    allow_lookup=True,
-                    fields=table.fields,
-                )
-                policy.set(table._tablename, "PUT", authorize=True, fields=table.fields)
-                policy.set(
-                    table._tablename, "POST", authorize=True, fields=table.fields
-                )
-                policy.set(table._tablename, "DELETE", authorize=True)
-            data = action.uses(db, T)(
-                lambda: RestAPI(db, policy)(
-                    request.method, args[2], id, request.query, request.json
-                )
-            )()
         else:
             data = {}
         if "code" in data:
             response.status = data["code"]
         return data
+
 
 if MODE == "full":
 
@@ -530,8 +664,10 @@ if MODE == "full":
         patch = run("git show " + commit + opt, project)
         return diff2kryten(patch)
 
+
 # handle internationalization & pluralization files
 #
+
 
 @action("translations/<name>", method="GET")
 @action.uses(Logged(session), "translations.html")
@@ -540,12 +676,14 @@ def translations(name):
     t = Translator(os.path.join(FOLDER, name, "translations"))
     return t.languages
 
+
 @action("api/translations/<name>", method="GET")
 @action.uses(Logged(session))
 def get_translations(name):
     """returns a json with all translations for all languages"""
     t = Translator(os.path.join(FOLDER, name, "translations"))
     return t.languages
+
 
 @action("api/translations/<name>", method="POST")
 @action.uses(Logged(session))
@@ -566,4 +704,4 @@ def update_translations(name):
     """find all T(...) decorated strings in the code and returns them"""
     app_folder = os.path.join(FOLDER, name)
     strings = Translator.find_matches(app_folder)
-    return {'strings': strings}
+    return {"strings": strings}

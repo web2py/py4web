@@ -5,25 +5,26 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   </head>
   <body>    
-    <div id="vue" class="my-effects">
-      <!--div class="loading" v-if="loading>0"></div-->
+    <div>
       <div class="panel">   
         <label>
-          App: {{app}}
-          Database: {{dbname}}
-          Table: {{tablename}}
+          App: [[=app]]
+          Database: [[=dbname]]
+          Table: [[=tablename]]
         </label>
-      </div>      
-      <div class="panel">
-        <mtable :url="url" :filter="filter" :order="order" :editable="true" :create="true" :deletable="true" :render="{}"></mtable>
+      </div>
+      <div style="padding: 10px" class="my-effects">
+        [[if error:]]
+        <div>
+          <p class="error">Query Error: [[=error]]</p>
+        </div>
+        [[pass]]
+	<div style="width:100%; overflow-x: auto">
+	  [[=grid.render()]]
+	</div>
       </div>
     </div>
   </body>
-  <script src="js/sugar.min.js"></script>
-  <script src="js/vue.min.js"></script>
-  <script src="js/axios.min.js"></script>
   <script src="js/utils.js"></script>
-  <script src="components/mtable.js"></script>
   <script>T.languages = [[=languages]];</script>
-  <script src="js/dbadmin.js"></script>
 </html>
