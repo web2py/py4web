@@ -46,7 +46,6 @@ db = DAL(
 # #######################################################
 cache = Cache(size=1000)
 T = Translator(settings.T_FOLDER)
-flash = Flash()
 
 # #######################################################
 # pick the session type that suits you best
@@ -90,6 +89,8 @@ auth.param.block_previous_password_num = 3
 auth.param.default_login_enabled = settings.DEFAULT_LOGIN_ENABLED
 auth.define_tables()
 auth.fix_actions()
+
+flash = auth.flash
 
 # #######################################################
 # Configure email sender for auth

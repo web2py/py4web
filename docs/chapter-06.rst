@@ -579,7 +579,7 @@ is not logged-in, hence this example is equivalent to the previous one.
 
 The ``auth`` fixture is plugin based: it supports multiple plugin
 methods including OAuth2 (Google, Facebook, Twitter), PAM and LDAP.
-The :ref:`Authentication and Access control` chapter will show you
+The :ref:`Authentication and authorization` chapter will show you
 all the related details.
 
 Caveats about fixtures
