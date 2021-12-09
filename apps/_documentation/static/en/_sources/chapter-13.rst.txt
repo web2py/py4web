@@ -1,16 +1,32 @@
-=================================
-Authentication and Access control
-=================================
+================================
+Authentication and authorization
+================================
 
-**Warning: the API described in this chapter is new and subject to
-changes. Make sure you keep your code up to date**
+Strong authentication and authorization methods are
+vital for a modern, multiuser web application.
+While they are often used interchangeably, authentication and authorization
+are separate processes: 
 
-py4web comes with a an object Auth and a system of plugins for user
-authentication and access control. It has the same name as the
+- Authentication confirms that users are who they say they are
+- Authorization gives those users permission to access a resource
+
+
+Authentication using Auth
+-------------------------
+
+py4web comes with a an object ``Auth`` and a system of plugins for user
+authentication. It has the same name as the
 corresponding web2py one and serves the same purpose but the API and
 internal design is very different.
 
-To use it, first of all you need to import it, instantiate it, configure
+The _scaffold application provides a guideline for its standard usage. By
+default it uses a local SQLite database and allows creating new users,
+login and logout. Notice that if you don't configure it, you have to manually
+approve new users (by visiting the link logged on the console or
+by directly editing the database).
+
+
+To use the Auth object, first of all you need to import it, instantiate it, configure
 it, and enable it.
 
 .. code:: python
@@ -25,7 +41,8 @@ operation other than telling the Auth object which session object to use
 and which database to use. Auth data is stored in ``session['user']``
 and, if a user is logged in, the user id is stored in
 session[‘user’][‘id’]. The db object is used to store persistent info
-about the user in a table ``auth_user`` with the following fields:
+about the user in a table ``auth_user`` which is created if missing.
+The ``auth_user`` table has the following fields:
 
 -  username
 -  email
@@ -35,10 +52,6 @@ about the user in a table ``auth_user`` with the following fields:
 -  sso_id (used for single sign on, see later)
 -  action_token (used to verify email, block users, and other tasks,
    also see later).
-
-If the ``auth_user`` table does not exist it is created.
-
-The configuration step is optional and discussed later.
 
 The ``auth.enable()`` step creates and exposes the following RESTful
 APIs:
@@ -56,51 +69,65 @@ APIs:
 Those marked with a (+) require a logged in user.
 
 Auth UI
--------
+~~~~~~~
 
 You can create your own web UI to login users using the above APIs but
 py4web provides one as an example, implemented in the following files:
 
 -  \_scaffold/templates/auth.html
--  \_scaffold/static/components/auth.js
--  \_scaffold/static/components/auth.html
+-  \_scaffold/templates/layout.html
 
-The component files (js/html) define a Vue component ``<auth/>`` which
-is used in the template file auth.html as follows:
 
-.. code:: html
+The key section is in ``layout.html`` where (using the no.css framework) the menu actions are defined:
 
-   [[extend "layout.html"]]
-   <div id="vue">
-     <div class="columns">
-       <div class="column is-half is-offset-one-quarter" style="border : 1px solid #e1e1e1; border-radius: 10px">
-         <auth plugins="local,oauth2google,oauth2facebook"></auth>
-       </div>
-     </div>
-   </div>
-   [[block page_scripts]]
-   <script src="js/utils.js"></script>
-   <script src="components/auth.js"></script>
-   <script>utils.app().start();</script>
-   [[end]]
+.. code-block:: html
+   :linenos:
 
-You can pretty much use this file un-modified. It extends the current
-layout and embeds the ``<auth/>`` component into the page. It then uses
-``utils.app().start();`` (py4web magic) to render the content of
-``<div id="vue">...</div>`` using Vue.js. ``components/auth.js`` also
-automatically loads ``components/auth.html`` into the component
-placeholder (more py4web magic). The component is responsible for
-rendering the login/register/etc forms using reactive html and
-GETing/POSTing data to the Auth service APIs.
+   <ul>
+      [[if globals().get('user'):]]
+      <li>
+      <a class="navbar-link is-primary">
+         [[=globals().get('user',{}).get('email')]]
+      </a>
+      <ul>
+         <li><a href="[[=URL('auth/profile')]]">Edit Profile</a></li>
+         [[if 'change_password' in globals().get('actions',{}).get('allowed_actions',{}):]]
+            <li><a href="[[=URL('auth/change_password')]]">Change Password</a></li>
+         [[pass]]
+         <li><a href="[[=URL('auth/logout')]]">Logout</a></li>
+      </ul>
+      </li>
+      [[else:]]
+      <li>
+      Login
+      <ul>
+         <li><a href="[[=URL('auth/register')]]">Sign up</a></li>
+         <li><a href="[[=URL('auth/login')]]">Log in</a></li>
+      </ul>
+      </li>
+      [[pass]]
+   </ul>
 
-If you need to change the style of the component you can edit
-“components/auth.html” to suit your needs. It is mostly HTML with some
-special Vue ``v-*`` tags.
 
-Using Auth
-----------
+The menu is dynamic: on line 2 there is a check if the user is already defined
+(i.e. if the user has already logged on). In this case the email is shown in the
+top menu, plus the menu options ``Edit Profile``, ``Change Password`` (optional) and
+``Logout``.
+Instead, if the user is not already logged on, from line 15 there are
+only the corresponding menu options allowed: ``Sign up`` and ``Log in``.
 
-There two ways to use the Auth object in an action:
+Every menu option then redirects the user to the corresponding standard URL,
+which in turn activates the Auth action.
+
+
+Using Auth inside actions
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There two ways to use the Auth object in an action.
+
+The first one does not force a login.  With ``@action.uses(auth)``
+we tell py4web that this action should have information about the user, 
+trying to parse the session for a user session.
 
 .. code:: python
 
@@ -110,9 +137,7 @@ There two ways to use the Auth object in an action:
        user = auth.get_user()
        return 'hello {first_name}'.format(**user) if user else 'not logged in'
 
-With ``@action.uses(auth)`` we tell py4web that this action needs to
-have information about the user, then try to parse the session for a
-user session.
+The second one forces the login if needed:
 
 .. code:: python
 
@@ -126,7 +151,7 @@ Here ``@action.uses(auth.user)`` tells py4web that this action requires
 a logged in user and should redirect to login if no user is logged in.
 
 Auth Plugins
-------------
+~~~~~~~~~~~~
 
 Plugins are defined in “py4web/utils/auth_plugins” and they have a
 hierarchical structure. Some are exclusive and some are not. For example,
@@ -138,12 +163,11 @@ UI).
 The ``<auth/>`` components will automatically adapt to display login
 forms as required by the installed plugins.
 
-**At this time we cannot guarantee that the following plugins work well.
-They have been ported from web2py where they do work but testing is
-still needed**
+In the _scaffold/settings.py and _scaffold/common.py files you can see
+the default settings for the supported plugins. 
 
 PAM
-~~~
+^^^
 
 Configuring PAM is the easiest:
 
@@ -161,8 +185,16 @@ The ``auth.register_plugin(...)`` **must** come before the
 ``auth.enable()`` since it makes no sense to expose APIs before desired
 plugins are mounted.
 
+.. note::
+
+   by design PAM authentication using local users works fine only if py4web is run by root.
+   Otherwise you can only authenticate the specific user that runs the py4web process.
+
+
 LDAP
-~~~~
+^^^^
+
+This is a common authentication method, especially using Microsoft Active Directory in enterprises.
 
 .. code:: python
 
@@ -170,12 +202,18 @@ LDAP
    LDAP_SETTING = {
        'mode': 'ad',
        'server': 'my.domain.controller',
-       'base_dn': 'ou=Users,dc=domain,dc=com'
+       'base_dn': 'cn=Users,dc=domain,dc=com'
    }
    auth.register_plugin(LDAPPlugin(**LDAP_SETTINGS))
 
-OAuth2 with Google (tested OK)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. warning::
+   
+   it needs the python-ldap module. On Ubuntu, you should also install some developer's libraries
+   in advance with ``sudo apt-get install libldap2-dev libsasl2-dev``.
+
+
+OAuth2 with Google
+^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
@@ -187,8 +225,8 @@ OAuth2 with Google (tested OK)
 
 The client id and client secret must be provided by Google.
 
-OAuth2 with Facebook (tested OK)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+OAuth2 with Facebook
+^^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
@@ -200,24 +238,64 @@ OAuth2 with Facebook (tested OK)
 
 The client id and client secret must be provided by Facebook.
 
-Tags and Permissions
---------------------
-
-Py4web does not have the concept of groups as web2py does. Experience
-showed that while that mechanism is powerful it suffers from two
-problems: it is overkill for most apps, and it is not flexible enough
-for very complex apps. Py4web provides a general purpose tagging
-mechanism that allows the developer to tag any record of any table,
-check for the existence of tags, as well as checking for records
-containing a tag. Group membership can be thought of a type of tag that
-we apply to users. Permissions can also be tags. Developer are free to
-create their own logic on top of the tagging system.
-
-To use the tagging system you need to create an object to tag a table:
+OAuth2 with Discord
+^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
+    from py4web.utils.auth_plugins.oauth2discord import OAuth2Discord
+    auth.register_plugin(OAuth2Discord(
+        client_id=DISCORD_CLIENT_ID,
+        client_secret=DISCORD_CLIENT_SECRET,
+        callback_url="auth/plugin/oauth2discord/callback"))
+
+To obtain a Discord client ID and secret, create an application at https://discord.com/developers/applications.
+You will also have to register your OAuth2 redirect URI in your created application, in the form of
+``http(s)://<your host>/<your app name>/auth/plugin/oauth2discord/callback``
+
+.. note::
+    As Discord users have no concept of first/last name, the user in the auth table will contain the
+    Discord username as the first name and discriminator as the last name.
+
+
+Authorization using Tags
+------------------------
+
+As already mentioned, authorization is the process of verifying what specific
+applications, files, and data a user has access to. This is accomplished
+in py4web using ``Tags``.
+
+
+Tags and Permissions
+~~~~~~~~~~~~~~~~~~~~
+
+Py4web provides a general purpose tagging
+mechanism that allows the developer to tag any record of any table,
+check for the existence of tags, as well as checking for records
+containing a tag. Group membership can be thought of a type of tag that
+we apply to users. Permissions can also be tags. Developers are free to
+create their own logic on top of the tagging system.
+
+.. note::
+
+   Py4web does not have the concept of groups as web2py does. Experience
+   showed that while that mechanism is powerful it suffers from two
+   problems: it is overkill for most apps, and it is not flexible enough
+   for very complex apps. 
+
+To use the tagging system you first need to import the Tags module
+from ``pydal.tools``. Then create a Tags object to tag a table:
+
+.. code:: python
+
+   from pydal.tools.tags import Tags
    groups = Tags(db.auth_user)
+
+If you look at the database level, a new table will be created with a
+name equals to tagged_db + '_tag' + tagged_name, in this case
+``auth_user_tag_groups``:
+
+.. image:: images/tags_db.png
 
 Then you can add one or more tags to records of the table as well as
 remove existing tags:
@@ -228,10 +306,19 @@ remove existing tags:
    groups.add(user.id, ['dancer', 'teacher'])
    groups.remove(user.id, 'dancer')
 
-Here the use case is group based access control where the developer
+On the ``auth_user_tagged_groups`` this will produce two records
+with different groups assigned to the same user.id (the "Record ID" field):
+
+.. image:: images/tags2.png
+
+Slashes at the
+beginning or the end of a tag are optional. All other chars are allowed
+on equal footing.
+
+A common use case is **group based access control**. Here the developer
 first checks if a user is a member of the ``'manager'`` group, if the
 user is not a manager (or no one is logged in) py4web redirects to the
-``'not authorized url'``. If the user is in the correct group then
+``'not authorized url'``. Else the user is in the correct group and then
 py4web displays ‘hello manager’:
 
 .. code:: python
@@ -272,29 +359,31 @@ following searches will return the user:
 -  ``groups.find('teacher/high-school')``
 -  ``groups.find('teacher')``
 
-This means that slashes have a special meaning for tags. Slashes at the
-beginning or the end of a tag are optional. All other chars are allowed
-on equal footing.
+This means that slashes have a special meaning for tags. 
 
-Notice that one table can have multiple associated ``Tags`` objects. The
-name groups here is completely arbitrary but has a specific semantic
-meaning. Different ``Tags`` objects are orthogonal to each other. The
-limit to their use is your creativity.
+Multiple Tags objects
+~~~~~~~~~~~~~~~~~~~~~
 
-For example you could create a table groups:
+.. note::
+   One table can have multiple associated ``Tags`` objects. The
+   name 'groups' here is completely arbitrary but has a specific semantic
+   meaning. Different ``Tags`` objects are independent to each other. The
+   limit to their use is your creativity.
+
+For example you could create a table ``auth_group``:
 
 .. code:: python
 
    db.define_table('auth_group', Field('name'), Field('description'))
 
-and to Tags:
+and two Tags attached to it:
 
 .. code:: python
 
    groups = Tags(db.auth_user)
    permissions = Tags(db.auth_groups)
 
-Then create a zapper group, give it a permission, and make a user member
+Then create a 'zapper' record in ``auth_group``, give it a permission, and make a user member
 of the group:
 
 .. code:: python

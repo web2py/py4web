@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Authentication and Access control &mdash; py4web 1.20210619.1 documentation</title>
+  <title>Authentication and authorization &mdash; py4web 1.20211207.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210619.1
+                1.20211207.1
               </div>
             
           
@@ -108,22 +108,30 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Authentication and Access control</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#auth-ui">Auth UI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#using-auth">Using Auth</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#auth-plugins">Auth Plugins</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pam">PAM</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ldap">LDAP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#oauth2-with-google-tested-ok">OAuth2 with Google (tested OK)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#oauth2-with-facebook-tested-ok">OAuth2 with Facebook (tested OK)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Authentication and authorization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#authentication-using-auth">Authentication using Auth</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#auth-ui">Auth UI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-auth-inside-actions">Using Auth inside actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auth-plugins">Auth Plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pam">PAM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ldap">LDAP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oauth2-with-google">OAuth2 with Google</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oauth2-with-facebook">OAuth2 with Facebook</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oauth2-with-discord">OAuth2 with Discord</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#tags-and-permissions">Tags and Permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#authorization-using-tags">Authorization using Tags</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tags-and-permissions">Tags and Permissions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-tags-objects">Multiple Tags objects</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
@@ -177,7 +185,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Authentication and Access control</li>
+      <li>Authentication and authorization</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -198,15 +206,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="authentication-and-access-control">
-<h1>Authentication and Access control<a class="headerlink" href="#authentication-and-access-control" title="Permalink to this headline">¶</a></h1>
-<p><strong>Warning: the API described in this chapter is new and subject to
-changes. Make sure you keep your code up to date</strong></p>
-<p>py4web comes with a an object Auth and a system of plugins for user
-authentication and access control. It has the same name as the
+  <div class="section" id="authentication-and-authorization">
+<h1>Authentication and authorization<a class="headerlink" href="#authentication-and-authorization" title="Permalink to this headline">¶</a></h1>
+<p>Strong authentication and authorization methods are
+vital for a modern, multiuser web application.
+While they are often used interchangeably, authentication and authorization
+are separate processes:</p>
+<ul class="simple">
+<li><p>Authentication confirms that users are who they say they are</p></li>
+<li><p>Authorization gives those users permission to access a resource</p></li>
+</ul>
+<div class="section" id="authentication-using-auth">
+<h2>Authentication using Auth<a class="headerlink" href="#authentication-using-auth" title="Permalink to this headline">¶</a></h2>
+<p>py4web comes with a an object <code class="docutils literal notranslate"><span class="pre">Auth</span></code> and a system of plugins for user
+authentication. It has the same name as the
 corresponding web2py one and serves the same purpose but the API and
 internal design is very different.</p>
-<p>To use it, first of all you need to import it, instantiate it, configure
+<p>The _scaffold application provides a guideline for its standard usage. By
+default it uses a local SQLite database and allows creating new users,
+login and logout. Notice that if you don’t configure it, you have to manually
+approve new users (by visiting the link logged on the console or
+by directly editing the database).</p>
+<p>To use the Auth object, first of all you need to import it, instantiate it, configure
 it, and enable it.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth</span> <span class="kn">import</span> <span class="n">Auth</span>
 <span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
@@ -219,7 +240,8 @@ operation other than telling the Auth object which session object to use
 and which database to use. Auth data is stored in <code class="docutils literal notranslate"><span class="pre">session['user']</span></code>
 and, if a user is logged in, the user id is stored in
 session[‘user’][‘id’]. The db object is used to store persistent info
-about the user in a table <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> with the following fields:</p>
+about the user in a table <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> which is created if missing.
+The <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> table has the following fields:</p>
 <ul class="simple">
 <li><p>username</p></li>
 <li><p>email</p></li>
@@ -230,8 +252,6 @@ about the user in a table <code class="docutils literal notranslate"><span class
 <li><p>action_token (used to verify email, block users, and other tasks,
 also see later).</p></li>
 </ul>
-<p>If the <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> table does not exist it is created.</p>
-<p>The configuration step is optional and discussed later.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">auth.enable()</span></code> step creates and exposes the following RESTful
 APIs:</p>
 <ul class="simple">
@@ -247,46 +267,55 @@ APIs:</p>
 </ul>
 <p>Those marked with a (+) require a logged in user.</p>
 <div class="section" id="auth-ui">
-<h2>Auth UI<a class="headerlink" href="#auth-ui" title="Permalink to this headline">¶</a></h2>
+<h3>Auth UI<a class="headerlink" href="#auth-ui" title="Permalink to this headline">¶</a></h3>
 <p>You can create your own web UI to login users using the above APIs but
 py4web provides one as an example, implemented in the following files:</p>
 <ul class="simple">
 <li><p>_scaffold/templates/auth.html</p></li>
-<li><p>_scaffold/static/components/auth.js</p></li>
-<li><p>_scaffold/static/components/auth.html</p></li>
+<li><p>_scaffold/templates/layout.html</p></li>
 </ul>
-<p>The component files (js/html) define a Vue component <code class="docutils literal notranslate"><span class="pre">&lt;auth/&gt;</span></code> which
-is used in the template file auth.html as follows:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &quot;layout.html&quot;]]
-<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;vue&quot;</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;columns&quot;</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;column is-half is-offset-one-quarter&quot;</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;border : 1px solid #e1e1e1; border-radius: 10px&quot;</span><span class="p">&gt;</span>
-      <span class="p">&lt;</span><span class="nt">auth</span> <span class="na">plugins</span><span class="o">=</span><span class="s">&quot;local,oauth2google,oauth2facebook&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">auth</span><span class="p">&gt;</span>
-    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-[[block page_scripts]]
-<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;js/utils.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;components/auth.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nx">utils</span><span class="p">.</span><span class="nx">app</span><span class="p">().</span><span class="nx">start</span><span class="p">();&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-[[end]]
+<p>The key section is in <code class="docutils literal notranslate"><span class="pre">layout.html</span></code> where (using the no.css framework) the menu actions are defined:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos"> 2</span>   [[if globals().get(&#39;user&#39;):]]
+<span class="linenos"> 3</span>   <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos"> 4</span>   <span class="p">&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;navbar-link is-primary&quot;</span><span class="p">&gt;</span>
+<span class="linenos"> 5</span>      [[=globals().get(&#39;user&#39;,{}).get(&#39;email&#39;)]]
+<span class="linenos"> 6</span>   <span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="linenos"> 7</span>   <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos"> 8</span>      <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/profile&#39;)]]&quot;</span><span class="p">&gt;</span>Edit Profile<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos"> 9</span>      [[if &#39;change_password&#39; in globals().get(&#39;actions&#39;,{}).get(&#39;allowed_actions&#39;,{}):]]
+<span class="linenos">10</span>         <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/change_password&#39;)]]&quot;</span><span class="p">&gt;</span>Change Password<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">11</span>      [[pass]]
+<span class="linenos">12</span>      <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/logout&#39;)]]&quot;</span><span class="p">&gt;</span>Logout<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">13</span>   <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">14</span>   <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">15</span>   [[else:]]
+<span class="linenos">16</span>   <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">17</span>   Login
+<span class="linenos">18</span>   <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">19</span>      <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/register&#39;)]]&quot;</span><span class="p">&gt;</span>Sign up<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">20</span>      <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;auth/login&#39;)]]&quot;</span><span class="p">&gt;</span>Log in<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">21</span>   <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="linenos">22</span>   <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="linenos">23</span>   [[pass]]
+<span class="linenos">24</span><span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
 </pre></div>
 </div>
-<p>You can pretty much use this file un-modified. It extends the current
-layout and embeds the <code class="docutils literal notranslate"><span class="pre">&lt;auth/&gt;</span></code> component into the page. It then uses
-<code class="docutils literal notranslate"><span class="pre">utils.app().start();</span></code> (py4web magic) to render the content of
-<code class="docutils literal notranslate"><span class="pre">&lt;div</span> <span class="pre">id=&quot;vue&quot;&gt;...&lt;/div&gt;</span></code> using Vue.js. <code class="docutils literal notranslate"><span class="pre">components/auth.js</span></code> also
-automatically loads <code class="docutils literal notranslate"><span class="pre">components/auth.html</span></code> into the component
-placeholder (more py4web magic). The component is responsible for
-rendering the login/register/etc forms using reactive html and
-GETing/POSTing data to the Auth service APIs.</p>
-<p>If you need to change the style of the component you can edit
-“components/auth.html” to suit your needs. It is mostly HTML with some
-special Vue <code class="docutils literal notranslate"><span class="pre">v-*</span></code> tags.</p>
+<p>The menu is dynamic: on line 2 there is a check if the user is already defined
+(i.e. if the user has already logged on). In this case the email is shown in the
+top menu, plus the menu options <code class="docutils literal notranslate"><span class="pre">Edit</span> <span class="pre">Profile</span></code>, <code class="docutils literal notranslate"><span class="pre">Change</span> <span class="pre">Password</span></code> (optional) and
+<code class="docutils literal notranslate"><span class="pre">Logout</span></code>.
+Instead, if the user is not already logged on, from line 15 there are
+only the corresponding menu options allowed: <code class="docutils literal notranslate"><span class="pre">Sign</span> <span class="pre">up</span></code> and <code class="docutils literal notranslate"><span class="pre">Log</span> <span class="pre">in</span></code>.</p>
+<p>Every menu option then redirects the user to the corresponding standard URL,
+which in turn activates the Auth action.</p>
 </div>
-<div class="section" id="using-auth">
-<h2>Using Auth<a class="headerlink" href="#using-auth" title="Permalink to this headline">¶</a></h2>
-<p>There two ways to use the Auth object in an action:</p>
+<div class="section" id="using-auth-inside-actions">
+<h3>Using Auth inside actions<a class="headerlink" href="#using-auth-inside-actions" title="Permalink to this headline">¶</a></h3>
+<p>There two ways to use the Auth object in an action.</p>
+<p>The first one does not force a login.  With <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(auth)</span></code>
+we tell py4web that this action should have information about the user,
+trying to parse the session for a user session.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
@@ -294,9 +323,7 @@ special Vue <code class="docutils literal notranslate"><span class="pre">v-*</sp
     <span class="k">return</span> <span class="s1">&#39;hello </span><span class="si">{first_name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">user</span><span class="p">)</span> <span class="k">if</span> <span class="n">user</span> <span class="k">else</span> <span class="s1">&#39;not logged in&#39;</span>
 </pre></div>
 </div>
-<p>With <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(auth)</span></code> we tell py4web that this action needs to
-have information about the user, then try to parse the session for a
-user session.</p>
+<p>The second one forces the login if needed:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
@@ -308,7 +335,7 @@ user session.</p>
 a logged in user and should redirect to login if no user is logged in.</p>
 </div>
 <div class="section" id="auth-plugins">
-<h2>Auth Plugins<a class="headerlink" href="#auth-plugins" title="Permalink to this headline">¶</a></h2>
+<h3>Auth Plugins<a class="headerlink" href="#auth-plugins" title="Permalink to this headline">¶</a></h3>
 <p>Plugins are defined in “py4web/utils/auth_plugins” and they have a
 hierarchical structure. Some are exclusive and some are not. For example,
 default, LDAP, PAM, and SAML are exclusive (the developer has to pick
@@ -317,11 +344,10 @@ one). Default, Google, Facebook, and Twitter OAuth are not exclusive
 UI).</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;auth/&gt;</span></code> components will automatically adapt to display login
 forms as required by the installed plugins.</p>
-<p><strong>At this time we cannot guarantee that the following plugins work well.
-They have been ported from web2py where they do work but testing is
-still needed</strong></p>
+<p>In the _scaffold/settings.py and _scaffold/common.py files you can see
+the default settings for the supported plugins.</p>
 <div class="section" id="pam">
-<h3>PAM<a class="headerlink" href="#pam" title="Permalink to this headline">¶</a></h3>
+<h4>PAM<a class="headerlink" href="#pam" title="Permalink to this headline">¶</a></h4>
 <p>Configuring PAM is the easiest:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.pam_plugin</span> <span class="kn">import</span> <span class="n">PamPlugin</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">PamPlugin</span><span class="p">())</span>
@@ -334,21 +360,32 @@ arguments (where other plugins do).</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">auth.register_plugin(...)</span></code> <strong>must</strong> come before the
 <code class="docutils literal notranslate"><span class="pre">auth.enable()</span></code> since it makes no sense to expose APIs before desired
 plugins are mounted.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>by design PAM authentication using local users works fine only if py4web is run by root.
+Otherwise you can only authenticate the specific user that runs the py4web process.</p>
+</div>
 </div>
 <div class="section" id="ldap">
-<h3>LDAP<a class="headerlink" href="#ldap" title="Permalink to this headline">¶</a></h3>
+<h4>LDAP<a class="headerlink" href="#ldap" title="Permalink to this headline">¶</a></h4>
+<p>This is a common authentication method, especially using Microsoft Active Directory in enterprises.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.ldap_plugin</span> <span class="kn">import</span> <span class="n">LDAPPlugin</span>
 <span class="n">LDAP_SETTING</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;ad&#39;</span><span class="p">,</span>
     <span class="s1">&#39;server&#39;</span><span class="p">:</span> <span class="s1">&#39;my.domain.controller&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;base_dn&#39;</span><span class="p">:</span> <span class="s1">&#39;ou=Users,dc=domain,dc=com&#39;</span>
+    <span class="s1">&#39;base_dn&#39;</span><span class="p">:</span> <span class="s1">&#39;cn=Users,dc=domain,dc=com&#39;</span>
 <span class="p">}</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">LDAPPlugin</span><span class="p">(</span><span class="o">**</span><span class="n">LDAP_SETTINGS</span><span class="p">))</span>
 </pre></div>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>it needs the python-ldap module. On Ubuntu, you should also install some developer’s libraries
+in advance with <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">libldap2-dev</span> <span class="pre">libsasl2-dev</span></code>.</p>
 </div>
-<div class="section" id="oauth2-with-google-tested-ok">
-<h3>OAuth2 with Google (tested OK)<a class="headerlink" href="#oauth2-with-google-tested-ok" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="oauth2-with-google">
+<h4>OAuth2 with Google<a class="headerlink" href="#oauth2-with-google" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.oauth2google</span> <span class="kn">import</span> <span class="n">OAuth2Google</span> <span class="c1"># TESTED</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Google</span><span class="p">(</span>
     <span class="n">client_id</span><span class="o">=</span><span class="n">CLIENT_ID</span><span class="p">,</span>
@@ -358,8 +395,8 @@ plugins are mounted.</p>
 </div>
 <p>The client id and client secret must be provided by Google.</p>
 </div>
-<div class="section" id="oauth2-with-facebook-tested-ok">
-<h3>OAuth2 with Facebook (tested OK)<a class="headerlink" href="#oauth2-with-facebook-tested-ok" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="oauth2-with-facebook">
+<h4>OAuth2 with Facebook<a class="headerlink" href="#oauth2-with-facebook" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.oauth2facebook</span> <span class="kn">import</span> <span class="n">OAuth2Facebook</span> <span class="c1"># UNTESTED</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Facebook</span><span class="p">(</span>
     <span class="n">client_id</span><span class="o">=</span><span class="n">CLIENT_ID</span><span class="p">,</span>
@@ -369,22 +406,56 @@ plugins are mounted.</p>
 </div>
 <p>The client id and client secret must be provided by Facebook.</p>
 </div>
+<div class="section" id="oauth2-with-discord">
+<h4>OAuth2 with Discord<a class="headerlink" href="#oauth2-with-discord" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.oauth2discord</span> <span class="kn">import</span> <span class="n">OAuth2Discord</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Discord</span><span class="p">(</span>
+    <span class="n">client_id</span><span class="o">=</span><span class="n">DISCORD_CLIENT_ID</span><span class="p">,</span>
+    <span class="n">client_secret</span><span class="o">=</span><span class="n">DISCORD_CLIENT_SECRET</span><span class="p">,</span>
+    <span class="n">callback_url</span><span class="o">=</span><span class="s2">&quot;auth/plugin/oauth2discord/callback&quot;</span><span class="p">))</span>
+</pre></div>
 </div>
+<p>To obtain a Discord client ID and secret, create an application at <a class="reference external" href="https://discord.com/developers/applications">https://discord.com/developers/applications</a>.
+You will also have to register your OAuth2 redirect URI in your created application, in the form of
+<code class="docutils literal notranslate"><span class="pre">http(s)://&lt;your</span> <span class="pre">host&gt;/&lt;your</span> <span class="pre">app</span> <span class="pre">name&gt;/auth/plugin/oauth2discord/callback</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As Discord users have no concept of first/last name, the user in the auth table will contain the
+Discord username as the first name and discriminator as the last name.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="authorization-using-tags">
+<h2>Authorization using Tags<a class="headerlink" href="#authorization-using-tags" title="Permalink to this headline">¶</a></h2>
+<p>As already mentioned, authorization is the process of verifying what specific
+applications, files, and data a user has access to. This is accomplished
+in py4web using <code class="docutils literal notranslate"><span class="pre">Tags</span></code>.</p>
 <div class="section" id="tags-and-permissions">
-<h2>Tags and Permissions<a class="headerlink" href="#tags-and-permissions" title="Permalink to this headline">¶</a></h2>
-<p>Py4web does not have the concept of groups as web2py does. Experience
-showed that while that mechanism is powerful it suffers from two
-problems: it is overkill for most apps, and it is not flexible enough
-for very complex apps. Py4web provides a general purpose tagging
+<h3>Tags and Permissions<a class="headerlink" href="#tags-and-permissions" title="Permalink to this headline">¶</a></h3>
+<p>Py4web provides a general purpose tagging
 mechanism that allows the developer to tag any record of any table,
 check for the existence of tags, as well as checking for records
 containing a tag. Group membership can be thought of a type of tag that
-we apply to users. Permissions can also be tags. Developer are free to
+we apply to users. Permissions can also be tags. Developers are free to
 create their own logic on top of the tagging system.</p>
-<p>To use the tagging system you need to create an object to tag a table:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Py4web does not have the concept of groups as web2py does. Experience
+showed that while that mechanism is powerful it suffers from two
+problems: it is overkill for most apps, and it is not flexible enough
+for very complex apps.</p>
+</div>
+<p>To use the tagging system you first need to import the Tags module
+from <code class="docutils literal notranslate"><span class="pre">pydal.tools</span></code>. Then create a Tags object to tag a table:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal.tools.tags</span> <span class="kn">import</span> <span class="n">Tags</span>
+<span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>If you look at the database level, a new table will be created with a
+name equals to tagged_db + ‘_tag’ + tagged_name, in this case
+<code class="docutils literal notranslate"><span class="pre">auth_user_tag_groups</span></code>:</p>
+<img alt="_images/tags_db.png" src="_images/tags_db.png" />
 <p>Then you can add one or more tags to records of the table as well as
 remove existing tags:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;manager&#39;</span><span class="p">)</span>
@@ -392,10 +463,16 @@ remove existing tags:</p>
 <span class="n">groups</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;dancer&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here the use case is group based access control where the developer
+<p>On the <code class="docutils literal notranslate"><span class="pre">auth_user_tagged_groups</span></code> this will produce two records
+with different groups assigned to the same user.id (the “Record ID” field):</p>
+<img alt="_images/tags2.png" src="_images/tags2.png" />
+<p>Slashes at the
+beginning or the end of a tag are optional. All other chars are allowed
+on equal footing.</p>
+<p>A common use case is <strong>group based access control</strong>. Here the developer
 first checks if a user is a member of the <code class="docutils literal notranslate"><span class="pre">'manager'</span></code> group, if the
 user is not a manager (or no one is logged in) py4web redirects to the
-<code class="docutils literal notranslate"><span class="pre">'not</span> <span class="pre">authorized</span> <span class="pre">url'</span></code>. If the user is in the correct group then
+<code class="docutils literal notranslate"><span class="pre">'not</span> <span class="pre">authorized</span> <span class="pre">url'</span></code>. Else the user is in the correct group and then
 py4web displays ‘hello manager’:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
@@ -430,23 +507,27 @@ following searches will return the user:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">groups.find('teacher/high-school')</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">groups.find('teacher')</span></code></p></li>
 </ul>
-<p>This means that slashes have a special meaning for tags. Slashes at the
-beginning or the end of a tag are optional. All other chars are allowed
-on equal footing.</p>
-<p>Notice that one table can have multiple associated <code class="docutils literal notranslate"><span class="pre">Tags</span></code> objects. The
-name groups here is completely arbitrary but has a specific semantic
-meaning. Different <code class="docutils literal notranslate"><span class="pre">Tags</span></code> objects are orthogonal to each other. The
+<p>This means that slashes have a special meaning for tags.</p>
+</div>
+<div class="section" id="multiple-tags-objects">
+<h3>Multiple Tags objects<a class="headerlink" href="#multiple-tags-objects" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>One table can have multiple associated <code class="docutils literal notranslate"><span class="pre">Tags</span></code> objects. The
+name ‘groups’ here is completely arbitrary but has a specific semantic
+meaning. Different <code class="docutils literal notranslate"><span class="pre">Tags</span></code> objects are independent to each other. The
 limit to their use is your creativity.</p>
-<p>For example you could create a table groups:</p>
+</div>
+<p>For example you could create a table <code class="docutils literal notranslate"><span class="pre">auth_group</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;auth_group&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>and to Tags:</p>
+<p>and two Tags attached to it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
 <span class="n">permissions</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_groups</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Then create a zapper group, give it a permission, and make a user member
+<p>Then create a ‘zapper’ record in <code class="docutils literal notranslate"><span class="pre">auth_group</span></code>, give it a permission, and make a user member
 of the group:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">zap_id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_group</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;zapper&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;can zap database&#39;</span><span class="p">)</span>
 <span class="n">permissions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">zap_id</span><span class="p">,</span> <span class="s1">&#39;zap database&#39;</span><span class="p">)</span>
@@ -472,6 +553,7 @@ of the group:</p>
 groups with the permission and we further filter those groups for those
 the current user is member of. We count them and if we find any, then
 the user has the permission.</p>
+</div>
 </div>
 </div>
 
@@ -521,7 +603,7 @@ the user has the permission.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210619.1
+      v: 1.20211207.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

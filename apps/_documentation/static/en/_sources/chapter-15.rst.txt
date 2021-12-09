@@ -18,9 +18,9 @@ profile forms. Both web2py and py4web track and log all errors.
 
 Some of the main differences are the following:
 
-- web2py works with both Python 2.6+ and 3.6+, while py4web runs on Python 3.6+ only. So, if your
+- web2py works with both Python 2.6+ and 3.6+, while py4web runs on Python 3.7+ only. So, if your
   old web2py application is still using Python 2, your first step involves migrating it to at
-  least Python 3.6, better if the latest 3.8.
+  least Python 3.7, better if the latest 3.9.
 
 - web2py apps consist of collection of files which are executed at every HTTP request (using a
   custom importer, in a predetermined order). In py4web apps are regular python modules that are
@@ -96,8 +96,10 @@ Some of the main differences are the following:
   provides a mechanism for assigning and checking tags efficiently to any object, including but
   not limited to, users.
 
-- Web2py comes with the Rocket web server. py4web at the time of writing defaults to the Tornado
-  web server but this may change.
+- Web2py comes with the Rocket web server. py4web at the time of writing defaults to the
+  `Rocket3 <https://github.com/web2py/rocket3>`__  web server, which is the same multi-threaded
+  web server used by web2py stripped of all the Python2 logic and dependencies. Note that this
+  may change in the future.
 
 
 Simple conversion examples
@@ -291,6 +293,24 @@ Simple conversion examples
       rows = db(db.thing).select()
       return locals()
 
+In the template you can access the flash object with
+
+.. code:: html
+
+    <div class="flash">[[=globals().get('flash','')]]</div>
+
+or using the more sophisticated
+
+.. code:: html
+
+   <flash-alerts class="padded " data-alert="[[=globals().get( 'flash', '')]]"></flash-alerts>
+
+The latter requires ``utils.js`` from the scaffolding app to render
+the custom tag into a div with dismissal behavior.
+
+Also notice that ``Flash`` is special: it is a singleton.
+So if you instantiate multiple Flash objects they share their data.
+
 “grid” example
 ~~~~~~~~~~~~~~
 
@@ -314,3 +334,88 @@ Simple conversion examples
       grid = Grid(db.thing)
       form.param.editable = True
       return locals()
+
+
+“Accessing OS files” example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**web2py**
+
+.. code:: python
+
+   file_path = os.path.join(request.folder, 'file.csv')
+
+
+--> **py4web**
+   
+.. code:: python
+
+   from .settings import APP_FOLDER
+   file_path = os.path.join(APP_FOLDER, 'file.csv')
+
+
+“auth” example
+~~~~~~~~~~~~~~
+
+**web2py**
+
+.. code:: python
+
+   auth = Auth()
+   auth.define_tables()
+
+   @requires_login()
+   def index():
+      user_id = auth.user.id
+      user_email = auth.user.email
+      return locals()
+
+   def user():
+       return dict(form=auth())
+
+Access with ``http://.../user/login``.
+
+--> **py4web**
+
+
+.. code:: python
+
+   auth = Auth(define_table=False)
+   auth.define_tables()
+   auth.enable(route='auth')
+
+   @action("index")
+   @action.uses(auth.user)
+   def index():
+      user_id = auth.user_id
+      user_email = auth.get_user().get('email')
+      return locals()
+
+Access with ``http://.../auth/login``.
+Notice that in web2py ``auth.user`` is the current logged-in user
+retrieved from session. In py4web instead ``auth.user`` is a fixture which serves the
+same purpose as ``@requires_login`` in web2py. In py4web only the ``user_id``
+is stored in the session and it can be retrieved using ``auth.user_id``.
+If you need more information about the user, you need to fetch the record
+from the database with ``auth.get_user()`` The latter returns all readable
+fields as a Python dictionary.
+
+Also notice there is a big difference between:
+
+.. code:: python
+
+   @action.uses(auth)
+
+and
+
+.. code:: python
+
+   @action.uses(auth.user)
+
+In the first case the decorated action can access the auth object
+but ``auth.user_id`` may be None if the user is not logged in. In the second
+case we are requiring a valid logged in user and therefore ``auth.user_id``
+is guaranteed to be a valid user id.
+
+Also notice that if an action uses auth, then it automatically uses
+its session and its flash objects.

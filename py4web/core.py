@@ -388,7 +388,8 @@ def thread_safe_pydal_patch():
         "represent",
     ]
     for a in tsafe_attrs:
-        setattr(Field, a, threadsafevariable.ThreadSafeVariable())
+        b = threadsafevariable.ThreadSafeVariable()
+        setattr(Field, a, b)
 
     # hack 'copy.copy' behavior, since it makes a shallow copy,
     # but ThreadSafe-attributes (see above) are class-level, so:

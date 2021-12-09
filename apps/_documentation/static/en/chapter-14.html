@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Grid &mdash; py4web 1.20210619.1 documentation</title>
+  <title>Grid &mdash; py4web 1.20211207.1 documentation</title>
   
 
   
@@ -47,7 +47,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="From web2py to py4web" href="chapter-15.html" />
-    <link rel="prev" title="Authentication and Access control" href="chapter-13.html" /> 
+    <link rel="prev" title="Authentication and authorization" href="chapter-13.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210619.1
+                1.20211207.1
               </div>
             
           
@@ -108,18 +108,19 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Grid</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#key-features">Key Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#basic-example">Basic Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#signature">Signature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#searching-filtering">Searching / Filtering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#crud">CRUD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-columns">Custom Columns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-templates">Using templates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#customizing-style">Customizing Style</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-action-buttons">Custom Action Buttons</a></li>
@@ -200,8 +201,7 @@
             
   <div class="section" id="grid">
 <h1>Grid<a class="headerlink" href="#grid" title="Permalink to this headline">¶</a></h1>
-<p>py4web comes with a Grid object providing simple grid and CRUD
-capabilities.</p>
+<p>py4web comes with a Grid object providing grid and CRUD capabilities.</p>
 <div class="section" id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -229,7 +229,7 @@ capabilities.</p>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="s1">&#39;grid.html&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">companies</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span>
-                <span class="n">query</span><span class="o">=</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">),</span> <span class="p">[</span><span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]),</span>
+                <span class="n">query</span><span class="o">=</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span>
                 <span class="n">orderby</span><span class="o">=</span><span class="p">[</span><span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
                 <span class="n">search_queries</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;Search by Name&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">val</span><span class="p">)]])</span>
 
@@ -251,7 +251,7 @@ capabilities.</p>
         <span class="n">query</span><span class="p">,</span>
         <span class="n">search_form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">search_queries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">show_id</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">orderby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -280,8 +280,8 @@ applying the filter to the query passed in. This differs from
 search_queries.</p></li>
 <li><p>search_queries: list of query lists to use to build the search form.
 Ignored if search_form is used. Format is</p></li>
-<li><p>fields: list of fields to display on the list page, if blank, glean
-tablename from first query and use all fields of that table</p></li>
+<li><p>columns: list of fields or columns to display on the list page,
+if blank, the table will use all readable fields of the searched table</p></li>
 <li><p>show_id: show the record id field on list page - default = False</p></li>
 <li><p>orderby: pydal orderby field or list of fields</p></li>
 <li><p>left: if joining other tables, specify the pydal left expression here</p></li>
@@ -345,6 +345,27 @@ create/details/editable/deletable during grid instantiation.</p>
 <p>Additionally, you can provide a separate URL to the
 create/details/editable/deletable parameters to bypass the
 auto-generated CRUD pages and handle the detail pages yourself.</p>
+</div>
+<div class="section" id="custom-columns">
+<h2>Custom Columns<a class="headerlink" href="#custom-columns" title="Permalink to this headline">¶</a></h2>
+<p>If the grid does not involve a join but displays results from a single table
+you can specify a list of columns and columns are highly customizable.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.grid</span> <span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span> <span class="nn">yatl</span> <span class="n">helpers</span> <span class="kn">import</span> <span class="nn">A</span>
+
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+   <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;Web Site&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.com&quot;</span><span class="p">),</span>
+   <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;Go To&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;link&quot;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.com&quot;</span><span class="p">))</span>
+<span class="p">]</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="o">...</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice in this example the first two columns are regular fields,
+The third column has a header “Web Site” and consists of URL strings generated from the rows.
+The fourth column has a header “Go To” and generates actual clickable links using the <code class="docutils literal notranslate"><span class="pre">A</span></code> helper.</p>
 </div>
 <div class="section" id="using-templates">
 <h2>Using templates<a class="headerlink" href="#using-templates" title="Permalink to this headline">¶</a></h2>
@@ -609,7 +630,7 @@ for the button</p></li>
 <p>When displaying fields in a PyDAL table, you sometimes want to display a
 more descriptive field than a foreign key value. There are a couple of
 ways to handle that with the py4web grid.</p>
-<p>filter_out on PyDAL field definition - here is an example of a foreign
+<p><code class="docutils literal notranslate"><span class="pre">filter_out</span></code> on PyDAL field definition - here is an example of a foreign
 key field</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;company&#39;</span><span class="p">,</span> <span class="s1">&#39;reference company&#39;</span><span class="p">,</span>
       <span class="n">requires</span><span class="o">=</span><span class="n">IS_NULL_OR</span><span class="p">(</span><span class="n">IS_IN_DB</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s1">&#39;company.id&#39;</span><span class="p">,</span>
@@ -650,7 +671,7 @@ behave differently.</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="chapter-15.html" class="btn btn-neutral float-right" title="From web2py to py4web" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="chapter-13.html" class="btn btn-neutral float-left" title="Authentication and Access control" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="chapter-13.html" class="btn btn-neutral float-left" title="Authentication and authorization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
@@ -689,7 +710,7 @@ behave differently.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210619.1
+      v: 1.20211207.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

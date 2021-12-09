@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Creating your first app &mdash; py4web 1.20210619.1 documentation</title>
+  <title>Creating your first app &mdash; py4web 1.20211207.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210619.1
+                1.20211207.1
               </div>
             
           
@@ -122,12 +122,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
@@ -228,10 +228,11 @@ slashes.</p>
 <p>If you now restart py4web or
 press the “Reload Apps” in the Dashboard, py4web will find this module,
 import it, and recognize it as an app, simply because of its location.
-You can also run py4web in <em>watch</em> mode (see the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>) for
-automatic reloading of the apps whenever it changes, which is very useful in a development environment.
-In this case, run py4web with a command like this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web run apps --watch sync
+By default py4web runs in <em>lazy watch</em> mode (see the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>)
+for automatic reloading of the apps whenever it changes, which is very useful
+in a development environment.
+In production or debugging environment, it’s better to run py4web with a command like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web run apps --watch off
 </pre></div>
 </div>
 <p>A py4web app is not required to do anything. It could just be a container for
@@ -362,7 +363,7 @@ multiple routes.</p>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;paint&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">paint</span><span class="p">():</span>
-    <span class="k">if</span> <span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span>
+    <span class="k">if</span> <span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="p">:</span>
        <span class="k">return</span> <span class="s1">&#39;Painting in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="s1">&#39;You did not specify a color&#39;</span>
 </pre></div>
@@ -489,7 +490,7 @@ create a new clone of it manually or using the Dashboard.</p>
 
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;welcome&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">)</span>
-<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="s1">&#39;generic.html&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
     <span class="n">message</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="s1">&#39;Hello </span><span class="si">{first_name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">user</span><span class="p">))</span>
@@ -498,7 +499,9 @@ create a new clone of it manually or using the Dashboard.</p>
 </div>
 <p>Notice the following:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">request</span></code>, <code class="docutils literal notranslate"><span class="pre">response</span></code>, <code class="docutils literal notranslate"><span class="pre">abort</span></code> are defined by Bottle</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">request</span></code>, <code class="docutils literal notranslate"><span class="pre">response</span></code>, <code class="docutils literal notranslate"><span class="pre">abort</span></code> are defined by Bottle, using
+<a class="reference external" href="https://github.com/valq7711/ombott">ombott (One More BOTTle)</a>,
+which is a fast bottlepy spin-off.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">redirect</span></code> and <code class="docutils literal notranslate"><span class="pre">URL</span></code> are similar to their web2py counterparts</p></li>
 <li><p>helpers (<code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">DIV</span></code>, <code class="docutils literal notranslate"><span class="pre">SPAN</span></code>, <code class="docutils literal notranslate"><span class="pre">IMG</span></code>, etc) must be imported
 from <code class="docutils literal notranslate"><span class="pre">yatl.helpers</span></code> . They work pretty much as in web2py</p></li>
@@ -524,8 +527,8 @@ a starting point for testing and even developing full features new apps.</p>
 <p>It’s better not to work directly on it: always create new apps copying it.
 You can do it in two ways:</p>
 <ul>
-<li><p>using the command line: copy the whole apps/_dashboard folder to another one
-(/apps/my_app for example). Then reload py4web and it will be automatically loaded.</p></li>
+<li><p>using the command line: copy the whole apps/_scaffold folder to another one
+(apps/my_app for example). Then reload py4web and it will be automatically loaded.</p></li>
 <li><p>using the Dashboard: select the button <code class="docutils literal notranslate"><span class="pre">Create/Upload</span> <span class="pre">App</span></code> under the “Installed
 Applications” upper section. Just give the new app a name and check that “Scaffold”
 is selected as the source.
@@ -539,7 +542,7 @@ along with the new app.</p>
 <h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Permalink to this headline">¶</a></h2>
 <p>As described in the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>, Py4web facilitates a
 development server’s setup by automatically reloads an app when its
-Python source files change (if run with the <code class="docutils literal notranslate"><span class="pre">--watch</span></code> option).
+Python source files change (by default).
 But in fact any other files inside an app can be watched by setting a
 handler function using the <code class="docutils literal notranslate"><span class="pre">&#64;app_watch_handler</span></code> decorator.</p>
 <p>Two examples of this usage are reported now. Do not worry if you don’t
@@ -631,7 +634,7 @@ exceptions inside handlers are printed in terminal.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210619.1
+      v: 1.20211207.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

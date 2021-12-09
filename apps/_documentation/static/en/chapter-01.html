@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>What is py4web? &mdash; py4web 1.20210619.1 documentation</title>
+  <title>What is py4web? &mdash; py4web 1.20211207.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210619.1
+                1.20211207.1
               </div>
             
           
@@ -111,12 +111,12 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
@@ -193,13 +193,13 @@
 <h1>What is py4web?<a class="headerlink" href="#what-is-py4web" title="Permalink to this headline">¶</a></h1>
 <p>PY4WEB is a web framework for rapid development of efficient database
 driven web applications. It is an evolution of the popular web2py
-framework but much faster and slicker. Its internal design has been much
+framework, but much faster and slicker. Its internal design has been much
 simplified compared to web2py.</p>
 <p>PY4WEB can be seen as a competitor of other frameworks like Django or
 Flask, and it can indeed serve the same purpose. Yet PY4WEB aims to
-provide a larger feature set out of the box and reduce the development
+provide a larger feature set out of the box and to reduce the development
 time of new apps.</p>
-<p>From a historical perspective our story starts in 2007 when web2py was
+<p>From a historical perspective, our story starts in 2007 when web2py was
 first released. web2py was designed to provide an all-inclusive solution
 for web development: one zip file containing the Python interpreter, the
 framework, a web based IDE, and a collection of battle-tested packages
@@ -229,19 +229,21 @@ features that experienced web2py users loved.</p>
 details if you come from web2py):</p>
 <ul class="simple">
 <li><p>PY4WEB, unlike web2py, requires Python 3.</p></li>
-<li><p>PY4WEB, unlike web2py, can be installed using pip and its
+<li><p>PY4WEB, unlike web2py, can be installed using pip, and its
 dependencies are managed using requirements.txt.</p></li>
-<li><p>PY4WEB apps are regular Python modules. This is very different to
+<li><p>PY4WEB apps are regular Python modules. This is very different from
 web2py. In particular, we ditched the custom importer, and we rely
 now exclusively on the regular Python import mechanism.</p></li>
 <li><p>PY4WEB, like web2py, can serve multiple applications concurrently, as
 long as the apps are submodules of the apps module.</p></li>
 <li><p>PY4WEB, unlike web2py, is based on bottlepy and in particular uses
-the Bottle request object and the Bottle routing mechanism.</p></li>
+the Bottle request object and the Bottle routing mechanism. This is
+achieved with <a class="reference external" href="https://github.com/valq7711/ombott">ombott (One More BOTTle)</a>,
+which is a fast bottlepy spin-off.</p></li>
 <li><p>PY4WEB, unlike web2py, does not create a new environment at every
 request. It introduces the concept of fixtures to explicitly declare
 which objects need to be (re)initialized when a new http request arrives
-or need cleanup when completed. This makes it much faster than web2py.</p></li>
+or needs cleanup when completed. This makes it much faster than web2py.</p></li>
 <li><p>PY4WEB, has a new session object which, like web2py’s, provides strong
 security and encryption of the session data, but sessions are no
 longer stored in the file system - which created performance issues.
@@ -266,7 +268,7 @@ flexible pluralization capabilities.</p></li>
 is a web IDE for uploading/managing/editing apps.</p></li>
 <li><p>PY4WEB’s Dashboard includes a web based database interface. This
 replaces the appadmin functionality of web2py.</p></li>
-<li><p>PY4WEB comes with a Form object and a Grid objects that are
+<li><p>PY4WEB comes with Form and Grid objects that are
 similar to web2py’s SQLFORM and SQLFORM.grid.</p></li>
 <li><p>PY4WEB comes with an Auth object that replaces the web2py one. It is
 more modular and easier to extend. Out of the box, it provides the
@@ -274,7 +276,7 @@ basic functionality of register, login, logout, change password,
 request change password, edit profile as well as integration with
 PAM, SAML2, LDAP, OAUTH2 (google, facebook, and twitter).</p></li>
 <li><p>PY4WEB leverages PyDAL’s new tags functionality
-to tag users with groups and search users by groups and
+to tag users with groups, search users by groups, and
 apply permissions based on membership.</p></li>
 <li><p>PY4WEB comes with with some custom Vue.js components designed to
 interact with the PyDAL RESTAPI, and with PY4WEB in general. These
@@ -306,8 +308,7 @@ fast and secure.</p>
 <li><p><a class="reference external" href="https://github.com/Kkeller83">Kevin Keller</a></p></li>
 <li><p><a class="reference external" href="mailto:sam&#37;&#52;&#48;dealfaro&#46;com">Sam de Alfaro</a> (logo design)</p></li>
 </ul>
-<p>Special thanks to Sam de Alfaro, who designed the official logo of py4web. We friendly call the logo “Axel the axolotl”: it magically represents the sense of kindness
-and inclusion we believe it’s the cornerstone of our growing community.</p>
+<p>Special thanks to Sam de Alfaro, who designed the official logo of py4web. We friendly call the logo “Axel the axolotl”: it magically represents the sense of kindness and inclusion. We believe it’s the cornerstone of our growing community.</p>
 <img alt="_images/logo.png" src="_images/logo.png" />
 </div>
 </div>
@@ -358,7 +359,7 @@ and inclusion we believe it’s the cornerstone of our growing community.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210619.1
+      v: 1.20211207.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

@@ -7,7 +7,7 @@ portalocker
 tornado
 renoir >= 1.4.0
 requests
-threadsafevariable >= 1.1
+threadsafevariable >= 1.2
 pyjwt >= 2.0.1
 pluralize >= 0.1.7
 rocket3
