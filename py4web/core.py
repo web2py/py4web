@@ -938,7 +938,7 @@ class action:
         """Building the decorator"""
         app_name = action.app_name
         if self.path[0] == "/":
-            path = self.path.rstrip("/")
+            path = self.path.rstrip("/") or "/"
         else:
             if app_name == "_default":
                 base_path = ""
