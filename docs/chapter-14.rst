@@ -29,8 +29,9 @@ Create a new minimal app called ``grid``. Change it with the following content.
 
    # in grid/__init__.py
    import os
-   from py4web.utils.grid import Grid
    from py4web import action, Field, DAL
+   from py4web.utils.grid import Grid, GridClassStyleBulma
+   from py4web.utils.form import Form, FormStyleBulma
 
 
    # database definition
@@ -56,7 +57,7 @@ Create a new minimal app called ``grid``. Change it with the following content.
    def index(path=None):
          grid = Grid(path,
                   formstyle=FormStyleDefault, # FormStyleDefault or FormStyleBulma
-                  grid_class_style=GridClassStyle, #GridClassStyle or GridClassStyleBulma      
+                  grid_class_style=GridClassStyle, # GridClassStyle or GridClassStyleBulma      
                   query=(db.person.id > 0),
                   orderby=[db.person.name],
                   search_queries=[['Search by Name', lambda val: db.person.name.contains(val)]])
@@ -113,6 +114,11 @@ the grid object on __init__.py to:
    formstyle=FormStyleBulma, # FormStyleDefault or FormStyleBulma
    grid_class_style=GridClassStyleBulma, #GridClassStyle or GridClassStyleBulma
 
+Notice that in this case you need to import the corresponding python modules in advance
+(we've already done it on line 4 and 5 above). Instead if you use the default no.css style
+you don't need to manually import its style modules (and you even don't need the formstyle
+and grid_class_style parameters).
+
 You also need to change the file templates/grid.html with this content:
 
 ::
@@ -145,6 +151,7 @@ This is much better, isn't it?
 
 In the  in the  :ref:`Advanced topics and examples` chapter you can find
 more examples, including a master/detail grid example written with **htmx**.
+
 
 The Grid object
 ---------------
