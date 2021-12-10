@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Fixtures &mdash; py4web 1.20210619.1 documentation</title>
+  <title>Fixtures &mdash; py4web 1.20211207.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210619.1
+                1.20211207.1
               </div>
             
           
@@ -129,12 +129,12 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
@@ -702,7 +702,7 @@ currently logged in user. If the user is not logged-in, it returns
 is not logged-in, hence this example is equivalent to the previous one.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">auth</span></code> fixture is plugin based: it supports multiple plugin
 methods including OAuth2 (Google, Facebook, Twitter), PAM and LDAP.
-The <a class="reference internal" href="chapter-13.html#authentication-and-access-control"><span class="std std-ref">Authentication and Access control</span></a> chapter will show you
+The <a class="reference internal" href="chapter-13.html#authentication-and-authorization"><span class="std std-ref">Authentication and authorization</span></a> chapter will show you
 all the related details.</p>
 </div>
 <div class="section" id="caveats-about-fixtures">
@@ -742,13 +742,13 @@ attributes.</p>
 <div class="section" id="custom-fixtures">
 <h2>Custom fixtures<a class="headerlink" href="#custom-fixtures" title="Permalink to this headline">¶</a></h2>
 <p>A fixture is an object with the following minimal structure:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Fixture</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">Fixture</span>
 
 <span class="k">class</span> <span class="nc">MyFixture</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
-    <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span> <span class="k">pass</span>
     <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span> <span class="k">return</span> <span class="n">data</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">shared_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="k">return</span> <span class="n">output</span>
 </pre></div>
 </div>
 <p>If an action uses this fixture:</p>
@@ -870,7 +870,7 @@ that function automatically.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210619.1
+      v: 1.20211207.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

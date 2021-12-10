@@ -1,17 +1,19 @@
 ===========
-The RESTAPI
+The RestAPI
 ===========
 
-Since version 19.5.10 pyDAL includes a restful API called RestAPI. It is
-inspired by GraphQL and while it’s not quite the same due to it being less
-powerful, it is in the spirit of py4web where it's more practical and easier to use.
+Since version 19.5.10 pyDAL includes a restful API [CIT0801]_ called RestAPI. It is
+inspired by GraphQL [CIT0802]_ and while it’s not quite the same due to it being less
+powerful, it is in the spirit of py4web since it's more practical and easier to use.
+
 Like GraphQL RestAPI allows a client to query for information using the
 GET method and allows to specify some details about the format of the
 response (which references to follow, and how to denormalize the data).
 Unlike GraphQL it allows the server to specify a policy and restrict
-which queries are allowed and which one are not. They can be evaluated
+which queries are allowed and which ones are not. They can be evaluated
 dynamically per request based on the user and the state of the server.
-As the name implied RestAPI allows all standard methods: GET, POST, PUT,
+
+As the name implies RestAPI allows all standard methods: GET, POST, PUT,
 and DELETE. Each of them can be enabled or disabled based on the policy,
 for individual tables and individual fields.
 
@@ -19,64 +21,96 @@ for individual tables and individual fields.
 
    Specifications might be subject to changes since this is a new feature.
 
-In the examples below we assume an app called “superheroes” and the
-following model:
+In the examples below we assume a simple app called “superheroes”:
 
 .. code:: python
 
-   db.define_table(
-       'person',
-       Field('name'),
-       Field('job'))
+    # in superheroes/__init__.py
+    import os
+    from py4web import action, request, Field, DAL
+    from pydal.restapi import RestAPI, Policy
 
-   db.define_table(
-       'superhero',
-       Field('name'),
-       Field('real_identity', 'reference person'))
+    # database definition
+    DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
+    if not os.path.isdir(DB_FOLDER):
+        os.mkdir(DB_FOLDER)
+    db = DAL('sqlite://storage.sqlite', folder=DB_FOLDER)
+    db.define_table(
+        'person',
+        Field('name'),
+        Field('job'))
+    db.define_table(
+        'superhero',
+        Field('name'),
+        Field('real_identity', 'reference person'))
+    db.define_table(
+        'superpower',
+        Field('description'))
+    db.define_table(
+        'tag',
+        Field('superhero', 'reference superhero'),
+        Field('superpower', 'reference superpower'),
+        Field('strength', 'integer'))
 
-   db.define_table(
-       'superpower',
-       Field('description'))
+    # add example entries in db
+    if not db(db.person).count():
+        db.person.insert(name='Clark Kent', job='Journalist')
+        db.person.insert(name='Peter Park', job='Photographer')
+        db.person.insert(name='Bruce Wayne', job='CEO')
+        db.superhero.insert(name='Superman', real_identity=1)
+        db.superhero.insert(name='Spiderman', real_identity=2)
+        db.superhero.insert(name='Batman', real_identity=3)
+        db.superpower.insert(description='Flight')
+        db.superpower.insert(description='Strength')
+        db.superpower.insert(description='Speed')
+        db.superpower.insert(description='Durability')
+        db.tag.insert(superhero=1, superpower=1, strength=100)
+        db.tag.insert(superhero=1, superpower=2, strength=100)
+        db.tag.insert(superhero=1, superpower=3, strength=100)
+        db.tag.insert(superhero=1, superpower=4, strength=100)
+        db.tag.insert(superhero=2, superpower=2, strength=50)
+        db.tag.insert(superhero=2, superpower=3, strength=75)
+        db.tag.insert(superhero=2, superpower=4, strength=10)
+        db.tag.insert(superhero=3, superpower=2, strength=80)
+        db.tag.insert(superhero=3, superpower=3, strength=20)
+        db.tag.insert(superhero=3, superpower=4, strength=70)
+        db.commit()
 
-   db.define_table(
-       'tag',
-       Field('superhero', 'reference superhero'),
-       Field('superpower', 'reference superpower'),
-       Field('strength', 'integer'))
+    # policy definitions
+    policy = Policy()
+    policy.set('superhero', 'GET', authorize=True, allowed_patterns=['*'])
+    policy.set('*', 'GET', authorize=True, allowed_patterns=['*'])
 
-We also assume the following controller:
+    # for security reasons we disabled here all methods but GET at the policy level,
+    # to enable any of them just set authorize = True
+    policy.set('*', 'PUT', authorize=False)
+    policy.set('*', 'POST', authorize=False)
+    policy.set('*', 'DELETE', authorize=False)
 
-.. code:: python
+    @action('api/<tablename>/', method = ['GET', 'POST'])
+    @action('api/<tablename>/<rec_id>', method = ['GET', 'PUT', 'DELETE'])
+    @action.uses(db)
+    def api(tablename, rec_id=None):
+        return RestAPI(db, policy)(request.method,
+                                tablename,
+                                rec_id,
+                                request.GET,
+                                request.POST
+                                )
 
-   from py4web import action, request
-   from .common import db
-   from pydal.restapi import RestAPI, Policy
+    @action("index")
+    def index():
+        return "RestAPI example"
 
-   policy = Policy()
-   policy.set('superhero', 'GET', authorize=True, allowed_patterns=['*'])
-   policy.set('*', 'GET', authorize=True, allowed_patterns=['*'])
 
-   # for security reasons we disabled here all methods but GET at the policy level, to enable any of them just set authorize = True
-   policy.set('*', 'PUT', authorize=False)
-   policy.set('*', 'POST', authorize=False)
-   policy.set('*', 'DELETE', authorize=False)
+RestAPI policies and actions
+----------------------------
 
-   @action('api/<tablename>/', method = ['GET', 'POST'])
-   @action('api/<tablename>/<rec_id>', method = ['GET', 'PUT', 'DELETE'])
-   @action.uses(db)
-   def api(tablename, rec_id=None):
-       return RestAPI(db, policy)(request.method,
-                                  tablename,
-                                  rec_id,
-                                  request.GET,
-                                  request.POST
-                                  )
-
-The policy is per table (or \* for all tables and per method. authorize
+The policy is per table (or * for all tables) and per method. ``authorize``
 can be True (allow), False (deny) or a function with the signature
 (method, tablename, record_id, get_vars, post_vars) which returns
 True/False. For the GET policy one can specify a list of allowed query
-patterns (\* for all). A query pattern will be matched against the keys
+patterns (* for all). A query pattern will be matched against the keys
 in the query string.
 
 The above action is exposed as:
@@ -85,6 +119,19 @@ The above action is exposed as:
 
    /superheroes/api/{tablename}
    /superheroes/api/{tablename}/{rec_id}
+
+
+The result can be seen directly with a browser, rendered as JSON.
+Let's look for example at the ``person`` table:
+
+.. image:: images/restapi.png
+
+
+The diagram of the superhero's database should help you interpreting the code:
+
+
+.. image:: images/restapi2.png
+
 
 .. note::
 
@@ -104,59 +151,55 @@ The general query has the form ``{something}.eq=value`` where ``eq=``
 stands for “equal”, ``gt=`` stands for “greater than”, etc. The
 expression can be prepended by ``not.``.
 
-``{something}`` can be the name of a field in the table being queried as
-in:
+``{something}`` can be:
 
-**All superheroes called “Superman”**
+- the name of a field in the table being queried as in:
 
-::
+    **All superheroes called “Superman”**
 
-   /superheroes/api/superhero?name.eq=Superman
+    ::
 
-It can be the name of a field of a table referred by the table being
-queried as in:
+    /superheroes/api/superhero?name.eq=Superman
 
-**All superheroes with real identity “Clark Kent”**
 
-::
+- the name of a field of a table referred by the table being queried as in:
 
-   /superheroes/api/superhero?real_identity.name.eq=Clark Kent
+    **All superheroes with real identity “Clark Kent”**
 
-It can be the name of a field of a table that refers to the table being
-queried as in:
+    ::
 
-**All superheroes with any tag superpower with strength > 90**
+    /superheroes/api/superhero?real_identity.name.eq=Clark Kent
 
-::
+- the name of a field of a table that refers to the table being queried as in:
 
-   /superheroes/api/superhero?superhero.tag.strength.gt=90
+    **All superheroes with any tag superpower with strength > 90**
 
-(here ``tag`` is the name of the link table, the preceding ``superhero`` is
-the name of the field that refers to the selected table and ``strength``
-is the name of the field used to filter)
+    ::
 
-It can also be a field of the table referenced by a many-to-many linked
-table as in:
+    /superheroes/api/superhero?superhero.tag.strength.gt=90
 
-**All superheroes with the flight power**
+    (here ``tag`` is the name of the link table, the preceding ``superhero`` is
+    the name of the field that refers to the selected table and ``strength``
+    is the name of the field used to filter)
 
-::
+- a field of the table referenced by a many-to-many linked table as in:
 
-   /superheroes/api/superhero?superhero.tag.superpower.description.eq=Flight
+    **All superheroes with the flight power**
 
-The key to understand the syntax above is to break it as follows:
+    ::
 
-::
+    /superheroes/api/superhero?superhero.tag.superpower.description.eq=Flight
 
-   superhero?superhero.tag.superpower.description.eq=Flight
 
-and read it as:
+.. hint::
+    The key to understand the syntax above is to read it as:
 
-   select records of table **superhero** referred by field **superhero**
-   of table **tag** when the **superpower** field of said table points
-   to a record with **description** **eq**\ ual to “Flight”.
+    << select records of table **superhero** referred by field **superhero**
+    of table **tag**, when the **superpower** field of said table points
+    to a record with **description** equal to “Flight” >>
 
-The query allows additional modifiers for example
+
+The query allows additional modifiers for example:
 
 ::
 
@@ -168,6 +211,10 @@ The query allows additional modifiers for example
 
 The first 3 are obvious. ``@model`` returns a JSON description of database
 model. ``@lookup`` denormalizes the linked field.
+
+
+RestAPI practical examples
+--------------------------
 
 Here are some practical examples:
 
@@ -1027,6 +1074,10 @@ OUTPUT:
        "api_version": "0.1"
    }
 
+
+The RestAPI response
+--------------------
+
 All RestAPI response have the fields:
 
 :api_version: RestAPI version.
@@ -1041,3 +1092,7 @@ Other optional fields are:
 :errors: Usually a validation error.
 :models: Usually if status != "success".
 :message: For error details.
+
+
+.. [CIT0801] https://en.wikipedia.org/wiki/Representational_state_transfer
+.. [CIT0802] https://graphql.org/

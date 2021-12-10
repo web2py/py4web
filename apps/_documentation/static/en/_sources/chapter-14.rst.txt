@@ -2,8 +2,7 @@
 Grid
 ====
 
-py4web comes with a Grid object providing simple grid and CRUD
-capabilities.
+py4web comes with a Grid object providing grid and CRUD capabilities.
 
 Key Features
 ------------
@@ -36,7 +35,7 @@ controllers.py
    @action.uses(session, db, auth, 'grid.html')
    def companies(path=None):
        grid = Grid(path,
-                   query=reduce(lambda a, b: (a & b), [db.company.id > 0]),
+                   query=(db.company.id > 0),
                    orderby=[db.company.name],
                    search_queries=[['Search by Name', lambda val: db.company.name.contains(val)]])
 
@@ -61,7 +60,7 @@ Signature
            query,
            search_form=None,
            search_queries=None,
-           fields=None,
+           columns=None,
            show_id=False,
            orderby=None,
            left=None,
@@ -88,8 +87,8 @@ Signature
    search_queries.
 -  search_queries: list of query lists to use to build the search form.
    Ignored if search_form is used. Format is
--  fields: list of fields to display on the list page, if blank, glean
-   tablename from first query and use all fields of that table
+-  columns: list of fields or columns to display on the list page, 
+   if blank, the table will use all readable fields of the searched table
 -  show_id: show the record id field on list page - default = False
 -  orderby: pydal orderby field or list of fields
 -  left: if joining other tables, specify the pydal left expression here
@@ -156,6 +155,31 @@ create/details/editable/deletable during grid instantiation.
 Additionally, you can provide a separate URL to the
 create/details/editable/deletable parameters to bypass the
 auto-generated CRUD pages and handle the detail pages yourself.
+
+Custom Columns
+--------------
+
+If the grid does not involve a join but displays results from a single table
+you can specify a list of columns and columns are highly customizable.
+
+.. code:: python
+
+   from py4web.utils.grid import Column
+   from yatl helpers import A
+
+   columns = [
+      db.company.id,
+      db.company.name,
+      Column("Web Site", lambda row: f"https://{row.name}.com"),
+      Column("Go To", lambda row: A("link", _href=f"https://{row.name}.com"))
+   ]
+
+   grid = Grid(... columns=columns ...) 
+
+Notice in this example the first two columns are regular fields,
+The third column has a header "Web Site" and consists of URL strings generated from the rows.
+The fourth column has a header "Go To" and generates actual clickable links using the ``A`` helper.
+
 
 Using templates
 ---------------
@@ -435,7 +459,7 @@ When displaying fields in a PyDAL table, you sometimes want to display a
 more descriptive field than a foreign key value. There are a couple of
 ways to handle that with the py4web grid.
 
-filter_out on PyDAL field definition - here is an example of a foreign
+``filter_out`` on PyDAL field definition - here is an example of a foreign
 key field
 
 .. code:: python

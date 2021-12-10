@@ -24,8 +24,9 @@ from py4web import (
     request,
     response,
 )
-from py4web.core import Fixture, Reloader, Session, dumps, error_logger, safely
+from py4web.core import Fixture, Reloader, Session, dumps, error_logger, safely, DAL
 from py4web.utils.factories import ActionFactory
+from pydal.restapi import RestAPI, Policy
 
 from .diff2kryten import diff2kryten
 from .utils import *
@@ -316,9 +317,6 @@ if MODE in ("demo", "readonly", "full"):
         # this is not final, requires pydal 19.5
         args = path.split("/")
         app_name = args[0]
-        from py4web.core import Reloader, DAL
-        from pydal.restapi import RestAPI, Policy
-
         if MODE != "full":
             raise HTTP(403)
         module = Reloader.MODULES[app_name]
@@ -365,11 +363,9 @@ if MODE in ("demo", "readonly", "full"):
                     table._tablename, "POST", authorize=True, fields=table.fields
                 )
                 policy.set(table._tablename, "DELETE", authorize=True)
-            data = action.uses(db, T)(
-                lambda: RestAPI(db, policy)(
-                    request.method, args[2], id, request.query, request.json
-                )
-            )()
+            data = RestAPI(db, policy)(
+                request.method, args[2], id, request.query, request.json
+            )
         else:
             data = {}
         if "code" in data:

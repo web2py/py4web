@@ -22,6 +22,7 @@ import numbers
 import os
 import pathlib
 import platform
+import portalocker
 import re
 import signal
 import sys
@@ -387,7 +388,8 @@ def thread_safe_pydal_patch():
         "represent",
     ]
     for a in tsafe_attrs:
-        setattr(Field, a, threadsafevariable.ThreadSafeVariable())
+        b = threadsafevariable.ThreadSafeVariable()
+        setattr(Field, a, b)
 
     # hack 'copy.copy' behavior, since it makes a shallow copy,
     # but ThreadSafe-attributes (see above) are class-level, so:
@@ -936,7 +938,7 @@ class action:
         """Building the decorator"""
         app_name = action.app_name
         if self.path[0] == "/":
-            path = self.path.rstrip("/")
+            path = self.path.rstrip("/") or "/"
         else:
             if app_name == "_default":
                 base_path = ""
@@ -1005,6 +1007,18 @@ def new_sslwrap(
 def get_error_snapshot(depth=5):
     """Return a dict describing a given traceback (based on cgitb.text)."""
 
+    tb = traceback.format_exc()
+    logfile = os.environ.get("PY4WEB_LOGFILE")
+    if logfile:
+        msg = f"[{datetime.datetime.now().isoformat()}]: {tb}\n"
+        if logfile == ':stderr':
+            sys.stderr.write(msg)
+        elif logfile == ':stdout':
+            sys.stdout.write(msg)
+        else:            
+            with portalocker.Lock(logfile, "a", timeout=2) as fp:
+                fp.write(msg)
+
     etype, evalue, etb = sys.exc_info()
     if isinstance(etype, type):
         etype = etype.__name__
@@ -1032,7 +1046,7 @@ def get_error_snapshot(depth=5):
 
     data["platform_info"] = {key: getattr(platform, key)() for key in platform_keys}
     data["os_environ"] = {key: str(value) for key, value in os.environ.items()}
-    data["traceback"] = traceback.format_exc()
+    data["traceback"] = tb
     data["exception_type"] = str(etype)
     data["exception_value"] = str(evalue)
 
@@ -1879,6 +1893,7 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     "--ssl_cert", type=click.Path(exists=True), help="SSL certificate file for HTTPS"
 )
 @click.option("--ssl_key", type=click.Path(exists=True), help="SSL key file for HTTPS")
+@click.option("--logfile", default="", help="Where to send error logs (:stdout/:stderr/{filename})")
 def run(**kwargs):
     """Run all the applications on apps_folder"""
     install_args(kwargs)

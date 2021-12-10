@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Installation and Startup &mdash; py4web 1.20210619.1 documentation</title>
+  <title>Installation and Startup &mdash; py4web 1.20211207.1 documentation</title>
   
 
   
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.20210619.1
+                1.20211207.1
               </div>
             
           
@@ -139,12 +139,12 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
@@ -501,27 +501,27 @@ Options:
 
   --watch [off|sync|lazy]       Watch python changes and reload apps
                                 automatically, modes: off, sync, lazy
-                                [default: off]
+                                [default: lazy]
 
   --ssl_cert PATH               SSL certificate file for HTTPS
   --ssl_key PATH                SSL key file for HTTPS
   -help, -h, --help             Show this message and exit.
 </pre></div>
 </div>
-<p>If you want py4web to automatically reload an application upon any
-changes to files of that application, you can:</p>
-<ul class="simple">
-<li><p>for immediate reloading (sync-mode): <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--watch=sync</span></code></p></li>
-<li><p>for reloading on any first incoming request to the application has
-been changed (lazy-mode): <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--watch=lazy</span></code></p></li>
-</ul>
+<p>By default py4web will automatically reload an application upon any changes to the python files of that application.
+The reloading will occur on any first incoming request to the application that has
+been changed (lazy-mode). If you prefer an immediate reloading (sync-mode), use
+<code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--watch</span> <span class="pre">sync</span></code>. For production servers, it’s better to use <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--watch</span> <span class="pre">off</span></code> in order
+to avoid unneded checks (but you will need to restart py4web for activating any change).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The optional <code class="docutils literal notranslate"><span class="pre">--watch</span></code> directive looks for any changes occurring to the python files under the
+<p>The <code class="docutils literal notranslate"><span class="pre">--watch</span></code> directive looks for any changes occurring to the python files under the
 <code class="docutils literal notranslate"><span class="pre">/apps</span></code> folder only. Any modifications to the standard py4web programs will always require a full
 restart of the framework.</p>
 </div>
-<p>The default web server used is currently Tornado, but you can change this behaviour with the <code class="docutils literal notranslate"><span class="pre">server</span></code> option.</p>
+<p>The default web server used is currently rocketServer, but you can change this behaviour with the <code class="docutils literal notranslate"><span class="pre">server</span></code> option.
+<a class="reference external" href="https://github.com/web2py/rocket3">Rocket3</a>  is the multi-threaded web server used by web2py stripped of all the
+Python2 logic and dependencies.</p>
 </div>
 <div class="section" id="set-password-command-option">
 <span id="id4"></span><h3><code class="docutils literal notranslate"><span class="pre">set_password</span></code> command option<a class="headerlink" href="#set-password-command-option" title="Permalink to this headline">¶</a></h3>
@@ -551,7 +551,7 @@ custom file name with</p>
 </pre></div>
 </div>
 <p>and then ask py4web to re-use that password at runtime with</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4webt run -p my_password_file.txt apps
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web run -p my_password_file.txt apps
 </pre></div>
 </div>
 <p>Finally you can manually create the file yourself with:</p>
@@ -736,7 +736,7 @@ tutorial</a>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210619.1
+      v: 1.20211207.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

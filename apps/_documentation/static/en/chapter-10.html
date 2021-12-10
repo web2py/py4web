@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>YATL helpers &mdash; py4web 1.20210619.1 documentation</title>
+  <title>YATL helpers &mdash; py4web 1.20211207.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210619.1
+                1.20211207.1
               </div>
             
           
@@ -108,7 +108,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">YATL helpers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#helpers-overview">Helpers overview</a></li>
@@ -157,11 +157,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#find"><code class="docutils literal notranslate"><span class="pre">find</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#import-modules-from-templates">Import modules from templates</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
@@ -869,6 +870,35 @@ that match the specified attributes will be searched for text.</p>
 </div>
 </div>
 </div>
+<div class="section" id="import-modules-from-templates">
+<h2>Import modules from templates<a class="headerlink" href="#import-modules-from-templates" title="Permalink to this headline">¶</a></h2>
+<p>Normally all the code should be called from the controller program, and only the
+necessary data is passed to the template in order to be displayed.
+But sometimes it’s useful to use a python function as a helper called from a template.</p>
+<p>In this case you can use <code class="docutils literal notranslate"><span class="pre">Inject</span></code>. For example if your helper function is called <em>sidebar_menu</em>
+and it’s inside the libs/helpers.py module of your app, you could use this in <strong>controllers.py</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.factories</span> <span class="kn">import</span> <span class="n">Inject</span>
+<span class="kn">from</span> <span class="nn">.libs.helpers</span> <span class="kn">import</span> <span class="n">sidebar_menu</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">Inject</span><span class="p">(</span><span class="n">sidebar_menu</span><span class="o">=</span><span class="n">sidebar_menu</span><span class="p">),</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="o">....</span>
+</pre></div>
+</div>
+<p>OR</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.factories</span> <span class="kn">import</span> <span class="n">Inject</span>
+<span class="kn">from</span> <span class="nn">.libs</span> <span class="kn">import</span> <span class="n">helpers</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">Inject</span><span class="p">(</span><span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="n">helpers</span><span class="p">)),</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="o">....</span>
+</pre></div>
+</div>
+<p>Then you can import the needed code in the index.html template in a clean way:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=sidebar_menu]]
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -917,7 +947,7 @@ that match the specified attributes will be searched for text.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20210619.1
+      v: 1.20211207.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>py4web: the reference Manual &mdash; py4web 1.20210619.1 documentation</title>
+  <title>py4web: the reference Manual &mdash; py4web 1.20211207.1 documentation</title>
   
 
   
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.20210619.1
+                1.20211207.1
               </div>
             
           
@@ -107,12 +107,12 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
@@ -256,8 +256,11 @@
 <li class="toctree-l2"><a class="reference internal" href="chapter-07.html#gotchas">Gotchas</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-08.html#restapi-policies-and-actions">RestAPI policies and actions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-08.html#restapi-get">RestAPI GET</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-08.html#restapi-practical-examples">RestAPI practical examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-08.html#the-restapi-response">The RestAPI response</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a><ul>
@@ -271,6 +274,7 @@
 <li class="toctree-l2"><a class="reference internal" href="chapter-10.html#built-in-helpers">Built-in helpers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-10.html#custom-helpers">Custom helpers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-10.html#server-side-dom">Server-side <em>DOM</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-10.html#import-modules-from-templates">Import modules from templates</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a><ul>
@@ -280,17 +284,16 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="chapter-12.html#the-form-constructor">The Form constructor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#a-minimal-form-example">A minimal form example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#form-basic-example">Form basic example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#form-structure-manipulation">Form Structure Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#a-minimal-form-example-without-a-database">A minimal form example without a database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#basic-form-example">Basic form example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#widgets">Widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#advanced-form-design">Advanced form design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-12.html#form-validation">Form validation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chapter-13.html#auth-ui">Auth UI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-13.html#using-auth">Using Auth</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-13.html#auth-plugins">Auth Plugins</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chapter-13.html#tags-and-permissions">Tags and Permissions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-13.html#authentication-using-auth">Authentication using Auth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-13.html#authorization-using-tags">Authorization using Tags</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a><ul>
@@ -299,6 +302,7 @@
 <li class="toctree-l2"><a class="reference internal" href="chapter-14.html#signature">Signature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-14.html#searching-filtering">Searching / Filtering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-14.html#crud">CRUD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#custom-columns">Custom Columns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-14.html#using-templates">Using templates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-14.html#customizing-style">Customizing Style</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chapter-14.html#custom-action-buttons">Custom Action Buttons</a></li>
@@ -372,7 +376,7 @@
      <label for="switch"></label>
      </span>
       
-      v: 1.20210619.1
+      v: 1.20211207.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Help, resources and hints &mdash; py4web 1.20210619.1 documentation</title>
+  <title>Help, resources and hints &mdash; py4web 1.20211207.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20210619.1
+                1.20211207.1
               </div>
             
           
@@ -107,6 +107,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#this-manual">This manual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-google-group">The Google group</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-chat-on-irc">The chat on IRC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-discord-server">The Discord server</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#tutorials-and-video">Tutorials and video</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-sources-on-github">The sources on GitHub</a></li>
 </ul>
@@ -126,12 +127,12 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating your first app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixtures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RESTAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-09.html">YATL Template Language</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-10.html">YATL helpers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and Access control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">From web2py to py4web</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
@@ -225,6 +226,10 @@ But don’t be scared, in this manual we’ll assist you side by side in this jo
 From time to time we also use it to host a scheduled public chat, where you can write and read live questions to developers.
 Transcripts of them are then available on the mailing list.</p>
 </div>
+<div class="section" id="the-discord-server">
+<h3>The Discord server<a class="headerlink" href="#the-discord-server" title="Permalink to this headline">¶</a></h3>
+<p>For quick questions and chats you can also use the free <a class="reference external" href="https://discord.gg/xCzQ9KTk3W">Discord server dedicated to py4web</a>. You could usually find many py4web developers hanging out in the channel.</p>
+</div>
 <div class="section" id="tutorials-and-video">
 <h3>Tutorials and video<a class="headerlink" href="#tutorials-and-video" title="Permalink to this headline">¶</a></h3>
 <p>There are many tutorials and videos available. Here are some of them:</p>
@@ -232,6 +237,8 @@ Transcripts of them are then available on the mailing list.</p>
 <li><p>the <a class="reference external" href="https://learn-py4web.github.io">Learn Py4Web site</a> by Luca de Alfaro (with lots of excellent training videos)</p></li>
 <li><p>the free video <a class="reference external" href="https://sites.google.com/a/ucsc.edu/luca/classes/cmps-183-hypermedia-and-the-web/cse-183-spring-2020">course 2020 by Luca de Alfaro</a> at UC Santa Cruz</p></li>
 <li><p>the <a class="reference external" href="https://github.com/agavgavi/py4web-blog-app.git">py4web blog app</a> by Andrew Gavgavian,  which uses py4web to replicate the famous Corey Schafer’s tutorial series on creating a blog app in Django</p></li>
+<li><p>the <a class="reference external" href="https://github.com/jpsteil/southbreeze">South Breeze Enterprises demo app</a> by <a class="reference external" href="https://github.com/jpsteil">Jim Steil</a>.  It is built around the structure of the Microsoft Northwind database,
+but converted to SQLite. You can view the final result online <a class="reference external" href="https://southbreeze.pythonbench.com">here</a></p></li>
 </ul>
 </div>
 <div class="section" id="the-sources-on-github">
@@ -269,8 +276,32 @@ Visual Studio Code (VScode) or PyCharm.</p></li>
 </div>
 <div class="section" id="debugging-py4web-with-vscode">
 <h3>Debugging py4web with VScode<a class="headerlink" href="#debugging-py4web-with-vscode" title="Permalink to this headline">¶</a></h3>
-<p>In order to run py4web.py within VScode, you need to add <code class="docutils literal notranslate"><span class="pre">&quot;args&quot;:</span> <span class="pre">[&quot;run&quot;,</span> <span class="pre">&quot;apps&quot;]</span></code> to the vscode <code class="docutils literal notranslate"><span class="pre">launch.json</span></code>
-configuration file. In addition, if you should get gevent errors you have to add <code class="docutils literal notranslate"><span class="pre">&quot;gevent&quot;:</span> <span class="pre">true</span></code> on the same configuration file.</p>
+<p>It’s quite simple to run and debug py4web within VScode if you have installed from source. You just need to open the main py4web folder (not the apps folder!) with VScode and add:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&quot;args&quot;: [&quot;run&quot;, &quot;apps&quot;],
+&quot;program&quot;: &quot;your_full_path_to_py4web.py&quot;,
+</pre></div>
+</div>
+<p>to the vscode <code class="docutils literal notranslate"><span class="pre">launch.json</span></code> configuration file. Note that if you’re using Windows the “your_full_path_to_py4web.py” parameter must be written using forward slash only, like
+“C:/Users/your_name/py4web/py4web.py”.</p>
+<p>If you have installed py4web from pip, you have instead to:</p>
+<ul class="simple">
+<li><p>open the <code class="docutils literal notranslate"><span class="pre">apps</span></code> folder with VScode</p></li>
+<li><p>copy the standard <a class="reference external" href="https://github.com/web2py/py4web/blob/master/py4web.py">py4web.py launcher</a> inside it, but rename it to <code class="docutils literal notranslate"><span class="pre">py4web-start.py</span></code> in order to avoid import
+errors later:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">cli</span>
+<span class="n">cli</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>create / change the vscode <code class="docutils literal notranslate"><span class="pre">launch.json</span></code> configuration file:</p></li>
+</ul>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&quot;args&quot;: [&quot;run&quot;, &quot;.&quot;],
+&quot;program&quot;: &quot;your_full_path_to_py4web-start.py&quot;,
+</pre></div>
+</div>
+<p>In both cases, if you should get gevent errors you have to also add <code class="docutils literal notranslate"><span class="pre">&quot;gevent&quot;:</span> <span class="pre">true</span></code> on the <code class="docutils literal notranslate"><span class="pre">launch.json</span></code> configuration file.</p>
 </div>
 <div class="section" id="debugging-py4web-with-pycharm">
 <h3>Debugging py4web with PyCharm<a class="headerlink" href="#debugging-py4web-with-pycharm" title="Permalink to this headline">¶</a></h3>
@@ -335,7 +366,7 @@ Once the PR is accepted, your changes will be written on the master branch, and 
      <label for="switch"></label>
      </span>
       
-      v: 1.20210619.1
+      v: 1.20211207.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
