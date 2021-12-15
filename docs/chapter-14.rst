@@ -32,6 +32,7 @@ Create a new minimal app called ``grid``. Change it with the following content.
    from py4web import action, Field, DAL
    from py4web.utils.grid import Grid, GridClassStyleBulma
    from py4web.utils.form import Form, FormStyleBulma
+   from yatl.helpers import A
 
 
    # database definition
