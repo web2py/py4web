@@ -11,7 +11,7 @@ threadsafevariable >= 1.2
 pyjwt >= 2.0.1
 pluralize >= 0.1.7
 rocket3
-yatl >= 20210326.1
+yatl >= 20211217.1
 pydal >= 20210626.3
 watchgod >= 0.6
 
