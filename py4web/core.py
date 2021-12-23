@@ -1770,9 +1770,11 @@ def call(apps_folder, func, yes, args):
     kwargs = json.loads(args)
     install_args(dict(apps_folder=apps_folder, yes=yes))
     apps_folder_name = os.path.basename(os.environ["PY4WEB_APPS_FOLDER"])
+    app_name = func.split('.')[0]
     module, name = ("%s.%s" % (apps_folder_name, func)).rsplit(".", 1)
     env = {}
     exec("from %s import %s" % (module, name), {}, env)
+    request.app_name = app_name
     env[name](**kwargs)
 
 
