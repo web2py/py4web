@@ -151,7 +151,6 @@ msgstr ""
 
 #: ../../chapter-01.rst:53
 msgid ""
-"PY4WEB, unlike web2py, is based on bottlepy and in particular uses the "
 "Bottle request object and the Bottle routing mechanism."
 msgstr ""
 "PY4WEB, ao contrário web2py, é baseado em bottlepy e em usos particulares do"

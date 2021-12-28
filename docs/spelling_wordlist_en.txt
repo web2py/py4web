@@ -144,12 +144,12 @@ multiselect
 multiuser
 myfunction
 mysql
-MySQLdb
 natively
 ndb
 Northwind
 NoSQL
 OAuth
+ombott
 ondelete
 onwards
 optimiser
