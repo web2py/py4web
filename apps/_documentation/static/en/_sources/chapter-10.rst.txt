@@ -801,14 +801,48 @@ that match the specified attributes will be searched for text.
    >>> print(a)
    <div><div><span class="abc">x</span><div><span class="efg">hello</span><span class="abc">z</span></div></div></div>
 
-Import modules from templates
------------------------------
+Using Inject
+------------
 
 Normally all the code should be called from the controller program, and only the
 necessary data is passed to the template in order to be displayed.
-But sometimes it's useful to use a python function as a helper called from a template.
+But sometimes it's useful to pass variables or even use a python function as a helper called from a template.
 
-In this case you can use ``Inject``. For example if your helper function is called *sidebar_menu*
+In this case you can use the fixture ``Inject`` from py4web.utils.factories.
+
+This is a simple example for injecting a variable:
+
+.. code:: python
+
+   from py4web.utils.factories import Inject
+
+   my_var = "Example variable to be passed to a Template"
+
+   ...
+
+   @unauthenticated("index", "index.html")
+   @action.uses(Inject(my_var=my_var))
+   def index():
+
+      ...
+
+
+Then in ``index.html`` you can use the injected variable:
+
+.. code:: html
+
+   [[=my_var]]
+
+
+You can also use ``Inject`` to add variables to the auth.enable line;
+in this way auth forms would have access to that variable.
+
+.. code:: python
+
+   auth.enable(uses=(session, T, db, Inject(TIMEOFFSET=settings.TIMEOFFSET)))
+
+A more complex usage of Inject is for passing python functions to templates.
+For example if your helper function is called *sidebar_menu*
 and it's inside the libs/helpers.py module of your app, you could use this in **controllers.py**:
 
 .. code:: python

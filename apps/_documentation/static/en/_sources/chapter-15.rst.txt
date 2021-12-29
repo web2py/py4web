@@ -67,8 +67,7 @@ Some of the main differences are the following:
   upon redirection.
 
 - web2py uses its own request/response objects. py4web uses the request/response objects from the
-  underlying Bottle framework. While this may change in the future we are committed to keep them
-  compatible with Bottle because of its excellent documentation. Bottle also handles for py4web
+  underlying Ombott library. While this may change in the future we are committed to keep them
   the interface with the web server, routing, partial requests, if modified since, and file
   streaming.
 

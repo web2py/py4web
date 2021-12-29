@@ -69,10 +69,10 @@ The newly created file will be accessible at
 Notice that ``static`` is a special path for py4web and only files under
 the ``static`` folder are served.
 
-Important: internally py4web uses the bottle
-`static_file <https://bottlepy.org/docs/dev/tutorial.html#static-files>`__
-method for serving static files, which means it supports streaming,
-partial content, range requests, and if-modified-since. This is all
+Important: internally py4web uses the ombott 
+(One More BOTTle) <https://github.com/valq7711/ombott>`__,
+It supports streaming, partial content, range requests,
+and if-modified-since. This is all
 handled automatically based on the HTTP request headers.
 
 Dynamic Web Pages
@@ -218,7 +218,7 @@ This action can be accessed at:
 
 
 
-Notice that the request object is a `Bottle request object <https://bottlepy.org/docs/dev/api.html#the-request-object>`__.
+Notice that the request object is equivalent to a `Bottle request object <https://bottlepy.org/docs/dev/api.html#the-request-object>`__.
 with one additional attribute:
 
 ::
@@ -364,8 +364,7 @@ The scaffold app contains an example of a more complex action:
 
 Notice the following:
 
--  ``request``, ``response``, ``abort`` are defined by Bottle, using
-   `ombott (One More BOTTle) <https://github.com/valq7711/ombott>`__,
+-  ``request``, ``response``, ``abort`` are defined by
    which is a fast bottlepy spin-off.
 -  ``redirect`` and ``URL`` are similar to their web2py counterparts
 -  helpers (``A``, ``DIV``, ``SPAN``, ``IMG``, etc) must be imported

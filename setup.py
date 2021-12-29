@@ -23,10 +23,24 @@ setup(
     description="Experimental py4web (a better web2py)",
     packages=["py4web", "py4web.utils", "py4web.utils.auth_plugins"],
     package_data={"py4web": ["assets/*"],},
-    install_requires=[line for line in [
-        line.split('#')[0].strip() for line in
-        open("requirements.txt")
-    ] if line],
+    install_requires=[
+        "wheel",
+        "ombott >= 0.0.10",
+        "click",
+        "colorama",
+        "cryptography",
+        "portalocker",
+        "tornado",
+        "renoir >= 1.4.0",
+        "requests",
+        "threadsafevariable >= 1.2",
+        "pyjwt >= 2.0.1",
+        "pluralize >= 0.1.7",
+        "rocket3",
+        "yatl >= 20211217.1",
+        "pydal >= 20210626.3",
+        "watchgod >= 0.6",
+    ],
     entry_points={"console_scripts": ["py4web=py4web.core:cli"],},
     zip_safe=False,
     platforms="any",

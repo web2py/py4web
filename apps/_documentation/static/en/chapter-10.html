@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>YATL helpers &mdash; py4web 1.20211207.1 documentation</title>
+  <title>YATL helpers &mdash; py4web 1.20211227.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20211207.1
+                1.20211227.1
               </div>
             
           
@@ -157,7 +157,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#find"><code class="docutils literal notranslate"><span class="pre">find</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#import-modules-from-templates">Import modules from templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-inject">Using Inject</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internationalization</a></li>
@@ -870,12 +870,37 @@ that match the specified attributes will be searched for text.</p>
 </div>
 </div>
 </div>
-<div class="section" id="import-modules-from-templates">
-<h2>Import modules from templates<a class="headerlink" href="#import-modules-from-templates" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="using-inject">
+<h2>Using Inject<a class="headerlink" href="#using-inject" title="Permalink to this headline">¶</a></h2>
 <p>Normally all the code should be called from the controller program, and only the
 necessary data is passed to the template in order to be displayed.
-But sometimes it’s useful to use a python function as a helper called from a template.</p>
-<p>In this case you can use <code class="docutils literal notranslate"><span class="pre">Inject</span></code>. For example if your helper function is called <em>sidebar_menu</em>
+But sometimes it’s useful to pass variables or even use a python function as a helper called from a template.</p>
+<p>In this case you can use the fixture <code class="docutils literal notranslate"><span class="pre">Inject</span></code> from py4web.utils.factories.</p>
+<p>This is a simple example for injecting a variable:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.factories</span> <span class="kn">import</span> <span class="n">Inject</span>
+
+<span class="n">my_var</span> <span class="o">=</span> <span class="s2">&quot;Example variable to be passed to a Template&quot;</span>
+
+<span class="o">...</span>
+
+<span class="nd">@unauthenticated</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">Inject</span><span class="p">(</span><span class="n">my_var</span><span class="o">=</span><span class="n">my_var</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+
+   <span class="o">...</span>
+</pre></div>
+</div>
+<p>Then in <code class="docutils literal notranslate"><span class="pre">index.html</span></code> you can use the injected variable:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=my_var]]
+</pre></div>
+</div>
+<p>You can also use <code class="docutils literal notranslate"><span class="pre">Inject</span></code> to add variables to the auth.enable line;
+in this way auth forms would have access to that variable.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">Inject</span><span class="p">(</span><span class="n">TIMEOFFSET</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">TIMEOFFSET</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>A more complex usage of Inject is for passing python functions to templates.
+For example if your helper function is called <em>sidebar_menu</em>
 and it’s inside the libs/helpers.py module of your app, you could use this in <strong>controllers.py</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.factories</span> <span class="kn">import</span> <span class="n">Inject</span>
 <span class="kn">from</span> <span class="nn">.libs.helpers</span> <span class="kn">import</span> <span class="n">sidebar_menu</span>
@@ -947,7 +972,7 @@ and it’s inside the libs/helpers.py module of your app, you could use this in 
      <label for="switch"></label>
      </span>
       
-      v: 1.20211207.1
+      v: 1.20211227.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

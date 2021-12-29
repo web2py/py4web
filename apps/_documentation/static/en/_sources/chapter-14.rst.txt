@@ -2,16 +2,18 @@
 Grid
 ====
 
-py4web comes with a Grid object providing grid and CRUD capabilities.
+py4web comes with a Grid object providing grid and CRUD (create, update and delete) capabilities.
+This allows you to quickly and safely provide an interface to your data. Since it's also
+highly customizable, it's the corner stone of most py4web's applications.
 
 Key Features
 ------------
 
+-  Full CRUD with Delete Confirmation
 -  Click column heads for sorting - click again for DESC
 -  Pagination control
 -  Built in Search (can use search_queries OR search_form)
 -  Action Buttons - with or without text
--  Full CRUD with Delete Confirmation
 -  Pre and Post Action (add your own buttons to each row)
 -  Grid dates in local format
 -  Default formatting by type plus user overrides
@@ -19,74 +21,181 @@ Key Features
 Basic Example
 -------------
 
-In this simple example we will make a grid over the company table.
+In this simple example we will make a grid over the superhero table.
 
-controllers.py
+Create a new minimal app called ``grid``. Change it with the following content.
 
 .. code:: python
 
-   from functools import reduce
-   from py4web.utils.grid import Grid
-   from py4web import action
-   from .common import db, session, auth
+   # in grid/__init__.py
+   import os
+   from py4web import action, Field, DAL
+   from py4web.utils.grid import Grid, GridClassStyleBulma
+   from py4web.utils.form import Form, FormStyleBulma
+   from yatl.helpers import A
 
-   @action('companies', method=['POST', 'GET'])
-   @action('companies/<path:path>', method=['POST', 'GET'])
-   @action.uses(session, db, auth, 'grid.html')
-   def companies(path=None):
-       grid = Grid(path,
-                   query=(db.company.id > 0),
-                   orderby=[db.company.name],
-                   search_queries=[['Search by Name', lambda val: db.company.name.contains(val)]])
 
-       return dict(grid=grid)
+   # database definition
+   DB_FOLDER = os.path.join(os.path.dirname(__file__), 'databases')
+   if not os.path.isdir(DB_FOLDER):
+      os.mkdir(DB_FOLDER)
+   db = DAL('sqlite://storage.sqlite', folder=DB_FOLDER)
+   db.define_table(
+      'person',
+      Field('name'),
+      Field('job'))
 
-grid.html
+   # add example entries in db
+   if not db(db.person).count():
+      db.person.insert(name='Clark Kent', job='Journalist')
+      db.person.insert(name='Peter Park', job='Photographer')
+      db.person.insert(name='Bruce Wayne', job='CEO')
+      db.commit()
+
+   @action('index', method=['POST', 'GET'])
+   @action('index/<path:path>', method=['POST', 'GET'])
+   @action.uses(db, 'grid.html')
+   def index(path=None):
+         grid = Grid(path,
+                  formstyle=FormStyleDefault, # FormStyleDefault or FormStyleBulma
+                  grid_class_style=GridClassStyle, # GridClassStyle or GridClassStyleBulma      
+                  query=(db.person.id > 0),
+                  orderby=[db.person.name],
+                  search_queries=[['Search by Name', lambda val: db.person.name.contains(val)]])
+
+      return dict(grid=grid)
+
+Add a new file templates/grid.html with this basic content:
 
 ::
 
-   [[extend 'layout.html']]
    [[=grid.render()]]
 
-Signature
----------
+Then restart py4web. If you browse to http://127.0.0.1:8000/grid/index you'll get this
+result:
+
+.. image:: images/grid.png
+
+
+Its layout is quite minimal, but it's perfectly usable.
+
+The main problem is that by default the **no.css** stylesheet is used, see
+`here <https://github.com/mdipierro/no.css/>`__. But we've not loaded it!
+Change the file templates/grid.html with this content:
+
+::
+
+   <!DOCTYPE html>
+   <html>
+      <head>
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"  />
+      </head>
+      <body>
+         [[=grid.render()]]
+      <body>
+   </html>
+
+
+
+Then refresh the page.
+
+
+.. image:: images/grid_nocss.png
+
+
+This is better now, with proper icons for Details, Edit and Delete actions.
+
+We can also think about using the **bulma.css**, 
+see `here <https://bulma.io/>`__. In this case you need to change
+the grid object on __init__.py to:
+
+.. code:: python
+
+
+   formstyle=FormStyleBulma, # FormStyleDefault or FormStyleBulma
+   grid_class_style=GridClassStyleBulma, #GridClassStyle or GridClassStyleBulma
+
+Notice that in this case you need to import the corresponding python modules in advance
+(we've already done it on line 4 and 5 above). Instead if you use the default no.css style
+you don't need to manually import its style modules (and you even don't need the formstyle
+and grid_class_style parameters).
+
+You also need to change the file templates/grid.html with this content:
+
+::
+
+   <!DOCTYPE html>
+   <html>
+      <head>
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+      </head>
+      <body>
+            [[=grid.render()]]
+      <body>
+   </html>
+
+Then refresh the page.
+
+.. image:: images/grid_bulmacss.png
+
+
+This is much better, isn't it?
+
+
+.. Note::
+   These are just minimal examples for showing how ``grid`` works internally.
+   Normally you should start from a copy of the standard ``_scaffold`` app, with all
+   the Session and Authentication stuff already defined. Also, you should
+   follow the standard rules for code, like placing the db definition inside
+   models.py and so on.
+   Using standards will make your code simpler, safer and more maintainable.
+
+In the  in the  :ref:`Advanced topics and examples` chapter you can find
+more examples, including a master/detail grid example written with **htmx**.
+
+
+The Grid object
+---------------
 
 .. code:: python
 
    class Grid:
-       def __init__(
-           self,
-           path,
-           query,
-           search_form=None,
-           search_queries=None,
-           columns=None,
-           show_id=False,
-           orderby=None,
-           left=None,
-           headings=None,
-           create=True,
-           details=True,
-           editable=True,
-           deletable=True,
-           pre_action_buttons=None,
-           post_action_buttons=None,
-           auto_process=True,
-           rows_per_page=15,
-           include_action_button_text=True,
-           search_button_text="Filter",
-           formstyle=FormStyleDefault,
-           grid_class_style=GridClassStyle,
-       ):
+      def __init__(
+         self,
+         path,
+         query,
+         search_form=None,
+         search_queries=None,
+         columns=None,
+         field_id=None,
+         show_id=False,
+         orderby=None,
+         left=None,
+         headings=None,
+         create=True,
+         details=True,
+         editable=True,
+         deletable=True,
+         validation=None,
+         pre_action_buttons=None,
+         post_action_buttons=None,
+         auto_process=True,
+         rows_per_page=15,
+         include_action_button_text=True,
+         search_button_text="Filter",
+         formstyle=FormStyleDefault,
+         grid_class_style=GridClassStyle,
+         T=lambda text: text,
+      ):
 
 -  path: the route of this request
 -  query: pydal query to be processed
 -  search_form: py4web FORM to be included as the search form. If
    search_form is passed in then the developer is responsible for
    applying the filter to the query passed in. This differs from
-   search_queries.
+   search_queries
 -  search_queries: list of query lists to use to build the search form.
-   Ignored if search_form is used. Format is
+   Ignored if search_form is used
 -  columns: list of fields or columns to display on the list page, 
    if blank, the table will use all readable fields of the searched table
 -  show_id: show the record id field on list page - default = False
@@ -94,10 +203,10 @@ Signature
 -  left: if joining other tables, specify the pydal left expression here
 -  headings: list of headings to be used for list page - if not provided
    use the field label
--  details: URL to redirect to for displaying records - set to True to
+-  create: URL to redirect to for creating records - set to True to
    automatically generate the URL - set to False to not display the
    button
--  create: URL to redirect to for creating records - set to True to
+-  details: URL to redirect to for displaying records - set to True to
    automatically generate the URL - set to False to not display the
    button
 -  editable: URL to redirect to for editing records - set to True to
@@ -106,6 +215,7 @@ Signature
 -  deletable: URL to redirect to for deleting records - set to True to
    automatically generate the URL - set to False to not display the
    button
+-  validation: optional validation function to pass to create and edit forms
 -  pre_action_buttons: list of action_button instances to include before
    the standard action buttons
 -  post_action_buttons: list of action_button instances to include after
@@ -122,12 +232,14 @@ Signature
    automatically building CRUD forms
 -  grid_class_style: GridClassStyle object used to override defaults for
    styling your rendered grid. Allows you to specify classes or styles
-   to apply at certain points in the grid.
+   to apply at certain points in the grid
+-  T: optional pluralize object
 
-Searching / Filtering
----------------------
 
-There are two ways to build a search form.
+Searching and Filtering
+~~~~~~~~~~~~~~~~~~~~~~~
+
+There are two ways to build a search form:
 
 -  Provide a search_queries list
 -  Build your own custom search form
@@ -143,12 +255,11 @@ However, if this doesn’t give you enough flexibility you can provide
 your own search form and handle all the filtering (building the queries)
 by yourself.
 
-CRUD
-----
+CRUD settings
+~~~~~~~~~~~~~
 
 The grid provides CRUD (create, read, update and delete) capabilities
 utilizing py4web Form.
-
 You can turn off CRUD features by setting
 create/details/editable/deletable during grid instantiation.
 
@@ -160,7 +271,7 @@ Custom Columns
 --------------
 
 If the grid does not involve a join but displays results from a single table
-you can specify a list of columns and columns are highly customizable.
+you can specify a list of columns. Columns are highly customizable.
 
 .. code:: python
 
@@ -230,188 +341,10 @@ You can provide your own formstyle or grid classes and style to grid.
    used for certain portions of the grid.
 
 The default GridClassStyle - based on no.css, primarily uses styles to
-modify the layout of the grid
+modify the layout of the grid. We've already seen that it's possible
+to use other class_style, in particular GridClassStyleBulma.
 
-.. code:: python
-
-   class GridClassStyle:
-
-       """
-       Default grid style
-       Internal element names match default class name, other classes can be added
-       Style use should be minimized since it cannot be overridden by CSS
-       """
-
-       classes = {
-           "grid-wrapper": "grid-wrapper",
-           "grid-header": "grid-header",
-           "grid-new-button": "grid-new-button info",
-           "grid-search": "grid-search",
-           "grid-table-wrapper": "grid-table-wrapper",
-           "grid-table": "grid-table",
-           "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up",
-           "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down",
-           "grid-th-action-button": "grid-col-action-button",
-           "grid-td-action-button": "grid-col-action-button",
-           "grid-tr": "",
-           "grid-th": "",
-           "grid-td": "",
-           "grid-details-button": "grid-details-button info",
-           "grid-edit-button": "grid-edit-button info",
-           "grid-delete-button": "grid-delete-button info",
-           "grid-footer": "grid-footer",
-           "grid-info": "grid-info",
-           "grid-pagination": "grid-pagination",
-           "grid-pagination-button": "grid-pagination-button info",
-           "grid-pagination-button-current": "grid-pagination-button-current default",
-           "grid-cell-type-string": "grid-cell-type-string",
-           "grid-cell-type-text": "grid-cell-type-text",
-           "grid-cell-type-boolean": "grid-cell-type-boolean",
-           "grid-cell-type-float": "grid-cell-type-float",
-           "grid-cell-type-int": "grid-cell-type-int",
-           "grid-cell-type-date": "grid-cell-type-date",
-           "grid-cell-type-time": "grid-cell-type-time",
-           "grid-cell-type-datetime": "grid-cell-type-datetime",
-           "grid-cell-type-upload": "grid-cell-type-upload",
-           "grid-cell-type-list": "grid-cell-type-list",
-           # specific for custom form
-           "search_form": "search-form",
-           "search_form_table": "search-form-table",
-           "search_form_tr": "search-form-tr",
-           "search_form_td": "search-form-td",
-       }
-
-       styles = {
-           "grid-wrapper": "",
-           "grid-header": "display: table; width: 100%",
-           "grid-new-button": "display: table-cell;",
-           "grid-search": "display: table-cell; float:right",
-           "grid-table-wrapper": "overflow-x: auto; width:100%",
-           "grid-table": "",
-           "grid-sorter-icon-up": "",
-           "grid-sorter-icon-down": "",
-           "grid-th-action-button": "",
-           "grid-td-action-button": "",
-           "grid-tr": "",
-           "grid-th": "white-space: nowrap; vertical-align: middle",
-           "grid-td": "white-space: nowrap; vertical-align: middle",
-           "grid-details-button": "margin-bottom: 0",
-           "grid-edit-button": "margin-bottom: 0",
-           "grid-delete-button": "margin-bottom: 0",
-           "grid-footer": "display: table; width:100%",
-           "grid-info": "display: table-cell;",
-           "grid-pagination": "display: table-cell; text-align:right",
-           "grid-pagination-button": "min-width: 20px",
-           "grid-pagination-button-current": "min-width: 20px; pointer-events:none; opacity: 0.7",
-           "grid-cell-type-string": "white-space: nowrap; vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px",
-           "grid-cell-type-text": "vertical-align: middle; text-align: left; text-overflow: ellipsis; max-width: 200px",
-           "grid-cell-type-boolean": "white-space: nowrap; vertical-align: middle; text-align: center",
-           "grid-cell-type-float": "white-space: nowrap; vertical-align: middle; text-align: right",
-           "grid-cell-type-int": "white-space: nowrap; vertical-align: middle; text-align: right",
-           "grid-cell-type-date": "white-space: nowrap; vertical-align: middle; text-align: right",
-           "grid-cell-type-time": "white-space: nowrap; vertical-align: middle; text-align: right",
-           "grid-cell-type-datetime": "white-space: nowrap; vertical-align: middle; text-align: right",
-           "grid-cell-type-upload": "white-space: nowrap; vertical-align: middle; text-align: center",
-           "grid-cell-type-list": "white-space: nowrap; vertical-align: middle; text-align: left",
-           # specific for custom form
-           "search_form": "",
-           "search_form_table": "",
-           "search_form_tr": "",
-           "search_form_td": "",
-       }
-
-       @classmethod
-       def get(cls, element):
-           """returns a dict with _class and _style for the element name"""
-           return {
-               "_class": cls.classes.get(element),
-               "_style": cls.styles.get(element),
-           }
-
-GridClassStyleBulma - bulma implementation
-
-.. code:: python
-
-   class GridClassStyleBulma(GridClassStyle):
-       classes = {
-           "grid-wrapper": "grid-wrapper field",
-           "grid-header": "grid-header pb-2",
-           "grid-new-button": "grid-new-button button",
-           "grid-search": "grid-search is-pulled-right pb-2",
-           "grid-table-wrapper": "grid-table-wrapper table_wrapper",
-           "grid-table": "grid-table table is-bordered is-striped is-hoverable is-fullwidth",
-           "grid-sorter-icon-up": "grid-sort-icon-up fas fa-sort-up is-pulled-right",
-           "grid-sorter-icon-down": "grid-sort-icon-down fas fa-sort-down is-pulled-right",
-           "grid-th-action-button": "grid-col-action-button is-narrow",
-           "grid-td-action-button": "grid-col-action-button is-narrow",
-           "grid-tr": "",
-           "grid-th": "",
-           "grid-td": "",
-           "grid-details-button": "grid-details-button button is-small",
-           "grid-edit-button": "grid-edit-button button is-small",
-           "grid-delete-button": "grid-delete-button button is-small",
-           "grid-footer": "grid-footer",
-           "grid-info": "grid-info is-pulled-left",
-           "grid-pagination": "grid-pagination is-pulled-right",
-           "grid-pagination-button": "grid-pagination-button button is-small",
-           "grid-pagination-button-current": "grid-pagination-button-current button is-primary is-small",
-           "grid-cell-type-string": "grid-cell-type-string",
-           "grid-cell-type-text": "grid-cell-type-text",
-           "grid-cell-type-boolean": "grid-cell-type-boolean has-text-centered",
-           "grid-cell-type-float": "grid-cell-type-float",
-           "grid-cell-type-int": "grid-cell-type-int",
-           "grid-cell-type-date": "grid-cell-type-date",
-           "grid-cell-type-time": "grid-cell-type-time",
-           "grid-cell-type-datetime": "grid-cell-type-datetime",
-           "grid-cell-type-upload": "grid-cell-type-upload",
-           "grid-cell-type-list": "grid-cell-type-list",
-           # specific for custom form
-           "search_form": "search-form is-pulled-right pb-2",
-           "search_form_table": "search-form-table",
-           "search_form_tr": "search-form-tr",
-           "search_form_td": "search-form-td pr-1",
-       }
-
-       styles = {
-           "grid-wrapper": "",
-           "grid-header": "",
-           "grid-new-button": "",
-           "grid-search": "",
-           "grid-table-wrapper": "",
-           "grid-table": "",
-           "grid-sorter-icon-up": "",
-           "grid-sorter-icon-down": "",
-           "grid-th-action-button": "",
-           "grid-td-action-button": "",
-           "grid-tr": "",
-           "grid-th": "text-align: center; text-transform: uppercase;",
-           "grid-td": "",
-           "grid-details-button": "",
-           "grid-edit-button": "",
-           "grid-delete-button": "",
-           "grid-footer": "padding-top: .5em;",
-           "grid-info": "",
-           "grid-pagination": "",
-           "grid-pagination-button": "margin-left: .25em;",
-           "grid-pagination-button-current": "margin-left: .25em;",
-           "grid-cell-type-string": "",
-           "grid-cell-type-text": "",
-           "grid-cell-type-boolean": "",
-           "grid-cell-type-float": "",
-           "grid-cell-type-int": "",
-           "grid-cell-type-date": "",
-           "grid-cell-type-time": "",
-           "grid-cell-type-datetime": "",
-           "grid-cell-type-upload": "",
-           "grid-cell-type-list": "",
-           # specific for custom form
-           "search_form": "",
-           "search_form_table": "",
-           "search_form_tr": "",
-           "search_form_td": "",
-       }
-
-You can build your own class_style to be used with the css framework of
+You can even build your own class_style to be used with the css framework of
 your choice.
 
 Custom Action Buttons
@@ -476,7 +409,7 @@ The downfall of using this method is that sorting and filtering are
 based on the company field in the employee table and not the name of the
 company
 
-left join and specify fields from joined table - specified on the left
+``left join`` and specify fields from joined table - specified on the left
 parameter of Grid instantiation
 
 .. code:: python
@@ -485,11 +418,10 @@ parameter of Grid instantiation
 
 You can specify a standard PyDAL left join, including a list of joins to
 consider.
-
 Now the company name field can be included in your fields list can be
 clicked on and sorted.
 
-Now you can also specify a query such as:
+Also you can specify a query such as:
 
 .. code:: python
 

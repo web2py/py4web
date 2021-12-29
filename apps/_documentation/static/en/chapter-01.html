@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>What is py4web? &mdash; py4web 1.20211207.1 documentation</title>
+  <title>What is py4web? &mdash; py4web 1.20211227.1 documentation</title>
   
 
   
@@ -74,7 +74,7 @@
             
             
               <div class="version">
-                1.20211207.1
+                1.20211227.1
               </div>
             
           
@@ -236,10 +236,9 @@ web2py. In particular, we ditched the custom importer, and we rely
 now exclusively on the regular Python import mechanism.</p></li>
 <li><p>PY4WEB, like web2py, can serve multiple applications concurrently, as
 long as the apps are submodules of the apps module.</p></li>
-<li><p>PY4WEB, unlike web2py, is based on bottlepy and in particular uses
-the Bottle request object and the Bottle routing mechanism. This is
-achieved with <a class="reference external" href="https://github.com/valq7711/ombott">ombott (One More BOTTle)</a>,
-which is a fast bottlepy spin-off.</p></li>
+<li><p>PY4WEB, unlike web2py, is based on ombott
+(a reduced and faster spin-off of Bottle) and in particular uses
+a Bottle-compatible request object and routing mechanism.</p></li>
 <li><p>PY4WEB, unlike web2py, does not create a new environment at every
 request. It introduces the concept of fixtures to explicitly declare
 which objects need to be (re)initialized when a new http request arrives
@@ -359,7 +358,7 @@ fast and secure.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20211207.1
+      v: 1.20211227.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
