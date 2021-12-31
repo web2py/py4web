@@ -100,6 +100,9 @@ Launch Arguments
                                  [default: lazy]
    --ssl_cert PATH               SSL certificate file for HTTPS
    --ssl_key PATH                SSL key file for HTTPS
+   --errorlog TEXT               Where to send error logs
+                                 (:stdout|:stderr|tickets_only|{filename})
+                                 [default: :stderr]
    -help, -h, --help             Show this message and exit.
 
 
