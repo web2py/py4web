@@ -1008,15 +1008,17 @@ def get_error_snapshot(depth=5):
     """Return a dict describing a given traceback (based on cgitb.text)."""
 
     tb = traceback.format_exc()
-    logfile = os.environ.get("PY4WEB_LOGFILE")
-    if logfile:
+    errorlog = os.environ.get("PY4WEB_ERRORLOG")
+    if errorlog:
         msg = f"[{datetime.datetime.now().isoformat()}]: {tb}\n"
-        if logfile == ':stderr':
+        if errorlog == ':stderr':
             sys.stderr.write(msg)
-        elif logfile == ':stdout':
+        elif errorlog == ':stdout':
             sys.stdout.write(msg)
+        elif errorlog == 'tickets_only':
+            pass
         else:            
-            with portalocker.Lock(logfile, "a", timeout=2) as fp:
+            with portalocker.Lock(errorlog, "a", timeout=2) as fp:
                 fp.write(msg)
 
     etype, evalue, etb = sys.exc_info()
@@ -1895,7 +1897,11 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     "--ssl_cert", type=click.Path(exists=True), help="SSL certificate file for HTTPS"
 )
 @click.option("--ssl_key", type=click.Path(exists=True), help="SSL key file for HTTPS")
-@click.option("--logfile", default="", help="Where to send error logs (:stdout/:stderr/{filename})")
+@click.option("--errorlog",
+    default=":stderr",
+    help="Where to send error logs (:stdout|:stderr|tickets_only|{filename})",
+    show_default=True,
+)
 def run(**kwargs):
     """Run all the applications on apps_folder"""
     install_args(kwargs)

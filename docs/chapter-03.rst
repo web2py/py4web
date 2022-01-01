@@ -278,7 +278,6 @@ running it without any argument
 
    # py4web
 
-.. FIXME: next image must be updated
 
 .. image:: images/command.png
    :class: with-shadow
@@ -370,6 +369,9 @@ This currently gives an error on binaries installations and from source installa
 
      --ssl_cert PATH               SSL certificate file for HTTPS
      --ssl_key PATH                SSL key file for HTTPS
+     --errorlog TEXT               Where to send error logs
+                                   (:stdout|:stderr|tickets_only|{filename})
+                                   [default: :stderr]
      -help, -h, --help             Show this message and exit.
 
 
