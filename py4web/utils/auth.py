@@ -441,7 +441,8 @@ class Auth(Fixture):
         If session contains only a user['id']
         retrives the other readable user info from auth_user
         """
-        
+        if not self.session.is_valid():
+            return {}
         user = self.session.get("user")
         if not user or not isinstance(user, dict) or "id" not in user:
             return {}
@@ -455,10 +456,14 @@ class Auth(Fixture):
 
     @property
     def is_logged_in(self):
+        if not self.session.is_valid():
+            return False
         return self.session.get("user", {}).get("id", None) != None
 
     @property
     def user_id(self):
+        if not self.session.is_valid():
+            return None        
         user = self.session.get("user")
         if not user:
             # handles corner case: session=dict(user=None)

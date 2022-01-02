@@ -35,7 +35,7 @@ setup(
         "requests",
         "threadsafevariable >= 1.2",
         "pyjwt >= 2.0.1",
-        "pluralize >= 0.1.7",
+        "pluralize >= 0.1.8",
         "rocket3",
         "yatl >= 20211217.1",
         "pydal >= 20210626.3",
