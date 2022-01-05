@@ -451,6 +451,11 @@ class Grid:
             return self.param.editable(row)
         return self.param.editable
 
+    def is_readable(self, row):
+        if callable(self.param.details):
+            return self.param.details(row)
+        return self.param.details
+
     def is_deletable(self, row):
         if callable(self.param.deletable):
             return self.param.deletable(row)
@@ -1058,7 +1063,7 @@ class Grid:
                     )
                 )
 
-        if self.param.details:
+        if self.is_readable(row):
             if isinstance(self.param.details, str):
                 details_url = self.param.details
             else:
@@ -1072,7 +1077,7 @@ class Grid:
                     name="grid-details-button",
                 )
             )
-        if self.param.editable:
+        if self.is_editable(row):
             if isinstance(self.param.editable, str):
                 edit_url = self.param.editable
             else:
@@ -1087,7 +1092,7 @@ class Grid:
                     _disabled=not self.is_editable(row),
                 )
             )
-        if self.param.deletable:
+        if self.is_deletable(row):
             if isinstance(self.param.deletable, str):
                 delete_url = self.param.deletable
             else:
