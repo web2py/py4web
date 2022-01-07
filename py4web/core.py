@@ -393,7 +393,7 @@ def thread_safe_pydal_patch():
         "update",
         "requires",
         "widget",
-#        "represent",
+        "represent",
     ]
     for a in tsafe_attrs:
         b = threadsafevariable.ThreadSafeVariable()

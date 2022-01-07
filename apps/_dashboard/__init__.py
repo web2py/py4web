@@ -346,7 +346,7 @@ if MODE in ("demo", "readonly", "full"):
                 ]
             }
         elif len(args) > 2 and args[1] in databases:
-            db = getattr(module, args[1])
+            db = getattr(module, args[1])           
             id = args[3] if len(args) == 4 else None
             policy = Policy()
             for table in db:
@@ -363,9 +363,11 @@ if MODE in ("demo", "readonly", "full"):
                     table._tablename, "POST", authorize=True, fields=table.fields
                 )
                 policy.set(table._tablename, "DELETE", authorize=True)
-            data = RestAPI(db, policy)(
+
+            # must wrap into action uses to make sure it closes transactions
+            data = action.uses(db)(lambda: RestAPI(db, policy)(
                 request.method, args[2], id, request.query, request.json
-            )
+            ))()
         else:
             data = {}
         if "code" in data:
