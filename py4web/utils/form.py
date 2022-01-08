@@ -87,7 +87,7 @@ class DateTimeWidget:
 
     def make(self, field, value, error, title, placeholder="", readonly=False):
         return INPUT(
-            _value=str(value).replace(" ", "T"),
+            _value=str(value).replace(" ", "T")[:16],
             _type=self.input_type,
             _id=to_id(field),
             _name=field.name,
