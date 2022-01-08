@@ -302,7 +302,9 @@ def dumps(obj, sort_keys=True, indent=2):
 
 
 class Fixture:
+
     __request_master_ctx__ = threading.local()
+    __fixture_debug__ = False
 
     @classmethod
     def __init_request_ctx__(cls):
@@ -327,16 +329,16 @@ class Fixture:
     def _safe_local(self, storage):
         self.__mount_local__(self, storage)
 
-    def is_valid(self, log=True):
+    def is_valid(self):
         """check if the fixture is valid in context"""
         try:
             self.__request_master_ctx__.request_ctx[self]
             return True
         except (KeyError, AttributeError) as err:
-            if log:
-                logging.warn(
-                    "attempted access to fixture %s from outside a request",
-                    self.__class__.__name)
+            logging.warn(
+                "attempted access to fixture %s from outside a request",
+                self.__class__.__name,
+            )
             return False
 
     def on_request(self):
@@ -643,6 +645,8 @@ class Session(Fixture):
                 or request.json
                 and request.json.get("_session_token")
             )
+        if Fixture.__fixture_debug__:
+            logging.debug("Session token found %s", raw_token)
         if raw_token:
             token_data = raw_token.encode()
             try:
@@ -659,8 +663,9 @@ class Session(Fixture):
                         self.expiration
                     )
                 assert self.get_data().get("secure") == self_local.secure
-            except Exception:
-                pass
+            except Exception as err:
+                if Fixture.__fixture_debug__:
+                    logging.debug("Session error %s", err)
         if "uuid" not in self.get_data():
             self.clear()
 
@@ -679,6 +684,8 @@ class Session(Fixture):
             )
             if isinstance(cookie_data, bytes):
                 cookie_data = cookie_data.decode()
+        if Fixture.__fixture_debug__:
+            logging.debug("Session stored %s", cookie_data)
 
         response.set_cookie(
             self_local.session_cookie_name,
@@ -862,31 +869,46 @@ class action:
                 fixtures.append(fixture)
 
         def decorator(func):
+
+            if Fixture.__fixture_debug__:
+                # in debug mode log all calls to fixtures
+                def call(obj, f, args=()):
+                    logging.debug("Calling %s.%s", obj.__class__.__name__, f)
+                    return getattr(obj, f)(*args)
+
+            else:
+
+                def call(obj, f, args=()):
+                    return getattr(obj, f)(*args)
+
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
                 # data shared by all fixtures in the pipeline for each request
                 shared_data = {"template_context": {}}
                 try:
-                    [obj.on_request() for obj in fixtures]
+                    for obj in fixtures:
+                        call(obj, "on_request")
                     ret = func(*args, **kwargs)
                     for obj in fixtures:
-                        ret = obj.transform(ret, shared_data)
-                    [obj.on_success(200) for obj in fixtures]
+                        ret = call(obj, "transform", (ret, shared_data))
+                    for obj in fixtures:
+                        call(obj, "on_success", (200,))
                     return ret
                 except HTTP as http:
                     if http.type == http.Type.success:
-                        [obj.on_success(http.status) for obj in fixtures]
+                        for obj in fixtures:
+                            call(obj, "on_success", (http.status,))
                     else:
-                        [obj.on_error() for obj in fixtures]
-                        # it should be [obj.on_error(status) for obj in fixtures]
-                        # but it breaks users fixtures
-                        # `def on_error(status = None):` - cost nothing, but we have  `def on_error():`
+                        if obj in fixtures:
+                            call(obj, "on_error")
                     raise
                 except Exception:
-                    [obj.on_error() for obj in fixtures]
+                    for obj in fixtures:
+                        call(obj, "on_error")
                     raise
                 finally:
-                    [obj.finalize() for obj in fixtures]
+                    for obj in fixtures:
+                        call(obj, "finalize")
                     # Clears the current object to prevent leakage.
 
             return wrapper
@@ -1023,13 +1045,13 @@ def get_error_snapshot(depth=5):
     errorlog = os.environ.get("PY4WEB_ERRORLOG")
     if errorlog:
         msg = f"[{datetime.datetime.now().isoformat()}]: {tb}\n"
-        if errorlog == ':stderr':
+        if errorlog == ":stderr":
             sys.stderr.write(msg)
-        elif errorlog == ':stdout':
+        elif errorlog == ":stdout":
             sys.stdout.write(msg)
-        elif errorlog == 'tickets_only':
+        elif errorlog == "tickets_only":
             pass
-        else:            
+        else:
             with portalocker.Lock(errorlog, "a", timeout=2) as fp:
                 fp.write(msg)
 
@@ -1245,8 +1267,11 @@ class Reloader:
         remove_route(routes)
         if app_name:
             remove_route(app_root)
-            if app_name == '_default':
-                [(remove_route(f"/{_}"), remove_route(f"/{_}/*")) for _ in _DEFAULT_APP_ROOTS]
+            if app_name == "_default":
+                [
+                    (remove_route(f"/{_}"), remove_route(f"/{_}/*"))
+                    for _ in _DEFAULT_APP_ROOTS
+                ]
                 remove_route("/")
                 _DEFAULT_APP_ROOTS.clear()
         else:
@@ -1330,7 +1355,7 @@ class Reloader:
             app_name = path.split(os.path.sep)[-1]
             if app_name == "_default":
                 prefix = ""
-                _DEFAULT_APP_ROOTS.add('static')
+                _DEFAULT_APP_ROOTS.add("static")
             else:
                 prefix = f"/{app_name}"
 
@@ -1636,6 +1661,10 @@ def install_args(kwargs, reinstall_apps=False):
     kwargs["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
     for key, val in kwargs.items():
         os.environ["PY4WEB_" + key.upper()] = str(val)
+    Fixture.__fixture_debug__ = kwargs.get("fixture_debug", False)
+    logging.getLogger().setLevel(
+        0 if Fixture.__fixture_debug__ else kwargs.get("logging_level", logging.WARNING)
+    )
     yes2 = yes = kwargs.get("yes", False)
     # If the apps folder does not exist create it and populate it
     if not os.path.exists(apps_folder):
@@ -1784,7 +1813,7 @@ def call(apps_folder, func, yes, args):
     kwargs = json.loads(args)
     install_args(dict(apps_folder=apps_folder, yes=yes))
     apps_folder_name = os.path.basename(os.environ["PY4WEB_APPS_FOLDER"])
-    app_name = func.split('.')[0]
+    app_name = func.split(".")[0]
     module, name = ("%s.%s" % (apps_folder_name, func)).rsplit(".", 1)
     env = {}
     exec("from %s import %s" % (module, name), {}, env)
@@ -1909,10 +1938,25 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     "--ssl_cert", type=click.Path(exists=True), help="SSL certificate file for HTTPS"
 )
 @click.option("--ssl_key", type=click.Path(exists=True), help="SSL key file for HTTPS")
-@click.option("--errorlog",
+@click.option(
+    "--errorlog",
     default=":stderr",
     help="Where to send error logs (:stdout|:stderr|tickets_only|{filename})",
     show_default=True,
+)
+@click.option(
+    "-D",
+    "--fixture_debug",
+    is_flag=True,
+    default=False,
+    help="Debug Fxtures",
+)
+@click.option(
+    "-L",
+    "--logging_level",
+    type=int,
+    default=logging.WARNING,
+    help="The debug level",
 )
 def run(**kwargs):
     """Run all the applications on apps_folder"""
