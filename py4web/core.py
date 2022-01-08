@@ -327,12 +327,16 @@ class Fixture:
     def _safe_local(self, storage):
         self.__mount_local__(self, storage)
 
-    def is_valid(self):
+    def is_valid(self, log=True):
         """check if the fixture is valid in context"""
         try:
             self.__request_master_ctx__.request_ctx[self]
             return True
         except (KeyError, AttributeError) as err:
+            if log:
+                logging.warn(
+                    "attempted access to fixture %s from outside a request",
+                    self.__class__.__name)
             return False
 
     def on_request(self):
