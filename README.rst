@@ -103,6 +103,9 @@ Launch Arguments
    --errorlog TEXT               Where to send error logs
                                  (:stdout|:stderr|tickets_only|{filename})
                                  [default: :stderr]
+  -D, --debug                    Debug switch [default: False]
+  -L, --logging_level INTEGER    The log level (0 - 50) [default: 30
+                                 (=WARNING)]
    -help, -h, --help             Show this message and exit.
 
 

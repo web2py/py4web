@@ -1945,18 +1945,19 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     show_default=True,
 )
 @click.option(
-    "-D",
-    "--fixture_debug",
-    is_flag=True,
-    default=False,
-    help="Debug Fxtures",
-)
-@click.option(
     "-L",
     "--logging_level",
     type=int,
     default=logging.WARNING,
-    help="The debug level",
+    help="The log level (0 - 50) [default: 30 (=WARNING)]",
+)
+@click.option(
+    "-D",
+    "--debug",
+    is_flag=True,
+    default=False,
+    help="Debug switch",
+    show_default=True,
 )
 def run(**kwargs):
     """Run all the applications on apps_folder"""
