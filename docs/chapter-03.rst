@@ -372,6 +372,9 @@ This currently gives an error on binaries installations and from source installa
      --errorlog TEXT               Where to send error logs
                                    (:stdout|:stderr|tickets_only|{filename})
                                    [default: :stderr]
+     -L, --logging_level INTEGER   The log level (0 - 50) [default: 30
+                                   (=WARNING)]
+     -D, --debug                   Debug switch  [default: False]
      -help, -h, --help             Show this message and exit.
 
 
@@ -391,6 +394,12 @@ The default web server used is currently rocketServer, but you can change this b
 `Rocket3 <https://github.com/web2py/rocket3>`__  is the multi-threaded web server used by web2py stripped of all the
 Python2 logic and dependencies.
 
+The logging_level values are defined in the **logging** standard python module. The default value is 30 (it corresponds
+to WARNING). Other common values are 0 (NOTSET), 10 (DEBUG), 20 (INFO), 40 (ERROR) and 50 (CRITICAL).
+Using them, you’re telling the library you want to handle all events from that level on up.
+
+The debug parameter automatically sets logging_level to 0 and logs all calls to fixture functions. It also logs when
+a session is found, invalid, saved.
 
 
 .. _set_password command option:
