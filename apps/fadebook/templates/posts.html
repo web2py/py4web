@@ -1,0 +1,19 @@
+[[for item in items:]]
+<div class="post">
+  <a href="[[=URL('home', item.created_by)]]">
+    [[=item.created_by.first_name]] 
+    [[=item.created_by.last_name]]
+  </a>
+  on [[=item.created_on]] says
+  <blockquote>[[=item.body]]</blockquote>
+  <i class="fa fa-thumbs-up" data-id="[[=item.id]]" data-liked="[[=item.liked]]" onclick="like(this)"></i>
+</div>
+[[pass]]
+
+<script>
+  function like(element) {
+      axios.post("../like/"+element.dataset.id).then(function(res){
+	  element.dataset.liked = res.data.liked;
+      });
+  }
+</Script>
