@@ -1048,6 +1048,12 @@ class Grid:
                         # if None was returned, no button is available for this row: ignore this value in the
                         # list
                         continue
+                attrs = (
+                    self.attributes_plugin.confirm(message=self.T(btn.message))
+                    if btn.message and btn.message != ""
+                    else dict()
+                )
+
                 cat.append(
                     self._make_action_button(
                         url=btn.url,
@@ -1060,6 +1066,7 @@ class Grid:
                         ignore_attribute_plugin=btn.ignore_attribute_plugin
                         if "ignore_attribute_plugin" in btn.__dict__
                         else False,
+                        **attrs,
                     )
                 )
 
@@ -1124,6 +1131,11 @@ class Grid:
                         # if None was returned, no button is available for this row: ignore this value in the
                         # list
                         continue
+                attrs = (
+                    self.attributes_plugin.confirm(message=self.T(btn.message))
+                    if btn.message and btn.message != ""
+                    else dict()
+                )
                 cat.append(
                     self._make_action_button(
                         url=btn.url,
@@ -1136,6 +1148,7 @@ class Grid:
                         ignore_attribute_plugin=btn.ignore_attribute_plugin
                         if "ignore_attribute_plugin" in btn.__dict__
                         else False,
+                        **attrs,
                     )
                 )
 
