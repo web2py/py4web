@@ -924,11 +924,6 @@ class Form(object):
 
                 button_attributes = item.attributes
                 button_attributes["_label"] = item.children[0]
-                button_attributes["_type"] = (
-                    button_attributes.pop("_role")
-                    if "_role" in button_attributes
-                    else None
-                )
                 helper["json_controls"]["form_buttons"] += [button_attributes]
 
             if self.action:
