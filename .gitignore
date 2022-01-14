@@ -32,7 +32,7 @@ apps/*
 !apps/_default/*
 !apps/_documentation/*
 !apps/superheroes/*
-!apps/myfeed/*
+!apps/fadebook/*
 apps/*/databases/*
 apps/*/uploads/*
 **/*.py[co]

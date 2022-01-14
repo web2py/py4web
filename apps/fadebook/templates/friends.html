@@ -1,0 +1,61 @@
+[[extend "layout.html"]]
+<h1>Friends Search</h1>
+
+<i>Try search for a user starting with "a"</i>
+[[=form]]
+
+<table>
+  [[for user in users:]]
+  <tr>
+    <td>[[=user.first_name]]</td>
+    <td>[[=user.last_name]]</td>
+    <td>[[=user.username]]</td>
+    <td><button data-endpoint="[[=URL('friendship', 'request', user.id)]]" onclick="callback(this)">Request</button></td>
+  </tr>
+  [[pass]]
+</table>
+
+<h2>Requests received</h2>
+<table>
+  [[for r in requests_received:]]
+  <tr>
+    <td>[[=r.auth_user.first_name]]</td>
+    <td>[[=r.auth_user.last_name]]</td>
+    <td>[[=r.auth_user.username]]</td>
+    <td>[[=r.friend_request.status]]</td> 
+    <td>
+      [[if r.friend_request.status == 'pending':]]
+      <button data-endpoint="[[=URL('friendship', r.friend_request.id, 'accept')]]"
+	      onclick="callback(this)">Accept</button>
+      <button data-endpoint="[[=URL('friendship', r.friend_request.id, 'reject')]]"
+	      onclick="callback(this)">Reject</button>
+      [[else:]]
+      <button data-endpoint="[[=URL('friendship', r.friend_request.id, 'reject')]]"
+	      onclick="callback(this)">Delete</button>
+      [[pass]]
+    </td>
+  </tr>
+  [[pass]]
+</table>
+
+<h2>Requests sent</h2>
+<table>
+  [[for r in requests_sent:]]
+  <tr>
+    <td>[[=r.auth_user.first_name]]</td>
+    <td>[[=r.auth_user.last_name]]</td>
+    <td>[[=r.auth_user.username]]</td>
+    <td>[[=r.friend_request.status]]</td> 
+    <td>
+      <button data-endpoint="[[=URL('friendship', r.friend_request.id, 'reject')]]"
+	      onclick="callback(this)">Delete</button>
+    </td>
+  </tr>
+  [[pass]]
+</table>
+
+<script>
+  function callback(element) {
+      axios.post(element.dataset.endpoint).then(function(){window.location.href="[[=URL('friends')]]";});
+  }
+</Script>
