@@ -38,7 +38,7 @@ setup(
         "pluralize >= 0.1.8",
         "rocket3",
         "yatl >= 20211217.1",
-        "pydal >= 20210626.3",
+        "pydal >= 20220114.1",
         "watchgod >= 0.6",
     ],
     entry_points={"console_scripts": ["py4web=py4web.core:cli"],},
