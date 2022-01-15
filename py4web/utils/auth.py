@@ -9,7 +9,7 @@ import urllib
 import uuid
 
 from py4web import redirect, request, response, abort, URL, action, Field, HTTP
-from py4web.core import Fixture, Translator, Flash, REGEX_APPJSON
+from py4web.core import Fixture, Template, Translator, Flash, REGEX_APPJSON
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
 from yatl.helpers import A, DIV
@@ -56,10 +56,8 @@ class AuthEnforcer(Fixture):
         self.auth = auth
         self.condition = condition
 
-    def transform(self, output, shared_data = None):
-        if shared_data is None:
-            shared_data = {}
-        return self.auth.transform(output, shared_data)
+    def on_success(self, context):
+        self.auth.on_success(context)
 
     def abort_or_redirect(self, page, message=""):
         """Return HTTP 403 if 'application/json' in HTTP_ACCEPT
@@ -84,7 +82,7 @@ class AuthEnforcer(Fixture):
             )
         )
 
-    def on_request(self):
+    def on_request(self, context):
         """Checks that we have a user in the session and
         the condition is met"""
         user = self.auth.session.get("user")
@@ -289,11 +287,9 @@ class Auth(Fixture):
         if action_name in self.param.allowed_actions:
             self.param.allowed_actions.remove(action_name)
         
-    def transform(self, output, shared_data = None):
+    def on_success(self, context):
         if self.inject:
-            template_context = shared_data.get("template_context")
-            template_context["user"] = self.get_user()
-        return output
+            context['template_inject'] = {'user': self.get_user()}
 
     def define_tables(self):
         """Defines the auth_user table"""

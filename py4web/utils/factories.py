@@ -12,10 +12,10 @@ class Inject(Fixture):
     def __init__(self, **variables):
         self.variables = variables
 
-    def transform(self, output, shared_data=None):
+    def on_success(self, context):
+        output = context['output']
         if isinstance(output, dict):
             output.update(**self.variables)
-        return output
 
 
 class ActionFactory:

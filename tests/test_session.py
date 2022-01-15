@@ -20,10 +20,11 @@ class TestSession(unittest.TestCase):
     def test_session(self):
         request.app_name = "myapp"
         session = Session(secret="a", expiration=10)
-        session.on_request()
+        context = dict(status=200)
+        session.on_request(context)
         session["key"] = "value"
         cookie_name = session.local.session_cookie_name
-        session.on_success(200)
+        session.on_success(context)
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
         request.cookies[a] = b
 
@@ -34,12 +35,13 @@ class TestSession(unittest.TestCase):
 
         session = Session(secret="b", expiration=10)
         request.cookies[a] = b
-        session.on_request()
+        context = dict(status=200)
+        session.on_request(context)
         self.assertEqual(session.get("key"), None)
 
         session = Session(secret="a", expiration=10)
         request.cookies[a] = b
-        session.on_request()
+        session.on_request(context)
         self.assertEqual(session.get("key"), "value")
 
     def test_session_in_db(self):
@@ -47,10 +49,11 @@ class TestSession(unittest.TestCase):
         db = DAL("sqlite:memory")
         session = Session(secret="a", expiration=10, storage=DBStore(db))
         request.cookies.clear()
-        session.on_request()
+        context = dict(status=200)
+        session.on_request(context)
         session["key"] = "value"
         cookie_name = session.local.session_cookie_name
-        session.on_success(200)
+        session.on_success(context)
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
         request.cookies[a] = b
 
@@ -61,12 +64,14 @@ class TestSession(unittest.TestCase):
 
         session = Session(expiration=10, storage=DBStore(db))
         request.cookies[a] = b
-        session.on_request()
+        context = dict(status=200)
+        session.on_request(context)
         self.assertEqual(session.get("key"), "value")
 
         session = Session(expiration=10, storage=DBStore(db))
         request.cookies[a] = "wrong_cookie"
-        session.on_request()
+        context = dict(status=200)
+        session.on_request(context)
         self.assertEqual(session.get("key"), None)
 
     def test_session_in_memcache(self):
@@ -78,10 +83,11 @@ class TestSession(unittest.TestCase):
             conn = memcache.Client(["127.0.0.1:11211"], debug=0)
             session = Session(secret="a", expiration=10, storage=conn)
             request.cookies.clear()
-            session.on_request()
+            context = dict(status=200)
+            session.on_request(context)
             session["key"] = "value"
             cookie_name = session.local.session_cookie_name
-            session.on_success(200)
+            session.on_success(context)
 
             a, b = (
                 str(response._cookies)[len("Set-Cookie: ") :]
@@ -98,13 +104,15 @@ class TestSession(unittest.TestCase):
             conn = memcache.Client(["127.0.0.1:11211"], debug=0)
             session = Session(expiration=10, storage=conn)
             request.cookies[a] = b
-            session.on_request()
+            context = dict(status=200)
+            session.on_request(context)
             self.assertEqual(session.get("key"), "value")
 
             conn = memcache.Client(["127.0.0.1:11211"], debug=0)
             session = Session(expiration=10, storage=conn)
             request.cookies[a] = "wrong_cookie"
-            session.on_request()
+            context = dict(status=200)
+            session.on_request(context)
             self.assertEqual(session.get("key"), None)
         finally:
             if memcache_process is None:

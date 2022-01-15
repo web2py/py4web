@@ -45,7 +45,7 @@ def page_with_error():
 
 @action("page_with_raise")
 def page_with_raise():
-    raise HTTP(400)
+    raise HTTP(400, "oops")
 
 
 @action("page_with_redirect")

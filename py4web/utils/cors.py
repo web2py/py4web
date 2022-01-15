@@ -17,7 +17,7 @@ class CORS(Fixture):
         self.headers = headers
         self.methods = methods
 
-    def on_request(self):
+    def on_request(self, context):
         response.headers["Access-Control-Allow-Origin"] = self.origin
         response.headers["Access-Control-Max-Age"] = self.age
         response.headers["Access-Control-Allow-Headers"] = self.headers
