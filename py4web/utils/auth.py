@@ -3,7 +3,6 @@ import calendar
 import copy
 import datetime
 import hashlib
-from mmap import ACCESS_DEFAULT
 import re
 import time
 import urllib
