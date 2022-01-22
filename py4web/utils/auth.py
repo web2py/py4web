@@ -3,6 +3,7 @@ import calendar
 import copy
 import datetime
 import hashlib
+from mmap import ACCESS_DEFAULT
 import re
 import time
 import urllib
@@ -132,7 +133,7 @@ class Auth(Fixture):
             "profile-saved": "Profile saved",
             "user-logout": "User logout",
             "email-verified": "Email verified",
-            "link-expired": "Link expired",
+            "link-expired": "Link invalid or expired",
         },
         "labels": {
             "username": "Username",
@@ -785,6 +786,9 @@ class Auth(Fixture):
     def _error(self, message, code=400):
         return {"status": "error", "message": message, "code": code}
 
+    def _success(self, message, code=200):
+        return {"status": "success", "message": message, "code": code}
+
     # Other service methods (that can be overwritten)
 
     def send(self, name, user, **attrs):
@@ -977,6 +981,7 @@ class AuthAPI:
         "logout",
         "request_reset_password",
         "reset_password",
+        "verify_email",
     ]
     private_api = ["profile", "change_password", "change_email", "unsubscribe"]
 
@@ -1068,6 +1073,16 @@ class AuthAPI:
             request.json.get("new_password"),
             request.json.get("new_password2", request.json.get("new_password")),
         )
+
+    @staticmethod
+    @api_wrapper
+    def verify_email(auth):
+        token = request.query.get("token")        
+        verified = auth.verify_email(token)
+
+        if not verified:
+            return auth._error(auth.param.messages["flash"].get("link-expired"))            
+        return auth._success(auth.param.messages["flash"].get("email-verified"))
 
     @staticmethod
     @api_wrapper
