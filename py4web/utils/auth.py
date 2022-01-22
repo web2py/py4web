@@ -258,9 +258,9 @@ class Auth(Fixture):
 
     def fix_actions(self):
         """Cleanup duplicated and expand 'all' allowed_actions on API and Forms"""
-        ALL_ALLOWED_ACTIONS = AuthAPI.public_api + AuthAPI.private_api + \
+        ALL_ALLOWED_ACTIONS = list(set(AuthAPI.public_api + AuthAPI.private_api + \
                 DefaultAuthForms.public_forms + DefaultAuthForms.private_forms + \
-                DefaultAuthForms.no_forms
+                DefaultAuthForms.no_forms))
         #"login", 
         #"logout", 
         #"request_reset_password", 
@@ -280,7 +280,7 @@ class Auth(Fixture):
             self.param.allowed_actions = list(set(self.param.allowed_actions))
             for unknown in self.param.allowed_actions:
                 if unknown not in ALL_ALLOWED_ACTIONS:
-                    self.param.allowed_actions.remove(unkown)
+                    self.param.allowed_actions.remove(unknown)
 
     def deny_action(self, action_name):
         """Deny the provided action on the Auth object"""
@@ -1047,8 +1047,12 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def request_reset_password(auth):
-        if request.json is None:
+        if (request.json is None):
             return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
+        
+        if 'email' not in request.json:
+            request.json['email'] = '' 
+
         if not auth.request_reset_password(**request.json):
             return auth._error("invalid user")
         return {}
