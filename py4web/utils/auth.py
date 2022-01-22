@@ -1047,7 +1047,7 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def request_reset_password(auth):
-        if (request.json is None):
+        if request.json is None:
             return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
         
         if 'email' not in request.json:
