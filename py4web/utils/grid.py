@@ -771,7 +771,7 @@ class Grid:
 
     def _make_default_form(self):
         search_type = safe_int(request.query.get("search_type", 0), default=0)
-        search_string = getattr(request.query,"search_string", None)
+        search_string = getattr(request.query, "search_string", None)
         options = [
             OPTION(items[0], _value=k, _selected=(k == search_type))
             for k, items in enumerate(self.param.search_queries)
