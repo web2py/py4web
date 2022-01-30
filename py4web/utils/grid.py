@@ -466,7 +466,7 @@ class Grid:
         db = self.db
         if not self.param.search_form and self.param.search_queries:
             search_type = safe_int(request.query.get("search_type", 0), default=0)
-            search_string = getattr(request.query,"search_string", None)
+            search_string = getattr(request.query, "search_string", None)
             if search_type < len(self.param.search_queries) and search_string:
                 query_lambda = self.param.search_queries[search_type][1]
                 try:
