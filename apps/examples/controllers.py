@@ -9,7 +9,7 @@ from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
 from yatl.helpers import INPUT, H1, HTML, BODY, A, DIV, XML
 from py4web.utils.param import Param
-from .settings import SESSION_SECRET_KEY
+from .settings import SESSION_SECRET_KEY, HCAPTCHA_SITE_KEY
 
 from .common import db, session, T, flash, cache, authenticated, unauthenticated, auth, hCaptcha
 
@@ -343,7 +343,7 @@ def hcaptcha_form():
         Field('dummy_form', 'string',)
     ])
     
-    form.structure.append(XML('<div class="h-captcha" data-sitekey="762fa531-efd3-401d-9c3e-8f249e929f9c"></div>'))
+    form.structure.append(XML('<div class="h-captcha" data-sitekey="{}"></div>'.format(HCAPTCHA_SITE_KEY)))
     if form.accepted:
         r = hCaptcha(request.forms.get('g-recaptcha-response'))
         if r == True:
