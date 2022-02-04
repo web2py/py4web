@@ -50,7 +50,7 @@ def page_with_raise():
 
 @action("page_with_redirect")
 def page_with_redirect():
-    redirect(URL('target'))
+    redirect(URL("target"))
 
 
 @action("target")
@@ -68,13 +68,14 @@ def page_with_query():
     return repr(dict(request.query))
 
 
-@action("page_with_postback", method=['GET', 'POST'])
+@action("page_with_postback", method=["GET", "POST"])
 def page_with_postback():
-    return ('<html><body><pre>%s</pre>' +
-            '<form method="POST" action="%s" enctype="multipart/form-data">' +
-            '<input type="hidden" name="data" value="dummy"/>' +
-            '<button>Click</button></form></body></html') % (
-               dict(request.forms), URL('page_with_postback'))
+    return (
+        "<html><body><pre>%s</pre>"
+        + '<form method="POST" action="%s" enctype="multipart/form-data">'
+        + '<input type="hidden" name="data" value="dummy"/>'
+        + "<button>Click</button></form></body></html"
+    ) % (dict(request.forms), URL("page_with_postback"))
 
 
 @action("session/counter")
@@ -88,7 +89,7 @@ def session_counter():
 @action.uses(session)
 def session_clear():
     session.clear()
-    redirect(URL('session/counter'))
+    redirect(URL("session/counter"))
 
 
 @action("flash_example")
@@ -132,7 +133,7 @@ def custom_form(id=None):
 @action("tagsinput_form", method=["GET", "POST"])
 @action.uses(session, "tagsinput_form.html")
 def tagsinput_form():
-    form = Form([Field('colors', 'list:string')], keep_values=True)
+    form = Form([Field("colors", "list:string")], keep_values=True)
     return dict(form=form)
 
 
@@ -147,28 +148,36 @@ def example_html_grid(path=None):
         include_action_button_text=True,
         search_button_text="Filter",
         formstyle=FormStyleDefault,
-        grid_class_style=GridClassStyle)
-                               
+        grid_class_style=GridClassStyle,
+    )
+
     search_queries = [
-        ['By Name', lambda value: db.thing.name.contains(value)],
-        ['By Color', lambda value: db.thing.color == value],
-        ['By Name or Color', lambda value: db.thing.name.contains(value)|(db.thing.color == value)],
+        ["By Name", lambda value: db.thing.name.contains(value)],
+        ["By Color", lambda value: db.thing.color == value],
+        [
+            "By Name or Color",
+            lambda value: db.thing.name.contains(value) | (db.thing.color == value),
+        ],
     ]
 
     query = db.thing.id > 0
     orderby = [db.thing.name]
     columns = [field for field in db.thing if field.readable]
     columns.insert(0, Column("Custom", lambda row: A("click me")))
-    grid = Grid(path,
-                query,
-                columns=columns,
-                search_queries=search_queries,
-                orderby=orderby,
-                show_id=False,
-                T=T,
-                **grid_param)
+    grid = Grid(
+        path,
+        query,
+        columns=columns,
+        search_queries=search_queries,
+        orderby=orderby,
+        show_id=False,
+        T=T,
+        **grid_param
+    )
 
-    grid.formatters['thing.color'] = lambda color: I(_class="fa fa-circle", _style="color:"+color)
+    grid.formatters["thing.color"] = lambda color: I(
+        _class="fa fa-circle", _style="color:" + color
+    )
 
     return dict(grid=grid)
 
@@ -255,15 +264,19 @@ def example_multiple_forms():
 def example_helpers():
     return dict(a=H1("I am a title"), b=2, c=dict(d=3, e=4, x=INPUT(_name="test")))
 
+
 expose = ActionFactory(auth, T, Inject(message="Hello World"))
+
 
 @expose.get("test_expose1", template="generic.html")
 def test_expose1():
     return dict()
 
+
 @expose.get("test_expose2")
 def test_expose2():
     return dict()
+
 
 @expose("test_expose3")
 def test_expose3():
@@ -280,9 +293,11 @@ def hello_world():
 def hello_world(msg):
     return dict(msg=msg)
 
+
 @unauthenticated.callback("click me")
 def a_callback(msg):
     import logging
+
     logging.info(msg)
 
 
@@ -325,7 +340,7 @@ def auth_form(name):
 @action("mycomponent.load", method=["GET", "POST"])
 @action.uses(flash)
 def mycomponent():
-    flash.set('Welcome')
+    flash.set("Welcome")
     form = Form([Field("your_name")])
     return DIV("Hello " + request.forms["your_name"] if form.accepted else form).xml()
 
@@ -335,3 +350,59 @@ def mycomponent():
 @action.uses(flash, "component_loader.html")
 def component_loader():
     return dict()
+
+
+# JSONRPC example
+
+# define a function
+def add(x, y):
+    return x + y
+
+
+# register your functions
+jsonrpc_methods = {}
+jsonrpc_methods["add"] = add
+
+# this is a standard handler that implements the protocol
+@action("rpc", method="POST")
+def rpc():
+    """
+    this function implements the jsonrpc server protocol, do not edit
+    client example:
+    import jsonrpc.proxy
+    p = jsonrpc.proxy.JSONRPCProxy("http://127.0.0.1:8000", "/examples/rpc")
+    assert p.add(1,2) == 3
+    assert p.add(x=1, y=2) == 3
+    """
+    if not request.json or request.json.get("jsonrpc") != "2.0":
+        return {
+            "id": None,
+            "jsonrpc": "2.0",
+            "error": {"code": -32600, "message": "Invalid Request"},
+        }
+    rid = request.json.get("id")
+    method = request.json.get("method")
+    params = request.json.get("params")
+    if None in (rid, method) or not isinstance(params, (list, dict)):
+        return {
+            "id": None,
+            "jsonrpc": "2.0",
+            "error": {"code": -32600, "message": "Invalid Request"},
+        }
+    func = jsonrpc_methods.get(method)
+    if not func:
+        return {
+            "rid": None,
+            "jsonrpc": "2.0",
+            "error": {"code": -32601, "message": "Method not found"},
+        }
+    try:
+        result = func(*params) if isinstance(params, list) else func(**params)
+        return {"result": result, "id": rid, "jsonrpc": "2.0"}
+    except Exception as e:
+        error = e
+        return {
+            "rid": None,
+            "jsonrpc": "2.0",
+            "error": {"code": -32603, "message": "Internal error", "data": e},
+        }
