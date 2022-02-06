@@ -13,6 +13,9 @@ from pydal.tools.tags import Tags
 from py4web.utils.factories import ActionFactory
 from . import settings
 
+#used to validate hcapcha response
+import requests
+
 # #######################################################
 # implement custom loggers form settings.LOGGERS
 # #######################################################
@@ -199,3 +202,20 @@ auth.enable(uses=(session, T, db), env=dict(T=T))
 # #######################################################
 unauthenticated = ActionFactory(db, session, T, flash, auth)
 authenticated = ActionFactory(db, session, T, flash, auth.user)
+
+
+def hCaptcha(token):
+    
+    # Retrieve token from post data with key 'h-captcha-response'.
+
+    # Build payload with secret key and token.
+    data = { 'secret': settings.HCAPTCHA_SECRET_KEY, 'response': token }
+
+    # Make POST request with data payload to hCaptcha API endpoint.
+    response = requests.post(url=settings.HCAPTCHA_VERIFY_URL, data=data)
+
+    # Parse JSON from response. Check for success or error codes.
+    response_json = response.json()
+    success = response_json['success']
+
+    return success

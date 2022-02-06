@@ -7,11 +7,11 @@ from py4web.utils.grid import Grid, GridClassStyle, Column
 from py4web.utils.param import Param
 from py4web.utils.publisher import Publisher, ALLOW_ALL_POLICY
 from pydal.validators import IS_NOT_EMPTY, IS_INT_IN_RANGE, IS_IN_SET, IS_IN_DB
-from yatl.helpers import INPUT, H1, HTML, BODY, A, DIV
+from yatl.helpers import INPUT, H1, HTML, BODY, A, DIV, XML
 from py4web.utils.param import Param
-from .settings import SESSION_SECRET_KEY
+from .settings import SESSION_SECRET_KEY, HCAPTCHA_SITE_KEY
 
-from .common import db, session, T, flash, cache, authenticated, unauthenticated, auth
+from .common import db, session, T, flash, cache, authenticated, unauthenticated, auth, hCaptcha
 
 # import websocket examples
 from .ws import *
@@ -350,6 +350,25 @@ def mycomponent():
 @action.uses(flash, "component_loader.html")
 def component_loader():
     return dict()
+
+@unauthenticated("hcaptcha_form", "hcaptcha_form.html")
+def hcaptcha_form():
+    
+    form = Form([
+        Field('dummy_form', 'string',)
+    ])
+    
+    form.structure.append(XML('<div class="h-captcha" data-sitekey="{}"></div>'.format(HCAPTCHA_SITE_KEY)))
+    if form.accepted:
+        r = hCaptcha(request.forms.get('g-recaptcha-response'))
+        if r == True:
+            #do something with form data
+            form.structure.append(XML('<div style="color:green">Captcha was solved succesfully!</font></div>'))
+        else:
+            form.structure.append(XML('<div class="py4web-validation-error">invalid captcha</div>'))
+            
+            
+    return dict(form=form)
 
 
 # JSONRPC example
