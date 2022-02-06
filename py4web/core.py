@@ -306,6 +306,10 @@ class Fixture:
     __request_master_ctx__ = threading.local()
     __fixture_debug__ = False
 
+    # normally on_success/on_error are only called if none of the previous
+    # on_request failed, if a fixture is_hook then on_error is always called.
+    is_hook = False
+
     @classmethod
     def __init_request_ctx__(cls):
         cls.__request_master_ctx__.request_ctx = dict()
@@ -895,14 +899,15 @@ class action:
                 except Exception as error:
                     context["exception"] = error
                 finally:
-                    for fixture in reversed(processed):
-                        try:
-                            if context.get('exception'):
-                                call(fixture.on_error, context)
-                            else:
-                                call(fixture.on_success, context)
-                        except Exception as error:
-                            context["exception"]= context.get("exception", error)
+                    for fixture in reversed(fixtures):
+                        if fixture in processed or getattr(fixture, "is_hook", False):
+                            try:
+                                if context.get('exception'):
+                                    call(fixture.on_error, context)
+                                else:
+                                    call(fixture.on_success, context)
+                            except Exception as error:
+                                context["exception"]= context.get("exception", error)
                     if context["exception"]:
                         raise context["exception"]
                 return context["output"]
