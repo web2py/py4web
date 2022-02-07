@@ -82,3 +82,8 @@ try:
     from .settings_private import *
 except:
     pass
+
+## hcaptcha config
+HCAPTCHA_SITE_KEY = ""
+HCAPTCHA_SECRET_KEY = ""
+HCAPTCHA_VERIFY_URL = "https://hcaptcha.com/siteverify"
