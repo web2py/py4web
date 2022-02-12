@@ -6,6 +6,7 @@
 import asyncio
 import cgitb
 import code
+import collections
 import copy
 import datetime
 import enum
@@ -98,8 +99,6 @@ DEFAULTS = dict(
 )
 
 HELPERS = {name: getattr(yatl.helpers, name) for name in yatl.helpers.__all__}
-
-_DEFAULT_APP_ROOTS = set()
 
 ART = r"""
 ██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗
@@ -562,7 +561,7 @@ class Template(Fixture):
         ctx = dict(request=request)
         ctx.update(HELPERS)
         ctx.update(URL=URL)
-        ctx.update(context.get('template_inject', {}))
+        ctx.update(context.get("template_inject", {}))
         ctx.update(output)
         ctx["__vars__"] = output
         app_folder = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], request.app_name)
@@ -902,12 +901,12 @@ class action:
                     for fixture in reversed(fixtures):
                         if fixture in processed or getattr(fixture, "is_hook", False):
                             try:
-                                if context.get('exception'):
+                                if context.get("exception"):
                                     call(fixture.on_error, context)
                                 else:
                                     call(fixture.on_success, context)
                             except Exception as error:
-                                context["exception"]= context.get("exception", error)
+                                context["exception"] = context.get("exception", error)
                     if context["exception"]:
                         raise context["exception"]
                 return context["output"]
@@ -954,7 +953,7 @@ class action:
                 logging.error(snapshot["traceback"])
                 ticket_uuid = error_logger.log(request.app_name, snapshot) or "unknown"
                 response.status = 500
-                response.body=error_page(
+                response.body = error_page(
                     500,
                     button_text=ticket_uuid,
                     href="/_dashboard/ticket/" + ticket_uuid,
@@ -968,18 +967,13 @@ class action:
         if self.path[0] == "/":
             path = self.path.rstrip("/") or "/"
         else:
-            if app_name == "_default":
-                base_path = ""
-                _DEFAULT_APP_ROOTS.add(self.path.split("/", 1)[0])
-            else:
-                base_path = f"/{app_name}"
+
+            base_path = "" if app_name == "_default" else f"/{app_name}"
             path = (f"{base_path}/{self.path}").rstrip("/")
-        if func not in self.registered:
-            func = action.catch_errors(app_name, func)
-        func = bottle.route(path, **self.kwargs)(func)
+        Reloader.register_route(app_name, path, self.kwargs, func)
         if path.endswith("/index"):  # /index is always optional
-            func = bottle.route(path[:-6] or "/", **self.kwargs)(func)
-        self.registered.add(func)
+            short_path = path[:-6] or "/"
+            Reloader.register_route(app_name, short_path, self.kwargs, func)
         return func
 
 
@@ -1232,7 +1226,7 @@ error_logger = ErrorLogger()
 
 class Reloader:
 
-    ROUTES = []
+    ROUTES = collections.defaultdict(list)
     MODULES = {}
     ERRORS = {}
 
@@ -1241,7 +1235,7 @@ class Reloader:
         # used by watcher
         def hook(*a, **k):
             app_name = request.path.split("/")[1]
-            if not app_name or app_name in _DEFAULT_APP_ROOTS:
+            if not app_name in Reloader.ROUTES:
                 app_name = "_default"
             if DIRTY_APPS.get(app_name):
                 Reloader.import_app(app_name)
@@ -1252,24 +1246,14 @@ class Reloader:
         _REQUEST_HOOKS.before.add(hook)
 
     @staticmethod
-    def clear_routes(app_name=""):
-        app_root = app_name
-        if app_root and app_root[0] != "/":
-            app_root = f"/{app_root}"
-        routes = f"{app_root}/*"
+    def clear_routes(app_names=None):
         remove_route = bottle.default_app().router.remove
-        remove_route(routes)
-        if app_name:
-            remove_route(app_root)
-            if app_name == "_default":
-                [
-                    (remove_route(f"/{_}"), remove_route(f"/{_}/*"))
-                    for _ in _DEFAULT_APP_ROOTS
-                ]
-                remove_route("/")
-                _DEFAULT_APP_ROOTS.clear()
-        else:
-            _DEFAULT_APP_ROOTS.clear()
+        if app_names is None:
+            app_names = Reloader.ROUTES.keys()
+        for app_name in app_names:
+            for route in Reloader.ROUTES[app_name]:
+                remove_route(route["rule"])
+            Reloader.ROUTES[app_name] = []
 
     @staticmethod
     def import_apps():
@@ -1288,7 +1272,8 @@ class Reloader:
     @staticmethod
     def import_app(app_name, clear_before_import=True):
         if clear_before_import:
-            Reloader.clear_routes(app_name)
+            Reloader.clear_routes([app_name])
+        Reloader.ROUTES[app_name] = []
         folder = os.environ["PY4WEB_APPS_FOLDER"]
         path = os.path.join(folder, app_name)
         init = os.path.join(path, "__init__.py")
@@ -1347,37 +1332,36 @@ class Reloader:
 
         if os.path.exists(static_folder):
             app_name = path.split(os.path.sep)[-1]
-            if app_name == "_default":
-                prefix = ""
-                _DEFAULT_APP_ROOTS.add("static")
-            else:
-                prefix = f"/{app_name}"
+            prefix = "" if app_name == "_default" else f"/{app_name}"
+            path = prefix + r"/static/<re((_\d+(\.\d+){2}/)?)><fp.path()>"
 
-            @bottle.route(prefix + r"/static/<re((_\d+(\.\d+){2}/)?)><fp.path()>")
             def server_static(fp, static_folder=static_folder):
                 filename = fp
                 response.headers.setdefault("Pragma", "cache")
                 response.headers.setdefault("Cache-Control", "private")
                 return bottle.static_file(filename, root=static_folder)
 
-        # Register routes list
-        app = bottle.default_app()
-        routes = []
-        for route in app.routes.values():
-            for method, method_obj in route.methods.items():
-                func = method_obj.handler
-                rule = route.rule
-                # remove optional trailing / from rule
-                routes.append(
-                    {
-                        "rule": rule,
-                        "method": method,
-                        "filename": module2filename(func.__module__),
-                        "action": func.__name__,
-                    }
-                )
-        Reloader.ROUTES = sorted(routes, key=lambda item: item["rule"])
+            Reloader.register_route(app_name, path, {"method": "GET"}, server_static)
+
         ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
+
+    @staticmethod
+    def register_route(app_name, rule, kwargs, func):
+        dec_func = action.catch_errors(app_name, func)
+        bottle.route(rule, **kwargs)(dec_func)
+        filename = module2filename(func.__module__)
+        methods = kwargs.get("method", ["GET"])
+        if isinstance(methods, str):
+            methods = [methods]
+        for method in methods:
+            Reloader.ROUTES[app_name].append(
+                {
+                    "rule": rule,
+                    "method": method,
+                    "filename": filename,
+                    "action": func.__name__,
+                }
+            )
 
 
 #########################################################################################
