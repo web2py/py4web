@@ -20,7 +20,7 @@ class URLVerifier(Fixture):
             self.__prerequisites__ = [url_signer.session]
         self.url_signer = url_signer
 
-    def on_request(self):
+    def on_request(self, context):
         """Checks the request's signature"""
         # extra and remove the signature from the query
         signature = request.query.get("_signature")

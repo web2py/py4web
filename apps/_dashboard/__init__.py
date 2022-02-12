@@ -87,7 +87,7 @@ class Logged(Fixture):
         self.__prerequisites__ = [session]
         self.session = session
 
-    def on_request(self):
+    def on_request(self, context):
         user = self.session.get("user")
         if not user or not user.get("id"):
             abort(403)

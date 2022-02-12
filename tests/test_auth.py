@@ -29,7 +29,7 @@ class TestAuth(unittest.TestCase):
         else:
             return getattr(self.auth.form_source, name)()
 
-    def on_request(self, keep_session=False):
+    def on_request(self, context={}, keep_session=False):
         storage = self.session._safe_local
 
         # mimic before_request bottle-hook
@@ -37,8 +37,8 @@ class TestAuth(unittest.TestCase):
 
         # mimic action.uses()
         self.session.initialize()
-        self.auth.flash.on_request()
-        self.auth.on_request()
+        self.auth.flash.on_request(context)
+        self.auth.on_request(context)
         if keep_session:
             self.session._safe_local = storage
 

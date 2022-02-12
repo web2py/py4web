@@ -306,6 +306,10 @@ class Fixture:
     __request_master_ctx__ = threading.local()
     __fixture_debug__ = False
 
+    # normally on_success/on_error are only called if none of the previous
+    # on_request failed, if a fixture is_hook then on_error is always called.
+    is_hook = False
+
     @classmethod
     def __init_request_ctx__(cls):
         cls.__request_master_ctx__.request_ctx = dict()
@@ -341,32 +345,24 @@ class Fixture:
             )
             return False
 
-    def on_request(self):
+    def on_request(self, context):
         pass  # called when a request arrives
 
-    def on_error(self):
+    def on_error(self, context):
         pass  # called when a request errors
 
-    def on_success(self, status):
+    def on_success(self, context):
         pass  # called when a request is successful
-
-    def finalize(self):
-        pass  # called in any case at the end of a request
-
-    def transform(
-        self, output, shared_data=None
-    ):  # transforms the output, for example to apply template
-        return output
 
 
 _REQUEST_HOOKS.before.add(Fixture.__init_request_ctx__)
 
 
 class Translator(pluralize.Translator, Fixture):
-    def on_request(self):
+    def on_request(self, context):
         self.select(request.headers.get("Accept-Language", "en"))
 
-    def on_success(self, status):
+    def on_success(self, context):
         response.headers["Content-Language"] = self.local.tag
 
 
@@ -374,15 +370,15 @@ class DAL(pydal.DAL, Fixture):
 
     reconnect_on_request = True
 
-    def on_request(self):
+    def on_request(self, context):
         if self.reconnect_on_request:
             self._adapter.reconnect()
         threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
 
-    def on_error(self):
+    def on_error(self, context):
         self.rollback()
 
-    def on_success(self, status):
+    def on_success(self, context):
         self.commit()
 
 
@@ -458,7 +454,7 @@ class Flash(Fixture):
     def local(self):
         return self._safe_local
 
-    def on_request(self):
+    def on_request(self, context):
         self._safe_local = types.SimpleNamespace()
         # when a new request arrives we look for a flash message in the cookie
         flash = request.get_cookie("py4web-flash")
@@ -467,14 +463,17 @@ class Flash(Fixture):
         else:
             self.local.flash = None
 
-    def on_success(self, status):
+    def on_success(self, context):
         # if we redirect and have a flash message we move it to the session
+        status = context["status"]
         if status == 303 and self.local.flash:
             response.set_cookie("py4web-flash", json.dumps(self.local.flash), path="/")
         else:
             response.delete_cookie("py4web-flash", path="/")
+        context["output"] = self.transform(context["output"])
+        self.local.__dict__.clear()
 
-    def finalize(self):
+    def on_error(self, context):
         """Clears the local to prevent leakage."""
         self.local.__dict__.clear()
 
@@ -484,7 +483,7 @@ class Flash(Fixture):
             message = yatl.sanitizer.xmlescape(message)
         self.local.flash = {"message": message, "class": _class}
 
-    def transform(self, data, shared_data=None):
+    def transform(self, data):
         # if we have a valid flash message, we inject it in the response dict
         if isinstance(data, dict):
             if "flash" not in data:
@@ -556,16 +555,16 @@ class Template(Fixture):
         self.path = path
         self.delimiters = delimiters
 
-    def transform(self, output, shared_data=None):
+    def on_success(self, context):
+        output = context["output"]
         if not isinstance(output, dict):
             return output
-        context = dict(request=request)
-        context.update(HELPERS)
-        context.update(URL=URL)
-        if shared_data:
-            context.update(shared_data.get("template_context", {}))
-        context.update(output)
-        context["__vars__"] = output
+        ctx = dict(request=request)
+        ctx.update(HELPERS)
+        ctx.update(URL=URL)
+        ctx.update(context.get('template_inject', {}))
+        ctx.update(output)
+        ctx["__vars__"] = output
         app_folder = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], request.app_name)
         path = self.path or os.path.join(app_folder, "templates")
         filename = os.path.join(path, self.filename)
@@ -573,10 +572,9 @@ class Template(Fixture):
             generic_filename = os.path.join(path, "generic.html")
             if os.path.exists(generic_filename):
                 filename = generic_filename
-        output = render(
-            filename=filename, path=path, context=context, delimiters=self.delimiters
+        context["output"] = render(
+            filename=filename, path=path, context=ctx, delimiters=self.delimiters
         )
-        return output
 
 
 #########################################################################################
@@ -724,14 +722,14 @@ class Session(Fixture):
         self_local.data["uuid"] = str(uuid.uuid1())
         self_local.data["secure"] = self_local.secure
 
-    def on_request(self):
+    def on_request(self, context):
         self.load()
 
-    def on_error(self):
+    def on_error(self, context):
         if self.local.changed:
             self.save()
 
-    def on_success(self, status):
+    def on_success(self, context):
         if self.local.changed:
             self.save()
 
@@ -823,21 +821,17 @@ def URL(
 
 
 class HTTP(BaseException):
-    class Type:
-        success = "success"
-        error = "error"
 
-    """Our HTTP exception does not delete cookies and headers like the bottle.HTTPResponse does;
-    since it is considered a success, not a failure"""
+    """An exception that is considered success"""
 
-    def __init__(self, status, type=Type.success):
+    def __init__(self, status, body="", headers={}):
         self.status = status
-        self.type = type
+        self.body = body
+        self.headers = headers
 
 
 def redirect(location):
-    """our redirect does not delete cookies and headers like bottle.HTTPResponse does;
-    it is considered a success, not failure"""
+    """raises HTTP(303) to the specified location"""
     response.headers["Location"] = location
     raise HTTP(303)
 
@@ -872,44 +866,51 @@ class action:
 
             if Fixture.__fixture_debug__:
                 # in debug mode log all calls to fixtures
-                def call(obj, f, args=()):
-                    logging.debug("Calling %s.%s", obj.__class__.__name__, f)
-                    return getattr(obj, f)(*args)
+                def call(f, context):
+                    logging.debug(
+                        f"Calling {f.__self__.__class__.__name__}.{f.__name__}"
+                    )
+                    return f(context)
 
             else:
 
-                def call(obj, f, args=()):
-                    return getattr(obj, f)(*args)
+                def call(f, context):
+                    return f(context)
 
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
                 # data shared by all fixtures in the pipeline for each request
-                shared_data = {"template_context": {}}
+                processed = []
+                context = {
+                    "fixtures": fixtures,
+                    "status": 200,
+                    "output": None,
+                    "exception": None,
+                    "processed": processed,
+                }
                 try:
-                    for obj in fixtures:
-                        call(obj, "on_request")
-                    ret = func(*args, **kwargs)
-                    for obj in fixtures:
-                        ret = call(obj, "transform", (ret, shared_data))
-                    for obj in fixtures:
-                        call(obj, "on_success", (200,))
-                    return ret
+                    for fixture in fixtures:
+                        call(fixture.on_request, context)
+                        processed.append(fixture)
+                    context["output"] = func(*args, **kwargs)
                 except HTTP as http:
-                    if http.type == http.Type.success:
-                        for obj in fixtures:
-                            call(obj, "on_success", (http.status,))
-                    else:
-                        if obj in fixtures:
-                            call(obj, "on_error")
-                    raise
-                except Exception:
-                    for obj in fixtures:
-                        call(obj, "on_error")
-                    raise
+                    context["status"] = http.status
+                    raise http
+                except Exception as error:
+                    context["exception"] = error
                 finally:
-                    for obj in fixtures:
-                        call(obj, "finalize")
-                    # Clears the current object to prevent leakage.
+                    for fixture in reversed(fixtures):
+                        if fixture in processed or getattr(fixture, "is_hook", False):
+                            try:
+                                if context.get('exception'):
+                                    call(fixture.on_error, context)
+                                else:
+                                    call(fixture.on_success, context)
+                            except Exception as error:
+                                context["exception"]= context.get("exception", error)
+                    if context["exception"]:
+                        raise context["exception"]
+                return context["output"]
 
             return wrapper
 
@@ -946,24 +947,17 @@ class action:
                 return ret
             except HTTP as http:
                 response.status = http.status
-                ret = getattr(http, "body", "")
-                http_headers = getattr(http, "headers", None)
-                if http_headers:
-                    response.headers.update(http_headers)
-                return ret
-            except bottle.HTTPResponse:
-                raise
+                response.headers.update(http.headers)
+                return http.body
             except Exception:
                 snapshot = get_error_snapshot()
                 logging.error(snapshot["traceback"])
                 ticket_uuid = error_logger.log(request.app_name, snapshot) or "unknown"
-                raise bottle.HTTPResponse(
-                    body=error_page(
-                        500,
-                        button_text=ticket_uuid,
-                        href="/_dashboard/ticket/" + ticket_uuid,
-                    ),
-                    status=500,
+                response.status = 500
+                response.body=error_page(
+                    500,
+                    button_text=ticket_uuid,
+                    href="/_dashboard/ticket/" + ticket_uuid,
                 )
 
         return wrapper
