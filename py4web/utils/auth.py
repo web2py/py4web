@@ -876,22 +876,17 @@ class Auth(Fixture):
 
         # This exposes all API actions as /{app_name}/{route}/api/{name} 
         # and API Models as /{app_name}/{route}/api/{name}?@model=true
-
+        
         # Exposed Public APIs
         exposed_api_routes = [dict(api_name=api_name, 
                                    api_route=f"{route}/api/{api_name}",
-                                   uses=auth) if self.allows(api_name) else None for api_name in AuthAPI.public_api]
-        
+                                   uses=auth) for api_name in AuthAPI.public_api if self.allows(api_name)]
+
         # Exposed Private APIs
         exposed_api_routes.extend([dict(api_name=api_name, 
                                         api_route=f"{route}/api/{api_name}",
-                                        uses=auth.user) if self.allows(api_name) else None for api_name in AuthAPI.private_api])
+                                        uses=auth.user) for api_name in AuthAPI.private_api if self.allows(api_name)])
 
-        # # Exposed Model APIs
-        # exposed_api_routes = [dict(api_name=f"{item['api_name']}_model", 
-        #                                 api_route=f"{route}/api/{item['api_name']}/model",
-        #                                 uses=item["uses"]) for item in exposed_api_routes]
-        
         for item in exposed_api_routes:
             api_factory = getattr(AuthAPI, item["api_name"])
 
@@ -963,6 +958,7 @@ class AuthAPI:
     """
     
     public_api = [
+        "all_models",
         "config",
         "register",
         "login",
@@ -971,7 +967,59 @@ class AuthAPI:
         "reset_password",
         "verify_email",
     ]
+
     private_api = ["profile", "change_password", "change_email", "unsubscribe"]
+
+    model_apis = [
+        "register",
+        "login",
+        "logout",
+        "request_reset_password",
+        "reset_password",
+        "verify_email",
+        "profile",
+        "change_password"
+    ]
+
+    @staticmethod
+    @api_wrapper
+    def all_models(auth):
+        available_models = [item for item in AuthAPI.model_apis if auth.allows(item)]
+        request.query['@model'] = 'true'
+        all_models = dict()
+        for model in available_models:
+            all_models[model] = getattr(AuthAPI, model)(auth)
+        return all_models
+    
+    @staticmethod
+    def model_request(route):
+        return (request.query.get('@model', None) == 'true') and (route in AuthAPI.model_apis)
+
+    @staticmethod
+    def get_model(defaultAuthFunction):
+
+        model = defaultAuthFunction(model=True)
+        
+        for key, value in model.items():
+            if key.lower() == 'fields':
+                formatted_fields = []
+
+                for field in value:
+                    formatted_fields.append(dict(name=field.name, 
+                                                 type=field.type,
+                                                 label=field.label,
+                                                 readable=field.readable,
+                                                 writable=field.writable if field.type != 'id' else False,
+                                                 required=field.required,
+                                                 regex=field.regex if hasattr(field, "regex") else None,
+                                                 default=field.default() if callable(field.default) else field.default,
+                                                 options=field.options))
+
+                model[key] = formatted_fields
+                break
+
+        return model
+      
 
     @staticmethod
     @api_wrapper
@@ -993,6 +1041,9 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def register(auth):
+        if AuthAPI.model_request('register'):
+            return  AuthAPI.get_model(defaultAuthFunction=auth.form_source.register)
+            
         if request.json is None:
             return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
         auth.get_or_delete_existing_unverified_account(request.json.get("email"))
@@ -1001,6 +1052,9 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def login(auth):
+        if AuthAPI.model_request('login'):
+            return  AuthAPI.get_model(defaultAuthFunction=auth.form_source.login)
+            
         if request.json is None:
             return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
         username, password = request.json.get("email"), request.json.get("password")
@@ -1040,6 +1094,9 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def request_reset_password(auth):
+        if AuthAPI.model_request('request_reset_password'):
+            return  AuthAPI.get_model(defaultAuthFunction=auth.form_source.request_reset_password)
+            
         if request.json is None:
             return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
         
@@ -1053,6 +1110,9 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def reset_password(auth):
+        if AuthAPI.model_request('reset_password'):
+            return  AuthAPI.get_model(defaultAuthFunction=auth.form_source.reset_password)
+            
         # check the new_password2 only if passed
         if request.json is None:
             return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
@@ -1065,6 +1125,9 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def verify_email(auth):
+        if AuthAPI.model_request('verify_email'):
+            return AuthAPI.get_model(defaultAuthFunction=auth.form_source.verify_email)
+            
         token = request.query.get("token")        
         verified = auth.verify_email(token)
 
@@ -1075,6 +1138,9 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def logout(auth):
+        if AuthAPI.model_request('logout'):
+            return AuthAPI.get_model(defaultAuthFunction=auth.form_source.logout)
+            
         auth.session.clear()
 
     @staticmethod
@@ -1087,6 +1153,9 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def change_password(auth):
+        if AuthAPI.model_request('change_password'):
+            return AuthAPI.get_model(defaultAuthFunction=auth.form_source.change_password)            
+
         if request.json is None:
             return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
         return auth.change_password(
@@ -1109,6 +1178,11 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def profile(auth):
+        if AuthAPI.model_request('profile'):
+            model = AuthAPI.get_model(defaultAuthFunction=auth.form_source.profile)
+            model["user"] = auth.get_user()
+            return model
+
         if request.method == "GET":
             return {"user": auth.get_user()}
         if request.json is None:
@@ -1139,7 +1213,7 @@ class DefaultAuthForms:
         else:
             self.auth.param.password_complexity={"entropy": 0}
             self.auth.db.auth_user.password.requires = [IS_STRONG(**self.auth.param.password_complexity)]
-        fields = [field for field in self.auth.db.auth_user if field.writable]
+        fields = [field for field in self.auth.db.auth_user if field.writable and field.type != 'id']
         if self.auth.param.exclude_extra_fields_in_register:
             fields = [
                 field
@@ -1163,11 +1237,11 @@ class DefaultAuthForms:
         if model:
             additional_buttons = []
             if self.auth.allows("login"):
-                additional_buttons.extend(dict(label=self.auth.param.messages["buttons"]["sign-in"], 
+                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-in"], 
                                                _href="../auth/login"))
 
             if self.auth.allows("request_reset_password"):
-                additional_buttons.extend(dict(label=self.auth.param.messages["buttons"]["lost-password"], 
+                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["lost-password"], 
                                                 _href="../auth/request_reset_password"))  
 
             return dict(fields=fields, 
@@ -1260,11 +1334,11 @@ class DefaultAuthForms:
         if model:
             additional_buttons = []
             if self.auth.allows("register"):
-                additional_buttons.extend(dict(label=self.auth.param.messages["buttons"]["sign-up"], 
+                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-up"], 
                                                _href="../auth/register"))
 
             if self.auth.allows("request_reset_password"):
-                additional_buttons.extend(dict(label=self.auth.param.messages["buttons"]["lost-password"], 
+                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["lost-password"], 
                                                _href="../auth/request_reset_password"))  
 
             additional_buttons.extend(top_buttons['buttons'])
@@ -1326,11 +1400,11 @@ class DefaultAuthForms:
         if model:
             additional_buttons = []
             if self.auth.allows("login"):
-                additional_buttons.extend(dict(label=self.auth.param.messages["buttons"]["sign-in"], 
+                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-in"], 
                                                _href="../auth/login"))
 
             if self.auth.allows("register"):
-                additional_buttons.extend(dict(label=self.auth.param.messages["buttons"]["sign-up"], 
+                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-up"], 
                                                _href="../auth/register"))  
 
             return dict(fields=fields, 
