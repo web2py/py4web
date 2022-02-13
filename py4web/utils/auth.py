@@ -986,9 +986,17 @@ class AuthAPI:
     def all_models(auth):
         available_models = [item for item in AuthAPI.model_apis if auth.allows(item)]
         request.query['@model'] = 'true'
+        response_remove_fields = ['code', 'status']
         all_models = dict()
+        
         for model in available_models:
-            all_models[model] = getattr(AuthAPI, model)(auth)
+            current_model = getattr(AuthAPI, model)(auth)
+            
+            for remove in response_remove_fields:
+                current_model.pop(remove, None)
+            
+            all_models[model] = current_model
+
         return all_models
     
     @staticmethod
