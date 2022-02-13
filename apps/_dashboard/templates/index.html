@@ -58,7 +58,7 @@
                     <button v-on:click="gitlog(selected_app.name)"><i class="fas fa-list"></i> Gitlog {{selected_app.name}}</button>
                     <button v-on:click="reload(selected_app.name)"><i class="fas fa-sync-alt"></i> Reload {{selected_app.name}}</button>
                 </div>
-                <table v-if="routes.length">
+                <table v-if="routes[selected_app.name].length">
                     <thead>
                         <tr>
                             <th>Rule</th>
@@ -71,7 +71,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="route in routes" v-if="route.filename.startsWith(selected_app.name+'/') || route.filename.startsWith(selected_app.name+'\\')">
+                        <tr v-for="route in routes[selected_app.name]">
                             <td><a v-bind:href="route.rule" target="_blank"><tt>{{route.rule}}</tt></a></td>
                             <td><tt>{{route.method}}</tt></td>
                             <td><a v-on:click="select_filename(route.filename)"><tt>{{route.filename}}</tt></a></td>

@@ -65,6 +65,7 @@ class CacheAction(unittest.TestCase):
 
     def test_local(self):
         # for test coverage
+        request.app_name = "example"
         Session.__init_request_ctx__()  # mimic before_request-hook
         index()
 
