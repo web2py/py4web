@@ -1254,8 +1254,10 @@ class DefaultAuthForms:
                                                action="request_reset_password",
                                                href="/auth/api/request_reset_password"))  
 
-            return dict(fields=fields,
-                        href="/auth/api/register" ,
+            return dict(public=True,
+                        hidden=False,
+                        fields=fields,
+                        href="/auth/api/register",                        
                         submit_label=button_name,
                         additional_buttons=additional_buttons)
         
@@ -1364,7 +1366,9 @@ class DefaultAuthForms:
 
             additional_buttons.extend(top_buttons['buttons'])
 
-            return dict(fields=fields, 
+            return dict(public=True,
+                        hidden=False,
+                        fields=fields, 
                         href="/auth/api/login",
                         submit_label=button_name,
                         additional_buttons=additional_buttons)
@@ -1431,7 +1435,9 @@ class DefaultAuthForms:
                                                action="register",
                                                href="/auth/api/register"))  
 
-            return dict(fields=fields, 
+            return dict(public=True,
+                        hidden=False,
+                        fields=fields, 
                         href="/auth/api/request_reset_password", 
                         submit_label=button_name,
                         additional_buttons=additional_buttons)
@@ -1489,7 +1495,9 @@ class DefaultAuthForms:
         button_name = self.auth.param.messages["buttons"]["submit"]
 
         if model:            
-            return dict(fields=fields, 
+            return dict(public=True,
+                        hidden=True,
+                        fields=fields, 
                         href="/auth/api/reset_password", 
                         submit_label=button_name)
 
@@ -1537,7 +1545,9 @@ class DefaultAuthForms:
         button_name = self.auth.param.messages["buttons"]["submit"]
 
         if model:            
-            return dict(fields=fields, 
+            return dict(public=False,
+                        hidden=False,
+                        fields=fields, 
                         href="/auth/api/change_password", 
                         submit_label=button_name)
 
@@ -1589,7 +1599,9 @@ class DefaultAuthForms:
         deletable=False
 
         if model:
-            return dict(fields=fields, 
+            return dict(public=False,
+                        hidden=False,
+                        fields=fields, 
                         href="/auth/api/profile", 
                         submit_label=button_name,
                         deletable=deletable)
@@ -1609,7 +1621,9 @@ class DefaultAuthForms:
     def logout(self, model=False):
         
         if model:
-            return dict(noform=True, 
+            return dict(public=False,
+                        hidden=False,
+                        noform=True, 
                         href="/auth/api/profile")
         
         """Process logout"""
@@ -1621,7 +1635,9 @@ class DefaultAuthForms:
     def verify_email(self, model=False):
         
         if model:
-            return dict(noform=True, 
+            return dict(public=True,
+                        hidden=True,
+                        noform=True, 
                         href="/auth/api/profile")
 
         """Process token in email verification"""
