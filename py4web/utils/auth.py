@@ -1247,14 +1247,15 @@ class DefaultAuthForms:
             if self.auth.allows("login"):
                 additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-in"],
                                                action="login",
-                                               _href="/auth/api/login"))
+                                               href="/auth/api/login"))
 
             if self.auth.allows("request_reset_password"):
                 additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["lost-password"],
                                                action="request_reset_password",
-                                               _href="/auth/api/request_reset_password"))  
+                                               href="/auth/api/request_reset_password"))  
 
-            return dict(fields=fields, 
+            return dict(fields=fields,
+                        href="/auth/api/register" ,
                         submit_label=button_name,
                         additional_buttons=additional_buttons)
         
@@ -1316,10 +1317,10 @@ class DefaultAuthForms:
                 url = f"{url}?next={request.query.get('next')}"
 
             if (name != "email_auth"):  #  do not add the top button for the email auth plugin
-                top_buttons.append(dict(label=f"{plugin.label} Login", action=name, _href=url))
+                top_buttons.append(dict(label=f"{plugin.label} Login", action=name, href=url))
         
         combined_div = DIV(*[A(item['label'], 
-                               _href=f"..{item['_href']}",
+                               _href=f"..{item['href']}",
                                _role="button") for item in top_buttons])
         
         return dict(buttons=top_buttons, 
@@ -1354,16 +1355,17 @@ class DefaultAuthForms:
             if self.auth.allows("register"):
                 additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-up"],
                                                action="register", 
-                                               _href="/auth/api/register"))
+                                               href="/auth/api/register"))
 
             if self.auth.allows("request_reset_password"):
                 additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["lost-password"], 
                                                action="request_reset_password",
-                                               _href="/auth/api/request_reset_password"))  
+                                               href="/auth/api/request_reset_password"))  
 
             additional_buttons.extend(top_buttons['buttons'])
 
             return dict(fields=fields, 
+                        href="/auth/api/login",
                         submit_label=button_name,
                         additional_buttons=additional_buttons)
 
@@ -1422,14 +1424,15 @@ class DefaultAuthForms:
             if self.auth.allows("login"):
                 additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-in"],
                                                action="login",
-                                               _href="/auth/api/login"))
+                                               href="/auth/api/login"))
 
             if self.auth.allows("register"):
                 additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-up"],
                                                action="register",
-                                               _href="/auth/api/register"))  
+                                               href="/auth/api/register"))  
 
             return dict(fields=fields, 
+                        href="/auth/api/request_reset_password", 
                         submit_label=button_name,
                         additional_buttons=additional_buttons)
 
@@ -1487,6 +1490,7 @@ class DefaultAuthForms:
 
         if model:            
             return dict(fields=fields, 
+                        href="/auth/api/reset_password", 
                         submit_label=button_name)
 
         user = None
@@ -1534,6 +1538,7 @@ class DefaultAuthForms:
 
         if model:            
             return dict(fields=fields, 
+                        href="/auth/api/change_password", 
                         submit_label=button_name)
 
         form = Form(
@@ -1585,6 +1590,7 @@ class DefaultAuthForms:
 
         if model:
             return dict(fields=fields, 
+                        href="/auth/api/profile", 
                         submit_label=button_name,
                         deletable=deletable)
 
@@ -1603,7 +1609,8 @@ class DefaultAuthForms:
     def logout(self, model=False):
         
         if model:
-            return dict(noform=True)
+            return dict(noform=True, 
+                        href="/auth/api/profile")
         
         """Process logout"""
         self.auth.session.clear()
@@ -1614,7 +1621,8 @@ class DefaultAuthForms:
     def verify_email(self, model=False):
         
         if model:
-            return dict(noform=True)
+            return dict(noform=True, 
+                        href="/auth/api/profile")
 
         """Process token in email verification"""
         token = request.query.get("token")
