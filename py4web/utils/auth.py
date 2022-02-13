@@ -907,15 +907,15 @@ class Auth(Fixture):
         if not spa:
             exposed_form_routes = [dict(form_name=form_name,
                                         form_route=f"{route}/{form_name}",
-                                        uses=auth) if self.allows(form_name) else None for form_name in self.form_source.public_forms]
+                                        uses=auth) for form_name in self.form_source.public_forms if self.allows(form_name)]
 
             exposed_form_routes.extend([dict(form_name=form_name,
                                              form_route=f"{route}/{form_name}",
-                                             uses=auth.user) if self.allows(form_name) else None for form_name in self.form_source.private_forms])
+                                             uses=auth.user) for form_name in self.form_source.private_forms if self.allows(form_name)])
 
             exposed_form_routes.extend([dict(form_name=form_name,
                                              form_route=f"{route}/{form_name}",
-                                             uses=auth) if self.allows(form_name) else None for form_name in self.form_source.no_forms])
+                                             uses=auth) for form_name in self.form_source.no_forms if self.allows(form_name)])
 
 
             for item in exposed_form_routes:
@@ -1245,12 +1245,14 @@ class DefaultAuthForms:
         if model:
             additional_buttons = []
             if self.auth.allows("login"):
-                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-in"], 
-                                               _href="../auth/login"))
+                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-in"],
+                                               action="login",
+                                               _href="/auth/api/login"))
 
             if self.auth.allows("request_reset_password"):
-                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["lost-password"], 
-                                                _href="../auth/request_reset_password"))  
+                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["lost-password"],
+                                               action="request_reset_password",
+                                               _href="/auth/api/request_reset_password"))  
 
             return dict(fields=fields, 
                         submit_label=button_name,
@@ -1308,12 +1310,20 @@ class DefaultAuthForms:
         top_buttons = []
 
         for name, plugin in self.auth.plugins.items():
-            url = f"../auth/plugin/{name}/login"
+            url = f"/auth/plugin/{name}/login"
+
             if request.query.get("next"):
-                url += f"?next={request.query.get('next')}"
+                url = f"{url}?next={request.query.get('next')}"
+
             if (name != "email_auth"):  #  do not add the top button for the email auth plugin
-                top_buttons.append(dict(label=f"{plugin.label} Login", _href=url))
-        return dict(buttons=top_buttons, combined_div=DIV(*[A(item['label'], _href=item['_href'], _role="button") for item in top_buttons ]))
+                top_buttons.append(dict(label=f"{plugin.label} Login", action=name, _href=url))
+        
+        combined_div = DIV(*[A(item['label'], 
+                               _href=f"..{item['_href']}",
+                               _role="button") for item in top_buttons])
+        
+        return dict(buttons=top_buttons, 
+                    combined_div=combined_div)
 
     def login(self, model=False):
         """Login form"""
@@ -1342,12 +1352,14 @@ class DefaultAuthForms:
         if model:
             additional_buttons = []
             if self.auth.allows("register"):
-                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-up"], 
-                                               _href="../auth/register"))
+                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-up"],
+                                               action="register", 
+                                               _href="/auth/api/register"))
 
             if self.auth.allows("request_reset_password"):
                 additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["lost-password"], 
-                                               _href="../auth/request_reset_password"))  
+                                               action="request_reset_password",
+                                               _href="/auth/api/request_reset_password"))  
 
             additional_buttons.extend(top_buttons['buttons'])
 
@@ -1408,12 +1420,14 @@ class DefaultAuthForms:
         if model:
             additional_buttons = []
             if self.auth.allows("login"):
-                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-in"], 
-                                               _href="../auth/login"))
+                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-in"],
+                                               action="login",
+                                               _href="/auth/api/login"))
 
             if self.auth.allows("register"):
-                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-up"], 
-                                               _href="../auth/register"))  
+                additional_buttons.append(dict(label=self.auth.param.messages["buttons"]["sign-up"],
+                                               action="register",
+                                               _href="/auth/api/register"))  
 
             return dict(fields=fields, 
                         submit_label=button_name,
