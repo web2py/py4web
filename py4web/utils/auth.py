@@ -1624,7 +1624,7 @@ class DefaultAuthForms:
             return dict(public=False,
                         hidden=False,
                         noform=True, 
-                        href="/auth/api/profile")
+                        href="/auth/api/logout")
         
         """Process logout"""
         self.auth.session.clear()
@@ -1638,7 +1638,7 @@ class DefaultAuthForms:
             return dict(public=True,
                         hidden=True,
                         noform=True, 
-                        href="/auth/api/profile")
+                        href="/auth/api/verify_email")
 
         """Process token in email verification"""
         token = request.query.get("token")
