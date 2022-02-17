@@ -955,7 +955,7 @@ class action:
                 logging.error(snapshot["traceback"])
                 ticket_uuid = error_logger.log(request.app_name, snapshot) or "unknown"
                 response.status = 500
-                response.body = error_page(
+                return error_page(
                     500,
                     button_text=ticket_uuid,
                     href="/_dashboard/ticket/" + ticket_uuid,
