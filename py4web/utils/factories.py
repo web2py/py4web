@@ -13,7 +13,7 @@ class Inject(Fixture):
         self.variables = variables
 
     def on_success(self, context):
-        output = context['output']
+        output = context["output"]
         if isinstance(output, dict):
             output.update(**self.variables)
 
@@ -52,7 +52,7 @@ class ActionFactory:
             if template is None:
                 template = func.__name__ + ".html"
             if template:
-                fixtures.append(template)
+                fixtures.insert(0, template)
             new_func = action.uses(*fixtures)(func)
             action(path, method=method)(new_func)
             return func
