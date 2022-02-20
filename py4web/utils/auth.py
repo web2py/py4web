@@ -1340,11 +1340,11 @@ class DefaultAuthForms:
 
         fields = [
             Field(
-                "username",
+                "email",
                 label = self.auth.db.auth_user.username.label if self.auth.use_username else self.auth.db.auth_user.email.label
             ),
             Field(
-                "login_password",
+                "password",
                 type="password",
                 label=self.auth.param.messages["labels"].get("password"),
             ),
@@ -1382,10 +1382,10 @@ class DefaultAuthForms:
         self.auth.session["_next_login"] = request.query.get("next")
         if form.submitted:
             user, error = self.auth.login(
-                form.vars.get("username", ""), form.vars.get("login_password", "")
+                form.vars.get("email", ""), form.vars.get("password", "")
             )
             form.accepted = not error
-            form.errors["username"] = error
+            form.errors["email"] = error
         if user:
             self.auth.store_user_in_session(user["id"])
             self._postprocessing("login", form, user)
