@@ -11,20 +11,22 @@ class TestAuth(unittest.TestCase):
         self.db = DAL("sqlite:memory")
         self.session = Session(secret="a", expiration=10)
         self.session.initialize()
-        self.auth = Auth(self.session, self.db, define_tables=True, password_complexity=None)
+        self.auth = Auth(
+            self.session, self.db, define_tables=True, password_complexity=None
+        )
         self.auth.enable()
         self.auth.action = self.action
         request.app_name = "_scaffold"
 
     def tearDown(self):
-        bottle.app.router.remove('/*')
+        bottle.app.router.remove("/*")
 
     def action(self, name, method, query, data):
-        request.environ['REQUEST_METHOD'] = method
-        request.environ['ombott.request.query'] = query
-        request.environ['ombott.request.json'] = data
+        request.environ["REQUEST_METHOD"] = method
+        request.environ["ombott.request.query"] = query
+        request.environ["ombott.request.json"] = data
         # we break a symmetry below. should fix in auth.py
-        if name.startswith('api/'):
+        if name.startswith("api/"):
             return getattr(AuthAPI, name[4:])(self.auth)
         else:
             return getattr(self.auth.form_source, name)()
@@ -44,7 +46,9 @@ class TestAuth(unittest.TestCase):
 
     def test_extra_fields(self):
         db = DAL("sqlite:memory")
-        self.auth = Auth(self.session, db, define_tables=True, extra_fields=[Field('favorite_color')])
+        self.auth = Auth(
+            self.session, db, define_tables=True, extra_fields=[Field("favorite_color")]
+        )
         self.on_request()
         self.assertEqual(type(db.auth_user.favorite_color), Field)
 
@@ -92,7 +96,7 @@ class TestAuth(unittest.TestCase):
         )
 
         self.on_request()
-        token = user.action_token[len("pending-registration") + 1:]
+        token = user.action_token[len("pending-registration") + 1 :]
         try:
             self.auth.action("verify_email", "GET", {"token": token}, {})
             assert False, "email not verified"
@@ -190,7 +194,7 @@ class TestAuth(unittest.TestCase):
         self.assertEqual(
             self.auth.action("api/change_password", "POST", {}, body),
             {
-                'errors': {'old_password': 'invalid current password'},
+                "errors": {"old_password": "invalid current password"},
                 "status": "error",
                 "message": "validation errors",
                 "code": 401,

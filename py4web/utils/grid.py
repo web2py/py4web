@@ -549,24 +549,24 @@ class Grid:
 
         #  ensure the user has access for new/details/edit/delete if chosen
         if self.action == "new" and not self.is_creatable():
-            ombott.abort(
-                code=403,
-                text=f"You do not have access to create a record in the {self.tablename} table.",
+            raise HTTP(
+                403,
+                f"You do not have access to create a record in the {self.tablename} table.",
             )
         if self.action == "details" and not self.is_readable(record):
-            ombott.abort(
-                code=403,
-                text=f"You do not have access to read a record from the {self.tablename} table.",
+            raise HTTP(
+                403,
+                f"You do not have access to read a record from the {self.tablename} table.",
             )
         if self.action == "edit" and not self.is_editable(record):
-            ombott.abort(
-                code=403,
-                text=f"You do not have access to edit a record in the {self.tablename} table.",
+            raise HTTP(
+                403,
+                f"You do not have access to edit a record in the {self.tablename} table.",
             )
         if self.action == "delete" and not self.is_deletable(record):
-            ombott.abort(
-                code=403,
-                text=f"You do not have access to delete a record in the {self.tablename} table.",
+            raise HTTP(
+                403,
+                f"You do not have access to delete a record in the {self.tablename} table.",
             )
 
         if self.action in ["new", "details", "edit"]:

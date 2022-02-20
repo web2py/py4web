@@ -2,7 +2,7 @@ import uuid
 import hashlib
 import jwt
 
-from py4web.core import request, abort, DAL, Field
+from py4web.core import request, DAL, Field, HTTP
 
 
 class OAuthServer(object):
@@ -47,7 +47,7 @@ class OAuthServer(object):
                 or not hashlib.sha1(client_secret).hexdigest() == client_id
                 or not db(db.oauth2.client_secret == client_secret).count()
             ):
-                abort(404)
+                raise HTTP(404)
             info = jwt.decode(code, self.secret + client_id, algorithms=["HS256"])
             access_token = jwt.encode(info, self.secret, algorithm="HS256")
             return dict(access_token=access_token)
@@ -56,4 +56,4 @@ class OAuthServer(object):
             info = jwt.decode(access_token, self.secret, algorithms=self.algorithms)
             return info
         else:
-            abort(404)
+            raise HTTP(404)

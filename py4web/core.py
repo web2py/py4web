@@ -897,6 +897,10 @@ class action:
                 except HTTP as http:
                     context["status"] = http.status
                     raise http
+                except bottle.HTTPError as error:
+                    context["exception"] = error
+                except bottle.HTTPResponse:
+                    raise
                 except Exception as error:
                     context["exception"] = error
                 finally:
@@ -909,9 +913,9 @@ class action:
                                     call(fixture.on_success, context)
                             except Exception as error:
                                 context["exception"] = context.get("exception", error)
-                    if context["exception"]:
+                    if context.get("exception"):
                         raise context["exception"]
-                return context["output"]
+                return context.get("output", "")
 
             return wrapper
 
@@ -919,14 +923,14 @@ class action:
 
     @staticmethod
     def requires(*requirements):
-        """Enforces requirements or calls bottle.abort(401)"""
+        """Enforces requirements or raises HTTP(401)"""
 
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
                 for requirement in requirements:
                     if not requirement():
-                        bottle.abort(401)
+                        raise HTTP(401)
                 return func(*args, **kwargs)
 
             return wrapper
@@ -950,6 +954,8 @@ class action:
                 response.status = http.status
                 response.headers.update(http.headers)
                 return http.body
+            except bottle.HTTPResponse:
+                raise
             except Exception:
                 snapshot = get_error_snapshot()
                 logging.error(snapshot["traceback"])
