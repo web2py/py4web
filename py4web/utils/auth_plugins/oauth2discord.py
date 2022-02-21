@@ -22,6 +22,7 @@ class OAuth2Discord(OAuth2):
     Note that as Discord users have no concept of first/last name, the user in the auth table will contain the
     Discord username as the first name and discriminator as the last name.
     """
+
     name = "oauth2discord"
     label = "Discord"
 
@@ -35,12 +36,12 @@ class OAuth2Discord(OAuth2):
         "sso_id": "id",
         "first_name": "username",
         "last_name": "discriminator",
-        "username": "full_username"
+        "username": "full_username",
     }
 
     def callback(self, query):
         # since Discord returns username and discriminator separately, we extend the auth plugin's callback
         # function to merge them into a single field, so it can be mapped into username correctly later
         data = super().callback(query)
-        data['full_username'] = f"{data['username']}#{data['discriminator']}"
+        data["full_username"] = f"{data['username']}#{data['discriminator']}"
         return data

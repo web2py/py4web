@@ -3,7 +3,7 @@ import hashlib
 import time
 import uuid
 import base64
-from py4web import request, abort
+from py4web import request, HTTP
 from py4web.core import Fixture, Session
 
 
@@ -25,7 +25,7 @@ class URLVerifier(Fixture):
         # extra and remove the signature from the query
         signature = request.query.get("_signature")
         if signature is None:
-            abort(403)
+            raise HTTP(403)
         try:
             h = self.url_signer.algo(self.url_signer.get_key())
             signature = request.query["_signature"]
@@ -41,15 +41,15 @@ class URLVerifier(Fixture):
             )
             computed_sig = base64.b85encode(h.digest()).decode("utf-8")
             if sig != computed_sig:
-                abort(403)
+                raise HTTP(403)
             # We remove the signature, not to pollute the request.
             del request.query["_signature"]
             # Checks the expiration time.
             if self.url_signer.lifespan is not None:
                 if float(ts) + self.url_signer.lifespan < time.time():
-                    abort(403)
+                    raise HTTP(403)
         except:
-            abort(403)
+            raise HTTP(403)
 
     def _decode_ts(self, ts_string):
         """Decodes the timestamp, removing the salt."""

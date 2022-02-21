@@ -6,7 +6,7 @@ uses 'WordPress OAuth Server' plugin:
 https://wordpress.org/plugins/miniorange-oauth-20-server
 """
 
-from ...core import URL, abort, redirect
+from ...core import URL, redirect, HTTP
 from . import OAuth2
 
 from urllib.parse import urljoin
@@ -80,9 +80,9 @@ class OAuth2WPMiniorange(OAuth2):
         except jwt.exceptions.InvalidSignatureError as err:
             # -# In case of invalid signature jwt library raises InvalidSignatureError
             # This maybe should be common to all OAuth2 derived classes.
-            abort(401, err)
+            raise HTTP(401, err)
         if not data:
-            abort(401)
+            raise HTTP(401)
         error = data.get("error")
         if error:
             if isinstance(error, str):
@@ -90,7 +90,7 @@ class OAuth2WPMiniorange(OAuth2):
             else:
                 code = error.get("code", 401)
                 msg = error.get("message", "Unknown error")
-            abort(code, msg)
+            raise HTTP(code, msg)
         if auth.db:
             # map returned fields into auth_user fields
             user = {}

@@ -10,5 +10,5 @@ class TemplateTest(unittest.TestCase):
         t = Template("index.html", path=PATH)
         context = dict(output=dict(n=3))
         t.on_success(context)
-        output = context['output']
+        output = context["output"]
         self.assertEqual(output, "0,1,2.\n")

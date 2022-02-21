@@ -31,7 +31,7 @@ class TestSession(unittest.TestCase):
         _before_request()
         with pytest.raises(RuntimeError) as err:
             session.local
-        self.assertTrue('py4web hint' in str(err.value))
+        self.assertTrue("py4web hint" in str(err.value))
 
         session = Session(secret="b", expiration=10)
         request.cookies[a] = b
@@ -60,7 +60,7 @@ class TestSession(unittest.TestCase):
         _before_request()
         with pytest.raises(RuntimeError) as err:
             session.local
-        self.assertTrue('py4web hint' in str(err.value))
+        self.assertTrue("py4web hint" in str(err.value))
 
         session = Session(expiration=10, storage=DBStore(db))
         request.cookies[a] = b
@@ -99,7 +99,7 @@ class TestSession(unittest.TestCase):
             _before_request()
             with pytest.raises(RuntimeError) as err:
                 session.local
-            self.assertTrue('py4web hint' in str(err.value))
+            self.assertTrue("py4web hint" in str(err.value))
 
             conn = memcache.Client(["127.0.0.1:11211"], debug=0)
             session = Session(expiration=10, storage=conn)
