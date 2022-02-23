@@ -87,7 +87,7 @@ class Logged(Fixture):
         self.__prerequisites__ = [session]
         self.session = session
 
-    def on_request(self):
+    def on_request(self, context):
         user = self.session.get("user")
         if not user or not user.get("id"):
             abort(403)
@@ -159,7 +159,11 @@ if MODE in ("demo", "readonly", "full"):
     @session_secured
     def routes():
         """Returns current registered routes"""
-        return {"payload": Reloader.ROUTES, "status": "success"}
+        sorted_routes = {
+            name: list(sorted(routes, key=lambda route: route["rule"]))
+            for name, routes in Reloader.ROUTES.items()
+        }
+        return {"payload": sorted_routes, "status": "success"}
 
     @action("apps")
     @session_secured

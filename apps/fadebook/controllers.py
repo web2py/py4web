@@ -39,7 +39,7 @@ def friend_ids(user_id):
 
 
 @action("index")
-@action.uses(auth, "index.html")
+@action.uses("index.html", auth)
 def index():
     if auth.user_id:
         redirect(URL("feed"))
@@ -47,7 +47,7 @@ def index():
 
 
 @action("feed", method=["GET", "POST"])
-@action.uses(auth.user, "feed.html")
+@action.uses("feed.html", auth.user)
 def feed():
     # make up some random data if only one user
     make()
@@ -63,7 +63,7 @@ def feed():
 
 
 @action("home/<user_id:int>", method=["GET", "POST"])
-@action.uses(auth.user, "home.html")
+@action.uses("home.html", auth.user)
 def home(user_id):
     if user_id not in friend_ids(auth.user_id):
         raise HTTP(400)
@@ -78,7 +78,7 @@ def home(user_id):
 
 
 @action("friends", method=["GET", "POST"])
-@action.uses(auth.user, "friends.html")
+@action.uses("friends.html", auth.user)
 def friends():
     # a search form (simply by first name)
     form = Form([Field("name", required=True)])

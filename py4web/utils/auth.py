@@ -8,8 +8,8 @@ import time
 import urllib
 import uuid
 
-from py4web import redirect, request, response, abort, URL, action, Field, HTTP
-from py4web.core import Fixture, Translator, Flash, REGEX_APPJSON
+from py4web import redirect, request, response, URL, action, Field, HTTP
+from py4web.core import Fixture, Template, Translator, Flash, REGEX_APPJSON
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
 from yatl.helpers import A, DIV
@@ -47,7 +47,7 @@ def b16d(text):
 
 class AuthEnforcer(Fixture):
     """Base fixture that checks if a condition is met.
-    
+
     If not it redirects to a different page or returns HTTP 403
     """
 
@@ -56,21 +56,19 @@ class AuthEnforcer(Fixture):
         self.auth = auth
         self.condition = condition
 
-    def transform(self, output, shared_data = None):
-        if shared_data is None:
-            shared_data = {}
-        return self.auth.transform(output, shared_data)
+    def on_success(self, context):
+        self.auth.on_success(context)
 
     def abort_or_redirect(self, page, message=""):
         """Return HTTP 403 if 'application/json' in HTTP_ACCEPT
         and HTTP_JSON_REDIRECTS flag is not set in the request to 'on'.
         Else redirects to page
         """
-        
+
         if re.search(REGEX_APPJSON, request.headers.get("accept", "")) and (
             request.headers.get("json-redirects", "") != "on"
         ):
-            abort(403)
+            raise HTTP(403)
         redirect_next = request.fullpath
         if request.query_string:
             redirect_next = redirect_next + "?{}".format(request.query_string)
@@ -84,7 +82,7 @@ class AuthEnforcer(Fixture):
             )
         )
 
-    def on_request(self):
+    def on_request(self, context):
         """Checks that we have a user in the session and
         the condition is met"""
         user = self.auth.session.get("user")
@@ -112,6 +110,7 @@ class AuthEnforcer(Fixture):
 class Auth(Fixture):
     """The Auth object is responsible for handling
     authentication and authorization"""
+
     MESSAGES = {
         "verify_email": {
             "subject": "Confirm email",
@@ -238,7 +237,7 @@ class Auth(Fixture):
         self.sender = sender
         self.route = "auth"
         self.use_username = use_username  # if False, uses email only
-        self.password_in_db = password_in_db # if False, password is never saved in db
+        self.password_in_db = password_in_db  # if False, password is never saved in db
         self.use_phone_number = use_phone_number
         # The self._link variable is not thread safe (only intended for testing)
         self.extra_auth_user_fields = extra_fields or []
@@ -258,21 +257,27 @@ class Auth(Fixture):
 
     def fix_actions(self):
         """Cleanup duplicated and expand 'all' allowed_actions on API and Forms"""
-        ALL_ALLOWED_ACTIONS = list(set(AuthAPI.public_api + AuthAPI.private_api + \
-                DefaultAuthForms.public_forms + DefaultAuthForms.private_forms + \
-                DefaultAuthForms.no_forms))
-        #"login", 
-        #"logout", 
-        #"request_reset_password", 
-        #"reset_password", 
-        #"change_password", 
-        #"change_email", 
-        #"profile", 
-        #"config",
-        #"register",
-        #"verify_email",
-        #"unsubscribe",
-    
+        ALL_ALLOWED_ACTIONS = list(
+            set(
+                AuthAPI.public_api
+                + AuthAPI.private_api
+                + DefaultAuthForms.public_forms
+                + DefaultAuthForms.private_forms
+                + DefaultAuthForms.no_forms
+            )
+        )
+        # "login",
+        # "logout",
+        # "request_reset_password",
+        # "reset_password",
+        # "change_password",
+        # "change_email",
+        # "profile",
+        # "config",
+        # "register",
+        # "verify_email",
+        # "unsubscribe",
+
         if "all" in self.param.allowed_actions:
             self.param.allowed_actions = ALL_ALLOWED_ACTIONS
         else:
@@ -288,12 +293,10 @@ class Auth(Fixture):
         self.fix_actions()
         if action_name in self.param.allowed_actions:
             self.param.allowed_actions.remove(action_name)
-        
-    def transform(self, output, shared_data = None):
+
+    def on_success(self, context):
         if self.inject:
-            template_context = shared_data.get("template_context")
-            template_context["user"] = self.get_user()
-        return output
+            context["template_inject"] = {"user": self.get_user()}
 
     def define_tables(self):
         """Defines the auth_user table"""
@@ -463,7 +466,7 @@ class Auth(Fixture):
     @property
     def user_id(self):
         if not self.session.is_valid():
-            return None        
+            return None
         user = self.session.get("user")
         if not user:
             # handles corner case: session=dict(user=None)
@@ -528,7 +531,6 @@ class Auth(Fixture):
                 self.store_user_in_session(res["id"])
         return res
 
-
     def login(self, email, password):
         """Login a new user after the user's parameters are entered
         in the Login form"""
@@ -562,14 +564,22 @@ class Auth(Fixture):
                 else:
                     return (None, self.param.messages["errors"].get("invalid_email"))
             if (user.action_token or "").startswith("pending-registration:"):
-                return (None, self.param.messages["errors"].get("registration_is_pending"))
+                return (
+                    None,
+                    self.param.messages["errors"].get("registration_is_pending"),
+                )
             if user.action_token == "account-blocked":
                 return (None, self.param.messages["errors"].get("account_is_blocked"))
             if user.action_token == "pending-approval":
-                return (None, self.param.messages["errors"].get("account_needs_to_be_approved"))
+                return (
+                    None,
+                    self.param.messages["errors"].get("account_needs_to_be_approved"),
+                )
             if "pam" in self.plugins or "ldap" in self.plugins:
                 plugin_name = "pam" if "pam" in self.plugins else "ldap"
-                check = self.plugins[plugin_name].check_credentials(user.username, password)
+                check = self.plugins[plugin_name].check_credentials(
+                    user.username, password
+                )
                 if check:
                     return (user, None)
             else:
@@ -577,12 +587,11 @@ class Auth(Fixture):
                     return (user, None)
             return None, self.param.messages["errors"].get("invalid_credentials")
 
-
     def request_reset_password(self, email, send=True, next="", route=None):
         """Send a mail with token for changing user's password after the user's parameters are entered
         in the request_reset_password form
         """
-        
+
         db = self.db
         value = email.lower()
         if self.use_username:
@@ -624,10 +633,18 @@ class Auth(Fixture):
         user = db(query).select().first()
 
         if not user:
-            return {"errors": {"token": self.param.messages["errors"].get("invalid_token")}}
+            return {
+                "errors": {"token": self.param.messages["errors"].get("invalid_token")}
+            }
 
         if new_password != new_password2:
-            return {"errors": {"new_password2": self.param.messages["errors"].get("password_doesnt_match")}}
+            return {
+                "errors": {
+                    "new_password2": self.param.messages["errors"].get(
+                        "password_doesnt_match"
+                    )
+                }
+            }
 
         qset = db(db.auth_user.id == user["id"])
         value, error = db.auth_user.password.validate(new_password)
@@ -646,14 +663,22 @@ class Auth(Fixture):
             if check_old_password:
                 pwd = CRYPT()(old_password)[0]
                 if not (pwd and pwd == user.get("password")):
-                    return {"errors": {"old_password": self.param.messages["errors"].get("invalid_current_password")}}
+                    return {
+                        "errors": {
+                            "old_password": self.param.messages["errors"].get(
+                                "invalid_current_password"
+                            )
+                        }
+                    }
             new_pwd, error = db.auth_user.password.validate(new_password)
             if error:
                 return {"errors": {"new_password": error}}
             if new_pwd == user.password:
                 return {
                     "errors": {
-                        "new_password": self.param.messages["errors"].get("new_password_is_the_same_as_previous_password")
+                        "new_password": self.param.messages["errors"].get(
+                            "new_password_is_the_same_as_previous_password"
+                        )
                     }
                 }
             if self.param.block_previous_password_num:
@@ -661,7 +686,13 @@ class Auth(Fixture):
                     : self.param.block_previous_password_num
                 ]
                 if any(new_pwd == old_pwd for old_pwd in past_pwds):
-                    return {"errors": {"new_password": self.param.messages["errors"].get("new_password_was_already_used")}}
+                    return {
+                        "errors": {
+                            "new_password": self.param.messages["errors"].get(
+                                "new_password_was_already_used"
+                            )
+                        }
+                    }
                 past_pwds.insert(0, user.get("password"))
                 db(db.auth_user.id == user.get("id")).update(
                     past_passwords_hash=past_pwds
@@ -674,7 +705,9 @@ class Auth(Fixture):
     def change_email(self, user, new_email, password=None, check=True):
         db = self.db
         if check and CRYPT()(password)[0] != user.get("password"):
-            return {"errors": {"password": self.param.messages["errors"].get("invalid")}}
+            return {
+                "errors": {"password": self.param.messages["errors"].get("invalid")}
+            }
         return (
             db(db.auth_user.id == user.get("id"))
             .validate_and_update(email=new_email)
@@ -794,7 +827,7 @@ class Auth(Fixture):
         """Extends the object and override the function to send messages with
         twilio or onesignal or alternative method other than email
         """
-        
+
         message = self.param.messages[name]
         d = dict(user)
         d.update(**attrs)
@@ -938,6 +971,7 @@ class Auth(Fixture):
 
 def api_wrapper(func):
     """Validates API calls"""
+
     def func_wrapper(auth, func=func):
         data = func(auth) or {}
         if not "status" in data and data.get("errors"):
@@ -956,7 +990,7 @@ class AuthAPI:
 
     Defines all the public and private API methods
     """
-    
+
     public_api = [
         "all_models",
         "config",
@@ -1053,7 +1087,9 @@ class AuthAPI:
             return  AuthAPI.get_model(defaultAuthFunction=auth.form_source.register)
             
         if request.json is None:
-            return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
+            return auth._error(
+                auth.param.messages["errors"].get("no_json_post_payload")
+            )
         auth.get_or_delete_existing_unverified_account(request.json.get("email"))
         return auth.register(request.json, send=True).as_dict()
 
@@ -1064,7 +1100,9 @@ class AuthAPI:
             return  AuthAPI.get_model(defaultAuthFunction=auth.form_source.login)
             
         if request.json is None:
-            return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
+            return auth._error(
+                auth.param.messages["errors"].get("no_json_post_payload")
+            )
         username, password = request.json.get("email"), request.json.get("password")
         if not all(isinstance(_, str) for _ in [username, password]):
             return auth._error(auth.param.messages["errors"].get("invalid_credentials"))
@@ -1085,7 +1123,9 @@ class AuthAPI:
                     auth.store_user_in_session(user["id"])
                 # else: if we're here - check is OK, but user is not in the session - is it right?
             else:
-                data = auth._error(auth.param.messages["errors"].get("invalid_credentials"))
+                data = auth._error(
+                    auth.param.messages["errors"].get("invalid_credentials")
+                )
         # Else use normal login
         else:
             user, error = auth.login(username, password)
@@ -1106,10 +1146,12 @@ class AuthAPI:
             return  AuthAPI.get_model(defaultAuthFunction=auth.form_source.request_reset_password)
             
         if request.json is None:
-            return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
-        
-        if 'email' not in request.json:
-            request.json['email'] = '' 
+            return auth._error(
+                auth.param.messages["errors"].get("no_json_post_payload")
+            )
+
+        if "email" not in request.json:
+            request.json["email"] = ""
 
         if not auth.request_reset_password(**request.json):
             return auth._error("invalid user")
@@ -1123,7 +1165,9 @@ class AuthAPI:
             
         # check the new_password2 only if passed
         if request.json is None:
-            return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
+            return auth._error(
+                auth.param.messages["errors"].get("no_json_post_payload")
+            )
         return auth.reset_password(
             request.json.get("token"),
             request.json.get("new_password"),
@@ -1136,11 +1180,11 @@ class AuthAPI:
         if AuthAPI.model_request('verify_email'):
             return AuthAPI.get_model(defaultAuthFunction=auth.form_source.verify_email)
             
-        token = request.query.get("token")        
+        token = request.query.get("token")
         verified = auth.verify_email(token)
 
         if not verified:
-            return auth._error(auth.param.messages["flash"].get("link-expired"))            
+            return auth._error(auth.param.messages["flash"].get("link-expired"))
         return auth._success(auth.param.messages["flash"].get("email-verified"))
 
     @staticmethod
@@ -1165,7 +1209,9 @@ class AuthAPI:
             return AuthAPI.get_model(defaultAuthFunction=auth.form_source.change_password)            
 
         if request.json is None:
-            return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
+            return auth._error(
+                auth.param.messages["errors"].get("no_json_post_payload")
+            )
         return auth.change_password(
             auth.get_user(safe=False),  # refactor make faster
             request.json.get("new_password"),
@@ -1176,7 +1222,9 @@ class AuthAPI:
     @api_wrapper
     def change_email(auth):
         if request.json is None:
-            return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
+            return auth._error(
+                auth.param.messages["errors"].get("no_json_post_payload")
+            )
         return auth.change_email(
             auth.get_user(safe=False),
             request.json.get("new_email"),
@@ -1194,7 +1242,9 @@ class AuthAPI:
         if request.method == "GET":
             return {"user": auth.get_user()}
         if request.json is None:
-            return auth._error(auth.param.messages["errors"].get("no_json_post_payload"))
+            return auth._error(
+                auth.param.messages["errors"].get("no_json_post_payload")
+            )
         else:
             return auth.update_profile(auth.get_user(), **request.json)
 
@@ -1217,10 +1267,14 @@ class DefaultAuthForms:
         """SignUp form"""
         self.auth.db.auth_user.password.writable = True
         if self.auth.password_in_db:
-            self.auth.db.auth_user.password.requires = [IS_STRONG(**self.auth.param.password_complexity), CRYPT()]
+            self.auth.db.auth_user.password.requires = [
+                IS_STRONG(**self.auth.param.password_complexity),
+                CRYPT(),
+            ]
         else:
             self.auth.param.password_complexity={"entropy": 0}
             self.auth.db.auth_user.password.requires = [IS_STRONG(**self.auth.param.password_complexity)]
+            
         fields = [field for field in self.auth.db.auth_user if field.writable and field.type != 'id']
         if self.auth.param.exclude_extra_fields_in_register:
             fields = [
@@ -1271,12 +1325,14 @@ class DefaultAuthForms:
         user = None
         if form.accepted:
             # notice that here the form is alrealdy validated
-            if not self.auth.password_in_db: # password must not be written in db
+            if not self.auth.password_in_db:  # password must not be written in db
                 # Prioritize PAM or LDAP logins if enabled
                 if "pam" in self.auth.plugins or "ldap" in self.auth.plugins:
                     plugin_name = "pam" if "pam" in self.auth.plugins else "ldap"
-                    check = self.auth.plugins[plugin_name].check_credentials(form.vars["username"], form.vars["password"])
-                    form.vars["password"]=""
+                    check = self.auth.plugins[plugin_name].check_credentials(
+                        form.vars["username"], form.vars["password"]
+                    )
+                    form.vars["password"] = ""
                     if not check:
                         self._set_flash("Invalid username or password")
                         redirect("register")

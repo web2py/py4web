@@ -7,6 +7,7 @@ import copy
 import datetime
 from urllib.parse import urlparse
 
+import ombott
 from pydal.objects import Field, FieldVirtual
 from yatl.helpers import (
     CAT,
@@ -446,6 +447,11 @@ class Grid:
         if auto_process:
             self.process()
 
+    def is_creatable(self):
+        if callable(self.param.create):
+            return self.param.create()
+        return self.param.create
+
     def is_editable(self, row):
         if callable(self.param.editable):
             return self.param.editable(row)
@@ -481,6 +487,7 @@ class Grid:
 
         parts = self.path.split("/")
         self.action = parts[0] or "select"
+
         if self.param.field_id:
             self.tablename = str(self.param.field_id._table)
         else:
@@ -540,6 +547,28 @@ class Grid:
         else:
             record = None
 
+        #  ensure the user has access for new/details/edit/delete if chosen
+        if self.action == "new" and not self.is_creatable():
+            raise HTTP(
+                403,
+                f"You do not have access to create a record in the {self.tablename} table.",
+            )
+        if self.action == "details" and not self.is_readable(record):
+            raise HTTP(
+                403,
+                f"You do not have access to read a record from the {self.tablename} table.",
+            )
+        if self.action == "edit" and not self.is_editable(record):
+            raise HTTP(
+                403,
+                f"You do not have access to edit a record in the {self.tablename} table.",
+            )
+        if self.action == "delete" and not self.is_deletable(record):
+            raise HTTP(
+                403,
+                f"You do not have access to delete a record in the {self.tablename} table.",
+            )
+
         if self.action in ["new", "details", "edit"]:
 
             readonly = self.action == "details"
@@ -560,7 +589,7 @@ class Grid:
                     self.form.param.sidecar.append(self.param.new_sidecar)
                 if self.param.new_submit_value:
                     self.form.param.submit_value = self.param.new_submit_value
-            if self.action == "details":
+            if self.action == "details" and self.is_readable(record):
                 if self.param.details_sidecar:
                     self.form.param.sidecar.append(self.param.details_sidecar)
                 if self.param.details_submit_value:

@@ -604,7 +604,7 @@ FormStyleBulma.classes.update(
         "inner": "control",
         "label": "label",
         "info": "help",
-        "error": "help is-danger py4web-validation-error",
+        "error": "help is-danger py4web-validation-error mt-1",
         "submit": "button is-primary",
         "input": "input",
         "input[type=text]": "input",

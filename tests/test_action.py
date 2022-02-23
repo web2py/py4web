@@ -6,9 +6,10 @@ import unittest
 import uuid
 
 import mechanize
+import requests
 
-from py4web import action, DAL, Field, Session, Cache
-from py4web.core import bottle, request, error404
+from py4web import abort, action, DAL, Field, Session, Cache, HTTP
+from py4web.core import bottle, request, error404, Fixture
 
 os.environ["PY4WEB_APPS_FOLDER"] = os.path.sep.join(
     os.path.normpath(__file__).split(os.path.sep)[:-2]
@@ -37,6 +38,37 @@ def index():
     return "ok %s %s %s" % (session["number"], db(db.thing).count(), clone_ok)
 
 
+@action("raise300")
+def raise300():
+    raise HTTP(300)
+
+
+@action("bottle_httpresponse")
+def bottle_httpresponse():
+    return bottle.HTTPResponse(status=200, body="ok")
+
+
+@action("abort")
+def abort_response():
+    abort(400)
+
+
+class Corrector(Fixture):
+    def on_error(self, context):
+        print(context)
+        context["exception"] = None
+        context["output"] = "caught"
+
+
+corrector = Corrector()
+
+
+@action("abort_caught")
+@action.uses(corrector)
+def abort_response():
+    abort(400)
+
+
 def run_server():
     bottle.run(host="localhost", port=8001)
 
@@ -63,8 +95,24 @@ class CacheAction(unittest.TestCase):
         res = self.browser.open("http://127.0.0.1:8001/tests/index")
         self.assertEqual(res.read(), b"ok 2 2 1")
 
+    def test_error(self):
+        res = requests.get("http://127.0.0.1:8001/tests/raise300")
+        self.assertEqual(res.status_code, 300)
+
+        res = requests.get("http://127.0.0.1:8001/tests/abort")
+        self.assertEqual(res.status_code, 400)
+
+        res = requests.get("http://127.0.0.1:8001/tests/abort_caught")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.content, b"caught")
+
+        res = requests.get("http://127.0.0.1:8001/tests/bottle_httpresponse")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.content, b"ok")
+
     def test_local(self):
         # for test coverage
+        request.app_name = "example"
         Session.__init_request_ctx__()  # mimic before_request-hook
         index()
 

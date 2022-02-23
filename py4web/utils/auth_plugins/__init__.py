@@ -7,7 +7,7 @@ import random
 import jwt
 import string
 import requests
-from py4web.core import URL, abort, redirect, request
+from py4web.core import URL, redirect, request, HTTP
 
 
 class SSO(object):
@@ -31,7 +31,7 @@ class SSO(object):
         elif path == "callback":
             self._handle_callback(auth, get_vars)
         else:
-            abort(404)
+            raise HTTP(404)
 
     def callback(self, get_vars):
         return {}
@@ -41,7 +41,7 @@ class SSO(object):
     def _handle_callback(self, auth, get_vars):
         data = self.callback(get_vars)
         if not data:
-            abort(401)
+            raise HTTP(401)
         error = data.get("error")
         if error:
             if isinstance(error, str):
@@ -49,7 +49,7 @@ class SSO(object):
             else:
                 code = error.get("code", 401)
                 msg = error.get("message", "Unknown error")
-            abort(code, msg)
+            raise HTTP(code, msg)
         if auth.db:
             # map returned fields into auth_user fields
             user = {}
