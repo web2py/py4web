@@ -1276,6 +1276,7 @@ class DefaultAuthForms:
             self.auth.db.auth_user.password.requires = [IS_STRONG(**self.auth.param.password_complexity)]
             
         fields = [field for field in self.auth.db.auth_user if field.writable and field.type != 'id']
+
         if self.auth.param.exclude_extra_fields_in_register:
             fields = [
                 field
