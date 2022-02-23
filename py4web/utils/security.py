@@ -56,7 +56,7 @@ class CheckHeaders(Fixture):
             checked_parts.append(parts[3])
         return checked_parts
 
-    def on_request(self):
+    def on_request(self, context):
         print(request.environ["REMOTE_ADDR"])
         if self.protocol and not request.url.startswith(self.protocol + "://"):
             raise HTTP(400)
@@ -98,7 +98,7 @@ class AllowCors(Fixture):
         self.exposed_headers = ", ".join(exposed_headers)
         self.request_headers = ", ".join(request_headers)
 
-    def on_request(self):
+    def on_request(self, context):
         if self.origin:
             response.headers["Access-Control-Allow-Origin"] = self.origin
         if self.headers:

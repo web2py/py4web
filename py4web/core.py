@@ -6,6 +6,7 @@
 import asyncio
 import cgitb
 import code
+import collections
 import copy
 import datetime
 import enum
@@ -99,15 +100,15 @@ DEFAULTS = dict(
 
 HELPERS = {name: getattr(yatl.helpers, name) for name in yatl.helpers.__all__}
 
-_DEFAULT_APP_ROOTS = set()
-
 ART = r"""
-██████╗ ██╗   ██╗██╗  ██╗██╗    ██╗███████╗██████╗
-██╔══██╗╚██╗ ██╔╝██║  ██║██║    ██║██╔════╝██╔══██╗
-██████╔╝ ╚████╔╝ ███████║██║ █╗ ██║█████╗  ██████╔╝
-██╔═══╝   ╚██╔╝  ╚════██║██║███╗██║██╔══╝  ██╔══██╗
-██║        ██║        ██║╚███╔███╔╝███████╗██████╔╝
-╚═╝        ╚═╝        ╚═╝ ╚══╝╚══╝ ╚══════╝╚═════╝
+ /#######  /##     /##/##   /## /##      /## /######## /####### 
+| ##__  ##|  ##   /##/ ##  | ##| ##  /# | ##| ##_____/| ##__  ##
+| ##  \ ## \  ## /##/| ##  | ##| ## /###| ##| ##      | ##  \ ##
+| #######/  \  ####/ | ########| ##/## ## ##| #####   | ####### 
+| ##____/    \  ##/  |_____  ##| ####_  ####| ##__/   | ##__  ##
+| ##          | ##         | ##| ###/ \  ###| ##      | ##  \ ##
+| ##          | ##         | ##| ##/   \  ##| ########| #######/
+|__/          |__/         |__/|__/     \__/|________/|_______/
 Is still experimental...
 """
 
@@ -306,6 +307,10 @@ class Fixture:
     __request_master_ctx__ = threading.local()
     __fixture_debug__ = False
 
+    # normally on_success/on_error are only called if none of the previous
+    # on_request failed, if a fixture is_hook then on_error is always called.
+    is_hook = False
+
     @classmethod
     def __init_request_ctx__(cls):
         cls.__request_master_ctx__.request_ctx = dict()
@@ -341,32 +346,24 @@ class Fixture:
             )
             return False
 
-    def on_request(self):
+    def on_request(self, context):
         pass  # called when a request arrives
 
-    def on_error(self):
+    def on_error(self, context):
         pass  # called when a request errors
 
-    def on_success(self, status):
+    def on_success(self, context):
         pass  # called when a request is successful
-
-    def finalize(self):
-        pass  # called in any case at the end of a request
-
-    def transform(
-        self, output, shared_data=None
-    ):  # transforms the output, for example to apply template
-        return output
 
 
 _REQUEST_HOOKS.before.add(Fixture.__init_request_ctx__)
 
 
 class Translator(pluralize.Translator, Fixture):
-    def on_request(self):
+    def on_request(self, context):
         self.select(request.headers.get("Accept-Language", "en"))
 
-    def on_success(self, status):
+    def on_success(self, context):
         response.headers["Content-Language"] = self.local.tag
 
 
@@ -374,15 +371,15 @@ class DAL(pydal.DAL, Fixture):
 
     reconnect_on_request = True
 
-    def on_request(self):
+    def on_request(self, context):
         if self.reconnect_on_request:
             self._adapter.reconnect()
         threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
 
-    def on_error(self):
+    def on_error(self, context):
         self.rollback()
 
-    def on_success(self, status):
+    def on_success(self, context):
         self.commit()
 
 
@@ -458,7 +455,7 @@ class Flash(Fixture):
     def local(self):
         return self._safe_local
 
-    def on_request(self):
+    def on_request(self, context):
         self._safe_local = types.SimpleNamespace()
         # when a new request arrives we look for a flash message in the cookie
         flash = request.get_cookie("py4web-flash")
@@ -467,14 +464,17 @@ class Flash(Fixture):
         else:
             self.local.flash = None
 
-    def on_success(self, status):
+    def on_success(self, context):
         # if we redirect and have a flash message we move it to the session
+        status = context["status"]
         if status == 303 and self.local.flash:
             response.set_cookie("py4web-flash", json.dumps(self.local.flash), path="/")
         else:
             response.delete_cookie("py4web-flash", path="/")
+        context["output"] = self.transform(context["output"])
+        self.local.__dict__.clear()
 
-    def finalize(self):
+    def on_error(self, context):
         """Clears the local to prevent leakage."""
         self.local.__dict__.clear()
 
@@ -484,7 +484,7 @@ class Flash(Fixture):
             message = yatl.sanitizer.xmlescape(message)
         self.local.flash = {"message": message, "class": _class}
 
-    def transform(self, data, shared_data=None):
+    def transform(self, data):
         # if we have a valid flash message, we inject it in the response dict
         if isinstance(data, dict):
             if "flash" not in data:
@@ -556,16 +556,16 @@ class Template(Fixture):
         self.path = path
         self.delimiters = delimiters
 
-    def transform(self, output, shared_data=None):
+    def on_success(self, context):
+        output = context["output"]
         if not isinstance(output, dict):
             return output
-        context = dict(request=request)
-        context.update(HELPERS)
-        context.update(URL=URL)
-        if shared_data:
-            context.update(shared_data.get("template_context", {}))
-        context.update(output)
-        context["__vars__"] = output
+        ctx = dict(request=request)
+        ctx.update(HELPERS)
+        ctx.update(URL=URL)
+        ctx.update(context.get("template_inject", {}))
+        ctx.update(output)
+        ctx["__vars__"] = output
         app_folder = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], request.app_name)
         path = self.path or os.path.join(app_folder, "templates")
         filename = os.path.join(path, self.filename)
@@ -573,10 +573,9 @@ class Template(Fixture):
             generic_filename = os.path.join(path, "generic.html")
             if os.path.exists(generic_filename):
                 filename = generic_filename
-        output = render(
-            filename=filename, path=path, context=context, delimiters=self.delimiters
+        context["output"] = render(
+            filename=filename, path=path, context=ctx, delimiters=self.delimiters
         )
-        return output
 
 
 #########################################################################################
@@ -666,7 +665,10 @@ class Session(Fixture):
             except Exception as err:
                 if Fixture.__fixture_debug__:
                     logging.debug("Session error %s", err)
-        if "uuid" not in self.get_data():
+        if (
+            self.get_data().get("session_cookie_name") != self_local.session_cookie_name
+            or "uuid" not in self.get_data()
+        ):
             self.clear()
 
     def get_data(self):
@@ -675,6 +677,7 @@ class Session(Fixture):
     def save(self):
         self_local = self.local
         self_local.data["timestamp"] = time.time()
+        self_local.data["session_cookie_name"] = self_local.session_cookie_name
         if self.storage:
             cookie_data = self_local.data["uuid"]
             self.storage.set(cookie_data, json.dumps(self_local.data), self.expiration)
@@ -724,14 +727,14 @@ class Session(Fixture):
         self_local.data["uuid"] = str(uuid.uuid1())
         self_local.data["secure"] = self_local.secure
 
-    def on_request(self):
+    def on_request(self, context):
         self.load()
 
-    def on_error(self):
+    def on_error(self, context):
         if self.local.changed:
             self.save()
 
-    def on_success(self, status):
+    def on_success(self, context):
         if self.local.changed:
             self.save()
 
@@ -823,21 +826,17 @@ def URL(
 
 
 class HTTP(BaseException):
-    class Type:
-        success = "success"
-        error = "error"
 
-    """Our HTTP exception does not delete cookies and headers like the bottle.HTTPResponse does;
-    since it is considered a success, not a failure"""
+    """An exception that is considered success"""
 
-    def __init__(self, status, type=Type.success):
+    def __init__(self, status, body="", headers={}):
         self.status = status
-        self.type = type
+        self.body = body
+        self.headers = headers
 
 
 def redirect(location):
-    """our redirect does not delete cookies and headers like bottle.HTTPResponse does;
-    it is considered a success, not failure"""
+    """raises HTTP(303) to the specified location"""
     response.headers["Location"] = location
     raise HTTP(303)
 
@@ -872,44 +871,55 @@ class action:
 
             if Fixture.__fixture_debug__:
                 # in debug mode log all calls to fixtures
-                def call(obj, f, args=()):
-                    logging.debug("Calling %s.%s", obj.__class__.__name__, f)
-                    return getattr(obj, f)(*args)
+                def call(f, context):
+                    logging.debug(
+                        f"Calling {f.__self__.__class__.__name__}.{f.__name__}"
+                    )
+                    return f(context)
 
             else:
 
-                def call(obj, f, args=()):
-                    return getattr(obj, f)(*args)
+                def call(f, context):
+                    return f(context)
 
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
                 # data shared by all fixtures in the pipeline for each request
-                shared_data = {"template_context": {}}
+                processed = []
+                context = {
+                    "fixtures": fixtures,
+                    "status": 200,
+                    "output": None,
+                    "exception": None,
+                    "processed": processed,
+                }
                 try:
-                    for obj in fixtures:
-                        call(obj, "on_request")
-                    ret = func(*args, **kwargs)
-                    for obj in fixtures:
-                        ret = call(obj, "transform", (ret, shared_data))
-                    for obj in fixtures:
-                        call(obj, "on_success", (200,))
-                    return ret
+                    for fixture in fixtures:
+                        call(fixture.on_request, context)
+                        processed.append(fixture)
+                    context["output"] = func(*args, **kwargs)
                 except HTTP as http:
-                    if http.type == http.Type.success:
-                        for obj in fixtures:
-                            call(obj, "on_success", (http.status,))
-                    else:
-                        if obj in fixtures:
-                            call(obj, "on_error")
+                    context["status"] = http.status
+                    raise http
+                except bottle.HTTPError as error:
+                    context["exception"] = error
+                except bottle.HTTPResponse:
                     raise
-                except Exception:
-                    for obj in fixtures:
-                        call(obj, "on_error")
-                    raise
+                except Exception as error:
+                    context["exception"] = error
                 finally:
-                    for obj in fixtures:
-                        call(obj, "finalize")
-                    # Clears the current object to prevent leakage.
+                    for fixture in reversed(fixtures):
+                        if fixture in processed or getattr(fixture, "is_hook", False):
+                            try:
+                                if context.get("exception"):
+                                    call(fixture.on_error, context)
+                                else:
+                                    call(fixture.on_success, context)
+                            except Exception as error:
+                                context["exception"] = context.get("exception", error)
+                    if context.get("exception"):
+                        raise context["exception"]
+                return context.get("output", "")
 
             return wrapper
 
@@ -917,14 +927,14 @@ class action:
 
     @staticmethod
     def requires(*requirements):
-        """Enforces requirements or calls bottle.abort(401)"""
+        """Enforces requirements or raises HTTP(401)"""
 
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
                 for requirement in requirements:
                     if not requirement():
-                        bottle.abort(401)
+                        raise HTTP(401)
                 return func(*args, **kwargs)
 
             return wrapper
@@ -946,24 +956,19 @@ class action:
                 return ret
             except HTTP as http:
                 response.status = http.status
-                ret = getattr(http, "body", "")
-                http_headers = getattr(http, "headers", None)
-                if http_headers:
-                    response.headers.update(http_headers)
-                return ret
+                response.headers.update(http.headers)
+                return http.body
             except bottle.HTTPResponse:
                 raise
             except Exception:
                 snapshot = get_error_snapshot()
                 logging.error(snapshot["traceback"])
                 ticket_uuid = error_logger.log(request.app_name, snapshot) or "unknown"
-                raise bottle.HTTPResponse(
-                    body=error_page(
-                        500,
-                        button_text=ticket_uuid,
-                        href="/_dashboard/ticket/" + ticket_uuid,
-                    ),
-                    status=500,
+                response.status = 500
+                return error_page(
+                    500,
+                    button_text=ticket_uuid,
+                    href="/_dashboard/ticket/" + ticket_uuid,
                 )
 
         return wrapper
@@ -974,18 +979,13 @@ class action:
         if self.path[0] == "/":
             path = self.path.rstrip("/") or "/"
         else:
-            if app_name == "_default":
-                base_path = ""
-                _DEFAULT_APP_ROOTS.add(self.path.split("/", 1)[0])
-            else:
-                base_path = f"/{app_name}"
+
+            base_path = "" if app_name == "_default" else f"/{app_name}"
             path = (f"{base_path}/{self.path}").rstrip("/")
-        if func not in self.registered:
-            func = action.catch_errors(app_name, func)
-        func = bottle.route(path, **self.kwargs)(func)
+        Reloader.register_route(app_name, path, self.kwargs, func)
         if path.endswith("/index"):  # /index is always optional
-            func = bottle.route(path[:-6] or "/", **self.kwargs)(func)
-        self.registered.add(func)
+            short_path = path[:-6] or "/"
+            Reloader.register_route(app_name, short_path, self.kwargs, func)
         return func
 
 
@@ -1238,7 +1238,7 @@ error_logger = ErrorLogger()
 
 class Reloader:
 
-    ROUTES = []
+    ROUTES = collections.defaultdict(list)
     MODULES = {}
     ERRORS = {}
 
@@ -1247,7 +1247,7 @@ class Reloader:
         # used by watcher
         def hook(*a, **k):
             app_name = request.path.split("/")[1]
-            if not app_name or app_name in _DEFAULT_APP_ROOTS:
+            if not app_name in Reloader.ROUTES:
                 app_name = "_default"
             if DIRTY_APPS.get(app_name):
                 Reloader.import_app(app_name)
@@ -1258,24 +1258,14 @@ class Reloader:
         _REQUEST_HOOKS.before.add(hook)
 
     @staticmethod
-    def clear_routes(app_name=""):
-        app_root = app_name
-        if app_root and app_root[0] != "/":
-            app_root = f"/{app_root}"
-        routes = f"{app_root}/*"
+    def clear_routes(app_names=None):
         remove_route = bottle.default_app().router.remove
-        remove_route(routes)
-        if app_name:
-            remove_route(app_root)
-            if app_name == "_default":
-                [
-                    (remove_route(f"/{_}"), remove_route(f"/{_}/*"))
-                    for _ in _DEFAULT_APP_ROOTS
-                ]
-                remove_route("/")
-                _DEFAULT_APP_ROOTS.clear()
-        else:
-            _DEFAULT_APP_ROOTS.clear()
+        if app_names is None:
+            app_names = Reloader.ROUTES.keys()
+        for app_name in app_names:
+            for route in Reloader.ROUTES[app_name]:
+                remove_route(route["rule"])
+            Reloader.ROUTES[app_name] = []
 
     @staticmethod
     def import_apps():
@@ -1294,7 +1284,8 @@ class Reloader:
     @staticmethod
     def import_app(app_name, clear_before_import=True):
         if clear_before_import:
-            Reloader.clear_routes(app_name)
+            Reloader.clear_routes([app_name])
+        Reloader.ROUTES[app_name] = []
         folder = os.environ["PY4WEB_APPS_FOLDER"]
         path = os.path.join(folder, app_name)
         init = os.path.join(path, "__init__.py")
@@ -1353,37 +1344,36 @@ class Reloader:
 
         if os.path.exists(static_folder):
             app_name = path.split(os.path.sep)[-1]
-            if app_name == "_default":
-                prefix = ""
-                _DEFAULT_APP_ROOTS.add("static")
-            else:
-                prefix = f"/{app_name}"
+            prefix = "" if app_name == "_default" else f"/{app_name}"
+            path = prefix + r"/static/<re((_\d+(\.\d+){2}/)?)><fp.path()>"
 
-            @bottle.route(prefix + r"/static/<re((_\d+(\.\d+){2}/)?)><fp.path()>")
             def server_static(fp, static_folder=static_folder):
                 filename = fp
                 response.headers.setdefault("Pragma", "cache")
                 response.headers.setdefault("Cache-Control", "private")
                 return bottle.static_file(filename, root=static_folder)
 
-        # Register routes list
-        app = bottle.default_app()
-        routes = []
-        for route in app.routes.values():
-            for method, method_obj in route.methods.items():
-                func = method_obj.handler
-                rule = route.rule
-                # remove optional trailing / from rule
-                routes.append(
-                    {
-                        "rule": rule,
-                        "method": method,
-                        "filename": module2filename(func.__module__),
-                        "action": func.__name__,
-                    }
-                )
-        Reloader.ROUTES = sorted(routes, key=lambda item: item["rule"])
+            Reloader.register_route(app_name, path, {"method": "GET"}, server_static)
+
         ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
+
+    @staticmethod
+    def register_route(app_name, rule, kwargs, func):
+        dec_func = action.catch_errors(app_name, func)
+        bottle.route(rule, **kwargs)(dec_func)
+        filename = module2filename(func.__module__)
+        methods = kwargs.get("method", ["GET"])
+        if isinstance(methods, str):
+            methods = [methods]
+        for method in methods:
+            Reloader.ROUTES[app_name].append(
+                {
+                    "rule": rule,
+                    "method": method,
+                    "filename": filename,
+                    "action": func.__name__,
+                }
+            )
 
 
 #########################################################################################

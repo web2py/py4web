@@ -11,8 +11,8 @@ def run_cli():
     dir = os.path.join(dirpath, "apps")
     runner = CliRunner()
 
-    testargs = ['setup', dir]
-    res = runner.invoke(cli, testargs, input='y')
+    testargs = ["setup", dir]
+    res = runner.invoke(cli, testargs, input="y")
     if res.exception:
         raise res.exception
 
