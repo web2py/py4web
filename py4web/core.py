@@ -918,7 +918,7 @@ class action:
                                 else:
                                     call(fixture.on_success, context)
                             except Exception as error:
-                                context["exception"] = context.get("exception", error)
+                                context["exception"] = context.get("exception") or error
                     if context.get("exception"):
                         raise context["exception"]
                 return context.get("output", "")
