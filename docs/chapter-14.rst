@@ -6,7 +6,8 @@ py4web comes with a Grid object providing grid and CRUD (create, update and dele
 This allows you to quickly and safely provide an interface to your data. Since it's also
 highly customizable, it's the corner stone of most py4web's applications.
 
-Key Features
+
+Key features
 ------------
 
 -  Full CRUD with Delete Confirmation
@@ -18,8 +19,15 @@ Key Features
 -  Grid dates in local format
 -  Default formatting by type plus user overrides
 
-Basic Example
--------------
+.. Hint::
+
+   There is an excellent grid tutorial made by Jim Steil on https://github.com/jpsteil/grid_tutorial.
+   You're strongly advised to check it for any doubt and for finding many precious examples,
+   hints & tips.
+
+
+Basic grid example
+------------------
 
 In this simple example we will make a grid over the superhero table.
 
@@ -42,26 +50,27 @@ Create a new minimal app called ``grid``. Change it with the following content.
    db = DAL('sqlite://storage.sqlite', folder=DB_FOLDER)
    db.define_table(
       'person',
+      Field('superhero'),
       Field('name'),
       Field('job'))
 
    # add example entries in db
    if not db(db.person).count():
-      db.person.insert(name='Clark Kent', job='Journalist')
-      db.person.insert(name='Peter Park', job='Photographer')
-      db.person.insert(name='Bruce Wayne', job='CEO')
+      db.person.insert(superhero='Superman', name='Clark Kent', job='Journalist')
+      db.person.insert(superhero='Spiderman', name='Peter Park', job='Photographer')
+      db.person.insert(superhero='Batman', name='Bruce Wayne', job='CEO')
       db.commit()
 
    @action('index', method=['POST', 'GET'])
    @action('index/<path:path>', method=['POST', 'GET'])
-   @action.uses(db, 'grid.html')
+   @action.uses('grid.html', db)
    def index(path=None):
-         grid = Grid(path,
-                  formstyle=FormStyleDefault, # FormStyleDefault or FormStyleBulma
-                  grid_class_style=GridClassStyle, # GridClassStyle or GridClassStyleBulma      
-                  query=(db.person.id > 0),
-                  orderby=[db.person.name],
-                  search_queries=[['Search by Name', lambda val: db.person.name.contains(val)]])
+      grid = Grid(path,
+               formstyle=FormStyleDefault, # FormStyleDefault or FormStyleBulma
+               grid_class_style=GridClassStyle, # GridClassStyle or GridClassStyleBulma      
+               query=(db.person.id > 0),
+               orderby=[db.person.name],
+               search_queries=[['Search by Name', lambda val: db.person.name.contains(val)]])
 
       return dict(grid=grid)
 
@@ -120,7 +129,7 @@ Notice that in this case you need to import the corresponding python modules in 
 you don't need to manually import its style modules (and you even don't need the formstyle
 and grid_class_style parameters).
 
-You also need to change the file templates/grid.html with this content:
+You also have to change the file templates/grid.html with this content:
 
 ::
 
@@ -150,8 +159,14 @@ This is much better, isn't it?
    models.py and so on.
    Using standards will make your code simpler, safer and more maintainable.
 
-In the  in the  :ref:`Advanced topics and examples` chapter you can find
+   Also, do not use grid objects directly on the root action of an app, because
+   it does not add the 'index' route. So, in this example if you browse to 
+   http://127.0.0.1:8000/grid the main page is displayed fine but any contained
+   action will lead to a non existent page.
+
+In the :ref:`Advanced topics and examples` chapter you can find
 more examples, including a master/detail grid example written with **htmx**.
+And don't forget Jim Steil's detailed tutorial on https://github.com/jpsteil/grid_tutorial.
 
 
 The Grid object
@@ -196,8 +211,9 @@ The Grid object
    search_queries
 -  search_queries: list of query lists to use to build the search form.
    Ignored if search_form is used
--  columns: list of fields or columns to display on the list page, 
-   if blank, the table will use all readable fields of the searched table
+-  columns: list of fields or columns to display on the list page,
+   see the :ref:`Custom columns` paragraph later.
+   If blank, the table will use all readable fields of the searched table
 -  show_id: show the record id field on list page - default = False
 -  orderby: pydal orderby field or list of fields
 -  left: if joining other tables, specify the pydal left expression here
@@ -208,13 +224,13 @@ The Grid object
    button
 -  details: URL to redirect to for displaying records - set to True to
    automatically generate the URL - set to False to not display the
-   button
+   button (*)
 -  editable: URL to redirect to for editing records - set to True to
    automatically generate the URL - set to False to not display the
-   button
+   button (*)
 -  deletable: URL to redirect to for deleting records - set to True to
    automatically generate the URL - set to False to not display the
-   button
+   button (*)
 -  validation: optional validation function to pass to create and edit forms
 -  pre_action_buttons: list of action_button instances to include before
    the standard action buttons
@@ -235,8 +251,21 @@ The Grid object
    to apply at certain points in the grid
 -  T: optional pluralize object
 
+(*) The parameters ``details``, ``editable`` and ``deletable`` can also take a **callable** that will 
+be passed the current row of the grid. This is useful because you can then turn a button on or off
+depending on the values in the row. In other words,
+instead of providing a simple Boolean value you can use an expression like:
 
-Searching and Filtering
+
+.. code:: python
+
+      deletable=lambda row: False if row.job=="CEO" else True,
+
+
+See also :ref:`Using callable parameters` later on.
+
+
+Searching and filtering
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 There are two ways to build a search form:
@@ -267,7 +296,7 @@ Additionally, you can provide a separate URL to the
 create/details/editable/deletable parameters to bypass the
 auto-generated CRUD pages and handle the detail pages yourself.
 
-Custom Columns
+Custom columns
 --------------
 
 If the grid does not involve a join but displays results from a single table
@@ -276,20 +305,37 @@ you can specify a list of columns. Columns are highly customizable.
 .. code:: python
 
    from py4web.utils.grid import Column
-   from yatl helpers import A
+   from yatl.helpers import A
 
    columns = [
-      db.company.id,
-      db.company.name,
-      Column("Web Site", lambda row: f"https://{row.name}.com"),
-      Column("Go To", lambda row: A("link", _href=f"https://{row.name}.com"))
+      db.person.id,
+      db.person.superhero,
+      db.person.name,
+      db.person.job,
+      Column("Web Site", lambda row: f"https://{row.superhero}.com"),
+      Column("Go To", lambda row: A("link", _href=f"https://{row.superhero}.com"))
    ]
 
    grid = Grid(... columns=columns ...) 
 
-Notice in this example the first two columns are regular fields,
-The third column has a header "Web Site" and consists of URL strings generated from the rows.
-The fourth column has a header "Go To" and generates actual clickable links using the ``A`` helper.
+Notice in this example the first columns are regular fields,
+The fifth column has a header "Web Site" and consists of URL strings generated from the rows.
+The last column has a header "Go To" and generates actual clickable links using the ``A`` helper.
+This is the result:
+
+.. image:: images/grid_columns.png
+
+Notice that we've also used the ``deletable`` parameter in order to disable and hide it for
+Batman only, as explained before.
+
+.. Warning::
+
+   Do not define columns outside of the controller methods that use them, otherwise the
+   structure of the table will change every time the user press the refresh button of the browser!
+   
+   The reason is that each time the grid displays,
+   it modifies the 'columns' variable (in the grid) by adding the action buttons to it. So, if columns are
+   defined outside of the controller method, it just keeps adding the actions column.
 
 
 Using templates
@@ -303,8 +349,8 @@ Display the grid or a CRUD Form
 
    [[=grid.render()]]
 
-To allow for customizing CRUD form layout (like with web2py) you can use
-the following
+You can customize the CRUD form layout like a normal form (see :ref:`Custom forms`). So you can use
+the following structure:
 
 ::
 
@@ -314,8 +360,9 @@ the following
    [[form.custom["submit"]
    [[form.custom["end"]
 
-When handling custom form layouts you need to know if you are displaying
-the grid or a form. Use the following to decide
+
+But notice that when handling custom form layouts you need to know if you are displaying
+the grid or a form. Use the following to decide:
 
 ::
 
@@ -330,7 +377,8 @@ the grid or a form. Use the following to decide
        [[grid.render() ]]
    [[pass]]
 
-Customizing Style
+
+Customizing style
 -----------------
 
 You can provide your own formstyle or grid classes and style to grid.
@@ -340,50 +388,139 @@ You can provide your own formstyle or grid classes and style to grid.
 -  grid_class_style is a class that provides the classes and/or styles
    used for certain portions of the grid.
 
-The default GridClassStyle - based on no.css, primarily uses styles to
+The default ``GridClassStyle`` - based on **no.css**, primarily uses styles to
 modify the layout of the grid. We've already seen that it's possible
-to use other class_style, in particular GridClassStyleBulma.
+to use other class_style, in particular ``GridClassStyleBulma``.
 
 You can even build your own class_style to be used with the css framework of
-your choice.
+your choice. Unfortunately, one based on **bootstrap** is still missing.
+
 
 Custom Action Buttons
 ---------------------
 
 As with web2py, you can add additional buttons to each row in your grid.
-You do this by providing pre_action_buttons or post_action_buttons to
+You do this by providing ``pre_action_buttons`` or ``post_action_buttons`` to
 the Grid **init** method.
 
--  pre_action_buttons - list of action_button instances to include
+-  ``pre_action_buttons`` - list of action_button instances to include
    before the standard action buttons
--  post_action_buttons - list of action_button instances to include
+-  ``post_action_buttons`` - list of action_button instances to include
    after the standard action buttons
 
 You can build your own Action Button class to pass to pre/post action
-buttons based on the template below (this is not provided with py4web)
+buttons based on the template below (this is not provided with py4web).
 
 Sample Action Button Class
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
-   def __init__(self,
-                url,
-                text,
-                icon="fa-calendar",
-                additional_classes=None,
-                message=None,
-                append_id=False):
+   class GridActionButton:
+      def __init__(
+         self,
+         url,
+         text=None,
+         icon=None,
+         onclick=None,
+         additional_classes="",
+         message="",
+         append_id=False,
+         ignore_attribute_plugin=False,
+      ):
+         self.url = url
+         self.text = text
+         self.icon = icon
+         self.onclick = onclick
+         self.additional_classes = additional_classes
+         self.message = message
+         self.append_id = append_id
+         self.ignore_attribute_plugin = ignore_attribute_plugin
 
 -  url: the page to navigate to when the button is clicked
 -  text: text to display on the button
--  icon: the font-awesome icon to display before the text
+-  icon: the font-awesome icon to display before the text, for example
+   "fa-calendar"
 -  additional_classes: a space-separated list of classes to include on
    the button element
 -  message: confirmation message to display if ‘confirmation’ class is
    added to additional classes
 -  append_id: if True, add id_field_name=id_value to the url querystring
    for the button
+
+After defining the custom GridActionButton class, you need to define
+your Action buttons:
+
+.. code:: python
+
+    pre_action_buttons = [
+        lambda row: GridActionButton(
+            lambda row: f"https://www.google.com/search?q={row.superhero}", 
+            text= f"Google for {row.superhero}",
+        )
+    ]
+
+Finally, you need to reference them in the Grid definition:
+
+.. code:: python
+
+   grid = Grid(... pre_action_buttons = pre_action_buttons  ...) 
+
+
+Using callable parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A recent improvement to py4web allows you to pass a **callable** instead of a GridActionButton. This allow you to more easily change the behaviour
+of standard and custom Actions.
+
+
+Callable can be used with:
+
+- details
+- editable
+- deletable
+- additional_classes
+- additional_styles
+- override_classes
+- override_styles
+
+
+Example usage:
+
+.. code:: python
+
+   @action("example/<path:path>")
+   def example(path=None):
+
+       pre_action_buttons = [
+           lambda row: GridActionButton(
+               URL("test", row.id),
+               text="Click me",
+               icon="fa-plus",
+               additional_classes=row.id,
+               additional_styles=["height: 10px" if row.bar else None],
+           )
+       ]
+
+       post_action_buttons = [
+           lambda row: GridActionButton(
+               URL("test", row.id),
+               text="Click me!!!",
+               icon="fa-plus",
+               additional_classes=row.id,
+               additional_styles=["height: 10px" if row.bar else None],
+           )
+       ]
+
+       grid = Grid(
+           path=path,
+           query=db.foo,
+           pre_action_buttons=pre_action_buttons,
+           post_action_buttons=post_action_buttons,
+       )
+
+       return dict(grid=grid.render())
+
 
 Reference Fields
 ----------------
@@ -425,7 +562,7 @@ Also you can specify a query such as:
 
 .. code:: python
 
-   queries.append((db.employee.last_name.contains(search_text)) | (db.employee.first_name.contains(search_text)) | db.company.name.contains(search_text)))
+   queries.append((db.employee.last_name.contains(search_text)) | (db.employee.first_name.contains(search_text)) | db.company.name.contains(search_text))
 
 This method allows you to sort and filter, but doesn’t allow you to
 combine fields to be displayed together as the filter_out method would
