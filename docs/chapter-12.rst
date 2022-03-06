@@ -144,7 +144,7 @@ Create a new minimal app called ``form_basic`` :
     
     # controllers definition
     @action("index", method=["GET", "POST"])
-    @action.uses(db, "form_basic.html")
+    @action.uses("form_basic.html", db)
     def index(id=None):
         form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
         rows = db(db.person).select()
@@ -225,7 +225,7 @@ Let's look at a simple example:
     )
 
     @action("index", method=["GET", "POST"])
-    @action.uses(db, "form_upload.html")
+    @action.uses("form_upload.html", db)
     def upload(id=None):
         form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
         rows = db(db.person).select()
@@ -306,7 +306,7 @@ This is an improved 'Basic Form Example' with a radio button widget:
 
     # controllers definition
     @action("index", method=["GET", "POST"])
-    @action.uses(db, "form_widgets.html")
+    @action.uses("form_widgets.html", db)
     def index(id=None):
         FormStyleDefault.widgets['universe']=RadioWidget()
         form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
@@ -396,7 +396,7 @@ improving again our Superhero example:
     
     # controllers definition
     @action("index", method=["GET", "POST"])
-    @action.uses(db, "form_custom_widgets.html")
+    @action.uses("form_custom_widgets.html", db)
     def index(id=None):
         MyStyle = FormStyleDefault
         MyStyle.classes = FormStyleDefault.classes
@@ -1828,7 +1828,7 @@ Here is an example:
            form.errors['product_quantity'] = T('The product quantity must be even')
 
    @action('form_example', method=['GET', 'POST'])
-   @action.uses(session, 'form_example.html')
+   @action.uses('form_example.html', session)
    def form_example():
        form = Form([
            Field('product_name'),

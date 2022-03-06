@@ -60,8 +60,13 @@ Then you can apply all of them at once with:
        return dict()
 
 Usually, it's not important the order you use to specify the fixtures, because py4web
-knows well how to manage them. But there is an important exception:
-the Template fixture must always be the last one.
+knows well how to manage them if they have explicit dependencies. For example auth
+depends explicitly on db and session and flash, so you do not even needs to list them.
+
+But there is an important exception: the Template fixture must always be the
+**first one**. Otherwise, it will not have access to various things it should
+need from the other fixtures, especially Inject() and Flash() that we'll see later.
+
 
 The Template fixture
 --------------------
@@ -98,20 +103,45 @@ syntactic sugar, and the two following lines are equivalent:
    @action.uses(Template('index.html', delimiters='[[ ]]'))
 
 
-Notice that py4web template files are cached in RAM. The py4web caching
+Also notice that py4web template files are cached in RAM. The py4web caching
 object is described later on :ref:`Caching and Memoize`.
 
 .. warning::
-   If you use multiple fixtures, always place the template as the last one.
-   Otherwise, it will not have access to various things it needs from the
-   other fixtures.
+   If you use multiple fixtures, always place the template as the **first one**.
+   
 
    For example:
 
       .. code:: python
 
-         @action.uses(session, db, 'index.html') # right
-         @action.uses('index.html', session, db) # wrong
+         @action.uses(session, db, 'index.html') # wrong
+         @action.uses('index.html', session, db) # right
+
+   
+   Be careful if you read old documentations that this need was **exactly the
+   opposite** in early py4web experimental versions (until February 2022)!
+
+
+The Inject fixture
+------------------
+
+The Inject fixture is used for passing variables (and even python functions) to
+templates. Here is a simple example:
+
+
+.. code:: python
+
+   my_var = "Example variable to be passed to a Template"
+
+   ...
+
+   @action.uses('index.html', Inject(my_var=my_var))
+   def index():
+
+      ...
+
+It will be explained later on :ref:`Using Inject` in the YATL chapter.
+
 
 The Translator fixture
 ----------------------
@@ -601,7 +631,7 @@ fields:
    db.define_table('thing', Field('name', writable=False))
 
    @action('index')
-   @action.uses(db, 'generic.html')
+   @action.uses('generic.html', db)
    def index():
        db.thing.name.writable = True
        form = Form(db.thing)
@@ -630,10 +660,14 @@ A fixture is an object with the following minimal structure:
    from py4web.core import Fixture
 
    class MyFixture(Fixture):
-       def on_request(self): pass
-       def on_success(self, status): pass
-       def on_error(self): pass
+       def on_request(self, context): pass
+       def on_success(self, context): pass
+       def on_error(self, context): pass
        def transform(self, output, shared_data=None): return output
+
+The ``context`` parameter knows about the state of the request and contains things like
+context["output"] which a fixture can manipulate on_success or on_response.
+It also contains context["exception"] which allows a fixture to eat an exception on_error.
 
 If an action uses this fixture:
 
@@ -655,6 +689,36 @@ then:
 * the ``transform`` function is called to perform any desired
   transformation of the value returned by the ``index()`` function.
 
+
+Multiple fixtures
+-----------------
+
+As previously stated, it's generally not important the order you use to specify the fixtures
+but it's mandatory that you always place the template as the **first one**.
+Consider this:
+
+.. code:: python
+
+   @action("index")
+   @action.uses(A,B)
+   def func(): return "Hello world"
+
+Pre-processing (``on_request``) in the fixtures happen in the sequence they are listed
+and then the ``on_success`` or ``on_error`` methods will be executed in reverse order (as
+an onion). 
+
+Hence the previous code can be explicitly transformed to:
+
+.. code:: python
+
+   A.on_request()
+   B.on_request()
+   func()
+   B.on_success()
+   A.on_success() 
+
+So if A.on_success() is a template and B is an inject fixture that allows you to add
+some extra variables to your templates, then A must come first.
 
 Caching and Memoize
 -------------------
