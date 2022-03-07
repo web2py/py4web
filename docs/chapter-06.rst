@@ -32,10 +32,10 @@ sessions, url signing and flash messages will be fully
 explained in this chapter. Database connections, internationalization,
 authentication, and templates will instead be just outlined here since
 they have dedicated chapters.
+
 The developer is also free to add fixtures, for example, to handle a third
 party template language or third party session logic; this is explained
 later in the :ref:`Custom fixtures` paragraph.
-
 
 Using Fixtures
 --------------
@@ -662,33 +662,113 @@ A fixture is an object with the following minimal structure:
    class MyFixture(Fixture):
        def on_request(self, context): pass
        def on_success(self, context): pass
-       def on_error(self, context): pass
-       def transform(self, output, shared_data=None): return output
+       def on_error(self, context) pass
 
-The ``context`` parameter knows about the state of the request and contains things like
-context["output"] which a fixture can manipulate on_success or on_response.
-It also contains context["exception"] which allows a fixture to eat an exception on_error.
+For example in the DAL fixture case, `on_request` starts a trasaction,
+`on_success` commits it, and `on_error` rolls it back.
 
-If an action uses this fixture:
+In the case of a template, `on_request` and `on_error` do nothing but
+`on_success` transforms the output.
 
-::
+In the case of `auth.user` fixtures, `on_request` does all the work of
+determining if the user is logged in (from the dependent session fixture)
+and eventually preventing the request from accessing the inner layers.
+
+Now imagine a request coming in calling an action with three fixures A, B, and C.
+Under normal circumstances above methods are executed in this order:
+
+.. code::
+   
+   request  -> A.on_request -> B.on_request -> C.on_request -> action
+   response <- A.on_success <- B.on_success <- C.on_success <-
+
+I.e the first fixture (A) is the first one to call `on_request`
+and the last one to call `on_success`. You can think of them as layers of
+an onion with the action (user code) at the center. `on_success` is called
+when entering a layer from the outside and `on_success` is called when
+exiting a layer from the inside (like WSGI middleware)
+
+If any point an exception is raised inner layers are not called
+and outer layers will call `on_error` instead of `on_success`.
+
+Context is a shared object which contains:
+
+- content['fixtures']: the list of all the fixtures for the action.
+- context['processed']: the list of fixtures that called `on_request` previouly within the request.
+- context['exception']: the exception raised by the action or any previous fuxture logic (usually None)
+- context['output']: the action output.
+
+`on_success` and `on_error` can see the current `context['exception']` and
+transform it. They can see the current `context['output']` and transform it as well.
+
+For example here is a fixture that transforms the output text to upper case:
+
+.. code:: python
+
+   class UpperCase(Fixture):
+       def on_success(self, context):
+           context['output'] = context['output'].upper()
+
+   upper_case = UpperCase()
 
    @action('index')
-   @action.uses(MyFixture())
-   def index(): return 'hello world'
+   @action.uses(upper_case)
+   def index(): return "hello world"
+   
+Notice that this fixture assumes the `context['output']` is a string
+and therefore it must come before the template.
 
-then:
+Here is a fixture that logs exeptions tracebacks to a file:
 
-* the ``on_request()`` function is guaranteed to be called before the ``index()``
-  function is called
-* the ``on_success()`` function is guaranteed to be called if
-  the ``index()`` function returns successfully or raises ``HTTP`` or
-  performs a ``redirect``
-* the ``on_error()`` function is guaranteed to be called
-  when the ``index()`` function raises any exception other than ``HTTP``.
-* the ``transform`` function is called to perform any desired
-  transformation of the value returned by the ``index()`` function.
+.. code:: python
 
+   class LogErrors(Fixture):
+       def __init__(self, filename):
+           self.filename = filename
+       def on_error(self, context):
+           with open(self.filename, "a") as stream:
+               stream.write(str(context['exception']) + '\n')
+     
+   errlog = LogErrors("myerrors.log")
+
+   @action('index')
+   @action.uses(errlog)
+   def index(): return 1/0
+
+Fixtures also have a `__prerequisite__` attribute. If a fixture
+takes another fixture as an argument, its value must be appeneded
+to the list of `__prerequisites__`. This guarantees that they are
+always executed in the proper order even if listed in the wrong order.
+It also makes it optional to declare prerequisitefixtures in `action.uses`.
+
+For example `Auth` depends on `db`, `session`, and `flash`. `db` and `session`
+are indeed arguments. `flash` is a special singleton fixture declared within `Auth`.
+This means that
+
+.. code:: python
+
+  action.uses(auth)
+
+is equivalent to
+
+.. code:: python
+
+  action.uses(auth, session, db, flash)
+
+Why are fixtures not simply functions that conatin a try/except?
+
+We considered the option but there are some special exceptions that should
+not be considered errors but success (`py4web.HTTP`, `bottle.HTTResponse`)
+while other exceptions are errors. The actual logic can be complicated 
+and individual fixtures do not need to know these details.
+
+They all need to know what the context is and whether they are
+processing a new request or a response amd whether the response is a success
+or an error. We believe this logic keeps the fixtures easy.
+
+Fixtures should not in general comunicate with each other but nothing
+prevents one fixtures to put data in the context and another fixture to
+retrieve that data.
 
 Multiple fixtures
 -----------------
@@ -719,6 +799,26 @@ Hence the previous code can be explicitly transformed to:
 
 So if A.on_success() is a template and B is an inject fixture that allows you to add
 some extra variables to your templates, then A must come first.
+
+Notice that
+
+.. code:: python
+
+   @action.uses(A)
+   @action.uses(B)
+
+is almost equivalent to 
+
+.. code:: python
+
+   @action.uses(A,B)
+
+but not quite. All fixtures declared in one `action.uses` share
+the same context while fixtures in different `action.uses` use
+different contexts and therefore they cannot communicate with each other.
+This may change in the future.
+For now we recommend using a single call to `action.uses`.
+
 
 Caching and Memoize
 -------------------
