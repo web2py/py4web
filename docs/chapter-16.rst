@@ -75,14 +75,14 @@ Let's continue with a full example (started from scaffold).
 
 
     @action("htmx_list", method=["GET", "POST"])
-    @action.uses(db, "htmx_list.html")
+    @action.uses("htmx_list.html", db)
     def htmx_list():
         superheros = db(db.superhero.id > 0).select()
         return dict(superheros=superheros)
 
 
     @action("htmx_form/<record_id>", method=["GET", "POST"])
-    @action.uses(db, "htmx_form.html")
+    @action.uses("htmx_form.html", db)
     def htmx_form(record_id=None):
         attrs = {
             "_hx-post": URL("htmx_form/%s" % record_id),
@@ -164,7 +164,7 @@ Here is an example building off the previous htmx forms example.
 .. code:: python
 
     @action("htmx_form/<record_id>", method=["GET", "POST"])
-    @action.uses(db, "htmx_form.html")
+    @action.uses("htmx_form.html", db)
     def htmx_form(record_id=None):
         attrs = {
             "_hx-post": URL("htmx_form/%s" % record_id),
@@ -184,7 +184,7 @@ Here is an example building off the previous htmx forms example.
 
     @action("htmx_grid", method=["GET", "POST"])
     @action("htmx_grid/<path:path>", method=["GET", "POST"])
-    @action.uses(session, db, "htmx_grid.html")
+    @action.uses( "htmx_grid.html", session, db)
     def htmx_grid(path=None):
         grid = Grid(path, db.superhero, auto_process=False)
 
@@ -259,10 +259,10 @@ handle the database calls to get your data.
         method=["GET", "POST"],
     )
     @action.uses(
+        "htmx/autocomplete.html",
         session,
         db,
         auth.user,
-        "htmx/autocomplete.html",
     )
     def autocomplete():
         tablename = request.params.tablename
