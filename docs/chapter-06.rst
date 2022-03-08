@@ -682,11 +682,11 @@ Under normal circumstances above methods are executed in this order:
    request  -> A.on_request -> B.on_request -> C.on_request -> action
    response <- A.on_success <- B.on_success <- C.on_success <-
 
-I.e the first fixture (A) is the first one to call `on_request`
+i.e. the first fixture (A) is the first one to call `on_request`
 and the last one to call `on_success`. You can think of them as layers of
 an onion with the action (user code) at the center. `on_success` is called
 when entering a layer from the outside and `on_success` is called when
-exiting a layer from the inside (like WSGI middleware)
+exiting a layer from the inside (like WSGI middleware).
 
 If any point an exception is raised inner layers are not called
 and outer layers will call `on_error` instead of `on_success`.
@@ -739,7 +739,7 @@ Fixtures also have a `__prerequisite__` attribute. If a fixture
 takes another fixture as an argument, its value must be appeneded
 to the list of `__prerequisites__`. This guarantees that they are
 always executed in the proper order even if listed in the wrong order.
-It also makes it optional to declare prerequisitefixtures in `action.uses`.
+It also makes it optional to declare prerequisite fixtures in `action.uses`.
 
 For example `Auth` depends on `db`, `session`, and `flash`. `db` and `session`
 are indeed arguments. `flash` is a special singleton fixture declared within `Auth`.
@@ -755,7 +755,7 @@ is equivalent to
 
   action.uses(auth, session, db, flash)
 
-Why are fixtures not simply functions that conatin a try/except?
+Why are fixtures not simply functions that contain a try/except?
 
 We considered the option but there are some special exceptions that should
 not be considered errors but success (`py4web.HTTP`, `bottle.HTTResponse`)
@@ -763,11 +763,11 @@ while other exceptions are errors. The actual logic can be complicated
 and individual fixtures do not need to know these details.
 
 They all need to know what the context is and whether they are
-processing a new request or a response amd whether the response is a success
+processing a new request or a response and whether the response is a success
 or an error. We believe this logic keeps the fixtures easy.
 
 Fixtures should not in general comunicate with each other but nothing
-prevents one fixtures to put data in the context and another fixture to
+prevents one fixture to put data in the context and another fixture to
 retrieve that data.
 
 Multiple fixtures
