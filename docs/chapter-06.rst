@@ -664,7 +664,7 @@ A fixture is an object with the following minimal structure:
        def on_success(self, context): pass
        def on_error(self, context) pass
 
-For example in the DAL fixture case, `on_request` starts a trasaction,
+For example in the DAL fixture case, `on_request` starts a transaction,
 `on_success` commits it, and `on_error` rolls it back.
 
 In the case of a template, `on_request` and `on_error` do nothing but
@@ -674,7 +674,7 @@ In the case of `auth.user` fixtures, `on_request` does all the work of
 determining if the user is logged in (from the dependent session fixture)
 and eventually preventing the request from accessing the inner layers.
 
-Now imagine a request coming in calling an action with three fixures A, B, and C.
+Now imagine a request coming in calling an action with three fixtures A, B, and C.
 Under normal circumstances above methods are executed in this order:
 
 .. code::
@@ -694,8 +694,8 @@ and outer layers will call `on_error` instead of `on_success`.
 Context is a shared object which contains:
 
 - content['fixtures']: the list of all the fixtures for the action.
-- context['processed']: the list of fixtures that called `on_request` previouly within the request.
-- context['exception']: the exception raised by the action or any previous fuxture logic (usually None)
+- context['processed']: the list of fixtures that called `on_request` previously within the request.
+- context['exception']: the exception raised by the action or any previous fixture logic (usually None)
 - context['output']: the action output.
 
 `on_success` and `on_error` can see the current `context['exception']` and
@@ -718,7 +718,7 @@ For example here is a fixture that transforms the output text to upper case:
 Notice that this fixture assumes the `context['output']` is a string
 and therefore it must come before the template.
 
-Here is a fixture that logs exeptions tracebacks to a file:
+Here is a fixture that logs exceptions tracebacks to a file:
 
 .. code:: python
 
@@ -736,7 +736,7 @@ Here is a fixture that logs exeptions tracebacks to a file:
    def index(): return 1/0
 
 Fixtures also have a `__prerequisite__` attribute. If a fixture
-takes another fixture as an argument, its value must be appeneded
+takes another fixture as an argument, its value must be appended
 to the list of `__prerequisites__`. This guarantees that they are
 always executed in the proper order even if listed in the wrong order.
 It also makes it optional to declare prerequisite fixtures in `action.uses`.
@@ -766,7 +766,7 @@ They all need to know what the context is and whether they are
 processing a new request or a response and whether the response is a success
 or an error. We believe this logic keeps the fixtures easy.
 
-Fixtures should not in general comunicate with each other but nothing
+Fixtures should not in general communicate with each other but nothing
 prevents one fixture to put data in the context and another fixture to
 retrieve that data.
 
