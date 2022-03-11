@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>De web2py para py4web &mdash; Documentação py4web 1.20220222.1</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Pesquisar" href="search.html" />
+    <link rel="next" title="Advanced topics and examples" href="chapter-16.html" />
+    <link rel="prev" title="Rede" href="chapter-14.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> py4web
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.20220222.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">O que é py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internacionalização</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forumlários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">De web2py para py4web</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#simple-conversion-examples">Simple conversion examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hello-world-example">“Hello world” example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#redirect-with-variables-example">“Redirect with variables” example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#returning-variables-example">“Returning variables” example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#returning-args-example">“Returning args” example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#return-calling-methods-example">“Return calling methods” example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-a-counter-example">“Setting up a counter” example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#view-example">“View” example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#form-and-flash-example">“Form and flash” example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#grid-example">“grid” example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#accessing-os-files-example">“Accessing OS files” example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auth-example">“auth” example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>De web2py para py4web</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-15.rst" class="fa fa-github"> Editar no GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="from-web2py-to-py4web">
+<h1>De web2py para py4web<a class="headerlink" href="#from-web2py-to-py4web" title="Link permanente para este título"></a></h1>
+<p>Este capítulo é dedicado a ajudar os usuários para portar aplicativos web2py antigos para py4web.</p>
+<p>Web2py and py4web share many similarities and some differences. For example they share the same
+database abstraction layer (pyDAL) which means pydal table definitions and queries are identical
+between the two frameworks. They also share the same template language with the minor caveat that
+web2py defaults to <cite>{{…}}</cite> delimiters while py4web defaults to <cite>[[…]]</cite> delimiters. They also
+share the same validators, part of pyDAL, and very similar helpers. The py4web ones are a
+lighter/faster/minimalist re-implementation but they serve the same purpose and support a very
+similar syntax. They both provide a <cite>Form</cite> object (equivalent to <cite>SQLFORM</cite> in web2py) and a <cite>Grid</cite>
+object (equivalent to <cite>SQLFORM.grid</cite> in web2py). They both provide a <cite>XML</cite> object that can sanitize
+HTML and <cite>URL</cite> helper to generate URL. They both can raise <cite>HTTP</cite> to return non-200 OK pages. They
+both provide an <cite>Auth</cite> object that can generate register/login/change password/lost password/edit
+profile forms. Both web2py and py4web track and log all errors.</p>
+<p>Some of the main differences are the following:</p>
+<ul class="simple">
+<li><p>web2py works with both Python 2.6+ and 3.6+, while py4web runs on Python 3.7+ only. So, if your
+old web2py application is still using Python 2, your first step involves migrating it to at
+least Python 3.7, better if the latest 3.9.</p></li>
+<li><p>web2py apps consist of collection of files which are executed at every HTTP request (using a
+custom importer, in a predetermined order). In py4web apps are regular python modules that are
+imported automatically by the frameworks. By the way, this makes possible the use of standard
+python debuggers (even inside the most used IDEs).</p></li>
+<li><p>In web2py every app has a fixed folder structure. A function is an action if and only if it is
+defined in a <code class="docutils literal notranslate"><span class="pre">controllers/*.py</span></code> file. py4web is much less constraining. In py4web an app must
+have an entry point <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> and a <code class="docutils literal notranslate"><span class="pre">static</span></code> folder. Every other convention such as the
+location of templates, uploaded files, translation files, sessions, etc. is user specified.</p></li>
+<li><p>In web2py the scaffolding app (the blue print for creating new apps) is called “welcome”. In
+py4web it is called “_scaffold”. _scaffold contains a “settings.py” file and a “common.py”.
+The latter provides an example of how to enable Auth and configure all the options for the
+specific app. _scaffold has also a “model.py” file and a “controller.py” file but, unlike
+web2py, those files are not treated in any special manner. Their names follow a convention
+(not enforced by the framework) and they are imported by the <cite>__init__.py</cite> file as for any
+regular python module.</p></li>
+<li><p>In web2py every function in <code class="docutils literal notranslate"><span class="pre">controllers/*.py</span></code> is an action. In py4web a function is an action
+if it has the <code class="docutils literal notranslate"><span class="pre">&#64;action(&quot;...&quot;)</span></code> decorator. That means that actions can be defined anywhere. The
+admin interface will help you locate where a particular action is defined.</p></li>
+<li><p>In web2py the mapping between URLs and file/function names is automatic but it can be
+overwritten in “routes.py” (like in Django). In py4web the mapping is specified in the decorator
+as in <cite>&#64;action(“my_url_path”)</cite> (like in Bottle and Flask). Notice that if the path starts with
+“/” it is assumed to be an absolute path. If not, it is assumed to be relative and prepended by
+the “/{appname}/” prefix. Also, if the path ends with “/index”, the latter postfix is assumed
+to be optional.</p></li>
+<li><p>In web2py the path extension matters and “<a class="reference external" href="http://">http://</a><em>.html” is expected to return HTML while
+“http://</em>.json” is expected to return JSON, etc. In py4web there is no such convention. If the
+action returns a dict() and has a template, the dict() will be rendered by the template, else it
+will be rendered in JSON. More complex behavior can be accomplished using decorators.</p></li>
+<li><p>In web2py there are many wrappers around each action and, for example, they could handle sessions,
+pluralization, database connections, and more whether the action needs it or not. This makes
+web2py performances hard to compare with other frameworks. In py4web everything is optional and
+features must be enabled and configured for each action using the <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code> decorator.
+The arguments of <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code> are called fixtures in analogy with the fixtures in a
+house. They add functionality by providing preprocessing and postprocessing to the action. For
+example <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(session,</span> <span class="pre">T,</span> <span class="pre">db,</span> <span class="pre">flash)</span></code> indicates that the action needs to use session,
+internationalization/pluralization (T), the database (db), and carry on state for flash messages
+upon redirection.</p></li>
+<li><p>web2py uses its own request/response objects. py4web uses the request/response objects from the
+underlying Ombott library. While this may change in the future we are committed to keep them
+the interface with the web server, routing, partial requests, if modified since, and file
+streaming.</p></li>
+<li><p>Both web2py and py4web use the same pyDAL therefore tables are defined using the same exact
+syntax, and so do queries. In web2py tables are re-defined at every HTTP
+request, when the entire models are executed. In py4web only the action is executed for every
+HTTP request, while the code defined outside of actions is only executed at startup. That makes
+py4web much faster, in particular when there are many tables. The downside of this approach is
+that the developer should be careful to never override pyDAL variables inside action or in any
+way that depends on the content of the request object, else the code is not thread safe. The
+only variables that can be changed at will are the following field attributes: readable,
+writable, requires, update, default. All the others are for practical purposes to be
+considered global and non thread safe. This is also the reason that makes using
+<a class="reference internal" href="chapter-07.html#lazy-tables"><span class="std std-ref">Tabelas preguiçosos</span></a> with py4web useless and even dangerous.</p></li>
+<li><p>Both web2py and pyweb have an Auth object which serve the same purpose. Both objects have the
+ability to generate forms pretty much in the same manner. The py4web ones is defined to be more
+modular and extensible and support both Forms and APIs, but it lacks the <cite>auth.requires_*</cite>
+decorators and group membership/permissions. This does not mean that the feature is not
+available. In fact py4web is even more powerful and that is why the syntax is different. While
+the web2py Auth objects tries to do everything, the corresponding py4web object is only in
+charge of establishing the identity of a user, not what the user can do. The latter can be
+achieved by attaching Tags to users. So group membership is assigned by labeling users with
+the Tags of the groups they belong to and checking permissions based on the user tags. Py4web
+provides a mechanism for assigning and checking tags efficiently to any object, including but
+not limited to, users.</p></li>
+<li><p>Web2py comes with the Rocket web server. py4web at the time of writing defaults to the
+<a class="reference external" href="https://github.com/web2py/rocket3">Rocket3</a>  web server, which is the same multi-threaded
+web server used by web2py stripped of all the Python2 logic and dependencies. Note that this
+may change in the future.</p></li>
+</ul>
+<section id="simple-conversion-examples">
+<h2>Simple conversion examples<a class="headerlink" href="#simple-conversion-examples" title="Link permanente para este título"></a></h2>
+<section id="hello-world-example">
+<h3>“Hello world” example<a class="headerlink" href="#hello-world-example" title="Link permanente para este título"></a></h3>
+<p><strong>web2py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers/default.py</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="k">return</span> <span class="s2">&quot;hello world&quot;</span>
+</pre></div>
+</div>
+<p>–&gt; <strong>py4web</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># file imported by __init__.py</span>
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">&quot;hello world&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="redirect-with-variables-example">
+<h3>“Redirect with variables” example<a class="headerlink" href="#redirect-with-variables-example" title="Link permanente para este título"></a></h3>
+<p><strong>web2py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">request</span><span class="o">.</span><span class="n">get_vars</span><span class="o">.</span><span class="n">name</span>
+<span class="n">request</span><span class="o">.</span><span class="n">post_vars</span><span class="o">.</span><span class="n">name</span>
+<span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">name</span>
+<span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">301</span><span class="p">)</span>
+<span class="n">redirect</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">URL</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="nb">vars</span><span class="o">=</span><span class="p">{})</span>
+</pre></div>
+</div>
+<p>–&gt; <strong>py4web</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+<span class="n">request</span><span class="o">.</span><span class="n">forms</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+<span class="n">request</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+<span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">301</span><span class="p">)</span>
+<span class="n">redirect</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">URL</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">vars</span><span class="o">=</span><span class="p">{})</span>
+</pre></div>
+</div>
+</section>
+<section id="returning-variables-example">
+<h3>“Returning variables” example<a class="headerlink" href="#returning-variables-example" title="Link permanente para este título"></a></h3>
+<p><strong>web2py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="n">a</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_vars</span><span class="o">.</span><span class="n">a</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>–&gt; <strong>py4web</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="n">a</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="returning-args-example">
+<h3>“Returning args” example<a class="headerlink" href="#returning-args-example" title="Link permanente para este título"></a></h3>
+<p><strong>web2py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span>
+   <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>–&gt; <strong>py4web</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index/&lt;a&gt;/&lt;b:int&gt;/&lt;c:int&gt;&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">):</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="return-calling-methods-example">
+<h3>“Return calling methods” example<a class="headerlink" href="#return-calling-methods-example" title="Link permanente para este título"></a></h3>
+<p><strong>web2py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;GET&quot;</span>
+   <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;POST&quot;</span>
+   <span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>–&gt; <strong>py4web</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="k">return</span> <span class="s2">&quot;GET&quot;</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="k">return</span> <span class="s2">&quot;POST&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="setting-up-a-counter-example">
+<h3>“Setting up a counter” example<a class="headerlink" href="#setting-up-a-counter-example" title="Link permanente para este título"></a></h3>
+<p><strong>web2py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">counter</span><span class="p">():</span>
+   <span class="n">session</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">counter</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+   <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">counter</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>–&gt; <strong>py4web</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">counter</span><span class="p">():</span>
+   <span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;counter&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+   <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="view-example">
+<h3>“View” example<a class="headerlink" href="#view-example" title="Link permanente para este título"></a></h3>
+<p><strong>web2py</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>{{ extend &#39;layout.html&#39; }}
+<span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+{{ for k in range(1): }}
+<span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span>{{= k }}<span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span>
+{{ pass }}
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>–&gt; <strong>py4web</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[ extend &#39;layout.html&#39; ]]
+<span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+[[ for k in range(1): ]]
+<span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span>[[= k ]]<span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span>
+[[ pass ]]
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="form-and-flash-example">
+<h3>“Form and flash” example<a class="headerlink" href="#form-and-flash-example" title="Link permanente para este título"></a></h3>
+<p><strong>web2py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;thing&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="n">form</span> <span class="o">=</span> <span class="n">SQLFORM</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
+   <span class="n">form</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+   <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+      <span class="n">flash</span> <span class="o">=</span> <span class="s1">&#39;Done!&#39;</span>
+   <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>–&gt; <strong>py4web</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;thing&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
+   <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+      <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Done!&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">)</span>
+   <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In the template you can access the flash object with</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;flash&quot;</span><span class="p">&gt;</span>[[=globals().get(&#39;flash&#39;,&#39;&#39;)]]<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>or using the more sophisticated</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">flash-alerts</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;padded &quot;</span> <span class="na">data-alert</span><span class="o">=</span><span class="s">&quot;[[=globals().get( &#39;flash&#39;, &#39;&#39;)]]&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">flash-alerts</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>The latter requires <code class="docutils literal notranslate"><span class="pre">utils.js</span></code> from the scaffolding app to render
+the custom tag into a div with dismissal behavior.</p>
+<p>Also notice that <code class="docutils literal notranslate"><span class="pre">Flash</span></code> is special: it is a singleton.
+So if you instantiate multiple Flash objects they share their data.</p>
+</section>
+<section id="grid-example">
+<h3>“grid” example<a class="headerlink" href="#grid-example" title="Link permanente para este título"></a></h3>
+<p><strong>web2py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">SQLFORM</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>–&gt; <strong>py4web</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
+   <span class="n">form</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">editable</span> <span class="o">=</span> <span class="kc">True</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="accessing-os-files-example">
+<h3>“Accessing OS files” example<a class="headerlink" href="#accessing-os-files-example" title="Link permanente para este título"></a></h3>
+<p><strong>web2py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">folder</span><span class="p">,</span> <span class="s1">&#39;file.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>–&gt; <strong>py4web</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.settings</span> <span class="kn">import</span> <span class="n">APP_FOLDER</span>
+<span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">APP_FOLDER</span><span class="p">,</span> <span class="s1">&#39;file.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="auth-example">
+<h3>“auth” example<a class="headerlink" href="#auth-example" title="Link permanente para este título"></a></h3>
+<p><strong>web2py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">()</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">define_tables</span><span class="p">()</span>
+
+<span class="nd">@requires_login</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="n">user_id</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span>
+   <span class="n">user_email</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">email</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">user</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">auth</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Access with <code class="docutils literal notranslate"><span class="pre">http://.../user/login</span></code>.</p>
+<p>–&gt; <strong>py4web</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">(</span><span class="n">define_table</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">define_tables</span><span class="p">()</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="n">route</span><span class="o">=</span><span class="s1">&#39;auth&#39;</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+   <span class="n">user_id</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user_id</span>
+   <span class="n">user_email</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Access with <code class="docutils literal notranslate"><span class="pre">http://.../auth/login</span></code>.
+Notice that in web2py <code class="docutils literal notranslate"><span class="pre">auth.user</span></code> is the current logged-in user
+retrieved from session. In py4web instead <code class="docutils literal notranslate"><span class="pre">auth.user</span></code> is a fixture which serves the
+same purpose as <code class="docutils literal notranslate"><span class="pre">&#64;requires_login</span></code> in web2py. In py4web only the <code class="docutils literal notranslate"><span class="pre">user_id</span></code>
+is stored in the session and it can be retrieved using <code class="docutils literal notranslate"><span class="pre">auth.user_id</span></code>.
+If you need more information about the user, you need to fetch the record
+from the database with <code class="docutils literal notranslate"><span class="pre">auth.get_user()</span></code> The latter returns all readable
+fields as a Python dictionary.</p>
+<p>Also notice there is a big difference between:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the first case the decorated action can access the auth object
+but <code class="docutils literal notranslate"><span class="pre">auth.user_id</span></code> may be None if the user is not logged in. In the second
+case we are requiring a valid logged in user and therefore <code class="docutils literal notranslate"><span class="pre">auth.user_id</span></code>
+is guaranteed to be a valid user id.</p>
+<p>Also notice that if an action uses auth, then it automatically uses
+its session and its flash objects.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Rodapé">
+        <a href="chapter-14.html" class="btn btn-neutral float-left" title="Rede" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="chapter-16.html" class="btn btn-neutral float-right" title="Advanced topics and examples" accesskey="n" rel="next">Seguinte <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20220222.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Idiomas</dt>
+        
+          
+          
+          <dd><a href="../en/index.html">en</a></dd> 
+        
+           <strong> 
+          <dd><a href="../pt/index.html">pt</a></dd> </strong>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versões</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Transferências</dt>
+        
+          <dd><a href="py4web_pt.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_pt.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>
