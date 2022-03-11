@@ -144,6 +144,7 @@ multiselect
 multiuser
 myfunction
 mysql
+MySQLdb
 natively
 ndb
 Northwind

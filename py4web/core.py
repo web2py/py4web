@@ -590,6 +590,8 @@ class Session(Fixture):
     # the actual value is loaded from a file
     SECRET = None
 
+    __slots__ = ['_safe', 'secret', 'expiration', 'algorithm', 'storage', 'same_site']
+    
     @property
     def local(self):
         return self._safe_local
@@ -916,7 +918,7 @@ class action:
                                 else:
                                     call(fixture.on_success, context)
                             except Exception as error:
-                                context["exception"] = context.get("exception", error)
+                                context["exception"] = context.get("exception") or error
                     if context.get("exception"):
                         raise context["exception"]
                 return context.get("output", "")
