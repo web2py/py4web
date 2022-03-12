@@ -1664,7 +1664,7 @@ class DefaultAuthForms:
                         deletable=deletable)
 
         form = Form(
-            fields,
+            self.auth.db.auth_user,
             user,
             formstyle=self.formstyle,
             deletable=deletable,
