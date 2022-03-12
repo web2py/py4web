@@ -79,7 +79,7 @@ def page_with_postback():
 
 
 @action("session/counter")
-@action.uses(session, "session_counter.html")
+@action.uses("session_counter.html", session)
 def session_counter():
     session["counter"] = session.get("counter", 0) + 1
     return {"counter": session.get("counter")}
@@ -106,7 +106,7 @@ def flash_example_fixture():
 
 
 @action("flash_next")
-@action.uses(flash, "flash_example_next.html")
+@action.uses("flash_example_next.html", flash)
 def flash_example_next():
     return dict()
 
@@ -114,7 +114,7 @@ def flash_example_next():
 # exposed as /examples/create_form or /examples/update_form/<id>
 @action("create_form", method=["GET", "POST"])
 @action("update_form/<id>", method=["GET", "POST"])
-@action.uses(db, session, T, "form.html")
+@action.uses("form.html", db, session, T)
 def example_form(id=None):
     form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
     rows = db(db.person).select()
@@ -123,7 +123,7 @@ def example_form(id=None):
 
 # exposed as /examples/custom_form
 @action("custom_form", method=["GET", "POST"])
-@action.uses(db, session, T, "custom_form.html")
+@action.uses("custom_form.html", db, session, T)
 def custom_form(id=None):
     form = Form(db.person, id, deletable=False, formstyle=FormStyleDefault)
     rows = db(db.person).select()
@@ -131,7 +131,7 @@ def custom_form(id=None):
 
 
 @action("tagsinput_form", method=["GET", "POST"])
-@action.uses(session, "tagsinput_form.html")
+@action.uses("tagsinput_form.html", session)
 def tagsinput_form():
     form = Form([Field("colors", "list:string")], keep_values=True)
     return dict(form=form)
@@ -140,7 +140,7 @@ def tagsinput_form():
 # exposed as /examples/html_grid
 @action("html_grid")
 @action("html_grid/<path:path>", method=["POST", "GET"])
-@action.uses(session, db, auth, T, "html_grid.html")
+@action.uses("html_grid.html", session, db, auth, T)
 def example_html_grid(path=None):
     #  controllers and used for all grids in the app
     grid_param = dict(
@@ -205,7 +205,7 @@ def count(number=1):
 
 
 @action("forms", method=["GET", "POST"])
-@action.uses(session, db, T, "forms.html")
+@action.uses("forms.html", session, db, T)
 def example_multiple_forms():
     name = Field("name", requires=IS_NOT_EMPTY())
     forms = [
@@ -307,7 +307,7 @@ def show_a_button():
 
 
 @action("auth_forms", method=["GET", "POST"])
-@action.uses(db, session, T, auth, "auth_forms.html")
+@action.uses("auth_forms.html", db, session, T, auth)
 def auth_forms():
     disabled = False
     # this is experimntal, we must disable forms that require a logged in user
@@ -323,7 +323,7 @@ def auth_forms():
 
 
 @action("auth_form/<name>", method=["GET", "POST"])
-@action.uses(db, session, T, auth, "auth_form.html")
+@action.uses("auth_form.html", db, session, T, auth)
 def auth_form(name):
     form = auth.form(name)
     if form.submitted:
@@ -347,17 +347,17 @@ def mycomponent():
 
 # a py4web component loader is a page that loads page parts via ajax
 @action("component_loader")
-@action.uses(flash, "component_loader.html")
+@action.uses("component_loader.html", flash)
 def component_loader():
     return dict()
 
 @unauthenticated("hcaptcha_form", "hcaptcha_form.html")
 def hcaptcha_form():
-    
+
     form = Form([
         Field('dummy_form', 'string',)
     ])
-    
+
     form.structure.append(XML('<div class="h-captcha" data-sitekey="{}"></div>'.format(HCAPTCHA_SITE_KEY)))
     if form.accepted:
         r = hCaptcha(request.forms.get('g-recaptcha-response'))
@@ -366,8 +366,8 @@ def hcaptcha_form():
             form.structure.append(XML('<div style="color:green">Captcha was solved succesfully!</font></div>'))
         else:
             form.structure.append(XML('<div class="py4web-validation-error">invalid captcha</div>'))
-            
-            
+
+
     return dict(form=form)
 
 
