@@ -590,6 +590,8 @@ class Session(Fixture):
     # the actual value is loaded from a file
     SECRET = None
 
+    __slots__ = ['_safe', 'secret', 'expiration', 'algorithm', 'storage', 'same_site']
+    
     @property
     def local(self):
         return self._safe_local
@@ -665,7 +667,10 @@ class Session(Fixture):
             except Exception as err:
                 if Fixture.__fixture_debug__:
                     logging.debug("Session error %s", err)
-        if "uuid" not in self.get_data():
+        if (
+            self.get_data().get("session_cookie_name") != self_local.session_cookie_name
+            or "uuid" not in self.get_data()
+        ):
             self.clear()
 
     def get_data(self):
@@ -674,6 +679,7 @@ class Session(Fixture):
     def save(self):
         self_local = self.local
         self_local.data["timestamp"] = time.time()
+        self_local.data["session_cookie_name"] = self_local.session_cookie_name
         if self.storage:
             cookie_data = self_local.data["uuid"]
             self.storage.set(cookie_data, json.dumps(self_local.data), self.expiration)
@@ -912,7 +918,7 @@ class action:
                                 else:
                                     call(fixture.on_success, context)
                             except Exception as error:
-                                context["exception"] = context.get("exception", error)
+                                context["exception"] = context.get("exception") or error
                     if context.get("exception"):
                         raise context["exception"]
                 return context.get("output", "")
