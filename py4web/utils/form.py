@@ -292,6 +292,9 @@ class FormStyleFactory:
         form_action = request.url.split(":", 1)[1]
         form_enctype = "multipart/form-data"
 
+        if "_method" in kwargs:
+            form_method = kwargs.pop("_method")
+
         form = FORM(
             _method=form_method, _action=form_action, _enctype=form_enctype, **kwargs
         )
@@ -754,8 +757,13 @@ class Form(object):
 
         if self.record:
             self.vars = self._read_vars_from_record(table)
-        if not readonly and request.method != "GET":
-            post_vars = request.POST
+
+        if not readonly:  # and request.method != "GET":
+            if request.method == "GET":
+                post_vars = request.GET
+            else:
+                post_vars = request.POST
+
             form_vars = copy.deepcopy(request.forms)
             for k in form_vars:
                 self.vars[k] = form_vars[k]
@@ -764,9 +772,10 @@ class Form(object):
 
             # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
             # Notice: we never expose the crsf uuid, we only use to sign the form uuid
-            if request.method == "POST":
+            if request.method in ["GET", "POST"]:
                 if not self.csrf_protection or self._verify_form(post_vars):
                     process = True
+
             if process:
                 record_id = self.record and self.record.get("id")
                 if not post_vars.get("_delete"):
@@ -794,7 +803,6 @@ class Form(object):
                                 continue
                             if field.type == "upload":
                                 value = request.files.get(field.name)
-                                print(str(value)[:100])
                                 delete = post_vars.get("_delete_" + field.name)
                                 if value is not None:
                                     if field.uploadfolder:
