@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fixures &mdash; Documentação py4web 1.20220222.1</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Pesquisar" href="search.html" />
+    <link rel="next" title="The Database Abstraction Layer (DAL)" href="chapter-07.html" />
+    <link rel="prev" title="Criando seu primeiro aplicativo" href="chapter-05.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> py4web
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.20220222.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">O que é py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Fixures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-fixtures">Using Fixtures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-template-fixture">The Template fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-inject-fixture">The Inject fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-translator-fixture">The Translator fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-flash-fixture">O fixture flash</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-session-fixture">The Session fixture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#client-side-session-in-cookies">Client-side session in cookies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-side-session-in-memcache">Server-side session in memcache</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-side-session-in-redis">Server-side session in Redis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-side-session-in-database">Server-side session in database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-side-session-anywhere">Server-side session anywhere</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-urlsigner-fixture">The URLsigner fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-dal-fixture">O fixture DAL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-auth-fixture">The Auth fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caveats-about-fixtures">Caveats about fixtures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-fixtures">Fixtures personalizados</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-fixtures">Multiple fixtures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caching-and-memoize">Caching e Memoize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#convenience-decorators">Decoradores de conveniência</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internacionalização</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forumlários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Fixures</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-06.rst" class="fa fa-github"> Editar no GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="fixtures">
+<h1>Fixures<a class="headerlink" href="#fixtures" title="Link permanente para este título"></a></h1>
+<p>Um fixture é definido como “uma peça de equipamento ou de mobiliário, que é fixa em posição num edifício ou veículo”. No nosso caso, um dispositivo elétrico é algo ligado à ação que processa um pedido HTTP, a fim de produzir uma resposta.</p>
+<p>When processing any HTTP requests there are some optional operations we
+may want to perform. For example parse the cookie to look for session
+information, commit a database transaction, determine the preferred
+language from the HTTP header and lookup proper internationalization,
+etc. These operations are optional. Some actions need them and some
+actions do not. They may also depend on each other. For example, if
+sessions are stored in the database and our action needs it, we may need
+to parse the session cookie from the HTTP header, pick up a connection from
+the database connection pool, and - after the action has been executed -
+save the session back in the database if data has changed.</p>
+<p>Fixtures PY4WEB fornecem um mecanismo para especificar o que uma ação necessidades para que py4web pode realizar as tarefas necessárias (e ignorar os não necessários) da maneira mais eficiente. Fixures tornar o código eficiente e reduzir a necessidade de código clichê.</p>
+<p>Fixtures PY4WEB são semelhantes aos middleware WSGI e BottlePy plug-in, exceto que eles se aplicam a ações individuais, não para todos eles, e pode dependem uns dos outros.</p>
+<p>PY4WEB comes with some pre-defined fixtures:
+sessions, url signing and flash messages will be fully
+explained in this chapter. Database connections, internationalization,
+authentication, and templates will instead be just outlined here since
+they have dedicated chapters.</p>
+<p>The developer is also free to add fixtures, for example, to handle a third
+party template language or third party session logic; this is explained
+later in the <a class="reference internal" href="#custom-fixtures"><span class="std std-ref">Fixtures personalizados</span></a> paragraph.</p>
+<section id="using-fixtures">
+<h2>Using Fixtures<a class="headerlink" href="#using-fixtures" title="Link permanente para este título"></a></h2>
+<p>As we’ve seen in the previous chapter, fixtures are the arguments of the decorator
+<code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code>. You can specify
+multiple fixtures in one decorator or you can have multiple decorators.</p>
+<p>Also, fixtures can be applied in groups. For example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>preferred = action.uses(session, auth, T, flash)
+</pre></div>
+</div>
+<p>Then you can apply all of them at once with:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@action(&#39;index.html&#39;)
+@preferred
+def index():
+    return dict()
+</pre></div>
+</div>
+<p>Usually, it’s not important the order you use to specify the fixtures, because py4web
+knows well how to manage them if they have explicit dependencies. For example auth
+depends explicitly on db and session and flash, so you do not even needs to list them.</p>
+<p>But there is an important exception: the Template fixture must always be the
+<strong>first one</strong>. Otherwise, it will not have access to various things it should
+need from the other fixtures, especially Inject() and Flash() that we’ll see later.</p>
+</section>
+<section id="the-template-fixture">
+<h2>The Template fixture<a class="headerlink" href="#the-template-fixture" title="Link permanente para este título"></a></h2>
+<p>PY4WEB by default uses the YATL template language and provides a
+fixture for it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span>
+<span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">Template</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">Template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">delimiters</span><span class="o">=</span><span class="s1">&#39;[[ ]]&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Hello world&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note: this example assumes that you created the application from the
+scaffolding app, so that the template index.html is already created for
+you.</p>
+<p>O objeto template é um dispositivo elétrico. Ele transforma o `` dict () “ <cite>retornado pela ação em uma string usando o arquivo</cite> <cite>template index.html`</cite>. Em um capítulo posterior iremos fornecer um exemplo de como definir um fixture personalizado para usar uma linguagem de template diferente, por exemplo Jinja2.</p>
+<p>Tenha em conta que uma vez que o uso de templates é muito comum e uma vez que, muito provavelmente, cada ação usa um template diferente, nós fornecemos um pouco de açúcar sintático, e as duas linhas a seguir são equivalentes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">Template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">delimiters</span><span class="o">=</span><span class="s1">&#39;[[ ]]&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Also notice that py4web template files are cached in RAM. The py4web caching
+object is described later on <a class="reference internal" href="#caching-and-memoize"><span class="std std-ref">Caching e Memoize</span></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Aviso</p>
+<p>If you use multiple fixtures, always place the template as the <strong>first one</strong>.</p>
+<p>For example:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span> <span class="c1"># wrong</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span> <span class="c1"># right</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Be careful if you read old documentations that this need was <strong>exactly the
+opposite</strong> in early py4web experimental versions (until February 2022)!</p>
+</div>
+</section>
+<section id="the-inject-fixture">
+<h2>The Inject fixture<a class="headerlink" href="#the-inject-fixture" title="Link permanente para este título"></a></h2>
+<p>The Inject fixture is used for passing variables (and even python functions) to
+templates. Here is a simple example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_var</span> <span class="o">=</span> <span class="s2">&quot;Example variable to be passed to a Template&quot;</span>
+
+<span class="o">...</span>
+
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">Inject</span><span class="p">(</span><span class="n">my_var</span><span class="o">=</span><span class="n">my_var</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+
+   <span class="o">...</span>
+</pre></div>
+</div>
+<p>It will be explained later on <a class="reference internal" href="chapter-10.html#using-inject"><span class="std std-ref">Using Inject</span></a> in the YATL chapter.</p>
+</section>
+<section id="the-translator-fixture">
+<h2>The Translator fixture<a class="headerlink" href="#the-translator-fixture" title="Link permanente para este título"></a></h2>
+<p>Aqui está um exemplo de uso:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Translator</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">T_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;translations&#39;</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">Translator</span><span class="p">(</span><span class="n">T_FOLDER</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="s1">&#39;Hello world&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The string <cite>hello world</cite> will be translated based on the
+internationalization file in the specified “translations” folder that
+best matches the HTTP <code class="docutils literal notranslate"><span class="pre">accept-language</span></code> header.</p>
+<p>Aqui `` Translator`` é uma classe py4web que se estende `` pluralize.Translator`` e também implementa a interface de `` Fixture``.</p>
+<p>Podemos facilmente combinar vários Fixtures. Aqui, como exemplo, podemos tornar a acção com um contador que conta “visitas”.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Translator</span><span class="p">,</span> <span class="n">DAL</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.dbstore</span> <span class="kn">import</span> <span class="n">DBStore</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite:memory&#39;</span><span class="p">)</span>
+<span class="n">session</span> <span class="o">=</span>  <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">DBStore</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
+<span class="n">T_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;translations&#39;</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">Translator</span><span class="p">(</span><span class="n">T_FOLDER</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;counter&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">session</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">counter</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="s2">&quot;You have been here </span><span class="si">{n}</span><span class="s2"> times&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">counter</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Agora crie o seguinte arquivo de tradução `` traduções / en.json``:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;You have been here {n} times&quot;</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This your first time here&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You have been here once before&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You have been here twice before&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You have been here {n} times&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;6&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;You have been here more than 5 times&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>When visiting this site with the browser language preference set to
+English and reloading multiple times you will get the following
+messages:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>This your first time here
+You have been here once before
+You have been here twice before
+You have been here 3 times
+You have been here 4 times
+You have been here 5 times
+You have been here more than 5 times
+</pre></div>
+</div>
+<p>Agora tente criar um arquivo chamado `` traduções / it.json`` que contém:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;You have been here {n} times&quot;</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Non ti ho mai visto prima&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ti ho gia&#39; visto&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ti ho gia&#39; visto 2 volte&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ti ho visto {n} volte&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;6&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ti ho visto piu&#39; di 5 volte&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Set your browser preference to Italian: now the messages will be
+automatically translated to Italian.</p>
+</section>
+<section id="the-flash-fixture">
+<h2>O fixture flash<a class="headerlink" href="#the-flash-fixture" title="Link permanente para este título"></a></h2>
+<p>It is common to want to display “alerts” to the users. Here we refer to
+them as <strong>flash messages</strong>. There is a little more to it than just
+displaying a message to the view, because flash messages:</p>
+<ul class="simple">
+<li><p>can have state that must be preserved after redirection</p></li>
+<li><p>can be generated both server side and client side</p></li>
+<li><p>may have a type</p></li>
+<li><p>should be dismissible</p></li>
+</ul>
+<p>O auxiliar o Flash lida com o lado do servidor deles. Aqui está um exemplo:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Flash</span>
+
+<span class="n">flash</span> <span class="o">=</span> <span class="n">Flash</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">,</span> <span class="n">_class</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>e no template:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>...
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;py4web-flash&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+...
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;js/utils.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+[[if globals().get(&#39;flash&#39;):]]
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nx">utils</span><span class="p">.</span><span class="nx">flash</span><span class="p">([[</span><span class="o">=</span><span class="nx">XML</span><span class="p">(</span><span class="nx">flash</span><span class="p">)]]);&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+[[pass]]
+</pre></div>
+</div>
+<p>By setting the value of the message in the flash helper, a flash
+variable is returned by the action and this triggers the JS in the
+template to inject the message in the <code class="docutils literal notranslate"><span class="pre">py4web-flash</span></code> DIV which you
+can position at your convenience. Also the optional class is applied to
+the injected HTML.</p>
+<p>If a page is redirected after a flash is set, the flash is remembered.
+This is achieved by asking the browser to keep the message temporarily
+in a one-time cookie. After redirection the message is sent back by the
+browser to the server and the server sets it again automatically before
+returning the content, unless it is overwritten by another set.</p>
+<p>O cliente também pode definir / adicionar mensagens flash chamando:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>utils.flash({&#39;message&#39;: &#39;hello world&#39;, &#39;class&#39;: &#39;info&#39;});
+</pre></div>
+</div>
+<p>py4web defaults to an alert class called <code class="docutils literal notranslate"><span class="pre">info</span></code> and most CSS
+frameworks define classes for alerts called <code class="docutils literal notranslate"><span class="pre">success</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>,
+<code class="docutils literal notranslate"><span class="pre">warning</span></code>, <code class="docutils literal notranslate"><span class="pre">default</span></code>, and <code class="docutils literal notranslate"><span class="pre">info</span></code>. Yet, there is nothing in py4web
+that hardcodes those names. You can use your own class names.</p>
+<p>You can see the basic usage of flash messages in the <strong>examples</strong> app.</p>
+</section>
+<section id="the-session-fixture">
+<h2>The Session fixture<a class="headerlink" href="#the-session-fixture" title="Link permanente para este título"></a></h2>
+<p>Simply speaking, a session can be defined as a way to preserve information that is
+desired to persist throughout the user’s interaction with the web site or web application.
+In other words, sessions render the stateless HTTP connection a stateful one.</p>
+<p>In py4web, the session object is also a fixture. Here is a simple example of its usage
+to implement a counter.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from py4web import Session, action
+session = Session(secret=&#39;my secret key&#39;)
+
+@action(&#39;index&#39;)
+@action.uses(session)
+def index():
+    counter = session.get(&#39;counter&#39;, -1)
+    counter += 1
+    session[&#39;counter&#39;] = counter
+    return &quot;counter = %i&quot; % counter
+</pre></div>
+</div>
+<p>The counter will start from 0; its value will be remembered and
+increased every time you reload the page.</p>
+<img alt="_images/simple_counter.png" src="_images/simple_counter.png" />
+<p>Opening the page in a new browser tab will give you the updated
+counter value. Closing and reopening the browser, or opening a
+new <em>private window</em>, will instead restart the counter from 0.</p>
+<p>Usually the information is saved in the session object are related
+to the user - like its username, preferences, last pages visited,
+shopping cart and so on. The session object has the same interface
+as a Python dictionary but in py4web sessions are always stored using
+JSON (<strong>JWT</strong> specifically, i.e.
+<a class="reference external" href="https://jwt.io/introduction">JSON Web Token</a>),
+therefore you should only store objects that are JSON serializable.
+If the object is not JSON serializable, it will be serialized using
+the <code class="docutils literal notranslate"><span class="pre">__str__</span></code> operator and some information may be lost.</p>
+<p>The information composing the session object can be saved:</p>
+<ul class="simple">
+<li><p>client-side, by only using cookies (default)</p></li>
+<li><p>server-side, but you’ll still need minimal cookies for identifying
+the clients</p></li>
+</ul>
+<p>Por padrão sessões py4web nunca expiram (a menos que contenham informações de login, mas isso é outra história), mesmo se uma expiração pode ser definido. Outros parâmetros podem ser especificados, bem como:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>session = Session(secret=&#39;my secret key&#39;,
+                  expiration=3600,
+                  algorithm=&#39;HS256&#39;,
+                  storage=None,
+                  same_site=&#39;Lax&#39;)
+</pre></div>
+</div>
+<p>Here:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">secret</span></code> is the passphrase used to sign the information</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">expiration</span></code> is the maximum lifetime of the session, in seconds
+(default = None, i.e. no timeout)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code> is the algorithm to be used for the JWT token
+signature (“HS256” by default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">storage</span></code> is a parameter that allows to specify an alternate
+session storage method (for example Redis, or database). If not
+specified, the default cookie method will be used</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">same_site</span></code> is an option that prevents CSRF attacks (Cross-Site
+Request Forgery) and is enabled by default with the “Lax” option.
+You can read more about it
+<a class="reference external" href="https://owasp.org/www-community/SameSite">here</a></p></li>
+</ul>
+<p>If storage is not provided, session is stored in client-side jwt cookie.
+Otherwise, we have server-side session: the jwt is stored in storage and
+only its UUID key is stored in the cookie. This is the reason why the
+secret is not required with server-side sessions.</p>
+<section id="client-side-session-in-cookies">
+<h3>Client-side session in cookies<a class="headerlink" href="#client-side-session-in-cookies" title="Link permanente para este título"></a></h3>
+<p>By default the session object is stored inside a cookie called
+<code class="docutils literal notranslate"><span class="pre">appname_session</span></code>. It’s a JWT, hence encoded in a URL-friendly string
+format and signed using the provided secret for preventing tampering.
+Notice that it’s not encrypted (in fact it’s quite trivial to read its
+content from http communications or from disk), so do not place any
+sensitive information inside, and use a complex secret.
+If the secret changes existing sessions are invalidated.
+If the user switches from HTTP to HTTPS or
+vice versa, the user session is also invalidated. Session in cookies have a
+small size limit (4 kbytes after being serialized and encoded) so do
+not put too much into them.</p>
+</section>
+<section id="server-side-session-in-memcache">
+<h3>Server-side session in memcache<a class="headerlink" href="#server-side-session-in-memcache" title="Link permanente para este título"></a></h3>
+<p>Requires memcache installed and configured.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">memcache</span><span class="o">,</span> <span class="nn">time</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">memcache</span><span class="o">.</span><span class="n">Client</span><span class="p">([</span><span class="s1">&#39;127.0.0.1:11211&#39;</span><span class="p">],</span> <span class="n">debug</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">conn</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="server-side-session-in-redis">
+<h3>Server-side session in Redis<a class="headerlink" href="#server-side-session-in-redis" title="Link permanente para este título"></a></h3>
+<p>Requires <a class="reference external" href="https://redis.io/">Redis</a> installed and configured.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">redis</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">Redis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">)</span>
+<span class="n">conn</span><span class="o">.</span><span class="n">set</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">cs</span><span class="o">=</span><span class="n">conn</span><span class="o">.</span><span class="n">set</span><span class="p">,</span> <span class="n">ct</span><span class="o">=</span><span class="n">conn</span><span class="o">.</span><span class="n">ttl</span><span class="p">:</span> <span class="p">(</span><span class="n">cs</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span> <span class="n">e</span> <span class="ow">and</span> <span class="n">ct</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">conn</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Aviso: um objecto de armazenamento deve ter `` `` GET`` e métodos set`` e do método <cite>set`</cite> deve permitir especificar uma expiração. O objecto de ligação redis tem um método <cite>ttl`</cite> para especificar a expiração, remendo, portanto, que o macaco` <cite>método set`</cite> ter a assinatura esperada e funcionalidade.</p>
+</section>
+<section id="server-side-session-in-database">
+<h3>Server-side session in database<a class="headerlink" href="#server-side-session-in-database" title="Link permanente para este título"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">DAL</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.dbstore</span> <span class="kn">import</span> <span class="n">DBStore</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite:memory&#39;</span><span class="p">)</span>
+<span class="n">session</span> <span class="o">=</span>  <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">DBStore</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Aviso</p>
+<p>the <code class="docutils literal notranslate"><span class="pre">'sqlite:memory'</span></code> database used in this example
+<strong>cannot be used in multiprocess environment</strong>;
+the quirk is that your application will still work but in non-deterministic
+and unsafe mode, since each process/worker will have its own independent
+in-memory database.</p>
+</div>
+<p>This is one case when a fixture (session) requires another
+fixture (db). This is handled automatically by py4web and the following lines
+are equivalent:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="server-side-session-anywhere">
+<h3>Server-side session anywhere<a class="headerlink" href="#server-side-session-anywhere" title="Link permanente para este título"></a></h3>
+<p>Você pode facilmente armazenar sessões em qualquer lugar que você quer. Tudo que você precisa fazer é fornecer ao objeto `` Session`` um objeto `` storage`` com ambos os `` GET`` e `` métodos set``. Por exemplo, imagine que você deseja armazenar sessões no seu sistema de arquivos local:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="k">class</span> <span class="nc">FSStorage</span><span class="p">:</span>
+   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">folder</span> <span class="o">=</span> <span class="n">folder</span>
+   <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+       <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+       <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+           <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+              <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+       <span class="k">return</span> <span class="kc">None</span>
+   <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">expiration</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+       <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">folder</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+       <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+           <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
+
+<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="n">FSStorage</span><span class="p">(</span><span class="s1">&#39;/tmp/sessions&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>We leave to you as an exercise to implement expiration, limit the number
+of files per folder by using subfolders, and implement file locking. Yet
+we do not recommend storing sessions on the filesystem: it is
+inefficient and does not scale well.</p>
+</section>
+</section>
+<section id="the-urlsigner-fixture">
+<h2>The URLsigner fixture<a class="headerlink" href="#the-urlsigner-fixture" title="Link permanente para este título"></a></h2>
+<p>A signed URL is a URL that provides limited permission and time to make an
+HTTP request by containing authentication information in its query string.
+The typical usage is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils</span> <span class="kn">import</span> <span class="n">URLSigner</span>
+
+<span class="c1"># We build a URL signer.</span>
+<span class="n">url_signer</span> <span class="o">=</span> <span class="n">URLSigner</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;/somepath&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">url_signer</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">somepath</span><span class="p">():</span>
+   <span class="c1"># This controller signs a URL.</span>
+   <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">signed_url</span> <span class="o">=</span> <span class="n">URL</span><span class="p">(</span><span class="s1">&#39;/anotherpath&#39;</span><span class="p">,</span> <span class="n">signer</span><span class="o">=</span><span class="n">url_signer</span><span class="p">))</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;/anotherpath&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">url_signer</span><span class="o">.</span><span class="n">verify</span><span class="p">())</span>
+<span class="k">def</span> <span class="nf">anotherpath</span><span class="p">():</span>
+   <span class="c1"># The signature has been verified.</span>
+   <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="the-dal-fixture">
+<h2>O fixture DAL<a class="headerlink" href="#the-dal-fixture" title="Link permanente para este título"></a></h2>
+<p>Nós já usou o `` dispositivo elétrico DAL`` no contexto das sessões, mas talvez você queira ter acesso direto ao objeto DAL com a finalidade de acessar o banco de dados, e não apenas sessões.</p>
+<p>PY4WEB, by default, uses the <strong>PyDAL</strong> (Python Database Abstraction Layer)
+which is documented in the next chapter. Here is an example, please
+remember to create the <code class="docutils literal notranslate"><span class="pre">databases</span></code> folder under your project in case
+it doesn’t exist:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.db&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;visit_log&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;client_ip&#39;</span><span class="p">),</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">))</span>
+<span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="n">client_ip</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;REMOTE_ADDR&#39;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">visit_log</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">client_ip</span><span class="o">=</span><span class="n">client_ip</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="k">return</span> <span class="s2">&quot;Your visit was stored in database&quot;</span>
+</pre></div>
+</div>
+<p>Notice that the database fixture defines (creates/re-creates) tables
+automatically when py4web starts (and every time it reloads this app)
+and picks a connection from the connection pool at every HTTP request.
+Also each call to the <code class="docutils literal notranslate"><span class="pre">index()</span></code> action is wrapped into a transaction
+and it commits <code class="docutils literal notranslate"><span class="pre">on_success</span></code> and rolls back <code class="docutils literal notranslate"><span class="pre">on_error</span></code>.</p>
+</section>
+<section id="the-auth-fixture">
+<h2>The Auth fixture<a class="headerlink" href="#the-auth-fixture" title="Link permanente para este título"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">auth</span></code> and <code class="docutils literal notranslate"><span class="pre">auth.user</span></code> are both fixtures that depend on
+<code class="docutils literal notranslate"><span class="pre">session</span></code> and <code class="docutils literal notranslate"><span class="pre">db</span></code>. Their role is to provide the action with
+authentication information.</p>
+<p>Auth is used as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">URL</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.auth</span> <span class="kn">import</span> <span class="n">Auth</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">secret</span><span class="o">=</span><span class="s1">&#39;my secret key&#39;</span><span class="p">)</span>
+<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.db&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span> <span class="ow">or</span> <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;auth/login&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s1">&#39;Welcome </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;first_name&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>O construtor do objeto `` Auth`` define a tabela `` auth_user`` com os seguintes campos: nome de usuário, e-mail, senha, first_name, last_name, sso_id e action_token (os dois últimos são principalmente para uso interno).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">auth</span></code> object exposes the method:<code class="docutils literal notranslate"><span class="pre">auth.enable()</span></code> which
+registers multiple actions including <code class="docutils literal notranslate"><span class="pre">{appname}/auth/login</span></code>.
+It requires the presence of the <code class="docutils literal notranslate"><span class="pre">auth.html</span></code> template and the
+<code class="docutils literal notranslate"><span class="pre">auth</span></code> value component provided by the
+<code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> app. It also exposes the method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>which returns a python dictionary containing the information of the
+currently logged in user. If the user is not logged-in, it returns
+<code class="docutils literal notranslate"><span class="pre">None</span></code> and in this case the code of the example redirects to the
+<code class="docutils literal notranslate"><span class="pre">auth/login</span></code> page.</p>
+<p>Desde essa verificação é muito comum, py4web fornece um fixture adicional `` auth.user``:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s1">&#39;Welcome </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;first_name&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This fixture automatically redirects to the <code class="docutils literal notranslate"><span class="pre">auth/login</span></code> page if user
+is not logged-in, hence this example is equivalent to the previous one.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">auth</span></code> fixture is plugin based: it supports multiple plugin
+methods including OAuth2 (Google, Facebook, Twitter), PAM and LDAP.
+The <a class="reference internal" href="chapter-13.html#authentication-and-authorization"><span class="std std-ref">Authentication and authorization</span></a> chapter will show you
+all the related details.</p>
+</section>
+<section id="caveats-about-fixtures">
+<h2>Caveats about fixtures<a class="headerlink" href="#caveats-about-fixtures" title="Link permanente para este título"></a></h2>
+<p>Desde fixtures são compartilhados por várias ações que você não tem permissão para alterar seu estado, porque não seria seguro para threads. Há uma exceção a esta regra. As ações podem alterar alguns atributos de campos de banco de dados:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.db&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;thing&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">writable</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">writable</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that this code will only be able to display a form, to process it
+after submit, additional code needs to be added, as we will see later
+on. This example is assuming that you created the application from the
+scaffolding app, so that a generic.html is already created for you.</p>
+<p>A `` readable``, `` writable``, `` default``, `` update``, e atributos `` `` require`` de db. {Tabela}. {Campo} `` são objectos especiais de classe `` ThreadSafeVariable`` definido a `` threadsafevariable`` módulo. Esses objetos são muito parecidos com Python rosca objetos locais, mas eles estão em todos os pedidos utilizando o valor fora da ação especificada inicializado-re. Isto significa que as ações podem mudar com segurança os valores desses atributos.</p>
+</section>
+<section id="custom-fixtures">
+<h2>Fixtures personalizados<a class="headerlink" href="#custom-fixtures" title="Link permanente para este título"></a></h2>
+<p>Um fixture é um objecto com a seguinte estrutura mínima:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">Fixture</span>
+
+<span class="k">class</span> <span class="nc">MyFixture</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span> <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="k">pass</span>
+</pre></div>
+</div>
+<p>For example in the DAL fixture case, <cite>on_request</cite> starts a transaction,
+<cite>on_success</cite> commits it, and <cite>on_error</cite> rolls it back.</p>
+<p>In the case of a template, <cite>on_request</cite> and <cite>on_error</cite> do nothing but
+<cite>on_success</cite> transforms the output.</p>
+<p>In the case of <cite>auth.user</cite> fixtures, <cite>on_request</cite> does all the work of
+determining if the user is logged in (from the dependent session fixture)
+and eventually preventing the request from accessing the inner layers.</p>
+<p>Now imagine a request coming in calling an action with three fixtures A, B, and C.
+Under normal circumstances above methods are executed in this order:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>request  -&gt; A.on_request -&gt; B.on_request -&gt; C.on_request -&gt; action
+response &lt;- A.on_success &lt;- B.on_success &lt;- C.on_success &lt;-
+</pre></div>
+</div>
+<p>i.e. the first fixture (A) is the first one to call <cite>on_request</cite>
+and the last one to call <cite>on_success</cite>. You can think of them as layers of
+an onion with the action (user code) at the center. <cite>on_success</cite> is called
+when entering a layer from the outside and <cite>on_success</cite> is called when
+exiting a layer from the inside (like WSGI middleware).</p>
+<p>If any point an exception is raised inner layers are not called
+and outer layers will call <cite>on_error</cite> instead of <cite>on_success</cite>.</p>
+<p>Context is a shared object which contains:</p>
+<ul class="simple">
+<li><p>content[“fixtures”]: the list of all the fixtures for the action.</p></li>
+<li><p>context[“processed”]: the list of fixtures that called <cite>on_request</cite> previously within the request.</p></li>
+<li><p>context[“exception”]: the exception raised by the action or any previous fixture logic (usually None)</p></li>
+<li><p>context[“output”]: the action output.</p></li>
+</ul>
+<p><cite>on_success</cite> and <cite>on_error</cite> can see the current <cite>context[“exception”]</cite> and
+transform it. They can see the current <cite>context[“output”]</cite> and transform it as well.</p>
+<p>For example here is a fixture that transforms the output text to upper case:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UpperCase</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+<span class="n">upper_case</span> <span class="o">=</span> <span class="n">UpperCase</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">upper_case</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="s2">&quot;hello world&quot;</span>
+</pre></div>
+</div>
+<p>Notice that this fixture assumes the <cite>context[“output”]</cite> is a string
+and therefore it must come before the template.</p>
+<p>Here is a fixture that logs exceptions tracebacks to a file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">LogErrors</span><span class="p">(</span><span class="n">Fixture</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+    <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="p">[</span><span class="s1">&#39;exception&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">errlog</span> <span class="o">=</span> <span class="n">LogErrors</span><span class="p">(</span><span class="s2">&quot;myerrors.log&quot;</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">errlog</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span> <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>Fixtures also have a <cite>__prerequisite__</cite> attribute. If a fixture
+takes another fixture as an argument, its value must be appended
+to the list of <cite>__prerequisites__</cite>. This guarantees that they are
+always executed in the proper order even if listed in the wrong order.
+It also makes it optional to declare prerequisite fixtures in <cite>action.uses</cite>.</p>
+<p>For example <cite>Auth</cite> depends on <cite>db</cite>, <cite>session</cite>, and <cite>flash</cite>. <cite>db</cite> and <cite>session</cite>
+are indeed arguments. <cite>flash</cite> is a special singleton fixture declared within <cite>Auth</cite>.
+This means that</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>is equivalent to</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Why are fixtures not simply functions that contain a try/except?</p>
+<p>We considered the option but there are some special exceptions that should
+not be considered errors but success (<cite>py4web.HTTP</cite>, <cite>bottle.HTTResponse</cite>)
+while other exceptions are errors. The actual logic can be complicated
+and individual fixtures do not need to know these details.</p>
+<p>They all need to know what the context is and whether they are
+processing a new request or a response and whether the response is a success
+or an error. We believe this logic keeps the fixtures easy.</p>
+<p>Fixtures should not in general communicate with each other but nothing
+prevents one fixture to put data in the context and another fixture to
+retrieve that data.</p>
+</section>
+<section id="multiple-fixtures">
+<h2>Multiple fixtures<a class="headerlink" href="#multiple-fixtures" title="Link permanente para este título"></a></h2>
+<p>As previously stated, it’s generally not important the order you use to specify the fixtures
+but it’s mandatory that you always place the template as the <strong>first one</strong>.
+Consider this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">func</span><span class="p">():</span> <span class="k">return</span> <span class="s2">&quot;Hello world&quot;</span>
+</pre></div>
+</div>
+<p>Pre-processing (<code class="docutils literal notranslate"><span class="pre">on_request</span></code>) in the fixtures happen in the sequence they are listed
+and then the <code class="docutils literal notranslate"><span class="pre">on_success</span></code> or <code class="docutils literal notranslate"><span class="pre">on_error</span></code> methods will be executed in reverse order (as
+an onion).</p>
+<p>Hence the previous code can be explicitly transformed to:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">on_request</span><span class="p">()</span>
+<span class="n">B</span><span class="o">.</span><span class="n">on_request</span><span class="p">()</span>
+<span class="n">func</span><span class="p">()</span>
+<span class="n">B</span><span class="o">.</span><span class="n">on_success</span><span class="p">()</span>
+<span class="n">A</span><span class="o">.</span><span class="n">on_success</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>So if A.on_success() is a template and B is an inject fixture that allows you to add
+some extra variables to your templates, then A must come first.</p>
+<p>Notice that</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>is almost equivalent to</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>but not quite. All fixtures declared in one <cite>action.uses</cite> share
+the same context while fixtures in different <cite>action.uses</cite> use
+different contexts and therefore they cannot communicate with each other.
+This may change in the future.
+For now we recommend using a single call to <cite>action.uses</cite>.</p>
+</section>
+<section id="caching-and-memoize">
+<h2>Caching e Memoize<a class="headerlink" href="#caching-and-memoize" title="Link permanente para este título"></a></h2>
+<p>py4web provides a cache in RAM object that implements the last recently
+used (LRU) algorithm. It can be used to cache any function via a
+decorator:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">Cache</span><span class="p">,</span> <span class="n">action</span>
+<span class="n">cache</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;hello/&lt;name&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@cache</span><span class="o">.</span><span class="n">memoize</span><span class="p">(</span><span class="n">expiration</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">&quot;Hello </span><span class="si">%s</span><span class="s2"> your code is </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>It will cache (memoize) the return value of the <code class="docutils literal notranslate"><span class="pre">hello</span></code> function, as
+function of the input <code class="docutils literal notranslate"><span class="pre">name</span></code>, for up to 60 seconds. It will store in
+cache the 1000 most recently used values. The data is always stored in
+RAM.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cache</span></code> object is not a fixture and it should not and cannot be
+registered using the <code class="docutils literal notranslate"><span class="pre">&#64;action.uses</span></code> decorator but we mention it here
+because some of the fixtures use this object internally. For example,
+template files are cached in RAM to avoid accessing the file system
+every time a template needs to be rendered.</p>
+</section>
+<section id="convenience-decorators">
+<h2>Decoradores de conveniência<a class="headerlink" href="#convenience-decorators" title="Link permanente para este título"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> application, in <code class="docutils literal notranslate"><span class="pre">common.py</span></code> defines two special
+convenience decorators:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@unauthenticated
+def index():
+    return dict()
+</pre></div>
+</div>
+<p>e</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@authenticated
+def index():
+    return dict()
+</pre></div>
+</div>
+<p>They apply all of the decorators below (db, session, T, flash, auth),
+use a template with the same name as the function (.html), and also
+register a route with the name of action followed by the number of
+arguments of the action separated by a slash (/).</p>
+<ul class="simple">
+<li><p>&#64;unauthenticated does not require the user to be logged in.</p></li>
+<li><p>&#64;authenticated required the user to be logged in.</p></li>
+</ul>
+<p>They can be combined with (and precede) other <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(...)</span></code> but
+they should not be combined with <code class="docutils literal notranslate"><span class="pre">&#64;action(...)</span></code> because they perform
+that function automatically.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Rodapé">
+        <a href="chapter-05.html" class="btn btn-neutral float-left" title="Criando seu primeiro aplicativo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="chapter-07.html" class="btn btn-neutral float-right" title="The Database Abstraction Layer (DAL)" accesskey="n" rel="next">Seguinte <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20220222.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Idiomas</dt>
+        
+          
+          
+          <dd><a href="../en/index.html">en</a></dd> 
+        
+           <strong> 
+          <dd><a href="../pt/index.html">pt</a></dd> </strong>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versões</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Transferências</dt>
+        
+          <dd><a href="py4web_pt.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_pt.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>
