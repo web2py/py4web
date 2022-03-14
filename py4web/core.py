@@ -1779,6 +1779,9 @@ def setup(**kwargs):
 )
 def shell(**kwargs):
     """Open a python shell with apps_folder's parent added to the path"""
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        #running in the PyInstaller binary bundle
+        import site
     install_args(kwargs)
     code.interact(local=dict(globals(), **locals()))
 
