@@ -10,13 +10,13 @@ Adds support for x509 authentication.
 Ported from web2py - Work in Pogress
 """
 
-from gluon.globals import current
-from gluon.storage import Storage
-from gluon.http import HTTP, redirect
+from functools import reduce
 
+from gluon.globals import current
+from gluon.http import HTTP, redirect
+from gluon.storage import Storage
 # requires M2Crypto
 from M2Crypto import X509
-from functools import reduce
 
 
 class x509Plugin:

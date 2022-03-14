@@ -6,12 +6,13 @@ uses 'WordPress OAuth Server' plugin:
 https://wordpress.org/plugins/miniorange-oauth-20-server
 """
 
-from ...core import URL, redirect, HTTP
-from . import OAuth2
-
 from urllib.parse import urljoin
+
 import jwt
 import requests
+
+from ...core import HTTP, URL, redirect
+from . import OAuth2
 
 
 class OAuth2WPMiniorange(OAuth2):

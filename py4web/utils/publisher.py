@@ -1,7 +1,9 @@
 import uuid
-from py4web import action, request, response, URL
-from pydal.restapi import RestAPI, ALLOW_ALL_POLICY, DENY_ALL_POLICY
-from yatl.helpers import DIV, XML, TAG
+
+from pydal.restapi import ALLOW_ALL_POLICY, DENY_ALL_POLICY, RestAPI
+from yatl.helpers import DIV, TAG, XML
+
+from py4web import URL, action, request, response
 
 MTABLE = '<mtable url="{url}" filter="" order="" :editable="true" :deletable="true" :create="true" :render="{render}"></mtable>'
 

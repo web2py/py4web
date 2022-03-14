@@ -1,33 +1,18 @@
+import copy
 import json
-import jwt
+import os
 import time
 import uuid
-import copy
-import os
 
-from pydal.objects import FieldVirtual
-
-from py4web import request, response, HTTP
-from py4web.utils.param import Param
+import jwt
 from pydal._compat import to_native
+from pydal.objects import FieldVirtual
 from pydal.validators import Validator
+from yatl.helpers import (DIV, FORM, INPUT, LABEL, OPTION, SELECT, SPAN, TABLE,
+                          TD, TEXTAREA, TR, XML, A, P)
 
-from yatl.helpers import (
-    A,
-    TEXTAREA,
-    INPUT,
-    TR,
-    TD,
-    TABLE,
-    DIV,
-    LABEL,
-    FORM,
-    SELECT,
-    OPTION,
-    P,
-    SPAN,
-    XML,
-)
+from py4web import HTTP, request, response
+from py4web.utils.param import Param
 
 
 def to_id(field):
