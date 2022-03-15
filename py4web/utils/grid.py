@@ -9,27 +9,10 @@ from urllib.parse import urlparse
 
 import ombott
 from pydal.objects import Field, FieldVirtual
-from yatl.helpers import (
-    CAT,
-    DIV,
-    TABLE,
-    TBODY,
-    TR,
-    TD,
-    TH,
-    A,
-    SPAN,
-    I,
-    THEAD,
-    TAG,
-    INPUT,
-    XML,
-    FORM,
-    SELECT,
-    OPTION,
-)
+from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
+                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
 
-from py4web import request, URL, redirect, HTTP
+from py4web import HTTP, URL, redirect, request
 from py4web.utils.form import Form, FormStyleDefault, join_classes
 from py4web.utils.param import Param
 

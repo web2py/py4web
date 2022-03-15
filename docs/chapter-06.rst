@@ -484,6 +484,75 @@ of files per folder by using subfolders, and implement file locking. Yet
 we do not recommend storing sessions on the filesystem: it is
 inefficient and does not scale well.
 
+The Condition fixture
+---------------------
+
+Some times you want to restrict access to an action based on a
+given condition. For example to enforce a worflow:
+
+.. code:: python
+
+   @action("step1")
+   @action.uses(session)
+   def step1():
+       session["step_completed"] = 1
+       button = A("next", _href=URL("step2"))
+       return locals()
+
+   @action("step2")
+   @action.uses(session, Condition(lambda: session.get("step_completed") == 1))
+   def step2():
+       session["step_completed"] = 2
+       button = A("next", _href=URL("step3"))
+       return locals()
+
+   @action("step3")
+   @action.uses(session, Condition(lambda: session.get("step_completed") == 2))
+   def step3():
+       session["step_completed"] = 3
+       button = A("next", _href=URL("index"))
+       return locals()
+
+Notice that the Condition fixtures takes a function as first argument
+which is called `on_request` and must evaluate to True or False.
+
+Also notice that in the above example the Condition dependes on the Session
+therefore it must be listed after `session` in `action.uses`.
+
+If False, by default, the Condition fixture raises 404.
+It is possible to specify a different exception:
+
+.. code:: python
+
+   Condition(cond, exception=HTTP(400))
+
+It is also possible to call a function before the exception is raised,
+for example, to redirect to another page:
+
+.. code:: python
+
+   Condition(cond, on_false=lambda: redirect(URL('step1')))
+
+You can use condition to check permissions. For example, assming you are using
+`Tags` as explained in chapter 13 and you are giving group memberships to users,
+then you can require that users action have specific group membership:
+
+.. code:: python
+
+   groups = Tags(db.auth_user)
+
+   def requires_membership(group_name):
+       return Condition(
+          lambda: group_name in groups.get(auth.user_id),
+          exception=HTTP(404)
+       )
+
+   @action("payroll")
+   @action.uses(auth, requires_membership("employees"))
+   def payroll():
+       return
+
+
 The URLsigner fixture
 ---------------------
 

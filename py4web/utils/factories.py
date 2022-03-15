@@ -1,11 +1,13 @@
 import copy
-import os
 import json
+import os
 from functools import wraps
+
 import jwt
 from yatl.helpers import TAG
-from py4web import action, URL, request
-from py4web.core import dumps, Session, Fixture
+
+from py4web import URL, action, request
+from py4web.core import Fixture, Session, dumps
 
 
 class Inject(Fixture):

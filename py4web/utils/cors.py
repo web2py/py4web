@@ -1,15 +1,12 @@
-from py4web.core import Fixture, request, response, HTTP
+from py4web.core import HTTP, Fixture, request, response
+
 
 class CORS(Fixture):
     """
     Fixture helper for sharing web service avoiding cross origin resource sharing problems
     """
 
-    def __init__(self,
-                 age=86400,
-                 origin="*",
-                 headers="*",
-                 methods="*"):
+    def __init__(self, age=86400, origin="*", headers="*", methods="*"):
         Fixture.__init__(self)
 
         self.age = age

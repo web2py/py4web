@@ -8,12 +8,12 @@
 """
 
 import email.utils
-from email import message_from_string
 import json
 import logging
 import mimetypes
 import os
 import smtplib
+from email import message_from_string
 from email.encoders import encode_base64
 
 from pydal._compat import *
