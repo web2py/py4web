@@ -607,23 +607,121 @@ Prevents a function from being called too often;
 
    Q("#element").onclick = Q.debounce(function(){console.log("clicked!)}, 1000);
 
-If the element if clicked more often than once every 1000ms, the other clicks will be ignored.
+If the element is clicked more often than once every 1000ms, the other clicks will be ignored.
 
-Undocumented
-~~~~~~~~~~~~
+**Q.tags_inputs**
+
+It turn a regular text input containing a string of comma separated tags into a tag widgets.
+For example:
+
+.. code:: html
+
+    <input name="browsers"/>
+
+and in JSL
 
 .. code:: javascript
 
-    Q.tags_input = function(elem, options) {
-    Q.score_password = function(text) {
-    Q.score_input = function(elem, reference)
-    Q.trap_form = function (action, elem_id)
-    Q.load_and_trap
-    Q.handle_components = function() {
-    Q.handle_flash = function() {
-    Q.handle_components();
-    Q.handle_flash();
-    Q('input[type=text].type-list-string').forEach(function(elem){Q.tags_input(elem);});
-    Q('input[type=text].type-list-integer').forEach(function(elem){Q.tags_input(elem, {regex:/[-+]?[\d]+/});});
-    Q('input[name=password],input[name=new_password]').forEach(Q.score_input);
+   Q.tags_input('[name=zip_codes]')
 
+You can restrict the set of options with:
+
+.. code:: javascript
+
+   Q.tags_input('[name=zip_codes]', {
+      freetext: false,
+      tags: ['Chrome', 'Firefox', 'Safari', 'Edge']
+   });
+
+It works with the datalist element to provide autocomplete. Simply prepend `-list` to the datalist id:
+
+.. code:: html
+
+    <input name="browsers"/>
+    <datalist id="browses-list">
+       <option>Chrome</option>
+       <option>Firfox</option>
+       <option>Safari</option>
+       <option>Edge</option>
+    </datalist>
+
+and in JS:
+
+.. code:: javascript
+
+   Q.tags_input('[name=zip_codes]', {freetext: false});
+
+It provides more undocumented options.
+You need to style the tags. For example:
+
+.. code:: css
+
+    ul.tags-list {
+      padding-left: 0;
+    }
+    ul.tags-list li {
+      display: inline-block;
+      border-radius: 100px;
+      background-color: #111111;
+      color: white;
+      padding: 0.3em 0.8em 0.2em 0.8em;
+      line-height: 1.2em;
+      margin: 2px;
+      cursor: pointer;
+      opacity: 0.2;
+      text-transform: capitalize;
+    }
+    ul.tags-list li[data-selected=true] {
+      opacity: 1.0;
+    }
+
+Notice that if an input element has class `.type-list-string` or `.type-list-integer`, utils.js applies the
+`tag_input` function automatically.
+
+*Q.score_input**
+
+..code:: javascript
+
+    Q.score_input(Q('input[type=password]')[0]);
+
+Will turn the password input into a widget that scores the password complexity.
+It is applied automatically to inputs with name "password" or "new_password".
+
+**Components**
+
+This is a poor man version of HTMX. It allows to insert in the page a ajax-component tags that
+are loaded via ajax and any form in those components will be trapped 
+(i.e. the result of form submission will also be displayed inside the same component)
+
+For example imagine an index.html that contains
+
+.. code:: html
+
+    <ajax-component id="component_1" url="[[=URL('mycomponent')]]">
+        <blink>Loading...</blink>
+    </ajax-component>
+
+And a different action serving the component:
+
+.. code:: python
+
+    @action("mycomponent", method=["GET", "POST"])
+    @action.uses(flash)
+    def mycomponent():
+        flash.set("Welcome")
+        form = Form([Field("your_name")])
+        return DIV(
+            "Hello " + request.forms["your_name"]
+            if form.accepted else form).xml()
+
+A component action is a regular action except it should generate html without the
+`<html><body>...</body></html>` envelop and it can make use of templates and flash for example.
+
+Notice that if the main page supports flash messages, any flash message in the component will be displayed
+by the parent page.
+
+Moreover if the component returns a `redirect("other_page")` not just the content of the component,
+but the entire page will be redirected.
+
+The content of the component html, can contain `<script>...</script>` and they can modify global page variables
+as well modify other components.
