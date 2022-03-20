@@ -56,26 +56,6 @@ Q.get_cookie = function (name) {
     return decodeURIComponent(!!cookie ? cookie.toString().replace(/^[^=]+./, "") : "");
 };
 
-// Gets a session token (py4web specific)
-Q.get_session_token = function () {
-    var app_name = Q.get_cookie('app_name');
-    return Q.get_cookie(app_name + '_session');
-};
-
-// Load data from localstorage
-Q.retrieve = function (key) {
-    try {
-        return JSON.parse(window.localStorage.getItem(key));
-    } catch (e) {
-        return null;
-    }
-};
-
-// Save data to localstorage
-Q.store = function (key, value) {
-    window.localStorage.setItem(key, JSON.stringify(value));
-};
-
 // Load components lazily: https://vuejs.org/v2/guide/components.html#Async-Components
 Q.register_vue_component = function (name, src, onload) {
     Vue.component(name, function (resolve, reject) {
@@ -162,59 +142,6 @@ Q.throttle = (callback, delay) => {
         }
     };
     return throttledEventHandler;
-};
-
-// A Vue app prototype
-Q.app = function (elem_id) {
-    self = {};
-    self.elem_id = elem_id || 'vue';
-    self.data = { loading: 0, page: null, state: null };
-    self.methods = {};
-    self.filters = {};
-    self.watch = {};
-    self.pages = {};
-    // translations
-    self.methods.T = T;
-    // toggles a variable
-    self.methods.toggle = function (obj, key) { obj[key] = !obj[key] };
-    // sets a variable
-    self.methods.set = function (obj, key, value) { obj[key] = value; };
-    // goto a given page and state (state should be 1 level deep dict
-    self.methods.go = function (page, state, push) {
-        self.v.loading++;
-        var pagecall = self.pages[page];
-        if (pagecall) pagecall(state, function () {
-            if (push) {
-                var path = self.base + '/' + page;
-                if (state) for (var key in state) path += '/' + key + '/' + state[key];
-                window.history.pushState(self.v, page, path);
-            }
-            self.v.loading--;
-            self.v.page = page;
-            self.v.state = state;
-        });
-    };
-    // restores state when navigating history
-    self.onpopstate = function (event) {
-        for (var key in event.state) self.v[key] = event.state[key];
-    };
-    self.start = function (base) {
-        self.base = base = base || window.location.href;;
-        self.v = new Vue({
-            el: '#' + self.elem_id,
-            data: self.data,
-            methods: self.methods,
-            watch: self.watch,
-            filters: self.filters
-        });
-        var parts = window.location.href.substr(base.length);
-        var page = parts[0];
-        var state = {};
-        for (var i = 1; i < parts.length; i += 2) state[parts[i]] = parts[i + 1];
-        self.v.go(page, state, false);
-        window.onpopstate = self.onpopstate;
-    };
-    return self;
 };
 
 // Renders a JSON field with tags_input
