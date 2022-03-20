@@ -1,6 +1,7 @@
 import fnmatch
 import ipaddress
-from py4web.core import Fixture, request, response, HTTP
+
+from py4web.core import HTTP, Fixture, request, response
 
 
 def listify(item):

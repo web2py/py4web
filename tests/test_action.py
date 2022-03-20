@@ -8,7 +8,7 @@ import uuid
 import mechanize
 import requests
 
-from py4web import abort, action, DAL, Field, Session, Cache, HTTP
+from py4web import abort, action, DAL, Field, Session, Cache, HTTP, Condition
 from py4web.core import bottle, request, error404, Fixture
 
 os.environ["PY4WEB_APPS_FOLDER"] = os.path.sep.join(
@@ -26,7 +26,7 @@ action.app_name = "tests"
 @action("index")
 @cache.memoize(expiration=1)
 @action.uses(db, session)
-@action.requires(lambda: True)
+@action.uses(Condition(lambda: True))
 def index():
     db.thing.insert(name="test")
     session["number"] = session.get("number", 0) + 1

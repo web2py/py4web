@@ -1,6 +1,6 @@
-from pydal._compat import urlopen
-from pydal._compat import urllib2
 import base64
+
+from pydal._compat import urllib2, urlopen
 
 
 class BasicAuthPlugin:
