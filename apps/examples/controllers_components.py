@@ -49,14 +49,14 @@ signed_url = URLSigner(session, lifespan=3600)
 vue_grid = Grid("grid_api", session)
 
 @action("vuegrid", method=["GET"])
-@action.uses(vue_grid, "vuegrid.html")
+@action.uses("vuegrid.html", vue_grid)
 def vuegrid():
     """This page generates a sample grid."""
     # We need to instantiate our grid component.
     return dict(grid=vue_grid())
 
 @action('vuegrid_bulma', method=["GET"])
-@action.uses(vue_grid, 'vuegrid_bulma.html')
+@action.uses('vuegrid_bulma.html', vue_grid)
 def vuegrid_bulma():
     """This page generates a sample grid."""
     # We need to instantiate our grid component.
@@ -69,7 +69,7 @@ file_uploader = FileUpload("upload_api", session)
 
 
 @action("file_uploader", method=["GET"])
-@action.uses(file_uploader, "file_uploader.html")
+@action.uses("file_uploader.html", file_uploader)
 def fileuploader():
     return dict(uploader=file_uploader(id=1))
 
@@ -110,12 +110,12 @@ vue_form = VueForm(
 
 
 @action("vue_form", method=["GET"])
-@action.uses(vue_form, "vueform.html")
+@action.uses("vueform.html", vue_form)
 def vueform():
     return dict(form=vue_form())
 
 @action('vue_form_bulma', method=["GET"])
-@action.uses(vue_form, "vueform_bulma.html")
+@action.uses("vueform_bulma.html", vue_form)
 def vueform_bulma():
     return dict(form=vue_form())
 
@@ -144,12 +144,12 @@ insert_form = InsertForm(
 
 
 @action("insert_form", method=["GET"])
-@action.uses(insert_form, "vueform.html")
+@action.uses("vueform.html", insert_form)
 def insertform():
     return dict(form=insert_form())
 
 @action('insert_form_bulma', method=["GET"])
-@action.uses(insert_form, 'vueform_bulma.html')
+@action.uses('vueform_bulma.html', insert_form)
 def insertform_bulma():
     return dict(form=insert_form())
 
@@ -165,13 +165,13 @@ update_form = TableForm(
 
 
 @action("update_form", method=["GET"])
-@action.uses(update_form, "vueform.html")
+@action.uses("vueform.html", update_form)
 def updateform():
     # For simplicity, we update the record 1.
     return dict(form=update_form(id=1))
 
 @action('update_form_bulma', method=["GET"])
-@action.uses(update_form, 'vueform_bulma.html')
+@action.uses('vueform_bulma.html', update_form)
 def updateform_bulma():
     # For simplicity, we update the record 1.
     return dict(form=update_form(id=1))
@@ -183,7 +183,7 @@ star_rater = StarRater("star_rater", session)
 
 
 @action("star_rater", method=["GET"])
-@action.uses(star_rater, "starrating.html")
+@action.uses("starrating.html", star_rater)
 def starrater():
     # This performs a star rating of item 1.
     return dict(stars=star_rater(id=1))
@@ -194,13 +194,13 @@ def starrater():
 
 
 @action("star_rater_vue", method=["GET"])
-@action.uses(star_rater, "star_rater_vue.html")
+@action.uses("star_rater_vue.html", star_rater)
 def star_rater_vue():
     return dict(get_posts_url=URL("star_rater_get_posts"))
 
 
 @action('star_rater_vue_bulma', method=["GET"])
-@action.uses(star_rater, 'star_rater_vue_bulma.html')
+@action.uses('star_rater_vue_bulma.html', star_rater)
 def star_rater_vue_bulma():
     return dict(get_posts_url=URL('star_rater_get_posts'))
 

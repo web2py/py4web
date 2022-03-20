@@ -1,13 +1,15 @@
-import urllib
 import calendar
-import time
-import uuid
 import json
 import random
-import jwt
 import string
+import time
+import urllib
+import uuid
+
+import jwt
 import requests
-from py4web.core import URL, redirect, request, HTTP
+
+from py4web.core import HTTP, URL, redirect, request
 
 
 class SSO(object):
