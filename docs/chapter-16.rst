@@ -440,3 +440,190 @@ data builder URL to provide your own controller function to retrieve the data.
 
 .. [CIT1601] from the https://htmx.org website
 
+utils.js
+------------------
+
+Multiple times in this documentation we have mentioned utils.js which comes with the scaffolding application,
+yet we never clearly listed what is in there. So here it is.
+
+string.format
+~~~~~~~~~~~~~
+
+It extends the String object ptototype to allow expressions like this:
+
+.. code: javascript
+
+    var a = "hello {name}".format(name="Max");
+
+The Q object
+~~~~~~~~~~~~
+
+The Q object can be used like a selector supporting jQuery like syntax:
+
+.. code: javascript
+
+   var element = Q("#element-id")[0];
+   var selected_elements = Q(".element-class");
+
+It supports the same symtax as JS ``querySelectorAll``
+and always returns an array of selected elements (can be empty).
+
+The Q objects is also container for functions can be useful when programming in Javascript.
+Notice that the Q object is a just a container for functions and it is stateless.
+
+For example:
+
+**Q.clone**
+
+A function to clone any object
+
+.. code: javascript
+
+   var b = {any: "object"}
+   var a = Q.clone(b);
+
+**Q.eval**
+
+It evaluates JS expressions in a string. It is not a sandbox.
+
+.. code:: javascript
+
+   var a = Q.eval("2+3+Math.random()");
+
+**Q.ajax**
+
+A wrapper for the JS fetch method which provides a nicer syntax:
+
+.. code:: javascript
+
+    var data = {};
+    var headers = {'custom-header-name': 'value'}
+    var success = response => { console.log("recereived", response); } 
+    var failure = response => { console.log("recereived", response); }
+    Q.ajax("POST", url, data, headers).then(success, failure);
+
+**Q.get_cookie**
+
+Extracts a cookie by name from the header of cookies in the current page:
+Returns null if the cookie does not exist. Can be used within the JS of a page to retrieve a session cookie
+in case it is needed to call an API.
+
+.. code:: javascript
+
+   var a = Q.get_cookie("session");
+
+**Q.register_vue_component**
+
+This is specific for Vue 2 and may be deprecated in the future but it allows
+to define a vue component where the template is stored in a separate HTML file
+and the template will be loaded lazily only when/if the component is used.
+
+For example instead of doing:
+
+.. code:: javascript
+
+    Vue.component('button-counter', {
+    data: function () {
+        return {
+            count: 0
+        }
+    },
+    template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
+    });
+
+You would put the template in a button-counter.html and do
+
+.. code:: javascript
+
+    Q.register_vue_component("button-counter", "button-counter.html", function(res) {
+        return {
+            data: function () {
+                return {
+                    count: 0
+                };
+            };
+    });
+
+
+**Q.upload_helper**
+
+It allows to bind an input tag of type file to a callback so that when a file is selected
+the content of the selecte file, is loaded, base64 encoded, and passed to the callback.
+
+This is useful to create form which include an input field selector but you want to
+place the content of the selected file into a variable, for example to do an ajax post of that content.
+
+For example:
+
+.. code:: html
+
+   <input type="file" id="my-id" />
+
+and 
+
+.. code:: javascript
+
+   var file_name = ""
+   var file_content = "";
+   Q.upload_helper("my_id", function(name, content) {
+      file_name = name;
+      file_content = content; // base 64 encoded;
+   }
+
+
+The T object
+~~~~~~~~~~~~
+
+This is a Javascript reimplemantation of the Python pluralize library in Python
+which is usedby the Python T object in py4web. So basically a client-side T.
+
+.. code:: javascript
+
+   T.translations = {'dog': {0: 'no cane', 1: 'un case', 2: '{n} cani', 10: 'tanti cani'}};
+   var message = T('dog').format({n: 5}); // "5 cani"
+
+The intended usage is to create a server endopoint that can provide translations
+for the client accepted-language, obtain T.translations via ajax get, and then use 
+T to translate and pluralize all messages client side rather than serverside.
+
+**Q.debounce**
+
+Prevents a function from stepping on itself.
+
+.. code:: javascript
+
+   setInterval(500, Q.debounce(function(){console.log("hello!)}, 200);
+
+and the function will be called every 500ms
+but will skip if the previous call did not terminate.
+Online other debounce implementations out there, it makes sure
+the last call is always execupted by delaying it (in the example 200ms);
+
+**Q.debounce**
+
+Prevents a function from being called too often;
+
+.. code:: javascript
+
+   Q("#element").onclick = Q.debounce(function(){console.log("clicked!)}, 1000);
+
+If the element if clicked more often than once every 1000ms, the other clicks will be ignored.
+
+Undocumented
+~~~~~~~~~~~~
+
+.. code:: javascript
+
+    Q.tags_input = function(elem, options) {
+    Q.score_password = function(text) {
+    Q.score_input = function(elem, reference)
+    Q.trap_form = function (action, elem_id)
+    Q.load_and_trap
+    Q.handle_components = function() {
+    Q.handle_flash = function() {
+    Q.handle_components();
+    Q.handle_flash();
+    Q('input[type=text].type-list-string').forEach(function(elem){Q.tags_input(elem);});
+    Q('input[type=text].type-list-integer').forEach(function(elem){Q.tags_input(elem, {regex:/[-+]?[\d]+/});});
+    Q('input[name=password],input[name=new_password]').forEach(Q.score_input);
+
