@@ -402,6 +402,8 @@ The debug parameter automatically sets logging_level to 0 and logs all calls to 
 a session is found, invalid, saved.
 
 
+
+
 .. _set_password command option:
 
 ``set_password`` command option
@@ -521,8 +523,38 @@ For example, inside a shell you can
 With the ``-all`` option you’ll get the version of all the available python
 modules, too.
 
-Special deployments
--------------------
+HTTPS
+~~~~~
+
+To use https with the build-in web server (Rocket3) these are the steps:
+
+- Generate the localhost certificates. For example followed the instructions here:
+   
+   https://www.section.io/engineering-education/how-to-get-ssl-https-for-localhost/.
+
+- Restart your browser and browse securely to your web site.
+
+If you use VSCode to run py4web you may want to update the py4web launch.json file to contain:
+
+.. code:: json   
+
+    "configurations": [
+            {
+                "name": "py4web",
+                "type": "python",
+                "request": "launch",
+                "program": "${workspaceFolder}/py4web.py",
+                "args": [
+                    "run",
+                    "apps",
+                    "--ssl_cert", "/path_to/localhost.crt",
+                    "--ssl_key", "/path_to/localhost.key",
+                    "--server", "rocketServer",
+                ]
+            }
+        ]
+
+Notice that /path_to/ should be the absolute path to the location of your certificate.
 
 
 WSGI
