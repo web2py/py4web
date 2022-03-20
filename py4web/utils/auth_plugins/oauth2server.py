@@ -1,8 +1,9 @@
-import uuid
 import hashlib
+import uuid
+
 import jwt
 
-from py4web.core import request, DAL, Field, HTTP
+from py4web.core import DAL, HTTP, Field, request
 
 
 class OAuthServer(object):

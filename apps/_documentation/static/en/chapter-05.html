@@ -1,85 +1,42 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Creating your first app &mdash; py4web 1.20211227.1 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
-
-  
-  
+  <title>Creating your first app &mdash; py4web 1.20220222.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/js/toggle.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Fixtures" href="chapter-06.html" />
     <link rel="prev" title="The Dashboard" href="chapter-04.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> py4web
-          
-
-          
-            
             <img src="_static/logo.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                1.20211227.1
+                1.20220222.1
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -87,19 +44,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="chapter-01.html">What is py4web?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Help, resources and hints</a></li>
@@ -133,77 +79,34 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">py4web</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Creating your first app</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-            
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-05.rst" class="fa fa-github"> Edit on GitHub</a>
-            
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="creating-your-first-app">
-<h1>Creating your first app<a class="headerlink" href="#creating-your-first-app" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="from-scratch">
-<h2>From scratch<a class="headerlink" href="#from-scratch" title="Permalink to this headline">¶</a></h2>
+             
+  <section id="creating-your-first-app">
+<h1>Creating your first app<a class="headerlink" href="#creating-your-first-app" title="Permalink to this headline"></a></h1>
+<section id="from-scratch">
+<h2>From scratch<a class="headerlink" href="#from-scratch" title="Permalink to this headline"></a></h2>
 <p>Apps can be created using the dashboard or directly from the filesystem.
 Here, we are going to do it manually, as the Dashboard is already described in
 its own chapter.</p>
@@ -239,9 +142,9 @@ In production or debugging environment, it’s better to run py4web with a comma
 static files or arbitrary code that other apps may want to import and
 access. Yet typically most apps are designed to expose static or dynamic
 web pages.</p>
-</div>
-<div class="section" id="static-web-pages">
-<h2>Static web pages<a class="headerlink" href="#static-web-pages" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="static-web-pages">
+<h2>Static web pages<a class="headerlink" href="#static-web-pages" title="Permalink to this headline"></a></h2>
 <p>To expose static web pages you simply need to create a <code class="docutils literal notranslate"><span class="pre">static</span></code>
 subfolder, and any file in there will be automatically published:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir apps/myapp/static
@@ -259,9 +162,9 @@ the <code class="docutils literal notranslate"><span class="pre">static</span></
 It supports streaming, partial content, range requests,
 and if-modified-since. This is all
 handled automatically based on the HTTP request headers.</p>
-</div>
-<div class="section" id="dynamic-web-pages">
-<h2>Dynamic Web Pages<a class="headerlink" href="#dynamic-web-pages" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="dynamic-web-pages">
+<h2>Dynamic Web Pages<a class="headerlink" href="#dynamic-web-pages" title="Permalink to this headline"></a></h2>
 <p>To create a dynamic page, you must create a function that returns the
 page content. For example edit the <code class="docutils literal notranslate"><span class="pre">myapp/__init__.py</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
@@ -292,8 +195,8 @@ ambiguity. But there is one exception: if you call your app
 <code class="docutils literal notranslate"><span class="pre">_default</span></code>, or if you create a symlink from <code class="docutils literal notranslate"><span class="pre">_default</span></code> to <code class="docutils literal notranslate"><span class="pre">myapp</span></code>,
 then py4web will not prepend any prefix to the routes defined inside the
 app.</p>
-<div class="section" id="on-return-values">
-<h3>On return values<a class="headerlink" href="#on-return-values" title="Permalink to this headline">¶</a></h3>
+<section id="on-return-values">
+<h3>On return values<a class="headerlink" href="#on-return-values" title="Permalink to this headline"></a></h3>
 <p>py4web actions should return a string or a dictionary. If they return a
 dictionary you must tell py4web what to do with it. By default py4web
 will serialize it into json. For example edit <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> again and
@@ -313,9 +216,9 @@ required, but it is a convention that we will often follow.</p>
 <p>You can use any template language to turn your data into a string.
 PY4WEB comes with yatl, a full chapter will be dedicated later and we
 will provide an example shortly.</p>
-</div>
-<div class="section" id="routes">
-<h3>Routes<a class="headerlink" href="#routes" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="routes">
+<h3>Routes<a class="headerlink" href="#routes" title="Permalink to this headline"></a></h3>
 <p>It is possible to map patterns in the URL into arguments of the
 function. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;name&gt;&#39;</span><span class="p">)</span>
@@ -355,9 +258,9 @@ can be an HTTP method or a list of methods:</p>
 </div>
 <p>You can use multiple decorators to expose the same function under
 multiple routes.</p>
-</div>
-<div class="section" id="the-request-object">
-<h3>The <code class="docutils literal notranslate"><span class="pre">request</span></code> object<a class="headerlink" href="#the-request-object" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="the-request-object">
+<h3>The <code class="docutils literal notranslate"><span class="pre">request</span></code> object<a class="headerlink" href="#the-request-object" title="Permalink to this headline"></a></h3>
 <p>From py4web you can import <code class="docutils literal notranslate"><span class="pre">request</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">request</span>
 
@@ -378,15 +281,15 @@ with one additional attribute:</p>
 </pre></div>
 </div>
 <p>Which you can use the code to identify the name and the folder used for the app.</p>
-</div>
-<div class="section" id="templates">
-<h3>Templates<a class="headerlink" href="#templates" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="templates">
+<h3>Templates<a class="headerlink" href="#templates" title="Permalink to this headline"></a></h3>
 <p>In order to use a yatl template you must declare it. For example create a file <code class="docutils literal notranslate"><span class="pre">apps/myapp/templates/paint.html</span></code> that contains:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
-      <span class="nt">body</span> <span class="p">{</span><span class="k">background</span><span class="p">:[[</span><span class="o">=</span><span class="kc">color</span><span class="p">]]}</span>
-    <span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">body</span><span class="w"> </span><span class="p">{</span><span class="k">background</span><span class="p">:[[</span><span class="o">=</span><span class="kc">color</span><span class="p">]]}</span><span class="w"></span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
     <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Color [[=color]]<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
@@ -434,10 +337,10 @@ user info)</p></li>
 <p>They may depend on each other. For example, the Session may need the DAL
 (database connection), and Auth may need both. Dependencies are handled
 automatically.</p>
-</div>
-</div>
-<div class="section" id="the-scaffold-app">
-<h2>The _scaffold app<a class="headerlink" href="#the-scaffold-app" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="the-scaffold-app">
+<h2>The _scaffold app<a class="headerlink" href="#the-scaffold-app" title="Permalink to this headline"></a></h2>
 <p>Most of the times, you do not want to start writing code from scratch.
 You also want to follow some sane conventions outlined here, like not
 putting all your code into <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>. PY4WEB provides a
@@ -490,7 +393,7 @@ create a new clone of it manually or using the Dashboard.</p>
 
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;welcome&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">)</span>
-<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="s1">&#39;generic.html&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">get_user</span><span class="p">()</span>
     <span class="n">message</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="s1">&#39;Hello </span><span class="si">{first_name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">user</span><span class="p">))</span>
@@ -518,9 +421,9 @@ don’t need to change anything in <code class="docutils literal notranslate"><s
 agnostic to your choice of JS and CSS, but with some exceptions. The
 <code class="docutils literal notranslate"><span class="pre">auth.html</span></code> which handles registration/login/etc. uses a vue.js
 component. Hence if you want to use that, you should not remove it.</p>
-</div>
-<div class="section" id="copying-the-scaffold-app">
-<span id="id1"></span><h2>Copying the _scaffold app<a class="headerlink" href="#copying-the-scaffold-app" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="copying-the-scaffold-app">
+<span id="id1"></span><h2>Copying the _scaffold app<a class="headerlink" href="#copying-the-scaffold-app" title="Permalink to this headline"></a></h2>
 <p>The scaffold app is really useful, and you will surely use it a lot as
 a starting point for testing and even developing full features new apps.</p>
 <p>It’s better not to work directly on it: always create new apps copying it.
@@ -536,9 +439,9 @@ along with the new app.</p>
 <img alt="_images/dashboard_new_app.png" src="_images/dashboard_new_app.png" />
 </li>
 </ul>
-</div>
-<div class="section" id="watch-for-files-change">
-<h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="watch-for-files-change">
+<h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Permalink to this headline"></a></h2>
 <p>As described in the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>, Py4web facilitates a
 development server’s setup by automatically reloads an app when its
 Python source files change (by default).
@@ -584,42 +487,32 @@ relative to an app. Python files (i.e. “*.py”) in a list passed to the
 decorator are ignored since they are watched by default. Handler
 function’s parameter is a list of filepaths that were changed. All
 exceptions inside handlers are printed in terminal.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="chapter-06.html" class="btn btn-neutral float-right" title="Fixtures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="chapter-04.html" class="btn btn-neutral float-left" title="The Dashboard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="chapter-06.html" class="btn btn-neutral float-right" title="Fixtures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020, BSDv3 License.
-
-    </p>
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   
 
@@ -633,7 +526,7 @@ exceptions inside handlers are printed in terminal.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20211227.1
+      v: 1.20220222.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
@@ -676,18 +569,11 @@ exceptions inside handlers are printed in terminal.</p>
     </div>
   </div>
 
- 
-
-  <script type="text/javascript">
+ <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-    
+  </script>  
 
   <style>
          .wy-nav-content { max-width: none; }

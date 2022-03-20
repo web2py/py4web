@@ -13,10 +13,10 @@ Implemented using ctypes, so no compilation is necessary.
 """
 __all__ = ["authenticate"]
 
-from ctypes import CDLL, POINTER, Structure, CFUNCTYPE, cast, byref, sizeof
-from ctypes import c_void_p, c_uint, c_char_p, c_char, c_int
-from ctypes.util import find_library
 import sys
+from ctypes import (CDLL, CFUNCTYPE, POINTER, Structure, byref, c_char,
+                    c_char_p, c_int, c_uint, c_void_p, cast, sizeof)
+from ctypes.util import find_library
 
 libpam = CDLL(find_library("pam"))
 libc = CDLL(find_library("c"))

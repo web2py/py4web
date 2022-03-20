@@ -16,6 +16,7 @@ import http.cookies
 import importlib.machinery
 import importlib.util
 import inspect
+import io
 import json
 import linecache
 import logging
@@ -23,7 +24,6 @@ import numbers
 import os
 import pathlib
 import platform
-import portalocker
 import re
 import signal
 import sys
@@ -34,11 +34,10 @@ import types
 import urllib.parse
 import uuid
 import zipfile
-import io
+from collections import OrderedDict
 from contextlib import redirect_stdout
 
-
-from collections import OrderedDict
+import portalocker
 from watchgod import awatch
 
 from . import server_adapters
@@ -49,18 +48,17 @@ try:
 except ImportError:
     gunicorn = None
 
-# Third party modules
-import ombott as bottle
 import click
 import jwt  # this is PyJWT
+# Third party modules
+import ombott as bottle
 import pluralize
 import pydal
-import threadsafevariable
-import yatl
 import renoir
 import renoir.constants
 import renoir.writers
-
+import threadsafevariable
+import yatl
 
 bottle.DefaultConfig.max_memfile_size = 16 * 1024 * 1024
 bottle.DefaultConfig.app_name_header = "HTTP_X_PY4WEB_APPNAME"
@@ -80,12 +78,12 @@ __all__ = [
     "Session",
     "Cache",
     "Flash",
-    "user_in",
     "Translator",
     "URL",
     "check_compatible",
     "required_folder",
     "wsgi",
+    "Condition",
 ]
 
 PY4WEB_CMD = sys.argv[0]
@@ -590,8 +588,8 @@ class Session(Fixture):
     # the actual value is loaded from a file
     SECRET = None
 
-    __slots__ = ['_safe', 'secret', 'expiration', 'algorithm', 'storage', 'same_site']
-    
+    __slots__ = ["_safe", "secret", "expiration", "algorithm", "storage", "same_site"]
+
     @property
     def local(self):
         return self._safe_local
@@ -928,22 +926,6 @@ class action:
         return decorator
 
     @staticmethod
-    def requires(*requirements):
-        """Enforces requirements or raises HTTP(401)"""
-
-        def decorator(func):
-            @functools.wraps(func)
-            def wrapper(*args, **kwargs):
-                for requirement in requirements:
-                    if not requirement():
-                        raise HTTP(401)
-                return func(*args, **kwargs)
-
-            return wrapper
-
-        return decorator
-
-    @staticmethod
     def catch_errors(app_name, func):
         """Catches and logs errors in an action; also sets request.app_name"""
 
@@ -991,12 +973,18 @@ class action:
         return func
 
 
-def user_in(session):
-    def requirement():
-        session.on_request()
-        return session.get("user", None) is not None
+class Condition(Fixture):
 
-    return requirement
+    def __init__(self, condition, on_false=None, exception=HTTP(400)):
+        self.condition = condition
+        self.on_false = on_false
+        self.exception = exception
+
+    def on_request(self, context):
+        if not self.condition():
+            if on_false is not None:
+                on_false()
+            raise self.exception
 
 
 #########################################################################################
@@ -1779,6 +1767,9 @@ def setup(**kwargs):
 )
 def shell(**kwargs):
     """Open a python shell with apps_folder's parent added to the path"""
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        #running in the PyInstaller binary bundle
+        import site
     install_args(kwargs)
     code.interact(local=dict(globals(), **locals()))
 

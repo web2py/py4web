@@ -1,5 +1,5 @@
-import smtplib
 import logging
+import smtplib
 
 
 class EmailAuthPlugin:

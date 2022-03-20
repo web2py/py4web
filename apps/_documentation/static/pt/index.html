@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>py4web: o manual de referência &mdash; Documentação py4web 1.20220222.1</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Pesquisar" href="search.html" />
+    <link rel="next" title="O que é py4web?" href="chapter-01.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> py4web
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.20220222.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">O que é py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internacionalização</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forumlários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>py4web: o manual de referência</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/index.rst" class="fa fa-github"> Editar no GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="py4web-the-reference-manual">
+<h1>py4web: o manual de referência<a class="headerlink" href="#py4web-the-reference-manual" title="Link permanente para este título"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Conteúdo:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">O que é py4web?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-01.html#acknowledgments">Acknowledgments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-02.html#resources">Recursos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-02.html#hints-and-tips">Dicas e sugestões</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-02.html#how-to-contribute">Como contribuir</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#understanding-the-design">Understanding the design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#supported-platforms-and-prerequisites">Plataformas e pré-requisitos suportados</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#setup-procedures">Procedimentos de configuração</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#upgrading">Melhoramento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#first-run">Primeira corrida</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#command-line-options">Opções de linha de comando</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-03.html#special-deployments">Special deployments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-04.html#the-main-web-page">A página Web principal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-04.html#login-into-the-dashboard">Sessão no Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#from-scratch">Do princípio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#static-web-pages">Páginas estáticas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#dynamic-web-pages">Páginas web dinâmicas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#the-scaffold-app">The _scaffold app</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#copying-the-scaffold-app">Copying the _scaffold app</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-05.html#watch-for-files-change">Watch for files change</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#using-fixtures">Using Fixtures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-template-fixture">The Template fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-inject-fixture">The Inject fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-translator-fixture">The Translator fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-flash-fixture">O fixture flash</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-session-fixture">The Session fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-urlsigner-fixture">The URLsigner fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-dal-fixture">O fixture DAL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#the-auth-fixture">The Auth fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#caveats-about-fixtures">Caveats about fixtures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#custom-fixtures">Fixtures personalizados</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#multiple-fixtures">Multiple fixtures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#caching-and-memoize">Caching e Memoize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-06.html#convenience-decorators">Decoradores de conveniência</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#dal-introduction">DAL introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#dal-constructor">Construtor DAL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#table-constructor">Construtor Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#field-constructor">Construtor Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#migrations">Migrações</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#table-methods">Table methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#raw-sql">Raw SQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#select-command">`` Comando SELECT``</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#computed-and-virtual-fields">Computed and Virtual fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#joins-and-relations">Joins and Relations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#other-operators">Outros operadores</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#exporting-and-importing-data">Exportar e importar dados</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#advanced-features">Características avançadas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-07.html#gotchas">Pegadinhas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-08.html#restapi-policies-and-actions">RestAPI policies and actions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-08.html#restapi-get">RestAPI GET</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-08.html#restapi-practical-examples">RestAPI practical examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-08.html#the-restapi-response">The RestAPI response</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-09.html#basic-syntax">Sintaxe básica</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-09.html#information-workflow">Information workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-09.html#page-layout-standard-structure">Page layout standard structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-10.html#helpers-overview">Helpers overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-10.html#built-in-helpers">Built-in helpers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-10.html#custom-helpers">Helpers personalizados</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-10.html#server-side-dom">Server-side <em>DOM</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-10.html#using-inject">Using Inject</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internacionalização</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-11.html#pluralize">Pluralizar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-11.html#update-the-translation-files">Atualizar os arquivos de tradução</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forumlários</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#the-form-constructor">The Form constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#a-minimal-form-example-without-a-database">A minimal form example without a database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#basic-form-example">Basic form example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#widgets">Widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#advanced-form-design">Advanced form design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-12.html#form-validation">Validação de formulário</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-13.html#authentication-using-auth">Authentication using Auth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-13.html#authorization-using-tags">Authorization using Tags</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#key-features">Key features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#basic-grid-example">Basic grid example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#the-grid-object">The Grid object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#custom-columns">Custom columns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#using-templates">Usando templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#customizing-style">Customizing style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#custom-action-buttons">Ação personalizada Botões</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-14.html#reference-fields">Os campos de referência</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-15.html#simple-conversion-examples">Simple conversion examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#py4web-and-asyncio">py4web and asyncio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter-16.html#htmx">htmx</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Índices e tabelas<a class="headerlink" href="#indices-and-tables" title="Link permanente para este título"></a></h1>
+<ul class="simple">
+<li><p>: Ref: <cite>genindex</cite></p></li>
+<li><p>: Ref: <cite>modindex</cite></p></li>
+<li><p>: Ref: <cite>search</cite></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Rodapé">
+        <a href="chapter-01.html" class="btn btn-neutral float-right" title="O que é py4web?" accesskey="n" rel="next">Seguinte <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20220222.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Idiomas</dt>
+        
+          
+          
+          <dd><a href="../en/index.html">en</a></dd> 
+        
+           <strong> 
+          <dd><a href="../pt/index.html">pt</a></dd> </strong>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versões</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Transferências</dt>
+        
+          <dd><a href="py4web_pt.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_pt.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

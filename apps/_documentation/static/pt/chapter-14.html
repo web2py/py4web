@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rede &mdash; Documentação py4web 1.20220222.1</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Pesquisar" href="search.html" />
+    <link rel="next" title="De web2py para py4web" href="chapter-15.html" />
+    <link rel="prev" title="Authentication and authorization" href="chapter-13.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> py4web
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.20220222.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">O que é py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internacionalização</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forumlários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Rede</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#key-features">Key features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-grid-example">Basic grid example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-grid-object">The Grid object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#searching-and-filtering">Searching and filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crud-settings">CRUD settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-columns">Custom columns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-templates">Usando templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#customizing-style">Customizing style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-action-buttons">Ação personalizada Botões</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sample-action-button-class">Botão Classe Ação Amostra</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-callable-parameters">Using callable parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reference-fields">Os campos de referência</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Rede</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-14.rst" class="fa fa-github"> Editar no GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="grid">
+<h1>Rede<a class="headerlink" href="#grid" title="Link permanente para este título"></a></h1>
+<p>py4web comes with a Grid object providing grid and CRUD (create, update and delete) capabilities.
+This allows you to quickly and safely provide an interface to your data. Since it’s also
+highly customizable, it’s the corner stone of most py4web’s applications.</p>
+<section id="key-features">
+<h2>Key features<a class="headerlink" href="#key-features" title="Link permanente para este título"></a></h2>
+<ul class="simple">
+<li><p>CRUD completa com Confirmação de exclusão</p></li>
+<li><p>Clique cabeças de coluna para classificar - clique novamente para DESC</p></li>
+<li><p>Controle de paginação</p></li>
+<li><p>Construído em Search (pode usar search_queries OU search_form)</p></li>
+<li><p>Botões de ação - com ou sem texto</p></li>
+<li><p>Pré e Pós Ação (adicionar seus próprios botões para cada linha)</p></li>
+<li><p>Datas de grid em formato local</p></li>
+<li><p>Formatação padrão por tipo de utilizador mais substituições</p></li>
+</ul>
+<div class="admonition hint">
+<p class="admonition-title">Dica</p>
+<p>There is an excellent grid tutorial made by Jim Steil on <a class="reference external" href="https://github.com/jpsteil/grid_tutorial">https://github.com/jpsteil/grid_tutorial</a>.
+You’re strongly advised to check it for any doubt and for finding many precious examples,
+hints &amp; tips.</p>
+</div>
+</section>
+<section id="basic-grid-example">
+<h2>Basic grid example<a class="headerlink" href="#basic-grid-example" title="Link permanente para este título"></a></h2>
+<p>In this simple example we will make a grid over the superhero table.</p>
+<p>Create a new minimal app called <code class="docutils literal notranslate"><span class="pre">grid</span></code>. Change it with the following content.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in grid/__init__.py</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.grid</span> <span class="kn">import</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">GridClassStyleBulma</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleBulma</span>
+<span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">A</span>
+
+
+<span class="c1"># database definition</span>
+<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">):</span>
+   <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
+   <span class="s1">&#39;person&#39;</span><span class="p">,</span>
+   <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;superhero&#39;</span><span class="p">),</span>
+   <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
+   <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;job&#39;</span><span class="p">))</span>
+
+<span class="c1"># add example entries in db</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">superhero</span><span class="o">=</span><span class="s1">&#39;Superman&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Clark Kent&#39;</span><span class="p">,</span> <span class="n">job</span><span class="o">=</span><span class="s1">&#39;Journalist&#39;</span><span class="p">)</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">superhero</span><span class="o">=</span><span class="s1">&#39;Spiderman&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Peter Park&#39;</span><span class="p">,</span> <span class="n">job</span><span class="o">=</span><span class="s1">&#39;Photographer&#39;</span><span class="p">)</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">superhero</span><span class="o">=</span><span class="s1">&#39;Batman&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Bruce Wayne&#39;</span><span class="p">,</span> <span class="n">job</span><span class="o">=</span><span class="s1">&#39;CEO&#39;</span><span class="p">)</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index/&lt;path:path&gt;&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;grid.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span>
+            <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span> <span class="c1"># FormStyleDefault or FormStyleBulma</span>
+            <span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyle</span><span class="p">,</span> <span class="c1"># GridClassStyle or GridClassStyleBulma</span>
+            <span class="n">query</span><span class="o">=</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="n">orderby</span><span class="o">=</span><span class="p">[</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+            <span class="n">search_queries</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;Search by Name&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">val</span><span class="p">:</span> <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">val</span><span class="p">)]])</span>
+
+   <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Add a new file templates/grid.html with this basic content:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=grid.render()]]
+</pre></div>
+</div>
+<p>Then restart py4web. If you browse to <a class="reference external" href="http://127.0.0.1:8000/grid/index">http://127.0.0.1:8000/grid/index</a> you’ll get this
+result:</p>
+<img alt="_images/grid.png" src="_images/grid.png" />
+<p>Its layout is quite minimal, but it’s perfectly usable.</p>
+<p>The main problem is that by default the <strong>no.css</strong> stylesheet is used, see
+<a class="reference external" href="https://github.com/mdipierro/no.css/">here</a>. But we’ve not loaded it!
+Change the file templates/grid.html with this content:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+   &lt;head&gt;
+      &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css&quot;  /&gt;
+   &lt;/head&gt;
+   &lt;body&gt;
+      [[=grid.render()]]
+   &lt;body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+<p>Then refresh the page.</p>
+<img alt="_images/grid_nocss.png" src="_images/grid_nocss.png" />
+<p>This is better now, with proper icons for Details, Edit and Delete actions.</p>
+<p>We can also think about using the <strong>bulma.css</strong>,
+see <a class="reference external" href="https://bulma.io/">here</a>. In this case you need to change
+the grid object on __init__.py to:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleBulma</span><span class="p">,</span> <span class="c1"># FormStyleDefault or FormStyleBulma</span>
+<span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyleBulma</span><span class="p">,</span> <span class="c1">#GridClassStyle or GridClassStyleBulma</span>
+</pre></div>
+</div>
+<p>Notice that in this case you need to import the corresponding python modules in advance
+(we’ve already done it on line 4 and 5 above). Instead if you use the default no.css style
+you don’t need to manually import its style modules (and you even don’t need the formstyle
+and grid_class_style parameters).</p>
+<p>You also have to change the file templates/grid.html with this content:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+   &lt;head&gt;
+      &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css&quot;&gt;
+   &lt;/head&gt;
+   &lt;body&gt;
+         [[=grid.render()]]
+   &lt;body&gt;
+&lt;/html&gt;
+</pre></div>
+</div>
+<p>Then refresh the page.</p>
+<img alt="_images/grid_bulmacss.png" src="_images/grid_bulmacss.png" />
+<p>This is much better, isn’t it?</p>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>These are just minimal examples for showing how <code class="docutils literal notranslate"><span class="pre">grid</span></code> works internally.
+Normally you should start from a copy of the standard <code class="docutils literal notranslate"><span class="pre">_scaffold</span></code> app, with all
+the Session and Authentication stuff already defined. Also, you should
+follow the standard rules for code, like placing the db definition inside
+models.py and so on.
+Using standards will make your code simpler, safer and more maintainable.</p>
+<p>Also, do not use grid objects directly on the root action of an app, because
+it does not add the “index” route. So, in this example if you browse to
+<a class="reference external" href="http://127.0.0.1:8000/grid">http://127.0.0.1:8000/grid</a> the main page is displayed fine but any contained
+action will lead to a non existent page.</p>
+</div>
+<p>In the <a class="reference internal" href="chapter-16.html#advanced-topics-and-examples"><span class="std std-ref">Advanced topics and examples</span></a> chapter you can find
+more examples, including a master/detail grid example written with <strong>htmx</strong>.
+And don’t forget Jim Steil’s detailed tutorial on <a class="reference external" href="https://github.com/jpsteil/grid_tutorial">https://github.com/jpsteil/grid_tutorial</a>.</p>
+</section>
+<section id="the-grid-object">
+<h2>The Grid object<a class="headerlink" href="#the-grid-object" title="Link permanente para este título"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Grid</span><span class="p">:</span>
+   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+      <span class="bp">self</span><span class="p">,</span>
+      <span class="n">path</span><span class="p">,</span>
+      <span class="n">query</span><span class="p">,</span>
+      <span class="n">search_form</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">search_queries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">show_id</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+      <span class="n">orderby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">headings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">details</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">deletable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">validation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">pre_action_buttons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">post_action_buttons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">auto_process</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">rows_per_page</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+      <span class="n">include_action_button_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+      <span class="n">search_button_text</span><span class="o">=</span><span class="s2">&quot;Filter&quot;</span><span class="p">,</span>
+      <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">,</span>
+      <span class="n">grid_class_style</span><span class="o">=</span><span class="n">GridClassStyle</span><span class="p">,</span>
+      <span class="n">T</span><span class="o">=</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span>
+   <span class="p">):</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>caminho: a rota do pedido</p></li>
+<li><p>query: consulta pydal a ser processado</p></li>
+<li><p>search_form: py4web FORM to be included as the search form. If
+search_form is passed in then the developer is responsible for
+applying the filter to the query passed in. This differs from
+search_queries</p></li>
+<li><p>search_queries: list of query lists to use to build the search form.
+Ignored if search_form is used</p></li>
+<li><p>columns: list of fields or columns to display on the list page,
+see the <a class="reference internal" href="#custom-columns"><span class="std std-ref">Custom columns</span></a> paragraph later.
+If blank, the table will use all readable fields of the searched table</p></li>
+<li><p>show_id: mostrar o campo ID de registo na página de lista - default = false</p></li>
+<li><p>orderby: Campo orderby pydal ou lista de campos</p></li>
+<li><p>esquerda: se juntando outras tabelas, especifique a expressão esquerda pydal aqui</p></li>
+<li><p>títulos: lista de títulos a ser utilizado para página da lista - se não for fornecido o uso do rótulo do campo</p></li>
+<li><p>criar: URL para redirecionar para a criação de registros - definido como verdadeiro para gerar automaticamente o URL - definido como falso para não exibir o botão</p></li>
+<li><p>details: URL to redirect to for displaying records - set to True to
+automatically generate the URL - set to False to not display the
+button (*)</p></li>
+<li><p>editable: URL to redirect to for editing records - set to True to
+automatically generate the URL - set to False to not display the
+button (*)</p></li>
+<li><p>deletable: URL to redirect to for deleting records - set to True to
+automatically generate the URL - set to False to not display the
+button (*)</p></li>
+<li><p>validation: optional validation function to pass to create and edit forms</p></li>
+<li><p>pre_action_buttons: lista de instâncias action_button para incluir antes de os botões de ação padrão</p></li>
+<li><p>post_action_buttons: lista de instâncias action_button para incluir após os botões de ação padrão</p></li>
+<li><p>auto_process: Boolean - se ou não a grid deve ser processado imediatamente. Se False, desenvolvedor deve chamar grid.process () uma vez todos os parâmetros são configurados</p></li>
+<li><p>rows_per_page: número de linhas a serem exibidos por página. padrão 15</p></li>
+<li><p>include_action_button_text: boolean dizendo a grid se deseja ou não de texto em botões de ação dentro de sua grid</p></li>
+<li><p>search_button_text: texto a ser exibido no botão enviar em seu formulário de pesquisa</p></li>
+<li><p>formstyle: py4web Form formstyle usado para estilo seu formulário ao construir automaticamente formulários CRUD</p></li>
+<li><p>grid_class_style: GridClassStyle object used to override defaults for
+styling your rendered grid. Allows you to specify classes or styles
+to apply at certain points in the grid</p></li>
+<li><p>T: optional pluralize object</p></li>
+</ul>
+<p>(*) The parameters <code class="docutils literal notranslate"><span class="pre">details</span></code>, <code class="docutils literal notranslate"><span class="pre">editable</span></code> and <code class="docutils literal notranslate"><span class="pre">deletable</span></code> can also take a <strong>callable</strong> that will
+be passed the current row of the grid. This is useful because you can then turn a button on or off
+depending on the values in the row. In other words,
+instead of providing a simple Boolean value you can use an expression like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">deletable</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">job</span><span class="o">==</span><span class="s2">&quot;CEO&quot;</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>See also <a class="reference internal" href="#using-callable-parameters"><span class="std std-ref">Using callable parameters</span></a> later on.</p>
+<section id="searching-and-filtering">
+<h3>Searching and filtering<a class="headerlink" href="#searching-and-filtering" title="Link permanente para este título"></a></h3>
+<p>There are two ways to build a search form:</p>
+<ul class="simple">
+<li><p>Fornecer uma lista search_queries</p></li>
+<li><p>Construa a sua própria forma de pesquisa personalizada</p></li>
+</ul>
+<p>Se você fornecer uma lista search_queries à grid, ele irá:</p>
+<ul class="simple">
+<li><p>build a search form. If more than one search query in the list, it
+will also generate a dropdown to select which search field to search
+against</p></li>
+<li><p>recolher valores de filtro e filtrar a grid</p></li>
+</ul>
+<p>No entanto, se isso não lhe dá flexibilidade suficiente, você pode fornecer o seu próprio formulário de busca e lidar com toda a filtragem (construção das consultas) por si mesmo.</p>
+</section>
+<section id="crud-settings">
+<h3>CRUD settings<a class="headerlink" href="#crud-settings" title="Link permanente para este título"></a></h3>
+<p>The grid provides CRUD (create, read, update and delete) capabilities
+utilizing py4web Form.
+You can turn off CRUD features by setting
+create/details/editable/deletable during grid instantiation.</p>
+<p>Além disso, você pode fornecer uma URL separada para a criação / detalhes / editáveis ​​/ parâmetros elimináveis ​​para ignorar as páginas CRUD gerados automaticamente e lidar com as páginas de detalhes do mesmo.</p>
+</section>
+</section>
+<section id="custom-columns">
+<h2>Custom columns<a class="headerlink" href="#custom-columns" title="Link permanente para este título"></a></h2>
+<p>If the grid does not involve a join but displays results from a single table
+you can specify a list of columns. Columns are highly customizable.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.grid</span> <span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">A</span>
+
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">superhero</span><span class="p">,</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">job</span><span class="p">,</span>
+   <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;Web Site&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">superhero</span><span class="si">}</span><span class="s2">.com&quot;</span><span class="p">),</span>
+   <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;Go To&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;link&quot;</span><span class="p">,</span> <span class="n">_href</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">superhero</span><span class="si">}</span><span class="s2">.com&quot;</span><span class="p">))</span>
+<span class="p">]</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="o">...</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice in this example the first columns are regular fields,
+The fifth column has a header «Web Site» and consists of URL strings generated from the rows.
+The last column has a header «Go To» and generates actual clickable links using the <code class="docutils literal notranslate"><span class="pre">A</span></code> helper.
+This is the result:</p>
+<img alt="_images/grid_columns.png" src="_images/grid_columns.png" />
+<p>Notice that we’ve also used the <code class="docutils literal notranslate"><span class="pre">deletable</span></code> parameter in order to disable and hide it for
+Batman only, as explained before.</p>
+<div class="admonition warning">
+<p class="admonition-title">Aviso</p>
+<p>Do not define columns outside of the controller methods that use them, otherwise the
+structure of the table will change every time the user press the refresh button of the browser!</p>
+<p>The reason is that each time the grid displays,
+it modifies the “columns” variable (in the grid) by adding the action buttons to it. So, if columns are
+defined outside of the controller method, it just keeps adding the actions column.</p>
+</div>
+</section>
+<section id="using-templates">
+<h2>Usando templates<a class="headerlink" href="#using-templates" title="Link permanente para este título"></a></h2>
+<p>Use o seguinte para tornar a sua grid ou formas CRUD em seus templates.</p>
+<p>Mostrar a grid ou um formulário CRUD</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[=grid.render()]]
+</pre></div>
+</div>
+<p>You can customize the CRUD form layout like a normal form (see <a class="reference internal" href="chapter-12.html#custom-forms"><span class="std std-ref">Custom forms</span></a>). So you can use
+the following structure:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[form = grid.render() ]]
+[[form.custom[&quot;begin&quot;] ]]
+...
+[[form.custom[&quot;submit&quot;]
+[[form.custom[&quot;end&quot;]
+</pre></div>
+</div>
+<p>But notice that when handling custom form layouts you need to know if you are displaying
+the grid or a form. Use the following to decide:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[[if request.query.get(&#39;action&#39;) in (&#39;details&#39;, &#39;edit&#39;):]]
+    #  Display the custom form
+    [[form = grid.render() ]]
+    [[form.custom[&quot;begin&quot;] ]]
+    ...
+    [[form.custom[&quot;submit&quot;]
+    [[form.custom[&quot;end&quot;]
+[[else:]]
+    [[grid.render() ]]
+[[pass]]
+</pre></div>
+</div>
+</section>
+<section id="customizing-style">
+<h2>Customizing style<a class="headerlink" href="#customizing-style" title="Link permanente para este título"></a></h2>
+<p>Você pode fornecer suas próprias formstyle ou grid classes e estilo ao grid.</p>
+<ul class="simple">
+<li><p>formstyle é o mesmo que um formstyle Forma, usadas para as formas estilo CRUD.</p></li>
+<li><p>grid_class_style é uma classe que fornece as classes e / ou estilos utilizados para certas porções da grelha.</p></li>
+</ul>
+<p>The default <code class="docutils literal notranslate"><span class="pre">GridClassStyle</span></code> - based on <strong>no.css</strong>, primarily uses styles to
+modify the layout of the grid. We’ve already seen that it’s possible
+to use other class_style, in particular <code class="docutils literal notranslate"><span class="pre">GridClassStyleBulma</span></code>.</p>
+<p>You can even build your own class_style to be used with the css framework of
+your choice. Unfortunately, one based on <strong>bootstrap</strong> is still missing.</p>
+</section>
+<section id="custom-action-buttons">
+<h2>Ação personalizada Botões<a class="headerlink" href="#custom-action-buttons" title="Link permanente para este título"></a></h2>
+<p>As with web2py, you can add additional buttons to each row in your grid.
+You do this by providing <code class="docutils literal notranslate"><span class="pre">pre_action_buttons</span></code> or <code class="docutils literal notranslate"><span class="pre">post_action_buttons</span></code> to
+the Grid <strong>init</strong> method.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pre_action_buttons</span></code> - list of action_button instances to include
+before the standard action buttons</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">post_action_buttons</span></code> - list of action_button instances to include
+after the standard action buttons</p></li>
+</ul>
+<p>You can build your own Action Button class to pass to pre/post action
+buttons based on the template below (this is not provided with py4web).</p>
+<section id="sample-action-button-class">
+<h3>Botão Classe Ação Amostra<a class="headerlink" href="#sample-action-button-class" title="Link permanente para este título"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GridActionButton</span><span class="p">:</span>
+   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+      <span class="bp">self</span><span class="p">,</span>
+      <span class="n">url</span><span class="p">,</span>
+      <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">icon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">onclick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+      <span class="n">additional_classes</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+      <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+      <span class="n">append_id</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+      <span class="n">ignore_attribute_plugin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+   <span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="n">icon</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">onclick</span> <span class="o">=</span> <span class="n">onclick</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">additional_classes</span> <span class="o">=</span> <span class="n">additional_classes</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">append_id</span> <span class="o">=</span> <span class="n">append_id</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">ignore_attribute_plugin</span> <span class="o">=</span> <span class="n">ignore_attribute_plugin</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>url: a página para navegar até quando o botão é clicado</p></li>
+<li><p>texto: texto para exibição no botão</p></li>
+<li><p>icon: the font-awesome icon to display before the text, for example
+«fa-calendar»</p></li>
+<li><p>additional_classes: uma lista separada por espaços de aulas para incluir no elemento botão</p></li>
+<li><p>mensagem: mensagem de confirmação para exibição se a classe ‘confirmação’ é adicionado a classes adicionais</p></li>
+<li><p>append_id: Se for verdade, adicionar id_field_name = id_value à querystring url para o botão</p></li>
+</ul>
+<p>After defining the custom GridActionButton class, you need to define
+your Action buttons:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pre_action_buttons</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">GridActionButton</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;https://www.google.com/search?q=</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">superhero</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Google for </span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">superhero</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Finally, you need to reference them in the Grid definition:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="o">...</span> <span class="n">pre_action_buttons</span> <span class="o">=</span> <span class="n">pre_action_buttons</span>  <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-callable-parameters">
+<h3>Using callable parameters<a class="headerlink" href="#using-callable-parameters" title="Link permanente para este título"></a></h3>
+<p>A recent improvement to py4web allows you to pass a <strong>callable</strong> instead of a GridActionButton. This allow you to more easily change the behaviour
+of standard and custom Actions.</p>
+<p>Callable can be used with:</p>
+<ul class="simple">
+<li><p>details</p></li>
+<li><p>editable</p></li>
+<li><p>deletable</p></li>
+<li><p>additional_classes</p></li>
+<li><p>additional_styles</p></li>
+<li><p>override_classes</p></li>
+<li><p>override_styles</p></li>
+</ul>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;example/&lt;path:path&gt;&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">example</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="n">pre_action_buttons</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">GridActionButton</span><span class="p">(</span>
+            <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Click me&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;fa-plus&quot;</span><span class="p">,</span>
+            <span class="n">additional_classes</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">additional_styles</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;height: 10px&quot;</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">bar</span> <span class="k">else</span> <span class="kc">None</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">post_action_buttons</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">GridActionButton</span><span class="p">(</span>
+            <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+            <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Click me!!!&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;fa-plus&quot;</span><span class="p">,</span>
+            <span class="n">additional_classes</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">additional_styles</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;height: 10px&quot;</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">bar</span> <span class="k">else</span> <span class="kc">None</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">foo</span><span class="p">,</span>
+        <span class="n">pre_action_buttons</span><span class="o">=</span><span class="n">pre_action_buttons</span><span class="p">,</span>
+        <span class="n">post_action_buttons</span><span class="o">=</span><span class="n">post_action_buttons</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="reference-fields">
+<h2>Os campos de referência<a class="headerlink" href="#reference-fields" title="Link permanente para este título"></a></h2>
+<p>Ao exibir campos em uma tabela PyDAL, às vezes você deseja exibir um campo mais descritivo do que um valor de chave estrangeira. Há um par de maneiras de lidar com isso com a grid py4web.</p>
+<p><code class="docutils literal notranslate"><span class="pre">filter_out</span></code> on PyDAL field definition - here is an example of a foreign
+key field</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;company&#39;</span><span class="p">,</span> <span class="s1">&#39;reference company&#39;</span><span class="p">,</span>
+      <span class="n">requires</span><span class="o">=</span><span class="n">IS_NULL_OR</span><span class="p">(</span><span class="n">IS_IN_DB</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s1">&#39;company.id&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;</span><span class="si">%(name)s</span><span class="s1">&#39;</span><span class="p">,</span>
+                                   <span class="n">zero</span><span class="o">=</span><span class="s1">&#39;..&#39;</span><span class="p">)),</span>
+      <span class="n">filter_out</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+</pre></div>
+</div>
+<p>Isto irá exibir o nome da empresa na grid em vez do ID empresa</p>
+<p>A queda de usar este método é que classificação e filtragem são baseados no campo da empresa na tabela de empregado e não o nome da empresa</p>
+<p><code class="docutils literal notranslate"><span class="pre">left</span> <span class="pre">join</span></code> and specify fields from joined table - specified on the left
+parameter of Grid instantiation</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">employee</span><span class="o">.</span><span class="n">company</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can specify a standard PyDAL left join, including a list of joins to
+consider.
+Now the company name field can be included in your fields list can be
+clicked on and sorted.</p>
+<p>Also you can specify a query such as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">db</span><span class="o">.</span><span class="n">employee</span><span class="o">.</span><span class="n">last_name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">employee</span><span class="o">.</span><span class="n">first_name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span> <span class="o">|</span> <span class="n">db</span><span class="o">.</span><span class="n">company</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">search_text</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Este método permite classificar e filtrar, mas não permite que você para combinar campos a serem exibidos em conjunto, como o método filter_out faria</p>
+<p>Você precisa determinar qual método é melhor para o seu caso de uso compreender as grids diferentes no mesmo aplicativo pode precisar de se comportar de forma diferente.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Rodapé">
+        <a href="chapter-13.html" class="btn btn-neutral float-left" title="Authentication and authorization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="chapter-15.html" class="btn btn-neutral float-right" title="De web2py para py4web" accesskey="n" rel="next">Seguinte <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20220222.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Idiomas</dt>
+        
+          
+          
+          <dd><a href="../en/index.html">en</a></dd> 
+        
+           <strong> 
+          <dd><a href="../pt/index.html">pt</a></dd> </strong>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versões</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Transferências</dt>
+        
+          <dd><a href="py4web_pt.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_pt.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>
