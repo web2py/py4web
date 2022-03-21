@@ -325,17 +325,11 @@ Here is the tree structure of the ``_scaffold`` app:
    ├── settings_private.py  # (optional) settings that you want to keep private
    ├── static               # static files
    │   ├── README.md
-   │   ├── components       # py4web's vue auth component
-   │   │   ├── auth.html
-   │   │   └── auth.js
    │   ├── css              # CSS files, we ship bulma because it is JS agnostic
    │   │   └── no.css       # we used bulma.css in the past
    │   ├── favicon.ico
    │   └── js               # JS files, we ship with these but you can replace them
-   │       ├── axios.min.js
-   │       ├── sugar.min.js
    │       ├── utils.js
-   │       └── vue.min.js
    ├── tasks.py
    ├── templates            # your templates go here
    │   ├── README.md       

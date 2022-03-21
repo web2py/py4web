@@ -440,3 +440,288 @@ data builder URL to provide your own controller function to retrieve the data.
 
 .. [CIT1601] from the https://htmx.org website
 
+utils.js
+------------------
+
+Multiple times in this documentation we have mentioned utils.js which comes with the scaffolding application,
+yet we never clearly listed what is in there. So here it is.
+
+string.format
+~~~~~~~~~~~~~
+
+It extends the String object ptototype to allow expressions like this:
+
+.. code: javascript
+
+    var a = "hello {name}".format(name="Max");
+
+The Q object
+~~~~~~~~~~~~
+
+The Q object can be used like a selector supporting jQuery like syntax:
+
+.. code: javascript
+
+   var element = Q("#element-id")[0];
+   var selected_elements = Q(".element-class");
+
+It supports the same symtax as JS ``querySelectorAll``
+and always returns an array of selected elements (can be empty).
+
+The Q objects is also container for functions can be useful when programming in Javascript.
+Notice that the Q object is a just a container for functions and it is stateless.
+
+For example:
+
+**Q.clone**
+
+A function to clone any object
+
+.. code: javascript
+
+   var b = {any: "object"}
+   var a = Q.clone(b);
+
+**Q.eval**
+
+It evaluates JS expressions in a string. It is not a sandbox.
+
+.. code:: javascript
+
+   var a = Q.eval("2+3+Math.random()");
+
+**Q.ajax**
+
+A wrapper for the JS fetch method which provides a nicer syntax:
+
+.. code:: javascript
+
+    var data = {};
+    var headers = {'custom-header-name': 'value'}
+    var success = response => { console.log("recereived", response); } 
+    var failure = response => { console.log("recereived", response); }
+    Q.ajax("POST", url, data, headers).then(success, failure);
+
+**Q.get_cookie**
+
+Extracts a cookie by name from the header of cookies in the current page:
+Returns null if the cookie does not exist. Can be used within the JS of a page to retrieve a session cookie
+in case it is needed to call an API.
+
+.. code:: javascript
+
+   var a = Q.get_cookie("session");
+
+**Q.register_vue_component**
+
+This is specific for Vue 2 and may be deprecated in the future but it allows
+to define a vue component where the template is stored in a separate HTML file
+and the template will be loaded lazily only when/if the component is used.
+
+For example instead of doing:
+
+.. code:: javascript
+
+    Vue.component('button-counter', {
+    data: function () {
+        return {
+            count: 0
+        }
+    },
+    template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
+    });
+
+You would put the template in a button-counter.html and do
+
+.. code:: javascript
+
+    Q.register_vue_component("button-counter", "button-counter.html", function(res) {
+        return {
+            data: function () {
+                return {
+                    count: 0
+                };
+            };
+    });
+
+
+**Q.upload_helper**
+
+It allows to bind an input tag of type file to a callback so that when a file is selected
+the content of the selecte file, is loaded, base64 encoded, and passed to the callback.
+
+This is useful to create form which include an input field selector but you want to
+place the content of the selected file into a variable, for example to do an ajax post of that content.
+
+For example:
+
+.. code:: html
+
+   <input type="file" id="my-id" />
+
+and 
+
+.. code:: javascript
+
+   var file_name = ""
+   var file_content = "";
+   Q.upload_helper("my_id", function(name, content) {
+      file_name = name;
+      file_content = content; // base 64 encoded;
+   }
+
+
+The T object
+~~~~~~~~~~~~
+
+This is a Javascript reimplemantation of the Python pluralize library in Python
+which is usedby the Python T object in py4web. So basically a client-side T.
+
+.. code:: javascript
+
+   T.translations = {'dog': {0: 'no cane', 1: 'un case', 2: '{n} cani', 10: 'tanti cani'}};
+   var message = T('dog').format({n: 5}); // "5 cani"
+
+The intended usage is to create a server endopoint that can provide translations
+for the client accepted-language, obtain T.translations via ajax get, and then use 
+T to translate and pluralize all messages client side rather than serverside.
+
+**Q.debounce**
+
+Prevents a function from stepping on itself.
+
+.. code:: javascript
+
+   setInterval(500, Q.debounce(function(){console.log("hello!)}, 200);
+
+and the function will be called every 500ms
+but will skip if the previous call did not terminate.
+Online other debounce implementations out there, it makes sure
+the last call is always execupted by delaying it (in the example 200ms);
+
+**Q.debounce**
+
+Prevents a function from being called too often;
+
+.. code:: javascript
+
+   Q("#element").onclick = Q.debounce(function(){console.log("clicked!)}, 1000);
+
+If the element is clicked more often than once every 1000ms, the other clicks will be ignored.
+
+**Q.tags_inputs**
+
+It turn a regular text input containing a string of comma separated tags into a tag widgets.
+For example:
+
+.. code:: html
+
+    <input name="browsers"/>
+
+and in JSL
+
+.. code:: javascript
+
+   Q.tags_input('[name=zip_codes]')
+
+You can restrict the set of options with:
+
+.. code:: javascript
+
+   Q.tags_input('[name=zip_codes]', {
+      freetext: false,
+      tags: ['Chrome', 'Firefox', 'Safari', 'Edge']
+   });
+
+It works with the datalist element to provide autocomplete. Simply prepend `-list` to the datalist id:
+
+.. code:: html
+
+    <input name="browsers"/>
+    <datalist id="browses-list">
+       <option>Chrome</option>
+       <option>Firfox</option>
+       <option>Safari</option>
+       <option>Edge</option>
+    </datalist>
+
+and in JS:
+
+.. code:: javascript
+
+   Q.tags_input('[name=zip_codes]', {freetext: false});
+
+It provides more undocumented options.
+You need to style the tags. For example:
+
+.. code:: css
+
+    ul.tags-list {
+      padding-left: 0;
+    }
+    ul.tags-list li {
+      display: inline-block;
+      border-radius: 100px;
+      background-color: #111111;
+      color: white;
+      padding: 0.3em 0.8em 0.2em 0.8em;
+      line-height: 1.2em;
+      margin: 2px;
+      cursor: pointer;
+      opacity: 0.2;
+      text-transform: capitalize;
+    }
+    ul.tags-list li[data-selected=true] {
+      opacity: 1.0;
+    }
+
+Notice that if an input element has class `.type-list-string` or `.type-list-integer`, utils.js applies the
+`tag_input` function automatically.
+
+*Q.score_input**
+
+..code:: javascript
+
+    Q.score_input(Q('input[type=password]')[0]);
+
+Will turn the password input into a widget that scores the password complexity.
+It is applied automatically to inputs with name "password" or "new_password".
+
+**Components**
+
+This is a poor man version of HTMX. It allows to insert in the page a ajax-component tags that
+are loaded via ajax and any form in those components will be trapped 
+(i.e. the result of form submission will also be displayed inside the same component)
+
+For example imagine an index.html that contains
+
+.. code:: html
+
+    <ajax-component id="component_1" url="[[=URL('mycomponent')]]">
+        <blink>Loading...</blink>
+    </ajax-component>
+
+And a different action serving the component:
+
+.. code:: python
+
+    @action("mycomponent", method=["GET", "POST"])
+    @action.uses(flash)
+    def mycomponent():
+        flash.set("Welcome")
+        form = Form([Field("your_name")])
+        return DIV(
+            "Hello " + request.forms["your_name"]
+            if form.accepted else form).xml()
+
+A component action is a regular action except it should generate html without the
+`<html><body>...</body></html>` envelop and it can make use of templates and flash for example.
+
+Notice that if the main page supports flash messages, any flash message in the component will be displayed
+by the parent page.
+
+Moreover if the component returns a `redirect("other_page")` not just the content of the component,
+but the entire page will be redirected.
+
+The content of the component html, can contain `<script>...</script>` and they can modify global page variables
+as well modify other components.

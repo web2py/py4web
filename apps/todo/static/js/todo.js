@@ -1,29 +1,29 @@
 // initialize the app
-var myapp = Q.app();
+var app = {data:{}, methods:{}};
 // data exposed to the view
-myapp.api = '/' + window.location.href.split('/')[3] + '/api';
-myapp.data.items = [];
-myapp.data.input = '';
+app.api = '/' + window.location.href.split('/')[3] + '/api';
+app.data.items = [];
+app.data.input = '';
 // methods exposed to the view
-myapp.methods.edit = function(item_id) { };
-myapp.methods.remove = function(item_id) { 
-    axios.delete(myapp.api + '/' + item_id).then(function(){
-            myapp.v.items=myapp.v.items.filter(function(item){
+app.methods.edit = function(item_id) { };
+app.methods.remove = function(item_id) { 
+    axios.delete(app.api + '/' + item_id).then(function(){
+            app.vue.items=app.vue.items.filter(function(item){
                     return item.id!=item_id;
                 }); 
         });
 };
-myapp.methods.save = function(item_id) { 
+app.methods.save = function(item_id) { 
     var data = {};
-    data.info = myapp.v.input;
-    axios.post(myapp.api, data).then(function(res){            
-            if (myapp.v.input) myapp.v.items.unshift({id:res.data.id, info: myapp.v.input});
-            myapp.v.input='';
+    data.info = app.vue.input;
+    axios.post(app.api, data).then(function(res){            
+            if (app.vue.input) app.vue.items.unshift({id:res.data.id, info: app.vue.input});
+            app.vue.input='';
         });
 };
 
 // start the app
-myapp.start();
-axios.get(myapp.api).then(function(res){
-        myapp.v.items = res.data.items;
+app.vue = new Vue({el:"#vue", data: app.data, methods: app.methods});
+axios.get(app.api).then(function(res){
+        app.vue.items = res.data.items;
     });

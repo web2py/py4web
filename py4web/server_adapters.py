@@ -119,7 +119,8 @@ def rocketServer():
                 log = logging.getLogger("Rocket")
                 log.setLevel(logging.INFO)
                 log.addHandler(logging.StreamHandler())
-            server = Rocket((self.host, self.port), "wsgi", dict(wsgi_app=app))
+            interface = (self.host, self.port, self.options["keyfile"], self.options["certfile"]) if self.options.get("certfile", None) else (self.host, self.port)
+            server = Rocket(interface, "wsgi", dict(wsgi_app=app))
             server.start()
 
     return RocketServer

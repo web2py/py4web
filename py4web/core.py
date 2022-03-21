@@ -1961,10 +1961,7 @@ def run(**kwargs):
                 % PY4WEB_CMD
             )
         else:
-            click.echo(
-                "Dashboard is at: http://%s:%s/_dashboard"
-                % (kwargs["host"], kwargs["port"])
-            )
+            click.echo(f"Dashboard is at: http{'s' if kwargs.get('ssl_cert', None) else ''}://{kwargs['host']}:{kwargs['port']}/_dashboard")
 
     # Start
     Reloader.import_apps()

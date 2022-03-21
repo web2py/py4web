@@ -137,12 +137,7 @@ The diagram of the superhero's database should help you interpreting the code:
 
    Keep in mind that **request.POST** only contains the form data
    that is posted using a **regular HTML-form** or **JavaScript
-   FormData** object. If you post just plain object
-   (e.g. ``axios.post('path/to/api', {field:'some'})``) you should pass
-   **request.json** instead of request.POST, since the latter will contain
-   just raw request-body which is string, not JSON. See `Bottle
-   <http://bottlepy.org/>`__ documentation about ``request`` object.
-
+   FormData** object.
 
 RestAPI GET
 -----------
