@@ -172,7 +172,7 @@ A route wildcard can be defined as
 -  ``<name:filter>`` or
 -  ``<name:filter:config>``
 
-And these are possible filters (only ``re:`` has a config):
+And these are possible filters (only ``:re`` has a config):
 
 -  ``:int`` matches (signed) digits and converts the value to integer.
 -  ``:float`` similar to :int but for decimal numbers.
