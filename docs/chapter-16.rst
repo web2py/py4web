@@ -441,7 +441,7 @@ data builder URL to provide your own controller function to retrieve the data.
 .. [CIT1601] from the https://htmx.org website
 
 utils.js
-------------------
+--------
 
 Multiple times in this documentation we have mentioned utils.js which comes with the scaffolding application,
 yet we never clearly listed what is in there. So here it is.
@@ -449,9 +449,9 @@ yet we never clearly listed what is in there. So here it is.
 string.format
 ~~~~~~~~~~~~~
 
-It extends the String object ptototype to allow expressions like this:
+It extends the String object prototype to allow expressions like this:
 
-.. code: javascript
+.. code:: javascript
 
     var a = "hello {name}".format(name="Max");
 
@@ -460,24 +460,24 @@ The Q object
 
 The Q object can be used like a selector supporting jQuery like syntax:
 
-.. code: javascript
+.. code:: javascript
 
    var element = Q("#element-id")[0];
    var selected_elements = Q(".element-class");
 
-It supports the same symtax as JS ``querySelectorAll``
+It supports the same syntax as JS ``querySelectorAll``
 and always returns an array of selected elements (can be empty).
 
-The Q objects is also container for functions can be useful when programming in Javascript.
-Notice that the Q object is a just a container for functions and it is stateless.
+The Q objects is also a container for functions that can be useful when programming in Javascript.
+It is stateless.
 
 For example:
 
 **Q.clone**
 
-A function to clone any object
+A function to clone any object:
 
-.. code: javascript
+.. code:: javascript
 
    var b = {any: "object"}
    var a = Q.clone(b);
@@ -505,7 +505,7 @@ A wrapper for the JS fetch method which provides a nicer syntax:
 **Q.get_cookie**
 
 Extracts a cookie by name from the header of cookies in the current page:
-Returns null if the cookie does not exist. Can be used within the JS of a page to retrieve a session cookie
+returns null if the cookie does not exist. Can be used within the JS of a page to retrieve a session cookie
 in case it is needed to call an API.
 
 .. code:: javascript
@@ -548,9 +548,9 @@ You would put the template in a button-counter.html and do
 **Q.upload_helper**
 
 It allows to bind an input tag of type file to a callback so that when a file is selected
-the content of the selecte file, is loaded, base64 encoded, and passed to the callback.
+the content of the selected file is loaded, base64 encoded, and passed to the callback.
 
-This is useful to create form which include an input field selector but you want to
+This is useful to create form which include an input field selector - but you want to
 place the content of the selected file into a variable, for example to do an ajax post of that content.
 
 For example:
@@ -574,8 +574,8 @@ and
 The T object
 ~~~~~~~~~~~~
 
-This is a Javascript reimplemantation of the Python pluralize library in Python
-which is usedby the Python T object in py4web. So basically a client-side T.
+This is a Javascript reimplementation of the Python pluralize library in Python
+which is used by the Python T object in py4web. So basically a client-side T.
 
 .. code:: javascript
 
@@ -584,7 +584,7 @@ which is usedby the Python T object in py4web. So basically a client-side T.
 
 The intended usage is to create a server endopoint that can provide translations
 for the client accepted-language, obtain T.translations via ajax get, and then use 
-T to translate and pluralize all messages client side rather than serverside.
+T to translate and pluralize all messages clientside rather than serverside.
 
 **Q.debounce**
 
@@ -596,8 +596,8 @@ Prevents a function from stepping on itself.
 
 and the function will be called every 500ms
 but will skip if the previous call did not terminate.
-Online other debounce implementations out there, it makes sure
-the last call is always execupted by delaying it (in the example 200ms);
+Unlike other debounce implementations out there, it makes sure
+the last call is always executed by delaying it (in the example 200ms);
 
 **Q.debounce**
 
@@ -611,7 +611,7 @@ If the element is clicked more often than once every 1000ms, the other clicks wi
 
 **Q.tags_inputs**
 
-It turn a regular text input containing a string of comma separated tags into a tag widgets.
+It turns a regular text input containing a string of comma separated tags into a tag widgets.
 For example:
 
 .. code:: html
@@ -684,12 +684,12 @@ Notice that if an input element has class `.type-list-string` or `.type-list-int
 
     Q.score_input(Q('input[type=password]')[0]);
 
-Will turn the password input into a widget that scores the password complexity.
+This will turn the password input into a widget that scores the password complexity.
 It is applied automatically to inputs with name "password" or "new_password".
 
 **Components**
 
-This is a poor man version of HTMX. It allows to insert in the page a ajax-component tags that
+This is a poor man version of HTMX. It allows to insert in the page ajax-component tags that
 are loaded via ajax and any form in those components will be trapped 
 (i.e. the result of form submission will also be displayed inside the same component)
 
@@ -714,7 +714,7 @@ And a different action serving the component:
             "Hello " + request.forms["your_name"]
             if form.accepted else form).xml()
 
-A component action is a regular action except it should generate html without the
+A component action is a regular action except that it should generate html without the
 `<html><body>...</body></html>` envelop and it can make use of templates and flash for example.
 
 Notice that if the main page supports flash messages, any flash message in the component will be displayed
@@ -723,5 +723,5 @@ by the parent page.
 Moreover if the component returns a `redirect("other_page")` not just the content of the component,
 but the entire page will be redirected.
 
-The content of the component html, can contain `<script>...</script>` and they can modify global page variables
-as well modify other components.
+The contents of the component html can contain `<script>...</script>` and they can modify global page variables
+as well as modify other components.
