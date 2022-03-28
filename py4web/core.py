@@ -677,6 +677,7 @@ class Session(Fixture):
         self_local = self.local
         self_local.data["timestamp"] = time.time()
         self_local.data["session_cookie_name"] = self_local.session_cookie_name
+        print("saving", self_local.data)
         if self.storage:
             cookie_data = self_local.data["uuid"]
             self.storage.set(cookie_data, json.dumps(self_local.data), self.expiration)
@@ -981,8 +982,8 @@ class Condition(Fixture):
 
     def on_request(self, context):
         if not self.condition():
-            if on_false is not None:
-                on_false()
+            if self.on_false is not None:
+                self.on_false()
             raise self.exception
 
 
@@ -1640,7 +1641,7 @@ def install_args(kwargs, reinstall_apps=False):
     kwargs["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
     for key, val in kwargs.items():
         os.environ["PY4WEB_" + key.upper()] = str(val)
-    Fixture.__fixture_debug__ = kwargs.get("fixture_debug", False)
+    Fixture.__fixture_debug__ = kwargs.get("debug", False)
     logging.getLogger().setLevel(
         0 if Fixture.__fixture_debug__ else kwargs.get("logging_level", logging.WARNING)
     )

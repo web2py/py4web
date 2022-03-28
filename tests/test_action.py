@@ -37,6 +37,13 @@ def index():
     clone_ok = 1 if field_clone.default == db.thing.name.default == "test_clone" else 0
     return "ok %s %s %s" % (session["number"], db(db.thing).count(), clone_ok)
 
+def fail():
+    raise HTTP(404)
+
+@action("conditional")
+@action.uses(Condition(lambda: False, on_false=fail))
+def conditional():
+    return "OK"
 
 @action("raise300")
 def raise300():
@@ -96,6 +103,9 @@ class CacheAction(unittest.TestCase):
         self.assertEqual(res.read(), b"ok 2 2 1")
 
     def test_error(self):
+        res = requests.get("http://127.0.0.1:8001/tests/conditional")
+        self.assertEqual(res.status_code, 404)
+
         res = requests.get("http://127.0.0.1:8001/tests/raise300")
         self.assertEqual(res.status_code, 300)
 
