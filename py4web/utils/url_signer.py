@@ -114,16 +114,24 @@ class URLSigner(Fixture):
         assert "_signature" not in self.variables_to_sign
         self.algo = algo or hashlib.sha256
 
+    def on_request(self, context):
+        """Creates the signing key if necessary."""
+        if self.session is not None and self.session.get("_signature_key") is None:
+            key = str(uuid.uuid1())
+            self.session["_signature_key"] = key
+            # Note that we CANNOT save the key in the URLsigner object,
+            # because there is only one object -- it's not thread-local in
+            # the way the session is.  So we cannot cache it for the later
+            # call to get_key.
+
     def get_key(self):
-        """Gets the signing key, creating it if necessary."""
+        """Gets the signing key."""
         if self.session is None:
             key = self.key
             assert self.key is not None, "You need to specify a signing key"
         else:
             key = self.session.get("_signature_key")
-            if key is None:
-                key = str(uuid.uuid1())
-                self.session["_signature_key"] = key
+            assert key is not None, "The signature key should have been created in on_request"
         return key.encode("utf8")
 
     def get_info_to_sign(self, url, variables, ts, salt):

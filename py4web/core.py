@@ -591,7 +591,7 @@ class Session(Fixture):
     SECRET = None
 
     __slots__ = ['_safe', 'secret', 'expiration', 'algorithm', 'storage', 'same_site']
-    
+
     @property
     def local(self):
         return self._safe_local
