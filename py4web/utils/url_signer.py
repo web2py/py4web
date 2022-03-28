@@ -129,10 +129,9 @@ class URLSigner(Fixture):
         """Gets the signing key."""
         if self.session is None:
             key = self.key
-            assert self.key is not None, "You need to specify a signing key"
         else:
             key = self.session.get("_signature_key")
-            assert key is not None, "The signature key should have been created in on_request"
+        assert key is not None, "No signing key"
         return key.encode("utf8")
 
     def get_info_to_sign(self, url, variables, ts, salt):
