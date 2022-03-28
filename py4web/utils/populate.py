@@ -1,12 +1,14 @@
 # from web2py
 
 from __future__ import print_function
-from pydal._compat import pickle, unicodeT
-import uuid
-import sys
-import re
-import random
+
 import datetime
+import random
+import re
+import sys
+import uuid
+
+from pydal._compat import pickle, unicodeT
 
 IUP = {
     "ad": {"minim": 1},

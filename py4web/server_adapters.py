@@ -1,4 +1,5 @@
 import logging
+
 from ombott.server_adapters import ServerAdapter
 
 try:
@@ -33,17 +34,18 @@ def geventWebSocketServer():
                 server.logger.addHandler(logging.StreamHandler())
 
             server.serve_forever()
+
     return GeventWebSocketServer
 
 
 def wsgirefThreadingServer():
     # https://www.electricmonk.nl/log/2016/02/15/multithreaded-dev-web-server-for-the-python-bottle-web-framework/
 
-    from wsgiref.simple_server import WSGIRequestHandler, WSGIServer
-    from wsgiref.simple_server import make_server
-    from socketserver import ThreadingMixIn
     import socket
     from concurrent.futures import ThreadPoolExecutor  # pip install futures
+    from socketserver import ThreadingMixIn
+    from wsgiref.simple_server import (WSGIRequestHandler, WSGIServer,
+                                       make_server)
 
     class WSGIRefThreadingServer(ServerAdapter):
         def run(self, app):
@@ -117,7 +119,8 @@ def rocketServer():
                 log = logging.getLogger("Rocket")
                 log.setLevel(logging.INFO)
                 log.addHandler(logging.StreamHandler())
-            server = Rocket((self.host, self.port), "wsgi", dict(wsgi_app=app))
+            interface = (self.host, self.port, self.options["keyfile"], self.options["certfile"]) if self.options.get("certfile", None) else (self.host, self.port)
+            server = Rocket(interface, "wsgi", dict(wsgi_app=app))
             server.start()
 
     return RocketServer

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced topics and examples &mdash; Documentação py4web 1.20220222.1</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Pesquisar" href="search.html" />
+    <link rel="prev" title="De web2py para py4web" href="chapter-15.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> py4web
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.20220222.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chapter-01.html">O que é py4web?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internacionalização</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forumlários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced topics and examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#py4web-and-asyncio">py4web and asyncio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#htmx">htmx</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#htmx-usage-in-form">htmx usage in Form</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#htmx-usage-in-grid">htmx usage in Grid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#autocomplete-widget-using-htmx">Autocomplete Widget using htmx</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Advanced topics and examples</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-16.rst" class="fa fa-github"> Editar no GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="advanced-topics-and-examples">
+<h1>Advanced topics and examples<a class="headerlink" href="#advanced-topics-and-examples" title="Link permanente para este título"></a></h1>
+<section id="py4web-and-asyncio">
+<h2>py4web and asyncio<a class="headerlink" href="#py4web-and-asyncio" title="Link permanente para este título"></a></h2>
+<p>Asyncio is not strictly needed, at least for most of the normal use
+cases where it will add problems more than value because of its concurrency model.
+On the other hand, we think py4web needs a built-in websocket async based solution.</p>
+<p>If you plan to play with asyncio be careful that you should also deal with all
+the framework’s components: in particular pydal is not asyncio compliant because
+not all the adapters work with async.</p>
+</section>
+<section id="htmx">
+<h2>htmx<a class="headerlink" href="#htmx" title="Link permanente para este título"></a></h2>
+<p>There are many javascript front-end frameworks available today that allow you great flexibility
+over how you design your web client. Vue, React and Angular are just a few.  However, the
+complexity in building one of these systems prevents many developers from reaping those benefits.
+Add to that the rapid state of change in the ecosystem and you soon have an application that is
+difficult to maintain just a year or two down the road.</p>
+<p>As a consequence, there is a growing need to use simple html elements to add reactivity to your web
+pages. htmx is one of the tools emerging as a leader in page reactivity without the complexities of javascript.
+Technically, htmx allows you to access AJAX, CSS Transitions, Web Sockets and Server Sent Events directly
+in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext.
+<a class="reference internal" href="#cit1601" id="id1"><span>[CIT1601]</span></a></p>
+<p>Read all about htmx and its capabilities on the official site at <a class="reference external" href="https://htmx.org">https://htmx.org</a> . If you prefer,
+there is also a video tutorial: <a class="reference external" href="https://www.youtube.com/watch?v=cBfz4W_KvEI">Simple, Fast Frontends With htmx</a> .</p>
+<p>py4web enables htmx integration in a couple of ways.</p>
+<ol class="arabic simple">
+<li><p>Allow you to add htmx attributes to your forms and buttons</p></li>
+<li><p>Includes an htmx attributes plugin for the py4web grid</p></li>
+</ol>
+<section id="htmx-usage-in-form">
+<h3>htmx usage in Form<a class="headerlink" href="#htmx-usage-in-form" title="Link permanente para este título"></a></h3>
+<p>The py4web Form class allows you to pass **kwargs to it that will be passed along as attributes to the html
+form. For example, to add the hx-post and hx-target to the &lt;form&gt; element you would use:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;_hx-post&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;url_to_post_to/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">record_id</span><span class="p">),</span>
+    <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#detail-target&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">tablename</span><span class="p">,</span>
+    <span class="n">record</span><span class="o">=</span><span class="n">record_id</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">attrs</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Now when your form is submitted it will call the URL in the hx-post attribute and whatever is returned
+to the browser will replace the html inside of the element with id=»detail-target».</p>
+<p>Let’s continue with a full example (started from scaffold).</p>
+<p><strong>controllers.py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_form_demo&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_form_demo.html&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">htmx_form_demo</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_list&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_list.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">htmx_list</span><span class="p">():</span>
+    <span class="n">superheros</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">superheros</span><span class="o">=</span><span class="n">superheros</span><span class="p">)</span>
+
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_form/&lt;record_id&gt;&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_form.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">htmx_form</span><span class="p">(</span><span class="n">record_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_hx-post&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_form/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">record_id</span><span class="p">),</span>
+        <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-form-demo&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">,</span> <span class="n">record</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_list&quot;</span><span class="p">))</span>
+
+    <span class="n">cancel_attrs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_hx-get&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_list&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-form-demo&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">sidecar</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">cancel_attrs</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>templates/htmx_form_demo.html</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+
+[[=timestamp]]
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;htmx-form-demo&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;htmx_list&#39;)]]&quot;</span> <span class="na">hx-trigger</span><span class="o">=</span><span class="s">&quot;load&quot;</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">&quot;#htmx-form-demo&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://unpkg.com/htmx.org@1.3.2&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p><strong>templates/htmx_list.html</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+[[for sh in superheros:]]
+    <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;htmx_form/%s&#39; % sh.id)]]&quot;</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">&quot;#htmx-form-demo&quot;</span><span class="p">&gt;</span>[[=sh.name]]<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+[[pass]]
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p><strong>templates/htmx_form.html</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=form]]
+</pre></div>
+</div>
+<p>We now have a functional maintenance app to update our superheros.  In your browser navigate to the htmx_form_demo page
+in your new application.  The hx-trigger=»load» attribute on the inner div of the htmx_form_demo.html page
+loads the htmx_list.html page inside the htmx-form-demo DIV once the htmx_form_demo page is loaded.</p>
+<p>Notice the timestamp added outside of the htmx-form-demo DIV does not change when transitions occur.  This is
+because the outer page is never reloaded, only the content inside the htmx-form-demo DIV.</p>
+<p>The htmx attributes hx-get and hx-target are then used on the anchor tags to call the htmx_form page to
+load the form inside the htmx-form-demo DIV.</p>
+<p>So far we’ve just seen standard htmx processing. Nothing fancy here, and nothing specific to py4web. However,
+in the htmx_form method we see how you can pass any attribute to a py4web form that will be rendered on the
+&lt;form&gt; element as we add the hx-post and hx-target. This tells the form to allow htmx to override the default
+form behavior and to render the resulting output in the target specified.</p>
+<p>The default py4web form does not include a Cancel button in case you want to cancel out of the edit form. But
+you can add “sidecar” elements to your forms. You can see in htmx_form that we add a cancel option and add the
+required htmx attributes to make sure the htmx_list page is rendered inside the htmx-form-demo DIV.</p>
+</section>
+<section id="htmx-usage-in-grid">
+<h3>htmx usage in Grid<a class="headerlink" href="#htmx-usage-in-grid" title="Link permanente para este título"></a></h3>
+<p>The py4web grid provides an attributes plugin system that allows you to build plugins to provide custom attributes
+for form elements, anchor elements or confirmation messages. py4web also provide an attributes plugin specifically for
+htmx.</p>
+<p>Here is an example building off the previous htmx forms example.</p>
+<p><strong>controller.py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_form/&lt;record_id&gt;&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;htmx_form.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">htmx_form</span><span class="p">(</span><span class="n">record_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_hx-post&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_form/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">record_id</span><span class="p">),</span>
+        <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-form-demo&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">,</span> <span class="n">record</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_list&quot;</span><span class="p">))</span>
+
+    <span class="n">cancel_attrs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_hx-get&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx_list&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-form-demo&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">sidecar</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">cancel_attrs</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_grid&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;htmx_grid/&lt;path:path&gt;&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span> <span class="s2">&quot;htmx_grid.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">htmx_grid</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="p">,</span> <span class="n">auto_process</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">grid</span><span class="o">.</span><span class="n">attributes_plugin</span> <span class="o">=</span> <span class="n">AttributesPluginHtmx</span><span class="p">(</span><span class="s2">&quot;#htmx-grid-demo&quot;</span><span class="p">)</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;_hx-get&quot;</span><span class="p">:</span> <span class="n">URL</span><span class="p">(</span>
+            <span class="s2">&quot;htmx_grid&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#htmx-grid-demo&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">grid</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">new_sidecar</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="n">grid</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">edit_sidecar</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
+
+    <span class="n">grid</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>templates/htmx_form_demo.html</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+
+[[=timestamp]]
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;htmx-form-demo&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;htmx_list&#39;)]]&quot;</span> <span class="na">hx-trigger</span><span class="o">=</span><span class="s">&quot;load&quot;</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">&quot;#htmx-form-demo&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;htmx-grid-demo&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">hx-get</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;htmx_grid&#39;)]]&quot;</span> <span class="na">hx-trigger</span><span class="o">=</span><span class="s">&quot;load&quot;</span> <span class="na">hx-target</span><span class="o">=</span><span class="s">&quot;#htmx-grid-demo&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://unpkg.com/htmx.org@1.3.2&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Notice that we added the #htmx-grid-demo DIV which calls the htmx_grid route.</p>
+<p><strong>templates/htmx_grid.html</strong></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[=grid.render()]]
+</pre></div>
+</div>
+<p>In htmx_grid we take advantage of deferred processing on the grid. We setup a standard CRUD grid, defer
+processing and then tell the grid we’re going to use an alternate attributes plugin to build our navigation.
+Now the forms, links and delete confirmations are all handled by htmx.</p>
+</section>
+<section id="autocomplete-widget-using-htmx">
+<h3>Autocomplete Widget using htmx<a class="headerlink" href="#autocomplete-widget-using-htmx" title="Link permanente para este título"></a></h3>
+<p>htmx can be used for much more than just form/grid processing. In this example we’ll take advantage of htmx and the
+py4web form widgets to build an autocomplete widget that can be used in your forms. <em>NOTE: this is just an example, none
+of this code comes with py4web</em></p>
+<p>Again we’ll use the superheros database as defined in the examples app.</p>
+<p>Add the following to your controllers.py.  This code will build your autocomplete dropdowns as well as
+handle the database calls to get your data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+
+<span class="kn">from</span> <span class="nn">yatl</span> <span class="kn">import</span> <span class="n">DIV</span><span class="p">,</span> <span class="n">INPUT</span><span class="p">,</span> <span class="n">SCRIPT</span>
+
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">URL</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">auth</span>
+
+
+<span class="nd">@action</span><span class="p">(</span>
+    <span class="s2">&quot;htmx/autocomplete&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span>
+    <span class="s2">&quot;htmx/autocomplete.html&quot;</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">,</span>
+    <span class="n">db</span><span class="p">,</span>
+    <span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">autocomplete</span><span class="p">():</span>
+    <span class="n">tablename</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">tablename</span>
+    <span class="n">fieldname</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">fieldname</span>
+    <span class="n">autocomplete_query</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">query</span>
+
+    <span class="n">field</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">tablename</span><span class="p">][</span><span class="n">fieldname</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">fk_table</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">field</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="p">:</span>
+        <span class="n">fk_table</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">ktable</span>
+        <span class="n">fk_field</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">kfield</span>
+
+        <span class="n">queries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="s2">&quot;_autocomplete_search_fields&quot;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">sf</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">_autocomplete_search_fields</span><span class="p">:</span>
+                <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">db</span><span class="p">[</span><span class="n">fk_table</span><span class="p">][</span><span class="n">sf</span><span class="p">]</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span>
+                        <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tablename</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">fieldname</span><span class="si">}</span><span class="s2">_search&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span> <span class="o">|</span> <span class="n">b</span><span class="p">),</span> <span class="n">queries</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">db</span><span class="p">[</span><span class="n">fk_table</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">]:</span>
+                    <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">db</span><span class="p">[</span><span class="n">fk_table</span><span class="p">][</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span>
+                            <span class="n">request</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tablename</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">fieldname</span><span class="si">}</span><span class="s2">_search&quot;</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+            <span class="n">query</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span> <span class="o">|</span> <span class="n">b</span><span class="p">),</span> <span class="n">queries</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">queries</span> <span class="o">=</span> <span class="p">[</span><span class="n">db</span><span class="p">[</span><span class="n">fk_table</span><span class="p">]</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">),</span> <span class="n">queries</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">autocomplete_query</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">),</span> <span class="p">[</span><span class="n">autocomplete_query</span><span class="p">,</span> <span class="n">query</span><span class="p">])</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">orderby</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">orderby</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">tablename</span><span class="o">=</span><span class="n">tablename</span><span class="p">,</span>
+        <span class="n">fieldname</span><span class="o">=</span><span class="n">fieldname</span><span class="p">,</span>
+        <span class="n">fk_table</span><span class="o">=</span><span class="n">fk_table</span><span class="p">,</span>
+        <span class="n">data_label</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">HtmxAutocompleteWidget</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simple_query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query</span> <span class="o">=</span> <span class="n">simple_query</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span> <span class="k">if</span> <span class="n">url</span> <span class="k">else</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;htmx/autocomplete&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="n">attrs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;simple_query&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">make</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1">#  TODO: handle readonly parameter</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">DIV</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;_table&quot;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+            <span class="n">tablename</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">_table</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tablename</span> <span class="o">=</span> <span class="s2">&quot;no_table&quot;</span>
+
+        <span class="c1">#  build the div-hidden input field to hold the value</span>
+        <span class="n">hidden_input</span> <span class="o">=</span> <span class="n">INPUT</span><span class="p">(</span>
+            <span class="n">_type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+            <span class="n">_id</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+            <span class="n">_name</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">_value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">hidden_div</span> <span class="o">=</span> <span class="n">DIV</span><span class="p">(</span><span class="n">hidden_input</span><span class="p">,</span> <span class="n">_style</span><span class="o">=</span><span class="s2">&quot;display: none;&quot;</span><span class="p">)</span>
+        <span class="n">control</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hidden_div</span><span class="p">)</span>
+
+        <span class="c1">#  build the input field to accept the text</span>
+
+        <span class="c1">#  set the htmx attributes</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;tablename&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">tablename</span><span class="p">),</span>
+            <span class="s2">&quot;fieldname&quot;</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;_hx-post&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="s2">&quot;_hx-trigger&quot;</span><span class="p">:</span> <span class="s2">&quot;keyup changed delay:500ms&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_hx-target&quot;</span><span class="p">:</span> <span class="s2">&quot;#</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">_autocomplete_results&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+            <span class="s2">&quot;_hx-indicator&quot;</span><span class="p">:</span> <span class="s2">&quot;.htmx-indicator&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_hx-vals&quot;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="n">search_value</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">ktable</span><span class="p">][</span><span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">kfield</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">select</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">row</span><span class="p">:</span>
+                <span class="n">search_value</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">requires</span><span class="o">.</span><span class="n">label</span> <span class="o">%</span> <span class="n">row</span>
+
+        <span class="n">control</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">INPUT</span><span class="p">(</span>
+                <span class="n">_type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+                <span class="n">_id</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">_search&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                <span class="n">_name</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">_search&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                <span class="n">_value</span><span class="o">=</span><span class="n">search_value</span><span class="p">,</span>
+                <span class="n">_class</span><span class="o">=</span><span class="s2">&quot;input&quot;</span><span class="p">,</span>
+                <span class="n">_placeholder</span><span class="o">=</span><span class="n">placeholder</span> <span class="k">if</span> <span class="n">placeholder</span> <span class="ow">and</span> <span class="n">placeholder</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span>
+                <span class="n">_title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                <span class="n">_autocomplete</span><span class="o">=</span><span class="s2">&quot;off&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">attrs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">control</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DIV</span><span class="p">(</span><span class="n">_id</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">_autocomplete_results&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)))</span>
+
+        <span class="n">control</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">SCRIPT</span><span class="p">(</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        htmx.onLoad(function(elt) {</span>
+<span class="sd">            document.querySelector(&#39;#%(table)s_%(field)s_search&#39;).onkeydown = check_%(table)s_%(field)s_down_key;</span>
+<span class="sd">            \n</span>
+<span class="sd">            function check_%(table)s_%(field)s_down_key(e) {</span>
+<span class="sd">                if (e.keyCode == &#39;40&#39;) {</span>
+<span class="sd">                    document.querySelector(&#39;#%(table)s_%(field)s_autocomplete&#39;).focus();</span>
+<span class="sd">                    document.querySelector(&#39;#%(table)s_%(field)s_autocomplete&#39;).selectedIndex = 0;</span>
+<span class="sd">                }</span>
+<span class="sd">            }</span>
+<span class="sd">        })</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+                <span class="o">%</span> <span class="p">{</span>
+                    <span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="n">tablename</span><span class="p">,</span>
+                    <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">control</span>
+</pre></div>
+</div>
+<p>Usage - in your controller code, this example uses bulma as the base css formatter.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">formstyle</span> <span class="o">=</span> <span class="n">FormStyleFactory</span><span class="p">()</span>
+<span class="n">formstyle</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="n">FormStyleBulma</span><span class="o">.</span><span class="n">classes</span>
+<span class="n">formstyle</span><span class="o">.</span><span class="n">class_inner_exceptions</span> <span class="o">=</span> <span class="n">FormStyleBulma</span><span class="o">.</span><span class="n">class_inner_exceptions</span>
+<span class="n">formstyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;vendor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">HtmxAutocompleteWidget</span><span class="p">(</span>
+    <span class="n">simple_query</span><span class="o">=</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">vendor</span><span class="o">.</span><span class="n">vendor_type</span> <span class="o">==</span> <span class="s2">&quot;S&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">product</span><span class="p">,</span>
+    <span class="n">record</span><span class="o">=</span><span class="n">product_record</span><span class="p">,</span>  <span class="c1"># defined earlier in controller</span>
+    <span class="n">formstyle</span><span class="o">=</span><span class="n">formstyle</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>First, get an instance of FormStyleFactory.  Then get the base css classes from whichever css framework you wish. Add
+the class inner exceptions from your css framework. Once this is set up you can override the default widget for a
+field based on its name.  In this case we’re overriding the widget for the “vendor” field. Instead of including all
+vendors in the select dropdown, we’re limiting only to those with a vendor type equal to “S”.</p>
+<p>When this is rendered in your page, the default widget for the vendor field is replaced with the widget generated by
+the HtmxAutocompleteWidget. When you pass a simple query to the HtmxAutocompleteWidget the widget will use the default
+route to fill the dropdown with data.</p>
+<p>If using the simple query and default build url, you are limited to a simple DAL query. You cannot use DAL subqueries
+within this simple query.  If the data for the dropdown requires a more complex DAL query you can override the default
+data builder URL to provide your own controller function to retrieve the data.</p>
+<dl class="citation">
+<dt class="label" id="cit1601"><span class="brackets"><a class="fn-backref" href="#id1">CIT1601</a></span></dt>
+<dd><p>from the <a class="reference external" href="https://htmx.org">https://htmx.org</a> website</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Rodapé">
+        <a href="chapter-15.html" class="btn btn-neutral float-left" title="De web2py para py4web" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20220222.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Idiomas</dt>
+        
+          
+          
+          <dd><a href="../en/index.html">en</a></dd> 
+        
+           <strong> 
+          <dd><a href="../pt/index.html">pt</a></dd> </strong>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versões</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Transferências</dt>
+        
+          <dd><a href="py4web_pt.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_pt.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

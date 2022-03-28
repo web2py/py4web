@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>O que é py4web? &mdash; Documentação py4web 1.20220222.1</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Pesquisar" href="search.html" />
+    <link rel="next" title="Ajuda, recursos e dicas" href="chapter-02.html" />
+    <link rel="prev" title="py4web: o manual de referência" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> py4web
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.20220222.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">O que é py4web?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-09.html">Linguagem de template YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-10.html">Helpers YATL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-11.html">Internacionalização</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-12.html">Forumlários</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-13.html">Authentication and authorization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-16.html">Advanced topics and examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py4web</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>O que é py4web?</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-01.rst" class="fa fa-github"> Editar no GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="what-is-py4web">
+<h1>O que é py4web?<a class="headerlink" href="#what-is-py4web" title="Link permanente para este título"></a></h1>
+<p>PY4WEB is a web framework for rapid development of efficient database
+driven web applications. It is an evolution of the popular web2py
+framework, but much faster and slicker. Its internal design has been much
+simplified compared to web2py.</p>
+<p>PY4WEB can be seen as a competitor of other frameworks like Django or
+Flask, and it can indeed serve the same purpose. Yet PY4WEB aims to
+provide a larger feature set out of the box and to reduce the development
+time of new apps.</p>
+<p>From a historical perspective, our story starts in 2007 when web2py was
+first released. web2py was designed to provide an all-inclusive solution
+for web development: one zip file containing the Python interpreter, the
+framework, a web based IDE, and a collection of battle-tested packages
+that work well together. In many ways web2py has been immensely
+successful. Web2py succeeded in providing a low barrier of entry for new
+developers, a very secure development platform, and remains backwards
+compatible until today.</p>
+<p>Web2py always suffered from one problem: its monolithic design. The most
+experienced Python developers did not understand how to use its
+components outside of the framework and how to use third party
+components within the framework. We thought of web2py as a perfect tool that
+did not have to be broken into pieces because that would compromise its
+security. It turned out that we were wrong, and playing well with others
+is important. Hence, since 2015 we worked on three fronts:</p>
+<ul class="simple">
+<li><p>Nós portado web2py para Python 3.</p></li>
+<li><p>Nós quebramos web2py em módulos que podem ser usados ​​de forma independente.</p></li>
+<li><p>Nós reagrupados alguns desses módulos em uma nova e mais modular quadro … PY4WEB.</p></li>
+</ul>
+<p>PY4WEB is more than a repackaging. It is a complete redesign.
+It uses some of the web2py modules, but not all of them. In
+some cases, it uses other and better modules. Some functionality was
+removed and some was added. We tried to preserve most of the syntax and
+features that experienced web2py users loved.</p>
+<p>Here is a more explicit list (see <a class="reference internal" href="chapter-15.html#from-web2py-to-py4web"><span class="std std-ref">De web2py para py4web</span></a> for more
+details if you come from web2py):</p>
+<ul class="simple">
+<li><p>PY4WEB, ao contrário web2py, requer Python 3.</p></li>
+<li><p>PY4WEB, unlike web2py, can be installed using pip, and its
+dependencies are managed using requirements.txt.</p></li>
+<li><p>PY4WEB apps are regular Python modules. This is very different from
+web2py. In particular, we ditched the custom importer, and we rely
+now exclusively on the regular Python import mechanism.</p></li>
+<li><p>PY4WEB, como web2py, podem servir múltiplas aplicações concorrentemente, enquanto as aplicações são submódulos do módulo de aplicações.</p></li>
+<li><p>PY4WEB, unlike web2py, is based on ombott
+(a reduced and faster spin-off of Bottle) and in particular uses
+a Bottle-compatible request object and routing mechanism.</p></li>
+<li><p>PY4WEB, unlike web2py, does not create a new environment at every
+request. It introduces the concept of fixtures to explicitly declare
+which objects need to be (re)initialized when a new http request arrives
+or needs cleanup when completed. This makes it much faster than web2py.</p></li>
+<li><p>PY4WEB, has a new session object which, like web2py’s, provides strong
+security and encryption of the session data, but sessions are no
+longer stored in the file system - which created performance issues.
+It provides sessions in cookies, in redis, in memcache, or optionally  in
+database. We also limited session data to objects that are json
+serializable.</p></li>
+<li><p>PY4WEB, como web2py, tem um built-in sistema de bilhética, mas, ao contrário web2py, este sistema é global e não por aplicação. Os bilhetes já não são armazenados no sistema de arquivos com os aplicativos individuais. Eles são armazenados em um único banco de dados.</p></li>
+<li><p>PY4WEB, like web2py, is based on pydal but leverages some new features of
+pydal (RESTAPI).</p></li>
+<li><p>PY4WEB, como web2py, usa a linguagem de template yatl mas o padrão é suportes delimitadores quadrados para evitar conflitos com modelo quadros JS, como Vue.js e angularjs. Yatl inclui um subconjunto dos ajudantes web2py.</p></li>
+<li><p>PY4WEB, ao contrário web2py, usa a biblioteca pluralização para a internacionalização. Na prática, isso expõe um objeto T muito semelhante ao do web2py T mas fornece melhor cache e capacidades pluralização mais flexíveis.</p></li>
+<li><p>PY4WEB vem com um painel APP que administrador substitui do web2py. Esta é uma IDE web para carregar / gestão / aplicativos de edição.</p></li>
+<li><p>Painel de PY4WEB inclui uma interface de banco de dados baseado na web. Isto substitui a funcionalidade AppAdmin de web2py.</p></li>
+<li><p>PY4WEB comes with Form and Grid objects that are
+similar to web2py’s SQLFORM and SQLFORM.grid.</p></li>
+<li><p>PY4WEB vem com um objeto Auth que substitui o web2py. É mais modular e mais fácil de estender. Fora da caixa, ele fornece a funcionalidade básica do registo, login, logout, de alteração de senha, solicitação de alteração de senha, editar o perfil, bem como a integração com o PAM, SAML2, LDAP, OAUTH2 (google, facebook e Twitter).</p></li>
+<li><p>PY4WEB leverages PyDAL’s new tags functionality
+to tag users with groups, search users by groups, and
+apply permissions based on membership.</p></li>
+<li><p>PY4WEB vem com com alguns componentes personalizados Vue.js projetados para interagir com o PyDAL RESTAPI, e com PY4WEB em geral. Essas APIs são projetados para permitir que o servidor para definir políticas sobre quais operações um cliente é permitido para executar, mas dá a flexibilidade cliente dentro dessas restrições. Os dois principais componentes são mtable (que fornece uma interface baseada na web para o banco de dados semelhante à grade do web2py) e auth (uma interface personalizável à API Auth).</p></li>
+</ul>
+<p>O objetivo do PY4WEB é e continua a ser o mesmo que web2py de: para o desenvolvimento web make fácil e acessível, enquanto a produção de aplicações que são rápidos e seguros.</p>
+<section id="acknowledgments">
+<h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Link permanente para este título"></a></h2>
+<p>Many thanks to everyone who has contributed to the project, and especially:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mdipierro">Massimo Di Pierro</a></p></li>
+<li><p><a class="reference external" href="https://github.com/lucadealfaro">Luca de Alfaro</a></p></li>
+<li><p><a class="reference external" href="https://github.com/cassiobotaro">Cassio Botaro</a></p></li>
+<li><p><a class="reference external" href="https://github.com/dan-carroll">Dan Carroll</a></p></li>
+<li><p><a class="reference external" href="https://github.com/jpsteil">Jim Steil</a></p></li>
+<li><p><a class="reference external" href="https://github.com/jmwolff3">John M. Wolf</a></p></li>
+<li><p><a class="reference external" href="https://github.com/MBfromOK">Micah Beasley</a></p></li>
+<li><p><a class="reference external" href="https://github.com/nicozanf">Nico Zanferrari</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Pirsch">Pirsch</a></p></li>
+<li><p><a class="reference external" href="https://github.com/sugizo">sugizo</a></p></li>
+<li><p><a class="reference external" href="https://github.com/valq7711">valq7711</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Kkeller83">Kevin Keller</a></p></li>
+<li><p><a class="reference external" href="mailto:sam&#37;&#52;&#48;dealfaro&#46;com">Sam de Alfaro</a> (logo design)</p></li>
+</ul>
+<p>Special thanks to Sam de Alfaro, who designed the official logo of py4web. We friendly call the logo «Axel the axolotl»: it magically represents the sense of kindness and inclusion. We believe it’s the cornerstone of our growing community.</p>
+<img alt="_images/logo.png" src="_images/logo.png" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Rodapé">
+        <a href="index.html" class="btn btn-neutral float-left" title="py4web: o manual de referência" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="chapter-02.html" class="btn btn-neutral float-right" title="Ajuda, recursos e dicas" accesskey="n" rel="next">Seguinte <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, BSDv3 License.</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      
+      
+     <span class="fa fa-element">
+     <input class="container_toggle" type="checkbox" id="switch" name="mode">
+     <label for="switch"></label>
+     </span>
+      
+      v: 1.20220222.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+      <dl>
+        <dt>Idiomas</dt>
+        
+          
+          
+          <dd><a href="../en/index.html">en</a></dd> 
+        
+           <strong> 
+          <dd><a href="../pt/index.html">pt</a></dd> </strong>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Versões</dt>
+        
+          
+          <dd><a href="index.html">current</a></dd>
+          
+        
+      </dl>
+      
+      
+      <dl>
+        <dt>Transferências</dt>
+        
+          <dd><a href="py4web_pt.pdf">pdf</a></dd>
+        
+          <dd><a href="py4web_pt.epub">epub</a></dd>
+        
+      </dl>
+      
+      
+      <hr/>
+    </div>
+  </div>
+
+ <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+         .wy-nav-content { max-width: none; }
+  </style>
+
+
+
+</body>
+</html>

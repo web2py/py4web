@@ -176,9 +176,8 @@ Configuring PAM is the easiest:
    from py4web.utils.auth_plugins.pam_plugin import PamPlugin
    auth.register_plugin(PamPlugin())
 
-This one like all plugins must be imported and registered. Once
-registered the UI (components/auth) and the RESTful APIs know how to
-handle it. The constructor of this plugins does not require any
+This one like all plugins must be imported and registered.
+The constructor of this plugins does not require any
 arguments (where other plugins do).
 
 The ``auth.register_plugin(...)`` **must** come before the

@@ -1,9 +1,10 @@
-import json
+import base64
 import hashlib
+import json
 import time
 import uuid
-import base64
-from py4web import request, HTTP
+
+from py4web import HTTP, request
 from py4web.core import Fixture, Session
 
 

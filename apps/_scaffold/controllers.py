@@ -31,7 +31,7 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 
 
 @action("index")
-@action.uses("index.html", auth)
+@action.uses("index.html", auth, T)
 def index():
     user = auth.get_user()
     message = T("Hello {first_name}".format(**user) if user else "Hello")

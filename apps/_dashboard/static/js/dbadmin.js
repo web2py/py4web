@@ -1,10 +1,10 @@
-var app = Q.app();
-var params = new URLSearchParams(window.location.search);
+var app = {data: {}, methods:{}};
+app.params = new URLSearchParams(window.location.search);
 app.data.loading = 0;
-app.data.app = params.get('app');
-app.data.dbname = params.get('dbname');
-app.data.tablename = params.get('tablename');
+app.data.app = app.params.get('app');
+app.data.dbname = app.params.get('dbname');
+app.data.tablename = app.params.get('tablename');
 app.data.url = '/_dashboard/rest/{app}/{dbname}/{tablename}'.format(app.data);
-app.data.filter = params.get('filter') || '';
-app.data.order = params.get('order') || '';
-app.start();
+app.data.filter = app.params.get('filter') || '';
+app.data.order = app.params.get('order') || '';
+app.vue = new Vue({el:"#vue", data: app.data, methods: app.methods});

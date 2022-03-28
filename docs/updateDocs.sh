@@ -112,6 +112,10 @@ for current_language in ${languages}; do
 		fi 
 	fi
 
+	# removes unuseful folders
+	rm -fr docs/_build/html/${current_language}/.doctrees
+	rm -fr docs/_build/html/${current_language}/_sources
+
 	# copy html files into docroot
 	rsync -a docs/_build/html/ ${docroot}
 
