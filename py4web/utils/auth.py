@@ -1118,7 +1118,7 @@ class AuthAPI:
         if AuthAPI.model_request("register"):
             return AuthAPI.get_model(defaultAuthFunction=auth.form_source.register)
 
-        payload = request.json or request.POST
+        payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
             return auth._error(
@@ -1133,7 +1133,7 @@ class AuthAPI:
         if AuthAPI.model_request("login"):
             return AuthAPI.get_model(defaultAuthFunction=auth.form_source.login)
 
-        payload = request.json or request.POST
+        payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
             return auth._error(
@@ -1183,7 +1183,7 @@ class AuthAPI:
                 defaultAuthFunction=auth.form_source.request_reset_password
             )
 
-        payload = request.json or request.POST
+        payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
             return auth._error(
@@ -1205,7 +1205,7 @@ class AuthAPI:
                 defaultAuthFunction=auth.form_source.reset_password
             )
 
-        payload = request.json or request.POST
+        payload = request.POST if (request.json is None) else request.json
 
         # check the new_password2 only if passed
         if payload is None:
@@ -1254,7 +1254,7 @@ class AuthAPI:
                 defaultAuthFunction=auth.form_source.change_password
             )
 
-        payload = request.json or request.POST
+        payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
             return auth._error(
@@ -1270,7 +1270,7 @@ class AuthAPI:
     @api_wrapper
     def change_email(auth):
 
-        payload = request.json or request.POST
+        payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
             return auth._error(
@@ -1293,7 +1293,7 @@ class AuthAPI:
         if request.method == "GET":
             return {"user": auth.get_user()}
         
-        payload = request.json or request.POST
+        payload = request.POST if (request.json is None) else request.json
         
         if payload is None:
             return auth._error(
