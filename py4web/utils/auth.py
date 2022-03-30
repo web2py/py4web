@@ -164,7 +164,7 @@ class Auth(Fixture):
             "new_password_is_the_same_as_previous_password": "new password is the same as previous password",
             "new_password_was_already_used": "new password was already used",
             "invalid": "invalid",
-            "no_json_post_payload": "no json post payload",
+            "no_post_payload": "no post payload",
         },
     }
 
@@ -1122,7 +1122,7 @@ class AuthAPI:
 
         if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
         auth.get_or_delete_existing_unverified_account(payload.get("email"))
         return auth.register(payload, send=True).as_dict()
@@ -1137,7 +1137,7 @@ class AuthAPI:
 
         if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
         username, password = payload.get("email"), payload.get("password")
         if not all(isinstance(_, str) for _ in [username, password]):
@@ -1187,7 +1187,7 @@ class AuthAPI:
 
         if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
 
         if "email" not in payload:
@@ -1210,7 +1210,7 @@ class AuthAPI:
         # check the new_password2 only if passed
         if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
         return auth.reset_password(
             payload.get("token"),
@@ -1258,7 +1258,7 @@ class AuthAPI:
 
         if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
         return auth.change_password(
             auth.get_user(safe=False),  # refactor make faster
@@ -1274,7 +1274,7 @@ class AuthAPI:
 
         if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
         return auth.change_email(
             auth.get_user(safe=False),
@@ -1297,7 +1297,7 @@ class AuthAPI:
         
         if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
         else:
             return auth.update_profile(auth.get_user(), **payload)
