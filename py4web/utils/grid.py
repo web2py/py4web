@@ -9,8 +9,25 @@ from urllib.parse import urlparse
 
 import ombott
 from pydal.objects import Field, FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
-                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TAG,
+    TBODY,
+    TD,
+    TH,
+    THEAD,
+    TR,
+    XML,
+    A,
+    I,
+)
 
 from py4web import HTTP, URL, redirect, request
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -336,6 +353,7 @@ class Grid:
         formstyle=FormStyleDefault,
         grid_class_style=GridClassStyle,
         T=lambda text: text,
+        groupby=None,
         # deprecated
         fields=None,
     ):
@@ -379,6 +397,7 @@ class Grid:
             show_id=show_id,
             orderby=orderby,
             left=left,
+            groupby=groupby,
             search_form=search_form,
             search_queries=search_queries,
             headings=headings or [],
@@ -637,7 +656,15 @@ class Grid:
             if self.param.left:
                 select_params["left"] = self.param.left
 
-            if self.param.left:
+            if self.param.groupby:
+                select_params["groupby"] = self.param.groupby
+
+            if self.param.groupby:
+                #  need groupby fields in select to get proper count
+                self.total_number_of_rows = len(
+                    db(query).select(*self.param.groupby, **select_params)
+                )
+            elif self.param.left:
                 # TODO: maybe this can be made more efficient
                 self.total_number_of_rows = len(
                     db(query).select(db[self.tablename].id, **select_params)
