@@ -338,10 +338,14 @@ class Fixture:
             self.__request_master_ctx__.request_ctx[self]
             return True
         except (KeyError, AttributeError) as err:
-            logging.warn(
-                "attempted access to fixture %s from outside a request",
-                self.__class__.__name,
-            )
+            try:
+                logging.warn(
+                    "attempted access to fixture %s from outside a request",
+                    self.__class__.__name,
+                )
+            except:
+                ''
+
             return False
 
     def on_request(self, context):
