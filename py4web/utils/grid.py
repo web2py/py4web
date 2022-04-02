@@ -5,12 +5,30 @@
 import base64
 import copy
 import datetime
+from dataclasses import is_dataclass, asdict
 from urllib.parse import urlparse
 
 import ombott
 from pydal.objects import Field, FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
-                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TAG,
+    TBODY,
+    TD,
+    TH,
+    THEAD,
+    TR,
+    XML,
+    A,
+    I,
+)
 
 from py4web import HTTP, URL, redirect, request
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -1423,3 +1441,306 @@ class AttributesPluginHtmx(AttributesPlugin):
         attrs = copy.copy(self.default_attrs)
         attrs["_hx-confirm"] = message
         return attrs
+
+
+class DataclassGrid(Grid):
+    """
+    build a py4web grid based on a list of dataclass objects
+
+    the dataclass must have a field called 'id'
+
+    """
+
+    def __init__(
+        self,
+        path,
+        data_list,
+        filters=None,
+        search_form=None,
+        search_queries=None,
+        columns=None,
+        orderby=None,
+        headings=None,
+        pre_action_buttons=None,
+        post_action_buttons=None,
+        auto_process=True,
+        rows_per_page=15,
+        include_action_button_text=True,
+        search_button_text="Filter",
+        grid_class_style=GridClassStyle,
+        T=lambda text: text,
+    ):
+        self.data_list = data_list
+        self.filters = filters
+
+        self.path = path or ""
+        self.db = None
+        self.T = T
+        self.param = Param(
+            query=None,
+            columns=columns,
+            field_id=None,
+            show_id=None,
+            orderby=orderby,
+            left=None,
+            groupby=None,
+            search_form=search_form,
+            search_queries=search_queries,
+            headings=headings or [],
+            create=False,
+            details=False,
+            editable=False,
+            deletable=False,
+            validation=False,
+            pre_action_buttons=pre_action_buttons,
+            post_action_buttons=post_action_buttons,
+            rows_per_page=rows_per_page,
+            include_action_button_text=include_action_button_text,
+            search_button_text=search_button_text,
+            formstyle=None,
+            grid_class_style=grid_class_style,
+            new_sidecar=None,
+            new_submit_value=None,
+            new_action_button_text="New",
+            details_sidecar=None,
+            details_submit_value=None,
+            details_action_button_text="Details",
+            edit_sidecar=None,
+            edit_submit_value=None,
+            edit_action_button_text="Edit",
+            delete_action_button_text="Delete",
+        )
+
+        #  instance variables that will be computed
+        self.action = None
+        self.current_page_number = None
+        self.endpoint = request.fullpath
+        if self.path:
+            self.endpoint = self.endpoint[: -len(self.path)].rstrip("/")
+        self.hidden_fields = None
+        self.form = None
+        self.number_of_pages = None
+        self.page_end = None
+        self.page_start = None
+        self.query_parms = request.params
+        self.record_id = None
+        self.rows = None
+        self.tablename = None
+        self.total_number_of_rows = None
+        self.use_tablename = self.is_join()
+        self.formatters = {}
+        self.formatters_by_type = copy.copy(Grid.FORMATTERS_BY_TYPE)
+        self.attributes_plugin = AttributesPlugin(request)
+
+        self.needed_fields = []
+
+        if auto_process:
+            self.process()
+
+    def process(self):
+        if not self.param.search_form and self.param.search_queries:
+            search_type = safe_int(request.query.get("search_type", 0), default=0)
+            search_string = request.query.get("search_string")
+            if search_type < len(self.param.search_queries) and search_string:
+                query_lambda = self.param.search_queries[search_type][1]
+                try:
+                    query = query_lambda(search_string)
+                except:
+                    pass  # flash a message here
+
+        parts = self.path.split("/")
+        self.action = parts[0] or "select"
+
+        #  ensure there is a column named 'id' in the data_list row
+
+        for index, row in enumerate(self.data_list):
+            if isinstance(row, dict):
+                if "id" not in row or not row["id"]:
+                    row["id"] = index
+                    self.param.show_id = False
+            elif is_dataclass(row):
+                if "id" not in asdict(row) or not asdict(row)["id"]:
+                    row.id = index
+                    self.param.show_id = False
+            else:
+                if id not in row.__dict__ or not row.__dict__["id"]:
+                    row.id = index
+                    self.param.show_id = False
+
+        self.needed_fields = (
+            [col for col in asdict(self.data_list[0])]
+            if len(self.data_list) > 0
+            else []
+        )
+        if not self.param.columns:
+            # if no column specified use all columns in data
+            self.param.columns = self.needed_fields
+
+        if not self.param.show_id:
+            self.param.columns.remove("id")
+
+        self.referrer = None
+
+        self.referrer = "_referrer=%s" % base64.b16encode(
+            request.url.encode("utf8")
+        ).decode("utf8")
+
+        #  find the primary key of the primary table
+        self.current_page_number = safe_int(request.query.get("page"), default=1)
+
+        #  apply DataclassGridFilters
+        if self.filters:
+            for lgf in self.filters:
+                self.data_list = lgf.filter(self.data_list)
+
+        select_params = dict()
+        #  try getting sort order from the request
+        sort_order = request.query.get("orderby", "")
+
+        try:
+            orderby = sort_order.lstrip("~")
+            self.data_list = sorted(
+                self.data_list,
+                key=lambda row: asdict(row)[orderby],
+                reverse=True if sort_order.startswith("~") else False,
+            )
+        except (IndexError, KeyError, TypeError, AttributeError):
+            if self.param.orderby:
+                self.data_list = sorted(
+                    self.data_list,
+                    key=lambda row: asdict(row)[self.param.orderby.replace("~", "")],
+                )
+
+        self.total_number_of_rows = len(self.data_list)
+
+        #  if at a high page number and then filter causes less records to be displayed, reset to page 1
+        if (
+            self.current_page_number - 1
+        ) * self.param.rows_per_page > self.total_number_of_rows:
+            self.current_page_number = 1
+
+        slice_start_end = [0, len(self.data_list)]
+        if self.total_number_of_rows > self.param.rows_per_page:
+            self.page_start = self.param.rows_per_page * (self.current_page_number - 1)
+            self.page_end = self.page_start + self.param.rows_per_page
+            slice_start_end = [self.page_start, self.page_end]
+        else:
+            self.page_start = 0
+            if self.total_number_of_rows > 1:
+                self.page_start = 1
+            self.page_end = self.total_number_of_rows
+
+        # get the data
+        self.rows = self.data_list[slice_start_end[0] : slice_start_end[1]]
+
+        self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
+        if self.total_number_of_rows % self.param.rows_per_page > 0:
+            self.number_of_pages += 1
+
+        if (
+            self.param.pre_action_buttons
+            or self.param.details
+            or self.param.editable
+            or self.param.deletable
+            or self.param.post_action_buttons
+        ):
+            self.param.columns.append(
+                Column("", self.make_action_buttons, td_class_style="grid-td-buttons")
+            )
+
+    def get_tablenames(self, *args):
+        return []
+
+    def _make_table_header(self):
+        sort_order = request.query.get("orderby", "")
+
+        thead = THEAD(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
+        for index, column in enumerate(self.param.columns):
+            if isinstance(column, Column):
+                key = column.name.lower().replace(" ", "-")
+                col = column.name
+                if column.orderby:
+                    key, col = self._make_field_header(column, index, sort_order)
+            else:
+                # key = column.lower().replace("_", "-")
+                # col = column.upper().replace("_", " ")
+                key, col = self._make_field_header(column, index, sort_order)
+
+            if col is not None:
+                classes = join_classes(
+                    self.param.grid_class_style.classes.get("grid-th"),
+                    "grid-col-%s" % key,
+                )
+                style = self.param.grid_class_style.styles.get("grid-th")
+                thead.append(TH(col, _class=classes, _style=style))
+
+        return thead
+
+    def _make_table_body(self):
+        tbody = TBODY()
+        for row in self.rows:
+            key = "%s.%s" % (self.tablename, "__row")
+            if self.formatters.get(key):
+                extra_class = self.formatters.get(key)(row)["_class"]
+                extra_style = self.formatters.get(key)(row)["_style"]
+            else:
+                extra_class = ""
+                extra_style = ""
+            tr = TR(
+                _role="row",
+                _class=join_classes(
+                    self.param.grid_class_style.classes.get("grid-tr"), extra_class
+                ),
+                _style=join_classes(
+                    self.param.grid_class_style.styles.get("grid-tr"), extra_style
+                ),
+            )
+            #  add all the fields to the row
+            for index, column in enumerate(self.param.columns):
+                if isinstance(column, Column):
+                    classes = self.param.grid_class_style.classes.get(
+                        column.td_class_style,
+                        self.param.grid_class_style.classes.get("grid-td"),
+                    )
+                    style = self.param.grid_class_style.styles.get(
+                        column.td_class_style,
+                        self.param.grid_class_style.styles.get("grid-td"),
+                    )
+                    tr.append(
+                        TD(column.render(row, index), _class=classes, _style=style)
+                    )
+                else:
+                    tr.append(TD(asdict(row)[column]))
+
+            tbody.append(tr)
+
+        return tbody
+
+    def _make_field_header(self, field, field_index, sort_order):
+        up = I(**self.param.grid_class_style.get("grid-sorter-icon-up"))
+        dw = I(**self.param.grid_class_style.get("grid-sorter-icon-down"))
+
+        if isinstance(field, Column):
+            key = str(field.orderby)
+        else:
+            key = field
+
+        heading = (
+            self.param.headings[field_index]
+            if field_index < len(self.param.headings)
+            else title(field.name if isinstance(field, Column) else field)
+        )
+        #  add the sort order query parm
+        sort_query_parms = dict(self.query_parms)
+
+        if key == sort_order:
+            sort_query_parms["orderby"] = "~" + key
+            url = URL(self.endpoint, vars=sort_query_parms)
+            attrs = self.attributes_plugin.link(url=url)
+            col = A(heading, up, **attrs)
+        else:
+            sort_query_parms["orderby"] = key
+            url = URL(self.endpoint, vars=sort_query_parms)
+            attrs = self.attributes_plugin.link(url=url)
+            col = A(heading, dw if "~" + key == sort_order else "", **attrs)
+        return key, col
