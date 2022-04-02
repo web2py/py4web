@@ -89,10 +89,10 @@
     };
 
     mtable.methods.s2l = function(string, is_list_integer) {
-	var v = string;
-	v = v && v.split(',').map(function(x){return x.trim();}) || [];
-	if (is_list_integer) v = v.map(parseInt);
-	return v;
+        var v = string;
+        v = v && v.split(',').map(function(x){return x.trim();}) || [];
+        if (is_list_integer) v = v.map(function(x){return parseInt(x)})
+        return v;
     };
 
     mtable.methods.prepare_fields = function(item){
