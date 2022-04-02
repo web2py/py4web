@@ -164,7 +164,7 @@ class Auth(Fixture):
             "new_password_is_the_same_as_previous_password": "new password is the same as previous password",
             "new_password_was_already_used": "new password was already used",
             "invalid": "invalid",
-            "no_json_post_payload": "no json post payload",
+            "no_post_payload": "no post payload",
         },
     }
 
@@ -1118,12 +1118,14 @@ class AuthAPI:
         if AuthAPI.model_request("register"):
             return AuthAPI.get_model(defaultAuthFunction=auth.form_source.register)
 
-        if request.json is None:
+        payload = request.POST if (request.json is None) else request.json
+
+        if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
-        auth.get_or_delete_existing_unverified_account(request.json.get("email"))
-        return auth.register(request.json, send=True).as_dict()
+        auth.get_or_delete_existing_unverified_account(payload.get("email"))
+        return auth.register(payload, send=True).as_dict()
 
     @staticmethod
     @api_wrapper
@@ -1131,11 +1133,13 @@ class AuthAPI:
         if AuthAPI.model_request("login"):
             return AuthAPI.get_model(defaultAuthFunction=auth.form_source.login)
 
-        if request.json is None:
+        payload = request.POST if (request.json is None) else request.json
+
+        if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
-        username, password = request.json.get("email"), request.json.get("password")
+        username, password = payload.get("email"), payload.get("password")
         if not all(isinstance(_, str) for _ in [username, password]):
             return auth._error(auth.param.messages["errors"].get("invalid_credentials"))
 
@@ -1179,15 +1183,17 @@ class AuthAPI:
                 defaultAuthFunction=auth.form_source.request_reset_password
             )
 
-        if request.json is None:
+        payload = request.POST if (request.json is None) else request.json
+
+        if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
 
-        if "email" not in request.json:
-            request.json["email"] = ""
+        if "email" not in payload:
+            payload["email"] = ""
 
-        if not auth.request_reset_password(**request.json):
+        if not auth.request_reset_password(**payload):
             return auth._error("invalid user")
         return {}
 
@@ -1199,15 +1205,17 @@ class AuthAPI:
                 defaultAuthFunction=auth.form_source.reset_password
             )
 
+        payload = request.POST if (request.json is None) else request.json
+
         # check the new_password2 only if passed
-        if request.json is None:
+        if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
         return auth.reset_password(
-            request.json.get("token"),
-            request.json.get("new_password"),
-            request.json.get("new_password2", request.json.get("new_password")),
+            payload.get("token"),
+            payload.get("new_password"),
+            payload.get("new_password2", payload.get("new_password")),
         )
 
     @staticmethod
@@ -1246,27 +1254,32 @@ class AuthAPI:
                 defaultAuthFunction=auth.form_source.change_password
             )
 
-        if request.json is None:
+        payload = request.POST if (request.json is None) else request.json
+
+        if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
         return auth.change_password(
             auth.get_user(safe=False),  # refactor make faster
-            request.json.get("new_password"),
-            request.json.get("old_password"),
+            payload.get("new_password"),
+            payload.get("old_password"),
         )
 
     @staticmethod
     @api_wrapper
     def change_email(auth):
-        if request.json is None:
+
+        payload = request.POST if (request.json is None) else request.json
+
+        if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
         return auth.change_email(
             auth.get_user(safe=False),
-            request.json.get("new_email"),
-            request.json.get("password"),
+            payload.get("new_email"),
+            payload.get("password"),
         )
 
     @staticmethod
@@ -1279,12 +1292,15 @@ class AuthAPI:
 
         if request.method == "GET":
             return {"user": auth.get_user()}
-        if request.json is None:
+        
+        payload = request.POST if (request.json is None) else request.json
+        
+        if payload is None:
             return auth._error(
-                auth.param.messages["errors"].get("no_json_post_payload")
+                auth.param.messages["errors"].get("no_post_payload")
             )
         else:
-            return auth.update_profile(auth.get_user(), **request.json)
+            return auth.update_profile(auth.get_user(), **payload)
 
 
 class DefaultAuthForms:
