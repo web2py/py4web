@@ -101,6 +101,8 @@ class GridClassStyle:
         "grid-search-form-tr": "grid-search-form-tr",
         "grid-search-form-td": "grid-search-form-td",
         "grid-search-boolean": "grid-search-boolean",
+        "grid-header-element": "grid-header-element info",
+        "grid-footer-element": "grid-footer-element info",
     }
 
     styles = {
@@ -139,13 +141,14 @@ class GridClassStyle:
         "grid-cell-type-datetime": "white-space: nowrap; vertical-align: middle; text-align: right;",
         "grid-cell-type-upload": "white-space: nowrap; vertical-align: middle; text-align: center;",
         "grid-cell-type-list": "white-space: nowrap; vertical-align: middle; text-align: left;",
-        "grid-cell-type-int": "white-space: nowrap; vertical-align: middle; text-align: right;",
         # specific for custom form
         "grid-search-form": "",
         "grid-search-form-table": "",
         "grid-search-form-tr": "border-bottom: none;",
         "grid-search-form-td": "",
         "grid-search-boolean": "",
+        "grid-header-element": "margin-top:4px; height:34px; line-height:34px;",
+        "grid-footer-element": "margin-top:4px; height:34px; line-height:34px;",
     }
 
     @classmethod
@@ -203,6 +206,8 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-search-form-tr": "grid-search-form-tr",
         "grid-search-form-td": "grid-search-form-td pr-1",
         "grid-search-boolean": "grid-search-boolean",
+        "grid-header-element": "grid-header-element button",
+        "grid-footer-element": "grid-footer-element button",
     }
 
     styles = {
@@ -248,6 +253,8 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-search-form-tr": "",
         "grid-search-form-td": "",
         "grid-search-boolean": "padding-top: .5rem;",
+        "grid-header-element": "",
+        "grid-footer-element": "",
     }
 
 
@@ -1246,7 +1253,9 @@ class Grid:
             )
         if self.param.header_elements and len(self.param.header_elements) > 0:
             for element in self.param.header_elements:
-                if callable(element):
+                if isinstance(element, str):
+                    html.append(XML(element))
+                elif callable(element):
                     grid_header.append(element())
                 else:
                     grid_header.append(
@@ -1258,10 +1267,10 @@ class Grid:
                             additional_classes=element.additional_classes,
                             message=element.message,
                             override_classes=self.param.grid_class_style.classes.get(
-                                "grid-new-button", ""
+                                "grid-header-element", ""
                             ),
                             override_styles=self.param.grid_class_style.styles.get(
-                                "grid-new-button"
+                                "grid-trailer-element"
                             ),
                         )
                     )
@@ -1309,7 +1318,9 @@ class Grid:
 
         if self.param.footer_elements and len(self.param.footer_elements) > 0:
             for element in self.param.footer_elements:
-                if callable(element):
+                if isinstance(element, str):
+                    html.append(XML(element))
+                elif callable(element):
                     html.append(element())
                 else:
                     html.append(
@@ -1321,10 +1332,10 @@ class Grid:
                             additional_classes=element.additional_classes,
                             message=element.message,
                             override_classes=self.param.grid_class_style.classes.get(
-                                "grid-new-button", ""
+                                "grid-footer-element", ""
                             ),
                             override_styles=self.param.grid_class_style.styles.get(
-                                "grid-new-button"
+                                "grid-footer-element"
                             ),
                         )
                     )
