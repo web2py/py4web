@@ -9,8 +9,25 @@ from urllib.parse import urlparse
 
 import ombott
 from pydal.objects import Field, FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
-                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TAG,
+    TBODY,
+    TD,
+    TH,
+    THEAD,
+    TR,
+    XML,
+    A,
+    I,
+)
 
 from py4web import HTTP, URL, redirect, request
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -404,6 +421,8 @@ class Grid:
             edit_submit_value=None,
             edit_action_button_text="Edit",
             delete_action_button_text="Delete",
+            header_elements=None,
+            footer_elements=None,
         )
 
         #  instance variables that will be computed
@@ -1225,6 +1244,27 @@ class Grid:
                     ),
                 )
             )
+        if self.param.header_elements and len(self.param.header_elements) > 0:
+            for element in self.param.header_elements:
+                if callable(element):
+                    grid_header.append(element())
+                else:
+                    grid_header.append(
+                        self._make_action_button(
+                            url=element.url,
+                            button_text=self.T(element.text),
+                            icon=element.icon,
+                            icon_size="normal",
+                            additional_classes=element.additional_classes,
+                            message=element.message,
+                            override_classes=self.param.grid_class_style.classes.get(
+                                "grid-new-button", ""
+                            ),
+                            override_styles=self.param.grid_class_style.styles.get(
+                                "grid-new-button"
+                            ),
+                        )
+                    )
 
         #  build the search form if provided
         if self.param.search_form:
@@ -1266,6 +1306,29 @@ class Grid:
             footer.append(self._make_table_pager())
 
         html.append(footer)
+
+        if self.param.footer_elements and len(self.param.footer_elements) > 0:
+            for element in self.param.footer_elements:
+                if callable(element):
+                    html.append(element())
+                else:
+                    html.append(
+                        self._make_action_button(
+                            url=element.url,
+                            button_text=self.T(element.text),
+                            icon=element.icon,
+                            icon_size="normal",
+                            additional_classes=element.additional_classes,
+                            message=element.message,
+                            override_classes=self.param.grid_class_style.classes.get(
+                                "grid-new-button", ""
+                            ),
+                            override_styles=self.param.grid_class_style.styles.get(
+                                "grid-new-button"
+                            ),
+                        )
+                    )
+
         return html
 
     def render(self):
