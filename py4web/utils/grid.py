@@ -450,11 +450,15 @@ class Grid:
             self.process()
 
     def is_creatable(self):
+        if self.param.groupby:
+            return False
         if callable(self.param.create):
             return self.param.create()
         return self.param.create
 
     def is_editable(self, row):
+        if self.param.groupby:
+            return False
         if callable(self.param.editable):
             return self.param.editable(row)
         return self.param.editable
@@ -465,6 +469,8 @@ class Grid:
         return self.param.details
 
     def is_deletable(self, row):
+        if self.param.groupby:
+            return False
         if callable(self.param.deletable):
             return self.param.deletable(row)
         return self.param.deletable
