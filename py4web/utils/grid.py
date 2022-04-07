@@ -8,7 +8,7 @@ import datetime
 from urllib.parse import urlparse
 
 import ombott
-from pydal.objects import Field, FieldVirtual
+from pydal.objects import Field, FieldVirtual, Expression
 from yatl.helpers import (
     CAT,
     DIV,
@@ -503,6 +503,15 @@ class Grid:
             self.param.field_id = db[self.tablename]._id
 
         self.record_id = safe_int(parts[1] if len(parts) > 1 else None, default=None)
+
+        #  if any columns are Expression but not Field, get the field info from 'first' attribute
+        converted_columns = []
+        for col in self.param.columns:
+            if isinstance(col, Expression) and not isinstance(col, Field):
+                converted_columns.append(col.first)
+            else:
+                converted_columns.append(col)
+        self.param.columns = converted_columns
 
         table = db[self.tablename]
         if not self.param.columns:
