@@ -504,6 +504,11 @@ class Grid:
 
         self.record_id = safe_int(parts[1] if len(parts) > 1 else None, default=None)
 
+        table = db[self.tablename]
+        if not self.param.columns:
+            # if no column specified use all fields
+            self.param.columns = [field for field in table if field.readable]
+
         #  if any columns are Expression but not Field, get the field info from 'first' attribute
         converted_columns = []
         for col in self.param.columns:
@@ -513,10 +518,7 @@ class Grid:
                 converted_columns.append(col)
         self.param.columns = converted_columns
 
-        table = db[self.tablename]
         if not self.param.columns:
-            # if no column specified use all fields
-            self.param.columns = [field for field in table if field.readable]
             self.needed_fields = self.param.columns[:]
         elif any(isinstance(col, Column) for col in self.param.columns):
             # if we use columns we have to get all fields and assume a single table
