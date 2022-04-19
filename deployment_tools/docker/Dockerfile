@@ -1,27 +1,18 @@
-# please change :
-# password.txt with your desire filename
-# password_admin with your desire password admin
-# 8000 with your available port
 
 FROM ubuntu:latest
 
 ARG user=py4web
-ARG password=none
 
-RUN apt update && apt install -y git python3 python3-pip memcached
-
-RUN service memcached restart
-
-RUN groupadd -r $user && useradd -m -r -g $user $user
-
-RUN python3 -m pip install -U py4web
+RUN apt update && \
+    apt install -y git python3 python3-pip memcached && \
+    service memcached restart && \
+    groupadd -r $user && \
+    useradd -m -r -g $user $user && \
+    python3 -m pip install -U py4web
 
 USER $user
 
 RUN cd /home/$user/ && py4web setup --yes apps
-
-RUN cd /home/$user/ && \
-    if [ "$password" = "none" ]; then echo "no admin"; else py4web set_password < "$password"; fi
 
 EXPOSE 8000
 
