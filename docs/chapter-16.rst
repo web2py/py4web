@@ -582,7 +582,7 @@ which is used by the Python T object in py4web. So basically a client-side T.
    T.translations = {'dog': {0: 'no cane', 1: 'un case', 2: '{n} cani', 10: 'tanti cani'}};
    var message = T('dog').format({n: 5}); // "5 cani"
 
-The intended usage is to create a server endopoint that can provide translations
+The intended usage is to create a server endpoint that can provide translations
 for the client accepted-language, obtain T.translations via ajax get, and then use 
 T to translate and pluralize all messages clientside rather than serverside.
 
@@ -592,7 +592,7 @@ Prevents a function from stepping on itself.
 
 .. code:: javascript
 
-   setInterval(500, Q.debounce(function(){console.log("hello!)}, 200);
+   setInterval(500, Q.debounce(function(){console.log("hello!")}, 200);
 
 and the function will be called every 500ms
 but will skip if the previous call did not terminate.
@@ -605,7 +605,7 @@ Prevents a function from being called too often;
 
 .. code:: javascript
 
-   Q("#element").onclick = Q.debounce(function(){console.log("clicked!)}, 1000);
+   Q("#element").onclick = Q.debounce(function(){console.log("clicked!")}, 1000);
 
 If the element is clicked more often than once every 1000ms, the other clicks will be ignored.
 
