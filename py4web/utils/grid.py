@@ -8,9 +8,26 @@ import datetime
 from urllib.parse import urlparse
 
 import ombott
-from pydal.objects import Field, FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
-                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
+from pydal.objects import Field, FieldVirtual, Expression
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TAG,
+    TBODY,
+    TD,
+    TH,
+    THEAD,
+    TR,
+    XML,
+    A,
+    I,
+)
 
 from py4web import HTTP, URL, redirect, request
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -336,6 +353,7 @@ class Grid:
         formstyle=FormStyleDefault,
         grid_class_style=GridClassStyle,
         T=lambda text: text,
+        groupby=None,
         # deprecated
         fields=None,
     ):
@@ -379,6 +397,7 @@ class Grid:
             show_id=show_id,
             orderby=orderby,
             left=left,
+            groupby=groupby,
             search_form=search_form,
             search_queries=search_queries,
             headings=headings or [],
@@ -431,11 +450,15 @@ class Grid:
             self.process()
 
     def is_creatable(self):
+        if self.param.groupby:
+            return False
         if callable(self.param.create):
             return self.param.create()
         return self.param.create
 
     def is_editable(self, row):
+        if self.param.groupby:
+            return False
         if callable(self.param.editable):
             return self.param.editable(row)
         return self.param.editable
@@ -446,6 +469,8 @@ class Grid:
         return self.param.details
 
     def is_deletable(self, row):
+        if self.param.groupby:
+            return False
         if callable(self.param.deletable):
             return self.param.deletable(row)
         return self.param.deletable
@@ -483,6 +508,17 @@ class Grid:
         if not self.param.columns:
             # if no column specified use all fields
             self.param.columns = [field for field in table if field.readable]
+
+        #  if any columns are Expression but not Field, get the field info from 'first' attribute
+        converted_columns = []
+        for col in self.param.columns:
+            if isinstance(col, Expression) and not isinstance(col, Field):
+                converted_columns.append(col.first)
+            else:
+                converted_columns.append(col)
+        self.param.columns = converted_columns
+
+        if not self.param.columns:
             self.needed_fields = self.param.columns[:]
         elif any(isinstance(col, Column) for col in self.param.columns):
             # if we use columns we have to get all fields and assume a single table
@@ -637,7 +673,15 @@ class Grid:
             if self.param.left:
                 select_params["left"] = self.param.left
 
-            if self.param.left:
+            if self.param.groupby:
+                select_params["groupby"] = self.param.groupby
+
+            if self.param.groupby:
+                #  need groupby fields in select to get proper count
+                self.total_number_of_rows = len(
+                    db(query).select(*self.param.groupby, **select_params)
+                )
+            elif self.param.left:
                 # TODO: maybe this can be made more efficient
                 self.total_number_of_rows = len(
                     db(query).select(db[self.tablename].id, **select_params)
