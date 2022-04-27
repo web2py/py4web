@@ -121,7 +121,7 @@ class URLSigner(Fixture):
 
     def on_request(self, context):
         """Creates the signing key if necessary."""
-        print("on_request", self.session.get("_signature_key")) 
+        # print("on_request", self.session.get("_signature_key")) 
         if self.session is not None and self.session.get("_signature_key") is None:
             key = str(uuid.uuid1())
             self.session["_signature_key"] = key
