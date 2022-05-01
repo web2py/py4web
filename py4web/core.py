@@ -677,7 +677,6 @@ class Session(Fixture):
         self_local = self.local
         self_local.data["timestamp"] = time.time()
         self_local.data["session_cookie_name"] = self_local.session_cookie_name
-        print("saving", self_local.data)
         if self.storage:
             cookie_data = self_local.data["uuid"]
             self.storage.set(cookie_data, json.dumps(self_local.data), self.expiration)
