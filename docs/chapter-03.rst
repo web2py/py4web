@@ -7,7 +7,7 @@ Understanding the design
 
 Before everything else it is important to understand that unlike other web frameworks,
 is not only a python module that can be imported by apps. It is also a program that
-is in charge of starting a apps. For this reason you need two things:
+is in charge of starting some apps. For this reason you need two things:
 
 -  the py4web module (which you download from our web site, from pypi, from github)
 -  one or more folders containing collections of apps you want to run.
@@ -523,6 +523,15 @@ For example, inside a shell you can
 With the ``-all`` option you’ll get the version of all the available python
 modules, too.
 
+
+Special installations
+---------------------
+
+There are special cases in which you cannot or don't want to use one of the generic installation
+instructions we've already described. There is a special folder called ``deployment_tools`` in
+the py4web repository that collects some special recipes. They are briefly described here, along
+with some tips and tricks.
+
 HTTPS
 ~~~~~
 
@@ -581,8 +590,8 @@ and then start the application using cli:
 The wsgi function takes arguments with the same name as the command line arguments.
 
 
-Deployment on GCloud (aka Google App Engine)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Deployment on GCloud (aka GAE - Google App Engine)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Login into the `Gcloud console <https://console.cloud.google.com/>`__ and
 create a new project. You will obtain a project id that looks like
@@ -646,3 +655,19 @@ tutorial <https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-sou
 . The bottle_app.py script is in
 ``py4web/deployment_tools/pythonanywhere.com/bottle_app.py``
 
+
+Deployment on Docker/Podman
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On ``deployment_tools/docker`` there is a simple Dockerfile for quickly running a py4web container. There is also
+a docker-compose.yml file for setting up a more complex multi-container with PostgreSQL.
+
+Note that you can use them also with Podman, which has the advantage of does not requiring sudo and does not
+running any background daemon.
+
+
+Deployment on Ubuntu
+~~~~~~~~~~~~~~~~~~~~
+
+On ``deployment_tools/ubuntu`` there is a bash script tested with Ubuntu Server 20.04.03 LTS. It uses nginx and self-signed
+certificates. It optionally manage iptables, too.

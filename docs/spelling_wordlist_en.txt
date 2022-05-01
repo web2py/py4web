@@ -1,3 +1,4 @@
+ajax
 api
 appadmin
 appname
@@ -26,6 +27,7 @@ cd
 checkboxes
 choosen
 cli
+clientside
 config
 couchdb
 CouchDB
@@ -38,15 +40,18 @@ cubriddb
 customizable
 cx
 dal
+datalist
 datastore
 Datetime
 dbi
 de
+debounce
 deletable
 denormalization
 denormalize
 denormalizes
 dismissible
+Dockerfile
 doesn
 dropdown
 dropdowns
@@ -100,6 +105,7 @@ ingresu
 IngresUnicode
 init
 instantiation
+iptables
 IPv
 iterable
 iterables
@@ -147,6 +153,7 @@ mysql
 MySQLdb
 natively
 ndb
+nginx
 Northwind
 NoSQL
 OAuth
@@ -162,6 +169,7 @@ pdkdf
 pydal
 PyTDS
 png
+Podman
 postfix
 Postgre
 PostgreBoolean
@@ -197,6 +205,7 @@ pyweb
 querystring
 readonly
 redis
+reimplementation
 resultset
 rname
 rocketServer
@@ -206,6 +215,7 @@ Schafer
 se
 selectorN
 serializable
+serverside
 severities
 somefile
 spatialite
@@ -219,6 +229,7 @@ subfolder
 subfolders
 submodules
 subnet
+sudo
 subnets
 subqueries
 substring
@@ -233,6 +244,7 @@ teradata
 Teradata
 teredo
 textarea
+tracebacks
 txt
 ual
 un
@@ -258,6 +270,7 @@ websocket
 wsgi
 xss
 yaml
+yml
 Yatl
 yourapp
 zxJDBC
