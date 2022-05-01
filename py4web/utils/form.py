@@ -743,9 +743,11 @@ class Form(object):
         if self.record:
             self.vars = self._read_vars_from_record(table)
 
-        if not readonly:  # and request.method != "GET":
+        if not readonly:
             if request.method == "GET":
                 post_vars = request.GET
+                if not post_vars:
+                    return
             else:
                 post_vars = request.POST
 
