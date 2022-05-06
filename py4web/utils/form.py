@@ -8,8 +8,22 @@ import jwt
 from pydal._compat import to_native
 from pydal.objects import FieldVirtual
 from pydal.validators import Validator
-from yatl.helpers import (DIV, FORM, INPUT, LABEL, OPTION, SELECT, SPAN, TABLE,
-                          TD, TEXTAREA, TR, XML, A, P)
+from yatl.helpers import (
+    DIV,
+    FORM,
+    INPUT,
+    LABEL,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TD,
+    TEXTAREA,
+    TR,
+    XML,
+    A,
+    P,
+)
 
 from py4web import HTTP, request, response
 from py4web.utils.param import Param
@@ -743,6 +757,9 @@ class Form(object):
         if self.record:
             self.vars = self._read_vars_from_record(table)
 
+        if self.csrf_protection:
+            self._sign_form()
+
         if not readonly:
             if request.method == "GET":
                 post_vars = request.GET
@@ -831,8 +848,6 @@ class Form(object):
             elif self.record:
                 # This form should not be processed.  We return the same as for GET.
                 self.vars = self._read_vars_from_record(table)
-        if self.csrf_protection:
-            self._sign_form()
 
     def _read_vars_from_record(self, table):
         if isinstance(table, list):
