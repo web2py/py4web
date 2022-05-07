@@ -8,8 +8,22 @@ import jwt
 from pydal._compat import to_native
 from pydal.objects import FieldVirtual
 from pydal.validators import Validator
-from yatl.helpers import (DIV, FORM, INPUT, LABEL, OPTION, SELECT, SPAN, TABLE,
-                          TD, TEXTAREA, TR, XML, A, P)
+from yatl.helpers import (
+    DIV,
+    FORM,
+    INPUT,
+    LABEL,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TD,
+    TEXTAREA,
+    TR,
+    XML,
+    A,
+    P,
+)
 
 from py4web import HTTP, request, response
 from py4web.utils.param import Param
@@ -744,13 +758,7 @@ class Form(object):
             self.vars = self._read_vars_from_record(table)
 
         if not readonly:
-            if request.method == "GET":
-                post_vars = request.GET
-                if not post_vars:
-                    return
-            else:
-                post_vars = request.POST
-
+            post_vars = request.GET if request.method == "GET" else request.POST
             form_vars = copy.deepcopy(request.forms)
             for k in form_vars:
                 self.vars[k] = form_vars[k]
@@ -759,7 +767,7 @@ class Form(object):
 
             # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
             # Notice: we never expose the crsf uuid, we only use to sign the form uuid
-            if request.method in ["GET", "POST"]:
+            if request.method == "POST" or (request.method == "GET" and post_vars):
                 if not self.csrf_protection or self._verify_form(post_vars):
                     process = True
 
