@@ -41,6 +41,7 @@ class Grid(Fixture):
         :param default_sort: array that indicates the default sorting order.
         :param auth: specify auth if you need it added as widget.
         """
+        print("Path:", path)
         assert session is not None, "You must provide a session."
         self.path = path
         self.search_placeholder = search_placeholder
