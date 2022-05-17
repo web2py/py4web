@@ -93,4 +93,26 @@ db.define_table(
 if db(db.thing).isempty():
     populate(db.thing, 100)
 
+db.define_table(
+    'vue_form_table',
+    Field("first_name", default="Jane"),
+    Field("last_name", default="Smith", writable=False),
+    Field("read", "boolean", default=True),
+    Field(
+        "animal",
+        requires=IS_IN_SET(["cat", "dog", "bird"]),
+        default="dog",
+        writable=False,
+    ),
+    Field(
+        "choice",
+        requires=IS_IN_SET({"c": "cat", "d": "dog", "b": "bird"}),
+        default="d",
+    ),
+    Field("arrival_time", "datetime", default=get_time),
+    Field("date_of_birth", "date"),
+    Field("narrative", "text"),
+)
+
+
 db.commit()

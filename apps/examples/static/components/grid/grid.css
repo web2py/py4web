@@ -8,6 +8,21 @@ span.disabled {
 th.clickable {
     cursor: pointer;
 }
-.grid td:last-child {
-    width:1px
+.pagination {
+    direction: rtl;
+}
+.pagination-symbols {
+    direction: ltr;
+}
+
+input.search {
+    width: 100%;
+}
+
+.table.is-striped tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.table.is-striped tr:hover {
+    background-color: #faf7f0;
 }

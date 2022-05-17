@@ -28,32 +28,25 @@ Warning: Fixtures MUST be declared with @action.uses({fixtures}) else your app w
 import datetime
 import uuid
 
-from py4web import action, request, abort, redirect, URL, Field
+from py4web import action, request, abort, redirect, URL, HTTP
 from py4web.utils.form import Form, FormStyleBulma
 from py4web.utils.url_signer import URLSigner
 from pydal.validators import *
 
-from yatl.helpers import A
+from yatl.helpers import A, I, SPAN, DIV
 from .common import db, session, T, cache, auth
 from .components.grid import Grid
-from .components.vueform import VueForm, InsertForm, TableForm
+from .components.vueform import VueForm
 from .components.fileupload import FileUpload
 from .components.starrater import StarRater
 
-signed_url = URLSigner(session, lifespan=3600)
+url_signer = URLSigner(session, lifespan=3600)
 
 
 # -----------------------------
 # Sample grid.
 
 vue_grid = Grid("grid_api", session)
-
-@action("vuegrid", method=["GET"])
-@action.uses("vuegrid.html", vue_grid)
-def vuegrid():
-    """This page generates a sample grid."""
-    # We need to instantiate our grid component.
-    return dict(grid=vue_grid())
 
 @action('vuegrid_bulma', method=["GET"])
 @action.uses('vuegrid_bulma.html', vue_grid)
@@ -82,99 +75,143 @@ def get_time():
     return datetime.datetime.utcnow()
 
 
-vue_form = VueForm(
-    "test_form",
-    session,
-    [
-        Field("name", default="Luca"),
-        Field("last_name", default="Smith", writable=False),
-        Field("read", "boolean", default=True),
-        Field(
-            "animal",
-            requires=IS_IN_SET(["cat", "dog", "bird"]),
-            default="dog",
-            writable=False,
-        ),
-        Field(
-            "choice",
-            requires=IS_IN_SET({"c": "cat", "d": "dog", "b": "bird"}),
-            default="d",
-        ),
-        Field("arrival_time", "datetime", default=get_time),
-        Field("date_of_birth", "date"),
-        Field("narrative", "text"),
-    ],
-    readonly=False,
-    redirect_url="index",
-)
+class ViewForm(VueForm):
+
+    def __init__(self):
+        super().__init__(db.vue_form_table, session, 'view-form-vue',
+                         use_id=True, readonly=True, db=db, auth=auth)
+
+    def read_values(self, record_id):
+        values = {}
+        assert record_id is not None
+        row = self.db(self.db.vue_form_table.id == record_id).select().first()
+        if row is not None:
+            for f in self.fields.values():
+                ff = f["field"]
+                values[ff.name] = ff.formatter(row.get(ff.name))
+        return values
+
+    def process_post(self, record_id, values):
+        raise HTTP(403) # Should not occur.
 
 
-@action("vue_form", method=["GET"])
-@action.uses("vueform.html", vue_form)
-def vueform():
-    return dict(form=vue_form())
+class InsertForm(VueForm):
 
-@action('vue_form_bulma', method=["GET"])
-@action.uses("vueform_bulma.html", vue_form)
-def vueform_bulma():
-    return dict(form=vue_form())
+    def __init__(self):
+        super().__init__(db.vue_form_table, session, 'insert-form-vue',
+                         signer=url_signer, db=db, auth=auth)
 
-# -----------------------------
-# Insertion form.
+    def read_values(self, record_id):
+        values = {}
+        for f in self.fields.values():
+            ff = f["field"]
+            values[ff.name] = ff.formatter(None)
+        return values
 
-
-def not_too_expensive(fields):
-    """Validation function that checks that the total price is low enough."""
-    if (
-        fields["product_quantity"]["validated_value"]
-        * fields["product_cost"]["validated_value"]
-    ) > 1000000:
-        err = "Please insert only products with total value of less than a million."
-        fields["product_quantity"]["error"] = err
-        fields["product_cost"]["error"] = err
+    def process_post(self, record_id, values):
+        new_id = self.db.vue_form_table.insert(**values)
+        return redirect(URL('list_vue_table'))
 
 
-insert_form = InsertForm(
-    "insert_product",
-    session,
-    db.product,
-    validate=not_too_expensive,
-    redirect_url="index",
-)
+class EditForm(VueForm):
+
+    def __init__(self):
+        super().__init__(db.vue_form_table, session, 'edit-form-vue',
+                         use_id=True, signer=url_signer, db=db, auth=auth)
+
+    def read_values(self, record_id):
+        values = {}
+        assert record_id is not None
+        row = self.db(self.db.assignment.id == record_id).select().first()
+        if row is not None:
+            for f in self.fields.values():
+                ff = f["field"]
+                values[ff.name] = ff.formatter(row.get(ff.name))
+        return values
+
+    def process_post(self, record_id, values):
+        self.db(self.db.vue_form_table.id == record_id).update(**values)
+        return redirect(URL('list_vue_table'))
 
 
-@action("insert_form", method=["GET"])
-@action.uses("vueform.html", insert_form)
-def insertform():
-    return dict(form=insert_form())
+class GridForVueForm(Grid):
 
-@action('insert_form_bulma', method=["GET"])
-@action.uses('vueform_bulma.html', insert_form)
-def insertform_bulma():
-    return dict(form=insert_form())
+    def __init__(self):
+        super().__init__('grid_for_vue_forms', session, use_id=False, db=db, auth=auth)
 
-# -----------------------------
-# Update form.
-update_form = TableForm(
-    "update_product",
-    session,
-    db.product,
-    validate=not_too_expensive,
-    redirect_url="index",
-)
+    def api(self, id=None):
+        """Returns data according to the API request."""
+        # Builds the header.
+        header = dict(
+            is_header=True,
+            cells=[
+                dict(text="First Name", sortable=True),
+                dict(text="Last Name", sortable=True),
+                dict(text="Arrival Time", sortable=True,)
+            ]
+        )
+        # Gets the request parameters, and copies the sort order in the header.
+        req = self._get_request_params(header)
+        timezone = request.query.get("timezone")
+        q = request.query.get("q", "")  # Query string
+        # Forms the query.
+        if q:
+            query = db(db.vue_form_table.first_name.contains(q)
+                       | db.vue_form_table.last_name.contains(q))
+        else:
+            query = db.vue_form_table.ALL
+        # Forms the select.
+        rows = db(query).select(**req.search_args)
+        # Builds the result rows.
+        result_rows = []
+        for r in rows:
+            cells = []
+            cells.append(dict(text=r.first_name))
+            cells.append(dict(text=r.last_name))
+            cells.append(dict(text=r.arrives_on.isoformat(), type="date"))
+            cells.append(dict(
+                raw_html=SPAN(
+                    A(I(_class="fa fa-eye"),
+                      _href=URL('view-form-vue', r.id, signer=url_signer), _class="button"),
+                    A(I(_class="fa fa-pencil"), _href=URL('edit_form_vue', r.id, signer=url_signer, _class="button"))
+                ).xml()
+            ))
+            result_rows.append(dict(cells=cells, has_delete=True))
+        has_more, result_rows = self._has_more(result_rows)
+        return dict(
+            page=req.page,
+            has_search=True,
+            search_placeholder="",
+            has_more=has_more,
+            rows=[header] + result_rows
+        )
 
 
-@action("update_form", method=["GET"])
-@action.uses("vueform.html", update_form)
-def updateform():
-    # For simplicity, we update the record 1.
-    return dict(form=update_form(id=1))
+## Now for the controllers.
 
-@action('update_form_bulma', method=["GET"])
-@action.uses('vueform_bulma.html', update_form)
-def updateform_bulma():
-    # For simplicity, we update the record 1.
-    return dict(form=update_form(id=1))
+vue_grid_and_forms = GridForVueForm()
+
+@action("vue_grid_and_forms")
+@action.uses("vue_grid_and_forms.html", db, session, vue_grid_and_forms)
+def vue_grid_and_forms():
+    return dict(grid=vue_grid_and_forms())
+
+edit_form = EditForm()
+
+@action('edit_form_vue/<row_id:int>')
+@action.uses('edit_form.html', db, session, edit_form, url_signer.verify())
+def edit_form_vue(row_id=None):
+    assert row_id is not None
+    return dict(form=edit_form(id=row_id, cancel_url=URL('view_grid_and_forms')))
+
+view_form = ViewForm()
+
+@action('view_form_vue/<row_id:int>')
+@action.uses('view_form.html', db, session, view_form, url_signer.verify())
+def view_form_vue(row_id=None):
+    assert row_id is not None
+    return dict(form=view_form(id=row_id, cancel_url=URL('view_grid_and_forms')))
+
 
 # -----------------------------
 # Star rater.

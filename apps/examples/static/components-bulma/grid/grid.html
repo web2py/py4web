@@ -38,7 +38,8 @@
           <!-- Non-header row -->
           <td v-for="cell in row.cells"  :class="cell.el_class">
             <button v-if="cell.is_button" class="button">
-              <a v-if="cell.url" :href="cell.url">{{cell.text}}</a>
+              <span v-if="cell.raw_html" v-html="cell.raw_html"></span>
+              <a v-else-if="cell.url" :href="cell.url">{{cell.text}}</a>
               <span v-else>{{cell.text}}</span>
             </button>
             <template v-else>
