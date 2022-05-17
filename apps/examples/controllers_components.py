@@ -258,6 +258,7 @@ def star_rater_vue_bulma():
     return dict(get_posts_url=URL('star_rater_get_posts'))
 
 @action("star_rater_get_posts", method=["GET"])
+@action.uses(star_rater)
 def star_rater_get_posts():
     posts = [
         {"id": 1, "content": "Hello there"},

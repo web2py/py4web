@@ -21,7 +21,7 @@ class StarRater(Fixture):
         # Creates an action (an entry point for URL calls),
         # mapped to the api method, that can be used to request pages
         # for the table.
-        self.__prerequisites__ = [session]
+        self.__prerequisites__ = [session, self.signer]
         args = list(filter(None, [session, db, auth, self.signer.verify()]))
         f = action.uses(*args)(self.get_stars)
         action(self.path + "/<id>", method=["GET"])(f)
