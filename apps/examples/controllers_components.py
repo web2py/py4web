@@ -137,7 +137,13 @@ class EditForm(VueForm):
 class GridForVueForm(Grid):
 
     def __init__(self):
-        super().__init__('grid_for_vue_forms', session, use_id=False, db=db)
+        super().__init__('grid_for_vue_forms', session, use_id=False, db=db,
+                         sort_fields=[
+                             db.vue_form_table.first_name,
+                             db.vue_form_table.last_name,
+                             db.vue_form_table.arrival_time,
+                         ],
+                         default_sort=[0, 0, 1])
 
     def api(self, id=None):
         """Returns data according to the API request."""

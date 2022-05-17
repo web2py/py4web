@@ -28,8 +28,8 @@
         <template v-if="row.is_header">
           <!-- Header row -->
           <th v-for="cell in row.cells" :class="{'clickable': cell.sortable, 'has-text-link': cell.sortable}" @click="do_sort(cell._idx)">
-            <i v-if="cell.sortable && cell.sort > 0" class="fa fa-sort-asc"></i>
-            <i v-if="cell.sortable && cell.sort < 0" class="fa fa-sort-desc"></i>
+            <i v-if="cell.sortable && cell.sort > 0" class="fa fa-sort-up"></i>
+            <i v-if="cell.sortable && cell.sort < 0" class="fa fa-sort-down"></i>
             <i v-if="cell.sortable && cell.sort === 0" class="fa fa-sort"></i>
             {{cell.text}}
           </th>
