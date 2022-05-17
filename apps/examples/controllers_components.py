@@ -122,7 +122,7 @@ class EditForm(VueForm):
     def read_values(self, record_id):
         values = {}
         assert record_id is not None
-        row = self.db(self.db.assignment.id == record_id).select().first()
+        row = self.db(self.db.vue_form_table.id == record_id).select().first()
         if row is not None:
             for f in self.fields.values():
                 ff = f["field"]
@@ -147,7 +147,8 @@ class GridForVueForm(Grid):
             cells=[
                 dict(text="First Name", sortable=True),
                 dict(text="Last Name", sortable=True),
-                dict(text="Arrival Time", sortable=True,)
+                dict(text="Arrival Time", sortable=True),
+                dict(text="", sortable=False), # Icons
             ]
         )
         # Gets the request parameters, and copies the sort order in the header.
@@ -172,9 +173,10 @@ class GridForVueForm(Grid):
             cells.append(dict(
                 raw_html=SPAN(
                     A(I(_class="fa fa-eye"),
-                      _href=URL('view-form-vue', r.id, signer=url_signer), _class="button"),
-                    A(I(_class="fa fa-pencil"),
-                      _href=URL('edit_form_vue', r.id, signer=url_signer), _class="button")
+                      _href=URL('view_form_vue', r.id, signer=url_signer)),
+                    " ",
+                    A(I(_class="fa fa-pen"),
+                      _href=URL('edit_form_vue', r.id, signer=url_signer))
                 ).xml()
             ))
             result_rows.append(dict(cells=cells, has_delete=True))
