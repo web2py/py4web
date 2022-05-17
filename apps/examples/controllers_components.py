@@ -75,69 +75,69 @@ def get_time():
     return datetime.datetime.utcnow()
 
 
+class ViewForm(VueForm):
 
-# class ViewForm(VueForm):
-#
-#     def __init__(self):
-#         super().__init__(db.vue_form_table, session, 'view-form-vue',
-#                          use_id=True, readonly=True, db=db, auth=auth)
-#
-#     def read_values(self, record_id):
-#         values = {}
-#         assert record_id is not None
-#         row = self.db(self.db.vue_form_table.id == record_id).select().first()
-#         if row is not None:
-#             for f in self.fields.values():
-#                 ff = f["field"]
-#                 values[ff.name] = ff.formatter(row.get(ff.name))
-#         return values
-#
-#     def process_post(self, record_id, values):
-#         raise HTTP(403) # Should not occur.
-#
-#
-# class InsertForm(VueForm):
-#
-#     def __init__(self):
-#         super().__init__(db.vue_form_table, session, 'insert-form-vue',
-#                          signer=url_signer, db=db, auth=auth)
-#
-#     def read_values(self, record_id):
-#         values = {}
-#         for f in self.fields.values():
-#             ff = f["field"]
-#             values[ff.name] = ff.formatter(None)
-#         return values
-#
-#     def process_post(self, record_id, values):
-#         new_id = self.db.vue_form_table.insert(**values)
-#         return redirect(URL('list_vue_table'))
-#
-#
-# class EditForm(VueForm):
-#
-#     def __init__(self):
-#         super().__init__(db.vue_form_table, session, 'edit-form-vue',
-#                          use_id=True, signer=url_signer, db=db, auth=auth)
-#
-#     def read_values(self, record_id):
-#         values = {}
-#         assert record_id is not None
-#         row = self.db(self.db.assignment.id == record_id).select().first()
-#         if row is not None:
-#             for f in self.fields.values():
-#                 ff = f["field"]
-#                 values[ff.name] = ff.formatter(row.get(ff.name))
-#         return values
-#
-#     def process_post(self, record_id, values):
-#         self.db(self.db.vue_form_table.id == record_id).update(**values)
-#         return redirect(URL('list_vue_table'))
+    def __init__(self):
+        super().__init__(db.vue_form_table, session, 'view-form-vue',
+                         use_id=True, readonly=True, db=db, auth=auth)
+
+    def read_values(self, record_id):
+        values = {}
+        assert record_id is not None
+        row = self.db(self.db.vue_form_table.id == record_id).select().first()
+        if row is not None:
+            for f in self.fields.values():
+                ff = f["field"]
+                values[ff.name] = ff.formatter(row.get(ff.name))
+        return values
+
+    def process_post(self, record_id, values):
+        raise HTTP(403) # Should not occur.
+
+
+class InsertForm(VueForm):
+
+    def __init__(self):
+        super().__init__(db.vue_form_table, session, 'insert-form-vue',
+                         signer=url_signer, db=db, auth=auth)
+
+    def read_values(self, record_id):
+        values = {}
+        for f in self.fields.values():
+            ff = f["field"]
+            values[ff.name] = ff.formatter(None)
+        return values
+
+    def process_post(self, record_id, values):
+        new_id = self.db.vue_form_table.insert(**values)
+        return redirect(URL('vue_grid_and_forms'))
+
+
+class EditForm(VueForm):
+
+    def __init__(self):
+        super().__init__(db.vue_form_table, session, 'edit-form-vue',
+                         use_id=True, signer=url_signer, db=db, auth=auth)
+
+    def read_values(self, record_id):
+        values = {}
+        assert record_id is not None
+        row = self.db(self.db.assignment.id == record_id).select().first()
+        if row is not None:
+            for f in self.fields.values():
+                ff = f["field"]
+                values[ff.name] = ff.formatter(row.get(ff.name))
+        return values
+
+    def process_post(self, record_id, values):
+        self.db(self.db.vue_form_table.id == record_id).update(**values)
+        return redirect(URL('vue_grid_and_forms'))
+
 
 class GridForVueForm(Grid):
 
-    def __init__(self, path, session, db):
-        super().__init__(path, session, use_id=False, db=db)
+    def __init__(self):
+        super().__init__('grid_for_vue_forms', session, use_id=False, db=db)
 
     def api(self, id=None):
         """Returns data according to the API request."""
@@ -189,28 +189,35 @@ class GridForVueForm(Grid):
 
 ## Now for the controllers.
 
-vue_grid_for_forms = GridForVueForm('grid_for_vue_session', session, db)
+vue_grid_for_forms = GridForVueForm()
 
 @action("vue_grid_and_forms")
-@action.uses("vue_grid_and_forms.html", db, session) # , vue_grid_and_forms)
+@action.uses("vue_grid_and_forms.html", db, session, vue_grid_for_forms)
 def vue_grid_and_forms():
     return dict(grid=vue_grid_for_forms())
 
-# edit_form = EditForm()
-#
-# @action('edit_form_vue/<row_id:int>')
-# @action.uses('edit_form.html', db, session, edit_form, url_signer.verify())
-# def edit_form_vue(row_id=None):
-#     assert row_id is not None
-#     return dict(form=edit_form(id=row_id, cancel_url=URL('view_grid_and_forms')))
-#
-# view_form = ViewForm()
-#
-# @action('view_form_vue/<row_id:int>')
-# @action.uses('view_form.html', db, session, view_form, url_signer.verify())
-# def view_form_vue(row_id=None):
-#     assert row_id is not None
-#     return dict(form=view_form(id=row_id, cancel_url=URL('view_grid_and_forms')))
+insert_form = InsertForm()
+
+@action('insert_form_vue')
+@action.uses('insert_form.html', db, session, insert_form)
+def insert_form_vue():
+    return dict(form=insert_form(cancel_url=URL('view_grid_and_forms')))
+
+edit_form = EditForm()
+
+@action('edit_form_vue/<row_id:int>')
+@action.uses('edit_form.html', db, session, edit_form, url_signer.verify())
+def edit_form_vue(row_id=None):
+    assert row_id is not None
+    return dict(form=edit_form(id=row_id, cancel_url=URL('view_grid_and_forms')))
+
+view_form = ViewForm()
+
+@action('view_form_vue/<row_id:int>')
+@action.uses('view_form.html', db, session, view_form, url_signer.verify())
+def view_form_vue(row_id=None):
+    assert row_id is not None
+    return dict(form=view_form(id=row_id, cancel_url=URL('view_grid_and_forms')))
 
 
 # -----------------------------
