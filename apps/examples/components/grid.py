@@ -122,17 +122,21 @@ class Grid(Fixture):
             - page: <integer>
             - search_placeholder: <string>
             - has_more: <boolean>
+            - has_delete: <boolean> ; indicates some row can be deleted.
             - rows: <list of rows (see below)>
         A row is a dictionary, containing:
             - is_header: <boolean>
             - cells: <cells>
         <cells> is a list of dictionaries, containing:
+            - raw_html: <content>; takes precedence over other types.
             - text: <text>
             - url: <text> or None
-            - is_button: <boolean>
+            - is_button: <boolean>; buttonizes the text or URL.
             - sortable: <boolean> (valid only of the row is a header)
             - sort: <int> (+1 for sort up, -1 for sort down, 0 for no sort)
             - el_class: <text> or None (class of element, if needed)
+            - delete: set this to a URL that will cause deletion if called
+                via GET, if you want the raw to be deletable.
         All the fields except text are optional.
         This is a sample implementation only, to test code.  You should
         over-ride the api method to provide your own input for the table.

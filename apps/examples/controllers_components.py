@@ -185,11 +185,14 @@ class GridForVueForm(Grid):
                       _href=URL('edit_form_vue', r.id, signer=url_signer))
                 ).xml()
             ))
-            result_rows.append(dict(cells=cells, has_delete=True))
+            result_rows.append(dict(
+                cells=cells,
+                delete=URL('delete_row', r.id, signer=self.signer)))
         has_more, result_rows = self._has_more(result_rows)
         return dict(
             page=req.page,
             has_search=True,
+            has_delete=True,
             search_placeholder="",
             has_more=has_more,
             rows=[header] + result_rows
@@ -204,6 +207,13 @@ vue_grid_for_forms = GridForVueForm()
 @action.uses("vue_grid_and_forms.html", db, session, vue_grid_for_forms)
 def vue_grid_and_forms():
     return dict(grid=vue_grid_for_forms())
+
+@action("delete_row/<row_id:int>")
+@action.uses(db, session, url_signer.verify())
+def delete_row(row_id=None):
+    db(db.vue_form_table.id == row_id).delete()
+    return "ok"
+
 
 insert_form = InsertForm()
 
@@ -232,25 +242,20 @@ def view_form_vue(row_id=None):
 # -----------------------------
 # Star rater.
 
-star_rater = StarRater("star_rater", session)
+class MyStarRater(StarRater):
 
+    def get_stars(self, id=None):
+        """Gets the number of stars for a given id. """
+        # This is a test implementation; it should be over-ridden.
+        # 0 means no stars set.
+        return dict(num_stars= int(id) % 6)
 
-@action("star_rater", method=["GET"])
-@action.uses("starrating.html", star_rater)
-def starrater():
-    # This performs a star rating of item 1.
-    return dict(stars=star_rater(id=1))
+    def set_stars(self, id=None):
+        """Sets the number of stars."""
+        print("Number of stars of item", id, "set to:", int(request.json["num_stars"]))
+        return "ok"
 
-
-# ------------------------------
-# Star rater, instantiated from Vue.
-
-
-@action("star_rater_vue", method=["GET"])
-@action.uses("star_rater_vue.html", star_rater)
-def star_rater_vue():
-    return dict(get_posts_url=URL("star_rater_get_posts"))
-
+star_rater = MyStarRater("star_rater", session)
 
 @action('star_rater_vue_bulma', method=["GET"])
 @action.uses('star_rater_vue_bulma.html', star_rater)
@@ -267,5 +272,19 @@ def star_rater_get_posts():
     ]
     for p in posts:
         # Creates the callback URL for each rater.
-        p["url"] = star_rater.url(p["id"])
+        p["stars_callback_url"] = star_rater.url(p["id"])
     return dict(posts=posts)
+
+
+
+
+
+
+# For the other CSS.
+
+@action("star_rater_vue", method=["GET"])
+@action.uses("star_rater_vue.html", star_rater)
+def star_rater_vue():
+    return dict(get_posts_url=URL("star_rater_get_posts"))
+
+
