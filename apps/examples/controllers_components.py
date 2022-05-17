@@ -168,12 +168,13 @@ class GridForVueForm(Grid):
             cells = []
             cells.append(dict(text=r.first_name))
             cells.append(dict(text=r.last_name))
-            cells.append(dict(text=r.arrives_on.isoformat(), type="date"))
+            cells.append(dict(text=r.arrival_time.isoformat(), type="date"))
             cells.append(dict(
                 raw_html=SPAN(
                     A(I(_class="fa fa-eye"),
                       _href=URL('view-form-vue', r.id, signer=url_signer), _class="button"),
-                    A(I(_class="fa fa-pencil"), _href=URL('edit_form_vue', r.id, signer=url_signer, _class="button"))
+                    A(I(_class="fa fa-pencil"),
+                      _href=URL('edit_form_vue', r.id, signer=url_signer), _class="button")
                 ).xml()
             ))
             result_rows.append(dict(cells=cells, has_delete=True))
