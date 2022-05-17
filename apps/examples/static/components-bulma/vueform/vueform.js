@@ -70,9 +70,9 @@
                     f.date_readonly = null;
                     f.datetime_readonly = null;
                 } else {
-                    // console.log("converting time", f.value)
+                    console.log("converting time", f.value)
                     let m = luxon.DateTime.fromISO(f.value, {zone: "UTC"});
-                    // console.log("parsed:", m);
+                    console.log("parsed:", m);
                     let local_m = m.setZone(self.time_zone);
                     f.date = local_m.toFormat("y-MM-dd");
                     f.time = local_m.toLocaleString(luxon.DateTime.TIME_SIMPLE);
