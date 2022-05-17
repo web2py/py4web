@@ -110,7 +110,7 @@ class InsertForm(VueForm):
 
     def process_post(self, record_id, values):
         new_id = self.db.vue_form_table.insert(**values)
-        return redirect(URL('vue_grid_and_forms'))
+        return dict(redirect_url=URL('vue_grid_and_forms'))
 
 
 class EditForm(VueForm):
@@ -131,7 +131,7 @@ class EditForm(VueForm):
 
     def process_post(self, record_id, values):
         self.db(self.db.vue_form_table.id == record_id).update(**values)
-        return redirect(URL('vue_grid_and_forms'))
+        return dict(redirect_url=URL('vue_grid_and_forms'))
 
 
 class GridForVueForm(Grid):
@@ -202,7 +202,7 @@ insert_form = InsertForm()
 @action('insert_form_vue')
 @action.uses('insert_form.html', db, session, insert_form)
 def insert_form_vue():
-    return dict(form=insert_form(cancel_url=URL('view_grid_and_forms')))
+    return dict(form=insert_form(cancel_url=URL('vue_grid_and_forms')))
 
 edit_form = EditForm()
 
@@ -210,7 +210,7 @@ edit_form = EditForm()
 @action.uses('edit_form.html', db, session, edit_form, url_signer.verify())
 def edit_form_vue(row_id=None):
     assert row_id is not None
-    return dict(form=edit_form(id=row_id, cancel_url=URL('view_grid_and_forms')))
+    return dict(form=edit_form(id=row_id, cancel_url=URL('vue_grid_and_forms')))
 
 view_form = ViewForm()
 
@@ -218,7 +218,7 @@ view_form = ViewForm()
 @action.uses('view_form.html', db, session, view_form, url_signer.verify())
 def view_form_vue(row_id=None):
     assert row_id is not None
-    return dict(form=view_form(id=row_id, cancel_url=URL('view_grid_and_forms')))
+    return dict(form=view_form(id=row_id, cancel_url=URL('vue_grid_and_forms')))
 
 
 # -----------------------------
