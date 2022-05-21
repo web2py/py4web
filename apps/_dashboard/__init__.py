@@ -40,6 +40,23 @@ T = Translator(T_FOLDER)
 session = Session()
 
 
+def make_safe(db):
+    def make_safe_field(func):
+        def wrapper():
+            try:
+                return func()
+            except Exception as exp:                
+                print(exp)
+                print("Warning: _dashboard trying to access a forbidden method of app")
+                return None
+    for table in db:
+        for field in table:
+            if callable(field.default):
+                field.default = make_safe_field(field.default)
+            if callable(field.update):
+                field.update = make_safe_field(field.update)
+
+
 def run(command, project):
     """for runing git commands inside an app (project)"""
     return subprocess.check_output(
@@ -323,7 +340,10 @@ if MODE in ("demo", "readonly", "full"):
         app_name = args[0]
         if MODE != "full":
             raise HTTP(403)
-        module = Reloader.MODULES[app_name]
+        module = Reloader.MODULES.get(app_name)
+
+        if not module:
+            raise HTTP(404)
 
         def url(*args):
             return request.url + "/" + "/".join(args)
@@ -334,7 +354,8 @@ if MODE in ("demo", "readonly", "full"):
         if len(args) == 1:
 
             def tables(name):
-                db = getattr(module, name)
+                db = getattr(module, name)                
+                make_safe(db)
                 return [
                     {
                         "name": t._tablename,
@@ -350,7 +371,8 @@ if MODE in ("demo", "readonly", "full"):
                 ]
             }
         elif len(args) > 2 and args[1] in databases:
-            db = getattr(module, args[1])           
+            db = getattr(module, args[1])
+            make_safe(db)          
             id = args[3] if len(args) == 4 else None
             policy = Policy()
             for table in db:

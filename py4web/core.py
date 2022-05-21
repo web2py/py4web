@@ -50,6 +50,7 @@ except ImportError:
 
 import click
 import jwt  # this is PyJWT
+
 # Third party modules
 import ombott as bottle
 import pluralize
@@ -334,19 +335,14 @@ class Fixture:
 
     def is_valid(self):
         """check if the fixture is valid in context"""
-        try:
-            self.__request_master_ctx__.request_ctx[self]
-            return True
-        except (KeyError, AttributeError) as err:
-            try:
-                logging.warn(
-                    "attempted access to fixture %s from outside a request",
-                    self.__class__.__name,
-                )
-            except:
-                ''
-
+        ctx = self.__request_master_ctx__.request_ctx
+        if self not in ctx:
+            logging.warn(
+                "attempted access to fixture %s from outside a request",
+                self.__class__.__name__,
+            )
             return False
+        return True
 
     def on_request(self, context):
         pass  # called when a request arrives
@@ -977,7 +973,6 @@ class action:
 
 
 class Condition(Fixture):
-
     def __init__(self, condition, on_false=None, exception=HTTP(400)):
         self.condition = condition
         self.on_false = on_false
@@ -1770,8 +1765,8 @@ def setup(**kwargs):
 )
 def shell(**kwargs):
     """Open a python shell with apps_folder's parent added to the path"""
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        #running in the PyInstaller binary bundle
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        # running in the PyInstaller binary bundle
         import site
     install_args(kwargs)
     code.interact(local=dict(globals(), **locals()))
@@ -1964,7 +1959,9 @@ def run(**kwargs):
                 % PY4WEB_CMD
             )
         else:
-            click.echo(f"Dashboard is at: http{'s' if kwargs.get('ssl_cert', None) else ''}://{kwargs['host']}:{kwargs['port']}/_dashboard")
+            click.echo(
+                f"Dashboard is at: http{'s' if kwargs.get('ssl_cert', None) else ''}://{kwargs['host']}:{kwargs['port']}/_dashboard"
+            )
 
     # Start
     Reloader.import_apps()

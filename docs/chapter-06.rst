@@ -54,7 +54,7 @@ Then you can apply all of them at once with:
 
 ::
 
-   @action('index.html')
+   @action('index')
    @preferred
    def index():
        return dict()
@@ -120,6 +120,30 @@ object is described later on :ref:`Caching and Memoize`.
    
    Be careful if you read old documentations that this need was **exactly the
    opposite** in early py4web experimental versions (until February 2022)!
+
+
+As we've already seen in the last paragraph, you can combine many fixtures in
+one decorator. But you can even extend this decorator by passing different
+templates as needed. For example:
+
+
+.. code:: python
+
+   def preferred(template, *optional): 
+      return action.uses(template, session, auth, T, flash, *optional)
+
+And then:
+
+.. code:: python
+
+   @action('index')
+   @preferred('index.html')
+   def index():
+      return dict()
+
+
+This syntax has no performance implications: it's just for avoiding to replicate a decorator logic in multiple places.
+In this way you'll have cleaner code and if needed you'll be able to change it later in one place only.
 
 
 The Inject fixture
@@ -488,7 +512,7 @@ The Condition fixture
 ---------------------
 
 Some times you want to restrict access to an action based on a
-given condition. For example to enforce a worflow:
+given condition. For example to enforce a workflow:
 
 .. code:: python
 
@@ -516,7 +540,7 @@ given condition. For example to enforce a worflow:
 Notice that the Condition fixtures takes a function as first argument
 which is called `on_request` and must evaluate to True or False.
 
-Also notice that in the above example the Condition dependes on the Session
+Also notice that in the above example the Condition depends on the Session
 therefore it must be listed after `session` in `action.uses`.
 
 If False, by default, the Condition fixture raises 404.
@@ -533,7 +557,7 @@ for example, to redirect to another page:
 
    Condition(cond, on_false=lambda: redirect(URL('step1')))
 
-You can use condition to check permissions. For example, assming you are using
+You can use condition to check permissions. For example, assuming you are using
 `Tags` as explained in chapter 13 and you are giving group memberships to users,
 then you can require that users action have specific group membership:
 

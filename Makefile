@@ -27,8 +27,8 @@ test: build
 	python3 -m pytest --cov=py4web --cov-report html:cov.html -v -s tests/
 push: test
 	git push origin master
-deploy: test
-	python2.7 setup.py sdist
+deploy:
+	python3 setup.py sdist
 	twine upload dist/*
 setup:
 	./py4web.py setup apps

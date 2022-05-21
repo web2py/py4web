@@ -101,6 +101,8 @@ class GridClassStyle:
         "grid-search-form-tr": "grid-search-form-tr",
         "grid-search-form-td": "grid-search-form-td",
         "grid-search-boolean": "grid-search-boolean",
+        "grid-header-element": "grid-header-element info",
+        "grid-footer-element": "grid-footer-element info",
     }
 
     styles = {
@@ -139,13 +141,14 @@ class GridClassStyle:
         "grid-cell-type-datetime": "white-space: nowrap; vertical-align: middle; text-align: right;",
         "grid-cell-type-upload": "white-space: nowrap; vertical-align: middle; text-align: center;",
         "grid-cell-type-list": "white-space: nowrap; vertical-align: middle; text-align: left;",
-        "grid-cell-type-int": "white-space: nowrap; vertical-align: middle; text-align: right;",
         # specific for custom form
         "grid-search-form": "",
         "grid-search-form-table": "",
         "grid-search-form-tr": "border-bottom: none;",
         "grid-search-form-td": "",
         "grid-search-boolean": "",
+        "grid-header-element": "margin-top:4px; height:34px; line-height:34px;",
+        "grid-footer-element": "margin-top:4px; height:34px; line-height:34px;",
     }
 
     @classmethod
@@ -203,6 +206,8 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-search-form-tr": "grid-search-form-tr",
         "grid-search-form-td": "grid-search-form-td pr-1",
         "grid-search-boolean": "grid-search-boolean",
+        "grid-header-element": "grid-header-element button",
+        "grid-footer-element": "grid-footer-element button",
     }
 
     styles = {
@@ -248,6 +253,8 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-search-form-tr": "",
         "grid-search-form-td": "",
         "grid-search-boolean": "padding-top: .5rem;",
+        "grid-header-element": "",
+        "grid-footer-element": "",
     }
 
 
@@ -423,6 +430,8 @@ class Grid:
             edit_submit_value=None,
             edit_action_button_text="Edit",
             delete_action_button_text="Delete",
+            header_elements=None,
+            footer_elements=None,
         )
 
         #  instance variables that will be computed
@@ -1269,6 +1278,29 @@ class Grid:
                     ),
                 )
             )
+        if self.param.header_elements and len(self.param.header_elements) > 0:
+            for element in self.param.header_elements:
+                if isinstance(element, str):
+                    html.append(XML(element))
+                elif callable(element):
+                    grid_header.append(element())
+                else:
+                    grid_header.append(
+                        self._make_action_button(
+                            url=element.url,
+                            button_text=self.T(element.text),
+                            icon=element.icon,
+                            icon_size="normal",
+                            additional_classes=element.additional_classes,
+                            message=element.message,
+                            override_classes=self.param.grid_class_style.classes.get(
+                                "grid-header-element", ""
+                            ),
+                            override_styles=self.param.grid_class_style.styles.get(
+                                "grid-trailer-element"
+                            ),
+                        )
+                    )
 
         #  build the search form if provided
         if self.param.search_form:
@@ -1310,6 +1342,31 @@ class Grid:
             footer.append(self._make_table_pager())
 
         html.append(footer)
+
+        if self.param.footer_elements and len(self.param.footer_elements) > 0:
+            for element in self.param.footer_elements:
+                if isinstance(element, str):
+                    html.append(XML(element))
+                elif callable(element):
+                    html.append(element())
+                else:
+                    html.append(
+                        self._make_action_button(
+                            url=element.url,
+                            button_text=self.T(element.text),
+                            icon=element.icon,
+                            icon_size="normal",
+                            additional_classes=element.additional_classes,
+                            message=element.message,
+                            override_classes=self.param.grid_class_style.classes.get(
+                                "grid-footer-element", ""
+                            ),
+                            override_styles=self.param.grid_class_style.styles.get(
+                                "grid-footer-element"
+                            ),
+                        )
+                    )
+
         return html
 
     def render(self):
