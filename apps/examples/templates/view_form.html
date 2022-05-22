@@ -1,0 +1,21 @@
+[[extend 'layout_bulma.html']]
+
+[[block page_head]]
+<link rel="stylesheet" href="[[=URL('static/components-bulma/vueform/vueform.css')]]">
+[[end]]
+
+<div id="vue">
+  <h2 class="title">View Form</h2>
+  [[=form]]
+</div>
+
+[[block page_scripts]]
+<script src="[[=URL('static/components-bulma/vueform/luxon.js')]]"></script>
+<script src="[[=URL('static/components-bulma/vueform/vueform.js')]]"></script>
+<script>
+  var app = new Vue({
+      el: "#vue",
+      data: {},
+  });
+</script>
+[[end]]

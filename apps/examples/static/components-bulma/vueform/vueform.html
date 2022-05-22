@@ -14,24 +14,38 @@
             </div>
             <div class="column">
               <input class="input column"
-                     type="time" v-model="field.time" >
+                     type="text" v-model="field.time" @change="set_readable_date(field._idx)">
               <span class="has-text-grey is-size-7">Timezone: {{time_zone}}</span>
             </div>
           </div>
         </div>
+        <!-- Date  -->
+        <div class="date" v-else-if="field.type==='date'">
+          <input v-if="field.readonly" type="text" readonly class="input is-static" v-model="field.date_readonly">
+          <input v-else class="input"
+                 :type="field.type" :placeholder="field.placeholder"
+                 v-model="field.value" :readonly="field.readonly"
+                 :class="{'is-static': field.readonly}">
+        </div>
         <!-- Dropdown -->
         <input v-else-if="field.type=='dropdown' && field.readonly" type="text"
-               readonly class="input is-static" v-model="field.value">
+               readonly class="input is-static" v-model="field.text">
         <div class="select" v-else-if="field.type=='dropdown'" :class="field.multiple? 'is-multiple' : ''">
           <select v-model="field.value" :multiple="field.multiple">
             <option v-for="setel in field.values" v-bind:value="setel.label">{{setel.text}}</option>
           </select>
         </div>
         <!-- Textarea -->
-        <textarea v-else-if="field.type=='textarea'" class="textarea" v-model="field.value"
-                  :placeholder="field.placeholder"></textarea>
+        <textarea v-else-if="field.type==='textarea'" class="textarea" v-model="field.value"
+                  :placeholder="field.placeholder"
+                  :readonly="field.readonly"></textarea>
         <!-- Checkbox -->
-        <input v-else-if="field.type === 'checkbox'" type="checkbox" :disabled="field.readonly"
+        <p v-else-if="field.type==='checkbox' && field.readonly">
+          <span v-if="field.value===true">Yes</span>
+          <span v-else-if="field.value===false">No</span>
+          <span v-else>None</span>
+        </p>
+        <input v-else-if="field.type==='checkbox'" type="checkbox" :disabled="field.readonly"
                v-model="field.value">
         <!-- Normal field -->
         <input v-else class="input"
@@ -44,6 +58,8 @@
     </div>
   </table>
   <div v-if="!readonly" class="submission">
-    <button v-on:click="submit" class="button">Submit</button>
+    <p class="error" v-if="some_error">Please fix the above errors</p>
+    <button v-on:click="submit" class="button is-primary" :disabled="some_error">Save</button>
+    <button v-if="cancel_url_" v-on:click="cancel" class="button">Cancel</button>
   </div>
 </div>
