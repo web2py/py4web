@@ -104,6 +104,9 @@ def wsgirefThreadingServer():
                         return WSGIRequestHandler.log_request(*args, **kw)
 
             class LogHandler(WSGIRequestHandler):
+                def address_string(self):  # Prevent reverse DNS lookups please.
+                    return self.client_address[0]
+
                 def log_message(self, format, *args):
                     if not this.quiet:  # and ( not args[1] in ['200', '304']) :
                         msg = "%s - - [%s] %s" % (
