@@ -35,7 +35,7 @@ import urllib.parse
 import uuid
 import zipfile
 from collections import OrderedDict
-from contextlib import redirect_stdout
+from contextlib import redirect_stdout, redirect_stderr
 
 import portalocker
 from watchgod import awatch
@@ -1303,14 +1303,14 @@ class Reloader:
                     del Reloader.MODULES[app_name]
                     clear_modules()
 
-                load_module_stdout = io.StringIO()
-                with redirect_stdout(load_module_stdout):
+                load_module_message = None
+                with io.StringIO() as buf, redirect_stdout(buf), redirect_stderr(buf):
                     module = importlib.machinery.SourceFileLoader(
                         module_name, init
                     ).load_module()
-                load_module_message = load_module_stdout.getvalue()
-                if len(load_module_message):
-                    click.secho("\x1b[A    stdout %s       " % app_name, fg="yellow")
+                    load_module_message = buf.getvalue()
+                if load_module_message:
+                    click.secho("\x1b[A    output %s       " % app_name, fg="yellow")
                     click.echo(load_module_message)
 
                 click.secho("\x1b[A[X] loaded %s       " % app_name, fg="green")
@@ -1532,7 +1532,8 @@ def start_server(kwargs):
     port = int(kwargs["port"])
     apps_folder = kwargs["apps_folder"]
     number_workers = kwargs["number_workers"]
-    params = dict(host=host, port=port, reloader=False)
+    quiet = kwargs['quiet']
+    params = dict(host=host, port=port, reloader=False, quiet=quiet)
     server_config = dict(
         platform=platform.system().lower(),
         server=None if kwargs["server"] == "default" else kwargs["server"],
@@ -1541,7 +1542,7 @@ def start_server(kwargs):
 
     if not server_config["server"]:
         if server_config["platform"] == "windows" or number_workers < 2:
-            server_config["server"] = "rocket"
+            server_config["server"] = "rocketServer"
         else:
             if not gunicorn:
                 logging.error("gunicorn not installed")
@@ -1549,7 +1550,7 @@ def start_server(kwargs):
             server_config["server"] = "gunicorn"
 
     # Catch interrupts like Ctrl-C if needed
-    if server_config["server"] not in {"rocket", "wsgirefWsTwistedServer"}:
+    if server_config["server"] not in {"rocketServer", "wsgirefWsTwistedServer"}:
         signal.signal(
             signal.SIGINT,
             lambda signal, frame: click.echo(
@@ -1880,6 +1881,14 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     "--password_file",
     default="password.txt",
     help="File for the encrypted password",
+    show_default=True,
+)
+@click.option(
+    "-Q",
+    "--quiet",
+    is_flag=True,
+    default=False,
+    help="Suppress server output",
     show_default=True,
 )
 @click.option(
