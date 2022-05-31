@@ -40,6 +40,6 @@ class Publisher:
             TAG.SCRIPT(_src=URL("static/js/vue.min.js")),
             TAG.SCRIPT(_src=URL("static/js/utils.js")),
             TAG.SCRIPT(_src=URL("static/components/mtable.js")),
-            TAG.SCRIPT(XML('var app=Q.app("%s"); app.start()' % name)),
+            TAG.SCRIPT(XML('var app={}; app.vue = new Vue({el:"#%s"});' % name)),
             _id=name,
         )
