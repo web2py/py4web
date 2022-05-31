@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>socket.io</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <h3>python-socketio (v5) + socket.io.js (v4)</h3>
+<h3>tested with tornado, aiohttp  socketio-servers py4web/utils/wsservers.py.txt</h3>
+
+    <form id="form" action="">
+      <input id="message" autocomplete="off" style="width: 50%;" />
+       <div><button>Send to py4web</button></div>
+    </form>
+    <ul id="messages"></ul>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script>
+
+      // https://socket.io/get-started/chat
+      // https://socket.io/docs/client-api/#With-custom-path
+
+
+
+      const socket = io('[[=sio_url ]]');
+      //onst socket = io(   'http://localhost:8000'    );
+
+      socket.on("connect", () => {
+        console.log("A user is connected!");
+        const li = document.createElement("li");
+        li.innerText = 'connected';
+        messageList.appendChild(li);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("User has disconnected.");
+        const li = document.createElement("li");
+        li.innerText = 'disconnected';
+        messageList.appendChild(li);
+
+      });
+
+      const formEl = document.querySelector("#form");
+      const messageEl = document.querySelector("#message");
+      const messageList = document.querySelector("#messages");
+
+      formEl.onsubmit = event => {
+        event.preventDefault();
+        socket.emit("to_py4web", messageEl.value);
+        messageEl.value = "";
+        return false;
+      };
+
+      socket.on("py4web_echo", message => {
+        console.log("py4web_echo:", message);
+        const li = document.createElement("li");
+        li.innerText = message;
+        messageList.appendChild(li);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8" />
+  <title>WebSocket Echo Test</title>
+</head>
+<body>
+  <h3>tested with tornado, aiohttp, twisted  websocket-servers py4web/utils/wsservers.py.txt</h3>
+  <p>for gevent-websocket servers, pls, use _websocket test-example</p>
+  <p>original: <a href = "https://www.includehelp.com/python/how-to-implement-a-websocket-server-using-tornado.aspx">
+      https://www.includehelp.com/python/how-to-implement-a-websocket-server-using-tornado.aspx
+  </a></p>
+  
+  
+  <form id="myform" action='#'>
+    <input id="input" type="text" style="width: 50%" value="message" />
+    <div><input id="submit" type="submit" value="Send" /> <div>
+  </form>
+  
+  <ul id="messages"></ul>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+	const  msgs = document.getElementById("messages");
+	const input = document.getElementById("input");
+	const form = document.getElementById("myform");
+        if (!window.WebSocket) {
+            if (window.MozWebSocket) {
+                window.WebSocket = window.MozWebSocket;
+            } else {
+                msgs.innerHTML += "<li>Your browser doesn't support WebSockets.</li>";
+            }
+        }
+        ws = new WebSocket('[[= ws_url ]]');
+        //ws = new WebSocket('ws://127.0.0.1:8000/');
+        ws.onopen = function(evt) {
+            msgs.innerHTML += '<li>js: WebSocket connection opened.</li>';
+        }
+        ws.onmessage = function(evt) {
+            msgs.innerHTML += '<li>' + evt.data + '</li>';
+        }
+        ws.onclose = function(evt) {
+            msgs.innerHTML += '<li>WebSocket connection closed.</li>';
+        }
+        form.onsubmit = function() {
+            ws.send(input.value);
+            input.focus();
+            return false;
+        };
+	
+	window.onbeforeunload = function() {
+	    ws.onclose = function () {}; // disable onclose handler first
+	    if(ws.readyState == WebSocket.OPEN)
+		ws.close();
+            console.log('ws closed')
+	};
+	
+	window.addEventListener("unload", function () {
+	    if(ws.readyState == WebSocket.OPEN)
+		console.log('ws closed')
+            ws.close();
+	});
+  });  
+    </script>
+</body>
+</html>

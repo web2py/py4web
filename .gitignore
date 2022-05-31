@@ -25,6 +25,7 @@ apps/_documentation/static/*/*.epub
 apps/*
 !apps/todo/*
 !apps/examples/*
+!apps/showcase/*
 !apps/_dashboard/*
 !apps/_scaffold/*
 !apps/_minimal/*

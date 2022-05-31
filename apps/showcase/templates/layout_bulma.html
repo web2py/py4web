@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href="[[=URL('static')]]/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    [[block page_head]]<!-- individual pages can customize head here -->[[end]]
+  </head>
+  <body>
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="[[=URL('index')]]">
+          <strong>Examples</strong>
+        </a>
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="left-navbar"
+           onclick="this.classList.toggle('is-active');document.getElementById(this.dataset.target).classList.toggle('is-active');">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div id="left-navbar" class="navbar-menu">
+        <div class="navbar-start">
+          [[block page_menu_items]]<!-- individual pages can add menu items here -->[[end]]
+        </div>
+      </div>
+    </nav>
+    <section class="section">
+      <!-- beginning of HTML inserted by extending template -->
+      [[include]]
+      <!-- end of HTML inserted by extending template -->
+    </section>
+    <footer class="footer">
+      <div class="content has-text-centered">
+        Made with py4web
+      </div>
+    </footer>
+    <script src="js/utils.js"></script>
+    <script src="js/sugar.min.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script src="js/vue.js"></script>
+    [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
+  </body>
+</html>

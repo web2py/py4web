@@ -1,0 +1,20 @@
+[[extend 'layout.html']]
+
+[[block page_head]]
+<link rel="stylesheet" href="[[=URL('static/components/grid/grid.css')]]">
+[[end]]
+
+<div id="vue">
+  <h2 class="title">Grid</h2>
+  [[=grid]]
+</div>
+
+[[block page_scripts]]
+<script src="[[=URL('static/components/grid/grid.js')]]"></script>
+<script>
+  var app = new Vue({
+      el: "#vue",
+      data: {},
+  });
+</script>
+[[end]]
