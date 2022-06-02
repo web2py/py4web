@@ -49,7 +49,6 @@ except ImportError:
     gunicorn = None
 
 import click
-import jwt  # this is PyJWT
 
 # Third party modules
 import ombott as bottle
@@ -60,6 +59,8 @@ import renoir.constants
 import renoir.writers
 import threadsafevariable
 import yatl
+
+from .utils.misc import secure_dumps, secure_loads
 
 bottle.DefaultConfig.max_memfile_size = 16 * 1024 * 1024
 bottle.DefaultConfig.app_name_header = "HTTP_X_PY4WEB_APPNAME"
@@ -605,7 +606,7 @@ class Session(Fixture):
         secret is the shared key used to encrypt the session (using algorithm)
         expiration is in seconds
         (optional) storage must have a get(key) and set(key,value,expiration) methods
-        if not provided session is stored in jwt cookie else the jwt is stored in storage and its uuid key is stored in the cookie
+        session is stored signed and encrypted in the cookie
         """
         # assert Session.SECRET, "Missing Session.SECRET"
         self.secret = secret or Session.SECRET
@@ -646,16 +647,17 @@ class Session(Fixture):
         if Fixture.__fixture_debug__:
             logging.debug("Session token found %s", raw_token)
         if raw_token:
-            token_data = raw_token.encode()
             try:
                 if self.storage:
+                    token_data = raw_token.encode()
                     json_data = self.storage.get(token_data)
                     if json_data:
                         self_local.data = json.loads(json_data)
                 else:
-                    self_local.data = jwt.decode(
-                        token_data, self.secret, algorithms=[self.algorithm]
-                    )
+                    try:
+                        self_local.data = secure_loads(raw_token, self.secret.encode())
+                    except (AssertionError, json.JSONDecodeError):
+                        self_local.data = {}
                 if self.expiration is not None and self.storage is None:
                     assert self_local.data["timestamp"] > time.time() - int(
                         self.expiration
@@ -681,14 +683,9 @@ class Session(Fixture):
             cookie_data = self_local.data["uuid"]
             self.storage.set(cookie_data, json.dumps(self_local.data), self.expiration)
         else:
-            cookie_data = jwt.encode(
-                self_local.data, self.secret, algorithm=self.algorithm
-            )
-            if isinstance(cookie_data, bytes):
-                cookie_data = cookie_data.decode()
+            cookie_data = secure_dumps(self_local.data, self.secret.encode())
         if Fixture.__fixture_debug__:
             logging.debug("Session stored %s", cookie_data)
-
         response.set_cookie(
             self_local.session_cookie_name,
             cookie_data,
