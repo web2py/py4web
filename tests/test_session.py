@@ -9,6 +9,11 @@ from py4web import request, response, Session, DAL
 from py4web.core import _before_request
 from py4web.utils.dbstore import DBStore
 
+def unquote(text):
+    print(repr(text))
+    if text[:1] + text[-1:] == '""':
+        text = text[1:-1]
+    return text
 
 class TestSession(unittest.TestCase):
     def setUp(self):
@@ -26,6 +31,7 @@ class TestSession(unittest.TestCase):
         cookie_name = session.local.session_cookie_name
         session.on_success(context)
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
+        b = unquote(b)
         request.cookies[a] = b
 
         _before_request()
@@ -55,6 +61,7 @@ class TestSession(unittest.TestCase):
         cookie_name = session.local.session_cookie_name
         session.on_success(context)
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
+        b = unquote(b)
         request.cookies[a] = b
 
         _before_request()
@@ -94,6 +101,7 @@ class TestSession(unittest.TestCase):
                 .split(";")[0]
                 .split("=", 1)
             )
+            b = unquote(b)
             request.cookies[a] = b
 
             _before_request()
