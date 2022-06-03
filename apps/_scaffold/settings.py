@@ -52,7 +52,7 @@ SMTP_TLS = False
 
 # session settings
 SESSION_TYPE = "cookies"
-SESSION_SECRET_KEY = "<session-secret-key>" # replace this with a uuid
+SESSION_SECRET_KEY = None   # or replace with your own secret
 MEMCACHE_CLIENTS = ["127.0.0.1:11211"]
 REDIS_SERVER = "localhost:6379"
 
