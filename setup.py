@@ -35,6 +35,7 @@ setup(
         "requests",
         "threadsafevariable >= 1.2",
         "pyjwt >= 2.0.1",
+        "pycryptodome",
         "pluralize >= 0.1.9",
         "rocket3",
         "yatl >= 20211217.1",
