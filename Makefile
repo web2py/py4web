@@ -1,5 +1,5 @@
 .PHONY: clean build docs clean-assets assets install test deploy
-asset-apps := _dashboard _default _scaffold _minimal _documentation examples
+asset-apps := _dashboard _default _scaffold _minimal _documentation showcase
 asset-zips := $(asset-apps:%=py4web/assets/py4web.app.%.zip)
 clean:
 	find . -name '*.pyc' -delete

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Firebase Cloud Messaging Example</title>
+  </head>
+  <body>
+    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-messaging.js"></script>
+    <script src="js/firebase-push.js"></script>
+    <script>
+      firebase.initializeApp({
+        apiKey: 'api-key',
+        authDomain: 'project-id.firebaseapp.com',
+        databaseURL: 'https://project-id.firebaseio.com',
+        projectId: 'project-id',
+        storageBucket: 'project-id.appspot.com',
+        messagingSenderId: 'sender-id',
+        appId: 'app-id',
+        measurementId: 'G-measurement-id',
+      });
+      enable_firebase_push(function(token) {
+        // send token to server to this client can be notified
+      }, function(payload) {
+        // app received a message, do something with it
+        alert(JSON.stringify(payload));
+      }
+    </script>
+  <body>
+</div>

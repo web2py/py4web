@@ -1,0 +1,50 @@
+[[extend 'layout.html']]
+
+<style>
+ul.tags-list {
+  padding-left: 0;
+}
+ul.tags-list li {
+  display: inline-block;
+  border-radius: 100px;
+  background-color: #111111;
+  color: white;
+  padding: 0.3em 0.8em 0.2em 0.8em;
+  line-height: 1.2em;
+  margin: 2px;
+  cursor: pointer;
+  opacity: 0.2;
+  text-transform: capitalize;
+}
+ul.tags-list li[data-selected=true] {
+  opacity: 1.0;
+}
+</style>
+
+<h2>Tagsinput Examples Using A Preloaded List of Values</h2>
+
+<h3>No freetext, predefined values from json, autocomplete</h3>
+
+<i>
+You can enter new tags comma separted.
+Press [tab] to add tags.
+[enter] will submit the form.
+Look at the page source for how to customize tags.
+</i>
+
+[[=form]]
+
+<!-- list of options for browser autocomplete -->
+<datalist id="zip_codes-list"></datalist>
+
+[[block page_scripts]]
+<script>
+  // enable the first tags_input
+  Q.ajax('GET', 'data/zip_codes.json').then(function(res){console.log(res.data);});
+
+  Q.tags_input('[name=zip_codes]', {
+    freetext: false,                         // allow typing custom tags 
+    placeholder:'add zip codes, comma separated' // text in the textfree input
+  });
+</script>
+[[end]]

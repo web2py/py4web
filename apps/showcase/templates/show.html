@@ -1,0 +1,19 @@
+[[extend 'layout.html']]
+<style>
+  code {margin: 0; padding: 0}
+</style>
+
+<a role="button" href="../index">Back to Examples</a>
+
+[[for file in files:]]
+<div>
+  <h3>[[=file['name'] ]]</h3>
+  <pre><code class="language-[[= file['language'] ]]">[[=file['content'] ]]</code></pre>
+</div>
+[[pass]]
+
+[[if executable:]]
+<a role="button" href="../[[=name]]">Run Example</a>
+[[else:]]
+Run this application locally to try examples
+[[pass]]

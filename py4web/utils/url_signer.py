@@ -27,7 +27,7 @@ class URLVerifier(Fixture):
         signature = request.query.get("_signature")
         if signature is None:
             raise HTTP(403)
-        if 1: # try:
+        try:
             h = self.url_signer.algo(self.url_signer.get_key())
             signature = request.query["_signature"]
             sig_content = base64.b16decode(signature.encode("utf-8")).decode("utf-8")
@@ -49,8 +49,8 @@ class URLVerifier(Fixture):
             if self.url_signer.lifespan is not None:
                 if float(ts) + self.url_signer.lifespan < time.time():
                     raise HTTP(403)
-        #except:
-        #    raise HTTP(403)
+        except:
+            raise HTTP(403)
 
     def _decode_ts(self, ts_string):
         """Decodes the timestamp, removing the salt."""
@@ -115,13 +115,13 @@ class URLSigner(Fixture):
         assert "_signature" not in self.variables_to_sign
         self.algo = algo or hashlib.sha256
 
-    #@property
-    #def local(self):
-    #    return self._safe_local        
+    @property
+    def local(self):
+        return self._safe_local        
 
     def on_request(self, context):
         """Creates the signing key if necessary."""
-        print("on_request", self.session.get("_signature_key")) 
+        print("on_request", self.session.get("_signature_key"))        
         if self.session is not None and self.session.get("_signature_key") is None:
             key = str(uuid.uuid1())
             self.session["_signature_key"] = key
