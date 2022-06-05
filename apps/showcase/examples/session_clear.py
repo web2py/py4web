@@ -1,6 +1,6 @@
 from py4web import URL, action, redirect
 
-from ..common import session
+from .common import session
 
 
 @action("session_clear")

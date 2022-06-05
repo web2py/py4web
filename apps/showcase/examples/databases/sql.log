@@ -1,0 +1,32 @@
+timestamp: 2022-06-05T14:36:03.545815
+CREATE TABLE "auth_user"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "username" CHAR(512) UNIQUE,
+    "email" CHAR(512) UNIQUE,
+    "password" CHAR(512),
+    "first_name" CHAR(512),
+    "last_name" CHAR(512),
+    "sso_id" CHAR(512),
+    "action_token" CHAR(512),
+    "last_password_change" TIMESTAMP
+);
+success!
+timestamp: 2022-06-05T14:36:03.553337
+CREATE TABLE "auth_user_tag_groups"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "tagpath" CHAR(512),
+    "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
+);
+success!
+timestamp: 2022-06-05T14:51:31.703785
+CREATE TABLE "vue_form_table"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "first_name" CHAR(512),
+    "last_name" CHAR(512),
+    "read" CHAR(1),
+    "animal" CHAR(512),
+    "arrival_time" TIMESTAMP,
+    "date_of_birth" DATE,
+    "narrative" TEXT
+);
+success!

@@ -6,15 +6,21 @@
         methods: {}
     };
 
+    var delete_row_idx = null;
+
     grid.data = function() {
         var data = {
             server_url: this.url,
             has_previous: false,
             has_more: false,
+            has_search: false,
+            has_delete: false,
             search_placeholder: '',
             search_text: '',
             page: 1,
             rows: [],
+            confirm_delete_text: '',
+            confirm_delete_active: false,
         };
         grid.methods.load.call(data);
         return data;
@@ -25,6 +31,29 @@
         let k=0;
         a.map(function(e) {e._idx = k++;});
     };
+
+    grid.transform_time_and_date = function (c) {
+        // Transforms dates and times to present them well.
+        // Times are also put into localtimes.
+        if (c.text === null) {
+            c.text = "";
+        } else {
+            if (c.type === 'date') {
+                let m = luxon.DateTime.fromISO(c.text, {zone: "UTC"});
+                c.text = m.toLocaleString(luxon.DateTime.DATE_HUGE);
+            }
+            if (c.type === 'datetime') {
+                let m = luxon.DateTime.fromISO(c.text, {zone: "UTC"});
+                let local_m = m.setZone(self.time_zone);
+                c.text = local_m.toLocaleString({
+                    year: "numeric", month: "long",
+                    day: "numeric", weekday: "long",
+                    hour: "numeric", minute: "numeric",
+                    timeZoneName: "short",
+                });
+            }
+        }
+    }
 
     grid.methods.do_search = function () {
         let self = this;
@@ -68,6 +97,31 @@
         self.load();
     }
 
+    grid.methods.delete_row = function (row_idx) {
+        let self = this;
+        delete_row_idx = row_idx;
+        self.confirm_delete_text = self.rows[row_idx].confirm;
+        self.confirm_delete_active = true;
+    };
+
+    grid.methods.delete_cancel = function () {
+        let self = this;
+        delete_row_idx = null;
+        self.confirm_delete_active = false;
+        self.confirm_delete_text = '';
+    };
+
+    grid.methods.delete_confirm = function () {
+        let self = this;
+        let row = self.rows[delete_row_idx];
+        axios.get(row.delete).then(function () {
+            self.rows.splice(delete_row_idx, 1);
+            self.delete_cancel();
+        }).catch(function () {
+            self.delete_cancel();
+        })
+    };
+
     grid.methods.load = function () {
         // In use, self will correspond to the data of the table,
         // as this is called via grid.methods.load
@@ -81,8 +135,10 @@
                     page: self.page,
                     q: self.search_text,
                     sort_order: sort_order,
-                }}).then(function(res) {
+                }}).then(function (res) {
             self.page = res.data.page;
+            self.has_search = res.data.has_search;
+            self.has_delete = res.data.has_delete;
             self.has_more = res.data.has_more;
             self.has_previous = self.page > 1;
             self.search_placeholder = res.data.search_placeholder;
@@ -91,6 +147,7 @@
             for (let r of rows) {
                 grid.enumerate(r.cells);
                 for (let c of r.cells) {
+                    grid.transform_time_and_date(c);
                     if (!c.sort) {
                         // Note that on purpose, we can have sorted fields
                         // that are not sortable via a UI click.

@@ -1,0 +1,22 @@
+[[extend 'layout_bulma.html']]
+
+[[block page_head]]
+<link rel="stylesheet" href="components/starrater/starrater.css">
+[[end]]
+
+<div id="vue">
+  <div class="section">
+  <div v-for="post in posts" class="box">
+      <p>{{post.content}}</p>
+      <starrater :url="post.stars_callback_url">
+  </div>
+</div>
+
+[[block page_scripts]]
+<script>
+  // URL for loading the posts.
+  let get_posts_url = "[[=XML(get_posts_url)]]";
+</script>
+<script src="components-bulma/starrater/starrater.js"></script>
+<script src="js/star_rater_vue.js"></script>
+[[end]]

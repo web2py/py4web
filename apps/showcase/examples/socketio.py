@@ -5,7 +5,7 @@ from py4web import action, request
 
 
 @action("socketio/index")
-@action.uses("socketio/index.html")
+@action.uses("socketio/examples/index.html")
 def index():
     sio_url = "http://localhost:8000"
     return dict(sio_url=sio_url)

@@ -4,6 +4,11 @@
 </style>
 
 <a role="button" href="../index">Back to Examples</a>
+[[if executable:]]
+<a role="button" href="../[[=name]]">Run Example</a>
+[[else:]]
+Run this application locally to try examples
+[[pass]]
 
 [[for file in files:]]
 <div>
@@ -12,8 +17,3 @@
 </div>
 [[pass]]
 
-[[if executable:]]
-<a role="button" href="../[[=name]]">Run Example</a>
-[[else:]]
-Run this application locally to try examples
-[[pass]]

@@ -5,7 +5,7 @@ from py4web import action, request
 
 
 @action("ws/index")
-@action.uses("ws/index.html")
+@action.uses("ws/examples/index.html")
 def index():
     ws_url = "ws://127.0.0.1:8000/"
     return dict(ws_url=ws_url)

@@ -7,5 +7,5 @@ def page_with_postback():
         "<html><body><pre>%s</pre>"
         + '<form method="POST" action="%s" enctype="multipart/form-data">'
         + '<input type="hidden" name="data" value="dummy"/>'
-        + "<button>Click</button></form></body></html"
+        + "<button>Click</button></form></body></html>"
     ) % (dict(request.forms), URL("page_with_postback"))

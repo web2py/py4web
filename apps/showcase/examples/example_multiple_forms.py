@@ -3,11 +3,11 @@ from pydal.validators import IS_IN_DB, IS_IN_SET, IS_INT_IN_RANGE, IS_NOT_EMPTY
 from py4web import Field, action
 from py4web.utils.form import Form, FormStyleDefault
 
-from ..common import T, db, flash, session
+from .common import T, db, flash, session
 
 
 @action("example_multiple_forms", method=["GET", "POST"])
-@action.uses("forms.html", session, db, T)
+@action.uses("examples/forms.html", session, db, T)
 def example_multiple_forms():
     name = Field("name", requires=IS_NOT_EMPTY())
     forms = [

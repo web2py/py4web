@@ -1,6 +1,6 @@
 from py4web import action, redirect
 
-from ..common import flash, session
+from .common import flash, session
 
 
 @action("flash_example_fixture")
@@ -11,6 +11,6 @@ def flash_example_fixture():
 
 
 @action("flash_next")
-@action.uses("flash_example_next.html", flash)
+@action.uses("examples/flash_example_next.html", flash)
 def flash_example_next():
     return dict()

@@ -1,6 +1,6 @@
 import logging
 
-from ..common import unauthenticated
+from .common import unauthenticated
 
 
 @unauthenticated.callback("click me")

@@ -1,10 +1,10 @@
 import os
 
-from yatl.helpers import BODY, H1, HTML, A, I
+from yatl.helpers import BODY, H1, HTML, A
 
 from py4web import URL, action
 
-from ..common import T
+from .common import T
 
 
 @action("count")

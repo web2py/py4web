@@ -1,5 +1,3 @@
-
-.datetime .columns {
-    margin: -20px;
-    box-sizing: initial;
+div.vueform p.error {
+    color: crimson;
 }
