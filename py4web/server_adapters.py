@@ -49,6 +49,18 @@ def wsgirefThreadingServer():
 
     class WSGIRefThreadingServer(ServerAdapter):
         def run(self, app):
+
+            if not self.quiet:
+                logging.basicConfig(
+                    filename="wsgiref.log",
+                    format="%(threadName)s | %(message)s",
+                    filemode="a",
+                    encoding="utf-8",
+                    level=logging.DEBUG,
+                )
+
+                self.log = logging.getLogger("WSGIRef")
+
             class PoolMixIn(ThreadingMixIn):
                 def process_request(self, request, client_address):
                     self.pool.submit(
@@ -91,7 +103,21 @@ def wsgirefThreadingServer():
                     if not self.quiet:
                         return WSGIRequestHandler.log_request(*args, **kw)
 
-            handler_cls = self.options.get("handler_class", FixedHandler)
+            class LogHandler(WSGIRequestHandler):
+                def address_string(self):  # Prevent reverse DNS lookups please.
+                    return self.client_address[0]
+
+                def log_message(self, format, *args):
+                    if not self.quiet:  # and ( not args[1] in ['200', '304']) :
+                        msg = "%s - - [%s] %s" % (
+                            self.client_address[0],
+                            self.log_date_time_string(),
+                            format % args,
+                        )
+                        self.log.info(msg)
+
+            handler_cls = self.options.get("handler_class", LogHandler)
+            #handler_cls = self.options.get("handler_class", FixedHandler)
             server_cls = Server
 
             if ":" in self.host:  # Fix wsgiref for IPv6 addresses.
