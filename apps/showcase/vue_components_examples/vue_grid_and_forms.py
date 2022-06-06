@@ -87,8 +87,13 @@ class GridForVueForm(Grid):
 
 vue_grid_for_forms = GridForVueForm()
 
-
 @action("vue_grid_and_forms")
 @action.uses("vue/vue_grid_and_forms.html", db, session, vue_grid_for_forms)
 def vue_grid_and_forms():
     return dict(grid=vue_grid_for_forms())
+
+@action("delete_row/<row_id:int>")
+@action.uses(db, session, vue_grid_for_forms.signer.verify())
+def delete_row(row_id=None):
+    db(db.vue_form_table.id == row_id).delete()
+    return "ok"
