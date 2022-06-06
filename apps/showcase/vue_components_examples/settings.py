@@ -1,0 +1,1 @@
+from ..examples.settings import *

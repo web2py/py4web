@@ -1,4 +1,4 @@
-from ..common import unauthenticated
+from .common import unauthenticated
 
 
 @unauthenticated.get()  # exposed as /hello_world/<msg>

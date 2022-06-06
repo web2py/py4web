@@ -1,6 +1,6 @@
 from py4web import action
 
-from ..common import T
+from .common import T
 
 
 @action("hello")

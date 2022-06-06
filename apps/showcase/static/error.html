@@ -1,0 +1,83 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <style>
+  * {
+    font-family: courier;
+    font-size: 12px;
+  }
+  body {
+    margin: 0;
+    border: 0;
+    padding: 9;
+    background-color: #111111;
+    color: #e1e1e1;
+  }
+  h2.page-title { font-size: 2em }
+  .ticket {
+    overflow-x: auto;    
+  }
+  .ticket table {
+    margin-top: -1px;
+  }
+  .ticket tr {
+    border-top: 1px solid #e1e1e1;        
+    padding-left: 5px;
+  }
+  .ticket th:after {
+    content: ':'
+  }
+  .ticket th {
+    font-weight: bold;
+    text-align: left;
+    vertical-align: top;
+    padding-right: 10px;
+    border-right: 5px solid #d2d2d2;
+  }
+  .ticket td {
+    white-space: pre;
+    padding-left: 5px;
+  }  
+  .ticket-traceback {
+    background-color: red;
+    color: white;
+    padding: 5px 20px;
+    overflow-x: auto;
+  }
+  .ticket-traceback pre {
+    font-family: courier;
+    font-size: 12px;
+  }
+    </style>
+  </head>
+  <body>
+    <h2 class="page-title">Error Ticket: division by zero</h2>    
+    <div class="ticket-traceback">
+      <pre>Traceback (most recent call last):
+  File "/home/massimo/Dropbox/py4web/py4web/core.py", line 932, in wrapper
+    ret = func(*func_args, **func_kwargs)
+  File "/home/massimo/Dropbox/py4web/apps/showcase/examples/page_with_error.py", line 6, in page_with_error
+    1 / 0
+ZeroDivisionError: division by zero
+</pre>
+    </div>
+    <div class="ticket"><table><tbody><tr><th>id</th><td>2501</td></tr><tr><th>uuid</th><td>ce059a4d-2b2b-4d67-b422-bd9914151254</td></tr><tr><th>app_name</th><td>showcase</td></tr><tr><th>method</th><td>GET</td></tr><tr><th>path</th><td>/showcase/page_with_error</td></tr><tr><th>timestamp</th><td>datetime.datetime(2022, 6, 5, 22, 1, 21)</td></tr><tr><th>client_ip</th><td>127.0.0.1</td></tr><tr><th>error</th><td>division by zero</td></tr><tr><th>snapshot</th><td><table><tbody><tr><th>timestamp</th><td>2022-06-05 22:01:21.009223</td></tr><tr><th>python_version</th><td>3.8.10 (default, Mar 15 2022, 12:22:08) 
+[GCC 9.4.0]</td></tr><tr><th>platform_info</th><td><table><tbody><tr><th>machine</th><td>x86_64</td></tr><tr><th>node</th><td>mdp-g3</td></tr><tr><th>platform</th><td>Linux-5.13.0-40-generic-x86_64-with-glibc2.29</td></tr><tr><th>processor</th><td>x86_64</td></tr><tr><th>python_branch</th><td></td></tr><tr><th>python_build</th><td><ul><li>default</li><li>Mar 15 2022 12:22:08</li></ul></td></tr><tr><th>python_compiler</th><td>GCC 9.4.0</td></tr><tr><th>python_implementation</th><td>CPython</td></tr><tr><th>python_revision</th><td></td></tr><tr><th>python_version</th><td>3.8.10</td></tr><tr><th>python_version_tuple</th><td><ul><li>3</li><li>8</li><li>10</li></ul></td></tr><tr><th>release</th><td>5.13.0-40-generic</td></tr><tr><th>system</th><td>Linux</td></tr><tr><th>uname</th><td><ul><li>Linux</li><li>mdp-g3</li><li>5.13.0-40-generic</li><li>#45~20.04.1-Ubuntu SMP Mon Apr 4 09:38:31 UTC 2022</li><li>x86_64</li><li>x86_64</li></ul></td></tr><tr><th>version</th><td>#45~20.04.1-Ubuntu SMP Mon Apr 4 09:38:31 UTC 2022</td></tr></tbody></table></td></tr><tr><th>os_environ</th><td><table><tbody><tr><th>DESKTOP_SESSION</th><td>ubuntu</td></tr><tr><th>XDG_SESSION_CLASS</th><td>user</td></tr><tr><th>XDG_SESSION_TYPE</th><td>x11</td></tr><tr><th>XAUTHORITY</th><td>/run/user/1000/gdm/Xauthority</td></tr><tr><th>GDMSESSION</th><td>ubuntu</td></tr><tr><th>XMODIFIERS</th><td>@im=ibus</td></tr><tr><th>SHELL</th><td>/bin/bash</td></tr><tr><th>VTE_VERSION</th><td>6003</td></tr><tr><th>JOURNAL_STREAM</th><td>8:48255</td></tr><tr><th>XDG_CONFIG_DIRS</th><td>/etc/xdg/xdg-ubuntu:/etc/xdg</td></tr><tr><th>IM_CONFIG_PHASE</th><td>1</td></tr><tr><th>USERNAME</th><td>massimo</td></tr><tr><th>XDG_DATA_DIRS</th><td>/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop</td></tr><tr><th>_</th><td>/usr/bin/make</td></tr><tr><th>MANAGERPID</th><td>1630</td></tr><tr><th>LESSOPEN</th><td>| /usr/bin/lesspipe %s</td></tr><tr><th>PATH</th><td>/home/massimo/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin</td></tr><tr><th>GPG_AGENT_INFO</th><td>/run/user/1000/gnupg/S.gpg-agent:0:1</td></tr><tr><th>SESSION_MANAGER</th><td>local/mdp-g3:@/tmp/.ICE-unix/1847,unix/mdp-g3:/tmp/.ICE-unix/1847</td></tr><tr><th>XDG_RUNTIME_DIR</th><td>/run/user/1000</td></tr><tr><th>XDG_MENU_PREFIX</th><td>gnome-</td></tr><tr><th>INVOCATION_ID</th><td>5965126e4c7f45428c177345d762dde8</td></tr><tr><th>LS_COLORS</th><td>rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:</td></tr><tr><th>XDG_SESSION_DESKTOP</th><td>ubuntu</td></tr><tr><th>SSH_AUTH_SOCK</th><td>/run/user/1000/keyring/ssh</td></tr><tr><th>DISPLAY</th><td>:0</td></tr><tr><th>HOME</th><td>/home/massimo</td></tr><tr><th>PWD</th><td>/home/massimo/Dropbox/py4web</td></tr><tr><th>SSH_AGENT_PID</th><td>1808</td></tr><tr><th>GTK_MODULES</th><td>gail:atk-bridge</td></tr><tr><th>DBUS_SESSION_BUS_ADDRESS</th><td>unix:path=/run/user/1000/bus</td></tr><tr><th>LESSCLOSE</th><td>/usr/bin/lesspipe %s %s</td></tr><tr><th>LOGNAME</th><td>massimo</td></tr><tr><th>GNOME_DESKTOP_SESSION_ID</th><td>this-is-deprecated</td></tr><tr><th>COLORTERM</th><td>truecolor</td></tr><tr><th>QT_IM_MODULE</th><td>ibus</td></tr><tr><th>SHLVL</th><td>1</td></tr><tr><th>GNOME_SHELL_SESSION_MODE</th><td>ubuntu</td></tr><tr><th>USER</th><td>massimo</td></tr><tr><th>XDG_CURRENT_DESKTOP</th><td>ubuntu:GNOME</td></tr><tr><th>OLDPWD</th><td>/home/massimo/Dropbox/py4web/apps</td></tr><tr><th>MAKEFLAGS</th><td></td></tr><tr><th>MFLAGS</th><td></td></tr><tr><th>MAKE_TERMOUT</th><td>/dev/pts/0</td></tr><tr><th>QT_ACCESSIBILITY</th><td>1</td></tr><tr><th>GJS_DEBUG_TOPICS</th><td>JS ERROR;JS LOG</td></tr><tr><th>GNOME_TERMINAL_SCREEN</th><td>/org/gnome/Terminal/screen/0f261012_0553_488d_84c6_e5b447972d10</td></tr><tr><th>GNOME_TERMINAL_SERVICE</th><td>:1.7932</td></tr><tr><th>WINDOWPATH</th><td>2</td></tr><tr><th>GJS_DEBUG_OUTPUT</th><td>stderr</td></tr><tr><th>MAKE_TERMERR</th><td>/dev/pts/0</td></tr><tr><th>LANG</th><td>en_US.UTF-8</td></tr><tr><th>TERM</th><td>xterm-256color</td></tr><tr><th>MAKELEVEL</th><td>1</td></tr><tr><th>PY4WEB_APPS_FOLDER</th><td>/home/massimo/Dropbox/py4web/apps</td></tr><tr><th>PY4WEB_SERVICE_FOLDER</th><td>/home/massimo/Dropbox/py4web/apps/.service</td></tr><tr><th>PY4WEB_SERVICE_DB_URI</th><td>sqlite://service.storage</td></tr><tr><th>PY4WEB_PATH</th><td>/home/massimo/Dropbox/py4web</td></tr><tr><th>PY4WEB_PASSWORD_FILE</th><td>password.txt</td></tr><tr><th>PY4WEB_YES</th><td>False</td></tr><tr><th>PY4WEB_HOST</th><td>127.0.0.1</td></tr><tr><th>PY4WEB_PORT</th><td>8000</td></tr><tr><th>PY4WEB_QUIET</th><td>False</td></tr><tr><th>PY4WEB_SERVER</th><td>default</td></tr><tr><th>PY4WEB_NUMBER_WORKERS</th><td>0</td></tr><tr><th>PY4WEB_DASHBOARD_MODE</th><td>full</td></tr><tr><th>PY4WEB_WATCH</th><td>lazy</td></tr><tr><th>PY4WEB_SSL_CERT</th><td>None</td></tr><tr><th>PY4WEB_SSL_KEY</th><td>None</td></tr><tr><th>PY4WEB_ERRORLOG</th><td>:stderr</td></tr><tr><th>PY4WEB_LOGGING_LEVEL</th><td>30</td></tr><tr><th>PY4WEB_DEBUG</th><td>False</td></tr></tbody></table></td></tr><tr><th>traceback</th><td>Traceback (most recent call last):
+  File "/home/massimo/Dropbox/py4web/py4web/core.py", line 932, in wrapper
+    ret = func(*func_args, **func_kwargs)
+  File "/home/massimo/Dropbox/py4web/apps/showcase/examples/page_with_error.py", line 6, in page_with_error
+    1 / 0
+ZeroDivisionError: division by zero
+</td></tr><tr><th>exception_type</th><td>ZeroDivisionError</td></tr><tr><th>exception_value</th><td>division by zero</td></tr><tr><th>stackframes</th><td><ul><li><table><tbody><tr><th>file</th><td>/home/massimo/Dropbox/py4web/py4web/core.py</td></tr><tr><th>func</th><td>wrapper</td></tr><tr><th>lnum</th><td>932</td></tr><tr><th>code</th><td><ul><li>            try:
+</li><li>                request.app_name = app_name
+</li><li>                ret = func(*func_args, **func_kwargs)
+</li><li>                if isinstance(ret, dict):
+</li><li>                    response.headers["Content-Type"] = "application/json"
+</li></ul></td></tr></tbody></table></li><li><table><tbody><tr><th>file</th><td>/home/massimo/Dropbox/py4web/apps/showcase/examples/page_with_error.py</td></tr><tr><th>func</th><td>page_with_error</td></tr><tr><th>lnum</th><td>6</td></tr><tr><th>code</th><td><ul><li>
+</li><li>
+</li><li>@action("page_with_error")
+</li><li>def page_with_error():
+</li><li>    1 / 0
+</li></ul></td></tr></tbody></table></li></ul></td></tr></tbody></table></td></tr></tbody></table></div>
+  
+
+</body></html>

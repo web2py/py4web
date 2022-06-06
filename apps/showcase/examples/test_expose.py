@@ -1,12 +1,12 @@
 from py4web import action
 from py4web.utils.factories import ActionFactory, Inject
 
-from ..common import T, auth, db
+from .common import T, auth, db
 
 expose = ActionFactory(auth, T, Inject(message="Hello World"))
 
 
-@expose.get("test_expose1", template="generic.html")
+@expose.get("test_expose1", template="examples/generic.html")
 def test_expose1():
     return dict()
 

@@ -1,14 +1,33 @@
+import requests
 from yatl.helpers import XML
 
-from py4web import Field, action
+from py4web import Field, action, request
 from py4web.utils.form import Form
 
-from ..common import session
-from ..settings import HCAPTCHA_SITE_KEY, SESSION_SECRET_KEY
+from .common import session
+from .settings import (HCAPTCHA_SECRET_KEY, HCAPTCHA_SITE_KEY,
+                       HCAPTCHA_VERIFY_URL)
+
+
+def hCaptcha(token):
+
+    # Retrieve token from post data with key 'h-captcha-response'.
+
+    # Build payload with secret key and token.
+    data = {"secret": HCAPTCHA_SECRET_KEY, "response": token}
+
+    # Make POST request with data payload to hCaptcha API endpoint.
+    response = requests.post(url=HCAPTCHA_VERIFY_URL, data=data)
+
+    # Parse JSON from response. Check for success or error codes.
+    response_json = response.json()
+    success = response_json["success"]
+
+    return success
 
 
 @action("hcaptcha_form")
-@action.uses("hcaptcha_form.html", session)
+@action.uses("examples/hcaptcha_form.html", session)
 def hcaptcha_form():
 
     form = Form(

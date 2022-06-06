@@ -1,20 +1,94 @@
-# check compatibility
-import py4web
+import os
+import re
 
-assert py4web.check_compatible("0.1.20190709.1")
+from py4web import HTTP, action, request
 
-# by importing db you expose it to the _dashboard/dbadmin (order matters)
-from .models import db
+MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 
-# by importing controllers you expose the actions defined in it
-from . import controllers
+from .examples.component_loader import component_loader
+from .examples.count import count
+from .examples.example_helpers import example_helpers
+from .examples.flash_example_fixture import flash_example_fixture
+from .examples.flash_example_naive import flash_example_naive
+from .examples.hcaptcha_form import hcaptcha_form
+from .examples.hello import hello
+from .examples.page_with_error import page_with_error
+from .examples.page_with_parameters import page_with_parameters
+from .examples.page_with_postback import page_with_postback
+from .examples.page_with_query import page_with_query
+from .examples.page_with_raise import page_with_raise
+from .examples.page_with_redirect import page_with_redirect, target
+from .examples.page_with_template import page_with_template
+from .examples.page_without_template import page_without_template
+from .examples.session_clear import session_clear
+from .examples.session_counter import session_counter
+from .examples.tagsinput_form import tagsinput_form
+from .vue_components_examples.vue_file_uploader import vue_file_uploader
+from .vue_components_examples.vue_grid import vue_grid
+from .vue_components_examples.vue_star_rater import vue_star_rater
 
-# optional parameters
-__version__ = "0.0.0"
-__author__ = "you <you@example.com>"
-__license__ = "anything you want"
+if MODE == "full":
+    from .examples.auth_form import auth_form
+    from .examples.auth_forms import auth_forms
+    from .examples.create_form import create_form
+    from .examples.custom_form import custom_form
+    from .examples.example_ajax_grid import example_ajax_grid
+    from .examples.example_html_grid import example_html_grid
+    from .examples.example_multiple_forms import example_multiple_forms
+    from .examples.hello_world import hello_world
+    from .examples.hello_world_msg import hello_world_msg
+    from .examples.show_a_button import show_a_button
+    from .examples.socketio import index as socketio
+    from .examples.test_expose import test_expose1, test_expose2, test_expose3
+    from .examples.update_form import update_form
+    from .vue_components_examples.vue_view_form import vue_view_form
+    from .vue_components_examples.vue_insert_form import vue_insert_form
+    from .vue_components_examples.vue_edit_form import vue_edit_form
+    from .vue_components_examples.vue_grid_and_forms import vue_grid_and_forms
+    from .examples.ws import index as ws
 
 
-def test(x=10):
-    """to call this funciton from shell: py4web call apps examples.test --args '{"x": 100}'"""
-    print("x = %r" % x)
+@action("index")
+@action.uses("index.html")
+def index():
+    return {"mode": MODE}
+
+
+@action("show/<name:path>")
+@action.uses("show.html")
+def show(name):
+    data = []
+    filename = f"apps/showcase/{name}.md"
+    if os.path.exists(filename):
+        with open(filename) as stream:
+            metadata = stream.read().strip()
+        data.append({"name": f"{name}.md", "content": metadata, "language": "markdown"})
+    filename = f"apps/showcase/{name}.py"
+    if not os.path.exists(filename):
+        raise HTTP(404)
+    with open(filename) as stream:
+        controller = stream.read().strip()
+    data.append({"name": f"{name}.py", "content": controller, "language": "python"})
+    templates = re.compile("[/\w]+\.html").findall(controller)
+    for template in templates:
+        with open(f"apps/showcase/templates/{template}") as stream:
+            content = stream.read().strip()
+            data.append(
+                {
+                    "name": f"templates/{template}",
+                    "content": content,
+                    "language": "html",
+                }
+            )
+    others = re.compile(r"from [.](\S+)").findall(controller)
+    for other in others:
+        if not other.startswith("."):
+            continue
+        filename = other[1:].replace(".", "/") + ".py"
+        with open(f"apps/showcase/{filename}") as stream:
+            content = stream.read().strip()
+            data.append({"name": filename, "content": content, "language": "python"})
+    # drop the subfolder name
+    name = "/".join(name.split("/")[1:])
+    executable = MODE == "full" or name in globals()
+    return {"files": data, "mode": MODE, "name": name, "executable": executable}

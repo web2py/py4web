@@ -1,21 +1,28 @@
 from yatl.helpers import DIV
 
-from py4web import Field, action
+from py4web import Field, action, request
 from py4web.utils.form import Form
 
-from ..common import flash
+from .common import flash
 
 
 @action("mycomponent.load", method=["GET", "POST"])
 @action.uses(flash)
 def mycomponent():
-    flash.set("Welcome")
+    # create a form object
     form = Form([Field("your_name")])
-    return DIV("Hello " + request.forms["your_name"] if form.accepted else form).xml()
+    # if the form is not submmitted show a welcome flash message
+    if not request.forms:
+        flash.set("Welcome")
+    # if the form is submitted and accepted display another message
+    elif form.accepted:
+        flash.set("Welcome " + request.forms["your_name"])
+    # return the form if it has not already been submitted and accepted
+    return DIV(form if not form.accepted else "done!").xml()
 
 
-# a py4web component loader is a page that loads page parts via ajax
+# a page that loads the above compnent via ajax
 @action("component_loader")
-@action.uses("component_loader.html", flash)
+@action.uses("examples/component_loader.html", flash)
 def component_loader():
     return dict()

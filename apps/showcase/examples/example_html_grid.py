@@ -6,12 +6,12 @@ from py4web import action
 from py4web.utils.form import FormStyleDefault
 from py4web.utils.grid import Column, Grid, GridClassStyle
 
-from ..common import T, auth, db, session
+from .common import T, auth, db, session
 
 
 @action("example_html_grid")
-@action("html_grid/<path:path>", method=["POST", "GET"])
-@action.uses("html_grid.html", session, db, auth, T)
+@action("example_html_grid/<path:path>", method=["POST", "GET"])
+@action.uses("examples/html_grid.html", session, db, auth, T)
 def example_html_grid(path=None):
     #  controllers and used for all grids in the app
     grid_param = dict(
