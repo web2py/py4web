@@ -1,17 +1,27 @@
 from py4web import action, request
 from py4web.utils.jsonrpc import JsonRpc
 
-obj = JsonRpc()
+import requests
 
-
-def add(a, b):
-    return a + b
+# define a function you want to expose
+def add(x, y):
+    return x + y
 
 
 # register your functions
-obj.methods["add"] = add
+service = JsonRpc()
+service.methods['add'] = add
 
-# this is a standard handler that implements the protocol
-@action("rpc", method="POST")
+
+# expose the server
+@action("rpc", method=["GET", "POST"])
 def rpc():
-    return obj(request.json)
+    return service(request.query or request.json)
+
+
+# example of a client
+def example_jsonrpc():
+    import jsonrpc.proxy                                                    
+    p = jsonrpc.proxy.JSONRPCProxy(URL('rpc'))
+    assert p.add(1,2) == 3                                                  
+    assert p.add(x=1, y=2) == 3
