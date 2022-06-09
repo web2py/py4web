@@ -80,3 +80,20 @@ CREATE TABLE "vue_form_table"(
     "narrative" TEXT
 );
 success!
+timestamp: 2022-06-08T00:33:47.969760
+CREATE TABLE "user_token"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "token" CHAR(512)
+);
+success!
+timestamp: 2022-06-08T00:33:47.979795
+CREATE TABLE "dummy"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "token" CHAR(512),
+    "name" CHAR(512),
+    "raw" TEXT
+);
+success!
+timestamp: 2022-06-08T21:37:50.143821
+ALTER TABLE "user_token" ADD "user_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  ;
+success!

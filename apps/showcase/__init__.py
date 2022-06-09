@@ -23,6 +23,7 @@ from .examples.page_without_template import page_without_template
 from .examples.session_clear import session_clear
 from .examples.session_counter import session_counter
 from .examples.tagsinput_form import tagsinput_form
+from .examples.rest import rest
 from .examples.rpc import rpc
 from .vue_components_examples.vue_file_uploader import vue_file_uploader
 from .vue_components_examples.vue_grid import vue_grid
