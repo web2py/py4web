@@ -31,7 +31,7 @@ from py4web.utils.param import Param
 
 def to_id(field):
     """get an identified for a field"""
-    return "%s_%s" % (getattr(field, "_tablename", "no_table"), field.name)
+    return "%s_%s" % (getattr(field, "_tablename", field.tablename), field.name)
 
 
 def get_options(validators):
@@ -196,10 +196,11 @@ class RadioWidget:
             if k != ""
         ]
         for k, v, selected in field_options:
+            _id = "%s%s" % (field_id, k)
             control.append(
                 INPUT(
                     v,
-                    _id=field_id,
+                    _id=_id,
                     _value=k,
                     _label=v,
                     _name=field.name,
@@ -207,7 +208,7 @@ class RadioWidget:
                     _checked=selected,
                 )
             )
-            control.append(LABEL(v, _for=field_id))
+            control.append(LABEL(v, _for=_id))
         return control
 
 
@@ -342,7 +343,7 @@ class FormStyleFactory:
             field_type = field.type
             field_comment = field.comment if field.comment else ""
             field_label = field.label
-            input_id = "%s_%s" % (field.tablename, field.name)
+            input_id = to_id(field)
             if isinstance(field, FieldVirtual):
                 value = None
             else:
@@ -716,7 +717,7 @@ class Form(object):
         if isinstance(table, list):
             dbio = False
             # Mimic a table from a list of fields without calling define_table
-            form_name = form_name or "none"
+            form_name = form_name or "no_table"
             for field in table:
                 field.tablename = getattr(field, "tablename", form_name)
 
