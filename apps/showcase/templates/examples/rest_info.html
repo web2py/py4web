@@ -1,0 +1,43 @@
+[[extend "layout.html"]]
+
+<h2>Rest examples</h2>
+
+Your authentication token is <tt>[[=token]]</tt>.
+Reload the page for a new token.
+
+<h3>List all chairs</h3>
+<pre>
+    curl -H "Authentication: [[=token]]" \
+         [[=URL('rest/chair', scheme=True)]]
+</pre>
+
+<h3>Create a new chair record</h3>
+<pre>
+    curl -X POST \
+         -d '{"color":"red"}' \
+         -H "Content-Type: application/json" \
+         -H "Authentication: [[=token]]" \
+         [[=URL('rest/chair', scheme=True)]]
+</pre>
+
+<h3>Retrieve chair with id=1</h3>
+<pre>
+    curl -H "Authentication: [[=token]]" \
+         [[=URL('rest/chair/1', scheme=True)]]
+</pre>
+
+<h3>Update chair with id=1</h3>
+<pre>
+    curl -X PUT \
+         -d '{"color":"green"}' \
+         -H "Content-Type: application/json" \
+         -H "Authentication: [[=token]]" \
+         [[=URL('rest/chair/1', scheme=True)]]
+</pre>
+
+<h3>Delete chair with id=1</h3>
+<pre>
+    curl -X DELETE \
+         -H "Authentication: [[=token]]" \
+         [[=URL('rest/chair/1', scheme=True)]]
+</pre>
