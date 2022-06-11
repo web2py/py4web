@@ -38,11 +38,20 @@ from py4web.utils.param import Param
 
 
 def b16e(text):
+    """convert unicode to b16 unicode"""
     return base64.b16encode(text.encode()).decode()
 
 
 def b16d(text):
+    """convert unicode to b16 unicode"""
     return base64.b16decode(text.encode()).decode()
+
+
+def prevent_open_redirect(url):
+    """url must be a valid absolute URL whithout schema"""
+    if url and url[0] == "/" and "//" not in url:
+        return url
+    return None
 
 
 class AuthEnforcer(Fixture):
@@ -1439,8 +1448,9 @@ class DefaultAuthForms:
         for name, plugin in self.auth.plugins.items():
             url = f"/auth/plugin/{name}/login"
 
-            if request.query.get("next"):
-                url = f"{url}?next={request.query.get('next')}"
+            next_url = prevent_open_redirect(request.query.get("next"))
+            if next_url:
+                url = f"{url}?next={next_url}"
 
             if (
                 name != "email_auth"
@@ -1521,7 +1531,8 @@ class DefaultAuthForms:
             formstyle=self.formstyle,
         )
         user = None
-        self.auth.session["_next_login"] = request.query.get("next")
+        next_url = prevent_open_redirect(request.query.get("next"))        
+        self.auth.session["_next_login"] = next_url
         if form.submitted:
             user, error = self.auth.login(
                 form.vars.get("email", ""), form.vars.get("password", "")
