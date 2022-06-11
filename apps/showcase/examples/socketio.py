@@ -1,11 +1,14 @@
 from py4web import action, request
 
-# pls, run socketio server - look at py4web/utils/wsservers.py.txt
+# pls, run socketio server - look into py4web/utils/wsservers.py.txt
 # test example for python-socketio
+#
+# sio examples https://github.com/ali96343/lvsio 
+# https://github.com/ali96343/capp
 
 
 @action("socketio/index")
-@action.uses("socketio/examples/index.html")
+@action.uses("socketio/socketio_index.html")
 def index():
     sio_url = "http://localhost:8000"
     return dict(sio_url=sio_url)
