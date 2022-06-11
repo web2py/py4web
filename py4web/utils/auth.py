@@ -1531,7 +1531,7 @@ class DefaultAuthForms:
             formstyle=self.formstyle,
         )
         user = None
-        next_url = prevent_open_redirect(request.query.get("next"))        
+        next_url = prevent_open_redirect(request.query.get("next"))
         self.auth.session["_next_login"] = next_url
         if form.submitted:
             user, error = self.auth.login(
