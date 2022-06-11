@@ -41,7 +41,7 @@ def geventWebSocketServer():
 def wsgirefThreadingServer():
     # https://www.electricmonk.nl/log/2016/02/15/multithreaded-dev-web-server-for-the-python-bottle-web-framework/
 
-    import socket
+    import socket, ssl
     from concurrent.futures import ThreadPoolExecutor  # pip install futures
     from socketserver import ThreadingMixIn
     from wsgiref.simple_server import (WSGIRequestHandler, WSGIServer,
@@ -60,6 +60,8 @@ def wsgirefThreadingServer():
                 )
 
                 self.log = logging.getLogger("WSGIRef")
+
+            self_run = self # used in internal classes to access options and logger
 
             class PoolMixIn(ThreadingMixIn):
                 def process_request(self, request, client_address):
@@ -93,6 +95,26 @@ def wsgirefThreadingServer():
                         ThreadingWSGIServer,
                         self.handler_cls,
                     )
+
+                    # openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
+                    # ./py4web.py run apps -s wsgirefThreadingServer --watch=off --port=8443 --ssl_cert=cert.pem --ssl_key=key.pem
+                    # openssl s_client -showcerts -connect 127.0.0.1:8443
+
+                    certfile = self_run.options.get("certfile", None)
+
+                    if certfile:
+                        try:                     
+                            self.server.socket = ssl.wrap_socket (
+                                self.server.socket,
+                                certfile = certfile,
+                                keyfile = self_run.options.get("keyfile", None),
+                                ssl_version=ssl.PROTOCOL_SSLv23,
+                                server_side= True,
+                                do_handshake_on_connect=False,
+                            )
+                        except ssl.SSLError: 
+                            pass
+
                     self.server.serve_forever()
 
             class FixedHandler(WSGIRequestHandler):
@@ -100,7 +122,7 @@ def wsgirefThreadingServer():
                     return self.client_address[0]
 
                 def log_request(*args, **kw):
-                    if not self.quiet:
+                    if not self_run.quiet:
                         return WSGIRequestHandler.log_request(*args, **kw)
 
             class LogHandler(WSGIRequestHandler):
@@ -108,13 +130,13 @@ def wsgirefThreadingServer():
                     return self.client_address[0]
 
                 def log_message(self, format, *args):
-                    if not self.quiet:  # and ( not args[1] in ['200', '304']) :
+                    if not self_run.quiet:  # and ( not args[1] in ['200', '304']) :
                         msg = "%s - - [%s] %s" % (
                             self.client_address[0],
                             self.log_date_time_string(),
                             format % args,
                         )
-                        self.log.info(msg)
+                        self_run.log.info(msg)
 
             handler_cls = self.options.get("handler_class", LogHandler)
             #handler_cls = self.options.get("handler_class", FixedHandler)
