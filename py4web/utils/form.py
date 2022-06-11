@@ -762,12 +762,12 @@ class Form(object):
             form_vars = copy.deepcopy(request.forms)
             for k in form_vars:
                 self.vars[k] = form_vars[k]
-            self.submitted = True
             process = False
 
             # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
             # Notice: we never expose the crsf uuid, we only use to sign the form uuid
             if request.method == "POST" or (request.method == "GET" and post_vars):
+                self.submitted = True
                 if not self.csrf_protection or self._verify_form(post_vars):
                     process = True
 
