@@ -8,8 +8,15 @@ import time
 import urllib
 import uuid
 
-from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
-                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG)
+from pydal.validators import (
+    CRYPT,
+    IS_EMAIL,
+    IS_EQUAL_TO,
+    IS_MATCH,
+    IS_NOT_EMPTY,
+    IS_NOT_IN_DB,
+    IS_STRONG,
+)
 from yatl.helpers import DIV, A
 
 from py4web import HTTP, URL, Field, action, redirect, request, response
@@ -197,6 +204,7 @@ class Auth(Fixture):
         password_in_db=True,
     ):
 
+        # configuration parameters
         self.param = Param(
             registration_requires_confirmation=registration_requires_confirmation,
             registration_requires_approval=registration_requires_approval,
@@ -215,6 +223,9 @@ class Auth(Fixture):
             exclude_extra_fields_in_register=None,
             exclude_extra_fields_in_profile=None,
         )
+
+        # callbacks for forms
+        self.on_accept = {}
 
         self.__prerequisites__ = []
         self.inject = inject
@@ -1121,9 +1132,7 @@ class AuthAPI:
         payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
-            return auth._error(
-                auth.param.messages["errors"].get("no_post_payload")
-            )
+            return auth._error(auth.param.messages["errors"].get("no_post_payload"))
         auth.get_or_delete_existing_unverified_account(payload.get("email"))
         return auth.register(payload, send=True).as_dict()
 
@@ -1136,9 +1145,7 @@ class AuthAPI:
         payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
-            return auth._error(
-                auth.param.messages["errors"].get("no_post_payload")
-            )
+            return auth._error(auth.param.messages["errors"].get("no_post_payload"))
         username, password = payload.get("email"), payload.get("password")
         if not all(isinstance(_, str) for _ in [username, password]):
             return auth._error(auth.param.messages["errors"].get("invalid_credentials"))
@@ -1186,9 +1193,7 @@ class AuthAPI:
         payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
-            return auth._error(
-                auth.param.messages["errors"].get("no_post_payload")
-            )
+            return auth._error(auth.param.messages["errors"].get("no_post_payload"))
 
         if "email" not in payload:
             payload["email"] = ""
@@ -1209,9 +1214,7 @@ class AuthAPI:
 
         # check the new_password2 only if passed
         if payload is None:
-            return auth._error(
-                auth.param.messages["errors"].get("no_post_payload")
-            )
+            return auth._error(auth.param.messages["errors"].get("no_post_payload"))
         return auth.reset_password(
             payload.get("token"),
             payload.get("new_password"),
@@ -1257,9 +1260,7 @@ class AuthAPI:
         payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
-            return auth._error(
-                auth.param.messages["errors"].get("no_post_payload")
-            )
+            return auth._error(auth.param.messages["errors"].get("no_post_payload"))
         return auth.change_password(
             auth.get_user(safe=False),  # refactor make faster
             payload.get("new_password"),
@@ -1273,9 +1274,7 @@ class AuthAPI:
         payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
-            return auth._error(
-                auth.param.messages["errors"].get("no_post_payload")
-            )
+            return auth._error(auth.param.messages["errors"].get("no_post_payload"))
         return auth.change_email(
             auth.get_user(safe=False),
             payload.get("new_email"),
@@ -1292,13 +1291,11 @@ class AuthAPI:
 
         if request.method == "GET":
             return {"user": auth.get_user()}
-        
+
         payload = request.POST if (request.json is None) else request.json
-        
+
         if payload is None:
-            return auth._error(
-                auth.param.messages["errors"].get("no_post_payload")
-            )
+            return auth._error(auth.param.messages["errors"].get("no_post_payload"))
         else:
             return auth.update_profile(auth.get_user(), **payload)
 
@@ -1557,7 +1554,7 @@ class DefaultAuthForms:
         return form
 
     def request_reset_password(self, model=False):
-        """"Request reset password form"""
+        """ "Request reset password form"""
         fields = [
             Field(
                 "email",
@@ -1813,5 +1810,7 @@ class DefaultAuthForms:
         self.auth.flash.set(self.auth.param.messages["flash"].get(key, key))
 
     def _postprocessing(self, action, form=None, user=None):
+        if action in self.auth.on_accept:
+            self.auth.on_accept[action](form, user)
         if not form or form.accepted:
             redirect(self.auth.session.get(f"_next_{action}") or URL("index"))
