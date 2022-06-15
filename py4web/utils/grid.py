@@ -972,9 +972,7 @@ class Grid:
         heading = (
             self.param.headings[field_index]
             if field_index < len(self.param.headings)
-            else field.label
-            if "label" in field.__dict__
-            else title(field.name)
+            else getattr(field, "label", title(field.name))
         )
         #  add the sort order query parm
         sort_query_parms = dict(self.query_parms)
@@ -1376,9 +1374,15 @@ class Grid:
         :return: html representation of the table or the py4web Form object
         """
         if self.action == "select":
-            return XML(self._make_table())
+            return self._make_table()
         elif self.action in ["new", "details", "edit"]:
             return self.form
+
+    def xml(self):
+        return self.render().xml()
+
+    def __str__(self):
+        return str(self.xml())
 
     def data(self):
         """

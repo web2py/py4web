@@ -2,7 +2,7 @@ import os
 
 from yatl.helpers import A, I
 
-from py4web import action
+from py4web import action, URL, redirect
 from py4web.utils.form import FormStyleDefault
 from py4web.utils.grid import Column, Grid, GridClassStyle
 
@@ -10,6 +10,10 @@ from .common import T, auth, db, session
 
 
 @action("example_html_grid")
+def example_html_grid():
+    redirect(URL("example_html_grid/select"))
+
+
 @action("example_html_grid/<path:path>", method=["POST", "GET"])
 @action.uses("examples/html_grid.html", session, db, auth, T)
 def example_html_grid(path=None):
