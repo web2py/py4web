@@ -9,6 +9,7 @@ from pydal._compat import to_native
 from pydal.objects import FieldVirtual
 from pydal.validators import Validator
 from yatl.helpers import (
+    CAT,
     DIV,
     FORM,
     INPUT,
@@ -187,7 +188,7 @@ class SelectWidget:
 
 class RadioWidget:
     def make(self, field, value, error, title, placeholder="", readonly=False):
-        control = DIV()
+        control = CAT()
         field_id = to_id(field)
         value = list(map(str, value if isinstance(value, list) else [value]))
         field_options = [
@@ -460,9 +461,10 @@ class FormStyleFactory:
             if key == "input":
                 key += "[type=%s]" % (control["_type"] or "text")
 
-            control["_class"] = join_classes(
-                control.attributes.get("_class"), self.classes.get(key)
-            )
+            if hasattr(control, 'attributes'):
+                control["_class"] = join_classes(
+                    control.attributes.get("_class"), self.classes.get(key)
+                )
 
             # Set the form controls.
             controls["labels"][field_name] = field_label
