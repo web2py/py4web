@@ -11,7 +11,38 @@ __all__ = [
     "geventWebSocketServer",
     "wsgirefThreadingServer",
     "rocketServer",
+    "gevent",
 ] + wsservers_list
+
+def gevent():
+    # basically tihis is the same as ombotts version, but
+    # since reload was added as keyword argument that's being passed to the server
+    # this was passed as ssl_options to gevent's pywsgi.WSGIServer. This breaks gevent's api
+    # Therefor 'reloader' is removed below in the options passed to the server.
+    from gevent import pywsgi, local
+    import threading
+    if not isinstance(threading.local(), local.local):
+        msg = "Ombott requires gevent.monkey.patch_all() (before import)"
+        raise RuntimeError(msg)
+
+    class GeventServer(ServerAdapter):
+        def run(self, handler):
+            if not self.quiet:
+                self.log = logging.getLogger("gevent")
+            options = self.options.copy()
+            try:
+                # keep only ssl options
+                del options['reloader']
+            except: pass
+
+            server = pywsgi.WSGIServer(
+                (self.host, self.port),
+                handler,
+                **options
+            )
+            server.serve_forever()
+
+    return GeventServer
 
 
 def geventWebSocketServer():
