@@ -1587,6 +1587,11 @@ def start_server(kwargs):
         params["keyfile"] = kwargs["ssl_key"]
 
     if server_config["server"] == "gevent":
+        if kwargs['watch'] != 'off':
+            print('Error: watch doesn\'t work with gevent. ')
+            print('invoke py4web with `--watch off` or choose another server. ')
+            exit(255)
+
         if not hasattr(_ssl, "sslwrap"):
             _ssl.sslwrap = new_sslwrap
 
