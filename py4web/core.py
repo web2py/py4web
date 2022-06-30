@@ -118,7 +118,7 @@ response = bottle.response
 abort = bottle.abort
 
 # monkey patching bottle/ombott
-request.query.__class__.get, request.query.__class__.getbytes = request.query.__class__.getunicode, request.query.__class__.get
+request.query.__class__.get, request.query.__class__.getraw = request.query.__class__.getunicode, request.query.__class__.get
 
 os.environ.update(
     {key: value for key, value in DEFAULTS.items() if key not in os.environ}
