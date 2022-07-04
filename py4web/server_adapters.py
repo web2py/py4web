@@ -160,7 +160,7 @@ def wsgirefThreadingServer():
                 Redirect(conn, addr, self.host, self.port, self.logger).run()
                 # to prevent ConnectionResetError in the server
                 try:
-                    data = conn.recv( 1024 )
+                    while conn.recv( 1 ): pass
                 except ( ConnectionResetError, BrokenPipeError ):
                     pass
                 return (conn, addr)
