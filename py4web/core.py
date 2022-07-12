@@ -36,6 +36,10 @@ import uuid
 import zipfile
 from collections import OrderedDict
 from contextlib import redirect_stdout, redirect_stderr
+import socket
+import ssl
+from datetime import datetime
+
 
 import portalocker
 from watchgod import awatch
@@ -116,9 +120,6 @@ Field = pydal.Field
 request = bottle.request
 response = bottle.response
 abort = bottle.abort
-
-# monkey patching bottle/ombott
-request.query.__class__.get, request.query.__class__.getraw = request.query.__class__.getunicode, request.query.__class__.get
 
 os.environ.update(
     {key: value for key, value in DEFAULTS.items() if key not in os.environ}
@@ -1020,6 +1021,114 @@ def new_sslwrap(
     caller_self = inspect.currentframe().f_back.f_locals["self"]
     return context._wrap_socket(sock, server_side=server_side, ssl_sock=caller_self)
 
+
+#########################################################################################
+# Redirector http -> https 
+#########################################################################################
+
+class Redirect:
+    # https://www.elifulkerson.com/projects/http-https-redirect.php
+    def __init__(self, socket, address, host="127.0.0.1", port=8000, logger=None):
+        self.socket = socket
+        self.ip = address[0]
+        self.host = host
+        self.port = str(port)
+        self.logger = logger
+        self.client_closed = False
+
+    def sendline(self, data):
+        if not self.client_closed:
+            try:
+                self.socket.send(data + b"\r\n")
+            except (ConnectionResetError, BrokenPipeError):
+                self.client_closed = True
+
+    def fileno(self):
+        return self.socket.fileno()
+
+    def run(self):
+        go_to = f"https://{self.host}:{self.port}".encode()
+        method = b"UNKNOWN"
+        data = self.socket.recv(1024)
+
+        if data:
+            req_url = data.split(b" ", 2)
+            if req_url and req_url[2].startswith(b"HTTP/1.1\r\n"):
+                go_to += req_url[1]
+                method = req_url[0]
+
+            # send our https redirect
+            self.sendline(b"HTTP/1.1 302 Encryption Required")
+            self.sendline(b"Location: " + go_to)
+            self.sendline(b"Connection: close")
+            self.sendline(b"Cache-control: private")
+            self.sendline(b"")
+
+            self.sendline(
+                b"<html><body>Encryption Required <a href='"
+                + go_to
+                + b"'>"
+                + go_to
+                + b"</a></body></html>"
+            )
+            self.sendline(b"")
+
+        self.socket.close
+        if self.logger:
+            dt = datetime.now().strftime("%d/%b/%Y %H:%M:%S")
+            self.logger.info(
+                f'{self.ip} - - [{dt}] -> "{go_to.decode()}" {method.decode()}'
+            )
+
+class SmartSocket:
+    # https://stackoverflow.com/questions/13325642/python-magic-smart-dual-mode-ssl-socket
+
+    def __init__(
+        self,
+        sock,
+        certfile,
+        keyfile,
+        allow_http=False,
+        host="127.0.0.1",
+        port=8000,
+        logger=None,
+    ):
+        self.sock = sock
+        self.certfile = certfile
+        self.keyfile = keyfile
+        self.allow_http = allow_http
+        self.host = host
+        self.port = str(port)
+        self.logger = logger
+        # delegate methods as needed
+        _delegate_methods = ["fileno"]
+        for method in _delegate_methods:
+            setattr(self, method, getattr(self.sock, method))
+
+    def accept(self):
+        (conn, addr) = self.sock.accept()
+        if conn.recv(1, socket.MSG_PEEK) == b"\x16":
+            return (
+                ssl.wrap_socket(
+                    conn,
+                    certfile=self.certfile,
+                    keyfile=self.keyfile,
+                    do_handshake_on_connect=False,
+                    server_side=True,
+                    ssl_version=ssl.PROTOCOL_SSLv23,
+                ),
+                addr,
+            )
+        elif self.allow_http:
+            return (conn, addr)
+        else:
+            Redirect(conn, addr, self.host, self.port, self.logger).run()
+            # to prevent ConnectionResetError in the server
+            try:
+                while conn.recv(1): pass
+            except (ConnectionResetError, BrokenPipeError):
+                pass
+            return (conn, addr)
 
 #########################################################################################
 # Error Handling
