@@ -38,7 +38,6 @@ from collections import OrderedDict
 from contextlib import redirect_stdout, redirect_stderr
 import socket
 import ssl
-from datetime import datetime
 
 
 import portalocker
@@ -1075,7 +1074,7 @@ class Redirect:
 
         self.socket.close
         if self.logger:
-            dt = datetime.now().strftime("%d/%b/%Y %H:%M:%S")
+            dt = datetime.datetime.now().strftime("%d/%b/%Y %H:%M:%S")
             self.logger.info(
                 f'{self.ip} - - [{dt}] -> "{go_to.decode()}" {method.decode()}'
             )
