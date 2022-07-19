@@ -900,7 +900,10 @@ class Form(object):
             self.record.update_record(**validated_vars)
         else:
             # warning, should we really insert if record
-            self.vars["id"] = self.table.insert(**validated_vars)
+            try:
+                self.vars["id"] = self.table.insert(**validated_vars)
+            except:
+                self.vars["id"] = None
 
     def clear(self):
         self.errors.clear()
