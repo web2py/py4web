@@ -118,7 +118,10 @@ response = bottle.response
 abort = bottle.abort
 
 # monkey patching bottle/ombott
-request.query.__class__.get, request.query.__class__.getraw = request.query.__class__.getunicode, request.query.__class__.get
+request.query.__class__.get, request.query.__class__.getraw = (
+    request.query.__class__.getunicode,
+    request.query.__class__.get,
+)
 
 os.environ.update(
     {key: value for key, value in DEFAULTS.items() if key not in os.environ}
@@ -370,19 +373,15 @@ class Translator(pluralize.Translator, Fixture):
 
 
 class DAL(pydal.DAL, Fixture):
-
-    reconnect_on_request = True
-
     def on_request(self, context):
-        if self.reconnect_on_request:
-            self._adapter.reconnect()
+        self.get_connection_from_pool_or_new()
         threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
 
     def on_error(self, context):
-        self.rollback()
+        self.recycle_connection_in_pool_or_close("rollback")
 
     def on_success(self, context):
-        self.commit()
+        self.recycle_connection_in_pool_or_close("commit")
 
 
 # make sure some variables in pydal are thread safe
@@ -1587,9 +1586,9 @@ def start_server(kwargs):
         params["keyfile"] = kwargs["ssl_key"]
 
     if server_config["server"] == "gevent":
-        if kwargs['watch'] != 'off':
-            print('Error: watch doesn\'t work with gevent. ')
-            print('invoke py4web with `--watch off` or choose another server. ')
+        if kwargs["watch"] != "off":
+            print("Error: watch doesn't work with gevent. ")
+            print("invoke py4web with `--watch off` or choose another server. ")
             exit(255)
 
         if not hasattr(_ssl, "sslwrap"):
