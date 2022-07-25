@@ -231,6 +231,7 @@ class Auth(Fixture):
             default_login_enabled=True,
             exclude_extra_fields_in_register=None,
             exclude_extra_fields_in_profile=None,
+            expose_all_models=True,
         )
 
         # callbacks for forms
@@ -1063,6 +1064,8 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def all_models(auth):
+        if not auth.param.get("expose_all_models"):
+            return HTTP(404)
         available_models = [item for item in AuthAPI.model_apis if auth.allows(item)]
         request.query["@model"] = "true"
         response_remove_fields = ["code", "status"]
