@@ -7,6 +7,7 @@ This file is provided as an example:
 """
 import os
 
+MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 # db settings
 APP_FOLDER = os.path.join(os.path.dirname(__file__), "..")
 APP_NAME = os.path.split(APP_FOLDER)[-1]
@@ -15,7 +16,7 @@ APP_NAME = os.path.split(APP_FOLDER)[-1]
 DB_FOLDER = os.path.join(APP_FOLDER, "databases")
 DB_URI = "sqlite://storage.db"
 DB_POOL_SIZE = 1
-DB_MIGRATE = True
+DB_MIGRATE = MODE == "full"
 DB_FAKE_MIGRATE = False  # maybe?
 
 # location where to store uploaded files:
