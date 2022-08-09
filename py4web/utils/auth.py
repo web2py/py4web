@@ -3,6 +3,7 @@ import calendar
 import copy
 import datetime
 import hashlib
+import random
 import re
 import time
 import urllib
@@ -211,6 +212,7 @@ class Auth(Fixture):
         allowed_actions=None,
         use_appname_in_redirects=None,
         password_in_db=True,
+        two_factor_methods=None,
     ):
 
         # configuration parameters
@@ -231,6 +233,9 @@ class Auth(Fixture):
             default_login_enabled=True,
             exclude_extra_fields_in_register=None,
             exclude_extra_fields_in_profile=None,
+            expose_all_models=True,
+            two_factor_methods=two_factor_methods,
+            two_factor_default_tries=3,
         )
 
         # callbacks for forms
@@ -1063,6 +1068,8 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def all_models(auth):
+        if not auth.param.get("expose_all_models"):
+            return HTTP(404)
         available_models = [item for item in AuthAPI.model_apis if auth.allows(item)]
         request.query["@model"] = "true"
         response_remove_fields = ["code", "status"]
@@ -1312,12 +1319,109 @@ class AuthAPI:
 class DefaultAuthForms:
     """Default Forms used for Auth actions"""
 
-    public_forms = ["register", "login", "request_reset_password", "reset_password"]
+    public_forms = [
+        "register",
+        "login",
+        "request_reset_password",
+        "reset_password",
+        "two_factor",
+    ]
     private_forms = ["profile", "change_password"]  # change_email, unsubscribe
     no_forms = ["logout", "verify_email"]
 
     def __init__(self, auth):
         self.auth = auth
+
+    def two_factor(self):
+        two_factor_label = "Authentication Code"
+        two_factor_comment = "Fill in your authentication code"
+        if "two_factor" in self.auth.param.messages:
+            if "label" in self.auth.param.messages["two_factor"]:
+                two_factor_label = self.auth.param.messages["two_factor"]["label"]
+            if "comment" in self.auth.param.messages["two_factor"]:
+                two_factor_comment = self.auth.param.messages["two_factor"]["comment"]
+
+        two_factor_user = self.auth.session.get("two_factor_user")
+        next_url = self.auth.session.get("two_factor_next_url")
+
+        if two_factor_user:
+            user = self.auth.db.auth_user(two_factor_user)
+        else:
+            #  two_factor_user wasn't found so we're not coming from the login page.  Redirect home...
+            redirect(URL("index"))
+
+        form = Form(
+            [
+                Field(
+                    "authentication_code",
+                    label=two_factor_label,
+                    required=True,
+                    comment=two_factor_comment,
+                ),
+                Field("next_url", label="", default=next_url),
+            ],
+            # hidden=dict(next_url=next_url),
+            formstyle=self.auth.param.formstyle,
+            form_name="auth_2fa",
+            keep_values=True,
+            validation=lambda f: DefaultAuthForms._validate_two_factor(
+                f, self.auth.session.get("two_factor_code")
+            ),
+        )
+
+        form.structure.find("[name=next_url]")[0]["_style"] = "display: none"
+        # form.structure.find('[for="auth_2fa_next_url"]')[0]["_style"] = "display: none"
+
+        if form.accepted:
+            if form.vars.get("authentication_code") == str(
+                self.auth.session.get("two_factor_code")
+            ):
+                self._reset_two_factor()
+                self.auth.store_user_in_session(user["id"])
+                self._postprocessing("login", form, user)
+                redirect(next_url)
+            else:
+                self.auth.session["two_factor_tries_left"] -= 1
+
+                if self.auth.session.get("two_factor_tries_left") < 1:
+                    self._reset_two_factor()
+                    redirect(URL("auth", "login", vars=dict(next=next_url)))
+                    self._set_flash("Two factor exceeded max tries")
+                else:
+                    self._set_flash("Invalid Authentication Code")
+                    form.errors["authentication_code"] = "Invalid code"
+                    form.accepted = False
+        else:
+            if not self.auth.session.get("two_factor_code"):
+                self.auth.session["two_factor_code"] = str(
+                    random.randint(100000, 999999)
+                )
+                self.auth.session[
+                    "two_factor_tries_left"
+                ] = self.auth.param.two_factor_default_tries
+
+                for two_factor_method in self.auth.param.two_factor_methods:
+                    try:
+                        # By default we use session.auth_two_factor generated before.
+                        self.auth.session["two_factor_code"] = str(
+                            two_factor_method(
+                                user,
+                                self.auth.session.get("two_factor_code"),
+                            )
+                        )
+                    except:
+                        pass
+                    else:
+                        break
+            if len(form.errors) > 0:
+                self.auth.session["two_factor_tries_left"] -= 1
+
+                if self.auth.session.get("two_factor_tries_left") < 1:
+                    self._reset_two_factor()
+                    self._set_flash("Two factor exceeded max tries")
+                    redirect(URL("auth", "login", vars=dict(next=next_url)))
+
+        return form
 
     @property
     def formstyle(self):
@@ -1468,6 +1572,13 @@ class DefaultAuthForms:
 
         return dict(buttons=top_buttons, combined_div=combined_div)
 
+    def _reset_two_factor(self):
+        self.auth.session["two_factor_user"] = None
+        self.auth.session["two_factor_code"] = None
+        self.auth.session[
+            "two_factor_tries_left"
+        ] = self.auth.param.two_factor_default_tries
+
     def login(self, model=False):
         """Login form"""
         top_buttons = self.login_buttons()
@@ -1540,6 +1651,10 @@ class DefaultAuthForms:
             form.accepted = not error
             form.errors["email"] = error
         if user:
+            if self.auth.param.two_factor_methods:
+                self.auth.session["two_factor_user"] = user["id"]
+                self.auth.session["two_factor_next_url"] = next_url
+                redirect(URL("auth", "two_factor"))
             self.auth.store_user_in_session(user["id"])
             self._postprocessing("login", form, user)
 
@@ -1819,6 +1934,11 @@ class DefaultAuthForms:
 
     def _set_flash(self, key):
         self.auth.flash.set(self.auth.param.messages["flash"].get(key, key))
+
+    @staticmethod
+    def _validate_two_factor(form, two_factor_code):
+        if form.vars.get("authentication_code") != two_factor_code:
+            form.errors["authentication_code"] = "Invalid authentication code"
 
     def _postprocessing(self, action, form=None, user=None):
         if action in self.auth.on_accept:
