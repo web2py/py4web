@@ -150,6 +150,95 @@ The second one forces the login if needed:
 Here ``@action.uses(auth.user)`` tells py4web that this action requires
 a logged in user and should redirect to login if no user is logged in.
 
+Two Factor Authentication
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Two factor authentication (or Two-step verification) is a way of improving authentication security. When activated an extra step is added in the login process. In the first step, users are shown the standard username/password form. If they successfully pass this challenge by submitting the correct username and password, and two factor authentication is enabled for the user, the server will present a second form before logging them in.
+
+There are a few Auth settings available to control how two factor authentication works.
+
+The follow can be specified on Auth instantiation:
+
+- two_factor_filter
+- two_factor_methods
+
+two_factor_filter
+^^^^^^^^^^^^^^^^^
+
+When you pass a method name to the two_factor_filter parameter you are telling py4web to call that method to determine whether or not this login should be use or bypass two factor authentication.  If your method returns True, then this login requires two factor.  If it returns False, two factor authentication is bypassed for this login.
+
+Sample two_factor_filter method
+
+This example shows how to allow users that are on a specific network.
+
+.. code:: python
+
+   def _two_factor_filter(user, request):
+       import ipaddress
+
+       networks = [
+           "10.10.0.0/22",
+       ]
+
+       ip_list = []
+       for range in networks:
+           ip_list.extend(ipaddress.IPv4Network(range))
+
+       if ipaddress.IPv4Address(request.remote_addr) in ip_list:
+           #  if the client address is in the network address list, then do NOT require MFA
+           return False
+
+       return True
+
+two_factor_methods
+^^^^^^^^^^^^^^^^^^
+
+When two factor authentication is active, py4web will generate a 6 digit code (using random.randint). What happens next is up to you. The two_factor_methods argument to the Auth class allows you to specify 1 or more methods to be called to send the two factor code to the user.
+
+This example shows how to send an email with the two factor code:
+
+.. code:: python
+
+   def _send_two_factor_email(user, auth_two_factor):
+       try:
+           auth.sender.send(
+               to=[user.email],
+               subject=f"Two factor login verification code",
+               body=f"You're verification code is {auth_two_factor}",
+               sender="from_address@youremail.com",
+           )
+       except Exception as e:
+           print(e)
+
+       return auth_two_factor
+
+NOTE - this two_factor_method uses 'auth' internally.  Therefore you cannot pass it when instantiating the Auth class.  Instead, instantiate Auth without passing this parameter and set it afterwards using:
+
+.. code:: python
+
+   auth.param.two_factor_methods = _send_two_factor_email
+
+two_factor_tries
+^^^^^^^^^^^^^^^^
+
+By default, py4web allows the user to try to enter their two factor code 3 times. You can override this after Auth is instantiated using:
+
+.. code:: python
+
+   auth.param.two_factor_tries = 5
+
+Once this is all setup, the flow for two factor authentication is:
+
+- present the login page
+- upon successful login and user passes two_factor_filter
+   - redirect to py4web auth/two_factor endpoint
+   - generate 6 digit verification code
+   - call two_factor_methods to distribute the verification code as needed
+   - display verification page where user can enter their code
+   - upon successful verification, take user to _next_url that was passed to the login page
+
+
+
 Auth Plugins
 ~~~~~~~~~~~~
 
