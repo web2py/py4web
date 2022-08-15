@@ -1615,13 +1615,12 @@ class DefaultAuthForms:
         user = self.auth.db.auth_user(user_id)
         code = self.auth.session.get("auth.2fa_code")
         if not code:
-            # generate ans tore the code
+            # generate and send the code
             code = str(random.randint(100000, 999999))
+            code = self.auth.param.two_factor_send(user, code)
+            # store code in session
             self.auth.session["auth.2fa_code"] = code
-            # reset the retried
             self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
-            # send the code (handle any try/catch inside)
-            self.auth.param.two_factor_send(user, code)
 
         form = Form(
             [
