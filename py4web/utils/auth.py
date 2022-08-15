@@ -3,6 +3,7 @@ import calendar
 import copy
 import datetime
 import hashlib
+import random
 import re
 import time
 import urllib
@@ -158,6 +159,7 @@ class Auth(Fixture):
             "created_by": "Created By",
             "modified on": "Modified On",
             "modified by": "Modified By",
+            "two_factor": "Authentication Code",
         },
         "buttons": {
             "lost-password": "Lost Password",
@@ -181,6 +183,8 @@ class Auth(Fixture):
             "new_password_was_already_used": "new password was already used",
             "invalid": "invalid",
             "no_post_payload": "no post payload",
+            "two_factor": "Verification code does not match",
+            "two_factor_max_tries": "Two factor max tries exceeded",
         },
     }
 
@@ -211,6 +215,8 @@ class Auth(Fixture):
         allowed_actions=None,
         use_appname_in_redirects=None,
         password_in_db=True,
+        two_factor_required=None,
+        two_factor_send=None,
     ):
 
         # configuration parameters
@@ -232,6 +238,9 @@ class Auth(Fixture):
             exclude_extra_fields_in_register=None,
             exclude_extra_fields_in_profile=None,
             expose_all_models=True,
+            two_factor_required=two_factor_required,
+            two_factor_send=two_factor_send,
+            two_factor_tries=3,
         )
 
         # callbacks for forms
@@ -1315,7 +1324,13 @@ class AuthAPI:
 class DefaultAuthForms:
     """Default Forms used for Auth actions"""
 
-    public_forms = ["register", "login", "request_reset_password", "reset_password"]
+    public_forms = [
+        "register",
+        "login",
+        "request_reset_password",
+        "reset_password",
+        "two_factor",
+    ]
     private_forms = ["profile", "change_password"]  # change_email, unsubscribe
     no_forms = ["logout", "verify_email"]
 
@@ -1543,6 +1558,20 @@ class DefaultAuthForms:
             form.accepted = not error
             form.errors["email"] = error
         if user:
+            #  We will process two_factor if two_factor_send is defined and either
+            #  - No two_factor_required defined
+            #    OR
+            #  - two_factor_required() returns True
+            #  If two_factor_required exists and returns False,
+            #  then this user bypasses two_factor processing
+            if self.auth.param.two_factor_send is not None:
+                if (
+                    not self.auth.param.two_factor_required
+                    or self.auth.param.two_factor_required(user, request)
+                ):
+                    self.auth.session["auth.2fa_user"] = user["id"]
+                    self.auth.session["auth.2fa_next_url"] = next_url
+                    redirect(URL("auth", "two_factor"))
             self.auth.store_user_in_session(user["id"])
             self._postprocessing("login", form, user)
 
@@ -1565,6 +1594,71 @@ class DefaultAuthForms:
                 )
             )
         form.structure.insert(0, DIV(top_buttons["combined_div"]))
+        return form
+
+    def _reset_two_factor(self):
+        self.auth.session["auth.2fa_user"] = None
+        self.auth.session["auth.2fa_code"] = None
+        self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
+
+    def two_factor(self):
+
+        if self.auth.param.two_factor_send is None:
+            raise HTTP(404)
+
+        user_id = self.auth.session.get("auth.2fa_user")
+        next_url = self.auth.session.get("auth.2fa_next_url")
+
+        if not user_id:
+            redirect(URL("index"))
+
+        user = self.auth.db.auth_user(user_id)
+        code = self.auth.session.get("auth.2fa_code")
+        if not code:
+            # generate and send the code
+            code = str(random.randint(100000, 999999))
+            code = self.auth.param.two_factor_send(user, code)
+            # store code in session
+            self.auth.session["auth.2fa_code"] = code
+            self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
+
+        form = Form(
+            [
+                Field(
+                    "authentication_code",
+                    label=self.auth.param.messages["labels"]["two_factor"],
+                    required=True,
+                    requires=IS_EQUAL_TO(
+                        code,
+                        error_message=self.auth.param.messages["errors"]["two_factor"],
+                    ),
+                ),
+            ],
+            formstyle=self.auth.param.formstyle,
+            form_name="auth_2fa",
+            keep_values=True,
+            hidden=dict(next_url=next_url),
+        )
+
+        if form.accepted:
+            # reset the 2f session
+            self._reset_two_factor()
+            # store user i session
+            self.auth.store_user_in_session(user["id"])
+            # login user
+            self._postprocessing("login", form, user)
+            # redirect after login
+            redirect(next_url)
+        elif form.errors:
+            # decrease the retries count
+            self.auth.session["auth.2fa_tries_left"] -= 1
+            # if 0 retries available, reset, and redirect to login
+            if self.auth.session.get("auth.2fa_tries_left") < 1:
+                self._reset_two_factor()
+                self._set_flash(
+                    self.auth.param.messages["errors"]["two_factor_max_tries"]
+                )
+                redirect(URL("auth", "login", vars=dict(next=next_url)))
         return form
 
     def request_reset_password(self, model=False):
