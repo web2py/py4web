@@ -1223,7 +1223,14 @@ class Grid:
         for page_number in self.iter_pages(
             self.current_page_number, self.number_of_pages
         ):
-            pager_query_parms = dict(self.query_parms)
+            #  params can sometimes come through as a list - if so, we only want the last element of the list
+            pager_query_parms = dict()
+            for x in dict(self.query_parms):
+                if isinstance(self.query_parms[x], str):
+                    pager_query_parms[x] = self.query_parms[x]
+                elif isinstance(self.query_parms[x], list):
+                    pager_query_parms[x] = self.query_parms[x][-1:]
+
             pager_query_parms["page"] = page_number
             # if there is a gat add a spacer
             if previous_page_number and page_number - previous_page_number > 1:
