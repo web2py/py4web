@@ -679,7 +679,13 @@ class Auth(Fixture):
     # Methods that assume a user
 
     def change_password(
-        self, user, new_password, old_password=None, check=True, check_old_password=True
+        self,
+        user,
+        new_password,
+        old_password=None,
+        check=True,
+        check_old_password=True,
+        clear_action_token=False,
     ):
         db = self.db
         if check:
@@ -720,9 +726,11 @@ class Auth(Fixture):
                 db(db.auth_user.id == user.get("id")).update(
                     past_passwords_hash=past_pwds
                 )
-        num = db(db.auth_user.id == user.get("id")).update(
-            password=new_pwd, last_password_change=datetime.datetime.utcnow()
-        )
+        args = dict(password=new_pwd, last_password_change=datetime.datetime.utcnow())
+        if clear_action_token:
+            args["action_token"] = None
+        num = db(db.auth_user.id == user.get("id")).update(**args)
+
         return {"updated": num}
 
     def change_email(self, user, new_email, password=None, check=True):
@@ -1775,7 +1783,9 @@ class DefaultAuthForms:
             formstyle=self.formstyle,
             submit_value=button_name,
         )
-        self._process_change_password_form(form, user, False)
+        self._process_change_password_form(
+            form, user, check_old_password=False, clear_action_token=True
+        )
         if form.accepted:
             self._set_flash("password-changed")
             self._postprocessing("reset_password", form, user)
@@ -1827,7 +1837,9 @@ class DefaultAuthForms:
             self._postprocessing("change_password", form, user)
         return form
 
-    def _process_change_password_form(self, form, user, check_old_password):
+    def _process_change_password_form(
+        self, form, user, check_old_password, clear_action_token=False
+    ):
         """Process change password form"""
         if form.accepted:
             old_password = request.forms.get("old_password")
@@ -1838,6 +1850,7 @@ class DefaultAuthForms:
                 old_password,
                 check=True,
                 check_old_password=check_old_password,
+                clear_action_token=clear_action_token,
             )
             form.errors = res.get("errors", {})
             form.accepted = not form.errors
