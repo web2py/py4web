@@ -289,7 +289,7 @@ class FormStyleFactory:
     ):
         kwargs = kwargs if kwargs else {}
 
-        kwargs['_accept-charset'] = 'utf8'
+        kwargs["_accept-charset"] = "utf8"
         form_method = "POST"
         form_action = request.url.split(":", 1)[1]
         form_enctype = "multipart/form-data"
@@ -462,7 +462,7 @@ class FormStyleFactory:
             if key == "input":
                 key += "[type=%s]" % (control["_type"] or "text")
 
-            if hasattr(control, 'attributes'):
+            if hasattr(control, "attributes"):
                 control["_class"] = join_classes(
                     control.attributes.get("_class"), self.classes.get(key)
                 )
@@ -757,12 +757,13 @@ class Form(object):
         self.action = None
 
         self.kwargs = kwargs if kwargs else {}
+        self.method = self.kwargs.get("_method", "POST")
 
         if self.record:
             self.vars = self._read_vars_from_record(table)
 
         if not readonly:
-            post_vars = request.GET if request.method == "GET" else request.POST
+            post_vars = request.GET if self.method == "GET" else request.POST
             form_vars = copy.deepcopy(request.forms)
             for k in form_vars:
                 self.vars[k] = form_vars[k]
@@ -770,7 +771,7 @@ class Form(object):
 
             # We only a process a form if it is POST and the formkey matches (correct formname and crsf)
             # Notice: we never expose the crsf uuid, we only use to sign the form uuid
-            if request.method == "POST" or (request.method == "GET" and post_vars):
+            if post_vars:
                 self.submitted = True
                 if not self.csrf_protection or self._verify_form(post_vars):
                     process = True
