@@ -52,6 +52,7 @@ import click
 
 # Third party modules
 import ombott as bottle
+from ombott.request.helpers import FormsDict
 import pluralize
 import pydal
 import renoir
@@ -122,6 +123,7 @@ request.query.__class__.get, request.query.__class__.getraw = (
     request.query.__class__.getunicode,
     request.query.__class__.get,
 )
+FormsDict.recode_unicode = False
 
 os.environ.update(
     {key: value for key, value in DEFAULTS.items() if key not in os.environ}
