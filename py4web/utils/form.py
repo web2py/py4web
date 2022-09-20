@@ -289,6 +289,7 @@ class FormStyleFactory:
     ):
         kwargs = kwargs if kwargs else {}
 
+        kwargs['_accept-charset'] = 'utf8'
         form_method = "POST"
         form_action = request.url.split(":", 1)[1]
         form_enctype = "multipart/form-data"
