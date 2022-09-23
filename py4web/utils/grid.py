@@ -629,7 +629,7 @@ class Grid:
                     self.form.param.submit_value = self.param.edit_submit_value
 
             # redirect to the referrer
-            if self.form.accepted or (readonly and request.method == "POST"):
+            if self.form.accepted or (readonly and request.method == "POST") or (self.form.deletable and self.form.deleted):
                 referrer = request.query.get("_referrer")
                 if referrer:
                     redirect(base64.b16decode(referrer.encode("utf8")).decode("utf8"))
@@ -766,20 +766,17 @@ class Grid:
         url,
         button_text,
         icon,
-        icon_size="small",
         additional_classes=None,
         additional_styles=None,
         override_classes=None,
         override_styles=None,
         message=None,
-        onclick=None,
         row_id=None,
         name="grid-button",
         row=None,
         ignore_attribute_plugin=False,
         **attrs,
     ):
-        separator = "?"
         if row_id:
             url += "/%s" % row_id
 
@@ -1114,7 +1111,7 @@ class Grid:
                 attrs = (
                     self.attributes_plugin.confirm(message=self.T(btn.message))
                     if btn.message and btn.message != ""
-                    else dict()
+                    else btn.__dict__.get('attrs', dict())
                 )
 
                 cat.append(
@@ -1283,6 +1280,12 @@ class Grid:
                 elif callable(element):
                     grid_header.append(element())
                 else:
+                    if element.override_classes and element.override_classes != '':
+                        override_classes = element.override_classes
+                    else:
+                        override_classes = self.param.grid_class_style.classes.get(
+                                "grid-header-element", ""
+                            ) + f" {element.additional_classes}"
                     grid_header.append(
                         self._make_action_button(
                             url=element.url,
@@ -1291,12 +1294,12 @@ class Grid:
                             icon_size="normal",
                             additional_classes=element.additional_classes,
                             message=element.message,
-                            override_classes=self.param.grid_class_style.classes.get(
-                                "grid-header-element", ""
-                            ),
+                            override_classes=override_classes,
                             override_styles=self.param.grid_class_style.styles.get(
                                 "grid-trailer-element"
                             ),
+                            ignore_attributes_plugin=element.ignore_attribute_plugin,
+                            **element.__dict__.get('attrs', dict())
                         )
                     )
 
