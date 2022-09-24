@@ -119,10 +119,7 @@ response = bottle.response
 abort = bottle.abort
 
 # monkey patching bottle/ombott
-request.query.__class__.get, request.query.__class__.getraw = (
-    request.query.__class__.getunicode,
-    request.query.__class__.get,
-)
+sys.modules[FormsDict.__module__].urlunquote = urllib.parse.unquote
 FormsDict.recode_unicode = False
 
 os.environ.update(
