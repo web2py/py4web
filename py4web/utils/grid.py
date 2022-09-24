@@ -629,7 +629,11 @@ class Grid:
                     self.form.param.submit_value = self.param.edit_submit_value
 
             # redirect to the referrer
-            if self.form.accepted or (readonly and request.method == "POST"):
+            if (
+                self.form.accepted
+                or (readonly and request.method == "POST")
+                or (self.form.deletable and self.form.deleted)
+            ):
                 referrer = request.query.get("_referrer")
                 if referrer:
                     redirect(base64.b16decode(referrer.encode("utf8")).decode("utf8"))
@@ -766,20 +770,19 @@ class Grid:
         url,
         button_text,
         icon,
-        icon_size="small",
+        icon_size="small",  # deprecated
         additional_classes=None,
         additional_styles=None,
         override_classes=None,
         override_styles=None,
         message=None,
-        onclick=None,
+        onclick=None,  # deprecated
         row_id=None,
         name="grid-button",
         row=None,
         ignore_attribute_plugin=False,
         **attrs,
     ):
-        separator = "?"
         if row_id:
             url += "/%s" % row_id
 
@@ -1114,7 +1117,7 @@ class Grid:
                 attrs = (
                     self.attributes_plugin.confirm(message=self.T(btn.message))
                     if btn.message and btn.message != ""
-                    else dict()
+                    else btn.__dict__.get("attrs", dict())
                 )
 
                 cat.append(
@@ -1123,8 +1126,12 @@ class Grid:
                         button_text=self.T(btn.text),
                         icon=btn.icon,
                         additional_classes=btn.additional_classes,
+                        additional_styles=btn.__dict__.get("override_styles"),
+                        override_classes=btn.__dict__.get("override_classes"),
+                        override_styles=btn.__dict__.get("override_styles"),
                         message=btn.message,
                         row_id=row_id if btn.append_id else None,
+                        name=btn.__dict__.get("name"),
                         row=row,
                         ignore_attribute_plugin=btn.ignore_attribute_plugin
                         if "ignore_attribute_plugin" in btn.__dict__
@@ -1197,7 +1204,7 @@ class Grid:
                 attrs = (
                     self.attributes_plugin.confirm(message=self.T(btn.message))
                     if btn.message and btn.message != ""
-                    else dict()
+                    else btn.__dict__.get("attrs", dict())
                 )
                 cat.append(
                     self._make_action_button(
@@ -1205,8 +1212,12 @@ class Grid:
                         button_text=self.T(btn.text),
                         icon=btn.icon,
                         additional_classes=btn.additional_classes,
+                        additional_styles=btn.__dict__.get("override_styles"),
+                        override_classes=btn.__dict__.get("override_classes"),
+                        override_styles=btn.__dict__.get("override_styles"),
                         message=btn.message,
                         row_id=row_id if btn.append_id else None,
+                        name=btn.__dict__.get("name"),
                         row=row,
                         ignore_attribute_plugin=btn.ignore_attribute_plugin
                         if "ignore_attribute_plugin" in btn.__dict__
@@ -1283,6 +1294,22 @@ class Grid:
                 elif callable(element):
                     grid_header.append(element())
                 else:
+                    override_classes = element.__dict__.get("override_classes", None)
+                    if not override_classes:
+                        override_classes = (
+                            self.param.grid_class_style.classes.get(
+                                "grid-header-element", ""
+                            )
+                            + f" {element.additional_classes}"
+                        )
+                    override_styles = element.__dict__.get("override_styles", None)
+                    if not override_styles:
+                        override_styles = (
+                            self.param.grid_class_style.styles.get(
+                                "grid-trailer-element", ""
+                            )
+                            + f" {element.__dict__.get('additional_styles')}"
+                        )
                     grid_header.append(
                         self._make_action_button(
                             url=element.url,
@@ -1290,13 +1317,13 @@ class Grid:
                             icon=element.icon,
                             icon_size="normal",
                             additional_classes=element.additional_classes,
+                            additional_styles=element.__dict__.get("additional_styles"),
+                            override_classes=override_classes,
+                            override_styles=override_styles,
                             message=element.message,
-                            override_classes=self.param.grid_class_style.classes.get(
-                                "grid-header-element", ""
-                            ),
-                            override_styles=self.param.grid_class_style.styles.get(
-                                "grid-trailer-element"
-                            ),
+                            name=element.__dict__.get("name"),
+                            ignore_attributes_plugin=element.ignore_attribute_plugin,
+                            **element.__dict__.get("attrs", dict()),
                         )
                     )
 
@@ -1348,6 +1375,22 @@ class Grid:
                 elif callable(element):
                     html.append(element())
                 else:
+                    override_classes = element.__dict__.get("override_classes", None)
+                    if not override_classes:
+                        override_classes = (
+                            self.param.grid_class_style.classes.get(
+                                "grid-footer-element", ""
+                            )
+                            + f" {element.additional_classes}"
+                        )
+                    override_styles = element.__dict__.get("override_styles", None)
+                    if not override_styles:
+                        override_styles = (
+                            self.param.grid_class_style.styles.get(
+                                "grid-footer-element", ""
+                            )
+                            + f" {element.__dict__.get('additional_styles')}"
+                        )
                     html.append(
                         self._make_action_button(
                             url=element.url,
@@ -1355,13 +1398,13 @@ class Grid:
                             icon=element.icon,
                             icon_size="normal",
                             additional_classes=element.additional_classes,
+                            additional_styles=element.__dict__.get("additional_styles"),
+                            override_classes=override_classes,
+                            override_styles=override_styles,
                             message=element.message,
-                            override_classes=self.param.grid_class_style.classes.get(
-                                "grid-footer-element", ""
-                            ),
-                            override_styles=self.param.grid_class_style.styles.get(
-                                "grid-footer-element"
-                            ),
+                            name=element.__dict__.get("name"),
+                            ignore_attributes_plugin=element.ignore_attribute_plugin,
+                            **element.__dict__.get("attrs", dict()),
                         )
                     )
 

@@ -417,25 +417,33 @@ Sample Action Button Class
 .. code:: python
 
    class GridActionButton:
-      def __init__(
-         self,
-         url,
-         text=None,
-         icon=None,
-         onclick=None,
-         additional_classes="",
-         message="",
-         append_id=False,
-         ignore_attribute_plugin=False,
-      ):
-         self.url = url
-         self.text = text
-         self.icon = icon
-         self.onclick = onclick
-         self.additional_classes = additional_classes
-         self.message = message
-         self.append_id = append_id
-         self.ignore_attribute_plugin = ignore_attribute_plugin
+    def __init__(
+        self,
+        url,
+        text=None,
+        icon=None,
+        additional_classes="",
+        additional_styles="",
+        override_classes="",
+        override_styles="",
+        message="",
+        append_id=False,
+        name=None,
+        ignore_attribute_plugin=False,
+        **attrs
+    ):
+        self.url = url
+        self.text = text
+        self.icon = icon
+        self.additional_classes = additional_classes
+        self.additional_styles = additional_styles
+        self.override_classes = override_classes
+        self.override_styles = override_styles
+        self.message = message
+        self.append_id = append_id
+        self.name = name
+        self.ignore_attribute_plugin = ignore_attribute_plugin
+        self.attrs = attrs
 
 -  url: the page to navigate to when the button is clicked
 -  text: text to display on the button
@@ -443,10 +451,16 @@ Sample Action Button Class
    "fa-calendar"
 -  additional_classes: a space-separated list of classes to include on
    the button element
+-  additional_styles: a string containing additional styles to add to the button
+-  override_classes: a space-separated list of classes to place on the control that will replace the default classes
+-  override_styles: a string containing the styles to be applied to the control
 -  message: confirmation message to display if ‘confirmation’ class is
    added to additional classes
 -  append_id: if True, add id_field_name=id_value to the url querystring
    for the button
+-  name: the name to apply to the control
+-  ignore_attribute_plugin: boolean - respect the attribute plugin specified on the grid or ignore it
+-  attrs: additional attributes to apply to the control
 
 After defining the custom GridActionButton class, you need to define
 your Action buttons:
