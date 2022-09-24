@@ -1073,7 +1073,7 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def all_models(auth):
-        if not auth.param.get("expose_all_models"):
+        if not auth.param.expose_all_models:
             return HTTP(404)
         available_models = [item for item in AuthAPI.model_apis if auth.allows(item)]
         request.query["@model"] = "true"
