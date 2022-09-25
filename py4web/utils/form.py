@@ -880,7 +880,7 @@ class Form(object):
         payload = {"ts": str(time.time())}
         if self.lifespan is not None:
             payload["exp"] = time.time() + self.lifespan
-        key = self._make_key()
+        key = self._get_key() or self._make_key()
         self.formkey = to_native(jwt.encode(payload, key, algorithm="HS256"))
 
     def _verify_form(self, post_vars):
