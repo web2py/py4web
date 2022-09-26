@@ -1126,7 +1126,7 @@ class Grid:
                         button_text=self.T(btn.text),
                         icon=btn.icon,
                         additional_classes=btn.additional_classes,
-                        additional_styles=btn.__dict__.get("override_styles"),
+                        additional_styles=btn.__dict__.get("additional_styles"),
                         override_classes=btn.__dict__.get("override_classes"),
                         override_styles=btn.__dict__.get("override_styles"),
                         message=btn.message,
@@ -1322,7 +1322,7 @@ class Grid:
                             override_styles=override_styles,
                             message=element.message,
                             name=element.__dict__.get("name"),
-                            ignore_attributes_plugin=element.ignore_attribute_plugin,
+                            ignore_attribute_plugin=element.ignore_attribute_plugin,
                             **element.__dict__.get("attrs", dict()),
                         )
                     )
@@ -1403,7 +1403,7 @@ class Grid:
                             override_styles=override_styles,
                             message=element.message,
                             name=element.__dict__.get("name"),
-                            ignore_attributes_plugin=element.ignore_attribute_plugin,
+                            ignore_attribute_plugin=element.ignore_attribute_plugin,
                             **element.__dict__.get("attrs", dict()),
                         )
                     )
