@@ -52,7 +52,6 @@ import click
 
 # Third party modules
 import ombott as bottle
-from ombott.request.helpers import FormsDict
 import pluralize
 import pydal
 import renoir
@@ -117,10 +116,6 @@ Field = pydal.Field
 request = bottle.request
 response = bottle.response
 abort = bottle.abort
-
-# monkey patching bottle/ombott
-sys.modules[FormsDict.__module__].urlunquote = urllib.parse.unquote
-FormsDict.recode_unicode = False
 
 os.environ.update(
     {key: value for key, value in DEFAULTS.items() if key not in os.environ}

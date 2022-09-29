@@ -25,7 +25,7 @@ setup(
     package_data={"py4web": ["assets/*"],},
     install_requires=[
         "wheel",
-        "ombott >= 0.0.10",
+        "ombott >= 1.0.0",
         "click",
         "colorama",
         "cryptography",
