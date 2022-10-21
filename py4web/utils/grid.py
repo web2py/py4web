@@ -100,6 +100,8 @@ class GridClassStyle:
         "grid-search-form-table": "grid-search-form-table",
         "grid-search-form-tr": "grid-search-form-tr",
         "grid-search-form-td": "grid-search-form-td",
+        "grid-search-form-input": "grid-search-form-input",
+        "grid-search-form-select": "grid-search-form-select",
         "grid-search-boolean": "grid-search-boolean",
         "grid-header-element": "grid-header-element info",
         "grid-footer-element": "grid-footer-element info",
@@ -146,6 +148,8 @@ class GridClassStyle:
         "grid-search-form-table": "",
         "grid-search-form-tr": "border-bottom: none;",
         "grid-search-form-td": "",
+        "grid-search-form-input": "",
+        "grid-search-form-select": "",
         "grid-search-boolean": "",
         "grid-header-element": "margin-top:4px; height:34px; line-height:34px;",
         "grid-footer-element": "margin-top:4px; height:34px; line-height:34px;",
@@ -205,6 +209,8 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-search-form-table": "grid-search-form-table",
         "grid-search-form-tr": "grid-search-form-tr",
         "grid-search-form-td": "grid-search-form-td pr-1",
+        "grid-search-form-input": "grid-search-form-input input",
+        "grid-search-form-select": "grid-search-form-input control select",
         "grid-search-boolean": "grid-search-boolean",
         "grid-header-element": "grid-header-element button",
         "grid-footer-element": "grid-footer-element button",
@@ -252,6 +258,8 @@ class GridClassStyleBulma(GridClassStyle):
         "grid-search-form-table": "",
         "grid-search-form-tr": "",
         "grid-search-form-td": "",
+        "grid-search-form-input": "",
+        "grid-search-form-select": "",
         "grid-search-boolean": "padding-top: .5rem;",
         "grid-header-element": "",
         "grid-footer-element": "",
@@ -851,16 +859,20 @@ class Grid:
         ]
         attrs = self.attributes_plugin.link(url=self.endpoint)
         form = FORM(*hidden_fields, **attrs)
+        sc = _class = self.param.grid_class_style.get("grid-search-form-select")
         select = SELECT(
             *options,
             **dict(
                 _name="search_type",
             ),
+            **sc,
         )
+        sc = self.param.grid_class_style.get("grid-search-form-input")
         input = INPUT(
             _type="text",
             _name="search_string",
             _value=search_string,
+            **sc,
         )
         sc = self.param.grid_class_style.get("grid-search-button")
         submit = INPUT(_type="submit", _value=self.T("Search"), **sc)
