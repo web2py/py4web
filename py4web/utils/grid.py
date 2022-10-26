@@ -50,6 +50,10 @@ def safe_int(text, default):
         return default
 
 
+def join_styles(items):
+    return "".join(items) if isinstance(items, (list, tuple)) else " %s" % items
+
+
 class GridClassStyle:
 
     """
@@ -797,9 +801,6 @@ class Grid:
         classes = self.param.grid_class_style.classes.get(name, "")
         styles = self.param.grid_class_style.styles.get(name, "")
 
-        def join_style(items):
-            return "".join(items) if isinstance(items, (list, tuple)) else " %s" % items
-
         if callable(additional_classes):
             additional_classes = additional_classes(row)
 
@@ -817,9 +818,9 @@ class Grid:
         elif additional_classes:
             classes = join_classes(classes, additional_classes)
         if override_styles:
-            styles = join_style(override_styles)
+            styles = join_styles(override_styles)
         elif additional_styles:
-            styles += join_style(additional_styles)
+            styles += join_styles(additional_styles)
 
         if callable(url):
             url = url(row)
@@ -1085,8 +1086,8 @@ class Grid:
                 _class=join_classes(
                     self.param.grid_class_style.classes.get("grid-tr"), extra_class
                 ),
-                _style=join_classes(
-                    self.param.grid_class_style.styles.get("grid-tr"), extra_style
+                _style=join_styles(
+                    [self.param.grid_class_style.styles.get("grid-tr"), extra_style]
                 ),
             )
             #  add all the fields to the row
