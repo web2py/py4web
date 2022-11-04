@@ -54,6 +54,11 @@ def join_styles(items):
     return "".join(items) if isinstance(items, (list, tuple)) else " %s" % items
 
 
+def clean_sc(**kwargs):
+    """returns a clean dict with _class and _style only if value"""
+    return {key: value for key, value in kwargs.items() if value}
+
+
 class GridClassStyle:
 
     """
@@ -162,10 +167,10 @@ class GridClassStyle:
     @classmethod
     def get(cls, element):
         """returns a dict with _class and _style for the element name"""
-        return {
-            "_class": cls.classes.get(element),
-            "_style": cls.styles.get(element),
-        }
+        return clean_sc(
+            _class=cls.classes.get(element),
+            _style=cls.styles.get(element),
+        )
 
 
 class GridClassStyleBulma(GridClassStyle):
@@ -833,10 +838,9 @@ class Grid:
         link = A(
             I(_class="fa %s" % icon),
             _role="button",
-            _class=classes,
             _message=message,
             _title=button_text,
-            _style=styles,
+            **clean_sc(_class=classes, _style=styles),
             **attrs,
         )
         if self.param.include_action_button_text:
@@ -860,7 +864,7 @@ class Grid:
         ]
         attrs = self.attributes_plugin.link(url=self.endpoint)
         form = FORM(*hidden_fields, **attrs)
-        sc = _class = self.param.grid_class_style.get("grid-search-form-select")
+        sc = self.param.grid_class_style.get("grid-search-form-select")
         select = SELECT(
             *options,
             **dict(
@@ -952,7 +956,7 @@ class Grid:
     def _make_table_header(self):
         sort_order = request.query.get("orderby", "")
 
-        thead = THEAD(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
+        thead = THEAD(**clean_sc(_class=self.param.grid_class_style.classes.get("grid-thead", "")))
         for index, column in enumerate(self.param.columns):
             col = None
             if isinstance(column, (Field, FieldVirtual)):
@@ -972,7 +976,7 @@ class Grid:
                     "grid-col-%s" % key,
                 )
                 style = self.param.grid_class_style.styles.get("grid-th")
-                thead.append(TH(col, _class=classes, _style=style))
+                thead.append(TH(col, **clean_sc(_class=classes, _style=style)))
 
         return thead
 
@@ -1055,10 +1059,12 @@ class Grid:
             formatter(field_value)
             if formatter.__code__.co_argcount == 1  # if formatter has only 1 argument
             else formatter(field_value, row),
-            _class=classes,
-            _style=(
-                self.param.grid_class_style.styles.get(class_type)
-                or self.param.grid_class_style.styles.get("grid-td")
+            **clean_sc(
+                _class=classes,
+                _style=(
+                        self.param.grid_class_style.styles.get(class_type)
+                        or self.param.grid_class_style.styles.get("grid-td")
+                )
             ),
         )
 
@@ -1083,12 +1089,10 @@ class Grid:
                 extra_style = ""
             tr = TR(
                 _role="row",
-                _class=join_classes(
-                    self.param.grid_class_style.classes.get("grid-tr"), extra_class
-                ),
-                _style=join_styles(
-                    [self.param.grid_class_style.styles.get("grid-tr"), extra_style]
-                ),
+                **clean_sc(
+                    _class=join_classes(self.param.grid_class_style.classes.get("grid-tr"), extra_class),
+                    _style=join_styles([self.param.grid_class_style.styles.get("grid-tr"), extra_style]),
+                )
             )
             #  add all the fields to the row
             for index, column in enumerate(self.param.columns):
@@ -1106,7 +1110,7 @@ class Grid:
                         self.param.grid_class_style.styles.get("grid-td"),
                     )
                     tr.append(
-                        TD(column.render(row, index), _class=classes, _style=style)
+                        TD(column.render(row, index), **clean_sc(_class=classes, _style=style))
                     )
 
             td = None
