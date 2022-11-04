@@ -215,6 +215,7 @@ class Mailer:
         settings.timeout = 5  # seconds
         settings.hostname = None
         settings.dkim = None
+        settings.list_unsubscribe = None
         settings.ssl = ssl
         settings.cipher_type = None
         settings.gpg_home = None
@@ -244,6 +245,7 @@ class Mailer:
         headers={},
         from_address=None,
         dkim=None,
+        list_unsubscribe=None,
         cipher_type=None,
         sign=None,
         sign_passphrase=None,
@@ -741,6 +743,10 @@ class Mailer:
         payload["Date"] = email.utils.formatdate()
         for k, v in iteritems(headers):
             payload[k] = encoded_or_raw(to_unicode(v, encoding))
+
+        list_unsubscribe = list_unsubscribe or self.settings.list_unsubscribe
+        if list_unsubscribe:
+            payload['List-Unsubscribe'] = "<mailto:%s>" % list_unsubscribe
 
         dkim = dkim or self.settings.dkim
         if dkim:
