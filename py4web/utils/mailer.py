@@ -214,6 +214,7 @@ class Mailer:
         settings.tls = tls
         settings.timeout = 5  # seconds
         settings.hostname = None
+        settings.dkim = None
         settings.ssl = ssl
         settings.cipher_type = None
         settings.gpg_home = None
@@ -242,6 +243,7 @@ class Mailer:
         raw=False,
         headers={},
         from_address=None,
+        dkim=None,
         cipher_type=None,
         sign=None,
         sign_passphrase=None,
@@ -739,6 +741,11 @@ class Mailer:
         payload["Date"] = email.utils.formatdate()
         for k, v in iteritems(headers):
             payload[k] = encoded_or_raw(to_unicode(v, encoding))
+
+        dkim = dkim or self.settings.dkim
+        if dkim:
+            payload['DKIM-Signature'] = dkim_sign(payload, dkim.key, dkim.selector)
+
         result = {}
         try:
             if self.settings.server == "logging":
