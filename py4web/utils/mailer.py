@@ -214,6 +214,8 @@ class Mailer:
         settings.tls = tls
         settings.timeout = 5  # seconds
         settings.hostname = None
+        settings.dkim = None
+        settings.list_unsubscribe = None
         settings.ssl = ssl
         settings.cipher_type = None
         settings.gpg_home = None
@@ -242,6 +244,8 @@ class Mailer:
         raw=False,
         headers={},
         from_address=None,
+        dkim=None,
+        list_unsubscribe=None,
         cipher_type=None,
         sign=None,
         sign_passphrase=None,
@@ -739,6 +743,15 @@ class Mailer:
         payload["Date"] = email.utils.formatdate()
         for k, v in iteritems(headers):
             payload[k] = encoded_or_raw(to_unicode(v, encoding))
+
+        list_unsubscribe = list_unsubscribe or self.settings.list_unsubscribe
+        if list_unsubscribe:
+            payload['List-Unsubscribe'] = "<mailto:%s>" % list_unsubscribe
+
+        dkim = dkim or self.settings.dkim
+        if dkim:
+            payload['DKIM-Signature'] = dkim_sign(payload, dkim.key, dkim.selector)
+
         result = {}
         try:
             if self.settings.server == "logging":
@@ -839,3 +852,34 @@ class Mailer:
         self.result = result
         self.error = None
         return True
+
+
+def dkim_sign(payload, dkim_key, dkim_selector):
+
+    import dkim
+
+    # sign all existing mail headers except those specified in
+    # http://dkim.org/specs/rfc4871-dkimbase.html#rfc.section.5.5
+    headers = list(filter(
+        lambda h: h not in [
+            "Return-Path",
+            "Received",
+            "Comments",
+            "Keywords",
+            "Resent-Bcc",
+            "Bcc",
+            "DKIM-Signature",
+        ],
+        payload))
+
+    domain = re.sub(r".*@", "", payload["From"])
+    domain = re.sub(r">.*", "", domain)
+
+    sig = dkim.sign(
+            message=payload.as_bytes(),
+            selector=dkim_selector.encode(),
+            domain=domain.encode(),
+            privkey=dkim_key.encode(),
+            include_headers=[h.encode() for h in headers])
+
+    return sig[len("DKIM-Signature: "):].decode()
