@@ -1343,17 +1343,18 @@ class DefaultAuthForms:
 
     def register(self, model=False):
         """SignUp form"""
-        self.auth.db.auth_user.password.writable = True
-        if self.auth.password_in_db:
-            self.auth.db.auth_user.password.requires = [
-                IS_STRONG(**self.auth.param.password_complexity),
-                CRYPT(),
-            ]
-        else:
-            self.auth.param.password_complexity = {"entropy": 0}
-            self.auth.db.auth_user.password.requires = [
-                IS_STRONG(**self.auth.param.password_complexity)
-            ]
+        if "password" in self.auth.db.auth_user.fields:
+            self.auth.db.auth_user.password.writable = True
+            if self.auth.password_in_db:
+                self.auth.db.auth_user.password.requires = [
+                    IS_STRONG(**self.auth.param.password_complexity),
+                    CRYPT(),
+                ]
+            else:
+                self.auth.param.password_complexity = {"entropy": 0}
+                self.auth.db.auth_user.password.requires = [
+                    IS_STRONG(**self.auth.param.password_complexity)
+                ]
 
         fields = [
             field
