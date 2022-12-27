@@ -1033,13 +1033,13 @@ class Grid:
                 field_value = field.f(row)
         elif self.use_tablename:
             field_value = (
-                field.represent(row[field.tablename][field.name])
+                field.represent(row[field.tablename][field.name], row[field.tablename])
                 if field.represent
                 else row[field.tablename][field.name]
             )
         else:
             field_value = (
-                field.represent(row[field.name]) if field.represent else row[field.name]
+                field.represent(row[field.name], row) if field.represent else row[field.name]
             )
         key = "%s.%s" % (field.tablename, field.name)
         formatter = (

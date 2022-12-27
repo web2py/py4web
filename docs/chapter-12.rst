@@ -653,7 +653,7 @@ Text format validators
 ``IS_ALPHANUMERIC``
 ^^^^^^^^^^^^^^^^^^^
 
-This validator checks that a field value contains only characters in the ranges a-z, A-Z, or 0-9.
+This validator checks that a field value contains only characters in the ranges a-z, A-Z, 0-9, and underscores.
 
 .. code:: python
 

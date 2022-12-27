@@ -409,7 +409,7 @@ class FormStyleFactory:
                         field_value = field.f(vars)
                     else:
                         field_value = (
-                            field.represent and field.represent(value) or value or ""
+                            field.represent and field.represent(value, vars) or value or ""
                         )
                     field_type = "represent"
                     control = DIV(field_value)
