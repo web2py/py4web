@@ -597,6 +597,7 @@ class Session(Fixture):
         algorithm="HS256",
         storage=None,
         same_site="Lax",
+        name="{app_name}_session",
     ):
         """
         secret is the shared key used to encrypt the session (using algorithm)
@@ -610,6 +611,7 @@ class Session(Fixture):
         self.algorithm = algorithm
         self.storage = storage
         self.same_site = same_site
+        self.name = name
         if isinstance(storage, Session):
             self.__prerequisites__ = [storage]
         if hasattr(storage, "__prerequisites__"):
@@ -620,7 +622,7 @@ class Session(Fixture):
         local = self.local
         local.changed = changed
         local.data = data or {}
-        local.session_cookie_name = "%s_session" % app_name
+        local.session_cookie_name = self.name.format(app_name=app_name)
         local.secure = secure
 
     def load(self):
