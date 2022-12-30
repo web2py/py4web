@@ -512,7 +512,7 @@ inefficient and does not scale well.
 Sharing sessions
 ~~~~~~~~~~~~~~~~
 
-Imagine you have an app "app1" which uses a session and an app "app2" that wants to share a session with app1. Assuming the use sessons in cookies, "app2" would use:
+Imagine you have an app "app1" which uses a session and an app "app2" that wants to share a session with app1. Assuming they use sessons in cookies, "app2" would use:
 
 .. code:: python
 
@@ -521,7 +521,7 @@ Imagine you have an app "app1" which uses a session and an app "app2" that wants
    
 The name tells app2 to use the cookie "app1_session" from app1. Notice it is important that the secret is the same as app1's secret. If using a session in db, then app2 must be using the same db as app1. It is up to the user to make sure that the data stored in the session and shared between the two apps are consistent and we strongly recommend that only app1 writes to the session, unless the share one and the same database.
 
-Notice that it is possible for one app to handle multiple sessions. For example one session may be its own, and another may be used exclusively to read data from another app (app1) running on the same server. For exaxmple:
+Notice that it is possible for one app to handle multiple sessions. For example one session may be its own, and another may be used exclusively to read data from another app (app1) running on the same server:
 
 .. code:: python
 
