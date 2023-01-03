@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="pt" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Criando seu primeiro aplicativo &mdash; Documentação py4web 1.20220222.1</title>
+  <title>Criando seu primeiro aplicativo &mdash; Documentação py4web 1.20221226.1</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
-    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/translations.js"></script>
         <script src="_static/js/toggle.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -33,10 +31,9 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> py4web
-            <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20220222.1
+                1.20221226.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -93,8 +90,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Navegação da página">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Criando seu primeiro aplicativo</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Criando seu primeiro aplicativo</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-05.rst" class="fa fa-github"> Editar no GitHub</a>
       </li>
@@ -105,9 +102,9 @@
            <div itemprop="articleBody">
              
   <section id="creating-your-first-app">
-<h1>Criando seu primeiro aplicativo<a class="headerlink" href="#creating-your-first-app" title="Link permanente para este título"></a></h1>
+<h1>Criando seu primeiro aplicativo<a class="headerlink" href="#creating-your-first-app" title="Permalink to this heading"></a></h1>
 <section id="from-scratch">
-<h2>Do princípio<a class="headerlink" href="#from-scratch" title="Link permanente para este título"></a></h2>
+<h2>Do princípio<a class="headerlink" href="#from-scratch" title="Permalink to this heading"></a></h2>
 <p>Apps can be created using the dashboard or directly from the filesystem.
 Here, we are going to do it manually, as the Dashboard is already described in
 its own chapter.</p>
@@ -120,8 +117,8 @@ Python 3.3, but it will be useful later on.</p>
 </div>
 <p>Open a command prompt and go to your main py4web folder. Enter the following
 simple commands in order to create a new empty <strong>myapp</strong> app:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir apps/myapp
-<span class="nb">echo</span> <span class="s1">&#39;&#39;</span> &gt; apps/myapp/__init__.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>apps/myapp
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>apps/myapp/__init__.py
 </pre></div>
 </div>
 <div class="admonition tip">
@@ -136,7 +133,7 @@ By default py4web runs in <em>lazy watch</em> mode (see the <a class="reference 
 for automatic reloading of the apps whenever it changes, which is very useful
 in a development environment.
 In production or debugging environment, it’s better to run py4web with a command like this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web run apps --watch off
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>py4web<span class="w"> </span>run<span class="w"> </span>apps<span class="w"> </span>--watch<span class="w"> </span>off
 </pre></div>
 </div>
 <p>A py4web app is not required to do anything. It could just be a container for
@@ -145,10 +142,10 @@ access. Yet typically most apps are designed to expose static or dynamic
 web pages.</p>
 </section>
 <section id="static-web-pages">
-<h2>Páginas estáticas<a class="headerlink" href="#static-web-pages" title="Link permanente para este título"></a></h2>
+<h2>Páginas estáticas<a class="headerlink" href="#static-web-pages" title="Permalink to this heading"></a></h2>
 <p>Para expor páginas estáticas você simplesmente precisa para criar um `` subpasta static`` e qualquer arquivo lá será automaticamente publicado:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir apps/myapp/static
-<span class="nb">echo</span> <span class="s1">&#39;Hello World&#39;</span> &gt; apps/myapp/static/hello.txt
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>apps/myapp/static
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;Hello World&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>apps/myapp/static/hello.txt
 </pre></div>
 </div>
 <p>O arquivo recém-criado será acessível em</p>
@@ -163,7 +160,7 @@ and if-modified-since. This is all
 handled automatically based on the HTTP request headers.</p>
 </section>
 <section id="dynamic-web-pages">
-<h2>Páginas web dinâmicas<a class="headerlink" href="#dynamic-web-pages" title="Link permanente para este título"></a></h2>
+<h2>Páginas web dinâmicas<a class="headerlink" href="#dynamic-web-pages" title="Permalink to this heading"></a></h2>
 <p>Para criar uma página dinâmica, você deve criar uma função que retorna o conteúdo da página. . Por exemplo editar a `` novaaplicacao / __ __ Init py`` como se segue:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span>
@@ -184,7 +181,7 @@ handled automatically based on the HTTP request headers.</p>
 <p>(Note que o índice é opcional)</p>
 <p>Ao contrário de outras estruturas, nós não importar ou iniciar o servidor web dentro do `` código myapp``. Isso ocorre porque py4web já está em execução, e pode servir vários aplicativos. py4web importa nossas funções de código e expõe decorados com `` &#64;Action () <code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">Note</span> <span class="pre">também</span> <span class="pre">que</span> <span class="pre">prepends</span> <span class="pre">py4web</span> <span class="pre">``</span> <span class="pre">/</span> <span class="pre">myapp</span></code> (ou seja, o nome do aplicativo) para o caminho url declarado na ação. Isso ocorre porque existem vários aplicativos, e eles podem definir rotas conflitantes. Antecedendo o nome do aplicativo remove a ambiguidade. Mas há uma exceção: se você chamar seu aplicativo `` _default``, ou se você criar um link simbólico do `` _default`` para `` myapp``, então py4web não irá anteceder qualquer prefixo para as rotas definidas dentro do aplicativo .</p>
 <section id="on-return-values">
-<h3>Em valores de retorno<a class="headerlink" href="#on-return-values" title="Link permanente para este título"></a></h3>
+<h3>Em valores de retorno<a class="headerlink" href="#on-return-values" title="Permalink to this heading"></a></h3>
 <p>py4web actions should return a string or a dictionary. If they return a
 dictionary you must tell py4web what to do with it. By default py4web
 will serialize it into json. For example edit <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> again and
@@ -202,7 +199,7 @@ add at the end</p>
 <p>Você pode usar qualquer linguagem de modelo para transformar seus dados em uma string. PY4WEB vem com yatl, um capítulo inteiro será dedicado mais tarde e iremos fornecer um exemplo em breve.</p>
 </section>
 <section id="routes">
-<h3>Rotas<a class="headerlink" href="#routes" title="Link permanente para este título"></a></h3>
+<h3>Rotas<a class="headerlink" href="#routes" title="Permalink to this heading"></a></h3>
 <p>É possível mapear padrões do URL em argumentos da função. Por exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;name&gt;&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
@@ -221,7 +218,7 @@ add at the end</p>
 <li><p>`` &lt;Name: filter&gt; `` ou</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;name:filter:config&gt;</span></code></p></li>
 </ul>
-<p>And these are possible filters (only <code class="docutils literal notranslate"><span class="pre">re:</span></code> has a config):</p>
+<p>And these are possible filters (only <code class="docutils literal notranslate"><span class="pre">:re</span></code> has a config):</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">Resultados</span> <span class="pre">int</span></code> dígitos (assinatura) e converte o valor de número inteiro.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">:</span> <span class="pre">Float</span></code> semelhante a: int mas para números decimais.</p></li>
@@ -237,7 +234,7 @@ the config field. The matched value is not modified.</p></li>
 <p>Você pode usar vários decoradores para expor a mesma função em várias rotas.</p>
 </section>
 <section id="the-request-object">
-<h3>O objeto `` request``<a class="headerlink" href="#the-request-object" title="Link permanente para este título"></a></h3>
+<h3>O objeto `` request``<a class="headerlink" href="#the-request-object" title="Permalink to this heading"></a></h3>
 <p>De py4web você pode importar `` request``</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">request</span>
 
@@ -260,12 +257,12 @@ with one additional attribute:</p>
 <p>Which you can use the code to identify the name and the folder used for the app.</p>
 </section>
 <section id="templates">
-<h3>Modelos<a class="headerlink" href="#templates" title="Link permanente para este título"></a></h3>
+<h3>Modelos<a class="headerlink" href="#templates" title="Permalink to this heading"></a></h3>
 <p>Para utilizar um yatl modelo que você deve declará-lo. Por exemplo, criar um arquivo `` apps / myapp / templates / paint.html`` que contém:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">body</span><span class="w"> </span><span class="p">{</span><span class="k">background</span><span class="p">:[[</span><span class="o">=</span><span class="kc">color</span><span class="p">]]}</span><span class="w"></span>
+    <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="nt">body</span><span class="w"> </span><span class="p">{</span><span class="k">background</span><span class="p">:[[</span><span class="o">=</span><span class="kc">color</span><span class="p">]]}</span>
 <span class="w">    </span><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
@@ -296,7 +293,7 @@ with one additional attribute:</p>
 </section>
 </section>
 <section id="the-scaffold-app">
-<h2>The _scaffold app<a class="headerlink" href="#the-scaffold-app" title="Link permanente para este título"></a></h2>
+<h2>The _scaffold app<a class="headerlink" href="#the-scaffold-app" title="Permalink to this heading"></a></h2>
 <p>Most of the times, you do not want to start writing code from scratch.
 You also want to follow some sane conventions outlined here, like not
 putting all your code into <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>. PY4WEB provides a
@@ -319,17 +316,11 @@ on which you can rely to build your real project.</p>
 ├── settings_private.py  # (optional) settings that you want to keep private
 ├── static               # static files
 │   ├── README.md
-│   ├── components       # py4web&#39;s vue auth component
-│   │   ├── auth.html
-│   │   └── auth.js
 │   ├── css              # CSS files, we ship bulma because it is JS agnostic
 │   │   └── no.css       # we used bulma.css in the past
 │   ├── favicon.ico
 │   └── js               # JS files, we ship with these but you can replace them
-│       ├── axios.min.js
-│       ├── sugar.min.js
 │       ├── utils.js
-│       └── vue.min.js
 ├── tasks.py
 ├── templates            # your templates go here
 │   ├── README.md
@@ -368,7 +359,7 @@ which is a fast bottlepy spin-off.</p></li>
 <p>Em seu HTML, você pode usar qualquer biblioteca JS que você quer, porque py4web é agnóstica para a sua escolha de JS e CSS, mas com algumas exceções. O `` auth.html`` que lida com registro / login / etc. usa um componente vue.js. Portanto, se você quiser usar isso, você não deve removê-lo.</p>
 </section>
 <section id="copying-the-scaffold-app">
-<span id="id1"></span><h2>Copying the _scaffold app<a class="headerlink" href="#copying-the-scaffold-app" title="Link permanente para este título"></a></h2>
+<span id="id1"></span><h2>Copying the _scaffold app<a class="headerlink" href="#copying-the-scaffold-app" title="Permalink to this heading"></a></h2>
 <p>The scaffold app is really useful, and you will surely use it a lot as
 a starting point for testing and even developing full features new apps.</p>
 <p>It’s better not to work directly on it: always create new apps copying it.
@@ -386,7 +377,7 @@ along with the new app.</p>
 </ul>
 </section>
 <section id="watch-for-files-change">
-<h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Link permanente para este título"></a></h2>
+<h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Permalink to this heading"></a></h2>
 <p>As described in the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">Opção `` comando run``</span></a>, Py4web facilitates a
 development server’s setup by automatically reloads an app when its
 Python source files change (by default).
@@ -471,7 +462,7 @@ exceptions inside handlers are printed in terminal.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20220222.1
+      v: 1.20221226.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

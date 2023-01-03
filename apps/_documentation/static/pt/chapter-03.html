@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="pt" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 1.20220222.1</title>
+  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 1.20221226.1</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
-    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/tabs.js"></script>
         <script src="_static/translations.js"></script>
         <script src="_static/js/toggle.js"></script>
@@ -34,10 +32,9 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> py4web
-            <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20220222.1
+                1.20221226.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -74,10 +71,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#version-command-option">Opção `` comando version``</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#special-deployments">Special deployments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#special-installations">Special installations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#https">HTTPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#wsgi">WSGI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#deployment-on-gcloud-aka-google-app-engine">Implantação em gcloud (aka Google App Engine)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deployment-on-gcloud-aka-gae-google-app-engine">Deployment on GCloud (aka GAE - Google App Engine)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deployment-on-pythonanywhere-com">Implantação em PythonAnywhere.com</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deployment-on-docker-podman">Deployment on Docker/Podman</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deployment-on-ubuntu">Deployment on Ubuntu</a></li>
 </ul>
 </li>
 </ul>
@@ -110,8 +110,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Navegação da página">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Instalação e colocação em funcionamento</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Instalação e colocação em funcionamento</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-03.rst" class="fa fa-github"> Editar no GitHub</a>
       </li>
@@ -122,12 +122,12 @@
            <div itemprop="articleBody">
              
   <section id="installation-and-startup">
-<h1>Instalação e colocação em funcionamento<a class="headerlink" href="#installation-and-startup" title="Link permanente para este título"></a></h1>
+<h1>Instalação e colocação em funcionamento<a class="headerlink" href="#installation-and-startup" title="Permalink to this heading"></a></h1>
 <section id="understanding-the-design">
-<h2>Understanding the design<a class="headerlink" href="#understanding-the-design" title="Link permanente para este título"></a></h2>
+<h2>Understanding the design<a class="headerlink" href="#understanding-the-design" title="Permalink to this heading"></a></h2>
 <p>Before everything else it is important to understand that unlike other web frameworks,
 is not only a python module that can be imported by apps. It is also a program that
-is in charge of starting a apps. For this reason you need two things:</p>
+is in charge of starting some apps. For this reason you need two things:</p>
 <ul class="simple">
 <li><p>the py4web module (which you download from our web site, from pypi, from github)</p></li>
 <li><p>one or more folders containing collections of apps you want to run.</p></li>
@@ -139,15 +139,15 @@ and served by the same py4web process at the same address and port.
 An apps folder is a python module, and each app is also a python module.</p>
 </section>
 <section id="supported-platforms-and-prerequisites">
-<h2>Plataformas e pré-requisitos suportados<a class="headerlink" href="#supported-platforms-and-prerequisites" title="Link permanente para este título"></a></h2>
+<h2>Plataformas e pré-requisitos suportados<a class="headerlink" href="#supported-platforms-and-prerequisites" title="Permalink to this heading"></a></h2>
 <p>PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is
 Python 3.7+, which must be installed in advance (except if you use binaries).</p>
 </section>
 <section id="setup-procedures">
-<h2>Procedimentos de configuração<a class="headerlink" href="#setup-procedures" title="Link permanente para este título"></a></h2>
+<h2>Procedimentos de configuração<a class="headerlink" href="#setup-procedures" title="Permalink to this heading"></a></h2>
 <p>Existem quatro formas alternativas de correr py4web, com diferentes níveis de dificuldade e flexibilidade. Vamos olhar os prós e contras.</p>
 <section id="installing-from-binaries">
-<h3>Instalando a partir de binários<a class="headerlink" href="#installing-from-binaries" title="Link permanente para este título"></a></h3>
+<h3>Instalando a partir de binários<a class="headerlink" href="#installing-from-binaries" title="Permalink to this heading"></a></h3>
 <p>Esta não é uma instalação real, porque você acabou de copiar um monte de arquivos em seu sistema sem modificá-lo de qualquer maneira. Daí esta é a solução mais simples, especialmente para iniciantes ou alunos, porque ele não requer Python pré-instalado em seu sistema, nem direitos administrativos. Por outro lado, é experimental, poderia conter uma liberação py4web de idade e é muito difícil para adicionar outras funcionalidades a ele.</p>
 <p>A fim de usá-lo você só precisa fazer o download do arquivo mais recente do Windows ou MacOS zip do <cite>este repositório externo &lt;https://github.com/nicozanf/py4web-pyinstaller&gt;</cite> __. Descompacte-o em uma pasta local e abrir uma linha de comando lá. finalmente executar</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web-start set_password
@@ -160,7 +160,7 @@ or the latest stable branch of py4web although we do our best to
 keep them up to date.</p>
 </section>
 <section id="installing-from-pip">
-<h3>Instalando a partir de pip<a class="headerlink" href="#installing-from-pip" title="Link permanente para este título"></a></h3>
+<h3>Instalando a partir de pip<a class="headerlink" href="#installing-from-pip" title="Permalink to this heading"></a></h3>
 <p>Using <em>pip</em> is the standard installation procedure for py4web, since it will
 quickly install the latest stable release of py4web.</p>
 <p>From the command line</p>
@@ -177,7 +177,7 @@ py4web run apps
 <p>Se o py4web comando não é aceito, isso significa que ele não está no caminho do sistema. No Windows, um arquivo py4web.exe especial (apontando para py4web.py) será criado por * pip * no caminho do sistema, mas não se você digitar o * -user * opção por engano.</p>
 </section>
 <section id="installing-using-a-virtual-environment">
-<h3>Installing using a virtual environment<a class="headerlink" href="#installing-using-a-virtual-environment" title="Link permanente para este título"></a></h3>
+<h3>Installing using a virtual environment<a class="headerlink" href="#installing-using-a-virtual-environment" title="Permalink to this heading"></a></h3>
 <p>A instalação completa de qualquer aplicação python complexo como py4web certamente irá modificar o ambiente python do seu sistema. A fim de evitar qualquer alteração indesejada, é um bom hábito de usar um ambiente virtual python (também chamado ** virtualenv <a href="#id1"><span class="problematic" id="id2">**</span></a>, veja <cite>aqui &lt;https://docs.python.org/3.7/tutorial/venv.html&gt;</cite> __ para uma introdução). Este é um recurso padrão do Python; se você ainda não sabe virtualenv é um bom momento para começar a sua descoberta!</p>
 <p>Here are the instructions for creating the virtual environment, activating it,
 and installing py4web in it:</p>
@@ -189,7 +189,7 @@ python -m pip install --upgrade py4web --no-cache-dir
 <p>The instructions for starting and running py4web are the same with or without a virtual environment.</p>
 </section>
 <section id="installing-from-source-globally">
-<h3>Instalação de fonte (globalmente)<a class="headerlink" href="#installing-from-source-globally" title="Link permanente para este título"></a></h3>
+<h3>Instalação de fonte (globalmente)<a class="headerlink" href="#installing-from-source-globally" title="Permalink to this heading"></a></h3>
 <p>This is the traditional way for installing a program, but it works only
 on Linux and MacOS (Windows does not normally support the <cite>make</cite> utility).
 All the requirements will be installed on the
@@ -209,7 +209,7 @@ later with the <code class="docutils literal notranslate"><span class="pre">make
 <p>Notice that you also (and should) install py4web from source inside a virtual environment.</p>
 </section>
 <section id="installing-from-source-locally">
-<h3>Instalando a partir de fonte (localmente)<a class="headerlink" href="#installing-from-source-locally" title="Link permanente para este título"></a></h3>
+<h3>Instalando a partir de fonte (localmente)<a class="headerlink" href="#installing-from-source-locally" title="Permalink to this heading"></a></h3>
 <p>In this way all the requirements will be installed or upgraded on the
 system’s path, but py4web itself will only be copied
 on a local folder. This is especially useful if you already have a
@@ -244,7 +244,7 @@ python3/python command.</p>
 </section>
 </section>
 <section id="upgrading">
-<h2>Melhoramento<a class="headerlink" href="#upgrading" title="Link permanente para este título"></a></h2>
+<h2>Melhoramento<a class="headerlink" href="#upgrading" title="Permalink to this heading"></a></h2>
 <p>Se você instalou py4web de pip você pode simples atualizá-lo com</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web
 </pre></div>
@@ -263,7 +263,7 @@ then delete the old installation folder and re-install the framework
 again.</p>
 </section>
 <section id="first-run">
-<h2>Primeira corrida<a class="headerlink" href="#first-run" title="Link permanente para este título"></a></h2>
+<h2>Primeira corrida<a class="headerlink" href="#first-run" title="Permalink to this heading"></a></h2>
 <p>Correndo py4web utilizando qualquer um procedimento anterior deve produzir uma saída como esta:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web run apps
 </pre></div>
@@ -301,7 +301,7 @@ In this case, try with <code class="docutils literal notranslate"><span class="p
 </div>
 </section>
 <section id="command-line-options">
-<h2>Opções de linha de comando<a class="headerlink" href="#command-line-options" title="Link permanente para este título"></a></h2>
+<h2>Opções de linha de comando<a class="headerlink" href="#command-line-options" title="Permalink to this heading"></a></h2>
 <p>py4web fornece várias opções de linha de comando que podem ser listados por executá-lo sem qualquer argumento</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web
 </pre></div>
@@ -309,7 +309,7 @@ In this case, try with <code class="docutils literal notranslate"><span class="p
 <img alt="_images/command.png" class="with-shadow" src="_images/command.png" />
 <p>Você pode ter ajuda adicional para uma opção de linha de comando específico, executando-o com o ** - ajuda ** ou ** - h ** argumento.</p>
 <section id="call-command-option">
-<span id="id1"></span><h3>Opção `` comando call``<a class="headerlink" href="#call-command-option" title="Link permanente para este título"></a></h3>
+<span id="id1"></span><h3>Opção `` comando call``<a class="headerlink" href="#call-command-option" title="Permalink to this heading"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web call -h
 Usage: py4web.py call [OPTIONS] APPS_FOLDER FUNC
 
@@ -330,7 +330,7 @@ that you have to use the single and double quotes just as shown for parameters t
 work.</p>
 </section>
 <section id="new-app-command-option">
-<span id="id2"></span><h3>Opção `` comando new_app``<a class="headerlink" href="#new-app-command-option" title="Link permanente para este título"></a></h3>
+<span id="id2"></span><h3>Opção `` comando new_app``<a class="headerlink" href="#new-app-command-option" title="Permalink to this heading"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web new_app -h
 Usage: py4web.py new_app [OPTIONS] APPS_FOLDER APP_NAME
 
@@ -347,7 +347,7 @@ Options:
 <p>Presentemente, dá um erro em instalações binários e de instalação de origem (no local), porque eles perdem o arquivo zip de ativos.</p>
 </section>
 <section id="run-command-option">
-<span id="id3"></span><h3>Opção `` comando run``<a class="headerlink" href="#run-command-option" title="Link permanente para este título"></a></h3>
+<span id="id3"></span><h3>Opção `` comando run``<a class="headerlink" href="#run-command-option" title="Permalink to this heading"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web run -h
 Usage: py4web.py run [OPTIONS] APPS_FOLDER
 
@@ -405,7 +405,7 @@ Using them, you’re telling the library you want to handle all events from that
 a session is found, invalid, saved.</p>
 </section>
 <section id="set-password-command-option">
-<span id="id4"></span><h3>Opção `` comando set_password``<a class="headerlink" href="#set-password-command-option" title="Link permanente para este título"></a></h3>
+<span id="id4"></span><h3>Opção `` comando set_password``<a class="headerlink" href="#set-password-command-option" title="Permalink to this heading"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web set_password -h
 Usage: py4web.py set_password [OPTIONS]
 
@@ -438,7 +438,7 @@ password: *****
 </div>
 </section>
 <section id="setup-command-option">
-<span id="id5"></span><h3>Opção `` comando setup``<a class="headerlink" href="#setup-command-option" title="Link permanente para este título"></a></h3>
+<span id="id5"></span><h3>Opção `` comando setup``<a class="headerlink" href="#setup-command-option" title="Permalink to this heading"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web setup -h
 Usage: py4web.py setup [OPTIONS] APPS_FOLDER
 
@@ -452,7 +452,7 @@ Options:
 <p>Esta opção criar uma nova pasta Aplicativos (ou reinstalá-lo). Se necessário, ele irá pedir a confirmação da criação da nova pasta e, em seguida, para copiar todos os aplicativos py4web padrão da pasta de ativos. Atualmente, não faz nada em instalações binários e de instalação de origem (localmente) - para eles você pode copiar manualmente a pasta de aplicações existentes para o novo.</p>
 </section>
 <section id="shell-command-option">
-<span id="id6"></span><h3>Opção `` comando shell``<a class="headerlink" href="#shell-command-option" title="Link permanente para este título"></a></h3>
+<span id="id6"></span><h3>Opção `` comando shell``<a class="headerlink" href="#shell-command-option" title="Permalink to this heading"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web shell -h
 Usage: py4web.py shell [OPTIONS] APPS_FOLDER
 
@@ -472,7 +472,7 @@ Options:
 </div>
 </section>
 <section id="version-command-option">
-<span id="id7"></span><h3>Opção `` comando version``<a class="headerlink" href="#version-command-option" title="Link permanente para este título"></a></h3>
+<span id="id7"></span><h3>Opção `` comando version``<a class="headerlink" href="#version-command-option" title="Permalink to this heading"></a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web version -h
 Usage: py4web.py version [OPTIONS]
 
@@ -487,10 +487,45 @@ Options:
 modules, too.</p>
 </section>
 </section>
-<section id="special-deployments">
-<h2>Special deployments<a class="headerlink" href="#special-deployments" title="Link permanente para este título"></a></h2>
+<section id="special-installations">
+<h2>Special installations<a class="headerlink" href="#special-installations" title="Permalink to this heading"></a></h2>
+<p>There are special cases in which you cannot or don’t want to use one of the generic installation
+instructions we’ve already described. There is a special folder called <code class="docutils literal notranslate"><span class="pre">deployment_tools</span></code> in
+the py4web repository that collects some special recipes. They are briefly described here, along
+with some tips and tricks.</p>
+<section id="https">
+<h3>HTTPS<a class="headerlink" href="#https" title="Permalink to this heading"></a></h3>
+<p>To use https with the build-in web server (Rocket3) these are the steps:</p>
+<ul>
+<li><p>Generate the localhost certificates. For example followed the instructions here:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.section.io/engineering-education/how-to-get-ssl-https-for-localhost/">https://www.section.io/engineering-education/how-to-get-ssl-https-for-localhost/</a>.</p>
+</div></blockquote>
+</li>
+<li><p>Restart your browser and browse securely to your web site.</p></li>
+</ul>
+<p>If you use VSCode to run py4web you may want to update the py4web launch.json file to contain:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">&quot;configurations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;py4web&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;request&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;launch&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;program&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${workspaceFolder}/py4web.py&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;run&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;apps&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;--ssl_cert&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/path_to/localhost.crt&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;--ssl_key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/path_to/localhost.key&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;--server&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;rocketServer&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Notice that /path_to/ should be the absolute path to the location of your certificate.</p>
+</section>
 <section id="wsgi">
-<h3>WSGI<a class="headerlink" href="#wsgi" title="Link permanente para este título"></a></h3>
+<h3>WSGI<a class="headerlink" href="#wsgi" title="Permalink to this heading"></a></h3>
 <p>py4web is a standard WSGI application. So, if a full program installation it’s not
 feasible you can simply run py4web as a WSGI app. For example, using gunicorn-cli,
 create a python file:</p>
@@ -505,8 +540,8 @@ create a python file:</p>
 </div>
 <p>The wsgi function takes arguments with the same name as the command line arguments.</p>
 </section>
-<section id="deployment-on-gcloud-aka-google-app-engine">
-<h3>Implantação em gcloud (aka Google App Engine)<a class="headerlink" href="#deployment-on-gcloud-aka-google-app-engine" title="Link permanente para este título"></a></h3>
+<section id="deployment-on-gcloud-aka-gae-google-app-engine">
+<h3>Deployment on GCloud (aka GAE - Google App Engine)<a class="headerlink" href="#deployment-on-gcloud-aka-gae-google-app-engine" title="Permalink to this heading"></a></h3>
 <p>Login into the <a class="reference external" href="https://console.cloud.google.com/">Gcloud console</a> and
 create a new project. You will obtain a project id that looks like
 “{project_name}-{number}”.</p>
@@ -544,11 +579,23 @@ gcloud config set {project id}
 <p>Você pode querer personalizar o Makefile e app.yaml para atender às suas necessidades. Você não deve precisar editar `` main.py``.</p>
 </section>
 <section id="deployment-on-pythonanywhere-com">
-<h3>Implantação em PythonAnywhere.com<a class="headerlink" href="#deployment-on-pythonanywhere-com" title="Link permanente para este título"></a></h3>
+<h3>Implantação em PythonAnywhere.com<a class="headerlink" href="#deployment-on-pythonanywhere-com" title="Permalink to this heading"></a></h3>
 <p>Watch the <a class="reference external" href="https://youtu.be/Wxjl_vkLAEY">YouTube video</a> and follow the <a class="reference external" href="https://github.com/tomcam/py4webcasts/blob/master/docs/how-install-source-pythonanywhere.md">detailed
 tutorial</a>
 . The bottle_app.py script is in
 <code class="docutils literal notranslate"><span class="pre">py4web/deployment_tools/pythonanywhere.com/bottle_app.py</span></code></p>
+</section>
+<section id="deployment-on-docker-podman">
+<h3>Deployment on Docker/Podman<a class="headerlink" href="#deployment-on-docker-podman" title="Permalink to this heading"></a></h3>
+<p>On <code class="docutils literal notranslate"><span class="pre">deployment_tools/docker</span></code> there is a simple Dockerfile for quickly running a py4web container. There is also
+a docker-compose.yml file for setting up a more complex multi-container with PostgreSQL.</p>
+<p>Note that you can use them also with Podman, which has the advantage of does not requiring sudo and does not
+running any background daemon.</p>
+</section>
+<section id="deployment-on-ubuntu">
+<h3>Deployment on Ubuntu<a class="headerlink" href="#deployment-on-ubuntu" title="Permalink to this heading"></a></h3>
+<p>On <code class="docutils literal notranslate"><span class="pre">deployment_tools/ubuntu</span></code> there is a bash script tested with Ubuntu Server 20.04.03 LTS. It uses nginx and self-signed
+certificates. It optionally manage iptables, too.</p>
 </section>
 </section>
 </section>
@@ -589,7 +636,7 @@ tutorial</a>
      <label for="switch"></label>
      </span>
       
-      v: 1.20220222.1
+      v: 1.20221226.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

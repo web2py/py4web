@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="pt" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced topics and examples &mdash; Documentação py4web 1.20220222.1</title>
+  <title>Advanced topics and examples &mdash; Documentação py4web 1.20221226.1</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
-    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/translations.js"></script>
         <script src="_static/js/toggle.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -32,10 +30,9 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> py4web
-            <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20220222.1
+                1.20221226.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -70,6 +67,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#autocomplete-widget-using-htmx">Autocomplete Widget using htmx</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#utils-js">utils.js</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#string-format">string.format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-q-object">The Q object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-t-object">The T object</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -87,8 +90,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Navegação da página">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Advanced topics and examples</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Advanced topics and examples</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-16.rst" class="fa fa-github"> Editar no GitHub</a>
       </li>
@@ -99,9 +102,9 @@
            <div itemprop="articleBody">
              
   <section id="advanced-topics-and-examples">
-<h1>Advanced topics and examples<a class="headerlink" href="#advanced-topics-and-examples" title="Link permanente para este título"></a></h1>
+<h1>Advanced topics and examples<a class="headerlink" href="#advanced-topics-and-examples" title="Permalink to this heading"></a></h1>
 <section id="py4web-and-asyncio">
-<h2>py4web and asyncio<a class="headerlink" href="#py4web-and-asyncio" title="Link permanente para este título"></a></h2>
+<h2>py4web and asyncio<a class="headerlink" href="#py4web-and-asyncio" title="Permalink to this heading"></a></h2>
 <p>Asyncio is not strictly needed, at least for most of the normal use
 cases where it will add problems more than value because of its concurrency model.
 On the other hand, we think py4web needs a built-in websocket async based solution.</p>
@@ -110,7 +113,7 @@ the framework’s components: in particular pydal is not asyncio compliant becau
 not all the adapters work with async.</p>
 </section>
 <section id="htmx">
-<h2>htmx<a class="headerlink" href="#htmx" title="Link permanente para este título"></a></h2>
+<h2>htmx<a class="headerlink" href="#htmx" title="Permalink to this heading"></a></h2>
 <p>There are many javascript front-end frameworks available today that allow you great flexibility
 over how you design your web client. Vue, React and Angular are just a few.  However, the
 complexity in building one of these systems prevents many developers from reaping those benefits.
@@ -129,7 +132,7 @@ there is also a video tutorial: <a class="reference external" href="https://www.
 <li><p>Includes an htmx attributes plugin for the py4web grid</p></li>
 </ol>
 <section id="htmx-usage-in-form">
-<h3>htmx usage in Form<a class="headerlink" href="#htmx-usage-in-form" title="Link permanente para este título"></a></h3>
+<h3>htmx usage in Form<a class="headerlink" href="#htmx-usage-in-form" title="Permalink to this heading"></a></h3>
 <p>The py4web Form class allows you to pass **kwargs to it that will be passed along as attributes to the html
 form. For example, to add the hx-post and hx-target to the &lt;form&gt; element you would use:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
@@ -221,7 +224,7 @@ you can add “sidecar” elements to your forms. You can see in htmx_form that 
 required htmx attributes to make sure the htmx_list page is rendered inside the htmx-form-demo DIV.</p>
 </section>
 <section id="htmx-usage-in-grid">
-<h3>htmx usage in Grid<a class="headerlink" href="#htmx-usage-in-grid" title="Link permanente para este título"></a></h3>
+<h3>htmx usage in Grid<a class="headerlink" href="#htmx-usage-in-grid" title="Permalink to this heading"></a></h3>
 <p>The py4web grid provides an attributes plugin system that allows you to build plugins to provide custom attributes
 for form elements, anchor elements or confirmation messages. py4web also provide an attributes plugin specifically for
 htmx.</p>
@@ -292,7 +295,7 @@ processing and then tell the grid we’re going to use an alternate attributes p
 Now the forms, links and delete confirmations are all handled by htmx.</p>
 </section>
 <section id="autocomplete-widget-using-htmx">
-<h3>Autocomplete Widget using htmx<a class="headerlink" href="#autocomplete-widget-using-htmx" title="Link permanente para este título"></a></h3>
+<h3>Autocomplete Widget using htmx<a class="headerlink" href="#autocomplete-widget-using-htmx" title="Permalink to this heading"></a></h3>
 <p>htmx can be used for much more than just form/grid processing. In this example we’ll take advantage of htmx and the
 py4web form widgets to build an autocomplete widget that can be used in your forms. <em>NOTE: this is just an example, none
 of this code comes with py4web</em></p>
@@ -440,7 +443,7 @@ handle the database calls to get your data.</p>
 
         <span class="n">control</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">SCRIPT</span><span class="p">(</span>
-                <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        htmx.onLoad(function(elt) {</span>
 <span class="sd">            document.querySelector(&#39;#%(table)s_%(field)s_search&#39;).onkeydown = check_%(table)s_%(field)s_down_key;</span>
 <span class="sd">            \n</span>
@@ -487,11 +490,226 @@ route to fill the dropdown with data.</p>
 <p>If using the simple query and default build url, you are limited to a simple DAL query. You cannot use DAL subqueries
 within this simple query.  If the data for the dropdown requires a more complex DAL query you can override the default
 data builder URL to provide your own controller function to retrieve the data.</p>
-<dl class="citation">
-<dt class="label" id="cit1601"><span class="brackets"><a class="fn-backref" href="#id1">CIT1601</a></span></dt>
-<dd><p>from the <a class="reference external" href="https://htmx.org">https://htmx.org</a> website</p>
-</dd>
-</dl>
+<div role="list" class="citation-list">
+<div class="citation" id="cit1601" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">CIT1601</a><span class="fn-bracket">]</span></span>
+<p>from the <a class="reference external" href="https://htmx.org">https://htmx.org</a> website</p>
+</div>
+</div>
+</section>
+</section>
+<section id="utils-js">
+<h2>utils.js<a class="headerlink" href="#utils-js" title="Permalink to this heading"></a></h2>
+<p>Multiple times in this documentation we have mentioned utils.js which comes with the scaffolding application,
+yet we never clearly listed what is in there. So here it is.</p>
+<section id="string-format">
+<h3>string.format<a class="headerlink" href="#string-format" title="Permalink to this heading"></a></h3>
+<p>It extends the String object prototype to allow expressions like this:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;hello {name}&quot;</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="nx">name</span><span class="o">=</span><span class="s2">&quot;Max&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="the-q-object">
+<h3>The Q object<a class="headerlink" href="#the-q-object" title="Permalink to this heading"></a></h3>
+<p>The Q object can be used like a selector supporting jQuery like syntax:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">element</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">(</span><span class="s2">&quot;#element-id&quot;</span><span class="p">)[</span><span class="mf">0</span><span class="p">];</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">selected_elements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">(</span><span class="s2">&quot;.element-class&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>It supports the same syntax as JS <code class="docutils literal notranslate"><span class="pre">querySelectorAll</span></code>
+and always returns an array of selected elements (can be empty).</p>
+<p>The Q objects is also a container for functions that can be useful when programming in Javascript.
+It is stateless.</p>
+<p>For example:</p>
+<p><strong>Q.clone</strong></p>
+<p>A function to clone any object:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="nx">any</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">}</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Q.eval</strong></p>
+<p>It evaluates JS expressions in a string. It is not a sandbox.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">.</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;2+3+Math.random()&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Q.ajax</strong></p>
+<p>A wrapper for the JS fetch method which provides a nicer syntax:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;custom-header-name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;value&#39;</span><span class="p">}</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;recereived&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">response</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">failure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;recereived&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">response</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="nx">Q</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">url</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">success</span><span class="p">,</span><span class="w"> </span><span class="nx">failure</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Q.get_cookie</strong></p>
+<p>Extracts a cookie by name from the header of cookies in the current page:
+returns null if the cookie does not exist. Can be used within the JS of a page to retrieve a session cookie
+in case it is needed to call an API.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">.</span><span class="nx">get_cookie</span><span class="p">(</span><span class="s2">&quot;session&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Q.register_vue_component</strong></p>
+<p>This is specific for Vue 2 and may be deprecated in the future but it allows
+to define a vue component where the template is stored in a separate HTML file
+and the template will be loaded lazily only when/if the component is used.</p>
+<p>For example instead of doing:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;button-counter&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">count</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">},</span>
+<span class="nx">template</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;&lt;button v-on:click=&quot;count++&quot;&gt;You clicked me {{ count }} times.&lt;/button&gt;&#39;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>You would put the template in a button-counter.html and do</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Q</span><span class="p">.</span><span class="nx">register_vue_component</span><span class="p">(</span><span class="s2">&quot;button-counter&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;button-counter.html&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">count</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span>
+<span class="w">            </span><span class="p">};</span>
+<span class="w">        </span><span class="p">};</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p><strong>Q.upload_helper</strong></p>
+<p>It allows to bind an input tag of type file to a callback so that when a file is selected
+the content of the selected file is loaded, base64 encoded, and passed to the callback.</p>
+<p>This is useful to create form which include an input field selector - but you want to
+place the content of the selected file into a variable, for example to do an ajax post of that content.</p>
+<p>For example:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;file&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;my-id&quot;</span> <span class="p">/&gt;</span>
+</pre></div>
+</div>
+<p>and</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">file_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">file_content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">;</span>
+<span class="nx">Q</span><span class="p">.</span><span class="nx">upload_helper</span><span class="p">(</span><span class="s2">&quot;my_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="w"> </span><span class="nx">content</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="nx">file_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">name</span><span class="p">;</span>
+<span class="w">   </span><span class="nx">file_content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">content</span><span class="p">;</span><span class="w"> </span><span class="c1">// base 64 encoded;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="the-t-object">
+<h3>The T object<a class="headerlink" href="#the-t-object" title="Permalink to this heading"></a></h3>
+<p>This is a Javascript reimplementation of the Python pluralize library in Python
+which is used by the Python T object in py4web. So basically a client-side T.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">T</span><span class="p">.</span><span class="nx">translations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;dog&#39;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="mf">0</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;no cane&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;un case&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;{n} cani&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">10</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;tanti cani&#39;</span><span class="p">}};</span>
+<span class="kd">var</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">T</span><span class="p">(</span><span class="s1">&#39;dog&#39;</span><span class="p">).</span><span class="nx">format</span><span class="p">({</span><span class="nx">n</span><span class="o">:</span><span class="w"> </span><span class="mf">5</span><span class="p">});</span><span class="w"> </span><span class="c1">// &quot;5 cani&quot;</span>
+</pre></div>
+</div>
+<p>The intended usage is to create a server endpoint that can provide translations
+for the client accepted-language, obtain T.translations via ajax get, and then use
+T to translate and pluralize all messages clientside rather than serverside.</p>
+<p><strong>Q.debounce</strong></p>
+<p>Prevents a function from stepping on itself.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">setInterval</span><span class="p">(</span><span class="mf">500</span><span class="p">,</span><span class="w"> </span><span class="nx">Q</span><span class="p">.</span><span class="nx">debounce</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;hello!&quot;</span><span class="p">)},</span><span class="w"> </span><span class="mf">200</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>and the function will be called every 500ms
+but will skip if the previous call did not terminate.
+Unlike other debounce implementations out there, it makes sure
+the last call is always executed by delaying it (in the example 200ms);</p>
+<p><strong>Q.debounce</strong></p>
+<p>Prevents a function from being called too often;</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Q</span><span class="p">(</span><span class="s2">&quot;#element&quot;</span><span class="p">).</span><span class="nx">onclick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">.</span><span class="nx">debounce</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;clicked!&quot;</span><span class="p">)},</span><span class="w"> </span><span class="mf">1000</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>If the element is clicked more often than once every 1000ms, the other clicks will be ignored.</p>
+<p><strong>Q.tags_inputs</strong></p>
+<p>It turns a regular text input containing a string of comma separated tags into a tag widgets.
+For example:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;browsers&quot;</span><span class="p">/&gt;</span>
+</pre></div>
+</div>
+<p>and in JSL</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Q</span><span class="p">.</span><span class="nx">tags_input</span><span class="p">(</span><span class="s1">&#39;[name=zip_codes]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can restrict the set of options with:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Q</span><span class="p">.</span><span class="nx">tags_input</span><span class="p">(</span><span class="s1">&#39;[name=zip_codes]&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="nx">freetext</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">   </span><span class="nx">tags</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;Chrome&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Firefox&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Safari&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Edge&#39;</span><span class="p">]</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>It works with the datalist element to provide autocomplete. Simply prepend <cite>-list</cite> to the datalist id:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;browsers&quot;</span><span class="p">/&gt;</span>
+<span class="p">&lt;</span><span class="nt">datalist</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;browses-list&quot;</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Chrome<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Firfox<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Safari<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">option</span><span class="p">&gt;</span>Edge<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">datalist</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>and in JS:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Q</span><span class="p">.</span><span class="nx">tags_input</span><span class="p">(</span><span class="s1">&#39;[name=zip_codes]&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="nx">freetext</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>It provides more undocumented options.
+You need to style the tags. For example:</p>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="nt">ul</span><span class="p">.</span><span class="nc">tags-list</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">padding-left</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">ul</span><span class="p">.</span><span class="nc">tags-list</span><span class="w"> </span><span class="nt">li</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">inline-block</span><span class="p">;</span>
+<span class="w">  </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">  </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#111111</span><span class="p">;</span>
+<span class="w">  </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="kc">white</span><span class="p">;</span>
+<span class="w">  </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mf">0.3</span><span class="kt">em</span><span class="w"> </span><span class="mf">0.8</span><span class="kt">em</span><span class="w"> </span><span class="mf">0.2</span><span class="kt">em</span><span class="w"> </span><span class="mf">0.8</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">  </span><span class="k">line-height</span><span class="p">:</span><span class="w"> </span><span class="mf">1.2</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">  </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">  </span><span class="k">cursor</span><span class="p">:</span><span class="w"> </span><span class="kc">pointer</span><span class="p">;</span>
+<span class="w">  </span><span class="k">opacity</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">;</span>
+<span class="w">  </span><span class="k">text-transform</span><span class="p">:</span><span class="w"> </span><span class="kc">capitalize</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">ul</span><span class="p">.</span><span class="nc">tags-list</span><span class="w"> </span><span class="nt">li</span><span class="o">[</span><span class="nt">data-selected</span><span class="o">=</span><span class="nt">true</span><span class="o">]</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">opacity</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Notice that if an input element has class <cite>.type-list-string</cite> or <cite>.type-list-integer</cite>, utils.js applies the
+<cite>tag_input</cite> function automatically.</p>
+<p><em>Q.score_input*</em></p>
+<p>..code:: javascript</p>
+<blockquote>
+<div><p>Q.score_input(Q(“input[type=password]”)[0]);</p>
+</div></blockquote>
+<p>This will turn the password input into a widget that scores the password complexity.
+It is applied automatically to inputs with name «password» or «new_password».</p>
+<p><strong>Components</strong></p>
+<p>This is a poor man version of HTMX. It allows to insert in the page ajax-component tags that
+are loaded via ajax and any form in those components will be trapped
+(i.e. the result of form submission will also be displayed inside the same component)</p>
+<p>For example imagine an index.html that contains</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ajax-component</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;component_1&quot;</span> <span class="na">url</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;mycomponent&#39;)]]&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">blink</span><span class="p">&gt;</span>Loading...<span class="p">&lt;/</span><span class="nt">blink</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ajax-component</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>And a different action serving the component:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;mycomponent&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">mycomponent</span><span class="p">():</span>
+    <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;Welcome&quot;</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">([</span><span class="n">Field</span><span class="p">(</span><span class="s2">&quot;your_name&quot;</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">DIV</span><span class="p">(</span>
+        <span class="s2">&quot;Hello &quot;</span> <span class="o">+</span> <span class="n">request</span><span class="o">.</span><span class="n">forms</span><span class="p">[</span><span class="s2">&quot;your_name&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span> <span class="k">else</span> <span class="n">form</span><span class="p">)</span><span class="o">.</span><span class="n">xml</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>A component action is a regular action except that it should generate html without the
+<cite>&lt;html&gt;&lt;body&gt;…&lt;/body&gt;&lt;/html&gt;</cite> envelop and it can make use of templates and flash for example.</p>
+<p>Notice that if the main page supports flash messages, any flash message in the component will be displayed
+by the parent page.</p>
+<p>Moreover if the component returns a <cite>redirect(«other_page»)</cite> not just the content of the component,
+but the entire page will be redirected.</p>
+<p>The contents of the component html can contain <cite>&lt;script&gt;…&lt;/script&gt;</cite> and they can modify global page variables
+as well as modify other components.</p>
 </section>
 </section>
 </section>
@@ -531,7 +749,7 @@ data builder URL to provide your own controller function to retrieve the data.</
      <label for="switch"></label>
      </span>
       
-      v: 1.20220222.1
+      v: 1.20221226.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
