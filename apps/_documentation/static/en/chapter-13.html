@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Authentication and authorization &mdash; py4web 1.20220222.1 documentation</title>
+  <title>Authentication and authorization &mdash; py4web 1.20221226.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
-    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/js/toggle.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -32,10 +30,9 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> py4web
-            <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20220222.1
+                1.20221226.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -63,6 +60,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#authentication-using-auth">Authentication using Auth</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#auth-ui">Auth UI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-auth-inside-actions">Using Auth inside actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#two-factor-authentication">Two Factor Authentication</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#two-factor-required">two_factor_required</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#two-factor-send">two_factor_send</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#two-factor-tries">two_factor_tries</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#auth-plugins">Auth Plugins</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#pam">PAM</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ldap">LDAP</a></li>
@@ -98,8 +101,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Authentication and authorization</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Authentication and authorization</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-13.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -110,7 +113,7 @@
            <div itemprop="articleBody">
              
   <section id="authentication-and-authorization">
-<h1>Authentication and authorization<a class="headerlink" href="#authentication-and-authorization" title="Permalink to this headline"></a></h1>
+<h1>Authentication and authorization<a class="headerlink" href="#authentication-and-authorization" title="Permalink to this heading"></a></h1>
 <p>Strong authentication and authorization methods are
 vital for a modern, multiuser web application.
 While they are often used interchangeably, authentication and authorization
@@ -120,7 +123,7 @@ are separate processes:</p>
 <li><p>Authorization gives those users permission to access a resource</p></li>
 </ul>
 <section id="authentication-using-auth">
-<h2>Authentication using Auth<a class="headerlink" href="#authentication-using-auth" title="Permalink to this headline"></a></h2>
+<h2>Authentication using Auth<a class="headerlink" href="#authentication-using-auth" title="Permalink to this heading"></a></h2>
 <p>py4web comes with a an object <code class="docutils literal notranslate"><span class="pre">Auth</span></code> and a system of plugins for user
 authentication. It has the same name as the
 corresponding web2py one and serves the same purpose but the API and
@@ -170,7 +173,7 @@ APIs:</p>
 </ul>
 <p>Those marked with a (+) require a logged in user.</p>
 <section id="auth-ui">
-<h3>Auth UI<a class="headerlink" href="#auth-ui" title="Permalink to this headline"></a></h3>
+<h3>Auth UI<a class="headerlink" href="#auth-ui" title="Permalink to this heading"></a></h3>
 <p>You can create your own web UI to login users using the above APIs but
 py4web provides one as an example, implemented in the following files:</p>
 <ul class="simple">
@@ -214,7 +217,7 @@ only the corresponding menu options allowed: <code class="docutils literal notra
 which in turn activates the Auth action.</p>
 </section>
 <section id="using-auth-inside-actions">
-<h3>Using Auth inside actions<a class="headerlink" href="#using-auth-inside-actions" title="Permalink to this headline"></a></h3>
+<h3>Using Auth inside actions<a class="headerlink" href="#using-auth-inside-actions" title="Permalink to this heading"></a></h3>
 <p>There two ways to use the Auth object in an action.</p>
 <p>The first one does not force a login.  With <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(auth)</span></code>
 we tell py4web that this action should have information about the user,
@@ -237,8 +240,86 @@ trying to parse the session for a user session.</p>
 <p>Here <code class="docutils literal notranslate"><span class="pre">&#64;action.uses(auth.user)</span></code> tells py4web that this action requires
 a logged in user and should redirect to login if no user is logged in.</p>
 </section>
+<section id="two-factor-authentication">
+<h3>Two Factor Authentication<a class="headerlink" href="#two-factor-authentication" title="Permalink to this heading"></a></h3>
+<p>Two factor authentication (or Two-step verification) is a way of improving authentication security. When activated an extra step is added in the login process. In the first step, users are shown the standard username/password form. If they successfully pass this challenge by submitting the correct username and password, and two factor authentication is enabled for the user, the server will present a second form before logging them in.</p>
+<p>There are a few Auth settings available to control how two factor authentication works.</p>
+<p>The follow can be specified on Auth instantiation:</p>
+<ul class="simple">
+<li><p>two_factor_required</p></li>
+<li><p>two_factor_send</p></li>
+</ul>
+<section id="two-factor-required">
+<h4>two_factor_required<a class="headerlink" href="#two-factor-required" title="Permalink to this heading"></a></h4>
+<p>When you pass a method name to the two_factor_filter parameter you are telling py4web to call that method to determine whether or not this login should be use or bypass two factor authentication.  If your method returns True, then this login requires two factor.  If it returns False, two factor authentication is bypassed for this login.</p>
+<p>Sample two_factor_filter method</p>
+<p>This example shows how to allow users that are on a specific network.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">user_outside_network</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">ipaddress</span>
+
+    <span class="n">networks</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;10.10.0.0/22&quot;</span><span class="p">]</span>
+
+    <span class="n">ip_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="nb">range</span> <span class="ow">in</span> <span class="n">networks</span><span class="p">:</span>
+        <span class="n">ip_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv4Network</span><span class="p">(</span><span class="nb">range</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv4Address</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">remote_addr</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ip_list</span><span class="p">:</span>
+        <span class="c1">#  if the client address is in the network address list, then do NOT require MFA</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+<section id="two-factor-send">
+<h4>two_factor_send<a class="headerlink" href="#two-factor-send" title="Permalink to this heading"></a></h4>
+<p>When two factor authentication is active, py4web generates a 6 digit code (using random.randint) and sends it to you. How this code is sent, is up to you. The two_factor_send argument to the Auth class allows you to specify the method that sends the two factor code to the user.</p>
+<p>This example shows how to send an email with the two factor code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">send_two_factor_email</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">auth</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
+            <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">],</span>
+            <span class="n">subject</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Two factor login verification code&quot;</span><span class="p">,</span>
+            <span class="n">body</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;You&#39;re verification code is </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">sender</span><span class="o">=</span><span class="s2">&quot;from_address@youremail.com&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">code</span>
+</pre></div>
+</div>
+<p>Notice that this method takes to arguments: the current user, and the code to be sent.
+Also notice thid method can override the code and return a new one.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">two_factor_required</span> <span class="o">=</span> <span class="n">user_outside_network</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">two_factor_send</span> <span class="o">=</span> <span class="n">send_two_factor_email</span>
+</pre></div>
+</div>
+</section>
+<section id="two-factor-tries">
+<h4>two_factor_tries<a class="headerlink" href="#two-factor-tries" title="Permalink to this heading"></a></h4>
+<p>By default, the user has 3 attempts to pass two factor authentication. You can override this after using:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">two_factor_tries</span> <span class="o">=</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>Once this is all setup, the flow for two factor authentication is:</p>
+<ul class="simple">
+<li><p>present the login page</p></li>
+<li><dl class="simple">
+<dt>upon successful login and user passes two_factor_required</dt><dd><ul>
+<li><p>redirect to py4web auth/two_factor endpoint</p></li>
+<li><p>generate 6 digit verification code</p></li>
+<li><p>call two_factor_send to send the verification code to the user</p></li>
+<li><p>display verification page where user can enter their code</p></li>
+<li><p>upon successful verification, take user to _next_url that was passed to the login page</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</section>
 <section id="auth-plugins">
-<h3>Auth Plugins<a class="headerlink" href="#auth-plugins" title="Permalink to this headline"></a></h3>
+<h3>Auth Plugins<a class="headerlink" href="#auth-plugins" title="Permalink to this heading"></a></h3>
 <p>Plugins are defined in “py4web/utils/auth_plugins” and they have a
 hierarchical structure. Some are exclusive and some are not. For example,
 default, LDAP, PAM, and SAML are exclusive (the developer has to pick
@@ -250,15 +331,14 @@ forms as required by the installed plugins.</p>
 <p>In the _scaffold/settings.py and _scaffold/common.py files you can see
 the default settings for the supported plugins.</p>
 <section id="pam">
-<h4>PAM<a class="headerlink" href="#pam" title="Permalink to this headline"></a></h4>
+<h4>PAM<a class="headerlink" href="#pam" title="Permalink to this heading"></a></h4>
 <p>Configuring PAM is the easiest:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.pam_plugin</span> <span class="kn">import</span> <span class="n">PamPlugin</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">PamPlugin</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>This one like all plugins must be imported and registered. Once
-registered the UI (components/auth) and the RESTful APIs know how to
-handle it. The constructor of this plugins does not require any
+<p>This one like all plugins must be imported and registered.
+The constructor of this plugins does not require any
 arguments (where other plugins do).</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">auth.register_plugin(...)</span></code> <strong>must</strong> come before the
 <code class="docutils literal notranslate"><span class="pre">auth.enable()</span></code> since it makes no sense to expose APIs before desired
@@ -270,7 +350,7 @@ Otherwise you can only authenticate the specific user that runs the py4web proce
 </div>
 </section>
 <section id="ldap">
-<h4>LDAP<a class="headerlink" href="#ldap" title="Permalink to this headline"></a></h4>
+<h4>LDAP<a class="headerlink" href="#ldap" title="Permalink to this heading"></a></h4>
 <p>This is a common authentication method, especially using Microsoft Active Directory in enterprises.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.ldap_plugin</span> <span class="kn">import</span> <span class="n">LDAPPlugin</span>
 <span class="n">LDAP_SETTING</span> <span class="o">=</span> <span class="p">{</span>
@@ -288,7 +368,7 @@ in advance with <code class="docutils literal notranslate"><span class="pre">sud
 </div>
 </section>
 <section id="oauth2-with-google">
-<h4>OAuth2 with Google<a class="headerlink" href="#oauth2-with-google" title="Permalink to this headline"></a></h4>
+<h4>OAuth2 with Google<a class="headerlink" href="#oauth2-with-google" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.oauth2google</span> <span class="kn">import</span> <span class="n">OAuth2Google</span> <span class="c1"># TESTED</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Google</span><span class="p">(</span>
     <span class="n">client_id</span><span class="o">=</span><span class="n">CLIENT_ID</span><span class="p">,</span>
@@ -299,7 +379,7 @@ in advance with <code class="docutils literal notranslate"><span class="pre">sud
 <p>The client id and client secret must be provided by Google.</p>
 </section>
 <section id="oauth2-with-facebook">
-<h4>OAuth2 with Facebook<a class="headerlink" href="#oauth2-with-facebook" title="Permalink to this headline"></a></h4>
+<h4>OAuth2 with Facebook<a class="headerlink" href="#oauth2-with-facebook" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.oauth2facebook</span> <span class="kn">import</span> <span class="n">OAuth2Facebook</span> <span class="c1"># UNTESTED</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Facebook</span><span class="p">(</span>
     <span class="n">client_id</span><span class="o">=</span><span class="n">CLIENT_ID</span><span class="p">,</span>
@@ -310,7 +390,7 @@ in advance with <code class="docutils literal notranslate"><span class="pre">sud
 <p>The client id and client secret must be provided by Facebook.</p>
 </section>
 <section id="oauth2-with-discord">
-<h4>OAuth2 with Discord<a class="headerlink" href="#oauth2-with-discord" title="Permalink to this headline"></a></h4>
+<h4>OAuth2 with Discord<a class="headerlink" href="#oauth2-with-discord" title="Permalink to this heading"></a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.auth_plugins.oauth2discord</span> <span class="kn">import</span> <span class="n">OAuth2Discord</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="n">OAuth2Discord</span><span class="p">(</span>
     <span class="n">client_id</span><span class="o">=</span><span class="n">DISCORD_CLIENT_ID</span><span class="p">,</span>
@@ -330,12 +410,12 @@ Discord username as the first name and discriminator as the last name.</p>
 </section>
 </section>
 <section id="authorization-using-tags">
-<h2>Authorization using Tags<a class="headerlink" href="#authorization-using-tags" title="Permalink to this headline"></a></h2>
+<h2>Authorization using Tags<a class="headerlink" href="#authorization-using-tags" title="Permalink to this heading"></a></h2>
 <p>As already mentioned, authorization is the process of verifying what specific
 applications, files, and data a user has access to. This is accomplished
 in py4web using <code class="docutils literal notranslate"><span class="pre">Tags</span></code>.</p>
 <section id="tags-and-permissions">
-<h3>Tags and Permissions<a class="headerlink" href="#tags-and-permissions" title="Permalink to this headline"></a></h3>
+<h3>Tags and Permissions<a class="headerlink" href="#tags-and-permissions" title="Permalink to this heading"></a></h3>
 <p>Py4web provides a general purpose tagging
 mechanism that allows the developer to tag any record of any table,
 check for the existence of tags, as well as checking for records
@@ -413,7 +493,7 @@ following searches will return the user:</p>
 <p>This means that slashes have a special meaning for tags.</p>
 </section>
 <section id="multiple-tags-objects">
-<h3>Multiple Tags objects<a class="headerlink" href="#multiple-tags-objects" title="Permalink to this headline"></a></h3>
+<h3>Multiple Tags objects<a class="headerlink" href="#multiple-tags-objects" title="Permalink to this heading"></a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>One table can have multiple associated <code class="docutils literal notranslate"><span class="pre">Tags</span></code> objects. The
@@ -496,7 +576,7 @@ the user has the permission.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20220222.1
+      v: 1.20221226.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

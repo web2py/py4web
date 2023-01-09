@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Internationalization &mdash; py4web 1.20220222.1 documentation</title>
+  <title>Internationalization &mdash; py4web 1.20221226.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
-    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/js/toggle.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -32,10 +30,9 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> py4web
-            <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20220222.1
+                1.20221226.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -82,8 +79,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Internationalization</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Internationalization</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-11.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -94,9 +91,9 @@
            <div itemprop="articleBody">
              
   <section id="internationalization">
-<h1>Internationalization<a class="headerlink" href="#internationalization" title="Permalink to this headline"></a></h1>
+<h1>Internationalization<a class="headerlink" href="#internationalization" title="Permalink to this heading"></a></h1>
 <section id="pluralize">
-<h2>Pluralize<a class="headerlink" href="#pluralize" title="Permalink to this headline"></a></h2>
+<h2>Pluralize<a class="headerlink" href="#pluralize" title="Permalink to this heading"></a></h2>
 <p>Pluralize is a Python library for Internationalization (i18n) and
 Pluralization (p10n).</p>
 <p>The library assumes a folder (for example “translations”) that contains
@@ -149,7 +146,7 @@ regular strings.</p>
 format.</p>
 </section>
 <section id="update-the-translation-files">
-<h2>Update the translation files<a class="headerlink" href="#update-the-translation-files" title="Permalink to this headline"></a></h2>
+<h2>Update the translation files<a class="headerlink" href="#update-the-translation-files" title="Permalink to this heading"></a></h2>
 <p>Find all strings wrapped in T(…) in .py, .html, and .js files:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>matches = T.find_matches(&#39;path/to/app/folder&#39;)
 </pre></div>
@@ -213,7 +210,7 @@ T.update_languages(known_expressions))
      <label for="switch"></label>
      </span>
       
-      v: 1.20220222.1
+      v: 1.20221226.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

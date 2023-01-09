@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Database Abstraction Layer (DAL) &mdash; py4web 1.20220222.1 documentation</title>
+  <title>The Database Abstraction Layer (DAL) &mdash; py4web 1.20221226.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
-    <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/js/toggle.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -32,10 +30,9 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> py4web
-            <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20220222.1
+                1.20221226.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -241,8 +238,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>The Database Abstraction Layer (DAL)</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">The Database Abstraction Layer (DAL)</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-07.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -253,9 +250,9 @@
            <div itemprop="articleBody">
              
   <section id="the-database-abstraction-layer-dal">
-<h1>The Database Abstraction Layer (DAL)<a class="headerlink" href="#the-database-abstraction-layer-dal" title="Permalink to this headline"></a></h1>
+<h1>The Database Abstraction Layer (DAL)<a class="headerlink" href="#the-database-abstraction-layer-dal" title="Permalink to this heading"></a></h1>
 <section id="dal-introduction">
-<h2>DAL introduction<a class="headerlink" href="#dal-introduction" title="Permalink to this headline"></a></h2>
+<h2>DAL introduction<a class="headerlink" href="#dal-introduction" title="Permalink to this heading"></a></h2>
 <p>py4web rely on a database abstraction layer (DAL), an API that maps
 Python objects into database objects such as queries, tables, and
 records. The DAL dynamically generates the SQL in real time using the
@@ -274,7 +271,7 @@ you can use it in any Python context.</p>
 <li><p>Nested Selects</p></li>
 </ul>
 <section id="py4web-model">
-<h3>py4web model<a class="headerlink" href="#py4web-model" title="Permalink to this headline"></a></h3>
+<h3>py4web model<a class="headerlink" href="#py4web-model" title="Permalink to this heading"></a></h3>
 <p>Even if web2py and py4web use the same pyDAL, there are important differences (see
 <a class="reference internal" href="chapter-15.html#from-web2py-to-py4web"><span class="std std-ref">From web2py to py4web</span></a> for details). The main caveat is that in py4web only
 the action is executed for every HTTP request, while the code defined outside of
@@ -287,7 +284,7 @@ readable, writable, requires, update, and default.
 All the others are for practical purposes to be considered global and non thread safe.</p>
 </section>
 <section id="supported-databases">
-<h3>Supported databases<a class="headerlink" href="#supported-databases" title="Permalink to this headline"></a></h3>
+<h3>Supported databases<a class="headerlink" href="#supported-databases" title="Permalink to this heading"></a></h3>
 <p>A partial list of supported databases is show in the table
 below. Please check on the py4web/pyDAL web site and mailing list for more
 recent adapters.</p>
@@ -304,10 +301,6 @@ end. Once the proper driver is installed, start py4web and it
 will automatically find the driver.</p>
 <p>Here is a list of the drivers py4web can use:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 81%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Database</p></th>
 <th class="head"><p>Drivers (source)</p></th>
@@ -366,7 +359,7 @@ The <a class="reference internal" href="#gotchas">Gotchas</a> section at the end
 about specific databases.</p>
 </section>
 <section id="the-dal-a-quick-tour">
-<h3>The DAL: a quick tour<a class="headerlink" href="#the-dal-a-quick-tour" title="Permalink to this headline"></a></h3>
+<h3>The DAL: a quick tour<a class="headerlink" href="#the-dal-a-quick-tour" title="Permalink to this heading"></a></h3>
 <p>py4web defines the following classes that make up the DAL:</p>
 <dl>
 <dt>DAL</dt><dd><p>represents a database connection. For example:</p>
@@ -393,7 +386,7 @@ thought of as a list of <code class="docutils literal notranslate"><span class="
 </dd>
 <dt>Row</dt><dd><p>contains field values.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
-    <span class="nb">print</span> <span class="n">row</span><span class="o">.</span><span class="n">myfield</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">myfield</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -423,7 +416,7 @@ example.</p>
 </dl>
 </section>
 <section id="using-the-dal-stand-alone">
-<h3>Using the DAL “stand-alone”<a class="headerlink" href="#using-the-dal-stand-alone" title="Permalink to this headline"></a></h3>
+<h3>Using the DAL “stand-alone”<a class="headerlink" href="#using-the-dal-stand-alone" title="Permalink to this heading"></a></h3>
 <p>pyDAL is an independent python package. As such, it can be used
 without the web2py/py4web environment; you just need to install
 it with <code class="docutils literal notranslate"><span class="pre">pip</span></code>. Then import the pydal module when needed:</p>
@@ -442,7 +435,7 @@ should better be:</p>
 </div>
 </section>
 <section id="experiment-with-the-py4web-shell">
-<h3>Experiment with the py4web shell<a class="headerlink" href="#experiment-with-the-py4web-shell" title="Permalink to this headline"></a></h3>
+<h3>Experiment with the py4web shell<a class="headerlink" href="#experiment-with-the-py4web-shell" title="Permalink to this heading"></a></h3>
 <p>You can also experiment with the pyDAL API using the py4web shell,
 that is available using the <a class="reference internal" href="chapter-03.html#shell-command-option"><span class="std std-ref">shell command option</span></a>.</p>
 <div class="admonition warning">
@@ -470,7 +463,7 @@ engine.</p>
 </section>
 </section>
 <section id="dal-constructor">
-<h2>DAL constructor<a class="headerlink" href="#dal-constructor" title="Permalink to this headline"></a></h2>
+<h2>DAL constructor<a class="headerlink" href="#dal-constructor" title="Permalink to this heading"></a></h2>
 <p>Basic use:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">)</span>
 </pre></div>
@@ -494,7 +487,7 @@ different databases, even databases of different types. For now, we will
 assume the presence of a single database since this is the most common
 situation.</p>
 <section id="dal-signature">
-<h3>DAL signature<a class="headerlink" href="#dal-signature" title="Permalink to this headline"></a></h3>
+<h3>DAL signature<a class="headerlink" href="#dal-signature" title="Permalink to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DAL</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;sqlite://dummy.db&#39;</span><span class="p">,</span>
     <span class="n">pool_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -523,7 +516,7 @@ situation.</p>
 </div>
 </section>
 <section id="connection-strings-the-uri-parameter">
-<h3>Connection strings (the uri parameter)<a class="headerlink" href="#connection-strings-the-uri-parameter" title="Permalink to this headline"></a></h3>
+<h3>Connection strings (the uri parameter)<a class="headerlink" href="#connection-strings-the-uri-parameter" title="Permalink to this heading"></a></h3>
 <p>A connection with the database is established by creating an instance of
 the DAL object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">)</span>
@@ -538,10 +531,6 @@ specific types of supported back-end databases (in all cases, we assume
 the database is running from localhost on its default port and is named
 “test”):</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 27%" />
-<col style="width: 73%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Database</p></th>
 <th class="head"><p>Connection string</p></th>
@@ -552,8 +541,7 @@ the database is running from localhost on its default port and is named
 <td><p><code class="docutils literal notranslate"><span class="pre">sqlite://storage.sqlite</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>MySQL</strong></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">mysql://username:password&#64;localhost/test?set_encoding</span>
-<span class="pre">=utf8mb4</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mysql://username:password&#64;localhost/test?set_encoding=utf8mb4</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><strong>PostgreSQL</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">postgres://username:password&#64;localhost/test</span></code></p></td>
@@ -649,7 +637,7 @@ you have to change it with the optional parameter <code class="docutils literal 
 <p>Otherwise you’ll get UnicodeDecodeError tickets.</p>
 </section>
 <section id="connection-pooling">
-<h3>Connection pooling<a class="headerlink" href="#connection-pooling" title="Permalink to this headline"></a></h3>
+<h3>Connection pooling<a class="headerlink" href="#connection-pooling" title="Permalink to this heading"></a></h3>
 <p>A common argument of the DAL constructor is the <code class="docutils literal notranslate"><span class="pre">pool_size</span></code>; it
 defaults to zero.</p>
 <p>As it is rather slow to establish a new database connection for each
@@ -674,7 +662,7 @@ Connection pooling is ignored for SQLite, since it would not yield any
 benefit.</p>
 </section>
 <section id="connection-failures-attempts-parameter">
-<h3>Connection failures (attempts parameter)<a class="headerlink" href="#connection-failures-attempts-parameter" title="Permalink to this headline"></a></h3>
+<h3>Connection failures (attempts parameter)<a class="headerlink" href="#connection-failures-attempts-parameter" title="Permalink to this heading"></a></h3>
 <p>If py4web fails to connect to the database it waits 1 second and by
 default tries again up to 5 times before declaring a failure. In case of
 connection pooling it is possible that a pooled connection that stays
@@ -683,7 +671,7 @@ the retry feature py4web tries to re-establish these dropped
 connections. The number of attempts is set via the attempts parameter.</p>
 </section>
 <section id="lazy-tables">
-<h3>Lazy Tables<a class="headerlink" href="#lazy-tables" title="Permalink to this headline"></a></h3>
+<h3>Lazy Tables<a class="headerlink" href="#lazy-tables" title="Permalink to this heading"></a></h3>
 <p>Setting <code class="docutils literal notranslate"><span class="pre">lazy_tables</span> <span class="pre">=</span> <span class="pre">True</span></code> provides a major performance boost (but
 not with py4web). It means that table creation is deferred until the
 table is actually referenced.</p>
@@ -694,7 +682,7 @@ no need, and possibly concurrency problems.</p>
 </div>
 </section>
 <section id="model-less-applications">
-<h3>Model-less applications<a class="headerlink" href="#model-less-applications" title="Permalink to this headline"></a></h3>
+<h3>Model-less applications<a class="headerlink" href="#model-less-applications" title="Permalink to this heading"></a></h3>
 <p>In py4web the code defined outside of actions (where normally DAL tables
 are defined) is only executed at startup.</p>
 <p>However, it is possible to define DAL tables on demand inside actions.
@@ -706,7 +694,7 @@ Also, remember maintainability: other py4web developers expect to find
 database definitions in the <code class="docutils literal notranslate"><span class="pre">models.py</span></code> file.</p>
 </section>
 <section id="replicated-databases">
-<h3>Replicated databases<a class="headerlink" href="#replicated-databases" title="Permalink to this headline"></a></h3>
+<h3>Replicated databases<a class="headerlink" href="#replicated-databases" title="Permalink to this heading"></a></h3>
 <p>The first argument of <code class="docutils literal notranslate"><span class="pre">DAL(...)</span></code> can be a list of URIs. In this case
 py4web tries to connect to each of them. The main purpose for this is to
 deal with multiple database servers and distribute the workload among
@@ -719,7 +707,7 @@ will try the second and the third. This can also be used to distribute
 load in a database master-slave configuration.</p>
 </section>
 <section id="reserved-keywords">
-<h3>Reserved keywords<a class="headerlink" href="#reserved-keywords" title="Permalink to this headline"></a></h3>
+<h3>Reserved keywords<a class="headerlink" href="#reserved-keywords" title="Permalink to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">check_reserved</span></code> tells the constructor to check table names and column
 names against reserved SQL keywords in target back-end databases.
 <code class="docutils literal notranslate"><span class="pre">check_reserved</span></code> defaults to None.</p>
@@ -744,10 +732,6 @@ append <code class="docutils literal notranslate"><span class="pre">_nonreserved
 </div>
 <p>The following database backends support reserved words checking.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 35%" />
-<col style="width: 65%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Database</p></th>
 <th class="head"><p>check_reserved</p></th>
@@ -773,7 +757,7 @@ append <code class="docutils literal notranslate"><span class="pre">_nonreserved
 </table>
 </section>
 <section id="database-quoting-and-case-settings">
-<h3>Database quoting and case settings<a class="headerlink" href="#database-quoting-and-case-settings" title="Permalink to this headline"></a></h3>
+<h3>Database quoting and case settings<a class="headerlink" href="#database-quoting-and-case-settings" title="Permalink to this heading"></a></h3>
 <p>Quoting of SQL entities are enabled by default in DAL, that is:</p>
 <p><code class="docutils literal notranslate"><span class="pre">entity_quoting</span> <span class="pre">=</span> <span class="pre">True</span></code></p>
 <p>This way identifiers are automatically quoted in SQL generated by DAL.
@@ -796,7 +780,7 @@ must arrange for both settings above. Here is an example:</p>
 </div>
 </section>
 <section id="making-a-secure-connection">
-<h3>Making a secure connection<a class="headerlink" href="#making-a-secure-connection" title="Permalink to this headline"></a></h3>
+<h3>Making a secure connection<a class="headerlink" href="#making-a-secure-connection" title="Permalink to this heading"></a></h3>
 <p>Sometimes it is necessary (and advised) to connect to your database
 using secure connection, especially if your database is not on the same
 server as your application. In this case you need to pass additional
@@ -814,16 +798,16 @@ documentation on how to configure PostgreSQL server to accept secure
 connections.</p>
 </section>
 <section id="other-dal-constructor-parameters">
-<h3>Other DAL constructor parameters<a class="headerlink" href="#other-dal-constructor-parameters" title="Permalink to this headline"></a></h3>
+<h3>Other DAL constructor parameters<a class="headerlink" href="#other-dal-constructor-parameters" title="Permalink to this heading"></a></h3>
 <section id="database-folder-location">
-<h4>Database folder location<a class="headerlink" href="#database-folder-location" title="Permalink to this headline"></a></h4>
+<h4>Database folder location<a class="headerlink" href="#database-folder-location" title="Permalink to this heading"></a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">folder</span></code> sets the place where migration files will be created (see
 <a class="reference internal" href="#migrations">Migrations</a> for details).
 It is also used for SQLite databases. Automatically set within py4web.
 Set a path when using DAL outside py4web.</p>
 </section>
 <section id="default-migration-settings">
-<h4>Default migration settings<a class="headerlink" href="#default-migration-settings" title="Permalink to this headline"></a></h4>
+<h4>Default migration settings<a class="headerlink" href="#default-migration-settings" title="Permalink to this heading"></a></h4>
 <p>The DAL constructor migration settings are booleans affecting defaults
 and global behaviour.</p>
 <p><code class="docutils literal notranslate"><span class="pre">migrate</span> <span class="pre">=</span> <span class="pre">True</span></code> sets default migrate behavior for all tables</p>
@@ -834,7 +818,7 @@ tables</p>
 </section>
 </section>
 <section id="commit-and-rollback">
-<h3><code class="docutils literal notranslate"><span class="pre">commit</span></code> and <code class="docutils literal notranslate"><span class="pre">rollback</span></code><a class="headerlink" href="#commit-and-rollback" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">commit</span></code> and <code class="docutils literal notranslate"><span class="pre">rollback</span></code><a class="headerlink" href="#commit-and-rollback" title="Permalink to this heading"></a></h3>
 <p>The insert, truncate, delete, and update operations aren’t actually
 committed until py4web issues the commit command. The create and drop
 operations may be executed immediately, depending on the database
@@ -888,10 +872,10 @@ looks like this (pseudo code):</p>
 </section>
 </section>
 <section id="table-constructor">
-<h2>Table constructor<a class="headerlink" href="#table-constructor" title="Permalink to this headline"></a></h2>
+<h2>Table constructor<a class="headerlink" href="#table-constructor" title="Permalink to this heading"></a></h2>
 <p>Tables are defined in the DAL via <code class="docutils literal notranslate"><span class="pre">define_table</span></code>.</p>
 <section id="define-table-signature">
-<h3>define_table signature<a class="headerlink" href="#define-table-signature" title="Permalink to this headline"></a></h3>
+<h3>define_table signature<a class="headerlink" href="#define-table-signature" title="Permalink to this heading"></a></h3>
 <p>The signature for define_table method is:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">define_table</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
@@ -915,7 +899,7 @@ containing a field (column) “name”. This object can also be accessed via
 define_table.</p>
 </section>
 <section id="id-notes-about-the-primary-key">
-<h3><code class="docutils literal notranslate"><span class="pre">id</span></code>: Notes about the primary key<a class="headerlink" href="#id-notes-about-the-primary-key" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">id</span></code>: Notes about the primary key<a class="headerlink" href="#id-notes-about-the-primary-key" title="Permalink to this heading"></a></h3>
 <p>Do not declare a field called “id”, because one is created by py4web
 anyway. Every table has a field called “id” by default. It is an
 auto-increment integer field (usually starting at 1) used for
@@ -929,13 +913,13 @@ different name. With some limitation, you can also use different primary
 keys using the <code class="docutils literal notranslate"><span class="pre">primarykey</span></code> parameter.</p>
 </section>
 <section id="plural-and-singular">
-<h3><code class="docutils literal notranslate"><span class="pre">plural</span></code> and <code class="docutils literal notranslate"><span class="pre">singular</span></code><a class="headerlink" href="#plural-and-singular" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">plural</span></code> and <code class="docutils literal notranslate"><span class="pre">singular</span></code><a class="headerlink" href="#plural-and-singular" title="Permalink to this heading"></a></h3>
 <p>As pyDAL is a general DAL, it includes plural and singular attributes to
 refer to the table names so that external elements can use the proper
 name for a table.</p>
 </section>
 <section id="redefine">
-<h3><code class="docutils literal notranslate"><span class="pre">redefine</span></code><a class="headerlink" href="#redefine" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">redefine</span></code><a class="headerlink" href="#redefine" title="Permalink to this heading"></a></h3>
 <p>Tables can be defined only once but you can force py4web to redefine an
 existing table:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
@@ -945,7 +929,7 @@ existing table:</p>
 <p>The redefinition may trigger a migration if table definition changes.</p>
 </section>
 <section id="format-record-representation">
-<h3><code class="docutils literal notranslate"><span class="pre">format</span></code>: Record representation<a class="headerlink" href="#format-record-representation" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">format</span></code>: Record representation<a class="headerlink" href="#format-record-representation" title="Permalink to this heading"></a></h3>
 <p>It is optional but recommended to specify a format representation for
 records with the <code class="docutils literal notranslate"><span class="pre">format</span></code> parameter.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(name)s</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -970,7 +954,7 @@ representation instead.</p></li>
 </ul>
 </section>
 <section id="rname-real-name">
-<h3><code class="docutils literal notranslate"><span class="pre">rname</span></code>: Real name<a class="headerlink" href="#rname-real-name" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">rname</span></code>: Real name<a class="headerlink" href="#rname-real-name" title="Permalink to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">rname</span></code> sets a database backend name for the table. This makes the
 py4web table name an alias, and <code class="docutils literal notranslate"><span class="pre">rname</span></code> is the real name used when
 constructing the query for the backend. To illustrate just one use,
@@ -979,17 +963,17 @@ accessing tables belonging to other databases on the server:
 <code class="docutils literal notranslate"><span class="pre">rname</span> <span class="pre">=</span> <span class="pre">'db1.dbo.table1'</span></code></p>
 </section>
 <section id="primarykey-support-for-legacy-tables">
-<h3><code class="docutils literal notranslate"><span class="pre">primarykey</span></code>: Support for legacy tables<a class="headerlink" href="#primarykey-support-for-legacy-tables" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">primarykey</span></code>: Support for legacy tables<a class="headerlink" href="#primarykey-support-for-legacy-tables" title="Permalink to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">primarykey</span></code> helps support legacy tables with existing primary keys,
 even multi-part. See <a class="reference internal" href="#legacy-databases-and-keyed-tables">Legacy databases and keyed tables</a>.</p>
 </section>
 <section id="migrate-fake-migrate">
-<h3><code class="docutils literal notranslate"><span class="pre">migrate</span></code>, <code class="docutils literal notranslate"><span class="pre">fake_migrate</span></code><a class="headerlink" href="#migrate-fake-migrate" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">migrate</span></code>, <code class="docutils literal notranslate"><span class="pre">fake_migrate</span></code><a class="headerlink" href="#migrate-fake-migrate" title="Permalink to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">migrate</span></code> sets migration options for the table. Refer to
 <a class="reference internal" href="#migrations">Migrations</a> for details.</p>
 </section>
 <section id="table-class">
-<h3><code class="docutils literal notranslate"><span class="pre">table_class</span></code><a class="headerlink" href="#table-class" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">table_class</span></code><a class="headerlink" href="#table-class" title="Permalink to this heading"></a></h3>
 <p>If you define your own table class as a sub-class of
 pydal.objects.Table, you can provide it here; this allows you to extend
 and override methods. Example:</p>
@@ -1003,7 +987,7 @@ and override methods. Example:</p>
 </div>
 </section>
 <section id="sequence-name">
-<h3><code class="docutils literal notranslate"><span class="pre">sequence_name</span></code><a class="headerlink" href="#sequence-name" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">sequence_name</span></code><a class="headerlink" href="#sequence-name" title="Permalink to this heading"></a></h3>
 <p>The name of a custom table sequence (if supported by the database). Can
 create a SEQUENCE (starting at 1 and incrementing by 1) or use this for
 legacy tables with custom sequences.</p>
@@ -1013,16 +997,16 @@ by default.</p>
 </div></blockquote>
 </section>
 <section id="trigger-name">
-<h3><code class="docutils literal notranslate"><span class="pre">trigger_name</span></code><a class="headerlink" href="#trigger-name" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">trigger_name</span></code><a class="headerlink" href="#trigger-name" title="Permalink to this heading"></a></h3>
 <p>Relates to <code class="docutils literal notranslate"><span class="pre">sequence_name</span></code>. Relevant for some backends which do not
 support auto-increment numeric fields.</p>
 </section>
 <section id="polymodel">
-<h3><code class="docutils literal notranslate"><span class="pre">polymodel</span></code><a class="headerlink" href="#polymodel" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">polymodel</span></code><a class="headerlink" href="#polymodel" title="Permalink to this heading"></a></h3>
 <p>For use with Google App Engine.</p>
 </section>
 <section id="on-define">
-<h3><code class="docutils literal notranslate"><span class="pre">on_define</span></code><a class="headerlink" href="#on-define" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">on_define</span></code><a class="headerlink" href="#on-define" title="Permalink to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">on_define</span></code> is a callback triggered when a lazy_table is instantiated,
 although it is called anyway if the table is not lazy. This allows
 dynamic changes to the table without losing the advantages of delayed
@@ -1046,7 +1030,7 @@ cause <code class="docutils literal notranslate"><span class="pre">sometable</sp
 <code class="docutils literal notranslate"><span class="pre">on_define</span></code>.</p>
 </section>
 <section id="adding-attributes-to-fields-and-tables">
-<h3>Adding attributes to fields and tables<a class="headerlink" href="#adding-attributes-to-fields-and-tables" title="Permalink to this headline"></a></h3>
+<h3>Adding attributes to fields and tables<a class="headerlink" href="#adding-attributes-to-fields-and-tables" title="Permalink to this heading"></a></h3>
 <p>If you need to add custom attributes to fields, you can simply do this:
 <code class="docutils literal notranslate"><span class="pre">db.table.field.extra</span> <span class="pre">=</span> <span class="pre">{}</span></code></p>
 <p>“extra” is not a keyword; it’s a custom attribute now attached to the
@@ -1057,7 +1041,7 @@ an underscore to avoid naming conflicts with fields:</p>
 </div>
 </section>
 <section id="legacy-databases-and-keyed-tables">
-<h3>Legacy databases and keyed tables<a class="headerlink" href="#legacy-databases-and-keyed-tables" title="Permalink to this headline"></a></h3>
+<h3>Legacy databases and keyed tables<a class="headerlink" href="#legacy-databases-and-keyed-tables" title="Permalink to this heading"></a></h3>
 <p>py4web can connect to legacy databases under some conditions.</p>
 <p>The easiest way is when these conditions are met:</p>
 <ul class="simple">
@@ -1102,7 +1086,7 @@ database view that has an auto-increment id field.</p>
 </section>
 </section>
 <section id="field-constructor">
-<h2>Field constructor<a class="headerlink" href="#field-constructor" title="Permalink to this headline"></a></h2>
+<h2>Field constructor<a class="headerlink" href="#field-constructor" title="Permalink to this heading"></a></h2>
 <p>These are the default values of a Field constructor:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Field</span><span class="p">(</span><span class="n">fieldname</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">DEFAULT</span><span class="p">,</span>
       <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">DEFAULT</span><span class="p">,</span>
@@ -1230,12 +1214,8 @@ should only be set globally for an app. The following are guaranteed to be
 thread safe and be set/reset in any action:
 <code class="docutils literal notranslate"><span class="pre">default</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code>, <code class="docutils literal notranslate"><span class="pre">readable</span></code>, <code class="docutils literal notranslate"><span class="pre">writable</span></code>, <code class="docutils literal notranslate"><span class="pre">requires</span></code>.</p>
 <section id="field-types-and-validators">
-<h3>Field types and validators<a class="headerlink" href="#field-types-and-validators" title="Permalink to this headline"></a></h3>
+<h3>Field types and validators<a class="headerlink" href="#field-types-and-validators" title="Permalink to this heading"></a></h3>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 34%" />
-<col style="width: 66%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Type</p></th>
 <th class="head"><p>Default validators</p></th>
@@ -1333,7 +1313,7 @@ making the communication independent of the back-end specific escaping
 conventions.</p>
 </section>
 <section id="run-time-field-and-table-modification">
-<h3>Run-time field and table modification<a class="headerlink" href="#run-time-field-and-table-modification" title="Permalink to this headline"></a></h3>
+<h3>Run-time field and table modification<a class="headerlink" href="#run-time-field-and-table-modification" title="Permalink to this heading"></a></h3>
 <p>Most attributes of fields and tables can be modified after they are
 defined:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(name)s</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -1404,7 +1384,7 @@ will see them later. A special method of the field object is
 input passes validation.</p>
 </section>
 <section id="more-on-uploads">
-<h3>More on uploads<a class="headerlink" href="#more-on-uploads" title="Permalink to this headline"></a></h3>
+<h3>More on uploads<a class="headerlink" href="#more-on-uploads" title="Permalink to this heading"></a></h3>
 <p>Consider the following model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;myfile&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;upload&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;path/to/file&#39;</span><span class="p">))</span>
@@ -1492,7 +1472,7 @@ case remember to close the file when you are done, calling
 </section>
 </section>
 <section id="migrations">
-<h2>Migrations<a class="headerlink" href="#migrations" title="Permalink to this headline"></a></h2>
+<h2>Migrations<a class="headerlink" href="#migrations" title="Permalink to this heading"></a></h2>
 <p>With our example table definition:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1557,7 +1537,7 @@ changes in attributes such as changes in the values of <code class="docutils lit
 Only one of the two apps should perform migrations, the other should
 disable them.</p>
 <section id="fixing-broken-migrations">
-<h3>Fixing broken migrations<a class="headerlink" href="#fixing-broken-migrations" title="Permalink to this headline"></a></h3>
+<h3>Fixing broken migrations<a class="headerlink" href="#fixing-broken-migrations" title="Permalink to this heading"></a></h3>
 <p>There are two common problems with migrations and there are ways to
 recover from them.</p>
 <p>One problem is specific with SQLite. SQLite does not enforce column
@@ -1601,7 +1581,7 @@ of “yourapp/databases/*.table” files.</p>
 database, but it can help narrowing down the problem.</p>
 </section>
 <section id="migration-control-summary">
-<h3>Migration control summary<a class="headerlink" href="#migration-control-summary" title="Permalink to this headline"></a></h3>
+<h3>Migration control summary<a class="headerlink" href="#migration-control-summary" title="Permalink to this heading"></a></h3>
 <p>The logic of the various migration arguments are summarized in this
 pseudo-code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">DAL</span><span class="o">.</span><span class="n">migrate_enabled</span> <span class="ow">and</span> <span class="n">table</span><span class="o">.</span><span class="n">migrate</span><span class="p">:</span>
@@ -1614,9 +1594,9 @@ pseudo-code:</p>
 </section>
 </section>
 <section id="table-methods">
-<h2>Table methods<a class="headerlink" href="#table-methods" title="Permalink to this headline"></a></h2>
+<h2>Table methods<a class="headerlink" href="#table-methods" title="Permalink to this heading"></a></h2>
 <section id="insert">
-<h3><code class="docutils literal notranslate"><span class="pre">insert</span></code><a class="headerlink" href="#insert" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">insert</span></code><a class="headerlink" href="#insert" title="Permalink to this heading"></a></h3>
 <p>Given a table, you can insert records</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alex&quot;</span><span class="p">)</span>
 <span class="go">1</span>
@@ -1655,7 +1635,7 @@ individual inserts but on Google App Engine NoSQL, there is a major
 speed advantage.</p>
 </section>
 <section id="query-set-rows">
-<h3><code class="docutils literal notranslate"><span class="pre">Query</span></code>, <code class="docutils literal notranslate"><span class="pre">Set</span></code>, <code class="docutils literal notranslate"><span class="pre">Rows</span></code><a class="headerlink" href="#query-set-rows" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">Query</span></code>, <code class="docutils literal notranslate"><span class="pre">Set</span></code>, <code class="docutils literal notranslate"><span class="pre">Rows</span></code><a class="headerlink" href="#query-set-rows" title="Permalink to this heading"></a></h3>
 <p>Let’s consider again the table defined (and dropped) previously and
 insert three records:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
@@ -1694,7 +1674,7 @@ determines from the query which table (or tables) are involved and, in
 fact, there is no need to specify that.</p>
 </section>
 <section id="update-or-insert">
-<h3><code class="docutils literal notranslate"><span class="pre">update_or_insert</span></code><a class="headerlink" href="#update-or-insert" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">update_or_insert</span></code><a class="headerlink" href="#update-or-insert" title="Permalink to this heading"></a></h3>
 <p>Some times you need to perform an insert only if there is no record with
 the same values as those being inserted. This can be done with</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
@@ -1725,7 +1705,7 @@ also be a query, such as</p>
 </div>
 </section>
 <section id="validate-and-insert-validate-and-update">
-<h3><code class="docutils literal notranslate"><span class="pre">validate_and_insert</span></code>, <code class="docutils literal notranslate"><span class="pre">validate_and_update</span></code><a class="headerlink" href="#validate-and-insert-validate-and-update" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">validate_and_insert</span></code>, <code class="docutils literal notranslate"><span class="pre">validate_and_update</span></code><a class="headerlink" href="#validate-and-insert-validate-and-update" title="Permalink to this heading"></a></h3>
 <p>The function</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="o">.</span><span class="n">validate_and_insert</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1756,14 +1736,14 @@ number of updated records can be found in <code class="docutils literal notransl
 will be in <code class="docutils literal notranslate"><span class="pre">ret.errors</span></code>.</p>
 </section>
 <section id="drop">
-<h3><code class="docutils literal notranslate"><span class="pre">drop</span></code><a class="headerlink" href="#drop" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">drop</span></code><a class="headerlink" href="#drop" title="Permalink to this heading"></a></h3>
 <p>Finally, you can drop tables and all data will be lost:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">drop</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
 <section id="tagging-records">
-<h3>Tagging records<a class="headerlink" href="#tagging-records" title="Permalink to this headline"></a></h3>
+<h3>Tagging records<a class="headerlink" href="#tagging-records" title="Permalink to this heading"></a></h3>
 <p>Tags allows to add or find properties attached to records in your
 database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
@@ -1802,9 +1782,9 @@ flexible mechanism to manage permissions.</p>
 </section>
 </section>
 <section id="raw-sql">
-<h2>Raw SQL<a class="headerlink" href="#raw-sql" title="Permalink to this headline"></a></h2>
+<h2>Raw SQL<a class="headerlink" href="#raw-sql" title="Permalink to this heading"></a></h2>
 <section id="executesql">
-<h3><code class="docutils literal notranslate"><span class="pre">executesql</span></code><a class="headerlink" href="#executesql" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">executesql</span></code><a class="headerlink" href="#executesql" title="Permalink to this heading"></a></h3>
 <p>The DAL allows you to explicitly issue SQL statements.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">executesql</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM person;&#39;</span><span class="p">)</span>
 <span class="go">[(1, u&#39;Massimo&#39;), (2, u&#39;Massimo&#39;)]</span>
@@ -1855,7 +1835,7 @@ database. Also, note that the <code class="docutils literal notranslate"><span c
 same order as the fields in the results cursor returned from the DB.</p>
 </section>
 <section id="lastsql">
-<h3><code class="docutils literal notranslate"><span class="pre">_lastsql</span></code><a class="headerlink" href="#lastsql" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">_lastsql</span></code><a class="headerlink" href="#lastsql" title="Permalink to this heading"></a></h3>
 <p>Whether SQL was executed manually using executesql or was SQL generated
 by the DAL, you can always find the SQL code in <code class="docutils literal notranslate"><span class="pre">db._lastsql</span></code>. This is
 useful for debugging purposes:</p>
@@ -1870,14 +1850,14 @@ always explicit when selecting fields.</p>
 </div></blockquote>
 </section>
 <section id="timing-queries">
-<h3>Timing queries<a class="headerlink" href="#timing-queries" title="Permalink to this headline"></a></h3>
+<h3>Timing queries<a class="headerlink" href="#timing-queries" title="Permalink to this heading"></a></h3>
 <p>All queries are automatically timed by py4web. The variable
 <code class="docutils literal notranslate"><span class="pre">db._timings</span></code> is a list of tuples. Each tuple contains the raw SQL
 query as passed to the database driver and the time it took to execute
 in seconds.</p>
 </section>
 <section id="indexes">
-<h3>Indexes<a class="headerlink" href="#indexes" title="Permalink to this headline"></a></h3>
+<h3>Indexes<a class="headerlink" href="#indexes" title="Permalink to this heading"></a></h3>
 <p>Currently the DAL API does not provide a command to create indexes on
 tables, but this can be done using the <code class="docutils literal notranslate"><span class="pre">executesql</span></code> command. This is
 because the existence of indexes can make migrations complex, and it is
@@ -1893,7 +1873,7 @@ fields that are used in recurrent queries.</p>
 the optional “IF NOT EXISTS” directive.</p>
 </section>
 <section id="generating-raw-sql">
-<h3>Generating raw SQL<a class="headerlink" href="#generating-raw-sql" title="Permalink to this headline"></a></h3>
+<h3>Generating raw SQL<a class="headerlink" href="#generating-raw-sql" title="Permalink to this heading"></a></h3>
 <p>Sometimes you need to generate the SQL but not execute it. This is easy
 to do with py4web since every command that performs database IO has an
 equivalent command that does not, and simply returns the SQL that would
@@ -1932,7 +1912,7 @@ SQL generated by the DAL.</p>
 </section>
 </section>
 <section id="select-command">
-<h2><code class="docutils literal notranslate"><span class="pre">select</span></code> command<a class="headerlink" href="#select-command" title="Permalink to this headline"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">select</span></code> command<a class="headerlink" href="#select-command" title="Permalink to this heading"></a></h2>
 <p>Given a Set, <code class="docutils literal notranslate"><span class="pre">s</span></code>, you can fetch the records with the command
 <code class="docutils literal notranslate"><span class="pre">select</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
@@ -2030,7 +2010,7 @@ instead of a column. We will show this later.</p>
 </pre></div>
 </div>
 <section id="using-an-iterator-based-select-for-lower-memory-use">
-<h3>Using an iterator-based select for lower memory use<a class="headerlink" href="#using-an-iterator-based-select-for-lower-memory-use" title="Permalink to this headline"></a></h3>
+<h3>Using an iterator-based select for lower memory use<a class="headerlink" href="#using-an-iterator-based-select-for-lower-memory-use" title="Permalink to this heading"></a></h3>
 <p>Python “iterators” are a type of “lazy-evaluation”. They ‘feed’ data one
 step at time; traditional Python loops create the entire set of data in
 memory before looping.</p>
@@ -2049,7 +2029,7 @@ dramatically lower memory use:</p>
 large RAM.</p>
 </section>
 <section id="rendering-rows-using-represent">
-<h3>Rendering rows using represent<a class="headerlink" href="#rendering-rows-using-represent" title="Permalink to this headline"></a></h3>
+<h3>Rendering rows using represent<a class="headerlink" href="#rendering-rows-using-represent" title="Permalink to this heading"></a></h3>
 <p>You may wish to rewrite rows returned by select to take advantage of
 formatting information contained in the represents setting of the
 fields.</p>
@@ -2077,7 +2057,7 @@ attribute, you can list them in the “fields” argument:</p>
 update_record (which you wouldn’t want anyway) or delete_record.</p>
 </section>
 <section id="shortcuts">
-<h3>Shortcuts<a class="headerlink" href="#shortcuts" title="Permalink to this headline"></a></h3>
+<h3>Shortcuts<a class="headerlink" href="#shortcuts" title="Permalink to this heading"></a></h3>
 <p>The DAL supports various code-simplifying shortcuts. In particular:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">myrecord</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
 </pre></div>
@@ -2123,7 +2103,7 @@ changed in pyDAL 19.02 to permit normal usage of id 0.</p>
 dictionary on the right hand side.</p>
 </section>
 <section id="fetching-a-row">
-<h3>Fetching a <code class="docutils literal notranslate"><span class="pre">Row</span></code><a class="headerlink" href="#fetching-a-row" title="Permalink to this headline"></a></h3>
+<h3>Fetching a <code class="docutils literal notranslate"><span class="pre">Row</span></code><a class="headerlink" href="#fetching-a-row" title="Permalink to this heading"></a></h3>
 <p>Yet another convenient syntax is the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">record</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 <span class="n">record</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">)</span>
@@ -2137,7 +2117,7 @@ exception). It also allows to specify multiple conditions that the
 record must meet. If they are not met, it also returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </section>
 <section id="recursive-selects">
-<h3>Recursive <code class="docutils literal notranslate"><span class="pre">select</span></code>s<a class="headerlink" href="#recursive-selects" title="Permalink to this headline"></a></h3>
+<h3>Recursive <code class="docutils literal notranslate"><span class="pre">select</span></code>s<a class="headerlink" href="#recursive-selects" title="Permalink to this heading"></a></h3>
 <p>Consider the previous table person and a new table “thing” referencing a
 “person”:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;thing&#39;</span><span class="p">,</span>
@@ -2183,10 +2163,10 @@ the referenced table. In this case one needs to be more explicit and use
 a full Query.</p>
 </section>
 <section id="orderby-groupby-limitby-distinct-having-orderby-on-limitby-join-left-cache">
-<span id="orderby-groupby-limitby"></span><h3><code class="docutils literal notranslate"><span class="pre">orderby</span></code>, <code class="docutils literal notranslate"><span class="pre">groupby</span></code>, <code class="docutils literal notranslate"><span class="pre">limitby</span></code>, <code class="docutils literal notranslate"><span class="pre">distinct</span></code>, <code class="docutils literal notranslate"><span class="pre">having</span></code>, <code class="docutils literal notranslate"><span class="pre">orderby_on_limitby</span></code>, <code class="docutils literal notranslate"><span class="pre">join</span></code>, <code class="docutils literal notranslate"><span class="pre">left</span></code>, <code class="docutils literal notranslate"><span class="pre">cache</span></code><a class="headerlink" href="#orderby-groupby-limitby-distinct-having-orderby-on-limitby-join-left-cache" title="Permalink to this headline"></a></h3>
+<span id="orderby-groupby-limitby"></span><h3><code class="docutils literal notranslate"><span class="pre">orderby</span></code>, <code class="docutils literal notranslate"><span class="pre">groupby</span></code>, <code class="docutils literal notranslate"><span class="pre">limitby</span></code>, <code class="docutils literal notranslate"><span class="pre">distinct</span></code>, <code class="docutils literal notranslate"><span class="pre">having</span></code>, <code class="docutils literal notranslate"><span class="pre">orderby_on_limitby</span></code>, <code class="docutils literal notranslate"><span class="pre">join</span></code>, <code class="docutils literal notranslate"><span class="pre">left</span></code>, <code class="docutils literal notranslate"><span class="pre">cache</span></code><a class="headerlink" href="#orderby-groupby-limitby-distinct-having-orderby-on-limitby-join-left-cache" title="Permalink to this heading"></a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">select</span></code> command takes a number of optional arguments.</p>
 <section id="orderby">
-<h4>orderby<a class="headerlink" href="#orderby" title="Permalink to this headline"></a></h4>
+<h4>orderby<a class="headerlink" href="#orderby" title="Permalink to this heading"></a></h4>
 <p>You can fetch the records sorted by name:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">orderby</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -2236,7 +2216,7 @@ them with a “|”:</p>
 </div>
 </section>
 <section id="groupby-having">
-<h4>groupby, having<a class="headerlink" href="#groupby-having" title="Permalink to this headline"></a></h4>
+<h4>groupby, having<a class="headerlink" href="#groupby-having" title="Permalink to this heading"></a></h4>
 <p>Using <code class="docutils literal notranslate"><span class="pre">groupby</span></code> together with <code class="docutils literal notranslate"><span class="pre">orderby</span></code>, you can group records with
 the same value for the specified field (this is back-end specific, and
 is not on the Google NoSQL):</p>
@@ -2259,7 +2239,7 @@ conditionally (only those <code class="docutils literal notranslate"><span class
 records to be grouped.</p>
 </section>
 <section id="distinct">
-<h4>distinct<a class="headerlink" href="#distinct" title="Permalink to this headline"></a></h4>
+<h4>distinct<a class="headerlink" href="#distinct" title="Permalink to this heading"></a></h4>
 <p>With the argument <code class="docutils literal notranslate"><span class="pre">distinct=True</span></code>, you can specify that you only want
 to select distinct records. This has the same effect as grouping using
 all specified fields except that it does not require sorting. When using
@@ -2285,7 +2265,7 @@ to select the “id” field, else all records will always be distinct.</p>
 </div>
 </section>
 <section id="limitby">
-<h4>limitby<a class="headerlink" href="#limitby" title="Permalink to this headline"></a></h4>
+<h4>limitby<a class="headerlink" href="#limitby" title="Permalink to this heading"></a></h4>
 <p>With <code class="docutils literal notranslate"><span class="pre">limitby=(min,</span> <span class="pre">max)</span></code>, you can select a subset of the records from
 offset=min to but not including offset=max. In the next example we
 select the first two records starting at zero:</p>
@@ -2298,19 +2278,19 @@ select the first two records starting at zero:</p>
 </div>
 </section>
 <section id="orderby-on-limitby">
-<h4>orderby_on_limitby<a class="headerlink" href="#orderby-on-limitby" title="Permalink to this headline"></a></h4>
+<h4>orderby_on_limitby<a class="headerlink" href="#orderby-on-limitby" title="Permalink to this heading"></a></h4>
 <p>Note that the DAL defaults to implicitly adding an orderby when using a
 limitby. This ensures the same query returns the same results each time,
 important for pagination. But it can cause performance problems. use
 <code class="docutils literal notranslate"><span class="pre">orderby_on_limitby</span> <span class="pre">=</span> <span class="pre">False</span></code> to change this (this defaults to True).</p>
 </section>
 <section id="join-left">
-<h4>join, left<a class="headerlink" href="#join-left" title="Permalink to this headline"></a></h4>
+<h4>join, left<a class="headerlink" href="#join-left" title="Permalink to this heading"></a></h4>
 <p>These are involved in managing <a class="reference internal" href="#one-to-many-relation">One to many relation</a>. They are
 described in <a class="reference internal" href="#inner-join">Inner join</a> and <a class="reference internal" href="#left-outer-join">Left outer join</a> sections respectively.</p>
 </section>
 <section id="cache-cacheable">
-<h4>cache, cacheable<a class="headerlink" href="#cache-cacheable" title="Permalink to this headline"></a></h4>
+<h4>cache, cacheable<a class="headerlink" href="#cache-cacheable" title="Permalink to this heading"></a></h4>
 <p>An example use which gives much faster selects is:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">ram</span><span class="p">,</span> <span class="mi">3600</span><span class="p">),</span> <span class="n">cacheable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -2319,7 +2299,7 @@ described in <a class="reference internal" href="#inner-join">Inner join</a> and
 </section>
 </section>
 <section id="logical-operators">
-<h3>Logical operators<a class="headerlink" href="#logical-operators" title="Permalink to this headline"></a></h3>
+<h3>Logical operators<a class="headerlink" href="#logical-operators" title="Permalink to this heading"></a></h3>
 <p>Queries can be combined using the binary AND operator “<code class="docutils literal notranslate"><span class="pre">&amp;</span></code>”:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">((</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="s1">&#39;Alex&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span> <span class="nb">print</span> <span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">name</span>
@@ -2365,7 +2345,7 @@ comparisons must also be parenthesized.</p>
 </div>
 </section>
 <section id="count-isempty-delete-update">
-<h3><code class="docutils literal notranslate"><span class="pre">count</span></code>, <code class="docutils literal notranslate"><span class="pre">isempty</span></code>, <code class="docutils literal notranslate"><span class="pre">delete</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code><a class="headerlink" href="#count-isempty-delete-update" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">count</span></code>, <code class="docutils literal notranslate"><span class="pre">isempty</span></code>, <code class="docutils literal notranslate"><span class="pre">delete</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code><a class="headerlink" href="#count-isempty-delete-update" title="Permalink to this heading"></a></h3>
 <p>You can count records in a set:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;William&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 <span class="go">3</span>
@@ -2396,7 +2376,7 @@ corresponding to the fields that need to be updated:</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">update</span></code> method returns the number of records that were updated.</p>
 </section>
 <section id="expressions">
-<h3>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline"></a></h3>
+<h3>Expressions<a class="headerlink" href="#expressions" title="Permalink to this heading"></a></h3>
 <p>The value assigned an update statement can be an expression. For example
 consider this model</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
@@ -2417,7 +2397,7 @@ consider this model</p>
 </div>
 </section>
 <section id="case">
-<h3><code class="docutils literal notranslate"><span class="pre">case</span></code><a class="headerlink" href="#case" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">case</span></code><a class="headerlink" href="#case" title="Permalink to this heading"></a></h3>
 <p>An expression can contain a case clause for example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">condition</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">yes_or_no</span> <span class="o">=</span> <span class="n">condition</span><span class="o">.</span><span class="n">case</span><span class="p">(</span><span class="s1">&#39;Yes&#39;</span><span class="p">,</span> <span class="s1">&#39;No&#39;</span><span class="p">)</span>
@@ -2431,7 +2411,7 @@ consider this model</p>
 </div>
 </section>
 <section id="update-record">
-<h3><code class="docutils literal notranslate"><span class="pre">update_record</span></code><a class="headerlink" href="#update-record" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">update_record</span></code><a class="headerlink" href="#update-record" title="Permalink to this heading"></a></h3>
 <p>py4web also allows updating a single record that is already in memory
 using <code class="docutils literal notranslate"><span class="pre">update_record</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">row</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
@@ -2468,7 +2448,7 @@ field is included in the select, and <code class="docutils literal notranslate">
 <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </section>
 <section id="inserting-and-updating-from-a-dictionary">
-<h3>Inserting and updating from a dictionary<a class="headerlink" href="#inserting-and-updating-from-a-dictionary" title="Permalink to this headline"></a></h3>
+<h3>Inserting and updating from a dictionary<a class="headerlink" href="#inserting-and-updating-from-a-dictionary" title="Permalink to this heading"></a></h3>
 <p>A common issue consists of needing to insert or update records in a
 table where the name of the table, the field to be updated, and the
 value for the field are all stored in variables. For example:
@@ -2486,7 +2466,7 @@ query works even for tables with a primary key field with type other
 than “id”.</p>
 </section>
 <section id="first-and-last">
-<h3><code class="docutils literal notranslate"><span class="pre">first</span></code> and <code class="docutils literal notranslate"><span class="pre">last</span></code><a class="headerlink" href="#first-and-last" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">first</span></code> and <code class="docutils literal notranslate"><span class="pre">last</span></code><a class="headerlink" href="#first-and-last" title="Permalink to this heading"></a></h3>
 <p>Given a Rows object containing records:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="n">first_row</span> <span class="o">=</span> <span class="n">rows</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
@@ -2507,7 +2487,7 @@ get the first and last record returned by your query which are often in
 a random order determined by the backend query optimiser.</p>
 </section>
 <section id="as-dict-and-as-list">
-<h3><code class="docutils literal notranslate"><span class="pre">as_dict</span></code> and <code class="docutils literal notranslate"><span class="pre">as_list</span></code><a class="headerlink" href="#as-dict-and-as-list" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">as_dict</span></code> and <code class="docutils literal notranslate"><span class="pre">as_list</span></code><a class="headerlink" href="#as-dict-and-as-list" title="Permalink to this heading"></a></h3>
 <p>A Row object can be serialized into a regular dictionary using the
 <code class="docutils literal notranslate"><span class="pre">as_dict()</span></code> method and a Rows object can be serialized into a list of
 dictionaries using the <code class="docutils literal notranslate"><span class="pre">as_list()</span></code> method. Here are some examples:</p>
@@ -2526,7 +2506,7 @@ serialized because they contain a reference to an open DB connection):</p>
 </div>
 </section>
 <section id="combining-rows">
-<h3>Combining rows<a class="headerlink" href="#combining-rows" title="Permalink to this headline"></a></h3>
+<h3>Combining rows<a class="headerlink" href="#combining-rows" title="Permalink to this heading"></a></h3>
 <p>Rows objects can be combined at the Python level. Here we assume:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rows1</span><span class="p">)</span>
 <span class="go">person.name</span>
@@ -2567,7 +2547,7 @@ serialized because they contain a reference to an open DB connection):</p>
 </div>
 </section>
 <section id="find-exclude-sort">
-<h3><code class="docutils literal notranslate"><span class="pre">find</span></code>, <code class="docutils literal notranslate"><span class="pre">exclude</span></code>, <code class="docutils literal notranslate"><span class="pre">sort</span></code><a class="headerlink" href="#find-exclude-sort" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">find</span></code>, <code class="docutils literal notranslate"><span class="pre">exclude</span></code>, <code class="docutils literal notranslate"><span class="pre">sort</span></code><a class="headerlink" href="#find-exclude-sort" title="Permalink to this heading"></a></h3>
 <p>Some times you need to perform two selects and one contains a subset of
 a previous select. In this case it is pointless to access the database
 again. The <code class="docutils literal notranslate"><span class="pre">find</span></code>, <code class="docutils literal notranslate"><span class="pre">exclude</span></code> and <code class="docutils literal notranslate"><span class="pre">sort</span></code> objects allow you to
@@ -2624,7 +2604,7 @@ meaning.</p>
 syntax and functionality as the Set <code class="docutils literal notranslate"><span class="pre">select</span></code> method.</p>
 </section>
 <section id="caching-selects">
-<h3>Caching selects<a class="headerlink" href="#caching-selects" title="Permalink to this headline"></a></h3>
+<h3>Caching selects<a class="headerlink" href="#caching-selects" title="Permalink to this heading"></a></h3>
 <p>The select method also takes a <code class="docutils literal notranslate"><span class="pre">cache</span></code> argument, which defaults to
 None. For caching purposes, it should be set to a tuple where the first
 element is the cache model (<code class="docutils literal notranslate"><span class="pre">cache.ram</span></code>, <code class="docutils literal notranslate"><span class="pre">cache.disk</span></code>, etc.), and
@@ -2660,9 +2640,9 @@ caching:</p>
 </section>
 </section>
 <section id="computed-and-virtual-fields">
-<h2>Computed and Virtual fields<a class="headerlink" href="#computed-and-virtual-fields" title="Permalink to this headline"></a></h2>
+<h2>Computed and Virtual fields<a class="headerlink" href="#computed-and-virtual-fields" title="Permalink to this heading"></a></h2>
 <section id="computed-fields">
-<h3>Computed fields<a class="headerlink" href="#computed-fields" title="Permalink to this headline"></a></h3>
+<h3>Computed fields<a class="headerlink" href="#computed-fields" title="Permalink to this heading"></a></h3>
 <p>DAL fields may have a <code class="docutils literal notranslate"><span class="pre">compute</span></code> attribute. This must be a function (or
 lambda) that takes a Row object and returns a value for the field. When
 a new record is modified, including both insertions and updates, if a
@@ -2692,7 +2672,7 @@ the table definition. A computed field can refer to previously defined
 computed fields.</p>
 </section>
 <section id="virtual-fields">
-<h3>Virtual fields<a class="headerlink" href="#virtual-fields" title="Permalink to this headline"></a></h3>
+<h3>Virtual fields<a class="headerlink" href="#virtual-fields" title="Permalink to this heading"></a></h3>
 <p>Virtual fields are also computed fields (as in the previous subsection)
 but they differ from those because they are <em>virtual</em> in the sense that
 they are not stored in the db and they are computed each time records
@@ -2701,7 +2681,7 @@ code without using additional storage but they cannot be used for
 searching.</p>
 </section>
 <section id="new-style-virtual-fields-experimental">
-<h3>New style virtual fields (experimental)<a class="headerlink" href="#new-style-virtual-fields-experimental" title="Permalink to this headline"></a></h3>
+<h3>New style virtual fields (experimental)<a class="headerlink" href="#new-style-virtual-fields-experimental" title="Permalink to this heading"></a></h3>
 <p>py4web provides a new and easier way to define virtual fields and lazy
 virtual fields. This section is marked experimental because the APIs may
 still change a little from what is described here.</p>
@@ -2762,7 +2742,7 @@ list of <code class="docutils literal notranslate"><span class="pre">db.table.fi
 </div></blockquote>
 </section>
 <section id="old-style-virtual-fields">
-<h3>Old style virtual fields<a class="headerlink" href="#old-style-virtual-fields" title="Permalink to this headline"></a></h3>
+<h3>Old style virtual fields<a class="headerlink" href="#old-style-virtual-fields" title="Permalink to this heading"></a></h3>
 <p>In order to define one or more virtual fields, you can also define a
 container class, instantiate it and link it to a table or to a select.
 For example, consider the following table:</p>
@@ -2865,9 +2845,9 @@ and access it by calling the function:</p>
 </section>
 </section>
 <section id="joins-and-relations">
-<h2>Joins and Relations<a class="headerlink" href="#joins-and-relations" title="Permalink to this headline"></a></h2>
+<h2>Joins and Relations<a class="headerlink" href="#joins-and-relations" title="Permalink to this heading"></a></h2>
 <section id="one-to-many-relation">
-<h3>One to many relation<a class="headerlink" href="#one-to-many-relation" title="Permalink to this headline"></a></h3>
+<h3>One to many relation<a class="headerlink" href="#one-to-many-relation" title="Permalink to this heading"></a></h3>
 <p>To illustrate how to implement one to many relations with the DAL,
 define another table “thing” that refers to the table “person” which we
 redefine here:</p>
@@ -2931,7 +2911,7 @@ looping over all persons and fetching their things easily:</p>
 </div>
 </section>
 <section id="inner-join">
-<h3>Inner join<a class="headerlink" href="#inner-join" title="Permalink to this headline"></a></h3>
+<h3>Inner join<a class="headerlink" href="#inner-join" title="Permalink to this heading"></a></h3>
 <p>Another way to achieve a similar result is by using a join, specifically
 an INNER JOIN. py4web performs joins automatically and transparently
 when the query links two or more tables as in the following example:</p>
@@ -2987,7 +2967,7 @@ table is joined twice and aliased:</p>
 <p>The value of <code class="docutils literal notranslate"><span class="pre">join</span></code> can be list of <code class="docutils literal notranslate"><span class="pre">db.table.on(...)</span></code> to join.</p>
 </section>
 <section id="left-outer-join">
-<h3>Left outer join<a class="headerlink" href="#left-outer-join" title="Permalink to this headline"></a></h3>
+<h3>Left outer join<a class="headerlink" href="#left-outer-join" title="Permalink to this heading"></a></h3>
 <p>Notice that Carl did not appear in the list above because he has no
 things. If you intend to select on persons (whether they have things or
 not) and their things (if they have any), then you need to perform a
@@ -3016,7 +2996,7 @@ which fields to select.</p>
 <code class="docutils literal notranslate"><span class="pre">db.mytable.on(...)</span></code> to the <code class="docutils literal notranslate"><span class="pre">left</span></code> parameter.</p>
 </section>
 <section id="grouping-and-counting">
-<h3>Grouping and counting<a class="headerlink" href="#grouping-and-counting" title="Permalink to this headline"></a></h3>
+<h3>Grouping and counting<a class="headerlink" href="#grouping-and-counting" title="Permalink to this heading"></a></h3>
 <p>When doing joins, sometimes you want to group rows according to certain
 criteria and count them. For example, count the number of things owned
 by every person. py4web allows this as well. First, you need a count
@@ -3043,7 +3023,7 @@ argument. When set to <code class="docutils literal notranslate"><span class="pr
 the field in question are to be counted.</p>
 </section>
 <section id="many-to-many-relation">
-<h3>Many to many relation<a class="headerlink" href="#many-to-many-relation" title="Permalink to this headline"></a></h3>
+<h3>Many to many relation<a class="headerlink" href="#many-to-many-relation" title="Permalink to this heading"></a></h3>
 <p>In the previous examples, we allowed a thing to have one owner but one
 person could have many things. What if Boat was owned by Alex and Curt?
 This requires a many-to-many relation, and it is realized via an
@@ -3118,7 +3098,7 @@ database backends that do not support JOINs like the Google App Engine
 NoSQL.</p>
 </section>
 <section id="self-reference-and-aliases">
-<h3>Self-Reference and aliases<a class="headerlink" href="#self-reference-and-aliases" title="Permalink to this headline"></a></h3>
+<h3>Self-Reference and aliases<a class="headerlink" href="#self-reference-and-aliases" title="Permalink to this heading"></a></h3>
 <p>It is possible to define tables with fields that refer to themselves,
 here is an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
@@ -3199,7 +3179,7 @@ correct queries.</p>
 </section>
 </section>
 <section id="other-operators">
-<h2>Other operators<a class="headerlink" href="#other-operators" title="Permalink to this headline"></a></h2>
+<h2>Other operators<a class="headerlink" href="#other-operators" title="Permalink to this heading"></a></h2>
 <p>py4web has other operators that provide an API to access equivalent SQL
 operators. Let’s define another table “log” to store security events,
 their event_time and severity, where the severity is an integer number.</p>
@@ -3224,7 +3204,7 @@ respectively).</p>
 </pre></div>
 </div>
 <section id="like-ilike-regexp-startswith-endswith-contains-upper-lower">
-<h3><code class="docutils literal notranslate"><span class="pre">like</span></code>, <code class="docutils literal notranslate"><span class="pre">ilike</span></code>, <code class="docutils literal notranslate"><span class="pre">regexp</span></code>, <code class="docutils literal notranslate"><span class="pre">startswith</span></code>, <code class="docutils literal notranslate"><span class="pre">endswith</span></code>, <code class="docutils literal notranslate"><span class="pre">contains</span></code>, <code class="docutils literal notranslate"><span class="pre">upper</span></code>, <code class="docutils literal notranslate"><span class="pre">lower</span></code><a class="headerlink" href="#like-ilike-regexp-startswith-endswith-contains-upper-lower" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">like</span></code>, <code class="docutils literal notranslate"><span class="pre">ilike</span></code>, <code class="docutils literal notranslate"><span class="pre">regexp</span></code>, <code class="docutils literal notranslate"><span class="pre">startswith</span></code>, <code class="docutils literal notranslate"><span class="pre">endswith</span></code>, <code class="docutils literal notranslate"><span class="pre">contains</span></code>, <code class="docutils literal notranslate"><span class="pre">upper</span></code>, <code class="docutils literal notranslate"><span class="pre">lower</span></code><a class="headerlink" href="#like-ilike-regexp-startswith-endswith-contains-upper-lower" title="Permalink to this heading"></a></h3>
 <p>Fields have a <code class="docutils literal notranslate"><span class="pre">like</span></code> operator that you can use to match strings:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="s1">&#39;port%&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">select</span><span class="p">():</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
@@ -3285,7 +3265,7 @@ like operator:</p>
 </div>
 </section>
 <section id="year-month-day-hour-minutes-seconds">
-<h3><code class="docutils literal notranslate"><span class="pre">year</span></code>, <code class="docutils literal notranslate"><span class="pre">month</span></code>, <code class="docutils literal notranslate"><span class="pre">day</span></code>, <code class="docutils literal notranslate"><span class="pre">hour</span></code>, <code class="docutils literal notranslate"><span class="pre">minutes</span></code>, <code class="docutils literal notranslate"><span class="pre">seconds</span></code><a class="headerlink" href="#year-month-day-hour-minutes-seconds" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">year</span></code>, <code class="docutils literal notranslate"><span class="pre">month</span></code>, <code class="docutils literal notranslate"><span class="pre">day</span></code>, <code class="docutils literal notranslate"><span class="pre">hour</span></code>, <code class="docutils literal notranslate"><span class="pre">minutes</span></code>, <code class="docutils literal notranslate"><span class="pre">seconds</span></code><a class="headerlink" href="#year-month-day-hour-minutes-seconds" title="Permalink to this heading"></a></h3>
 <p>The date and datetime fields have <code class="docutils literal notranslate"><span class="pre">day</span></code>, <code class="docutils literal notranslate"><span class="pre">month</span></code> and <code class="docutils literal notranslate"><span class="pre">year</span></code>
 methods. The datetime and time fields have <code class="docutils literal notranslate"><span class="pre">hour</span></code>, <code class="docutils literal notranslate"><span class="pre">minutes</span></code> and
 <code class="docutils literal notranslate"><span class="pre">seconds</span></code> methods. Here is an example:</p>
@@ -3299,7 +3279,7 @@ methods. The datetime and time fields have <code class="docutils literal notrans
 </div>
 </section>
 <section id="belongs">
-<h3><code class="docutils literal notranslate"><span class="pre">belongs</span></code><a class="headerlink" href="#belongs" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">belongs</span></code><a class="headerlink" href="#belongs" title="Permalink to this heading"></a></h3>
 <p>The SQL IN operator is realized via the <code class="docutils literal notranslate"><span class="pre">belongs</span></code> method which returns
 true when the field value belongs to the specified set (list or tuples):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">belongs</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span><span class="o">.</span><span class="n">select</span><span class="p">():</span>
@@ -3346,7 +3326,7 @@ the syntax is different:</p>
 person “Jonathan”. The two lines result in one single SQL query.</p>
 </section>
 <section id="sum-avg-min-max-and-len">
-<h3><code class="docutils literal notranslate"><span class="pre">sum</span></code>, <code class="docutils literal notranslate"><span class="pre">avg</span></code>, <code class="docutils literal notranslate"><span class="pre">min</span></code>, <code class="docutils literal notranslate"><span class="pre">max</span></code> and <code class="docutils literal notranslate"><span class="pre">len</span></code><a class="headerlink" href="#sum-avg-min-max-and-len" title="Permalink to this headline"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">sum</span></code>, <code class="docutils literal notranslate"><span class="pre">avg</span></code>, <code class="docutils literal notranslate"><span class="pre">min</span></code>, <code class="docutils literal notranslate"><span class="pre">max</span></code> and <code class="docutils literal notranslate"><span class="pre">len</span></code><a class="headerlink" href="#sum-avg-min-max-and-len" title="Permalink to this heading"></a></h3>
 <p>Previously, you have used the <code class="docutils literal notranslate"><span class="pre">count</span></code> operator to count records.
 Similarly, you can use the <code class="docutils literal notranslate"><span class="pre">sum</span></code> operator to add (sum) the values of a
 specific field from a group of records. As in the case of count, the
@@ -3382,7 +3362,7 @@ in the logs plus one:</p>
 </div>
 </section>
 <section id="substrings">
-<h3>Substrings<a class="headerlink" href="#substrings" title="Permalink to this headline"></a></h3>
+<h3>Substrings<a class="headerlink" href="#substrings" title="Permalink to this heading"></a></h3>
 <p>One can build an expression to refer to a substring. For example, we can
 group things whose name starts with the same three characters and select
 only one from each group:</p>
@@ -3391,7 +3371,7 @@ only one from each group:</p>
 </div>
 </section>
 <section id="default-values-with-coalesce-and-coalesce-zero">
-<h3>Default values with <code class="docutils literal notranslate"><span class="pre">coalesce</span></code> and <code class="docutils literal notranslate"><span class="pre">coalesce_zero</span></code><a class="headerlink" href="#default-values-with-coalesce-and-coalesce-zero" title="Permalink to this headline"></a></h3>
+<h3>Default values with <code class="docutils literal notranslate"><span class="pre">coalesce</span></code> and <code class="docutils literal notranslate"><span class="pre">coalesce_zero</span></code><a class="headerlink" href="#default-values-with-coalesce-and-coalesce-zero" title="Permalink to this heading"></a></h3>
 <p>There are times when you need to pull a value from database but also
 need a default values if the value for a record is set to NULL. In SQL
 there is a function, <code class="docutils literal notranslate"><span class="pre">COALESCE</span></code>, for this. py4web has an equivalent
@@ -3432,9 +3412,9 @@ query:</p>
 </section>
 </section>
 <section id="exporting-and-importing-data">
-<h2>Exporting and importing data<a class="headerlink" href="#exporting-and-importing-data" title="Permalink to this headline"></a></h2>
+<h2>Exporting and importing data<a class="headerlink" href="#exporting-and-importing-data" title="Permalink to this heading"></a></h2>
 <section id="csv-one-table-at-a-time">
-<h3>CSV (one Table at a time)<a class="headerlink" href="#csv-one-table-at-a-time" title="Permalink to this headline"></a></h3>
+<h3>CSV (one Table at a time)<a class="headerlink" href="#csv-one-table-at-a-time" title="Permalink to this heading"></a></h3>
 <p>When a Rows object is converted to a string it is automatically
 serialized in CSV:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">owner_id</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
@@ -3486,7 +3466,7 @@ ignores the “person.” prefix, and it ignores the “id” fields. Then all
 records are appended and assigned new ids.</p>
 </section>
 <section id="csv-all-tables-at-once">
-<h3>CSV (all tables at once)<a class="headerlink" href="#csv-all-tables-at-once" title="Permalink to this headline"></a></h3>
+<h3>CSV (all tables at once)<a class="headerlink" href="#csv-all-tables-at-once" title="Permalink to this heading"></a></h3>
 <p>In py4web, you can backup/restore an entire database with two commands:</p>
 <p>To export:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;somefile.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dumpfile</span><span class="p">:</span>
@@ -3524,7 +3504,7 @@ identify duplicates. Also, if an imported record has the same <code class="docut
 as an existing record, the previous record will be updated.</p>
 </section>
 <section id="csv-and-remote-database-synchronization">
-<h3>CSV and remote database synchronization<a class="headerlink" href="#csv-and-remote-database-synchronization" title="Permalink to this headline"></a></h3>
+<h3>CSV and remote database synchronization<a class="headerlink" href="#csv-and-remote-database-synchronization" title="Permalink to this heading"></a></h3>
 <p>Consider once again the following model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;person&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
@@ -3622,7 +3602,7 @@ labeled by UUIDs so you do not need to worry about naming conflicts and
 references.</p>
 </section>
 <section id="html-and-xml-one-table-at-a-time">
-<h3>HTML and XML (one Table at a time)<a class="headerlink" href="#html-and-xml-one-table-at-a-time" title="Permalink to this headline"></a></h3>
+<h3>HTML and XML (one Table at a time)<a class="headerlink" href="#html-and-xml-one-table-at-a-time" title="Permalink to this heading"></a></h3>
 <p>Rows objects also have an <code class="docutils literal notranslate"><span class="pre">xml</span></code> method (like helpers) that serializes
 it to XML/HTML:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">owner_id</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
@@ -3666,15 +3646,15 @@ that we’ll see later and the Python syntax
 </pre></div>
 </div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;result&gt;</span>
-<span class="nt">&lt;row&gt;&lt;field</span> <span class="na">name=</span><span class="s">&quot;id&quot;</span><span class="nt">&gt;</span>1<span class="nt">&lt;/field&gt;&lt;field</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;</span>Alex<span class="nt">&lt;/field&gt;&lt;/row&gt;</span>
-<span class="nt">&lt;row&gt;&lt;field</span> <span class="na">name=</span><span class="s">&quot;id&quot;</span><span class="nt">&gt;</span>2<span class="nt">&lt;/field&gt;&lt;field</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;</span>Bob<span class="nt">&lt;/field&gt;&lt;/row&gt;</span>
-<span class="nt">&lt;row&gt;&lt;field</span> <span class="na">name=</span><span class="s">&quot;id&quot;</span><span class="nt">&gt;</span>3<span class="nt">&lt;/field&gt;&lt;field</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;</span>Carl<span class="nt">&lt;/field&gt;&lt;/row&gt;</span>
+<span class="nt">&lt;row&gt;&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;id&quot;</span><span class="nt">&gt;</span>1<span class="nt">&lt;/field&gt;&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;</span>Alex<span class="nt">&lt;/field&gt;&lt;/row&gt;</span>
+<span class="nt">&lt;row&gt;&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;id&quot;</span><span class="nt">&gt;</span>2<span class="nt">&lt;/field&gt;&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;</span>Bob<span class="nt">&lt;/field&gt;&lt;/row&gt;</span>
+<span class="nt">&lt;row&gt;&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;id&quot;</span><span class="nt">&gt;</span>3<span class="nt">&lt;/field&gt;&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;</span>Carl<span class="nt">&lt;/field&gt;&lt;/row&gt;</span>
 <span class="nt">&lt;/result&gt;</span>
 </pre></div>
 </div>
 </section>
 <section id="data-representation">
-<h3>Data representation<a class="headerlink" href="#data-representation" title="Permalink to this headline"></a></h3>
+<h3>Data representation<a class="headerlink" href="#data-representation" title="Permalink to this heading"></a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">Rows.export_to_csv_file</span></code> method accepts a keyword argument named
 <code class="docutils literal notranslate"><span class="pre">represent</span></code>. When <code class="docutils literal notranslate"><span class="pre">True</span></code> it will use the columns <code class="docutils literal notranslate"><span class="pre">represent</span></code>
 function while exporting the data instead of the raw data.</p>
@@ -3705,9 +3685,9 @@ double quotes) - <code class="docutils literal notranslate"><span class="pre">qu
 </section>
 </section>
 <section id="advanced-features">
-<h2>Advanced features<a class="headerlink" href="#advanced-features" title="Permalink to this headline"></a></h2>
+<h2>Advanced features<a class="headerlink" href="#advanced-features" title="Permalink to this heading"></a></h2>
 <section id="list-type-and-contains">
-<span id="id1"></span><h3><code class="docutils literal notranslate"><span class="pre">list:&lt;type&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">contains</span></code><a class="headerlink" href="#list-type-and-contains" title="Permalink to this headline"></a></h3>
+<span id="id1"></span><h3><code class="docutils literal notranslate"><span class="pre">list:&lt;type&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">contains</span></code><a class="headerlink" href="#list-type-and-contains" title="Permalink to this heading"></a></h3>
 <p>py4web provides the following special field types:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">:</span><span class="n">string</span>
 <span class="nb">list</span><span class="p">:</span><span class="n">integer</span>
@@ -3791,7 +3771,7 @@ use them in forms.</p>
 </div></blockquote>
 </section>
 <section id="table-inheritance">
-<h3>Table inheritance<a class="headerlink" href="#table-inheritance" title="Permalink to this headline"></a></h3>
+<h3>Table inheritance<a class="headerlink" href="#table-inheritance" title="Permalink to this heading"></a></h3>
 <p>It is possible to create a table that contains all the fields from
 another table. It is sufficient to pass the other table in place of a
 field to <code class="docutils literal notranslate"><span class="pre">define_table</span></code>. For example</p>
@@ -3827,7 +3807,7 @@ inherit validators, be sure to define the validators of the parent table
 before defining the inheriting table.</p>
 </section>
 <section id="filter-in-and-filter-out">
-<span id="id2"></span><h3><code class="docutils literal notranslate"><span class="pre">filter_in</span></code> and <code class="docutils literal notranslate"><span class="pre">filter_out</span></code><a class="headerlink" href="#filter-in-and-filter-out" title="Permalink to this headline"></a></h3>
+<span id="id2"></span><h3><code class="docutils literal notranslate"><span class="pre">filter_in</span></code> and <code class="docutils literal notranslate"><span class="pre">filter_out</span></code><a class="headerlink" href="#filter-in-and-filter-out" title="Permalink to this heading"></a></h3>
 <p>It is possible to define a filter for each field to be called before a
 value is inserted into the database for that field and after a value is
 retrieved from the database.</p>
@@ -3852,7 +3832,7 @@ accomplished:</p>
 <code class="docutils literal notranslate"><span class="pre">SQLCustomType</span></code>, as discussed in <a class="reference internal" href="#custom-field-types"><span class="std std-ref">Custom Field types</span></a>.</p>
 </section>
 <section id="callbacks-on-record-insert-delete-and-update">
-<h3>callbacks on record insert, delete and update<a class="headerlink" href="#callbacks-on-record-insert-delete-and-update" title="Permalink to this headline"></a></h3>
+<h3>callbacks on record insert, delete and update<a class="headerlink" href="#callbacks-on-record-insert-delete-and-update" title="Permalink to this heading"></a></h3>
 <p>PY4WEB provides a mechanism to register callbacks to be called before
 and/or after insert, update and delete of records.</p>
 <p>Each table stores six lists of callbacks:</p>
@@ -3910,7 +3890,7 @@ could cause an infinite loop.</p>
 method that works like <code class="docutils literal notranslate"><span class="pre">update</span></code> but ignores before and after
 callbacks.</p>
 <section id="database-cascades">
-<h4>Database cascades<a class="headerlink" href="#database-cascades" title="Permalink to this headline"></a></h4>
+<h4>Database cascades<a class="headerlink" href="#database-cascades" title="Permalink to this heading"></a></h4>
 <p>Database schema can define relationships which trigger deletions of
 related records, known as cascading. The DAL is not informed when a
 record is deleted due to a cascade. So no *_delete callback will ever
@@ -3918,7 +3898,7 @@ be called as consequence of a cascade-deletion.</p>
 </section>
 </section>
 <section id="record-versioning">
-<h3>Record versioning<a class="headerlink" href="#record-versioning" title="Permalink to this headline"></a></h3>
+<h3>Record versioning<a class="headerlink" href="#record-versioning" title="Permalink to this heading"></a></h3>
 <p>It is possible to ask py4web to save every copy of a record when the
 record is individually modified. There are different ways to do it and
 it can be done for all tables at once using the syntax:</p>
@@ -3969,7 +3949,7 @@ field used by the <code class="docutils literal notranslate"><span class="pre">c
 deleted or not.</p>
 </section>
 <section id="common-filters">
-<h3>Common filters<a class="headerlink" href="#common-filters" title="Permalink to this headline"></a></h3>
+<h3>Common filters<a class="headerlink" href="#common-filters" title="Permalink to this heading"></a></h3>
 <p>A common filter is a generalization of the above multi-tenancy idea. It
 provides an easy way to prevent repeating of the same query. Consider
 for example the following table:</p>
@@ -4004,7 +3984,7 @@ remove the filter:</p>
 </div></blockquote>
 </section>
 <section id="custom-field-types">
-<span id="id3"></span><h3>Custom <code class="docutils literal notranslate"><span class="pre">Field</span></code> types<a class="headerlink" href="#custom-field-types" title="Permalink to this headline"></a></h3>
+<span id="id3"></span><h3>Custom <code class="docutils literal notranslate"><span class="pre">Field</span></code> types<a class="headerlink" href="#custom-field-types" title="Permalink to this heading"></a></h3>
 <p>Aside for using <code class="docutils literal notranslate"><span class="pre">filter_in</span></code> and <code class="docutils literal notranslate"><span class="pre">filter_out</span></code>, it is possible to
 define new/custom field types. For example, suppose that you want to
 define a custom type to store an IP address:</p>
@@ -4062,7 +4042,7 @@ portable across database engines.</p>
 <p>It does not work on Google App Engine NoSQL.</p>
 </section>
 <section id="using-dal-without-define-tables">
-<h3>Using DAL without define tables<a class="headerlink" href="#using-dal-without-define-tables" title="Permalink to this headline"></a></h3>
+<h3>Using DAL without define tables<a class="headerlink" href="#using-dal-without-define-tables" title="Permalink to this heading"></a></h3>
 <p>The DAL can be used from any Python program simply by doing this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="s1">&#39;path/to/app/databases&#39;</span><span class="p">)</span>
@@ -4082,7 +4062,7 @@ py4web to read the necessary info from the metadata in the .table files:</p>
 <p>This allows us to access any db.table without need to re-define it.</p>
 </section>
 <section id="distributed-transaction">
-<h3>Distributed transaction<a class="headerlink" href="#distributed-transaction" title="Permalink to this headline"></a></h3>
+<h3>Distributed transaction<a class="headerlink" href="#distributed-transaction" title="Permalink to this heading"></a></h3>
 <blockquote>
 <div><p>At the time of writing this feature is only supported by PostgreSQL,
 MySQL and Firebird, since they expose API for two-phase commits.</p>
@@ -4105,7 +4085,7 @@ succeeds and one fails. The distributed transaction prevents this from
 happening.</p>
 </section>
 <section id="copy-data-from-one-db-into-another">
-<h3>Copy data from one db into another<a class="headerlink" href="#copy-data-from-one-db-into-another" title="Permalink to this headline"></a></h3>
+<h3>Copy data from one db into another<a class="headerlink" href="#copy-data-from-one-db-into-another" title="Permalink to this heading"></a></h3>
 <p>Consider the situation in which you have been using the following
 database:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">)</span>
@@ -4122,9 +4102,9 @@ we also assume it is empty.</p>
 </section>
 </section>
 <section id="gotchas">
-<h2>Gotchas<a class="headerlink" href="#gotchas" title="Permalink to this headline"></a></h2>
+<h2>Gotchas<a class="headerlink" href="#gotchas" title="Permalink to this heading"></a></h2>
 <section id="note-on-new-dal-and-adapters">
-<h3>Note on new DAL and adapters<a class="headerlink" href="#note-on-new-dal-and-adapters" title="Permalink to this headline"></a></h3>
+<h3>Note on new DAL and adapters<a class="headerlink" href="#note-on-new-dal-and-adapters" title="Permalink to this heading"></a></h3>
 <p>The source code of the Database Abstraction Layer was completely
 rewritten in 2010. While it stays backward compatible, the rewrite made
 it more modular and easier to extend. Here we explain the main logic.</p>
@@ -4243,10 +4223,6 @@ ones.</p>
 <p>the prefix in the uri string defines the adapter. The mapping is defined
 in the following dictionary also in “dal.py”:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p>couchdb</p></td>
 <td><p>pydal.adapters.couchdb.CouchDB</p></td>
@@ -4402,7 +4378,7 @@ can specify optional driver arguments and adapter arguments:</p>
 </div>
 </section>
 <section id="sqlite">
-<h3>SQLite<a class="headerlink" href="#sqlite" title="Permalink to this headline"></a></h3>
+<h3>SQLite<a class="headerlink" href="#sqlite" title="Permalink to this heading"></a></h3>
 <p>SQLite does not support dropping and altering columns. That means that
 py4web migrations will work up to a point. If you delete a field from a
 table, the column will remain in the database but will be invisible to
@@ -4421,7 +4397,7 @@ works well. But if you are updating the SQLite table with SQL directly,
 be aware of the py4web implementation, and avoid using 0 and 1 values.</p>
 </section>
 <section id="mysql">
-<h3>MySQL<a class="headerlink" href="#mysql" title="Permalink to this headline"></a></h3>
+<h3>MySQL<a class="headerlink" href="#mysql" title="Permalink to this heading"></a></h3>
 <p>MySQL does not support multiple ALTER TABLE within a single transaction.
 This means that any migration process is broken into multiple commits.
 If something happens that causes a failure it is possible to break a
@@ -4434,7 +4410,7 @@ has been rebuilt, set <code class="docutils literal notranslate"><span class="pr
 again).</p>
 </section>
 <section id="google-sql">
-<h3>Google SQL<a class="headerlink" href="#google-sql" title="Permalink to this headline"></a></h3>
+<h3>Google SQL<a class="headerlink" href="#google-sql" title="Permalink to this heading"></a></h3>
 <p>Google SQL has the same problems as MySQL and more. In particular table
 metadata itself must be stored in the database in a table that is not
 migrated by py4web. This is because Google App Engine has a read-only
@@ -4447,7 +4423,7 @@ dashboard and deleting any corrupted entry from the table called
 <code class="docutils literal notranslate"><span class="pre">py4web_filesystem</span></code>.</p>
 </section>
 <section id="mssql-microsoft-sql-server">
-<h3>MSSQL (Microsoft SQL Server)<a class="headerlink" href="#mssql-microsoft-sql-server" title="Permalink to this headline"></a></h3>
+<h3>MSSQL (Microsoft SQL Server)<a class="headerlink" href="#mssql-microsoft-sql-server" title="Permalink to this heading"></a></h3>
 <p>MSSQL &lt; 2012 does not support the SQL OFFSET keyword. Therefore the
 database cannot do pagination. When doing a <code class="docutils literal notranslate"><span class="pre">limitby=(a,</span> <span class="pre">b)</span></code> py4web
 will fetch the first <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">+</span> <span class="pre">b</span></code> rows and discard the first <code class="docutils literal notranslate"><span class="pre">a</span></code>. This
@@ -4484,7 +4460,7 @@ and therefore while this works,</p>
 </div>
 </section>
 <section id="oracle">
-<h3>Oracle<a class="headerlink" href="#oracle" title="Permalink to this headline"></a></h3>
+<h3>Oracle<a class="headerlink" href="#oracle" title="Permalink to this heading"></a></h3>
 <p>Oracle also does not support pagination. It does not support neither the
 OFFSET nor the LIMIT keywords. PY4WEB achieves pagination by translating
 a <code class="docutils literal notranslate"><span class="pre">db(...).select(limitby=(a,</span> <span class="pre">b))</span></code> into a complex three-way nested
@@ -4493,7 +4469,7 @@ simple select but may break for complex selects involving aliased fields
 and or joins.</p>
 </section>
 <section id="google-nosql-datastore">
-<h3>Google NoSQL (Datastore)<a class="headerlink" href="#google-nosql-datastore" title="Permalink to this headline"></a></h3>
+<h3>Google NoSQL (Datastore)<a class="headerlink" href="#google-nosql-datastore" title="Permalink to this heading"></a></h3>
 <p>Google NoSQL (Datastore) does not allow joins, left joins, aggregates,
 expression, OR involving more than one table, the ‘like’ operator
 searches in “text” fields.</p>
@@ -4548,7 +4524,7 @@ than on SQL databases.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20220222.1
+      v: 1.20221226.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

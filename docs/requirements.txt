@@ -1,7 +1,7 @@
 ### optional, used for documentation only ###
 
 docutils
-PyStemmer
+PyStemmer<2.2
 sphinx
 sphinx-tabs
 sphinx_rtd_theme

@@ -956,7 +956,9 @@ class Grid:
     def _make_table_header(self):
         sort_order = request.query.get("orderby", "")
 
-        thead = THEAD(**clean_sc(_class=self.param.grid_class_style.classes.get("grid-thead", "")))
+        thead = THEAD(
+            **clean_sc(_class=self.param.grid_class_style.classes.get("grid-thead", ""))
+        )
         for index, column in enumerate(self.param.columns):
             col = None
             if isinstance(column, (Field, FieldVirtual)):
@@ -1025,28 +1027,30 @@ class Grid:
         :param field:
         :return:
         """
+        if self.use_tablename:
+            row = row[field.tablename]
         if isinstance(field, FieldVirtual):
-            #  handle virtual fields in table display
-            if self.use_tablename:
-                field_value = field.f(row[field.tablename])
-            else:
-                field_value = field.f(row)
-        elif self.use_tablename:
-            field_value = (
-                field.represent(row[field.tablename][field.name], row[field.tablename])
-                if field.represent
-                else row[field.tablename][field.name]
-            )
+            field_value = field.f(row)
         else:
-            field_value = (
-                field.represent(row[field.name], row) if field.represent else row[field.name]
-            )
+            field_value = row[field.name]
         key = "%s.%s" % (field.tablename, field.name)
-        formatter = (
-            self.formatters.get(key)
-            or self.formatters_by_type.get(field.type)
-            or self.formatters_by_type.get("default")
-        )
+        # custom formatter overwrites represent
+        if key in self.formatters:
+            formatter = self.formatters.get(key)
+        # else if represent provided use it
+        elif field.represent:
+            formatter = field.represent
+        # else fallback on the formatter for the type
+        elif field.type in self.formatters_by_type:
+            formatter = self.formatters_by_type.get(field.type)
+        # else fallback to default
+        else:
+            formatter = self.formatters_by_type.get("default")
+        # allow 1 (value) or 2 (value + row) args
+        try:
+            formatted_value = formatter(field_value, row)
+        except TypeError:
+            formatted_value = formatter(field_value)
 
         class_type = "grid-cell-type-%s" % str(field.type).split(":")[0].split("(")[0]
         class_col = " grid-col-%s" % key.replace(".", "_")
@@ -1056,15 +1060,13 @@ class Grid:
             class_col,
         )
         td = TD(
-            formatter(field_value)
-            if formatter.__code__.co_argcount == 1  # if formatter has only 1 argument
-            else formatter(field_value, row),
+            formatted_value,
             **clean_sc(
                 _class=classes,
                 _style=(
-                        self.param.grid_class_style.styles.get(class_type)
-                        or self.param.grid_class_style.styles.get("grid-td")
-                )
+                    self.param.grid_class_style.styles.get(class_type)
+                    or self.param.grid_class_style.styles.get("grid-td")
+                ),
             ),
         )
 
@@ -1090,9 +1092,13 @@ class Grid:
             tr = TR(
                 _role="row",
                 **clean_sc(
-                    _class=join_classes(self.param.grid_class_style.classes.get("grid-tr"), extra_class),
-                    _style=join_styles([self.param.grid_class_style.styles.get("grid-tr"), extra_style]),
-                )
+                    _class=join_classes(
+                        self.param.grid_class_style.classes.get("grid-tr"), extra_class
+                    ),
+                    _style=join_styles(
+                        [self.param.grid_class_style.styles.get("grid-tr"), extra_style]
+                    ),
+                ),
             )
             #  add all the fields to the row
             for index, column in enumerate(self.param.columns):
@@ -1110,7 +1116,10 @@ class Grid:
                         self.param.grid_class_style.styles.get("grid-td"),
                     )
                     tr.append(
-                        TD(column.render(row, index), **clean_sc(_class=classes, _style=style))
+                        TD(
+                            column.render(row, index),
+                            **clean_sc(_class=classes, _style=style),
+                        )
                     )
 
             td = None

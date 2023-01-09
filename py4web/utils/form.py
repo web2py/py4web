@@ -35,6 +35,16 @@ def to_id(field):
     return "%s_%s" % (getattr(field, "_tablename", field.tablename), field.name)
 
 
+def compat_represent(field, value, row):
+    represent = field.represent
+    if not represent:
+        return value or ""
+    try:
+        return represent(value, row)
+    except TypeError:
+        return represent(value)
+
+
 def get_options(validators):
     """given a validator chain, if one has .options, return them"""
     options = None
@@ -408,9 +418,7 @@ class FormStyleFactory:
                     if isinstance(field, FieldVirtual):
                         field_value = field.f(vars)
                     else:
-                        field_value = (
-                            field.represent and field.represent(value, vars) or value or ""
-                        )
+                        field_value = compat_represent(field, value, vars)
                     field_type = "represent"
                     control = DIV(field_value)
 
