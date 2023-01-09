@@ -24,7 +24,7 @@ class DBStore:
         if not row:
             return None
         if row.expiration:
-            row.update_record(expires_on=now + timedelta(row.expiration))
+            row.update_record(expires_on=now + timedelta(seconds=row.expiration))
         return row.rvalue
 
     def set(self, key, value, expiration=None):
@@ -32,7 +32,9 @@ class DBStore:
         db(table.expires_on < now).delete()
         row = db(table.rkey == key).select().first()
         expires_on = (
-            now + timedelta(expiration) if expiration else datetime(2999, 12, 31)
+            now + timedelta(seconds=expiration)
+            if expiration
+            else datetime(2999, 12, 31)
         )
         if row:
             row.update_record(
@@ -44,6 +46,6 @@ class DBStore:
                 rvalue=value,
                 expires_on=expires_on,
                 expiration=expiration,
-                ceated_on=None,
+                created_on=now,
             )
         db.commit()
