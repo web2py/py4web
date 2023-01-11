@@ -252,7 +252,9 @@ class FileUploadWidget:
 
             control.append(download_div)
 
-        control.append(LABEL("Change: "))
+            control.append(LABEL("Change: "))
+        else:
+            control.append(LABEL("Upload: "))
         control.append(INPUT(_type="file", _id=field_id, _name=field.name))
         return control
 
@@ -788,6 +790,7 @@ class Form(object):
                 record_id = self.record and self.record.get("id")
                 if not post_vars.get("_delete"):
                     validated_vars = {}
+                    uploaded_fields = set()
                     uploaded_files = []
                     for field in self.table:
                         if field.writable and field.type != "id":
@@ -810,6 +813,7 @@ class Form(object):
                             if field.type == "password" and record_id and value is None:
                                 continue
                             if field.type == "upload":
+                                uploaded_fields.add(field.name)
                                 value = request.files.get(field.name)
                                 delete = post_vars.get("_delete_" + field.name)
                                 if value is not None:
@@ -829,6 +833,14 @@ class Form(object):
                                 validated_vars[field.name] = value
                             if error:
                                 self.errors[field.name] = error
+                    if self.errors:
+                        print("have errors")
+                        for field_name in uploaded_fields:
+                            print(field_name)
+                            validated_vars[field_name] = (
+                                self.record and self.record.get(field_name) or None
+                            )
+                            print(validated_vars[field_name])
                     self.vars.update(validated_vars)
                     if validation:
                         validation(self)
