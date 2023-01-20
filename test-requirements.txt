@@ -1,4 +1,4 @@
 pytest
 pytest-cov
-mechanize==0.4.5
+mechanize==0.4.6
 python-memcached
