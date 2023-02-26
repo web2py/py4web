@@ -78,6 +78,10 @@ OAUTH2OKTA_CLIENT_SECRET = None
 OAUTH2FACEBOOK_CLIENT_ID = None
 OAUTH2FACEBOOK_CLIENT_SECRET = None
 
+# single sign on GitHub (will be used if provided)
+OAUTH2GITHUB_CLIENT_ID = None
+OAUTH2GITHUB_CLIENT_SECRET = None
+
 # enable PAM
 USE_PAM = False
 

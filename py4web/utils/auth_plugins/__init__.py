@@ -163,7 +163,8 @@ class OAuth2(SSO):
             ),
             grant_type="authorization_code",
         )
-        res = requests.post(self.token_url, data=data)
+        headers = {"Accept": "application/json"}
+        res = requests.post(self.token_url, data=data, headers=headers)
         output = res.json()
         token = output.get("id_token")
         if token is not None:
@@ -184,6 +185,7 @@ class OAuth2(SSO):
             res = requests.get(self.userinfo_url, headers=headers)
             data = res.json()
         return data
+
 
     def revoke(self, token):
         requests.post(self.revoke_url, data=dict(token=token))

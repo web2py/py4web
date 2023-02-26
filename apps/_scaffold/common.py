@@ -133,6 +133,18 @@ if settings.OAUTH2GOOGLE_CLIENT_ID:
             callback_url="auth/plugin/oauth2google/callback",
         )
     )
+
+if settings.OAUTH2GITHUB_CLIENT_ID:
+    from py4web.utils.auth_plugins.oauth2github import OAuth2Github  # TESTED
+
+    auth.register_plugin(
+        OAuth2Github(
+            client_id=settings.OAUTH2GITHUB_CLIENT_ID,
+            client_secret=settings.OAUTH2GITHUB_CLIENT_SECRET,
+            callback_url="auth/plugin/oauth2github/callback",
+        )
+    )
+
 if settings.OAUTH2FACEBOOK_CLIENT_ID:
     from py4web.utils.auth_plugins.oauth2facebook import OAuth2Facebook  # UNTESTED
 
