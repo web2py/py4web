@@ -8,26 +8,9 @@ import datetime
 from urllib.parse import urlparse
 
 import ombott
-from pydal.objects import Field, FieldVirtual, Expression
-from yatl.helpers import (
-    CAT,
-    DIV,
-    FORM,
-    INPUT,
-    OPTION,
-    SELECT,
-    SPAN,
-    TABLE,
-    TAG,
-    TBODY,
-    TD,
-    TH,
-    THEAD,
-    TR,
-    XML,
-    A,
-    I,
-)
+from pydal.objects import Expression, Field, FieldVirtual
+from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
+                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
 
 from py4web import HTTP, URL, redirect, request
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -406,12 +389,17 @@ class Grid:
                               responsible for calling process().
         :param T: optional pluralize object
         """
+        if path in (None, "", "index"):
+            fullpath = request.fullpath.rstrip("/")
+            if path == "index":
+                fullpath = fullpath[:-6]
+            redirect(fullpath + "/select")
 
-        # in case the query is a Table instead
+        # in case the query is a Table insteance
         if isinstance(query, query._db.Table):
             query = query._id != None
 
-        self.path = path or ""
+        self.path = path
         self.db = query._db
         self.T = T
         self.param = Param(
@@ -454,9 +442,7 @@ class Grid:
         #  instance variables that will be computed
         self.action = None
         self.current_page_number = None
-        self.endpoint = request.fullpath
-        if self.path:
-            self.endpoint = self.endpoint[: -len(self.path)].rstrip("/")
+        self.endpoint = request.fullpath[: -len(self.path)].rstrip("/")
         self.hidden_fields = None
         self.form = None
         self.number_of_pages = None
@@ -660,10 +646,11 @@ class Grid:
         elif self.action == "delete" and self.is_deletable(record):
             db(db[self.tablename].id == self.record_id).delete()
 
-            url = parse_referer(request)
-            if url and url.query:
-                self.endpoint += "?%s" % url.query
-            redirect(self.endpoint)
+            rereffer = parse_referer(request)
+            url = self.endpoint + "/select"
+            if referred and referrer.query:
+                url += "?%s" % referrer.query
+            redirect(url)
 
         elif self.action == "select":
             self.referrer = "_referrer=%s" % base64.b16encode(
@@ -1004,12 +991,12 @@ class Grid:
             col = SPAN(heading)
         elif key == sort_order:
             sort_query_parms["orderby"] = "~" + key
-            url = URL(self.endpoint, vars=sort_query_parms)
+            url = URL(self.endpoint, "select", vars=sort_query_parms)
             attrs = self.attributes_plugin.link(url=url)
             col = A(heading, up, **attrs)
         else:
             sort_query_parms["orderby"] = key
-            url = URL(self.endpoint, vars=sort_query_parms)
+            url = URL(self.endpoint, "select", vars=sort_query_parms)
             attrs = self.attributes_plugin.link(url=url)
             col = A(heading, dw if "~" + key == sort_order else "", **attrs)
         return key, col
@@ -1272,7 +1259,7 @@ class Grid:
                 else "grid-pagination-button"
             )
             attrs = self.attributes_plugin.link(
-                url=URL(self.endpoint, vars=pager_query_parms)
+                url=URL(self.endpoint, "select", vars=pager_query_parms)
             )
             pager.append(
                 A(
