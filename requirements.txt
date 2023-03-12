@@ -12,7 +12,7 @@ pyjwt >= 2.0.1
 pycryptodome
 pluralize >= 0.1.9
 rocket3
-yatl >= 20211217.1
+yatl >= 20230304.1
 pydal >= 20221110.1
 watchgod >= 0.6
 
