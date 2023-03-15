@@ -983,9 +983,9 @@ class Form(object):
                 helper["form"].append(helper["controls"]["hidden_widgets"][key])
 
             helper["controls"]["begin"] = XML(
-                "".join(
-                    str(helper["controls"]["begin"])
-                    + str(helper["controls"]["hidden_widgets"][hidden_field])
+                str(helper["controls"]["begin"])
+                + "".join(
+                    str(helper["controls"]["hidden_widgets"][hidden_field])
                     for hidden_field in helper["controls"]["hidden_widgets"]
                 )
             )
