@@ -834,13 +834,10 @@ class Form(object):
                             if error:
                                 self.errors[field.name] = error
                     if self.errors:
-                        print("have errors")
                         for field_name in uploaded_fields:
-                            print(field_name)
                             validated_vars[field_name] = (
                                 self.record and self.record.get(field_name) or None
                             )
-                            print(validated_vars[field_name])
                     self.vars.update(validated_vars)
                     if validation:
                         validation(self)
