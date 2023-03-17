@@ -209,6 +209,7 @@ class Auth(Fixture):
         registration_requires_approval=False,
         inject=True,
         extra_fields=None,
+        extra_form_fields=None,
         login_expiration_time=3600,  # seconds
         password_complexity="default",
         block_previous_password_num=None,
@@ -264,6 +265,7 @@ class Auth(Fixture):
         self.use_phone_number = use_phone_number
         # The self._link variable is not thread safe (only intended for testing)
         self.extra_auth_user_fields = extra_fields or []
+        self.extra_form_fields = extra_form_fields or {}
         self._link = None
         if db and define_tables:
             self.define_tables()
@@ -1417,6 +1419,8 @@ class DefaultAuthForms:
             email = request.forms.get("email")
             if email:
                 self.auth.get_or_delete_existing_unverified_account(email)
+        extra_form_fields = self.auth.extra_form_fields.get("register", [])
+        fields += extra_form_fields
         form = Form(fields, submit_value=button_name, formstyle=self.formstyle)
         user = None
         if form.accepted:
@@ -1432,7 +1436,9 @@ class DefaultAuthForms:
                     if not check:
                         self._set_flash("Invalid username or password")
                         redirect("register")
-            res = self.auth.register(form.vars, validate=False)
+            extra_names = set(field.name for field in extra_form_fields)
+            vars = {k: v for k, v in form.vars.items() if k not in extra_names}
+            res = self.auth.register(vars, validate=False)
             form.errors.update(**res.get("errors", {}))
             form.accepted = not form.errors
         if form.accepted:
@@ -1544,6 +1550,8 @@ class DefaultAuthForms:
                 additional_buttons=additional_buttons,
             )
 
+        extra_form_fields = self.auth.extra_form_fields.get("login", [])
+        fields += extra_form_fields
         form = Form(
             fields,
             submit_value=button_name,
@@ -1702,6 +1710,11 @@ class DefaultAuthForms:
                 submit_label=button_name,
                 additional_buttons=additional_buttons,
             )
+
+        extra_form_fields = self.auth.extra_form_fields.get(
+            "request_reset_password", []
+        )
+        fields += extra_form_fields
 
         form = Form(
             fields,
