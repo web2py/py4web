@@ -16,24 +16,23 @@ class recaptcha_fixture(Fixture):
             del request.POST["g-recaptcha-response"]
 
     def on_success(self, context):
-        context["output"]["recaptcha"] = XML(
-            """<script>
-        var field = document.querySelector("input[name=g_recaptcha_response]");
-        if(field) {
-          field.hidden = true;
-          var form =  document.querySelector(".auth-container form");
-          var button = form.querySelector("input[type=submit]");
-          window.recaptcha_submit = function(token){ form.submit(); };
-          button.setAttribute("class", "g-recaptcha");
-          button.setAttribute("data-action", "submit");
-          button.setAttribute("data-callback", "recaptcha_submit");
-          button.setAttribute("data-sitekey", "%s");
-        }
-        </script>
-        <script src="https://www.google.com/recaptcha/api.js"></script>
-        """
-            % self.api_key
-        )
+        if context:
+            script = "".join(map(lambda line: line.strip(), """<script>
+            var field = document.querySelector("input[name=g_recaptcha_response]");
+            if(field) {
+              field.hidden = true;
+              var form =  document.querySelector(".auth-container form");
+              var button = form.querySelector("input[type=submit]");
+              window.recaptcha_submit = function(token){ form.submit(); };
+              button.setAttribute("class", "g-recaptcha");
+              button.setAttribute("data-action", "submit");
+              button.setAttribute("data-callback", "recaptcha_submit");
+              button.setAttribute("data-sitekey", "%s");
+            }
+            </script>
+            <script src="https://www.google.com/recaptcha/api.js"></script>
+            """.split('\n')));
+            context["output"]["recaptcha"] = XML(script % self.api_key)
 
 
 class ReCaptcha:
@@ -47,7 +46,7 @@ class ReCaptcha:
 
     @property
     def field(self):
-        return Field("g_recaptcha_response", requires=self.validator, label="")
+        return Field("g_recaptcha_response", "hidden", requires=self.validator)
 
     @property
     def script(self):
