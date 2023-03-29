@@ -663,9 +663,9 @@ class Grid:
         elif self.action == "delete" and self.is_deletable(record):
             db(db[self.tablename].id == self.record_id).delete()
 
-            rereffer = parse_referer(request)
+            referrer = parse_referrer(request)
             url = self.endpoint + "/select"
-            if referred and referrer.query:
+            if referrer and referrer.query:
                 url += "?%s" % referrer.query
             redirect(url)
 
@@ -1495,7 +1495,7 @@ class Grid:
         return len(self.get_tablenames(*items)) > 1
 
 
-def parse_referer(r):
+def parse_referrer(r):
     """
     Get the referrer from the request query and use urlparse to parse it into a url object
 
