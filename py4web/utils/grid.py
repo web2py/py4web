@@ -663,9 +663,9 @@ class Grid:
         elif self.action == "delete" and self.is_deletable(record):
             db(db[self.tablename].id == self.record_id).delete()
 
-            rereffer = parse_referer(request)
+            referrer = parse_referer(request)
             url = self.endpoint + "/select"
-            if referred and referrer.query:
+            if referrer and referrer.query:
                 url += "?%s" % referrer.query
             redirect(url)
 
