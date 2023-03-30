@@ -788,7 +788,8 @@ def URL(
         if static_version:
             broken_parts.insert(1, "_" + static_version)
 
-    url = prefix + "/".join(map(urllib.parse.quote, broken_parts))
+    url_prefix = os.environ.get("PY4WEB_URL_PREFIX", "")
+    url = url_prefix + prefix + "/".join(map(urllib.parse.quote, broken_parts))
     # Signs the URL if required.  Copy vars into urlvars not to modify it.
     urlvars = dict(vars) if vars else {}
     if signer:
@@ -1356,8 +1357,9 @@ class Reloader:
 
     @staticmethod
     def register_route(app_name, rule, kwargs, func):
+        url_prefix = os.environ.get("PY4WEB_URL_PREFIX", "")
         dec_func = action.catch_errors(app_name, func)
-        bottle.route(rule, **kwargs)(dec_func)
+        bottle.route(url_prefix + rule, **kwargs)(dec_func)
         filename = module2filename(func.__module__)
         methods = kwargs.get("method", ["GET"])
         if isinstance(methods, str):
@@ -1961,6 +1963,13 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     is_flag=True,
     default=False,
     help="Debug switch",
+    show_default=True,
+)
+@click.option(
+    "-P",
+    "--url_prefix",
+    default="",
+    help="Prefix to add to all URLs in and out",
     show_default=True,
 )
 def run(**kwargs):
