@@ -8,12 +8,12 @@ import sys
 
 import ldap  # python-ldap
 import ldap.filter
-from pydal.tools.tags import Tags
+from . import UsernamePassword
 
 ldap.set_option(ldap.OPT_REFERRALS, 0)
 
 
-class LDAPPlugin(object):
+class LDAPPlugin(UsernamePassword):
 
     name = "ldap"
     label = "LDAP"
@@ -891,3 +891,6 @@ class LDAPPlugin(object):
         if filterstr[0] == "(" and filterstr[-1] == ")":  # rfc4515 syntax
             filterstr = filterstr[1:-1]  # parens added again where used
         return []
+
+    def validate_credentials(self, username, password):
+        return self.is_user_in_allowed_groups(username, password)

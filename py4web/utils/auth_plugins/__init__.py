@@ -12,6 +12,33 @@ import requests
 from py4web.core import HTTP, URL, redirect, request
 
 
+class UsernamePassword(object):
+
+    name = "undefined"
+
+    def get_login_url(self):
+        """returns the url for login"""
+        return ""
+
+    def handle_request(self, auth, path, get_vars, post_vars):
+        if path == "login":
+            if post_vars:
+                username = post_vars.get("username")
+                password = post_vars.get("password")
+                if self.validate_credentials(username, password):
+                    db = auth.db
+                    user = db(db.auth_user.username == username).select().first()
+                    user_id = db.auth_user.insert(username=username, password="") if not user else user.id
+                    auth.store_user_in_session(user_id)
+                redirect(request.query.get("next") or URL("index"))
+        else:
+            raise HTTP(404)
+        
+    def validate_credentials(self, username, password):
+        raise NotImplementedError
+
+
+
 class SSO(object):
 
     name = "undefined"

@@ -15,6 +15,17 @@ Q.clone = function (data) { return JSON.parse(JSON.stringify(data)); };
 
 Q.eval = function(text) { return eval('('+text+')'); };
 
+// Given a url retuns an object with parsed query string
+Q.get_query = function (source) {
+    source = source || window.location.search.substring(1);
+    var vars = {}, items = source.split('&');
+    items.map(function (item) {
+        var pair = item.split('=');
+        vars[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+    });
+    return vars;
+};
+
 // a wrapper for fetch return a promise
 Q.ajax = function(method, url, data, headers) {
     var options = {
