@@ -1966,7 +1966,7 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     show_default=True,
 )
 @click.option(
-    "-P",
+    "-U",
     "--url_prefix",
     default="",
     help="Prefix to add to all URLs in and out",
