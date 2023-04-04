@@ -513,9 +513,8 @@ class Grid:
             if path == "index":
                 fullpath = fullpath[:-6]
             redirect(
-                f"{fullpath}/select" + f"?{request.query_string}"
-                if request.query_string
-                else ""
+                f"{fullpath}/select"
+                + (f"?{request.query_string}" if request.query_string else "")
             )
 
         # in case the query is a Table insteance
