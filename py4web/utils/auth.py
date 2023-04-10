@@ -170,8 +170,6 @@ class Auth(Fixture):
             "submit": "Submit",
         },
         "errors": {
-            "invalid_username": "Invalid username",
-            "invalid_email": "Invalid email",
             "registration_is_pending": "Registration is pending",
             "account_is_blocked": "Account is blocked",
             "account_needs_to_be_approved": "Account needs to be approved",
@@ -565,52 +563,54 @@ class Auth(Fixture):
         email = "" if email is None else email
         password = "" if password is None else password
 
-        if "email_auth" in self.plugins:
-            email = email.lower()
-            if self.plugins["email_auth"].validate_credentials(email, password):
-                user = db(db.auth_user.email == email).select().first()
-                return (user, None)
-            else:
-                return None, self.param.messages["errors"].get("invalid_credentials")
-        else:
+        user = None
+        error = None
+        prevent_db_lookup = False
+        # first check if we have a plugin that can check credentials
+
+        for plugin in self.plugins.values():
+            print(plugin)
+            if not hasattr(plugin, "get_login_url"):
+                prevent_db_lookup = True
+                print("OK")
+                if plugin.check_credentials(email, password):
+                    print("plugin accepted")
+                    # if the creadentials are independently validated
+                    # get of create the user (if does not exist)
+                    user_info = {}
+                    user_info["sso_id"] = plugin.name + ":" + email
+                    if self.use_username or not "@" in email:
+                        user_info["username"] = email
+                    if "@" in email:
+                        user_info["email"] = email
+                    else:
+                        user_info["email"] = email + "@example.com"
+                    user = self.get_or_register_user(user_info)
+                    print(user)
+                    break
+
+        # else check against database
+        if not prevent_db_lookup:
             value = email.lower()
-            if self.use_username:
-                query = (
-                    (db.auth_user.email == value)
-                    if "@" in value
-                    else (db.auth_user.username == value)
-                )
-            else:
-                query = db.auth_user.email == value
-            user = db(query).select().first()
-            if not user:
-                if self.use_username:
-                    return (None, self.param.messages["errors"].get("invalid_username"))
-                else:
-                    return (None, self.param.messages["errors"].get("invalid_email"))
-            if (user.action_token or "").startswith("pending-registration:"):
-                return (
-                    None,
-                    self.param.messages["errors"].get("registration_is_pending"),
-                )
-            if user.action_token == "account-blocked":
-                return (None, self.param.messages["errors"].get("account_is_blocked"))
-            if user.action_token == "pending-approval":
-                return (
-                    None,
-                    self.param.messages["errors"].get("account_needs_to_be_approved"),
-                )
-            if "pam" in self.plugins or "ldap" in self.plugins:
-                plugin_name = "pam" if "pam" in self.plugins else "ldap"
-                check = self.plugins[plugin_name].check_credentials(
-                    user.username, password
-                )
-                if check:
-                    return (user, None)
-            else:
-                if CRYPT()(password)[0] == user.password:
-                    return (user, None)
-            return None, self.param.messages["errors"].get("invalid_credentials")
+            field = db.auth_user.email if "@" in value else db.auth_user.username
+            user = db(field == value).select().first()
+            if user and not (CRYPT()(password)[0] == user.password):
+                user = None
+
+        # then check for possible login blockers
+        if not user:
+            error = "invalid_credentials"
+        elif (user.get("action_token") or "").startswith("pending-registration:"):
+            error = "registration_is_pending"
+        elif user.get("action_token") == "account-blocked":
+            error = "account_is_blocked"
+        elif user.get("action_token") == "pending-approval":
+            error = "account_needs_to_be_approved"
+
+        # return the error or the user
+        if error:
+            return (None, self.param.messages["errors"].get(error, error))
+        return (user, None)
 
     def request_reset_password(self, email, send=True, next="", route=None):
         """Send a mail with token for changing user's password after the user's parameters are entered
@@ -823,7 +823,7 @@ class Auth(Fixture):
             user["id"] = row["id"]
         # if we do not have a candidate user we need to create one
         else:
-            # we expect an email to unable to create account
+            # we expect an email to be able to create account
             if not "email" in user:
                 return None
             # if we expect a username but not provided, user email as username
@@ -1434,7 +1434,7 @@ class DefaultAuthForms:
                     )
                     form.vars["password"] = ""
                     if not check:
-                        self._set_flash("Invalid username or password")
+                        self._set_flash("Invalid credentials")
                         redirect("register")
             extra_names = set(field.name for field in extra_form_fields)
             vars = {k: v for k, v in form.vars.items() if k not in extra_names}
@@ -1471,18 +1471,19 @@ class DefaultAuthForms:
         top_buttons = []
 
         for name, plugin in self.auth.plugins.items():
+            #  do not add a button for plugin that do not delegate to url
+            if not hasattr(plugin, "get_login_url"):
+                continue
+
             url = f"/auth/plugin/{name}/login"
 
             next_url = prevent_open_redirect(request.query.get("next"))
             if next_url:
                 url = f"{url}?next={next_url}"
 
-            if (
-                name != "email_auth"
-            ):  #  do not add the top button for the email auth plugin
-                top_buttons.append(
-                    dict(label=f"{plugin.label} Login", action=name, href=url)
-                )
+            top_buttons.append(
+                dict(label=f"{plugin.label} Login", action=name, href=url)
+            )
 
         combined_div = DIV(
             *[
@@ -1565,7 +1566,7 @@ class DefaultAuthForms:
                 form.vars.get("email", ""), form.vars.get("password", "")
             )
             form.accepted = not error
-            form.errors["email"] = error
+            form.errors["password"] = error
         if user:
             #  We will process two_factor if two_factor_send is defined and either
             #  - No two_factor_required defined

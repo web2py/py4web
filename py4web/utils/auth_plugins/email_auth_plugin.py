@@ -12,7 +12,7 @@ class EmailAuthPlugin:
         self.domain = domain
         self.tls_mode = tls_mode
 
-    def validate_credentials(self, username, password):
+    def check_credentials(self, username, password):
         email = username
         server = self.server
         domain = self.domain

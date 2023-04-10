@@ -892,5 +892,5 @@ class LDAPPlugin(UsernamePassword):
             filterstr = filterstr[1:-1]  # parens added again where used
         return []
 
-    def validate_credentials(self, username, password):
+    def check_credentials(self, username, password):
         return self.is_user_in_allowed_groups(username, password)
