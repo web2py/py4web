@@ -92,6 +92,14 @@ class TestAuth(unittest.TestCase):
         body = {"email": "pinco.pallino@example.com", "password": "1234567"}
         self.assertEqual(
             self.auth.action("api/login", "POST", {}, body),
+            {"status": "error", "message": "Invalid Credentials", "code": 400},
+        )
+
+        self.on_request()
+        self.on_request()
+        body = {"email": "pinco.pallino@example.com", "password": "123456789"}
+        self.assertEqual(
+            self.auth.action("api/login", "POST", {}, body),
             {"status": "error", "message": "Registration is pending", "code": 400},
         )
 
@@ -106,6 +114,7 @@ class TestAuth(unittest.TestCase):
         self.assertTrue(user.action_token is None)
 
         self.on_request()
+        body = {"email": "pinco.pallino@example.com", "password": "1234567"}
         self.assertEqual(
             self.auth.action("api/login", "POST", {}, body),
             {"status": "error", "message": "Invalid Credentials", "code": 400},

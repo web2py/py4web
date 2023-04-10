@@ -569,12 +569,9 @@ class Auth(Fixture):
         # first check if we have a plugin that can check credentials
 
         for plugin in self.plugins.values():
-            print(plugin)
             if not hasattr(plugin, "get_login_url"):
                 prevent_db_lookup = True
-                print("OK")
                 if plugin.check_credentials(email, password):
-                    print("plugin accepted")
                     # if the creadentials are independently validated
                     # get of create the user (if does not exist)
                     user_info = {}
@@ -586,13 +583,16 @@ class Auth(Fixture):
                     else:
                         user_info["email"] = email + "@example.com"
                     user = self.get_or_register_user(user_info)
-                    print(user)
                     break
 
         # else check against database
         if not prevent_db_lookup:
             value = email.lower()
-            field = db.auth_user.email if "@" in value else db.auth_user.username
+            field = (
+                db.auth_user.email
+                if "@" in value or not self.use_username
+                else db.auth_user.username
+            )
             user = db(field == value).select().first()
             if user and not (CRYPT()(password)[0] == user.password):
                 user = None
@@ -600,11 +600,11 @@ class Auth(Fixture):
         # then check for possible login blockers
         if not user:
             error = "invalid_credentials"
-        elif (user.get("action_token") or "").startswith("pending-registration:"):
+        elif (user["action_token"] or "").startswith("pending-registration:"):
             error = "registration_is_pending"
-        elif user.get("action_token") == "account-blocked":
+        elif user["action_token"] == "account-blocked":
             error = "account_is_blocked"
-        elif user.get("action_token") == "pending-approval":
+        elif user["action_token"] == "pending-approval":
             error = "account_needs_to_be_approved"
 
         # return the error or the user
@@ -619,15 +619,12 @@ class Auth(Fixture):
 
         db = self.db
         value = email.lower()
-        if self.use_username:
-            query = (
-                (db.auth_user.email == value)
-                if "@" in value
-                else (db.auth_user.username == value)
-            )
-        else:
-            query = db.auth_user.email == value
-        user = db(query).select().first()
+        field = (
+            db.auth_user.email
+            if "@" in value or not self.use_username
+            else self.auth_user.username
+        )
+        user = db(field == value).select().first()
         if user and user.action_token != "account-blocked":
             token = str(uuid.uuid4())
             if next:
