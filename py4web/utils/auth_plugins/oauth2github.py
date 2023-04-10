@@ -1,6 +1,8 @@
 # from https://requests-oauthlib.readthedocs.io/en/latest/examples/github.html
 import requests
+
 from py4web import URL
+
 from . import OAuth2
 
 

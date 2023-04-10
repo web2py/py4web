@@ -8,6 +8,7 @@ import sys
 
 import ldap  # python-ldap
 import ldap.filter
+
 from . import UsernamePassword
 
 ldap.set_option(ldap.OPT_REFERRALS, 0)
