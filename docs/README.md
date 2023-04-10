@@ -52,22 +52,22 @@ The current official translators are listed here:
 
 If your language does not still exist in the documentation, for example the Italian one, you need to build its PO files. Setup a working environment as described before for updatDocs.sh, go to the
 /docs folder and run:
-
+```
 make gettext
 sphinx-intl update -p _build/gettext -l it
+```
+(where 'it' is the language code for Italian).  
+This will create the PO files to be translated in `/docs/locales/it/LC_MESSAGES`
 
-(where 'it' is the language code for Italian).
-This will create the PO files to be translated in /docs/locales/it/LC_MESSAGES
-
-After their translation, make a PR for them. If you want, you can also generate the local HTML outputs as usual with the updateDocs.sh program.
+After their translation, make a PR for them. If you want, you can also generate the local HTML outputs as usual with the `updateDocs.sh` program.
 
 ## Update translation
 
 When the english source files will be updated, the translated work will not be lost - but the new strings will appear inside your translated ones.
 In order import the updated sources without loosing your previous work, you need to run:
-
+```
 sphinx-build -b gettext . _build/gettext
-
+```
 This creates the updates .pot files on /docs/_build/gettext. 
 With poedit you have to load the old translated .po file in your language. Then you use the menu "Catalog" -> "Update from POT file ..." in order to collect the updates from the .pot file.
 The new additions / changes will be loaded and marked to be fixed. You can now save the updated PO file and work on it. 

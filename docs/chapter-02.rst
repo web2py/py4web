@@ -21,12 +21,6 @@ The Google group
 
 There is a dedicated mailing list hosted on Google Groups, see https://groups.google.com/g/py4web. This is the main source of discussions for developers and simple users. For any problem you should face, this is the right place to search for a hint or a solution.
 
-The chat on IRC
----------------
-
-We also use to chat sometime on IRC (Internet Relay Chat, which is an old-style text only chat). You can freely join us at https://webchat.freenode.net/#py4web.
-From time to time we also use it to host a scheduled public chat, where you can write and read live questions to developers.
-Transcripts of them are then available on the mailing list.
 
 The Discord server
 -------------------

@@ -81,25 +81,6 @@ msgstr ""
 "para desenvolvedores e usuários simples. Para qualquer problema que você "
 "deve enfrentar, este é o lugar certo para procurar uma dica ou uma solução."
 
-#: ../../chapter-02.rst:30
-msgid "The chat on IRC"
-msgstr "O bate-papo no IRC"
-
-#: ../../chapter-02.rst:32
-msgid ""
-"We also use to chat sometime on IRC (Internet Relay Chat, which is an old-"
-"style text only chat). You can freely join us at https://webchat.freenode."
-"net/#py4web. From time to time we also use it to host a scheduled public "
-"chat, where you can write and read live questions to developers. "
-"Transcripts of them are then available on the mailing list."
-msgstr ""
-"Nós também usamos para conversar em algum momento no IRC (Internet Relay "
-"Chat, que é um texto de estilo antigo única chat). Você pode se juntar a "
-"nós livremente no https://webchat.freenode.net/#py4web. De vez em quando "
-"nós também usá-lo para hospedar um bate-papo pública agendada, onde você "
-"pode escrever e ler perguntas ao vivo para os desenvolvedores. Transcrições "
-"deles são, então, disponível na lista de discussão."
-
 #: ../../chapter-02.rst:38
 msgid "Tutorials and video"
 msgstr "Tutoriais e vídeo"
