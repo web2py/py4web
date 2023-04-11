@@ -707,11 +707,17 @@ class Session(Fixture):
         self.local.changed = True
         self.local.data[key] = value
 
+    def __contains__(self, other):
+        return other in self.get_data()
+
     def keys(self):
         return self.get_data().keys()
 
+    def items(self):
+        return self.get_data().items()
+
     def __iter__(self):
-        yield from self.get_data().items()
+        yield from self.get_data().keys()
 
     def clear(self):
         """Produces a brand-new session."""
