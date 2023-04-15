@@ -1276,7 +1276,11 @@ class Reloader:
             loader = importlib.machinery.SourceFileLoader("apps", path)
             loader.load_module()
         # Then load all the apps as submodules
-        for app_name in os.listdir(folder):
+        if os.environ.get("PY4WEB_APP_NAMES"):
+            app_names = os.environ.get("PY4WEB_APP_NAMES").split(",")
+        else:
+            app_names = os.listdir(folder)
+        for app_name in app_names:
             Reloader.import_app(app_name, clear_before_import=False)
 
     @staticmethod
@@ -1899,6 +1903,12 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     "-P", "--port", default=8000, type=int, help="Port number", show_default=True
 )
 @click.option(
+    "-A",
+    "--app_names",
+    default="",
+    help="List of apps to run (all if omitted or empty)",
+)
+@click.option(
     "-p",
     "--password_file",
     default="password.txt",
@@ -1987,6 +1997,9 @@ def run(**kwargs):
     click.secho(ART, fg="blue")
     click.echo("Py4web: %s on Python %s\n\n" % (__version__, sys.version))
 
+    # Start
+    Reloader.import_apps()
+
     # If we know where the password is stored, read it, otherwise ask for one
     if os.path.exists(os.path.join(os.environ["PY4WEB_APPS_FOLDER"], "_dashboard")):
         if kwargs["dashboard_mode"] not in ("demo", "none") and not os.path.exists(
@@ -1996,13 +2009,11 @@ def run(**kwargs):
                 'You have not set a dashboard password. Run "%s set_password" to do so.'
                 % PY4WEB_CMD
             )
-        else:
+        elif "_dashboard" in Reloader.ROUTES:
             click.echo(
                 f"Dashboard is at: http{'s' if kwargs.get('ssl_cert', None) else ''}://{kwargs['host']}:{kwargs['port']}/_dashboard"
             )
 
-    # Start
-    Reloader.import_apps()
     start_server(kwargs)
 
 
