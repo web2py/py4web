@@ -349,30 +349,7 @@ class FormStyleFactory:
             all_fields += table._virtual_fields
         for field in all_fields:
 
-            # Reset the json control fields.
-            field_attributes = dict()
-            field_value = None
-
-            field_name = field.name
-            field_type = field.type
-            field_comment = field.comment if field.comment else ""
-            field_label = field.label
-            input_id = to_id(field)
-            if isinstance(field, FieldVirtual):
-                value = None
-            else:
-                value = vars.get(
-                    field.name,
-                    field.default() if callable(field.default) else field.default,
-                )
-            error = errors.get(field.name)
-            field_class = "type-" + field.type.split()[0].replace(":", "-")
-            placeholder = (
-                field._placeholder if "_placeholder" in field.__dict__ else None
-            )
-
-            title = field._title if "_title" in field.__dict__ else None
-            field_disabled = False
+            is_virtual = isinstance(field, FieldVirtual)
 
             # only display field if readable or writable
             if not field.readable and not field.writable:
@@ -382,6 +359,10 @@ class FormStyleFactory:
             if readonly:
                 if not field.readable:
                     continue
+
+            # do not display virtual fields in edit forms
+            if not readonly and is_virtual:
+                continue
 
             # do not show the id if not desired
             if field.type == "id" and not show_id:
@@ -398,17 +379,33 @@ class FormStyleFactory:
                 continue
 
             # ignore fields of type id its value is equal to None
-            if field.type == "id" and value is None:
+            if field.type == "id" and vars.get(field.name) is None:
                 field.writable = False
                 continue
 
+            # Reset the json control fields.
+            field_attributes = dict()
+            field_value = None
+
+            field_name = field.name
+            field_type = field.type
+            field_comment = field.comment if field.comment else ""
+            field_label = field.label
+            input_id = to_id(field)
+            default = field.default() if callable(field.default) else field.default
+            value = vars.get(field.name, default) if not is_virtual else None
+
+            error = errors.get(field.name)
+            field_class = "type-" + field.type.split()[0].replace(":", "-")
+            placeholder = (
+                field._placeholder if "_placeholder" in field.__dict__ else None
+            )
+
+            title = field._title if "_title" in field.__dict__ else None
+            field_disabled = False
+
             # if the form is readonly or this is an id type field, display it as readonly
-            if (
-                readonly
-                or not field.writable
-                or field.type == "id"
-                or isinstance(field, FieldVirtual)
-            ):
+            if readonly or not field.writable or field.type == "id" or is_virtual:
                 # for boolean readonly we use a readonly checbox
                 if field.type == "boolean":
 
@@ -417,7 +414,7 @@ class FormStyleFactory:
                     )
                 # for all othe readonly fields we use represent or a string
                 else:
-                    if isinstance(field, FieldVirtual):
+                    if is_virtual:
                         field_value = field.f(vars)
                     else:
                         field_value = compat_represent(field, value, vars)
