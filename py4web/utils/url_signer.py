@@ -1,6 +1,7 @@
 import base64
 import hashlib
 import json
+import os
 import time
 import uuid
 
@@ -158,6 +159,9 @@ class URLSigner(Fixture):
         h = self.algo(self.get_key())
         ts = "%.3f" % time.time()
         salt = str(uuid.uuid1())
+        url_prefix = os.environ.get("PY4WEB_URL_PREFIX", "")
+        if url_prefix:
+            url = url_prefix + url
         h.update(self.get_info_to_sign(url, variables, ts, salt))
         sig = base64.b16encode(h.digest()).decode("utf-8")
         sig_content = json.dumps(dict(ts=ts, salt=salt, sig=sig))
