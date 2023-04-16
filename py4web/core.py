@@ -964,7 +964,6 @@ class action:
         if self.path[0] == "/":
             path = self.path.rstrip("/") or "/"
         else:
-
             base_path = "" if app_name == "_default" else f"/{app_name}"
             path = (f"{base_path}/{self.path}").rstrip("/")
         Reloader.register_route(app_name, path, self.kwargs, func)
@@ -1368,6 +1367,8 @@ class Reloader:
     @staticmethod
     def register_route(app_name, rule, kwargs, func):
         url_prefix = os.environ.get("PY4WEB_URL_PREFIX", "")
+        if url_prefix and rule == "/":
+            rule = ""
         dec_func = action.catch_errors(app_name, func)
         bottle.route(url_prefix + rule, **kwargs)(dec_func)
         filename = module2filename(func.__module__)

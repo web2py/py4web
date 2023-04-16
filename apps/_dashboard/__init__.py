@@ -33,6 +33,7 @@ from .utils import *
 
 MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 FOLDER = os.environ["PY4WEB_APPS_FOLDER"]
+APP_NAMES = os.environ.get("PY4WEB_APP_NAMES")
 APP_FOLDER = os.path.dirname(__file__)
 T_FOLDER = os.path.join(APP_FOLDER, "translations")
 T = Translator(T_FOLDER)
@@ -187,12 +188,14 @@ if MODE in ("demo", "readonly", "full"):
     def apps():
         """Returns a list of installed apps"""
         apps = os.listdir(FOLDER)
+        exposed_names = APP_NAMES and APP_NAMES.split(",")
         apps = [
             {"name": app, "error": Reloader.ERRORS.get(app)}
             for app in apps
             if os.path.isdir(os.path.join(FOLDER, app))
             and not app.startswith("__")
             and not app.startswith(".")
+            and (exposed_names is None or app in exposed_names)
         ]
         apps.sort(key=lambda item: item["name"])
         return {"payload": apps, "status": "success"}
