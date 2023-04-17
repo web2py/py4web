@@ -108,7 +108,12 @@
                 }
             }
         }
-    }
+	this.$nextTick(function(){
+            Q("input[type=text].type-list-string,input[type=text].type-list-integer,input[type=text].type-list-reference").forEach(
+               function(elem){Q.tags_input(elem);
+            });
+	});
+    };
 
     mtable.methods.parse_and_validate_json = function(event){
         try {

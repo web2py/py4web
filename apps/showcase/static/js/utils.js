@@ -182,6 +182,7 @@ Q.tags_input = function(elem, options) {
           if(item.dataset.selected=='false') keys.push(x); else keys = keys.filter(function(y){ return x!=y; });
           item.dataset.selected = keys.indexOf(x)>=0;          
           elem.value = JSON.stringify(keys);
+          elem.dispatchEvent(new Event('input', { bubbles: true }));
         };
       });
     };
@@ -201,6 +202,7 @@ Q.tags_input = function(elem, options) {
         });
         inp.value = '';
         elem.value = JSON.stringify(keys);
+        elem.dispatchEvent(new Event('input', { bubbles: true }));
         fill(elem, repl);
       };
     }
