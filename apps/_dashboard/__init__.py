@@ -188,6 +188,7 @@ if MODE in ("demo", "readonly", "full"):
     def apps():
         """Returns a list of installed apps"""
         apps = os.listdir(FOLDER)
+        print(APP_NAMES)
         exposed_names = APP_NAMES and APP_NAMES.split(",")
         apps = [
             {"name": app, "error": Reloader.ERRORS.get(app)}
@@ -195,7 +196,7 @@ if MODE in ("demo", "readonly", "full"):
             if os.path.isdir(os.path.join(FOLDER, app))
             and not app.startswith("__")
             and not app.startswith(".")
-            and (exposed_names is None or app in exposed_names)
+            and (not exposed_names or app in exposed_names)
         ]
         apps.sort(key=lambda item: item["name"])
         return {"payload": apps, "status": "success"}
