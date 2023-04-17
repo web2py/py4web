@@ -15,7 +15,7 @@ clean-assets:
 assets: clean-assets $(asset-zips)
 py4web/assets/py4web.app.%.zip: apps/%
 	cd $< && find . | \
-	egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt|mm)$$" | \
+	egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt|mm|ico)$$" | \
 	zip -@ $(addprefix ../../, $@)
 build: clean assets
 	python3 setup.py build
