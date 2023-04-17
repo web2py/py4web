@@ -84,24 +84,11 @@
         this.prepare_fields(this.item);
     };
 
-    mtable.methods.l2s = function(list) {
-	return (list||[]).map(function(x){return ''+x}).join(', ');
-    };
-
-    mtable.methods.s2l = function(string, is_list_integer) {
-        var v = string;
-        v = v && v.split(',').map(function(x){return x.trim();}) || [];
-        if (is_list_integer) v = v.map(function(x){return parseInt(x)})
-        return v;
-    };
-
     mtable.methods.prepare_fields = function(item){
         let self = this;
         for(var field of this.table.model){
-            console.log(field.name);
 	    if(field.type == "list:string" || field.type == "list:integer" || field.type.substr(0,14) == "list:reference"){
-		self.string_values[field.name] = mtable.methods.l2s(item[field.name]);
-		console.log(self.string_values[field.name]);
+		self.string_values[field.name] = JSON.stringify(item[field.name]);
 	    } else if (field.type == "datetime") {
 		output = field.default != null ? field.default : '';
                 output = output.split('.')[0];
@@ -148,7 +135,12 @@
 	for(var field of this.table.model) {
 	    var is_list_integer = field.type == "list:integer" || field.type.substr(0,14) == "list:reference";
 	    if(field.type == "list:string" || is_list_integer) {
-		item[field.name] = mtable.methods.s2l(this.string_values[field.name], is_list_integer);
+		try {
+		    item[field.name] = JSON.parse(this.string_values[field.name]);
+		} catch(err) {
+		    alert("Invalid field value: " + field.name);
+		    break;
+		}
 	    }
 	}
         if (item.id) {
@@ -167,7 +159,6 @@
             if (res.response) res = res.response; // deal with error weirdness
             if (method == 'post') {
                 data.table.items = [];
-                console.log(data);
                 mtable.methods.load.call(data);
             }
             if (res.data.status == 'success') {
@@ -207,13 +198,11 @@
         window.location = window.location.href.split('?')[0]+'?'+source;
     };
 
-
-
     var scripts = document.getElementsByTagName('script');
     var src = scripts[scripts.length-1].src;
     var path = src.substr(0, src.length-3) + '.html';
-    Q.register_vue_component('mtable', path, function(template) {        
-            mtable.template = template.data;
-            return mtable;
-        });
+    Q.register_vue_component('mtable', path, function(template) {
+        mtable.template = template.data;
+        return mtable;
+    });
 })();

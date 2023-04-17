@@ -96,8 +96,8 @@
             <span v-else-if="field.type=='decimal'" class="field-float">{{item[field.name]}}</span>
             <span v-else-if="field.type=='date'" class="field-date">{{item[field.name]}}</span>
             <span v-else-if="field.type=='time'" class="field-time">{{item[field.name]}}</span>
-            <span v-else-if="field.type=='list:integer'" class="field-string">{{l2s(item[field.name])}}</span>
-            <span v-else-if="field.type=='list:string'" class="field-string">{{l2s(item[field.name])}}</span>
+            <span v-else-if="field.type=='list:integer'" class="field-string">{{JSON.stringify(item[field.name])}}</span>
+            <span v-else-if="field.type=='list:string'" class="field-string">{{JSON.stringify(item[field.name])}}</span>
             <span v-else-if="field.type=='datetime'" class="field-datetime">{{(item[field.name]||'').replace('T','@').substr(0,16)}}</span>
             <span v-else-if="field.type=='password'" class="field-password">{{item[field.name]}}</span>
             <span v-else-if="field.type=='boolean'" class="field-boolean">

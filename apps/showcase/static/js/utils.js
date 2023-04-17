@@ -188,6 +188,7 @@ Q.tags_input = function(elem, options) {
     if (options.freetext) {
       var inp = document.createElement('input');
       elem.parentNode.insertBefore(inp, elem);
+      inp.type = "text";
       inp.classList = elem.classList;
       inp.placeholder = options.placeholder;
       inp.setAttribute('list',  options.autocomplete_list);
