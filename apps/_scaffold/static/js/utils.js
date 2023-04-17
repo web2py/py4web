@@ -172,7 +172,6 @@ Q.tags_input = function(elem, options) {
     var fill = function(elem, repl) {
       repl.innerHTML = '';
       tags.forEach(function(x){
-        console.log(x);
         var item = document.createElement('li');
         item.innerHTML = options.labels[x] || x;
         item.dataset.value = x;
@@ -260,7 +259,6 @@ Q.load_and_trap = function (method, url, form_data, target) {
         if (res.redirected) window.location = res.url;
         Q('#'+target)[0].innerHTML = res.data;
         Q.trap_form(url, target);
-        console.log(res.headers);
         var flash = res.headers.get('component-flash');
         if (flash) Q.flash(JSON.parse(flash));
     };
@@ -298,7 +296,6 @@ Q.handle_flash = function() {
     if (elem) {
         elem.addEventListener('flash', make_handler(elem), false);
         Q.flash = function(detail) {elem.dispatchEvent(new CustomEvent('flash', {detail: detail}));};
-        console.log(elem.dataset.alert);
         if (elem.dataset.alert) Q.flash(Q.eval(elem.dataset.alert));
     }    
 };
