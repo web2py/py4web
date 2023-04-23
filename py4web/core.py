@@ -1369,8 +1369,10 @@ class Reloader:
         url_prefix = os.environ.get("PY4WEB_URL_PREFIX", "")
         if url_prefix and rule == "/":
             rule = ""
+        else:
+            rule = url_prefix + rule
         dec_func = action.catch_errors(app_name, func)
-        bottle.route(url_prefix + rule, **kwargs)(dec_func)
+        bottle.route(rule, **kwargs)(dec_func)
         filename = module2filename(func.__module__)
         methods = kwargs.get("method", ["GET"])
         if isinstance(methods, str):

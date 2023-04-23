@@ -9,6 +9,16 @@ Vue.component('treefiles', {
         }
     });
 
+let post= function(url, data) {
+    return fetch(url, {
+	method: "POST",
+	cache: "no-cache",
+	headers: { "Content-Type": "application/json" },
+	redirect: "follow",
+	body: JSON.stringify(data)
+    });
+};
+
 let app = {}; 
 let init = (app) => {
     app.data = {
@@ -34,8 +44,8 @@ let init = (app) => {
     app.select_app = (appobj) => {
         app.vue.selected_app = appobj;
         app.vue.walk = [];
-        axios.get('../walk/'+appobj.name).then((res)=>{app.vue.walk=res.data.payload;});
-        axios.get('../rest/'+appobj.name).then((res)=>{app.vue.databases=res.data.databases;});        
+        fetch('../walk/'+appobj.name).then(r=>r.json()).then(r=>{app.vue.walk=r.payload;});
+        fetch('../rest/'+appobj.name).then(r=>r.json()).then(r=>{app.vue.databases=r.databases;});        
     };
     app.activate_editor = (path, payload) => {
         app.vue.files[path] = payload;
@@ -70,8 +80,8 @@ let init = (app) => {
             } else {            
                 var url = '../load/'+path;
                 if(app.vue.selected_type != 'text') url = '../load_bytes/'+path;
-                axios.get(url).then((res)=>{
-                        app.activate_editor(path, res.data.payload);
+                fetch(url).then(r=>r.json()).then(r=>{
+                        app.activate_editor(path, r.data.payload);
                     });
             }
         }
@@ -83,7 +93,7 @@ let init = (app) => {
     app.reload = (name) => {
         app.modal_dismiss();
         app.vue.loading = true;        
-        axios.get(name?'../reload/'+name:'../reload').then(app.init);        
+        fetch(name?'../reload/'+name:'../reload').then(r=>r.json()).then(r=>app.init());
     };
     app.gitlog = (name) => {
         window.open('../gitlog/'+name);
@@ -98,9 +108,7 @@ let init = (app) => {
     app.save_file = () => {
         var path = app.vue.selected_filename;
         app.vue.files[path] = app.editor.getValue();
-        axios.post('../save/'+path, app.vue.files[path]).then(()=>{
-                app.file_saved(); 
-            }); 
+        post('../save/'+path, app.vue.files[path]).then(r=>app.file_saved());
     };
     app.download_selected_app = () => {
         var url = '../packed/py4web.app.' + app.vue.selected_app.name + '.zip?' + (new Date()).getTime()
@@ -121,7 +129,7 @@ let init = (app) => {
         else if(form.mode=='new' && app.vue.apps.map((a)=>{return a.name;}).indexOf(form.name)>=0) {
             alert('Cannot create an app with this name. It already exists');
         } else {
-            axios.post('../new_app', form).then(app.reload);
+            post('../new_app', form).then(r=>app.reload());
         }
     };
     app.process_new_file = () => {
@@ -129,9 +137,9 @@ let init = (app) => {
         var form = app.vue.modal.form;
         if(!form.filename) { alert('An file name must be provided'); return; }
         /*reload entire page needed to see the new file listed*/
-        axios.post('../new_file/'+app_name+'/'+form.filename).then(function(){
+        post('../new_file/'+app_name+'/'+form.filename).then(r=>{
                 app.vue.walk = [];
-                axios.get('../walk/'+app_name).then((res)=>{app.vue.walk=res.data.payload;});
+                fetch('../walk/'+app_name).then(r=>r.json()).then(r=>{app.vue.walk=r.payload;});
                 app.modal_dismiss();
             });
     }; 
@@ -167,57 +175,55 @@ let init = (app) => {
     app.delete_selected_file = () => {
         var name = app.vue.selected_filename;
         app.confirm("Delete File","blue","Do you really want to delete "+name+"?",()=>{
-                app.modal_dismiss();
-                axios.post('../delete/'+name).then(()=>{
-                        app.init();
-                    });
-            });
+            app.modal_dismiss();
+            post('../delete/'+name).then(r=>app.init());
+        });
     };
     app.delete_selected_app = () => {
         var name = app.vue.selected_app.name;
         app.confirm("Delete App","blue","Do you really want to delete "+name+"?",()=>{
-                app.modal_dismiss();
-                axios.post('../delete_app/'+name).then(()=>{
-                        app.init();
-                    });
-            });
+            app.modal_dismiss();
+            post('../delete_app/'+name).then(r=>app.init());
+        });
     };
     app.reload_info = () => {
-        axios.get('../info').then((res)=>{
-                app.vue.info=res.data.payload || [];
-            });
+        fetch('../info').then(r=>r.json()).then(r=>{
+            app.vue.info=r.payload || [];
+        });
     };
     app.reload_apps = () => {
-        axios.get('../apps').then((res)=>{
-                app.vue.apps=res.data.payload || []; app.update_selected();
-            });
+        fetch('../apps').then(r=>r.json()).then(r=>{
+            app.vue.apps=r.payload || []; app.update_selected();
+        });
     };
     app.reload_routes = () => {
-        axios.get('../routes').then((res)=>{
-                app.vue.routes=res.data.payload || [];
+        fetch('../routes').then(r=>r.json()).then(r=>{
+                app.vue.routes=r.payload || [];
             });
     };
     app.reload_tickets = () => {
         app.vue.tickets = [];
-        axios.get('../tickets').then((res)=>{
-                app.vue.tickets = res.data.payload || [];
+        fetch('../tickets').then(r=>r.json()).then(r=>{
+                app.vue.tickets = r.payload || [];
             });
     };
     app.clear_tickets = () => {
         app.vue.tickets = [];
-        axios.get('../clear').then(app.reload_tickets());
+        fetch('../clear').then(r=>app.reload_tickets());
     };
     app.login = () => {
-        axios.post('../login',{'password': app.vue.password}).then(function(res){
+        post('../login', {'password': app.vue.password})
+	    .then(r=>r.json())
+	    .then(r=>{
                 app.vue.password = '';
-                if( res.data.user) {
+                if( r.user) {
                     app.vue.user = true;
                     app.init();
                 }
             });
     };
     app.logout = () => {
-        axios.post('../logout').then(()=>{window.location.reload();});        
+        post('../logout').then(r=>window.location.reload());
     };
     app.methods = {
         select: app.select_app,

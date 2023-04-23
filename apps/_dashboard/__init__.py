@@ -412,7 +412,7 @@ if MODE == "full":
     def reload(name=None):
         """Reloads installed apps"""
         Reloader.import_app(name) if name else Reloader.import_apps()
-        return "ok"
+        return {"status": "ok"}
 
     @action("save/<path:path>", method="POST")
     @session_secured
@@ -506,7 +506,10 @@ if MODE == "full":
             data = data.replace("<session-secret-key>", str(uuid.uuid4()))
             with open(settings, "w") as fp:
                 fp.write(data)
-        Reloader.import_app(app_name)
+        try:
+            Reloader.import_app(app_name)
+        except Exception:
+            pass
         return {"status": "success"}
 
     #
