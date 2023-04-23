@@ -2,7 +2,7 @@
 
     var mtable = { props: ['url', 'filter', 'order', 'editable', 'create', 'deletable', 'render'], data: null, methods: {}};
     
-    mtable.data = function() {        
+    mtable.data = function() {
         var data = {url: this.url,
                     busy: false,
                     filter: this.filter || '',
