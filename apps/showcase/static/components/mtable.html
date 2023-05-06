@@ -2,7 +2,7 @@
   <table>
     <tr>
       <td class="control">              
-        <input class="input" v-model="mtFilter" type="text" placeholder="filter (example id > 1)" style="width: 100%" v-on:keyup.enter="search()"/>
+        <input v-model="filter" type="text" placeholder="filter (example id > 1)" style="width: 100%" v-on:keyup.enter="search()"/>
       </td>
       <td style="white-space: nowrap; width:10%; padding-left:5px">
         <button v-on:click="search()" class="button">Search</button>
@@ -24,21 +24,33 @@
       <tr v-for="field in table.model" v-if="field.type!='id' || item.id">
         <th>{{field.label}}</th>
         <td class="control">
-          <input class="input" v-if="field.type=='id'" type="text" readonly v-model="item[field.name]">
-          <input class="input" v-else-if="field.type=='string'" type="text" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-if="field.type=='id'" type="text" readonly v-model="item[field.name]">
+          <input v-else-if="field.type=='string'" type="text" v-model="item[field.name]" v-bind:readonly="!editable">
           <span v-else-if="field.type=='boolean'" v-on:click="toggle(item, field.name)" v-bind:readonly="!editable">
             <span v-if="item[field.name]===true"><i class="fa fa-check-square"></i> True</span>
             <span v-else-if="item[field.name]===false"><i class="fa fa-square"></i> False</span>
             <span v-else><i class="fa fa-square"></i> None</span>
           </span>
-          <input class="input" v-else-if="field.type=='integer'" type="number" step="1" v-model="item[field.name]" v-bind:readonly="!editable">
-          <input class="input" v-else-if="field.type=='float'" type="number" v-model="item[field.name]" v-bind:readonly="!editable">
-          <input class="input" v-else-if="field.type=='date'" type="date" v-model="item[field.name]" v-bind:readonly="!editable">
-          <input class="input" v-else-if="field.type=='time'" type="time" v-model="item[field.name]" v-bind:readonly="!editable">
-          <input class="input" v-else-if="field.type=='datetime'" type="datetime-local" v-model="item[field.name]" v-bind:readonly="!editable">
-          <input class="input" v-else-if="field.type=='password'" type="password" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='integer'" type="number" step="1" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='float'" type="number" step="0.00000000000001" v-model="item[field.name]"  v-bind:readonly="!editable">
+          <input v-else-if="field.type=='double'" type="number" step="0.00000000000001" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='decimal'" type="number" step="0.1" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='date'" type="date" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='time'" type="time" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='datetime'" type="datetime-local" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input v-else-if="field.type=='password'" type="password" v-model="item[field.name]" v-bind:readonly="!editable">
+          <input class="type-list-integer" v-else-if="field.type=='list:integer'" type="text" v-model="string_values[field.name]" v-bind:readonly="!editable">
+          <input class="type-list-reference" v-else-if="field.type.substr(0,14)=='list:reference'" type="text" v-model="string_values[field.name]" v-bind:readonly="!editable">
+          <input class="type-list-string" v-else-if="field.type=='list:string'" type="text" v-model="string_values[field.name]" v-bind:readonly="!editable">
           <input v-else-if="field.type=='upload'" type="text" v-model="item[field.name]" v-bind:readonly="!editable">
           <textarea class="textarea" v-else-if="field.type=='text'" v-model="item[field.name]" v-bind:readonly="!editable"></textarea>
+          <select v-else-if="field.type=='reference'" v-model="item[field.name]" v-bind:readonly="!editable">
+            <option disabled value="">Select...</option>
+            <option v-for="option in reference_options[field.references]" :key="option.value" v-bind:value="option.value">
+              {{ option.text }}
+            </option>
+          </select>
+          <textarea class="textarea" v-else-if="field.type=='json'" @input="function(event){item[field.name] = parse_and_validate_json(event)}" v-bind:readonly="!editable">{{item[field.name]}}</textarea>
           <div class="error" v-if="editable && field.name in errors">{{errors[field.name]}}</div>
         </td>
       </tr>
@@ -65,8 +77,8 @@
         <tr>
           <th v-for="field in table.model" v-on:click="reorder(field)">
             {{field.label}}
-            <i v-if="mtOrder==field.name" class="fa fa-arrow-up"></i>
-            <i v-if="mtOrder=='~'+field.name" class="fa fa-arrow-down"></i>
+            <i v-if="order==field.name" class="fa fa-arrow-up"></i>
+            <i v-if="order=='~'+field.name" class="fa fa-arrow-down"></i>
           </th>
         </tr>
       </thead>
@@ -77,10 +89,15 @@
               [{{item[field.name]}}]
             </a>
             <span v-else-if="field.type=='string'" class="field-string">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='json'" class="field-string">(json)</span>
             <span v-else-if="field.type=='integer'" class="field-integer">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='double'" class="field-float">{{item[field.name]}}</span>
             <span v-else-if="field.type=='float'" class="field-float">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='decimal'" class="field-float">{{item[field.name]}}</span>
             <span v-else-if="field.type=='date'" class="field-date">{{item[field.name]}}</span>
             <span v-else-if="field.type=='time'" class="field-time">{{item[field.name]}}</span>
+            <span v-else-if="field.type=='list:integer'" class="field-string">{{JSON.stringify(item[field.name])}}</span>
+            <span v-else-if="field.type=='list:string'" class="field-string">{{JSON.stringify(item[field.name])}}</span>
             <span v-else-if="field.type=='datetime'" class="field-datetime">{{(item[field.name]||'').replace('T','@').substr(0,16)}}</span>
             <span v-else-if="field.type=='password'" class="field-password">{{item[field.name]}}</span>
             <span v-else-if="field.type=='boolean'" class="field-boolean">
@@ -94,7 +111,7 @@
           </td>
         </tr>
       </tbody>
-    </table>
+    </table>          
     <button class="button" v-if="table.count > table.items.length" v-on:click="load()">Load More</button>
   </div>
 </div>

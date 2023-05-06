@@ -165,8 +165,8 @@
                                 <td>{{ticket.app_name}}</td>
                                 <td>{{ticket.method}}</td>
                                 <td>{{ticket.path}}</td>
-                                <td><a target="blank" v-bind:href="'/_dashboard/ticket/'+ticket.uuid">{{ticket.error}}</a></td>
-                                <td><a class="button" target="blank" v-bind:href="'/_dashboard/dbadmin?app=_dashboard&dbname=db&tablename=py4web_error&filter=path%3D'+ticket.path+' and error%3D'+ticket.error">Search</a></td>
+                                <td><a target="blank" v-bind:href="'[[=URL('ticket')]]/'+ticket.uuid">{{ticket.error}}</a></td>
+                                <td><a class="button" target="blank" v-bind:href="'[[=URL('dbadmin')]]?app=_dashboard&dbname=db&tablename=py4web_error&filter=path%3D'+ticket.path+' and error%3D'+ticket.error">Search</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -253,9 +253,8 @@
 
     </div>
 </body>
-<script src="js/sugar.min.js"></script>
+<!--script src="js/sugar.min.js"></script-->
 <script src="js/vue.min.js"></script>
-<script src="js/axios.min.js"></script>
 <script src="js/ace/ace.js"></script>
 <script src="js/ace/ext-modelist.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/utils.js"></script>

@@ -285,3 +285,6 @@ label {
 .field-referenced {
   margin-right: 1em;
 }
+
+.tags-list li { display: inline-block; color: black; background: #d1d1d1; padding: 2px 5px; margin: 5px; border-radius: 5px; }
+.tags-list li[data-selected=false] { opacity: 0.5;  }

@@ -33,6 +33,7 @@ from .utils import *
 
 MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 FOLDER = os.environ["PY4WEB_APPS_FOLDER"]
+APP_NAMES = os.environ.get("PY4WEB_APP_NAMES")
 APP_FOLDER = os.path.dirname(__file__)
 T_FOLDER = os.path.join(APP_FOLDER, "translations")
 T = Translator(T_FOLDER)
@@ -187,12 +188,15 @@ if MODE in ("demo", "readonly", "full"):
     def apps():
         """Returns a list of installed apps"""
         apps = os.listdir(FOLDER)
+        print(APP_NAMES)
+        exposed_names = APP_NAMES and APP_NAMES.split(",")
         apps = [
             {"name": app, "error": Reloader.ERRORS.get(app)}
             for app in apps
             if os.path.isdir(os.path.join(FOLDER, app))
             and not app.startswith("__")
             and not app.startswith(".")
+            and (not exposed_names or app in exposed_names)
         ]
         apps.sort(key=lambda item: item["name"])
         return {"payload": apps, "status": "success"}
@@ -408,7 +412,7 @@ if MODE == "full":
     def reload(name=None):
         """Reloads installed apps"""
         Reloader.import_app(name) if name else Reloader.import_apps()
-        return "ok"
+        return {"status": "ok"}
 
     @action("save/<path:path>", method="POST")
     @session_secured
@@ -502,7 +506,10 @@ if MODE == "full":
             data = data.replace("<session-secret-key>", str(uuid.uuid4()))
             with open(settings, "w") as fp:
                 fp.write(data)
-        Reloader.import_app(app_name)
+        try:
+            Reloader.import_app(app_name)
+        except Exception:
+            pass
         return {"status": "success"}
 
     #

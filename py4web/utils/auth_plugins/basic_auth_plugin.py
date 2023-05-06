@@ -11,7 +11,7 @@ class BasicAuthPlugin:
     def __init__(self, server="127.0.0.1", table=None):
         self.server = server
 
-    def validate_credentials(self, username, password):
+    def check_credentials(self, username, password):
 
         """
         to use basic login with a different server

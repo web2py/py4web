@@ -707,11 +707,17 @@ class Session(Fixture):
         self.local.changed = True
         self.local.data[key] = value
 
+    def __contains__(self, other):
+        return other in self.get_data()
+
     def keys(self):
         return self.get_data().keys()
 
+    def items(self):
+        return self.get_data().items()
+
     def __iter__(self):
-        yield from self.get_data().items()
+        yield from self.get_data().keys()
 
     def clear(self):
         """Produces a brand-new session."""
@@ -958,7 +964,6 @@ class action:
         if self.path[0] == "/":
             path = self.path.rstrip("/") or "/"
         else:
-
             base_path = "" if app_name == "_default" else f"/{app_name}"
             path = (f"{base_path}/{self.path}").rstrip("/")
         Reloader.register_route(app_name, path, self.kwargs, func)
@@ -1270,7 +1275,11 @@ class Reloader:
             loader = importlib.machinery.SourceFileLoader("apps", path)
             loader.load_module()
         # Then load all the apps as submodules
-        for app_name in os.listdir(folder):
+        if os.environ.get("PY4WEB_APP_NAMES"):
+            app_names = os.environ.get("PY4WEB_APP_NAMES").split(",")
+        else:
+            app_names = os.listdir(folder)
+        for app_name in app_names:
             Reloader.import_app(app_name, clear_before_import=False)
 
     @staticmethod
@@ -1358,8 +1367,12 @@ class Reloader:
     @staticmethod
     def register_route(app_name, rule, kwargs, func):
         url_prefix = os.environ.get("PY4WEB_URL_PREFIX", "")
+        if url_prefix and rule == "/":
+            rule = ""
+        else:
+            rule = url_prefix + rule
         dec_func = action.catch_errors(app_name, func)
-        bottle.route(url_prefix + rule, **kwargs)(dec_func)
+        bottle.route(rule, **kwargs)(dec_func)
         filename = module2filename(func.__module__)
         methods = kwargs.get("method", ["GET"])
         if isinstance(methods, str):
@@ -1893,6 +1906,12 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     "-P", "--port", default=8000, type=int, help="Port number", show_default=True
 )
 @click.option(
+    "-A",
+    "--app_names",
+    default="",
+    help="List of apps to run (all if omitted or empty)",
+)
+@click.option(
     "-p",
     "--password_file",
     default="password.txt",
@@ -1981,6 +2000,9 @@ def run(**kwargs):
     click.secho(ART, fg="blue")
     click.echo("Py4web: %s on Python %s\n\n" % (__version__, sys.version))
 
+    # Start
+    Reloader.import_apps()
+
     # If we know where the password is stored, read it, otherwise ask for one
     if os.path.exists(os.path.join(os.environ["PY4WEB_APPS_FOLDER"], "_dashboard")):
         if kwargs["dashboard_mode"] not in ("demo", "none") and not os.path.exists(
@@ -1990,13 +2012,11 @@ def run(**kwargs):
                 'You have not set a dashboard password. Run "%s set_password" to do so.'
                 % PY4WEB_CMD
             )
-        else:
+        elif "_dashboard" in Reloader.ROUTES:
             click.echo(
                 f"Dashboard is at: http{'s' if kwargs.get('ssl_cert', None) else ''}://{kwargs['host']}:{kwargs['port']}/_dashboard"
             )
 
-    # Start
-    Reloader.import_apps()
     start_server(kwargs)
 
 
