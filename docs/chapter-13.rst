@@ -210,7 +210,7 @@ This example shows how to send an email with the two factor code:
        return code
 
 Notice that this method takes to arguments: the current user, and the code to be sent.
-Also notice thid method can override the code and return a new one.
+Also notice this method can override the code and return a new one.
 
 .. code:: python
 

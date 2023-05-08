@@ -1,4 +1,4 @@
-.PHONY: clean build docs clean-assets assets install test deploy
+.PHONY: clean docs clean-assets assets test setup run build deploy
 asset-apps := _dashboard _default _scaffold _minimal _documentation showcase
 asset-zips := $(asset-apps:%=py4web/assets/py4web.app.%.zip)
 clean:
@@ -6,9 +6,6 @@ clean:
 	find . -name '*~' -delete
 	find . -name '#*' -delete
 	rm -rf dist/*
-	python3 setup.py clean
-docs:
-	cd docs; ./updateDocs.sh all
 clean-assets:
 	rm -f py4web/assets/*
 	mkdir -p py4web/assets
@@ -17,29 +14,28 @@ py4web/assets/py4web.app.%.zip: apps/%
 	cd $< && find . | \
 	egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt|mm|ico)$$" | \
 	zip -@ $(addprefix ../../, $@)
-build: clean assets
-	python3 setup.py build
-install: build
-	python3 setup.py install
-test: build
-	python3 -m pip install -r requirements.txt
-	python3 -m pip install -r test-requirements.txt
-	python3 -m pytest --cov=py4web --cov-report html:cov.html -v -s tests/
-push: test
-	git push origin master
-deploy:
-	python3 setup.py sdist
-	twine upload dist/*
+venv:
+	python3 -m venv venv
+	venv/bin/pip install -U -r requirements.txt
+docs: venv
+	venv/bin/pip install -U -r docs/requirements.txt
+	cd docs; . ../venv/bin/activate && ./updateDocs.sh html
+test: venv
+	venv/bin/pip install -U -r test-requirements.txt
+	venv/bin/python -m pytest --cov=py4web --cov-report html:cov.html -v -s tests/
 setup:
-	./py4web.py setup apps
-	./py4web.py set_password
+	venv/bin/python py4web.py setup apps
+	venv/bin/python py4web.py set_password
 run:
-	./py4web.py run -p password.txt apps
+	venv/bin/python py4web.py run -p password.txt apps
 upgrade-utils:
 	find apps -name "utils.js" -exec cp apps/_dashboard/static/js/utils.js {} \;
-upgrade-axios:
-	curl -L https://unpkg.com/axios/dist/axios.min.js > apps/_dashboard/static/js/axios.min.js
-	find apps -name "axios.min.js" -exec cp apps/_dashboard/static/js/axios.min.js {} \;
 upgrade-vue:
 	curl -L https://unpkg.com/vue/dist/vue.min.js > apps/_dashboard/static/js/vue.min.js
 	find apps -name "vue.min.js" -exec cp apps/_dashboard/static/js/vue.min.js {} \;
+build: assets
+	python3 -m pip install --upgrade build
+	python3 -m pip install --upgrade twine
+	python3 -m build
+deploy: build
+	python3 -m twine upload dist/*

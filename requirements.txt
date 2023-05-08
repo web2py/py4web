@@ -7,13 +7,13 @@ portalocker
 tornado
 renoir >= 1.4.0
 requests
-threadsafevariable >= 1.2
+threadsafevariable >= 20230507.1
 pyjwt >= 2.0.1
 pycryptodome
-pluralize >= 0.1.9
-rocket3
-yatl >= 20230304.1
-pydal >= 20221110.1
+pluralize >= 20230507.1
+rocket3 >= 20230507.1
+yatl >= 20230507.3
+pydal >= 20230507.3
 watchgod >= 0.6
 
 # optional modules:
