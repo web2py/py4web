@@ -22,7 +22,6 @@ __all__ = (
     "safe_join",
     "list_dir",
     "recursive_unlink",
-    "sanitize",
     "tar",
     "untar",
     "pack",
@@ -87,13 +86,6 @@ def recursive_unlink(path):
         os.rmdir(path)
     elif os.path.isfile(path):
         os.unlink(path)
-
-
-def sanitize(name):
-    """Turns any expression/path into a valid filename. replaces / with _ and
-    removes special characters.
-    """
-    return re.sub(r"\W", "", re.sub("[/.-]+", "_", name))
 
 
 def _extractall(filename, path=".", members=None):

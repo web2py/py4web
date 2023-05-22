@@ -46,10 +46,11 @@ def make_safe(db):
         def wrapper():
             try:
                 return func()
-            except Exception as exp:                
+            except Exception as exp:
                 print(exp)
                 print("Warning: _dashboard trying to access a forbidden method of app")
                 return None
+
     for table in db:
         for field in table:
             if callable(field.default):
@@ -219,7 +220,7 @@ if MODE in ("demo", "readonly", "full"):
     @action("new_file/<name:re:\w+>/<file_name:path>", method="POST")
     @session_secured
     def new_file(name, file_name):
-        """asign an sanitize inputs"""
+        """creates a new file"""
         path = os.path.join(FOLDER, name)
         form = request.json
         if not os.path.exists(path):
@@ -291,8 +292,10 @@ if MODE in ("demo", "readonly", "full"):
     def packed(path):
         """Packs an app"""
         appname = path.split(".")[-2]
-        appname = sanitize(appname)
+        # some security
         app_dir = os.path.join(FOLDER, appname)
+        if "/" in path or appname.startswith(".") or not os.path.exists(app_dir):
+            raise HTTP(400)
         store = io.BytesIO()
         zip = zipfile.ZipFile(store, mode="w", compression=zipfile.ZIP_DEFLATED)
         for root, dirs, files in os.walk(app_dir, topdown=False):
@@ -358,7 +361,7 @@ if MODE in ("demo", "readonly", "full"):
         if len(args) == 1:
 
             def tables(name):
-                db = getattr(module, name)                
+                db = getattr(module, name)
                 make_safe(db)
                 return [
                     {
@@ -376,7 +379,7 @@ if MODE in ("demo", "readonly", "full"):
             }
         elif len(args) > 2 and args[1] in databases:
             db = getattr(module, args[1])
-            make_safe(db)          
+            make_safe(db)
             id = args[3] if len(args) == 4 else None
             policy = Policy()
             for table in db:
@@ -395,14 +398,17 @@ if MODE in ("demo", "readonly", "full"):
                 policy.set(table._tablename, "DELETE", authorize=True)
 
             # must wrap into action uses to make sure it closes transactions
-            data = action.uses(db)(lambda: RestAPI(db, policy)(
-                request.method, args[2], id, request.query, request.json
-            ))()
+            data = action.uses(db)(
+                lambda: RestAPI(db, policy)(
+                    request.method, args[2], id, request.query, request.json
+                )
+            )()
         else:
             data = {}
         if "code" in data:
             response.status = data["code"]
         return data
+
 
 if MODE == "full":
 
@@ -561,8 +567,10 @@ if MODE == "full":
         patch = run("git show " + commit + opt, project)
         return diff2kryten(patch)
 
+
 # handle internationalization & pluralization files
 #
+
 
 @action("translations/<name>", method="GET")
 @action.uses(Logged(session), "translations.html")
@@ -571,12 +579,14 @@ def translations(name):
     t = Translator(os.path.join(FOLDER, name, "translations"))
     return t.languages
 
+
 @action("api/translations/<name>", method="GET")
 @action.uses(Logged(session))
 def get_translations(name):
     """returns a json with all translations for all languages"""
     t = Translator(os.path.join(FOLDER, name, "translations"))
     return t.languages
+
 
 @action("api/translations/<name>", method="POST")
 @action.uses(Logged(session))
@@ -597,4 +607,4 @@ def update_translations(name):
     """find all T(...) decorated strings in the code and returns them"""
     app_folder = os.path.join(FOLDER, name)
     strings = Translator.find_matches(app_folder)
-    return {'strings': strings}
+    return {"strings": strings}
