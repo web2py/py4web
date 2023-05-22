@@ -27,7 +27,7 @@ jobs:
         run: |
             sudo apt-get install memcached libmemcached-tools
             python -m pip install --upgrade pip
-	    ls -l
+            ls -l
             python -m pip install py4web
             python -m pip install -r test-requirements.txt
       - name: Test
