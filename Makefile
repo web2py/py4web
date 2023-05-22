@@ -16,7 +16,8 @@ py4web/assets/py4web.app.%.zip: apps/%
 	zip -@ $(addprefix ../../, $@)
 venv:
 	python3 -m venv venv
-	venv/bin/pip install -U -r requirements.txt
+	venv/bin/pip install -U pip
+	venv/bin/pip install ./
 docs: venv
 	venv/bin/pip install -U -r docs/requirements.txt
 	cd docs; . ../venv/bin/activate && ./updateDocs.sh html

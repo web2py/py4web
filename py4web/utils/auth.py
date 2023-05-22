@@ -733,7 +733,6 @@ class Auth(Fixture):
         return (
             db(db.auth_user.id == user.get("id"))
             .validate_and_update(email=new_email)
-            .as_dict()
         )
 
     def update_profile(self, user, **fields):
@@ -748,7 +747,6 @@ class Auth(Fixture):
         return (
             db(db.auth_user.id == user.get("id"))
             .validate_and_update(**fields)
-            .as_dict()
         )
 
     def gdpr_unsubscribe(self, user, send=True):
@@ -1154,7 +1152,7 @@ class AuthAPI:
         if payload is None:
             return auth._error(auth.param.messages["errors"].get("no_post_payload"))
         auth.get_or_delete_existing_unverified_account(payload.get("email"))
-        return auth.register(payload, send=True).as_dict()
+        return auth.register(payload, send=True)
 
     @staticmethod
     @api_wrapper

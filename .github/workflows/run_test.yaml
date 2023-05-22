@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9, 3.10, 3.11]
 
     steps:
       - uses: actions/checkout@v2
@@ -23,16 +23,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+      - name: Install
         run: |
             sudo apt-get install memcached libmemcached-tools
             python -m pip install --upgrade pip
-            python3 -m pip install -r requirements.txt
+            python3 -m pip install ./
             python3 -m pip install -r test-requirements.txt
-      - name: build
-        run: |
-            python3 setup.py install
       - name: Test with pytest
         run: |
             python3 -m pytest --cov=py4web --cov-report html:cov.html -v -s tests/
-
