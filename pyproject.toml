@@ -1,0 +1,45 @@
+[project]
+name = "py4web"
+version = "1.20230521.1"
+authors = [{ name="Massimo Di Pierro", email="massimo.dipierro@gmail.com" },]
+description = "A fast, stable, comprehensive web framework"
+readme = "README.rst"
+requires-python = ">=3.7"
+classifiers = [
+      "Programming Language :: Python :: 3",
+      "License :: OSI Approved :: BSD License",
+      "Operating System :: OS Independent",
+]
+dependencies = [
+        "wheel",
+        "ombott >= 1.0.0",
+        "click",
+        "colorama",
+        "cryptography",
+        "portalocker",
+        "tornado",
+        "renoir >= 1.4.0",
+        "requests",
+        "threadsafevariable >= 20230507.1",
+        "pyjwt >= 2.0.1",
+        "pycryptodome",
+        "pluralize >= 20230507.1",
+        "rocket3 >= 20230507.1",
+        "yatl >= 20230507.3",
+        "pydal >= 20230521.1",
+        "watchgod >= 0.6",
+    ]
+
+[tool.setuptools]    
+packages = ["py4web", "py4web.utils", "py4web.utils.auth_plugins",]
+
+[tool.setuptools.package-data]
+py4web = ["assets/*"]
+
+[project.scripts]
+py4web = "py4web.core:cli"
+
+[project.urls]
+"Homepage" = "https://github.com/web2py/py4web"
+"Bug Tracker" = "https://github.com/web2py/py4web/issues"
+"Documentation" = "https://py4web.com"
