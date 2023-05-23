@@ -1551,6 +1551,16 @@ def watch(apps_folder, server_config, mode="sync"):
         Reloader.install_reloader_hook()
 
 
+def log_routes(apps_routes, log_file = 'routes-py4web.txt'):
+    try:
+        with open(log_file, 'w') as f:
+            f.write( '\n'.join([ v.rule if '\r' in k else ('/' + k )
+                        for k, v in sorted(apps_routes.items()) ]) )
+        print (f'{len(apps_routes)} routes written to {log_file}')
+    except OSError as ex:
+        sys.exit(ex)
+
+
 def start_server(kwargs):
     host = kwargs["host"]
     port = int(kwargs["port"])
@@ -1608,6 +1618,10 @@ def start_server(kwargs):
 
     if kwargs["watch"] != "off":
         watch(apps_folder, server_config, kwargs["watch"])
+
+    if kwargs['routes']:
+        log_routes ( bottle.default_app().routes )
+
     bottle.run(**params)
 
 
@@ -1925,6 +1939,14 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     is_flag=True,
     default=False,
     help="Suppress server output",
+    show_default=True,
+)
+@click.option(
+    "-R",
+    "--routes",
+    is_flag=True,
+    default=False,
+    help="Write apps routes to file",
     show_default=True,
 )
 @click.option(
