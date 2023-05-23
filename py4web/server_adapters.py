@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from ombott.server_adapters import ServerAdapter
 
@@ -14,6 +15,34 @@ __all__ = [
     "gevent",
 ] + wsservers_list
 
+
+def logging_conf(log_file="p4w-server.log", level = logging.WARN, ):
+
+     try:
+         i_level = int (level )
+     except ValueError:
+         i_level = logging.WARN 
+
+     # lib/python3.7/logging/__init__.py
+     # CRITICAL = 50
+     # FATAL = CRITICAL
+     # ERROR = 40
+     # WARNING = 30
+     # WARN = WARNING
+     # INFO = 20
+     # DEBUG = 10
+     # NOTSET = 0
+
+     lvs = ( logging.CRITICAL, logging.ERROR, logging.WARN, logging.INFO, logging.DEBUG, logging.NOTSET )
+
+     logging.basicConfig(
+                    filename=log_file,
+                    format="%(threadName)s | %(message)s",
+                    filemode="w",
+                    encoding="utf-8",
+                    level=i_level if i_level in lvs else logging.WARN ,
+                )
+
 def gevent():
     # basically tihis is the same as ombotts version, but
     # since reload was added as keyword argument that's being passed to the server
@@ -28,11 +57,14 @@ def gevent():
     class GeventServer(ServerAdapter):
         def run(self, handler):
             if not self.quiet:
+                logging_conf(log_file="gevent.log", level=self.options["logging_level"] )
                 self.log = logging.getLogger("gevent")
+                #self.log.addHandler(logging.StreamHandler())
             options = self.options.copy()
             try:
                 # keep only ssl options
                 del options['reloader']
+                del options["logging_level"]
             except: pass
 
             server = pywsgi.WSGIServer(
@@ -82,15 +114,10 @@ def wsgirefThreadingServer():
         def run(self, app):
 
             if not self.quiet:
-                logging.basicConfig(
-                    filename="wsgiref.log",
-                    format="%(threadName)s | %(message)s",
-                    filemode="a",
-                    encoding="utf-8",
-                    level=logging.DEBUG,
-                )
 
+                logging_conf(log_file="wsgiref.log", level=self.options["logging_level"] )
                 self.log = logging.getLogger("WSGIRef")
+                self.log.addHandler(logging.StreamHandler())
 
             self_run = self # used in internal classes to access options and logger
 
@@ -148,17 +175,13 @@ def wsgirefThreadingServer():
 
                     self.server.serve_forever()
 
-            class FixedHandler(WSGIRequestHandler):
+            class LogHandler(WSGIRequestHandler):
                 def address_string(self):  # Prevent reverse DNS lookups please.
                     return self.client_address[0]
 
                 def log_request(*args, **kw):
                     if not self_run.quiet:
                         return WSGIRequestHandler.log_request(*args, **kw)
-
-            class LogHandler(WSGIRequestHandler):
-                def address_string(self):  # Prevent reverse DNS lookups please.
-                    return self.client_address[0]
 
                 def log_message(self, format, *args):
                     if not self_run.quiet:  # and ( not args[1] in ['200', '304']) :
@@ -170,7 +193,6 @@ def wsgirefThreadingServer():
                         self_run.log.info(msg)
 
             handler_cls = self.options.get("handler_class", LogHandler)
-            #handler_cls = self.options.get("handler_class", FixedHandler)
             server_cls = Server
 
             if ":" in self.host:  # Fix wsgiref for IPv6 addresses.
@@ -190,15 +212,19 @@ def rocketServer():
         from rocket3 import Rocket3 as Rocket
     except ImportError:
         from .rocket3 import Rocket3 as Rocket
-    import logging.handlers
 
     class RocketServer(ServerAdapter):
         def run(self, app):
             if not self.quiet:
+                logging_conf(log_file="rocket.log", level=self.options["logging_level"] )
                 log = logging.getLogger("Rocket")
-                log.setLevel(logging.INFO)
                 log.addHandler(logging.StreamHandler())
-            interface = (self.host, self.port, self.options["keyfile"], self.options["certfile"]) if self.options.get("certfile", None) else (self.host, self.port)
+
+            interface = (self.host, self.port, self.options["keyfile"], self.options["certfile"]
+                    ) if all(
+                         [self.options.get("certfile", None), self.options.get("keyfile", None) ] 
+                      ) else ( self.host, self.port)
+
             server = Rocket(interface, "wsgi", dict(wsgi_app=app))
             server.start()
 
