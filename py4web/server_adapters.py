@@ -15,7 +15,7 @@ __all__ = [
 ] + wsservers_list
 
 
-def logging_conf( level, log_file="p4w-server.log"):
+def logging_conf( level, log_file="server-py4web.log"):
 
      # lib/python3.7/logging/__init__.py
      # CRITICAL = 50
@@ -55,11 +55,13 @@ def gevent():
                 self.log = logging.getLogger("gevent")
                 #self.log.addHandler(logging.StreamHandler())
             options = self.options.copy()
-            try:
-                # keep only ssl options
-                del options['reloader']
-                del options["logging_level"]
-            except: pass
+
+            # keep only ssl options
+            for e in ( 'reloader', 'logging_level', 'number_workers', 'workers' ):
+                try:
+                    del options[ e]
+                except KeyError: 
+                    pass
 
             server = pywsgi.WSGIServer(
                 (self.host, self.port),
@@ -106,12 +108,17 @@ def wsgirefThreadingServer():
 
     class WSGIRefThreadingServer(ServerAdapter):
         def run(self, app):
-
+            
             if not self.quiet:
 
                 logging_conf(self.options["logging_level"], log_file="wsgiref.log" )
                 self.log = logging.getLogger("WSGIRef")
                 self.log.addHandler(logging.StreamHandler())
+
+            try:
+                workers = self.options['workers'] if self.options['workers'] else 40
+            except KeyError:
+                workers = 40
 
             self_run = self # used in internal classes to access options and logger
 
@@ -123,7 +130,7 @@ def wsgirefThreadingServer():
 
             class ThreadingWSGIServer(PoolMixIn, WSGIServer):
                 daemon_threads = True
-                pool = ThreadPoolExecutor(max_workers=40)
+                pool = ThreadPoolExecutor(max_workers=workers)
 
             class Server:
                 def __init__(
@@ -210,14 +217,14 @@ def rocketServer():
     class RocketServer(ServerAdapter):
         def run(self, app):
             if not self.quiet:
-
+             
                 logging_conf( self.options["logging_level"], log_file="rocket.log" )
                 log = logging.getLogger("Rocket")
                 log.addHandler(logging.StreamHandler())
 
             interface = (self.host, self.port, self.options["keyfile"], self.options["certfile"]
-                    ) if ( self.options.get("certfile", None) and self.options.get("keyfile", None) 
-                      ) else ( self.host, self.port)
+                ) if ( self.options.get("certfile", None) and self.options.get("keyfile", None) 
+                ) else ( self.host, self.port)
 
             server = Rocket(interface, "wsgi", dict(wsgi_app=app))
             server.start()
