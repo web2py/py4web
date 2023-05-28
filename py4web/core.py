@@ -466,7 +466,18 @@ class Flash(Fixture):
             response.set_cookie("py4web-flash", json.dumps(self.local.flash), path="/")
         else:
             response.delete_cookie("py4web-flash", path="/")
-        context["output"] = self.transform(context["output"])
+        # if we have a valid flash message, we store it for the template to use later
+        output = context["output"]
+        flash = self.local.flash or ""
+        if isinstance(output, dict):
+            if "template_inject" in context:
+                context["template_inject"]["flash"] = flash
+            else:
+                context["template_inject"] = dict(flash=flash)
+        else:
+            if self.local.flash is not None:
+                response.headers["component-flash"] = json.dumps(flash)
+        self.local.flash = None
         self.local.__dict__.clear()
 
     def on_error(self, context):
@@ -478,17 +489,6 @@ class Flash(Fixture):
         if sanitize:
             message = yatl.sanitizer.xmlescape(message)
         self.local.flash = {"message": message, "class": _class}
-
-    def transform(self, data):
-        # if we have a valid flash message, we inject it in the response dict
-        if isinstance(data, dict):
-            if "flash" not in data:
-                data["flash"] = self.local.flash or ""
-        else:
-            if self.local.flash is not None:
-                response.headers["component-flash"] = json.dumps(self.local.flash)
-        self.local.flash = None
-        return data
 
 
 #########################################################################################
@@ -555,6 +555,7 @@ class Template(Fixture):
         output = context["output"]
         if not isinstance(output, dict):
             return output
+
         ctx = dict(request=request)
         ctx.update(HELPERS)
         ctx.update(URL=URL)
