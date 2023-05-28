@@ -936,7 +936,7 @@ class action:
             try:
                 request.app_name = app_name
                 ret = func(*func_args, **func_kwargs)
-                if isinstance(ret, dict):
+                if isinstance(ret, (list, dict)):
                     response.headers["Content-Type"] = "application/json"
                     ret = dumps(ret)
                 return ret
