@@ -14,55 +14,121 @@ __all__ = [
     "gevent",
 ] + wsservers_list
 
+def check_level(level):
+
+     # lib/python3.7/logging/__init__.py
+     # CRITICAL = 50
+     # FATAL = CRITICAL
+     # ERROR = 40
+     # WARNING = 30
+     # WARN = WARNING
+     # INFO = 20
+     # DEBUG = 10
+     # NOTSET = 0
+
+     return level if level in ( logging.CRITICAL, logging.ERROR, logging.WARN, 
+                  logging.INFO, logging.DEBUG, logging.NOTSET ) else logging.WARN
+
+def logging_conf( level, log_file="server-py4web.log"):
+
+     logging.basicConfig(
+         filename=log_file,
+         format="%(threadName)s | %(message)s",
+         filemode="w",
+         encoding="utf-8",
+         level=check_level( level ) ,
+     )
+
 def gevent():
-    # basically tihis is the same as ombotts version, but
-    # since reload was added as keyword argument that's being passed to the server
-    # this was passed as ssl_options to gevent's pywsgi.WSGIServer. This breaks gevent's api
-    # Therefor 'reloader' is removed below in the options passed to the server.
-    from gevent import pywsgi, local
-    import threading
+    # gevent version 22.10.2
+
+    from gevent import pywsgi, local # pip install gevent
+    import threading, ssl
+
     if not isinstance(threading.local(), local.local):
         msg = "Ombott requires gevent.monkey.patch_all() (before import)"
         raise RuntimeError(msg)
 
+
+    # ./py4web.py run apps --watch=off -s gevent -L 20  # look into gevent.log
+    #
+    # ./py4web.py run apps -s gevent --watch=off --port=8443 --ssl_cert=cert.pem --ssl_key=key.pem -L 0
+    # ./py4web.py run apps -s gevent --watch=off --host=192.168.1.161 --port=8443 --ssl_cert=server.pem -L 0
+
     class GeventServer(ServerAdapter):
         def run(self, handler):
+
+            logger ='default' # not None - from gevent doc
             if not self.quiet:
-                self.log = logging.getLogger("gevent")
-            options = self.options.copy()
-            try:
-                # keep only ssl options
-                del options['reloader']
-            except: pass
+          
+                logger = logging.getLogger('gevent')
+                fh = logging.FileHandler('gevent.log')
+                logger.setLevel( check_level( self.options["logging_level"] ) )
+                logger.addHandler( fh )
+                logger.addHandler(logging.StreamHandler())
+
+            certfile = self.options.get("certfile", None)
+
+            ssl_args = dict (
+                     certfile = certfile,
+                     keyfile = self.options.get("keyfile", None),
+                     ssl_version=ssl.PROTOCOL_SSLv23,
+                     server_side= True,
+                     do_handshake_on_connect=False,
+                ) if certfile else dict()
 
             server = pywsgi.WSGIServer(
                 (self.host, self.port),
                 handler,
-                **options
+                log=logger, error_log=logger,
+                **ssl_args
             )
+
             server.serve_forever()
 
     return GeventServer
 
 
 def geventWebSocketServer():
-    from gevent import pywsgi
-    from geventwebsocket.handler import WebSocketHandler
-    from geventwebsocket.logging import create_logger
+    from gevent import pywsgi  # pip install gevent gevent-websocket
+    from geventwebsocket.handler import WebSocketHandler 
+    # from geventwebsocket.logging import create_logger # it does not work for me
+  
+    # ./py4web.py run apps -s geventWebSocketServer --watch=off --host=127.0.0.1 --port=8000 -L 10
+    # vi apps/_websocket/templates/index.html    ws host port
+    # firefox http://localhost:8000/_websocket
+
+    # >>> geventwebsocket.get_version()
+    # '0.10.1'
+    # >>> gevent.__version__
+    # '22.10.2'
 
     class GeventWebSocketServer(ServerAdapter):
         def run(self, handler):
+
+            #ssl_args = self.options.copy()
+            # keep only ssl options
+            #for e in ( 'reloader', 'logging_level', 'number_workers', 'workers' ):
+            #    try:
+            #        del ssl_args[ e]
+            #    except KeyError:
+            #        pass
+
+            ssl_args = dict()
+
+            logger='default' # not None !! from gevent doc
+            if not self.quiet:
+                logging_conf(self.options["logging_level"], 'gevent-ws.log' )
+                logger = logging.getLogger("geventwebsocket.logging")
+                logger.addHandler(logging.StreamHandler())
+
             server = pywsgi.WSGIServer(
                 (self.host, self.port),
                 handler,
                 handler_class=WebSocketHandler,
-                **self.options
+                log=logger, error_log=logger,
+                **ssl_args
             )
-
-            if not self.quiet:
-                server.logger = create_logger("geventwebsocket.logging")
-                server.logger.setLevel(logging.INFO)
-                server.logger.addHandler(logging.StreamHandler())
 
             server.serve_forever()
 
@@ -75,22 +141,21 @@ def wsgirefThreadingServer():
     import socket, ssl
     from concurrent.futures import ThreadPoolExecutor  # pip install futures
     from socketserver import ThreadingMixIn
-    from wsgiref.simple_server import (WSGIRequestHandler, WSGIServer,
-                                       make_server)
+    from wsgiref.simple_server import (WSGIRequestHandler, WSGIServer, make_server)
 
     class WSGIRefThreadingServer(ServerAdapter):
         def run(self, app):
-
+            
             if not self.quiet:
-                logging.basicConfig(
-                    filename="wsgiref.log",
-                    format="%(threadName)s | %(message)s",
-                    filemode="a",
-                    encoding="utf-8",
-                    level=logging.DEBUG,
-                )
 
+                logging_conf(self.options["logging_level"], )
                 self.log = logging.getLogger("WSGIRef")
+                self.log.addHandler(logging.StreamHandler())
+
+            try:
+                workers = self.options['workers'] if self.options['workers'] else 40
+            except KeyError:
+                workers = 40
 
             self_run = self # used in internal classes to access options and logger
 
@@ -102,7 +167,7 @@ def wsgirefThreadingServer():
 
             class ThreadingWSGIServer(PoolMixIn, WSGIServer):
                 daemon_threads = True
-                pool = ThreadPoolExecutor(max_workers=40)
+                pool = ThreadPoolExecutor(max_workers=workers)
 
             class Server:
                 def __init__(
@@ -127,6 +192,7 @@ def wsgirefThreadingServer():
                         self.handler_cls,
                     )
 
+                    # openssl req -newkey rsa:4096 -new -x509 -keyout server.pem -out server.pem -days 365 -nodes
                     # openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
                     # ./py4web.py run apps -s wsgirefThreadingServer --watch=off --port=8443 --ssl_cert=cert.pem --ssl_key=key.pem
                     # openssl s_client -showcerts -connect 127.0.0.1:8443
@@ -134,7 +200,6 @@ def wsgirefThreadingServer():
                     certfile = self_run.options.get("certfile", None)
 
                     if certfile:
-                        try:                     
                             self.server.socket = ssl.wrap_socket (
                                 self.server.socket,
                                 certfile = certfile,
@@ -143,22 +208,16 @@ def wsgirefThreadingServer():
                                 server_side= True,
                                 do_handshake_on_connect=False,
                             )
-                        except ssl.SSLError: 
-                            pass
 
                     self.server.serve_forever()
 
-            class FixedHandler(WSGIRequestHandler):
+            class LogHandler(WSGIRequestHandler):
                 def address_string(self):  # Prevent reverse DNS lookups please.
                     return self.client_address[0]
 
                 def log_request(*args, **kw):
                     if not self_run.quiet:
                         return WSGIRequestHandler.log_request(*args, **kw)
-
-            class LogHandler(WSGIRequestHandler):
-                def address_string(self):  # Prevent reverse DNS lookups please.
-                    return self.client_address[0]
 
                 def log_message(self, format, *args):
                     if not self_run.quiet:  # and ( not args[1] in ['200', '304']) :
@@ -170,7 +229,6 @@ def wsgirefThreadingServer():
                         self_run.log.info(msg)
 
             handler_cls = self.options.get("handler_class", LogHandler)
-            #handler_cls = self.options.get("handler_class", FixedHandler)
             server_cls = Server
 
             if ":" in self.host:  # Fix wsgiref for IPv6 addresses.
@@ -190,15 +248,20 @@ def rocketServer():
         from rocket3 import Rocket3 as Rocket
     except ImportError:
         from .rocket3 import Rocket3 as Rocket
-    import logging.handlers
 
     class RocketServer(ServerAdapter):
         def run(self, app):
+
             if not self.quiet:
+             
+                logging_conf( self.options["logging_level"], )
                 log = logging.getLogger("Rocket")
-                log.setLevel(logging.INFO)
                 log.addHandler(logging.StreamHandler())
-            interface = (self.host, self.port, self.options["keyfile"], self.options["certfile"]) if self.options.get("certfile", None) else (self.host, self.port)
+
+            interface = (self.host, self.port, self.options["keyfile"], self.options["certfile"]
+                ) if ( self.options.get("certfile", None) and self.options.get("keyfile", None) 
+                ) else ( self.host, self.port)
+
             server = Rocket(interface, "wsgi", dict(wsgi_app=app))
             server.start()
 

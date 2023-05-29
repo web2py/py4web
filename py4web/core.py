@@ -1558,7 +1558,8 @@ def start_server(kwargs):
     apps_folder = kwargs["apps_folder"]
     number_workers = kwargs["number_workers"]
     quiet = kwargs["quiet"]
-    params = dict(host=host, port=port, reloader=False, quiet=quiet)
+    logging_level = kwargs["logging_level"]
+    params = dict(host=host, port=port, reloader=False, quiet=quiet, logging_level=logging_level )
     server_config = dict(
         platform=platform.system().lower(),
         server=None if kwargs["server"] == "default" else kwargs["server"],
