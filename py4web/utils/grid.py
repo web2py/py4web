@@ -512,7 +512,10 @@ class Grid:
             fullpath = request.fullpath.rstrip("/")
             if path == "index":
                 fullpath = fullpath[:-6]
-            redirect(fullpath + "/select")
+            redirect(
+                f"{fullpath}/select"
+                + (f"?{request.query_string}" if request.query_string else "")
+            )
 
         # in case the query is a Table insteance
         if isinstance(query, query._db.Table):
