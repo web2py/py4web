@@ -5,14 +5,16 @@
     <style>
         li { list-style: none; }
     </style>
-     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+     <!-- script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script -->
 </head>
 <body>
-    <h2>Py4web Websockets!
+    <h2>Py4web Websockets with ssl!
         (original: <a href = "https://github.com/zeekay/bottle-websocket/tree/master/examples/echo">
           https://github.com/zeekay/bottle-websocket
         </a>)
     </h2>
+    <p>./py4web.py run apps -s geventWebSocketServer --watch=off --ssl_cert=server.pem --host=192.168.1.161 --port=9000 -L 10</p>
     <form id="send" action='#'>
         <input type="text" value="message" />
         <input type="submit" value="Send" />
@@ -27,6 +29,7 @@
                     $('#messages').append("<li>Your browser doesn't support WebSockets.</li>");
                 }
             }
+            //ws = new WebSocket('wss://192.168.1.161:9000/_websocket/websocket');
             ws = new WebSocket('ws://127.0.0.1:8000/_websocket/websocket');
             ws.onopen = function(evt) {
                 $('#messages').append('<li>WebSocket connection opened.</li>');
