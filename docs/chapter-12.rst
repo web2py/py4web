@@ -1100,7 +1100,7 @@ To force a filled-in form checkbox (such as an acceptance of terms and condition
 
 .. code:: python
     
-    requires=IS_IN_SET(['on'])
+    requires=IS_IN_SET(['ON'])
 
 
 Dictionaries and tuples with IS_IN_SET
