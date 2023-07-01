@@ -21,10 +21,11 @@ class recaptcha_fixture(Fixture):
             var field = document.querySelector("input[name=g_recaptcha_response]");
             if(field) {
               field.hidden = true;
+              field.setAttribute("type", "hidden");           
               var form =  document.querySelector(".auth-container form");
               var button = form.querySelector("input[type=submit]");
               window.recaptcha_submit = function(token){ form.submit(); };
-              button.setAttribute("class", "g-recaptcha");
+              button.classList.add("g-recaptcha");
               button.setAttribute("data-action", "submit");
               button.setAttribute("data-callback", "recaptcha_submit");
               button.setAttribute("data-sitekey", "%s");
@@ -32,6 +33,8 @@ class recaptcha_fixture(Fixture):
             </script>
             <script src="https://www.google.com/recaptcha/api.js"></script>
             """.split('\n')));
+            if context["output"] is None:
+                context["output"] = {}
             context["output"]["recaptcha"] = XML(script % self.api_key)
 
 
