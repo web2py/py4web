@@ -39,6 +39,12 @@ def logging_conf( level, log_file="server-py4web.log"):
          level=check_level( level ) ,
      )
 
+def get_workers(opts, default = 10):
+    try:
+        return opts['workers'] if opts['workers'] else default
+    except KeyError:
+        return default
+
 def gevent():
     # gevent version 22.10.2
 
@@ -62,7 +68,7 @@ def gevent():
             if not self.quiet:
           
                 logger = logging.getLogger('gevent')
-                fh = logging.FileHandler('gevent.log')
+                fh = logging.FileHandler('server-py4web.log')
                 logger.setLevel( check_level( self.options["logging_level"] ) )
                 logger.addHandler( fh )
                 logger.addHandler(logging.StreamHandler())
@@ -90,37 +96,40 @@ def gevent():
 
 
 def geventWebSocketServer():
-    from gevent import pywsgi  # pip install gevent gevent-websocket
-    from geventwebsocket.handler import WebSocketHandler 
-    # from geventwebsocket.logging import create_logger # it does not work for me
-  
-    # ./py4web.py run apps -s geventWebSocketServer --watch=off --host=127.0.0.1 --port=8000 -L 10
-    # vi apps/_websocket/templates/index.html    ws host port
-    # firefox http://localhost:8000/_websocket
+    from gevent import pywsgi  # pip install gevent gevent-ws
+    #from geventwebsocket.handler import WebSocketHandler # pip install gevent-websocket
+    from gevent_ws import WebSocketHandler
+    import ssl
 
-    # >>> geventwebsocket.get_version()
-    # '0.10.1'
-    # >>> gevent.__version__
-    # '22.10.2'
+    # https://stackoverflow.com/questions/5312311/secure-websockets-with-self-signed-certificate
+
+    # https://pypi.org/project/gevent-ws/
+    # ./py4web.py run apps -s geventWebSocketServer --watch=off --ssl_cert=server.pem -H 192.168.1.161 -P 9000 -L 10
+
+    # vi apps/_websocket/templates/index.html    set: ws, wss, host, port
+    # firefox http://localhost:8000/_websocket
+    # firefox https://192.168.1.161:9000/_websocket  test wss
+
+    # curl --insecure -I -H 'Upgrade: websocket' \
+    #   -H "Sec-WebSocket-Key: `openssl rand -base64 16`" \
+    #   -H 'Sec-WebSocket-Version: 13' \
+    #   -sSv  https://192.168.1.161:9000/
+
 
     class GeventWebSocketServer(ServerAdapter):
         def run(self, handler):
-
-            #ssl_args = self.options.copy()
-            # keep only ssl options
-            #for e in ( 'reloader', 'logging_level', 'number_workers', 'workers' ):
-            #    try:
-            #        del ssl_args[ e]
-            #    except KeyError:
-            #        pass
-
-            ssl_args = dict()
-
             logger='default' # not None !! from gevent doc
             if not self.quiet:
-                logging_conf(self.options["logging_level"], 'gevent-ws.log' )
-                logger = logging.getLogger("geventwebsocket.logging")
+                logging_conf(self.options["logging_level"], )
+                logger = logging.getLogger("gevent-ws")
                 logger.addHandler(logging.StreamHandler())
+
+            certfile = self.options.get("certfile", None)
+
+            ssl_args = dict (
+                     certfile = certfile,
+                     keyfile = self.options.get("keyfile", None),
+                ) if certfile else dict()
 
             server = pywsgi.WSGIServer(
                 (self.host, self.port),
@@ -152,11 +161,6 @@ def wsgirefThreadingServer():
                 self.log = logging.getLogger("WSGIRef")
                 self.log.addHandler(logging.StreamHandler())
 
-            try:
-                workers = self.options['workers'] if self.options['workers'] else 40
-            except KeyError:
-                workers = 40
-
             self_run = self # used in internal classes to access options and logger
 
             class PoolMixIn(ThreadingMixIn):
@@ -167,7 +171,7 @@ def wsgirefThreadingServer():
 
             class ThreadingWSGIServer(PoolMixIn, WSGIServer):
                 daemon_threads = True
-                pool = ThreadPoolExecutor(max_workers=workers)
+                pool = ThreadPoolExecutor(max_workers=get_workers(self.options, default = 40))
 
             class Server:
                 def __init__(
