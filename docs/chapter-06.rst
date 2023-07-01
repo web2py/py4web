@@ -974,7 +974,7 @@ convenience decorators:
 
 ::
 
-   @unauthenticated
+   @unauthenticated()
    def index():
        return dict()
 
@@ -982,7 +982,7 @@ and
 
 ::
 
-   @authenticated
+   @authenticated()
    def index():
        return dict()
 

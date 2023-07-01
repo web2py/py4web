@@ -25,6 +25,7 @@ You'll obtain the standard py4web app running with the Rocket web server and
 listening on http://localhost:8000
 
 Optional:
+
     # this is needed for providing a password in order to use the Dashboard
     $ docker exec -it mypy4web py4web set_password
     # then restart the container
