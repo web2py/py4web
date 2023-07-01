@@ -731,7 +731,7 @@ class Grid:
                 table,
                 record=record,
                 readonly=readonly,
-                deletable=self.param.deletable,
+                deletable=self.is_deletable(record),
                 formstyle=self.param.formstyle,
                 validation=self.param.validation,
                 show_id=self.param.show_id,
