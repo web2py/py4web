@@ -603,10 +603,16 @@ class Grid:
         return self.param.details
 
     def is_deletable(self, row):
+        # cannot delete a record that does not exist
+        if row is None:
+            return False
+        # cannot delete if the a record is grouped
         if self.param.groupby:
             return False
+        # if deletable is callable, call it
         if callable(self.param.deletable):
             return self.param.deletable(row)
+        # if deletable is boolean, check it
         return self.param.deletable
 
     def process(self):
