@@ -730,9 +730,8 @@ class Auth(Fixture):
             return {
                 "errors": {"password": self.param.messages["errors"].get("invalid")}
             }
-        return (
-            db(db.auth_user.id == user.get("id"))
-            .validate_and_update(email=new_email)
+        return db(db.auth_user.id == user.get("id")).validate_and_update(
+            email=new_email
         )
 
     def update_profile(self, user, **fields):
@@ -744,10 +743,7 @@ class Auth(Fixture):
         }
         if errors:
             return {"errors": errors}
-        return (
-            db(db.auth_user.id == user.get("id"))
-            .validate_and_update(**fields)
-        )
+        return db(db.auth_user.id == user.get("id")).validate_and_update(**fields)
 
     def gdpr_unsubscribe(self, user, send=True):
         """GDPR unsubscribe means we delete first_name, last_name,

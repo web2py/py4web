@@ -19,4 +19,3 @@ class OAuth2Github(OAuth2):
         "email": "email",
         "sso_id": "url",
     }
-

@@ -1,6 +1,6 @@
 class JsonRpc:
     """implements the jsonrpc server 2.0 protocol"""
-    
+
     def __init__(self):
         self.methods = {}
 

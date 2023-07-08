@@ -17,7 +17,10 @@ class recaptcha_fixture(Fixture):
 
     def on_success(self, context):
         if context:
-            script = "".join(map(lambda line: line.strip(), """<script>
+            script = "".join(
+                map(
+                    lambda line: line.strip(),
+                    """<script>
             var field = document.querySelector("input[name=g_recaptcha_response]");
             if(field) {
               field.hidden = true;
@@ -32,7 +35,11 @@ class recaptcha_fixture(Fixture):
             }
             </script>
             <script src="https://www.google.com/recaptcha/api.js"></script>
-            """.split('\n')));
+            """.split(
+                        "\n"
+                    ),
+                )
+            )
             if context["output"] is None:
                 context["output"] = {}
             context["output"]["recaptcha"] = XML(script % self.api_key)

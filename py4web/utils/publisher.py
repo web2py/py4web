@@ -10,7 +10,7 @@ MTABLE = '<mtable url="{url}" filter="" order="" :editable="true" :deletable="tr
 
 class Publisher:
 
-    """ this is a work in progress - API subject to change """
+    """this is a work in progress - API subject to change"""
 
     def __init__(self, db, policy=None, auth=None, path="service/{uuid}/<tablename>"):
         self.db = db
