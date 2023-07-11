@@ -63,7 +63,7 @@ def run(command, project):
     """for runing git commands inside an app (project)"""
     return subprocess.check_output(
         command.split(), cwd=os.path.join(FOLDER, project)
-    ).decode()
+    ).decode(errors="ignore")
 
 
 def get_commits(project):
@@ -277,7 +277,7 @@ if MODE in ("demo", "readonly", "full"):
     def load(path):
         """Loads a text file"""
         path = safe_join(FOLDER, path) or abort()
-        content = open(path, "rb").read().decode("utf8")
+        content = open(path, "rb").read().decode("utf8", errors="ignore")
         return {"payload": content, "status": "success"}
 
     @action("load_bytes/<path:path>")
