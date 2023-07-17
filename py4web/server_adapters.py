@@ -1,4 +1,4 @@
-import logging, ssl, os
+import logging, ssl, os, platform
 
 from ombott.server_adapters import ServerAdapter
 
@@ -13,6 +13,14 @@ __all__ = [
     "wsgirefThreadingServer",
     "rocketServer",
 ] + wsservers_list
+
+
+def log_file_path(log_file = 'server-py4web.log'):
+    if platform.system() == 'Linux':
+        return os.path.join('/tmp', log_file)
+    else:
+        return log_file
+        # return os.path.join("c:/", "Users", log_file)
 
 
 def check_level(level):
@@ -45,7 +53,7 @@ def check_level(level):
 def logging_conf(level, log_file="server-py4web.log"):
 
     logging.basicConfig(
-        filename=os.path.join("/tmp",log_file),
+        filename=log_file_path(),
         format="%(threadName)s | %(message)s",
         filemode="w",
         encoding="utf-8",
@@ -80,7 +88,7 @@ def gevent():
 
             logger = "default"  # not None 
             if not self.quiet:
-                gevent_log = os.path.join( "/tmp", "server-py4web.log")
+                gevent_log = log_file_path() 
                 logger = logging.getLogger("gevent")
                 fh = logging.FileHandler( gevent_log )
                 logger.setLevel(check_level(self.options["logging_level"]))

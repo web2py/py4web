@@ -1553,9 +1553,9 @@ def watch(apps_folder, server_config, mode="sync"):
 
 
 def log_routes(apps_routes, log_file="routes-py4web.txt"):
-    tmp_log_file = os.path.join("/tmp",log_file )
+    log_file_path = os.path.join("/tmp",log_file ) if platform.system() == 'Linux' else log_file
     try:
-        with open(tmp_log_file, "w") as f:
+        with open(log_file_path, "w") as f:
             f.write(
                 "\n".join(
                     [
@@ -1564,7 +1564,7 @@ def log_routes(apps_routes, log_file="routes-py4web.txt"):
                     ]
                 )
             )
-        print(f"{len(apps_routes)} routes written to {tmp_log_file}")
+        print(f"{len(apps_routes)} routes written to {log_file_path}")
     except OSError as ex:
         sys.exit(ex)
 
