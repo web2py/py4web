@@ -1553,7 +1553,8 @@ def watch(apps_folder, server_config, mode="sync"):
 
 
 def log_routes(apps_routes, out_file="routes-py4web.txt"):
-    path_out_file = os.path.join('/tmp', out_file)
+    tmp = os.environ.get("TEMPDIR", "/tmp")
+    path_out_file = os.path.join(tmp, out_file)
     try:
         with open(path_out_file, "w") as f:
             f.write(
