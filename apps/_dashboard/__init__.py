@@ -2,6 +2,7 @@ import base64
 import copy
 import datetime
 import io
+import json
 import os
 import shutil
 import subprocess
@@ -10,23 +11,15 @@ import uuid
 import zipfile
 
 import requests
+from pydal.restapi import Policy, RestAPI
 from pydal.validators import CRYPT
 
 import py4web
-from py4web import (
-    HTTP,
-    URL,
-    Translator,
-    __version__,
-    abort,
-    action,
-    redirect,
-    request,
-    response,
-)
-from py4web.core import Fixture, Reloader, Session, dumps, error_logger, safely, DAL
+from py4web import (HTTP, URL, Translator, __version__, abort, action,
+                    redirect, request, response)
+from py4web.core import (DAL, Fixture, Reloader, Session, dumps, error_logger,
+                         safely)
 from py4web.utils.factories import ActionFactory
-from pydal.restapi import RestAPI, Policy
 
 from .diff2kryten import diff2kryten
 from .utils import *
@@ -426,8 +419,9 @@ if MODE == "full":
         """Saves a file"""
         app_name = path.split("/")[0]
         path = safe_join(FOLDER, path) or abort()
-        with open(path, "wb") as myfile:
-            myfile.write(request.body.read())
+        with open(path, "w") as myfile:
+            body = json.load(request.body)
+            myfile.write(body)
         if reload_app:
             Reloader.import_app(app_name)
         return {"status": "success"}
