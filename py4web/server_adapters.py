@@ -1,4 +1,4 @@
-import logging
+import logging, ssl, os
 
 from ombott.server_adapters import ServerAdapter
 
@@ -8,10 +8,10 @@ except ImportError:
     wsservers_list = []
 
 __all__ = [
+    "gevent",
     "geventWebSocketServer",
     "wsgirefThreadingServer",
     "rocketServer",
-    "gevent",
 ] + wsservers_list
 
 
@@ -41,16 +41,25 @@ def check_level(level):
         else logging.WARN
     )
 
+def logging_conf(level, log_file="server-py4web.log" ):
 
-def logging_conf(level, log_file="server-py4web.log"):
+    # export PY4WEB_LOGS=/tmp # set log_file directory
 
-    logging.basicConfig(
-        filename=log_file,
-        format="%(threadName)s | %(message)s",
-        filemode="w",
-        encoding="utf-8",
-        level=check_level(level),
-    )
+    log_dir = os.environ.get('PY4WEB_LOGS', None)
+
+    log_param = {
+            "filename":os.path.join( log_dir, log_file ),
+            "filemode":"w",
+            "format":"%(threadName)s | %(message)s",
+            "encoding":"utf-8",
+            "level":check_level(level),
+        } if log_dir else {
+            "format":"%(threadName)s | %(message)s",
+            "encoding":"utf-8",
+            "level":check_level(level),
+        }
+
+    logging.basicConfig(**log_param)
 
 
 def get_workers(opts, default=10):
@@ -64,13 +73,13 @@ def gevent():
     # gevent version 22.10.2
 
     from gevent import pywsgi, local  # pip install gevent
-    import threading, ssl
+    import threading
 
     if not isinstance(threading.local(), local.local):
         msg = "Ombott requires gevent.monkey.patch_all() (before import)"
         raise RuntimeError(msg)
 
-    # ./py4web.py run apps --watch=off -s gevent -L 20  # look into gevent.log
+    # ./py4web.py run apps --watch=off -s gevent -L 20  
     #
     # ./py4web.py run apps -s gevent --watch=off --port=8443 --ssl_cert=cert.pem --ssl_key=key.pem -L 0
     # ./py4web.py run apps -s gevent --watch=off --host=192.168.1.161 --port=8443 --ssl_cert=server.pem -L 0
@@ -82,7 +91,10 @@ def gevent():
             if not self.quiet:
 
                 logger = logging.getLogger("gevent")
-                fh = logging.FileHandler("server-py4web.log")
+                log_dir = os.environ.get('PY4WEB_LOGS', None)
+                fh = logging.FileHandler() if not log_dir else ( 
+                       logging.FileHandler( os.path.join(log_dir, "server-py4web.log") )
+                       )
                 logger.setLevel(check_level(self.options["logging_level"]))
                 logger.addHandler(fh)
                 logger.addHandler(logging.StreamHandler())
@@ -115,11 +127,10 @@ def gevent():
 
 
 def geventWebSocketServer():
-    from gevent import pywsgi  # pip install gevent gevent-ws
+    from gevent import pywsgi  
 
     # from geventwebsocket.handler import WebSocketHandler # pip install gevent-websocket
-    from gevent_ws import WebSocketHandler
-    import ssl
+    from gevent_ws import WebSocketHandler # pip install gevent gevent-ws
 
     # https://stackoverflow.com/questions/5312311/secure-websockets-with-self-signed-certificate
 
@@ -173,7 +184,7 @@ def geventWebSocketServer():
 def wsgirefThreadingServer():
     # https://www.electricmonk.nl/log/2016/02/15/multithreaded-dev-web-server-for-the-python-bottle-web-framework/
 
-    import socket, ssl
+    import socket
     from concurrent.futures import ThreadPoolExecutor  # pip install futures
     from socketserver import ThreadingMixIn
     from wsgiref.simple_server import WSGIRequestHandler, WSGIServer, make_server

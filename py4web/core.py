@@ -1552,9 +1552,11 @@ def watch(apps_folder, server_config, mode="sync"):
         Reloader.install_reloader_hook()
 
 
-def log_routes(apps_routes, log_file="routes-py4web.txt"):
+def log_routes(apps_routes, out_file="routes-py4web.txt"):
+    tmp = os.environ.get("TEMPDIR", "/tmp")
+    path_out_file = os.path.join(tmp, out_file)
     try:
-        with open(log_file, "w") as f:
+        with open(path_out_file, "w") as f:
             f.write(
                 "\n".join(
                     [
@@ -1563,7 +1565,7 @@ def log_routes(apps_routes, log_file="routes-py4web.txt"):
                     ]
                 )
             )
-        print(f"{len(apps_routes)} routes written to {log_file}")
+        print(f"{len(apps_routes)} routes written to {path_out_file}")
     except OSError as ex:
         sys.exit(ex)
 
