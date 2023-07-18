@@ -1,4 +1,4 @@
-import logging, ssl
+import logging, ssl, os
 
 from ombott.server_adapters import ServerAdapter
 
@@ -8,10 +8,10 @@ except ImportError:
     wsservers_list = []
 
 __all__ = [
+    "gevent",
     "geventWebSocketServer",
     "wsgirefThreadingServer",
     "rocketServer",
-    "gevent",
 ] + wsservers_list
 
 
@@ -41,16 +41,25 @@ def check_level(level):
         else logging.WARN
     )
 
+def logging_conf(level, log_file="server-py4web.log" ):
 
-def logging_conf(level, log_file="server-py4web.log"):
+    # export PY4WEB_LOGS=/tmp # set log_file directory
 
-    logging.basicConfig(
-        #filename=log_file,
-        format="%(threadName)s | %(message)s",
-        #filemode="w",
-        encoding="utf-8",
-        level=check_level(level),
-    )
+    log_dir = os.environ.get('PY4WEB_LOGS', None)
+
+    log_param = {
+            "filename":os.path.join( log_dir, log_file ),
+            "filemode":"w",
+            "format":"%(threadName)s | %(message)s",
+            "encoding":"utf-8",
+            "level":check_level(level),
+        } if log_dir else {
+            "format":"%(threadName)s | %(message)s",
+            "encoding":"utf-8",
+            "level":check_level(level),
+        }
+
+    logging.basicConfig(**log_param)
 
 
 def get_workers(opts, default=10):
@@ -82,7 +91,10 @@ def gevent():
             if not self.quiet:
 
                 logger = logging.getLogger("gevent")
-                fh = logging.FileHandler()
+                log_dir = os.environ.get('PY4WEB_LOGS', None)
+                fh = logging.FileHandler() if not log_dir else ( 
+                       logging.FileHandler( os.path.join(log_dir, "server-py4web.log") )
+                       )
                 logger.setLevel(check_level(self.options["logging_level"]))
                 logger.addHandler(fh)
                 logger.addHandler(logging.StreamHandler())
