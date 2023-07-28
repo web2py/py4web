@@ -30,6 +30,14 @@ class OAuth2GoogleScoped(object):
                  define_tables=True, delete_credentials_on_logout=True):
         """
         Creates an authorization object for Google with Oauth2 and paramters.
+
+        There are some differences between this plugin and other Oauth2 plugins:
+        - The plugin uses the database, and creates an auth_credentials table to
+          store the credentials for the scopes requested.
+        - The plugin relies on some google libraries (see on top), so these
+          need to be installed.
+        - The plugin takes in input a .json credentials file that can be
+          downloaded from Google Cloud when creating the OAuth2 credentials.
         Args:
             secrets_file: file with secrets for Oauth2.
             scopes: scopes desired.
