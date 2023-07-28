@@ -1500,7 +1500,7 @@ class Grid:
                 else self.total_number_of_rows,
                 self.total_number_of_rows,
             )
-        ) if self.number_of_pages > 0 else row_count.append("No rows to display")
+        ) if self.number_of_pages > 0 else row_count.append(self.T("No rows to display"))
         footer.append(row_count)
 
         #  build the pager
