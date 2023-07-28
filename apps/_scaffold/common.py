@@ -134,6 +134,17 @@ if settings.OAUTH2GOOGLE_CLIENT_ID:
         )
     )
 
+if settings.OAUTH2GOOGLE_SCOPED_CREDENTIALS_FILE:
+    from py4web.utils.auth_plugins.oauth2google_scoped import OAuth2GoogleScoped # TESTED
+
+    auth.register_plugin(
+        OAuth2GoogleScoped(
+            secrets_file=settings.OAUTH2GOOGLE_SCOPED_CREDENTIALS_FILE,
+            scopes=[], # Put here any scopes you want in addition to login
+            db=db, # Needed to store credentials in auth_credentials
+        )
+    )
+
 if settings.OAUTH2GITHUB_CLIENT_ID:
     from py4web.utils.auth_plugins.oauth2github import OAuth2Github  # TESTED
 
@@ -172,10 +183,10 @@ if settings.OAUTH2OKTA_CLIENT_ID:
 # files uploaded and reference by Field(type='upload')
 # #######################################################
 if settings.UPLOAD_FOLDER:
-    @action('download/<filename>')                                                   
-    @action.uses(db)                                                                                           
+    @action('download/<filename>')
+    @action.uses(db)
     def download(filename):
-        return downloader(db, settings.UPLOAD_FOLDER, filename) 
+        return downloader(db, settings.UPLOAD_FOLDER, filename)
     # To take advantage of this in Form(s)
     # for every field of type upload you MUST specify:
     #
