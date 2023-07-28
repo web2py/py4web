@@ -1,4 +1,6 @@
-import logging, ssl, os
+import logging
+import os
+import ssl
 
 from ombott.server_adapters import ServerAdapter
 
@@ -41,23 +43,28 @@ def check_level(level):
         else logging.WARN
     )
 
-def logging_conf(level, log_file="server-py4web.log" ):
+
+def logging_conf(level, log_file="server-py4web.log"):
 
     # export PY4WEB_LOGS=/tmp # set log_file directory
 
-    log_dir = os.environ.get('PY4WEB_LOGS', None)
+    log_dir = os.environ.get("PY4WEB_LOGS", None)
 
-    log_param = {
-            "filename":os.path.join( log_dir, log_file ),
-            "filemode":"w",
-            "format":"%(threadName)s | %(message)s",
-            "encoding":"utf-8",
-            "level":check_level(level),
-        } if log_dir else {
-            "format":"%(threadName)s | %(message)s",
-            "encoding":"utf-8",
-            "level":check_level(level),
+    log_param = (
+        {
+            "filename": os.path.join(log_dir, log_file),
+            "filemode": "w",
+            "format": "%(message)s > %(threadName)s",
+            "encoding": "utf-8",
+            "level": check_level(level),
         }
+        if log_dir
+        else {
+            "format": "%(message)s > %(threadName)s",
+            "encoding": "utf-8",
+            "level": check_level(level),
+        }
+    )
 
     logging.basicConfig(**log_param)
 
@@ -72,14 +79,15 @@ def get_workers(opts, default=10):
 def gevent():
     # gevent version 22.10.2
 
-    from gevent import pywsgi, local  # pip install gevent
     import threading
+
+    from gevent import local, pywsgi  # pip install gevent
 
     if not isinstance(threading.local(), local.local):
         msg = "Ombott requires gevent.monkey.patch_all() (before import)"
         raise RuntimeError(msg)
 
-    # ./py4web.py run apps --watch=off -s gevent -L 20  
+    # ./py4web.py run apps --watch=off -s gevent -L 20
     #
     # ./py4web.py run apps -s gevent --watch=off --port=8443 --ssl_cert=cert.pem --ssl_key=key.pem -L 0
     # ./py4web.py run apps -s gevent --watch=off --host=192.168.1.161 --port=8443 --ssl_cert=server.pem -L 0
@@ -91,10 +99,14 @@ def gevent():
             if not self.quiet:
 
                 logger = logging.getLogger("gevent")
-                log_dir = os.environ.get('PY4WEB_LOGS', None)
-                fh = logging.FileHandler() if not log_dir else ( 
-                       logging.FileHandler( os.path.join(log_dir, "server-py4web.log") )
-                       )
+                log_dir = os.environ.get("PY4WEB_LOGS", None)
+                fh = (
+                    logging.FileHandler(None)
+                    if not log_dir
+                    else (
+                        logging.FileHandler(os.path.join(log_dir, "server-py4web.log"))
+                    )
+                )
                 logger.setLevel(check_level(self.options["logging_level"]))
                 logger.addHandler(fh)
                 logger.addHandler(logging.StreamHandler())
@@ -127,20 +139,17 @@ def gevent():
 
 
 def geventWebSocketServer():
-    from gevent import pywsgi  
+    from gevent import pywsgi
 
     # from geventwebsocket.handler import WebSocketHandler # pip install gevent-websocket
-    from gevent_ws import WebSocketHandler # pip install gevent gevent-ws
+    from gevent_ws import WebSocketHandler  # pip install gevent gevent-ws
 
     # https://stackoverflow.com/questions/5312311/secure-websockets-with-self-signed-certificate
-
     # https://pypi.org/project/gevent-ws/
     # ./py4web.py run apps -s geventWebSocketServer --watch=off --ssl_cert=server.pem -H 192.168.1.161 -P 9000 -L 10
-
     # vi apps/_websocket/templates/index.html    set: ws, wss, host, port
     # firefox http://localhost:8000/_websocket
     # firefox https://192.168.1.161:9000/_websocket  test wss
-
     # curl --insecure -I -H 'Upgrade: websocket' \
     #   -H "Sec-WebSocket-Key: `openssl rand -base64 16`" \
     #   -H 'Sec-WebSocket-Version: 13' \
@@ -154,7 +163,6 @@ def geventWebSocketServer():
                     self.options["logging_level"],
                 )
                 logger = logging.getLogger("gevent-ws")
-                logger.addHandler(logging.StreamHandler())
 
             certfile = self.options.get("certfile", None)
 
@@ -198,7 +206,6 @@ def wsgirefThreadingServer():
                     self.options["logging_level"],
                 )
                 self.log = logging.getLogger("WSGIRef")
-                self.log.addHandler(logging.StreamHandler())
 
             self_run = self  # used in internal classes to access options and logger
 
@@ -260,9 +267,9 @@ def wsgirefThreadingServer():
                 def address_string(self):  # Prevent reverse DNS lookups please.
                     return self.client_address[0]
 
-                def log_request(*args, **kw):
+                def log_request(self, *args, **kw):
                     if not self_run.quiet:
-                        return WSGIRequestHandler.log_request(*args, **kw)
+                        return WSGIRequestHandler.log_request(self, *args, **kw)
 
                 def log_message(self, format, *args):
                     if not self_run.quiet:  # and ( not args[1] in ['200', '304']) :
@@ -279,8 +286,10 @@ def wsgirefThreadingServer():
             if ":" in self.host:  # Fix wsgiref for IPv6 addresses.
                 if getattr(server_cls, "address_family") == socket.AF_INET:
 
-                    class server_cls(server_cls):
+                    class ServerClass(Server):
                         address_family = socket.AF_INET6
+
+                    server_cls = ServerClass
 
             srv = make_server(self.host, self.port, app, server_cls, handler_cls)
             srv.serve_forever()
@@ -302,8 +311,6 @@ def rocketServer():
                 logging_conf(
                     self.options["logging_level"],
                 )
-                log = logging.getLogger("Rocket")
-                log.addHandler(logging.StreamHandler())
 
             interface = (
                 (
