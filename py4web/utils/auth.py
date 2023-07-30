@@ -127,9 +127,7 @@ class AuthEnforcer(Fixture):
             and time_now - activity > self.auth.param.login_expiration_time
         ):
             del self.auth.session["user"]
-            self.goto_login(message="Login expired")
-            # Otherwise, uses the normal login.
-            self.abort_or_redirect("login", "Login expired")
+        self.goto_login(message="Login expired")
         # record the time of the latest activity for logged in user (with throttling)
         if not activity or time_now - activity > 6:
             self.auth.session["recent_activity"] = time_now
