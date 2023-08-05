@@ -54,20 +54,20 @@ class OAuth2GoogleScoped(object):
 
         # Local secrets to be able to access.
         assert secrets_file is not None, "Missing secrets file"
-        self.secrets_file = secrets_file
+        self._secrets_file = secrets_file
         # Scopes for which we ask authorization
         scopes = scopes or []
-        self.scopes = ["openid",
+        self._scopes = ["openid",
                        "https://www.googleapis.com/auth/userinfo.email",
                        "https://www.googleapis.com/auth/userinfo.profile"] + scopes
-        self.db = db
+        self._db = db
         if db and define_tables:
             self._define_tables()
-            self.delete_credentials_on_logout = delete_credentials_on_logout
+            self._delete_credentials_on_logout = delete_credentials_on_logout
 
 
     def _define_tables(self):
-        self.db.define_table('auth_credentials', [
+        self._db.define_table('auth_credentials', [
             Field('email'),
             Field('name'), # First and last names, all together.
             Field('profile_pic'), # URL of profile pic.
@@ -79,16 +79,16 @@ class OAuth2GoogleScoped(object):
         """Handles the login request or the callback."""
         if path == "login":
             auth.session["_next"] = request.query.get("next") or URL("index")
-            redirect(self.get_login_url(auth))
+            redirect(self._get_login_url(auth))
         elif path == "callback":
             self._handle_callback(auth, get_vars)
         elif path == "logout":
             # Deletes the credentials, and clears the session.
-            if self.delete_credentials_on_logout:
+            if self._delete_credentials_on_logout:
                 email = auth.current_user.get('email') if auth.current_user else None
                 if email is not None:
-                    self.db(self.db.auth_credentials.email == email).delete()
-                    self.db.commit()
+                    self._db(self._db.auth_credentials.email == email).delete()
+                    self._db.commit()
             auth.session.clear()
             next = request.query.get("next") or URL("index")
             redirect(next)
@@ -96,10 +96,10 @@ class OAuth2GoogleScoped(object):
             raise HTTP(404)
 
 
-    def get_login_url(self, auth, state=None):
+    def _get_login_url(self, auth, state=None):
         # Creates a flow.
         flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-            self.secrets_file, scopes=self.scopes)
+            self._secrets_file, scopes=self._scopes)
         # Sets its callback URL.  This is the local URL that will be called
         # once the user gives permission.
         """Returns the URL to which the user is directed."""
@@ -117,7 +117,7 @@ class OAuth2GoogleScoped(object):
         # Builds a flow again, this time with the state in it.
         state = auth.session["oauth2googlescoped:state"]
         flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-            self.secrets_file, scopes=self.scopes, state=state)
+            self._secrets_file, scopes=self._scopes, state=state)
         flow.redirect_uri = URL(self.callback_url, scheme=True)
         # Use the authorization server's response to fetch the OAuth 2.0 tokens.
         if state and get_vars.get('state', None) != state:
@@ -147,16 +147,16 @@ class OAuth2GoogleScoped(object):
             raise HTTP(401, "Missing email")
         # Finally, we store the credentials, so we can re-use them in order
         # to use the scopes we requested.
-        if self.db:
+        if self._db:
             credentials_json=json.dumps(self.credentials_to_dict(credentials))
-            self.db.auth_credentials.update_or_insert(
-                self.db.auth_credentials.email == email,
+            self._db.auth_credentials.update_or_insert(
+                self._db.auth_credentials.email == email,
                 email=email,
                 name=user_info.get("name"),
                 credentials=credentials_json,
                 profile_pic=user_info.get("picture"),
             )
-            self.db.commit()
+            self._db.commit()
         # Logs in the user.
         if auth.db:
             user = {
@@ -192,7 +192,7 @@ class OAuth2GoogleScoped(object):
                 'token_uri': credentials.token_uri,
                 'client_id': credentials.client_id,
                 'client_secret': credentials.client_secret,
-                'scopes': credentials.scopes}
+                'scopes': credentials._scopes}
 
     @staticmethod
     def credentials_from_dict(credentials_dict):
