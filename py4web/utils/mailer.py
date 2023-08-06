@@ -189,19 +189,15 @@ class Mailer:
                 if filename is None:
                     raise Exception("Missing attachment name")
                 payload = payload.read()
-            # FIXME PY3 can be used to_native?
-            filename = filename.encode(encoding)
             if content_type is None:
-                content_type = mimetypes.guess_type(filename)
+                content_type = mimetypes.guess_type(filename)[0]
             self.my_filename = filename
             self.my_payload = payload
             MIMEBase.__init__(self, *content_type.split("/", 1))
             self.set_payload(payload)
-            self["Content-Disposition"] = 'attachment; filename="%s"' % to_native(
-                filename, encoding
-            )
+            self["Content-Disposition"] = f'attachment; filename="{filename}"'
             if content_id is not None:
-                self["Content-Id"] = "<%s>" % to_native(content_id, encoding)
+                self["Content-Id"] = f"<{content_id}>"
             Encoders.encode_base64(self)
 
     def __init__(self, server=None, sender=None, login=None, tls=True, ssl=False):
