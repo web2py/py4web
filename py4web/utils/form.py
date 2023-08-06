@@ -852,7 +852,6 @@ class Form(object):
                         self.vars.update(validated_vars)
                         if dbio:
                             self.update_or_insert(validated_vars)
-                        self.clear()
                 elif dbio:
                     self.deleted = True
                     self.record.delete_record()
@@ -919,21 +918,24 @@ class Form(object):
             # warning, should we really insert if record
             self.vars["id"] = self.table.insert(**validated_vars)
 
-    def clear(self):
-        self.errors.clear()
+    def clear(self, vars, errors):
+        errors.clear()
         if not self.record and not self.keep_values:
-            self.vars.clear()
+            vars.clear()
             for field in self.table:
-                self.vars[field.name] = (
+                vars[field.name] = (
                     field.default() if callable(field.default) else field.default
                 )
 
     def helper(self):
+        vars, errors = copy.copy(self.vars), copy.copy(self.errors)
+        if self.accepted:
+            self.clear(vars, errors)
         if not self.cached_helper:
             helper = self.param.formstyle(
                 self.table,
-                self.vars,
-                self.errors,
+                vars,
+                errors,
                 self.readonly,
                 self.deletable,
                 self.noncreate,
