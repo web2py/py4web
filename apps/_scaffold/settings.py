@@ -32,11 +32,11 @@ VERIFY_EMAIL = True
 REQUIRES_APPROVAL = False
 
 # auto login after registration
-# requires False VERIFY_EMAIL & REQUIRES_APPROVAL 
+# requires False VERIFY_EMAIL & REQUIRES_APPROVAL
 LOGIN_AFTER_REGISTRATION = False
 
 # ALLOWED_ACTIONS in API / default Forms:
-# ["all"] 
+# ["all"]
 # ["login", "logout", "request_reset_password", "reset_password", \
 #  "change_password", "change_email", "profile", "config", "register",
 #  "verify_email", "unsubscribe"]
@@ -67,6 +67,10 @@ DEFAULT_LOGIN_ENABLED = True
 # single sign on Google (will be used if provided)
 OAUTH2GOOGLE_CLIENT_ID = None
 OAUTH2GOOGLE_CLIENT_SECRET = None
+
+# Single sign on Google, with stored credentials for scopes (will be used if provided).
+# set it to something like os.path.join(APP_FOLDER, "private/credentials.json"
+OAUTH2GOOGLE_SCOPED_CREDENTIALS_FILE = None
 
 # single sign on Okta (will be used if provided. Please also add your tenant
 # name to py4web/utils/auth_plugins/oauth2okta.py. You can replace the XXX

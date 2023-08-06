@@ -92,13 +92,32 @@ class AuthEnforcer(Fixture):
             )
         )
 
+    def goto_login(self, message=""):
+        """Goes to the proper login page."""
+        # If a plugin can handle requests, redirects to the login url for the login.
+        for plugin in self.auth.plugins.values():
+            if hasattr(plugin, "handle_request"):
+                if re.search(REGEX_APPJSON,
+                             request.headers.get("accept", "")) and (
+                        request.headers.get("json-redirects", "") != "on"
+                ):
+                    raise HTTP(403)
+                redirect_next = request.fullpath
+                if request.query_string:
+                    redirect_next = redirect_next + "?{}".format(request.query_string)
+                redirect(
+                    URL(self.auth.route, "plugin", plugin.name, "login",
+                        vars=dict(next=redirect_next)))
+        # Otherwise, uses the normal login.
+        self.abort_or_redirect("login", message=message)
+
     def on_request(self, context):
         """Checks that we have a user in the session and
         the condition is met"""
         user = self.auth.session.get("user")
         if not user or not user.get("id"):
             self.auth.session["recent_activity"] = None
-            self.abort_or_redirect("login", "User not logged in")
+            self.goto_login(message="User not logged in")
         activity = self.auth.session.get("recent_activity")
         time_now = calendar.timegm(time.gmtime())
         # enforce the optionl auth session expiration time
@@ -108,7 +127,7 @@ class AuthEnforcer(Fixture):
             and time_now - activity > self.auth.param.login_expiration_time
         ):
             del self.auth.session["user"]
-            self.abort_or_redirect("login", "Login expired")
+            self.goto_login(message="Login expired")
         # record the time of the latest activity for logged in user (with throttling)
         if not activity or time_now - activity > 6:
             self.auth.session["recent_activity"] = time_now
@@ -1183,6 +1202,7 @@ class AuthAPI:
                 data = auth._error(
                     auth.param.messages["errors"].get("invalid_credentials")
                 )
+
         # Else use normal login
         else:
             user, error = auth.login(username, password)
