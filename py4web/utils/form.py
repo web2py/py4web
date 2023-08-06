@@ -852,6 +852,7 @@ class Form(object):
                         self.vars.update(validated_vars)
                         if dbio:
                             self.update_or_insert(validated_vars)
+                        self.clear()
                 elif dbio:
                     self.deleted = True
                     self.record.delete_record()
@@ -928,8 +929,6 @@ class Form(object):
                 )
 
     def helper(self):
-        if self.accepted:
-            self.clear()
         if not self.cached_helper:
             helper = self.param.formstyle(
                 self.table,
