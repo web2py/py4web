@@ -33,6 +33,7 @@ if MODE == "full":
     from .examples.auth_form import auth_form
     from .examples.auth_forms import auth_forms
     from .examples.create_form import create_form
+    from .examples.update_form import update_form
     from .examples.custom_form import custom_form
     from .examples.example_ajax_grid import example_ajax_grid
     from .examples.example_html_grid import example_html_grid
@@ -42,7 +43,6 @@ if MODE == "full":
     from .examples.show_a_button import show_a_button
     from .examples.socketio import index as socketio
     from .examples.test_expose import test_expose1, test_expose2, test_expose3
-    from .examples.update_form import update_form
     from .vue_components_examples.vue_view_form import vue_view_form
     from .vue_components_examples.vue_insert_form import vue_insert_form
     from .vue_components_examples.vue_edit_form import vue_edit_form
@@ -59,6 +59,8 @@ def index():
 @action("show/<name:path>")
 @action.uses("show.html")
 def show(name):
+    path = name
+    name = name.rstrip("/0123456789")
     data = []
     filename = f"apps/showcase/{name}.md"
     if os.path.exists(filename):
@@ -89,8 +91,8 @@ def show(name):
         filename = other[1:].replace(".", "/") + ".py"
         with open(f"apps/showcase/{filename}") as stream:
             content = stream.read().strip()
-            data.append({"name": filename, "content": content, "language": "python"})
+            data.append({"shortname": filename, "content": content, "language": "python"})
     # drop the subfolder name
-    name = "/".join(name.split("/")[1:])
+    path = "/".join(path.split("/")[1:])
     executable = MODE == "full" or name in globals()
-    return {"files": data, "mode": MODE, "name": name, "executable": executable}
+    return {"files": data, "mode": MODE, "path": path, "executable": executable}
