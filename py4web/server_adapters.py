@@ -50,21 +50,18 @@ def logging_conf(level, log_file="server-py4web.log"):
 
     log_dir = os.environ.get("PY4WEB_LOGS", None)
 
-    log_param = (
-        {
-            "filename": os.path.join(log_dir, log_file),
-            "filemode": "w",
-            "format": "%(message)s > %(threadName)s",
-            "encoding": "utf-8",
-            "level": check_level(level),
+    log_param = {
+            "format":"%(threadName)s | %(message)s",
+            "level":check_level(level),
         }
-        if log_dir
-        else {
-            "format": "%(message)s > %(threadName)s",
-            "encoding": "utf-8",
-            "level": check_level(level),
-        }
-    )
+
+    if log_dir:
+        h = logging.FileHandler( 
+                  os.path.join( log_dir, log_file), 
+                  mode = "w",
+                  encoding = "utf-8"
+                  )
+        log_param.update( {"handlers": [h]} )
 
     logging.basicConfig(**log_param)
 
