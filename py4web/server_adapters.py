@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 import ssl
 
 from ombott.server_adapters import ServerAdapter
@@ -15,6 +16,50 @@ __all__ = [
     "wsgirefThreadingServer",
     "rocketServer",
 ] + wsservers_list
+
+# export PY4WEB_LOGS=/tmp # export PY4WEB_LOGS=
+LOG_DIR = os.environ.get("PY4WEB_LOGS", None)
+LOG_FILE = os.path.join (LOG_DIR, 'server-py4web.log') if LOG_DIR else None
+
+
+"""
+# how to write to server-py4web.log from controllers.py
+# controllers.py
+
+import logging
+from .common import logger
+from .settings import APP_NAME
+
+__srv_log=None
+
+def log_info(mess, dbg=True, ):
+    def salog(pat='SA:'):
+        global __srv_log
+        if __srv_log: # and isinstance( __srv_log, logging.Logger ):
+           return __srv_log
+        hs= [e for e in logging.root.manager.loggerDict if e.startswith(pat) ]
+        if len(hs) == 0:
+            return logger
+        __srv_log = logging.getLogger(hs[0])
+        return __srv_log
+
+    dbg and salog().info(str(mess))
+
+log_warn=log_info
+log_debug=log_info
+
+
+@action('index')
+@action.uses('index.html', auth, T, )
+def index():
+
+    log_warn('5'* 30 + ' ' +APP_NAME)
+    log_info('7'* 30 + ' ' +APP_NAME)
+    log_debug('9'* 30 + ' ' +APP_NAME)
+
+    ....
+
+"""
 
 
 def check_level(level):
@@ -44,29 +89,34 @@ def check_level(level):
     )
 
 
-def logging_conf(level, log_file="server-py4web.log"):
+def logging_conf(level):
 
-    # export PY4WEB_LOGS=/tmp # set log_file directory
+    global LOG_FILE
+    log_to = dict()
 
-    log_dir = os.environ.get("PY4WEB_LOGS", None)
-
-    log_param = (
-        {
-            "filename": os.path.join(log_dir, log_file),
+    if LOG_FILE:
+        log_to = {
+            "filename": LOG_FILE,
             "filemode": "w",
-            "format": "%(message)s > %(threadName)s",
-            "encoding": "utf-8",
-            "level": check_level(level),
         }
-        if log_dir
-        else {
-            "format": "%(message)s > %(threadName)s",
-            "encoding": "utf-8",
-            "level": check_level(level),
-        }
-    )
 
-    logging.basicConfig(**log_param)
+        if sys.version_info >= (3, 9):
+            log_to["encoding"] = "utf-8"
+
+        print(f"PY4WEB_LOGS={LOG_DIR}, open {LOG_FILE}")
+
+    _short = "%(message)s > %(threadName)s > %(asctime)s.%(msecs)03d"
+    #_long = _short + " > %(funcName)s > %(filename)s:%(lineno)d > %(levelname)s"
+
+    _time = '%H:%M:%S'
+    #_date_time = '%Y-%m-%d %H:%M:%S'
+
+    logging.basicConfig(
+        format=_short,
+        datefmt=_time,
+        level=check_level(level),
+        **log_to,
+    )
 
 
 def get_workers(opts, default=10):
@@ -95,21 +145,19 @@ def gevent():
     class GeventServer(ServerAdapter):
         def run(self, handler):
 
+            global LOG_FILE
             logger = "default"  # not None - from gevent doc
-            if not self.quiet:
 
-                logger = logging.getLogger("gevent")
-                log_dir = os.environ.get("PY4WEB_LOGS", None)
+            if not self.quiet:
+                logger = logging.getLogger("SA:gevent")
                 fh = (
-                    logging.FileHandler(None)
-                    if not log_dir
-                    else (
-                        logging.FileHandler(os.path.join(log_dir, "server-py4web.log"))
-                    )
+                    logging.FileHandler()
+                    if not LOG_FILE
+                    else logging.FileHandler(LOG_FILE)
                 )
                 logger.setLevel(check_level(self.options["logging_level"]))
                 logger.addHandler(fh)
-                logger.addHandler(logging.StreamHandler())
+                logger.propagate = True
 
             certfile = self.options.get("certfile", None)
 
@@ -162,7 +210,8 @@ def geventWebSocketServer():
                 logging_conf(
                     self.options["logging_level"],
                 )
-                logger = logging.getLogger("gevent-ws")
+                logger = logging.getLogger("SA:gevent-ws")
+                logger.propagate = True
 
             certfile = self.options.get("certfile", None)
 
@@ -200,12 +249,14 @@ def wsgirefThreadingServer():
     class WSGIRefThreadingServer(ServerAdapter):
         def run(self, app):
 
+            self.log = None
             if not self.quiet:
 
                 logging_conf(
                     self.options["logging_level"],
                 )
-                self.log = logging.getLogger("WSGIRef")
+                self.log = logging.getLogger("SA:wsgiref")
+                self.log.propagate = True
 
             self_run = self  # used in internal classes to access options and logger
 
@@ -280,7 +331,7 @@ def wsgirefThreadingServer():
                         )
                         self_run.log.info(msg)
 
-            handler_cls = self.options.get("handler_class", LogHandler)
+            #handler_cls = self.options.get("handler_class", LogHandler)
             server_cls = Server
 
             if ":" in self.host:  # Fix wsgiref for IPv6 addresses.
@@ -291,7 +342,7 @@ def wsgirefThreadingServer():
 
                     server_cls = ServerClass
 
-            srv = make_server(self.host, self.port, app, server_cls, handler_cls)
+            srv = make_server(self.host, self.port, app, server_cls, LogHandler) #handler_cls)
             srv.serve_forever()
 
     return WSGIRefThreadingServer
@@ -311,6 +362,8 @@ def rocketServer():
                 logging_conf(
                     self.options["logging_level"],
                 )
+                logger = logging.getLogger("SA:Rocket")
+                logger.propagate = True
 
             interface = (
                 (
