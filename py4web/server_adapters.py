@@ -18,8 +18,8 @@ __all__ = [
 ] + wsservers_list
 
 # export PY4WEB_LOGS=/tmp # export PY4WEB_LOGS=
-LOG_DIR = os.environ.get("PY4WEB_LOGS", None)
-LOG_FILE = os.path.join (LOG_DIR, 'server-py4web.log') if LOG_DIR else None
+_LOG_DIR = os.environ.get("PY4WEB_LOGS", None)
+_LOG_FILE = os.path.join (_LOG_DIR, 'server-py4web.log') if _LOG_DIR else None
 
 
 """
@@ -91,29 +91,26 @@ def check_level(level):
 
 def logging_conf(level):
 
-    global LOG_FILE
+    global _LOG_FILE
     log_to = dict()
 
-    if LOG_FILE:
-        log_to = {
-            "filename": LOG_FILE,
-            "filemode": "w",
-        }
-
+    if _LOG_FILE:
+        log_to["filename"] = _LOG_FILE
+        log_to["filemode"] = "w"
         if sys.version_info >= (3, 9):
             log_to["encoding"] = "utf-8"
 
-        print(f"PY4WEB_LOGS={LOG_DIR}, open {LOG_FILE}")
+        print(f"PY4WEB_LOGS={_LOG_DIR}, open {_LOG_FILE}")
 
-    _short = "%(message)s > %(threadName)s > %(asctime)s.%(msecs)03d"
-    #_long = _short + " > %(funcName)s > %(filename)s:%(lineno)d > %(levelname)s"
+    short_fmt = "%(message)s > %(threadName)s > %(asctime)s.%(msecs)03d"
+    #long_fmt = short_fmt + " > %(funcName)s > %(filename)s:%(lineno)d > %(levelname)s"
 
-    _time = '%H:%M:%S'
-    #_date_time = '%Y-%m-%d %H:%M:%S'
+    time_fmt = '%H:%M:%S'
+    #date_time_fmt = '%Y-%m-%d %H:%M:%S'
 
     logging.basicConfig(
-        format=_short,
-        datefmt=_time,
+        format=short_fmt,
+        datefmt=time_fmt,
         level=check_level(level),
         **log_to,
     )
@@ -145,15 +142,15 @@ def gevent():
     class GeventServer(ServerAdapter):
         def run(self, handler):
 
-            global LOG_FILE
+            global _LOG_FILE
             logger = "default"  # not None - from gevent doc
 
             if not self.quiet:
                 logger = logging.getLogger("SA:gevent")
                 fh = (
                     logging.FileHandler()
-                    if not LOG_FILE
-                    else logging.FileHandler(LOG_FILE)
+                    if not _LOG_FILE
+                    else logging.FileHandler(_LOG_FILE)
                 )
                 logger.setLevel(check_level(self.options["logging_level"]))
                 logger.addHandler(fh)
