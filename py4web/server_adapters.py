@@ -21,11 +21,11 @@ __all__ = [
 
 # export PY4WEB_LOGS=/tmp # export PY4WEB_LOGS=
 def get_log_file():
-    LOG_DIR = os.environ.get("PY4WEB_LOGS", None)
-    LOG_FILE = os.path.join (LOG_DIR, 'server-py4web.log') if LOG_DIR else None
-    if LOG_FILE:
-        print(f"log_file: {LOG_FILE}")
-    return LOG_FILE 
+    log_dir = os.environ.get("PY4WEB_LOGS", None)
+    log_file = os.path.join (log_dir, 'server-py4web.log') if log_dir else None
+    if log_file:
+        print(f"log_file: {log_file}")
+    return log_file 
 
 
 def check_level(level):
@@ -57,36 +57,40 @@ def check_level(level):
 
 def logging_conf(level=logging.WARN, logger_name=__name__):
 
-    LOG_FILE = get_log_file()
+    log_file = get_log_file()
     log_to = dict()
 
-    if LOG_FILE:
+    if log_file:
 
         if sys.version_info >= (3, 9):
-            log_to["filename" ] = LOG_FILE
+            log_to["filename" ] = log_file
             log_to["filemode" ] = "w"
             log_to["encoding"] = "utf-8"
+
         else: # sys.version_info < (3, 9)
             
             h = logging.FileHandler(
-                  LOG_FILE,
+                  log_file,
                   mode = "w",
                   encoding = "utf-8"
                   )
             log_to.update( {"handlers": [h]} )
-
 
     short_msg = "%(message)s > %(threadName)s > %(asctime)s.%(msecs)03d"
     #long_msg = short_msg + " > %(funcName)s > %(filename)s:%(lineno)d > %(levelname)s"
 
     time_msg = '%H:%M:%S'
     #date_time_msg = '%Y-%m-%d %H:%M:%S'
+
     logging.basicConfig(
         format=short_msg,
         datefmt=time_msg,
         level=check_level(level),
         **log_to,
     )
+
+    if logger_name is None:
+        return None
 
     logger_name = "SA:" + logger_name
     log = logging.getLogger(logger_name)
@@ -109,7 +113,6 @@ def gevent():
     # gevent version 23.7.0
 
     import threading
-
     from gevent import local, pywsgi  # pip install gevent
 
     if not isinstance(threading.local(), local.local):
@@ -122,8 +125,8 @@ def gevent():
     # ./py4web.py run apps -s gevent --watch=off --host=192.168.1.161 --port=8443 --ssl_cert=server.pem -L 0
 
     class GeventServer(ServerAdapter):
-        def run(self, handler):
-            LOG_FILE = get_log_file()
+        def run(self, app_handler):
+            log_file = get_log_file()
 
             logger = "default"  
 
@@ -131,8 +134,8 @@ def gevent():
                 logger = logging.getLogger("SA:gevent")
                 fh = (
                     logging.FileHandler()
-                    if not LOG_FILE
-                    else logging.FileHandler(LOG_FILE, mode='w')
+                    if not log_file
+                    else logging.FileHandler(log_file, mode='w')
                 )
                 logger.setLevel(check_level(self.options["logging_level"]))
                 logger.addHandler(fh)
@@ -155,7 +158,7 @@ def gevent():
 
             server = pywsgi.WSGIServer(
                 (self.host, self.port),
-                handler,
+                app_handler,
                 log=logger,
                 error_log=logger,
                 **ssl_args
@@ -184,7 +187,7 @@ def geventWebSocketServer():
     #   -sSv  https://192.168.1.161:9000/
 
     class GeventWebSocketServer(ServerAdapter):
-        def run(self, handler):
+        def run(self, app_handler):
             logger = "default"  
 
             if not self.quiet:
@@ -206,7 +209,7 @@ def geventWebSocketServer():
 
             server = pywsgi.WSGIServer(
                 (self.host, self.port),
-                handler,
+                app_handler,
                 handler_class=WebSocketHandler,
                 log=logger,
                 error_log=logger,
@@ -227,7 +230,9 @@ def wsgirefThreadingServer():
     from wsgiref.simple_server import WSGIRequestHandler, WSGIServer, make_server
 
     class WSGIRefThreadingServer(ServerAdapter):
-        def run(self, app):
+        def run(self, app_handler):
+
+            self.log = None
 
             if not self.quiet:
                 self.log = logging_conf(
@@ -318,7 +323,7 @@ def wsgirefThreadingServer():
 
                     server_cls = ServerClass
 
-            srv = make_server(self.host, self.port, app, server_cls, LogHandler ) # handler_cls)
+            srv = make_server(self.host, self.port, app_handler, server_cls, LogHandler ) # handler_cls)
             srv.serve_forever()
 
     return WSGIRefThreadingServer
@@ -331,7 +336,7 @@ def rocketServer():
         from .rocket3 import Rocket3 as Rocket
 
     class RocketServer(ServerAdapter):
-        def run(self, app):
+        def run(self, app_handler):
 
             if not self.quiet:
 
@@ -353,7 +358,7 @@ def rocketServer():
                 else (self.host, self.port)
             )
 
-            server = Rocket(interface, "wsgi", dict(wsgi_app=app))
+            server = Rocket(interface, "wsgi", dict(wsgi_app=app_handler))
             server.start()
 
     return RocketServer
@@ -370,20 +375,19 @@ from .settings import APP_NAME
 from threading import Lock
 
 
-_sa_lock = Lock()
 _srv_log=None
 def log_info(mess, dbg=True, ):
     def salog(pat='SA:'):
-        global _srv_log, _sa_lock
-        if _srv_log: # and isinstance( _srv_log, logging.Logger ):
+        global _srv_log
+        if _srv_log and isinstance( _srv_log, logging.Logger ):
            return _srv_log
         hs= [e for e in logging.root.manager.loggerDict if e.startswith(pat) ]
         if len(hs) == 0:
             return logger
 
-        _sa_lock.acquire()
-        _srv_log = logging.getLogger(hs[0])
-        _sa_lock.release()
+        sa_lock = Lock()
+        with sa_lock:
+            _srv_log = logging.getLogger(hs[0])
 
         return _srv_log
 
