@@ -61,14 +61,11 @@ def logging_conf(level=logging.WARN, logger_name=__name__):
     log_to = dict()
 
     if log_file:
-
         if sys.version_info >= (3, 9):
             log_to["filename" ] = log_file
             log_to["filemode" ] = "w"
             log_to["encoding"] = "utf-8"
-
         else: 
-            
             h = logging.FileHandler(
                   log_file,
                   mode = "w",
@@ -83,29 +80,23 @@ def logging_conf(level=logging.WARN, logger_name=__name__):
     #date_time_msg = '%Y-%m-%d %H:%M:%S'
 
     try:
-
         logging.basicConfig(
             format=short_msg,
             datefmt=time_msg,
             level=check_level(level),
             **log_to,
         )
-
-    except ( OSError, KeyError, ValueError ) as ex:
+    except ( OSError, LookupError, KeyError, ValueError ) as ex:
         print(f"{ex}, {__file__}")
         print(f'cannot open {log_file}')
-        logging.basicConfig( level=check_level(level),)
+        logging.basicConfig( level=check_level(level))
 
     if logger_name is None:
         return None
 
-    logger_name = "SA:" + logger_name
-    log = logging.getLogger(logger_name)
+    log = logging.getLogger("SA:" + logger_name)
     log.propagate = True
 
-    log.info( f'info start logger {logger_name}' )
-    log.warn( f'warn start logger {logger_name}' )
-    log.debug( f'debug start logger {logger_name}' )
     return log
 
 
