@@ -1551,12 +1551,21 @@ def watch(apps_folder, server_config, mode="sync"):
     if mode == "lazy":
         Reloader.install_reloader_hook()
 
-def log_routes(apps_routes, log_file = 'routes-py4web.txt'):
+
+def log_routes(apps_routes, out_file="routes-py4web.txt"):
+    tmp = os.environ.get("TEMPDIR", "/tmp")
+    path_out_file = os.path.join(tmp, out_file)
     try:
-        with open(log_file, 'w') as f:
-            f.write( '\n'.join([ v.rule if '\r' in k else ('/' + k )
-                        for k, v in sorted(apps_routes.items()) ]) )
-        print (f'{len(apps_routes)} routes written to {log_file}')
+        with open(path_out_file, "w") as f:
+            f.write(
+                "\n".join(
+                    [
+                        v.rule if "\r" in k else ("/" + k)
+                        for k, v in sorted(apps_routes.items())
+                    ]
+                )
+            )
+        print(f"{len(apps_routes)} routes written to {path_out_file}")
     except OSError as ex:
         sys.exit(ex)
 
@@ -1568,7 +1577,9 @@ def start_server(kwargs):
     number_workers = kwargs["number_workers"]
     quiet = kwargs["quiet"]
     logging_level = kwargs["logging_level"]
-    params = dict(host=host, port=port, reloader=False, quiet=quiet, logging_level=logging_level )
+    params = dict(
+        host=host, port=port, reloader=False, quiet=quiet, logging_level=logging_level
+    )
     server_config = dict(
         platform=platform.system().lower(),
         server=None if kwargs["server"] == "default" else kwargs["server"],
@@ -1619,8 +1630,8 @@ def start_server(kwargs):
     if kwargs["watch"] != "off":
         watch(apps_folder, server_config, kwargs["watch"])
 
-    if kwargs['routes']:
-        log_routes ( bottle.default_app().routes )
+    if kwargs["routes"]:
+        log_routes(bottle.default_app().routes)
 
     bottle.run(**params)
 

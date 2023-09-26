@@ -118,7 +118,7 @@ class URLSigner(Fixture):
 
     @property
     def local(self):
-        return self._safe_local        
+        return self._safe_local
 
     def on_request(self, context):
         """Creates the signing key if necessary."""

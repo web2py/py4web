@@ -603,10 +603,16 @@ class Grid:
         return self.param.details
 
     def is_deletable(self, row):
+        # cannot delete a record that does not exist
+        if row is None:
+            return False
+        # cannot delete if the a record is grouped
         if self.param.groupby:
             return False
+        # if deletable is callable, call it
         if callable(self.param.deletable):
             return self.param.deletable(row)
+        # if deletable is boolean, check it
         return self.param.deletable
 
     def process(self):
@@ -731,7 +737,7 @@ class Grid:
                 table,
                 record=record,
                 readonly=readonly,
-                deletable=self.param.deletable,
+                deletable=self.is_deletable(record),
                 formstyle=self.param.formstyle,
                 validation=self.param.validation,
                 show_id=self.param.show_id,
@@ -1494,7 +1500,7 @@ class Grid:
                 else self.total_number_of_rows,
                 self.total_number_of_rows,
             )
-        ) if self.number_of_pages > 0 else row_count.append("No rows to display")
+        ) if self.number_of_pages > 0 else row_count.append(self.T("No rows to display"))
         footer.append(row_count)
 
         #  build the pager

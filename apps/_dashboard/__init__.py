@@ -2,6 +2,7 @@ import base64
 import copy
 import datetime
 import io
+import json
 import os
 import shutil
 import subprocess
@@ -10,23 +11,15 @@ import uuid
 import zipfile
 
 import requests
+from pydal.restapi import Policy, RestAPI
 from pydal.validators import CRYPT
 
 import py4web
-from py4web import (
-    HTTP,
-    URL,
-    Translator,
-    __version__,
-    abort,
-    action,
-    redirect,
-    request,
-    response,
-)
-from py4web.core import Fixture, Reloader, Session, dumps, error_logger, safely, DAL
+from py4web import (HTTP, URL, Translator, __version__, abort, action,
+                    redirect, request, response)
+from py4web.core import (DAL, Fixture, Reloader, Session, dumps, error_logger,
+                         safely)
 from py4web.utils.factories import ActionFactory
-from pydal.restapi import RestAPI, Policy
 
 from .diff2kryten import diff2kryten
 from .utils import *
@@ -63,7 +56,7 @@ def run(command, project):
     """for runing git commands inside an app (project)"""
     return subprocess.check_output(
         command.split(), cwd=os.path.join(FOLDER, project)
-    ).decode()
+    ).decode(errors="ignore")
 
 
 def get_commits(project):
@@ -189,7 +182,6 @@ if MODE in ("demo", "readonly", "full"):
     def apps():
         """Returns a list of installed apps"""
         apps = os.listdir(FOLDER)
-        print(APP_NAMES)
         exposed_names = APP_NAMES and APP_NAMES.split(",")
         apps = [
             {"name": app, "error": Reloader.ERRORS.get(app)}
@@ -277,7 +269,7 @@ if MODE in ("demo", "readonly", "full"):
     def load(path):
         """Loads a text file"""
         path = safe_join(FOLDER, path) or abort()
-        content = open(path, "rb").read().decode("utf8")
+        content = open(path, "rb").read().decode("utf8", errors="ignore")
         return {"payload": content, "status": "success"}
 
     @action("load_bytes/<path:path>")
@@ -306,7 +298,6 @@ if MODE in ("demo", "readonly", "full"):
                     ):
                         filename = os.path.join(root, name)
                         short = filename[len(app_dir + os.path.sep) :]
-                        print("added", filename, short)
                         zip.write(filename, short)
         zip.close()
         data = store.getvalue()
@@ -426,8 +417,9 @@ if MODE == "full":
         """Saves a file"""
         app_name = path.split("/")[0]
         path = safe_join(FOLDER, path) or abort()
-        with open(path, "wb") as myfile:
-            myfile.write(request.body.read())
+        with open(path, "w") as myfile:
+            body = json.load(request.body)
+            myfile.write(body)
         if reload_app:
             Reloader.import_app(app_name)
         return {"status": "success"}
@@ -497,7 +489,6 @@ if MODE == "full":
                 if process.returncode != 0:
                     abort(500)
         elif form["type"] == "upload":
-            print(request.files.keys())
             prepare_target_dir(form, target_dir)
             source_stream = io.BytesIO(base64.b64decode(form["file"]))
             zfile = zipfile.ZipFile(source_stream, "r")

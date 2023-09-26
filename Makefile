@@ -34,7 +34,7 @@ upgrade-utils:
 upgrade-vue:
 	curl -L https://unpkg.com/vue/dist/vue.min.js > apps/_dashboard/static/js/vue.min.js
 	find apps -name "vue.min.js" -exec cp apps/_dashboard/static/js/vue.min.js {} \;
-build: assets
+build: clean assets
 	python3 -m pip install --upgrade build
 	python3 -m pip install --upgrade twine
 	python3 -m build

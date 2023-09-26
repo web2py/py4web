@@ -81,7 +81,7 @@ let init = (app) => {
                 var url = '../load/'+path;
                 if(app.vue.selected_type != 'text') url = '../load_bytes/'+path;
                 fetch(url).then(r=>r.json()).then(r=>{
-                        app.activate_editor(path, r.data.payload);
+                        app.activate_editor(path, r.payload);
                     });
             }
         }

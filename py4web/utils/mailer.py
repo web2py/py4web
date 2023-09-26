@@ -189,19 +189,15 @@ class Mailer:
                 if filename is None:
                     raise Exception("Missing attachment name")
                 payload = payload.read()
-            # FIXME PY3 can be used to_native?
-            filename = filename.encode(encoding)
             if content_type is None:
-                content_type = mimetypes.guess_type(filename)
+                content_type = mimetypes.guess_type(filename)[0]
             self.my_filename = filename
             self.my_payload = payload
             MIMEBase.__init__(self, *content_type.split("/", 1))
             self.set_payload(payload)
-            self["Content-Disposition"] = 'attachment; filename="%s"' % to_native(
-                filename, encoding
-            )
+            self["Content-Disposition"] = f'attachment; filename="{filename}"'
             if content_id is not None:
-                self["Content-Id"] = "<%s>" % to_native(content_id, encoding)
+                self["Content-Id"] = f"<{content_id}>"
             Encoders.encode_base64(self)
 
     def __init__(self, server=None, sender=None, login=None, tls=True, ssl=False):
@@ -746,11 +742,11 @@ class Mailer:
 
         list_unsubscribe = list_unsubscribe or self.settings.list_unsubscribe
         if list_unsubscribe:
-            payload['List-Unsubscribe'] = "<mailto:%s>" % list_unsubscribe
+            payload["List-Unsubscribe"] = "<mailto:%s>" % list_unsubscribe
 
         dkim = dkim or self.settings.dkim
         if dkim:
-            payload['DKIM-Signature'] = dkim_sign(payload, dkim.key, dkim.selector)
+            payload["DKIM-Signature"] = dkim_sign(payload, dkim.key, dkim.selector)
 
         result = {}
         try:
@@ -860,26 +856,31 @@ def dkim_sign(payload, dkim_key, dkim_selector):
 
     # sign all existing mail headers except those specified in
     # http://dkim.org/specs/rfc4871-dkimbase.html#rfc.section.5.5
-    headers = list(filter(
-        lambda h: h not in [
-            "Return-Path",
-            "Received",
-            "Comments",
-            "Keywords",
-            "Resent-Bcc",
-            "Bcc",
-            "DKIM-Signature",
-        ],
-        payload))
+    headers = list(
+        filter(
+            lambda h: h
+            not in [
+                "Return-Path",
+                "Received",
+                "Comments",
+                "Keywords",
+                "Resent-Bcc",
+                "Bcc",
+                "DKIM-Signature",
+            ],
+            payload,
+        )
+    )
 
     domain = re.sub(r".*@", "", payload["From"])
     domain = re.sub(r">.*", "", domain)
 
     sig = dkim.sign(
-            message=payload.as_bytes(),
-            selector=dkim_selector.encode(),
-            domain=domain.encode(),
-            privkey=dkim_key.encode(),
-            include_headers=[h.encode() for h in headers])
+        message=payload.as_bytes(),
+        selector=dkim_selector.encode(),
+        domain=domain.encode(),
+        privkey=dkim_key.encode(),
+        include_headers=[h.encode() for h in headers],
+    )
 
-    return sig[len("DKIM-Signature: "):].decode()
+    return sig[len("DKIM-Signature: ") :].decode()
