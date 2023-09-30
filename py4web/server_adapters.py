@@ -12,8 +12,8 @@ except ImportError:
 
 __all__ = [
     "gevent",
-    "geventWebSocketServer",
-    "wsgirefThreadingServer",
+    "geventWebSocketServer", "geventWs", # short_name
+    "wsgirefThreadingServer", "wsgiTh", # short_name
     "rocketServer",
 ] + wsservers_list
 
@@ -79,9 +79,11 @@ def logging_conf(level=logging.WARN, logger_name=__name__):
     time_msg = '%H:%M:%S'
     #date_time_msg = '%Y-%m-%d %H:%M:%S'
 
+    msg_format = None if 'gevent' in logger_name else short_msg
+
     try:
         logging.basicConfig(
-            format=short_msg,
+            format=msg_format,
             datefmt=time_msg,
             level=check_level(level),
             **log_to,
@@ -89,7 +91,7 @@ def logging_conf(level=logging.WARN, logger_name=__name__):
     except ( OSError, LookupError, KeyError, ValueError ) as ex:
         print(f"{ex}, {__file__}")
         print(f'cannot open {log_file}')
-        logging.basicConfig( level=check_level(level))
+        logging.basicConfig( format="%(message)s", level=check_level(level),)
 
     if logger_name is None:
         return None
@@ -109,7 +111,7 @@ def get_workers(opts, default=10):
 # ---------------------- servers -----------------------------------------------
 
 def gevent():
-    # gevent version 23.7.0
+    # gevent version 23.9.1
 
     import threading
     from gevent import local, pywsgi  # pip install gevent
@@ -125,21 +127,13 @@ def gevent():
 
     class GeventServer(ServerAdapter):
         def run(self, app_handler):
-            log_file = get_log_file()
-
             logger = "default"  
 
             if not self.quiet:
-                logger = logging.getLogger("SA:gevent")
-                fh = (
-                    logging.FileHandler()
-                    if not log_file
-                    else logging.FileHandler(log_file, mode='w')
+                logger = logging_conf(
+                    self.options["logging_level"], "gevent",
                 )
-                logger.setLevel(check_level(self.options["logging_level"]))
-                logger.addHandler(fh)
                 #logger.addHandler(logging.StreamHandler())
-                logger.propagate = True
 
             certfile = self.options.get("certfile", None)
 
@@ -194,7 +188,6 @@ def geventWebSocketServer():
                     self.options["logging_level"], "gevent-ws",
                 )
                 
-
             certfile = self.options.get("certfile", None)
 
             ssl_args = (
@@ -218,7 +211,7 @@ def geventWebSocketServer():
             server.serve_forever()
 
     return GeventWebSocketServer
-
+geventWs=geventWebSocketServer
 
 def wsgirefThreadingServer():
     # https://www.electricmonk.nl/log/2016/02/15/multithreaded-dev-web-server-for-the-python-bottle-web-framework/
@@ -326,7 +319,7 @@ def wsgirefThreadingServer():
             srv.serve_forever()
 
     return WSGIRefThreadingServer
-
+wsgiTh=wsgirefThreadingServer
 
 def rocketServer():
     try:
