@@ -55,7 +55,7 @@ def check_level(level):
     )
 
 
-def logging_conf(level=logging.WARN, logger_name=__name__):
+def logging_conf(level=logging.WARN, logger_name=__name__, test_log = False):
 
     log_file = get_log_file()
     log_to = dict()
@@ -79,11 +79,9 @@ def logging_conf(level=logging.WARN, logger_name=__name__):
     time_msg = '%H:%M:%S'
     #date_time_msg = '%Y-%m-%d %H:%M:%S'
 
-    msg_format = None if 'gevent' in logger_name else short_msg
-
     try:
         logging.basicConfig(
-            format=msg_format,
+            format=short_msg,
             datefmt=time_msg,
             level=check_level(level),
             **log_to,
@@ -98,6 +96,10 @@ def logging_conf(level=logging.WARN, logger_name=__name__):
 
     log = logging.getLogger("SA:" + logger_name)
     log.propagate = True
+
+    if test_log:
+        for func in (log.debug, log.info, log.warn, log.error, log.critical, ) :
+            func('func: ' + func.__name__ )
 
     return log
 
