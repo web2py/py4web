@@ -182,7 +182,6 @@ if MODE in ("demo", "readonly", "full"):
     def apps():
         """Returns a list of installed apps"""
         apps = os.listdir(FOLDER)
-        print(APP_NAMES)
         exposed_names = APP_NAMES and APP_NAMES.split(",")
         apps = [
             {"name": app, "error": Reloader.ERRORS.get(app)}
@@ -299,7 +298,6 @@ if MODE in ("demo", "readonly", "full"):
                     ):
                         filename = os.path.join(root, name)
                         short = filename[len(app_dir + os.path.sep) :]
-                        print("added", filename, short)
                         zip.write(filename, short)
         zip.close()
         data = store.getvalue()
@@ -491,7 +489,6 @@ if MODE == "full":
                 if process.returncode != 0:
                     abort(500)
         elif form["type"] == "upload":
-            print(request.files.keys())
             prepare_target_dir(form, target_dir)
             source_stream = io.BytesIO(base64.b64decode(form["file"]))
             zfile = zipfile.ZipFile(source_stream, "r")
