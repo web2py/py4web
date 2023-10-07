@@ -58,7 +58,22 @@ class AuthEnforcerGoogleScoped(AuthEnforcer):
 
 class OAuth2GoogleScoped(object):
     """Class that enables google login via oauth2 with additional scopes.
-    The authorization info is saved so the scopes can be used later on."""
+    The authorization info is saved so the scopes can be used later on.
+
+    NOTE: if you use this plugin, it is also recommended that you set:
+
+        auth.param.auth_enforcer = AuthEnforcerGoogleScoped(auth, error_page="credentials_error")
+
+    and that you create a page at URL("credentials_error") to explain the user
+    that their credentials have expired, and that they must log in again.
+
+    This because sometimes, when one tries to use the credentials, Google
+    complains that the refresh action fails due to missing credentials.
+    This can happen if the user, or Google, has revoked credentials.
+    We need to catch this error, and log out the user, so the user
+    can decide whether they want to login (and create credentials) again.
+
+    """
 
     # These values are used for the plugin registration.
     name = "oauth2googlescoped"
