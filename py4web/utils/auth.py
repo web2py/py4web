@@ -928,7 +928,7 @@ class Auth(Fixture):
                     current_record_label=current_record_label,
                 )
 
-    def enable(self, route="auth", uses=(), env=None, spa=False):
+    def enable(self, route="auth", uses=(), env=None, spa=False, allow_api_routes=True):
         """Enables Auth, aka generates login/logout/register/etc API pages"""
         self.route = route = route.rstrip("/")
         env = env or {}
@@ -945,35 +945,37 @@ class Auth(Fixture):
 
         # This exposes all API actions as /{app_name}/{route}/api/{name}
         # and API Models as /{app_name}/{route}/api/{name}?@model=true
+        exposed_api_routes = []
+        if allow_api_routes:
 
-        # Exposed Public APIs
-        exposed_api_routes = [
-            dict(api_name=api_name, api_route=f"{route}/api/{api_name}", uses=auth)
-            for api_name in AuthAPI.public_api
-            if self.allows(api_name)
-        ]
-
-        # Exposed Private APIs
-        exposed_api_routes.extend(
-            [
-                dict(
-                    api_name=api_name,
-                    api_route=f"{route}/api/{api_name}",
-                    uses=auth.user,
-                )
-                for api_name in AuthAPI.private_api
+            # Exposed Public APIs
+            exposed_api_routes = [
+                dict(api_name=api_name, api_route=f"{route}/api/{api_name}", uses=auth)
+                for api_name in AuthAPI.public_api
                 if self.allows(api_name)
             ]
-        )
-
-        for item in exposed_api_routes:
-            api_factory = getattr(AuthAPI, item["api_name"])
-
-            @action(item["api_route"], method=methods)
-            @action.uses(item["uses"], *uses)
-            def _(auth=auth, api_factory=api_factory):
-                return api_factory(auth)
-
+    
+            # Exposed Private APIs
+            exposed_api_routes.extend(
+                [
+                    dict(
+                        api_name=api_name,
+                        api_route=f"{route}/api/{api_name}",
+                        uses=auth.user,
+                    )
+                    for api_name in AuthAPI.private_api
+                    if self.allows(api_name)
+                ]
+            )
+    
+            for item in exposed_api_routes:
+                api_factory = getattr(AuthAPI, item["api_name"])
+    
+                @action(item["api_route"], method=methods)
+                @action.uses(item["uses"], *uses)
+                def _(auth=auth, api_factory=api_factory):
+                    return api_factory(auth)
+    
         # This exposes all plugins as /{app_name}/{route}/plugins/{path}
         for name in self.plugins:
 
