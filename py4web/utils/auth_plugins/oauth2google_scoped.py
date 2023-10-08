@@ -7,19 +7,73 @@
 
 import calendar
 import json
+import re
 import time
 import uuid
 
 import google_auth_oauthlib.flow
 import google.oauth2.credentials
 from googleapiclient.discovery import build
+from google.auth.exceptions import RefreshError
 
 from py4web import request, redirect, URL, HTTP
 from pydal import Field
+from py4web.utils.auth import AuthEnforcer, REGEX_APPJSON
+
+
+class AuthEnforcerGoogleScoped(AuthEnforcer):
+    """This class catches certain invalid access errors Google generates
+    when credentials get stale, and forces the user to login again.
+    Pass it to Auth as param.auth_enfoercer, as in:
+    auth.param.auth_enforcer = AuthEnforcerGoogleScoped(auth)
+    """
+
+    def __init__(self, auth, condition=None, error_page=None):
+        super().__init__(auth, condition=condition)
+        self.error_page = error_page
+        assert error_page is not None, "You need to specify an error page; can't use login."
+
+    def on_error(self, context):
+        if isinstance(context.get("exception"), RefreshError):
+            del context["exception"]
+            self.auth.session.clear()
+            if re.search(REGEX_APPJSON,
+                         request.headers.get("accept", "")) and (
+                    request.headers.get("json-redirects", "") != "on"
+            ):
+                raise HTTP(403)
+            redirect_next = request.fullpath
+            if request.query_string:
+                redirect_next = redirect_next + "?{}".format(
+                    request.query_string)
+            self.auth.flash.set("Invalid credentials")
+            redirect(
+                URL(
+                    self.error_page,
+                    vars=dict(next=redirect_next),
+                    use_appname=self.auth.param.use_appname_in_redirects,
+                )
+            )
+
 
 class OAuth2GoogleScoped(object):
     """Class that enables google login via oauth2 with additional scopes.
-    The authorization info is saved so the scopes can be used later on."""
+    The authorization info is saved so the scopes can be used later on.
+
+    NOTE: if you use this plugin, it is also recommended that you set:
+
+        auth.param.auth_enforcer = AuthEnforcerGoogleScoped(auth, error_page="credentials_error")
+
+    and that you create a page at URL("credentials_error") to explain the user
+    that their credentials have expired, and that they must log in again.
+
+    This because sometimes, when one tries to use the credentials, Google
+    complains that the refresh action fails due to missing credentials.
+    This can happen if the user, or Google, has revoked credentials.
+    We need to catch this error, and log out the user, so the user
+    can decide whether they want to login (and create credentials) again.
+
+    """
 
     # These values are used for the plugin registration.
     name = "oauth2googlescoped"
@@ -70,7 +124,7 @@ class OAuth2GoogleScoped(object):
         self._db.define_table('auth_credentials', [
             Field('email'),
             Field('name'), # First and last names, all together.
-            Field('profile_pic'), # URL of profile pic.
+            Field('profile_pic', 'text'), # URL of profile pic.
             Field('credentials', 'text') # Credentials for access, stored in Json for generality.
         ])
 

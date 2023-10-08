@@ -256,6 +256,7 @@ class Auth(Fixture):
             two_factor_required=two_factor_required,
             two_factor_send=two_factor_send,
             two_factor_tries=3,
+            auth_enforcer=None,
         )
 
         # callbacks for forms
@@ -469,11 +470,11 @@ class Auth(Fixture):
     @property
     def user(self):
         """Use as @action.uses(auth.user)"""
-        return AuthEnforcer(self)
+        return self.param.auth_enforcer if self.param.auth_enforcer else AuthEnforcer(self)
 
     def condition(self, condition):
         """Use as @action.uses(auth.condition(lambda user: True))"""
-        return AuthEnforcer(self, condition)
+        return self.param.auth_enforcer if self.param.auth_enforcer else AuthEnforcer(self, condition)
 
     # utilities
     def get_user(self, safe=True):
