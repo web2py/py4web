@@ -9,21 +9,13 @@ import time
 import urllib
 import uuid
 
-from pydal.validators import (
-    CRYPT,
-    IS_EMAIL,
-    IS_EQUAL_TO,
-    IS_MATCH,
-    IS_NOT_EMPTY,
-    IS_NOT_IN_DB,
-    IS_STRONG,
-)
-from yatl.helpers import DIV, A
-
 from py4web import HTTP, URL, Field, action, redirect, request, response
 from py4web.core import REGEX_APPJSON, Fixture, Flash, Template, Translator
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
+from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
+                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG)
+from yatl.helpers import DIV, A
 
 """
 [X] Enable and disable plugins
@@ -97,17 +89,22 @@ class AuthEnforcer(Fixture):
         # If a plugin can handle requests, redirects to the login url for the login.
         for plugin in self.auth.plugins.values():
             if hasattr(plugin, "handle_request"):
-                if re.search(REGEX_APPJSON,
-                             request.headers.get("accept", "")) and (
-                        request.headers.get("json-redirects", "") != "on"
+                if re.search(REGEX_APPJSON, request.headers.get("accept", "")) and (
+                    request.headers.get("json-redirects", "") != "on"
                 ):
                     raise HTTP(403)
                 redirect_next = request.fullpath
                 if request.query_string:
                     redirect_next = redirect_next + "?{}".format(request.query_string)
                 redirect(
-                    URL(self.auth.route, "plugin", plugin.name, "login",
-                        vars=dict(next=redirect_next)))
+                    URL(
+                        self.auth.route,
+                        "plugin",
+                        plugin.name,
+                        "login",
+                        vars=dict(next=redirect_next),
+                    )
+                )
         # Otherwise, uses the normal login.
         self.abort_or_redirect("login", message=message)
 
@@ -519,6 +516,31 @@ class Auth(Fixture):
     @property
     def current_user(self):
         return self.get_user()
+
+    def impersonate(self, impersonated_id, next_url):
+        user = self.session.get("user")
+        if not user or "id" not in user:
+            raise RuntimeError("Cannot impersonate if not logged in")
+        if "impersonator_id" in user:
+            raise RuntimeError("Cannot impersonate while impersonating")
+        self.session.clear()
+        self.store_user_in_session(impersonated_id)
+        self.session["user"]["impersonator_id"] = user["id"]
+        redirect(next_url)
+
+    def is_impersonating(self):
+        return self.session.get("user", {}).get("impersonator_id", None) != None
+
+    def stop_impersonation(self, next_url):
+        user = self.session.get("user")
+        impersonator_id = (user or {}).get("inpersonator_id")
+        if impersonator_id is None:
+            raise RuntimeError(
+                "Cannot stop impersonation because not impersonating anybody"
+            )
+        self.session.clear()
+        self.store_user_in_session(impersonator_id)
+        redirect(next_url)
 
     def register_plugin(self, plugin):
         """Registers an Auth plugin, usually from common.py inside apps"""
