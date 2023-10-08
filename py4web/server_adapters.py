@@ -1,7 +1,7 @@
 import logging
 import os
-import sys
 import ssl
+import sys
 
 from ombott.server_adapters import ServerAdapter
 
@@ -12,8 +12,10 @@ except ImportError:
 
 __all__ = [
     "gevent",
-    "geventWebSocketServer", "geventWs", # short_name
-    "wsgirefThreadingServer", "wsgiTh", # short_name
+    "geventWebSocketServer",
+    "geventWs",  # short_name
+    "wsgirefThreadingServer",
+    "wsgiTh",  # short_name
     "rocketServer",
 ] + wsservers_list
 
@@ -22,10 +24,10 @@ __all__ = [
 # export PY4WEB_LOGS=/tmp # export PY4WEB_LOGS=
 def get_log_file():
     log_dir = os.environ.get("PY4WEB_LOGS", None)
-    log_file = os.path.join (log_dir, 'server-py4web.log') if log_dir else None
+    log_file = os.path.join(log_dir, "server-py4web.log") if log_dir else None
     if log_file:
         print(f"log_file: {log_file}")
-    return log_file 
+    return log_file
 
 
 def check_level(level):
@@ -55,29 +57,25 @@ def check_level(level):
     )
 
 
-def logging_conf(level=logging.WARN, logger_name=__name__, test_log = False):
+def logging_conf(level=logging.WARN, logger_name=__name__, test_log=False):
 
     log_file = get_log_file()
     log_to = dict()
 
     if log_file:
         if sys.version_info >= (3, 9):
-            log_to["filename" ] = log_file
-            log_to["filemode" ] = "w"
+            log_to["filename"] = log_file
+            log_to["filemode"] = "w"
             log_to["encoding"] = "utf-8"
-        else: 
-            h = logging.FileHandler(
-                  log_file,
-                  mode = "w",
-                  encoding = "utf-8"
-                  )
-            log_to.update( {"handlers": [h]} )
+        else:
+            h = logging.FileHandler(log_file, mode="w", encoding="utf-8")
+            log_to.update({"handlers": [h]})
 
     short_msg = "%(message)s > %(threadName)s > %(asctime)s.%(msecs)03d"
-    #long_msg = short_msg + " > %(funcName)s > %(filename)s:%(lineno)d > %(levelname)s"
+    # long_msg = short_msg + " > %(funcName)s > %(filename)s:%(lineno)d > %(levelname)s"
 
-    time_msg = '%H:%M:%S'
-    #date_time_msg = '%Y-%m-%d %H:%M:%S'
+    time_msg = "%H:%M:%S"
+    # date_time_msg = '%Y-%m-%d %H:%M:%S'
 
     try:
         logging.basicConfig(
@@ -86,10 +84,13 @@ def logging_conf(level=logging.WARN, logger_name=__name__, test_log = False):
             level=check_level(level),
             **log_to,
         )
-    except ( OSError, LookupError, KeyError, ValueError ) as ex:
+    except (OSError, LookupError, KeyError, ValueError) as ex:
         print(f"{ex}, {__file__}")
-        print(f'cannot open {log_file}')
-        logging.basicConfig( format="%(message)s", level=check_level(level),)
+        print(f"cannot open {log_file}")
+        logging.basicConfig(
+            format="%(message)s",
+            level=check_level(level),
+        )
 
     if logger_name is None:
         return None
@@ -98,8 +99,14 @@ def logging_conf(level=logging.WARN, logger_name=__name__, test_log = False):
     log.propagate = True
 
     if test_log:
-        for func in (log.debug, log.info, log.warn, log.error, log.critical, ) :
-            func('func: ' + func.__name__ )
+        for func in (
+            log.debug,
+            log.info,
+            log.warn,
+            log.error,
+            log.critical,
+        ):
+            func("func: " + func.__name__)
 
     return log
 
@@ -110,12 +117,15 @@ def get_workers(opts, default=10):
     except KeyError:
         return default
 
+
 # ---------------------- servers -----------------------------------------------
+
 
 def gevent():
     # gevent version 23.9.1
 
     import threading
+
     from gevent import local, pywsgi  # pip install gevent
 
     if not isinstance(threading.local(), local.local):
@@ -129,13 +139,14 @@ def gevent():
 
     class GeventServer(ServerAdapter):
         def run(self, app_handler):
-            logger = "default"  
+            logger = "default"
 
             if not self.quiet:
                 logger = logging_conf(
-                    self.options["logging_level"], "gevent",
+                    self.options["logging_level"],
+                    "gevent",
                 )
-                #logger.addHandler(logging.StreamHandler())
+                # logger.addHandler(logging.StreamHandler())
 
             certfile = self.options.get("certfile", None)
 
@@ -156,7 +167,7 @@ def gevent():
                 app_handler,
                 log=logger,
                 error_log=logger,
-                **ssl_args
+                **ssl_args,
             )
 
             server.serve_forever()
@@ -166,7 +177,6 @@ def gevent():
 
 def geventWebSocketServer():
     from gevent import pywsgi
-
     # from geventwebsocket.handler import WebSocketHandler # pip install gevent-websocket
     from gevent_ws import WebSocketHandler  # pip install gevent gevent-ws
 
@@ -183,13 +193,14 @@ def geventWebSocketServer():
 
     class GeventWebSocketServer(ServerAdapter):
         def run(self, app_handler):
-            logger = "default"  
+            logger = "default"
 
             if not self.quiet:
                 logger = logging_conf(
-                    self.options["logging_level"], "gevent-ws",
+                    self.options["logging_level"],
+                    "gevent-ws",
                 )
-                
+
             certfile = self.options.get("certfile", None)
 
             ssl_args = (
@@ -207,13 +218,16 @@ def geventWebSocketServer():
                 handler_class=WebSocketHandler,
                 log=logger,
                 error_log=logger,
-                **ssl_args
+                **ssl_args,
             )
 
             server.serve_forever()
 
     return GeventWebSocketServer
-geventWs=geventWebSocketServer
+
+
+geventWs = geventWebSocketServer
+
 
 def wsgirefThreadingServer():
     # https://www.electricmonk.nl/log/2016/02/15/multithreaded-dev-web-server-for-the-python-bottle-web-framework/
@@ -221,7 +235,8 @@ def wsgirefThreadingServer():
     import socket
     from concurrent.futures import ThreadPoolExecutor  # pip install futures
     from socketserver import ThreadingMixIn
-    from wsgiref.simple_server import WSGIRequestHandler, WSGIServer, make_server
+    from wsgiref.simple_server import (WSGIRequestHandler, WSGIServer,
+                                       make_server)
 
     class WSGIRefThreadingServer(ServerAdapter):
         def run(self, app_handler):
@@ -230,7 +245,8 @@ def wsgirefThreadingServer():
 
             if not self.quiet:
                 self.log = logging_conf(
-                    self.options["logging_level"], "wsgiref",
+                    self.options["logging_level"],
+                    "wsgiref",
                 )
 
             self_run = self  # used in internal classes to access options and logger
@@ -306,7 +322,7 @@ def wsgirefThreadingServer():
                         )
                         self_run.log.info(msg)
 
-            #handler_cls = self.options.get("handler_class", LogHandler)
+            # handler_cls = self.options.get("handler_class", LogHandler)
             server_cls = Server
 
             if ":" in self.host:  # Fix wsgiref for IPv6 addresses.
@@ -317,11 +333,16 @@ def wsgirefThreadingServer():
 
                     server_cls = ServerClass
 
-            srv = make_server(self.host, self.port, app_handler, server_cls, LogHandler ) # handler_cls)
+            srv = make_server(
+                self.host, self.port, app_handler, server_cls, LogHandler
+            )  # handler_cls)
             srv.serve_forever()
 
     return WSGIRefThreadingServer
-wsgiTh=wsgirefThreadingServer
+
+
+wsgiTh = wsgirefThreadingServer
+
 
 def rocketServer():
     try:

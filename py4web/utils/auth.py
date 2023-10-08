@@ -9,13 +9,14 @@ import time
 import urllib
 import uuid
 
+from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
+                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG)
+from yatl.helpers import DIV, A
+
 from py4web import HTTP, URL, Field, action, redirect, request, response
 from py4web.core import REGEX_APPJSON, Fixture, Flash, Template, Translator
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
-from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
-                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG)
-from yatl.helpers import DIV, A
 
 """
 [X] Enable and disable plugins
@@ -470,11 +471,17 @@ class Auth(Fixture):
     @property
     def user(self):
         """Use as @action.uses(auth.user)"""
-        return self.param.auth_enforcer if self.param.auth_enforcer else AuthEnforcer(self)
+        return (
+            self.param.auth_enforcer if self.param.auth_enforcer else AuthEnforcer(self)
+        )
 
     def condition(self, condition):
         """Use as @action.uses(auth.condition(lambda user: True))"""
-        return self.param.auth_enforcer if self.param.auth_enforcer else AuthEnforcer(self, condition)
+        return (
+            self.param.auth_enforcer
+            if self.param.auth_enforcer
+            else AuthEnforcer(self, condition)
+        )
 
     # utilities
     def get_user(self, safe=True):
@@ -976,7 +983,7 @@ class Auth(Fixture):
                 for api_name in AuthAPI.public_api
                 if self.allows(api_name)
             ]
-    
+
             # Exposed Private APIs
             exposed_api_routes.extend(
                 [
@@ -989,15 +996,15 @@ class Auth(Fixture):
                     if self.allows(api_name)
                 ]
             )
-    
+
             for item in exposed_api_routes:
                 api_factory = getattr(AuthAPI, item["api_name"])
-    
+
                 @action(item["api_route"], method=methods)
                 @action.uses(item["uses"], *uses)
                 def _(auth=auth, api_factory=api_factory):
                     return api_factory(auth)
-    
+
         # This exposes all plugins as /{app_name}/{route}/plugins/{path}
         for name in self.plugins:
 

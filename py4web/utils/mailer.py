@@ -530,7 +530,7 @@ class Mailer:
                         "signed",
                         boundary=None,
                         _subparts=None,
-                        **dict(micalg="pgp-sha1", protocol="application/pgp-signature")
+                        **dict(micalg="pgp-sha1", protocol="application/pgp-signature"),
                     )
                     # Insert the origin payload
                     payload.attach(payload_in)
@@ -574,7 +574,7 @@ class Mailer:
                         "encrypted",
                         boundary=None,
                         _subparts=None,
-                        **dict(protocol="application/pgp-encrypted")
+                        **dict(protocol="application/pgp-encrypted"),
                     )
                     p = MIMEBase("application", "pgp-encrypted")
                     p.set_payload("Version: 1\r\n")
@@ -788,7 +788,7 @@ class Mailer:
                         body=to_unicode(text or "", encoding),
                         html=html,
                         attachments=attachments,
-                        **xcc
+                        **xcc,
                     )
                 elif html and (not raw):
                     result = google_mail.send_mail(
@@ -797,7 +797,7 @@ class Mailer:
                         subject=to_unicode(subject, encoding),
                         body=to_unicode(text or "", encoding),
                         html=html,
-                        **xcc
+                        **xcc,
                     )
                 else:
                     result = google_mail.send_mail(
@@ -805,7 +805,7 @@ class Mailer:
                         to=origTo,
                         subject=to_unicode(subject, encoding),
                         body=to_unicode(text or "", encoding),
-                        **xcc
+                        **xcc,
                     )
             elif self.settings.server == "aws" and boto3:
                 client = boto3.client("ses")

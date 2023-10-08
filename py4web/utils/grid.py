@@ -9,25 +9,8 @@ from urllib.parse import urlparse
 
 import ombott
 from pydal.objects import Expression, Field, FieldVirtual
-from yatl.helpers import (
-    CAT,
-    DIV,
-    FORM,
-    INPUT,
-    OPTION,
-    SELECT,
-    SPAN,
-    TABLE,
-    TAG,
-    TBODY,
-    TD,
-    TH,
-    THEAD,
-    TR,
-    XML,
-    A,
-    I,
-)
+from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
+                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
 
 from py4web import HTTP, URL, redirect, request
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -1500,7 +1483,9 @@ class Grid:
                 else self.total_number_of_rows,
                 self.total_number_of_rows,
             )
-        ) if self.number_of_pages > 0 else row_count.append(self.T("No rows to display"))
+        ) if self.number_of_pages > 0 else row_count.append(
+            self.T("No rows to display")
+        )
         footer.append(row_count)
 
         #  build the pager

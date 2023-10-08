@@ -8,23 +8,8 @@ import jwt
 from pydal._compat import to_native
 from pydal.objects import FieldVirtual
 from pydal.validators import Validator
-from yatl.helpers import (
-    CAT,
-    DIV,
-    FORM,
-    INPUT,
-    LABEL,
-    OPTION,
-    SELECT,
-    SPAN,
-    TABLE,
-    TD,
-    TEXTAREA,
-    TR,
-    XML,
-    A,
-    P,
-)
+from yatl.helpers import (CAT, DIV, FORM, INPUT, LABEL, OPTION, SELECT, SPAN,
+                          TABLE, TD, TEXTAREA, TR, XML, A, P)
 
 from py4web import HTTP, request, response
 from py4web.utils.param import Param

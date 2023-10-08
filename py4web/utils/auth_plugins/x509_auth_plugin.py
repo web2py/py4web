@@ -15,7 +15,6 @@ from functools import reduce
 from gluon.globals import current
 from gluon.http import HTTP, redirect
 from gluon.storage import Storage
-
 # requires M2Crypto
 from M2Crypto import X509
 

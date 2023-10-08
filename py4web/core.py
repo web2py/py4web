@@ -35,7 +35,7 @@ import urllib.parse
 import uuid
 import zipfile
 from collections import OrderedDict
-from contextlib import redirect_stdout, redirect_stderr
+from contextlib import redirect_stderr, redirect_stdout
 
 import portalocker
 from watchgod import awatch
@@ -49,7 +49,6 @@ except ImportError:
     gunicorn = None
 
 import click
-
 # Third party modules
 import ombott as bottle
 import pluralize
