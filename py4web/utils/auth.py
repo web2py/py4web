@@ -10,7 +10,7 @@ import urllib
 import uuid
 
 from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
-                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG)
+                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG,IS_EMPTY_OR)
 from yatl.helpers import DIV, A
 
 from py4web import HTTP, URL, Field, action, redirect, request, response
@@ -1719,8 +1719,8 @@ class DefaultAuthForms:
         fields = [
             Field(
                 "email",
-                label=self.auth.param.messages["labels"].get("username_or_email"),
-                requires=IS_NOT_EMPTY(),
+                label=self.auth.param.messages["labels"].get("email"),
+                requires=IS_EMAIL()
             )
         ]
 
