@@ -10,7 +10,7 @@ import urllib
 import uuid
 
 from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
-                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG,IS_EMPTY_OR)
+                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG,IS_EMPTY_OR,ANY_OF,IS_ALPHANUMERIC,)
 from yatl.helpers import DIV, A
 
 from py4web import HTTP, URL, Field, action, redirect, request, response
