@@ -526,6 +526,7 @@ class Auth(Fixture):
         return self.get_user()
 
     def impersonate(self, impersonated_id, next_url):
+        """impersonates the new user"""
         user = self.session.get("user")
         if not user or "id" not in user:
             raise RuntimeError("Cannot impersonate if not logged in")
@@ -537,11 +538,13 @@ class Auth(Fixture):
         redirect(next_url)
 
     def is_impersonating(self):
+        """checks if we are impersonating a user"""
         return self.session.get("user", {}).get("impersonator_id", None) != None
 
     def stop_impersonation(self, next_url):
+        """stops impersonating a user, assuming we are impersonating one"""
         user = self.session.get("user")
-        impersonator_id = (user or {}).get("inpersonator_id")
+        impersonator_id = (user or {}).get("impersonator_id")
         if impersonator_id is None:
             raise RuntimeError(
                 "Cannot stop impersonation because not impersonating anybody"

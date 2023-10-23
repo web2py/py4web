@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>From web2py to py4web &mdash; py4web 1.20230507.1 documentation</title>
+  <title>From web2py to py4web &mdash; py4web 1.20230718.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -14,12 +14,12 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=4c9c9fab"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -40,7 +40,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                1.20230718.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -111,7 +111,7 @@
            <div itemprop="articleBody">
              
   <section id="from-web2py-to-py4web">
-<h1>From web2py to py4web<a class="headerlink" href="#from-web2py-to-py4web" title="Permalink to this heading"></a></h1>
+<h1>From web2py to py4web<a class="headerlink" href="#from-web2py-to-py4web" title="Link to this heading"></a></h1>
 <p>This chapter is dedicated to help users for porting old web2py applications to py4web.</p>
 <p>Web2py and py4web share many similarities and some differences. For example they share the same
 database abstraction layer (pyDAL) which means pydal table definitions and queries are identical
@@ -198,9 +198,9 @@ web server used by web2py stripped of all the Python2 logic and dependencies. No
 may change in the future.</p></li>
 </ul>
 <section id="simple-conversion-examples">
-<h2>Simple conversion examples<a class="headerlink" href="#simple-conversion-examples" title="Permalink to this heading"></a></h2>
+<h2>Simple conversion examples<a class="headerlink" href="#simple-conversion-examples" title="Link to this heading"></a></h2>
 <section id="hello-world-example">
-<h3>“Hello world” example<a class="headerlink" href="#hello-world-example" title="Permalink to this heading"></a></h3>
+<h3>“Hello world” example<a class="headerlink" href="#hello-world-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers/default.py</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
@@ -216,7 +216,7 @@ may change in the future.</p></li>
 </div>
 </section>
 <section id="redirect-with-variables-example">
-<h3>“Redirect with variables” example<a class="headerlink" href="#redirect-with-variables-example" title="Permalink to this heading"></a></h3>
+<h3>“Redirect with variables” example<a class="headerlink" href="#redirect-with-variables-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">request</span><span class="o">.</span><span class="n">get_vars</span><span class="o">.</span><span class="n">name</span>
 <span class="n">request</span><span class="o">.</span><span class="n">post_vars</span><span class="o">.</span><span class="n">name</span>
@@ -237,7 +237,7 @@ may change in the future.</p></li>
 </div>
 </section>
 <section id="returning-variables-example">
-<h3>“Returning variables” example<a class="headerlink" href="#returning-variables-example" title="Permalink to this heading"></a></h3>
+<h3>“Returning variables” example<a class="headerlink" href="#returning-variables-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
    <span class="n">a</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_vars</span><span class="o">.</span><span class="n">a</span>
@@ -253,7 +253,7 @@ may change in the future.</p></li>
 </div>
 </section>
 <section id="returning-args-example">
-<h3>“Returning args” example<a class="headerlink" href="#returning-args-example" title="Permalink to this heading"></a></h3>
+<h3>“Returning args” example<a class="headerlink" href="#returning-args-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span>
@@ -269,7 +269,7 @@ may change in the future.</p></li>
 </div>
 </section>
 <section id="return-calling-methods-example">
-<h3>“Return calling methods” example<a class="headerlink" href="#return-calling-methods-example" title="Permalink to this heading"></a></h3>
+<h3>“Return calling methods” example<a class="headerlink" href="#return-calling-methods-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
@@ -291,7 +291,7 @@ may change in the future.</p></li>
 </div>
 </section>
 <section id="setting-up-a-counter-example">
-<h3>“Setting up a counter” example<a class="headerlink" href="#setting-up-a-counter-example" title="Permalink to this heading"></a></h3>
+<h3>“Setting up a counter” example<a class="headerlink" href="#setting-up-a-counter-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">counter</span><span class="p">():</span>
    <span class="n">session</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">counter</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
@@ -306,7 +306,7 @@ may change in the future.</p></li>
 </div>
 </section>
 <section id="view-example">
-<h3>“View” example<a class="headerlink" href="#view-example" title="Permalink to this heading"></a></h3>
+<h3>“View” example<a class="headerlink" href="#view-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>{{ extend &#39;layout.html&#39; }}
 <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
@@ -327,7 +327,7 @@ may change in the future.</p></li>
 </div>
 </section>
 <section id="form-and-flash-example">
-<h3>“Form and flash” example<a class="headerlink" href="#form-and-flash-example" title="Permalink to this heading"></a></h3>
+<h3>“Form and flash” example<a class="headerlink" href="#form-and-flash-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;thing&#39;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
 
@@ -367,7 +367,7 @@ the custom tag into a div with dismissal behavior.</p>
 So if you instantiate multiple Flash objects they share their data.</p>
 </section>
 <section id="grid-example">
-<h3>“grid” example<a class="headerlink" href="#grid-example" title="Permalink to this heading"></a></h3>
+<h3>“grid” example<a class="headerlink" href="#grid-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
    <span class="n">grid</span> <span class="o">=</span> <span class="n">SQLFORM</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -385,7 +385,7 @@ So if you instantiate multiple Flash objects they share their data.</p>
 </div>
 </section>
 <section id="accessing-os-files-example">
-<h3>“Accessing OS files” example<a class="headerlink" href="#accessing-os-files-example" title="Permalink to this heading"></a></h3>
+<h3>“Accessing OS files” example<a class="headerlink" href="#accessing-os-files-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">folder</span><span class="p">,</span> <span class="s1">&#39;file.csv&#39;</span><span class="p">)</span>
 </pre></div>
@@ -397,7 +397,7 @@ So if you instantiate multiple Flash objects they share their data.</p>
 </div>
 </section>
 <section id="auth-example">
-<h3>“auth” example<a class="headerlink" href="#auth-example" title="Permalink to this heading"></a></h3>
+<h3>“auth” example<a class="headerlink" href="#auth-example" title="Link to this heading"></a></h3>
 <p><strong>web2py</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">()</span>
 <span class="n">auth</span><span class="o">.</span><span class="n">define_tables</span><span class="p">()</span>
@@ -488,7 +488,7 @@ its session and its flash objects.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 1.20230718.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

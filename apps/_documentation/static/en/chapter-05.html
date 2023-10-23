@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating your first app &mdash; py4web 1.20230507.1 documentation</title>
+  <title>Creating your first app &mdash; py4web 1.20230718.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -14,12 +14,12 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=4c9c9fab"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -40,7 +40,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                1.20230718.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -109,9 +109,9 @@
            <div itemprop="articleBody">
              
   <section id="creating-your-first-app">
-<h1>Creating your first app<a class="headerlink" href="#creating-your-first-app" title="Permalink to this heading"></a></h1>
+<h1>Creating your first app<a class="headerlink" href="#creating-your-first-app" title="Link to this heading"></a></h1>
 <section id="from-scratch">
-<h2>From scratch<a class="headerlink" href="#from-scratch" title="Permalink to this heading"></a></h2>
+<h2>From scratch<a class="headerlink" href="#from-scratch" title="Link to this heading"></a></h2>
 <p>Apps can be created using the dashboard or directly from the filesystem.
 Here, we are going to do it manually, as the Dashboard is already described in
 its own chapter.</p>
@@ -149,7 +149,7 @@ access. Yet typically most apps are designed to expose static or dynamic
 web pages.</p>
 </section>
 <section id="static-web-pages">
-<h2>Static web pages<a class="headerlink" href="#static-web-pages" title="Permalink to this heading"></a></h2>
+<h2>Static web pages<a class="headerlink" href="#static-web-pages" title="Link to this heading"></a></h2>
 <p>To expose static web pages you simply need to create a <code class="docutils literal notranslate"><span class="pre">static</span></code>
 subfolder, and any file in there will be automatically published:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>apps/myapp/static
@@ -169,7 +169,7 @@ and if-modified-since. This is all
 handled automatically based on the HTTP request headers.</p>
 </section>
 <section id="dynamic-web-pages">
-<h2>Dynamic Web Pages<a class="headerlink" href="#dynamic-web-pages" title="Permalink to this heading"></a></h2>
+<h2>Dynamic Web Pages<a class="headerlink" href="#dynamic-web-pages" title="Link to this heading"></a></h2>
 <p>To create a dynamic page, you must create a function that returns the
 page content. For example edit the <code class="docutils literal notranslate"><span class="pre">myapp/__init__.py</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
@@ -201,7 +201,7 @@ ambiguity. But there is one exception: if you call your app
 then py4web will not prepend any prefix to the routes defined inside the
 app.</p>
 <section id="on-return-values">
-<h3>On return values<a class="headerlink" href="#on-return-values" title="Permalink to this heading"></a></h3>
+<h3>On return values<a class="headerlink" href="#on-return-values" title="Link to this heading"></a></h3>
 <p>py4web actions should return a string or a dictionary. If they return a
 dictionary you must tell py4web what to do with it. By default py4web
 will serialize it into json. For example edit <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> again and
@@ -223,7 +223,7 @@ PY4WEB comes with yatl, a full chapter will be dedicated later and we
 will provide an example shortly.</p>
 </section>
 <section id="routes">
-<h3>Routes<a class="headerlink" href="#routes" title="Permalink to this heading"></a></h3>
+<h3>Routes<a class="headerlink" href="#routes" title="Link to this heading"></a></h3>
 <p>It is possible to map patterns in the URL into arguments of the
 function. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;color/&lt;name&gt;&#39;</span><span class="p">)</span>
@@ -265,7 +265,7 @@ can be an HTTP method or a list of methods:</p>
 multiple routes.</p>
 </section>
 <section id="the-request-object">
-<h3>The <code class="docutils literal notranslate"><span class="pre">request</span></code> object<a class="headerlink" href="#the-request-object" title="Permalink to this heading"></a></h3>
+<h3>The <code class="docutils literal notranslate"><span class="pre">request</span></code> object<a class="headerlink" href="#the-request-object" title="Link to this heading"></a></h3>
 <p>From py4web you can import <code class="docutils literal notranslate"><span class="pre">request</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">request</span>
 
@@ -288,7 +288,7 @@ with one additional attribute:</p>
 <p>Which you can use the code to identify the name and the folder used for the app.</p>
 </section>
 <section id="templates">
-<h3>Templates<a class="headerlink" href="#templates" title="Permalink to this heading"></a></h3>
+<h3>Templates<a class="headerlink" href="#templates" title="Link to this heading"></a></h3>
 <p>In order to use a yatl template you must declare it. For example create a file <code class="docutils literal notranslate"><span class="pre">apps/myapp/templates/paint.html</span></code> that contains:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
@@ -345,7 +345,7 @@ automatically.</p>
 </section>
 </section>
 <section id="the-scaffold-app">
-<h2>The _scaffold app<a class="headerlink" href="#the-scaffold-app" title="Permalink to this heading"></a></h2>
+<h2>The _scaffold app<a class="headerlink" href="#the-scaffold-app" title="Link to this heading"></a></h2>
 <p>Most of the times, you do not want to start writing code from scratch.
 You also want to follow some sane conventions outlined here, like not
 putting all your code into <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>. PY4WEB provides a
@@ -422,7 +422,7 @@ agnostic to your choice of JS and CSS, but with some exceptions. The
 component. Hence if you want to use that, you should not remove it.</p>
 </section>
 <section id="copying-the-scaffold-app">
-<span id="id1"></span><h2>Copying the _scaffold app<a class="headerlink" href="#copying-the-scaffold-app" title="Permalink to this heading"></a></h2>
+<span id="id1"></span><h2>Copying the _scaffold app<a class="headerlink" href="#copying-the-scaffold-app" title="Link to this heading"></a></h2>
 <p>The scaffold app is really useful, and you will surely use it a lot as
 a starting point for testing and even developing full features new apps.</p>
 <p>It’s better not to work directly on it: always create new apps copying it.
@@ -440,7 +440,7 @@ along with the new app.</p>
 </ul>
 </section>
 <section id="watch-for-files-change">
-<h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Permalink to this heading"></a></h2>
+<h2>Watch for files change<a class="headerlink" href="#watch-for-files-change" title="Link to this heading"></a></h2>
 <p>As described in the <a class="reference internal" href="chapter-03.html#run-command-option"><span class="std std-ref">run command option</span></a>, Py4web facilitates a
 development server’s setup by automatically reloads an app when its
 Python source files change (by default).
@@ -525,7 +525,7 @@ exceptions inside handlers are printed in terminal.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 1.20230718.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
