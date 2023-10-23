@@ -4,7 +4,6 @@
 
 # Standard modules
 import asyncio
-import cgitb
 import code
 import collections
 import copy
@@ -49,6 +48,7 @@ except ImportError:
     gunicorn = None
 
 import click
+
 # Third party modules
 import ombott as bottle
 import pluralize
@@ -142,6 +142,15 @@ def module2filename(module):
         else filename + ".py"
     )
     return filename
+
+
+def load_module(name, path):
+    """load a module with name from math"""
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def required_folder(*parts):
@@ -302,7 +311,6 @@ def dumps(obj, sort_keys=True, indent=2):
 
 
 class Fixture:
-
     __request_master_ctx__ = threading.local()
     __fixture_debug__ = False
 
@@ -542,7 +550,6 @@ def render(
 
 
 class Template(Fixture):
-
     cache = Cache(100)
 
     def __init__(self, filename, path=None, delimiters="[[ ]]"):
@@ -579,7 +586,6 @@ class Template(Fixture):
 
 
 class Session(Fixture):
-
     # All apps share the same default secret if not specified.
     # important for _dashboard reload
     # the actual value is loaded from a file
@@ -649,6 +655,8 @@ class Session(Fixture):
                 if self.storage:
                     token_data = raw_token.encode()
                     json_data = self.storage.get(token_data)
+                    if isinstance(json_data, bytes):
+                        json_data = json_data.decode("utf8")
                     if json_data:
                         self_local.data = json.loads(json_data)
                 else:
@@ -869,7 +877,6 @@ class action:
                 fixtures.append(fixture)
 
         def decorator(func):
-
             if Fixture.__fixture_debug__:
                 # in debug mode log all calls to fixtures
                 def call(f, context):
@@ -1028,7 +1035,7 @@ def new_sslwrap(
 
 
 def get_error_snapshot(depth=5):
-    """Return a dict describing a given traceback (based on cgitb.text)."""
+    """Return a dict describing a given traceback."""
 
     tb = traceback.format_exc()
     errorlog = os.environ.get("PY4WEB_ERRORLOG")
@@ -1234,7 +1241,6 @@ class StreamProxy:
 
 
 class Reloader:
-
     ROUTES = collections.defaultdict(list)
     MODULES = {}
     ERRORS = {}
@@ -1272,8 +1278,7 @@ class Reloader:
         # if first time reload dummy top module
         if not Reloader.MODULES:
             path = os.path.join(folder, "__init__.py")
-            loader = importlib.machinery.SourceFileLoader("apps", path)
-            loader.load_module()
+            module = load_module("apps", path)
         # Then load all the apps as submodules
         if os.environ.get("PY4WEB_APP_NAMES"):
             app_names = os.environ.get("PY4WEB_APP_NAMES").split(",")
@@ -1292,7 +1297,6 @@ class Reloader:
         init = os.path.join(path, "__init__.py")
 
         if os.path.isdir(path) and not path.endswith("__") and os.path.exists(init):
-
             action.app_name = app_name
             module_name = "apps.%s" % app_name
 
@@ -1320,9 +1324,7 @@ class Reloader:
                 buf_out = StreamProxy(io.StringIO())
                 buf_err = StreamProxy(buf_out._stream)
                 with redirect_stdout(buf_out), redirect_stderr(buf_err):
-                    module = importlib.machinery.SourceFileLoader(
-                        module_name, init
-                    ).load_module()
+                    module = load_module(module_name, init)
                     load_module_message = buf_out._stream.getvalue()
                 buf_out._stream.close()
                 buf_out._stream = sys.stdout

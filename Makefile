@@ -23,7 +23,7 @@ docs: venv
 	cd docs; . ../venv/bin/activate && ./updateDocs.sh html
 test: venv
 	venv/bin/pip install -U -r test-requirements.txt
-	venv/bin/python -m pytest --cov=py4web --cov-report html:cov.html -v -s tests/
+	venv/bin/python -m pytest --cov=py4web --cov-report html:cov.html -v tests/
 setup:
 	venv/bin/python py4web.py setup apps
 	venv/bin/python py4web.py set_password
