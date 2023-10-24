@@ -130,6 +130,7 @@ def gunicorn():
         def run(self, py4web_apps_handler):
             from gunicorn.app.base import BaseApplication
 
+            level = check_level (self.options["logging_level"])
             config = {
                      "bind": f"{self.host}:{self.port}",
                      "workers": get_workers(self.options),
@@ -140,7 +141,6 @@ def gunicorn():
             if not self.quiet:
 
                   log_file = get_log_file ( out_banner= False)
-                  level = check_level (self.options["logging_level"])
 
                   logger = logging_conf(level )
                   log_to = "-" if log_file is None else log_file
@@ -151,6 +151,18 @@ def gunicorn():
                      "accesslog": log_to,
                      "errorlog": log_to,
                   })
+
+            # export GUNICORN_WORKERS=2
+            # export GUNICORN_BACKLOG=4096
+
+            gunicorn_env = dict()
+            for k,v in os.environ.items():
+                if k.startswith("GUNICORN_"):
+                    key = k.split('_', 1)[1].lower()
+                    gunicorn_env[key] = v
+            config.update( gunicorn_env )
+            if level == logging.NOTSET:
+                 print (config)
 
             class GunicornApplication(BaseApplication):
                 def load_config(self):
