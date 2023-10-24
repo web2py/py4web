@@ -11,6 +11,7 @@ except ImportError:
     wsservers_list = []
 
 __all__ = [
+    "gunicorn",
     "gevent",
     "geventWebSocketServer",
     "geventWs",  # short_name
@@ -22,10 +23,10 @@ __all__ = [
 # ---------------------- utils -----------------------------------------------
 
 # export PY4WEB_LOGS=/tmp # export PY4WEB_LOGS=
-def get_log_file():
+def get_log_file(out_banner = True):
     log_dir = os.environ.get("PY4WEB_LOGS", None)
     log_file = os.path.join(log_dir, "server-py4web.log") if log_dir else None
-    if log_file:
+    if log_file and out_banner:
         print(f"log_file: {log_file}")
     return log_file
 
@@ -119,6 +120,49 @@ def get_workers(opts, default=10):
 
 
 # ---------------------- servers -----------------------------------------------
+def gunicorn():
+
+    class GunicornServer(ServerAdapter):
+        """ https://docs.gunicorn.org/en/stable/settings.html """
+        # https://pawamoy.github.io/posts/unify-logging-for-a-gunicorn-uvicorn-app/
+        # ./py4web.py run apps -s gunicorn  --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -Q
+
+        def run(self, py4web_apps_handler):
+            from gunicorn.app.base import BaseApplication
+
+            config = {
+                     "bind": f"{self.host}:{self.port}",
+                     "workers": get_workers(self.options),
+                     "certfile": self.options.get("certfile", None),
+                     "keyfile": self.options.get("keyfile", None),
+                     }
+
+            if not self.quiet:
+
+                  log_file = get_log_file ( out_banner= False)
+                  level = check_level (self.options["logging_level"])
+
+                  logger = logging_conf(level )
+                  log_to = "-" if log_file is None else log_file
+
+                  config.update({
+                     "loglevel": logging.getLevelName( level ),
+                     "access_log_format" : '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"' ,
+                     "accesslog": log_to,
+                     "errorlog": log_to,
+                  })
+
+            class GunicornApplication(BaseApplication):
+                def load_config(self):
+                    for key, value in config.items():
+                        self.cfg.set(key, value)
+
+                def load(self):
+                    return py4web_apps_handler
+
+            GunicornApplication().run()
+    return GunicornServer
+
 
 
 def gevent():
