@@ -183,7 +183,7 @@ def gevent():
 
     class GeventServer(ServerAdapter):
         def run(self, app_handler):
-            logger = "default"
+            logger = None #"default"
 
             if not self.quiet:
                 logger = logging_conf(
@@ -237,7 +237,7 @@ def geventWebSocketServer():
 
     class GeventWebSocketServer(ServerAdapter):
         def run(self, app_handler):
-            logger = "default"
+            logger = None #"default"
 
             if not self.quiet:
                 logger = logging_conf(
