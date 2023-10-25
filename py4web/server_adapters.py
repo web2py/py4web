@@ -127,7 +127,7 @@ def gunicorn():
         # https://pawamoy.github.io/posts/unify-logging-for-a-gunicorn-uvicorn-app/
         # ./py4web.py run apps -s gunicorn  --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -Q
 
-        def run(self, py4web_apps_handler):
+        def run(self, app_handler):
             from gunicorn.app.base import BaseApplication
 
             level = check_level (self.options["logging_level"])
@@ -152,25 +152,29 @@ def gunicorn():
                      "errorlog": log_to,
                   })
 
-            # export GUNICORN_WORKERS=2
-            # export GUNICORN_BACKLOG=4096
-
-            gunicorn_env = dict()
-            for k,v in os.environ.items():
-                if k.startswith("GUNICORN_"):
-                    key = k.split('_', 1)[1].lower()
-                    gunicorn_env[key] = v
-            config.update( gunicorn_env )
-            if level == logging.NOTSET:
-                 print (config)
-
             class GunicornApplication(BaseApplication):
                 def load_config(self):
+
+                    # export GUNICORN_WORKERS=2
+                    # export GUNICORN_BACKLOG=4096
+
+                    gunicorn_vars = dict()
+
+                    for k,v in os.environ.items():
+                        if k.startswith("GUNICORN_"):
+                            key = k.split('_', 1)[1].lower()
+                            if v:
+                               gunicorn_vars[key] = v
+
+                    if gunicorn_vars:
+                         config.update( gunicorn_vars )
+                         print ('gunicorn config:',config)
+
                     for key, value in config.items():
                         self.cfg.set(key, value)
 
                 def load(self):
-                    return py4web_apps_handler
+                    return app_handler
 
             GunicornApplication().run()
     return GunicornServer
