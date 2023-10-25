@@ -12,6 +12,7 @@ except ImportError:
 
 __all__ = [
     "gunicorn",
+    "gunicornGevent",
     "gevent",
     "geventWebSocketServer",
     "geventWs",  # short_name
@@ -126,6 +127,8 @@ def gunicorn():
         """ https://docs.gunicorn.org/en/stable/settings.html """
         # https://pawamoy.github.io/posts/unify-logging-for-a-gunicorn-uvicorn-app/
         # ./py4web.py run apps -s gunicorn  --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -Q
+        #  
+        # ./py4web.py run apps -s gunicornGevent  --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -Q
 
         def run(self, app_handler):
             from gunicorn.app.base import BaseApplication
@@ -158,13 +161,16 @@ def gunicorn():
                     # export GUNICORN_WORKERS=2
                     # export GUNICORN_BACKLOG=4096
 
+                    # To use gevent monkey.patch_all()  , run ./py4web.py run apps -s gunicornGevent ......
+                    # export GUNICORN_worker_class=gevent
+                    # export GUNICORN_worker_class=gunicorn.workers.ggevent.GeventWorker
+
                     gunicorn_vars = dict()
 
                     for k,v in os.environ.items():
-                        if k.startswith("GUNICORN_"):
+                        if k.startswith("GUNICORN_") and v:
                             key = k.split('_', 1)[1].lower()
-                            if v:
-                               gunicorn_vars[key] = v
+                            gunicorn_vars[key] = v
 
                     if gunicorn_vars:
                          config.update( gunicorn_vars )
@@ -178,6 +184,7 @@ def gunicorn():
 
             GunicornApplication().run()
     return GunicornServer
+gunicornGevent = gunicorn
 
 
 
