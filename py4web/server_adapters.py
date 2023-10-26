@@ -123,17 +123,24 @@ def get_workers(opts, default=10):
 # ---------------------- servers -----------------------------------------------
 def gunicorn():
 
+    from gevent import local  # pip install gevent gunicorn
+    import threading
+
+    # To use gevent monkey.patch_all()
+    # run ./py4web.py run apps -s gunicornGevent ......
+    if isinstance(threading.local(), local.local):
+        print( 'gunicorn: monkey.patch_all() applied' )
+
     class GunicornServer(ServerAdapter):
         """ https://docs.gunicorn.org/en/stable/settings.html """
         # https://pawamoy.github.io/posts/unify-logging-for-a-gunicorn-uvicorn-app/
-        # ./py4web.py run apps -s gunicorn  --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -Q
+        # ./py4web.py run apps -s gunicorn --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
         #  
-        # ./py4web.py run apps -s gunicornGevent  --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -Q
+        # ./py4web.py run apps -s gunicornGevent --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20 
 
         def run(self, app_handler):
             from gunicorn.app.base import BaseApplication
 
-            level = check_level (self.options["logging_level"])
             config = {
                      "bind": f"{self.host}:{self.port}",
                      "workers": get_workers(self.options),
@@ -143,6 +150,7 @@ def gunicorn():
 
             if not self.quiet:
 
+                  level = check_level (self.options["logging_level"])
                   log_file = get_log_file ( out_banner= False)
 
                   logger = logging_conf(level )
@@ -160,10 +168,28 @@ def gunicorn():
 
                     # export GUNICORN_WORKERS=2
                     # export GUNICORN_BACKLOG=4096
-
-                    # To use gevent monkey.patch_all()  , run ./py4web.py run apps -s gunicornGevent ......
+                    # export GUNICORN_worker_connections=100
+                    #
+                    # tested with ssep4w https://github.com/ali96343/lvsio
+                    # export GUNICORN_worker_class=sync
+                    # export GUNICORN_worker_class=gthread
+                    #
+                    # To use gevent monkey.patch_all()
+                    # run ./py4web.py run apps -s gunicornGevent ......
                     # export GUNICORN_worker_class=gevent
                     # export GUNICORN_worker_class=gunicorn.workers.ggevent.GeventWorker
+                    #
+                    # pip install gunicorn[eventlet]
+                    # export GUNICORN_worker_class=eventlet
+                    #
+                    # pip install tornado # for special app
+                    # export GUNICORN_worker_class=tornado
+
+                    # bad: $pip install "uvicorn[standard]" gunicorn
+                    #      $export GUNICORN_worker_class=uvicorn.workers.UvicornWorker
+                    #      $export GUNICORN_worker_class=aiohttp.worker.GunicornWebWorker
+                    #
+                    # time for i in {1..5000}; do curl -k http://localhost:8000/todo &>/dev/null ; done
 
                     gunicorn_vars = dict()
 
