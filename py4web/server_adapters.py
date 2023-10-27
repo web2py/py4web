@@ -191,7 +191,7 @@ def gunicorn():
                     #      $export GUNICORN_worker_class=uvicorn.workers.UvicornWorker
                     #      $export GUNICORN_worker_class=aiohttp.worker.GunicornWebWorker
                     #
-                    # time for i in {1..5000}; do curl -k http://localhost:8000/todo &>/dev/null ; done
+                    # time seq 1 5000 | xargs -I % -P 10000 curl http://localhost:8000/mig1ssl &>/dev/null
 
                     gunicorn_vars = dict()
 
