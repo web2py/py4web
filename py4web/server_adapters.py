@@ -26,7 +26,7 @@ __all__ = [
 # export PY4WEB_LOGS=/tmp # export PY4WEB_LOGS=
 def get_log_file(out_banner = True):
     log_dir = os.environ.get("PY4WEB_LOGS", None)
-    if os.path.isdir(log_dir):
+    if log_dir and os.path.isdir(log_dir):
         log_file = os.path.join (log_dir, 'server-py4web.log')
         if out_banner:
             print(f"log_file: {log_file}")
