@@ -61,7 +61,7 @@ def check_level(level):
     )
 
 
-def logging_conf(level=logging.WARN, logger_name=__name__, test_log=False):
+def logging_conf(level=logging.WARN, logger_name=__name__, m="w", test_log=False):
 
     log_file = get_log_file()
     log_to = dict()
@@ -69,11 +69,11 @@ def logging_conf(level=logging.WARN, logger_name=__name__, test_log=False):
     if log_file:
         if sys.version_info >= (3, 9):
             log_to["filename"] = log_file
-            log_to["filemode"] = "w"
+            log_to["filemode"] = m
             log_to["encoding"] = "utf-8"
         else:
             try:
-                h = logging.FileHandler(log_file, mode="w", encoding="utf-8")
+                h = logging.FileHandler(log_file, mode=m, encoding="utf-8")
                 log_to.update({"handlers": [h]})
             except (LookupError, KeyError, ValueError) as ex:
                 print(f"{ex}, bad  encoding {__file__}")
@@ -138,7 +138,6 @@ def gunicorn():
 
         # https://pawamoy.github.io/posts/unify-logging-for-a-gunicorn-uvicorn-app/
         # ./py4web.py run apps -s gunicorn --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
-        #
         # ./py4web.py run apps -s gunicornGevent --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
 
         def run(self, app_handler):
@@ -179,9 +178,9 @@ def gunicorn():
                                     line = line.strip()
                                     if not line or line.startswith("#"):
                                         continue
-                                    for k in ( "export", "GUNICORN_" ):
-                                        line = line.replace(k, '')
-                                    k, v = line.split("=",1)
+                                    for k in ("export ", "GUNICORN_"):
+                                        line = line.replace(k, "")
+                                    k, v = line.split("=", 1)
                                     result[k.strip().lower()] = v.strip()
                                 if result:
                                     print(f"gunicorn: read {env_file}")
@@ -201,9 +200,9 @@ def gunicorn():
 
                     # export GUNICORN_worker_class=sync
                     # export GUNICORN_worker_class=gthread
-                    # export GUNICORN_worker_tmp_dir=/dev/shm 
-                    # export GUNICORN_threads=8 
-                    # export GUNICORN_timeout=10 
+                    # export GUNICORN_worker_tmp_dir=/dev/shm
+                    # export GUNICORN_threads=8
+                    # export GUNICORN_timeout=10
                     # export GUNICORN_max_requests=1200
 
                     #
@@ -217,14 +216,7 @@ def gunicorn():
                     # pip install gunicorn[eventlet]
                     # export GUNICORN_worker_class=eventlet
                     #
-                    # pip install tornado # for special app
-                    # export GUNICORN_worker_class=tornado
-
-                    # bad: $pip install "uvicorn[standard]" gunicorn
-                    #      $export GUNICORN_worker_class=uvicorn.workers.UvicornWorker
-                    #      $export GUNICORN_worker_class=aiohttp.worker.GunicornWebWorker
-                    #
-                    # time seq 1 5000 | xargs -I % -P 10000 curl http://localhost:8000/mig1ssl &>/dev/null
+                    # time seq 1 5000 | xargs -I % -P 0 curl http://localhost:8000/todo &>/dev/null
 
                     gunicorn_vars = self.get_gunicorn_vars()
 
