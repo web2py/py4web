@@ -75,7 +75,7 @@ def logging_conf(level=logging.WARN, logger_name=__name__, test_log=False):
             try:
                 h = logging.FileHandler(log_file, mode="w", encoding="utf-8")
                 log_to.update({"handlers": [h]})
-            except ( LookupError, KeyError, ValueError) as ex:
+            except (LookupError, KeyError, ValueError) as ex:
                 print(f"{ex}, bad  encoding {__file__}")
                 pass
 
@@ -492,7 +492,8 @@ def log_info(mess, dbg=True, ):
 
         return _srv_log
 
-    dbg and salog().info(str(mess))
+    #caller = f" > {APP_NAME} > {sys._getframe().f_back.f_code.co_name}"
+    dbg and salog().info(mess + caller)
 
 log_warn=log_info
 log_debug=log_info
