@@ -171,13 +171,18 @@ def gunicorn():
             class GunicornApplication(BaseApplication):
                 def load_config(self):
 
-                    # export GUNICORN_WORKERS=2
                     # export GUNICORN_BACKLOG=4096
                     # export GUNICORN_worker_connections=100
-                    #
-                    # tested with ssep4w https://github.com/ali96343/lvsio
+
                     # export GUNICORN_worker_class=sync
                     # export GUNICORN_worker_class=gthread
+                    # export GUNICORN_worker_tmp_dir=/dev/shm 
+                    # export GUNICORN_threads=8 
+                    # export GUNICORN_timeout=10 
+                    # export GUNICORN_max_requests=1200
+
+                    #
+                    # tested with ssep4w https://github.com/ali96343/lvsio
                     #
                     # To use gevent monkey.patch_all()
                     # run ./py4web.py run apps -s gunicornGevent ......
