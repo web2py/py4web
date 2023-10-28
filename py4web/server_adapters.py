@@ -174,15 +174,15 @@ def gunicorn():
                     if os.path.isfile(env_file):
                         try:
                             with open(env_file, "r") as f:
-                                lines =  f.read().splitlines()
+                                lines = f.read().splitlines()
                                 for line in lines:
+                                    line = line.strip()
                                     if not line or line.startswith("#"):
                                         continue
-                                    line = line.replace("export", "").replace(
-                                        "GUNICORN_", ""
-                                    )
-                                    key, value = line.split("=",1)
-                                    result[key.strip().lower()] = value.strip()
+                                    for k in ( "export", "GUNICORN_" ):
+                                        line = line.replace(k, '')
+                                    k, v = line.split("=",1)
+                                    result[k.strip().lower()] = v.strip()
                                 if result:
                                     print(f"gunicorn: read {env_file}")
                                     return result
