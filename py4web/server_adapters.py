@@ -169,6 +169,31 @@ def gunicorn():
                 )
 
             class GunicornApplication(BaseApplication):
+                def get_gunicorn_vars(self, env_file="gunicorn.saenv"):
+                    result = dict()
+                    if os.path.isfile(env_file):
+                        try:
+                            with open(env_file, "r") as f:
+                                lines =  f.read().splitlines()
+                                for line in lines:
+                                    if not line or line.startswith("#"):
+                                        continue
+                                    line = line.replace("export", "").replace(
+                                        "GUNICORN_", ""
+                                    )
+                                    key, value = line.split("=",1)
+                                    result[key.strip().lower()] = value.strip()
+                                if result:
+                                    print(f"gunicorn: read {env_file}")
+                                    return result
+                        except OSError as ex:
+                            print(f"{ex} {env_file}")
+                    for k, v in os.environ.items():
+                        if k.startswith("GUNICORN_") and v:
+                            key = k.split("_", 1)[1].lower()
+                            result[key] = v
+                    return result
+
                 def load_config(self):
 
                     # export GUNICORN_BACKLOG=4096
@@ -201,12 +226,7 @@ def gunicorn():
                     #
                     # time seq 1 5000 | xargs -I % -P 10000 curl http://localhost:8000/mig1ssl &>/dev/null
 
-                    gunicorn_vars = dict()
-
-                    for k, v in os.environ.items():
-                        if k.startswith("GUNICORN_") and v:
-                            key = k.split("_", 1)[1].lower()
-                            gunicorn_vars[key] = v
+                    gunicorn_vars = self.get_gunicorn_vars()
 
                     if gunicorn_vars:
                         config.update(gunicorn_vars)
