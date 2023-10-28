@@ -72,8 +72,12 @@ def logging_conf(level=logging.WARN, logger_name=__name__, test_log=False):
             log_to["filemode"] = "w"
             log_to["encoding"] = "utf-8"
         else:
-            h = logging.FileHandler(log_file, mode="w", encoding="utf-8")
-            log_to.update({"handlers": [h]})
+            try:
+                h = logging.FileHandler(log_file, mode="w", encoding="utf-8")
+                log_to.update({"handlers": [h]})
+            except ( LookupError, KeyError, ValueError) as ex:
+                print(f"{ex}, bad  encoding {__file__}")
+                pass
 
     short_msg = "%(message)s > %(threadName)s > %(asctime)s.%(msecs)03d"
     # long_msg = short_msg + " > %(funcName)s > %(filename)s:%(lineno)d > %(levelname)s"
