@@ -61,7 +61,7 @@ def check_level(level):
     )
 
 
-def logging_conf(level=logging.WARN, logger_name=__name__, m="w", test_log=False):
+def logging_conf(level=logging.WARN, logger_name=__name__, fmode="w", test_log=False):
 
     log_file = get_log_file()
     log_to = dict()
@@ -69,11 +69,11 @@ def logging_conf(level=logging.WARN, logger_name=__name__, m="w", test_log=False
     if log_file:
         if sys.version_info >= (3, 9):
             log_to["filename"] = log_file
-            log_to["filemode"] = m
+            log_to["filemode"] = fmode
             log_to["encoding"] = "utf-8"
         else:
             try:
-                h = logging.FileHandler(log_file, mode=m, encoding="utf-8")
+                h = logging.FileHandler(log_file, mode=fmode, encoding="utf-8")
                 log_to.update({"handlers": [h]})
             except (LookupError, KeyError, ValueError) as ex:
                 print(f"{ex}, bad  encoding {__file__}")
@@ -509,7 +509,7 @@ def log_info(mess, dbg=True, ):
 
         return _srv_log
 
-    #caller = f" > {APP_NAME} > {sys._getframe().f_back.f_code.co_name}"
+    caller = f" > {APP_NAME} > {sys._getframe().f_back.f_code.co_name}"
     dbg and salog().info(mess + caller)
 
 log_warn=log_info
