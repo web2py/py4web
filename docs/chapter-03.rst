@@ -21,14 +21,14 @@ An apps folder is a python module, and each app is also a python module.
 Supported platforms and prerequisites
 -------------------------------------
 
-PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is
+py4web runs fine on Windows, MacOS and Linux. Its only prerequisite is
 Python 3.7+, which must be installed in advance (except if you use binaries).
 
 
 Setup procedures
 ----------------
 
-There are four alternative ways of running py4web, with different level
+There are four alternative ways of installing py4web, with different level
 of difficulty and flexibility. Let’s look at the pros and cons.
 
 Installing from binaries
@@ -87,7 +87,14 @@ on any given working folder with
 If the command py4web is not accepted, it means it’s not in the system’s
 path. On Windows, a special py4web.exe file (pointing to py4web.py) will
 be created by *pip* on the system’s path, but not if you type the
-*–user* option by mistake.
+*–user* option by mistake, then you can run the needed commands like this
+
+::
+
+   python3 py4web.py setup apps
+   python3 py4web.py set_password
+   python3 py4web.py run apps
+
 
 Installing using a virtual environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
