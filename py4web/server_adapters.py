@@ -176,17 +176,22 @@ def gunicorn():
                                 lines = f.read().splitlines()
                                 for line in lines:
                                     line = line.strip()
-                                    if not line or line.startswith("#"):
+                                    if not line or line.startswith(("#",'[')):
                                         continue
                                     for k in ("export ", "GUNICORN_"):
-                                        line = line.replace(k, "")
-                                    k, v = line.split("=", 1)
-                                    result[k.strip().lower()] = v.strip()
+                                        line = line.replace(k, "",1)
+                                    k, v = None, None
+                                    try:
+                                        k, v = line.split("=", 1)
+                                    except ValueError:
+                                       continue
+                                    v = v.strip()
+                                    result[k.strip().lower()] = None if v == 'None' else v
                                 if result:
                                     print(f"gunicorn: read {env_file}")
                                     return result
                         except OSError as ex:
-                            print(f"{ex} {env_file}")
+                            print(f"{ex} gunicorn: cannot read {env_file}")
                     for k, v in os.environ.items():
                         if k.startswith("GUNICORN_") and v:
                             key = k.split("_", 1)[1].lower()
@@ -194,6 +199,27 @@ def gunicorn():
                     return result
 
                 def load_config(self):
+
+                    """
+                    gunicorn.saenv
+
+                    # example
+                    # export GUNICORN_max_requests=1200
+                    export GUNICORN_worker_tmp_dir=/dev/shm
+
+                    # run as -s gunicornGevent
+                    #worker_class=gevent
+                    #worker_class=eventlet
+
+                    # run as -s gunicorn
+                    #worker_class=sync
+                    [hello any text]
+                    worker_class=gthread
+                    workers=4
+                    threads=8
+
+                    """
+
 
                     # export GUNICORN_BACKLOG=4096
                     # export GUNICORN_worker_connections=100
