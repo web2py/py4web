@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 1.20230718.1</title>
+  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 1.20231029.1</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=058a9de4"></script>
+        <script src="_static/documentation_options.js?v=4394b118"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/tabs.js?v=3030b3cb"></script>
@@ -42,7 +42,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230718.1
+                1.20231029.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -148,12 +148,13 @@ An apps folder is a python module, and each app is also a python module.</p>
 </section>
 <section id="supported-platforms-and-prerequisites">
 <h2>Plataformas e pré-requisitos suportados<a class="headerlink" href="#supported-platforms-and-prerequisites" title="Link to this heading"></a></h2>
-<p>PY4WEB runs fine on Windows, MacOS and Linux. Its only prerequisite is
+<p>py4web runs fine on Windows, MacOS and Linux. Its only prerequisite is
 Python 3.7+, which must be installed in advance (except if you use binaries).</p>
 </section>
 <section id="setup-procedures">
 <h2>Procedimentos de configuração<a class="headerlink" href="#setup-procedures" title="Link to this heading"></a></h2>
-<p>Existem quatro formas alternativas de correr py4web, com diferentes níveis de dificuldade e flexibilidade. Vamos olhar os prós e contras.</p>
+<p>There are four alternative ways of installing py4web, with different level
+of difficulty and flexibility. Let’s look at the pros and cons.</p>
 <section id="installing-from-binaries">
 <h3>Instalando a partir de binários<a class="headerlink" href="#installing-from-binaries" title="Link to this heading"></a></h3>
 <p>Esta não é uma instalação real, porque você acabou de copiar um monte de arquivos em seu sistema sem modificá-lo de qualquer maneira. Daí esta é a solução mais simples, especialmente para iniciantes ou alunos, porque ele não requer Python pré-instalado em seu sistema, nem direitos administrativos. Por outro lado, é experimental, poderia conter uma liberação py4web de idade e é muito difícil para adicionar outras funcionalidades a ele.</p>
@@ -182,7 +183,15 @@ py4web set_password
 py4web run apps
 </pre></div>
 </div>
-<p>Se o py4web comando não é aceito, isso significa que ele não está no caminho do sistema. No Windows, um arquivo py4web.exe especial (apontando para py4web.py) será criado por * pip * no caminho do sistema, mas não se você digitar o * -user * opção por engano.</p>
+<p>If the command py4web is not accepted, it means it’s not in the system’s
+path. On Windows, a special py4web.exe file (pointing to py4web.py) will
+be created by <em>pip</em> on the system’s path, but not if you type the
+<em>–user</em> option by mistake, then you can run the needed commands like this</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 py4web.py setup apps
+python3 py4web.py set_password
+python3 py4web.py run apps
+</pre></div>
+</div>
 </section>
 <section id="installing-using-a-virtual-environment">
 <h3>Installing using a virtual environment<a class="headerlink" href="#installing-using-a-virtual-environment" title="Link to this heading"></a></h3>
@@ -644,7 +653,7 @@ certificates. It optionally manage iptables, too.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20230718.1
+      v: 1.20231029.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

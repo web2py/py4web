@@ -493,10 +493,10 @@ class Auth(Fixture):
         """
         if not self.session.is_valid():
             return {}
-        user = self.session.get("user")
+        user = copy.copy(self.session.get("user"))
         if not user or not isinstance(user, dict) or "id" not in user:
             return {}
-        if len(user) == 1 and self.db:
+        if self.db:
             user = self.db.auth_user(user["id"])
             if not user:
                 return {}
@@ -525,13 +525,15 @@ class Auth(Fixture):
     def current_user(self):
         return self.get_user()
 
-    def impersonate(self, impersonated_id, next_url):
+    def start_impersonating(self, impersonated_id, next_url):
         """impersonates the new user"""
         user = self.session.get("user")
         if not user or "id" not in user:
             raise RuntimeError("Cannot impersonate if not logged in")
         if "impersonator_id" in user:
             raise RuntimeError("Cannot impersonate while impersonating")
+        if impersonated_id == self.user_id:
+            raise RuntimeError("Cannot impersonate yourself")
         self.session.clear()
         self.store_user_in_session(impersonated_id)
         self.session["user"]["impersonator_id"] = user["id"]
@@ -541,7 +543,7 @@ class Auth(Fixture):
         """checks if we are impersonating a user"""
         return self.session.get("user", {}).get("impersonator_id", None) != None
 
-    def stop_impersonation(self, next_url):
+    def stop_impersonating(self, next_url):
         """stops impersonating a user, assuming we are impersonating one"""
         user = self.session.get("user")
         impersonator_id = (user or {}).get("impersonator_id")

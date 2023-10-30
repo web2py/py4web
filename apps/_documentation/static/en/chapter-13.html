@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Authentication and authorization &mdash; py4web 1.20230718.1 documentation</title>
+  <title>Authentication and authorization &mdash; py4web 1.20231029.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=4c9c9fab"></script>
+        <script src="_static/documentation_options.js?v=0a82b357"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -40,7 +40,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230718.1
+                1.20231029.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -87,9 +87,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#authorization-using-tags">Authorization using Tags</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#tags-and-permissions">Tags and Permissions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#multiple-tags-objects">Multiple Tags objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#user-impersonation">User Impersonation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#user-impersonation">User Impersonation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Grid</a></li>
@@ -546,25 +546,29 @@ groups with the permission and we further filter those groups for those
 the current user is member of. We count them and if we find any, then
 the user has the permission.</p>
 </section>
-</section>
 <section id="user-impersonation">
-<h2>User Impersonation<a class="headerlink" href="#user-impersonation" title="Link to this heading"></a></h2>
-<p>It is possible to impersonate a user. As an example here is an action that, when called with <code class="docutils literal notranslate"><span class="pre">?user_id={number}</span></code>
-start impersonation and when called without <code class="docutils literal notranslate"><span class="pre">?user_id</span></code> will stop impersonation:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;impersonate&quot;</span><span class="p">)</span>
+<h3>User Impersonation<a class="headerlink" href="#user-impersonation" title="Link to this heading"></a></h3>
+<p>Auth provides API that allow you to impersonate another user.
+Here is an example of an action to start impersonating and stop impersonating another user.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;impersonate/{user_id:int}&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">switch_impersonation</span><span class="p">():</span>
-    <span class="nb">id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">auth</span><span class="o">.</span><span class="n">is_impersonating</span><span class="p">():</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">user_id</span> <span class="ow">or</span> <span class="n">auth</span><span class="o">.</span><span class="n">user_id</span> <span class="o">!=</span> <span class="n">user_id</span><span class="p">:</span>
-         <span class="n">auth</span><span class="o">.</span><span class="n">stop_impersonation</span><span class="p">(</span><span class="n">next_url</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
-    <span class="c1"># if we are not impersonating and a user email is specificed</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">auth</span><span class="o">.</span><span class="n">is_impersonating</span><span class="p">()</span> <span class="ow">and</span> <span class="n">user_id</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">),</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-             <span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
-        <span class="n">auth</span><span class="o">.</span><span class="n">impersonate</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">next_url</span><span class="o">=</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">start_impersonating</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">auth</span><span class="o">.</span><span class="n">is_impersonating</span><span class="p">()</span> <span class="ow">and</span>
+        <span class="n">user_id</span> <span class="ow">and</span>
+        <span class="n">user_id</span> <span class="o">!=</span> <span class="n">auth</span><span class="o">.</span><span class="n">user_id</span> <span class="ow">and</span>
+        <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="o">.</span><span class="n">id</span><span class="o">==</span><span class="n">user_id</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+        <span class="n">auth</span><span class="o">.</span><span class="n">start_impersonating</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
+    <span class="k">raise</span> <span class="n">HTTP</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+
+ <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;stop_impersonating&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">)</span>
+ <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+ <span class="k">def</span> <span class="nf">stop_impersonating</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">auth</span> <span class="ow">and</span> <span class="n">auth</span><span class="o">.</span><span class="n">is_impersonating</span><span class="p">():</span>
+        <span class="n">auth</span><span class="o">.</span><span class="n">stop_impersonating</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
+    <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 
@@ -604,7 +608,7 @@ start impersonation and when called without <code class="docutils literal notran
      <label for="switch"></label>
      </span>
       
-      v: 1.20230718.1
+      v: 1.20231029.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

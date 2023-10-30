@@ -500,3 +500,29 @@ Notice here ``permissions.find(permission)`` generates a query for all
 groups with the permission and we further filter those groups for those
 the current user is member of. We count them and if we find any, then
 the user has the permission.
+
+User Impersonation
+~~~~~~~~~~~~~~~~~~
+
+Auth provides API that allow you to impersonate another user.
+Here is an example of an action to start impersonating and stop impersonating another user.
+
+.. code:: python
+
+   @action("impersonate/{user_id:int}", method="GET")
+   @action.uses(auth.user)
+   def start_impersonating(user_id):
+       if (not auth.is_impersonating() and
+           user_id and
+           user_id != auth.user_id and
+           db(db.auth_user.id==user_id).count()):
+           auth.start_impersonating(user_id, URL("index"))
+       raise HTTP(404)
+
+    @action("stop_impersonating", method="GET")
+    @action.uses(auth)
+    def stop_impersonating():
+       if auth and auth.is_impersonating():
+           auth.stop_impersonating(URL("index"))
+       redirect(URL("index"))
+
