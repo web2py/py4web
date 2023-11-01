@@ -195,6 +195,7 @@ def gunicorn():
                                     result[k] = None if v == 'None' else v
                                 if result:
                                     print(f"gunicorn: read {env_file}")
+                                    result['config'] = './' + env_file
                                     return result
                         except OSError as ex:
                             print(f"gunicorn: cannot read {env_file}; {ex}")
@@ -206,6 +207,7 @@ def gunicorn():
                             if v.startswith('{') and v.endswith('}'):
                                  v = json.loads( v.replace("'", "\"") )
                             result[key] = None if v == 'None' else v
+                    result['config'] = 'environ' 
                     return result
 
                 def load_config(self):
@@ -263,15 +265,16 @@ def gunicorn():
                     if 'use_native_config' in gunicorn_vars:
                           location=gunicorn_vars['use_native_config' ]
                           super().load_config_from_module_name_or_filename(location)
+                          self.cfg.set('config', './' + location)
                           print (f'gunicorn: used config {location}')
                           return
 
                     if gunicorn_vars:
                         config.update(gunicorn_vars)
-                        print("gunicorn: used config gunicorn.saenv", config)
+                        location = gunicorn_vars['config']
+                        print(f"gunicorn: used config {location}", config)
 
                     for k, v in config.items():
-                        #self.cfg.set(k, v)
                         if k not in self.cfg.settings:
                            continue
                         try:
