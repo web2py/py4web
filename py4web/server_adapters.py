@@ -262,6 +262,12 @@ def gunicorn():
 
                     gunicorn_vars = self.get_gunicorn_vars()
 
+                    sa_show_msg = True
+                    if 'sa_show_msg' in gunicorn_vars:
+                        if gunicorn_vars['sa_show_msg'].lower() == 'false' :
+                             sa_show_msg = False
+                        del gunicorn_vars['sa_show_msg']
+
                     if 'use_native_config' in gunicorn_vars:
                           location=gunicorn_vars['use_native_config' ]
                           super().load_config_from_module_name_or_filename(location)
