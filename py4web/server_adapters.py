@@ -272,13 +272,13 @@ def gunicorn():
                           location=gunicorn_vars['use_native_config' ]
                           super().load_config_from_module_name_or_filename(location)
                           self.cfg.set('config', './' + location)
-                          print (f'gunicorn: used config {location}')
+                          sa_show_msg and print (f'gunicorn: used config {location}')
                           return
 
                     if gunicorn_vars:
                         config.update(gunicorn_vars)
                         location = gunicorn_vars['config']
-                        print(f"gunicorn: used config {location}", config)
+                        sa_show_msg and print(f"gunicorn: used config {location}", config)
 
                     for k, v in config.items():
                         if k not in self.cfg.settings:
