@@ -180,36 +180,36 @@ def gunicorn():
                                 lines = f.read().splitlines()
                                 for line in lines:
                                     line = line.strip()
-                                    if not line or line.startswith(("#",'[')):
+                                    if not line or line.startswith(("#", "[")):
                                         continue
                                     for k in ("export ", "GUNICORN_"):
-                                        line = line.replace(k, "",1)
-                                    k,v = None, None
+                                        line = line.replace(k, "", 1)
+                                    k, v = None, None
                                     try:
                                         k, v = line.split("=", 1)
                                         k, v = k.strip().lower(), v.strip()
-                                    except (ValueError, AttributeError ) :
+                                    except (ValueError, AttributeError):
                                         continue
-                                    if not v or k == 'bind':
+                                    if not v or k == "bind":
                                         continue
-                                    if v.startswith('{') and v.endswith('}'):
-                                         v = json.loads( v.replace("'", "\"") )
-                                    result[k] = None if v == 'None' else v
+                                    if v.startswith("{") and v.endswith("}"):
+                                        v = json.loads(v.replace("'", '"'))
+                                    result[k] = None if v == "None" else v
                                 if result:
                                     print(f"gunicorn: read {env_file}")
-                                    result['config'] = './' + env_file
+                                    result["config"] = "./" + env_file
                                     return result
                         except OSError as ex:
                             print(f"gunicorn: cannot read {env_file}; {ex}")
                     for k, v in os.environ.items():
                         if k.startswith("GUNICORN_") and v:
                             key = k.split("_", 1)[1].lower()
-                            if key == 'bind':
+                            if key == "bind":
                                 continue
-                            if v.startswith('{') and v.endswith('}'):
-                                 v = json.loads( v.replace("'", "\"") )
-                            result[key] = None if v == 'None' else v
-                    result['config'] = 'environ' 
+                            if v.startswith("{") and v.endswith("}"):
+                                v = json.loads(v.replace("'", '"'))
+                            result[key] = None if v == "None" else v
+                    result["config"] = "environ"
                     return result
 
                 def load_config(self):
@@ -238,7 +238,6 @@ def gunicorn():
 
                     """
 
-
                     # export GUNICORN_BACKLOG=4096
                     # export GUNICORN_worker_connections=100
 
@@ -262,37 +261,41 @@ def gunicorn():
                     #
                     # time seq 1 5000 | xargs -I % -P 0 curl http://localhost:8000/todo &>/dev/null
 
-                    def logger_info(msg='msg'):
-                        logger and logger.info (str(msg))
+                    def logger_info(msg="msg"):
+                        logger and logger.info(str(msg))
 
                     gunicorn_vars = self.get_gunicorn_vars()
 
                     try:
                         # test https://github.com/benoitc/gunicorn/blob/master/examples/example_config.py
-                        location=gunicorn_vars['use_native_config' ]
-                        Application.load_config_from_module_name_or_filename(self, location)
-                        self.cfg.set('config', './' + location)
-                        logger_info (f'gunicorn: used config {location}')
+                        location = gunicorn_vars["use_native_config"]
+                        Application.load_config_from_module_name_or_filename(
+                            self, location
+                        )
+                        self.cfg.set("config", "./" + location)
+                        logger_info(f"gunicorn: used config {location}")
                         return
                     except KeyError:
                         pass
 
                     if gunicorn_vars:
                         config.update(gunicorn_vars)
-                        location = gunicorn_vars['config']
+                        location = gunicorn_vars["config"]
                         logger_info(f"gunicorn: used config {location} {config}")
 
                     for k, v in config.items():
                         if k not in self.cfg.settings:
-                           continue
+                            continue
                         try:
                             self.cfg.set(k, v)
                         except Exception:
                             logger_info(f"gunicorn: Invalid value for {k}:{v}")
                             raise
 
-                    if 'print_config' in gunicorn_vars:
-                        gunicorn_vars['print_config'].lower() == 'true' and  print (self.cfg)
+                    if "print_config" in gunicorn_vars:
+                        gunicorn_vars["print_config"].lower() == "true" and logger_info(
+                            self.cfg
+                        )
 
                 def load(self):
                     return app_handler
