@@ -145,6 +145,8 @@ def gunicorn():
         def run(self, app_handler):
             from gunicorn.app.base import Application
 
+            logger = None
+
             config = {
                 "bind": f"{self.host}:{self.port}",
                 "workers": get_workers(self.options),
@@ -260,38 +262,37 @@ def gunicorn():
                     #
                     # time seq 1 5000 | xargs -I % -P 0 curl http://localhost:8000/todo &>/dev/null
 
+                    def logger_info(msg='msg'):
+                        logger and logger.info (str(msg))
+
                     gunicorn_vars = self.get_gunicorn_vars()
 
-                    sa_show_msg = True
-                    if 'sa_show_msg' in gunicorn_vars:
-                        if gunicorn_vars['sa_show_msg'].lower() == 'false' :
-                             sa_show_msg = False
-                        del gunicorn_vars['sa_show_msg']
-
-                    if 'use_native_config' in gunicorn_vars:
-                          location=gunicorn_vars['use_native_config' ]
-                          super().load_config_from_module_name_or_filename(location)
-                          self.cfg.set('config', './' + location)
-                          sa_show_msg and print (f'gunicorn: used config {location}')
-                          return
+                    try:
+                        # test https://github.com/benoitc/gunicorn/blob/master/examples/example_config.py
+                        location=gunicorn_vars['use_native_config' ]
+                        Application.load_config_from_module_name_or_filename(self, location)
+                        self.cfg.set('config', './' + location)
+                        logger_info (f'gunicorn: used config {location}')
+                        return
+                    except KeyError:
+                        pass
 
                     if gunicorn_vars:
                         config.update(gunicorn_vars)
                         location = gunicorn_vars['config']
-                        sa_show_msg and print(f"gunicorn: used config {location}", config)
+                        logger_info(f"gunicorn: used config {location} {config}")
 
                     for k, v in config.items():
                         if k not in self.cfg.settings:
                            continue
                         try:
-                            self.cfg.set(k.lower(), v)
+                            self.cfg.set(k, v)
                         except Exception:
-                            print(f"gunicorn: Invalid value for {k}:{v}\n", file=sys.stderr)
-                            sys.stderr.flush()
+                            logger_info(f"gunicorn: Invalid value for {k}:{v}")
                             raise
 
                     if 'print_config' in gunicorn_vars:
-                          gunicorn_vars['print_config'].lower() == 'true' and  print (self.cfg)
+                        gunicorn_vars['print_config'].lower() == 'true' and  print (self.cfg)
 
                 def load(self):
                     return app_handler
