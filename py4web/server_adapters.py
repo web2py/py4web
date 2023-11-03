@@ -265,17 +265,18 @@ def gunicorn():
 
                     gunicorn_vars = self.get_gunicorn_vars()
 
-                    try:
-                        # test https://github.com/benoitc/gunicorn/blob/master/examples/example_config.py
-                        location = gunicorn_vars["use_native_config"]
-                        Application.load_config_from_module_name_or_filename(
-                            self, location
-                        )
-                        self.cfg.set("config", "./" + location)
-                        logger_info(f"gunicorn: used config {location}")
-                        return
-                    except KeyError:
-                        pass
+                    # test https://github.com/benoitc/gunicorn/blob/master/examples/example_config.py
+                    for e in ("use_python_config", "use_native_config"):
+                        try:
+                            location = gunicorn_vars[e]
+                            Application.load_config_from_module_name_or_filename(
+                                self, location
+                            )
+                            self.cfg.set("config", "./" + location)
+                            logger_info(f"gunicorn: used config {location}")
+                            return
+                        except KeyError:
+                            pass
 
                     if gunicorn_vars:
                         config.update(gunicorn_vars)
@@ -291,14 +292,15 @@ def gunicorn():
                             logger_info(f"gunicorn: Invalid value for {k}:{v}")
                             raise
 
-                    #if "print_config" in gunicorn_vars:
+                    # if "print_config" in gunicorn_vars:
                     #    gunicorn_vars["print_config"].lower() == "true" and logger_info( self.cfg)
 
                     try:
-                        gunicorn_vars['print_config'] == 'True' and logger_info(self.cfg)
+                        gunicorn_vars["print_config"] == "True" and logger_info(
+                            self.cfg
+                        )
                     except KeyError:
                         pass
-
 
                 def load(self):
                     return app_handler
