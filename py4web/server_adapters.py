@@ -129,18 +129,16 @@ def gunicorn():
     import threading
 
     # To use gevent monkey.patch_all()
-    # run ./py4web.py run apps -s gunicornGevent ......
+    # run ./py4web.py run apps -s gunicornGevent ...
+
     if isinstance(threading.local(), local.local):
         print("gunicorn: monkey.patch_all() applied")
 
     class GunicornServer(ServerAdapter):
         """ https://docs.gunicorn.org/en/stable/settings.html """
 
-        # https://pawamoy.github.io/posts/unify-logging-for-a-gunicorn-uvicorn-app/
-        # https://raw.githubusercontent.com/benoitc/gunicorn/master/examples/example_config.py
-
-        # ./py4web.py run apps -s gunicorn --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
-        # ./py4web.py run apps -s gunicornGevent --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
+        # ./py4web.py run apps -s gunicorn --watch=off --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
+        # ./py4web.py run apps -s gunicornGevent --watch=off --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
 
         def run(self, app_handler):
             from gunicorn.app.base import Application
@@ -218,7 +216,7 @@ def gunicorn():
                     gunicorn.saenv
 
                     # load conf from native_gunicorn
-                    usse_native_config=python:example
+                    use_native_config=python:example
                     use_native_config=gunicorn.conf.py
 
                     # example
@@ -260,6 +258,7 @@ def gunicorn():
                     # export GUNICORN_worker_class=eventlet
                     #
                     # time seq 1 5000 | xargs -I % -P 0 curl http://localhost:8000/todo &>/dev/null
+                    # time seq 1 5000 | xargs -I % -P 0 curl -k https://localhost:8000/todo &>/dev/null
 
                     def logger_info(msg="msg"):
                         logger and logger.info(str(msg))
@@ -292,10 +291,14 @@ def gunicorn():
                             logger_info(f"gunicorn: Invalid value for {k}:{v}")
                             raise
 
-                    if "print_config" in gunicorn_vars:
-                        gunicorn_vars["print_config"].lower() == "true" and logger_info(
-                            self.cfg
-                        )
+                    #if "print_config" in gunicorn_vars:
+                    #    gunicorn_vars["print_config"].lower() == "true" and logger_info( self.cfg)
+
+                    try:
+                        gunicorn_vars['print_config'] == 'True' and logger_info(self.cfg)
+                    except KeyError:
+                        pass
+
 
                 def load(self):
                     return app_handler
