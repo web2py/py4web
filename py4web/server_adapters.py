@@ -142,6 +142,7 @@ def gunicorn():
 
         def run(self, app_handler):
             from gunicorn.app.base import Application
+            import re
 
             logger = None
 
@@ -191,7 +192,8 @@ def gunicorn():
                                     if not v or k == "bind":
                                         continue
                                     if v.startswith("{") and v.endswith("}"):
-                                        v = json.loads(v.replace("'", '"'))
+                                        vs =  re.sub(',\s*\}','}', v)
+                                        v = json.loads( vs.replace("'", "\"") )
                                     result[k] = None if v == "None" else v
                                 if result:
                                     print(f"gunicorn: read {env_file}")
@@ -205,7 +207,8 @@ def gunicorn():
                             if key == "bind":
                                 continue
                             if v.startswith("{") and v.endswith("}"):
-                                v = json.loads(v.replace("'", '"'))
+                                vs =  re.sub(',\s*\}','}', v)
+                                v = json.loads( vs.replace("'", "\"") )
                             result[key] = None if v == "None" else v
                     result["config"] = "environ"
                     return result
