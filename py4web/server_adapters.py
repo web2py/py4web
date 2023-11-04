@@ -151,6 +151,8 @@ def gunicorn():
                 "workers": get_workers(self.options),
                 "certfile": self.options.get("certfile", None),
                 "keyfile": self.options.get("keyfile", None),
+                "accesslog": None,
+                "errorlog": None,
             }
 
             if not self.quiet:
@@ -171,6 +173,9 @@ def gunicorn():
                 )
 
             class GunicornApplication(Application):
+                def logger_info(self, msg="msg"):
+                    logger and logger.info(str(msg))
+
                 def get_gunicorn_vars(self, env_file="gunicorn.saenv"):
                     def check_kv(kx, vx):
                         if kx and vx and kx != "bind":
@@ -207,7 +212,8 @@ def gunicorn():
                                     result["config"] = "./" + env_file
                                     return result
                         except OSError as ex:
-                            print(f"gunicorn: cannot read {env_file}; {ex}")
+                            self.logger_info(f"gunicorn: cannot read {env_file}; {ex}")
+
                     for k, v in os.environ.items():
                         if k.startswith("GUNICORN_"):
                             k = k.split("_", 1)[1].lower()
@@ -273,9 +279,6 @@ def gunicorn():
                     # time seq 1 5000 | xargs -I % -P 0 curl http://localhost:8000/todo &>/dev/null
                     # time seq 1 5000 | xargs -I % -P 0 curl -k https://localhost:8000/todo &>/dev/null
 
-                    def logger_info(msg="msg"):
-                        logger and logger.info(str(msg))
-
                     gunicorn_vars = self.get_gunicorn_vars()
 
                     # test https://github.com/benoitc/gunicorn/blob/master/examples/example_config.py
@@ -286,7 +289,7 @@ def gunicorn():
                                 self, location
                             )
                             self.cfg.set("config", "./" + location)
-                            logger_info(f"gunicorn: used {location}")
+                            self.logger_info(f"gunicorn: used {location}")
                             return
                         except KeyError:
                             pass
@@ -294,7 +297,7 @@ def gunicorn():
                     if gunicorn_vars:
                         sa_config.update(gunicorn_vars)
                         location = gunicorn_vars["config"]
-                        logger_info(f"gunicorn: used {location} {sa_config}")
+                        self.logger_info(f"gunicorn: used {location} {sa_config}")
 
                     for k, v in sa_config.items():
                         if k not in self.cfg.settings:
@@ -302,11 +305,11 @@ def gunicorn():
                         try:
                             self.cfg.set(k, v)
                         except Exception:
-                            logger_info(f"gunicorn: Invalid value for {k}:{v}")
+                            self.logger_info(f"gunicorn: Invalid value for {k}:{v}")
                             raise
 
                     try:
-                        gunicorn_vars["print_config"] == "True" and logger_info(
+                        gunicorn_vars["print_config"] == "True" and self.logger_info(
                             self.cfg
                         )
                     except KeyError:
