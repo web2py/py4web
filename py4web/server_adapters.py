@@ -146,7 +146,7 @@ def gunicorn():
 
             logger = None
 
-            config = {
+            sa_config = {
                 "bind": f"{self.host}:{self.port}",
                 "workers": get_workers(self.options),
                 "certfile": self.options.get("certfile", None),
@@ -161,7 +161,7 @@ def gunicorn():
                 logger = logging_conf(level)
                 log_to = "-" if log_file is None else log_file
 
-                config.update(
+                sa_config.update(
                     {
                         "loglevel": logging.getLevelName(level),
                         "access_log_format": '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"',
@@ -227,6 +227,11 @@ def gunicorn():
                     use_native_config=python:example
                     use_native_config=gunicorn.conf.py
 
+                    # or
+
+                    use_python_config=python:example
+                    use_python_config=gunicorn.conf.py
+
                     # example
                     # export GUNICORN_max_requests=1200
                     export GUNICORN_worker_tmp_dir=/dev/shm
@@ -281,17 +286,17 @@ def gunicorn():
                                 self, location
                             )
                             self.cfg.set("config", "./" + location)
-                            logger_info(f"gunicorn: used config {location}")
+                            logger_info(f"gunicorn: used {location}")
                             return
                         except KeyError:
                             pass
 
                     if gunicorn_vars:
-                        config.update(gunicorn_vars)
+                        sa_config.update(gunicorn_vars)
                         location = gunicorn_vars["config"]
-                        logger_info(f"gunicorn: used config {location} {config}")
+                        logger_info(f"gunicorn: used {location} {sa_config}")
 
-                    for k, v in config.items():
+                    for k, v in sa_config.items():
                         if k not in self.cfg.settings:
                             continue
                         try:
@@ -299,9 +304,6 @@ def gunicorn():
                         except Exception:
                             logger_info(f"gunicorn: Invalid value for {k}:{v}")
                             raise
-
-                    # if "print_config" in gunicorn_vars:
-                    #    gunicorn_vars["print_config"].lower() == "true" and logger_info( self.cfg)
 
                     try:
                         gunicorn_vars["print_config"] == "True" and logger_info(
