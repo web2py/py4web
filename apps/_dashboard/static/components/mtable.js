@@ -156,6 +156,7 @@
             axios.post(url, item).then(mtable.handle_response('post', this),
                                        mtable.handle_response('post', this));
         }
+	location.reload();    
     };
 
     mtable.handle_response = function(method, data) {
