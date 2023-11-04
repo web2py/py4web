@@ -172,6 +172,16 @@ def gunicorn():
 
             class GunicornApplication(Application):
                 def get_gunicorn_vars(self, env_file="gunicorn.saenv"):
+                    def check_kv(kx, vx):
+                        if kx and vx and kx != "bind":
+                            if vx.startswith("{") and vx.endswith("}"):
+                                vt = re.sub(",\s*\}", "}", vx)
+                                vx = json.loads(vt.replace("'", '"'))
+                            if vx == "None":
+                                vx = None
+                            return kx, vx
+                        return None, None
+
                     result = dict()
                     if os.path.isfile(env_file):
                         try:
@@ -189,12 +199,10 @@ def gunicorn():
                                         k, v = k.strip().lower(), v.strip()
                                     except (ValueError, AttributeError):
                                         continue
-                                    if not v or k == "bind":
+                                    k, v = check_kv(k, v)
+                                    if k is None:
                                         continue
-                                    if v.startswith("{") and v.endswith("}"):
-                                        vs =  re.sub(',\s*\}','}', v)
-                                        v = json.loads( vs.replace("'", "\"") )
-                                    result[k] = None if v == "None" else v
+                                    result[k] = v
                                 if result:
                                     print(f"gunicorn: read {env_file}")
                                     result["config"] = "./" + env_file
@@ -202,15 +210,13 @@ def gunicorn():
                         except OSError as ex:
                             print(f"gunicorn: cannot read {env_file}; {ex}")
                     for k, v in os.environ.items():
-                        if k.startswith("GUNICORN_") and v:
-                            key = k.split("_", 1)[1].lower()
-                            if key == "bind":
+                        if k.startswith("GUNICORN_"):
+                            k = k.split("_", 1)[1].lower()
+                            k, v = check_kv(k, v)
+                            if k is None:
                                 continue
-                            if v.startswith("{") and v.endswith("}"):
-                                vs =  re.sub(',\s*\}','}', v)
-                                v = json.loads( vs.replace("'", "\"") )
-                            result[key] = None if v == "None" else v
-                    result["config"] = "environ"
+                            result[k] = v
+                    result["config"] = "os.environ.items"
                     return result
 
                 def load_config(self):
