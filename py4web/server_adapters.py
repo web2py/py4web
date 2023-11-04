@@ -191,8 +191,8 @@ def gunicorn():
                                     line = line.strip()
                                     if not line or line.startswith(("#", "[")):
                                         continue
-                                    for k in ("export ", "GUNICORN_"):
-                                        line = line.replace(k, "", 1)
+                                    for e in ("export ", "GUNICORN_"):
+                                        line = line.replace(e, "", 1)
                                     k, v = None, None
                                     try:
                                         k, v = line.split("=", 1)
@@ -204,7 +204,6 @@ def gunicorn():
                                         continue
                                     result[k] = v
                                 if result:
-                                    print(f"gunicorn: read {env_file}")
                                     result["config"] = "./" + env_file
                                     return result
                         except OSError as ex:
