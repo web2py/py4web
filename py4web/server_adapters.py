@@ -128,9 +128,6 @@ def gunicorn():
     from gevent import local  # pip install gevent gunicorn
     import threading
 
-    # To use gevent monkey.patch_all()
-    # run ./py4web.py run apps -s gunicornGevent ...
-
     if isinstance(threading.local(), local.local):
         print("gunicorn: monkey.patch_all() applied")
 
@@ -139,6 +136,7 @@ def gunicorn():
 
         # ./py4web.py run apps -s gunicorn --watch=off --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
         # ./py4web.py run apps -s gunicornGevent --watch=off --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
+        # time seq 1 5000 | xargs -I % -P 0 curl http://localhost:8000/todo &>/dev/null
 
         def run(self, app_handler):
             from gunicorn.app.base import Application
@@ -225,59 +223,6 @@ def gunicorn():
                     return result
 
                 def load_config(self):
-
-                    """
-                    gunicorn.saenv
-
-                    # load conf from native_gunicorn
-                    use_native_config=python:example
-                    use_native_config=gunicorn.conf.py
-
-                    # or
-
-                    use_python_config=python:example
-                    use_python_config=gunicorn.conf.py
-
-                    # example
-                    # export GUNICORN_max_requests=1200
-                    export GUNICORN_worker_tmp_dir=/dev/shm
-
-                    # run as -s gunicornGevent
-                    #worker_class=gevent
-                    #worker_class=eventlet
-
-                    # run as -s gunicorn
-                    #worker_class=sync
-                    [hello any text]
-                    worker_class=gthread
-                    workers=4
-                    threads=8
-
-                    """
-
-                    # export GUNICORN_BACKLOG=4096
-                    # export GUNICORN_worker_connections=100
-
-                    # export GUNICORN_worker_class=sync
-                    # export GUNICORN_worker_class=gthread
-                    # export GUNICORN_worker_tmp_dir=/dev/shm
-                    # export GUNICORN_threads=8
-                    # export GUNICORN_timeout=10
-                    # export GUNICORN_max_requests=1200
-
-                    #
-                    # tested with ssep4w https://github.com/ali96343/lvsio
-                    #
-                    # To use gevent monkey.patch_all()
-                    # run ./py4web.py run apps -s gunicornGevent ......
-                    # export GUNICORN_worker_class=gevent
-                    # export GUNICORN_worker_class=gunicorn.workers.ggevent.GeventWorker
-                    #
-                    # pip install gunicorn[eventlet]
-                    # export GUNICORN_worker_class=eventlet
-                    #
-                    # time seq 1 5000 | xargs -I % -P 0 curl http://localhost:8000/todo &>/dev/null
-                    # time seq 1 5000 | xargs -I % -P 0 curl -k https://localhost:8000/todo &>/dev/null
 
                     gunicorn_vars = self.get_gunicorn_vars()
 
