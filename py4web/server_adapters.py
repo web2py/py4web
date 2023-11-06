@@ -128,26 +128,29 @@ def gunicorn():
     from gevent import local  # pip install gevent gunicorn
     import threading
 
-    # To use gevent monkey.patch_all()
-    # run ./py4web.py run apps -s gunicornGevent ......
     if isinstance(threading.local(), local.local):
         print("gunicorn: monkey.patch_all() applied")
 
     class GunicornServer(ServerAdapter):
         """ https://docs.gunicorn.org/en/stable/settings.html """
 
-        # https://pawamoy.github.io/posts/unify-logging-for-a-gunicorn-uvicorn-app/
-        # ./py4web.py run apps -s gunicorn --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
-        # ./py4web.py run apps -s gunicornGevent --watch=off --port=8000 --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
+        # ./py4web.py run apps -s gunicorn --watch=off --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
+        # ./py4web.py run apps -s gunicornGevent --watch=off --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
+        # time seq 1 5000 | xargs -I % -P 0 curl http://localhost:8000/todo &>/dev/null
 
         def run(self, app_handler):
-            from gunicorn.app.base import BaseApplication
+            from gunicorn.app.base import Application
+            import re
 
-            config = {
+            logger = None
+
+            sa_config = {
                 "bind": f"{self.host}:{self.port}",
                 "workers": get_workers(self.options),
                 "certfile": self.options.get("certfile", None),
                 "keyfile": self.options.get("keyfile", None),
+                "accesslog": None,
+                "errorlog": None,
             }
 
             if not self.quiet:
@@ -158,7 +161,7 @@ def gunicorn():
                 logger = logging_conf(level)
                 log_to = "-" if log_file is None else log_file
 
-                config.update(
+                sa_config.update(
                     {
                         "loglevel": logging.getLevelName(level),
                         "access_log_format": '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"',
@@ -167,8 +170,21 @@ def gunicorn():
                     }
                 )
 
-            class GunicornApplication(BaseApplication):
+            class GunicornApplication(Application):
+                def logger_info(self, msg="msg"):
+                    logger and logger.info(str(msg))
+
                 def get_gunicorn_vars(self, env_file="gunicorn.saenv"):
+                    def check_kv(kx, vx):
+                        if kx and vx and kx != "bind":
+                            if vx.startswith("{") and vx.endswith("}"):
+                                vt = re.sub(",\s*\}", "}", vx)
+                                vx = json.loads(vt.replace("'", '"'))
+                            if vx == "None":
+                                vx = None
+                            return kx, vx
+                        return None, None
+
                     result = dict()
                     if os.path.isfile(env_file):
                         try:
@@ -176,82 +192,73 @@ def gunicorn():
                                 lines = f.read().splitlines()
                                 for line in lines:
                                     line = line.strip()
-                                    if not line or line.startswith(("#",'[')):
+                                    if not line or line.startswith(("#", "[")):
                                         continue
-                                    for k in ("export ", "GUNICORN_"):
-                                        line = line.replace(k, "",1)
+                                    for e in ("export ", "GUNICORN_"):
+                                        line = line.replace(e, "", 1)
                                     k, v = None, None
                                     try:
                                         k, v = line.split("=", 1)
-                                    except ValueError:
-                                       continue
-                                    v = v.strip()
-                                    result[k.strip().lower()] = None if v == 'None' else v
+                                        k, v = k.strip().lower(), v.strip()
+                                    except (ValueError, AttributeError):
+                                        continue
+                                    k, v = check_kv(k, v)
+                                    if k is None:
+                                        continue
+                                    result[k] = v
                                 if result:
-                                    print(f"gunicorn: read {env_file}")
+                                    result["config"] = "./" + env_file
                                     return result
                         except OSError as ex:
-                            print(f"{ex} gunicorn: cannot read {env_file}")
+                            self.logger_info(f"gunicorn: cannot read {env_file}; {ex}")
+
                     for k, v in os.environ.items():
-                        if k.startswith("GUNICORN_") and v:
-                            key = k.split("_", 1)[1].lower()
-                            result[key] = v
+                        if k.startswith("GUNICORN_"):
+                            k = k.split("_", 1)[1].lower()
+                            k, v = check_kv(k, v)
+                            if k is None:
+                                continue
+                            result[k] = v
+                    result["config"] = "os.environ.items"
                     return result
 
                 def load_config(self):
 
-                    """
-                    gunicorn.saenv
-
-                    # example
-                    # export GUNICORN_max_requests=1200
-                    export GUNICORN_worker_tmp_dir=/dev/shm
-
-                    # run as -s gunicornGevent
-                    #worker_class=gevent
-                    #worker_class=eventlet
-
-                    # run as -s gunicorn
-                    #worker_class=sync
-                    [hello any text]
-                    worker_class=gthread
-                    workers=4
-                    threads=8
-
-                    """
-
-
-                    # export GUNICORN_BACKLOG=4096
-                    # export GUNICORN_worker_connections=100
-
-                    # export GUNICORN_worker_class=sync
-                    # export GUNICORN_worker_class=gthread
-                    # export GUNICORN_worker_tmp_dir=/dev/shm
-                    # export GUNICORN_threads=8
-                    # export GUNICORN_timeout=10
-                    # export GUNICORN_max_requests=1200
-
-                    #
-                    # tested with ssep4w https://github.com/ali96343/lvsio
-                    #
-                    # To use gevent monkey.patch_all()
-                    # run ./py4web.py run apps -s gunicornGevent ......
-                    # export GUNICORN_worker_class=gevent
-                    # export GUNICORN_worker_class=gunicorn.workers.ggevent.GeventWorker
-                    #
-                    # pip install gunicorn[eventlet]
-                    # export GUNICORN_worker_class=eventlet
-                    #
-                    # time seq 1 5000 | xargs -I % -P 0 curl http://localhost:8000/todo &>/dev/null
-
                     gunicorn_vars = self.get_gunicorn_vars()
 
-                    if gunicorn_vars:
-                        config.update(gunicorn_vars)
-                        print("gunicorn config:", config)
+                    # test https://github.com/benoitc/gunicorn/blob/master/examples/example_config.py
+                    for e in ("use_python_config", "use_native_config"):
+                        try:
+                            location = gunicorn_vars[e]
+                            Application.load_config_from_module_name_or_filename(
+                                self, location
+                            )
+                            self.cfg.set("config", "./" + location)
+                            self.logger_info(f"gunicorn: used {location}")
+                            return
+                        except KeyError:
+                            pass
 
-                    for key, value in config.items():
-                        self.cfg.set(key, value)
+                    #if gunicorn_vars:
+                    sa_config.update(gunicorn_vars)
+                    location = gunicorn_vars["config"]
+                    self.logger_info(f"gunicorn: used {location} {sa_config}")
+
+                    for k, v in sa_config.items():
+                        if k not in self.cfg.settings:
+                            continue
+                        try:
+                            self.cfg.set(k, v)
+                        except Exception:
+                            self.logger_info(f"gunicorn: Invalid value for {k}:{v}")
+                            raise
+
+                    try:
+                        gunicorn_vars["print_config"] == "True" and self.logger_info(
+                            self.cfg
+                        )
+                    except KeyError:
+                        pass
 
                 def load(self):
                     return app_handler
