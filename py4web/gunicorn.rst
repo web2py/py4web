@@ -1,5 +1,7 @@
-gunicorn
-~~~~~~~~
+====================
+gunicorn with py4web
+====================
+
 
 The gunicorn server starts in the usual way for the py4web
 
@@ -8,8 +10,9 @@ The gunicorn server starts in the usual way for the py4web
    $./py4web.py run apps -s gunicorn --watch=off
    $
    $./py4web.py run apps -s gunicornGevent --watch=off
-   $
-   $ # gunicornGevent === gunicorn + monkey.patch_all() 
+
+
+gunicornGevent === gunicorn + monkey.patch_all() 
 
 It is possible to use several methods to configure gunicorn options with py4web
 
@@ -33,10 +36,13 @@ Let's show examples
 
 
 
-* set gunicorn options via config file py4web/gunicorn.saenv 
+
+* set gunicorn options via config file gunicorn.saenv 
 
   ::
 
+   # example gunicorn.saenv
+   #
    export GUNICORN_worker_tmp_dir=/dev/shm
    export GUNICORN_max_requests=1200
    worker_class=gthread
@@ -53,23 +59,23 @@ Let's show examples
    # use_python_config=python:mod_name
 
 
-* set gunicorn options via python file  py4web/myguni.conf.py
+* set gunicorn options via python file myguni.conf.py
 
  ::
 
-   set the variable use_python_config=myguni.conf.py
+   set the env variable use_python_config=myguni.conf.py
 
  .. code:: bash
 
    $ # via env
    $export GUNCORN_use_python_config=myguni.conf.py
    $ 
-   $ # via py4web/gunicorn.saenv 
-   $echo use_python_config=mmyguni.conf.py >> py4web/gunicorn.saenv
+   $ # via gunicorn.saenv 
+   $echo use_python_config=mmyguni.conf.py >> gunicorn.saenv
 
  ::
 
-   write file py4web/myguni.conf.py
+   write file myguni.conf.py
 
  .. code:: python
 
@@ -86,7 +92,8 @@ Let's show examples
 
  ::
 
-  ./py4web.py run apps -s gunicorn 
+   $ ./py4web.py run apps -s gunicorn --watch=off
+
 
 * set gunicorn options via python module
 
@@ -97,16 +104,16 @@ Let's show examples
  .. code:: bash
 
 
-  $ cd py4web && mkdir mod_name && cp myguni.conf.py mod_name/__init__.py
+  $  mkdir mod_name && cp myguni.conf.py mod_name/__init__.py
   $
   $ # via env
   $export GUNCORN_use_python_config=python:mod_name
   $
-  $ # via py4web/gunicorn.saenv
-  $echo use_python_config=python:mod_name >> py4web/gunicorn.saenv
+  $ # via gunicorn.saenv
+  $echo use_python_config=python:mod_name >> gunicorn.saenv
 
   
  ::
 
-  ./py4web.py run apps -s gunicorn 
+   $ ./py4web.py run apps -s gunicorn --watch=off
 

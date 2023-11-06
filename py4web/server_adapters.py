@@ -239,10 +239,10 @@ def gunicorn():
                         except KeyError:
                             pass
 
-                    if gunicorn_vars:
-                        sa_config.update(gunicorn_vars)
-                        location = gunicorn_vars["config"]
-                        self.logger_info(f"gunicorn: used {location} {sa_config}")
+                    #if gunicorn_vars:
+                    sa_config.update(gunicorn_vars)
+                    location = gunicorn_vars["config"]
+                    self.logger_info(f"gunicorn: used {location} {sa_config}")
 
                     for k, v in sa_config.items():
                         if k not in self.cfg.settings:
