@@ -16,7 +16,7 @@ gunicornGevent === gunicorn + monkey.patch_all()
 
 It is possible to use several methods to configure gunicorn options with py4web
 
-Let's show examples
+Let's show examples (go to py4web root dir)
 
 * set gunicorn options via bash environment variables
 
@@ -41,14 +41,14 @@ Let's show examples
 
   ::
 
-   # example gunicorn.saenv
+   # example file  gunicorn.saenv
    #
    export GUNICORN_worker_tmp_dir=/dev/shm
    export GUNICORN_max_requests=1200
    worker_class=gthread
    threads=2
 
-   # guncornGevent
+   # gunicornGevent
    #worker_class=gevent
    #worker_class=eventlet
 
@@ -79,8 +79,9 @@ Let's show examples
 
  .. code:: python
 
-   # Gunicorn configuration file
+   # Gunicorn configuration file myguni.conf.py
    # https://docs.gunicorn.org/en/stable/settings.html
+
    import multiprocessing
 
    max_requests = 1000
@@ -99,7 +100,7 @@ Let's show examples
 
  ::
 
-  write python module 
+  create a new python module mod_name
 
  .. code:: bash
 
@@ -116,4 +117,44 @@ Let's show examples
  ::
 
    $ ./py4web.py run apps -s gunicorn --watch=off
+
+
+* set gunicorn options via gunicorn.conf.py
+
+ ::
+
+ 
+  put gunicorn settings in the gunicorn.conf.py
+
+  (if gunicorn.conf.py exists, the GUNICORN_ vars and file gunicorn.saenv will be ignored)
+
+ .. code:: bash
+
+  $ echo "print_config = True"  > gunicorn.conf.py 
+
+
+ ::
+
+   $ ./py4web.py run apps -s gunicorn --watch=off
+                          
+* set gunicorn options via gunicorn-cli 
+
+ ::
+
+  run py4web/apps as wsgi-app 
+
+ .. code:: bash
+
+  $ echo 'from py4web.core import wsgi;myapp = wsgi(apps_folder="apps")' > py4web_wsgi.py 
+  $
+
+
+ ::
+
+   $ gunicorn -w 4 py4web_wsgi:myapp 
+
+
+
+
+thats it
 

@@ -174,7 +174,7 @@ def gunicorn():
                 def logger_info(self, msg="msg"):
                     logger and logger.info(str(msg))
 
-                def get_gunicorn_vars(self, env_file="gunicorn.saenv"):
+                def get_gunicorn_vars(self, env_file="gunicorn.saenv", env_key='GUNICORN_'):
                     def check_kv(kx, vx):
                         if kx and vx and kx != "bind":
                             if vx.startswith("{") and vx.endswith("}"):
@@ -186,6 +186,12 @@ def gunicorn():
                         return None, None
 
                     result = dict()
+
+                    default_conf = './gunicorn.conf.py'
+                    if os.path.isfile( default_conf ):
+                        result ['use_python_config' ] = default_conf
+                        return result
+
                     if os.path.isfile(env_file):
                         try:
                             with open(env_file, "r") as f:
@@ -194,7 +200,7 @@ def gunicorn():
                                     line = line.strip()
                                     if not line or line.startswith(("#", "[")):
                                         continue
-                                    for e in ("export ", "GUNICORN_"):
+                                    for e in ("export ", env_key ):
                                         line = line.replace(e, "", 1)
                                     k, v = None, None
                                     try:
@@ -213,13 +219,14 @@ def gunicorn():
                             self.logger_info(f"gunicorn: cannot read {env_file}; {ex}")
 
                     for k, v in os.environ.items():
-                        if k.startswith("GUNICORN_"):
+                        if k.startswith(env_key):
                             k = k.split("_", 1)[1].lower()
                             k, v = check_kv(k, v)
                             if k is None:
                                 continue
                             result[k] = v
-                    result["config"] = "os.environ.items"
+
+                    result["config"] = env_key 
                     return result
 
                 def load_config(self):
@@ -239,7 +246,6 @@ def gunicorn():
                         except KeyError:
                             pass
 
-                    #if gunicorn_vars:
                     sa_config.update(gunicorn_vars)
                     location = gunicorn_vars["config"]
                     self.logger_info(f"gunicorn: used {location} {sa_config}")
@@ -247,18 +253,7 @@ def gunicorn():
                     for k, v in sa_config.items():
                         if k not in self.cfg.settings:
                             continue
-                        try:
-                            self.cfg.set(k, v)
-                        except Exception:
-                            self.logger_info(f"gunicorn: Invalid value for {k}:{v}")
-                            raise
-
-                    try:
-                        gunicorn_vars["print_config"] == "True" and self.logger_info(
-                            self.cfg
-                        )
-                    except KeyError:
-                        pass
+                        self.cfg.set(k, v)
 
                 def load(self):
                     return app_handler
