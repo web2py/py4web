@@ -9,8 +9,15 @@ import time
 import urllib
 import uuid
 
-from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
-                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG)
+from pydal.validators import (
+    CRYPT,
+    IS_EMAIL,
+    IS_EQUAL_TO,
+    IS_MATCH,
+    IS_NOT_EMPTY,
+    IS_NOT_IN_DB,
+    IS_STRONG,
+)
 from yatl.helpers import DIV, A
 
 from py4web import HTTP, URL, Field, action, redirect, request, response
@@ -234,7 +241,6 @@ class Auth(Fixture):
         two_factor_required=None,
         two_factor_send=None,
     ):
-
         # configuration parameters
         self.param = Param(
             registration_requires_confirmation=registration_requires_confirmation,
@@ -420,7 +426,7 @@ class Auth(Fixture):
     def signature(self):
         """Returns a list of fields for a table signature"""
         now = lambda: datetime.datetime.utcnow()
-        user = lambda s=self: s.get_user().get("id")
+        user = lambda s=self: s.user_id
         fields = [
             Field(
                 "created_on",
@@ -491,17 +497,18 @@ class Auth(Fixture):
         If session contains only a user['id']
         retrives the other readable user info from auth_user
         """
-        if not self.session.is_valid():
-            return {}
-        user = copy.copy(self.session.get("user"))
-        if not user or not isinstance(user, dict) or "id" not in user:
+        if not self.session.is_valid() or not self.user_id:
             return {}
         if self.db:
-            user = self.db.auth_user(user["id"])
+            user = self.db.auth_user(self.user_id)
             if not user:
                 return {}
             if safe:
-                user = {f.name: user[f.name] for f in self.db.auth_user if f.readable}
+                user = {
+                    f.name: user[f.name]
+                    for f in self.db.auth_user
+                    if f.readable or f.name == "id"
+                }
         return user
 
     @property
@@ -981,7 +988,6 @@ class Auth(Fixture):
         # and API Models as /{app_name}/{route}/api/{name}?@model=true
         exposed_api_routes = []
         if allow_api_routes:
-
             # Exposed Public APIs
             exposed_api_routes = [
                 dict(api_name=api_name, api_route=f"{route}/api/{api_name}", uses=auth)
@@ -1147,7 +1153,6 @@ class AuthAPI:
 
     @staticmethod
     def get_model(defaultAuthFunction):
-
         model = defaultAuthFunction(model=True)
 
         for key, value in model.items():
@@ -1341,7 +1346,6 @@ class AuthAPI:
     @staticmethod
     @api_wrapper
     def change_email(auth):
-
         payload = request.POST if (request.json is None) else request.json
 
         if payload is None:
@@ -1660,7 +1664,6 @@ class DefaultAuthForms:
         self.auth.session["auth.2fa_tries_left"] = self.auth.param.two_factor_tries
 
     def two_factor(self):
-
         if self.auth.param.two_factor_send is None:
             raise HTTP(404)
 
@@ -1952,7 +1955,6 @@ class DefaultAuthForms:
         return form
 
     def logout(self, model=False):
-
         if model:
             return dict(
                 public=False, hidden=False, noform=True, href="/auth/api/logout"
@@ -1965,7 +1967,6 @@ class DefaultAuthForms:
         return ""
 
     def verify_email(self, model=False):
-
         if model:
             return dict(
                 public=True, hidden=True, noform=True, href="/auth/api/verify_email"
