@@ -178,7 +178,7 @@ def gunicorn():
                     def check_kv(kx, vx):
                         if kx and vx and kx != "bind":
                             if vx.startswith("{") and vx.endswith("}"):
-                                vt = re.sub(",\s*\}", "}", vx)
+                                vt = re.sub(r",\s*\}", "}", vx)
                                 vx = json.loads(vt.replace("'", '"'))
                             if vx == "None":
                                 vx = None
