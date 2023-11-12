@@ -33,15 +33,15 @@ var init_app = function() {
     };
     self.methods.save_languages = function() {
         let data = self.vue.translations;
-        axios.post('/' + self.base + '/api/translations/' + self.app, data).then(
+        Q.post('/' + self.base + '/api/translations/' + self.app, data).then(
             function(res) { alert("Saved"); },
             function(res) { alert("Error Saving"); }
         );
     };
     self.methods.update_languages = function() {
-        axios.get('/' + self.base + '/api/translations/' + self.app + '/search').then(
+        Q.get('/' + self.base + '/api/translations/' + self.app + '/search').then(
             function(res) {
-                let words = res.data.strings;
+                let words = res.json().strings;
                 for (var lang in self.vue.translations) {
                     var translations = self.vue.translations[lang];
                     words.map(function(key) {
@@ -78,8 +78,8 @@ var init_app = function() {
         self.methods.select_language(language);
     };
     self.vue = new Vue({ el: '#vue', data: self.data, methods: self.methods });
-    axios.get('/' + self.base + '/api/translations/' + self.app).then(
-        function(res) { self.vue.translations = res.data; }
+    Q.get('/' + self.base + '/api/translations/' + self.app).then(
+        function(res) { self.vue.translations = res.json(); }
     );
     return self;
 }

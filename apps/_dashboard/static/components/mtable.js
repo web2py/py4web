@@ -52,10 +52,10 @@
         if (filters.length) url += '&'+filters.join('&');
         if (self.order) url += '&@order='+self.order;
         self.busy = true;
-        axios.get(url).then(function (res) {
+        Q.get(url).then(function (res) {
                 self.busy = false;
-                if(!length) self.table = res.data; 
-                else self.table.items = self.table.items.concat(res.data.items);
+                if(!length) self.table = res.json(); 
+                else self.table.items = self.table.items.concat(res.json().items);
             });
     };
     
@@ -100,8 +100,8 @@
                     reference_table_url.pop()
                     reference_table_url.push(field.references)
                     reference_table_url = reference_table_url.join('/') + '?@options_list=true';
-                    axios.get(reference_table_url).then(function (res) {
-                        let url_components = res.config.url.split('?')[0].split('/');
+                    Q.get(reference_table_url).then(function (res) {
+                        let url_components = res.json().config.url.split('?')[0].split('/');
                         self.reference_options[url_components[url_components.length - 1 ]] = res.data.items;
                      });
                     
@@ -129,7 +129,7 @@
         if (window.confirm("Really delete record?")) {
             let url = this.url + '/' + item.id;            
             this.table.items = this.table.items.filter((i)=>{return i.id != item.id;});
-            axios.delete(url);
+            Q.delete(url);
             if (item==this.item) this.item = null;
         }
     };
@@ -150,10 +150,10 @@
 	}
         if (item.id) {
             url += '/' + item.id;
-            axios.put(url, item).then(mtable.handle_response('put', this),
+            Q.put(url, item).then(mtable.handle_response('put', this),
                                       mtable.handle_response('put', this));
         } else {
-            axios.post(url, item).then(mtable.handle_response('post', this),
+            Q.post(url, item).then(mtable.handle_response('post', this),
                                        mtable.handle_response('post', this));
         }
 	location.reload();    

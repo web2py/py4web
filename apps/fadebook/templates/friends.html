@@ -56,6 +56,6 @@
 
 <script>
   function callback(element) {
-      axios.post(element.dataset.endpoint).then(function(){window.location.href="[[=URL('friends')]]";});
+      Q.post(element.dataset.endpoint).then(function(){window.location.href="[[=URL('friends')]]";});
   }
 </Script>
