@@ -106,6 +106,10 @@ let init = (app) => {
         // pass
     };
     app.save_file = () => {
+	if(app.vue.selected_type != 'text') {
+	    alert("Unable to save this file, it is not of type text");
+	    return;
+	}
         var path = app.vue.selected_filename;
         app.vue.files[path] = app.editor.getValue();
         post('../save/'+path, app.vue.files[path]).then(r=>app.file_saved());
