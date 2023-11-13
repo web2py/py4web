@@ -226,11 +226,11 @@ def gunicorn():
                             k, v = check_kv(k, v)
                             if k is None:
                                 continue
-                            qu_opts[k] = v
+                            gu_opts[k] = v
 
                     if gu_opts:
                         gu_opts["config"] = env_key
-                    return qu_opts
+                    return gu_opts
 
                 def load_config(self):
                     sa_config.update(self.get_gunicorn_options())
