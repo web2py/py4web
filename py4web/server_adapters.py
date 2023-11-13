@@ -181,7 +181,7 @@ def gunicorn():
                         )
                         if kx and vx and kx not in bad_keys:
                             if vx.startswith("{") and vx.endswith("}"):
-                                vt = re.sub(",\s*\}", "}", vx)
+                                vt = re.sub("r'\,\s*\}'", "}", vx)
                                 vx = json.loads(vt.replace("'", '"'))
                             if vx == "None":
                                 vx = None
