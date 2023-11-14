@@ -552,7 +552,7 @@ class FormStyleFactory:
                     SPAN(
                         controls["delete"],
                         _class=class_inner,
-                        _stye="vertical-align: middle;",
+                        _style="vertical-align: middle;",
                     ),
                     P(
                         deletable_record_attributes["_label"],
