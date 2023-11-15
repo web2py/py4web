@@ -1,4 +1,4 @@
-.PHONY: clean docs clean-assets assets test setup run build deploy
+.PHONY: clean venv docs clean-assets assets test setup run build deploy
 asset-apps := _dashboard _default _scaffold _minimal _documentation showcase
 asset-zips := $(asset-apps:%=py4web/assets/py4web.app.%.zip)
 clean:
@@ -15,8 +15,9 @@ py4web/assets/py4web.app.%.zip: apps/%
 	egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt|mm|ico)$$" | \
 	zip -@ $(addprefix ../../, $@)
 venv:
-	python3 -m venv venv
+	python -m venv venv
 	venv/bin/pip install -U pip
+	venv/bin/pip install -U -r requirements.txt
 	venv/bin/pip install ./
 docs: venv
 	venv/bin/pip install -U -r docs/requirements.txt
@@ -35,8 +36,8 @@ upgrade-vue:
 	curl -L https://unpkg.com/vue/dist/vue.min.js > apps/_dashboard/static/js/vue.min.js
 	find apps -name "vue.min.js" -exec cp apps/_dashboard/static/js/vue.min.js {} \;
 build: clean assets
-	python3 -m pip install --upgrade build
-	python3 -m pip install --upgrade twine
-	python3 -m build
+	python -m pip install --upgrade build
+	python -m pip install --upgrade twine
+	python -m build
 deploy: build
-	python3 -m twine upload dist/*
+	python -m twine upload dist/*
