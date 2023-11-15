@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Database Abstraction Layer (DAL) &mdash; py4web 1.20231029.1 documentation</title>
+  <title>The Database Abstraction Layer (DAL) &mdash; py4web 1.20231114.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=0a82b357"></script>
+        <script src="_static/documentation_options.js?v=9501f309"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -40,7 +40,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20231029.1
+                1.20231114.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -1724,11 +1724,11 @@ also be a query, such as</p>
 </div>
 <p>except that it calls the validators for the fields before performing the
 insert and bails out if the validation does not pass. If validation does
-not pass the errors can be found in <code class="docutils literal notranslate"><span class="pre">ret.errors</span></code>. <code class="docutils literal notranslate"><span class="pre">ret.errors</span></code> holds
+not pass the errors can be found in <code class="docutils literal notranslate"><span class="pre">ret[&quot;errors&quot;]</span></code>. <code class="docutils literal notranslate"><span class="pre">ret[&quot;errors&quot;]</span></code> holds
 a key-value mapping where each key is the field name whose validation
 failed, and the value of the key is the result from the validation error
-(much like <code class="docutils literal notranslate"><span class="pre">form.errors</span></code>). If it passes, the id of the new record is
-in <code class="docutils literal notranslate"><span class="pre">ret.id</span></code>. Mind that normally validation is done by the form
+(much like <code class="docutils literal notranslate"><span class="pre">form[&quot;errors&quot;]</span></code>). If it passes, the id of the new record is
+in <code class="docutils literal notranslate"><span class="pre">ret[&quot;id&quot;]</span></code>. Mind that normally validation is done by the form
 processing logic so this function is rarely needed.</p>
 <p>Similarly</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">validate_and_update</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
@@ -1740,8 +1740,8 @@ processing logic so this function is rarely needed.</p>
 </div>
 <p>except that it calls the validators for the fields before performing the
 update. Notice that it only works if query involves a single table. The
-number of updated records can be found in <code class="docutils literal notranslate"><span class="pre">ret.updated</span></code> and errors
-will be in <code class="docutils literal notranslate"><span class="pre">ret.errors</span></code>.</p>
+number of updated records can be found in <code class="docutils literal notranslate"><span class="pre">ret[&quot;updated&quot;]</span></code> and errors
+will be in <code class="docutils literal notranslate"><span class="pre">ret[&quot;errors&quot;]</span></code>.</p>
 </section>
 <section id="drop">
 <h3><code class="docutils literal notranslate"><span class="pre">drop</span></code><a class="headerlink" href="#drop" title="Link to this heading"></a></h3>
@@ -4532,7 +4532,7 @@ than on SQL databases.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20231029.1
+      v: 1.20231114.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

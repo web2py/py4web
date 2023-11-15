@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Database Abstraction Layer (DAL) &mdash; Documentação py4web 1.20231029.1</title>
+  <title>The Database Abstraction Layer (DAL) &mdash; Documentação py4web 1.20231114.1</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -16,7 +16,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=4394b118"></script>
+        <script src="_static/documentation_options.js?v=dc17f146"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
@@ -41,7 +41,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20231029.1
+                1.20231114.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -1477,7 +1477,14 @@ of “yourapp/databases/*.table” files.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">mytable</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>exceto que ele chama os validadores para os campos antes de realizar a inserção e fianças se a validação não passa. Se a validação não passa os erros podem ser encontradas em `` ret.errors``. `` Ret.errors`` mantém um mapeamento de valores-chave, onde cada chave é o nome do campo cuja validação falhou, e o valor da chave é o resultado do erro de validação (muito parecido com `` form.errors``). Se passar, o ID do novo registro é em `` ret.id``. Mente que normalmente validação é feita pela lógica de processamento de formulário para essa função é raramente necessária.</p>
+<p>except that it calls the validators for the fields before performing the
+insert and bails out if the validation does not pass. If validation does
+not pass the errors can be found in <code class="docutils literal notranslate"><span class="pre">ret[&quot;errors&quot;]</span></code>. <code class="docutils literal notranslate"><span class="pre">ret[&quot;errors&quot;]</span></code> holds
+a key-value mapping where each key is the field name whose validation
+failed, and the value of the key is the result from the validation error
+(much like <code class="docutils literal notranslate"><span class="pre">form[&quot;errors&quot;]</span></code>). If it passes, the id of the new record is
+in <code class="docutils literal notranslate"><span class="pre">ret[&quot;id&quot;]</span></code>. Mind that normally validation is done by the form
+processing logic so this function is rarely needed.</p>
 <p>Similarmente</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">validate_and_update</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1486,7 +1493,10 @@ of “yourapp/databases/*.table” files.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">num</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>exceto que ele chama os validadores para os campos antes de realizar a atualização. Note que ele só funciona se consulta envolve uma única tabela. O número de registros atualizados podem ser encontrados em `` ret.updated`` e erros será no `` ret.errors``.</p>
+<p>except that it calls the validators for the fields before performing the
+update. Notice that it only works if query involves a single table. The
+number of updated records can be found in <code class="docutils literal notranslate"><span class="pre">ret[&quot;updated&quot;]</span></code> and errors
+will be in <code class="docutils literal notranslate"><span class="pre">ret[&quot;errors&quot;]</span></code>.</p>
 </section>
 <section id="drop">
 <h3>`` Drop``<a class="headerlink" href="#drop" title="Link to this heading"></a></h3>
@@ -3812,7 +3822,7 @@ dashboard and deleting any corrupted entry from the table called
      <label for="switch"></label>
      </span>
       
-      v: 1.20231029.1
+      v: 1.20231114.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
