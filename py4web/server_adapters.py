@@ -145,8 +145,8 @@ def gunicorn():
                 "keyfile": self.options.get("keyfile", None),
                 "accesslog": None,
                 "errorlog": None,
-                "config": "sa_config_B",
-                # ( 'sa_config_B', 'sa_config_L',  'GUNICORN_', 'gunicorn.saenv', 'gunicorn.conf.py' )
+                "config": "sa_config",
+                # ( 'sa_config',  'GUNICORN_', 'gunicorn.saenv', 'gunicorn.conf.py' )
             }
 
             if not self.quiet:
@@ -162,7 +162,6 @@ def gunicorn():
                         "access_log_format": '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"',
                         "accesslog": log_to,
                         "errorlog": log_to,
-                        "config": "sa_config_L",
                     }
                 )
 
@@ -177,24 +176,20 @@ def gunicorn():
                     env_key="GUNICORN_",
                 ):
                     def check_kv(kx, vx):
-                        bad_keys = (
-                            "bind",
-                            "config",
-                        )
-                        if kx and vx and kx not in bad_keys:
+                        if kx and vx and ( kx not in ( "bind", "config",) ) :
                             if vx.startswith("{") and vx.endswith("}"):
                                 vt = re.sub( r'\,\s*\}', "}", vx)
                                 vx = json.loads(vt.replace("'", '"'))
                             if vx == "None":
                                 vx = None
                             return kx, vx
-                        self.logger_info(f"gunicorn: Bad {kx}={vx}")
+                        self.logger_info(f"gunicorn: Ignored {kx}={vx}")
                         return None, None
 
                     if os.path.isfile(default):
                         return {"use_python_config": default, "config": default}
 
-                    gu_opts = dict()
+                    res_opts = dict()
 
                     if os.path.isfile(env_file):
                         try:
@@ -215,11 +210,11 @@ def gunicorn():
                                     k, v = check_kv(k, v)
                                     if k is None:
                                         continue
-                                    gu_opts[k] = v
-                                if gu_opts:
-                                    gu_opts["config"] = env_file
-                                    return gu_opts
-                        except OSError as ex:
+                                    res_opts[k] = v
+                                if res_opts:
+                                    res_opts["config"] = env_file
+                                    return res_opts
+                        except (IOError, OSError):
                             self.logger_info(f"gunicorn: Bad {env_file}")
 
                     for k, v in os.environ.items():
@@ -228,11 +223,11 @@ def gunicorn():
                             k, v = check_kv(k, v)
                             if k is None:
                                 continue
-                            gu_opts[k] = v
+                            res_opts[k] = v
 
-                    if gu_opts:
-                        gu_opts["config"] = env_key
-                    return gu_opts
+                    if res_opts:
+                        res_opts["config"] = env_key
+                    return res_opts
 
                 def load_config(self):
                     sa_config.update(self.get_gunicorn_options())
@@ -247,10 +242,10 @@ def gunicorn():
                             self.logger_info(sa_config)
                             self.logger_info(self.cfg)
 
-                    for e in ("use_python_config", "use_native_config"):
+                    for e in ( "use_python_config", "usepy", ):
                         if e in sa_config:
-                            filename = sa_config[e]
-                            Application.load_config_from_file(self, filename)
+                            Application.load_config_from_file(self, sa_config [ e ]  )
+                            break
 
                 def load(self):
                     return py4web_apps_handler
