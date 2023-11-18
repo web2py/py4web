@@ -124,6 +124,7 @@ def get_workers(opts, default=10):
 
 # ---------------------- servers -----------------------------------------------
 
+
 def gunicorn():
     from gevent import local  # pip install gevent gunicorn
     import threading
@@ -132,9 +133,9 @@ def gunicorn():
         print("gunicorn: monkey.patch_all() applied")
 
     class GunicornServer(ServerAdapter):
-        def run(self, py4web_apps_handler):
+        def run(self, app_handler):
             from gunicorn.app.base import Application
-            import re
+            from ast import literal_eval
 
             logger = None
 
@@ -166,28 +167,27 @@ def gunicorn():
                 )
 
             class GunicornApplication(Application):
-                def logger_info(self, msg="its logger_info"):
-                    logger and logger.info(str(msg))
+                def logger_put(self, msg="its logger_put"):
+                    logger and logger.debug(str(msg))
 
                 def get_gunicorn_options(
                     self,
-                    default="gunicorn.conf.py",
+                    gu_default="gunicorn.conf.py",
                     env_file="gunicorn.saenv",
                     env_key="GUNICORN_",
                 ):
                     def check_kv(kx, vx):
-                        if kx and vx and ( kx not in ( "bind", "config",) ) :
+                        if kx and vx and (kx not in ("bind", "config",)):
                             if vx.startswith("{") and vx.endswith("}"):
-                                vt = re.sub( r'\,\s*\}', "}", vx)
-                                vx = json.loads(vt.replace("'", '"'))
+                                vx = literal_eval(vx)
                             if vx == "None":
                                 vx = None
                             return kx, vx
-                        self.logger_info(f"gunicorn: Ignored {kx}={vx}")
+                        self.logger_put(f"Ignored: {kx}={vx}")
                         return None, None
 
-                    if os.path.isfile(default):
-                        return {"use_python_config": default, "config": default}
+                    if os.path.isfile(gu_default):
+                        return {"use_python_config": gu_default, "config": gu_default}
 
                     res_opts = dict()
 
@@ -211,11 +211,15 @@ def gunicorn():
                                     if k is None:
                                         continue
                                     res_opts[k] = v
+
                                 if res_opts:
                                     res_opts["config"] = env_file
                                     return res_opts
+
                         except (IOError, OSError):
-                            self.logger_info(f"gunicorn: Bad {env_file}")
+                            print(f"\nError: {env_file}", file=sys.stderr)
+                            sys.stderr.flush()
+                            sys.exit(1)
 
                     for k, v in os.environ.items():
                         if k.startswith(env_key):
@@ -227,28 +231,25 @@ def gunicorn():
 
                     if res_opts:
                         res_opts["config"] = env_key
+
                     return res_opts
 
                 def load_config(self):
                     sa_config.update(self.get_gunicorn_options())
+                    self.logger_put(sa_config)
 
                     for k, v in sa_config.items():
                         if k not in self.cfg.settings:
                             continue
                         self.cfg.set(k, v)
 
-                    if "print_config" in sa_config:
-                        if sa_config["print_config"] == "True":
-                            self.logger_info(sa_config)
-                            self.logger_info(self.cfg)
-
                     for e in ( "use_python_config", "usepy", ):
                         if e in sa_config:
-                            Application.load_config_from_file(self, sa_config [ e ]  )
+                            Application.load_config_from_file(self, sa_config[e])
                             break
 
                 def load(self):
-                    return py4web_apps_handler
+                    return app_handler
 
             GunicornApplication().run()
 
