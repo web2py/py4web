@@ -123,8 +123,9 @@ def get_workers(opts, default=10):
 
 
 # ---------------------- servers -----------------------------------------------
-def gunicorn():
 
+
+def gunicorn():
     from gevent import local  # pip install gevent gunicorn
     import threading
 
@@ -132,15 +133,9 @@ def gunicorn():
         print("gunicorn: monkey.patch_all() applied")
 
     class GunicornServer(ServerAdapter):
-        """ https://docs.gunicorn.org/en/stable/settings.html """
-
-        # ./py4web.py run apps -s gunicorn --watch=off --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
-        # ./py4web.py run apps -s gunicornGevent --watch=off --ssl_cert=cert.pem --ssl_key=key.pem -w 6 -L 20
-        # time seq 1 5000 | xargs -I % -P 0 curl http://localhost:8000/todo &>/dev/null
-
         def run(self, app_handler):
             from gunicorn.app.base import Application
-            import re
+            from ast import literal_eval
 
             logger = None
 
@@ -151,10 +146,11 @@ def gunicorn():
                 "keyfile": self.options.get("keyfile", None),
                 "accesslog": None,
                 "errorlog": None,
+                "config": "sa_config",
+                # ( 'sa_config',  'GUNICORN_', 'gunicorn.saenv', 'gunicorn.conf.py' )
             }
 
             if not self.quiet:
-
                 level = check_level(self.options["logging_level"])
                 log_file = get_log_file(out_banner=False)
 
@@ -171,26 +167,29 @@ def gunicorn():
                 )
 
             class GunicornApplication(Application):
-                def logger_info(self, msg="msg"):
-                    logger and logger.info(str(msg))
+                def logger_put(self, msg="its logger_put"):
+                    logger and logger.debug(str(msg))
 
-                def get_gunicorn_vars(self, env_file="gunicorn.saenv", env_key='GUNICORN_'):
+                def get_gunicorn_options(
+                    self,
+                    gu_default="gunicorn.conf.py",
+                    env_file="gunicorn.saenv",
+                    env_key="GUNICORN_",
+                ):
                     def check_kv(kx, vx):
-                        if kx and vx and kx != "bind":
+                        if kx and vx and (kx not in ("bind", "config",)):
                             if vx.startswith("{") and vx.endswith("}"):
-                                vt = re.sub(r",\s*\}", "}", vx)
-                                vx = json.loads(vt.replace("'", '"'))
+                                vx = literal_eval(vx)
                             if vx == "None":
                                 vx = None
                             return kx, vx
+                        self.logger_put(f"Ignored: {kx}={vx}")
                         return None, None
 
-                    result = dict()
+                    if os.path.isfile(gu_default):
+                        return {"use_python_config": gu_default, "config": gu_default}
 
-                    default_conf = './gunicorn.conf.py'
-                    if os.path.isfile( default_conf ):
-                        result ['use_python_config' ] = default_conf
-                        return result
+                    res_opts = dict()
 
                     if os.path.isfile(env_file):
                         try:
@@ -200,7 +199,7 @@ def gunicorn():
                                     line = line.strip()
                                     if not line or line.startswith(("#", "[")):
                                         continue
-                                    for e in ("export ", env_key ):
+                                    for e in ("export ", env_key):
                                         line = line.replace(e, "", 1)
                                     k, v = None, None
                                     try:
@@ -211,12 +210,16 @@ def gunicorn():
                                     k, v = check_kv(k, v)
                                     if k is None:
                                         continue
-                                    result[k] = v
-                                if result:
-                                    result["config"] = "./" + env_file
-                                    return result
-                        except OSError as ex:
-                            self.logger_info(f"gunicorn: cannot read {env_file}; {ex}")
+                                    res_opts[k] = v
+
+                                if res_opts:
+                                    res_opts["config"] = env_file
+                                    return res_opts
+
+                        except (IOError, OSError):
+                            print(f"\nError: {env_file}", file=sys.stderr)
+                            sys.stderr.flush()
+                            sys.exit(1)
 
                     for k, v in os.environ.items():
                         if k.startswith(env_key):
@@ -224,36 +227,26 @@ def gunicorn():
                             k, v = check_kv(k, v)
                             if k is None:
                                 continue
-                            result[k] = v
+                            res_opts[k] = v
 
-                    result["config"] = env_key 
-                    return result
+                    if res_opts:
+                        res_opts["config"] = env_key
+
+                    return res_opts
 
                 def load_config(self):
-
-                    gunicorn_vars = self.get_gunicorn_vars()
-
-                    # test https://github.com/benoitc/gunicorn/blob/master/examples/example_config.py
-                    for e in ("use_python_config", "use_native_config"):
-                        try:
-                            location = gunicorn_vars[e]
-                            Application.load_config_from_module_name_or_filename(
-                                self, location
-                            )
-                            self.cfg.set("config", "./" + location)
-                            self.logger_info(f"gunicorn: used {location}")
-                            return
-                        except KeyError:
-                            pass
-
-                    sa_config.update(gunicorn_vars)
-                    location = gunicorn_vars["config"]
-                    self.logger_info(f"gunicorn: used {location} {sa_config}")
+                    sa_config.update(self.get_gunicorn_options())
+                    self.logger_put(sa_config)
 
                     for k, v in sa_config.items():
                         if k not in self.cfg.settings:
                             continue
                         self.cfg.set(k, v)
+
+                    for e in ( "use_python_config", "usepy", ):
+                        if e in sa_config:
+                            Application.load_config_from_file(self, sa_config[e])
+                            break
 
                 def load(self):
                     return app_handler
