@@ -198,7 +198,7 @@ Let's show examples (go to py4web root dir)
 
    $ ./py4web.py run apps -s gunicorn -L 10 --watch=off &
 
-   $ tguni
+   $ gunitest
    $
    $ less /tmp/server-py4web.log
 
