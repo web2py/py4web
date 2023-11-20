@@ -167,9 +167,6 @@ def gunicorn():
                 )
 
             class GunicornApplication(Application):
-                def logger_put(self, msg="its logger_put"):
-                    logger and logger.debug(str(msg))
-
                 def get_gunicorn_options(
                     self,
                     gu_default="gunicorn.conf.py",
@@ -183,7 +180,6 @@ def gunicorn():
                             if vx == "None":
                                 vx = None
                             return kx, vx
-                        self.logger_put(f"Ignored: {kx}={vx}")
                         return None, None
 
                     if os.path.isfile(gu_default):
@@ -217,9 +213,7 @@ def gunicorn():
                                     return res_opts
 
                         except (IOError, OSError):
-                            print(f"\nError: {env_file}", file=sys.stderr)
-                            sys.stderr.flush()
-                            sys.exit(1)
+                            sys.exit(f"\nError: {env_file}")
 
                     for k, v in os.environ.items():
                         if k.startswith(env_key):
@@ -236,14 +230,14 @@ def gunicorn():
 
                 def load_config(self):
                     sa_config.update(self.get_gunicorn_options())
-                    self.logger_put(sa_config)
+                    logger and logger.debug(sa_config)
 
                     for k, v in sa_config.items():
                         if k not in self.cfg.settings:
                             continue
                         self.cfg.set(k, v)
 
-                    for e in ( "use_python_config", "usepy", ):
+                    for e in ( "use_python_config", "usepy",):
                         if e in sa_config:
                             Application.load_config_from_file(self, sa_config[e])
                             break
