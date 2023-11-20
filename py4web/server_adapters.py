@@ -122,6 +122,20 @@ def get_workers(opts, default=10):
         return default
 
 
+def check_port(host="127.0.0.1", port="8000"):
+    import socket, errno
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.bind((host, port))
+    except socket.error as e:
+        if e.errno == errno.EADDRINUSE:
+            sys.exit(f"{host}:{port} is already in use")
+        else:
+            sys.exit(f"{e}\n{host}:{port} cannot be acessed")
+    s.close()
+
+
 # ---------------------- servers -----------------------------------------------
 
 
@@ -136,6 +150,8 @@ def gunicorn():
         def run(self, app_handler):
             from gunicorn.app.base import Application
             from ast import literal_eval
+
+            check_port(self.host, self.port)
 
             logger = None
 
@@ -237,7 +253,10 @@ def gunicorn():
                             continue
                         self.cfg.set(k, v)
 
-                    for e in ( "use_python_config", "usepy",):
+                    for e in (
+                        "use_python_config",
+                        "usepy",
+                    ):
                         if e in sa_config:
                             Application.load_config_from_file(self, sa_config[e])
                             break
