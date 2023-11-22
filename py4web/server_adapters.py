@@ -122,12 +122,12 @@ def get_workers(opts, default=10):
         return default
 
 
-def check_port(host="127.0.0.1", port="8000"):
+def check_port(host="127.0.0.1", port=8000):
     import socket, errno
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        s.bind((host, port))
+        s.bind((host, int(port)))
     except socket.error as e:
         if e.errno == errno.EADDRINUSE:
             sys.exit(f"{host}:{port} is already in use")
@@ -151,7 +151,7 @@ def gunicorn():
             from gunicorn.app.base import Application
             from ast import literal_eval
 
-            check_port(self.host, self.port)
+            check_port(self.host, int(self.port) )
 
             logger = None
 
@@ -162,6 +162,7 @@ def gunicorn():
                 "keyfile": self.options.get("keyfile", None),
                 "accesslog": None,
                 "errorlog": None,
+                "proc_name": 'py4web' ,  # pip install setproctitle
                 "config": "sa_config",
                 # ( 'sa_config',  'GUNICORN_', 'gunicorn.saenv', 'gunicorn.conf.py' )
             }
@@ -228,8 +229,8 @@ def gunicorn():
                                     res_opts["config"] = env_file
                                     return res_opts
 
-                        except (IOError, OSError):
-                            sys.exit(f"\nError: {env_file}")
+                        except (IOError, OSError) as ex:
+                            sys.exit(f"{ex}\nError: {env_file}")
 
                     for k, v in os.environ.items():
                         if k.startswith(env_key):
