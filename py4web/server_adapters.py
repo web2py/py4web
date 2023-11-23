@@ -123,16 +123,26 @@ def get_workers(opts, default=10):
 
 
 def check_port(host="127.0.0.1", port=8000):
-    import socket, errno
+    import socket, errno, subprocess
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         s.bind((host, int(port)))
     except socket.error as e:
         if e.errno == errno.EADDRINUSE:
+            try:
+                subprocess.run(
+                    f"command -v lsof >/dev/null 2>&1  && lsof -nPi:{port}",
+                    shell=True,
+                    check=True,
+                    text=True,
+                )
+            except subprocess.CalledProcessError:
+                pass
             sys.exit(f"{host}:{port} is already in use")
         else:
             sys.exit(f"{e}\n{host}:{port} cannot be acessed")
+
     s.close()
 
 
@@ -140,7 +150,7 @@ def check_port(host="127.0.0.1", port=8000):
 
 
 def gunicorn():
-    from gevent import local  # pip install gevent gunicorn
+    from gevent import local  # pip install gevent gunicorn setproctitle
     import threading
 
     if isinstance(threading.local(), local.local):
@@ -148,10 +158,14 @@ def gunicorn():
 
     class GunicornServer(ServerAdapter):
         def run(self, app_handler):
-            from gunicorn.app.base import Application
+            try:
+               from gunicorn.app.base import Application
+            except ImportError as ex:
+               sys.exit(f"{ex}\nTry: pip install gunicorn gevent setproctitle")
+
             from ast import literal_eval
 
-            check_port(self.host, int(self.port) )
+            check_port(self.host, int(self.port))
 
             logger = None
 
@@ -162,7 +176,7 @@ def gunicorn():
                 "keyfile": self.options.get("keyfile", None),
                 "accesslog": None,
                 "errorlog": None,
-                "proc_name": 'py4web' ,  # pip install setproctitle
+                "proc_name": "sa_py4web",  # ps a | grep py4web 
                 "config": "sa_config",
                 # ( 'sa_config',  'GUNICORN_', 'gunicorn.saenv', 'gunicorn.conf.py' )
             }
@@ -190,12 +204,27 @@ def gunicorn():
                     env_file="gunicorn.saenv",
                     env_key="GUNICORN_",
                 ):
+                    raw_env = dict()
+
                     def check_kv(kx, vx):
+                        global raw_env
                         if kx and vx and (kx not in ("bind", "config",)):
                             if vx.startswith("{") and vx.endswith("}"):
                                 vx = literal_eval(vx)
                             if vx == "None":
                                 vx = None
+                            if kx == "raw_env":
+                                try:
+                                    raw_env = {
+                                        i.split("=", 1)[0].strip(): i.split("=", 1)[1].strip()
+                                        for i in vx.split(",")
+                                    }
+                                except (ValueError, AttributeError):
+                                    pass
+                            else:
+                                for ke, ve in raw_env.items():
+                                    vx = vx.replace(ke, ve)
+
                             return kx, vx
                         return None, None
 
