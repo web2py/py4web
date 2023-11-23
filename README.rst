@@ -39,7 +39,7 @@ Editing a database in the Dashboard
 Installation
 ############
 
-PY4WEB runs fine on Windows, MacOS and Linux. There are many installation procedures (see the official documentation for details) but only two of them are summarized here.
+PY4WEB runs fine on Windows, MacOS and Linux. There are many installation procedures `(see the official documentation for details) <https://py4web.com/_documentation/static/en/chapter-03.html>`__ but only two of them are summarized here.
 
 The **simplest way** to install py4web is using binaries, but it's only available for Windows and MacOS. It's meant especially for newbies or students, because it does not require Python pre-installed on your system nor administrative rights. You just need to download the latest Windows or MacOS ZIP file from `this external repository <https://github.com/nicozanf/py4web-pyinstaller>`__. Unzip it on a local folder and open a command line there. Finally run the commands (omit './' if you're using Windows)
 
