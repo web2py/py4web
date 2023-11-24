@@ -9,8 +9,8 @@ Before everything else it is important to understand that unlike other web frame
 is not only a python module that can be imported by apps. It is also a program that
 is in charge of starting some apps. For this reason you need two things:
 
--  the py4web module (which you download from our web site, from pypi, from github)
--  one or more folders containing collections of apps you want to run.
+-  The py4web module (which you download from our web site, from pypi or from github)
+-  One or more folders containing collections of apps you want to run.
 
 py4web has command line options to create a folder with some example apps,
 to initialize an existing folder, and to add scaffolding apps to that folder.
@@ -28,41 +28,62 @@ Python 3.7+, which must be installed in advance (except if you use binaries).
 Setup procedures
 ----------------
 
-There are four alternative ways of installing py4web, with different level
-of difficulty and flexibility. Let’s look at the pros and cons.
-
-Installing from binaries
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-This is not a real installation, because you just copy a bunch of files
-on your system without modifying it anyhow. Hence this is the simplest
-solution, especially for newbies or students, because it does not
-require Python pre-installed on your system nor administrative rights.
-On the other hand, it’s experimental, it could contain an old py4web
-release and it is quite difficult to add other functionalities to it.
-
-In order to use it you just need to download the latest Windows or MacOS
-ZIP file from
-`this external repository <https://github.com/nicozanf/py4web-pyinstaller>`__.
-Unzip it on a local folder and open a command line there. Finally run
-
-::
-
-   py4web-start set_password
-   py4web-start run apps
-
-With this type of installation, remember to always use **py4web-start**
-instead of ‘py4web’ or ‘py4web.py’ in the following documentation.
-
-Notice the binaries many not correspond to the latest master
-or the latest stable branch of py4web although we do our best to
-keep them up to date.
+There are four alternative ways of installing py4web, we will guide 
+you trought each of them and if you get stuck, reach 
+`out to us. <https://py4web.com/_documentation/static/en/chapter-02.html>`__
 
 
-Installing from pip
+Installing from pip, using a virtual environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A full installation of any complex python application like py4web will
+surely modify the python environment of your system. In order to prevent
+any unwanted change, it’s a good habit to use a python virtual
+environment (also called **virtualenv**, see
+`here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an
+introduction). This is a standard python feature; if you still don’t
+know virtualenv it’s a good time to start its discovery!
+
+Here are the instructions for creating the virtual environment, activating it,
+and installing py4web in it:
+
+.. tabs::
+
+   .. group-tab:: Linux and MacOS
+
+      ::
+
+         python3 -m venv venv
+         . venv/bin/activate
+         python -m pip install --upgrade py4web --no-cache-dir
+         python py4web setup apps
+         python py4web set_password
+         python py4web run apps
+
+      Starting py4web is same with or without a virtual environment
+      python py4web run apps
+
+   .. group-tab:: Windows
+
+      ::
+
+         run cmd.exe
+         In e.g. folder c:\py4web
+         python3 -m venv venv
+         "C:\py4web\venv\Scripts\activate.bat"
+         python -m pip install --upgrade py4web --no-cache-dir
+         cd venv\scripts
+         py4web.exe setup apps
+         py4web.exe set_password
+         py4web.exe run apps
+		 
+      You can also find power shell scripts in the same folder. Starting py4web is same with or without a virtual environment
+      python py4web run apps
+
+Installing from pip, wihtout virtual environment
 ~~~~~~~~~~~~~~~~~~~
 
-Using *pip* is the standard installation procedure for py4web, since it will
+*pip* is the basic installation procedure for py4web, it will
 quickly install the latest stable release of py4web.
 
 From the command line
@@ -96,28 +117,6 @@ be created by *pip* on the system’s path, but not if you type the
    python3 py4web.py run apps
 
 
-Installing using a virtual environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-A full installation of any complex python application like py4web will
-surely modify the python environment of your system. In order to prevent
-any unwanted change, it’s a good habit to use a python virtual
-environment (also called **virtualenv**, see
-`here <https://docs.python.org/3.7/tutorial/venv.html>`__ for an
-introduction). This is a standard python feature; if you still don’t
-know virtualenv it’s a good time to start its discovery!
-
-Here are the instructions for creating the virtual environment, activating it,
-and installing py4web in it:
-
-::
-
-   python3 -m venv venv
-   . venv/bin/activate
-   python -m pip install --upgrade py4web --no-cache-dir
-
-The instructions for starting and running py4web are the same with or without a virtual environment.
-
 
 Installing from source (globally)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -135,6 +134,8 @@ folder
    make assets
    make test
    make install
+   py4web setup apps
+   py4web set_password
    py4web run apps
 
 Also notice that when installing in this way the content of
@@ -192,7 +193,32 @@ Once installed, you should always start it from there with:
       But running .py files directly it’s not usual and you’ll need an explicit
       python3/python command.
 
-      
+Installing from binaries
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is not a real installation, because you just copy a bunch of files
+on your system without modifying it anyhow. Hence this is the simplest
+solution, especially for beginners or students, because it does not
+require Python pre-installed on your system nor administrative rights.
+On the other hand, it’s experimental, it could contain an old py4web
+release, DAL support is limited and it is quite difficult to add other functionalities to it.
+
+In order to use it you just need to download the latest Windows or MacOS
+ZIP file from
+`this external repository <https://github.com/nicozanf/py4web-pyinstaller>`__.
+Unzip it on a local folder and open a command line there. Finally run
+
+::
+
+   py4web-start set_password
+   py4web-start run apps
+
+With this type of installation, remember to always use **py4web-start**
+instead of ‘py4web’ or ‘py4web.py’ in the following documentation.
+
+Notice the binaries many not correspond to the latest master
+or the latest stable branch of py4web although we do our best to
+keep them up to date.      
 
 Upgrading
 ---------
@@ -226,10 +252,7 @@ First run
 
 Running py4web using any of the previous procedure should produce an
 output like this:
-
-::
-
-   py4web run apps
+  
 
 .. image:: images/first_run.png
    :class: with-shadow
