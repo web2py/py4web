@@ -343,8 +343,9 @@ class Fixture:
 
     def is_valid(self):
         """check if the fixture is valid in context"""
-        ctx = self.__request_master_ctx__.request_ctx
-        if self not in ctx:
+        
+        ctx = getattr(self.__request_master_ctx__, 'request_ctx', None)
+        if not ctx or self not in ctx:
             logging.warn(
                 "attempted access to fixture %s from outside a request",
                 self.__class__.__name__,
