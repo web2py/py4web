@@ -1,4 +1,4 @@
-.PHONY: clean venv docs clean-assets assets test setup run build deploy
+.PHONY: clean docs clean-assets assets test setup run build deploy
 asset-apps := _dashboard _default _scaffold _minimal _documentation showcase
 asset-zips := $(asset-apps:%=py4web/assets/py4web.app.%.zip)
 clean:
@@ -14,30 +14,25 @@ py4web/assets/py4web.app.%.zip: apps/%
 	cd $< && find . | \
 	egrep "\.(py|html|css|js|png|jpg|gif|json|yaml|md|txt|mm|ico)$$" | \
 	zip -@ $(addprefix ../../, $@)
-venv:
-	python -m venv venv
-	venv/bin/pip install -U pip
-	venv/bin/pip install -U -r requirements.txt
-	venv/bin/pip install ./
-docs: venv
-	venv/bin/pip install -U -r docs/requirements.txt
-	cd docs; . ../venv/bin/activate && ./updateDocs.sh html
-test: venv
-	venv/bin/pip install -U -r test-requirements.txt
-	venv/bin/python -m pytest --cov=py4web --cov-report html:cov.html -v tests/
+docs:
+	.venv/bin/pip install -U -r docs/requirements.txt
+	cd docs; ./updateDocs.sh html
+test:
+	.venv/bin/pip install -U -r test-requirements.txt
+	.venv/bin/python -m pytest --cov=py4web --cov-report html:cov.html -v tests/
 setup:
-	venv/bin/python py4web.py setup apps
-	venv/bin/python py4web.py set_password
+	.venv/bin/python py4web.py setup apps
+	.venv/bin/python py4web.py set_password
 run:
-	venv/bin/python py4web.py run -p password.txt apps
+	.venv/bin/python py4web.py run -p password.txt apps
 upgrade-utils:
 	find apps -name "utils.js" -exec cp apps/_dashboard/static/js/utils.js {} \;
 upgrade-vue:
 	curl -L https://unpkg.com/vue/dist/vue.min.js > apps/_dashboard/static/js/vue.min.js
 	find apps -name "vue.min.js" -exec cp apps/_dashboard/static/js/vue.min.js {} \;
-build: clean assets venv
-	venv/bin/pip install --upgrade build
-	venv/bin/pip install --upgrade twine
-	venv/bin/python -m build
+build: clean assets
+	.venv/bin/pip install --upgrade build
+	.venv/bin/pip install --upgrade twine
+	.venv/bin/python -m build
 deploy: build
-	venv/bin/python -m twine upload dist/*
+	.venv/bin/python -m twine upload dist/*

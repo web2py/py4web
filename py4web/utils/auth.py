@@ -683,7 +683,7 @@ class Auth(Fixture):
         field = (
             db.auth_user.email
             if "@" in value or not self.use_username
-            else self.auth_user.username
+            else db.auth_user.username
         )
         user = db(field == value).select().first()
         if user and user.action_token != "account-blocked":

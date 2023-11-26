@@ -148,7 +148,6 @@ def check_port(host="127.0.0.1", port=8000):
 
 # ---------------------- servers -----------------------------------------------
 
-
 def gunicorn():
     from gevent import local  # pip install gevent gunicorn setproctitle
     import threading
@@ -214,7 +213,7 @@ def gunicorn():
                                 vx = None
                             return kx, vx
                         return None, None
-
+                      
                     if os.path.isfile(gu_default):
                         return {"use_python_config": gu_default, "config": gu_default}
 
@@ -247,7 +246,7 @@ def gunicorn():
 
                         except (IOError, OSError) as ex:
                             sys.exit(f"{ex}\nError: {env_file}")
-
+            
                     for k, v in os.environ.items():
                         if k.startswith(env_key):
                             k = k.split("_", 1)[1].lower()
@@ -279,7 +278,7 @@ def gunicorn():
                             break
 
                 def load(self):
-                    return app_handler
+                    return py4web_apps_handler
 
             GunicornApplication().run()
 
