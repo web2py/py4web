@@ -207,26 +207,11 @@ def gunicorn():
                     raw_env = dict()
 
                     def check_kv(kx, vx):
-                        global raw_env
                         if kx and vx and (kx not in ("bind", "config",)):
                             if vx.startswith("{") and vx.endswith("}"):
                                 vx = literal_eval(vx)
                             if vx == "None":
                                 vx = None
-                            if kx == "raw_env":
-                                try:
-                                    raw_env = {
-                                        i.split("=", 1)[0]
-                                        .strip(): i.split("=", 1)[1]
-                                        .strip()
-                                        for i in vx.split(",")
-                                    }
-                                except (ValueError, AttributeError):
-                                    pass
-                            else:
-                                for ke, ve in raw_env.items():
-                                    vx = vx.replace(ke, ve)
-
                             return kx, vx
                         return None, None
 
