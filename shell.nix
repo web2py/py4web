@@ -10,7 +10,7 @@ let
   };
 
   # This is the Python version that will be used.
-  myPython = pkgs.python310;
+  myPython = pkgs.python311;
 
   pythonWithPkgs = myPython.withPackages (pythonPkgs: with pythonPkgs; [
     pip
@@ -28,6 +28,7 @@ let
       # my python and packages
       pythonWithPkgs
       pkgs.memcached
+      pkgs.redis
 
       # other packages needed for compiling python libs
       pkgs.readline
@@ -38,17 +39,17 @@ let
     shellHook = ''
       # Allow the use of wheels.
       SOURCE_DATE_EPOCH=$(date +%s)
-
+      VENV_PATH=/home/$USER/.nix-venvs$(pwd)/venv${myPython.version}
       # Augment the dynamic linker path
       export "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${lib-path}"
 
       # Setup the virtual environment if it doesn't already exist.
-      if test ! -d .venv; then
-        python -m venv .venv
+      if test ! -d $VENV_PATH; then
+        python -m venv $VENV_PATH
       fi
-      .venv/bin/pip install -U -r requirements.txt
-      source .venv/bin/activate
-      export PYTHONPATH=`pwd`.venv/${myPython.sitePackages}/:$PYTHONPATH      
+      $VENV_PATH/bin/pip install -U -r requirements.txt
+      source $VENV_PATH/bin/activate
+      export PYTHONPATH=$VENV_PATH/${myPython.sitePackages}/:$PYTHONPATH      
     '';
   };
 in
