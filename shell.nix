@@ -1,6 +1,6 @@
 let
   nixpkgs-src = builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/tarball/nixos-22.11";
+    url = "https://github.com/NixOS/nixpkgs/tarball/nixos-23.05";
   };
 
   pkgs = import nixpkgs-src {
