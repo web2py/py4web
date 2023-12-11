@@ -1,5 +1,5 @@
 ====================
-gunicorn with py4web
+gunicorn and py4web
 ====================
 
 
@@ -18,7 +18,18 @@ It is possible to use several methods to configure gunicorn options with py4web
 
 Let's show examples (go to py4web root dir)
 
-* set gunicorn options via bash environment variables
+
+* set gunicorn options via py4web.py cmd-keys
+
+ use: -H, -P, -w, -L, --ssl_cert, --ssl_key, -Q
+
+ ./py4web.py run apps -s gunicorn --watch=off -w 4 -H 192.168.1.161 -P 9000 -L 20 --ssl_cert=cert.pem --ssl_key=key.pem
+
+ with -L 10 we can see gunicorn options in server-py4web.log
+
+ this is enough for regular applications (you don't have to read further)
+
+* set gunicorn options via bash env variables
 
   ::
 
@@ -41,8 +52,21 @@ Let's show examples (go to py4web root dir)
 
   ::
 
-   # example file  gunicorn.saenv
+   # gunicorn.saenv: example file
    #
+   # its key=value file
+   # export GUNICORN_ will be removed
+   #
+   # boolean
+   # print_config=False
+   #
+   # str
+   export GUNICORN_raw_env=VARIABLE_HERE=VARIABLE_VALUE_HERE, v2=x2,
+   # python dict
+   export GUNICORN_secure_scheme_headers={'x':'x1', 'y':'y1',}
+   # None
+   certfile=None
+
    export GUNICORN_worker_tmp_dir=/dev/shm
    export GUNICORN_max_requests=1200
    worker_class=gthread
@@ -54,9 +78,13 @@ Let's show examples (go to py4web root dir)
 
    # for use python-config-file
    # use_python_config=myguni.conf.py
+   # or short 
+   # usepy=myguni.conf.py
 
    # for use python-config-mod_name
    # use_python_config=python:mod_name
+   # or short 
+   # usepy=python:mod_name
 
 
 * set gunicorn options via python file myguni.conf.py
@@ -71,7 +99,7 @@ Let's show examples (go to py4web root dir)
    $export GUNCORN_use_python_config=myguni.conf.py
    $ 
    $ # via gunicorn.saenv 
-   $echo use_python_config=mmyguni.conf.py >> gunicorn.saenv
+   $echo use_python_config=myguni.conf.py >> gunicorn.saenv
 
  ::
 
@@ -79,7 +107,7 @@ Let's show examples (go to py4web root dir)
 
  .. code:: python
 
-   # Gunicorn configuration file myguni.conf.py
+   # myguni.conf.py : example gunicorn configuration file
    # https://docs.gunicorn.org/en/stable/settings.html
 
    import multiprocessing
@@ -124,13 +152,15 @@ Let's show examples (go to py4web root dir)
  ::
 
  
-  put gunicorn settings in the gunicorn.conf.py
+  write gunicorn settings to the gunicorn.conf.py
 
-  (if gunicorn.conf.py exists, the GUNICORN_ vars and file gunicorn.saenv will be ignored)
+  (if gunicorn.conf.py exists, the GUNICORN_ vars and the file gunicorn.saenv will be ignored)
 
  .. code:: bash
 
   $ echo "print_config = True"  > gunicorn.conf.py 
+  $ # or
+  $ cp myguni.con.py gunicorn.conf.py 
 
 
  ::
@@ -141,7 +171,7 @@ Let's show examples (go to py4web root dir)
 
  ::
 
-  run py4web/apps as wsgi-app 
+  run py4web/apps as wsgi-apps
 
  .. code:: bash
 
@@ -154,6 +184,25 @@ Let's show examples (go to py4web root dir)
    $ gunicorn -w 4 py4web_wsgi:myapp 
 
 
+* test gunicorn response time 
+
+ ::
+
+  add to .bashrc 
+
+ .. code:: bash
+
+   export PY4WEB_LOGS=/tmp
+   p4w_todo_get() { time seq 1 500 | xargs -I % curl http://localhost:8000/todo &>/dev/null ;}
+   todotest() { for ((i=0; i < $1; i++)); do p4w_todo_get  & done  ;}
+
+ ::
+
+   $ ./py4web.py run apps -s gunicorn -L 10 --watch=off &
+
+   $ todotest 10
+   $
+   $ less /tmp/server-py4web.log
 
 
 thats it
