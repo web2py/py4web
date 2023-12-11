@@ -821,10 +821,10 @@ class Form(object):
                                 self.record and self.record.get(field_name) or None
                             )
                     self.vars.update(validated_vars)
-                    if validation:
-                        validation(self)
                     if self.record and dbio:
                         self.vars["id"] = self.record.id
+                    if validation:
+                        validation(self)
                     if not self.errors:
                         for file in uploaded_files:
                             field, value = file
