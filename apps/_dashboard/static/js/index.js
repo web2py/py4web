@@ -220,6 +220,7 @@ let init = (app) => {
                     app.vue.user = true;
                     app.init();
                 }
+		location.reload();    
             });
     };
     app.logout = () => {
