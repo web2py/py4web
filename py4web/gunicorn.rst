@@ -96,7 +96,7 @@ Let's show examples (go to py4web root dir)
  .. code:: bash
 
    $ # via env
-   $export GUNCORN_use_python_config=myguni.conf.py
+   $export GUNICORN_use_python_config=myguni.conf.py
    $ 
    $ # via gunicorn.saenv 
    $echo use_python_config=myguni.conf.py >> gunicorn.saenv
@@ -136,7 +136,7 @@ Let's show examples (go to py4web root dir)
   $  mkdir mod_name && cp myguni.conf.py mod_name/__init__.py
   $
   $ # via env
-  $export GUNCORN_use_python_config=python:mod_name
+  $export GUNICORN_use_python_config=python:mod_name
   $
   $ # via gunicorn.saenv
   $echo use_python_config=python:mod_name >> gunicorn.saenv

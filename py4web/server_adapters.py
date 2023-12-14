@@ -278,7 +278,7 @@ def gunicorn():
                             break
 
                 def load(self):
-                    return py4web_apps_handler
+                    return app_handler
 
             GunicornApplication().run()
 
