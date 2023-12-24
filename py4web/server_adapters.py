@@ -131,12 +131,12 @@ def check_port(host="127.0.0.1", port=8000):
         except subprocess.CalledProcessError :
            pass
 
-    if host.startswith('unix:'):
+    if host.startswith('unix:/'):
         socket_path = host[5:]
         if os.path.exists(socket_path):
-            os_cmd ("ps au | grep py4web | grep -v grep")
-            os_cmd (f"ls -alF {socket_path}")
-            sys.exit(f"{socket_path} exists: can't run gunicorn")
+            os_cmd ("ps -ef | head -1; ps -ef | grep py4web | grep -v grep")
+            os_cmd (f"ls -alFi {socket_path}")
+            print (f"reopen {socket_path}")
         print (f'=== gunicorn listening at: {host} ===')
         return
 
@@ -174,7 +174,7 @@ def gunicorn():
 
             logger = None
 
-            sa_bind = self.host if self.host.startswith('unix:') else f"{self.host}:{self.port}"
+            sa_bind = self.host if self.host.startswith('unix:/') else f"{self.host}:{self.port}"
 
             sa_config = {
                 "bind": sa_bind, # f"{self.host}:{self.port}",
