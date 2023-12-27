@@ -134,10 +134,16 @@ def check_port(host="127.0.0.1", port=8000):
     if host.startswith('unix:/'):
         socket_path = host[5:]
         if os.path.exists(socket_path):
-            os_cmd ("ps -ef | head -1; ps -ef | grep py4web | grep -v grep")
-            os_cmd (f"ls -alFi {socket_path}")
-            print (f"reopen {socket_path}")
-        print (f'=== gunicorn listening at: {host} ===')
+            if port == 0:
+                os_cmd (f"ls -alFi {socket_path}")
+                sys.exit(f"can't run gunicorn: {socket_path} exists")
+            elif port == 1:
+                os_cmd ("ps -ef | head -1; ps -ef | grep py4web | grep -v grep")
+                os_cmd (f"ls -alFi {socket_path}")
+                os_cmd (f"lsof -w {socket_path}")
+            elif port == 8000:
+                pass
+        print (f'gunicorn listening at: {host}')
         return
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -145,7 +151,8 @@ def check_port(host="127.0.0.1", port=8000):
         s.bind((host, int(port) ))
     except socket.error as e:
         if e.errno == errno.EADDRINUSE:
-            os_cmd( f"command -v lsof >/dev/null 2>&1 && ps aux | grep py4web  && lsof -nPi:{port}" )
+            os_cmd( f"command -v lsof >/dev/null 2>&1 && ps -ef | head -1; ps -ef |"
+                    f" grep py4web | grep -v grep && lsof -nPi:{port}" )
             sys.exit(f"{host}:{port} is already in use")
         else:
             sys.exit(f"{e}\n{host}:{port} cannot be acessed")

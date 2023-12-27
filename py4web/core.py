@@ -2048,7 +2048,7 @@ def run(**kwargs):
                 'You have not set a dashboard password. Run "%s set_password" to do so.'
                 % PY4WEB_CMD
             )
-        elif "_dashboard" in Reloader.ROUTES and (not kwargs['host'].startswith('unix:')) :
+        elif "_dashboard" in Reloader.ROUTES and (not kwargs['host'].startswith('unix:/')) :
             click.echo(
                 f"Dashboard is at: http{'s' if kwargs.get('ssl_cert', None) else ''}://{kwargs['host']}:{kwargs['port']}/_dashboard"
             )
