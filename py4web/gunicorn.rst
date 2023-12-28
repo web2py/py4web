@@ -9,6 +9,8 @@ The gunicorn server starts in the usual way for the py4web
 
    $./py4web.py run apps -s gunicorn --watch=off
    $
+   $./py4web.py run apps -H 'unix:/tmp/p4w.sock' -w 4 -L 10
+   $
    $./py4web.py run apps -s gunicornGevent --watch=off
 
 
@@ -19,11 +21,11 @@ It is possible to use several methods to configure gunicorn options with py4web
 Let's show examples (go to py4web root dir)
 
 
-* set gunicorn options via py4web.py cmd-keys
+* set gunicorn options via py4web keys
 
- use: -H, -P, -w, -L, --ssl_cert, --ssl_key, -Q
+ use: -H, -P, -w, -L, --ssl_cert, --ssl_key , -Q
 
- ./py4web.py run apps -s gunicorn --watch=off -w 4 -H 192.168.1.161 -P 9000 -L 20 --ssl_cert=cert.pem --ssl_key=key.pem
+ ./py4web.py run apps -s gunicorn --watch=off -H 192.168.1.161 -P 9000 -L 20 --ssl_cert=cert.pem --ssl_key=key.pem
 
  with -L 10 we can see gunicorn options in server-py4web.log
 
@@ -83,8 +85,6 @@ Let's show examples (go to py4web root dir)
 
    # for use python-config-mod_name
    # use_python_config=python:mod_name
-   # or short 
-   # usepy=python:mod_name
 
 
 * set gunicorn options via python file myguni.conf.py
@@ -96,10 +96,10 @@ Let's show examples (go to py4web root dir)
  .. code:: bash
 
    $ # via env
-   $export GUNICORN_use_python_config=myguni.conf.py
+   $export GUNCORN_use_python_config=myguni.conf.py
    $ 
    $ # via gunicorn.saenv 
-   $echo use_python_config=myguni.conf.py >> gunicorn.saenv
+   $echo use_python_config=mmyguni.conf.py >> gunicorn.saenv
 
  ::
 
@@ -136,7 +136,7 @@ Let's show examples (go to py4web root dir)
   $  mkdir mod_name && cp myguni.conf.py mod_name/__init__.py
   $
   $ # via env
-  $export GUNICORN_use_python_config=python:mod_name
+  $export GUNCORN_use_python_config=python:mod_name
   $
   $ # via gunicorn.saenv
   $echo use_python_config=python:mod_name >> gunicorn.saenv
@@ -193,14 +193,14 @@ Let's show examples (go to py4web root dir)
  .. code:: bash
 
    export PY4WEB_LOGS=/tmp
-   p4w_todo_get() { time seq 1 500 | xargs -I % curl http://localhost:8000/todo &>/dev/null ;}
-   todotest() { for ((i=0; i < $1; i++)); do p4w_todo_get  & done  ;}
+   p4w_srv_test() { time seq 1 500 | xargs -I % curl http://localhost:8000/todo &>/dev/null ;}
+   gunitest() { for ((i=0; i < 20; i++)); do p4w_srv_test  & done  ;}
 
  ::
 
    $ ./py4web.py run apps -s gunicorn -L 10 --watch=off &
 
-   $ todotest 10
+   $ tguni
    $
    $ less /tmp/server-py4web.log
 

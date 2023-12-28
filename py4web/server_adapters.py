@@ -125,24 +125,37 @@ def get_workers(opts, default=10):
 def check_port(host="127.0.0.1", port=8000):
     import socket, errno, subprocess
 
+    def os_cmd (run_cmd ):
+        try:
+           subprocess.run( run_cmd , shell=True, check = True, text=True, )
+        except subprocess.CalledProcessError :
+           pass
+
+    if host.startswith('unix:/'):
+        socket_path = host[5:]
+        if os.path.exists(socket_path):
+            if port == 0:
+                os_cmd (f"ls -alFi {socket_path}")
+                sys.exit(f"can't run gunicorn: {socket_path} exists")
+            elif port == 1:
+                os_cmd ("ps -ef | head -1; ps -ef | grep py4web | grep -v grep")
+                os_cmd (f"ls -alFi {socket_path}")
+                os_cmd (f"lsof -w {socket_path}")
+            elif port == 8000:
+                pass
+        print (f'gunicorn listening at: {host}')
+        return
+
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        s.bind((host, int(port)))
+        s.bind((host, int(port) ))
     except socket.error as e:
         if e.errno == errno.EADDRINUSE:
-            try:
-                subprocess.run(
-                    f"command -v lsof >/dev/null 2>&1  && lsof -nPi:{port}",
-                    shell=True,
-                    check=True,
-                    text=True,
-                )
-            except subprocess.CalledProcessError:
-                pass
+            os_cmd( f"command -v lsof >/dev/null 2>&1 && ps -ef | head -1; ps -ef |"
+                    f" grep py4web | grep -v grep && lsof -nPi:{port}" )
             sys.exit(f"{host}:{port} is already in use")
         else:
             sys.exit(f"{e}\n{host}:{port} cannot be acessed")
-
     s.close()
 
 
@@ -168,8 +181,10 @@ def gunicorn():
 
             logger = None
 
+            sa_bind = self.host if self.host.startswith('unix:/') else f"{self.host}:{self.port}"
+
             sa_config = {
-                "bind": f"{self.host}:{self.port}",
+                "bind": sa_bind, # f"{self.host}:{self.port}",
                 "workers": get_workers(self.options),
                 "certfile": self.options.get("certfile", None),
                 "keyfile": self.options.get("keyfile", None),
