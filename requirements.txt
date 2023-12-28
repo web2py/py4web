@@ -1,5 +1,5 @@
 wheel
-ombott >= 1.0.0
+ombott==2.0rc2
 click
 colorama
 cryptography
