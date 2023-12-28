@@ -236,6 +236,7 @@ Once this is all setup, the flow for two factor authentication is:
    - display verification page where user can enter their code
    - upon successful verification, take user to _next_url that was passed to the login page
 
+Important! If you filtered ``ALLOWED_ACTIONS`` in your app, make sure to whitelist the "two_factor" action so not to block the two factor API.
 
 
 Auth Plugins
