@@ -36,6 +36,7 @@ def downloader(db, path, filename, download_filename=None):
     fieldname = items.group("field")
     try:
         field = db[tablename][fieldname]
+        path = field.uploadfolder or path
 
         # Functionality to handle uploadseparate Field declaration.
         if field.uploadseparate:

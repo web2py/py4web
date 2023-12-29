@@ -8,23 +8,8 @@ import jwt
 from pydal._compat import to_native
 from pydal.objects import FieldVirtual
 from pydal.validators import Validator
-from yatl.helpers import (
-    CAT,
-    DIV,
-    FORM,
-    INPUT,
-    LABEL,
-    OPTION,
-    SELECT,
-    SPAN,
-    TABLE,
-    TD,
-    TEXTAREA,
-    TR,
-    XML,
-    A,
-    P,
-)
+from yatl.helpers import (CAT, DIV, FORM, INPUT, LABEL, OPTION, SELECT, SPAN,
+                          TABLE, TD, TEXTAREA, TR, XML, A, P)
 
 from py4web import HTTP, request, response
 from py4web.utils.param import Param
@@ -567,7 +552,7 @@ class FormStyleFactory:
                     SPAN(
                         controls["delete"],
                         _class=class_inner,
-                        _stye="vertical-align: middle;",
+                        _style="vertical-align: middle;",
                     ),
                     P(
                         deletable_record_attributes["_label"],
@@ -836,10 +821,10 @@ class Form(object):
                                 self.record and self.record.get(field_name) or None
                             )
                     self.vars.update(validated_vars)
-                    if validation:
-                        validation(self)
                     if self.record and dbio:
                         self.vars["id"] = self.record.id
+                    if validation:
+                        validation(self)
                     if not self.errors:
                         for file in uploaded_files:
                             field, value = file

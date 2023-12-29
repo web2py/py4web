@@ -36,7 +36,6 @@ class Publisher:
         name = "vue%s" % str(uuid.uuid4())[:8]
         return DIV(
             self.mtable(table),
-            TAG.SCRIPT(_src=URL("static/js/axios.min.js")),
             TAG.SCRIPT(_src=URL("static/js/vue.min.js")),
             TAG.SCRIPT(_src=URL("static/js/utils.js")),
             TAG.SCRIPT(_src=URL("static/components/mtable.js")),

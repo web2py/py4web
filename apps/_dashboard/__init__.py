@@ -417,9 +417,9 @@ if MODE == "full":
         """Saves a file"""
         app_name = path.split("/")[0]
         path = safe_join(FOLDER, path) or abort()
-        with open(path, "w") as myfile:
+        with open(path, "wb") as myfile:
             body = json.load(request.body)
-            myfile.write(body)
+            myfile.write(body.encode("utf8"))
         if reload_app:
             Reloader.import_app(app_name)
         return {"status": "success"}

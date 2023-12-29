@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="pt" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Linguagem de template YATL &mdash; Documentação py4web 1.20230507.1</title>
+  <title>Linguagem de template YATL &mdash; Documentação py4web 1.20231114.1</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -14,13 +14,13 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/translations.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=dc17f146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=3b002d5c"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Pesquisar" href="search.html" />
@@ -41,7 +41,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                1.20231114.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -118,7 +118,7 @@
            <div itemprop="articleBody">
              
   <section id="yatl-template-language">
-<h1>Linguagem de template YATL<a class="headerlink" href="#yatl-template-language" title="Permalink to this heading"></a></h1>
+<h1>Linguagem de template YATL<a class="headerlink" href="#yatl-template-language" title="Link to this heading"></a></h1>
 <p>py4web uses two distinct template languages for rendering dynamic HTML pages that contain Python code:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://pypi.org/project/yatl/">yatl (Yet Another Template Language)</a> , which is considered the original reference implementation</p></li>
@@ -215,7 +215,7 @@ Also, you never need to (and never should) call the <code class="docutils litera
 method explicitly.</p>
 </div>
 <section id="basic-syntax">
-<h2>Sintaxe básica<a class="headerlink" href="#basic-syntax" title="Permalink to this heading"></a></h2>
+<h2>Sintaxe básica<a class="headerlink" href="#basic-syntax" title="Link to this heading"></a></h2>
 <p>The py4web template language supports all Python control structures.
 Here we provide some examples of each of them. They can be nested
 according to usual programming practice.
@@ -223,7 +223,7 @@ You can easily test them by copying the _scaffold app (see
 <a class="reference internal" href="chapter-05.html#copying-the-scaffold-app"><span class="std std-ref">Copying the _scaffold app</span></a>) and then editing the file
 <code class="docutils literal notranslate"><span class="pre">new_app/template/index.html</span></code>.</p>
 <section id="for-in">
-<h3>`` Para … in``<a class="headerlink" href="#for-in" title="Permalink to this heading"></a></h3>
+<h3>`` Para … in``<a class="headerlink" href="#for-in" title="Link to this heading"></a></h3>
 <p>Em templates você pode fazer um loop sobre qualquer objeto iterável:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[items = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;] ]]
 <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
@@ -242,7 +242,7 @@ You can easily test them by copying the _scaffold app (see
 <p>Aqui `` items`` é qualquer objeto iterável como uma lista Python, Python tupla, ou linhas objeto, ou qualquer objeto que é implementado como um iterador. Os elementos apresentados são primeiro serializado e escapou.</p>
 </section>
 <section id="while">
-<h3>`` While``<a class="headerlink" href="#while" title="Permalink to this heading"></a></h3>
+<h3>`` While``<a class="headerlink" href="#while" title="Link to this heading"></a></h3>
 <p>Você pode criar um loop usando a palavra-chave, enquanto:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[k = 3]]
 <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
@@ -260,7 +260,7 @@ You can easily test them by copying the _scaffold app (see
 </div>
 </section>
 <section id="if-elif-else">
-<h3>`` If … elif … else``<a class="headerlink" href="#if-elif-else" title="Permalink to this heading"></a></h3>
+<h3>`` If … elif … else``<a class="headerlink" href="#if-elif-else" title="Link to this heading"></a></h3>
 <p>Você pode usar cláusulas condicionais:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[
 import random
@@ -301,7 +301,7 @@ k = random.randint(0, 100)
 </div>
 </section>
 <section id="try-except-else-finally">
-<h3>`` Tentar … exceto … else … finally``<a class="headerlink" href="#try-except-else-finally" title="Permalink to this heading"></a></h3>
+<h3>`` Tentar … exceto … else … finally``<a class="headerlink" href="#try-except-else-finally" title="Link to this heading"></a></h3>
 <p>It is also possible to use <code class="docutils literal notranslate"><span class="pre">try...except</span></code> statements in templates with one
 caveat. Consider the following example:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[try:]]
@@ -323,7 +323,7 @@ no division by zero
 <p>Este exemplo ilustra que todas as saídas gerado antes de ocorrer uma exceção é processado (incluindo a saída que precedeu a excepção) no interior do bloco de teste. “Olá” é escrito porque precede a exceção.</p>
 </section>
 <section id="def-return">
-<h3>`` Def … return``<a class="headerlink" href="#def-return" title="Permalink to this heading"></a></h3>
+<h3>`` Def … return``<a class="headerlink" href="#def-return" title="Link to this heading"></a></h3>
 <p>O linguagem de template py4web permite ao desenvolvedor definir e implementar funções que podem retornar qualquer objeto Python ou uma cadeia de texto / html. Aqui, consideramos dois exemplos:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[def itemize1(link): return LI(A(link, _href=&quot;http://&quot; + link))]]
 <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
@@ -353,13 +353,13 @@ a <code class="docutils literal notranslate"><span class="pre">return</span></co
 </section>
 </section>
 <section id="information-workflow">
-<h2>Information workflow<a class="headerlink" href="#information-workflow" title="Permalink to this heading"></a></h2>
+<h2>Information workflow<a class="headerlink" href="#information-workflow" title="Link to this heading"></a></h2>
 <p>For dynamically modifying the workflow of the information there are custom commands available:
 <code class="docutils literal notranslate"><span class="pre">extend</span></code>, <code class="docutils literal notranslate"><span class="pre">include</span></code>, <code class="docutils literal notranslate"><span class="pre">block</span></code> and <code class="docutils literal notranslate"><span class="pre">super</span></code>. Note that they are special template
 directives, not Python commands.</p>
 <p>In addition, you can use normal Python functions inside templates.</p>
 <section id="extend-and-include">
-<h3><code class="docutils literal notranslate"><span class="pre">extend</span></code> and <code class="docutils literal notranslate"><span class="pre">include</span></code><a class="headerlink" href="#extend-and-include" title="Permalink to this heading"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">extend</span></code> and <code class="docutils literal notranslate"><span class="pre">include</span></code><a class="headerlink" href="#extend-and-include" title="Link to this heading"></a></h3>
 <p>Templates can extend and include other templates in a tree-like structure.</p>
 <p>For example, we can think of a template “index.html” that extends
 “layout.html” and includes “body.html”. At the same time, “layout.html”
@@ -433,7 +433,7 @@ controller function are available not only in the function’s main template,
 but in all of its extended and included templates as well.</p>
 </section>
 <section id="extending-using-variables">
-<h3>Extending using variables<a class="headerlink" href="#extending-using-variables" title="Permalink to this heading"></a></h3>
+<h3>Extending using variables<a class="headerlink" href="#extending-using-variables" title="Link to this heading"></a></h3>
 <p>The argument of an <code class="docutils literal notranslate"><span class="pre">extend</span></code> or <code class="docutils literal notranslate"><span class="pre">include</span></code> (i.e., the extended or
 included template name) can be a Python variable (though not a Python
 expression). However, this imposes a limitation – templates that use
@@ -468,7 +468,7 @@ menus), and though they are not mandatory, they will make your
 application easier to write and maintain.</p>
 </section>
 <section id="template-functions">
-<h3>Template Functions<a class="headerlink" href="#template-functions" title="Permalink to this heading"></a></h3>
+<h3>Template Functions<a class="headerlink" href="#template-functions" title="Link to this heading"></a></h3>
 <p>Consider this “layout.html”:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="cm">&lt;!--layout.html--&gt;</span>
 <span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
@@ -514,7 +514,7 @@ layout calls the template function using <code class="docutils literal notransla
 <code class="docutils literal notranslate"><span class="pre">[[=mysidebar()]]</span></code>. Functions defined in this way can take arguments.</p>
 </section>
 <section id="block-and-super">
-<h3><code class="docutils literal notranslate"><span class="pre">block</span></code> and <code class="docutils literal notranslate"><span class="pre">super</span></code><a class="headerlink" href="#block-and-super" title="Permalink to this heading"></a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">block</span></code> and <code class="docutils literal notranslate"><span class="pre">super</span></code><a class="headerlink" href="#block-and-super" title="Link to this heading"></a></h3>
 <p>The main way to make a template more modular is by using
 <code class="docutils literal notranslate"><span class="pre">[[block</span> <span class="pre">...]]</span></code>s and this mechanism is an alternative to the
 mechanism discussed in the previous section.</p>
@@ -594,9 +594,9 @@ my new sidebar!!!
 </section>
 </section>
 <section id="page-layout-standard-structure">
-<h2>Page layout standard structure<a class="headerlink" href="#page-layout-standard-structure" title="Permalink to this heading"></a></h2>
+<h2>Page layout standard structure<a class="headerlink" href="#page-layout-standard-structure" title="Link to this heading"></a></h2>
 <section id="default-page-layout">
-<h3>Default page layout<a class="headerlink" href="#default-page-layout" title="Permalink to this heading"></a></h3>
+<h3>Default page layout<a class="headerlink" href="#default-page-layout" title="Link to this heading"></a></h3>
 <p>The “templates/layout.html” that currently ships with the py4web <strong>_scaffold</strong>
 application is quite complex but it has the following structure:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span> <span class="cp">&lt;!DOCTYPE html&gt;</span>
@@ -688,7 +688,7 @@ the page is rendered</p></li>
 the stylesheet with your own.</p>
 </section>
 <section id="mobile-development">
-<h3>Mobile development<a class="headerlink" href="#mobile-development" title="Permalink to this heading"></a></h3>
+<h3>Mobile development<a class="headerlink" href="#mobile-development" title="Link to this heading"></a></h3>
 <p>Although the default layout.html is designed to be mobile-friendly, one
 may sometimes need to use different templates when a page is visited by a
 mobile device.</p>
@@ -732,7 +732,7 @@ mobile device.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 1.20231114.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

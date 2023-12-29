@@ -43,12 +43,18 @@ Q.ajax = function(method, url, data, headers) {
     return new Promise(function(resolve, reject) {
             fetch(url, options).then(function(res){
                     res.text().then(function(body){
-                            res.data = body;
+                            res.data = body;                            
                             res.json = function(){return JSON.parse(body);};
                             resolve(res);
                         }, reject);}).catch(reject);
     });
 }
+
+Q.get = (url, headers) => Q.ajax("GET", url, null, headers);
+Q.post = (url, data, headers) => Q.ajax("POST", url, data, headers);
+Q.put = (url, data, headers) => Q.ajax("PUT", url, data, headers);
+Q.delete = (url, headers) => Q.ajax("DELETE", url, null, headers);
+
 // Gets a cookie value
 Q.get_cookie = function (name) {
     var cookie = RegExp("" + name + "[^;]+").exec(document.cookie);

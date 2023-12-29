@@ -12,8 +12,8 @@
 
 <script>
   function like(element) {
-      axios.post("../like/"+element.dataset.id).then(function(res){
-	  element.dataset.liked = res.data.liked;
+      Q.post("../like/"+element.dataset.id).then(function(res){
+	  element.dataset.liked = res.json().liked;
       });
   }
 </Script>

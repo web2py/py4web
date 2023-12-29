@@ -1598,11 +1598,11 @@ works very much like
 
 except that it calls the validators for the fields before performing the
 insert and bails out if the validation does not pass. If validation does
-not pass the errors can be found in ``ret.errors``. ``ret.errors`` holds
+not pass the errors can be found in ``ret["errors"]``. ``ret["errors"]`` holds
 a key-value mapping where each key is the field name whose validation
 failed, and the value of the key is the result from the validation error
-(much like ``form.errors``). If it passes, the id of the new record is
-in ``ret.id``. Mind that normally validation is done by the form
+(much like ``form["errors"]``). If it passes, the id of the new record is
+in ``ret["id"]``. Mind that normally validation is done by the form
 processing logic so this function is rarely needed.
 
 Similarly
@@ -1619,8 +1619,8 @@ works very much the same as
 
 except that it calls the validators for the fields before performing the
 update. Notice that it only works if query involves a single table. The
-number of updated records can be found in ``ret.updated`` and errors
-will be in ``ret.errors``.
+number of updated records can be found in ``ret["updated"]`` and errors
+will be in ``ret["errors"]``.
 
 ``drop``
 ~~~~~~~~

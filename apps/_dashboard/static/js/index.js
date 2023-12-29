@@ -9,16 +9,6 @@ Vue.component('treefiles', {
         }
     });
 
-let post= function(url, data) {
-    return fetch(url, {
-	method: "POST",
-	cache: "no-cache",
-	headers: { "Content-Type": "application/json" },
-	redirect: "follow",
-	body: JSON.stringify(data)
-    });
-};
-
 let app = {}; 
 let init = (app) => {
     app.data = {
@@ -43,9 +33,7 @@ let init = (app) => {
     };
     app.select_app = (appobj) => {
         app.vue.selected_app = appobj;
-        app.vue.walk = [];
-        fetch('../walk/'+appobj.name).then(r=>r.json()).then(r=>{app.vue.walk=r.payload;});
-        fetch('../rest/'+appobj.name).then(r=>r.json()).then(r=>{app.vue.databases=r.databases;});        
+        app.reload_files();
     };
     app.activate_editor = (path, payload) => {
         app.vue.files[path] = payload;
@@ -80,8 +68,8 @@ let init = (app) => {
             } else {            
                 var url = '../load/'+path;
                 if(app.vue.selected_type != 'text') url = '../load_bytes/'+path;
-                fetch(url).then(r=>r.json()).then(r=>{
-                        app.activate_editor(path, r.payload);
+                Q.get(url).then(r=>{
+                        app.activate_editor(path, r.json().payload);
                     });
             }
         }
@@ -93,7 +81,7 @@ let init = (app) => {
     app.reload = (name) => {
         app.modal_dismiss();
         app.vue.loading = true;        
-        fetch(name?'../reload/'+name:'../reload').then(r=>r.json()).then(r=>app.init());
+        Q.get(name?'../reload/'+name:'../reload').then(r=>app.init());
     };
     app.gitlog = (name) => {
         window.open('../gitlog/'+name);
@@ -106,9 +94,13 @@ let init = (app) => {
         // pass
     };
     app.save_file = () => {
+	if(app.vue.selected_type != 'text') {
+	    alert("Unable to save this file, it is not of type text");
+	    return;
+	}
         var path = app.vue.selected_filename;
         app.vue.files[path] = app.editor.getValue();
-        post('../save/'+path, app.vue.files[path]).then(r=>app.file_saved());
+        Q.post('../save/'+path, app.vue.files[path]).then(r=>app.file_saved());
     };
     app.download_selected_app = () => {
         var url = '../packed/py4web.app.' + app.vue.selected_app.name + '.zip?' + (new Date()).getTime()
@@ -129,7 +121,7 @@ let init = (app) => {
         else if(form.mode=='new' && app.vue.apps.map((a)=>{return a.name;}).indexOf(form.name)>=0) {
             alert('Cannot create an app with this name. It already exists');
         } else {
-            post('../new_app', form).then(r=>app.reload());
+            Q.post('../new_app', form).then(r=>app.reload());
         }
     };
     app.process_new_file = () => {
@@ -137,9 +129,9 @@ let init = (app) => {
         var form = app.vue.modal.form;
         if(!form.filename) { alert('An file name must be provided'); return; }
         /*reload entire page needed to see the new file listed*/
-        post('../new_file/'+app_name+'/'+form.filename).then(r=>{
+        Q.post('../new_file/'+app_name+'/'+form.filename).then(r=>{
                 app.vue.walk = [];
-                fetch('../walk/'+app_name).then(r=>r.json()).then(r=>{app.vue.walk=r.payload;});
+                Q.get('../walk/'+app_name).then(r=>{app.vue.walk=r.json().payload;});
                 app.modal_dismiss();
             });
     }; 
@@ -176,54 +168,63 @@ let init = (app) => {
         var name = app.vue.selected_filename;
         app.confirm("Delete File","blue","Do you really want to delete "+name+"?",()=>{
             app.modal_dismiss();
-            post('../delete/'+name).then(r=>app.init());
+            Q.post('../delete/'+name).then(r=>app.init());
         });
     };
     app.delete_selected_app = () => {
         var name = app.vue.selected_app.name;
         app.confirm("Delete App","blue","Do you really want to delete "+name+"?",()=>{
             app.modal_dismiss();
-            post('../delete_app/'+name).then(r=>app.init());
+            Q.post('../delete_app/'+name).then(r=>app.init());
         });
     };
     app.reload_info = () => {
-        fetch('../info').then(r=>r.json()).then(r=>{
-            app.vue.info=r.payload || [];
+        Q.get('../info').then(r=>{
+            app.vue.info=r.json().payload || [];
         });
     };
     app.reload_apps = () => {
-        fetch('../apps').then(r=>r.json()).then(r=>{
-            app.vue.apps=r.payload || []; app.update_selected();
+        Q.get('../apps').then(r=>{
+            app.vue.apps=r.json().payload || []; app.update_selected();
         });
     };
     app.reload_routes = () => {
-        fetch('../routes').then(r=>r.json()).then(r=>{
-                app.vue.routes=r.payload || [];
+        Q.get('../routes').then(r=>{
+                app.vue.routes=r.json().payload || [];
             });
     };
     app.reload_tickets = () => {
         app.vue.tickets = [];
-        fetch('../tickets').then(r=>r.json()).then(r=>{
-                app.vue.tickets = r.payload || [];
+        Q.get('../tickets').then(r=>{
+                app.vue.tickets = r.json().payload || [];
             });
     };
+    app.reload_files = () => {
+        if (!app.vue.selected_app) return;
+        app.vue.walk = [];
+        var name = app.vue.selected_app.name;
+        Q.get('../walk/'+name).then(r=>{app.vue.walk=r.json().payload;});
+        Q.get('../rest/'+name).then(r=>{app.vue.databases=r.json().databases;});
+        app.vue.selected_filename = null;
+    }
     app.clear_tickets = () => {
         app.vue.tickets = [];
-        fetch('../clear').then(r=>app.reload_tickets());
+        Q.get('../clear').then(r=>app.reload_tickets());
     };
     app.login = () => {
-        post('../login', {'password': app.vue.password})
-	    .then(r=>r.json())
+        Q.post('../login', {'password': app.vue.password})
+	    
 	    .then(r=>{
                 app.vue.password = '';
                 if( r.user) {
                     app.vue.user = true;
                     app.init();
                 }
+		location.reload();    
             });
     };
     app.logout = () => {
-        post('../logout').then(r=>window.location.reload());
+        Q.post('../logout').then(r=>window.location.reload());
     };
     app.methods = {
         select: app.select_app,
@@ -258,11 +259,12 @@ let init = (app) => {
                     return a.name==app.vue.selected_app.name;
                 })[0];
     };
-    app.init = () => {        
+    app.init = () => {
         app.reload_info();
         app.reload_apps();
         app.reload_routes();
         app.reload_tickets();
+        app.reload_files();
         setTimeout(()=>{app.vue.loading=false;}, 1000);
     };    
     if (USER_ID) app.init();

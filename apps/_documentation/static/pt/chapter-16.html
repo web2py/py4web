@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="pt" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced topics and examples &mdash; Documentação py4web 1.20230507.1</title>
+  <title>Advanced topics and examples &mdash; Documentação py4web 1.20231114.1</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -14,13 +14,13 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/translations.js"></script>
-        <script src="_static/js/toggle.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=dc17f146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=3b002d5c"></script>
+        <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Pesquisar" href="search.html" />
@@ -40,7 +40,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20230507.1
+                1.20231114.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -110,9 +110,9 @@
            <div itemprop="articleBody">
              
   <section id="advanced-topics-and-examples">
-<h1>Advanced topics and examples<a class="headerlink" href="#advanced-topics-and-examples" title="Permalink to this heading"></a></h1>
+<h1>Advanced topics and examples<a class="headerlink" href="#advanced-topics-and-examples" title="Link to this heading"></a></h1>
 <section id="py4web-and-asyncio">
-<h2>py4web and asyncio<a class="headerlink" href="#py4web-and-asyncio" title="Permalink to this heading"></a></h2>
+<h2>py4web and asyncio<a class="headerlink" href="#py4web-and-asyncio" title="Link to this heading"></a></h2>
 <p>Asyncio is not strictly needed, at least for most of the normal use
 cases where it will add problems more than value because of its concurrency model.
 On the other hand, we think py4web needs a built-in websocket async based solution.</p>
@@ -121,7 +121,7 @@ the framework’s components: in particular pydal is not asyncio compliant becau
 not all the adapters work with async.</p>
 </section>
 <section id="htmx">
-<h2>htmx<a class="headerlink" href="#htmx" title="Permalink to this heading"></a></h2>
+<h2>htmx<a class="headerlink" href="#htmx" title="Link to this heading"></a></h2>
 <p>There are many javascript front-end frameworks available today that allow you great flexibility
 over how you design your web client. Vue, React and Angular are just a few.  However, the
 complexity in building one of these systems prevents many developers from reaping those benefits.
@@ -140,7 +140,7 @@ there is also a video tutorial: <a class="reference external" href="https://www.
 <li><p>Includes an htmx attributes plugin for the py4web grid</p></li>
 </ol>
 <section id="htmx-usage-in-form">
-<h3>htmx usage in Form<a class="headerlink" href="#htmx-usage-in-form" title="Permalink to this heading"></a></h3>
+<h3>htmx usage in Form<a class="headerlink" href="#htmx-usage-in-form" title="Link to this heading"></a></h3>
 <p>The py4web Form class allows you to pass **kwargs to it that will be passed along as attributes to the html
 form. For example, to add the hx-post and hx-target to the &lt;form&gt; element you would use:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
@@ -232,7 +232,7 @@ you can add “sidecar” elements to your forms. You can see in htmx_form that 
 required htmx attributes to make sure the htmx_list page is rendered inside the htmx-form-demo DIV.</p>
 </section>
 <section id="htmx-usage-in-grid">
-<h3>htmx usage in Grid<a class="headerlink" href="#htmx-usage-in-grid" title="Permalink to this heading"></a></h3>
+<h3>htmx usage in Grid<a class="headerlink" href="#htmx-usage-in-grid" title="Link to this heading"></a></h3>
 <p>The py4web grid provides an attributes plugin system that allows you to build plugins to provide custom attributes
 for form elements, anchor elements or confirmation messages. py4web also provide an attributes plugin specifically for
 htmx.</p>
@@ -303,7 +303,7 @@ processing and then tell the grid we’re going to use an alternate attributes p
 Now the forms, links and delete confirmations are all handled by htmx.</p>
 </section>
 <section id="autocomplete-widget-using-htmx">
-<h3>Autocomplete Widget using htmx<a class="headerlink" href="#autocomplete-widget-using-htmx" title="Permalink to this heading"></a></h3>
+<h3>Autocomplete Widget using htmx<a class="headerlink" href="#autocomplete-widget-using-htmx" title="Link to this heading"></a></h3>
 <p>htmx can be used for much more than just form/grid processing. In this example we’ll take advantage of htmx and the
 py4web form widgets to build an autocomplete widget that can be used in your forms. <em>NOTE: this is just an example, none
 of this code comes with py4web</em></p>
@@ -507,18 +507,18 @@ data builder URL to provide your own controller function to retrieve the data.</
 </section>
 </section>
 <section id="utils-js">
-<h2>utils.js<a class="headerlink" href="#utils-js" title="Permalink to this heading"></a></h2>
+<h2>utils.js<a class="headerlink" href="#utils-js" title="Link to this heading"></a></h2>
 <p>Multiple times in this documentation we have mentioned utils.js which comes with the scaffolding application,
 yet we never clearly listed what is in there. So here it is.</p>
 <section id="string-format">
-<h3>string.format<a class="headerlink" href="#string-format" title="Permalink to this heading"></a></h3>
+<h3>string.format<a class="headerlink" href="#string-format" title="Link to this heading"></a></h3>
 <p>It extends the String object prototype to allow expressions like this:</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;hello {name}&quot;</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="nx">name</span><span class="o">=</span><span class="s2">&quot;Max&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
 <section id="the-q-object">
-<h3>The Q object<a class="headerlink" href="#the-q-object" title="Permalink to this heading"></a></h3>
+<h3>The Q object<a class="headerlink" href="#the-q-object" title="Link to this heading"></a></h3>
 <p>The Q object can be used like a selector supporting jQuery like syntax:</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">element</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">(</span><span class="s2">&quot;#element-id&quot;</span><span class="p">)[</span><span class="mf">0</span><span class="p">];</span>
 <span class="kd">var</span><span class="w"> </span><span class="nx">selected_elements</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Q</span><span class="p">(</span><span class="s2">&quot;.element-class&quot;</span><span class="p">);</span>
@@ -602,7 +602,7 @@ place the content of the selected file into a variable, for example to do an aja
 </div>
 </section>
 <section id="the-t-object">
-<h3>The T object<a class="headerlink" href="#the-t-object" title="Permalink to this heading"></a></h3>
+<h3>The T object<a class="headerlink" href="#the-t-object" title="Link to this heading"></a></h3>
 <p>This is a Javascript reimplementation of the Python pluralize library in Python
 which is used by the Python T object in py4web. So basically a client-side T.</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">T</span><span class="p">.</span><span class="nx">translations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s1">&#39;dog&#39;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="mf">0</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;no cane&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;un case&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;{n} cani&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">10</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;tanti cani&#39;</span><span class="p">}};</span>
@@ -757,7 +757,7 @@ as well as modify other components.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20230507.1
+      v: 1.20231114.1
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
