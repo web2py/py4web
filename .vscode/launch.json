@@ -1,13 +1,14 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "Python: py4web",
             "type": "python",
             "request": "launch",
             "program": "py4web.py",
             "args": [
-                "run",
+                "run", "--errorlog=:stdout", "-L", "20",
                 "apps"
             ],
             "console": "integratedTerminal",
