@@ -35,6 +35,7 @@ import uuid
 import zipfile
 from collections import OrderedDict
 from contextlib import redirect_stderr, redirect_stdout
+import html as sanitize_html
 
 import portalocker
 from watchgod import awatch
@@ -1407,6 +1408,9 @@ ERROR_PAGES = {
 
 
 def error_page(code, button_text=None, href="#", color=None, message=None):
+    if button_text:
+        button_text = sanitize_html.escape(button_text)
+    href = sanitize_html.escape(href)
     message = http.client.responses[code].upper() if message is None else message
     color = (
         {"4": "#F44336", "5": "#607D8B"}.get(str(code)[0], "#2196F3")
