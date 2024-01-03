@@ -690,7 +690,8 @@ Deployment on Docker/Podman
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 On ``deployment_tools/docker`` there is a simple Dockerfile for quickly running a py4web container. There is also
-a docker-compose.yml file for setting up a more complex multi-container with PostgreSQL.
+a docker-compose.yml file for setting up a more complex multi-container with PostgreSQL. 
+A ready docker example based on the Scaffold application can be cloned from this repository <https://github.com/macneiln/docker-py4web-scaffold>
 
 Note that you can use them also with Podman, which has the advantage of does not requiring sudo and does not
 running any background daemon.
