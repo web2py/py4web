@@ -29,12 +29,12 @@ Setup procedures
 ----------------
 
 There are four alternative ways of installing py4web, we will guide 
-you trought each of them and if you get stuck, reach 
+you through each of them and if you get stuck, reach 
 `out to us. <https://py4web.com/_documentation/static/en/chapter-02.html>`__
 
 
 Installing from pip, using a virtual environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A full installation of any complex python application like py4web will
 surely modify the python environment of your system. In order to prevent
@@ -80,8 +80,8 @@ and installing py4web in it:
       You can also find power shell scripts in the same folder. Starting py4web is same with or without a virtual environment
       python py4web run apps
 
-Installing from pip, wihtout virtual environment
-~~~~~~~~~~~~~~~~~~~
+Installing from pip, without virtual environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 *pip* is the basic installation procedure for py4web, it will
 quickly install the latest stable release of py4web.
@@ -177,7 +177,7 @@ Once installed, you should always start it from there with:
          ./py4web.py run apps
 
       If you have installed py4web both globally and locally, notice the
-      **./** ; it forces the run of the local folder’s py4web and not the
+      **./** ; it forces the run of the local folder's py4web and not the
       globally installed one.
 
    .. group-tab:: Windows
@@ -295,7 +295,7 @@ For all apps the trailing ``/index`` is also optional.
 .. warning::
 
    For Windows: it could be that ``Ctrl-C`` does not work in order to stop py4web.
-   In this case, try with ``Ctrl-Break`` or ``Ctrl-Fn-Pause``.
+   In this case, try with ``Ctrl-Break`` or ``Ctrl-Fn-Pause``\.
    
    
 Command line options
