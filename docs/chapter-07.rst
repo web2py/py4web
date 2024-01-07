@@ -851,7 +851,7 @@ the current application, always set ``migrate=False``.
 If the legacy table has an auto-increment integer field but it is not
 called “id”, py4web can still access it but the table definition must
 declare the auto-increment field with ‘id’ type (that is using
-``FIeld('...', 'id')``).
+``Field('...', 'id')``).
 
 Finally if the legacy table uses a primary key that is not an
 auto-increment id field it is possible to use a “keyed table”, for

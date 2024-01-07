@@ -5,6 +5,7 @@ appname
 args
 async
 Asyncio
+attrs
 auth
 Auth
 autocomplete
@@ -71,6 +72,7 @@ firebird
 FireBird
 Firebird
 FireBirdEmbedded
+formatter
 formstyle
 fullname
 gae
@@ -203,6 +205,7 @@ pysqlite
 pytds
 pyweb
 querystring
+randint
 readonly
 redis
 reimplementation
