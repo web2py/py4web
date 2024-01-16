@@ -12,3 +12,6 @@ class TestURL(unittest.TestCase):
         request.app_name = "app"
         self.assertEqual(URL("index"), "/app/index")
         self.assertEqual(URL("a", "b", vars=dict(x=1), hash="y"), "/app/a/b?x=1#y")
+
+if __name__ == '__main__':
+    unittest.main()
