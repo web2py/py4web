@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "py4web.py",
             "args": [
-                "run",
+                "run", "--errorlog=:stdout", "-L", "20",
                 "apps"
             ],
             "console": "integratedTerminal",

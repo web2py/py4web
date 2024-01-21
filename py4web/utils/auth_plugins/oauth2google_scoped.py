@@ -17,7 +17,7 @@ from google.auth.exceptions import RefreshError
 from googleapiclient.discovery import build
 from pydal import Field
 
-from py4web import HTTP, URL, redirect, request
+from py4web import HTTP, URL, redirect, request, response
 from py4web.utils.auth import REGEX_APPJSON, AuthEnforcer
 
 
@@ -25,11 +25,12 @@ class AuthEnforcerGoogleScoped(AuthEnforcer):
     """This class catches certain invalid access errors Google generates
     when credentials get stale, and forces the user to login again.
     Pass it to Auth as param.auth_enfoercer, as in:
-    auth.param.auth_enforcer = AuthEnforcerGoogleScoped(auth)
+    auth.param.auth_enforcer = MyAuthEnforcerGoogleScoped(auth, db)
     """
 
-    def __init__(self, auth, condition=None, error_page=None):
+    def __init__(self, auth, db, condition=None, error_page=None):
         super().__init__(auth, condition=condition)
+        self.db = db
         self.error_page = error_page
         assert (
             error_page is not None
@@ -38,22 +39,38 @@ class AuthEnforcerGoogleScoped(AuthEnforcer):
     def on_error(self, context):
         if isinstance(context.get("exception"), RefreshError):
             del context["exception"]
-            self.auth.session.clear()
-            if re.search(REGEX_APPJSON, request.headers.get("accept", "")) and (
-                request.headers.get("json-redirects", "") != "on"
-            ):
-                raise HTTP(403)
-            redirect_next = request.fullpath
-            if request.query_string:
-                redirect_next = redirect_next + "?{}".format(request.query_string)
-            self.auth.flash.set("Invalid credentials")
-            redirect(
-                URL(
-                    self.error_page,
-                    vars=dict(next=redirect_next),
-                    use_appname=self.auth.param.use_appname_in_redirects,
-                )
+            self._handle_error()
+            
+    def _handle_error(self):
+        # Removes this Google cookie, trying to enforce loggin in again. 
+        response.delete_cookie("G_ENABLED_IDPS")
+        self.auth.session.clear()
+        if re.search(REGEX_APPJSON, request.headers.get("accept", "")) and (
+            request.headers.get("json-redirects", "") != "on"
+        ):
+            raise HTTP(403)
+        redirect_next = request.fullpath
+        if request.query_string:
+            redirect_next = redirect_next + "?{}".format(request.query_string)
+        self.auth.flash.set("Invalid credentials")
+        redirect(
+            URL(
+                self.error_page,
+                vars=dict(next=redirect_next),
+                use_appname=self.auth.param.use_appname_in_redirects,
             )
+        )
+            
+    def on_request(self, context):
+        super().on_request(context)
+        user = self.auth.session.get("user")
+        user_info = self.db(self.db.auth_credentials.email == user["email"]).select().first()
+        if not user_info:
+            self._handle_error()
+        credentials_dict = json.loads(user_info.credentials)
+        if not credentials_dict.get("refresh_token"):
+            print("Missing credentials:", user["email"], credentials_dict)
+            self._handle_error()
 
 
 class OAuth2GoogleScoped(object):
@@ -265,3 +282,4 @@ class OAuth2GoogleScoped(object):
     @staticmethod
     def credentials_from_dict(credentials_dict):
         return google.oauth2.credentials.Credentials(**credentials_dict)
+    
