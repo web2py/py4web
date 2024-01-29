@@ -700,6 +700,7 @@ class Session(Fixture):
             path="/",
             secure=self_local.secure,
             same_site=self.same_site,
+            httponly=True,
         )
 
     def get(self, key, default=None):
