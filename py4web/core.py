@@ -1941,7 +1941,7 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     "-A",
     "--app_names",
     default="",
-    help="List of apps to run (all if omitted or empty)",
+    help="List of apps to run, comma separated (all if omitted or empty)",
 )
 @click.option(
     "-p",
@@ -1974,8 +1974,8 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
         ["default", "wsgiref", "tornado", "gunicorn", "gevent", "waitress"]
         + server_adapters.__all__
     ),
-    help="server to use",
-    show_default=True,
+    help="Web server to use",
+    show_default=False,
 )
 @click.option(
     "-w",
@@ -2032,7 +2032,7 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     show_default=True,
 )
 def run(**kwargs):
-    """Run all the applications on apps_folder"""
+    """Run the applications on apps_folder"""
     install_args(kwargs)
 
     from py4web import __version__

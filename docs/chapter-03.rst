@@ -375,7 +375,7 @@ This currently gives an error on binaries installations and from source installa
    # py4web run -h
    Usage: py4web.py run [OPTIONS] APPS_FOLDER
 
-     Run all the applications on apps_folder
+     Run the applications on apps_folder
 
    Options:
      -Y, --yes                     No prompt, assume yes to questions
@@ -383,12 +383,15 @@ This currently gives an error on binaries installations and from source installa
 
      -H, --host TEXT               Host name  [default: 127.0.0.1]
      -P, --port INTEGER            Port number  [default: 8000]
+     -A, --app_names TEXT          List of apps to run, comma separated (all if omitted or
+                                   empty)
      -p, --password_file TEXT      File for the encrypted password  [default:
                                    password.txt]
-
-     -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|
-                   geventWebSocketServer|wsgirefThreadingServer|rocketServer]
-                                   server to use  [default: default]
+     -Q, --quiet                   Suppress server output
+     -R, --routes                  Write apps routes to file
+     -s, --server                  [default|wsgiref|tornado|gunicorn|gevent|waitress|gunicorn|gunicornGevent|gevent|
+                                   geventWebSocketServer|geventWs|wsgirefThreadingServer|wsgiTh|rocketServer]
+                                   Web server to use
      -w, --number_workers INTEGER  Number of workers  [default: 0]
      -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
                                    [default: full]
@@ -405,8 +408,16 @@ This currently gives an error on binaries installations and from source installa
      -L, --logging_level INTEGER   The log level (0 - 50) [default: 30
                                    (=WARNING)]
      -D, --debug                   Debug switch  [default: False]
+     -U, --url_prefix TEXT         Prefix to add to all URLs in and out
      -help, -h, --help             Show this message and exit.
 
+
+The ``app_names`` option lets you filter which specific apps you want to serve (comma separated). If absent or empty
+all the apps in the APPS_FOLDER will be run.
+
+The ``url_prefix`` option is useful for routing at the py4web level. It allows mapping to multiple versions of py4web
+running on different ports as long as the url_prefix and port match the location. For example
+``py4web run --url_prefix=/abracadabra --port 8000 apps``.
 
 By default py4web will automatically reload an application upon any changes to the python files of that application.
 The reloading will occur on any first incoming request to the application that has
