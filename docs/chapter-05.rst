@@ -313,32 +313,7 @@ create a new clone of it manually or using the Dashboard.
 
 Here is the tree structure of the ``_scaffold`` app:
 
-::
-
-   ├── __init__.py          # imports everything else
-   ├── common.py            # defines useful objects
-   ├── controllers.py       # your actions
-   ├── databases            # your sqlite databases and metadata
-       │   └── README.md
-   ├── models.py            # your pyDAL table model
-   ├── settings.py          # any settings used by the app
-   ├── settings_private.py  # (optional) settings that you want to keep private
-   ├── static               # static files
-   │   ├── README.md
-   │   ├── css              # CSS files, we ship bulma because it is JS agnostic
-   │   │   └── no.css       # we used bulma.css in the past
-   │   ├── favicon.ico
-   │   └── js               # JS files, we ship with these but you can replace them
-   │       ├── utils.js
-   ├── tasks.py
-   ├── templates            # your templates go here
-   │   ├── README.md       
-   │   ├── auth.html        # the auth page for register/logic/etc (uses vue)
-   │   ├── generic.html     # a general purpose template
-   │   ├── index.html
-   │   └── layout.html      # a bulma layout example
-   └── translations         # internationalization/pluralization files go here
-       └── it.json          # py4web internationalization/pluralization files are in JSON, this is an italian example
+.. image:: images/scaffold_tree.png
 
 The scaffold app contains an example of a more complex action:
 

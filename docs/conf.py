@@ -171,11 +171,12 @@ latex_elements = {
 # -- Options for PDF output --------------------------------------------------
 
 # settings for creating PDF with rinoh
-rinoh_documents = [(
-    master_doc,
-    'target',
-    project + ' Documentation',
-    '© ' + copyright,
+rinoh_documents = [dict(
+    doc = master_doc,
+    target = 'target',
+    title = project + ' Documentation',
+    date = '© ' + copyright,
+    logo = 'images/logo.png'
 )]
 
 
