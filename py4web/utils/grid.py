@@ -1045,7 +1045,8 @@ class Grid:
             TABLE(tr, **self.param.grid_class_style.get("grid-search-form-table"))
         )
         for hidden_widget in self.param.search_form.custom["hidden_widgets"].keys():
-            div.append(self.param.search_form.custom["hidden_widgets"][hidden_widget])
+            if hidden_widget not in ('formname', 'formkey'):
+                div.append(self.param.search_form.custom["hidden_widgets"][hidden_widget])
 
         div.append(self.param.search_form.custom["end"])
 
