@@ -14,7 +14,9 @@ you'll need to specify the version of all the components.
 
 You need a working Docker system, see the official site for installation info
 at https://docs.docker.com/get-docker/ 
-Download all the files in this directory to an empty one your system, then run:
+Download the four files on top of this page to an empty directory on your system. If you download them with chrome based browser there is a big chance you need to remove the .txt part from the file names due to this bug: https://github.com/microsoft/vscode/issues/118436
+
+Then run:
 
     # build an image called py4web from latest Ubuntu
     $ docker build . -t py4web
