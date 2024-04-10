@@ -194,7 +194,7 @@ if MODE in ("demo", "readonly", "full"):
         apps.sort(key=lambda item: item["name"])
         return {"payload": apps, "status": "success"}
 
-    @action("delete_app/<name:re:\w+>", method="POST")
+    @action("delete_app/<name:re:\\w+>", method="POST")
     @session_secured
     def delete_app(name):
         """delete the app"""
@@ -209,7 +209,7 @@ if MODE in ("demo", "readonly", "full"):
             return {"status": "success", "payload": "Deleted"}
         return {"status": "success", "payload": "App does not exist"}
 
-    @action("new_file/<name:re:\w+>/<file_name:path>", method="POST")
+    @action("new_file/<name:re:\\w+>/<file_name:path>", method="POST")
     @session_secured
     def new_file(name, file_name):
         """creates a new file"""

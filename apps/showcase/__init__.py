@@ -73,7 +73,7 @@ def show(name):
     with open(filename) as stream:
         controller = stream.read().strip()
     data.append({"name": f"{name}.py", "content": controller, "language": "python"})
-    templates = re.compile("[/\w]+\.html").findall(controller)
+    templates = re.compile(r"[/\w]+\.html").findall(controller)
     for template in templates:
         with open(f"apps/showcase/templates/{template}") as stream:
             content = stream.read().strip()
