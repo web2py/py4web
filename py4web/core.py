@@ -464,7 +464,7 @@ class Flash(Fixture):
         # when a new request arrives we look for a flash message in the cookie
         flash = request.get_cookie("py4web-flash")
         if flash:
-            self.local.flash = json.loads(flash)
+            self.local.flash = safely(lambda:json.loads(flash), default=None)
         else:
             self.local.flash = None
 
