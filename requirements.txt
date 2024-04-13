@@ -10,7 +10,7 @@ requests
 threadsafevariable >= 20230507.1
 pyjwt >= 2.0.1
 pycryptodome
-pluralize >= 20231008.1
+pluralize >= 20240413.1
 rocket3 >= 20230507.1
 yatl >= 20230507.3
 pydal >= 20231114.3
