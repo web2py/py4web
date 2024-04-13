@@ -377,7 +377,9 @@ class FormStyleFactory:
             field_comment = field.comment if field.comment else ""
             field_label = field.label
             input_id = to_id(field)
-            default = field.default() if callable(field.default) else field.default
+            default = getattr(field, "default", None)
+            if callable(default):
+                default = default()
             value = vars.get(field.name, default) if not is_virtual else None
 
             error = errors.get(field.name)
