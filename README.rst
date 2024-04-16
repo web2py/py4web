@@ -46,8 +46,8 @@ The **simplest way** to install py4web is using binaries, but it's only availabl
 
 .. code:: bash
 
-   ./py4web-start set_password
-   ./py4web-start run apps
+   ./py4web set_password
+   ./py4web run apps
 
 
 
