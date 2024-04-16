@@ -92,10 +92,10 @@ class Learner:
 
     def learn(self, text):
         replacements1 = {
-            "[^a-zA-Z0-9\.;:\-]": " ",
-            "\s+": " ",
+            r"[^a-zA-Z0-9\.;:\-]": " ",
+            r"\s+": " ",
             ", ": " , ",
-            "\. ": " . ",
+            r"\. ": " . ",
             ": ": " : ",
             "; ": " ; ",
         }
@@ -124,7 +124,7 @@ class Learner:
         self.db = db
 
     def generate(self, length=10000, prefix=False):
-        replacements2 = {" ,": ",", " \.": ".\n", " :": ":", " ;": ";", "\n\s+": "\n"}
+        replacements2 = {" ,": ",", " \\.": ".\n", " :": ":", " ;": ";", "\n\\s+": "\n"}
         keys = list(self.db.keys())
         key = keys[random.randint(0, len(keys) - 1)]
         words = key
