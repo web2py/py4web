@@ -210,13 +210,12 @@ Unzip it on a local folder and open a command line there. Finally run
 
 ::
 
-   py4web-start set_password
-   py4web-start run apps
+   ./py4web set_password
+   ./py4web run apps
 
-With this type of installation, remember to always use **py4web-start**
-instead of ‘py4web’ or ‘py4web.py’ in the following documentation.
+(omit './' if you're using Windows).
 
-Notice the binaries many not correspond to the latest master
+Notice: the binaries many not correspond to the latest master
 or the latest stable branch of py4web although we do our best to
 keep them up to date.      
 
