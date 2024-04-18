@@ -9,8 +9,25 @@ from urllib.parse import urlparse
 
 import ombott
 from pydal.objects import Expression, Field, FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
-                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TAG,
+    TBODY,
+    TD,
+    TH,
+    THEAD,
+    TR,
+    XML,
+    A,
+    I,
+)
 
 from py4web import HTTP, URL, redirect, request
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -1045,8 +1062,10 @@ class Grid:
             TABLE(tr, **self.param.grid_class_style.get("grid-search-form-table"))
         )
         for hidden_widget in self.param.search_form.custom["hidden_widgets"].keys():
-            if hidden_widget not in ('formname', 'formkey'):
-                div.append(self.param.search_form.custom["hidden_widgets"][hidden_widget])
+            if hidden_widget not in ("formname", "formkey"):
+                div.append(
+                    self.param.search_form.custom["hidden_widgets"][hidden_widget]
+                )
 
         div.append(self.param.search_form.custom["end"])
 
@@ -1208,11 +1227,15 @@ class Grid:
                 elif isinstance(column, Column):
                     classes = self.param.grid_class_style.classes.get(
                         column.td_class_style,
-                        self.param.grid_class_style.classes.get("grid-td"),
+                        column.td_class_style(row)
+                        if callable(column.td_class_style)
+                        else self.param.grid_class_style.classes.get("grid-td"),
                     )
                     style = self.param.grid_class_style.styles.get(
                         column.td_class_style,
-                        self.param.grid_class_style.styles.get("grid-td"),
+                        column.td_class_style(row)
+                        if callable(column.td_class_style)
+                        else self.param.grid_class_style.styles.get("grid-td"),
                     )
                     tr.append(
                         TD(
