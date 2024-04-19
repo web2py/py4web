@@ -64,20 +64,28 @@ class SSO(object):
         if auth.db:
             # map returned fields into auth_user fields
             user = {}
-            for key, value in self.maps.items():
-                value, parts = data, value.split(".")
+            for key, orig_key in self.maps.items():
+                value = data
+                parts = orig_key.split(".")
                 for part in parts:
-                    value = value[int(part) if part.isdigit() else part]
+                    try:
+                        value = value[int(part) if part.isdigit() else part]
+                    except:
+                        break
+                else:
                     user[key] = value
             user["sso_id"] = "%s:%s" % (self.name, user["sso_id"])
             if not "username" in user:
                 user["username"] = user["sso_id"]
             # store or retrieve the user
             data = auth.get_or_register_user(user)
+            user_id = data["id"]
         else:
             # WIP Allow login without DB
             if not "id" in data:
-                data["id"] = data.get("username") or data.get("email")
+                data["id"] = (
+                    data.get("sso_id") or data.get("username") or data.get("email")
+                )
         user_id = data.get("id")
         auth.store_user_in_session(user_id)
         if "_next" in auth.session:

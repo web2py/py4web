@@ -857,32 +857,36 @@ class Auth(Fixture):
 
     def get_or_register_user(self, user):
         db = self.db
-        # if the we have an email for the user
-        if "email" in user:
-            # return a user if exists and has a verified email
-            row = self.get_or_delete_existing_unverified_account(user["email"])
-        # else retrieve the user from the sso_id
-        else:
+        # if we have an sso_id we use it to id the user
+        if user.get("sso_id"):
+            keyid = "sso_id"
             row = (
                 db(db.auth_user.sso_id == user["sso_id"]).select(limitby=(0, 1)).first()
             )
-        # if we have found a candidate user
-        if row:
-            # we expect the email to match if provided
-            if "email" in user and row.email != user["email"]:
-                return None
-            # we can update all the other information provided by the SSO
-            if any(user[key] != row[key] for key in user if not key == "username"):
+            # the sso source is always more authoritative so update the record
+            if row:
                 row.update_record(**user)
-            user["id"] = row["id"]
-        # if we do not have a candidate user we need to create one
+                # pass the full user
+                user = row.as_dict()
+        # othrewise we id the user via email
+        elif user.get("email"):
+            keyid = "email"
+            # return a user if exists and has a verified email
+            row = self.get_or_delete_existing_unverified_account(user["email"])
+            # the database is more authoritative
+            if row:
+                user.update(**row.as_dict())
         else:
-            # we expect an email to be able to create account
-            if not "email" in user:
-                return None
-            # if we expect a username but not provided, user email as username
-            if self.use_username and "username" not in user:
-                user["username"] = user["email"]
+            return None
+        # if we do not have a candidate user we create one
+        if not row:
+            # if we expect a username but not provided, use keyid as username
+            if self.use_username:
+                if "username" not in user:
+                    user["username"] = user[keyid]
+                    # make sure the username is unique
+                    if db(db.auth_user.username == user["username"]).count():
+                        raise HTTP(401, body=f"Conficting {user['username']} accounts")
             # create the user
             user["id"] = db.auth_user.insert(**db.auth_user._filter_fields(user))
         return user
