@@ -8,7 +8,6 @@
 """
 
 import email.utils
-import json
 import logging
 import mimetypes
 import os
@@ -505,7 +504,6 @@ class Mailer:
             #                   sign                   #
             ############################################
             if sign:
-                import string
 
                 core.check_version(None)
                 pin = payload_in.as_string().replace("\n", "\r\n")
@@ -815,7 +813,7 @@ class Mailer:
                         RawMessage=raw, Source=sender, Destinations=to
                     )
                     return True
-                except ClientError as e:
+                except ClientError:
                     raise RuntimeError()
             else:
                 smtp_args = self.settings.server.split(":")

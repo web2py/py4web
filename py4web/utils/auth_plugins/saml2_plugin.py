@@ -7,14 +7,13 @@ THIS FILE IS A WORK IN PROGRESS AND PROBALY DOES NOT WORK
 
 from saml2 import BINDING_HTTP_POST, BINDING_HTTP_REDIRECT
 from saml2.client import Saml2Client
-from saml2.config import Config as Saml2Config
 
 
 def obj2dict(obj, processed=None):
     """
     converts any object into a dict, recursively
     """
-    processed = processed if not processed is None else set()
+    processed = processed if processed is not None else set()
     if obj is None:
         return None
     if isinstance(obj, (int, long, str, unicode, float, bool)):
@@ -32,8 +31,7 @@ def obj2dict(obj, processed=None):
         (key, obj2dict(value, processed))
         for key, value in obj.items()
         if not key.startswith("_")
-        and not type(value)
-        in (
+        and type(value) not in (
             types.FunctionType,
             types.LambdaType,
             types.BuiltinFunctionType,
@@ -79,7 +77,7 @@ def saml2_handler(session, request, config_filename=None, entityid=None):
                 unquoted_response, binding, session.saml_outstanding_queries
             )
             res["response"] = data if data else {}
-        except Exception as e:
+        except Exception:
             import traceback
 
             res["error"] = traceback.format_exc()

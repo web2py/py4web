@@ -111,7 +111,7 @@ class OAuth2WPMiniorange(OAuth2):
                 self.name,
                 sso_id,
             )
-            if not "username" in user:
+            if "username" not in user:
                 user["username"] = "%s:%s" % (
                     self.name,
                     sso_id,
@@ -126,7 +126,7 @@ class OAuth2WPMiniorange(OAuth2):
 
         else:
             # WIP Allow login without DB
-            if not "id" in data:
+            if "id" not in data:
                 data["id"] = data.get("username") or data.get("email")
         user_id = data.get("id")
         auth.store_user_in_session(user_id)

@@ -6,7 +6,6 @@ import hashlib
 import random
 import re
 import time
-import urllib
 import uuid
 
 from pydal.validators import (
@@ -21,7 +20,7 @@ from pydal.validators import (
 from yatl.helpers import DIV, A
 
 from py4web import HTTP, URL, Field, action, redirect, request, response
-from py4web.core import REGEX_APPJSON, Fixture, Flash, Template, Translator
+from py4web.core import REGEX_APPJSON, Fixture, Flash, Translator
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
 
@@ -639,7 +638,7 @@ class Auth(Fixture):
                     # get of create the user (if does not exist)
                     user_info = {}
                     user_info["sso_id"] = plugin.name + ":" + email
-                    if self.use_username or not "@" in email:
+                    if self.use_username or "@" not in email:
                         user_info["username"] = email
                     if "@" in email:
                         user_info["email"] = email
@@ -1090,7 +1089,7 @@ def api_wrapper(func):
 
     def func_wrapper(auth, func=func):
         data = func(auth) or {}
-        if not "status" in data and data.get("errors"):
+        if "status" not in data and data.get("errors"):
             data.update(status="error", message="validation errors", code=401)
         elif "errors" in data and not data["errors"]:
             del data["errors"]

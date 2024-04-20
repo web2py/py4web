@@ -1,4 +1,3 @@
-import fnmatch
 import ipaddress
 
 from py4web.core import HTTP, Fixture, request, response

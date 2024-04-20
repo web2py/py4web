@@ -7,7 +7,6 @@ import copy
 import datetime
 from urllib.parse import urlparse
 
-import ombott
 from pydal.objects import Expression, Field, FieldVirtual
 from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
                           TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
@@ -958,7 +957,7 @@ class Grid:
         hidden_fields = [
             INPUT(_name=key, _value=request.query.get(key), _type="hidden")
             for key in request.query
-            if not key in ("search_type", "search_string")
+            if key not in ("search_type", "search_string")
         ]
         attrs = self.attributes_plugin.link(url=self.endpoint)
         form = FORM(*hidden_fields, **attrs)

@@ -132,7 +132,7 @@ class Learner:
         regex = re.compile("[a-z]+")
         for i in range(length):
             okey = key
-            if not key in self.db:
+            if key not in self.db:
                 break  # should not happen
             db = self.db[key]
             s = sum(db.values())
@@ -231,7 +231,7 @@ def populate_generator(table, default=True, compute=False, contents=None, ell=No
                 continue
             elif field.compute is not None:
                 continue
-            elif default and not field.default in (None, ""):
+            elif default and field.default not in (None, ""):
                 record[fieldname] = field.default
             elif compute and field.compute:
                 continue
@@ -295,7 +295,7 @@ def populate_generator(table, default=True, compute=False, contents=None, ell=No
             elif field.type[:10] == "reference ":
                 tablename = field.type[10:]
                 rtable = db[tablename]
-                if not tablename in ids:
+                if tablename not in ids:
                     if db._dbname == "gql":
                         ids[tablename] = [x.id for x in db(rtable).select(rtable.id)]
                     else:
@@ -308,7 +308,7 @@ def populate_generator(table, default=True, compute=False, contents=None, ell=No
             elif field.type[:15] == "list:reference ":
                 tablename = field.type[15:]
                 rtable = db[tablename]
-                if not tablename in ids:
+                if tablename not in ids:
                     if db._dbname == "gql":
                         ids[tablename] = [x.id for x in db(rtable).select(rtable.id)]
                     else:

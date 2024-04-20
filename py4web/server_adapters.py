@@ -123,7 +123,9 @@ def get_workers(opts, default=10):
 
 
 def check_port(host="127.0.0.1", port=8000):
-    import socket, errno, subprocess
+    import socket
+    import errno
+    import subprocess
 
     def os_cmd (run_cmd ):
         try:

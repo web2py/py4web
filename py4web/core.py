@@ -1253,7 +1253,7 @@ class Reloader:
         # used by watcher
         def hook(*a, **k):
             app_name = request.path.split("/")[1]
-            if not app_name in Reloader.ROUTES:
+            if app_name not in Reloader.ROUTES:
                 app_name = "_default"
             if DIRTY_APPS.get(app_name):
                 Reloader.import_app(app_name)
