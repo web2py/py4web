@@ -7,9 +7,8 @@ import uuid
 import jwt
 from pydal._compat import to_native
 from pydal.objects import FieldVirtual
-from pydal.validators import Validator
 from yatl.helpers import (CAT, DIV, FORM, INPUT, LABEL, OPTION, SELECT, SPAN,
-                          TABLE, TD, TEXTAREA, TR, XML, A, P)
+                          TEXTAREA, XML, A, P)
 
 from py4web import HTTP, request, response
 from py4web.utils.param import Param
@@ -161,7 +160,7 @@ class SelectWidget:
         value = list(map(str, value if isinstance(value, list) else [value]))
 
         field_options = [
-            [k, v, (not k is None and k in value)]
+            [k, v, (k is not None and k in value)]
             for k, v in get_options(field.requires)
         ]
         option_tags = [
@@ -187,7 +186,7 @@ class RadioWidget:
         field_id = to_id(field)
         value = list(map(str, value if isinstance(value, list) else [value]))
         field_options = [
-            [k, v, (not k is None and k in value)]
+            [k, v, (k is not None and k in value)]
             for k, v in get_options(field.requires)
             if k != ""
         ]

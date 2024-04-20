@@ -75,14 +75,14 @@ class SSO(object):
                 else:
                     user[key] = value
             user["sso_id"] = "%s:%s" % (self.name, user["sso_id"])
-            if not "username" in user:
+            if "username" not in user:
                 user["username"] = user["sso_id"]
             # store or retrieve the user
             data = auth.get_or_register_user(user)
             user_id = data["id"]
         else:
             # WIP Allow login without DB
-            if not "id" in data:
+            if "id" not in data:
                 data["id"] = (
                     data.get("sso_id") or data.get("username") or data.get("email")
                 )

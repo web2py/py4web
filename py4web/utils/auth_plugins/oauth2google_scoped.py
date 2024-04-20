@@ -214,7 +214,7 @@ class OAuth2GoogleScoped(object):
                 code = error.get("code", 401)
                 msg = error.get("message", "Unknown error")
             raise HTTP(code, msg)
-        if not "code" in get_vars:
+        if "code" not in get_vars:
             raise HTTP(401, "Missing code parameter in response.")
         code = get_vars.get("code")
         flow.fetch_token(code=code)
@@ -253,7 +253,7 @@ class OAuth2GoogleScoped(object):
         else:
             # WIP Allow login without DB
             user = dict(user_info)
-            if not "id" in user:
+            if "id" not in user:
                 user["id"] = user.get("username") or user.get("email")
         # Stores the user in the session.  We do it here, so we store
         # the complete details, and not just the user_id.

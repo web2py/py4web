@@ -425,7 +425,7 @@ class LDAPPlugin(UsernamePassword):
                             con.simple_bind_s(user_dn, password)
                             found = True
                             break
-                    except ldap.LDAPError as detail:
+                    except ldap.LDAPError:
                         (exc_type, exc_value) = sys.exc_info()[:2]
                         logger.warning(
                             "ldap_auth: searching %s for %s resulted in %s: %s\n"
@@ -463,7 +463,7 @@ class LDAPPlugin(UsernamePassword):
                             con.simple_bind_s(user_dn, password)
                             found = True
                             break
-                    except ldap.LDAPError as detail:
+                    except ldap.LDAPError:
                         (exc_type, exc_value) = sys.exc_info()[:2]
                         logger.warning(
                             "ldap_auth: searching %s for %s resulted in %s: %s\n"
@@ -484,7 +484,7 @@ class LDAPPlugin(UsernamePassword):
                         )[user_firstname_part]
                     else:
                         store_user_firstname = user_firstname
-                except KeyError as e:
+                except KeyError:
                     store_user_firstname = None
                 try:
                     user_lastname = result[user_lastname_attrib][0]
@@ -494,11 +494,11 @@ class LDAPPlugin(UsernamePassword):
                         )[user_lastname_part]
                     else:
                         store_user_lastname = user_lastname
-                except KeyError as e:
+                except KeyError:
                     store_user_lastname = None
                 try:
                     store_user_mail = result[user_mail_attrib][0]
-                except KeyError as e:
+                except KeyError:
                     store_user_mail = None
                 update_or_insert_values = {
                     "first_name": store_user_firstname,
@@ -540,16 +540,16 @@ class LDAPPlugin(UsernamePassword):
 
             con.unbind()
             return True
-        except ldap.INVALID_CREDENTIALS as e:
+        except ldap.INVALID_CREDENTIALS:
             return False
-        except ldap.LDAPError as e:
+        except ldap.LDAPError:
             import traceback
 
             logger.warning("[%s] Error in ldap processing" % str(username))
             logger.debug(traceback.format_exc())
             print(traceback.format_exc())
             return False
-        except IndexError as ex:  # for AD membership test
+        except IndexError:  # for AD membership test
             import traceback
 
             logger.warning("[%s] Ldap result indexing error" % str(username))
@@ -683,7 +683,7 @@ class LDAPPlugin(UsernamePassword):
                         .first()
                         .id
                     )
-                except AttributeError as e:
+                except AttributeError:
                     #
                     # There is no user in local db
                     # We create one
@@ -692,7 +692,7 @@ class LDAPPlugin(UsernamePassword):
                         db_user_id = db.auth_user.insert(
                             username=username, first_name=username
                         )
-                    except AttributeError as e:
+                    except AttributeError:
                         db_user_id = db.auth_user.insert(
                             email=username, first_name=username
                         )
