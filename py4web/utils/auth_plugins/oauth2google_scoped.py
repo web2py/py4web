@@ -40,9 +40,9 @@ class AuthEnforcerGoogleScoped(AuthEnforcer):
         if isinstance(context.get("exception"), RefreshError):
             del context["exception"]
             self._handle_error()
-            
+
     def _handle_error(self):
-        # Removes this Google cookie, trying to enforce loggin in again. 
+        # Removes this Google cookie, trying to enforce loggin in again.
         response.delete_cookie("G_ENABLED_IDPS")
         self.auth.session.clear()
         if re.search(REGEX_APPJSON, request.headers.get("accept", "")) and (
@@ -60,11 +60,13 @@ class AuthEnforcerGoogleScoped(AuthEnforcer):
                 use_appname=self.auth.param.use_appname_in_redirects,
             )
         )
-            
+
     def on_request(self, context):
         super().on_request(context)
         user = self.auth.session.get("user")
-        user_info = self.db(self.db.auth_credentials.email == user["email"]).select().first()
+        user_info = (
+            self.db(self.db.auth_credentials.email == user["email"]).select().first()
+        )
         if not user_info:
             self._handle_error()
         credentials_dict = json.loads(user_info.credentials)
@@ -282,4 +284,3 @@ class OAuth2GoogleScoped(object):
     @staticmethod
     def credentials_from_dict(credentials_dict):
         return google.oauth2.credentials.Credentials(**credentials_dict)
-    

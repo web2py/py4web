@@ -1,6 +1,6 @@
 import uuid
 
-from pydal.restapi import ALLOW_ALL_POLICY, DENY_ALL_POLICY, RestAPI
+from pydal.restapi import RestAPI
 from yatl.helpers import DIV, TAG, XML
 
 from py4web import URL, action, request, response
@@ -9,7 +9,6 @@ MTABLE = '<mtable url="{url}" filter="" order="" :editable="true" :deletable="tr
 
 
 class Publisher:
-
     """this is a work in progress - API subject to change"""
 
     def __init__(self, db, policy=None, auth=None, path="service/{uuid}/<tablename>"):
@@ -23,7 +22,6 @@ class Publisher:
         f = action(self.path + "/<id:int>", method=["PUT", "DELETE"])(f)
 
     def api(self, tablename, id=None):
-        policy = self.policy
         data = self.restapi(request.method, tablename, id, request.query, request.json)
         response.status = data["code"]
         return data

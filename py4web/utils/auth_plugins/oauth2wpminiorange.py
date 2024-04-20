@@ -44,7 +44,7 @@ class OAuth2WPMiniorange(OAuth2):
     default_maps = {
         # "email": "email",
         "sso_id": "ID",
-        "username": "username"
+        "username": "username",
         # "first_name": "firstname",
         # "last_name": "lastname",
     }

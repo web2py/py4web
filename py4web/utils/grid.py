@@ -8,8 +8,25 @@ import datetime
 from urllib.parse import urlparse
 
 from pydal.objects import Expression, Field, FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
-                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TAG,
+    TBODY,
+    TD,
+    TH,
+    THEAD,
+    TR,
+    XML,
+    A,
+    I,
+)
 
 from py4web import HTTP, URL, redirect, request
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -42,7 +59,6 @@ def clean_sc(**kwargs):
 
 
 class GridClassStyle:
-
     """
     Default grid style
     Internal element names match default class name, other classes can be added
@@ -390,46 +406,46 @@ class Column:
 class Grid:
 
     FORMATTERS_BY_TYPE = {
-        "boolean": lambda value: INPUT(
-            _type="checkbox", _checked=value, _disabled="disabled"
-        )
-        if value
-        else "",
-        "datetime": lambda value: XML(
-            "<script>document.write((new Date(%s,%s,%s,%s,%s,%s)).toLocaleString())</script>"
-            % (
-                value.year,
-                value.month - 1,
-                value.day,
-                value.hour,
-                value.minute,
-                value.second,
+        "boolean": lambda value: (
+            INPUT(_type="checkbox", _checked=value, _disabled="disabled")
+            if value
+            else ""
+        ),
+        "datetime": lambda value: (
+            XML(
+                "<script>document.write((new Date(%s,%s,%s,%s,%s,%s)).toLocaleString())</script>"
+                % (
+                    value.year,
+                    value.month - 1,
+                    value.day,
+                    value.hour,
+                    value.minute,
+                    value.second,
+                )
             )
-        )
-        if value and isinstance(value, datetime.datetime)
-        else value
-        if value
-        else "",
-        "time": lambda value: XML(
-            "<script>document.write((new Date(0, 0, 0,%s,%s,%s)).toLocaleString().split(', ')[1])</script>"
-            % (value.hour, value.minute, value.second)
-        )
-        if value and isinstance(value, datetime.time)
-        else value
-        if value
-        else "",
-        "date": lambda value: XML(
-            '<script>document.write((new Date(%s,%s,%s)).toLocaleString().split(",")[0])</script>'
-            % (
-                value.year,
-                value.month - 1,
-                value.day,
+            if value and isinstance(value, datetime.datetime)
+            else value if value else ""
+        ),
+        "time": lambda value: (
+            XML(
+                "<script>document.write((new Date(0, 0, 0,%s,%s,%s)).toLocaleString().split(', ')[1])</script>"
+                % (value.hour, value.minute, value.second)
             )
-        )
-        if value and isinstance(value, datetime.date)
-        else value
-        if value
-        else "",
+            if value and isinstance(value, datetime.time)
+            else value if value else ""
+        ),
+        "date": lambda value: (
+            XML(
+                '<script>document.write((new Date(%s,%s,%s)).toLocaleString().split(",")[0])</script>'
+                % (
+                    value.year,
+                    value.month - 1,
+                    value.day,
+                )
+            )
+            if value and isinstance(value, datetime.date)
+            else value if value else ""
+        ),
         "list:string": lambda value: ", ".join(str(x) for x in value) if value else "",
         "list:integer": lambda value: ", ".join(x for x in value) if value else "",
         "default": lambda value: str(value) if value is not None else "",
@@ -501,7 +517,7 @@ class Grid:
 
         # in case the query is a Table insteance
         if isinstance(query, query._db.Table):
-            query = query._id != None
+            query = query._id is not None
 
         self.path = path
         self.db = query._db
@@ -607,7 +623,7 @@ class Grid:
                 query_lambda = self.param.search_queries[search_type][1]
                 try:
                     query = query_lambda(search_string)
-                except:
+                except Exception:
                     pass  # flash a message here
 
         if not query:
@@ -1044,8 +1060,10 @@ class Grid:
             TABLE(tr, **self.param.grid_class_style.get("grid-search-form-table"))
         )
         for hidden_widget in self.param.search_form.custom["hidden_widgets"].keys():
-            if hidden_widget not in ('formname', 'formkey'):
-                div.append(self.param.search_form.custom["hidden_widgets"][hidden_widget])
+            if hidden_widget not in ("formname", "formkey"):
+                div.append(
+                    self.param.search_form.custom["hidden_widgets"][hidden_widget]
+                )
 
         div.append(self.param.search_form.custom["end"])
 
@@ -1174,10 +1192,7 @@ class Grid:
         tbody = TBODY()
         for row in self.rows:
             #  find the row id - there may be nested tables....
-            if self.use_tablename and self.tablename in row and "id" not in row:
-                row_id = row[self.tablename]["id"]
-            else:
-                row_id = row["id"]
+            if not (self.use_tablename and self.tablename in row and "id" not in row):
                 self.use_tablename = False
 
             key = "%s.%s" % (self.tablename, "__row")
@@ -1220,7 +1235,6 @@ class Grid:
                         )
                     )
 
-            td = None
             tbody.append(tr)
 
         return tbody
@@ -1234,7 +1248,7 @@ class Grid:
                     # a button can be a callable, to indicate whether or not a button should
                     # be displayed. call the function with the row object
                     btn = btn(row)
-                    if btn == None:
+                    if btn is None:
                         # if None was returned, no button is available for this row: ignore this value in the
                         # list
                         continue
@@ -1257,9 +1271,11 @@ class Grid:
                         row_id=row_id if btn.append_id else None,
                         name=btn.__dict__.get("name"),
                         row=row,
-                        ignore_attribute_plugin=btn.ignore_attribute_plugin
-                        if "ignore_attribute_plugin" in btn.__dict__
-                        else False,
+                        ignore_attribute_plugin=(
+                            btn.ignore_attribute_plugin
+                            if "ignore_attribute_plugin" in btn.__dict__
+                            else False
+                        ),
                         **attrs,
                     )
                 )
@@ -1321,7 +1337,7 @@ class Grid:
                     # a button can be a callable, to indicate whether or not a button should
                     # be displayed. call the function with the row object
                     btn = btn(row)
-                    if btn == None:
+                    if btn is None:
                         # if None was returned, no button is available for this row: ignore this value in the
                         # list
                         continue
@@ -1343,9 +1359,11 @@ class Grid:
                         row_id=row_id if btn.append_id else None,
                         name=btn.__dict__.get("name"),
                         row=row,
-                        ignore_attribute_plugin=btn.ignore_attribute_plugin
-                        if "ignore_attribute_plugin" in btn.__dict__
-                        else False,
+                        ignore_attribute_plugin=(
+                            btn.ignore_attribute_plugin
+                            if "ignore_attribute_plugin" in btn.__dict__
+                            else False
+                        ),
                         **attrs,
                     )
                 )
@@ -1474,17 +1492,21 @@ class Grid:
         footer = DIV(**self.param.grid_class_style.get("grid-footer"))
 
         row_count = DIV(**self.param.grid_class_style.get("grid-info"))
-        row_count.append(
-            str(self.T("Displaying rows %s thru %s of %s"))
-            % (
-                self.page_start + 1 if self.number_of_pages > 1 else 1,
-                self.page_end
-                if self.page_end < self.total_number_of_rows
-                else self.total_number_of_rows,
-                self.total_number_of_rows,
+        (
+            row_count.append(
+                str(self.T("Displaying rows %s thru %s of %s"))
+                % (
+                    self.page_start + 1 if self.number_of_pages > 1 else 1,
+                    (
+                        self.page_end
+                        if self.page_end < self.total_number_of_rows
+                        else self.total_number_of_rows
+                    ),
+                    self.total_number_of_rows,
+                )
             )
-        ) if self.number_of_pages > 0 else row_count.append(
-            self.T("No rows to display")
+            if self.number_of_pages > 0
+            else row_count.append(self.T("No rows to display"))
         )
         footer.append(row_count)
 
@@ -1648,7 +1670,7 @@ def get_parent(path, parent_field):
 
     try:
         parent_id = parent_id.split("&")[0]
-    except:
+    except Exception:
         pass
 
     return parent_id

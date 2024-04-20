@@ -10,7 +10,6 @@ from py4web.core import bottle
 
 
 def downloader(db, path, filename, download_filename=None):
-
     """
     Given a db, and filesystem path, and the filename of an uploaded file,
     it retrieves the file, checks permission, and returns or stream its.

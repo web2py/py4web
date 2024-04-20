@@ -50,8 +50,8 @@ class URLVerifier(Fixture):
             if self.url_signer.lifespan is not None:
                 if float(ts) + self.url_signer.lifespan < time.time():
                     raise HTTP(403)
-        except:
-            raise HTTP(403)
+        except Exception as err:
+            raise HTTP(403, body=str(err))
 
     def _decode_ts(self, ts_string):
         """Decodes the timestamp, removing the salt."""
