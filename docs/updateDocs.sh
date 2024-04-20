@@ -76,10 +76,10 @@ for current_language in ${languages}; do
 	export current_language
 
 	# make spelling if english
-	if [ ${current_language} = 'en' ]
-	then
-	sphinx-build -b spelling docs/ docs/_build/spelling
-	fi	
+	#if [ ${current_language} = 'en' ]
+	#then
+	#sphinx-build -b spelling docs/ docs/_build/spelling
+	#fi	
 
 	# make HTML
 	# NOTE: this affect files in docs/locales/${current_language}/LC_MESSAGES/	sphinx-build -b html -D language="${current_language}" docs/ docs/_build/html/${current_language}

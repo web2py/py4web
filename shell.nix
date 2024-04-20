@@ -49,6 +49,7 @@ let
       fi
       $VENV_PATH/bin/pip install -U -r requirements.txt
       source $VENV_PATH/bin/activate
+      export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
       export PYTHONPATH=$VENV_PATH/${myPython.sitePackages}/:$PYTHONPATH      
     '';
   };

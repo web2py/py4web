@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="pt" >
+<html class="writer-html5" lang="pt" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Criando seu primeiro aplicativo &mdash; Documentação py4web 1.20231114.1</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+  <title>Creating an app &mdash; Documentação py4web 1.20240420.2</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
@@ -16,8 +18,8 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=dc17f146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/documentation_options.js?v=904ae00b"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
         <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -41,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20231114.1
+                1.20240420.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,7 +59,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Criando seu primeiro aplicativo</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Creating an app</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#from-scratch">Do princípio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#static-web-pages">Páginas estáticas</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dynamic-web-pages">Páginas web dinâmicas</a><ul>
@@ -99,7 +101,7 @@
           <div role="navigation" aria-label="Navegação da página">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Criando seu primeiro aplicativo</li>
+      <li class="breadcrumb-item active">Creating an app</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/web2py/py4web/blob/master/docs/chapter-05.rst" class="fa fa-github"> Editar no GitHub</a>
       </li>
@@ -109,8 +111,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="creating-your-first-app">
-<h1>Criando seu primeiro aplicativo<a class="headerlink" href="#creating-your-first-app" title="Link to this heading"></a></h1>
+  <section id="creating-an-app">
+<h1>Creating an app<a class="headerlink" href="#creating-an-app" title="Link to this heading"></a></h1>
 <section id="from-scratch">
 <h2>Do princípio<a class="headerlink" href="#from-scratch" title="Link to this heading"></a></h2>
 <p>Apps can be created using the dashboard or directly from the filesystem.
@@ -314,32 +316,7 @@ on which you can rely to build your real project.</p>
 <img alt="_images/_scaffold.png" src="_images/_scaffold.png" />
 <p>Normalmente você vai encontrar o aplicativo andaime sob apps, mas você pode facilmente criar um novo clone de la manualmente ou usando o Dashboard.</p>
 <p>Aqui está a estrutura da árvore do `` aplicativo _scaffold``:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>├── __init__.py          # imports everything else
-├── common.py            # defines useful objects
-├── controllers.py       # your actions
-├── databases            # your sqlite databases and metadata
-    │   └── README.md
-├── models.py            # your pyDAL table model
-├── settings.py          # any settings used by the app
-├── settings_private.py  # (optional) settings that you want to keep private
-├── static               # static files
-│   ├── README.md
-│   ├── css              # CSS files, we ship bulma because it is JS agnostic
-│   │   └── no.css       # we used bulma.css in the past
-│   ├── favicon.ico
-│   └── js               # JS files, we ship with these but you can replace them
-│       ├── utils.js
-├── tasks.py
-├── templates            # your templates go here
-│   ├── README.md
-│   ├── auth.html        # the auth page for register/logic/etc (uses vue)
-│   ├── generic.html     # a general purpose template
-│   ├── index.html
-│   └── layout.html      # a bulma layout example
-└── translations         # internationalization/pluralization files go here
-    └── it.json          # py4web internationalization/pluralization files are in JSON, this is an italian example
-</pre></div>
-</div>
+<img alt="_images/scaffold_tree.png" src="_images/scaffold_tree.png" />
 <p>O aplicativo andaime contém um exemplo de uma ação mais complexa:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span>
 <span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">A</span>
@@ -445,7 +422,7 @@ exceptions inside handlers are printed in terminal.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2024, BSDv3 License.</p>
   </div>
 
   Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
@@ -470,7 +447,7 @@ exceptions inside handlers are printed in terminal.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20231114.1
+      v: 1.20240420.2
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

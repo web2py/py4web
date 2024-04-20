@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="pt" >
+<html class="writer-html5" lang="pt" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 1.20231114.1</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+  <title>Instalação e colocação em funcionamento &mdash; Documentação py4web 1.20240420.2</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
@@ -16,8 +18,8 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=dc17f146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/documentation_options.js?v=904ae00b"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/tabs.js?v=3030b3cb"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
@@ -42,7 +44,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20231114.1
+                1.20240420.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -60,11 +62,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#understanding-the-design">Understanding the design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#supported-platforms-and-prerequisites">Plataformas e pré-requisitos suportados</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#setup-procedures">Procedimentos de configuração</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#installing-from-binaries">Instalando a partir de binários</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#installing-from-pip">Instalando a partir de pip</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#installing-using-a-virtual-environment">Installing using a virtual environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-pip-using-a-virtual-environment">Installing from pip, using a virtual environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-pip-without-virtual-environment">Installing from pip, without virtual environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-from-source-globally">Instalação de fonte (globalmente)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-from-source-locally">Instalando a partir de fonte (localmente)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-binaries">Instalando a partir de binários</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#upgrading">Melhoramento</a></li>
@@ -91,7 +93,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating an app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-07.html">The Database Abstraction Layer (DAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-08.html">The RestAPI</a></li>
@@ -137,8 +139,8 @@
 is not only a python module that can be imported by apps. It is also a program that
 is in charge of starting some apps. For this reason you need two things:</p>
 <ul class="simple">
-<li><p>the py4web module (which you download from our web site, from pypi, from github)</p></li>
-<li><p>one or more folders containing collections of apps you want to run.</p></li>
+<li><p>The py4web module (which you download from our web site, from pypi or from github)</p></li>
+<li><p>One or more folders containing collections of apps you want to run.</p></li>
 </ul>
 <p>py4web has command line options to create a folder with some example apps,
 to initialize an existing folder, and to add scaffolding apps to that folder.
@@ -153,24 +155,43 @@ Python 3.7+, which must be installed in advance (except if you use binaries).</p
 </section>
 <section id="setup-procedures">
 <h2>Procedimentos de configuração<a class="headerlink" href="#setup-procedures" title="Link to this heading"></a></h2>
-<p>There are four alternative ways of installing py4web, with different level
-of difficulty and flexibility. Let’s look at the pros and cons.</p>
-<section id="installing-from-binaries">
-<h3>Instalando a partir de binários<a class="headerlink" href="#installing-from-binaries" title="Link to this heading"></a></h3>
-<p>Esta não é uma instalação real, porque você acabou de copiar um monte de arquivos em seu sistema sem modificá-lo de qualquer maneira. Daí esta é a solução mais simples, especialmente para iniciantes ou alunos, porque ele não requer Python pré-instalado em seu sistema, nem direitos administrativos. Por outro lado, é experimental, poderia conter uma liberação py4web de idade e é muito difícil para adicionar outras funcionalidades a ele.</p>
-<p>A fim de usá-lo você só precisa fazer o download do arquivo mais recente do Windows ou MacOS zip do <cite>este repositório externo &lt;https://github.com/nicozanf/py4web-pyinstaller&gt;</cite> __. Descompacte-o em uma pasta local e abrir uma linha de comando lá. finalmente executar</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web-start set_password
-py4web-start run apps
+<p>There are four alternative ways of installing py4web, we will guide
+you through each of them and if you get stuck, reach
+<a class="reference external" href="https://py4web.com/_documentation/static/en/chapter-02.html">out to us.</a></p>
+<section id="installing-from-pip-using-a-virtual-environment">
+<h3>Installing from pip, using a virtual environment<a class="headerlink" href="#installing-from-pip-using-a-virtual-environment" title="Link to this heading"></a></h3>
+<p>A instalação completa de qualquer aplicação python complexo como py4web certamente irá modificar o ambiente python do seu sistema. A fim de evitar qualquer alteração indesejada, é um bom hábito de usar um ambiente virtual python (também chamado ** virtualenv <a href="#id1"><span class="problematic" id="id2">**</span></a>, veja <cite>aqui &lt;https://docs.python.org/3.7/tutorial/venv.html&gt;</cite> __ para uma introdução). Este é um recurso padrão do Python; se você ainda não sabe virtualenv é um bom momento para começar a sua descoberta!</p>
+<p>Here are the instructions for creating the virtual environment, activating it,
+and installing py4web in it:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-TGludXggYW5kIE1hY09T" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tab" tabindex="0">Linux and MacOS</button><button aria-controls="panel-0-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-0-TGludXggYW5kIE1hY09T" class="sphinx-tabs-panel group-tab" id="panel-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m venv venv
+. venv/bin/activate
+python -m pip install --upgrade py4web --no-cache-dir
+python py4web setup apps
+python py4web set_password
+python py4web run apps
 </pre></div>
 </div>
-<p>Com este tipo de instalação, lembre-se de usar sempre py4web-start ** ** em vez de ‘py4web’ ou ‘py4web.py’ na seguinte documentação.</p>
-<p>Notice the binaries many not correspond to the latest master
-or the latest stable branch of py4web although we do our best to
-keep them up to date.</p>
+<p>Starting py4web is same with or without a virtual environment
+python py4web run apps</p>
+</div><div aria-labelledby="tab-0-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>run cmd.exe
+In e.g. folder c:\py4web
+python3 -m venv venv
+&quot;C:\py4web\venv\Scripts\activate.bat&quot;
+python -m pip install --upgrade py4web --no-cache-dir
+cd venv\scripts
+py4web.exe setup apps
+py4web.exe set_password
+py4web.exe run apps
+</pre></div>
+</div>
+<p>You can also find power shell scripts in the same folder. Starting py4web is same with or without a virtual environment
+python py4web run apps</p>
+</div></div>
 </section>
-<section id="installing-from-pip">
-<h3>Instalando a partir de pip<a class="headerlink" href="#installing-from-pip" title="Link to this heading"></a></h3>
-<p>Using <em>pip</em> is the standard installation procedure for py4web, since it will
+<section id="installing-from-pip-without-virtual-environment">
+<h3>Installing from pip, without virtual environment<a class="headerlink" href="#installing-from-pip-without-virtual-environment" title="Link to this heading"></a></h3>
+<p><em>pip</em> is the basic installation procedure for py4web, it will
 quickly install the latest stable release of py4web.</p>
 <p>From the command line</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --upgrade py4web --no-cache-dir --user
@@ -193,18 +214,6 @@ python3 py4web.py run apps
 </pre></div>
 </div>
 </section>
-<section id="installing-using-a-virtual-environment">
-<h3>Installing using a virtual environment<a class="headerlink" href="#installing-using-a-virtual-environment" title="Link to this heading"></a></h3>
-<p>A instalação completa de qualquer aplicação python complexo como py4web certamente irá modificar o ambiente python do seu sistema. A fim de evitar qualquer alteração indesejada, é um bom hábito de usar um ambiente virtual python (também chamado ** virtualenv <a href="#id1"><span class="problematic" id="id2">**</span></a>, veja <cite>aqui &lt;https://docs.python.org/3.7/tutorial/venv.html&gt;</cite> __ para uma introdução). Este é um recurso padrão do Python; se você ainda não sabe virtualenv é um bom momento para começar a sua descoberta!</p>
-<p>Here are the instructions for creating the virtual environment, activating it,
-and installing py4web in it:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m venv venv
-. venv/bin/activate
-python -m pip install --upgrade py4web --no-cache-dir
-</pre></div>
-</div>
-<p>The instructions for starting and running py4web are the same with or without a virtual environment.</p>
-</section>
 <section id="installing-from-source-globally">
 <h3>Instalação de fonte (globalmente)<a class="headerlink" href="#installing-from-source-globally" title="Link to this heading"></a></h3>
 <p>This is the traditional way for installing a program, but it works only
@@ -217,6 +226,8 @@ cd py4web
 make assets
 make test
 make install
+py4web setup apps
+py4web set_password
 py4web run apps
 </pre></div>
 </div>
@@ -242,13 +253,15 @@ python3 -m pip install  --upgrade -r requirements.txt
 </div>
 <p>Once installed, you should always start it from there with:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-TGludXggYW5kIE1hY09T" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tab" tabindex="0">Linux and MacOS</button><button aria-controls="panel-0-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-0-TGludXggYW5kIE1hY09T" class="sphinx-tabs-panel group-tab" id="panel-0-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./py4web.py setup apps
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-TGludXggYW5kIE1hY09T" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-1-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tab" tabindex="0">Linux and MacOS</button><button aria-controls="panel-1-V2luZG93cw==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-1-V2luZG93cw==" name="V2luZG93cw==" role="tab" tabindex="-1">Windows</button></div><div aria-labelledby="tab-1-TGludXggYW5kIE1hY09T" class="sphinx-tabs-panel group-tab" id="panel-1-TGludXggYW5kIE1hY09T" name="TGludXggYW5kIE1hY09T" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./py4web.py setup apps
 ./py4web.py set_password
 ./py4web.py run apps
 </pre></div>
 </div>
-<p>Se você tiver instalado py4web tanto global como localmente, observe a ** / <a href="#id1"><span class="problematic" id="id2">**</span></a>.; ele força o prazo de py4web da pasta local e não o instalado globalmente.</p>
-</div><div aria-labelledby="tab-0-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 py4web.py setup apps
+<p>If you have installed py4web both globally and locally, notice the
+<strong>./</strong> ; it forces the run of the local folder’s py4web and not the
+globally installed one.</p>
+</div><div aria-labelledby="tab-1-V2luZG93cw==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-1-V2luZG93cw==" name="V2luZG93cw==" role="tabpanel" tabindex="0"><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 py4web.py setup apps
 python3 py4web.py set_password
 python3 py4web.py run apps
 </pre></div>
@@ -258,6 +271,24 @@ the ones in the path (hence you don’t need the <strong>./</strong> as on Linux
 But running .py files directly it’s not usual and you’ll need an explicit
 python3/python command.</p>
 </div></div>
+</section>
+<section id="installing-from-binaries">
+<h3>Instalando a partir de binários<a class="headerlink" href="#installing-from-binaries" title="Link to this heading"></a></h3>
+<p>This is not a real installation, because you just copy a bunch of files
+on your system without modifying it anyhow. Hence this is the simplest
+solution, especially for beginners or students, because it does not
+require Python pre-installed on your system nor administrative rights.
+On the other hand, it’s experimental, it could contain an old py4web
+release, DAL support is limited and it is quite difficult to add other functionalities to it.</p>
+<p>A fim de usá-lo você só precisa fazer o download do arquivo mais recente do Windows ou MacOS zip do <cite>este repositório externo &lt;https://github.com/nicozanf/py4web-pyinstaller&gt;</cite> __. Descompacte-o em uma pasta local e abrir uma linha de comando lá. finalmente executar</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./py4web set_password
+./py4web run apps
+</pre></div>
+</div>
+<p>(omit “./” if you’re using Windows).</p>
+<p>Notice: the binaries many not correspond to the latest master
+or the latest stable branch of py4web although we do our best to
+keep them up to date.</p>
 </section>
 </section>
 <section id="upgrading">
@@ -282,9 +313,6 @@ again.</p>
 <section id="first-run">
 <h2>Primeira corrida<a class="headerlink" href="#first-run" title="Link to this heading"></a></h2>
 <p>Correndo py4web utilizando qualquer um procedimento anterior deve produzir uma saída como esta:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web run apps
-</pre></div>
-</div>
 <img alt="_images/first_run.png" class="with-shadow" src="_images/first_run.png" />
 <p>Generally <code class="docutils literal notranslate"><span class="pre">apps</span></code> is the name of the folder where you keep all your
 apps, and can be explicitly set wit the <code class="docutils literal notranslate"><span class="pre">run</span></code> command.
@@ -368,7 +396,7 @@ Options:
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># py4web run -h
 Usage: py4web.py run [OPTIONS] APPS_FOLDER
 
-  Run all the applications on apps_folder
+  Run the applications on apps_folder
 
 Options:
   -Y, --yes                     No prompt, assume yes to questions
@@ -376,12 +404,15 @@ Options:
 
   -H, --host TEXT               Host name  [default: 127.0.0.1]
   -P, --port INTEGER            Port number  [default: 8000]
+  -A, --app_names TEXT          List of apps to run, comma separated (all if omitted or
+                                empty)
   -p, --password_file TEXT      File for the encrypted password  [default:
                                 password.txt]
-
-  -s, --server [default|wsgiref|tornado|gunicorn|gevent|waitress|
-                geventWebSocketServer|wsgirefThreadingServer|rocketServer]
-                                server to use  [default: default]
+  -Q, --quiet                   Suppress server output
+  -R, --routes                  Write apps routes to file
+  -s, --server                  [default|wsgiref|tornado|gunicorn|gevent|waitress|gunicorn|gunicornGevent|gevent|
+                                geventWebSocketServer|geventWs|wsgirefThreadingServer|wsgiTh|rocketServer]
+                                Web server to use
   -w, --number_workers INTEGER  Number of workers  [default: 0]
   -d, --dashboard_mode TEXT     Dashboard mode: demo, readonly, full, none
                                 [default: full]
@@ -398,9 +429,15 @@ Options:
   -L, --logging_level INTEGER   The log level (0 - 50) [default: 30
                                 (=WARNING)]
   -D, --debug                   Debug switch  [default: False]
+  -U, --url_prefix TEXT         Prefix to add to all URLs in and out
   -help, -h, --help             Show this message and exit.
 </pre></div>
 </div>
+<p>The <code class="docutils literal notranslate"><span class="pre">app_names</span></code> option lets you filter which specific apps you want to serve (comma separated). If absent or empty
+all the apps in the APPS_FOLDER will be run.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">url_prefix</span></code> option is useful for routing at the py4web level. It allows mapping to multiple versions of py4web
+running on different ports as long as the url_prefix and port match the location. For example
+<code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--url_prefix=/abracadabra</span> <span class="pre">--port</span> <span class="pre">8000</span> <span class="pre">apps</span></code>.</p>
 <p>By default py4web will automatically reload an application upon any changes to the python files of that application.
 The reloading will occur on any first incoming request to the application that has
 been changed (lazy-mode). If you prefer an immediate reloading (sync-mode), use
@@ -605,7 +642,8 @@ tutorial</a>
 <section id="deployment-on-docker-podman">
 <h3>Deployment on Docker/Podman<a class="headerlink" href="#deployment-on-docker-podman" title="Link to this heading"></a></h3>
 <p>On <code class="docutils literal notranslate"><span class="pre">deployment_tools/docker</span></code> there is a simple Dockerfile for quickly running a py4web container. There is also
-a docker-compose.yml file for setting up a more complex multi-container with PostgreSQL.</p>
+a docker-compose.yml file for setting up a more complex multi-container with PostgreSQL.
+A ready docker example based on the Scaffold application can be cloned from this repository &lt;<a class="reference external" href="https://github.com/macneiln/docker-py4web-scaffold">https://github.com/macneiln/docker-py4web-scaffold</a>&gt;</p>
 <p>Note that you can use them also with Podman, which has the advantage of does not requiring sudo and does not
 running any background daemon.</p>
 </section>
@@ -628,7 +666,7 @@ certificates. It optionally manage iptables, too.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2024, BSDv3 License.</p>
   </div>
 
   Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
@@ -653,7 +691,7 @@ certificates. It optionally manage iptables, too.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20231114.1
+      v: 1.20240420.2
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

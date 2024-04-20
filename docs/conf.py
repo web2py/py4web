@@ -46,7 +46,7 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.autosectionlabel',
     'sphinx_tabs.tabs',
-    'sphinxcontrib.spelling',
+#    'sphinxcontrib.spelling',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

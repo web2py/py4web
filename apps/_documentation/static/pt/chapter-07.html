@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="pt" >
+<html class="writer-html5" lang="pt" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Database Abstraction Layer (DAL) &mdash; Documentação py4web 1.20231114.1</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+  <title>The Database Abstraction Layer (DAL) &mdash; Documentação py4web 1.20240420.2</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="_static/css/toggle.css?v=029c1802" />
+
+  
     <link rel="shortcut icon" href="_static/logo-32x32.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
@@ -16,8 +18,8 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=dc17f146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/documentation_options.js?v=904ae00b"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
         <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -41,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20231114.1
+                1.20240420.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,7 +59,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-02.html">Ajuda, recursos e dicas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-03.html">Instalação e colocação em funcionamento</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-04.html">O Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Criando seu primeiro aplicativo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter-05.html">Creating an app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-06.html">Fixures</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The Database Abstraction Layer (DAL)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#dal-introduction">DAL introduction</a><ul>
@@ -970,7 +972,10 @@ an underscore to avoid naming conflicts with fields:</p>
 <li><p>Records must be referenced exclusively using the “id” field.</p></li>
 </ul>
 <p>Ao acessar uma tabela existente, isto é, uma tabela não criado por py4web no aplicativo atual, sempre definir `` migrar = False``.</p>
-<p>Se a tabela de legado tem um campo inteiro de auto-incremento, mas não é chamado de “id”, py4web ainda pode acessá-lo, mas a definição da tabela deve declarar o campo de incremento automático com o tipo de “id” (que está usando campo `` (” … “, “id”) <a href="#id1"><span class="problematic" id="id2">``</span></a>).</p>
+<p>If the legacy table has an auto-increment integer field but it is not
+called “id”, py4web can still access it but the table definition must
+declare the auto-increment field with ‘id’ type (that is using
+<code class="docutils literal notranslate"><span class="pre">Field('...',</span> <span class="pre">'id')</span></code>).</p>
 <p>Finalmente se a tabela de legado usa uma chave primária que não é um campo id auto-incremento é possível usar uma “mesa com chave”, por exemplo:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s1">&#39;account&#39;</span><span class="p">,</span>
                 <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;accnum&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">),</span>
@@ -3797,7 +3802,7 @@ dashboard and deleting any corrupted entry from the table called
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, BSDv3 License.</p>
+    <p>&#169; Copyright 2024, BSDv3 License.</p>
   </div>
 
   Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
@@ -3822,7 +3827,7 @@ dashboard and deleting any corrupted entry from the table called
      <label for="switch"></label>
      </span>
       
-      v: 1.20231114.1
+      v: 1.20240420.2
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
