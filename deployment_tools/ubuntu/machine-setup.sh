@@ -7,7 +7,7 @@
 # installation script for py4web on Ubuntu server
 #    see https://github.com/web2py/py4web/blob/master/docs/updateDocs.sh
 #
-#   tested with Ubuntu Server 20.04.03 LTS
+#   tested with Ubuntu Server 22.04 LTS
 #
 # Usage:
 #       copy and run it in any directory with 'sudo ./machine-setup.sh'
@@ -17,8 +17,8 @@
 # Parameters:
 
 # python_bin is used to state your python version
-# by default python_bin=python3.8
-python_bin=python3.8
+# by default python_bin=python3.10
+python_bin=python3.10
 
 # use_iptables is set to yes if
 # you want to setup linux firewall from scratch
@@ -153,11 +153,9 @@ apt-get -y install redis-server
 
 echo "======================================="
 echo "Installing Python Packages for py4web"
+echo "entf server: tornado, gevent, gunicorn"
 echo "======================================="
 cat > requirements-py4web.txt <<EOF
-tornado
-gevent
-gunicorn
 requests
 redis
 psycopg2
