@@ -246,9 +246,11 @@ class Auth(Fixture):
             registration_requires_approval=registration_requires_approval,
             login_after_registration=False,
             login_expiration_time=login_expiration_time,  # seconds
-            password_complexity={"entropy": 50}
-            if password_complexity == "default"
-            else password_complexity,
+            password_complexity=(
+                {"entropy": 50}
+                if password_complexity == "default"
+                else password_complexity
+            ),
             block_previous_password_num=block_previous_password_num,
             allowed_actions=allowed_actions or ["all"],
             use_appname_in_redirects=use_appname_in_redirects,
@@ -342,9 +344,7 @@ class Auth(Fixture):
 
     def on_success(self, context):
         if self.inject:
-            context["template_inject"] = {
-                "user": self.get_user()
-            }
+            context["template_inject"] = {"user": self.get_user()}
 
     def define_tables(self):
         """Defines the auth_user table"""
@@ -516,7 +516,7 @@ class Auth(Fixture):
     def is_logged_in(self):
         if not self.session.is_valid():
             return False
-        return self.session.get("user", {}).get("id", None) != None
+        return self.session.get("user", {}).get("id", None) is not None
 
     @property
     def user_id(self):
@@ -549,7 +549,7 @@ class Auth(Fixture):
 
     def is_impersonating(self):
         """checks if we are impersonating a user"""
-        return self.session.get("user", {}).get("impersonator_id", None) != None
+        return self.session.get("user", {}).get("impersonator_id", None) is not None
 
     def stop_impersonating(self, next_url):
         """stops impersonating a user, assuming we are impersonating one"""
@@ -1174,9 +1174,11 @@ class AuthAPI:
                             writable=field.writable if field.type != "id" else False,
                             required=field.required,
                             regex=field.regex if hasattr(field, "regex") else None,
-                            default=field.default()
-                            if callable(field.default)
-                            else field.default,
+                            default=(
+                                field.default()
+                                if callable(field.default)
+                                else field.default
+                            ),
                             options=field.options,
                         )
                     )
@@ -1564,9 +1566,11 @@ class DefaultAuthForms:
         fields = [
             Field(
                 "email",
-                label=self.auth.db.auth_user.username.label
-                if self.auth.use_username
-                else self.auth.db.auth_user.email.label,
+                label=(
+                    self.auth.db.auth_user.username.label
+                    if self.auth.use_username
+                    else self.auth.db.auth_user.email.label
+                ),
             ),
             Field(
                 "password",

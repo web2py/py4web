@@ -70,7 +70,7 @@ class SSO(object):
                 for part in parts:
                     try:
                         value = value[int(part) if part.isdigit() else part]
-                    except:
+                    except Exception:
                         break
                 else:
                     user[key] = value

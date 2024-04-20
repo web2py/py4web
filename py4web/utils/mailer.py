@@ -11,6 +11,7 @@ import email.utils
 import logging
 import mimetypes
 import os
+import re
 import smtplib
 from email import message_from_string
 from email.encoders import encode_base64
@@ -735,7 +736,7 @@ class Mailer:
             to.extend(bcc)
         payload["Subject"] = encoded_or_raw(to_unicode(subject, encoding))
         payload["Date"] = email.utils.formatdate()
-        for k, v in iteritems(headers):
+        for k, v in headers.items():
             payload[k] = encoded_or_raw(to_unicode(v, encoding))
 
         list_unsubscribe = list_unsubscribe or self.settings.list_unsubscribe
@@ -812,6 +813,7 @@ class Mailer:
                     response = client.send_raw_email(
                         RawMessage=raw, Source=sender, Destinations=to
                     )
+                    print("Message send:", response)
                     return True
                 except ClientError:
                     raise RuntimeError()
@@ -832,12 +834,12 @@ class Mailer:
                     # do not want to hide errors raising some exception here
                     try:
                         server.quit()
-                    except:
+                    except Exception:
                         pass
                     # ensure to close any socket with SMTP server
                     try:
                         server.close()
-                    except:
+                    except Exception:
                         pass
         except Exception as e:
             self.settings.logger.warning("Mailer.send failure:%s" % e)

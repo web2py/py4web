@@ -12,7 +12,6 @@ class BasicAuthPlugin:
         self.server = server
 
     def check_credentials(self, username, password):
-
         """
         to use basic login with a different server
         from gluon.contrib.login_methods.basic_auth import basic_auth

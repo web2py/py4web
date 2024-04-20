@@ -7,8 +7,20 @@ import uuid
 import jwt
 from pydal._compat import to_native
 from pydal.objects import FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, LABEL, OPTION, SELECT, SPAN,
-                          TEXTAREA, XML, A, P)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    LABEL,
+    OPTION,
+    SELECT,
+    SPAN,
+    TEXTAREA,
+    XML,
+    A,
+    P,
+)
 
 from py4web import HTTP, request, response
 from py4web.utils.param import Param
@@ -53,7 +65,6 @@ def join_classes(*args):
 
 
 class Widget:
-
     """Prototype widget object for all form widgets"""
 
     type_map = {
@@ -115,7 +126,7 @@ class CheckboxWidget:
             _value="ON",
             _checked=value,
             _readonly=readonly,
-            **attrs
+            **attrs,
         )
 
 
@@ -174,7 +185,7 @@ class SelectWidget:
             _name=field.name,
             _multiple=multiple,
             _title=title,
-            _readonly=readonly
+            _readonly=readonly,
         )
 
         return control
@@ -319,7 +330,7 @@ class FormStyleFactory:
             form_method=form_method,
             form_action=form_action,
             form_enctype=form_enctype,
-            **kwargs
+            **kwargs,
         )
 
         class_label = self.classes["label"]
@@ -372,7 +383,6 @@ class FormStyleFactory:
             field_value = None
 
             field_name = field.name
-            field_type = field.type
             field_comment = field.comment if field.comment else ""
             field_label = field.label
             input_id = to_id(field)
@@ -404,7 +414,6 @@ class FormStyleFactory:
                         field_value = field.f(vars)
                     else:
                         field_value = compat_represent(field, value, vars)
-                    field_type = "represent"
                     control = DIV(field_value)
 
                 field_disabled = True
@@ -467,6 +476,8 @@ class FormStyleFactory:
             controls["titles"][field_name] = title
             controls["placeholders"][field_name] = placeholder
 
+            field_type = str(field.type).replace(" ", "-")
+
             # Set the remain json field attributes.
             field_attributes["_title"] = title
             field_attributes["_label"] = field_label
@@ -474,7 +485,7 @@ class FormStyleFactory:
             field_attributes["_id"] = to_id(field)
             field_attributes["_class"] = field_class
             field_attributes["_name"] = field.name
-            field_attributes["_type"] = field.type
+            field_attributes["_type"] = field_type
             field_attributes["_placeholder"] = placeholder
             field_attributes["_error"] = error
             field_attributes["_disabled"] = field_disabled
@@ -701,7 +712,7 @@ class Form(object):
         signing_info=None,
         submit_value="Submit",
         show_id=True,
-        **kwargs
+        **kwargs,
     ):
         self.param = Param(
             formstyle=formstyle,
@@ -894,7 +905,7 @@ class Form(object):
         try:
             jwt.decode(token, key, algorithms=["HS256"])
             return True
-        except:
+        except Exception:
             return False
 
     def update_or_insert(self, validated_vars):

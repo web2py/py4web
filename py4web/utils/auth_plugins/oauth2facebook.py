@@ -1,4 +1,5 @@
 from . import OAuth2
+import requests
 
 
 class OAuth2Facebook(OAuth2):

@@ -31,7 +31,8 @@ def obj2dict(obj, processed=None):
         (key, obj2dict(value, processed))
         for key, value in obj.items()
         if not key.startswith("_")
-        and type(value) not in (
+        and type(value)
+        not in (
             types.FunctionType,
             types.LambdaType,
             types.BuiltinFunctionType,
