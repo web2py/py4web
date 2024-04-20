@@ -17,7 +17,6 @@ import importlib.util
 import inspect
 import io
 import json
-import linecache
 import logging
 import numbers
 import os
@@ -344,8 +343,8 @@ class Fixture:
 
     def is_valid(self):
         """check if the fixture is valid in context"""
-        
-        ctx = getattr(self.__request_master_ctx__, 'request_ctx', None)
+
+        ctx = getattr(self.__request_master_ctx__, "request_ctx", None)
         if not ctx or self not in ctx:
             logging.warn(
                 "attempted access to fixture %s from outside a request",
@@ -464,7 +463,7 @@ class Flash(Fixture):
         # when a new request arrives we look for a flash message in the cookie
         flash = request.get_cookie("py4web-flash")
         if flash:
-            self.local.flash = safely(lambda:json.loads(flash), default=None)
+            self.local.flash = safely(lambda: json.loads(flash), default=None)
         else:
             self.local.flash = None
 
@@ -513,12 +512,12 @@ class RenoirXMLEscapeMixin:
         )
 
 
-class RenoirCustomWriter(RenoirXMLEscapeMixin, renoir.writers.Writer):
-    ...
+class RenoirCustomWriter(RenoirXMLEscapeMixin, renoir.writers.Writer): ...
 
 
-class RenoirCustomEscapeAllWriter(RenoirXMLEscapeMixin, renoir.writers.EscapeAllWriter):
-    ...
+class RenoirCustomEscapeAllWriter(
+    RenoirXMLEscapeMixin, renoir.writers.EscapeAllWriter
+): ...
 
 
 class Renoir(renoir.Renoir):
@@ -838,7 +837,6 @@ def URL(
 
 
 class HTTP(BaseException):
-
     """An exception that is considered success"""
 
     def __init__(self, status, body="", headers={}):
@@ -1096,17 +1094,6 @@ def get_error_snapshot(depth=5):
         # Basic frame information
         f = {"file": file, "func": func, "lnum": lnum}
         f["code"] = lines
-        # FIXME: disable this for now until we understand why this goes into infinite loop
-        if False:
-            line_vars = cgitb.scanvars(
-                lambda: linecache.getline(file, lnum), frame, locals
-            )
-            # Dump local variables (referenced in current line only)
-            f["vars"] = {
-                key: repr(value)
-                for key, value in locals.items()
-                if not key.startswith("__")
-            }
         stackframes.append(f)
 
     return data
@@ -1192,7 +1179,6 @@ class DatabaseErrorLogger:
 
 
 class ErrorLogger:
-
     """
     To create your own custom logger for an app:
 
@@ -1281,7 +1267,7 @@ class Reloader:
         # if first time reload dummy top module
         if not Reloader.MODULES:
             path = os.path.join(folder, "__init__.py")
-            module = load_module("apps", path)
+            module = load_module("apps", path)  # noqa: F841
         # Then load all the apps as submodules
         if os.environ.get("PY4WEB_APP_NAMES"):
             app_names = os.environ.get("PY4WEB_APP_NAMES").split(",")
@@ -1830,7 +1816,7 @@ def shell(**kwargs):
     """Open a python shell with apps_folder's parent added to the path"""
     if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
         # running in the PyInstaller binary bundle
-        import site
+        import site  # noqa: F401
     install_args(kwargs)
     code.interact(local=dict(globals(), **locals()))
 
@@ -2053,7 +2039,9 @@ def run(**kwargs):
                 'You have not set a dashboard password. Run "%s set_password" to do so.'
                 % PY4WEB_CMD
             )
-        elif "_dashboard" in Reloader.ROUTES and (not kwargs['host'].startswith('unix:/')) :
+        elif "_dashboard" in Reloader.ROUTES and (
+            not kwargs["host"].startswith("unix:/")
+        ):
             click.echo(
                 f"Dashboard is at: http{'s' if kwargs.get('ssl_cert', None) else ''}://{kwargs['host']}:{kwargs['port']}/_dashboard"
             )
