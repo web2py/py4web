@@ -6,7 +6,7 @@ clean:
 	find . -name '*~' -delete
 	find . -name '#*' -delete
 	rm -rf dist/*
-clean-assets:
+clean-assets: clean
 	rm -f py4web/assets/*
 	mkdir -p py4web/assets
 assets: clean-assets $(asset-zips)

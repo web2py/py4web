@@ -1,6 +1,6 @@
 import uuid
 
-from pydal.restapi import RestAPI
+from pydal.restapi import ALLOW_ALL_POLICY, DENY_ALL_POLICY, RestAPI
 from yatl.helpers import DIV, TAG, XML
 
 from py4web import URL, action, request, response
