@@ -62,18 +62,18 @@ class SSO(object):
                 msg = error.get("message", "Unknown error")
             raise HTTP(code, msg)
         if auth.db:
+            print(data)
             # map returned fields into auth_user fields
             user = {}
             for key, orig_key in self.maps.items():
                 value = data
                 parts = orig_key.split(".")
-                for part in parts:
-                    try:
+                try:
+                    for part in parts:
                         value = value[int(part) if part.isdigit() else part]
-                    except Exception:
-                        break
-                else:
                     user[key] = value
+                except Exception:
+                    continue
             user["sso_id"] = "%s:%s" % (self.name, user["sso_id"])
             if "username" not in user:
                 user["username"] = user["sso_id"]

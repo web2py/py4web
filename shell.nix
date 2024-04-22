@@ -41,7 +41,7 @@ let
       SOURCE_DATE_EPOCH=$(date +%s)
       VENV_PATH=/home/$USER/.nix-venvs$(pwd)/venv${myPython.version}
       # Augment the dynamic linker path
-      export "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${lib-path}"
+      export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${lib-path}"
 
       # Setup the virtual environment if it doesn't already exist.
       if test ! -d $VENV_PATH; then
