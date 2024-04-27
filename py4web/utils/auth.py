@@ -585,9 +585,10 @@ class Auth(Fixture):
         if self.use_username:
             fields["username"] = fields.get("username", "").lower()
         fields["email"] = fields.get("email", "").lower()
-
+        self.db.auth_user.action_token.writable = True
         def store(fields):
             if validate:
+                self.db.auth_user.password.writable = True
                 return self.db.auth_user.validate_and_insert(**fields)
             return dict(id=self.db.auth_user.insert(**fields))
 

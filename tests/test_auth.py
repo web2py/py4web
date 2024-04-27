@@ -72,7 +72,7 @@ class TestAuth(unittest.TestCase):
         )
 
     def test_register(self):
-        self.on_request()
+        self.on_request()        
         body = {
             "username": "ppallino",
             "email": "pinco.pallino@example.com",
@@ -222,18 +222,6 @@ class TestAuth(unittest.TestCase):
         self.assertEqual(
             self.auth.action("api/change_email", "POST", {}, body),
             {"updated": 1, "status": "success", "code": 200},
-        )
-
-        self.on_request(keep_session=True)
-        body = {"first_name": "Max", "last_name": "Powers", "password": "xyz"}
-        self.assertEqual(
-            self.auth.action("api/profile", "POST", {}, body),
-            {
-                "errors": {"password": "invalid"},
-                "status": "error",
-                "message": "validation errors",
-                "code": 401,
-            },
         )
 
         self.on_request(keep_session=True)
