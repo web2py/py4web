@@ -55,15 +55,16 @@ class TestAuth(unittest.TestCase):
     def test_register_invalid(self):
         self.on_request()
         body = {"email": "pinco.pallino@example.com"}
+        res = self.auth.action("api/register", "POST", {}, body)
         self.assertEqual(
-            self.auth.action("api/register", "POST", {}, body),
+            res,
             {
                 "id": None,
                 "errors": {
-                    "username": "Enter a value",
-                    "password": "Too short",
-                    "first_name": "Enter a value",
-                    "last_name": "Enter a value",
+                    "username": "required",
+                    "password": "required",
+                    "first_name": "required",
+                    "last_name": "required",
                 },
                 "status": "error",
                 "message": "validation errors",

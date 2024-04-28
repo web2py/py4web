@@ -582,13 +582,19 @@ class Auth(Fixture):
     def register(self, fields, send=True, next="", validate=True, route=None):
         """Registers a new user after the user's parameters are entered
         in the SignUp form"""
-        if self.use_username:
-            fields["username"] = fields.get("username", "").lower()
+        if "username" in fields:
+            fields["username"] = fields["username"].lower()
         fields["email"] = fields.get("email", "").lower()
-        self.db.auth_user.action_token.writable = True
+
         def store(fields):
             if validate:
+                if self.use_username:
+                    self.db.auth_user.username.required = True
+                self.db.auth_user.action_token.writable = True
                 self.db.auth_user.password.writable = True
+                self.db.auth_user.password.required = True
+                self.db.auth_user.first_name.required = True
+                self.db.auth_user.last_name.required = True
                 return self.db.auth_user.validate_and_insert(**fields)
             return dict(id=self.db.auth_user.insert(**fields))
 
