@@ -28,7 +28,7 @@ from yatl.helpers import (
     I,
 )
 
-from py4web import HTTP, URL, redirect, request
+from py4web import HTTP, URL, redirect, request, safely
 from py4web.utils.form import Form, FormStyleDefault, join_classes
 from py4web.utils.param import Param
 
@@ -517,7 +517,7 @@ class Grid:
 
         # in case the query is a Table insteance
         if isinstance(query, query._db.Table):
-            query = query._id is not None
+            query = query._id != None
 
         self.path = path
         self.db = query._db
@@ -568,7 +568,7 @@ class Grid:
         self.number_of_pages = None
         self.page_end = None
         self.page_start = None
-        self.query_parms = request.params
+        self.query_parms = safely(lambda: request.params, default={})
         self.record_id = None
         self.rows = None
         self.tablename = None

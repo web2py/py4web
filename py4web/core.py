@@ -85,6 +85,7 @@ __all__ = [
     "required_folder",
     "wsgi",
     "Condition",
+    "safely",
 ]
 
 PY4WEB_CMD = sys.argv[0]
