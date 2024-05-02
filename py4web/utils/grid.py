@@ -761,7 +761,6 @@ class Grid:
             if (
                 self.form.accepted
                 or (readonly and request.method == "POST")
-                or (self.form.deletable and self.form.deleted)
             ):
                 referrer = request.query.get("_referrer")
                 if referrer:

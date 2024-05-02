@@ -850,6 +850,7 @@ class Form(object):
                         if dbio:
                             self.update_or_insert(validated_vars)
                 elif dbio:
+                    self.accepted = True
                     self.deleted = True
                     self.record.delete_record()
             elif self.record:
