@@ -947,6 +947,12 @@ class action:
                 if isinstance(ret, (list, dict)):
                     response.headers["Content-Type"] = "application/json"
                     ret = dumps(ret)
+                elif ret is None:
+                    ret = ""
+                elif isinstance(ret, yatl.helpers.TAGGER):
+                    res = str(ret)
+                elif not hasattr(ret, "__iter__"):
+                    raise RuntimeError(f"Cannot return type {ret.__class__.__name__}")                
                 return ret
             except HTTP as http:
                 response.status = http.status
