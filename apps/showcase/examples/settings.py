@@ -9,7 +9,7 @@ import os
 
 MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 # db settings
-APP_FOLDER = os.path.join(os.path.dirname(__file__), "..")
+APP_FOLDER = os.path.dirname(os.path.dirname(__file__))
 APP_NAME = os.path.split(APP_FOLDER)[-1]
 # DB_FOLDER:    Sets the place where migration files will be created
 #               and is the store location for SQLite databases

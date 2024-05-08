@@ -47,8 +47,7 @@ def downloader(db, path, filename, download_filename=None):
         (original_name, stream) = field.retrieve(filename, path, nameonly=True)
         fullpath = os.path.join(path, filename)
         if not os.path.exists(fullpath) and hasattr(stream, "read"):
-            with open(fullpath, "wb") as fp:
-                shutil.copyfile(fp, stream)
+            return stream.read()
     except NotAuthorizedException:
         raise HTTP(403)
     except NotFoundException:
