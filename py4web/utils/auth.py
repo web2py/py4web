@@ -69,15 +69,13 @@ class AuthEnforcer(Fixture):
         self.auth.on_success(context)
 
     def abort_or_redirect(self, page, message=""):
-        """Return HTTP 403 if 'application/json' in HTTP_ACCEPT
-        and HTTP_JSON_REDIRECTS flag is not set in the request to 'on'.
-        Else redirects to page
+        """
+        Return HTTP 403 if 'text/htmp' not in HTTP_ACCEPT
+        else redirects to specified page
         """
 
-        if re.search(REGEX_APPJSON, request.headers.get("accept", "")) and (
-            request.headers.get("json-redirects", "") != "on"
-        ):
-            raise HTTP(403)
+        if "text/html" not in request.headers.get("accept", ""):
+            raise HTTP(403, body={"message": message})
         redirect_next = request.fullpath
         if request.query_string:
             redirect_next = redirect_next + "?{}".format(request.query_string)

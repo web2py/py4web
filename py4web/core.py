@@ -952,12 +952,13 @@ class action:
                 elif isinstance(ret, yatl.helpers.TAGGER):
                     res = str(ret)
                 elif not hasattr(ret, "__iter__"):
-                    raise RuntimeError(f"Cannot return type {ret.__class__.__name__}")                
+                    raise RuntimeError(f"Cannot return type {ret.__class__.__name__}")
                 return ret
             except HTTP as http:
                 response.status = http.status
                 response.headers.update(http.headers)
-                return http.body
+                body = http.body
+                return dumps(body) if isinstance(body, (list, dict)) else str(body)
             except bottle.HTTPResponse:
                 raise
             except Exception:
