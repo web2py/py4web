@@ -1,6 +1,5 @@
 import os
 import re
-import sqlite3
 
 from py4web import HTTP, action, request
 
@@ -24,16 +23,7 @@ from .examples.page_without_template import page_without_template
 from .examples.session_clear import session_clear
 from .examples.session_counter import session_counter
 from .examples.tagsinput_form import tagsinput_form
-try:
-    from .examples.rest import rest
-except sqlite3.OperationalError:
-    error_message = """
-    ** ERROR ** the examples db of the showcase app is not properly initialized.
-    You need to execute once 'py4web run apps' before using the shell with
-    py4web's showcase examples.
-    """ 
-    print(error_message)
-    exit(0)
+from .examples.rest import rest
 from .examples.rpc import rpc
 from .vue_components_examples.vue_file_uploader import vue_file_uploader
 from .vue_components_examples.vue_grid import vue_grid
