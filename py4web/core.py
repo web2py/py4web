@@ -950,7 +950,7 @@ class action:
                 elif ret is None:
                     ret = ""
                 elif isinstance(ret, yatl.helpers.TAGGER):
-                    res = str(ret)
+                    ret = str(ret)
                 elif not hasattr(ret, "__iter__"):
                     raise RuntimeError(f"Cannot return type {ret.__class__.__name__}")
                 return ret
