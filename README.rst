@@ -180,4 +180,4 @@ Many thanks to everyone who has contributed to the project, and especially:
 - `sugizo <https://github.com/sugizo>`__
 - `valq7711 <https://github.com/valq7711>`__
 - `Kevin Keller <https://github.com/Kkeller83>`__
-- `Sam de Alfaro <sam@dealfaro.com>`__ (logo design)
+- Sam de Alfaro sam@dealfaro.com (logo design)
