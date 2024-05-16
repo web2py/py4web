@@ -52,6 +52,7 @@ T = Translator(settings.T_FOLDER)
 # #######################################################
 if settings.SESSION_TYPE == "cookies":
     session = Session(secret=settings.SESSION_SECRET_KEY)
+
 elif settings.SESSION_TYPE == "redis":
     import redis
 
@@ -64,11 +65,13 @@ elif settings.SESSION_TYPE == "redis":
         else cs(k, v, e)
     )
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
+
 elif settings.SESSION_TYPE == "memcache":
     import memcache, time
 
     conn = memcache.Client(settings.MEMCACHE_CLIENTS, debug=0)
     session = Session(secret=settings.SESSION_SECRET_KEY, storage=conn)
+
 elif settings.SESSION_TYPE == "database":
     from py4web.utils.dbstore import DBStore
 
@@ -84,7 +87,7 @@ auth.param.registration_requires_approval = settings.REQUIRES_APPROVAL
 auth.param.login_after_registration = settings.LOGIN_AFTER_REGISTRATION
 auth.param.allowed_actions = settings.ALLOWED_ACTIONS
 auth.param.login_expiration_time = 3600
-auth.param.password_complexity = {"entropy": 50}
+auth.param.password_complexity = {"entropy": settings.PASSWORD_ENTROPY}
 auth.param.block_previous_password_num = 3
 auth.param.default_login_enabled = settings.DEFAULT_LOGIN_ENABLED
 auth.define_tables()
@@ -205,7 +208,6 @@ if settings.USE_CELERY:
         "apps.%s.tasks" % settings.APP_NAME, broker=settings.CELERY_BROKER
     )
 
-
 # #######################################################
 # Enable authentication
 # #######################################################
@@ -213,6 +215,8 @@ auth.enable(uses=(session, T, db), env=dict(T=T))
 
 # #######################################################
 # Define convenience decorators
+# They can be used instead of @action and @action.uses
+# They should NEVER BE MIXED with @action and @action.uses
 # #######################################################
 unauthenticated = ActionFactory(db, session, T, flash, auth)
 authenticated = ActionFactory(db, session, T, flash, auth.user)
