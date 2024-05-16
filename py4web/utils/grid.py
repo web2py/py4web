@@ -8,8 +8,25 @@ import datetime
 from urllib.parse import urlparse
 
 from pydal.objects import Expression, Field, FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
-                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TAG,
+    TBODY,
+    TD,
+    TH,
+    THEAD,
+    TR,
+    XML,
+    A,
+    I,
+)
 
 from py4web import HTTP, URL, redirect, request, safely
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -1201,11 +1218,15 @@ class Grid:
                 elif isinstance(column, Column):
                     classes = self.param.grid_class_style.classes.get(
                         column.td_class_style,
-                        self.param.grid_class_style.classes.get("grid-td"),
+                        column.td_class_style(row)
+                        if callable(column.td_class_style)
+                        else self.param.grid_class_style.classes.get("grid-td"),
                     )
                     style = self.param.grid_class_style.styles.get(
                         column.td_class_style,
-                        self.param.grid_class_style.styles.get("grid-td"),
+                        column.td_class_style(row)
+                        if callable(column.td_class_style)
+                        else self.param.grid_class_style.styles.get("grid-td"),
                     )
                     tr.append(
                         TD(
