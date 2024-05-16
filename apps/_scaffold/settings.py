@@ -8,6 +8,9 @@ This file is provided as an example:
 import os
 from py4web.core import required_folder
 
+# mode (default or development)
+MODE = os.environ["PY4WEB_MODE"]
+
 # db settings
 APP_FOLDER = os.path.dirname(__file__)
 APP_NAME = os.path.split(APP_FOLDER)[-1]
@@ -27,10 +30,10 @@ STATIC_FOLDER = required_folder(APP_FOLDER, "static")
 UPLOAD_FOLDER = required_folder(APP_FOLDER, "uploads")
 
 # send verification email on registration
-VERIFY_EMAIL = True
+VERIFY_EMAIL = MODE != "development"
 
 # complexity of the password 0: no constraints, 50: safe!
-PASSWORD_ENTROPY = 50
+PASSWORD_ENTROPY = 0 if MODE == "development" else 50
 
 # account requires to be approved ?
 REQUIRES_APPROVAL = False

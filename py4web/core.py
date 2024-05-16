@@ -2026,6 +2026,13 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     help="Prefix to add to all URLs in and out",
     show_default=True,
 )
+@click.option(
+    "-m",
+    "--mode",
+    default="default",
+    help="default or development",
+    show_default=True,
+)
 def run(**kwargs):
     """Run the applications on apps_folder"""
     install_args(kwargs)
