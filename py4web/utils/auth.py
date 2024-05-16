@@ -8,15 +8,8 @@ import re
 import time
 import uuid
 
-from pydal.validators import (
-    CRYPT,
-    IS_EMAIL,
-    IS_EQUAL_TO,
-    IS_MATCH,
-    IS_NOT_EMPTY,
-    IS_NOT_IN_DB,
-    IS_STRONG,
-)
+from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
+                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG)
 from yatl.helpers import DIV, A
 
 from py4web import HTTP, URL, Field, action, redirect, request, response

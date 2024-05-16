@@ -1,5 +1,6 @@
-from . import OAuth2
 import requests
+
+from . import OAuth2
 
 
 class OAuth2Facebook(OAuth2):

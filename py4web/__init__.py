@@ -23,16 +23,5 @@ from .core import Field  # pydal
 from .core import Translator  # from pluralize
 from .core import action  # main py4web decorator
 from .core import render  # yatl
-from .core import (
-    DAL,
-    Cache,
-    Condition,
-    Flash,
-    Session,
-    abort,
-    check_compatible,
-    redirect,
-    request,
-    response,
-    safely,
-)
+from .core import (DAL, Cache, Condition, Flash, Session, abort,
+                   check_compatible, redirect, request, response, safely)

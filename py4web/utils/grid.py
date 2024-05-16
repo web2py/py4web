@@ -8,25 +8,8 @@ import datetime
 from urllib.parse import urlparse
 
 from pydal.objects import Expression, Field, FieldVirtual
-from yatl.helpers import (
-    CAT,
-    DIV,
-    FORM,
-    INPUT,
-    OPTION,
-    SELECT,
-    SPAN,
-    TABLE,
-    TAG,
-    TBODY,
-    TD,
-    TH,
-    THEAD,
-    TR,
-    XML,
-    A,
-    I,
-)
+from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
+                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
 
 from py4web import HTTP, URL, redirect, request, safely
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -758,10 +741,7 @@ class Grid:
                     self.form.param.submit_value = self.param.edit_submit_value
 
             # redirect to the referrer
-            if (
-                self.form.accepted
-                or (readonly and request.method == "POST")
-            ):
+            if self.form.accepted or (readonly and request.method == "POST"):
                 referrer = request.query.get("_referrer")
                 if referrer:
                     redirect(base64.b16decode(referrer.encode("utf8")).decode("utf8"))

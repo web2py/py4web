@@ -128,8 +128,8 @@ def get_workers(opts, default=10):
 
 
 def check_port(host="127.0.0.1", port=8000):
-    import socket
     import errno
+    import socket
     import subprocess
 
     def os_cmd(run_cmd):
@@ -177,8 +177,9 @@ def check_port(host="127.0.0.1", port=8000):
 
 
 def gunicorn():
-    from gevent import local  # pip install gevent gunicorn setproctitle
     import threading
+
+    from gevent import local  # pip install gevent gunicorn setproctitle
 
     if isinstance(threading.local(), local.local):
         print("gunicorn: monkey.patch_all() applied")
@@ -386,7 +387,6 @@ def gevent():
 
 def geventWebSocketServer():
     from gevent import pywsgi
-
     # from geventwebsocket.handler import WebSocketHandler # pip install gevent-websocket
     from gevent_ws import WebSocketHandler  # pip install gevent gevent-ws
 
@@ -445,7 +445,8 @@ def wsgirefThreadingServer():
     import socket
     from concurrent.futures import ThreadPoolExecutor  # pip install futures
     from socketserver import ThreadingMixIn
-    from wsgiref.simple_server import WSGIRequestHandler, WSGIServer, make_server
+    from wsgiref.simple_server import (WSGIRequestHandler, WSGIServer,
+                                       make_server)
 
     class WSGIRefThreadingServer(ServerAdapter):
         def run(self, app_handler):

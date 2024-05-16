@@ -10,6 +10,7 @@ import copy
 import datetime
 import enum
 import functools
+import html as sanitize_html
 import http.client
 import http.cookies
 import importlib.machinery
@@ -34,7 +35,6 @@ import uuid
 import zipfile
 from collections import OrderedDict
 from contextlib import redirect_stderr, redirect_stdout
-import html as sanitize_html
 
 import portalocker
 from watchgod import awatch
@@ -48,7 +48,6 @@ except ImportError:
     gunicorn = None
 
 import click
-
 # Third party modules
 import ombott as bottle
 import pluralize
