@@ -1372,7 +1372,7 @@ class Reloader:
         dec_func = action.catch_errors(app_name, func)
         bottle.route(rule, **kwargs)(dec_func)
         filename = module2filename(func.__module__)
-        methods = kwargs.get("method", ["GET"])
+        methods = kwargs.get("method", ["GET", "POST"])
         if isinstance(methods, str):
             methods = [methods]
         for method in methods:
