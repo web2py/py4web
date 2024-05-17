@@ -48,6 +48,8 @@ if MODE == "full":
     from .vue_components_examples.vue_edit_form import vue_edit_form
     from .vue_components_examples.vue_grid_and_forms import vue_grid_and_forms
     from .examples.ws import index as ws
+    # by importing db you expose it to the _dashboard/dbadmin
+    from .examples.models import db
 
 
 @action("index")
