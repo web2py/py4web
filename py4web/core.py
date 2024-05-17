@@ -52,6 +52,7 @@ import click
 import ombott as bottle
 import pluralize
 import pydal
+import pydal.validators
 import renoir
 import renoir.constants
 import renoir.writers
@@ -614,6 +615,8 @@ class Session(Fixture):
         """
         # assert Session.SECRET, "Missing Session.SECRET"
         self.secret = secret or Session.SECRET
+        assert isinstance(self.secret, str) and \
+            not pydal.validators.IS_STRONG(entropy=50)(self.secret)[1], "Not a good secret"
         self.expiration = expiration
         self.algorithm = algorithm
         self.storage = storage

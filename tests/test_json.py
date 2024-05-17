@@ -1,7 +1,7 @@
 import datetime
+import fractions
 import json
 import unittest
-import fractions
 
 from py4web.core import dumps, objectify
 

@@ -8,16 +8,17 @@ import uuid
 import mechanize
 import requests
 
-from py4web import abort, action, DAL, Field, Session, Cache, HTTP, Condition
-from py4web.core import bottle, request, error404, Fixture
+from py4web import DAL, HTTP, Cache, Condition, Field, Session, abort, action
+from py4web.core import Fixture, bottle, error404, request
 
 os.environ["PY4WEB_APPS_FOLDER"] = os.path.sep.join(
     os.path.normpath(__file__).split(os.path.sep)[:-2]
 )
 
+SECRET = str(uuid.uuid4())
 db = DAL("sqlite://storage_%s" % uuid.uuid4(), folder="/tmp/")
 db.define_table("thing", Field("name"))
-session = Session(secret="my secret")
+session = Session(secret=SECRET)
 cache = Cache()
 
 action.app_name = "tests"
@@ -37,13 +38,16 @@ def index():
     clone_ok = 1 if field_clone.default == db.thing.name.default == "test_clone" else 0
     return "ok %s %s %s" % (session["number"], db(db.thing).count(), clone_ok)
 
+
 def fail():
     raise HTTP(404)
+
 
 @action("conditional")
 @action.uses(Condition(lambda: False, on_false=fail))
 def conditional():
     return "OK"
+
 
 @action("raise300")
 def raise300():

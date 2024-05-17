@@ -1,9 +1,11 @@
 import os
-import unittest
-import tempfile
 import signal
-from py4web.core import cli
+import tempfile
+import unittest
+
 from click.testing import CliRunner
+
+from py4web.core import cli
 
 
 def run_cli():

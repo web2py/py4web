@@ -1,6 +1,8 @@
-from types import SimpleNamespace
-import pytest
 import threading
+from types import SimpleNamespace
+
+import pytest
+
 from py4web.core import Fixture
 
 result = {"seq": []}

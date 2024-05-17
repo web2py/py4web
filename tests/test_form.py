@@ -1,8 +1,12 @@
 import io
 import os
 import unittest
-from py4web import request, response, Field, Session
+import uuid
+
+from py4web import Field, Session, request, response
 from py4web.utils.form import Form
+
+SECRET = str(uuid.uuid4())
 
 
 class FormTest(unittest.TestCase):
@@ -12,7 +16,7 @@ class FormTest(unittest.TestCase):
         response._cookies = ""
 
     def test_form(self):
-        session = Session()
+        session = Session(secret=SECRET)
         session.initialize()
         table = [Field("name")]
         form_name = "testing_form"

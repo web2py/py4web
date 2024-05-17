@@ -1,19 +1,27 @@
 import io
-import unittest
-import time
-import memcache
 import subprocess
+import time
+import unittest
+import uuid
+
+import memcache
 import pytest
 
-from py4web import request, response, Session, DAL
+from py4web import DAL, Session, request, response
 from py4web.core import _before_request
 from py4web.utils.dbstore import DBStore
+
 
 def unquote(text):
     print(repr(text))
     if text[:1] + text[-1:] == '""':
         text = text[1:-1]
     return text
+
+
+secret1 = str(uuid.uuid4())
+secret2 = str(uuid.uuid4())
+
 
 class TestSession(unittest.TestCase):
     def setUp(self):
@@ -24,7 +32,7 @@ class TestSession(unittest.TestCase):
 
     def test_session(self):
         request.app_name = "myapp"
-        session = Session(secret="a", expiration=10)
+        session = Session(secret=secret1, expiration=10)
         context = dict(status=200)
         session.on_request(context)
         session["key"] = "value"
@@ -39,13 +47,13 @@ class TestSession(unittest.TestCase):
             session.local
         self.assertTrue("py4web hint" in str(err.value))
 
-        session = Session(secret="b", expiration=10)
+        session = Session(secret=secret2, expiration=10)
         request.cookies[a] = b
         context = dict(status=200)
         session.on_request(context)
         self.assertEqual(session.get("key"), None)
 
-        session = Session(secret="a", expiration=10)
+        session = Session(secret=secret1, expiration=10)
         request.cookies[a] = b
         session.on_request(context)
         self.assertEqual(session.get("key"), "value")
@@ -53,7 +61,7 @@ class TestSession(unittest.TestCase):
     def test_session_in_db(self):
         request.app_name = "myapp"
         db = DAL("sqlite:memory")
-        session = Session(secret="a", expiration=10, storage=DBStore(db))
+        session = Session(secret=secret1, expiration=10, storage=DBStore(db))
         request.cookies.clear()
         context = dict(status=200)
         session.on_request(context)
@@ -88,7 +96,7 @@ class TestSession(unittest.TestCase):
             time.sleep(1)
             request.app_name = "myapp"
             conn = memcache.Client(["127.0.0.1:11211"], debug=0)
-            session = Session(secret="a", expiration=10, storage=conn)
+            session = Session(secret=secret1, expiration=10, storage=conn)
             request.cookies.clear()
             context = dict(status=200)
             session.on_request(context)

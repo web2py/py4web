@@ -1,7 +1,12 @@
 import os
 import unittest
-from py4web.core import Session, DAL, request, HTTP, Field, bottle, _before_request
+import uuid
+
+from py4web.core import (DAL, HTTP, Field, Session, _before_request, bottle,
+                         request)
 from py4web.utils.auth import Auth, AuthAPI
+
+SECRET = str(uuid.uuid4())
 
 
 class TestAuth(unittest.TestCase):
@@ -9,7 +14,7 @@ class TestAuth(unittest.TestCase):
         os.environ["PY4WEB_APPS_FOLDER"] = "apps"
         _before_request()  # mimic before_request bottle-hook
         self.db = DAL("sqlite:memory")
-        self.session = Session(secret="a", expiration=10)
+        self.session = Session(secret=SECRET, expiration=10)
         self.session.initialize()
         self.auth = Auth(
             self.session, self.db, define_tables=True, password_complexity=None
@@ -73,7 +78,7 @@ class TestAuth(unittest.TestCase):
         )
 
     def test_register(self):
-        self.on_request()        
+        self.on_request()
         body = {
             "username": "ppallino",
             "email": "pinco.pallino@example.com",
