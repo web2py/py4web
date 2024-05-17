@@ -3,11 +3,7 @@ let
     url = "https://github.com/NixOS/nixpkgs/tarball/nixos-23.05";
   };
 
-  pkgs = import nixpkgs-src {
-    config = {
-      allowUnfree = true;
-    };
-  };
+  pkgs = import nixpkgs-src {};
 
   # This is the Python version that will be used.
   myPython = pkgs.python311;
@@ -16,6 +12,10 @@ let
     pip
     setuptools
     wheel
+    twine
+    black
+    isort
+    pytest
   ]);
 
   lib-path = with pkgs; lib.makeLibraryPath [
@@ -25,21 +25,20 @@ let
 
   shell = pkgs.mkShell {
     buildInputs = [
-      # my python and packages
       pythonWithPkgs
+      pkgs.zip
       pkgs.memcached
       pkgs.redis
-
-      # other packages needed for compiling python libs
       pkgs.readline
       pkgs.libffi
       pkgs.openssl
+      pkgs.cmake
     ];
 
     shellHook = ''
       # Allow the use of wheels.
       SOURCE_DATE_EPOCH=$(date +%s)
-      VENV_PATH=/home/$USER/.nix-venvs$(pwd)/venv${myPython.version}
+      VENV_PATH=/home/$USER/.venvs$(pwd)/venv${myPython.version}
       # Augment the dynamic linker path
       export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${lib-path}"
 

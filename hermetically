@@ -1,0 +1,8 @@
+#!/bin/bash
+# Aauthor: Massimo Di Pierro
+# License: BSDv3
+
+# if Nix not installed, install it, then rerun this script with nix-shell
+[ -f /etc/nix/nix.conf ] || curl -L https://nixos.org/nix/install | sh -s -- --daemon
+command="$@"
+nix-shell --pure --run "$command"
