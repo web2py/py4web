@@ -737,7 +737,7 @@ class Session(Fixture):
         self_local = self.local
         self_local.changed = True
         self_local.data.clear()
-        self_local.data["uuid"] = str(uuid.uuid1())
+        self_local.data["uuid"] = str(uuid.uuid4())
         self_local.data["secure"] = self_local.secure
 
     def on_request(self, context):
