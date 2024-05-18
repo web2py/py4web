@@ -48,6 +48,7 @@ except ImportError:
     gunicorn = None
 
 import click
+
 # Third party modules
 import ombott as bottle
 import pluralize
@@ -101,15 +102,11 @@ DEFAULTS = dict(
 HELPERS = {name: getattr(yatl.helpers, name) for name in yatl.helpers.__all__}
 
 ART = r"""
- /#######  /##     /##/##   /## /##      /## /######## /####### 
-| ##__  ##|  ##   /##/ ##  | ##| ##  /# | ##| ##_____/| ##__  ##
-| ##  \ ## \  ## /##/| ##  | ##| ## /###| ##| ##      | ##  \ ##
-| #######/  \  ####/ | ########| ##/## ## ##| #####   | ####### 
-| ##____/    \  ##/  |_____  ##| ####_  ####| ##__/   | ##__  ##
-| ##          | ##         | ##| ###/ \  ###| ##      | ##  \ ##
-| ##          | ##         | ##| ##/   \  ##| ########| #######/
-|__/          |__/         |__/|__/     \__/|________/|_______/
-Is still experimental...
+██████◣◥█◣  ◢█◤ ██   ██ ██      ██ ███████ ██████◣  
+██   ██ ◥█◣◢█◤  ██   ██ ██      ██ ██      ██   ██ 
+██████◤  ◥██◤   ███████ ██  ◢◣  ██ ██████  ██████  
+██        ██         ██ ◥█◣◢██◣◢█◤ ██      ██   ██ 
+██        ██         ██  ◥██◤◥██◤  ███████ ██████◤
 """
 
 Field = pydal.Field
@@ -513,12 +510,12 @@ class RenoirXMLEscapeMixin:
         )
 
 
-class RenoirCustomWriter(RenoirXMLEscapeMixin, renoir.writers.Writer): ...
+class RenoirCustomWriter(RenoirXMLEscapeMixin, renoir.writers.Writer):
+    ...
 
 
-class RenoirCustomEscapeAllWriter(
-    RenoirXMLEscapeMixin, renoir.writers.EscapeAllWriter
-): ...
+class RenoirCustomEscapeAllWriter(RenoirXMLEscapeMixin, renoir.writers.EscapeAllWriter):
+    ...
 
 
 class Renoir(renoir.Renoir):
@@ -615,8 +612,10 @@ class Session(Fixture):
         """
         # assert Session.SECRET, "Missing Session.SECRET"
         self.secret = secret or Session.SECRET
-        assert isinstance(self.secret, str) and \
-            not pydal.validators.IS_STRONG(entropy=50)(self.secret)[1], "Not a good secret"
+        assert (
+            isinstance(self.secret, str)
+            and not pydal.validators.IS_STRONG(entropy=50)(self.secret)[1]
+        ), "Not a good secret"
         self.expiration = expiration
         self.algorithm = algorithm
         self.storage = storage
@@ -2046,6 +2045,10 @@ def run(**kwargs):
 
     # Start
     Reloader.import_apps()
+
+    if not Reloader.MODULES:
+        click.secho("No apps installed", fg="red")
+        sys.exit(1)
 
     # If we know where the password is stored, read it, otherwise ask for one
     if os.path.exists(os.path.join(os.environ["PY4WEB_APPS_FOLDER"], "_dashboard")):

@@ -2,7 +2,7 @@ import os
 from py4web import action, request, DAL, Field, Session, Cache, Condition
 
 # define session and cache objects
-session = Session(secret="some secret")
+session = Session()
 cache = Cache(size=1000)
 
 # define database and tables
