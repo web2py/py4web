@@ -2046,10 +2046,6 @@ def run(**kwargs):
     # Start
     Reloader.import_apps()
 
-    if not Reloader.MODULES:
-        click.secho("No apps installed", fg="red")
-        sys.exit(1)
-
     # If we know where the password is stored, read it, otherwise ask for one
     if os.path.exists(os.path.join(os.environ["PY4WEB_APPS_FOLDER"], "_dashboard")):
         if kwargs["dashboard_mode"] not in ("demo", "none") and not os.path.exists(
