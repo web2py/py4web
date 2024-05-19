@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "py4web"
 version = "1.20240518.3"
@@ -13,9 +17,9 @@ classifiers = [
 dynamic = ["dependencies"]
 
 [tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
+dependencies = {file = "requirements.txt"}
 
-[tool.setuptools]    
+[tool.setuptools]
 packages = ["py4web", "py4web.utils", "py4web.utils.auth_plugins",]
 
 [tool.setuptools.package-data]
