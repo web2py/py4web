@@ -8,25 +8,8 @@ import datetime
 from urllib.parse import urlparse
 
 from pydal.objects import Expression, Field, FieldVirtual
-from yatl.helpers import (
-    CAT,
-    DIV,
-    FORM,
-    INPUT,
-    OPTION,
-    SELECT,
-    SPAN,
-    TABLE,
-    TAG,
-    TBODY,
-    TD,
-    TH,
-    THEAD,
-    TR,
-    XML,
-    A,
-    I,
-)
+from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
+                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
 
 from py4web import HTTP, URL, redirect, request, safely
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -404,7 +387,6 @@ class Column:
 
 
 class Grid:
-
     FORMATTERS_BY_TYPE = {
         "boolean": lambda value: (
             INPUT(_type="checkbox", _checked=value, _disabled="disabled")
@@ -424,7 +406,9 @@ class Grid:
                 )
             )
             if value and isinstance(value, datetime.datetime)
-            else value if value else ""
+            else value
+            if value
+            else ""
         ),
         "time": lambda value: (
             XML(
@@ -432,7 +416,9 @@ class Grid:
                 % (value.hour, value.minute, value.second)
             )
             if value and isinstance(value, datetime.time)
-            else value if value else ""
+            else value
+            if value
+            else ""
         ),
         "date": lambda value: (
             XML(
@@ -444,7 +430,9 @@ class Grid:
                 )
             )
             if value and isinstance(value, datetime.date)
-            else value if value else ""
+            else value
+            if value
+            else ""
         ),
         "list:string": lambda value: ", ".join(str(x) for x in value) if value else "",
         "list:integer": lambda value: ", ".join(x for x in value) if value else "",
@@ -727,7 +715,6 @@ class Grid:
             )
 
         if self.action in ["new", "details", "edit"]:
-
             readonly = self.action == "details"
 
             attrs = self.attributes_plugin.form(url=request.url.split(":", 1)[1])
@@ -798,16 +785,20 @@ class Grid:
 
             select_params = dict()
             #  try getting sort order from the request
-            sort_order = request.query.get("orderby", "")
+            sort_order = request.query.get("orderby")
 
-            try:
+            select_params["orderby"] = self.param.orderby
+            if sort_order:
                 parts = sort_order.lstrip("~").split(".")
-                orderby = db[parts[0]][parts[1]]
-                if sort_order.startswith("~"):
-                    orderby = ~orderby
-                select_params["orderby"] = orderby
-            except (IndexError, KeyError, TypeError, AttributeError):
-                select_params["orderby"] = self.param.orderby
+                if (
+                    len(parts) == 2
+                    and parts[0] in db.tables
+                    and parts[1] in db[parts[p]]
+                ):
+                    orderby = db[parts[0]][parts[1]]
+                    if sort_order.startswith("~"):
+                        orderby = ~orderby
+                    select_params["orderby"] = orderby
 
             if self.param.left:
                 select_params["left"] = self.param.left
@@ -815,13 +806,8 @@ class Grid:
             if self.param.groupby:
                 select_params["groupby"] = self.param.groupby
 
-            if self.param.groupby:
+            if self.param.groupby or self.param.left:
                 #  need groupby fields in select to get proper count
-                self.total_number_of_rows = len(
-                    db(query).select(*self.param.groupby, **select_params)
-                )
-            elif self.param.left:
-                # TODO: maybe this can be made more efficient
                 self.total_number_of_rows = len(
                     db(query).select(db[self.tablename].id, **select_params)
                 )
@@ -1402,7 +1388,6 @@ class Grid:
         return pager
 
     def _make_table(self):
-
         html = DIV(**self.param.grid_class_style.get("grid-wrapper"))
         grid_header = DIV(**self.param.grid_class_style.get("grid-header"))
 
@@ -1652,9 +1637,9 @@ def get_parent(path, parent_field):
         parts = path.split("/")
         record_id = parts[1] if len(parts) > 1 else None
         if record_id:
-            r = child_table(record_id)
-            if r:
-                parent_id = r[fn]
+            record = child_table(record_id)
+            if record:
+                parent_id = record[fn]
 
     #  not passed in, check in the form
     if not parent_id:
@@ -1668,10 +1653,8 @@ def get_parent(path, parent_field):
             if "parent_id" in kvp:
                 parent_id = kvp.split("parent_id=")[1]
 
-    try:
+    if parent_id and "&" in parent_id:
         parent_id = parent_id.split("&")[0]
-    except Exception:
-        pass
 
     return parent_id
 
