@@ -48,7 +48,7 @@ def init_foo():
     return init
 
 
-def test_fixtute_local_storage(init_foo):
+def test_fixture_local_storage(init_foo):
     assert init_foo("t1", "a1") is foo
     evnt_done = threading.Event()
     evnt_play = threading.Event()
@@ -66,7 +66,7 @@ def test_fixtute_local_storage(init_foo):
     assert ",".join(result["seq"]) == "t1,t2,t3"
 
 
-def test_fixtute_error():
+def test_fixture_error():
     before_request()
     # attempt to access _safe_local prop without on_request-call
     with pytest.raises(RuntimeError) as err:
