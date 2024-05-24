@@ -145,7 +145,7 @@ The second one forces the login if needed:
    @action.uses(auth.user)
    def index():
        user = auth.get_user()
-       return 'hello {first_name}'.format(**user)'
+       return 'hello {first_name}'.format(**user)
 
 Here ``@action.uses(auth.user)`` tells py4web that this action requires
 a logged in user and should redirect to login if no user is logged in.
