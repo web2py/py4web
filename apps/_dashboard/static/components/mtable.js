@@ -150,11 +150,13 @@
 	}
         if (item.id) {
             url += '/' + item.id;
-            Q.put(url, item).then(mtable.handle_response('put', this),
-                                      mtable.handle_response('put', this));
+	    var data = JSON.parse(JSON.stringify(item));
+	    delete data["id"];
+            Q.put(url, data).then(mtable.handle_response('put', this),
+                                  mtable.handle_response('put', this));
         } else {
             Q.post(url, item).then(mtable.handle_response('post', this),
-                                       mtable.handle_response('post', this));
+                                   mtable.handle_response('post', this));
         }
 	location.reload();    
     };
