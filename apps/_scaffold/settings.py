@@ -9,7 +9,7 @@ import os
 from py4web.core import required_folder
 
 # mode (default or development)
-MODE = os.environ["PY4WEB_MODE"]
+MODE = os.environ.get("PY4WEB_MODE")
 
 # db settings
 APP_FOLDER = os.path.dirname(__file__)
