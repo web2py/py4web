@@ -9,7 +9,7 @@ import mechanize
 import requests
 
 from py4web import DAL, HTTP, Cache, Condition, Field, Session, abort, action
-from py4web.core import Fixture, bottle, error404, request
+from py4web.core import Fixture, MetaLocal, bottle, error404, request
 
 os.environ["PY4WEB_APPS_FOLDER"] = os.path.sep.join(
     os.path.normpath(__file__).split(os.path.sep)[:-2]
@@ -76,7 +76,7 @@ corrector = Corrector()
 
 @action("abort_caught")
 @action.uses(corrector)
-def abort_response():
+def abort_response_corrected():
     abort(400)
 
 
@@ -127,7 +127,6 @@ class CacheAction(unittest.TestCase):
     def test_local(self):
         # for test coverage
         request.app_name = "example"
-        Session.__init_request_ctx__()  # mimic before_request-hook
         index()
 
     def test_error_page(self):

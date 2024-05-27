@@ -17,10 +17,11 @@ class FormTest(unittest.TestCase):
 
     def test_form(self):
         session = Session(secret=SECRET)
-        session.initialize()
+        session.on_request({})
         table = [Field("name")]
         form_name = "testing_form"
         f = Form(table, form_name=form_name, csrf_session=session)
         value = f.formkey
         post_vars = dict(_formname=form_name, _formkey=value)
         self.assertTrue(f._verify_form(post_vars))
+        session.on_success({})

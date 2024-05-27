@@ -116,10 +116,6 @@ class URLSigner(Fixture):
         assert "_signature" not in self.variables_to_sign
         self.algo = algo or hashlib.sha256
 
-    @property
-    def local(self):
-        return self._safe_local
-
     def on_request(self, context):
         """Creates the signing key if necessary."""
         if self.session is not None and self.session.get("_signature_key") is None:

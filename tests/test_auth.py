@@ -1,9 +1,9 @@
+import io
 import os
 import unittest
 import uuid
 
-from py4web.core import (DAL, HTTP, Field, Session, _before_request, bottle,
-                         request)
+from py4web.core import DAL, HTTP, Field, MetaLocal, Session, bottle, request, safely
 from py4web.utils.auth import Auth, AuthAPI
 
 SECRET = str(uuid.uuid4())
@@ -12,10 +12,8 @@ SECRET = str(uuid.uuid4())
 class TestAuth(unittest.TestCase):
     def setUp(self):
         os.environ["PY4WEB_APPS_FOLDER"] = "apps"
-        _before_request()  # mimic before_request bottle-hook
         self.db = DAL("sqlite:memory")
         self.session = Session(secret=SECRET, expiration=10)
-        self.session.initialize()
         self.auth = Auth(
             self.session, self.db, define_tables=True, password_complexity=None
         )
@@ -24,12 +22,15 @@ class TestAuth(unittest.TestCase):
         request.app_name = "_scaffold"
 
     def tearDown(self):
+        # this is normally done by @action
+        safely(lambda: MetaLocal.local_delete(self.session))
         bottle.app.router.remove("/*")
 
     def action(self, name, method, query, data):
         request.environ["REQUEST_METHOD"] = method
         request.environ["ombott.request.query"] = query
         request.environ["ombott.request.json"] = data
+        request.environ["wsgi.input"] = io.BytesIO()
         # we break a symmetry below. should fix in auth.py
         if name.startswith("api/"):
             return getattr(AuthAPI, name[4:])(self.auth)
@@ -37,17 +38,20 @@ class TestAuth(unittest.TestCase):
             return getattr(self.auth.form_source, name)()
 
     def on_request(self, context={}, keep_session=False):
-        storage = self.session._safe_local
-
-        # mimic before_request bottle-hook
-        _before_request()
-
-        # mimic action.uses()
-        self.session.initialize()
+        # store the current session
+        try:
+            storage = self.session.local.__dict__
+        except RuntimeError:
+            storage = None
+        # reinitialize everything
+        safely(lambda: MetaLocal.local_delete(self.session))
+        safely(lambda: MetaLocal.local_delete(self.auth.flash))
+        self.session.on_request(context)
         self.auth.flash.on_request(context)
         self.auth.on_request(context)
-        if keep_session:
-            self.session._safe_local = storage
+        # restore the previous session
+        if keep_session and storage:
+            self.session.local.__dict__.update(storage)
 
     def test_extra_fields(self):
         db = DAL("sqlite:memory")
@@ -101,7 +105,6 @@ class TestAuth(unittest.TestCase):
             {"status": "error", "message": "Invalid Credentials", "code": 400},
         )
 
-        self.on_request()
         self.on_request()
         body = {"email": "pinco.pallino@example.com", "password": "123456789"}
         self.assertEqual(

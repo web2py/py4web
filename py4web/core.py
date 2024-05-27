@@ -122,17 +122,26 @@ os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parents[1])
 
 # hold all framework hooks in one place
 # NOTE: `after_request` hooks are not currently used
-_REQUEST_HOOKS = types.SimpleNamespace(before=set())
+REQUEST_HOOKS = type("Object", (), dict(before=[]))
+
+# set to true to debug issues with fixtures
+DEBUG = False
 
 
-def _before_request(*args, **kw):
-    [h(*args, **kw) for h in _REQUEST_HOOKS.before]
-
-
-bottle.default_app().add_hook("before_request", _before_request)
+def register_hooks():
+    """register hooks with ombott if they exist"""
+    if not REQUEST_HOOKS.before:
+        return
+    bottle.default_app().add_hook(
+        "before_request",
+        lambda *args, **kwargs: [
+            func(*args, **kwargs) for func in REQUEST_HOOKS.before
+        ],
+    )
 
 
 def module2filename(module):
+    """given a module name as a string, convert to filename"""
     filename = os.path.join(*module.split(".")[1:])
     filename = (
         os.path.join(filename, "__init__.py")
@@ -214,7 +223,12 @@ class Cache:
 
     def get(self, key, callback, expiration=3600, monitor=None):
         """If key not stored or key has expired and monitor == None or monitor() value has changed, returns value = callback()"""
-        node, t0 = self.mapping.get(key), time.time()
+        # set defaults
+        node = self.mapping.get(key)
+        t0 = time.time()
+        value = None
+        t = t0
+        # update
         with self.lock:
             if node:
                 # if a node was found remove it from storage
@@ -235,7 +249,8 @@ class Cache:
                 # ignore the value found
                 node = None
         if node is None:
-            value, t = callback(), t0
+            value = callback()
+            t = t0
         # add the new node back into storage
         with self.lock:
             new_node = Node(key, value, t, m, prev=self.head, next=self.head.next)
@@ -309,50 +324,14 @@ def dumps(obj, sort_keys=True, indent=2):
 
 
 class Fixture:
-    __request_master_ctx__ = threading.local()
-    __fixture_debug__ = False
+    """all fixtures should inherit from this class and have the methods below"""
 
     # normally on_success/on_error are only called if none of the previous
     # on_request failed, if a fixture is_hook then on_error is always called.
     is_hook = False
 
-    @classmethod
-    def __init_request_ctx__(cls):
-        cls.__request_master_ctx__.request_ctx = dict()
-
-    @classmethod
-    def __mount_local__(cls, self, storage):
-        cls.__request_master_ctx__.request_ctx[self] = storage
-
-    @property
-    def _safe_local(self):
-        try:
-            ret = self.__request_master_ctx__.request_ctx[self]
-        except (KeyError, AttributeError) as err:
-            msg = "py4web hint: check @action.uses() for the missing fixture {}".format(
-                self
-            )
-            raise RuntimeError(msg) from err
-        return ret
-
-    @_safe_local.setter
-    def _safe_local(self, storage):
-        self.__mount_local__(self, storage)
-
-    def is_valid(self):
-        """check if the fixture is valid in context"""
-
-        ctx = getattr(self.__request_master_ctx__, "request_ctx", None)
-        if not ctx or self not in ctx:
-            logging.warn(
-                "attempted access to fixture %s from outside a request",
-                self.__class__.__name__,
-            )
-            return False
-        return True
-
     def on_request(self, context):
-        pass  # called when a request arrives
+        pass  # called when a request arrived
 
     def on_error(self, context):
         pass  # called when a request errors
@@ -360,12 +339,49 @@ class Fixture:
     def on_success(self, context):
         pass  # called when a request is successful
 
+class MetaLocalUndefined(RuntimeError): pass
 
-_REQUEST_HOOKS.before.add(Fixture.__init_request_ctx__)
+class MetaLocal:
+    """special object for safe thread locals"""
+
+    _local = threading.local()
+
+    @staticmethod
+    def local_initialize(self):
+        """To be called in on_request if the Fixtures needs a thread local dict"""
+        if not hasattr(MetaLocal._local, "request_ctx"):
+            MetaLocal._local.request_ctx = {}
+        if self in MetaLocal._local.request_ctx:
+            raise RuntimeError(f"initialize_thread_local called twice for {self}")
+        MetaLocal._local.request_ctx[self] = types.SimpleNamespace()
+
+    @staticmethod
+    def local_delete(self):
+        """To be called in on_success and on_error to cleat the thread local"""
+        del MetaLocal._local.request_ctx[self]
+
+    @property
+    def local(self):
+        """Returns the fixture thread local dict if initialized else a default one"""
+        try:
+            return MetaLocal._local.request_ctx[self]
+        except (AttributeError, KeyError):
+            raise MetaLocalUndefined(f"thread local not initialized for {self}") from None
+
+    def is_valid(self):
+        """Checks if the fixture has a valid thread local dict"""
+        try:
+            MetaLocal._local.request_ctx[self]
+            return True
+        except (AttributeError, KeyError):
+            return False
 
 
 class Translator(pluralize.Translator, Fixture):
+    """a Fixture wrapper for the pluralize.Translator"""
+
     def on_request(self, context):
+        # important: pluralize.Translator has its own thread local
         self.select(request.headers.get("Accept-Language", "en"))
 
     def on_success(self, context):
@@ -373,7 +389,10 @@ class Translator(pluralize.Translator, Fixture):
 
 
 class DAL(pydal.DAL, Fixture):
+    """a Fixture wrappre for pydal.DAL"""
+
     def on_request(self, context):
+        # important: the connection pool handles its own thread local
         self.get_connection_from_pool_or_new()
         threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
 
@@ -434,7 +453,7 @@ ICECUBE = {}
 #########################################################################################
 
 
-class Flash(Fixture):
+class Flash(Fixture, MetaLocal):
     """
     flash = Flash()
 
@@ -448,16 +467,8 @@ class Flash(Fixture):
     Also notice all Flash objects share the same threading local so act as singletons
     """
 
-    # this essential makes flash a singleton
-    # necessary because auth defines its own flash
-    # possible because flash does not depend on the app
-
-    @property
-    def local(self):
-        return self._safe_local
-
     def on_request(self, context):
-        self._safe_local = types.SimpleNamespace()
+        MetaLocal.local_initialize(self)
         # when a new request arrives we look for a flash message in the cookie
         flash = request.get_cookie("py4web-flash")
         if flash:
@@ -480,15 +491,12 @@ class Flash(Fixture):
                 context["template_inject"]["flash"] = flash
             else:
                 context["template_inject"] = dict(flash=flash)
-        else:
-            if self.local.flash is not None:
-                response.headers["component-flash"] = json.dumps(flash)
-        self.local.flash = None
-        self.local.__dict__.clear()
+        elif self.local.flash is not None:
+            response.headers["component-flash"] = json.dumps(flash)
 
     def on_error(self, context):
         """Clears the local to prevent leakage."""
-        self.local.__dict__.clear()
+        pass
 
     def set(self, message, _class="", sanitize=True):
         # we set a flash message
@@ -584,16 +592,16 @@ class Template(Fixture):
 #########################################################################################
 
 
-class Session(Fixture):
+class Session(Fixture, MetaLocal):
     # All apps share the same default secret if not specified.
     # important for _dashboard reload
     # the actual value is loaded from a file
     SECRET = None
-    __slots__ = ["_safe", "secret", "expiration", "algorithm", "storage", "same_site"]
+    _params = {}
 
     @property
-    def local(self):
-        return self._safe_local
+    def params(self):
+        return Session._params[self]
 
     def __init__(
         self,
@@ -610,37 +618,44 @@ class Session(Fixture):
         (optional) storage must have a get(key) and set(key,value,expiration) methods
         session is stored signed and encrypted in the cookie
         """
-        # assert Session.SECRET, "Missing Session.SECRET"
-        self.secret = secret or Session.SECRET
+        secret = secret or Session.SECRET
         assert (
-            isinstance(self.secret, str)
-            and not pydal.validators.IS_STRONG(entropy=50)(self.secret)[1]
+            isinstance(secret, str)
+            and not pydal.validators.IS_STRONG(entropy=50)(secret)[1]
         ), "Not a good secret"
-        self.expiration = expiration
-        self.algorithm = algorithm
-        self.storage = storage
-        self.same_site = same_site
-        self.name = name
-        if isinstance(storage, Session):
-            self.__prerequisites__ = [storage]
-        if hasattr(storage, "__prerequisites__"):
-            self.__prerequisites__ = storage.__prerequisites__
 
-    def initialize(self, app_name="unknown", data=None, changed=False, secure=False):
-        self._safe_local = types.SimpleNamespace()
-        local = self.local
-        local.changed = changed
-        local.data = data or {}
-        local.session_cookie_name = self.name.format(app_name=app_name)
-        local.secure = secure
+        if isinstance(storage, Session):
+            prerequisites = [storage]
+        elif hasattr(storage, "__prerequisites__"):
+            prerequisites = storage.__prerequisites__
+        else:
+            prerequisites = []
+        Session._params[self] = type(
+            "Object",
+            (),
+            dict(
+                secret=secret,
+                expiration=expiration,
+                algorithm=algorithm,
+                storage=storage,
+                same_site=same_site,
+                name=name,
+                prerequisites=prerequisites,
+            ),
+        )
+
+    @property
+    def __prerequisites__(self):
+        return self.params.prerequisites
 
     def load(self):
-        self.initialize(
-            app_name=request.app_name,
-            changed=False,
-            secure=request.url.startswith("https"),
-        )
+        app_name = request.app_name
+        params = self.params
         self_local = self.local
+        self_local.changed = False
+        self_local.data = {}
+        self_local.session_cookie_name = params.name.format(app_name=app_name)
+        self_local.secure = request.url.startswith("https")
         raw_token = request.get_cookie(
             self_local.session_cookie_name
         ) or request.query.get("_session_token")
@@ -651,67 +666,73 @@ class Session(Fixture):
                 or request.json
                 and request.json.get("_session_token")
             )
-        if Fixture.__fixture_debug__:
+        if DEBUG:
             logging.debug("Session token found %s", raw_token)
         if raw_token:
             try:
-                if self.storage:
+                if params.storage:
                     token_data = raw_token.encode()
-                    json_data = self.storage.get(token_data)
+                    json_data = params.storage.get(token_data)
                     if isinstance(json_data, bytes):
                         json_data = json_data.decode("utf8")
                     if json_data:
                         self_local.data = json.loads(json_data)
                 else:
                     try:
-                        self_local.data = secure_loads(raw_token, self.secret.encode())
+                        self_local.data = secure_loads(
+                            raw_token, params.secret.encode()
+                        )
                     except (AssertionError, json.JSONDecodeError):
                         self_local.data = {}
-                if self.expiration is not None and self.storage is None:
-                    assert self_local.data["timestamp"] > time.time() - int(
-                        self.expiration
-                    )
-                assert self.get_data().get("secure") == self_local.secure
             except Exception as err:
-                if Fixture.__fixture_debug__:
+                if DEBUG:
                     logging.debug("Session error %s", err)
         if (
-            self.get_data().get("session_cookie_name") != self_local.session_cookie_name
-            or "uuid" not in self.get_data()
+            self.local.data.get("session_cookie_name") != self_local.session_cookie_name
+            or self.local.data.get("secure") != self_local.secure
+            or "uuid" not in self.local.data
+            or (
+                params.expiration is not None
+                and params.storage is None
+                and self_local.data["timestamp"] < time.time() - int(params.expiration)
+            )
         ):
             self.clear()
 
-    def get_data(self):
-        return getattr(self.local, "data", {})
-
     def save(self):
+        params = self.params
         self_local = self.local
         self_local.data["timestamp"] = time.time()
         self_local.data["session_cookie_name"] = self_local.session_cookie_name
-        if self.storage:
+        if params.storage:
             cookie_data = self_local.data["uuid"]
-            self.storage.set(cookie_data, json.dumps(self_local.data), self.expiration)
+            params.storage.set(
+                cookie_data, json.dumps(self_local.data), params.expiration
+            )
         else:
-            cookie_data = secure_dumps(self_local.data, self.secret.encode())
-        if Fixture.__fixture_debug__:
+            cookie_data = secure_dumps(self_local.data, params.secret.encode())
+        if DEBUG:
             logging.debug("Session stored %s", cookie_data)
         response.set_cookie(
             self_local.session_cookie_name,
             cookie_data,
             path="/",
             secure=self_local.secure,
-            same_site=self.same_site,
+            same_site=params.same_site,
             httponly=True,
         )
 
     def get(self, key, default=None):
-        return self.get_data().get(key, default)
+        try:
+            return self.local.data.get(key, default)
+        except MetaLocalUndefined:
+            return default
 
     def __getitem__(self, key):
-        return self.get_data()[key]
+        return self.local.data[key]
 
     def __delitem__(self, key):
-        if key in self.get_data():
+        if key in self.local.data:
             self.local.changed = True
             del self.local.data[key]
 
@@ -720,16 +741,20 @@ class Session(Fixture):
         self.local.data[key] = value
 
     def __contains__(self, other):
-        return other in self.get_data()
+        return other in self.local.data
 
     def keys(self):
-        return self.get_data().keys()
+        return self.local.data.keys()
 
     def items(self):
-        return self.get_data().items()
+        return self.local.data.items()
 
     def __iter__(self):
-        yield from self.get_data().keys()
+        yield from self.local.data.keys()
+
+    __getattr__ = get
+    __setattr__ = __setitem__
+    __delattr__ = __delitem__
 
     def clear(self):
         """Produces a brand-new session."""
@@ -740,6 +765,7 @@ class Session(Fixture):
         self_local.data["secure"] = self_local.secure
 
     def on_request(self, context):
+        MetaLocal.local_initialize(self)
         self.load()
 
     def on_error(self, context):
@@ -776,10 +802,11 @@ def URL(
     if use_appname is None:
         # force use_appname on domain-unmapped apps
         use_appname = not request.environ.get("HTTP_X_PY4WEB_APPNAME")
+    has_appname = False
     if use_appname:
         # app_name is not set by py4web shell
         app_name = getattr(request, "app_name", None)
-    has_appname = use_appname and app_name
+        has_appname = use_appname and app_name
     script_name = (
         request.environ.get("SCRIPT_NAME", "")
         or request.environ.get("HTTP_X_SCRIPT_NAME", "")
@@ -880,7 +907,7 @@ class action:
                 fixtures.append(fixture)
 
         def decorator(func):
-            if Fixture.__fixture_debug__:
+            if DEBUG:
                 # in debug mode log all calls to fixtures
                 def call(f, context):
                     logging.debug(
@@ -928,8 +955,10 @@ class action:
                                     call(fixture.on_success, context)
                             except Exception as error:
                                 context["exception"] = context.get("exception") or error
-                    if context.get("exception"):
-                        raise context["exception"]
+                        safely(lambda: MetaLocal.local_delete(fixture))
+                    exception = context.get("exception")
+                    if isinstance(exception, Exception):
+                        raise exception
                 return context.get("output", "")
 
             return wrapper
@@ -1256,7 +1285,7 @@ class Reloader:
             ## APP_WATCH tasks, if used by any app
             try_app_watch_tasks()
 
-        _REQUEST_HOOKS.before.add(hook)
+        REQUEST_HOOKS.before.append(hook)
 
     @staticmethod
     def clear_routes(app_names=None):
@@ -1629,6 +1658,8 @@ def start_server(kwargs):
         if not hasattr(_ssl, "sslwrap"):
             _ssl.sslwrap = new_sslwrap
 
+    register_hooks()
+
     if kwargs["watch"] != "off":
         watch(apps_folder, server_config, kwargs["watch"])
 
@@ -1697,9 +1728,9 @@ def install_args(kwargs, reinstall_apps=False):
     kwargs["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
     for key, val in kwargs.items():
         os.environ["PY4WEB_" + key.upper()] = str(val)
-    Fixture.__fixture_debug__ = kwargs.get("debug", False)
+    DEBUG = kwargs.get("debug", False)
     logging.getLogger().setLevel(
-        0 if Fixture.__fixture_debug__ else kwargs.get("logging_level", logging.WARNING)
+        0 if DEBUG else kwargs.get("logging_level", logging.WARNING)
     )
     yes2 = yes = kwargs.get("yes", False)
     # If the apps folder does not exist create it and populate it
