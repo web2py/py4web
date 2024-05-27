@@ -1,9 +1,7 @@
 import threading
-from types import SimpleNamespace
-
 import pytest
 
-from py4web.core import Fixture, MetaLocal
+from py4web.core import Fixture
 
 
 def run_thread(func, *a):
@@ -11,9 +9,9 @@ def run_thread(func, *a):
     return t
 
 
-class Foo(Fixture, MetaLocal):
+class Foo(Fixture):
     def on_request(self, context):
-        MetaFixture.local_initialize(self)
+        Fixture.local_initialize(self)
 
     @property
     def bar(self):
@@ -31,12 +29,12 @@ foo = Foo()
 @pytest.fixture
 def init_foo():
     def init(key, a, evnt_done=None, evnt_play=None):
-        MetaLocal.local_initialize(foo)
+        Fixture.local_initialize(foo)
         foo.bar = a
         evnt_done and evnt_done.set()
         evnt_play and evnt_play.wait()
         results[key] = foo.bar
-        MetaLocal.local_delete(foo)
+        Fixture.local_delete(foo)
         return foo
 
     return init

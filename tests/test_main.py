@@ -26,9 +26,6 @@ def run_cli():
 
 class MainTest(unittest.TestCase):
     def test_main(self):
-        class MyException(Exception):
-            pass
-
         def handler(signum, frame):
             raise KeyboardInterrupt
 

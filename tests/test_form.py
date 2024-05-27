@@ -1,5 +1,4 @@
 import io
-import os
 import unittest
 import uuid
 

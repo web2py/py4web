@@ -1,4 +1,3 @@
-import os
 import unittest
 
 from py4web.core import get_error_snapshot

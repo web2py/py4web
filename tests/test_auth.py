@@ -3,7 +3,7 @@ import os
 import unittest
 import uuid
 
-from py4web.core import DAL, HTTP, Field, MetaLocal, Session, bottle, request, safely
+from py4web.core import DAL, HTTP, Field, Fixture, Session, bottle, request, safely
 from py4web.utils.auth import Auth, AuthAPI
 
 SECRET = str(uuid.uuid4())
@@ -23,7 +23,7 @@ class TestAuth(unittest.TestCase):
 
     def tearDown(self):
         # this is normally done by @action
-        safely(lambda: MetaLocal.local_delete(self.session))
+        safely(lambda: Fixture.local_delete(self.session))
         bottle.app.router.remove("/*")
 
     def action(self, name, method, query, data):
@@ -34,18 +34,18 @@ class TestAuth(unittest.TestCase):
         # we break a symmetry below. should fix in auth.py
         if name.startswith("api/"):
             return getattr(AuthAPI, name[4:])(self.auth)
-        else:
-            return getattr(self.auth.form_source, name)()
+        return getattr(self.auth.form_source, name)()
 
-    def on_request(self, context={}, keep_session=False):
+    def on_request(self, context=None, keep_session=False):
         # store the current session
+        context = context or {}
         try:
             storage = self.session.local.__dict__
         except RuntimeError:
             storage = None
         # reinitialize everything
-        safely(lambda: MetaLocal.local_delete(self.session))
-        safely(lambda: MetaLocal.local_delete(self.auth.flash))
+        safely(lambda: Fixture.local_delete(self.session))
+        safely(lambda: Fixture.local_delete(self.auth.flash))
         self.session.on_request(context)
         self.auth.flash.on_request(context)
         self.auth.on_request(context)

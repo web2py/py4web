@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from py4web.core import Template, request
+from py4web.core import Template
 
 PATH = os.path.join(os.path.dirname(__file__), "templates")
 

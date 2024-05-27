@@ -9,7 +9,7 @@ import memcache
 import pytest
 
 from py4web import DAL, Session, request, response
-from py4web.core import MetaLocal
+from py4web.core import Fixture
 from py4web.utils.dbstore import DBStore
 
 
@@ -33,7 +33,7 @@ def request_context(session, context={}):
         session.on_success(context)
     finally:
         session.on_error(context)
-        MetaLocal.local_delete(session)
+        Fixture.local_delete(session)
 
 
 class TestSession(unittest.TestCase):
@@ -44,7 +44,6 @@ class TestSession(unittest.TestCase):
         with request_context(session):
             session["key"] = "value"
             assert "key" in session.local.data
-            cookie_name = session.local.session_cookie_name
 
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
         b = unquote(b)
@@ -67,7 +66,6 @@ class TestSession(unittest.TestCase):
         with request_context(session):
             session.key = "value"
             assert "key" in session.local.data
-            cookie_name = session.local.session_cookie_name
 
         a, b = str(response._cookies)[len("Set-Cookie: ") :].split(";")[0].split("=", 1)
         b = unquote(b)

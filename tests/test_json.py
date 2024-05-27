@@ -10,7 +10,7 @@ class TestJson(unittest.TestCase):
     def test_objectify(self):
         """Check if we can serialize objects, generators, and dates"""
 
-        class A(object):
+        class A:
             def __init__(self, x):
                 self.x = x
 

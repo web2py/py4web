@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# pylint: disable=too-many-lines,line-too-long,too-many-branches,use-dict-literal,too-many-arguments,too-few-public-methods,too-many-locals,broad-exception-caught,cell-var-from-loop
+
 """PY4WEB - a web framework for rapid development of efficient database driven web applications"""
 
 # Standard modules
@@ -39,8 +41,6 @@ from contextlib import redirect_stderr, redirect_stdout
 import portalocker
 from watchgod import awatch
 
-from . import server_adapters
-
 # Optional web servers for speed
 try:
     import gunicorn
@@ -60,6 +60,7 @@ import renoir.writers
 import threadsafevariable
 import yatl
 
+from . import server_adapters
 from .utils.misc import secure_dumps, secure_loads
 
 bottle.DefaultConfig.max_memfile_size = 16 * 1024 * 1024
@@ -122,7 +123,7 @@ os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parents[1])
 
 # hold all framework hooks in one place
 # NOTE: `after_request` hooks are not currently used
-REQUEST_HOOKS = type("Object", (), dict(before=[]))
+REQUEST_HOOKS = type("Object", (), dict(before=[]))  # pylint: disable=invalid-name
 
 # set to true to debug issues with fixtures
 DEBUG = False
@@ -165,7 +166,7 @@ def required_folder(*parts):
     path = os.path.join(*parts)
     if not os.path.exists(path):
         os.makedirs(path)
-    assert os.path.isdir(path), "%s is not a folder as required" % path
+    assert os.path.isdir(path), f"{path} is not a folder as required"
     return path
 
 
@@ -178,7 +179,7 @@ def safely(func, exceptions=(Exception,), log=False, default=None):
         return func()
     except exceptions as err:
         if log:
-            logging.warn(str(err))
+            logging.warning(str(err))
         return default() if callable(default) else default
 
 
@@ -188,7 +189,12 @@ def safely(func, exceptions=(Exception,), log=False, default=None):
 
 
 class Node:
-    def __init__(self, key=None, value=None, t=None, m=None, prev=None, next=None):
+    """A node for the LRU cache"""
+
+    def __init__(
+        self, key=None, value=None, t=None, m=None, prev=None, next=None
+    ):  # pylint: disable=redefined-builtin
+        """create a node of the LRU cache"""
         self.key, self.value, self.t, self.m, self.prev, self.next = (
             key,
             value,
@@ -213,6 +219,7 @@ class Cache:
     """
 
     def __init__(self, size=1000):
+        """Create an LRU caching object"""
         self.free = size
         self.head = Node()
         self.tail = Node()
@@ -263,10 +270,12 @@ class Cache:
         return value
 
     def memoize(self, expiration=3600):
+        """Decorator to memorize the output of any fuction"""
+
         def decorator(func):
             @functools.wraps(func)
             def memoized_func(*args, **kwargs):
-                key = "%s:%s:%s:%s" % (func.__module__, func.__name__, args, kwargs)
+                key = f"{func.__module__}:{func.__name__}:{args}:{kwargs}"
                 return self.get(
                     key,
                     lambda args=args, kwargs=kwargs: func(*args, **kwargs),
@@ -283,31 +292,31 @@ class Cache:
 #########################################################################################
 
 
-def objectify(obj):
+def objectify(obj):  # pylint: disable=too-many-return-statements
     """converts the obj(ect) into a json serializable object"""
     if isinstance(obj, numbers.Integral):
         return int(obj)
-    elif isinstance(obj, (numbers.Rational, numbers.Real)):
+    if isinstance(obj, (numbers.Rational, numbers.Real)):
         return float(obj)
-    elif isinstance(obj, (datetime.date, datetime.datetime, datetime.time)):
+    if isinstance(obj, (datetime.date, datetime.datetime, datetime.time)):
         return obj.isoformat().replace("T", " ")
-    elif isinstance(obj, str):
+    if isinstance(obj, str):
         return obj
-    elif isinstance(obj, dict):
+    if isinstance(obj, dict):
         return obj
-    elif hasattr(obj, "as_list"):
+    if hasattr(obj, "as_list"):
         return obj.as_list()
-    elif hasattr(obj, "as_dict"):
+    if hasattr(obj, "as_dict"):
         return obj.as_dict()
-    elif hasattr(obj, "__iter__") or isinstance(obj, types.GeneratorType):
+    if hasattr(obj, "__iter__") or isinstance(obj, types.GeneratorType):
         return list(obj)
-    elif hasattr(obj, "xml"):
+    if hasattr(obj, "xml"):
         return obj.xml()
-    elif isinstance(
+    if isinstance(
         obj, enum.Enum
     ):  # Enum class handled specially to address self reference in __dict__
         return dict(name=obj.name, value=obj.value, __class__=obj.__class__.__name__)
-    elif hasattr(obj, "__dict__") and hasattr(obj, "__class__"):
+    if hasattr(obj, "__dict__") and hasattr(obj, "__class__"):
         d = dict(obj.__dict__)
         d["__class__"] = obj.__class__.__name__
         return d
@@ -315,6 +324,7 @@ def objectify(obj):
 
 
 def dumps(obj, sort_keys=True, indent=2):
+    """General purpose memoize function with sane default"""
     return json.dumps(obj, default=objectify, sort_keys=sort_keys, indent=indent)
 
 
@@ -323,89 +333,107 @@ def dumps(obj, sort_keys=True, indent=2):
 #########################################################################################
 
 
-class Fixture:
-    """all fixtures should inherit from this class and have the methods below"""
+class LocalUndefined(RuntimeError):
+    """
+    Exception raised trying to access an unitialized thread local
+    from a Fixture
+    """
+
+
+class BareFixture:
+    """Minimal Fixture class - without thread local logic"""
 
     # normally on_success/on_error are only called if none of the previous
     # on_request failed, if a fixture is_hook then on_error is always called.
     is_hook = False
 
-    def on_request(self, context):
-        pass  # called when a request arrived
+    def on_request(self, context):  # pylint: disable=unused-argument
+        """Method that will be called when a new HTTP request arrives"""
 
-    def on_error(self, context):
-        pass  # called when a request errors
+    def on_error(self, context):  # pylint: disable=unused-argument
+        """Method that will be called when an HTTP request errors"""
 
-    def on_success(self, context):
-        pass  # called when a request is successful
+    def on_success(self, context):  # pylint: disable=unused-argument
+        """Method that will be called when an HTTP request succeeds"""
 
-class MetaLocalUndefined(RuntimeError): pass
 
-class MetaLocal:
-    """special object for safe thread locals"""
+class Fixture(BareFixture):
+    """
+    Fixture class - with thread local logic
+    all fixtures should inherit from this class
+    """
+
+    ### being logic to handle safe thread local
 
     _local = threading.local()
 
     @staticmethod
-    def local_initialize(self):
+    def local_initialize(obj):
         """To be called in on_request if the Fixtures needs a thread local dict"""
-        if not hasattr(MetaLocal._local, "request_ctx"):
-            MetaLocal._local.request_ctx = {}
-        if self in MetaLocal._local.request_ctx:
-            raise RuntimeError(f"initialize_thread_local called twice for {self}")
-        MetaLocal._local.request_ctx[self] = types.SimpleNamespace()
+        if not hasattr(Fixture._local, "request_ctx"):
+            Fixture._local.request_ctx = {}
+        if obj in Fixture._local.request_ctx:
+            raise RuntimeError(f"initialize_thread_local called twice for {obj}")
+        Fixture._local.request_ctx[obj] = types.SimpleNamespace()
 
     @staticmethod
-    def local_delete(self):
+    def local_delete(obj):
         """To be called in on_success and on_error to cleat the thread local"""
-        del MetaLocal._local.request_ctx[self]
+        del Fixture._local.request_ctx[obj]
 
     @property
     def local(self):
         """Returns the fixture thread local dict if initialized else a default one"""
         try:
-            return MetaLocal._local.request_ctx[self]
+            return Fixture._local.request_ctx[self]
         except (AttributeError, KeyError):
-            raise MetaLocalUndefined(f"thread local not initialized for {self}") from None
+            raise LocalUndefined(f"thread local not initialized for {self}") from None
 
     def is_valid(self):
         """Checks if the fixture has a valid thread local dict"""
         try:
-            MetaLocal._local.request_ctx[self]
+            Fixture._local.request_ctx[self]  # pylint: disable=pointless-statement
             return True
         except (AttributeError, KeyError):
             return False
 
+    ### end logic to handle safe thread local
 
-class Translator(pluralize.Translator, Fixture):
+
+class Translator(BareFixture, pluralize.Translator):
     """a Fixture wrapper for the pluralize.Translator"""
 
     def on_request(self, context):
+        """Sets the request language from the request header"""
         # important: pluralize.Translator has its own thread local
         self.select(request.headers.get("Accept-Language", "en"))
 
     def on_success(self, context):
-        response.headers["Content-Language"] = self.local.tag
+        """Inject the selected language in the response header"""
+        response.headers.setdefault("Content-Language", self.local.tag)
 
 
 class DAL(pydal.DAL, Fixture):
     """a Fixture wrappre for pydal.DAL"""
 
     def on_request(self, context):
+        """Retrieves a database connection from the pool"""
         # important: the connection pool handles its own thread local
         self.get_connection_from_pool_or_new()
         threadsafevariable.ThreadSafeVariable.restore(ICECUBE)
 
     def on_error(self, context):
+        """Rollback and recycle connection"""
         self.recycle_connection_in_pool_or_close("rollback")
 
     def on_success(self, context):
+        """Commit and recycle connection"""
         self.recycle_connection_in_pool_or_close("commit")
 
 
 # make sure some variables in pydal are thread safe
 def thread_safe_pydal_patch():
-    Field = pydal.DAL.Field
+    """Make the selected fields attributes thread local variables"""
     tsafe_attrs = [
         "readable",
         "writable",
@@ -453,7 +481,7 @@ ICECUBE = {}
 #########################################################################################
 
 
-class Flash(Fixture, MetaLocal):
+class Flash(Fixture):
     """
     flash = Flash()
 
@@ -468,7 +496,8 @@ class Flash(Fixture, MetaLocal):
     """
 
     def on_request(self, context):
-        MetaLocal.local_initialize(self)
+        """Retrieves flash message from cookie if present"""
+        Fixture.local_initialize(self)
         # when a new request arrives we look for a flash message in the cookie
         flash = request.get_cookie("py4web-flash")
         if flash:
@@ -477,6 +506,7 @@ class Flash(Fixture, MetaLocal):
             self.local.flash = None
 
     def on_success(self, context):
+        """Stores the flash message in cookie"""
         # if we redirect and have a flash message we move it to the session
         status = context["status"]
         if status == 303 and self.local.flash:
@@ -492,13 +522,10 @@ class Flash(Fixture, MetaLocal):
             else:
                 context["template_inject"] = dict(flash=flash)
         elif self.local.flash is not None:
-            response.headers["component-flash"] = json.dumps(flash)
-
-    def on_error(self, context):
-        """Clears the local to prevent leakage."""
-        pass
+            response.headers.setdefault("component-flash", json.dumps(flash))
 
     def set(self, message, _class="", sanitize=True):
+        """Stores a message in the object thread safe storage"""
         # we set a flash message
         if sanitize:
             message = yatl.sanitizer.xmlescape(message)
@@ -511,19 +538,22 @@ class Flash(Fixture, MetaLocal):
 
 
 class RenoirXMLEscapeMixin:
+    """for internal Renoir use"""
+
     def _escape_data(self, data):
         """Allows Renoir to convert yatl helpers to strings"""
         return safely(
-            lambda: data.xml(), default=lambda: self._to_html(self._to_unicode(data))
+            lambda: data.xml(),  # pylint: disable=unnecessary-lambda
+            default=lambda: self._to_html(self._to_unicode(data)),
         )
 
 
 class RenoirCustomWriter(RenoirXMLEscapeMixin, renoir.writers.Writer):
-    ...
+    """for internal Renoir use"""
 
 
 class RenoirCustomEscapeAllWriter(RenoirXMLEscapeMixin, renoir.writers.EscapeAllWriter):
-    ...
+    """for internal Renoir use"""
 
 
 class Renoir(renoir.Renoir):
@@ -539,35 +569,47 @@ def render(
     content=None,
     filename=None,
     path=".",
-    context={},
+    context=None,
     delimiters="[[ ]]",
     cached_renoir_engines=Cache(100),
 ):
     """
-    renders the template using renoire, same API as yatl.render, does caching of
+    Renders the template using renoire, same API as yatl.render, does caching of
     both Renoire engine and source files
     """
+    context = context or {}
     engine = cached_renoir_engines.get(
         (path, delimiters),
         lambda: Renoir(path=path, delimiters=delimiters.split(" "), reload=True),
     )
     if content is not None:
-        return engine._render(content, context=context)
+        return engine._render(  # pylint: disable=protected-access
+            content, context=context
+        )
     return engine.render(filename, context=context)
 
 
 class Template(Fixture):
+    """The Template Fixture class"""
+
     cache = Cache(100)
 
     def __init__(self, filename, path=None, delimiters="[[ ]]"):
+        """Initialized the template object"""
         self.filename = filename
         self.path = path
         self.delimiters = delimiters
 
     def on_success(self, context):
+        """
+        Filters the context output through the template
+        Also injects helpers in the output dict
+        """
         output = context["output"]
+
+        # we only proceed furthed if the output is a dict
         if not isinstance(output, dict):
-            return output
+            return
 
         ctx = dict(request=request)
         ctx.update(HELPERS)
@@ -592,7 +634,9 @@ class Template(Fixture):
 #########################################################################################
 
 
-class Session(Fixture, MetaLocal):
+class Session(Fixture):
+    """The Session Fixture"""
+
     # All apps share the same default secret if not specified.
     # important for _dashboard reload
     # the actual value is loaded from a file
@@ -601,6 +645,7 @@ class Session(Fixture, MetaLocal):
 
     @property
     def params(self):
+        """Returns the object parameters"""
         return Session._params[self]
 
     def __init__(
@@ -613,6 +658,8 @@ class Session(Fixture, MetaLocal):
         name="{app_name}_session",
     ):
         """
+        Creates a session object.
+
         secret is the shared key used to encrypt the session (using algorithm)
         expiration is in seconds
         (optional) storage must have a get(key) and set(key,value,expiration) methods
@@ -646,19 +693,21 @@ class Session(Fixture, MetaLocal):
 
     @property
     def __prerequisites__(self):
+        """Returns the session prerequisite fixtures"""
         return self.params.prerequisites
 
     def load(self):
+        """Loads a session"""
         app_name = request.app_name
         params = self.params
         self_local = self.local
         self_local.changed = False
         self_local.data = {}
-        self_local.session_cookie_name = params.name.format(app_name=app_name)
+        self_local.cookie_name = params.name.format(app_name=app_name)
         self_local.secure = request.url.startswith("https")
-        raw_token = request.get_cookie(
-            self_local.session_cookie_name
-        ) or request.query.get("_session_token")
+        raw_token = request.get_cookie(self_local.cookie_name) or request.query.get(
+            "_session_token"
+        )
         if not raw_token and request.method in {"POST", "PUT", "DELETE", "PATCH"}:
             raw_token = (
                 request.forms
@@ -668,42 +717,51 @@ class Session(Fixture, MetaLocal):
             )
         if DEBUG:
             logging.debug("Session token found %s", raw_token)
+        data = {}
+        # if we have a token in the query string of cookie
         if raw_token:
             try:
+                # if session i stored serverside
                 if params.storage:
+                    # used token as id and retrieve data
                     token_data = raw_token.encode()
                     json_data = params.storage.get(token_data)
                     if isinstance(json_data, bytes):
                         json_data = json_data.decode("utf8")
                     if json_data:
-                        self_local.data = json.loads(json_data)
+                        data = json.loads(json_data)
                 else:
+                    # rertieve the data from inside the token itself
                     try:
-                        self_local.data = secure_loads(
-                            raw_token, params.secret.encode()
-                        )
+                        data = secure_loads(raw_token, params.secret.encode())
                     except (AssertionError, json.JSONDecodeError):
-                        self_local.data = {}
+                        data = {}
             except Exception as err:
+                # something went wrong, unable to load session data
                 if DEBUG:
                     logging.debug("Session error %s", err)
+        # if the session data is valid update the current session
         if (
-            self.local.data.get("session_cookie_name") != self_local.session_cookie_name
-            or self.local.data.get("secure") != self_local.secure
-            or "uuid" not in self.local.data
-            or (
-                params.expiration is not None
-                and params.storage is None
-                and self_local.data["timestamp"] < time.time() - int(params.expiration)
+            data.get("cookie_name") == self_local.cookie_name  # have valid cookie
+            and data.get("secure") == self_local.secure  # have valid security
+            and data.get("uuid") is not None  # have a uuid
+            and (
+                params.expiration is None  # has not expired
+                or data["timestamp"] > time.time() - int(params.expiration)
             )
         ):
-            self.clear()
+            self_local.data.update(data)  # the take the loaded data
 
     def save(self):
+        """Saves the session"""
         params = self.params
         self_local = self.local
+        # make sure the session constain these basic veriables
+        if "uuid" not in self_local.data:
+            self_local.data["uuid"] = str(uuid.uuid4())
         self_local.data["timestamp"] = time.time()
-        self_local.data["session_cookie_name"] = self_local.session_cookie_name
+        self_local.data["secure"] = self_local.secure
+        self_local.data["cookie_name"] = self_local.cookie_name
         if params.storage:
             cookie_data = self_local.data["uuid"]
             params.storage.set(
@@ -714,7 +772,7 @@ class Session(Fixture, MetaLocal):
         if DEBUG:
             logging.debug("Session stored %s", cookie_data)
         response.set_cookie(
-            self_local.session_cookie_name,
+            self_local.cookie_name,
             cookie_data,
             path="/",
             secure=self_local.secure,
@@ -723,33 +781,41 @@ class Session(Fixture, MetaLocal):
         )
 
     def get(self, key, default=None):
+        """Get the value for the key from session"""
         try:
             return self.local.data.get(key, default)
-        except MetaLocalUndefined:
+        except LocalUndefined:
             return default
 
     def __getitem__(self, key):
+        """Session key getter"""
         return self.local.data[key]
 
     def __delitem__(self, key):
+        """Deletes a key from the session"""
         if key in self.local.data:
             self.local.changed = True
             del self.local.data[key]
 
     def __setitem__(self, key, value):
+        """Session key setter"""
         self.local.changed = True
         self.local.data[key] = value
 
     def __contains__(self, other):
+        """Checks if a key in session"""
         return other in self.local.data
 
     def keys(self):
+        """Returns the session keys"""
         return self.local.data.keys()
 
     def items(self):
+        """Returns the (key, value) in session"""
         return self.local.data.items()
 
     def __iter__(self):
+        """Iterates over the session keys"""
         yield from self.local.data.keys()
 
     __getattr__ = get
@@ -757,22 +823,18 @@ class Session(Fixture, MetaLocal):
     __delattr__ = __delitem__
 
     def clear(self):
-        """Produces a brand-new session."""
+        """Clears the session key"""
         self_local = self.local
         self_local.changed = True
         self_local.data.clear()
-        self_local.data["uuid"] = str(uuid.uuid4())
-        self_local.data["secure"] = self_local.secure
 
     def on_request(self, context):
-        MetaLocal.local_initialize(self)
+        """Initializes the session thread local and tries to load a session"""
+        Fixture.local_initialize(self)
         self.load()
 
-    def on_error(self, context):
-        if self.local.changed:
-            self.save()
-
     def on_success(self, context):
+        """Saves the session if its content changed"""
         if self.local.changed:
             self.save()
 
@@ -782,16 +844,18 @@ class Session(Fixture, MetaLocal):
 #########################################################################################
 
 
-def URL(
+def URL(  # pylint: disable=invalid-name
     *parts,
-    vars=None,
-    hash=None,
+    vars=None,  # pylint: disable=redefined-builtin
+    hash=None,  # pylint: disable=redefined-builtin
     scheme=False,
     signer=None,
     use_appname=None,
     static_version=None,
 ):
     """
+    Generates a URL for the action.
+
     Examples:
     URL('a','b',vars=dict(x=1),hash='y')       -> /{script_name?}/{app_name?}/a/b?x=1#y
     URL('a','b',vars=dict(x=1),scheme=None)    -> //{domain}/{script_name?}/{app_name?}/a/b?x=1
@@ -814,16 +878,16 @@ def URL(
     if parts and parts[0].startswith("/"):
         prefix = ""
     elif has_appname and app_name != "_default":
-        prefix = "%s/%s/" % (script_name, app_name)
+        prefix = f"{script_name}/{app_name}/"
     else:
-        prefix = "%s/" % script_name
+        prefix = f"{script_name}/"
     broken_parts = []
     for part in parts:
         broken_parts += str(part).rstrip("/").split("/")
     if static_version != "" and broken_parts and broken_parts[0] == "static":
         if not static_version:
             # try to retrieve from __init__.py
-            app_module = "apps.%s" % app_name if has_appname else "apps"
+            app_module = f"apps.{app_name}" if has_appname else "apps"
             try:
                 static_version = getattr(
                     sys.modules[app_module], "__static_version__", None
@@ -843,10 +907,10 @@ def URL(
         signer.sign(prefix + "/".join(broken_parts), urlvars)
     if urlvars:
         url += "?" + "&".join(
-            "%s=%s" % (k, urllib.parse.quote(str(v))) for k, v in urlvars.items()
+            f"{k}={urllib.parse.quote(str(v))}" for k, v in urlvars.items()
         )
     if hash:
-        url += "#%s" % hash
+        url += f"#{hash}"
     if scheme is not False:
         original_url = request.environ.get("HTTP_ORIGIN") or request.url
         orig_scheme, _, domain = original_url.split("/", 3)[:3]
@@ -856,7 +920,7 @@ def URL(
             scheme = ""
         else:
             scheme += ":"
-        url = "%s//%s%s" % (scheme, domain, url)
+        url = f"{scheme}//{domain}{url}"
     return url
 
 
@@ -868,31 +932,33 @@ def URL(
 class HTTP(BaseException):
     """An exception that is considered success"""
 
-    def __init__(self, status, body="", headers={}):
+    def __init__(self, status, body="", headers=None):
+        """Makes an HTTP object"""
         self.status = status
         self.body = body
-        self.headers = headers
+        self.headers = headers or {}
 
 
 def redirect(location):
-    """raises HTTP(303) to the specified location"""
-    response.headers["Location"] = location
+    """Raises HTTP(303) to redirect to the specified location"""
+    response.headers.setdefault("Location", location)
     raise HTTP(303)
 
 
-class action:
+class action:  # pylint: disable=invalid-name
     """@action(...) is a decorator for functions to be exposed as actions"""
 
     registered = set()
     app_name = "_default"
 
     def __init__(self, path, **kwargs):
+        """Constructs the action decorator"""
         self.path = path
         self.kwargs = kwargs
 
     @staticmethod
     def uses(*fixtures_in):
-        """Find all fixtures, including dependencies, topologically sorted"""
+        """Used to declare needed fixtures, they will be topologically sorted"""
         fixtures = []
         reversed_fixtures = []
         stack = list(fixtures_in)
@@ -909,15 +975,15 @@ class action:
         def decorator(func):
             if DEBUG:
                 # in debug mode log all calls to fixtures
-                def call(f, context):
+                def call_f(f, context):
                     logging.debug(
-                        f"Calling {f.__self__.__class__.__name__}.{f.__name__}"
+                        "Calling %s.%s", f.__self__.__class__.__name__, f.__name__
                     )
                     return f(context)
 
             else:
 
-                def call(f, context):
+                def call_f(f, context):
                     return f(context)
 
             @functools.wraps(func)
@@ -933,12 +999,12 @@ class action:
                 }
                 try:
                     for fixture in fixtures:
-                        call(fixture.on_request, context)
+                        call_f(fixture.on_request, context)
                         processed.append(fixture)
                     context["output"] = func(*args, **kwargs)
-                except HTTP as http:
-                    context["status"] = http.status
-                    raise http
+                except HTTP as http_exception:
+                    context["status"] = http_exception.status
+                    raise http_exception
                 except bottle.HTTPError as error:
                     context["exception"] = error
                 except bottle.HTTPResponse:
@@ -950,12 +1016,12 @@ class action:
                         if fixture in processed or getattr(fixture, "is_hook", False):
                             try:
                                 if context.get("exception"):
-                                    call(fixture.on_error, context)
+                                    call_f(fixture.on_error, context)
                                 else:
-                                    call(fixture.on_success, context)
-                            except Exception as error:
-                                context["exception"] = context.get("exception") or error
-                        safely(lambda: MetaLocal.local_delete(fixture))
+                                    call_f(fixture.on_success, context)
+                            except Exception as err:
+                                context["exception"] = context.get("exception") or err
+                        safely(lambda: Fixture.local_delete(fixture))
                     exception = context.get("exception")
                     if isinstance(exception, Exception):
                         raise exception
@@ -975,7 +1041,7 @@ class action:
                 request.app_name = app_name
                 ret = func(*func_args, **func_kwargs)
                 if isinstance(ret, (list, dict)):
-                    response.headers["Content-Type"] = "application/json"
+                    response.headers.setdefault("Content-Type", "application/json")
                     ret = dumps(ret)
                 elif ret is None:
                     ret = ""
@@ -984,14 +1050,14 @@ class action:
                 elif not hasattr(ret, "__iter__"):
                     raise RuntimeError(f"Cannot return type {ret.__class__.__name__}")
                 return ret
-            except HTTP as http:
-                response.status = http.status
-                response.headers.update(http.headers)
-                body = http.body
+            except HTTP as http_exception:
+                response.status = http_exception.status
+                response.headers.update(http_exception.headers)
+                body = http_exception.body
                 return dumps(body) if isinstance(body, (list, dict)) else str(body)
             except bottle.HTTPResponse:
                 raise
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
                 snapshot = get_error_snapshot()
                 logging.error(snapshot["traceback"])
                 ticket_uuid = error_logger.log(request.app_name, snapshot) or "unknown"
@@ -1020,12 +1086,16 @@ class action:
 
 
 class Condition(Fixture):
+    """The Condition Fixture"""
+
     def __init__(self, condition, on_false=None, exception=HTTP(400)):
+        """Creates a fixture that checks for a given condition"""
         self.condition = condition
         self.on_false = on_false
         self.exception = exception
 
     def on_request(self, context):
+        """Checks if the condition is true or false"""
         if not self.condition():
             if self.on_false is not None:
                 self.on_false()
@@ -1036,7 +1106,9 @@ class Condition(Fixture):
 # Monkey Patch: Cookies
 #########################################################################################
 
-http.cookies.Morsel._reserved["same-site"] = "SameSite"
+http.cookies.Morsel._reserved[  # pylint: disable=protected-access
+    "same-site"
+] = "SameSite"
 
 #########################################################################################
 # Monkey Patch: ssl bug for gevent
@@ -1056,6 +1128,7 @@ def new_sslwrap(
     ca_certs=None,
     ciphers=None,
 ):
+    """Used to support HTTP"""
     context = __ssl__.SSLContext(ssl_version)
     context.verify_mode = cert_reqs or __ssl__.CERT_NONE
     if ca_certs:
@@ -1065,7 +1138,9 @@ def new_sslwrap(
     if ciphers:
         context.set_ciphers(ciphers)
     caller_self = inspect.currentframe().f_back.f_locals["self"]
-    return context._wrap_socket(sock, server_side=server_side, ssl_sock=caller_self)
+    return context._wrap_socket(  # pylint: disable=protected-access
+        sock, server_side=server_side, ssl_sock=caller_self
+    )
 
 
 #########################################################################################
@@ -1085,7 +1160,7 @@ def get_error_snapshot(depth=5):
         elif errorlog == ":stdout":
             sys.stdout.write(msg)
         elif errorlog == "tickets_only":
-            pass
+            ...
         else:
             with portalocker.Lock(errorlog, "a", timeout=2) as fp:
                 fp.write(msg)
@@ -1126,9 +1201,9 @@ def get_error_snapshot(depth=5):
     del etb  # Prevent circular references that would cause memory leaks
     data["stackframes"] = stackframes = []
 
-    for frame, file, lnum, func, lines, idx in items:
+    for frame, file, lnum, func, lines, idx in items:  # pylint: disable=unused-variable
         file = file and os.path.abspath(file) or "?"
-        args, varargs, varkw, locals = inspect.getargvalues(frame)
+        # TODO: call inspect.getargvalues(frame) and get more info
         # Basic frame information
         f = {"file": file, "func": func, "lnum": lnum}
         f["code"] = lines
@@ -1138,15 +1213,18 @@ def get_error_snapshot(depth=5):
 
 
 class SimpleErrorLogger:
+    """Simple Error Logger"""
+
     def log(self, app_name, snapshot):
-        """logs the error"""
-        logging.error("%s error:\n%s" % (app_name, snapshot["traceback"]))
-        return None
+        """Logs the error"""
+        logging.error("%s error:\n%s", app_name, snapshot["traceback"])
 
 
 class DatabaseErrorLogger:
+    """Database Error Logger"""
+
     def __init__(self):
-        """creates the py4web_error table in the service database"""
+        """Creates the py4web_error table in the service database"""
         uri = os.environ["PY4WEB_SERVICE_DB_URI"]
         folder = os.environ["PY4WEB_SERVICE_FOLDER"]
         self.db = DAL(uri, folder=folder)
@@ -1164,7 +1242,7 @@ class DatabaseErrorLogger:
         self.db.commit()
 
     def log(self, app_name, error_snapshot):
-        """store error snapshot (ticket) in the database"""
+        """Store error snapshot (ticket) in the database"""
         ticket_uuid = str(uuid.uuid4())
         try:
             self.db.py4web_error.insert(
@@ -1179,13 +1257,13 @@ class DatabaseErrorLogger:
             )
             self.db.commit()
             return ticket_uuid
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-exception-caught
             logging.error(str(err))
             self.db.rollback()
             return None
 
     def get(self, ticket_uuid=None):
-        """retrieve a ticket from error database"""
+        """Retrieve a ticket from error database"""
         db = self.db
         if ticket_uuid:
             query, orderby = db.py4web_error.uuid == ticket_uuid, None
@@ -1210,7 +1288,7 @@ class DatabaseErrorLogger:
         return rows if not ticket_uuid else rows[0] if rows else None
 
     def clear(self):
-        """erase all tickets from database"""
+        """Erase all tickets from database"""
         db = self.db
         db(db.py4web_error).delete()
         self.db.commit()
@@ -1234,17 +1312,17 @@ class ErrorLogger:
         self.plugins = {}
 
     def initialize(self):
-        """try inizalize database if we have service folder"""
+        """Try inizalize database if we have service folder"""
         self.database_logger = safely(DatabaseErrorLogger, log=True)
 
     def _get_logger(self, app_name):
-        """get the appropriate logger for the app"""
+        """Get the appropriate logger for the app"""
         return (
             self.plugins.get(app_name) or self.database_logger or self.fallback_logger
         )
 
     def log(self, app_name, error_snapshot):
-        """log the error snapshot"""
+        """Log the error snapshot"""
         logger = self._get_logger(app_name)
         ticket_uuid = safely(lambda: logger.log(app_name, error_snapshot))
         if not ticket_uuid:
@@ -1259,23 +1337,21 @@ error_logger = ErrorLogger()
 #########################################################################################
 
 
-class StreamProxy:
-    def __init__(self, stream):
-        self._stream = stream
-
-    def write(self, *args, **kwargs):
-        return self._stream.write(*args, **kwargs)
-
-
 class Reloader:
+    """
+    Class responsible for loading/readloading apps
+    """
+
     ROUTES = collections.defaultdict(list)
     MODULES = {}
     ERRORS = {}
 
     @staticmethod
     def install_reloader_hook():
+        """Installs the Reloader hook, checks for changes at every request"""
+
         # used by watcher
-        def hook(*a, **k):
+        def hook(*args, **kwargs):  # pylint: disable=unused-argument
             app_name = request.path.split("/")[1]
             if app_name not in Reloader.ROUTES:
                 app_name = "_default"
@@ -1289,6 +1365,7 @@ class Reloader:
 
     @staticmethod
     def clear_routes(app_names=None):
+        """Clears all stored routes"""
         remove_route = bottle.default_app().router.remove
         if app_names is None:
             app_names = Reloader.ROUTES.keys()
@@ -1305,7 +1382,7 @@ class Reloader:
         # if first time reload dummy top module
         if not Reloader.MODULES:
             path = os.path.join(folder, "__init__.py")
-            module = load_module("apps", path)  # noqa: F841
+            load_module("apps", path)  # noqa: F841
         # Then load all the apps as submodules
         if os.environ.get("PY4WEB_APP_NAMES"):
             app_names = os.environ.get("PY4WEB_APP_NAMES").split(",")
@@ -1316,6 +1393,7 @@ class Reloader:
 
     @staticmethod
     def import_app(app_name, clear_before_import=True):
+        """Imports a specified app and its routes"""
         if clear_before_import:
             Reloader.clear_routes([app_name])
         Reloader.ROUTES[app_name] = []
@@ -1325,7 +1403,7 @@ class Reloader:
 
         if os.path.isdir(path) and not path.endswith("__") and os.path.exists(init):
             action.app_name = app_name
-            module_name = "apps.%s" % app_name
+            module_name = f"apps.{app_name}"
 
             def clear_modules():
                 # all files/submodules
@@ -1340,40 +1418,39 @@ class Reloader:
             try:
                 module = Reloader.MODULES.get(app_name)
                 if not module:
-                    click.echo("[ ] loading %s ..." % app_name)
+                    click.echo(f"[ ] loading {app_name} ...")
                 else:
-                    click.echo("[ ] reloading %s ..." % app_name)
+                    click.echo(f"[ ] reloading {app_name} ...")
                     # forget the module
                     del Reloader.MODULES[app_name]
                     clear_modules()
 
                 load_module_message = None
-                buf_out = StreamProxy(io.StringIO())
-                buf_err = StreamProxy(buf_out._stream)
+                buf_out = io.StringIO()
+                buf_err = buf_out
                 with redirect_stdout(buf_out), redirect_stderr(buf_err):
                     module = load_module(module_name, init)
-                    load_module_message = buf_out._stream.getvalue()
-                buf_out._stream.close()
-                buf_out._stream = sys.stdout
-                buf_err._stream = sys.stderr
+                    load_module_message = buf_out.getvalue()
+                buf_out.close()
+                buf_out = sys.stdout
+                buf_err = sys.stderr
 
                 if load_module_message:
-                    click.secho("\x1b[A    output %s       " % app_name, fg="yellow")
+                    click.secho(f"\x1b[A    output {app_name}       ", fg="yellow")
                     click.echo(load_module_message)
 
-                click.secho("\x1b[A[X] loaded %s       " % app_name, fg="green")
+                click.secho(f"\x1b[A[X] loaded {app_name}       ", fg="green")
                 Reloader.MODULES[app_name] = module
                 Reloader.ERRORS[app_name] = None
-            except Exception as err:
+            except Exception as err:  # pylint: disable=broad-exception-caught
                 Reloader.ERRORS[app_name] = traceback.format_exc()
                 error_logger.log(app_name, get_error_snapshot())
                 click.secho(
-                    "\x1b[A[FAILED] loading %s (%s)" % (app_name, err),
+                    f"\x1b[A[FAILED] loading {app_name} ({err})",
                     fg="red",
                 )
                 # clear all files/submodules if the loading fails
                 clear_modules()
-                return None
 
         # Expose static files with support for static asset management
         static_folder = os.path.join(path, "static")
@@ -1384,6 +1461,7 @@ class Reloader:
             path = prefix + r"/static/<re((_\d+(\.\d+){2}/)?)><fp.path()>"
 
             def server_static(fp, static_folder=static_folder):
+                """Action that serves static/ files"""
                 filename = fp
                 response.headers.setdefault("Pragma", "cache")
                 response.headers.setdefault("Cache-Control", "private")
@@ -1391,10 +1469,13 @@ class Reloader:
 
             Reloader.register_route(app_name, path, {"method": "GET"}, server_static)
 
+        # Very important to make sure actions can modify Field attributes
+        # in a thread safe manner
         ICECUBE.update(threadsafevariable.ThreadSafeVariable.freeze())
 
     @staticmethod
     def register_route(app_name, rule, kwargs, func):
+        """Given an app_name and a rule registers the corresponding routes"""
         url_prefix = os.environ.get("PY4WEB_URL_PREFIX", "")
         if url_prefix and rule == "/":
             rule = ""
@@ -1432,18 +1513,19 @@ ERROR_PAGES = {
 }
 
 
-def error_page(code, button_text=None, href="#", color=None, message=None):
+def error_page(token, button_text=None, href="#", color=None, message=None):
+    """Generates an error page"""
     if button_text:
         button_text = sanitize_html.escape(button_text)
     href = sanitize_html.escape(href)
-    message = http.client.responses[code].upper() if message is None else message
+    message = http.client.responses[token].upper() if message is None else message
     color = (
         {"4": "#F44336", "5": "#607D8B"}.get(str(code)[0], "#2196F3")
         if not color
         else color
     )
     context = dict(
-        code=code, message=message, button_text=button_text, href=href, color=color
+        code=token, message=message, button_text=button_text, href=href, color=color
     )
     # if client accepts 'application/json' - return json
     if re.search(REGEX_APPJSON, request.headers.get("accept", "")):
@@ -1455,7 +1537,8 @@ def error_page(code, button_text=None, href="#", color=None, message=None):
 
 
 @bottle.error(404)
-def error404(error):
+def error404(error):  # pylint: disable=unused-argument
+    """Generates a 404 page"""
     guess_app_name = (
         "index"
         if request.environ.get("HTTP_X_PY4WEB_APPNAME")
@@ -1493,13 +1576,14 @@ def sass_compile(changed_files):
 
 
 def app_watch_handler(watched_app_subpaths):
+    """Finds files to watch for changes"""
     stack = inspect.stack
     invoker = pathlib.Path(stack()[1].filename)
     apps_path = pathlib.Path(os.environ["PY4WEB_APPS_FOLDER"])
     app = invoker.relative_to(os.environ["PY4WEB_APPS_FOLDER"]).parts[0]
 
     def decorator(func):
-        handler = "{}.{}".format(func.__module__, func.__name__)
+        handler = f"{func.__module__}.{func.__name__}"
         APP_WATCH["handlers"][handler] = func
         for subpath in watched_app_subpaths:
             app_path = apps_path.joinpath(app, subpath).as_posix()
@@ -1512,6 +1596,7 @@ def app_watch_handler(watched_app_subpaths):
 
 
 def try_app_watch_tasks():
+    """If there are watch tasks, executes them when files change"""
     if APP_WATCH["tasks"]:
         tried_tasks = []
         for handler in APP_WATCH["tasks"]:
@@ -1519,7 +1604,7 @@ def try_app_watch_tasks():
             try:
                 APP_WATCH["handlers"][handler](changed_files_dict.keys())
                 tried_tasks.append(handler)
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
                 logging.error(traceback.format_exc())
         ## remove executed tasks from register
         for handler in tried_tasks:
@@ -1527,15 +1612,17 @@ def try_app_watch_tasks():
 
 
 def watch(apps_folder, server_config, mode="sync"):
+    """Watches files for change"""
+
     def watch_folder_event_loop(apps_folder):
+        """Main event loop looking for file changes"""
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(watch_folder(apps_folder))
 
     async def watch_folder(apps_folder):
-        click.echo(
-            "watching (%s-mode) python file changes in: %s" % (mode, apps_folder)
-        )
+        """Async function that watches a folder for changes"""
+        click.echo(f"watching ({mode}-mode) python file changes in: {apps_folder}")
         async for changes in awatch(os.path.join(apps_folder)):
             apps = []
             for subpath in [pathlib.Path(pair[1]) for pair in changes]:
@@ -1562,7 +1649,8 @@ def watch(apps_folder, server_config, mode="sync"):
     if server_config["number_workers"] > 1:
         click.echo("--watch option has no effect in multi-process environment \n")
         return
-    elif server_config["server"].startswith(("wsgiref", "waitress", "rocket")):
+
+    if server_config["server"].startswith(("wsgiref", "waitress", "rocket")):
         # these servers block the main thread so we open a new thread for the file watcher
         threading.Thread(
             target=watch_folder_event_loop, args=(apps_folder,), daemon=True
@@ -1584,10 +1672,11 @@ def watch(apps_folder, server_config, mode="sync"):
 
 
 def log_routes(apps_routes, out_file="routes-py4web.txt"):
+    """Logs defined routes to a file"""
     tmp = os.environ.get("TEMPDIR", "/tmp")
     path_out_file = os.path.join(tmp, out_file)
     try:
-        with open(path_out_file, "w") as f:
+        with open(path_out_file, "w", encoding="utf8") as f:
             f.write(
                 "\n".join(
                     [
@@ -1602,6 +1691,7 @@ def log_routes(apps_routes, out_file="routes-py4web.txt"):
 
 
 def start_server(kwargs):
+    """Starts the web server"""
     host = kwargs["host"]
     port = int(kwargs["port"])
     apps_folder = kwargs["apps_folder"]
@@ -1631,11 +1721,9 @@ def start_server(kwargs):
         signal.signal(
             signal.SIGINT,
             lambda signal, frame: click.echo(
-                "KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(
-                    signal
-                )
-                and sys.exit(0),
-            ),
+                "KeyboardInterrupt (ID: {signal}) has been caught. Cleaning up..."
+            )
+            and sys.exit(0),
         )
 
     params["server"] = server_config["server"]
@@ -1653,7 +1741,7 @@ def start_server(kwargs):
         if kwargs["watch"] != "off":
             print("Error: watch doesn't work with gevent. ")
             print("invoke py4web with `--watch off` or choose another server. ")
-            exit(255)
+            sys.exit(255)
 
         if not hasattr(_ssl, "sslwrap"):
             _ssl.sslwrap = new_sslwrap
@@ -1669,12 +1757,12 @@ def start_server(kwargs):
     bottle.run(**params)
 
 
-def check_compatible(version):
+def check_compatible(py4web_version):
     """To be called by apps to check if module version is compatible with py4web requirements"""
-    from . import __version__
+    from . import __version__  # pylint: disable=import-outside-toplevel
 
     return tuple(map(int, __version__.split("."))) >= tuple(
-        map(int, version.split("."))
+        map(int, py4web_version.split("."))
     )
 
 
@@ -1708,7 +1796,8 @@ class MetaPathRouter:
             # register as path finder
             sys.meta_path.append(self)
 
-    def find_spec(self, fullname, path=None, target=None):
+    def find_spec(self, fullname, path=None):
+        """Loads the spec for the module at fullname"""
         if fullname == self.pkg_alias and path is None:
             spec = importlib.util.find_spec(self.pkg)
             if spec:
@@ -1717,9 +1806,11 @@ class MetaPathRouter:
                     fullname, spec.origin
                 )
                 return spec
+        return None
 
 
-def install_args(kwargs, reinstall_apps=False):
+def install_args(kwargs, reinstall_apps=False):  # pylint: disable=too-many-statements
+    """Handles the command line argumens and adds them to the os.environ"""
     # always convert apps_folder to an absolute path
     apps_folder = kwargs["apps_folder"] = os.path.abspath(kwargs["apps_folder"])
     kwargs["service_folder"] = os.path.join(
@@ -1728,14 +1819,17 @@ def install_args(kwargs, reinstall_apps=False):
     kwargs["service_db_uri"] = DEFAULTS["PY4WEB_SERVICE_DB_URI"]
     for key, val in kwargs.items():
         os.environ["PY4WEB_" + key.upper()] = str(val)
+
+    global DEBUG  # pylint: disable=global-statement
     DEBUG = kwargs.get("debug", False)
+
     logging.getLogger().setLevel(
         0 if DEBUG else kwargs.get("logging_level", logging.WARNING)
     )
     yes2 = yes = kwargs.get("yes", False)
     # If the apps folder does not exist create it and populate it
     if not os.path.exists(apps_folder):
-        if yes or click.confirm("Create missing folder %s?" % apps_folder):
+        if yes or click.confirm(f"Create missing folder {apps_folder}?"):
             os.makedirs(apps_folder)
             yes2 = True
         else:
@@ -1743,9 +1837,9 @@ def install_args(kwargs, reinstall_apps=False):
             sys.exit(0)
     init_py = os.path.join(apps_folder, "__init__.py")
     if not os.path.exists(init_py):
-        if yes2 or click.confirm("Create missing init file %s?" % init_py):
+        if yes2 or click.confirm(f"Create missing init file {init_py}?"):
             with open(init_py, "wb"):
-                pass
+                ...
         else:
             click.echo("Command aborted")
             sys.exit(0)
@@ -1760,10 +1854,10 @@ def install_args(kwargs, reinstall_apps=False):
         os.mkdir(kwargs["service_folder"])
     session_secret_filename = os.path.join(kwargs["service_folder"], "session.secret")
     if not os.path.exists(session_secret_filename):
-        with open(session_secret_filename, "w") as fp:
+        with open(session_secret_filename, "w", encoding="utf8") as fp:
             fp.write(str(uuid.uuid4()))
 
-    with open(session_secret_filename) as fp:
+    with open(session_secret_filename, "r", encoding="utf8") as fp:
         Session.SECRET = fp.read()
 
     # after everything is etup but before installing apps, init
@@ -1781,8 +1875,8 @@ def install_args(kwargs, reinstall_apps=False):
                 app_name = filename.split(".")[-2]
                 target_dir = os.path.join(apps_folder, app_name)
                 if not os.path.exists(target_dir):
-                    if yes or click.confirm("Create app %s?" % app_name):
-                        click.echo("[ ] Unzipping app %s" % filename)
+                    if yes or click.confirm(f"Create app {app_name}?"):
+                        click.echo(f"[ ] Unzipping app {filename}")
                         with zipfile.ZipFile(zip_filename, "r") as zip_file:
                             os.makedirs(target_dir)
                             zip_file.extractall(target_dir)
@@ -1803,28 +1897,28 @@ def wsgi(**kwargs):
 
 @click.group(
     context_settings=dict(help_option_names=["-h", "-help", "--help"]),
-    help='%s\n\nType "%s COMMAND -h" for available options on commands'
-    % (__doc__, PY4WEB_CMD),
+    help=f'{__doc__}\n\nType "{PY4WEB_CMD} COMMAND -h" for available options on commands',
 )
 def cli():
-    pass
+    """The Command Line Interface"""
 
 
 @cli.command()
 @click.option(
     "-a", "--all", is_flag=True, default=False, help="List version of all modules"
 )
-def version(all):
+def version(verbose=False):
     """Show versions and exit"""
-    from . import __version__
+    from . import __version__  # pylint: disable=import-outside-toplevel
 
-    click.echo("py4web: %s" % __version__)
-    if all:
-        click.echo("system: %s" % platform.platform())
-        click.echo("python: %s" % sys.version.replace("\n", " "))
+    click.echo(f"py4web: {__version__}")
+    if verbose:
+        sys_version = sys.version.replace("\n", " ")
+        click.echo(f"system: {platform.platform()}")
+        click.echo(f"python: {sys_version}")
         for name in sorted(sys.modules):
             if hasattr(sys.modules[name], "__version__"):
-                click.echo("%s: %s" % (name, sys.modules[name].__version__))
+                click.echo(f"{name}: {sys.modules[name].__version__}")
 
 
 @cli.command()
@@ -1856,7 +1950,7 @@ def shell(**kwargs):
     """Open a python shell with apps_folder's parent added to the path"""
     if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
         # running in the PyInstaller binary bundle
-        import site  # noqa: F401
+        import site  # pylint: disable=possibly-unused-variable,import-outside-toplevel
     install_args(kwargs)
     code.interact(local=dict(globals(), **locals()))
 
@@ -1884,9 +1978,9 @@ def call(apps_folder, func, yes, args):
     install_args(dict(apps_folder=apps_folder, yes=yes))
     apps_folder_name = os.path.basename(os.environ["PY4WEB_APPS_FOLDER"])
     app_name = func.split(".")[0]
-    module, name = ("%s.%s" % (apps_folder_name, func)).rsplit(".", 1)
+    module, name = f"{apps_folder_name}.{func}".rsplit(".", 1)
     env = {}
-    exec("from %s import %s" % (module, name), {}, env)
+    exec(f"from {module} import {name}", {}, env)  # pylint: disable=exec-used
     request.app_name = app_name
     env[name](**kwargs)
 
@@ -1908,8 +2002,8 @@ def call(apps_folder, func, yes, args):
 )
 def set_password(password, password_file):
     """Set administrator's password for the Dashboard"""
-    click.echo('Storing the hashed password in file "%s"\n' % password_file)
-    with open(password_file, "w") as fp:
+    click.echo(f'Storing the hashed password in file "{password_file}"\n')
+    with open(password_file, "w", encoding="utf8") as fp:
         fp.write(str(pydal.validators.CRYPT()(password)[0]))
 
 
@@ -1939,15 +2033,14 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     )
     target_dir = os.path.join(os.environ["PY4WEB_APPS_FOLDER"], app_name)
     if not os.path.exists(source):
-        click.echo("Source app %s does not exists" % source)
+        click.echo(f"Source app {source} does not exists")
         sys.exit(1)
     elif os.path.exists(target_dir):
-        click.echo("Target folder %s already exists" % target_dir)
+        click.echo(f"Target folder {target_dir} already exists")
         sys.exit(1)
     else:
-        zfile = zipfile.ZipFile(source, "r")
-        zfile.extractall(target_dir)
-        zfile.close()
+        with zipfile.ZipFile(source, "r") as zfile:
+            zfile.extractall(target_dir)
 
 
 @cli.command()
@@ -2069,10 +2162,8 @@ def run(**kwargs):
     """Run the applications on apps_folder"""
     install_args(kwargs)
 
-    from py4web import __version__
-
     click.secho(ART, fg="blue")
-    click.echo("Py4web: %s on Python %s\n\n" % (__version__, sys.version))
+    click.echo(f"Py4web: {version} on Python {sys.version}\n\n")
 
     # Start
     Reloader.import_apps()
@@ -2083,8 +2174,7 @@ def run(**kwargs):
             kwargs["password_file"]
         ):
             click.echo(
-                'You have not set a dashboard password. Run "%s set_password" to do so.'
-                % PY4WEB_CMD
+                f'You have not set a dashboard password. Run "{PY4WEB_CMD} set_password" to do so.'
             )
         elif "_dashboard" in Reloader.ROUTES and (
             not kwargs["host"].startswith("unix:/")
