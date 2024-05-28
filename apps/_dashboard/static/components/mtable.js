@@ -157,23 +157,23 @@
         } else {
             Q.post(url, item).then(mtable.handle_response('post', this),
                                    mtable.handle_response('post', this));
-        }
-	location.reload();    
+        }	
     };
 
     mtable.handle_response = function(method, data) {
         self.busy = false;
         return function(res) {
-            if (res.response) res = res.response; // deal with error weirdness
+	    res = res.json();
             if (method == 'post') {
                 data.table.items = [];
                 mtable.methods.load.call(data);
             }
-            if (res.data.status == 'success') {
+            if (res.status == 'success') {
                 data.clear();
+		location.reload();
             } else {
-                data.errors = res.data.errors;
-                data.message = res.data.message;
+                data.errors = res.errors;
+                data.message = res.message;
             }
         };
     };
