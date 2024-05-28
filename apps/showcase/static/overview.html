@@ -325,7 +325,6 @@ def api_PUT_things(thing_id):
 </div><div class="section">
 A DELETE example
 
-
 <pre class="language-python"><code>
 @action("api/things/&lt;thing_id:int&gt;", method="DELETE")
 @action.uses(db)
@@ -343,7 +342,14 @@ def api_DELETE_things(thing_id):
     <li>It provides <a href="https://py4web.com/_documentation/static/en/chapter-11.html">internationalization and pluralization</a> with a translation UI.</li>
     <li>It can generate <a href="https://py4web.com/_documentation/static/en/chapter-08.html">RESTful APIs</a> for your database automatically based on a policy.</li>
     <li>There is built-in logic for <a href="https://py4web.com/_documentation/static/en/chapter-13.html#user-impersonation">user impersonation</a>.</li>
-  </ul>
+  </ul>  
+</div>
+
+<h4>Examples of more complex apps</h4>
+
+<div class="section">
+  <a href="https://github.com/web2py/py4web/tree/master/apps/fadebook">A minimalist Facebook clone</a><br/>
+  <a href="https://github.com/web2py/py4web/tree/master/apps/tagged_posts">A minimalist Twitter clone (with Vue)</a><br/>
 </div>
 
 <h4>Screenshots</h4>
