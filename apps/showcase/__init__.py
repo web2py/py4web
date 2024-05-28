@@ -3,7 +3,7 @@ import re
 
 from py4web import HTTP, action, request
 
-MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
+MODE = "none" # os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 
 from .examples.component_loader import component_loader
 from .examples.count import count

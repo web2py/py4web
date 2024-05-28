@@ -1520,7 +1520,7 @@ def error_page(token, button_text=None, href="#", color=None, message=None):
     href = sanitize_html.escape(href)
     message = http.client.responses[token].upper() if message is None else message
     color = (
-        {"4": "#F44336", "5": "#607D8B"}.get(str(code)[0], "#2196F3")
+        {"4": "#F44336", "5": "#607D8B"}.get(str(token)[0], "#2196F3")
         if not color
         else color
     )
