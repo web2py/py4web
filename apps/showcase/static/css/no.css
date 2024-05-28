@@ -115,7 +115,7 @@ header, footer {
 code {
   background: #f4f5f6;
   border-radius: .4rem;
-  font-size: 90;
+  font-size: 0.8em;
   margin: 0 .2rem;
   padding: .2rem .5rem;
   white-space: nowrap;

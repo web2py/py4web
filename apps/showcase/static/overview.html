@@ -1,0 +1,359 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="css/prism.css">
+    <style>
+      body {
+	  border: 0;
+	  margin: 0;
+	  padding: 0;
+	  font-family: Helvetica;
+      }
+      .section {
+	  line-height: 1.5em;
+	  text-align: justify;
+	  margin-bottom: 1.5em;
+      }
+      a {
+	  text-decoration: none;
+	  color: #15497B;
+      }
+      a:hover {
+	  text-decoration: underline;
+      }
+      main {
+	  width: 80%;
+	  margin: 0 auto;
+      }
+      code[class*=language-] {
+	  font-size: 0.8em;
+      }
+      pre {
+	  border: 2px solid #15497B;
+	  border-left: 20px solid #15497B;
+      }
+      header {
+	  padding: 20px;
+	  background: linear-gradient(57deg, #C188BB 0%, #15497B 100%); 
+      }
+    </style>
+    
+  </head>
+  <body>
+    <header>
+      <center>
+	<img src="https://py4web.com/_documentation/static/en/_static/logo.png" width="300px"/>
+      </center>
+    </header>
+    <main class="padded">
+	<h2>What is py4web?</h2>
+<div class="section">
+  <a href="https://py4web.com">py4web</a> is a framework for rapid development of secure database driven web applications.
+  It is the successor of <a href="https://web2py.com">web2py</a>.
+
+</div><div class="section">
+Install it and start it
+
+<pre class="language-bash"><code>
+$ pip install py4web
+$ py4web setup apps    # answer yes to all questions
+$ py4web set_password  # pick a password for the admin
+$ py4web run apps      # starts py4web
+</code></pre>
+
+</div><div class="section">
+	Each subfolder of <tt>app/</tt> with an <tt>__init__.py</tt> is its own app. One py4web can run multiple apps.
+	Copy the <tt>_scaffold</tt> app to start.
+<pre class="language-bash"><code>
+$ cp -r apps/_scaffold apps/myapp
+</code></pre>
+	
+	</div><div class="section">
+
+	
+Most of the API is imported from py4web.
+
+
+<pre class="language-python"><code>
+from py4web import action, redirect, request, URL, Field
+</code></pre>
+
+</div><div class="section">
+Use @action to map URLs into functions (aka actions). Actions can return strings or dictionaries.
+
+
+<pre class="language-python"><code>
+# http://127.0.0.1:8000/myapp/index
+@action("index")
+def index():
+    return "hello world"
+</code></pre>
+
+</div><div class="section">
+Actions can map path_info items into variables
+
+
+<pre class="language-python"><code>
+# http://127.0.0.1:8000/myapp/index/1
+@action("index/&lt;x:int&gt;")
+def index(x):
+    return f"x = {x}"
+</code></pre>
+
+</div><div class="section">
+py4web uses a request object from <a href="https://github.com/valq7711/ombott">ombott</a>, compatible with <a href="https://bottlepy.org/docs/dev/">bottlepy</a>
+
+
+<pre class="language-python"><code>
+# http://127.0.0.1:8000/myapp/index/?x=1
+@action("index")
+def index():
+    x = request.query.get("x")
+    return f"x = {x}"
+</code></pre>
+
+</div><div class="section">
+I can parse JSON from POST requests for example
+
+
+<pre class="language-python"><code>
+# http://127.0.0.1:8000/myapp/index POST {x: 1}
+@action("index", method="POST")
+def index():
+    x = request.json.get("x")
+    return {"x": x}
+</code></pre>
+
+</div><div class="section">
+A page can redirect to another page
+
+
+<pre class="language-python"><code>
+@action("index")
+def index():
+    redirect("http://example.com")
+</code></pre>
+
+</div><div class="section">
+We use URL(...) to generate the urls of internal pages
+
+
+<pre class="language-python"><code>
+@action("index")
+def index():
+    redirect(URL("other_page"))
+</code></pre>
+
+</div><div class="section">
+We have a built-in session object which by default stores the session data, encrypted, in a cookie. Optionally it can be stored in db, redist, or other custom storage. Session is a fixture and it must be declated with @action.uses()
+
+
+<pre class="language-python"><code>
+@action("index")
+@action.uses(session)
+def index():
+    session.x = (session.x or 0) + 1 
+    return f"x = {x}"
+</code></pre>
+
+</div><div class="section">
+An action can return a dictionary and use a <a href="https://py4web.com/_documentation/static/en/chapter-09.html">template</a> to render the dictionary into HTML. A template is also a fixture and must be declared with @action.uses.
+
+
+<pre class="language-python"><code>
+@action("index")
+@action.uses("index.html")
+def index():
+    x = 1
+    return locals()
+</code></pre>
+
+</div><div class="section">
+A template can be any text but typically it is HTML. Templates can extend and include other templates. Templetes can embed variables with <tt>[[=x]]</tt> and they can also embed python code (without limitations) with double square brakets. Indentation does not matter. <tt>[[pass]]</tt> closes <tt>[[ if ... ]]</tt> and <tt>[[ for ... ]]</tt>.
+
+
+<pre class="language-html"><code>
+[[extend "layout.html"]]
+<h1>x = [[=x]]</h1>
+
+[[ for i in range(10): ]][[ if i % 2==0: ]]
+<span>[[=i]] is even</span>
+[[ pass ]][[ pass ]]
+</code></pre>
+
+</div><div class="section">
+Py4web comes with a built-in <a href="https://py4web.com/_documentation/static/en/chapter-13.html">auth</a> object that generates all the pages required for user registration, login, email verification, retrieve and change password, edit profile, single sign on with OAuth2 and more. <tt>auth</tt> is also a fixture which exposed the current user to the action</tt>
+
+
+<pre class="language-python"><code>
+@action("index")
+@action.uses("generic.html", auth)
+def index():
+    user = auth.get_user()
+    if user:
+        message = "Hello {first_name}".format(user)
+    else:
+        message = "Hello, you are not logged in"
+    return {"message": message}
+</code></pre>
+
+</div><div class="section">
+<tt>auth.user</tt> is a different fixture which requires a logged-in user and blocks access otherwise
+
+
+<pre class="language-python"><code>
+@action("index")
+@action.uses("generic.html", auth.user)
+def index():
+    user = auth.get_user()
+    message = "Hello {first_name}".format(user)
+    return {"message": message}
+</code></pre>
+
+</div><div class="section">
+  More complex policies are possible using the built-in <a href="https://py4web.com/_documentation/static/en/chapter-07.html#tagging-records">tagging system</a> combined with <a href="https://py4web.com/_documentation/static/en/chapter-13.html#authorization-using-tags">auth</a>
+
+
+<pre class="language-python"><code>
+is_manager = Condition(lambda: "manager" in groups.get(auth.user_id))
+
+@action("index")
+@action.uses("generic.html", auth.user, is_manager)
+def index():
+    user = auth.get_user()
+    message = "Hello {first_name} (manager!)".format(user)
+    return {"message": message}
+</code></pre>
+
+
+</div><div class="section">
+Py4web has a built-in Database Abstraction Layer (support for sqlite, postgres, mysql, oracle, and more).
+It is integrated with <tt>auth</tt> and with form generation logic. It follows a declarative pattern and
+provides automatic migrations to create/alter tables. For example the following code creates a "thing"
+table with a "name" field and and an "image" and an additional signature field ("created_by", "created_on", "modified_by", "modified_on")
+Field types are more complex than basic database types as they have logic for validation and handling its content.
+
+
+<pre class="language-python"><code>
+db.define_table(
+    "thing",
+    Field("name", requires=IS_NOT_EMPTY()),
+    Field("image", "upload", download_url = lambda fn: URL(f"download/{fn}"))
+    auth.signature)
+</code></pre>
+
+</div><div class="section">
+Given the object <tt>db.thing</tt> defined above py4web can automatically generate <a href="https://py4web.com/_documentation/static/en/chapter-12.html">forms</a> including <a href="https://py4web.com/_documentation/static/en/chapter-12.html#form-validation">validation</a>.
+Here is a create form
+
+
+<pre class="language-python"><code>
+@action("create_thing")
+@action.uses("generic.html", auth.user)
+def create_thing():
+    form = Form(db.thing)
+    if form.accepted:
+        # record created
+        redirect(URL("index"))
+    return locals()
+</code></pre>
+
+</div><div class="section">
+Here is an edit form
+
+
+<pre class="language-python"><code>
+@action("edit_thing/&lt;thing_id:int&gt;")
+@action.uses("generic.html", auth.user)
+def edit_thing(thing_id):
+    form = Form(db.thing, thing_id)
+    if form.accepted:
+        # record updated
+        redirect(URL("index"))
+    return locals()
+</code></pre>
+
+</div><div class="section">
+py4web can also generate a <a href="https://github.com/jpsteil/grid_tutorial">grid</a> from a database query.
+The grid shows selected records with pagination and, optionally, enables creating, editing,
+deleting records, with multiple options for customization
+
+
+<pre class="language-python"><code>
+@action("my_things")
+@action("my_things/&lt;path:path&gt;")
+@action.uses("generic.html", auth.user)
+def my_things(path=None):
+    form = Grid(path,
+		db.thing.created_by==auth.user_id,
+    	        editable=True, create=True, deletable=True)
+    return locals()
+</code></pre>
+
+</div><div class="section">
+The DAL also makes it very easy to create APIs. Here is a GET example
+
+
+<pre class="language-python"><code>
+@action("api/things", method="GET")
+@action.uses(db)
+def api_GET_things():
+    return {"things": db(db.thing).select().as_list()}
+</code></pre>
+
+</div><div class="section">
+A POST example
+
+
+<pre class="language-python"><code>
+@action("api/things", method="POST")
+@action.uses(db)
+def api_POST_things():
+    return db.thing.validate_and_insert(**request.json)
+</code></pre>
+
+</div><div class="section">
+A PUT example
+
+
+<pre class="language-python"><code>
+@action("api/things/&lt;thing_id:int&gt;", method="PUT")
+@action.uses(db)
+def api_PUT_things(thing_id):
+    return db.thing.validate_and_update(thing_id, **request.json)
+</code></pre>
+
+</div><div class="section">
+A DELETE example
+
+
+<pre class="language-python"><code>
+@action("api/things/&lt;thing_id:int&gt;", method="DELETE")
+@action.uses(db)
+def api_DELETE_things(thing_id):
+    return {"deleted": db(db.thing.id==thing_id).delete()}
+</code></pre>
+</div>
+
+<div class="section">
+  These are just the basics. There is a lot more to it.
+  <ul>
+    <li>It has a built-in <a href="https://py4web.com/_documentation/static/en/chapter-04.html">Web UI</a>.</li>
+    <li>It has a built-in ticketing system to track and retrieve bugs in production.</li>
+    <li>It provides <a href="https://py4web.com/_documentation/static/en/chapter-07.html#record-versioning">full record versioning</a> (remembers all changes to every record).</li>
+    <li>It provides <a href="https://py4web.com/_documentation/static/en/chapter-11.html">internationalization and pluralization</a> with a translation UI.</li>
+    <li>It can generate <a href="https://py4web.com/_documentation/static/en/chapter-08.html">RESTful APIs</a> for your database automatically based on a policy.</li>
+    <li>There is built-in logic for <a href="https://py4web.com/_documentation/static/en/chapter-13.html#user-impersonation">user impersonation</a>.</li>
+  </ul>
+</div>
+
+<h4>Screenshots</h4>
+
+<center>
+  <img src="https://py4web.com/_documentation/static/en/_images/dashboard_main.png" height="200">
+  <img src="https://py4web.com/_documentation/static/en/_images/dashboard_ticket.png" height="200">
+</center>
+</main>
+    <script src="js/prism.js"></script>
+
+</body>
+</html>
