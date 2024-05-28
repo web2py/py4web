@@ -3,7 +3,7 @@ import re
 
 from py4web import HTTP, action, request
 
-MODE = "none" # os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
+MODE = os.environ.get("PY4WEB_DASHBOARD_MODE", "none")
 
 from .examples.component_loader import component_loader
 from .examples.count import count
@@ -94,5 +94,5 @@ def show(name):
             data.append({"shortname": filename, "content": content, "language": "python"})
     # drop the subfolder name
     path = "/".join(path.split("/")[1:])
-    executable = MODE == "full" or name in globals()
+    executable = MODE == "full" or name.split("/")[-1] in globals()
     return {"files": data, "mode": MODE, "path": path, "executable": executable}
