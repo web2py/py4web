@@ -1021,6 +1021,7 @@ class action:  # pylint: disable=invalid-name
                                     call_f(fixture.on_success, context)
                             except Exception as err:
                                 context["exception"] = context.get("exception") or err
+                    for fixture in reversed(fixtures):
                         safely(lambda: Fixture.local_delete(fixture))
                     exception = context.get("exception")
                     if isinstance(exception, Exception):
