@@ -1905,7 +1905,7 @@ def cli():
 
 @cli.command()
 @click.option(
-    "-a", "--all", is_flag=True, default=False, help="List version of all modules"
+    "-v", "--verbose", is_flag=True, default=False, help="List version of all modules"
 )
 def version(verbose=False):
     """Show versions and exit"""
