@@ -412,7 +412,10 @@ class Auth(Fixture):
                         readable=False,
                     )
                 )
-            db.define_table("auth_user", *(auth_fields + self.extra_auth_user_fields))
+            db.define_table(
+                "auth_user",
+                *(auth_fields + self.extra_auth_user_fields),
+                format=lambda u: f"{u.first_name} {u.last_name}")
 
     @property
     def signature(self):
