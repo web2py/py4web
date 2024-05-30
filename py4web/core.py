@@ -123,22 +123,17 @@ os.environ["PY4WEB_PATH"] = str(pathlib.Path(__file__).resolve().parents[1])
 
 # hold all framework hooks in one place
 # NOTE: `after_request` hooks are not currently used
-REQUEST_HOOKS = type("Object", (), dict(before=[]))  # pylint: disable=invalid-name
+_REQUEST_HOOKS = types.SimpleNamespace(before=[])
+
+
+def _before_request(*args, **kw):
+    [h(*args, **kw) for h in _REQUEST_HOOKS.before]
+
+
+bottle.default_app().add_hook("before_request", _before_request)
 
 # set to true to debug issues with fixtures
 DEBUG = False
-
-
-def register_hooks():
-    """register hooks with ombott if they exist"""
-    if not REQUEST_HOOKS.before:
-        return
-    bottle.default_app().add_hook(
-        "before_request",
-        lambda *args, **kwargs: [
-            func(*args, **kwargs) for func in REQUEST_HOOKS.before
-        ],
-    )
 
 
 def module2filename(module):
@@ -1362,7 +1357,7 @@ class Reloader:
             ## APP_WATCH tasks, if used by any app
             try_app_watch_tasks()
 
-        REQUEST_HOOKS.before.append(hook)
+        _REQUEST_HOOKS.before.append(hook)
 
     @staticmethod
     def clear_routes(app_names=None):
@@ -1746,8 +1741,6 @@ def start_server(kwargs):
 
         if not hasattr(_ssl, "sslwrap"):
             _ssl.sslwrap = new_sslwrap
-
-    register_hooks()
 
     if kwargs["watch"] != "off":
         watch(apps_folder, server_config, kwargs["watch"])
