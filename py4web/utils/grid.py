@@ -793,7 +793,7 @@ class Grid:
                 if (
                     len(parts) == 2
                     and parts[0] in db.tables
-                    and parts[1] in db[parts[p]]
+                    and parts[1] in db[parts[0]]
                 ):
                     orderby = db[parts[0]][parts[1]]
                     if sort_order.startswith("~"):
@@ -1059,6 +1059,7 @@ class Grid:
         )
         for index, column in enumerate(self.param.columns):
             col = None
+            key = None
             if isinstance(column, (Field, FieldVirtual)):
                 field = column
                 if field.readable and (field.type != "id" or self.param.show_id):
