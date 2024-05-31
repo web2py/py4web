@@ -127,7 +127,9 @@ _REQUEST_HOOKS = types.SimpleNamespace(before=[])
 
 
 def _before_request(*args, **kw):
-    [h(*args, **kw) for h in _REQUEST_HOOKS.before]
+    [  # pylint: disable=expression-not-assigned
+        h(*args, **kw) for h in _REQUEST_HOOKS.before
+    ]
 
 
 bottle.default_app().add_hook("before_request", _before_request)
@@ -1509,26 +1511,26 @@ ERROR_PAGES = {
 }
 
 
-def error_page(token, button_text=None, href="#", color=None, message=None):
+def error_page(http_code, button_text=None, href="#", color=None, message=None):
     """Generates an error page"""
     if button_text:
         button_text = sanitize_html.escape(button_text)
     href = sanitize_html.escape(href)
-    message = http.client.responses[token].upper() if message is None else message
+    message = http.client.responses[http_code].upper() if message is None else message
     color = (
-        {"4": "#F44336", "5": "#607D8B"}.get(str(token)[0], "#2196F3")
+        {"4": "#F44336", "5": "#607D8B"}.get(str(http_code)[0], "#2196F3")
         if not color
         else color
     )
     context = dict(
-        code=token, message=message, button_text=button_text, href=href, color=color
+        code=http_code, message=message, button_text=button_text, href=href, color=color
     )
     # if client accepts 'application/json' - return json
     if re.search(REGEX_APPJSON, request.headers.get("accept", "")):
-        response.status = code
+        response.status = http_code
         return json.dumps(context)
     # else - return html error-page
-    content = ERROR_PAGES.get(code) or ERROR_PAGES["*"]
+    content = ERROR_PAGES.get(http_code) or ERROR_PAGES["*"]
     return render(content=content, context=context, delimiters="[[ ]]")
 
 
