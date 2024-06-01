@@ -1480,9 +1480,11 @@ class Reloader:
         else:
             rule = url_prefix + rule
         dec_func = action.catch_errors(app_name, func)
+        if "method" not in kwargs:
+            kwargs["method"] = ["GET", "POST"]
         bottle.route(rule, **kwargs)(dec_func)
         filename = module2filename(func.__module__)
-        methods = kwargs.get("method", ["GET", "POST"])
+        methods = kwargs.get("method")
         if isinstance(methods, str):
             methods = [methods]
         for method in methods:

@@ -27,7 +27,7 @@ def index():
 # example of GET/POST/DELETE RESTful APIs
 
 
-@action("api")  # a GET API function
+@action("api", method="GET")  # a GET API function
 @action.uses(session, db)  # we load the session and db
 @action.uses(user_in_session)  # then check we have a valid user in session
 def todo():
