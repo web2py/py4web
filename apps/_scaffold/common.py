@@ -10,6 +10,7 @@ from py4web.utils.mailer import Mailer
 from py4web.utils.auth import Auth
 from py4web.utils.downloader import downloader
 from pydal.tools.tags import Tags
+from pydal.tools.scheduler import Scheduler
 from py4web.utils.factories import ActionFactory
 from . import settings
 
@@ -138,13 +139,15 @@ if settings.OAUTH2GOOGLE_CLIENT_ID:
     )
 
 if settings.OAUTH2GOOGLE_SCOPED_CREDENTIALS_FILE:
-    from py4web.utils.auth_plugins.oauth2google_scoped import OAuth2GoogleScoped # TESTED
+    from py4web.utils.auth_plugins.oauth2google_scoped import (
+        OAuth2GoogleScoped,
+    )  # TESTED
 
     auth.register_plugin(
         OAuth2GoogleScoped(
             secrets_file=settings.OAUTH2GOOGLE_SCOPED_CREDENTIALS_FILE,
-            scopes=[], # Put here any scopes you want in addition to login
-            db=db, # Needed to store credentials in auth_credentials
+            scopes=[],  # Put here any scopes you want in addition to login
+            db=db,  # Needed to store credentials in auth_credentials
         )
     )
 
@@ -186,10 +189,12 @@ if settings.OAUTH2OKTA_CLIENT_ID:
 # files uploaded and reference by Field(type='upload')
 # #######################################################
 if settings.UPLOAD_FOLDER:
-    @action('download/<filename>')
+
+    @action("download/<filename>")
     @action.uses(db)
     def download(filename):
         return downloader(db, settings.UPLOAD_FOLDER, filename)
+
     # To take advantage of this in Form(s)
     # for every field of type upload you MUST specify:
     #
@@ -197,16 +202,15 @@ if settings.UPLOAD_FOLDER:
     # field.download_url = lambda filename: URL('download/%s' % filename)
 
 # #######################################################
-# Optionally configure celery
+# Define and optionally start the scheduler
 # #######################################################
-if settings.USE_CELERY:
-    from celery import Celery
-
-    # to use "from .common import scheduler" and then use it according
-    # to celery docs, examples in tasks.py
-    scheduler = Celery(
-        "apps.%s.tasks" % settings.APP_NAME, broker=settings.CELERY_BROKER
+if settings.USE_SCHEDULER:
+    scheduler = Scheduler(
+        db, logger=logger, max_concurrent_runs=settings.SCHEDULER_MAX_CONCURRENT_RUNS
     )
+    scheduler.start()
+else:
+    scheduler = None
 
 # #######################################################
 # Enable authentication

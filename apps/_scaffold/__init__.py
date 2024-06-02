@@ -6,6 +6,9 @@ assert py4web.check_compatible("0.1.20190709.1")
 # by importing db you expose it to the _dashboard/dbadmin
 from .models import db
 
+# import the scheduler
+from .tasks import scheduler
+
 # by importing controllers you expose the actions defined in it
 from . import controllers
 

@@ -59,7 +59,7 @@ SMTP_TLS = False
 
 # session settings
 SESSION_TYPE = "cookies"
-SESSION_SECRET_KEY = None   # or replace with your own secret
+SESSION_SECRET_KEY = None  # or replace with your own secret
 MEMCACHE_CLIENTS = ["127.0.0.1:11211"]
 REDIS_SERVER = "localhost:6379"
 
@@ -100,14 +100,18 @@ USE_PAM = False
 USE_LDAP = False
 LDAP_SETTINGS = {
     "mode": "ad",  # Microsoft Active Directory
-    "server": "mydc.domain.com", # FQDN or IP of one Domain Controller
-    "base_dn": "cn=Users,dc=domain,dc=com", # base dn, i.e. where the users are located
+    "server": "mydc.domain.com",  # FQDN or IP of one Domain Controller
+    "base_dn": "cn=Users,dc=domain,dc=com",  # base dn, i.e. where the users are located
 }
 
 # i18n settings
 T_FOLDER = required_folder(APP_FOLDER, "translations")
 
-# Celery settings
+# Scheduler settings
+USE_SCHEDULER = False
+SCHEDULER_MAX_CONCURRENT_RUNS = 1
+
+# Celery settings (alternative to the build-in scheduler)
 USE_CELERY = False
 CELERY_BROKER = "redis://localhost:6379/0"
 

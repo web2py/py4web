@@ -24,7 +24,7 @@ setup:
 	python py4web.py setup apps
 	python py4web.py set_password
 run:
-	python py4web.py run -p password.txt apps
+	python py4web.py run -p password.txt apps -L20
 upgrade-utils:
 	find apps -name "utils.js" -exec cp apps/_dashboard/static/js/utils.js {} \;
 upgrade-vue:
