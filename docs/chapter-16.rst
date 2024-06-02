@@ -2,6 +2,84 @@
 Advanced topics and examples
 ============================
 
+The scheduler
+-------------
+
+Py4web has a built-in scheduler. There is nothing for you to install or configure to make it work.
+
+Given a task (just a python function), you can schedule async runs of that function.
+The runs can be a one-off or periodic. They can have timeout. They can be scheduled to run at a given scheduled time.
+
+The scheduler works by creating a table ``task_run`` and enqueueing runs of the predefined task as table records.
+Each ``task_run`` references a task and contains the input to be passed to that task. The scheduler will caputure the
+task stdout+stderr in a ``db.task_run.log`` and the task output in ``db.task_run.output``.
+
+A py4web thread loops and finds the next task that needs to be executed. For each task it creates a worker process
+and assigns the task to the worker process. You can specify how many worker processes should run concurrently.
+The worker processes are daemons and they only live for the life of one task run. Each worker process is only
+responsible for executing that one task in isolation. The main loop is responsible for assigning tasks and timeouts.
+
+The system is very robust because the only source of truth is the database and its integrity is guaranteed by
+transational safety. Even if py4web is killed, running tasks continue to run unless they complete, fail, or are
+explicitely killed.
+
+Aside for allowing multiple concurrent task runs in execution on one node,
+it is also possible to run multiple instances of the scheduler on different computing nodes,
+as long as they use the same client/server database for ``task_run`` and as long as
+they all define the same tasks.
+
+Here is an example of how to use the scheduler:
+
+.. code:: python
+
+   from pydal.tools.scheduler import Scheduler, delta, now
+   from .common import db
+
+   # create and start the scheduler
+   scheduler = Scheduler(db, sleep_time=1, max_concurrent_runs=1)
+   scheduler.start()
+
+   # register your tasks
+   scheduler.register_task("hello", lambda **inputs: print("hi!"))
+   scheduler.register_task("slow", lambda: time.sleep(10))
+   scheduler.register_task("periodic", lambda **inputs: print("I am periodic!"))
+   scheduler.register_task("fail", lambda x: 1 / x)
+   
+   # enqueue some task runs:
+   
+   scheduler.enqueue_run(name="hello")
+   scheduler.enqueue_run(name="hello", scheduled_for=now() + delta(10) # start in 10 secs
+   scheduler.enqueue_run(name="slow", timeout=1) # 1 secs
+   scheduler.enqueue_run(name="periodic", period=10) # 10 secs
+   scheduler.enqueue_run(name="fail", inputs={"x": 0})
+
+Notice that in scaffolding app, the scheduler is created and started in common if
+``USE_SCHEDULER=True`` in ``settings.py``.
+
+You can manage your task runs busing the dashboard or using a ``Grid(path, db.task_run)``.
+
+To prevent database locks (in particular with sqlite) we recommand:
+
+- Use a different database for the scheduler and everything else
+- Always ``db.commit()`` as soon as possible after any insert/update/delete
+- wrap your database logic in tasks in a try...except as in
+
+.. code:: python
+
+   def my_task():
+       try:
+           # do something
+           db.commit()
+       except Exception:
+           db.rollback()
+
+Celery
+------
+
+Yes. You can use Celery instead of the build-in scheduler but it adds complexity and it is less robust.
+Yet the build-in schduler is designed for long running tasks and the database can become a bottle neck
+if you have hundrands running concurrently. Celery may work better if you have more than 100 concurrent
+tasks and/or they are short running tasks.
 
 
 py4web and asyncio

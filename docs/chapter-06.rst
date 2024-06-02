@@ -699,6 +699,23 @@ with the following fields: username, email, password, first_name,
 last_name, sso_id, and action_token (the last two are mostly for
 internal use).
 
+If a ``auth_user`` table is defined before calling ``auth.enable()``
+the provided table withh be used.
+
+It is also possible to add ``extra_fields`` to the ``auth_user`` table,
+for example:
+
+.. code:: python
+
+   extra_fields = [
+      Field("favorite_color"),
+   ]
+   auth = Auth(session, db, extra_fields=extra_fields)
+
+In any case, we recommend not to pollute the ``auth_user`` table with
+extra fields but, instead, to use one of more additional custom
+tables that reference users and store the required information.
+   
 The ``auth`` object exposes the method:``auth.enable()`` which
 registers multiple actions including ``{appname}/auth/login``.
 It requires the presence of the ``auth.html`` template and the

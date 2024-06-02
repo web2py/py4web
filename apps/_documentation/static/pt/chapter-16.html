@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced topics and examples &mdash; Documentação py4web 1.20240420.2</title>
+  <title>Advanced topics and examples &mdash; Documentação py4web 1.20240530.2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=904ae00b"></script>
+        <script src="_static/documentation_options.js?v=7ffce357"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
@@ -42,7 +42,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20240420.2
+                1.20240530.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -70,6 +70,8 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-14.html">Rede</a></li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced topics and examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-scheduler">The scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#celery">Celery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#py4web-and-asyncio">py4web and asyncio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#htmx">htmx</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#htmx-usage-in-form">htmx usage in Form</a></li>
@@ -113,6 +115,73 @@
              
   <section id="advanced-topics-and-examples">
 <h1>Advanced topics and examples<a class="headerlink" href="#advanced-topics-and-examples" title="Link to this heading"></a></h1>
+<section id="the-scheduler">
+<h2>The scheduler<a class="headerlink" href="#the-scheduler" title="Link to this heading"></a></h2>
+<p>Py4web has a built-in scheduler. There is nothing for you to install or configure to make it work.</p>
+<p>Given a task (just a python function), you can schedule async runs of that function.
+The runs can be a one-off or periodic. They can have timeout. They can be scheduled to run at a given scheduled time.</p>
+<p>The scheduler works by creating a table <code class="docutils literal notranslate"><span class="pre">task_run</span></code> and enqueueing runs of the predefined task as table records.
+Each <code class="docutils literal notranslate"><span class="pre">task_run</span></code> references a task and contains the input to be passed to that task. The scheduler will caputure the
+task stdout+stderr in a <code class="docutils literal notranslate"><span class="pre">db.task_run.log</span></code> and the task output in <code class="docutils literal notranslate"><span class="pre">db.task_run.output</span></code>.</p>
+<p>A py4web thread loops and finds the next task that needs to be executed. For each task it creates a worker process
+and assigns the task to the worker process. You can specify how many worker processes should run concurrently.
+The worker processes are daemons and they only live for the life of one task run. Each worker process is only
+responsible for executing that one task in isolation. The main loop is responsible for assigning tasks and timeouts.</p>
+<p>The system is very robust because the only source of truth is the database and its integrity is guaranteed by
+transational safety. Even if py4web is killed, running tasks continue to run unless they complete, fail, or are
+explicitely killed.</p>
+<p>Aside for allowing multiple concurrent task runs in execution on one node,
+it is also possible to run multiple instances of the scheduler on different computing nodes,
+as long as they use the same client/server database for <code class="docutils literal notranslate"><span class="pre">task_run</span></code> and as long as
+they all define the same tasks.</p>
+<p>Here is an example of how to use the scheduler:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal.tools.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">now</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
+
+<span class="c1"># create and start the scheduler</span>
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">Scheduler</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">sleep_time</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_concurrent_runs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="c1"># register your tasks</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hi!&quot;</span><span class="p">))</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;slow&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;periodic&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">inputs</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I am periodic!&quot;</span><span class="p">))</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;fail&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># enqueue some task runs:</span>
+
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="n">scheduled_for</span><span class="o">=</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">delta</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># start in 10 secs</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;slow&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 1 secs</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;periodic&quot;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># 10 secs</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fail&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Notice that in scaffolding app, the scheduler is created and started in common if
+<code class="docutils literal notranslate"><span class="pre">USE_SCHEDULER=True</span></code> in <code class="docutils literal notranslate"><span class="pre">settings.py</span></code>.</p>
+<p>You can manage your task runs busing the dashboard or using a <code class="docutils literal notranslate"><span class="pre">Grid(path,</span> <span class="pre">db.task_run)</span></code>.</p>
+<p>To prevent database locks (in particular with sqlite) we recommand:</p>
+<ul class="simple">
+<li><p>Use a different database for the scheduler and everything else</p></li>
+<li><p>Always <code class="docutils literal notranslate"><span class="pre">db.commit()</span></code> as soon as possible after any insert/update/delete</p></li>
+<li><p>wrap your database logic in tasks in a try…except as in</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># do something</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="celery">
+<h2>Celery<a class="headerlink" href="#celery" title="Link to this heading"></a></h2>
+<p>Yes. You can use Celery instead of the build-in scheduler but it adds complexity and it is less robust.
+Yet the build-in schduler is designed for long running tasks and the database can become a bottle neck
+if you have hundrands running concurrently. Celery may work better if you have more than 100 concurrent
+tasks and/or they are short running tasks.</p>
+</section>
 <section id="py4web-and-asyncio">
 <h2>py4web and asyncio<a class="headerlink" href="#py4web-and-asyncio" title="Link to this heading"></a></h2>
 <p>Asyncio is not strictly needed, at least for most of the normal use
@@ -759,7 +828,7 @@ as well as modify other components.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20240420.2
+      v: 1.20240530.2
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

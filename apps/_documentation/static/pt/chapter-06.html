@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fixures &mdash; Documentação py4web 1.20240420.2</title>
+  <title>Fixures &mdash; Documentação py4web 1.20240530.2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=904ae00b"></script>
+        <script src="_static/documentation_options.js?v=7ffce357"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
@@ -43,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20240420.2
+                1.20240530.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -679,6 +679,19 @@ authentication information.</p>
 </pre></div>
 </div>
 <p>O construtor do objeto `` Auth`` define a tabela `` auth_user`` com os seguintes campos: nome de usuário, e-mail, senha, first_name, last_name, sso_id e action_token (os dois últimos são principalmente para uso interno).</p>
+<p>If a <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> table is defined before calling <code class="docutils literal notranslate"><span class="pre">auth.enable()</span></code>
+the provided table withh be used.</p>
+<p>It is also possible to add <code class="docutils literal notranslate"><span class="pre">extra_fields</span></code> to the <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> table,
+for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">extra_fields</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;favorite_color&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">auth</span> <span class="o">=</span> <span class="n">Auth</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">extra_fields</span><span class="o">=</span><span class="n">extra_fields</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In any case, we recommend not to pollute the <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> table with
+extra fields but, instead, to use one of more additional custom
+tables that reference users and store the required information.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">auth</span></code> object exposes the method:<code class="docutils literal notranslate"><span class="pre">auth.enable()</span></code> which
 registers multiple actions including <code class="docutils literal notranslate"><span class="pre">{appname}/auth/login</span></code>.
 It requires the presence of the <code class="docutils literal notranslate"><span class="pre">auth.html</span></code> template and the
@@ -955,7 +968,7 @@ that function automatically.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20240420.2
+      v: 1.20240530.2
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

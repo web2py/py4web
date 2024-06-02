@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forumlários &mdash; Documentação py4web 1.20240420.2</title>
+  <title>Forumlários &mdash; Documentação py4web 1.20240530.2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=904ae00b"></script>
+        <script src="_static/documentation_options.js?v=7ffce357"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
@@ -43,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20240420.2
+                1.20240530.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -187,8 +187,59 @@
 <h1>Forumlários<a class="headerlink" href="#forms" title="Link to this heading"></a></h1>
 <p>The Form class provides a high-level API for quickly building CRUD (create, update and delete) forms,
 especially for working on an existing database table. It can generate and process a form from a
-list of desired fields and/or from an existing database table.
-It is a pretty much equivalent to web2py’s <code class="docutils literal notranslate"><span class="pre">SQLFORM</span></code>.</p>
+list of desired fields and/or from an existing database table.</p>
+<p>There are 3 typs of forms:</p>
+<p>CRUD Create forms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;create_thing&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_thing</span><span class="p">():</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;record created&quot;</span><span class="p">)</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;other_page&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>CRUD Update forms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;update_thing/&lt;thing_id:int&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">update_thing</span><span class="p">(</span><span class="n">thing_id</span><span class="p">):</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">thing_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;record updated&quot;</span><span class="p">)</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;other_page&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Non-CRUD forms (not associated to a database):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;some_form&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">some_form</span><span class="p">():</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s2">&quot;red&quot;</span><span class="p">,</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span><span class="s2">&quot;green&quot;</span><span class="p">])),</span>
+    <span class="p">]</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
+        <span class="n">flash</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;information recorded&quot;</span><span class="p">)</span>
+        <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;other_page&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The use of flash is optional. <code class="docutils literal notranslate"><span class="pre">flash</span></code> is defined in <code class="docutils literal notranslate"><span class="pre">common.py</span></code>
+in the scaffolding application. It simply stores a message in a cookie
+so it can be recovered and displayed after redirection.
+This is done in the default layout.</p>
+<p>In this chapter from now on we will assume the following model and
+an app derived from the scaffolding app:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
+    <span class="s1">&#39;thing&#39;</span><span class="p">,</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="s1">&#39;green&#39;</span><span class="p">])),</span>
+    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;upload&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 <section id="the-form-constructor">
 <h2>The Form constructor<a class="headerlink" href="#the-form-constructor" title="Link to this heading"></a></h2>
 <p>O `` construtor Form`` aceita os seguintes argumentos:</p>
@@ -232,21 +283,21 @@ FormStyleBulma or FormStyleBootstrap4</p></li>
 <h2>A minimal form example without a database<a class="headerlink" href="#a-minimal-form-example-without-a-database" title="Link to this heading"></a></h2>
 <p>Let’s start with a minimal working form example.
 Create a new minimal app called <code class="docutils literal notranslate"><span class="pre">form_minimal</span></code> :</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in form_minimal/__init__.py</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="n">impot</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_NOT_EMPTY</span>
-
+<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;form_minimal.html&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">([</span>
-        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;product_name&#39;</span><span class="p">),</span>
-        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;product_quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-        <span class="p">])</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
+        <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_SET</span><span class="p">([</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="s1">&#39;green&#39;</span><span class="p">]),</span>
+    <span class="p">]</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">accepted</span><span class="p">:</span>
-        <span class="c1"># Do something with form.vars[&#39;product_name&#39;] and form.vars[&#39;product_quantity&#39;]</span>
+        <span class="c1"># Do something with form.vars[&#39;name&#39;] and form.vars[&#39;color&#39;]</span>
         <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;accepted&#39;</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
         <span class="c1"># display message error</span>
@@ -285,30 +336,18 @@ The next example will.</p>
 <h2>Basic form example<a class="headerlink" href="#basic-form-example" title="Link to this heading"></a></h2>
 <p>In this next basic example we generate a form from a database.
 Create a new minimal app called <code class="docutils literal notranslate"><span class="pre">form_basic</span></code> :</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in form_basic/__init__.py</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
-<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_NOT_EMPTY</span><span class="p">,</span> <span class="n">IS_IN_SET</span>
-
-<span class="c1"># database definition</span>
-<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
-    <span class="s1">&#39;person&#39;</span><span class="p">,</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;superhero&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;realname&#39;</span><span class="p">),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;universe&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;DC Comics&#39;</span><span class="p">,</span><span class="s1">&#39;Marvel Comics&#39;</span><span class="p">])),</span>
-<span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="n">impot</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
 
 <span class="c1"># controllers definition</span>
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_basic.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">)</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -319,7 +358,9 @@ with the <code class="docutils literal notranslate"><span class="pre">requires</
 on the <a class="reference internal" href="#form-validation"><span class="std std-ref">Validação de formulário</span></a> paragraph.</p>
 <p>You will also need a template file <code class="docutils literal notranslate"><span class="pre">templates/form_basic.html</span></code> that
 contains, for example, the following code:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form Basic example: Superhero Identity<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &quot;layout.html&quot;]]
+
+<span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form Basic example: My Things<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
 
 [[=form]]
 
@@ -327,7 +368,7 @@ contains, for example, the following code:</p>
 
 <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
 [[for row in rows:]]
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.superhero]] ([[=row.realname]]) from [[=row.universe]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.name]] has color [[=row.color]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
 [[pass]]
 <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
 </pre></div>
@@ -335,12 +376,12 @@ contains, for example, the following code:</p>
 <p>Reload py4web and visit <a class="reference external" href="http://127.0.0.1:8000/form_basic">http://127.0.0.1:8000/form_basic</a> :
 the result is an input form on the top of the page, and the list of all the
 previously added entries on the bottom:</p>
-<img alt="_images/form2.png" src="_images/form2.png" />
+<img alt="images/form2.png###FIXTHIS" src="images/form2.png###FIXTHIS" />
 <p>This is a simple example and you cannot change nor delete existing records. But if you’d
 like to experiment, the database content can be fully seen and changed with the Dashboard app.</p>
-<p>Notice that py4web by default let you choose the value of the <cite>universe</cite> field using
-a dropdown menu:</p>
-<img alt="_images/form3.png" src="_images/form3.png" />
+<p>Notice that py4web by default let you choose the value of the <cite>color</cite> field using
+a dropdown menu.</p>
+<img alt="images/form3.png###FIXTHIS" src="images/form3.png###FIXTHIS" />
 <p>The basic form usage is quite useful for rapid prototyping of programs, since you don’t need
 to specify the layout of the form. On the other hand, you cannot change its default behaviour.</p>
 <section id="file-upload-field">
@@ -349,34 +390,22 @@ to specify the layout of the form. On the other hand, you cannot change its defa
 is to have the UPLOAD_FOLDER defined in the common.py file. But if you don’t specify it, then the
 default value of  <code class="docutils literal notranslate"><span class="pre">your_app/upload</span></code> folder will be used (and the folder will also be created if needed).
 Let’s look at a simple example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in form_upload/__init__.py</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">py4web.core</span> <span class="kn">import</span> <span class="n">required_folder</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="n">impot</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_NOT_EMPTY</span>
-
-<span class="c1"># database definition</span>
-<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
-    <span class="s1">&#39;person&#39;</span><span class="p">,</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;superhero&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s2">&quot;upload&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Superhero Image&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_upload.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">)</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>And in templates/form_upload.html :</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form upload example: Superhero Identity<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form upload example: My Things<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
 
 [[=form]]
 
@@ -384,14 +413,15 @@ Let’s look at a simple example:</p>
 
 <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
 [[for row in rows:]]
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.superhero]] = [[=row.image]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.thing]] <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;[[=URL(&#39;download&#39;, row.image)]]&quot;</span><span class="p">&gt;</span>image<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
 [[pass]]
 <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
 </pre></div>
 </div>
 <p>This gives a result like the following:</p>
-<img alt="_images/form6.png" src="_images/form6.png" />
-<p>Note that the uploaded files will be saved on the UPLOAD_FOLDER folder with their name hashed.
+<img alt="images/form6.png###FIXME" src="images/form6.png###FIXME" />
+<p>Notice that the <code class="docutils literal notranslate"><span class="pre">download</span></code> action is defined in the scaffolding app in <code class="docutils literal notranslate"><span class="pre">common.py</span></code>.</p>
+<p>The uploaded files (the thing images) are saved on the UPLOAD_FOLDER folder with their name hashed.
 Other details on the upload fields can be found on <a class="reference internal" href="chapter-07.html#field-constructor"><span class="std std-ref">Construtor Field</span></a> paragraph, including
 a way to save the files inside the database itself.</p>
 </section>
@@ -415,31 +445,19 @@ some of their properties.</p>
 <li><p>TextareaWidget</p></li>
 </ul>
 <p>This is an improved “Basic Form Example” with a radio button widget:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in form_widgets/__init__.py</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="n">impot</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span><span class="p">,</span> <span class="n">RadioWidget</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_NOT_EMPTY</span><span class="p">,</span> <span class="n">IS_IN_SET</span>
-
-<span class="c1"># database definition</span>
-<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
-    <span class="s1">&#39;person&#39;</span><span class="p">,</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;superhero&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;realname&#39;</span><span class="p">),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;universe&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;DC Comics&#39;</span><span class="p">,</span><span class="s1">&#39;Marvel Comics&#39;</span><span class="p">])),</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
 
 <span class="c1"># controllers definition</span>
 <span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;form_widgets.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;universe&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">)</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">FormStyleDefault</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -447,58 +465,28 @@ some of their properties.</p>
 beginning of the chapter:</p>
 <ul>
 <li><p>you need to import the widget from the py4web.utils.form library</p></li>
-<li><p>before the form definition, you define the <code class="docutils literal notranslate"><span class="pre">universe</span></code> field form style with the line:</p>
+<li><p>before the form definition, you define the <code class="docutils literal notranslate"><span class="pre">color</span></code> field form style with the line:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;universe&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></blockquote>
 </li>
 </ul>
-<p>You will also need a template file <code class="docutils literal notranslate"><span class="pre">templates/form_widgets.html</span></code> that
-contains the following code (as the form_basic.html) :</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form Widget example: Superhero Identity<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
-
-[[=form]]
-
-<span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Rows<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
-
-<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
-[[for row in rows:]]
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.superhero]] ([[=row.realname]]) from [[=row.universe]]<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-[[pass]]
-<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
-</pre></div>
-</div>
 <p>The result is the same as before, but now we have a radio button widget instead of the
 dropdown menu!</p>
-<img alt="_images/form4.png" src="_images/form4.png" />
+<img alt="images/form4.png###FIXME" src="images/form4.png###FIXME" />
 <p>Using widgets in forms is quite easy, and they’ll let you have more control on its pieces.</p>
 </section>
 <section id="custom-widgets">
 <h3>Custom widgets<a class="headerlink" href="#custom-widgets" title="Link to this heading"></a></h3>
 <p>You can also customize the widgets properties by subclassing the FormStyleDefault class. Let’s have a quick look,
 improving again our Superhero example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
-<span class="c1"># in form_custom_widgets/__init__.py</span>
-<span class="c1">#</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">action</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">DAL</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in controllers.py</span>
+<span class="kn">from</span> <span class="nn">py4web</span> <span class="n">impot</span> <span class="n">action</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">py4web.utils.form</span> <span class="kn">import</span> <span class="n">Form</span><span class="p">,</span> <span class="n">FormStyleDefault</span><span class="p">,</span> <span class="n">RadioWidget</span>
-<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="n">IS_NOT_EMPTY</span><span class="p">,</span> <span class="n">IS_IN_SET</span>
-<span class="kn">from</span> <span class="nn">yatl.helpers</span> <span class="kn">import</span> <span class="n">INPUT</span><span class="p">,</span> <span class="n">DIV</span>
-
-<span class="c1"># database definition</span>
-<span class="n">DB_FOLDER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;databases&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">DB_FOLDER</span><span class="p">)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
-    <span class="s1">&#39;person&#39;</span><span class="p">,</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;superhero&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;realname&#39;</span><span class="p">),</span>
-    <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;universe&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_IN_SET</span><span class="p">([</span><span class="s1">&#39;DC Comics&#39;</span><span class="p">,</span><span class="s1">&#39;Marvel Comics&#39;</span><span class="p">])),</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pydal.validators</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="kn">import</span> <span class="n">db</span>
 
 <span class="c1"># custom widget class definition</span>
 <span class="k">class</span> <span class="nc">MyCustomWidget</span><span class="p">:</span>
@@ -522,33 +510,17 @@ improving again our Superhero example:</p>
 <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">MyStyle</span> <span class="o">=</span> <span class="n">FormStyleDefault</span>
     <span class="n">MyStyle</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="n">FormStyleDefault</span><span class="o">.</span><span class="n">classes</span>
-    <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;superhero&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">MyCustomWidget</span><span class="p">()</span>
-    <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;realname&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">MyCustomWidget</span><span class="p">()</span>
-    <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;universe&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
+    <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">MyCustomWidget</span><span class="p">()</span>
+    <span class="n">MyStyle</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">RadioWidget</span><span class="p">()</span>
 
-    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">MyStyle</span><span class="p">)</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">deletable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">formstyle</span><span class="o">=</span><span class="n">MyStyle</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>You will also need a template file <code class="docutils literal notranslate"><span class="pre">templates/form_custom_widgets.html</span></code> that
-contains the following code (as the form_basic.html) :</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Form Custom Widgets example: Superhero Identity<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
-
-[[=form]]
-
-<span class="p">&lt;</span><span class="nt">h2</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Rows<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
-
-<span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
-[[for row in rows:]]
-<span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>[[=row.id]]: [[=row.superhero]]  ([[=row.realname]]) from [[=row.universe]] <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
-[[pass]]
-<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
 </pre></div>
 </div>
 <p>The result is similar to the previous ones, but now we have a custom input field,
 with foreground color red and background color black:</p>
-<img alt="_images/form5.png" src="_images/form5.png" />
+<img alt="images/form5.png###FIXME" src="images/form5.png###FIXME" />
 <p>Even the radio button widget has changed, from red to blue.</p>
 </section>
 </section>
@@ -591,8 +563,6 @@ instructions before the form is displayed or after its data submission by insert
 [[=form.custom.end ]]
 </pre></div>
 </div>
-<p>Custom forms are also frequently used for avoiding code redundancy; you can use a single template file for
-multiple form types, and programmatically change the fields contained and how to render them.</p>
 <p>Note: “custom” is just a convention, it could be any name that does not clash with already defined objects.</p>
 <div class="admonition warning">
 <p class="admonition-title">Aviso</p>
@@ -604,6 +574,32 @@ that might be needed based on your css framework.  For example, if you’re usin
 your css framework, you’ll have to add an outer DIV in order to get select controls to
 appear correctly.</p>
 </div>
+<p>You can also be more creative and use your HTML in the template instead of using widgets:</p>
+<blockquote>
+<div><p>[[=form.custom.begin ]]</p>
+<p>[[for field, error form.errors.items:]]
+&lt;div class=»error»&gt;Field [[=field]] [[=error]]&lt;/div&gt;
+[[pass]]</p>
+<dl class="simple">
+<dt>&lt;div class=»select»&gt;</dt><dd><p>&lt;input name=»name» value=»form.vars.get(“name”, “”)»/&gt;</p>
+</dd>
+</dl>
+<p>&lt;/div&gt;
+&lt;div class=»select»&gt;
+[[for color in [“red”, “blue”, “green”]:]]</p>
+<blockquote>
+<div><p>&lt;label&gt;[[=color]]&lt;/label&gt;
+&lt;input name=»color» type=»radio» value=»[[=color]]»</p>
+<blockquote>
+<div><p>[[if form.vars.get(“color”) == color]]checked[[pass]]</p>
+</div></blockquote>
+<p>/&gt;</p>
+</div></blockquote>
+<p>[[pass]]
+&lt;/div&gt;
+&lt;input type=»submit» value=»Click me»/&gt;
+[[=form.custom.end ]]</p>
+</div></blockquote>
 </section>
 <section id="the-sidecar-parameter">
 <h3>The sidecar parameter<a class="headerlink" href="#the-sidecar-parameter" title="Link to this heading"></a></h3>
@@ -1618,7 +1614,7 @@ displayed to the user, and no database I/O will take place.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20240420.2
+      v: 1.20240530.2
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
