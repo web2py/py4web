@@ -92,6 +92,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#is-match"><code class="docutils literal notranslate"><span class="pre">IS_MATCH</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#is-length"><code class="docutils literal notranslate"><span class="pre">IS_LENGTH</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#is-url"><code class="docutils literal notranslate"><span class="pre">IS_URL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#is-safe"><code class="docutils literal notranslate"><span class="pre">IS_SAFE</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#is-slug"><code class="docutils literal notranslate"><span class="pre">IS_SLUG</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#is-json"><code class="docutils literal notranslate"><span class="pre">IS_JSON</span></code></a></li>
 </ul>
@@ -841,6 +842,17 @@ will become ‘%4e%86’.</p>
                 <span class="n">prepend_scheme</span><span class="o">=</span><span class="s1">&#39;https&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="is-safe">
+<h4><code class="docutils literal notranslate"><span class="pre">IS_SAFE</span></code><a class="headerlink" href="#is-safe" title="Link to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">requires</span> <span class="o">=</span> <span class="n">IS_SAFE</span><span class="p">(</span><span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;Unsafe Content&#39;</span><span class="p">)</span>
+<span class="n">requires</span> <span class="o">=</span> <span class="n">IS_SAFE</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;sanitize&quot;</span><span class="p">)</span>
+<span class="n">requires</span> <span class="o">=</span> <span class="n">IS_SAFE</span><span class="p">(</span><span class="n">sanitizer</span><span class="o">=</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">XML</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>This validators is for text fields that should contain HTML and may contain invalid tags (script, ember, object, iframe).
+It works by trying to sanitize the content and either provide an error (mode=”error”) or replacing the content
+with the sanitized one (mode=”sanitize”). You can specify the error message, the mode, and provide your own sanitizer.</p>
 </section>
 <section id="is-slug">
 <h4><code class="docutils literal notranslate"><span class="pre">IS_SLUG</span></code><a class="headerlink" href="#is-slug" title="Link to this heading"></a></h4>
