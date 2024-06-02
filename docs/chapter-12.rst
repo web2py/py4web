@@ -64,8 +64,8 @@ an app derived from the scaffolding app:
    db.define_table(
        'thing',
        Field('name', requires=IS_NOT_EMPTY()),
-       Field('color', requires=IS_IN_SET('red','blue','green'])),
-       Field('image', 'upload'),
+       Field('color', requires=IS_IN_SET(['red','blue','green'])),
+       Field('image', 'upload', download_url=lambda name: URL('download', name)),
    )
 
 
@@ -129,15 +129,15 @@ Create a new minimal app called ``form_minimal`` :
     def index():
         fields = [
             Field('name', requires=IS_NOT_EMPTY()),
-            Field('color', requires=IS_SET(['red','blue','green']),
+            Field('color', requires=IS_IN_SET(['red','blue','green'])),
         ]
         form = Form(fields)
         if form.accepted:
             # Do something with form.vars['name'] and form.vars['color']
             redirect(URL('accepted'))
         if form.errors:
-            # display message error
-            redirect(URL('not_accepted'))
+            # do something
+            ...
         return dict(form=form)
 
     @action("accepted")
@@ -145,16 +145,12 @@ Create a new minimal app called ``form_minimal`` :
         return "form_example accepted"
 
 
-    @action("not_accepted")
-    def not_accepted():
-        return "form_example NOT accepted"
-
-
 Also, you need to create a file inside the app called ``templates/form_minimal.html``
 that just contains the line:
 
 .. code:: html
 
+    [[extend 'layout.html']]
     [[=form]]
 
 
@@ -179,29 +175,26 @@ The next example will.
 Basic form example
 ------------------
 
-In this next basic example we generate a form from a database. 
+In this next basic example we generate a CRUD create form from a database. 
 Create a new minimal app called ``form_basic`` :
 
 
 .. code-block:: python
 
     # in controllers.py
-    from py4web impot action, redirect, URL, Field
+    from py4web import action, redirect, URL, Field
     from py4web.utils.form import Form
     from pydal.validators import *
     from .common import db
     
     # controllers definition
-    @action("index", method=["GET", "POST"])
+    @action("create_form", method=["GET", "POST"])
     @action.uses("form_basic.html", db)
-    def index(id=None):
-        form = Form(db.thing, id, deletable=False, formstyle=FormStyleDefault)
+    def create_form():
+        form = Form(db.thing)
         rows = db(db.thing).select()
         return dict(form=form, rows=rows)
 
-
-Because this is a dual purpose form, in case an ``id`` is passed, we also validate it
-by checking if the corresponding record exists and raise 404 if not.
 
 Note the import of two simple validators on top, in order to be used later
 with the ``requires`` parameter. We'll fully explain them
@@ -226,8 +219,8 @@ contains, for example, the following code:
     [[pass]]
     </ul>
 
-
-Reload py4web and visit http://127.0.0.1:8000/form_basic : 
+    
+Reload py4web and visit http://127.0.0.1:8000/create_form : 
 the result is an input form on the top of the page, and the list of all the
 previously added entries on the bottom:
 
@@ -236,42 +229,41 @@ previously added entries on the bottom:
 This is a simple example and you cannot change nor delete existing records. But if you'd
 like to experiment, the database content can be fully seen and changed with the Dashboard app.
 
+You can turn a create form into a CRUD update form by passing a record or a record id
+it second argument:
 
-Notice that py4web by default let you choose the value of the `color` field using
-a dropdown menu.
+.. code:: html
 
-.. image:: images/form3.png   ### FIX THIS
-
-The basic form usage is quite useful for rapid prototyping of programs, since you don't need
-to specify the layout of the form. On the other hand, you cannot change its default behaviour.
-
+    # controllers definition
+    @action("update_form/<thing_id:int>", method=["GET", "POST"])
+    @action.uses("form_basic.html", db)
+    def update_form():
+        form = Form(db.thing, thing_id)
+        rows = db(db.thing).select()
+        return dict(form=form, rows=rows)
 
 
 File upload field
 ~~~~~~~~~~~~~~~~~
 
+We can make a minor modificaiton to our reference model and an upload type file:
+
+.. code:: python
+
+   db.define_table(
+       'thing',
+       Field('name', requires=IS_NOT_EMPTY()),
+       Field('color', requires=IS_IN_SET(['red','blue','green'])),
+       Field('image', 'upload', download_url=lambda image: URL('download', image)),
+   )
+
 The file upload field is quite particular. The standard way to use it (as in the _scaffold app) 
 is to have the UPLOAD_FOLDER defined in the common.py file. But if you don't specify it, then the
 default value of  ``your_app/upload`` folder will be used (and the folder will also be created if needed).
-Let's look at a simple example:
+``download_url`` is a callback that given the image name, generated the URL to download. The ``download``
+url is predefined in ``common.py``.
 
-.. code-block:: python
-
-    # in controllers.py
-    from py4web impot action, redirect, URL, Field
-    from py4web.utils.form import Form, FormStyleDefault
-    from pydal.validators import *
-    from .common import db
-
-    @action("index", method=["GET", "POST"])
-    @action.uses("form_upload.html", db)
-    def upload(id=None):
-        form = Form(db.thing, id, deletable=False, formstyle=FormStyleDefault)
-        rows = db(db.thing).select()
-        return dict(form=form, rows=rows)
-
-
-And in templates/form_upload.html :
+We can modify ``form_basic.html`` to display the uploaded images:
 
 .. code:: html
 
@@ -283,16 +275,11 @@ And in templates/form_upload.html :
     
     <ul>
     [[for row in rows:]]
-    <li>[[=row.id]]: [[=row.thing]] <a href="[[=URL('download', row.image)]]">image</a></li>
+    <li>[[=row.id]]: [[=row.name]] has color [[=row.color]]
+        <img src="[[=URL('download', row.image)]]" />
     [[pass]]
     </ul>
 
-
-This gives a result like the following:
-
-.. image:: images/form6.png   ### FIX ME
-
-Notice that the ``download`` action is defined in the scaffolding app in ``common.py``.	   
 
 The uploaded files (the thing images) are saved on the UPLOAD_FOLDER folder with their name hashed.
 Other details on the upload fields can be found on :ref:`Field constructor` paragraph, including
@@ -327,15 +314,15 @@ This is an improved 'Basic Form Example' with a radio button widget:
 .. code:: python
 
     # in controllers.py
-    from py4web impot action, redirect, URL, Field
+    from py4web import action, redirect, URL, Field
     from py4web.utils.form import Form, FormStyleDefault, RadioWidget
     from pydal.validators import *
     from .common import db
 
     # controllers definition
-    @action("index", method=["GET", "POST"])
+    @action("create_form", method=["GET", "POST"])
     @action.uses("form_widgets.html", db)
-    def index(id=None):
+    def create_form():
         FormStyleDefault.widgets['color']=RadioWidget()
         form = Form(db.thing, formstyle=FormStyleDefault)
         rows = db(db.thing).select()
@@ -354,9 +341,6 @@ beginning of the chapter:
 The result is the same as before, but now we have a radio button widget instead of the
 dropdown menu!
 
-.. image:: images/form4.png   ### FIX ME
-
-
 Using widgets in forms is quite easy, and they'll let you have more control on its pieces.
 
 Custom widgets
@@ -368,7 +352,7 @@ improving again our Superhero example:
 .. code:: python
 
     # in controllers.py
-    from py4web impot action, redirect, URL, Field
+    from py4web import action, redirect, URL, Field
     from py4web.utils.form import Form, FormStyleDefault, RadioWidget
     from pydal.validators import *
     from .common import db
@@ -390,23 +374,21 @@ improving again our Superhero example:
             return control
     
     # controllers definition
-    @action("index", method=["GET", "POST"])
+    @action("create_form", method=["GET", "POST"])
     @action.uses("form_custom_widgets.html", db)
-    def index(id=None):
+    def create_form():
         MyStyle = FormStyleDefault
         MyStyle.classes = FormStyleDefault.classes
         MyStyle.widgets['name']=MyCustomWidget()
         MyStyle.widgets['color']=RadioWidget()
         
-        form = Form(db.thing, id, deletable=False, formstyle=MyStyle)
+        form = Form(db.thing, deletable=False, formstyle=MyStyle)
         rows = db(db.thing).select()
         return dict(form=form, rows=rows)
     
 
 The result is similar to the previous ones, but now we have a custom input field, 
-with foreground color red and background color black:
-
-.. image:: images/form5.png    ### FIX ME
+with foreground color red and background color black,
 
 Even the radio button widget has changed, from red to blue.
 
@@ -1827,19 +1809,14 @@ Here is an example:
    from py4web.utils.form import Form, FormStyleBulma
    from pydal.validators import IS_INT_IN_RANGE
 
-   def check_nonnegative_quantity(form):
-       if not form.errors and form.vars['product_quantity'] % 2:
-           form.errors['product_quantity'] = T('The product quantity must be even')
+   def custom_check(form):
+       if not 'name' in form.errors and len(form.vars['name']) < 4
+           form.errors['name'] = T("too short")
 
    @action('form_example', method=['GET', 'POST'])
    @action.uses('form_example.html', session)
    def form_example():
-       form = Form([
-           Field('product_name'),
-           Field('product_quantity', 'integer', requires=IS_INT_IN_RANGE(0,100))],
-           validation=check_nonnegative_quantity,
-           formstyle=FormStyleBulma)
+       form = Form(db.thing, validation=custom_check)
        if form.accepted:
-           # Do something with form.vars['product_name'] and form.vars['product_quantity']
            redirect(URL('index'))
        return dict(form=form)
