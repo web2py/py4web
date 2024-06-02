@@ -61,12 +61,12 @@ an app derived from the scaffolding app:
 
 .. code:: python
 
-   db.define_table(
-       'thing',
-       Field('name', requires=IS_NOT_EMPTY()),
-       Field('color', requires=IS_IN_SET(['red','blue','green'])),
-       Field('image', 'upload', download_url=lambda name: URL('download', name)),
-   )
+    db.define_table(
+        'thing',
+        Field('name', requires=IS_NOT_EMPTY()),
+        Field('color', requires=IS_IN_SET(['red','blue','green'])),
+        Field('image', 'upload', download_url=lambda name: URL('download', name)),
+    )
 
 
 The Form constructor
@@ -76,22 +76,22 @@ The ``Form`` constructor accepts the following arguments:
 
 .. code:: python
 
-   Form(self,
-        table,
-        record=None,
-        readonly=False,
-        deletable=True,
-        formstyle=FormStyleDefault,
-        dbio=True,
-        keep_values=False,
-        form_name=False,
-        hidden=None,
-        validation=None,
-        csrf_session=None,
-        csrf_protection=True,
-        lifespan=None,
-        signing_info=None,
-        ):
+    Form(self,
+         table,
+         record=None,
+         readonly=False,
+         deletable=True,
+         formstyle=FormStyleDefault,
+         dbio=True,
+         keep_values=False,
+         form_name=False,
+         hidden=None,
+         validation=None,
+         csrf_session=None,
+         csrf_protection=True,
+         lifespan=None,
+         signing_info=None,
+         ):
 
 Where:
 
@@ -224,7 +224,7 @@ Reload py4web and visit http://127.0.0.1:8000/create_form :
 the result is an input form on the top of the page, and the list of all the
 previously added entries on the bottom:
 
-.. image:: images/form2.png    ### FIX THIS
+.. image:: images/form2.png
 
 This is a simple example and you cannot change nor delete existing records. But if you'd
 like to experiment, the database content can be fully seen and changed with the Dashboard app.
@@ -430,6 +430,7 @@ For example you could use it to avoid displaying the ``id`` field while editing 
 
 .. code:: html
 
+    [[extend 'layout.html']]	  
     [[=form.custom.begin ]]
         [[for field in DETAIL_FIELDS: ]]
             [[ if field not in ['id']: ]]
@@ -457,11 +458,15 @@ Note: 'custom' is just a convention, it could be any name that does not clash wi
   
 You can also be more creative and use your HTML in the template instead of using widgets:
 
-    [[=form.custom.begin ]]
+.. code:: html
+
+    [[extend 'layout.html']]
 
     [[for field, error form.errors.items:]]
     <div class="error">Field [[=field]] [[=error]]</div>
     [[pass]]
+    
+    [[=form.custom.begin ]]
 
     <div class="select">
          <input name="name" value="form.vars.get('name', '')"/>
@@ -470,7 +475,7 @@ You can also be more creative and use your HTML in the template instead of using
     [[for color in ['red', 'blue', 'green']:]]
          <label>[[=color]]</label>
          <input name="color" type="radio" value="[[=color]]"
-                [[if form.vars.get('color') == color]]checked[[pass]]
+                [[if form.vars.get('color') == color:]]checked[[pass]]
          />
     [[pass]]	 
     </div>
