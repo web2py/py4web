@@ -9,7 +9,7 @@ import time
 import uuid
 
 from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
-                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG)
+                              IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG,ANY_OF,IS_ALPHANUMERIC,)
 from yatl.helpers import DIV, A
 
 from py4web import HTTP, URL, Field, action, redirect, request, response
@@ -363,14 +363,20 @@ class Auth(Fixture):
                 ),
                 Field(
                     "first_name",
-                    requires=ne,
+                    requires=[
+					            ne,
+            					ANY_OF([(IS_EMAIL()),IS_ALPHANUMERIC()]),
+            					],
                     label=self.param.messages["labels"].get("first_name"),
                 ),
                 Field(
                     "last_name",
-                    requires=ne,
-                    label=self.param.messages["labels"].get("last_name"),
-                ),
+                    requires=[
+					            ne,
+            					ANY_OF([(IS_EMAIL()),IS_ALPHANUMERIC()]),
+            					],
+            				label=self.param.messages["labels"].get("last_name"),
+            			),			
                 Field("sso_id", readable=False, writable=False),
                 Field("action_token", readable=False, writable=False),
                 Field(
