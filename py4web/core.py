@@ -2160,8 +2160,10 @@ def run(**kwargs):
     """Run the applications on apps_folder"""
     install_args(kwargs)
 
+    from py4web import __version__  # pylint: disable=import-outside-toplevel
+
     click.secho(ART, fg="blue")
-    click.echo(f"Py4web: {version} on Python {sys.version}\n\n")
+    click.echo(f"Py4web: {__version__} on Python {sys.version}\n\n")
 
     # Start
     Reloader.import_apps()
@@ -2172,7 +2174,7 @@ def run(**kwargs):
             kwargs["password_file"]
         ):
             click.echo(
-                f'You have not set a dashboard password. Run "{PY4WEB_CMD} set_password" to do so.'
+                f'\nYou have not set a dashboard password. Run "{PY4WEB_CMD} set_password" to do so.'
             )
         elif "_dashboard" in Reloader.ROUTES and (
             not kwargs["host"].startswith("unix:/")

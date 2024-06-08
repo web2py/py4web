@@ -18,7 +18,7 @@ db.define_table(
 )    
 
 def parse_post_content(content, post_item_id):
-    for word in re.compile("\#\w+").findall(content):
+    for word in re.compile(r"\#\w+").findall(content):
         db.tag_item.insert(name=word[1:], post_item_id=post_item_id)    
         
 
