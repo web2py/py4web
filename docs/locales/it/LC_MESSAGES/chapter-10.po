@@ -1,0 +1,905 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20240602.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-08 18:37-0700\n"
+"PO-Revision-Date: 2024-06-09 00:04-0700\n"
+"Last-Translator: \n"
+"Language-Team: it <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.15.0\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: ../../chapter-10.rst:3
+msgid "YATL helpers"
+msgstr "Aiutanti YATL"
+
+#: ../../chapter-10.rst:6
+msgid "Helpers overview"
+msgstr "Panoramica degli helper"
+
+#: ../../chapter-10.rst:8
+msgid "Consider the following code in a template:"
+msgstr "Si consideri il codice seguente in un modello:"
+
+#: ../../chapter-10.rst:14
+msgid "it is rendered as:"
+msgstr "Viene reso come:"
+
+#: ../../chapter-10.rst:20
+msgid ""
+"You can easily test the rendering of these commands by copying the _scaffold "
+"app (see :ref:`copying-the-scaffold-app`) and then editing the file ``new_app/"
+"template/index.html``."
+msgstr ""
+"Si può facilmente testare il rendering di questi comandi copiando l'app "
+"_scaffold (vedi :ref:'copying-the-scaffold-app') e poi modificando il file "
+"''new_app/template/index.html''."
+
+#: ../../chapter-10.rst:24
+msgid ""
+"``DIV`` is a **helper class**, i.e., something that can be used to build HTML "
+"programmatically. It corresponds to the HTML ``<div>`` tag."
+msgstr ""
+"''DIV'' è una **classe helper**, cioè qualcosa che può essere usato per "
+"costruire HTML programmaticamente. Corrisponde all'HTML ''<div>''.</div>"
+
+#: ../../chapter-10.rst:27
+msgid "Helpers can have:"
+msgstr "Gli helper possono avere:"
+
+#: ../../chapter-10.rst:29
+msgid ""
+"**positional arguments** interpreted as objects contained between the open and "
+"close tags, like ``thisisatest`` in the previous example"
+msgstr ""
+"**argomenti posizionali** interpretati come oggetti contenuti tra i tag open e "
+"close, come ''thisisatest'' nell'esempio precedente"
+
+#: ../../chapter-10.rst:31
+msgid ""
+"**named arguments** (start with an underscore) interpreted as HTML tag "
+"attributes (without the underscore), like ``_class`` and ``_id`` in the "
+"previous example"
+msgstr ""
+"**argomenti denominati** (iniziano con un carattere di sottolineatura) "
+"interpretati come attributi di tag HTML (senza il carattere di "
+"sottolineatura), come ''_class'' e ''_id'' nell'esempio precedente"
+
+#: ../../chapter-10.rst:34
+msgid ""
+"**named arguments** (start without an underscore), in this case these "
+"arguments are tag-specific"
+msgstr ""
+"**argomenti denominati** (iniziano senza un carattere di sottolineatura), in "
+"questo caso questi argomenti sono specifici del tag"
+
+#: ../../chapter-10.rst:38
+msgid ""
+"Instead of a set of unnamed arguments, a helper can also take a single list or "
+"tuple as its set of components using the ``*`` notation and it can take a "
+"single dictionary as its set of attributes using the ``**``, for example:"
+msgstr ""
+"Invece di un insieme di argomenti senza nome, un helper può anche prendere una "
+"singola lista o tupla come set di componenti usando la notazione ''*'' e può "
+"prendere un singolo dizionario come set di attributi usando ''**'', per "
+"esempio:"
+
+#: ../../chapter-10.rst:51
+msgid "(produces the same output as before)."
+msgstr "(produce lo stesso output di prima)."
+
+#: ../../chapter-10.rst:53
+msgid ""
+"The following are the current set of helpers available within the YATL module:"
+msgstr ""
+"Di seguito è riportato il set corrente di helper disponibili all'interno del "
+"modulo YATL:"
+
+#: ../../chapter-10.rst:56
+msgid ""
+"``A``, ``BEAUTIFY``, ``BODY``, ``CAT``, ``CODE``, ``DIV``, ``EM``, ``FORM``, "
+"``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``, ``HEAD``, ``HTML``, ``IMG``, "
+"``INPUT``, ``LABEL``, ``LI``, ``METATAG``, ``OL``, ``OPTION``, ``P``, ``PRE``, "
+"``SELECT``, ``SPAN``, ``STRONG``, ``TABLE``, ``TAG``, ``TAGGER``, ``THEAD``, "
+"``TBODY``, ``TD``, ``TEXTAREA``, ``TH``, ``TT``, ``TR``, ``UL``, ``XML``, "
+"``xmlescape``, ``I``, ``META``, ``LINK``, ``TITLE``, ``STYLE``, ``SCRIPT``"
+msgstr ""
+"''A'', ''ABBELLIRE'', ''CORPO'', ''GATTO'', ''CODICE'', ''DIV'', ''EM'', "
+"''FORMA'', ''H1'', ''H2'', ''H3'', ''H4'', ''H5'', ''H6'', ''HEAD'', ''HTML'', "
+"''IMG'', ''INPUT'', ''LABEL'', ''LI'', ''METATAG'', ''OL'', ''OPTION'', ''', "
+"'' P'', ''PRE'', ''SELECT'', ''SPAN'', ''STRONG'', ''TABLE'', ''TAG'', "
+"''TAGGER'', ''THEAD'', ''TBODY'', ''TD'', ''TEXTAREA'', ''TH'', ''TT'', "
+"''TR'', ''UL'', ''XML'', ''XMLESCAPE'', ''I'', ''META'', ''LINK'', ''TITLE'', "
+"''STYLE'', ''SCRIPT''"
+
+#: ../../chapter-10.rst:64
+msgid ""
+"Helpers can be used to build complex expressions, that can then be serialized "
+"to XML. For example:"
+msgstr ""
+"Gli helper possono essere utilizzati per creare espressioni complesse, che "
+"possono quindi essere serializzate in XML. Per esempio:"
+
+#: ../../chapter-10.rst:71
+msgid "is rendered:"
+msgstr "viene visualizzato:"
+
+#: ../../chapter-10.rst:77
+msgid ""
+"Helpers can also be serialized into strings, equivalently, with the "
+"``__str__`` and the ``xml`` methods. This can be manually tested directly with "
+"a Python shell or by using the :ref:`shell command option` of py4web and then:"
+msgstr ""
+"Gli helper possono anche essere serializzati in stringhe, in modo equivalente, "
+"con i metodi ''__str__'' e ''xml''. Questo può essere testato manualmente "
+"direttamente con una shell Python o usando l'opzione :ref:'shell command' di "
+"py4web e poi:"
+
+#: ../../chapter-10.rst:92
+msgid ""
+"The helpers mechanism in py4web is more than a system to generate HTML without "
+"concatenating strings. It provides a server-side representation of the "
+"document object model (DOM)."
+msgstr ""
+"Il meccanismo degli helper in py4web è più di un sistema per generare HTML "
+"senza concatenare stringhe. Fornisce una rappresentazione lato server del "
+"modello DOM (Document Object Model)."
+
+#: ../../chapter-10.rst:96
+msgid ""
+"Components of helpers can be referenced via their position, and helpers act as "
+"lists with respect to their components:"
+msgstr ""
+"È possibile fare riferimento ai componenti degli helper tramite la loro "
+"posizione e gli helper fungono da elenchi rispetto ai loro componenti:"
+
+#: ../../chapter-10.rst:110
+msgid ""
+"Attributes of helpers can be referenced by name, and helpers act as "
+"dictionaries with respect to their attributes:"
+msgstr ""
+"È possibile fare riferimento agli attributi degli helper in base al nome e gli "
+"helper fungono da dizionari rispetto ai relativi attributi:"
+
+#: ../../chapter-10.rst:121
+msgid ""
+"Note, the complete set of components can be accessed via a list called ``a."
+"children``, and the complete set of attributes can be accessed via a "
+"dictionary called ``a.attributes``. So, ``a[i]`` is equivalent to ``a."
+"children[i]`` when ``i`` is an integer, and ``a[s]`` is equivalent to ``a."
+"attributes[s]`` when ``s`` is a string."
+msgstr ""
+"Si noti che è possibile accedere all'insieme completo dei componenti tramite "
+"una lista chiamata ''a.children'', e l'insieme completo degli attributi è "
+"accessibile tramite un dizionario chiamato ''a.attributes''. Quindi, ''a[i]'' "
+"è equivalente a ''a.children[i]'' quando ''i'' è un numero intero, e ''a[s]'' "
+"è equivalente a ''a.attributes[s]'' quando ''s'' è una stringa."
+
+#: ../../chapter-10.rst:127
+msgid ""
+"Notice that helper attributes are passed as keyword arguments to the helper. "
+"In some cases, however, attribute names include special characters that are "
+"not allowed in Python identifiers (e.g., hyphens) and therefore cannot be used "
+"as keyword argument names. For example:"
+msgstr ""
+"Si noti che gli attributi dell'helper vengono passati come argomenti di parole "
+"chiave all'helper. In alcuni casi, tuttavia, i nomi degli attributi includono "
+"caratteri speciali che non sono consentiti negli identificatori Python (ad "
+"esempio, i trattini) e quindi non possono essere utilizzati come nomi di "
+"argomenti di parole chiave. Per esempio:"
+
+#: ../../chapter-10.rst:136
+msgid ""
+"will not work because “_data-role” includes a hyphen, which will produce a "
+"Python syntax error."
+msgstr ""
+"non funzionerà perché \"_data-role\" include un trattino, che produrrà un "
+"errore di sintassi Python."
+
+#: ../../chapter-10.rst:139
+msgid ""
+"In such cases you can pass the attributes as a dictionary and make use of "
+"Python’s ``**`` function arguments notation, which maps a dictionary of (key:"
+"value) pairs into a set of keyword arguments:"
+msgstr ""
+"In questi casi è possibile passare gli attributi come un dizionario e "
+"utilizzare la notazione degli argomenti della funzione ''**'' di Python, che "
+"mappa un dizionario di coppie (chiave:valore) in un insieme di argomenti di "
+"parole chiave:"
+
+#: ../../chapter-10.rst:148
+msgid "You can also dynamically create special TAGs:"
+msgstr "È inoltre possibile creare dinamicamente TAG speciali:"
+
+#: ../../chapter-10.rst:157
+msgid "Built-in helpers"
+msgstr "Helper incorporati"
+
+#: ../../chapter-10.rst:162
+msgid "``XML``"
+msgstr "''XML''"
+
+#: ../../chapter-10.rst:164
+msgid ""
+"``XML`` is an helper object used to encapsulate text that should **not** be "
+"escaped. The text may or may not contain valid XML; for example it could "
+"contain JavaScript."
+msgstr ""
+"''XML'' è un oggetto helper usato per incapsulare il testo che **non** deve "
+"essere preceduto da un escape. Il testo può contenere o meno un codice XML "
+"valido; ad esempio potrebbe contenere JavaScript."
+
+#: ../../chapter-10.rst:168
+msgid "The text in this example is escaped:"
+msgstr "Il testo in questo esempio è preceduto da caratteri di escape:"
+
+#: ../../chapter-10.rst:175
+msgid "by using ``XML`` you can prevent escaping:"
+msgstr "usando ''XML'' è possibile impedire l'escape:"
+
+#: ../../chapter-10.rst:182
+msgid ""
+"Sometimes you want to render HTML stored in a variable, but the HTML may "
+"contain unsafe tags such as scripts:"
+msgstr ""
+"A volte si desidera eseguire il rendering del codice HTML memorizzato in una "
+"variabile, ma il codice HTML può contenere tag non sicuri, ad esempio gli "
+"script:"
+
+#: ../../chapter-10.rst:190
+msgid ""
+"Un-escaped executable input such as this (for example, entered in the body of "
+"a comment in a blog) is unsafe, because it can be used to generate cross site "
+"scripting (XSS) attacks against other visitors to the page. In this case the "
+"py4web ``XML`` helper can sanitize our text to prevent injections and escape "
+"all tags except those that you explicitly allow. Here is an example:"
+msgstr ""
+"L'input eseguibile senza caratteri di escape come questo (ad esempio, immesso "
+"nel corpo di un commento in un blog) non è sicuro, perché può essere "
+"utilizzato per generare attacchi XSS (Cross Site Scripting) contro altri "
+"visitatori della pagina. In questo caso l'helper ''XML'' di py4web può "
+"disinfettare il nostro testo per prevenire le iniezioni e l'escape di tutti i "
+"tag tranne quelli che consenti esplicitamente. Ecco un esempio:"
+
+#: ../../chapter-10.rst:203
+msgid ""
+"The ``XML`` constructors, by default, consider the content of some tags and "
+"some of their attributes safe. You can override the defaults using the "
+"optional ``permitted_tags`` and ``allowed_attributes`` arguments. Here are the "
+"default values of the optional arguments of the ``XML`` helper."
+msgstr ""
+"I costruttori ''XML'', per impostazione predefinita, considerano sicuro il "
+"contenuto di alcuni tag e alcuni dei loro attributi. È possibile sovrascrivere "
+"le impostazioni predefinite usando gli argomenti opzionali ''permitted_tags'' "
+"e ''allowed_attributes''. Di seguito sono riportati i valori predefiniti degli "
+"argomenti opzionali dell'helper ''XML''."
+
+#: ../../chapter-10.rst:221
+msgid "``A``"
+msgstr "''A''"
+
+#: ../../chapter-10.rst:223
+msgid "This helper is used to build links."
+msgstr "Questo helper viene utilizzato per creare collegamenti."
+
+#: ../../chapter-10.rst:232
+msgid "``BODY``"
+msgstr "''CORPO''"
+
+#: ../../chapter-10.rst:234
+msgid "This helper makes the body of a page."
+msgstr "Questo helper crea il corpo di una pagina."
+
+#: ../../chapter-10.rst:242
+msgid "``CAT``"
+msgstr "''GATTO''"
+
+#: ../../chapter-10.rst:244
+msgid "This helper concatenates other helpers."
+msgstr "Questo helper concatena altri helper."
+
+#: ../../chapter-10.rst:252
+msgid "``DIV``"
+msgstr "''DIV''"
+
+#: ../../chapter-10.rst:254
+msgid "This is the content division element."
+msgstr "Questo è l'elemento di divisione del contenuto."
+
+#: ../../chapter-10.rst:262
+msgid "``EM``"
+msgstr "''EM''"
+
+#: ../../chapter-10.rst:264
+msgid "Emphasizes its content."
+msgstr "Ne enfatizza il contenuto."
+
+#: ../../chapter-10.rst:272
+msgid "``FORM``"
+msgstr "''FORMA''"
+
+#: ../../chapter-10.rst:274
+msgid ""
+"Use this helper to make a FORM for user input. Forms will be later discussed "
+"in detail in the dedicated :ref:`Forms` chapter."
+msgstr ""
+"Utilizzare questo helper per creare un FORM per l'input dell'utente. I moduli "
+"saranno successivamente discussi in dettaglio nel capitolo dedicato :"
+"ref:'Forms'."
+
+#: ../../chapter-10.rst:283
+msgid "``H1``, ``H2``, ``H3``, ``H4``, ``H5``, ``H6``"
+msgstr "''H1'', ''H2'', ''H3'', ''H4'', ''H5'', ''H6''"
+
+#: ../../chapter-10.rst:285
+msgid "These helpers are for paragraph headings and subheadings."
+msgstr "Questi helper sono per le intestazioni e i sottotitoli dei paragrafi."
+
+#: ../../chapter-10.rst:293
+msgid "``HEAD``"
+msgstr "''TESTA''"
+
+#: ../../chapter-10.rst:295
+msgid "For tagging the HEAD of an HTML page."
+msgstr "Per taggare l'HEAD di una pagina HTML."
+
+#: ../../chapter-10.rst:303
+msgid "``HTML``"
+msgstr "''HTML''"
+
+#: ../../chapter-10.rst:305
+msgid "For tagging an HTML page."
+msgstr "Per taggare una pagina HTML."
+
+#: ../../chapter-10.rst:313
+msgid "``I``"
+msgstr "''Io''"
+
+#: ../../chapter-10.rst:315
+msgid "This helper makes its contents italic."
+msgstr "Questo helper rende il suo contenuto corsivo."
+
+#: ../../chapter-10.rst:323
+msgid "``IMG``"
+msgstr "''IMG''"
+
+#: ../../chapter-10.rst:325
+msgid "It can be used to embed images into HTML."
+msgstr "Può essere utilizzato per incorporare immagini in HTML."
+
+#: ../../chapter-10.rst:332
+msgid ""
+"Here is a combination of A, IMG, and URL helpers for including a static image "
+"with a link:"
+msgstr ""
+"Di seguito è riportata una combinazione di helper A, IMG e URL per "
+"l'inclusione di un'immagine statica con un collegamento:"
+
+#: ../../chapter-10.rst:342
+msgid "``INPUT``"
+msgstr "''INGRESSO''"
+
+#: ../../chapter-10.rst:344
+msgid ""
+"Creates an ``<input.../>`` tag. An input tag may not contain other tags, and "
+"is closed by ``/>`` instead of ``>``. The input tag has an optional attribute "
+"``_type`` that can be set to “text” (the default), “submit”, “checkbox”, or "
+"“radio”."
+msgstr ""
+"Crea un tag ''<input.../>''. Un tag di input non può contenere altri tag, ed è "
+"chiuso da ''/>'' invece di ''>''. Il tag di input ha un attributo opzionale "
+"''_type'' che può essere impostato su \"testo\" (impostazione predefinita), "
+"\"submit\", \"checkbox\" o \"radio\"."
+
+#: ../../chapter-10.rst:354
+msgid "For radio buttons use the ``_checked`` attribute:"
+msgstr "Per i pulsanti di opzione usare l'attributo ''_checked'':"
+
+#: ../../chapter-10.rst:365
+msgid "and similarly for checkboxes:"
+msgstr "e allo stesso modo per le caselle di controllo:"
+
+#: ../../chapter-10.rst:375
+msgid "``LABEL``"
+msgstr "''ETICHETTA''"
+
+#: ../../chapter-10.rst:377
+msgid "It is used to create a LABEL tag for an INPUT field."
+msgstr "Viene utilizzato per creare un tag LABEL per un campo INPUT."
+
+#: ../../chapter-10.rst:385
+msgid "``LI``"
+msgstr "''LI''"
+
+#: ../../chapter-10.rst:387
+msgid "It makes a list item and should be contained in a ``UL`` or ``OL`` tag."
+msgstr ""
+"È una voce di elenco e dovrebbe essere contenuta in un tag ''UL'' o ''OL''."
+
+#: ../../chapter-10.rst:395
+msgid "``OL``"
+msgstr "''OL''"
+
+#: ../../chapter-10.rst:397
+msgid "It stands for ordered list. The list should contain LI tags."
+msgstr "È l'acronimo di Ordered List. L'elenco deve contenere tag LI."
+
+#: ../../chapter-10.rst:405
+msgid "``OPTION``"
+msgstr "''OPZIONE''"
+
+#: ../../chapter-10.rst:407
+msgid "This should only be used as argument of a ``SELECT``."
+msgstr "Questo dovrebbe essere usato solo come argomento di un ''SELECT''."
+
+#: ../../chapter-10.rst:414
+msgid "For selected options use the ``_selected`` attribute:"
+msgstr "Per le opzioni selezionate usare l'attributo ''_selected'':"
+
+#: ../../chapter-10.rst:422
+msgid "``P``"
+msgstr "''P''"
+
+#: ../../chapter-10.rst:424
+msgid "This is for tagging a paragraph."
+msgstr "Serve per taggare un paragrafo."
+
+#: ../../chapter-10.rst:432
+msgid "``PRE``"
+msgstr "''PRE''"
+
+#: ../../chapter-10.rst:434
+msgid ""
+"Generates a ``<pre>...</pre>`` tag for displaying pre-formatted text. The "
+"``CODE`` helper is generally preferable for code listings."
+msgstr ""
+"Genera un ''<pre>...</pre>'' per la visualizzazione di testo preformattato. "
+"L'helper ''CODE'' è generalmente preferibile per i listati di codice."
+
+#: ../../chapter-10.rst:443
+msgid "``SCRIPT``"
+msgstr "''COPIONE''"
+
+#: ../../chapter-10.rst:445
+msgid "This is for include or link a script, such as JavaScript."
+msgstr ""
+"Questo serve per includere o collegare uno script, ad esempio JavaScript."
+
+#: ../../chapter-10.rst:453
+msgid "``SELECT``"
+msgstr "''SELEZIONA''"
+
+#: ../../chapter-10.rst:455
+msgid ""
+"Makes a ``<select>...</select>`` tag. This is used with the ``OPTION`` helper."
+msgstr "Fa un ''<select>...</select>''. Questo è usato con l'helper ''OPTION''."
+
+#: ../../chapter-10.rst:465
+msgid "``SPAN``"
+msgstr "''SPAN''"
+
+#: ../../chapter-10.rst:467
+msgid "Similar to ``DIV`` but used to tag inline (rather than block) content."
+msgstr ""
+"Simile a ''DIV'' ma usato per taggare il contenuto in linea (piuttosto che a "
+"blocchi)."
+
+#: ../../chapter-10.rst:475
+msgid "``STYLE``"
+msgstr "''STILE''"
+
+#: ../../chapter-10.rst:477
+msgid ""
+"Similar to script, but used to either include or link CSS code. Here the CSS "
+"is included:"
+msgstr ""
+"Simile allo script, ma utilizzato per includere o collegare il codice CSS. Qui "
+"è incluso il CSS:"
+
+#: ../../chapter-10.rst:485
+msgid "and here it is linked:"
+msgstr "Ed ecco che è collegato:"
+
+#: ../../chapter-10.rst:493
+msgid "``TABLE``, ``TR``, ``TD``"
+msgstr "''TAVOLO'', ''TR'', ''TD''"
+
+#: ../../chapter-10.rst:495
+msgid ""
+"These tags (along with the optional ``THEAD`` and ``TBODY`` helpers) are used "
+"to build HTML tables."
+msgstr ""
+"Questi tag (insieme agli helper opzionali ''THEAD'' e ''TBODY'') sono usati "
+"per costruire tabelle HTML."
+
+#: ../../chapter-10.rst:503
+msgid "``TR`` expects ``TD`` content."
+msgstr "''TR'' si aspetta contenuti ''TD''."
+
+#: ../../chapter-10.rst:505
+msgid ""
+"It is easy to convert a Python array into an HTML table using Python’s ``*`` "
+"function arguments notation, which maps list elements to positional function "
+"arguments."
+msgstr ""
+"È facile convertire un array Python in una tabella HTML usando la notazione "
+"degli argomenti della funzione ''*'' di Python, che mappa gli elementi della "
+"lista agli argomenti della funzione posizionale."
+
+#: ../../chapter-10.rst:509
+msgid "Here, we will do it line by line:"
+msgstr "Qui, lo faremo riga per riga:"
+
+#: ../../chapter-10.rst:517
+msgid "Here we do all lines at once:"
+msgstr "Qui facciamo tutte le linee contemporaneamente:"
+
+#: ../../chapter-10.rst:526
+msgid "``TBODY``"
+msgstr "''CORPO''"
+
+#: ../../chapter-10.rst:528
+msgid ""
+"This is used to tag rows contained in the table body, as opposed to header or "
+"footer rows. It is optional."
+msgstr ""
+"Viene utilizzato per contrassegnare le righe contenute nel corpo della "
+"tabella, anziché le righe di intestazione o piè di pagina. È facoltativo."
+
+#: ../../chapter-10.rst:537
+msgid "``TEXTAREA``"
+msgstr "''TEXTAREA''"
+
+#: ../../chapter-10.rst:539
+msgid "This helper makes a ``<textarea>...</textarea>`` tag."
+msgstr "Questo aiutante fa un ''<textarea>...</textarea>''."
+
+#: ../../chapter-10.rst:548
+msgid "``TH``"
+msgstr "''TH''"
+
+#: ../../chapter-10.rst:550
+msgid "This is used instead of ``TD`` in table headers."
+msgstr "Questo è usato al posto di ''TD'' nelle intestazioni delle tabelle."
+
+#: ../../chapter-10.rst:558
+msgid "``THEAD``"
+msgstr "''THEAD''"
+
+#: ../../chapter-10.rst:560
+msgid "This is used to tag table header rows."
+msgstr ""
+"Viene utilizzato per contrassegnare le righe di intestazione della tabella."
+
+#: ../../chapter-10.rst:568
+msgid "``TITLE``"
+msgstr "''TITOLO''"
+
+#: ../../chapter-10.rst:570
+msgid "This is used to tag the title of a page in an HTML header."
+msgstr ""
+"Viene utilizzato per contrassegnare il titolo di una pagina in un'intestazione "
+"HTML."
+
+#: ../../chapter-10.rst:578
+msgid "``TT``"
+msgstr "''TT''"
+
+#: ../../chapter-10.rst:580
+msgid "Tags text as typewriter (monospaced) text."
+msgstr ""
+"Contrassegna il testo come testo della macchina da scrivere (a spaziatura "
+"fissa)."
+
+#: ../../chapter-10.rst:588
+msgid "``UL``"
+msgstr "''UL''"
+
+#: ../../chapter-10.rst:590
+msgid "It stands for unordered list. The list should contain LI tags."
+msgstr "È l'acronimo di elenco non ordinato. L'elenco deve contenere tag LI."
+
+#: ../../chapter-10.rst:598
+msgid "``URL``"
+msgstr "''URL''"
+
+#: ../../chapter-10.rst:602
+msgid ""
+"The URL helper is not part of yatl package, instead it is provided by py4web."
+msgstr "L'helper URL non fa parte del pacchetto yatl, ma è fornito da py4web."
+
+#: ../../chapter-10.rst:605
+msgid "Custom helpers"
+msgstr "Aiutanti personalizzati"
+
+#: ../../chapter-10.rst:610
+msgid "``TAG``"
+msgstr "''TAG''"
+
+#: ../../chapter-10.rst:612
+msgid ""
+"Sometimes you need to generate **custom XML tags***. For this purpose py4web "
+"provides ``TAG``, a universal tag generator."
+msgstr ""
+"A volte è necessario generare **tag XML personalizzati***. A questo scopo "
+"py4web mette a disposizione ''TAG'', un generatore di tag universale."
+
+#: ../../chapter-10.rst:619 ../../chapter-10.rst:641
+msgid "generates the following XML:"
+msgstr "genera il seguente codice XML:"
+
+#: ../../chapter-10.rst:625
+msgid ""
+"Arguments “a”, “b”, and “d” are automatically escaped; use the ``XML`` helper "
+"to suppress this behavior. Using ``TAG`` you can generate HTML/XML tags not "
+"already provided by the API. TAGs can be nested, and are serialized with "
+"``str().`` An equivalent syntax is:"
+msgstr ""
+"Gli argomenti \"a\", \"b\" e \"d\" vengono automaticamente preceduti da "
+"caratteri di escape; usare l'helper ''XML'' per sopprimere questo "
+"comportamento. Usando ''TAG'' è possibile generare tag HTML/XML non già "
+"forniti dall'API. I TAG possono essere nidificati e serializzati con "
+"''str().'' Una sintassi equivalente è:"
+
+#: ../../chapter-10.rst:634
+msgid ""
+"Self-closing tags can be generated with the TAG helper. The tag name must end "
+"with a “/”."
+msgstr ""
+"I tag a chiusura automatica possono essere generati con l'helper TAG. Il nome "
+"del tag deve terminare con \"/\"."
+
+#: ../../chapter-10.rst:647
+msgid ""
+"Notice that ``TAG`` is an object, and ``TAG.name`` or ``TAG['name']`` is a "
+"function that returns an helper instance."
+msgstr ""
+"Si noti che ''TAG'' è un oggetto, e ''TAG.name'' o ''TAG['name']'' è una "
+"funzione che restituisce un'istanza helper."
+
+#: ../../chapter-10.rst:651
+msgid "``BEAUTIFY``"
+msgstr "''ABBELLIRE''"
+
+#: ../../chapter-10.rst:653
+msgid ""
+"``BEAUTIFY`` is used to build HTML representations of compound objects, "
+"including lists, tuples and dictionaries:"
+msgstr ""
+"''BEAUTIFY'' è usato per costruire rappresentazioni HTML di oggetti composti, "
+"incluse liste, tuple e dizionari:"
+
+#: ../../chapter-10.rst:660
+msgid ""
+"``BEAUTIFY`` returns an XML-like object serializable to XML, with a nice "
+"looking representation of its constructor argument. In this case, the XML "
+"representation of:"
+msgstr ""
+"''BEAUTIFY'' restituisce un oggetto XML-like serializzabile in XML, con una "
+"bella rappresentazione del suo argomento costruttore. In questo caso, la "
+"rappresentazione XML di:"
+
+#: ../../chapter-10.rst:668
+msgid "will render as:"
+msgstr "verrà visualizzato come:"
+
+#: ../../chapter-10.rst:678
+msgid "Server-side *DOM*"
+msgstr "Lato server *DOM*"
+
+#: ../../chapter-10.rst:680
+msgid ""
+"As we've already seen the helpers mechanism in py4web also provides a server-"
+"side representation of the document object model (DOM)."
+msgstr ""
+"Come abbiamo già visto, il meccanismo degli helper in py4web fornisce anche "
+"una rappresentazione lato server del modello a oggetti del documento (DOM)."
+
+#: ../../chapter-10.rst:683
+msgid "``children``"
+msgstr "''Bambini''"
+
+#: ../../chapter-10.rst:685
+msgid ""
+"Each helper object keep the list of its components into the ``children`` "
+"attribute."
+msgstr ""
+"Ogni oggetto helper mantiene l'elenco dei suoi componenti nell'attributo "
+"''children''."
+
+#: ../../chapter-10.rst:694
+msgid "``find``"
+msgstr "''Trova''"
+
+#: ../../chapter-10.rst:696
+msgid ""
+"To help searching into the DOM, all helpers have a ``find`` method with the "
+"following signature:"
+msgstr ""
+"Per facilitare la ricerca nel DOM, tutti gli helper hanno un metodo ''find'' "
+"con la seguente firma:"
+
+#: ../../chapter-10.rst:703
+msgid "that returns all the components matching supplied arguments."
+msgstr ""
+"che restituisce tutti i componenti corrispondenti agli argomenti forniti."
+
+#: ../../chapter-10.rst:705
+msgid "A very simple ``query`` can be a tag name:"
+msgstr "Una ''query'' molto semplice può essere il nome di un tag:"
+
+#: ../../chapter-10.rst:717
+msgid ""
+"It also supports a syntax compatible with `jQuery <https://api.jquery.com/"
+">`__, accepting the following expressions:"
+msgstr ""
+"Supporta inoltre una sintassi compatibile con 'jQuery <https://api.jquery.com/"
+">'__, accettando le seguenti espressioni:"
+
+#: ../../chapter-10.rst:720
+msgid ""
+"`jQuery Multiple Selector <https://api.jquery.com/multiple-selector/>`__, e.g. "
+"“selector1, selector2, selectorN”,"
+msgstr ""
+"'jQuery Multiple Selector <https://api.jquery.com/multiple-selector/>'__, ad "
+"esempio \"selector1, selector2, selectorN\","
+
+#: ../../chapter-10.rst:722
+msgid ""
+"`jQuery Descendant Selector <https://api.jquery.com/descendant-selector/>`__, "
+"e.g. “ancestor descendant”,"
+msgstr ""
+"'selettore discendente jQuery <https://api.jquery.com/descendant-selector/"
+">'__, ad esempio \"discendente antenato\","
+
+#: ../../chapter-10.rst:724
+msgid "`jQuery ID Selector <https://api.jquery.com/id-selector/>`__, e.g. “#id”,"
+msgstr ""
+"'selettore ID jQuery <https://api.jquery.com/id-selector/>'__, ad esempio "
+"\"#id\","
+
+#: ../../chapter-10.rst:725
+msgid ""
+"`jQuery Class Selector <https://api.jquery.com/class-selector/>`__, e.g. “."
+"class”, and"
+msgstr ""
+"'Selettore di classe jQuery <https://api.jquery.com/class-selector/>'__, ad "
+"esempio \".class\" e"
+
+#: ../../chapter-10.rst:727
+msgid ""
+"`jQuery Attribute Equals Selector <https://api.jquery.com/attribute-equals-"
+"selector/>`__, e.g. “[name=value]”, notice that here the value must be "
+"unquoted."
+msgstr ""
+"'jQuery Attribute Equals Selector <https://api.jquery.com/attribute-equals-"
+"selector/>'__, ad esempio \"[name=value]\", si noti che qui il valore deve "
+"essere senza virgolette."
+
+#: ../../chapter-10.rst:730
+msgid "Here are some examples:"
+msgstr "Ecco alcuni esempi:"
+
+#: ../../chapter-10.rst:750
+msgid ""
+"Elements that are matched can also be replaced or removed by specifying a "
+"``replace`` argument (note, a list of the original matching elements is still "
+"returned as usual)."
+msgstr ""
+"Gli elementi che sono abbinati possono anche essere sostituiti o rimossi "
+"specificando un argomento ''replace'' (nota, un elenco degli elementi "
+"corrispondenti originali viene ancora restituito come al solito)."
+
+#: ../../chapter-10.rst:761
+msgid ""
+"``replace`` can be a callable, which will be passed the original element and "
+"should return a new element to replace it."
+msgstr ""
+"''replace'' può essere un callable, che verrà passato l'elemento originale e "
+"dovrebbe restituire un nuovo elemento per sostituirlo."
+
+#: ../../chapter-10.rst:771
+msgid "If ``replace=None``, matching elements will be removed completely."
+msgstr ""
+"Se ''replace=None'', gli elementi corrispondenti verranno rimossi "
+"completamente."
+
+#: ../../chapter-10.rst:780
+msgid ""
+"If a ``text`` argument is specified, elements will be searched for text "
+"components that match text, and any matching text components will be replaced "
+"(``text`` is ignored if ``replace`` is not also specified, use a ``find`` "
+"argument when you only need searching for textual elements)."
+msgstr ""
+"Se viene specificato un argomento ''text'', gli elementi verranno cercati per "
+"i componenti di testo che corrispondono al testo, e tutti i componenti di "
+"testo corrispondenti verranno sostituiti (''text'' viene ignorato se non è "
+"specificato anche ''replace'', usare un argomento ''find'' quando è necessaria "
+"solo la ricerca di elementi testuali)."
+
+#: ../../chapter-10.rst:785
+msgid "Like the ``find`` argument, ``text`` can be a string or a compiled regex."
+msgstr ""
+"Come l'argomento ''find'', ''text'' può essere una stringa o un'espressione "
+"regolare compilata."
+
+#: ../../chapter-10.rst:794
+msgid ""
+"If other attributes are specified along with ``text``, then only components "
+"that match the specified attributes will be searched for text."
+msgstr ""
+"Se vengono specificati altri attributi insieme a ''testo'', verranno cercati "
+"solo i componenti che corrispondono agli attributi specificati."
+
+#: ../../chapter-10.rst:805
+msgid "Using Inject"
+msgstr "Utilizzo di Inject"
+
+#: ../../chapter-10.rst:807
+msgid ""
+"Normally all the code should be called from the controller program, and only "
+"the necessary data is passed to the template in order to be displayed. But "
+"sometimes it's useful to pass variables or even use a python function as a "
+"helper called from a template."
+msgstr ""
+"Normalmente tutto il codice deve essere richiamato dal programma di controllo "
+"e solo i dati necessari vengono passati al modello per essere visualizzati. Ma "
+"a volte è utile passare variabili o anche usare una funzione python come "
+"helper chiamato da un modello."
+
+#: ../../chapter-10.rst:811
+msgid ""
+"In this case you can use the fixture ``Inject`` from py4web.utils.factories."
+msgstr ""
+"In questo caso è possibile utilizzare il fixture ''Inject'' da py4web.utils."
+"factories."
+
+#: ../../chapter-10.rst:813
+msgid "This is a simple example for injecting a variable:"
+msgstr "Questo è un semplice esempio per l'inserimento di una variabile:"
+
+#: ../../chapter-10.rst:830
+msgid "Then in ``index.html`` you can use the injected variable:"
+msgstr "Quindi in ''index.html'' puoi usare la variabile iniettata:"
+
+#: ../../chapter-10.rst:837
+msgid ""
+"You can also use ``Inject`` to add variables to the auth.enable line; in this "
+"way auth forms would have access to that variable."
+msgstr ""
+"Si può anche usare ''Inject'' per aggiungere variabili alla riga auth.enable; "
+"In questo modo i moduli di autenticazione avrebbero accesso a quella variabile."
+
+#: ../../chapter-10.rst:844
+msgid ""
+"A more complex usage of Inject is for passing python functions to templates. "
+"For example if your helper function is called *sidebar_menu* and it's inside "
+"the libs/helpers.py module of your app, you could use this in **controllers."
+"py**:"
+msgstr ""
+"Un uso più complesso di Inject è per il passaggio di funzioni python ai "
+"modelli. Ad esempio, se la funzione helper si chiama *sidebar_menu* e si trova "
+"all'interno del modulo libs/helpers.py dell'app, è possibile usare questa "
+"funzione in **controllers.py**:"
+
+#: ../../chapter-10.rst:857
+msgid "OR"
+msgstr "O"
+
+#: ../../chapter-10.rst:869
+msgid ""
+"Then you can import the needed code in the index.html template in a clean way:"
+msgstr ""
+"Quindi puoi importare il codice necessario nel modello di index.html in modo "
+"pulito:"
