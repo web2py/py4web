@@ -1,0 +1,367 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20240602.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-08 18:37-0700\n"
+"PO-Revision-Date: 2024-06-08 23:41-0700\n"
+"Last-Translator: \n"
+"Language-Team: it <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.15.0\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: ../../chapter-02.rst:3
+msgid "Help, resources and hints"
+msgstr "Aiuto, risorse e suggerimenti"
+
+#: ../../chapter-02.rst:5
+msgid ""
+"We've made our best to make PY4WEB simple and clean. But you know, modern "
+"web programming is a daunting task. It requires an open mind, able to jump "
+"frequently (without being lost!) from python to HTML to javascript to css "
+"and even database management. But don't be scared, in this manual we'll "
+"assist you side by side in this journey. And there are many other valuable "
+"resources that we're going to show you."
+msgstr ""
+"Abbiamo fatto del nostro meglio per rendere PY4WEB semplice e pulito. Ma "
+"si sa, la moderna programmazione web è un compito arduo. Richiede una "
+"mente aperta, in grado di saltare frequentemente (senza perdersi!) da "
+"python a HTML a javascript a css e persino alla gestione di database. Ma "
+"non spaventatevi, in questo manuale vi assisteremo fianco a fianco in "
+"questo viaggio. E ci sono molte altre risorse preziose che ti mostreremo."
+
+#: ../../chapter-02.rst:12
+msgid "Resources"
+msgstr "Risorse"
+
+#: ../../chapter-02.rst:15
+msgid "This manual"
+msgstr "Questo manuale"
+
+#: ../../chapter-02.rst:17
+msgid ""
+"This manual is the Reference Manual for py4web. It's available online at "
+"https://py4web.com/_documentation/static/index.html, where you'll also "
+"find the PDF and EBOOK version, in multiple languages. It written in "
+"RestructuredText and generated using Sphinx."
+msgstr ""
+"Questo manuale è il manuale di riferimento per py4web. È disponibile "
+"online su https://py4web.com/_documentation/static/index.html, dove "
+"troverai anche la versione PDF ed EBOOK, in più lingue. È scritto in "
+"RestructuredText e generato utilizzando Sphinx."
+
+#: ../../chapter-02.rst:22
+msgid "The Google group"
+msgstr "Il gruppo Google"
+
+#: ../../chapter-02.rst:24
+msgid ""
+"There is a dedicated mailing list hosted on Google Groups, see https://"
+"groups.google.com/g/py4web. This is the main source of discussions for "
+"developers and simple users. For any problem you should face, this is the "
+"right place to search for a hint or a solution."
+msgstr ""
+"Esiste una mailing list dedicata ospitata su Google Gruppi, vedi https://"
+"groups.google.com/g/py4web. Questa è la principale fonte di discussioni "
+"per gli sviluppatori e i semplici utenti. Per qualsiasi problema tu debba "
+"affrontare, questo è il posto giusto per cercare un suggerimento o una "
+"soluzione."
+
+#: ../../chapter-02.rst:29
+msgid "The Discord server"
+msgstr "Il server Discord"
+
+#: ../../chapter-02.rst:31
+msgid ""
+"For quick questions and chats you can also use the free `Discord server "
+"dedicated to py4web <https://discord.gg/xCzQ9KTk3W>`__. You could usually "
+"find many py4web developers hanging out in the channel."
+msgstr ""
+"Per domande veloci e chat puoi anche utilizzare il 'Server Discord "
+"dedicato a py4web <https://discord.gg/xCzQ9KTk3W>'__. Di solito potresti "
+"trovare molti sviluppatori py4web in giro per il canale."
+
+#: ../../chapter-02.rst:36
+msgid "Tutorials and video"
+msgstr "Tutorial e video"
+
+#: ../../chapter-02.rst:38
+msgid "There are many tutorials and videos available. Here are some of them:"
+msgstr "Ci sono molti tutorial e video disponibili. Eccone alcune:"
+
+#: ../../chapter-02.rst:40
+msgid ""
+"the `Learn Py4Web site <https://learn-py4web.github.io>`__ by Luca de "
+"Alfaro (with lots of excellent training videos)"
+msgstr ""
+"il 'Learn Py4Web site <https://learn-py4web.github.io>'__ di Luca de "
+"Alfaro (con tanti ottimi video di formazione)"
+
+#: ../../chapter-02.rst:41
+msgid ""
+"the free video `course 2020 by Luca de Alfaro <https://sites.google.com/a/"
+"ucsc.edu/luca/classes/cmps-183-hypermedia-and-the-web/cse-183-"
+"spring-2020>`__ at UC Santa Cruz"
+msgstr ""
+"il video gratuito 'corso 2020 di Luca de Alfaro <https://sites.google.com/"
+"a/ucsc.edu/luca/classes/cmps-183-hypermedia-and-the-web/cse-183-"
+"spring-2020>'__ presso UC Santa Cruz"
+
+#: ../../chapter-02.rst:43
+msgid ""
+"the `py4web blog app <https://github.com/agavgavi/py4web-blog-app.git>`__ "
+"by Andrew Gavgavian,  which uses py4web to replicate the famous Corey "
+"Schafer's tutorial series on creating a blog app in Django"
+msgstr ""
+"l'app per blog 'py4web <https://github.com/agavgavi/py4web-blog-app."
+"git>'__ di Andrew Gavgavian, che utilizza py4web per replicare la famosa "
+"serie di tutorial di Corey Schafer sulla creazione di un'app per blog in "
+"Django"
+
+#: ../../chapter-02.rst:45
+msgid ""
+"the `South Breeze Enterprises demo app <https://github.com/jpsteil/"
+"southbreeze>`__ by `Jim Steil <https://github.com/jpsteil>`__.  It is "
+"built around the structure of the Microsoft Northwind database, but "
+"converted to SQLite. You can view the final result online `here <https://"
+"southbreeze.pythonbench.com>`__"
+msgstr ""
+"l'app demo 'South Breeze Enterprises <https://github.com/jpsteil/"
+"southbreeze>'__ di 'Jim Steil <https://github.com/jpsteil>'__.  È "
+"costruito intorno alla struttura del database Microsoft Northwind, ma "
+"convertito in SQLite. È possibile visualizzare il risultato finale online "
+"'qui <https://southbreeze.pythonbench.com>'__"
+
+#: ../../chapter-02.rst:50
+msgid "The sources on GitHub"
+msgstr "I sorgenti su GitHub"
+
+#: ../../chapter-02.rst:52
+msgid ""
+"Last but not least, py4web is Open Source, with a BSD v3 license, hosted "
+"on GitHub at https://github.com/web2py/py4web. This means that you can "
+"read, study and experiment with all of its internal details by yourself."
+msgstr ""
+"Ultimo ma non meno importante, py4web è Open Source, con licenza BSD v3, "
+"ospitato su GitHub all'indirizzo https://github.com/web2py/py4web. Ciò "
+"significa che puoi leggere, studiare e sperimentare da solo tutti i suoi "
+"dettagli interni."
+
+#: ../../chapter-02.rst:57
+msgid "Hints and tips"
+msgstr "Suggerimenti e suggerimenti"
+
+#: ../../chapter-02.rst:59
+msgid ""
+"This paragraph is dedicated to preliminary hints, suggestions and tips "
+"that could be helpful to know before starting to learn py4web."
+msgstr ""
+"Questo paragrafo è dedicato a suggerimenti preliminari, suggerimenti e "
+"suggerimenti che potrebbe essere utile conoscere prima di iniziare a "
+"imparare py4web."
+
+#: ../../chapter-02.rst:63
+msgid "Prerequisites"
+msgstr "Prerequisiti"
+
+#: ../../chapter-02.rst:65
+msgid ""
+"In order to understand py4web you need at least a basic python knowledge. "
+"There are many books, courses and tutorials available on the web - choose "
+"what's best for you. The python's decorators, in particular, are a "
+"milestone of any python web framework and you have to fully understand it."
+msgstr ""
+"Per capire py4web è necessaria almeno una conoscenza di base di python. Ci "
+"sono molti libri, corsi e tutorial disponibili sul web: scegli quello che "
+"è meglio per te. I decoratori di python, in particolare, sono una pietra "
+"miliare di qualsiasi framework web python e devi comprenderlo appieno."
+
+#: ../../chapter-02.rst:69
+msgid "A modern python workplace"
+msgstr "Un moderno ambiente di lavoro python"
+
+#: ../../chapter-02.rst:71
+msgid ""
+"In the following chapters you will start coding on your computer. We "
+"suggest you to setup a modern python workplace if you plan to do it "
+"efficiently and safely. Even for running simple examples and experimenting "
+"a little, we strongly suggest to use an **Integrated Development "
+"Environment** (IDE). This will make your programming experience much "
+"better, allowing syntax checking, linting and visual debugging. Nowadays "
+"there are two free and multi-platform main choices: Microsoft Visual "
+"Studio Code aka `VScode <https://code.visualstudio.com/>`__ and JetBrains "
+"`PyCharm <https://www.jetbrains.com/pycharm/>`__."
+msgstr ""
+"Nei capitoli seguenti inizierai a scrivere codice sul tuo computer. Ti "
+"consigliamo di configurare un moderno ambiente di lavoro python se prevedi "
+"di farlo in modo efficiente e sicuro. Anche per eseguire semplici esempi e "
+"sperimentare un po', si consiglia vivamente di utilizzare un **ambiente di "
+"sviluppo integrato** (IDE). Ciò renderà la tua esperienza di "
+"programmazione molto migliore, consentendo il controllo della sintassi, il "
+"linting e il debug visivo. Al giorno d'oggi ci sono due scelte principali "
+"gratuite e multipiattaforma: Microsoft Visual Studio Code aka 'VScode "
+"<https://code.visualstudio.com/>'__ e JetBrains 'PyCharm <https://www."
+"jetbrains.com/pycharm/>'__."
+
+#: ../../chapter-02.rst:77
+msgid ""
+"When you'll start to deal with more complex programs and need reliability, "
+"we also suggest to:"
+msgstr ""
+"Quando inizierai ad avere a che fare con programmi più complessi e avrai "
+"bisogno di affidabilità, ti suggeriamo anche di:"
+
+#: ../../chapter-02.rst:80
+msgid ""
+"use virtual environments (also called **virtualenv**\\, see `here <https://"
+"docs.python.org/3.7/tutorial/venv.html>`__ for an introduction). In a "
+"complex workplace this will avoid to be messed up with other python "
+"programs and modules"
+msgstr ""
+"Usa ambienti virtuali (chiamati anche **virtualenv**\\, vedi 'qui <https://"
+"docs.python.org/3.7/tutorial/venv.html>'__ per un'introduzione). In un "
+"ambiente di lavoro complesso questo eviterà di essere incasinato con altri "
+"programmi e moduli python"
+
+#: ../../chapter-02.rst:84
+msgid ""
+"use **git** to keep track of your program's changes and save your changes "
+"in a safe place online (GitHub, GitLat, or Bitbucket)."
+msgstr ""
+"usa **git** per tenere traccia delle modifiche del tuo programma e "
+"salvarle in un luogo sicuro online (GitHub, GitLat o Bitbucket)."
+
+#: ../../chapter-02.rst:86
+msgid ""
+"use an editor with Syntax Highlighting. We highly recommend Visual Studio "
+"Code (VScode) or PyCharm."
+msgstr ""
+"utilizzare un editor con evidenziazione della sintassi. È consigliabile "
+"Visual Studio Code (VScode) o PyCharm."
+
+#: ../../chapter-02.rst:91
+msgid "Debugging py4web with VScode"
+msgstr "Debug di py4web con VScode"
+
+#: ../../chapter-02.rst:93
+msgid "It's quite simple to run and debug py4web within VScode."
+msgstr ""
+"È abbastanza semplice eseguire ed eseguire il debug di py4web all'interno "
+"di VScode."
+
+#: ../../chapter-02.rst:95
+msgid ""
+"If you have **installed py4web from source**, you just need to open the "
+"main py4web folder (not the apps folder!) with VScode and add:"
+msgstr ""
+"Se hai **installato py4web dai sorgenti**, devi solo aprire la cartella "
+"principale py4web (non la cartella apps!) con VScode e aggiungere:"
+
+#: ../../chapter-02.rst:102
+msgid ""
+"to the vscode ``launch.json`` configuration file. Note that if you're "
+"using Windows the \"your_full_path_to_py4web.py\" parameter must be "
+"written using forward slash only, like \"C:/Users/your_name/py4web/py4web."
+"py\"."
+msgstr ""
+"al file di configurazione ''launch.json'' VSConde. Si noti che se si "
+"utilizza Windows il parametro \"your_full_path_to_py4web.py\" deve essere "
+"scritto utilizzando solo la barra, ad esempio \"C:/Users/your_name/py4web/"
+"py4web.py\"."
+
+#: ../../chapter-02.rst:106
+msgid "If you have instead **installed py4web from pip,** you need to:"
+msgstr "Se invece hai **installato py4web da pip,** devi:"
+
+#: ../../chapter-02.rst:108
+msgid "open the ``apps`` folder with VScode"
+msgstr "apri la cartella ''apps'' con VScode"
+
+#: ../../chapter-02.rst:109
+msgid ""
+"copy the standard `py4web.py launcher <https://github.com/web2py/py4web/"
+"blob/master/py4web.py>`__ inside it, but rename it to ``py4web-start.py`` "
+"in order to avoid import errors later:"
+msgstr ""
+"Copiare il <https://github.com/web2py/py4web/blob/master/py4web.py> di "
+"avvio standard py4web.py'__ al suo interno, ma rinominarlo in ''py4web-"
+"start.py'' per evitare errori di importazione in seguito:"
+
+#: ../../chapter-02.rst:118
+msgid "create / change the vscode ``launch.json`` configuration file:"
+msgstr "Creare/modificare il file di configurazione ''launch.json'' VSConde:"
+
+#: ../../chapter-02.rst:128
+msgid ""
+"In both cases, if you should get gevent errors you have to also add "
+"``\"gevent\": true`` on the ``launch.json`` configuration file."
+msgstr ""
+"In entrambi i casi, se si dovessero ottenere errori gevent, è necessario "
+"aggiungere anche ''\"gevent\": true'' nel file di configurazione ''launch."
+"json''."
+
+#: ../../chapter-02.rst:132
+msgid "Debugging py4web with PyCharm"
+msgstr "Debug di py4web con PyCharm"
+
+#: ../../chapter-02.rst:134
+msgid ""
+"In PyCharm, if you should get gevent errors you need to enable Settings | "
+"Build, Execution, Deployment | Python Debugger | Gevent compatible."
+msgstr ""
+"In PyCharm, se si dovessero ottenere errori gevent, è necessario abilitare "
+"Impostazioni | Compilazione, esecuzione, distribuzione | Debugger Python | "
+"Compatibile con Gevent."
+
+#: ../../chapter-02.rst:138
+msgid "How to contribute"
+msgstr "Come contribuire"
+
+#: ../../chapter-02.rst:140
+msgid ""
+"We need help from everyone: support our efforts! You can just participate "
+"in the Google group trying to answer other's questions, submit bugs using "
+"or create pull requests on the GitHub repository."
+msgstr ""
+"Abbiamo bisogno dell'aiuto di tutti: sostieni i nostri sforzi! Puoi "
+"semplicemente partecipare al gruppo di Google cercando di rispondere alle "
+"domande degli altri, inviare bug utilizzando o creare richieste pull sul "
+"repository GitHub."
+
+#: ../../chapter-02.rst:143
+msgid ""
+"If you wish to correct and expand this manual, or even translate it in a "
+"new foreign language, you can read all the needed information directly on "
+"the `specific README <https://github.com/web2py/py4web/blob/master/docs/"
+"README.md>`__ on GitHub."
+msgstr ""
+"Se desideri correggere ed espandere questo manuale, o anche tradurlo in "
+"una nuova lingua straniera, puoi leggere tutte le informazioni necessarie "
+"direttamente sul '<https://github.com/web2py/py4web/blob/master/docs/"
+"README.md> README specifico'__ su GitHub."
+
+#: ../../chapter-02.rst:146
+msgid ""
+"It's really simple! Just change the .RST files in the /doc folder and "
+"create a Pull Request on the GitHub repository at https://github.com/"
+"web2py/py4web - you can even do it within your browser. Once the PR is "
+"accepted, your changes will be written on the master branch, and will be "
+"reflected on the web pages / pdf / epub at the next output generation on "
+"the branch."
+msgstr ""
+"È davvero semplice! È sufficiente modificare il file . RST nella cartella /"
+"doc e creare una Pull Request sul repository GitHub a https://github.com/"
+"web2py/py4web - puoi anche farlo all'interno del tuo browser. Una volta "
+"accettata la richiesta pull, le modifiche verranno scritte nel ramo master "
+"e si rifletteranno nelle pagine Web / pdf / epub alla successiva "
+"generazione di output nel ramo."
