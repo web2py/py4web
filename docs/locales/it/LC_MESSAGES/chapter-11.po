@@ -1,0 +1,121 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20240602.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-08 18:37-0700\n"
+"PO-Revision-Date: 2024-06-09 00:08-0700\n"
+"Last-Translator: \n"
+"Language-Team: it <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.15.0\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: ../../chapter-11.rst:3
+msgid "Internationalization"
+msgstr "Internazionalizzazione"
+
+#: ../../chapter-11.rst:6
+msgid "Pluralize"
+msgstr "Pluralizza"
+
+#: ../../chapter-11.rst:8
+msgid ""
+"Pluralize is a Python library for Internationalization (i18n) and "
+"Pluralization (p10n)."
+msgstr ""
+"Pluralize è una libreria Python per l'internazionalizzazione (i18n) e la "
+"pluralizzazione (p10n)."
+
+#: ../../chapter-11.rst:11
+msgid ""
+"The library assumes a folder (for example “translations”) that contains files "
+"like:"
+msgstr ""
+"La libreria presuppone una cartella (ad esempio \"translations\") che contiene "
+"file come:"
+
+#: ../../chapter-11.rst:22
+msgid "Each file has the following structure, for example for Italian (it.json):"
+msgstr "Ogni file ha la seguente struttura, ad esempio per l'italiano (it.json):"
+
+#: ../../chapter-11.rst:29
+msgid ""
+"The top level keys are the expressions to be translated and the associated "
+"value/dictionary maps a number to a translation. Different translations "
+"correspond to different plural forms of the expression,"
+msgstr ""
+"Le chiavi di primo livello sono le espressioni da tradurre e il valore/"
+"dizionario associato associa un numero a una traduzione. Traduzioni diverse "
+"corrispondono a diverse forme plurali dell'espressione,"
+
+#: ../../chapter-11.rst:33
+msgid "Here is another example for the word “bed” in Czech"
+msgstr "Ecco un altro esempio per la parola \"letto\" in ceco"
+
+#: ../../chapter-11.rst:39
+msgid ""
+"To translate and pluralize a string “dog” one simply warps the string in the T "
+"operator as follows:"
+msgstr ""
+"Per tradurre e pluralizzare una stringa \"dog\" è sufficiente deformare la "
+"stringa nell'operatore T come segue:"
+
+#: ../../chapter-11.rst:61
+msgid ""
+"The string can contain multiple placeholders but the {n} placeholder is "
+"special because the variable called “n” is used to determine the pluralization "
+"by best match (max dict key <= n)."
+msgstr ""
+"La stringa può contenere più segnaposto, ma il segnaposto {n} è speciale "
+"perché la variabile denominata \"n\" viene utilizzata per determinare la "
+"pluralizzazione in base alla migliore corrispondenza (max dict key <= n)."
+
+#: ../../chapter-11.rst:65
+msgid ""
+"T(…) objects can be added together with each other and with string, like "
+"regular strings."
+msgstr ""
+"Gli oggetti T(...) possono essere sommati tra loro e con stringa, come le "
+"stringhe normali."
+
+#: ../../chapter-11.rst:68
+msgid ""
+"T.select(s) can parse a string s following the HTTP accept language format."
+msgstr ""
+"T.select(s) può analizzare una stringa s seguendo il formato della lingua di "
+"accettazione HTTP."
+
+#: ../../chapter-11.rst:72
+msgid "Update the translation files"
+msgstr "Aggiornare i file di traduzione"
+
+#: ../../chapter-11.rst:74
+msgid "Find all strings wrapped in T(…) in .py, .html, and .js files:"
+msgstr "Trova tutte le stringhe racchiuse in T(...) nei file .py, .html e .js:"
+
+#: ../../chapter-11.rst:80
+msgid "Add newly discovered entries in all supported languages"
+msgstr "Aggiungere le voci appena individuate in tutte le lingue supportate"
+
+#: ../../chapter-11.rst:86
+msgid "Add a new supported language (for example German, “de”)"
+msgstr "Aggiungere una nuova lingua supportata (ad esempio tedesco, \"de\")"
+
+#: ../../chapter-11.rst:92
+msgid "Make sure all languages contain the same origin expressions"
+msgstr ""
+"Assicurarsi che tutte le lingue contengano le stesse espressioni di origine"
+
+#: ../../chapter-11.rst:102
+msgid "Finally save the changes:"
+msgstr "Infine, salva le modifiche:"

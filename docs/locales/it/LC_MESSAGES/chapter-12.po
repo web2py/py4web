@@ -1,0 +1,2460 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20240602.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-08 18:37-0700\n"
+"PO-Revision-Date: 2024-06-09 00:09-0700\n"
+"Last-Translator: \n"
+"Language-Team: it <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.15.0\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: ../../chapter-12.rst:3
+msgid "Forms"
+msgstr "Forms"
+
+#: ../../chapter-12.rst:5
+msgid ""
+"The Form class provides a high-level API for quickly building CRUD (create, "
+"update and delete) forms, especially for working on an existing database table. "
+"It can generate and process a form from a list of desired fields and/or from an "
+"existing database table."
+msgstr ""
+"La classe Form fornisce un'API di alto livello per la creazione rapida di "
+"moduli CRUD (creazione, aggiornamento ed eliminazione), in particolare per "
+"l'utilizzo di una tabella di database esistente. Può generare ed elaborare un "
+"modulo da un elenco di campi desiderati e/o da una tabella di database "
+"esistente."
+
+#: ../../chapter-12.rst:9
+msgid "There are 3 typs of forms:"
+msgstr "Esistono 3 tipi di moduli:"
+
+#: ../../chapter-12.rst:11
+msgid "CRUD Create forms:"
+msgstr "CRUD Crea moduli:"
+
+#: ../../chapter-12.rst:24
+msgid "CRUD Update forms:"
+msgstr "Moduli di aggiornamento CRUD:"
+
+#: ../../chapter-12.rst:37
+msgid "Non-CRUD forms (not associated to a database):"
+msgstr "Moduli non CRUD (non associati a un database):"
+
+#: ../../chapter-12.rst:54
+msgid ""
+"The use of flash is optional. ``flash`` is defined in ``common.py`` in the "
+"scaffolding application. It simply stores a message in a cookie so it can be "
+"recovered and displayed after redirection. This is done in the default layout."
+msgstr ""
+"L'uso del flash è facoltativo. ''Flash'' è definito in ''common.py'' "
+"nell'applicazione di ponteggio. Memorizza semplicemente un messaggio in un "
+"cookie in modo che possa essere recuperato e visualizzato dopo il "
+"reindirizzamento. Questa operazione viene eseguita nel layout predefinito."
+
+#: ../../chapter-12.rst:59
+msgid ""
+"In this chapter from now on we will assume the following model and an app "
+"derived from the scaffolding app:"
+msgstr ""
+"In questo capitolo d'ora in poi assumeremo il seguente modello e un'app "
+"derivata dall'app di scaffolding :"
+
+#: ../../chapter-12.rst:73
+msgid "The Form constructor"
+msgstr "Il costruttore Form"
+
+#: ../../chapter-12.rst:75
+msgid "The ``Form`` constructor accepts the following arguments:"
+msgstr "Il costruttore ''Form'' accetta i seguenti argomenti:"
+
+#: ../../chapter-12.rst:96 ../../chapter-12.rst:1472
+msgid "Where:"
+msgstr "Dove:"
+
+#: ../../chapter-12.rst:98
+msgid "``table``: a DAL table or a list of fields"
+msgstr "''tabella'': una tabella DAL o un elenco di campi"
+
+#: ../../chapter-12.rst:99
+msgid "``record``: a DAL record or record id"
+msgstr "''record'': un record DAL o un ID record"
+
+#: ../../chapter-12.rst:100
+msgid "``readonly``: set to True to make a readonly form"
+msgstr "''readonly'': impostato su True per creare una forma di sola lettura"
+
+#: ../../chapter-12.rst:101
+msgid "``deletable``: set to False to disallow deletion of record"
+msgstr "''deletable'': impostato su False per impedire l'eliminazione del record"
+
+#: ../../chapter-12.rst:102
+msgid ""
+"``formstyle``: a function that renders the form using helpers. Can be "
+"FormStyleDefault (default), FormStyleBulma or FormStyleBootstrap4"
+msgstr ""
+"''formstyle'': una funzione che rende il form usando degli helper. Può essere "
+"FormStyleDefault (impostazione predefinita), FormStyleBulma o "
+"FormStyleBootstrap4"
+
+#: ../../chapter-12.rst:104
+msgid "``dbio``: set to False to prevent any DB writes"
+msgstr "''dbio'': impostato a False per impedire qualsiasi scrittura DB"
+
+#: ../../chapter-12.rst:105
+msgid ""
+"``keep_values``: if set to true, it remembers the values of the previously "
+"submitted form"
+msgstr ""
+"''keep_values'': se impostato a true, ricorda i valori del modulo inviato in "
+"precedenza"
+
+#: ../../chapter-12.rst:106
+msgid "``form_name``: the optional name of this form"
+msgstr "''form_name'': il nome facoltativo di questa forma"
+
+#: ../../chapter-12.rst:107
+msgid "``hidden``: a dictionary of hidden fields that is added to the form"
+msgstr "''hidden'': un dizionario di campi nascosti che viene aggiunto al modulo"
+
+#: ../../chapter-12.rst:108
+msgid "``validation``: an optional validator, see :ref:`Validation functions`"
+msgstr ""
+"''validation'': un validatore opzionale, vedi :ref:'Funzioni di validazione''"
+
+#: ../../chapter-12.rst:109
+msgid ""
+"``csrf_session``: if None, no csrf token is added.  If a session, then a CSRF "
+"token is added and verified"
+msgstr ""
+"''csrf_session'': se None, non viene aggiunto alcun token csrf.  Se si tratta "
+"di una sessione, viene aggiunto e verificato un token CSRF"
+
+#: ../../chapter-12.rst:110
+msgid "``lifespan``: lifespan of CSRF token in seconds, to limit form validity"
+msgstr ""
+"''lifespan'': durata della vita del token CSRF in secondi, per limitare la "
+"validità del modulo"
+
+#: ../../chapter-12.rst:111
+msgid ""
+"``signing_info``: information that should not change between when the CSRF "
+"token is signed and verified"
+msgstr ""
+"''signing_info'': informazioni che non devono cambiare tra il momento in cui il "
+"token CSRF viene firmato e verificato"
+
+#: ../../chapter-12.rst:115
+msgid "A minimal form example without a database"
+msgstr "Un esempio di modulo minimo senza un database"
+
+#: ../../chapter-12.rst:117
+msgid ""
+"Let's start with a minimal working form example. Create a new minimal app "
+"called ``form_minimal`` :"
+msgstr ""
+"Cominciamo con un esempio di forma di lavoro minimale. Crea una nuova app "
+"minimale chiamata ''form_minimal'' :"
+
+#: ../../chapter-12.rst:148
+msgid ""
+"Also, you need to create a file inside the app called ``templates/form_minimal."
+"html`` that just contains the line:"
+msgstr ""
+"Inoltre, è necessario creare un file all'interno dell'app chiamato ''templates/"
+"form_minimal.html'' che contenga solo la riga:"
+
+#: ../../chapter-12.rst:157
+msgid ""
+"Then reload py4web and visit http://127.0.0.1:8000/form_minimal - you'll get "
+"the Form page:"
+msgstr ""
+"Quindi ricarica py4web e visita http://127.0.0.1:8000/form_minimal - otterrai "
+"la pagina del modulo:"
+
+#: ../../chapter-12.rst:161
+msgid "Note that:"
+msgstr "Si noti che:"
+
+#: ../../chapter-12.rst:164
+msgid "``Form`` is a class contained in the ``py4web.utils.form`` module"
+msgstr "''Form'' è una classe contenuta nel modulo ''py4web.utils.form''"
+
+#: ../../chapter-12.rst:165
+msgid ""
+"it's possible to use **form validators** like ``IS_NOT_EMPTY``, see :ref:`Form "
+"validation` later. They are imported from the ``pydal.validators`` module"
+msgstr ""
+"è possibile usare **validatori di moduli** come ''IS_NOT_EMPTY'', vedi :"
+"ref:'Convalida del modulo' più avanti. Vengono importati dal modulo ''pydal."
+"validators''"
+
+#: ../../chapter-12.rst:167
+msgid ""
+"it's normally important to use both the **GET** and the **POST** methods in the "
+"action where the form is contained"
+msgstr ""
+"in genere è importante utilizzare entrambi i metodi **GET** e **POST** "
+"nell'azione in cui è contenuto il modulo"
+
+#: ../../chapter-12.rst:171
+msgid ""
+"This example is intentionally not using a database, a template, nor the session "
+"management. The next example will."
+msgstr ""
+"In questo esempio non viene utilizzato intenzionalmente un database, un modello "
+"o la gestione delle sessioni. Il prossimo esempio lo farà."
+
+#: ../../chapter-12.rst:176
+msgid "Basic form example"
+msgstr "Esempio di modulo di base"
+
+#: ../../chapter-12.rst:178
+msgid ""
+"In this next basic example we generate a CRUD create form from a database. "
+"Create a new minimal app called ``form_basic`` :"
+msgstr ""
+"In questo prossimo esempio di base viene generato un modulo di creazione CRUD "
+"da un database. Crea una nuova app minimale chiamata ''form_basic'' :"
+
+#: ../../chapter-12.rst:199
+msgid ""
+"Note the import of two simple validators on top, in order to be used later with "
+"the ``requires`` parameter. We'll fully explain them on the :ref:`Form "
+"validation` paragraph."
+msgstr ""
+"Si noti l'importazione di due semplici validatori in cima, per essere "
+"utilizzati in seguito con il parametro ''requires''. Li spiegheremo "
+"dettagliatamente nel paragrafo :ref:'Convalida del modulo'."
+
+#: ../../chapter-12.rst:203
+msgid ""
+"You will also need a template file ``templates/form_basic.html`` that contains, "
+"for example, the following code:"
+msgstr ""
+"Avrai anche bisogno di un file modello ''templates/form_basic.html'' che "
+"contiene, ad esempio, il seguente codice:"
+
+#: ../../chapter-12.rst:223
+msgid ""
+"Reload py4web and visit http://127.0.0.1:8000/create_form : the result is an "
+"input form on the top of the page, and the list of all the previously added "
+"entries on the bottom:"
+msgstr ""
+"Ricarica py4web e visita http://127.0.0.1:8000/create_form : il risultato è un "
+"modulo di input nella parte superiore della pagina e l'elenco di tutte le voci "
+"aggiunte in precedenza nella parte inferiore:"
+
+#: ../../chapter-12.rst:229
+msgid ""
+"This is a simple example and you cannot change nor delete existing records. But "
+"if you'd like to experiment, the database content can be fully seen and changed "
+"with the Dashboard app."
+msgstr ""
+"Questo è un semplice esempio e non è possibile modificare o eliminare i record "
+"esistenti. Ma se vuoi sperimentare, il contenuto del database può essere "
+"completamente visto e modificato con l'app Dashboard."
+
+#: ../../chapter-12.rst:232
+msgid ""
+"You can turn a create form into a CRUD update form by passing a record or a "
+"record id it second argument:"
+msgstr ""
+"È possibile trasformare un modulo di creazione in un modulo di aggiornamento "
+"CRUD passando un record o un ID record come secondo argomento:"
+
+#: ../../chapter-12.rst:247
+msgid "File upload field"
+msgstr "Campo di caricamento file"
+
+#: ../../chapter-12.rst:249
+msgid ""
+"We can make a minor modificaiton to our reference model and an upload type file:"
+msgstr ""
+"Possiamo apportare una piccola modifica al nostro modello di riferimento e un "
+"file di tipo di caricamento:"
+
+#: ../../chapter-12.rst:260
+msgid ""
+"The file upload field is quite particular. The standard way to use it (as in "
+"the _scaffold app) is to have the UPLOAD_FOLDER defined in the common.py file. "
+"But if you don't specify it, then the default value of  ``your_app/upload`` "
+"folder will be used (and the folder will also be created if needed). "
+"``download_url`` is a callback that given the image name, generated the URL to "
+"download. The ``download`` url is predefined in ``common.py``."
+msgstr ""
+"Il campo di caricamento dei file è piuttosto particolare. Il modo standard per "
+"usarlo (come nell'app _scaffold) consiste nell'avere il UPLOAD_FOLDER definito "
+"nel file common.py. Ma se non lo specifichi, verrà utilizzato il valore "
+"predefinito della cartella ''your_app/upload'' (e la cartella verrà anche "
+"creata se necessario). ''download_url'' è un callback che, dato il nome "
+"dell'immagine, ha generato l'URL da scaricare. L'URL ''download'' è predefinito "
+"in ''common.py''."
+
+#: ../../chapter-12.rst:266
+msgid "We can modify ``form_basic.html`` to display the uploaded images:"
+msgstr ""
+"Possiamo modificare ''form_basic.html'' per visualizzare le immagini caricate:"
+
+#: ../../chapter-12.rst:284
+msgid ""
+"The uploaded files (the thing images) are saved on the UPLOAD_FOLDER folder "
+"with their name hashed. Other details on the upload fields can be found on :ref:"
+"`Field constructor` paragraph, including a way to save the files inside the "
+"database itself."
+msgstr ""
+"I file caricati (le immagini degli oggetti) vengono salvati nella cartella "
+"UPLOAD_FOLDER con il relativo nome sottoposto a hash. Altri dettagli sui campi "
+"di caricamento possono essere trovati nel paragrafo :ref:'Field constructor', "
+"incluso un modo per salvare i file all'interno del database stesso."
+
+#: ../../chapter-12.rst:290
+msgid "Widgets"
+msgstr "Widgets"
+
+#: ../../chapter-12.rst:293
+msgid "Standard widgets"
+msgstr "Widget standard"
+
+#: ../../chapter-12.rst:295
+msgid ""
+"Py4web provides many widgets in the py4web.utility.form library. They are "
+"simple plugins that easily allow you to specify the type of the input elements "
+"in a form, along with some of their properties."
+msgstr ""
+"Py4web fornisce molti widget nella libreria py4web.utility.form. Sono semplici "
+"plug-in che consentono di specificare facilmente il tipo di elementi di input "
+"in un modulo, insieme ad alcune delle loro proprietà."
+
+#: ../../chapter-12.rst:299
+msgid "Here is the full list:"
+msgstr "Ecco l'elenco completo:"
+
+#: ../../chapter-12.rst:301
+msgid "CheckboxWidget"
+msgstr "Widget casella di controllo"
+
+#: ../../chapter-12.rst:302
+msgid "DateTimeWidget"
+msgstr "DateTimeWidget"
+
+#: ../../chapter-12.rst:303
+msgid "FileUploadWidget"
+msgstr "FileUploadWidget"
+
+#: ../../chapter-12.rst:304
+msgid "ListWidget"
+msgstr "ListWidget (Widget elenco)"
+
+#: ../../chapter-12.rst:305
+msgid "PasswordWidget"
+msgstr "PasswordWidget"
+
+#: ../../chapter-12.rst:306
+msgid "RadioWidget"
+msgstr "RadioWidget"
+
+#: ../../chapter-12.rst:307
+msgid "SelectWidget"
+msgstr "SelezionareWidget"
+
+#: ../../chapter-12.rst:308
+msgid "TextareaWidget"
+msgstr "TextareaWidget"
+
+#: ../../chapter-12.rst:311
+msgid "This is an improved 'Basic Form Example' with a radio button widget:"
+msgstr ""
+"Questo è un \"Esempio di modulo di base\" migliorato con un widget pulsante di "
+"opzione:"
+
+#: ../../chapter-12.rst:331
+msgid ""
+"Notice the differences from the 'Basic Form example' we've seen at the "
+"beginning of the chapter:"
+msgstr ""
+"Notate le differenze rispetto all'\"esempio di modulo di base\" che abbiamo "
+"visto all'inizio del capitolo:"
+
+#: ../../chapter-12.rst:334
+msgid "you need to import the widget from the py4web.utils.form library"
+msgstr "È necessario importare il widget dalla libreria py4web.utils.form"
+
+#: ../../chapter-12.rst:335
+msgid ""
+"before the form definition, you define the ``color`` field form style with the "
+"line:"
+msgstr ""
+"Prima della definizione del modulo, si definisce lo stile del modulo del campo "
+"''Colore'' con la riga:"
+
+#: ../../chapter-12.rst:341
+msgid ""
+"The result is the same as before, but now we have a radio button widget instead "
+"of the dropdown menu!"
+msgstr ""
+"Il risultato è lo stesso di prima, ma ora abbiamo un widget per i pulsanti di "
+"opzione invece del menu a discesa!"
+
+#: ../../chapter-12.rst:344
+msgid ""
+"Using widgets in forms is quite easy, and they'll let you have more control on "
+"its pieces."
+msgstr ""
+"L'uso dei widget nei moduli è abbastanza semplice e ti permetteranno di avere "
+"un maggiore controllo sui suoi pezzi."
+
+#: ../../chapter-12.rst:347
+msgid "Custom widgets"
+msgstr "Widget personalizzati"
+
+#: ../../chapter-12.rst:349
+msgid ""
+"You can also customize the widgets properties by subclassing the "
+"FormStyleDefault class. Let's have a quick look, improving again our Superhero "
+"example:"
+msgstr ""
+"È inoltre possibile personalizzare le proprietà dei widget creando una "
+"sottoclasse della classe FormStyleDefault. Diamo una rapida occhiata, "
+"migliorando ancora una volta il nostro esempio di Supereroe:"
+
+#: ../../chapter-12.rst:390
+msgid ""
+"The result is similar to the previous ones, but now we have a custom input "
+"field, with foreground color red and background color black,"
+msgstr ""
+"Il risultato è simile ai precedenti, ma ora abbiamo un campo di input "
+"personalizzato, con il colore di primo piano rosso e il colore di sfondo nero,"
+
+#: ../../chapter-12.rst:393
+msgid "Even the radio button widget has changed, from red to blue."
+msgstr "Anche il widget del pulsante di opzione è cambiato, da rosso a blu."
+
+#: ../../chapter-12.rst:396
+msgid "Advanced form design"
+msgstr "Progettazione avanzata di moduli"
+
+#: ../../chapter-12.rst:399
+msgid "Form structure manipulation"
+msgstr "Manipolazione della struttura del modulo"
+
+#: ../../chapter-12.rst:401
+msgid ""
+"In py4web a form is rendered by YATL helpers. This means the tree structure of "
+"a form can be manipulated before the form is serialized in HTML. Here is an "
+"example of how to manipulate the generate HTML structure:"
+msgstr ""
+"In py4web un form viene visualizzato dagli helper YATL. Ciò significa che la "
+"struttura ad albero di un modulo può essere modificata prima che il modulo "
+"venga serializzato in HTML. Di seguito è riportato un esempio di come "
+"manipolare la struttura HTML generata:"
+
+#: ../../chapter-12.rst:411
+msgid ""
+"Notice that a form does not make an HTML tree until form structure is accessed. "
+"Once accessed you can use ``.find(...)`` to find matching elements. The "
+"argument of ``find`` is a string following the filter syntax of jQuery. In the "
+"above case there is a single match ``[0]`` and we modify the ``_class`` "
+"attribute of that element. Attribute names of HTML elements must be preceded by "
+"an underscore."
+msgstr ""
+"Si noti che un modulo non crea una struttura ad albero HTML fino a quando non "
+"si accede alla struttura del modulo. Una volta effettuato l'accesso, è "
+"possibile utilizzare ''.find(...) '' per trovare gli elementi corrispondenti. "
+"L'argomento di ''find'' è una stringa che segue la sintassi del filtro di "
+"jQuery. Nel caso precedente c'è una singola corrispondenza ''[0]'' e "
+"modifichiamo l'attributo ''_class'' di quell'elemento. I nomi degli attributi "
+"degli elementi HTML devono essere preceduti da un carattere di sottolineatura."
+
+#: ../../chapter-12.rst:417
+msgid "Custom forms"
+msgstr "Moduli personalizzati"
+
+#: ../../chapter-12.rst:419
+msgid ""
+"Custom forms allow you to granulary control how the form is processed. In the "
+"template file, you can execute specific instructions before the form is "
+"displayed or after its data submission by inserting code among the following "
+"statements:"
+msgstr ""
+"I moduli personalizzati consentono di controllare in modo granulare la modalità "
+"di elaborazione del modulo. Nel file modello è possibile eseguire istruzioni "
+"specifiche prima della visualizzazione del modulo o dopo l'invio dei dati "
+"inserendo il codice tra le seguenti istruzioni:"
+
+#: ../../chapter-12.rst:429
+msgid ""
+"For example you could use it to avoid displaying the ``id`` field while editing "
+"a record in your form:"
+msgstr ""
+"Ad esempio, è possibile utilizzarlo per evitare di visualizzare il campo ''id'' "
+"durante la modifica di un record nel modulo:"
+
+#: ../../chapter-12.rst:445
+msgid ""
+"Note: 'custom' is just a convention, it could be any name that does not clash "
+"with already defined objects."
+msgstr ""
+"Nota: 'custom' è solo una convenzione, potrebbe essere qualsiasi nome che non "
+"si scontra con oggetti già definiti."
+
+#: ../../chapter-12.rst:449
+msgid ""
+"When working with custom forms, if you have a writable field that isn't "
+"included on your form, it will be set to null when you save a record.  Any time "
+"a field is not included on a custom form, it should be set field.writable=False "
+"to ensure that field is not updated."
+msgstr ""
+"Quando si utilizzano moduli personalizzati, se si dispone di un campo "
+"scrivibile che non è incluso nel modulo, verrà impostato su null quando si "
+"salva un record.  Ogni volta che un campo non è incluso in un modulo "
+"personalizzato, deve essere impostato field.writable=False per garantire che il "
+"campo non venga aggiornato."
+
+#: ../../chapter-12.rst:453
+msgid ""
+"Also, custom forms only create the element for a given field, but no "
+"surrounding elements that might be needed based on your css framework.  For "
+"example, if you're using Bulma as your css framework, you'll have to add an "
+"outer DIV in order to get select controls to appear correctly."
+msgstr ""
+"Inoltre, i moduli personalizzati creano solo l'elemento per un determinato "
+"campo, ma non gli elementi circostanti che potrebbero essere necessari in base "
+"al framework css.  Ad esempio, se stai usando Bulma come framework css, dovrai "
+"aggiungere un DIV esterno per far apparire correttamente i controlli select."
+
+#: ../../chapter-12.rst:459
+msgid ""
+"You can also be more creative and use your HTML in the template instead of "
+"using widgets:"
+msgstr ""
+"Puoi anche essere più creativo e utilizzare il tuo HTML nel modello invece di "
+"utilizzare i widget:"
+
+#: ../../chapter-12.rst:487
+msgid "The sidecar parameter"
+msgstr "Il parametro sidecar"
+
+#: ../../chapter-12.rst:489
+msgid ""
+"The sidecar is the stuff injected in the form along with the submit button."
+msgstr ""
+"Il sidecar è il materiale iniettato nel modulo insieme al pulsante di invio."
+
+#: ../../chapter-12.rst:491
+msgid ""
+"For example, you can inject a simple ``click me`` button in your form with the "
+"following code:"
+msgstr ""
+"Ad esempio, puoi inserire un semplice pulsante ''cliccami'' nel tuo modulo con "
+"il seguente codice:"
+
+#: ../../chapter-12.rst:499
+msgid ""
+"In particular, this is frequently used for adding a ``Cancel`` button, which is "
+"not provided by py4web:"
+msgstr ""
+"In particolare, questo è spesso usato per aggiungere un pulsante ''Annulla'', "
+"che non è fornito da py4web:"
+
+#: ../../chapter-12.rst:512
+msgid "Form validation"
+msgstr "Convalida del modulo"
+
+#: ../../chapter-12.rst:514
+msgid ""
+"Validators are classes used to validate input fields (including forms generated "
+"from database tables). They are normally assigned using the ``requires`` "
+"attribute of a table ``Field`` object, as already shown on the :ref:`Field "
+"constructor` paragraph of the DAL chapter. Also, you can use advanced "
+"validators in order to create widgets such as drop-down menus, radio buttons "
+"and even lookups from other tables. Last but not least, you can even explicitly "
+"define a validation function."
+msgstr ""
+"I validatori sono classi utilizzate per convalidare i campi di input (inclusi i "
+"moduli generati dalle tabelle del database). Normalmente vengono assegnati "
+"usando l'attributo ''requires'' di un oggetto ''Field'' della tabella, come già "
+"mostrato nel paragrafo :ref:'Field constructor' del capitolo DAL. Inoltre, è "
+"possibile utilizzare validatori avanzati per creare widget come menu a discesa, "
+"pulsanti di opzione e persino ricerche da altre tabelle. Infine, ma non meno "
+"importante, è anche possibile definire in modo esplicito una funzione di "
+"convalida."
+
+#: ../../chapter-12.rst:521
+msgid "Here is a simple example of how to require a validator for a table field:"
+msgstr ""
+"Di seguito è riportato un semplice esempio di come richiedere un validatore per "
+"un campo di tabella:"
+
+#: ../../chapter-12.rst:531
+msgid ""
+"The validator is frequently written explicitly outside the table definition in "
+"this equivalent syntax:"
+msgstr ""
+"Il validatore è spesso scritto in modo esplicito all'esterno della definizione "
+"della tabella in questa sintassi equivalente:"
+
+#: ../../chapter-12.rst:544
+msgid "A field can have a single validator or a list of multiple validators:"
+msgstr "Un campo può avere un singolo validatore o un elenco di più validatori:"
+
+#: ../../chapter-12.rst:552
+msgid ""
+"Mind that the only validators that can be used with ``list:`` type fields are:"
+msgstr ""
+"Tieni presente che gli unici validatori che possono essere utilizzati con i "
+"campi di tipo ''list:'' sono:"
+
+#: ../../chapter-12.rst:554
+msgid "``IS_IN_DB(..., multiple=True)``"
+msgstr "''IS_IN_DB(..., multiplo=Vero)''"
+
+#: ../../chapter-12.rst:555
+msgid "``IS_IN_SET(..., multiple=True)``"
+msgstr "''IS_IN_SET(..., multiplo=Vero)''"
+
+#: ../../chapter-12.rst:556
+msgid "``IS_NOT_EMPTY()``"
+msgstr "''IS_NOT_EMPTY()''"
+
+#: ../../chapter-12.rst:557
+msgid "``IS_LIST_OF_EMAILS()``"
+msgstr "''IS_LIST_OF_EMAILS()''"
+
+#: ../../chapter-12.rst:558
+msgid "``IS_LIST_OF(...)``"
+msgstr "''IS_LIST_OF(...) ``"
+
+#: ../../chapter-12.rst:560
+msgid ""
+"The latter can be used to apply any validator to the individual items in the "
+"list. ``multiple=(1, 1000)`` requires a selection of between 1 and 1000 items. "
+"This enforces selection of at least one choice."
+msgstr ""
+"Quest'ultimo può essere utilizzato per applicare qualsiasi validatore ai "
+"singoli elementi dell'elenco. ''multiple=(1, 1000)'' richiede una selezione "
+"compresa tra 1 e 1000 elementi. In questo modo si impone la selezione di almeno "
+"una scelta."
+
+#: ../../chapter-12.rst:564
+msgid ""
+"Built-in validators have constructors that take an ``error_message`` argument:"
+msgstr ""
+"I validatori incorporati hanno costruttori che accettano un argomento "
+"''error_message'':"
+
+#: ../../chapter-12.rst:570
+msgid ""
+"Notice the error message is usually fist option of the constructors and you can "
+"normally avoid to name it. Hence the following syntax is equivalent:"
+msgstr ""
+"Si noti che il messaggio di errore è di solito la prima opzione dei costruttori "
+"e normalmente è possibile evitare di assegnargli un nome. Quindi la seguente "
+"sintassi è equivalente:"
+
+#: ../../chapter-12.rst:573
+msgid ""
+"If you want to use internationalization like explained in a previous chapter "
+"you need to define your own messages and wrap the validator message in the T "
+"operator:"
+msgstr ""
+"Se si desidera utilizzare l'internazionalizzazione come spiegato in un capitolo "
+"precedente, è necessario definire i propri messaggi e racchiudere il messaggio "
+"del validatore nell'operatore T:"
+
+#: ../../chapter-12.rst:576
+msgid "IS_NOT_EMPTY(error_message=T('cannot be empty!'))"
+msgstr "IS_NOT_EMPTY(error_message=T('non può essere vuoto!'))"
+
+#: ../../chapter-12.rst:582
+msgid "Here is an example of a validator on a database table:"
+msgstr ""
+"Di seguito è riportato un esempio di convalida su una tabella di database:"
+
+#: ../../chapter-12.rst:589
+msgid ""
+"where we have used the translation operator ``T`` to allow for "
+"internationalization. Notice that error messages are not translated by default "
+"unless you define them explicitly with ``T``."
+msgstr ""
+"dove abbiamo usato l'operatore di traduzione ''T'' per consentire "
+"l'internazionalizzazione. Si noti che i messaggi di errore non vengono tradotti "
+"per impostazione predefinita, a meno che non vengano definiti esplicitamente "
+"con ''T''."
+
+#: ../../chapter-12.rst:592
+msgid "One can also call validators explicitly for a field:"
+msgstr "Si possono anche chiamare i validatori in modo esplicito per un campo:"
+
+#: ../../chapter-12.rst:599
+msgid ""
+"which returns a tuple ``(value, error)`` and ``error`` is ``None`` if the value "
+"validates."
+msgstr ""
+"che restituisce una tupla ''(valore, errore)'' e ''errore'' è ''Nessuno'' se il "
+"valore viene convalidato."
+
+#: ../../chapter-12.rst:601
+msgid ""
+"You can easily test most of the following validators directly using python "
+"only. For example:"
+msgstr ""
+"È possibile testare facilmente la maggior parte dei seguenti validatori "
+"direttamente utilizzando solo python. Per esempio:"
+
+#: ../../chapter-12.rst:618
+msgid ""
+"The DAL validators are well documented inside the python source code. You can "
+"easily check it by yourself for all the details!"
+msgstr ""
+"I validatori DAL sono ben documentati all'interno del codice sorgente python. "
+"Puoi facilmente controllarlo da solo per tutti i dettagli!"
+
+#: ../../chapter-12.rst:628
+msgid "Text format validators"
+msgstr "Validatori di formati di testo"
+
+#: ../../chapter-12.rst:632
+msgid "``IS_ALPHANUMERIC``"
+msgstr "''IS_ALPHANUMERIC''"
+
+#: ../../chapter-12.rst:634
+msgid ""
+"This validator checks that a field value contains only characters in the ranges "
+"a-z, A-Z, 0-9, and underscores."
+msgstr ""
+"Questo strumento di convalida verifica che il valore di un campo contenga solo "
+"caratteri compresi negli intervalli a-z, A-Z, 0-9 e caratteri di sottolineatura."
+
+#: ../../chapter-12.rst:642
+msgid "``IS_LOWER``"
+msgstr "''IS_LOWER''"
+
+#: ../../chapter-12.rst:644
+msgid ""
+"This validator never returns an error. It just converts the value to lower case."
+msgstr ""
+"Questo validatore non restituisce mai un errore. Converte semplicemente il "
+"valore in minuscolo."
+
+#: ../../chapter-12.rst:652
+msgid "``IS_UPPER``"
+msgstr "''IS_UPPER''"
+
+#: ../../chapter-12.rst:654
+msgid ""
+"This validator never returns an error. It converts the value to upper case."
+msgstr ""
+"Questo validatore non restituisce mai un errore. Converte il valore in "
+"maiuscolo."
+
+#: ../../chapter-12.rst:663
+msgid "``IS_EMAIL``"
+msgstr "''IS_EMAIL''"
+
+#: ../../chapter-12.rst:665
+msgid ""
+"It checks that the field value looks like an email address. It does not try to "
+"send email to confirm."
+msgstr ""
+"Controlla che il valore del campo assomigli a un indirizzo e-mail. Non tenta di "
+"inviare e-mail di conferma."
+
+#: ../../chapter-12.rst:673
+msgid "``IS_MATCH``"
+msgstr "''IS_MATCH''"
+
+#: ../../chapter-12.rst:675
+msgid ""
+"This validator matches the value against a regular expression and returns an "
+"error if it does not match. Here is an example of usage to validate a US zip "
+"code:"
+msgstr ""
+"Questo validatore confronta il valore con un'espressione regolare e restituisce "
+"un errore se non corrisponde. Di seguito è riportato un esempio di utilizzo per "
+"convalidare un codice postale statunitense:"
+
+#: ../../chapter-12.rst:683
+msgid ""
+"Here is an example of usage to validate an IPv4 address (note: the IS_IPV4 "
+"validator is more appropriate for this purpose):"
+msgstr ""
+"Di seguito è riportato un esempio di utilizzo per convalidare un indirizzo IPv4 "
+"(nota: il validatore IS_IPV4 è più appropriato per questo scopo):"
+
+#: ../../chapter-12.rst:691
+msgid "Here is an example of usage to validate a US phone number:"
+msgstr ""
+"Di seguito è riportato un esempio di utilizzo per convalidare un numero di "
+"telefono statunitense:"
+
+#: ../../chapter-12.rst:699
+msgid ""
+"For more information on Python regular expressions, refer to the official "
+"Python documentation."
+msgstr ""
+"Per ulteriori informazioni sulle espressioni regolari di Python, fare "
+"riferimento alla documentazione ufficiale di Python."
+
+#: ../../chapter-12.rst:701
+msgid ""
+"``IS_MATCH`` takes an optional argument ``strict`` which defaults to ``False``. "
+"When set to ``True`` it only matches the whole string (from the beginning to "
+"the end):"
+msgstr ""
+"''IS_MATCH'' accetta un argomento opzionale ''strict'' che di default è "
+"''False''. Quando è impostato su ''True'' corrisponde solo all'intera stringa "
+"(dall'inizio alla fine):"
+
+#: ../../chapter-12.rst:713
+msgid ""
+"``IS_MATCH`` takes an other optional argument ``search`` which defaults to "
+"``False``. When set to ``True``, it uses regex method ``search`` instead of "
+"method ``match`` to validate the string."
+msgstr ""
+"''IS_MATCH'' accetta un altro argomento opzionale ''search'' che il valore "
+"predefinito è ''False''. Quando è impostato su ''True'', usa il metodo regex "
+"''search'' invece del metodo ''match'' per convalidare la stringa."
+
+#: ../../chapter-12.rst:715
+msgid ""
+"``IS_MATCH('...', extract=True)`` filters and extract only the first matching "
+"substring rather than the original value."
+msgstr ""
+"''IS_MATCH('...', extract=True)'' filtra ed estrae solo la prima sottostringa "
+"corrispondente anziché il valore originale."
+
+#: ../../chapter-12.rst:719
+msgid "``IS_LENGTH``"
+msgstr "''IS_LENGTH''"
+
+#: ../../chapter-12.rst:721
+msgid ""
+"Checks if length of field's value fits between given boundaries. Works for both "
+"text and file inputs."
+msgstr ""
+"Controlla se la lunghezza del valore del campo rientra tra i limiti "
+"specificati. Funziona sia per gli input di testo che per quelli di file."
+
+#: ../../chapter-12.rst:724 ../../chapter-12.rst:1367 ../../chapter-12.rst:1425
+msgid "Its arguments are:"
+msgstr "Le sue argomentazioni sono:"
+
+#: ../../chapter-12.rst:726
+msgid "maxsize: the maximum allowed length / size (has default = 255)"
+msgstr ""
+"maxsize: la lunghezza/dimensione massima consentita (ha il valore predefinito = "
+"255)"
+
+#: ../../chapter-12.rst:727
+msgid "minsize: the minimum allowed length / size"
+msgstr "minsize: la lunghezza/dimensione minima consentita"
+
+#: ../../chapter-12.rst:729
+msgid "Examples: Check if text string is shorter than 16 characters:"
+msgstr "Esempi: controlla se la stringa di testo è più breve di 16 caratteri:"
+
+#: ../../chapter-12.rst:744
+msgid "Check if uploaded file has size between 1KB and 1MB:"
+msgstr "Controlla se il file caricato ha dimensioni comprese tra 1 KB e 1 MB:"
+
+#: ../../chapter-12.rst:751
+msgid ""
+"For all field types except for files, it checks the length of the value. In the "
+"case of files, the value is a ``cgi.FieldStorage``, so it validates the length "
+"of the data in the file, which is the behavior one might intuitively expect."
+msgstr ""
+"Per tutti i tipi di campo, ad eccezione dei file, controlla la lunghezza del "
+"valore. Nel caso dei file, il valore è un ''cgi. FieldStorage'', in modo da "
+"convalidare la lunghezza dei dati nel file, che è il comportamento che ci si "
+"potrebbe intuitivamente aspettare."
+
+#: ../../chapter-12.rst:756
+msgid "``IS_URL``"
+msgstr "''IS_URL''"
+
+#: ../../chapter-12.rst:758
+msgid "Rejects a URL string if any of the following is true:"
+msgstr "Rifiuta una stringa URL se si verifica una delle seguenti condizioni:"
+
+#: ../../chapter-12.rst:760 ../../chapter-12.rst:774
+msgid "The string is empty or None"
+msgstr "La stringa è vuota o None"
+
+#: ../../chapter-12.rst:761 ../../chapter-12.rst:775
+msgid "The string uses characters that are not allowed in a URL"
+msgstr "La stringa utilizza caratteri non consentiti in un URL"
+
+#: ../../chapter-12.rst:762
+msgid "The string breaks any of the HTTP syntactic rules"
+msgstr "La stringa interrompe una qualsiasi delle regole sintattiche HTTP"
+
+#: ../../chapter-12.rst:763
+msgid "The URL scheme specified (if one is specified) is not 'http' or 'https'"
+msgstr "Lo schema URL specificato (se specificato) non è 'http' o 'https'"
+
+#: ../../chapter-12.rst:764
+msgid "The top-level domain (if a host name is specified) does not exist"
+msgstr "Il dominio di primo livello (se è specificato un nome host) non esiste"
+
+#: ../../chapter-12.rst:766
+msgid "(These rules are based on ``RFC 2616``)"
+msgstr "(Queste regole sono basate su ''RFC 2616'')"
+
+#: ../../chapter-12.rst:768
+msgid ""
+"This function only checks the URL's syntax. It does not check that the URL "
+"points to a real document, for example, or that it otherwise makes semantic "
+"sense. This function does automatically prepend 'http://' in front of a URL in "
+"the case of an abbreviated URL (e.g. 'google.ca'). If the parameter "
+"``mode='generic'`` is used, then this function's behavior changes. It then "
+"rejects a URL string if any of the following is true:"
+msgstr ""
+"Questa funzione controlla solo la sintassi dell'URL. Non controlla che l'URL "
+"punti a un documento reale, ad esempio, o che abbia un senso semantico. Questa "
+"funzione antepone automaticamente 'http://' davanti a un URL nel caso di un URL "
+"abbreviato (ad es. 'google.ca'). Se viene utilizzato il parametro "
+"''mode='generic''', il comportamento di questa funzione cambia. Rifiuta quindi "
+"una stringa URL se si verifica una delle seguenti condizioni:"
+
+#: ../../chapter-12.rst:776
+msgid "The URL scheme specified (if one is specified) is not valid"
+msgstr "Lo schema URL specificato (se specificato) non è valido"
+
+#: ../../chapter-12.rst:778
+msgid "(These rules are based on ``RFC 2396``)"
+msgstr "(Queste regole sono basate su ''RFC 2396'')"
+
+#: ../../chapter-12.rst:780
+msgid ""
+"The list of allowed schemes is customizable with the allowed_schemes parameter. "
+"If you exclude None from the list, then abbreviated URLs (lacking a scheme such "
+"as 'http') will be rejected."
+msgstr ""
+"L'elenco degli schemi consentiti è personalizzabile con il parametro "
+"allowed_schemes. Se escludi Nessuno dall'elenco, gli URL abbreviati (privi di "
+"uno schema come \"http\") verranno rifiutati."
+
+#: ../../chapter-12.rst:783
+msgid ""
+"The default prepended scheme is customizable with the prepend_scheme parameter. "
+"If you set prepend_scheme to None, then prepending will be disabled. URLs that "
+"require prepending to parse will still be accepted, but the return value will "
+"not be modified."
+msgstr ""
+"Lo schema preposto predefinito è personalizzabile con il parametro "
+"prepend_scheme. Se si imposta prepend_scheme su Nessuno, l'anteposizione verrà "
+"disabilitata. Gli URL che richiedono l'anteposizione per l'analisi verranno "
+"comunque accettati, ma il valore restituito non verrà modificato."
+
+#: ../../chapter-12.rst:787
+#, python-format
+msgid ""
+"IS_URL is compatible with the Internationalized Domain Name (IDN) standard "
+"specified in ``RFC 3490``). As a result, URLs can be regular strings or unicode "
+"strings. If the URL's domain component (e.g. google.ca) contains non-US-ASCII "
+"letters, then the domain will be converted into Punycode (defined in ``RFC "
+"3492``). IS_URL goes a bit beyond the standards, and allows non-US-ASCII "
+"characters to be present in the path and query components of the URL as well. "
+"These non-US-ASCII characters will be encoded. For example, space will be "
+"encoded as'%20'. The unicode character with hex code 0x4e86 will become "
+"'%4e%86'."
+msgstr ""
+"IS_URL è compatibile con lo standard IDN (Internationalized Domain Name) "
+"specificato in ''RFC 3490''). Di conseguenza, gli URL possono essere stringhe "
+"normali o stringhe Unicode. Se il componente di dominio dell'URL (ad esempio "
+"google.ca) contiene lettere non US-ASCII, il dominio verrà convertito in "
+"Punycode (definito in ''RFC 3492''). IS_URL va un po' oltre gli standard e "
+"consente la presenza di caratteri non US-ASCII anche nel percorso e nei "
+"componenti di query dell'URL. Questi caratteri non US-ASCII verranno "
+"codificati. Ad esempio, lo spazio verrà codificato come'%20'. Il carattere "
+"Unicode con codice esadecimale 0x4e86 diventerà '%4e%86'."
+
+#: ../../chapter-12.rst:796 ../../chapter-12.rst:1435 ../../chapter-12.rst:1506
+#: ../../chapter-12.rst:1562 ../../chapter-12.rst:1612
+msgid "Examples:"
+msgstr "Esempi:"
+
+#: ../../chapter-12.rst:810
+msgid "``IS_SAFE``"
+msgstr "''IS_SAFE''"
+
+#: ../../chapter-12.rst:818
+msgid ""
+"This validators is for text fields that should contain HTML and may contain "
+"invalid tags (script, ember, object, iframe). It works by trying to sanitize "
+"the content and either provide an error (mode=\"error\") or replacing the "
+"content with the sanitized one (mode=\"sanitize\"). You can specify the error "
+"message, the mode, and provide your own sanitizer."
+msgstr ""
+"Questo validatore è per i campi di testo che devono contenere HTML e possono "
+"contenere tag non validi (script, ember, object, iframe). Funziona provando a "
+"disinfettare il contenuto e fornendo un errore (mode=\"error\") o sostituendo "
+"il contenuto con quello disinfettato (mode=\"sanitize\"). È possibile "
+"specificare il messaggio di errore, la modalità e fornire il proprio "
+"disinfettante."
+
+#: ../../chapter-12.rst:823
+msgid "``IS_SLUG``"
+msgstr "''IS_SLUG''"
+
+#: ../../chapter-12.rst:830
+msgid ""
+"If ``check`` is set to ``True`` it check whether the validated value is a slug "
+"(allowing only alphanumeric characters and non-repeated dashes)."
+msgstr ""
+"Se ''check'' è impostato su ''True'' controlla se il valore convalidato è uno "
+"slug (che consente solo caratteri alfanumerici e trattini non ripetuti)."
+
+#: ../../chapter-12.rst:832
+msgid ""
+"If ``check`` is set to ``False`` (default) it converts the input value to a "
+"slug."
+msgstr ""
+"Se ''check'' è impostato a ''False'' (default) converte il valore di input in "
+"uno slug."
+
+#: ../../chapter-12.rst:835
+msgid "``IS_JSON``"
+msgstr "''IS_JSON''"
+
+#: ../../chapter-12.rst:842
+msgid "This validator checks that a field value is in JSON format."
+msgstr "Questo validatore verifica che il valore di un campo sia in formato JSON."
+
+#: ../../chapter-12.rst:844
+msgid ""
+"If ``native_json`` is set to ``False`` (default) it converts the input value to "
+"the serialized value otherwise the input value is left unchanged."
+msgstr ""
+"Se ''native_json'' è impostato a ''False'' (default) converte il valore di "
+"input nel valore serializzato, altrimenti il valore di input viene lasciato "
+"invariato."
+
+#: ../../chapter-12.rst:847
+msgid "Date and time validators"
+msgstr "Validatori di data e ora"
+
+#: ../../chapter-12.rst:850
+msgid "``IS_TIME``"
+msgstr "''IS_TIME''"
+
+#: ../../chapter-12.rst:852
+msgid ""
+"This validator checks that a field value contains a valid time in the specified "
+"format."
+msgstr ""
+"Questo strumento di convalida verifica che il valore di un campo contenga "
+"un'ora valida nel formato specificato."
+
+#: ../../chapter-12.rst:860
+msgid "``IS_DATE``"
+msgstr "''IS_DATE''"
+
+#: ../../chapter-12.rst:862
+msgid ""
+"This validator checks that a field value contains a valid date in the specified "
+"format. It is good practice to specify the format using the translation "
+"operator, in order to support different formats in different locales."
+msgstr ""
+"Questo strumento di convalida verifica che il valore di un campo contenga una "
+"data valida nel formato specificato. È buona norma specificare il formato "
+"utilizzando l'operatore di traduzione, in modo da supportare formati diversi in "
+"impostazioni locali diverse."
+
+#: ../../chapter-12.rst:870 ../../chapter-12.rst:913 ../../chapter-12.rst:928
+#, python-format
+msgid ""
+"For the full description on % directives look under the IS_DATETIME validator."
+msgstr ""
+"Per la descrizione completa delle % directive guarda sotto il validatore "
+"IS_DATETIME."
+
+#: ../../chapter-12.rst:873
+msgid "``IS_DATETIME``"
+msgstr "''IS_DATETIME''"
+
+#: ../../chapter-12.rst:875
+msgid ""
+"This validator checks that a field value contains a valid datetime in the "
+"specified format. It is good practice to specify the format using the "
+"translation operator, in order to support different formats in different "
+"locales."
+msgstr ""
+"Questo strumento di convalida verifica che il valore di un campo contenga un "
+"valore datetime valido nel formato specificato. È buona norma specificare il "
+"formato utilizzando l'operatore di traduzione, in modo da supportare formati "
+"diversi in impostazioni locali diverse."
+
+#: ../../chapter-12.rst:883
+msgid ""
+"The following symbols can be used for the format string (this shows the symbol, "
+"their meaning, and an example string):"
+msgstr ""
+"Per la stringa di formato è possibile utilizzare i seguenti simboli (che "
+"mostrano il simbolo, il loro significato e una stringa di esempio):"
+
+#: ../../chapter-12.rst:901
+msgid "``IS_DATE_IN_RANGE``"
+msgstr "''IS_DATE_IN_RANGE''"
+
+#: ../../chapter-12.rst:903 ../../chapter-12.rst:918
+msgid "Works very much like the previous validator but allows to specify a range:"
+msgstr ""
+"Funziona in modo molto simile al validatore precedente, ma permette di "
+"specificare un intervallo:"
+
+#: ../../chapter-12.rst:916
+msgid "``IS_DATETIME_IN_RANGE``"
+msgstr "''IS_DATETIME_IN_RANGE''"
+
+#: ../../chapter-12.rst:931
+msgid "Range, set and equality validators"
+msgstr "Validatori di intervalli, insiemi e uguaglianza"
+
+#: ../../chapter-12.rst:934
+msgid "``IS_EQUAL_TO``"
+msgstr "''IS_EQUAL_TO''"
+
+#: ../../chapter-12.rst:936
+msgid ""
+"Checks whether the validated value is equal to a given value (which can be a "
+"variable):"
+msgstr ""
+"Controlla se il valore convalidato è uguale a un determinato valore (che può "
+"essere una variabile):"
+
+#: ../../chapter-12.rst:945
+msgid "``IS_NOT_EMPTY``"
+msgstr "''IS_NOT_EMPTY''"
+
+#: ../../chapter-12.rst:947
+msgid ""
+"This validator checks that the content of the field value is neither None nor "
+"an empty string nor an empty list. A string value is checked for after a ``."
+"strip()``."
+msgstr ""
+"Questo strumento di convalida verifica che il contenuto del valore del campo "
+"non sia né Nessuno, né una stringa vuota, né un elenco vuoto. Un valore stringa "
+"viene controllato dopo un ''.strip()''."
+
+#: ../../chapter-12.rst:954
+msgid "You can provide a regular expression for the matching of the empty string."
+msgstr ""
+"È possibile fornire un'espressione regolare per la corrispondenza della stringa "
+"vuota."
+
+#: ../../chapter-12.rst:962
+msgid "``IS_NULL_OR``"
+msgstr "''IS_NULL_OR''"
+
+#: ../../chapter-12.rst:964
+msgid "Deprecated, an alias for ``IS_EMPTY_OR`` described below."
+msgstr "Deprecato, un alias per ''IS_EMPTY_OR'' descritto di seguito."
+
+#: ../../chapter-12.rst:967
+msgid "``IS_EMPTY_OR``"
+msgstr "''IS_EMPTY_OR''"
+
+#: ../../chapter-12.rst:969
+msgid ""
+"Sometimes you need to allow empty values on a field along with other "
+"requirements. For example a field may be a date but it can also be empty. The "
+"``IS_EMPTY_OR`` validator allows this:"
+msgstr ""
+"A volte è necessario consentire valori vuoti in un campo insieme ad altri "
+"requisiti. Ad esempio, un campo può essere una data, ma può anche essere vuoto. "
+"Il validatore ''IS_EMPTY_OR'' permette questo:"
+
+#: ../../chapter-12.rst:977
+msgid ""
+"An empty value is either None or an empty string or an empty list. A string "
+"value is checked for after a ``.strip()``."
+msgstr ""
+"Un valore vuoto è None o una stringa vuota o un elenco vuoto. Un valore stringa "
+"viene controllato dopo un ''.strip()''."
+
+#: ../../chapter-12.rst:979
+msgid ""
+"You can provide a regular expression for the matching of the empty string with "
+"the ``empty_regex`` argument (like for IS_NOT_EMPTY validator)."
+msgstr ""
+"È possibile fornire un'espressione regolare per la corrispondenza della stringa "
+"vuota con l'argomento ''empty_regex'' (come per IS_NOT_EMPTY validatore)."
+
+#: ../../chapter-12.rst:981
+msgid "You may also specify a value to be used for the empty case."
+msgstr ""
+"È inoltre possibile specificare un valore da utilizzare per il caso vuoto."
+
+#: ../../chapter-12.rst:989
+msgid "``IS_EXPR``"
+msgstr "''IS_EXPR''"
+
+#: ../../chapter-12.rst:991
+msgid ""
+"This validator let you express a general condition by means of a callable which "
+"takes a value to validate and returns the error message or ``None`` to accept "
+"the input value."
+msgstr ""
+"Questo validatore consente di esprimere una condizione generale per mezzo di un "
+"callable che prende un valore da convalidare e restituisce il messaggio di "
+"errore o ''None'' per accettare il valore di input."
+
+#: ../../chapter-12.rst:999
+msgid ""
+"**Notice** that returned message will not be translated if you do not arrange "
+"otherwise."
+msgstr ""
+"**Si noti** che il messaggio restituito non verrà tradotto se non si dispone "
+"diversamente."
+
+#: ../../chapter-12.rst:1002
+msgid ""
+"For backward compatibility the condition may be expressed as a string "
+"containing a logical expression in terms of a variable value. It validates a "
+"field value if the expression evaluates to ``True``."
+msgstr ""
+"Per compatibilità con le versioni precedenti, la condizione può essere espressa "
+"come una stringa contenente un'espressione logica in termini di valore di "
+"variabile. Convalida un valore di campo se l'espressione restituisce ''True''."
+
+#: ../../chapter-12.rst:1010
+msgid ""
+"One should first check that the value is an integer so that an exception will "
+"not occur."
+msgstr ""
+"Si dovrebbe prima controllare che il valore sia un numero intero in modo che "
+"non si verifichi un'eccezione."
+
+#: ../../chapter-12.rst:1020
+msgid "``IS_DECIMAL_IN_RANGE``"
+msgstr "''IS_DECIMAL_IN_RANGE''"
+
+#: ../../chapter-12.rst:1027
+msgid ""
+"It converts the input into a Python Decimal or generates an error if the "
+"decimal does not fall within the specified inclusive range. The comparison is "
+"made with Python Decimal arithmetic."
+msgstr ""
+"Converte l'input in un decimale Python o genera un errore se il decimale non "
+"rientra nell'intervallo inclusivo specificato. Il confronto viene effettuato "
+"con l'aritmetica decimale Python."
+
+#: ../../chapter-12.rst:1031
+msgid ""
+"The minimum and maximum limits can be None, meaning no lower or upper limit, "
+"respectively."
+msgstr ""
+"I limiti minimo e massimo possono essere Nessuno, ovvero nessun limite "
+"inferiore o superiore, rispettivamente."
+
+#: ../../chapter-12.rst:1034 ../../chapter-12.rst:1047
+msgid ""
+"The ``dot`` argument is optional and allows you to internationalize the symbol "
+"used to separate the decimals."
+msgstr ""
+"L'argomento ''punto'' è facoltativo e permette di internazionalizzare il "
+"simbolo usato per separare i decimali."
+
+#: ../../chapter-12.rst:1037
+msgid "``IS_FLOAT_IN_RANGE``"
+msgstr "''IS_FLOAT_IN_RANGE''"
+
+#: ../../chapter-12.rst:1039
+msgid ""
+"Checks that the field value is a floating point number within a definite range, "
+"``0 <= value <= 100`` in the following example:"
+msgstr ""
+"Controlla che il valore del campo sia un numero a virgola mobile all'interno di "
+"un intervallo definito, ''0 <= valore <= 100'' nell'esempio seguente:"
+
+#: ../../chapter-12.rst:1050
+msgid "``IS_INT_IN_RANGE``"
+msgstr "''IS_INT_IN_RANGE''"
+
+#: ../../chapter-12.rst:1059
+msgid "Checks that the field value is an integer number within a definite range,"
+msgstr ""
+"Controlla che il valore del campo sia un numero intero all'interno di un "
+"intervallo definito,"
+
+#: ../../chapter-12.rst:1053
+msgid "``0 <= value < 100`` in the following example:"
+msgstr "''0 <= valore < 100'' nell'esempio seguente:"
+
+#: ../../chapter-12.rst:1062
+msgid "``IS_IN_SET``"
+msgstr "''IS_IN_SET''"
+
+#: ../../chapter-12.rst:1064
+msgid ""
+"This validator will automatically set the form field to an option field (ie, "
+"with a drop-down menu)."
+msgstr ""
+"Questo validatore imposterà automaticamente il campo del modulo su un campo di "
+"opzione (ad esempio, con un menu a discesa)."
+
+#: ../../chapter-12.rst:1066
+msgid "``IS_IN_SET`` checks that the field values are in a set:"
+msgstr "''IS_IN_SET'' controlla che i valori dei campi siano in un insieme:"
+
+#: ../../chapter-12.rst:1074
+msgid ""
+"The zero argument is optional and it determines the text of the option selected "
+"by default, an option which is not accepted by the ``IS_IN_SET`` validator "
+"itself. If you do not want a \"choose one\" option, set ``zero=None``."
+msgstr ""
+"L'argomento zero è opzionale e determina il testo dell'opzione selezionata di "
+"default, un'opzione che non è accettata dal validatore ''IS_IN_SET'' stesso. Se "
+"non si desidera un'opzione \"scegline uno\", impostare ''zero=None''."
+
+#: ../../chapter-12.rst:1077
+msgid ""
+"The elements of the set can be combined with a numerical validator, as long as "
+"IS_IN_SET is first in the list. Doing so will force conversion by the last "
+"validator to the numerical type. So, IS_IN_SET can be followed by "
+"``IS_INT_IN_RANGE`` (which converts the value to int) or ``IS_FLOAT_IN_RANGE`` "
+"(which converts the value to float). For example:"
+msgstr ""
+"Gli elementi dell'insieme possono essere combinati con un validatore numerico, "
+"purché IS_IN_SET sia il primo nell'elenco. In questo modo verrà forzata la "
+"conversione da parte dell'ultimo validatore al tipo numerico. Quindi, IS_IN_SET "
+"può essere seguito da ''IS_INT_IN_RANGE'' (che converte il valore in int) o "
+"''IS_FLOAT_IN_RANGE'' (che converte il valore in float). Per esempio:"
+
+#: ../../chapter-12.rst:1089
+msgid "Checkbox validation"
+msgstr "Convalida delle caselle di controllo"
+
+#: ../../chapter-12.rst:1090
+msgid ""
+"To force a filled-in form checkbox (such as an acceptance of terms and "
+"conditions), use this:"
+msgstr ""
+"Per forzare la casella di controllo di un modulo compilato (ad esempio "
+"l'accettazione di termini e condizioni), utilizzare quanto segue:"
+
+#: ../../chapter-12.rst:1098
+msgid "Dictionaries and tuples with IS_IN_SET"
+msgstr "Dizionari e tuple con IS_IN_SET"
+
+#: ../../chapter-12.rst:1100
+msgid ""
+"You may also use a dictionary or a list of tuples to make the drop down list "
+"more descriptive:"
+msgstr ""
+"È anche possibile utilizzare un dizionario o un elenco di tuple per rendere "
+"l'elenco a discesa più descrittivo:"
+
+#: ../../chapter-12.rst:1112
+msgid "Sorted options"
+msgstr "Opzioni ordinate"
+
+#: ../../chapter-12.rst:1114
+msgid ""
+"To keep the options alphabetically sorted by their labels into the drop down "
+"list, use the ``sort`` argument with IS_IN_SET."
+msgstr ""
+"Per mantenere le opzioni in ordine alfabetico in base alle loro etichette "
+"nell'elenco a discesa, usare l'argomento ''ordina'' con IS_IN_SET."
+
+#: ../../chapter-12.rst:1122
+msgid "``IS_IN_SET`` and Tagging"
+msgstr "''IS_IN_SET'' e tagging"
+
+#: ../../chapter-12.rst:1124
+msgid ""
+"The ``IS_IN_SET`` validator has an optional attribute ``multiple=False``. If "
+"set to True, multiple values can be stored in one field. The field should be of "
+"type ``list:integer`` or ``list:string`` as discussed in [[Chapter 6 ../06#list-"
+"type-and-contains]]. An explicit example of tagging is discussed there. We "
+"strongly suggest using the jQuery multiselect plugin to render multiple fields."
+msgstr ""
+"Il validatore ''IS_IN_SET'' ha un attributo opzionale ''multiple=False''. Se "
+"impostato su True, è possibile memorizzare più valori in un campo. Il campo "
+"dovrebbe essere di tipo ''list:integer'' o ''list:string'' come discusso in "
+"[[Chapter 6 .. /06#tipo-elenco-e-contiene]]. Un esempio esplicito di tagging "
+"viene discusso qui. Si consiglia vivamente di utilizzare il plug-in jQuery "
+"multiselect per eseguire il rendering di più campi."
+
+#: ../../chapter-12.rst:1128
+msgid ""
+"**Note** that when ``multiple=True``, ``IS_IN_SET`` will accept zero or more "
+"values, i.e. it will accept the field when nothing has been selected. "
+"``multiple`` can also be a tuple of the form ``(a, b)`` where ``a`` and ``b`` "
+"are the minimum and (exclusive) maximum number of items that can be selected "
+"respectively."
+msgstr ""
+"**Nota** che quando ''multiple=True'', ''IS_IN_SET'' accetterà zero o più "
+"valori, cioè accetterà il campo quando non è stato selezionato nulla. "
+"''Multiplo'' può anche essere una tupla della forma ''(a, b)'' dove ''a'' e "
+"''b'' sono rispettivamente il numero minimo e massimo (esclusivo) di elementi "
+"che possono essere selezionati."
+
+#: ../../chapter-12.rst:1135
+msgid "Complexity and security validators"
+msgstr "Validatori di complessità e sicurezza"
+
+#: ../../chapter-12.rst:1138
+msgid "``IS_STRONG``"
+msgstr "''IS_STRONG''"
+
+#: ../../chapter-12.rst:1140
+msgid "Enforces complexity requirements on a field (usually a password field)."
+msgstr ""
+"Applica i requisiti di complessità a un campo (in genere un campo password)."
+
+#: ../../chapter-12.rst:1142
+msgid "Example:"
+msgstr "Esempio:"
+
+#: ../../chapter-12.rst:1149
+msgid "where:"
+msgstr "dove:"
+
+#: ../../chapter-12.rst:1151
+msgid "``min`` is minimum length of the value"
+msgstr "''min'' è la lunghezza minima del valore"
+
+#: ../../chapter-12.rst:1152
+msgid ""
+"``special`` is the minimum number of required special characters, by default "
+"special characters are any of the following ``^!!@#$%^&*()_+-=?<>,.:;{}[]|`` "
+"(you can customize these using ``specials = '...'``)"
+msgstr ""
+"''speciale'' è il numero minimo di caratteri speciali richiesti, per "
+"impostazione predefinita i caratteri speciali sono uno dei seguenti ''^!! @#$"
+"%^&*()_+-=?<>,.:; {} []|'' (puoi personalizzarli usando ''specials = '...''')"
+
+#: ../../chapter-12.rst:1154
+msgid "``upper`` is the minimum number of upper case characters"
+msgstr "''maiuscolo'' è il numero minimo di caratteri maiuscoli"
+
+#: ../../chapter-12.rst:1156
+msgid "other accepted arguments are:"
+msgstr "Altri argomenti accettati sono:"
+
+#: ../../chapter-12.rst:1158
+msgid ""
+"``invalid`` for the list of forbidden characters, by default ``invalid=' \"'``"
+msgstr ""
+"''invalid'' per l'elenco dei caratteri proibiti, di default ''invalid=' \"'''"
+
+#: ../../chapter-12.rst:1159
+msgid "``max`` for the maximum length of the value"
+msgstr "''max'' per la lunghezza massima del valore"
+
+#: ../../chapter-12.rst:1160
+msgid "``lower`` for the minimum number of lower case characters"
+msgstr "''lower'' per il numero minimo di caratteri minuscoli"
+
+#: ../../chapter-12.rst:1161
+msgid "``number`` for the minimum number of digit characters"
+msgstr "''number'' per il numero minimo di caratteri numerici"
+
+#: ../../chapter-12.rst:1163
+msgid ""
+"Obviously you can provide an ``error_message`` as for any other validator, "
+"although IS_STRONG is clever enough to provide a clear message to describe the "
+"validation failure."
+msgstr ""
+"Ovviamente è possibile fornire un ''error_message'' come per qualsiasi altro "
+"validatore, anche se IS_STRONG è abbastanza intelligente da fornire un "
+"messaggio chiaro per descrivere l'errore di validazione."
+
+#: ../../chapter-12.rst:1165
+msgid ""
+"A special argument you can use is ``entropy``, that is a minimum value for the "
+"complexity of the value to accept (a number), experiment this with:"
+msgstr ""
+"Un argomento speciale che puoi usare è ''entropia'', che è un valore minimo per "
+"la complessità del valore da accettare (un numero), sperimentalo con:"
+
+#: ../../chapter-12.rst:1173
+msgid ""
+"**Notice** that if the argument ``entropy`` is not given then IS_STRONG "
+"implicitly sets the following defaults: ``min = 8, upper = 1, lower = 1, number "
+"= 1, special = 1`` which otherwise are all sets to ``None``."
+msgstr ""
+"**Notate** che se l'argomento ''entropia'' non è dato allora IS_STRONG imposta "
+"implicitamente i seguenti valori predefiniti: ''min = 8, upper = 1, lower = 1, "
+"number = 1, special = 1'' che altrimenti sono tutti impostati su ''None''."
+
+#: ../../chapter-12.rst:1178
+msgid "``CRYPT``"
+msgstr "''CRIPTA''"
+
+#: ../../chapter-12.rst:1180
+msgid ""
+"This is also a filter. It performs a secure hash on the input and it is used to "
+"prevent passwords from being passed in the clear to the database."
+msgstr ""
+"Anche questo è un filtro. Esegue un hash sicuro sull'input e viene utilizzato "
+"per impedire che le password vengano passate in chiaro al database."
+
+#: ../../chapter-12.rst:1187
+msgid ""
+"By default, CRYPT uses 1000 iterations of the pbkdf2 algorithm combined with "
+"SHA512 to produce a 20-byte-long hash. Old versions of web2py used md5 or "
+"HMAC+SHA512 depending on whether a key was specified or not."
+msgstr ""
+"Per impostazione predefinita, CRYPT utilizza 1000 iterazioni dell'algoritmo "
+"pbkdf2 combinato con SHA512 per produrre un hash lungo 20 byte. Le vecchie "
+"versioni di web2py usavano md5 o HMAC+SHA512 a seconda che fosse specificata o "
+"meno una chiave."
+
+#: ../../chapter-12.rst:1190
+msgid ""
+"If a key is specified, CRYPT uses the HMAC algorithm. The key may contain a "
+"prefix that determines the algorithm to use with HMAC, for example SHA512:"
+msgstr ""
+"Se viene specificata una chiave, CRYPT utilizza l'algoritmo HMAC. La chiave può "
+"contenere un prefisso che determina l'algoritmo da utilizzare con HMAC, ad "
+"esempio SHA512:"
+
+#: ../../chapter-12.rst:1197
+msgid ""
+"This is the recommended syntax. The key must be a unique string associated with "
+"the database used. The key can never be changed. If you lose the key, the "
+"previously hashed values become useless. By default, CRYPT uses random salt, "
+"such that each result is different. To use a constant salt value, specify its "
+"value:"
+msgstr ""
+"Questa è la sintassi consigliata. La chiave deve essere una stringa univoca "
+"associata al database utilizzato. La chiave non può mai essere cambiata. Se si "
+"perde la chiave, i valori hash precedentemente sottoposti a hash diventano "
+"inutili. Per impostazione predefinita, CRYPT utilizza salt casuale, in modo che "
+"ogni risultato sia diverso. Per utilizzare un valore salt costante, "
+"specificarne il valore:"
+
+#: ../../chapter-12.rst:1205
+msgid "Or, to use no salt:"
+msgstr "Oppure, per non usare sale:"
+
+#: ../../chapter-12.rst:1212
+msgid ""
+"The CRYPT validator hashes its input, and this makes it somewhat special. If "
+"you need to validate a password field before it is hashed, you can use CRYPT in "
+"a list of validators, but must make sure it is the last of the list, so that it "
+"is called last. For example:"
+msgstr ""
+"Il validatore CRYPT esegue l'hashing del suo input e questo lo rende in qualche "
+"modo speciale. Se è necessario convalidare un campo password prima che venga "
+"eseguito l'hashing, è possibile utilizzare CRYPT in un elenco di validatori, ma "
+"è necessario assicurarsi che sia l'ultimo dell'elenco, in modo che venga "
+"chiamato per ultimo. Per esempio:"
+
+#: ../../chapter-12.rst:1220
+msgid "``CRYPT`` also takes a ``min_length`` argument, which defaults to zero."
+msgstr ""
+"''CRYPT'' accetta anche un argomento ''min_length'', che per impostazione "
+"predefinita è zero."
+
+#: ../../chapter-12.rst:1222
+msgid ""
+"The resulting hash takes the form ``alg$salt$hash``, where ``alg`` is the hash "
+"algorithm used, ``salt`` is the salt string (which can be empty), and ``hash`` "
+"is the algorithm's output. Consequently, the hash is self-identifying, "
+"allowing, for example, the algorithm to be changed without invalidating "
+"previous hashes. The key, however, must remain the same."
+msgstr ""
+"L'hash risultante assume la forma ''alg$salt$hash'', dove ''alg'' è l'algoritmo "
+"hash usato, ''salt'' è la stringa salt (che può essere vuota) e ''hash'' è "
+"l'output dell'algoritmo. Di conseguenza, l'hash si auto-identifica, "
+"consentendo, ad esempio, di modificare l'algoritmo senza invalidare gli hash "
+"precedenti. La chiave, tuttavia, deve rimanere la stessa."
+
+#: ../../chapter-12.rst:1228
+msgid "Special type validators"
+msgstr "Validatori di tipi speciali"
+
+#: ../../chapter-12.rst:1231
+msgid "``IS_LIST_OF``"
+msgstr "''IS_LIST_OF''"
+
+#: ../../chapter-12.rst:1233
+msgid ""
+"This validator helps you to ensure length limits on values of type list, for "
+"this purpose use its ``minimum``, ``maximum``, and ``error_message`` arguments, "
+"for example:"
+msgstr ""
+"Questo validatore ti aiuta a garantire limiti di lunghezza sui valori di tipo "
+"list, a questo scopo usa i suoi argomenti ''minimum'', ''maximum'' e "
+"''error_message'', per esempio:"
+
+#: ../../chapter-12.rst:1241
+msgid ""
+"A list value may comes from a form containing multiple fields with the same "
+"name or a multiple selection box. Note that this validator automatically "
+"converts a non-list value into a single valued list:"
+msgstr ""
+"Un valore di elenco può provenire da un modulo contenente più campi con lo "
+"stesso nome o da una casella di selezione multipla. Si noti che questo "
+"validatore converte automaticamente un valore non di elenco in un elenco a "
+"valori singolo:"
+
+#: ../../chapter-12.rst:1250
+msgid ""
+"If the first argument of IS_LIST_OF is another validator, then it applies the "
+"other validator to each element of the list. A typical usage is validation of a "
+"``list:`` type field, for example:"
+msgstr ""
+"Se il primo argomento di IS_LIST_OF è un altro validatore, allora applica "
+"l'altro validatore a ogni elemento della lista. Un uso tipico è la convalida di "
+"un campo di tipo ''list:'', per esempio:"
+
+#: ../../chapter-12.rst:1259
+msgid "``IS_LIST_OF_EMAILS``"
+msgstr "''IS_LIST_OF_EMAILS''"
+
+#: ../../chapter-12.rst:1261
+msgid "This validator is specifically designed to work with the following field:"
+msgstr ""
+"Questo validatore è specificamente progettato per funzionare con il seguente "
+"campo:"
+
+#: ../../chapter-12.rst:1274
+msgid ""
+"Notice that due to the ``widget`` customization this field will be rendered by "
+"a textarea in SQLFORMs (see next [[Widgets #Widgets]] section). This let you "
+"insert and edit multiple emails in a single input field (very much like normal "
+"mail client programs do), separating each email address with ``,``, ``;``, and "
+"blanks (space, newline, and tab characters). As a consequence now we need a "
+"validator which is able to operate on a single value input and a way to split "
+"the validated value into a list to be next processed by DAL, these are what the "
+"``requires`` and ``filter_in`` arguments stand for. As alternative to "
+"``filter_in``, you can pass the following function to the ``onvalidation`` "
+"argument of form ``accepts``, ``process``, or ``validate`` method:"
+msgstr ""
+"Si noti che, a causa della personalizzazione del ''widget'', questo campo sarà "
+"reso da un'area di testo in SQLFORMs (vedere la prossima sezione [[Widgets "
+"#Widgets]]). Ciò consente di inserire e modificare più e-mail in un singolo "
+"campo di input (in modo molto simile ai normali programmi client di posta), "
+"separando ogni indirizzo e-mail con '','', '';'' e spazi vuoti (spazio, nuova "
+"riga e caratteri di tabulazione). Di conseguenza ora abbiamo bisogno di un "
+"validatore che sia in grado di operare su un singolo valore in ingresso e di un "
+"modo per dividere il valore convalidato in una lista che verrà successivamente "
+"elaborata da DAL, questi sono ciò che gli argomenti ''requires'' e "
+"''filter_in'' rappresentano. In alternativa a ''filter_in'', è possibile "
+"passare la seguente funzione all'argomento ''onvalidation'' del metodo "
+"''accepts'', ''process'' o ''validate'':"
+
+#: ../../chapter-12.rst:1288
+msgid ""
+"The effect of the ``represent`` argument (at lines 6 and 7) is to add a "
+"\"mailto:...\" link to each email address when the record is rendered in HTML "
+"pages."
+msgstr ""
+"L'effetto dell'argomento ''represent'' (alle righe 6 e 7) è quello di "
+"aggiungere un ''mailto:...\" collegamento a ciascun indirizzo e-mail quando il "
+"record viene visualizzato nelle pagine HTML."
+
+#: ../../chapter-12.rst:1291
+msgid "``ANY_OF``"
+msgstr "''ANY_OF''"
+
+#: ../../chapter-12.rst:1293
+msgid ""
+"This validator takes a list of validators and accepts a value if any of the "
+"validators in the list does (i.e. it acts like a logical OR with respect to "
+"given validators)."
+msgstr ""
+"Questo validatore prende una lista di validatori e accetta un valore se uno "
+"qualsiasi dei validatori nella lista lo fa (cioè agisce come un OR logico "
+"rispetto a determinati validatori)."
+
+#: ../../chapter-12.rst:1301
+msgid ""
+"When none of the validators accepts the value you get the error message form "
+"the last attempted one (the last in the list), you can customize the error "
+"message as usual:"
+msgstr ""
+"Quando nessuno dei validatori accetta il valore, si ottiene il messaggio di "
+"errore dall'ultimo tentativo (l'ultimo della lista), è possibile personalizzare "
+"il messaggio di errore come di consueto:"
+
+#: ../../chapter-12.rst:1314
+msgid "``IS_IMAGE``"
+msgstr "''IS_IMAGE''"
+
+#: ../../chapter-12.rst:1316
+msgid ""
+"This validator checks if a file uploaded through the file input was saved in "
+"one of the selected image formats and has dimensions (width and height) within "
+"given limits."
+msgstr ""
+"Questo validatore controlla se un file caricato tramite l'input del file è "
+"stato salvato in uno dei formati di immagine selezionati e ha dimensioni "
+"(larghezza e altezza) entro determinati limiti."
+
+#: ../../chapter-12.rst:1319
+msgid ""
+"It does not check for maximum file size (use IS_LENGTH for that). It returns a "
+"validation failure if no data was uploaded. It supports the file formats BMP, "
+"GIF, JPEG, PNG, and it does not require the Python Imaging Library."
+msgstr ""
+"Non controlla la dimensione massima del file (usa IS_LENGTH per questo). "
+"Restituisce un errore di convalida se non è stato caricato alcun dato. Supporta "
+"i formati di file BMP, GIF, JPEG, PNG e non richiede la libreria di immagini "
+"Python."
+
+#: ../../chapter-12.rst:1322
+msgid "Code parts taken from ref.``source1``:cite"
+msgstr "Parti di codice prese da ref.''source1'':cite"
+
+#: ../../chapter-12.rst:1324
+msgid ""
+"It takes the following arguments: - extensions: iterable containing allowed "
+"image file extensions in lowercase - maxsize: iterable containing maximum width "
+"and height of the image - minsize: iterable containing minimum width and height "
+"of the image"
+msgstr ""
+"Accetta i seguenti argomenti: - extensions: iterable contenente le estensioni "
+"di file immagine consentite in minuscolo - maxsize: iterabile contenente la "
+"larghezza e l'altezza massime dell'immagine - minsize: iterabile contenente la "
+"larghezza e l'altezza minime dell'immagine"
+
+#: ../../chapter-12.rst:1329
+msgid "Use (-1, -1) as minsize to bypass the image-size check."
+msgstr ""
+"Usa (-1, -1) come minsize per bypassare il controllo della dimensione "
+"dell'immagine."
+
+#: ../../chapter-12.rst:1331
+msgid ""
+"Here are some Examples: - Check if uploaded file is in any of supported image "
+"formats:"
+msgstr ""
+"Ecco alcuni esempi: - Controlla se il file caricato è in uno dei formati di "
+"immagine supportati:"
+
+#: ../../chapter-12.rst:1338
+msgid "Check if uploaded file is either JPEG or PNG:"
+msgstr "Controlla se il file caricato è JPEG o PNG:"
+
+#: ../../chapter-12.rst:1345
+msgid "Check if uploaded file is PNG with maximum size of 200x200 pixels:"
+msgstr ""
+"Controlla se il file caricato è PNG con una dimensione massima di 200x200 pixel:"
+
+#: ../../chapter-12.rst:1352
+msgid ""
+"Note: on displaying an edit form for a table including ``requires = "
+"IS_IMAGE()``, a ``delete`` checkbox will NOT appear because to delete the file "
+"would cause the validation to fail. To display the ``delete`` checkbox use this "
+"validation:"
+msgstr ""
+"Nota: quando si visualizza un modulo di modifica per una tabella che include "
+"''requires = IS_IMAGE()'', una casella di controllo ''delete'' NON apparirà "
+"perché l'eliminazione del file causerebbe il fallimento della convalida. Per "
+"visualizzare la casella di controllo ''elimina'' utilizzare questa convalida:"
+
+#: ../../chapter-12.rst:1361
+msgid "``IS_FILE``"
+msgstr "''IS_FILE''"
+
+#: ../../chapter-12.rst:1363
+msgid ""
+"Checks if name and extension of file uploaded through file input matches given "
+"criteria."
+msgstr ""
+"Controlla se il nome e l'estensione del file caricato tramite l'input del file "
+"corrispondono ai criteri specificati."
+
+#: ../../chapter-12.rst:1365
+msgid ""
+"Does *not* ensure the file type in any way. Returns validation failure if no "
+"data was uploaded."
+msgstr ""
+"*non* garantisce il tipo di file in alcun modo. Restituisce un errore di "
+"convalida se non è stato caricato alcun dato."
+
+#: ../../chapter-12.rst:1369
+msgid ""
+"filename: string/compiled regex or a list of strings/regex of valid filenames"
+msgstr ""
+"filename: stringa/regex compilata o un elenco di stringhe/regex di nomi di file "
+"validi"
+
+#: ../../chapter-12.rst:1370
+msgid ""
+"extension: string/compiled regex or a list of strings/regex of valid extensions"
+msgstr ""
+"extension: stringa/regex compilata o un elenco di stringhe/regex di estensioni "
+"valide"
+
+#: ../../chapter-12.rst:1371 ../../chapter-12.rst:1429
+msgid ""
+"lastdot: which dot should be used as a filename / extension separator: ``True`` "
+"indicates last dot (e.g., \"file.tar.gz\" will be broken in \"file.tar\" + "
+"\"gz\") while ``False`` means first dot (e.g., \"file.tar.gz\" will be broken "
+"into \"file\" + \"tar.gz\")."
+msgstr ""
+"lastdot: quale punto dovrebbe essere usato come separatore di nome file / "
+"estensione: ''True'' indica l'ultimo punto (ad esempio, \"file.tar.gz\" sarà "
+"interrotto in \"file.tar\" + \"gz\") mentre ''False'' significa il primo punto "
+"(ad esempio, \"file.tar.gz\" sarà suddiviso in \"file\" + \"tar.gz\")."
+
+#: ../../chapter-12.rst:1373 ../../chapter-12.rst:1431
+msgid ""
+"case: 0 means keep the case; 1 means transform the string into lowercase "
+"(default); 2 means transform the string into uppercase."
+msgstr ""
+"caso: 0 significa tenere il caso; 1 significa trasformare la stringa in "
+"minuscolo (default); 2 significa trasformare la stringa in maiuscolo."
+
+#: ../../chapter-12.rst:1375
+msgid ""
+"If there is no dot present, extension checks will be done against empty string "
+"and filename checks against whole value."
+msgstr ""
+"Se non è presente alcun punto, i controlli dell'estensione verranno eseguiti "
+"sulla stringa vuota e i controlli del nome del file sul valore intero."
+
+#: ../../chapter-12.rst:1377
+msgid "Examples: Check if file has a pdf extension (case insensitive):"
+msgstr ""
+"Esempi: Controlla se il file ha un'estensione pdf (senza distinzione tra "
+"maiuscole e minuscole):"
+
+#: ../../chapter-12.rst:1386
+msgid ""
+"Check if file is called 'thumbnail' and has a jpg or png extension (case "
+"insensitive):"
+msgstr ""
+"Controlla se il file si chiama 'miniatura' e ha un'estensione jpg o png (senza "
+"distinzione tra maiuscole e minuscole):"
+
+#: ../../chapter-12.rst:1396 ../../chapter-12.rst:1444
+msgid "Check if file has a tar.gz extension and name starting with backup:"
+msgstr ""
+"Controlla se il file ha un'estensione tar.gz e un nome che inizia con backup:"
+
+#: ../../chapter-12.rst:1405 ../../chapter-12.rst:1451
+msgid "Check if file has no extension and name matching README (case sensitive):"
+msgstr ""
+"Controlla se il file non ha estensione e nome corrispondenti al file README "
+"(con distinzione tra maiuscole e minuscole):"
+
+#: ../../chapter-12.rst:1416
+msgid "``IS_UPLOAD_FILENAME``"
+msgstr "''IS_UPLOAD_FILENAME''"
+
+#: ../../chapter-12.rst:1418
+msgid ""
+"This is the older implementation for checking files, included for backwards "
+"compatibility.  For new applications, use ``IS_FILE()``."
+msgstr ""
+"Questa è l'implementazione precedente per il controllo dei file, inclusa per la "
+"compatibilità con le versioni precedenti.  Per le nuove applicazioni, usare "
+"''IS_FILE()''."
+
+#: ../../chapter-12.rst:1420
+msgid ""
+"This validator checks if the name and extension of a file uploaded through the "
+"file input matches the given criteria."
+msgstr ""
+"Questo validatore controlla se il nome e l'estensione di un file caricato "
+"tramite l'input del file corrispondono ai criteri specificati."
+
+#: ../../chapter-12.rst:1422
+msgid ""
+"It does not ensure the file type in any way. Returns validation failure if no "
+"data was uploaded."
+msgstr ""
+"Non garantisce in alcun modo il tipo di file. Restituisce un errore di "
+"convalida se non è stato caricato alcun dato."
+
+#: ../../chapter-12.rst:1427
+msgid "filename: filename (before dot) regex."
+msgstr "filename: regex del nome del file (prima del punto)."
+
+#: ../../chapter-12.rst:1428
+msgid "extension: extension (after dot) regex."
+msgstr "Estensione: estensione (dopo il punto) regex."
+
+#: ../../chapter-12.rst:1433
+msgid ""
+"If there is no dot present, extension checks will be done against an empty "
+"string and filename checks will be done against the whole value."
+msgstr ""
+"Se non è presente alcun punto, i controlli dell'estensione verranno eseguiti su "
+"una stringa vuota e i controlli del nome del file verranno eseguiti sull'intero "
+"valore."
+
+#: ../../chapter-12.rst:1437
+msgid "Check if file has a pdf extension (case insensitive):"
+msgstr ""
+"Controlla se il file ha un'estensione pdf (senza distinzione tra maiuscole e "
+"minuscole):"
+
+#: ../../chapter-12.rst:1459
+msgid "``IS_IPV4``"
+msgstr "''IS_IPV4''"
+
+#: ../../chapter-12.rst:1461
+msgid ""
+"This validator checks if a field's value is an IP version 4 address in decimal "
+"form. Can be set to force addresses from a certain range."
+msgstr ""
+"Questo validatore controlla se il valore di un campo è un indirizzo IP versione "
+"4 in formato decimale. Può essere impostato per forzare gli indirizzi da un "
+"determinato intervallo."
+
+#: ../../chapter-12.rst:1464
+msgid ""
+"IPv4 regex taken from ``regexlib``. The signature for the ``IS_IPV4`` "
+"constructor is the following:"
+msgstr ""
+"Regex IPv4 presa da ''regexlib''. La firma per il costruttore ''IS_IPV4'' è la "
+"seguente:"
+
+#: ../../chapter-12.rst:1474
+msgid "``minip`` is the lowest allowed address"
+msgstr "''minip'' è l'indirizzo più basso consentito"
+
+#: ../../chapter-12.rst:1475
+msgid "``maxip`` is the highest allowed address"
+msgstr "''maxip'' è l'indirizzo più alto consentito"
+
+#: ../../chapter-12.rst:1476
+msgid ""
+"``invert`` is a flag to invert allowed address range, i.e. if set to True "
+"allows addresses only from outside of given range; note that range boundaries "
+"are not matched this way"
+msgstr ""
+"''invert'' è un flag per invertire l'intervallo di indirizzi consentito, cioè "
+"se impostato a True permette gli indirizzi solo dall'esterno di un dato "
+"intervallo; Si noti che i limiti dell'intervallo non corrispondono in questo "
+"modo"
+
+#: ../../chapter-12.rst:1479
+msgid ""
+"You can pass an IP address either as a string (e.g. '192.168.0.1') or as a list "
+"or tuple of 4 integers (e.g. [192, 168, 0, 1])."
+msgstr ""
+"È possibile passare un indirizzo IP come stringa (ad esempio '192.168.0.1') o "
+"come elenco o tupla di 4 numeri interi (ad esempio [192, 168, 0, 1])."
+
+#: ../../chapter-12.rst:1481
+msgid ""
+"To check for multiple address ranges pass to ``minip`` and ``maxip`` a list or "
+"tuple of boundary addresses, for example to allow only addresses between "
+"'192.168.20.10' and '192.168.20.19' or between '192.168.30.100' and "
+"'192.168.30.199' use:"
+msgstr ""
+"Per verificare la presenza di più intervalli di indirizzi, passare a ''minip'' "
+"e ''maxip'' una lista o una tupla di indirizzi di confine, ad esempio per "
+"consentire solo gli indirizzi compresi tra '192.168.20.10' e '192.168.20.19' o "
+"tra '192.168.30.100' e '192.168.30.199' usare:"
+
+#: ../../chapter-12.rst:1490
+msgid ""
+"**Notice** that only a range for which both lower and upper limits are set is "
+"configured, that is the number of configured ranges is determined by the "
+"shorter of the iterables passed to ``minip`` and ``maxip``."
+msgstr ""
+"**Si noti** che viene configurato solo un intervallo per il quale sono "
+"impostati sia i limiti inferiore che quello superiore, ovvero il numero di "
+"intervalli configurati è determinato dal più breve degli iterabili passati a "
+"''minip'' e ''maxip''."
+
+#: ../../chapter-12.rst:1494
+msgid ""
+"The arguments ``is_localhost``, ``is_private``, and ``is_automatic`` accept the "
+"following values:"
+msgstr ""
+"Gli argomenti ''is_localhost'', ''is_private'' e ''is_automatic'' accettano i "
+"seguenti valori:"
+
+#: ../../chapter-12.rst:1496 ../../chapter-12.rst:1545
+msgid "``None`` to ignore the option"
+msgstr "''Nessuno'' per ignorare l'opzione"
+
+#: ../../chapter-12.rst:1497 ../../chapter-12.rst:1546
+msgid "``True`` to force the option"
+msgstr "''True'' per forzare l'opzione"
+
+#: ../../chapter-12.rst:1498
+msgid "``False`` to forbid the option"
+msgstr "''False'' per vietare l'opzione"
+
+#: ../../chapter-12.rst:1500 ../../chapter-12.rst:1549
+msgid "The option meanings are:"
+msgstr "I significati delle opzioni sono:"
+
+#: ../../chapter-12.rst:1502
+msgid "``is_localhost``: match localhost address (127.0.0.1)"
+msgstr "''is_localhost'': corrisponde all'indirizzo localhost (127.0.0.1)"
+
+#: ../../chapter-12.rst:1503
+msgid ""
+"``is_private``: match address in 172.16.0.0 - 172.31.255.255 and 192.168.0.0 - "
+"192.168.255.255 ranges"
+msgstr ""
+"''is_private'': corrisponde all'indirizzo negli intervalli 172.16.0.0 - "
+"172.31.255.255 e 192.168.0.0 - 192.168.255.255"
+
+#: ../../chapter-12.rst:1504
+msgid "``is_automatic``: match address in 169.254.0.0 - 169.254.255.255 range"
+msgstr ""
+"''is_automatic'': corrisponde all'indirizzo nell'intervallo 169.254.0.0 - "
+"169.254.255.255"
+
+#: ../../chapter-12.rst:1508
+msgid "Check for valid IPv4 address:"
+msgstr "Verificare la validità dell'indirizzo IPv4:"
+
+#: ../../chapter-12.rst:1515
+msgid "Check for valid private network IPv4 address:"
+msgstr "Verificare la presenza di un indirizzo IPv4 valido per la rete privata:"
+
+#: ../../chapter-12.rst:1523
+msgid "``IS_IPV6``"
+msgstr "''IS_IPV6''"
+
+#: ../../chapter-12.rst:1525
+msgid "This validator checks if a field's value is an IP version 6 address."
+msgstr ""
+"Questo validatore controlla se il valore di un campo è un indirizzo IP versione "
+"6."
+
+#: ../../chapter-12.rst:1527
+msgid "The signature for the ``IS_IPV6`` constructor is the following:"
+msgstr "La firma per il costruttore ''IS_IPV6'' è la seguente:"
+
+#: ../../chapter-12.rst:1542
+msgid ""
+"The arguments ``is_private``, ``is_link_local``, ``is_reserved``, "
+"``is_multicast``, ``is_routeable``, ``is_6to4``, and ``is_teredo`` accept the "
+"following values:"
+msgstr ""
+"Gli argomenti ''is_private'', ''is_link_local'', ''is_reserved'', "
+"''is_multicast'', ''is_routeable'', ''is_6to4'' e ''is_teredo'' accettano i "
+"seguenti valori:"
+
+#: ../../chapter-12.rst:1547
+msgid "``False`` to forbid the option, this does not work for ``is_routeable``"
+msgstr "''False'' per vietare l'opzione, questo non funziona per ''is_routeable''"
+
+#: ../../chapter-12.rst:1551
+msgid "``is_private``: match an address allocated for private networks"
+msgstr "''is_private'': corrisponde a un indirizzo allocato per le reti private"
+
+#: ../../chapter-12.rst:1552
+msgid ""
+"``is_link_local``: match an address reserved for link-local (i.e. in fe80::/10 "
+"range), this is a private network too (also matched by ``is_private`` above)"
+msgstr ""
+"''is_link_local'': corrisponde a un indirizzo riservato per link-local (cioè "
+"nell'intervallo fe80::/10), anche questa è una rete privata (abbinata anche a "
+"''is_private'' sopra)"
+
+#: ../../chapter-12.rst:1553
+msgid "``is_reserved``: match an address otherwise IETF reserved"
+msgstr "''is_reserved'': corrisponde a un indirizzo altrimenti riservato IETF"
+
+#: ../../chapter-12.rst:1554
+msgid ""
+"``is_multicast``: match an address reserved for multicast use (i.e. in ff00::/8 "
+"range)"
+msgstr ""
+"''is_multicast'': corrisponde a un indirizzo riservato per l'uso multicast "
+"(cioè nell'intervallo ff00::/8)"
+
+#: ../../chapter-12.rst:1555
+msgid ""
+"``is_6to4``: match an address that appear to contain a 6to4 embedded address (i."
+"e. in 2002::/16 range)"
+msgstr ""
+"''is_6to4'': corrisponde a un indirizzo che sembra contenere un indirizzo "
+"incorporato 6to4 (cioè nell'intervallo 2002::/16)"
+
+#: ../../chapter-12.rst:1556
+msgid "``is_teredo``: match a teredo address (i.e. in 2001::/32 range)"
+msgstr ""
+"''is_teredo'': corrisponde a un indirizzo teredo (cioè nell'intervallo "
+"2001::/32)"
+
+#: ../../chapter-12.rst:1558
+msgid ""
+"Forcing ``is_routeable`` (setting to True) is a shortcut to forbid (setting to "
+"False) ``is_private``, ``is_reserved``, and ``is_multicast`` all."
+msgstr ""
+"Forzare ''is_routeable'' (impostando su True) è una scorciatoia per proibire "
+"(impostando su False) ''is_private'', ''is_reserved'' e ''is_multicast'' tutti."
+
+#: ../../chapter-12.rst:1560
+msgid ""
+"Use the ``subnets`` argument to pass a subnet or list of subnets to check for "
+"address membership, this way an address must be a subnet member to validate."
+msgstr ""
+"Usa l'argomento ''subnets'' per passare una sottorete o un elenco di sottoreti "
+"per verificare l'appartenenza all'indirizzo, in questo modo un indirizzo deve "
+"essere un membro della sottorete da convalidare."
+
+#: ../../chapter-12.rst:1564
+msgid "Check for valid IPv6 address:"
+msgstr "Verificare la presenza di un indirizzo IPv6 valido:"
+
+#: ../../chapter-12.rst:1571
+msgid "Check for valid private network IPv6 address:"
+msgstr "Verificare la presenza di un indirizzo IPv6 valido per la rete privata:"
+
+#: ../../chapter-12.rst:1578
+msgid "Check for valid IPv6 address in subnet:"
+msgstr "Verificare la presenza di un indirizzo IPv6 valido nella subnet:"
+
+#: ../../chapter-12.rst:1586
+msgid "``IS_IPADDRESS``"
+msgstr "''IS_IPADDRESS''"
+
+#: ../../chapter-12.rst:1588
+msgid ""
+"This validator checks if a field's value is an IP address (either version 4 or "
+"version 6). Can be set to force addresses from within a specific range. Checks "
+"are done using the appropriate ``IS_IPV4`` or ``IS_IPV6`` validator."
+msgstr ""
+"Questo validatore controlla se il valore di un campo è un indirizzo IP "
+"(versione 4 o versione 6). Può essere impostato per forzare gli indirizzi "
+"all'interno di un intervallo specifico. I controlli vengono effettuati "
+"utilizzando l'apposito validatore ''IS_IPV4'' o ''IS_IPV6''."
+
+#: ../../chapter-12.rst:1592
+msgid "The signature for the ``IS_IPADDRESS`` constructor is the following:"
+msgstr "La firma per il costruttore ''IS_IPADDRESS'' è la seguente:"
+
+#: ../../chapter-12.rst:1605
+msgid ""
+"With respect to ``IS_IPV4`` and ``IS_IPV6`` validators the only added arguments "
+"are:"
+msgstr ""
+"Per quanto riguarda i validatori ''IS_IPV4'' e ''IS_IPV6'' gli unici argomenti "
+"aggiunti sono:"
+
+#: ../../chapter-12.rst:1607
+msgid ""
+"``is_ipv4``, set to True to force version 4 or set to False to forbid version 4"
+msgstr ""
+"''is_ipv4'', impostato su True per forzare la versione 4 o impostato su False "
+"per impedire la versione 4"
+
+#: ../../chapter-12.rst:1608
+msgid ""
+"``is_ipv6``, set to True to force version 6 or set to False to forbid version 6"
+msgstr ""
+"''is_ipv6'', impostato su True per forzare la versione 6 o impostato su False "
+"per vietare la versione 6"
+
+#: ../../chapter-12.rst:1610
+msgid ""
+"Refer to IS_IPV4 and IS_IPV6 validators for the meaning of other arguments."
+msgstr ""
+"Fare riferimento ai validatori IS_IPV4 e IS_IPV6 per il significato di altri "
+"argomenti."
+
+#: ../../chapter-12.rst:1614
+msgid "Check for valid IP address (both IPv4 and IPv6):"
+msgstr "Verificare la presenza di un indirizzo IP valido (sia IPv4 che IPv6):"
+
+#: ../../chapter-12.rst:1621
+msgid "Check for valid IP address (IPv6 only):"
+msgstr "Verificare la presenza di un indirizzo IP valido (solo IPv6):"
+
+#: ../../chapter-12.rst:1629
+msgid "Other validators"
+msgstr "Altri validatori"
+
+#: ../../chapter-12.rst:1633
+msgid "``CLEANUP``"
+msgstr "''PULIZIA''"
+
+#: ../../chapter-12.rst:1635
+msgid ""
+"This is a filter. It never fails. By default it just removes all characters "
+"whose decimal ASCII codes are not in the list [10, 13, 32-127]. It always "
+"perform an initial strip (i.e. heading and trailing blank characters removal) "
+"on the value."
+msgstr ""
+"Questo è un filtro. Non fallisce mai. Per impostazione predefinita, rimuove "
+"solo tutti i caratteri i cui codici ASCII decimali non sono nell'elenco [10, "
+"13, 32-127]. Esegue sempre una striscia iniziale (ad esempio, la rimozione dei "
+"caratteri vuoti di intestazione e finale) sul valore."
+
+#: ../../chapter-12.rst:1643
+msgid ""
+"You can pass a regular expression to decide what has to be removed, for example "
+"to clear all non-digit characters use:"
+msgstr ""
+"È possibile passare un'espressione regolare per decidere cosa deve essere "
+"rimosso, ad esempio per cancellare tutti i caratteri non numerici utilizzare:"
+
+#: ../../chapter-12.rst:1652
+msgid "Database validators"
+msgstr "Validatori di database"
+
+#: ../../chapter-12.rst:1655
+msgid "``IS_NOT_IN_DB``"
+msgstr "''IS_NOT_IN_DB''"
+
+#: ../../chapter-12.rst:1657
+msgid "Synopsis: ``IS_NOT_IN_DB(db|set, 'table.field')``"
+msgstr "Sinossi: ''IS_NOT_IN_DB(db|set, 'table.field')''"
+
+#: ../../chapter-12.rst:1660
+msgid "Consider the following example:"
+msgstr "Si consideri l'esempio seguente:"
+
+#: ../../chapter-12.rst:1668
+msgid ""
+"It requires that when you insert a new person, his/her name is not already in "
+"the database, ``db``, in the field ``person.name``."
+msgstr ""
+"Richiede che quando si inserisce una nuova persona, il suo nome non sia già "
+"presente nel database, ''db'', nel campo ''person.name''."
+
+#: ../../chapter-12.rst:1670
+msgid "A set can be used instead of ``db``."
+msgstr "Un set può essere usato al posto di ''db''."
+
+#: ../../chapter-12.rst:1672
+msgid ""
+"As with all other validators this requirement is enforced at the form "
+"processing level, not at the database level. This means that there is a small "
+"probability that, if two visitors try to concurrently insert records with the "
+"same person.name, this results in a race condition and both records are "
+"accepted. It is therefore safer to also inform the database that this field "
+"should have a unique value:"
+msgstr ""
+"Come per tutti gli altri validatori, questo requisito viene applicato a livello "
+"di elaborazione del modulo, non a livello di database. Ciò significa che esiste "
+"una piccola probabilità che, se due visitatori tentano di inserire "
+"contemporaneamente record con lo stesso person.name, ciò si traduce in una race "
+"condition ed entrambi i record vengono accettati. È quindi più sicuro informare "
+"anche il database che questo campo deve avere un valore univoco:"
+
+#: ../../chapter-12.rst:1682
+msgid ""
+"Now if a race condition occurs, the database raises an OperationalError and one "
+"of the two inserts is rejected."
+msgstr ""
+"A questo punto, se si verifica una race condition, il database genera un errore "
+"operativo e uno dei due inserimenti viene rifiutato."
+
+#: ../../chapter-12.rst:1684
+msgid ""
+"The first argument of ``IS_NOT_IN_DB`` can be a database connection or a Set. "
+"In the latter case, you would be checking only the set defined by the Set."
+msgstr ""
+"Il primo argomento di ''IS_NOT_IN_DB'' può essere una connessione al database o "
+"un Set. In quest'ultimo caso, si controllerà solo l'insieme definito "
+"dall'insieme."
+
+#: ../../chapter-12.rst:1686
+msgid "A complete argument list for ``IS_NOT_IN_DB()`` is as follows:"
+msgstr "Un elenco completo di argomenti per ''IS_NOT_IN_DB()'' è il seguente:"
+
+#: ../../chapter-12.rst:1694
+msgid ""
+"The following code, for example, does not allow registration of two persons "
+"with the same name within 10 days of each other:"
+msgstr ""
+"Il seguente codice, ad esempio, non consente la registrazione di due persone "
+"con lo stesso nome entro 10 giorni l'una dall'altra:"
+
+#: ../../chapter-12.rst:1708
+msgid "``IS_IN_DB``"
+msgstr "''IS_IN_DB''"
+
+#: ../../chapter-12.rst:1710
+#, python-format
+msgid ""
+"Synopsis: ``IS_IN_DB(db|set, 'table.value_field', '%(representing_field)s', "
+"zero='choose one')`` where the third and fourth arguments are optional."
+msgstr ""
+"Sinossi: ''IS_IN_DB(db|set, 'table.value_field', '%(representing_field)s', "
+"zero='scegline uno')'' dove il terzo e il quarto argomento sono facoltativi."
+
+#: ../../chapter-12.rst:1714
+msgid ""
+"``multiple=`` is also possible if the field type is a list. The default is "
+"False. It can be set to True or to a tuple (min, max) to restrict the number of "
+"values selected. So ``multiple=(1, 10)`` enforces at least one and at most ten "
+"selections."
+msgstr ""
+"''multiple='' è possibile anche se il tipo di campo è una lista. Il valore "
+"predefinito è False. Può essere impostato su True o su una tupla (min, max) per "
+"limitare il numero di valori selezionati. Quindi ''multiple=(1, 10)'' impone "
+"almeno una e al massimo dieci selezioni."
+
+#: ../../chapter-12.rst:1717
+msgid "Other optional arguments are discussed below."
+msgstr "Altri argomenti facoltativi sono discussi di seguito."
+
+#: ../../chapter-12.rst:1719
+msgid "Example Consider the following tables and requirement:"
+msgstr "Esempio Si considerino le tabelle e i requisiti seguenti:"
+
+#: ../../chapter-12.rst:1729
+msgid "the IS_IN_DB requirement could also be written to use a Set instead of db"
+msgstr ""
+"il requisito IS_IN_DB potrebbe anche essere scritto per usare un Set invece di "
+"db"
+
+#: ../../chapter-12.rst:1737
+#, python-format
+msgid ""
+"It is enforced at the level of dog INSERT/UPDATE/DELETE forms. This example "
+"requires that a ``dog.owner`` be a valid id in the field ``person.id`` in the "
+"database ``db``. Because of this validator, the ``dog.owner`` field is "
+"represented as a drop-down list. The third argument of the validator is a "
+"string that describes the elements in the drop-down list, this is passed to the "
+"``label`` argument of the validator. In the example you want to see the person "
+"``%(name)s`` instead of the person ``%(id)s``. ``%(...)s`` is replaced by the "
+"value of the field in brackets for each record. Other accepted values for the "
+"``label`` are a Field instance (e.g. you could use db.person.name instead of "
+"'%(name)s') or even a callable that takes a row and returns the description for "
+"the option."
+msgstr ""
+"Viene applicato a livello di moduli INSERISCI/AGGIORNA/ELIMINA del cane. Questo "
+"esempio richiede che ''dog.owner'' sia un id valido nel campo ''person.id'' nel "
+"database ''db''. A causa di questo validatore, il campo ''dog.owner'' è "
+"rappresentato come un elenco a discesa. Il terzo argomento del validatore è una "
+"stringa che descrive gli elementi nell'elenco a discesa, questo viene passato "
+"all'argomento ''label'' del validatore. Nell'esempio si vuole vedere la persona "
+"''%(name)s'' invece della persona ''%(id)s''. ``%(...) s'' è sostituito dal "
+"valore del campo tra parentesi quadre per ogni record. Altri valori accettati "
+"per ''label'' sono un'istanza Field (ad esempio si potrebbe usare db.person."
+"name invece di '%(name)s') o anche un callable che prende una riga e "
+"restituisce la descrizione per l'opzione."
+
+#: ../../chapter-12.rst:1745
+msgid "The ``zero`` option works very much like for the ``IS_IN_SET`` validator."
+msgstr ""
+"L'opzione ''zero'' funziona in modo molto simile al validatore ''IS_IN_SET''."
+
+#: ../../chapter-12.rst:1747
+msgid ""
+"Other optional arguments accepted by ``IS_IN_DB`` are: ``orderby``, "
+"``groupby``, ``distinct``, ``cache``, and ``left``; these are passed to the db "
+"select (see :ref:`their description <orderby, groupby, limitby>` on the DAL "
+"chapter)."
+msgstr ""
+"Altri argomenti facoltativi accettati da ''IS_IN_DB'' sono: ''orderby'', "
+"''groupby'', ''distinct'', ''cache'' e ''left''; questi vengono passati al db "
+"select (vedere :ref:'their description <orderby, groupby, limitby>' nel "
+"capitolo DAL)."
+
+#: ../../chapter-12.rst:1751
+msgid ""
+"**Notice** that ``groupby``, ``distinct``, and ``left`` do not apply to Google "
+"App Engine."
+msgstr ""
+"**Si noti** che ''groupby'', ''distinct'' e ''left'' non si applicano a Google "
+"App Engine."
+
+#: ../../chapter-12.rst:1754
+msgid ""
+"To alphabetically sort the options listed in the drop-down list you can set the "
+"``sort`` argument to ``True`` (sorting is case-insensitive), this may be "
+"usefull when no ``orderby`` is feasible or practical."
+msgstr ""
+"Per ordinare alfabeticamente le opzioni elencate nell'elenco a discesa è "
+"possibile impostare l'argomento ''sort'' a ''True'' (l'ordinamento non fa "
+"distinzione tra maiuscole e minuscole), questo può essere utile quando non è "
+"fattibile o pratico ''orderby''."
+
+#: ../../chapter-12.rst:1757
+msgid ""
+"The first argument of the validator can be a database connection or a DAL Set, "
+"as in ``IS_NOT_IN_DB``. This can be useful for example when wishing to limit "
+"the records in the drop-down list. In this example, we use ``IS_IN_DB`` in a "
+"controller to limit the records dynamically each time the controller is called:"
+msgstr ""
+"Il primo argomento del validatore può essere una connessione al database o un "
+"set DAL, come in ''IS_NOT_IN_DB''. Ciò può essere utile, ad esempio, quando si "
+"desidera limitare i record nell'elenco a discesa. In questo esempio, usiamo "
+"''IS_IN_DB'' in un controller per limitare i record dinamicamente ogni volta "
+"che il controller viene chiamato:"
+
+#: ../../chapter-12.rst:1772
+msgid ""
+"If you want the field validated, but you do not want a drop-down, you must put "
+"the validator in a list."
+msgstr ""
+"Se si desidera convalidare il campo, ma non si desidera un elenco a discesa, è "
+"necessario inserire il validatore in un elenco."
+
+#: ../../chapter-12.rst:1780
+msgid ""
+"Occasionally you want the drop-down (so you do not want to use the list syntax "
+"above) yet you want to use additional validators. For this purpose the "
+"``IS_IN_DB`` validator takes an extra argument ``_and`` that can point to a "
+"list of other validators applied if the validated value passes the ``IS_IN_DB`` "
+"validation. For example to validate all dog owners in db that are not in a "
+"subset:"
+msgstr ""
+"Occasionalmente si desidera il menu a discesa (quindi non si desidera "
+"utilizzare la sintassi dell'elenco precedente) ma si desidera utilizzare "
+"validatori aggiuntivi. A questo scopo il validatore ''IS_IN_DB'' accetta un "
+"argomento aggiuntivo ''_and'' che può puntare a una lista di altri validatori "
+"applicati se il valore convalidato supera la convalida ''IS_IN_DB''. Ad "
+"esempio, per convalidare tutti i proprietari di cani in db che non sono in un "
+"sottoinsieme:"
+
+#: ../../chapter-12.rst:1793
+msgid "``IS_IN_DB`` and Tagging"
+msgstr "''IS_IN_DB'' e Tagging"
+
+#: ../../chapter-12.rst:1795
+msgid ""
+"The ``IS_IN_DB`` validator has an optional attribute ``multiple=False``. If set "
+"to ``True`` multiple values can be stored in one field. This field should be of "
+"type ``list:reference`` as discussed in :ref:`list_type and contains`. An "
+"explicit example of tagging is discussed there. Multiple references are handled "
+"automatically in create and update forms, but they are transparent to the DAL. "
+"We strongly suggest using the jQuery multiselect plugin to render multiple "
+"fields."
+msgstr ""
+"Il validatore ''IS_IN_DB'' ha un attributo opzionale ''multiple=False''. Se "
+"impostato su ''True'' è possibile memorizzare più valori in un campo. Questo "
+"campo dovrebbe essere di tipo ''list:reference'' come discusso in :"
+"ref:'list_type and contains'. Un esempio esplicito di tagging viene discusso "
+"qui. I riferimenti multipli vengono gestiti automaticamente nei moduli di "
+"creazione e aggiornamento, ma sono trasparenti per il DAL. Si consiglia "
+"vivamente di utilizzare il plug-in jQuery multiselect per eseguire il rendering "
+"di più campi."
+
+#: ../../chapter-12.rst:1802
+msgid "Validation functions"
+msgstr "Funzioni di convalida"
+
+#: ../../chapter-12.rst:1804
+msgid ""
+"In order to explicitly define a validation function, we pass to the "
+"``validation`` parameter a function that takes the form and returns a "
+"dictionary, mapping field names to errors. If the dictionary is non-empty, the "
+"errors will be displayed to the user, and no database I/O will take place."
+msgstr ""
+"Per definire in modo esplicito una funzione di validazione, passiamo al "
+"parametro ''validation'' una funzione che prende la forma e restituisce un "
+"dizionario, mappando i nomi dei campi agli errori. Se il dizionario non è "
+"vuoto, gli errori verranno visualizzati all'utente e non verrà eseguito alcun I/"
+"O del database."
+
+#: ../../chapter-12.rst:1809
+msgid "Here is an example:"
+msgstr "Ecco un esempio:"
