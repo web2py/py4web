@@ -1,0 +1,993 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20240602.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-08 18:37-0700\n"
+"PO-Revision-Date: 2024-06-08 23:47-0700\n"
+"Last-Translator: \n"
+"Language-Team: it <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.15.0\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: ../../chapter-03.rst:3
+#, fuzzy
+msgid "Installation and Startup"
+msgstr "Installazione e messa in servizio"
+
+#: ../../chapter-03.rst:6
+#, fuzzy
+msgid "Understanding the design"
+msgstr "Comprendere il progetto"
+
+#: ../../chapter-03.rst:8
+#, fuzzy
+msgid ""
+"Before everything else it is important to understand that unlike other web "
+"frameworks, is not only a python module that can be imported by apps. It is "
+"also a program that is in charge of starting some apps. For this reason you "
+"need two things:"
+msgstr ""
+"Prima di tutto è importante capire che a differenza di altri framework web, "
+"non è solo un modulo python che può essere importato dalle app. È anche un "
+"programma che si occupa di avviare alcune app. Per questo motivo hai bisogno "
+"di due cose:"
+
+#: ../../chapter-03.rst:12
+#, fuzzy
+msgid ""
+"The py4web module (which you download from our web site, from pypi or from "
+"github)"
+msgstr ""
+"Il modulo py4web (che si scarica dal nostro sito web, da pypi o da github)"
+
+#: ../../chapter-03.rst:13
+#, fuzzy
+msgid "One or more folders containing collections of apps you want to run."
+msgstr "Una o più cartelle contenenti raccolte di app che si desidera eseguire."
+
+#: ../../chapter-03.rst:15
+#, fuzzy
+msgid ""
+"py4web has command line options to create a folder with some example apps, to "
+"initialize an existing folder, and to add scaffolding apps to that folder. "
+"Once installed you can have multiple apps under the same folder running "
+"concurrently and served by the same py4web process at the same address and "
+"port. An apps folder is a python module, and each app is also a python module."
+msgstr ""
+"py4web ha opzioni della riga di comando per creare una cartella con alcune "
+"app di esempio, per inizializzare una cartella esistente e per aggiungere app "
+"di scaffolding a quella cartella. Una volta installate, è possibile avere più "
+"app nella stessa cartella in esecuzione contemporaneamente e servite dallo "
+"stesso processo py4web allo stesso indirizzo e porta. Una cartella apps è un "
+"modulo python e ogni app è anche un modulo python."
+
+#: ../../chapter-03.rst:22
+#, fuzzy
+msgid "Supported platforms and prerequisites"
+msgstr "Piattaforme supportate e prerequisiti"
+
+#: ../../chapter-03.rst:24
+#, fuzzy
+msgid ""
+"py4web runs fine on Windows, MacOS and Linux. Its only prerequisite is Python "
+"3.7+, which must be installed in advance (except if you use binaries)."
+msgstr ""
+"py4web funziona bene su Windows, MacOS e Linux. Il suo unico prerequisito è "
+"Python 3.7+, che deve essere installato in anticipo (a meno che non si "
+"utilizzino i binari)."
+
+#: ../../chapter-03.rst:29
+#, fuzzy
+msgid "Setup procedures"
+msgstr "Procedure di configurazione"
+
+#: ../../chapter-03.rst:31
+#, fuzzy
+msgid ""
+"There are four alternative ways of installing py4web, we will guide you "
+"through each of them and if you get stuck, reach `out to us. <https://py4web."
+"com/_documentation/static/en/chapter-02.html>`__"
+msgstr ""
+"Ci sono quattro modi alternativi per installare py4web, ti guideremo "
+"attraverso ciascuno di essi e se rimani bloccato, contattaci. <https://py4web."
+"com/_documentation/static/en/chapter-02.html>'__"
+
+#: ../../chapter-03.rst:37
+#, fuzzy
+msgid "Installing from pip, using a virtual environment"
+msgstr "Installazione da pip, utilizzando un ambiente virtuale"
+
+#: ../../chapter-03.rst:39
+#, fuzzy
+msgid ""
+"A full installation of any complex python application like py4web will surely "
+"modify the python environment of your system. In order to prevent any "
+"unwanted change, it’s a good habit to use a python virtual environment (also "
+"called **virtualenv**, see `here <https://docs.python.org/3.7/tutorial/venv."
+"html>`__ for an introduction). This is a standard python feature; if you "
+"still don’t know virtualenv it’s a good time to start its discovery!"
+msgstr ""
+"Un'installazione completa di qualsiasi applicazione python complessa come "
+"py4web modificherà sicuramente l'ambiente python del tuo sistema. Al fine di "
+"prevenire qualsiasi cambiamento indesiderato, è buona abitudine usare un "
+"ambiente virtuale python (chiamato anche **virtualenv**, vedere 'qui <https://"
+"docs.python.org/3.7/tutorial/venv.html>'__ per un'introduzione). Questa è una "
+"funzionalità standard di Python; Se ancora non conosci Virtualenv è un buon "
+"momento per iniziare la sua scoperta!"
+
+#: ../../chapter-03.rst:47
+#, fuzzy
+msgid ""
+"Here are the instructions for creating the virtual environment, activating "
+"it, and installing py4web in it:"
+msgstr ""
+"Ecco le istruzioni per creare l'ambiente virtuale, attivarlo e installarvi "
+"py4web:"
+
+#: ../../chapter-03.rst:52 ../../chapter-03.rst:171
+#, fuzzy
+msgid "Linux and MacOS"
+msgstr "Linux e MacOS"
+
+#: ../../chapter-03.rst:63
+#, fuzzy
+msgid ""
+"Starting py4web is same with or without a virtual environment python py4web "
+"run apps"
+msgstr ""
+"L'avvio di py4web è lo stesso con o senza un ambiente virtuale python py4web "
+"esegue le applicazioni"
+
+#: ../../chapter-03.rst:66 ../../chapter-03.rst:183
+msgid "Windows"
+msgstr "Windows"
+
+#: ../../chapter-03.rst:80
+#, fuzzy
+msgid ""
+"You can also find power shell scripts in the same folder. Starting py4web is "
+"same with or without a virtual environment python py4web run apps"
+msgstr ""
+"È anche possibile trovare gli script di Power Shell nella stessa cartella. "
+"L'avvio di py4web è lo stesso con o senza un ambiente virtuale python py4web "
+"esegue le applicazioni"
+
+#: ../../chapter-03.rst:84
+#, fuzzy
+msgid "Installing from pip, without virtual environment"
+msgstr "Installazione da pip, senza ambiente virtuale"
+
+#: ../../chapter-03.rst:86
+#, fuzzy
+msgid ""
+"*pip* is the basic installation procedure for py4web, it will quickly install "
+"the latest stable release of py4web."
+msgstr ""
+"*pip* è la procedura di installazione di base per py4web, installerà "
+"rapidamente l'ultima versione stabile di py4web."
+
+#: ../../chapter-03.rst:89
+#, fuzzy
+msgid "From the command line"
+msgstr "Dalla riga di comando"
+
+#: ../../chapter-03.rst:95
+#, fuzzy
+msgid ""
+"Also, if ``python3`` does not work, try specify a full version as in "
+"``python3.8``."
+msgstr ""
+"Inoltre, se ''python3'' non funziona, provare a specificare una versione "
+"completa come in ''python3.8''."
+
+#: ../../chapter-03.rst:97
+#, fuzzy
+msgid ""
+"This will install py4web and all its dependencies on the system’s path only. "
+"The assets folder (that contains the py4web’s system apps) will also be "
+"created. After the installation you’ll be able to start py4web on any given "
+"working folder with"
+msgstr ""
+"Questo installerà py4web e tutte le sue dipendenze solo sul percorso del "
+"sistema. Verrà creata anche la cartella assets (che contiene le app di "
+"sistema di py4web). Dopo l'installazione sarai in grado di avviare py4web su "
+"una qualsiasi cartella di lavoro con"
+
+#: ../../chapter-03.rst:108
+#, fuzzy
+msgid ""
+"If the command py4web is not accepted, it means it’s not in the system’s "
+"path. On Windows, a special py4web.exe file (pointing to py4web.py) will be "
+"created by *pip* on the system’s path, but not if you type the *–user* option "
+"by mistake, then you can run the needed commands like this"
+msgstr ""
+"Se il comando py4web non viene accettato, significa che non è nel percorso "
+"del sistema. Su Windows, un file py4web.exe speciale (che punta a py4web.py) "
+"verrà creato da *pip* nel percorso del sistema, ma non se si digita l'opzione "
+"*–user* per errore, è possibile eseguire i comandi necessari come questo"
+
+#: ../../chapter-03.rst:122
+#, fuzzy
+msgid "Installing from source (globally)"
+msgstr "Installazione dall'origine (globale)"
+
+#: ../../chapter-03.rst:124
+#, fuzzy
+msgid ""
+"This is the traditional way for installing a program, but it works only on "
+"Linux and MacOS (Windows does not normally support the `make` utility). All "
+"the requirements will be installed on the system’s path along with links to "
+"the py4web.py program on the local folder"
+msgstr ""
+"Questo è il modo tradizionale per installare un programma, ma funziona solo "
+"su Linux e MacOS (Windows normalmente non supporta l'utilità 'make'). Tutti i "
+"requisiti verranno installati nel percorso del sistema insieme ai "
+"collegamenti al programma py4web.py nella cartella locale"
+
+#: ../../chapter-03.rst:141
+#, fuzzy
+msgid ""
+"Also notice that when installing in this way the content of ``py4web/assets`` "
+"folder is missing at first but it is manually created later with the ``make "
+"assets`` command."
+msgstr ""
+"Si noti inoltre che durante l'installazione in questo modo il contenuto della "
+"cartella ''py4web/assets'' è mancante all'inizio, ma viene creato manualmente "
+"in seguito con il comando ''make assets''."
+
+#: ../../chapter-03.rst:145
+#, fuzzy
+msgid ""
+"Notice that you also (and should) install py4web from source inside a virtual "
+"environment."
+msgstr ""
+"Si noti che si installa anche (e si dovrebbe) py4web dai sorgenti all'interno "
+"di un ambiente virtuale."
+
+#: ../../chapter-03.rst:148
+#, fuzzy
+msgid "Installing from source (locally)"
+msgstr "Installazione dall'origine (in locale)"
+
+#: ../../chapter-03.rst:150
+#, fuzzy
+msgid ""
+"In this way all the requirements will be installed or upgraded on the "
+"system’s path, but py4web itself will only be copied on a local folder. This "
+"is especially useful if you already have a working py4web installation but "
+"you want to test a different one. Also, installing from sources (locally or "
+"globally) will install all the latest changes present on the master branch of "
+"py4web - hence you will gain the latest (but potentially untested) code."
+msgstr ""
+"In questo modo tutti i requisiti verranno installati o aggiornati sul "
+"percorso del sistema, ma py4web stesso verrà copiato solo su una cartella "
+"locale. Questo è particolarmente utile se si dispone già di un'installazione "
+"py4web funzionante ma si desidera testarne una diversa. Inoltre, "
+"l'installazione da sorgenti (locali o globali) installerà tutte le ultime "
+"modifiche presenti sul ramo master di py4web - quindi si otterrà il codice "
+"più recente (ma potenzialmente non testato)."
+
+#: ../../chapter-03.rst:159
+#, fuzzy
+msgid "From the command line, go to a given working folder and then run"
+msgstr ""
+"Dalla riga di comando, passare a una determinata cartella di lavoro e quindi "
+"eseguire"
+
+#: ../../chapter-03.rst:167
+#, fuzzy
+msgid "Once installed, you should always start it from there with:"
+msgstr "Una volta installato, dovresti sempre avviarlo da lì con:"
+
+#: ../../chapter-03.rst:179
+#, fuzzy
+msgid ""
+"If you have installed py4web both globally and locally, notice the **./** ; "
+"it forces the run of the local folder's py4web and not the globally installed "
+"one."
+msgstr ""
+"Se py4web è stato installato sia globalmente che localmente, si noti il **./"
+"** ; Forza l'esecuzione del py4web della cartella locale e non di quella "
+"installata globalmente."
+
+#: ../../chapter-03.rst:191
+#, fuzzy
+msgid ""
+"On Windows, the programs on the local folder are always executed before the "
+"ones in the path (hence you don’t need the **./** as on Linux). But running ."
+"py files directly it’s not usual and you’ll need an explicit python3/python "
+"command."
+msgstr ""
+"Su Windows, i programmi nella cartella locale vengono sempre eseguiti prima "
+"di quelli nel percorso (quindi non è necessario il **./** come su Linux). Ma "
+"l'esecuzione diretta dei file .py non è usuale e avrai bisogno di un comando "
+"python3/python esplicito."
+
+#: ../../chapter-03.rst:197
+#, fuzzy
+msgid "Installing from binaries"
+msgstr "Installazione da file binari"
+
+#: ../../chapter-03.rst:199
+#, fuzzy
+msgid ""
+"This is not a real installation, because you just copy a bunch of files on "
+"your system without modifying it anyhow. Hence this is the simplest solution, "
+"especially for beginners or students, because it does not require Python pre-"
+"installed on your system nor administrative rights. On the other hand, it’s "
+"experimental, it could contain an old py4web release, DAL support is limited "
+"and it is quite difficult to add other functionalities to it."
+msgstr ""
+"Questa non è una vera installazione, perché si copia semplicemente un mucchio "
+"di file sul sistema senza modificarlo in alcun modo. Quindi questa è la "
+"soluzione più semplice, soprattutto per principianti o studenti, perché non "
+"richiede Python preinstallato sul tuo sistema né diritti amministrativi. "
+"D'altra parte, è sperimentale, potrebbe contenere una vecchia versione di "
+"py4web, il supporto DAL è limitato ed è abbastanza difficile aggiungervi "
+"altre funzionalità."
+
+#: ../../chapter-03.rst:206
+#, fuzzy
+msgid ""
+"In order to use it you just need to download the latest Windows or MacOS ZIP "
+"file from `this external repository <https://github.com/nicozanf/py4web-"
+"pyinstaller>`__. Unzip it on a local folder and open a command line there. "
+"Finally run"
+msgstr ""
+"Per utilizzarlo è sufficiente scaricare l'ultimo file ZIP di Windows o MacOS "
+"da 'this external repository <https://github.com/nicozanf/py4web-"
+"pyinstaller>'__. Decomprimilo in una cartella locale e apri una riga di "
+"comando lì. Infine corri"
+
+#: ../../chapter-03.rst:216
+#, fuzzy
+msgid "(omit './' if you're using Windows)."
+msgstr "(omettere './' se si utilizza Windows)."
+
+#: ../../chapter-03.rst:218
+#, fuzzy
+msgid ""
+"Notice: the binaries many not correspond to the latest master or the latest "
+"stable branch of py4web although we do our best to keep them up to date."
+msgstr ""
+"Avviso: i binari molti non corrispondono all'ultimo master o all'ultimo ramo "
+"stabile di py4web anche se facciamo del nostro meglio per tenerli aggiornati."
+
+#: ../../chapter-03.rst:223
+msgid "Upgrading"
+msgstr "Aggiornamento"
+
+#: ../../chapter-03.rst:225
+#, fuzzy
+msgid "If you installed py4web from pip you can simple upgrade it with"
+msgstr "Se hai installato py4web da pip puoi semplicemente aggiornarlo con"
+
+#: ../../chapter-03.rst:233
+#, fuzzy
+msgid ""
+"This will not automatically upgrade the standard apps like **Dashboard** and "
+"**Default**. You have to manually remove these apps and then run"
+msgstr ""
+"Questo non aggiornerà automaticamente le app standard come **Dashboard** e "
+"**Predefinito**. È necessario rimuovere manualmente queste app e quindi "
+"eseguire"
+
+#: ../../chapter-03.rst:241
+#, fuzzy
+msgid ""
+"in order to re-install them. This is a safety precaution, in case you made "
+"changes to those apps."
+msgstr ""
+"per reinstallarli. Questa è una precauzione di sicurezza, nel caso in cui tu "
+"abbia apportato modifiche a tali app."
+
+#: ../../chapter-03.rst:244
+#, fuzzy
+msgid ""
+"If you installed py4web in any other way, you must upgrade it manually. First "
+"you have to make a backup of any personal py4web work you've done, then "
+"delete the old installation folder and re-install the framework again."
+msgstr ""
+"Se py4web è stato installato in qualsiasi altro modo, è necessario "
+"aggiornarlo manualmente. Per prima cosa devi fare un backup di tutto il "
+"lavoro personale di py4web che hai fatto, quindi eliminare la vecchia "
+"cartella di installazione e reinstallare nuovamente il framework."
+
+#: ../../chapter-03.rst:250
+msgid "First run"
+msgstr "Prima esecuzione"
+
+#: ../../chapter-03.rst:252
+#, fuzzy
+msgid ""
+"Running py4web using any of the previous procedure should produce an output "
+"like this:"
+msgstr ""
+"L'esecuzione di py4web utilizzando una qualsiasi delle procedure precedenti "
+"dovrebbe produrre un output simile al seguente:"
+
+#: ../../chapter-03.rst:259
+#, fuzzy
+msgid ""
+"Generally ``apps`` is the name of the folder where you keep all your apps, "
+"and can be explicitly set wit the ``run`` command. (Yet nothing prevents you "
+"from grouping apps in multiple folders with different names.) If that folder "
+"does not exist, it is created. PY4WEB expects to find at least two apps in "
+"this folder: **Dashboard** (``_dashboard``) and **Default** (``_default``). "
+"If it does not find them, it installs them."
+msgstr ""
+"Generalmente ''apps'' è il nome della cartella in cui si conservano tutte le "
+"app, e può essere impostato esplicitamente con il comando ''run''. Tuttavia, "
+"nulla impedisce di raggruppare le app in più cartelle con nomi diversi. Se la "
+"cartella non esiste, viene creata. PY4WEB si aspetta di trovare almeno due "
+"app in questa cartella: **Dashboard** (''_dashboard'') e **Default** "
+"(''_default''). Se non li trova, li installa."
+
+#: ../../chapter-03.rst:267
+#, fuzzy
+msgid ""
+"**Dashboard** is a web based IDE. It will be described in the next chapter."
+msgstr ""
+"**Dashboard** è un IDE basato sul web. Verrà descritto nel prossimo capitolo."
+
+#: ../../chapter-03.rst:269
+#, fuzzy
+msgid "**Default** is an app that does nothing other than welcome the user."
+msgstr "**Default** è un'app che non fa altro che dare il benvenuto all'utente."
+
+#: ../../chapter-03.rst:273
+#, fuzzy
+msgid ""
+"Some apps - like **Dashboard** and **Default** - have a special role in "
+"py4web and therefore their actual name starts with ``_`` to avoid conflicts "
+"with apps created by you."
+msgstr ""
+"Alcune app - come **Dashboard** e **Default** - hanno un ruolo speciale in "
+"py4web e quindi il loro nome attuale inizia con ''_'' per evitare conflitti "
+"con le app create da te."
+
+#: ../../chapter-03.rst:276
+#, fuzzy
+msgid ""
+"Once py4web is running you can access a specific app at the following urls:"
+msgstr ""
+"Una volta che py4web è in esecuzione, è possibile accedere a un'app specifica "
+"ai seguenti URL:"
+
+#: ../../chapter-03.rst:285
+#, fuzzy
+msgid ""
+"In order to stop py4web, you need to hit :kbd:`Control-C` on the window where "
+"you run it."
+msgstr ""
+"Per fermare py4web, è necessario premere :kbd:'Control-C' nella finestra in "
+"cui lo si esegue."
+
+#: ../../chapter-03.rst:289
+#, fuzzy
+msgid ""
+"ONLY the **Default** app is special because if does not require the "
+"“{appname}/” prefix in the path, like all the other apps do. In general you "
+"may want to symlink ``apps/_default`` to your default app."
+msgstr ""
+"SOLO l'app **Default** è speciale perché non richiede il prefisso \"{appname}/"
+"\" nel percorso, come fanno tutte le altre app. In generale, potresti voler "
+"creare un collegamento simbolico ''apps/_default'' alla tua app predefinita."
+
+#: ../../chapter-03.rst:292
+#, fuzzy
+msgid "For all apps the trailing ``/index`` is also optional."
+msgstr "Per tutte le app anche l''indice finale ''/index'' è facoltativo."
+
+#: ../../chapter-03.rst:296
+#, fuzzy
+msgid ""
+"For Windows: it could be that ``Ctrl-C`` does not work in order to stop "
+"py4web. In this case, try with ``Ctrl-Break`` or ``Ctrl-Fn-Pause``\\."
+msgstr ""
+"Per Windows: potrebbe essere che ''Ctrl-C'' non funzioni per fermare py4web. "
+"In questo caso, prova con ''Ctrl-Break'' o ''Ctrl-Fn-Pause''\\."
+
+#: ../../chapter-03.rst:301
+#, fuzzy
+msgid "Command line options"
+msgstr "Opzioni della riga di comando"
+
+#: ../../chapter-03.rst:303
+#, fuzzy
+msgid ""
+"py4web provides multiple command line options which can be listed by running "
+"it without any argument"
+msgstr ""
+"py4web fornisce più opzioni della riga di comando che possono essere elencate "
+"eseguendolo senza alcun argomento"
+
+#: ../../chapter-03.rst:314
+#, fuzzy
+msgid ""
+"You can have additional help for a specific command line option by running it "
+"with the **–help** or **-h** argument."
+msgstr ""
+"È possibile ottenere ulteriore aiuto per una specifica opzione della riga di "
+"comando eseguendola con l'argomento **–help** o **-h**."
+
+#: ../../chapter-03.rst:320
+#, fuzzy
+msgid "``call`` command option"
+msgstr "Opzione di comando ''call''"
+
+#: ../../chapter-03.rst:335
+msgid "For example:"
+msgstr "Ad esempio:"
+
+#: ../../chapter-03.rst:341
+#, fuzzy
+msgid ""
+"where myfunction is the function you want to call in apps/examples/test.py. "
+"Note that you have to use the single and double quotes just as shown for "
+"parameters to work."
+msgstr ""
+"dove myfunction è la funzione che si desidera chiamare in apps/examples/test."
+"py. Si noti che è necessario utilizzare le virgolette singole e doppie "
+"proprio come mostrato affinché i parametri funzionino."
+
+#: ../../chapter-03.rst:348
+#, fuzzy
+msgid "``new_app`` command option"
+msgstr "Opzione di comando ''new_app''"
+
+#: ../../chapter-03.rst:364
+#, fuzzy
+msgid ""
+"This currently gives an error on binaries installations and from source "
+"installation (locally), because they miss the asset zip file."
+msgstr ""
+"Questo attualmente genera un errore nelle installazioni dei file binari e "
+"dall'installazione di origine (localmente), perché manca il file zip "
+"dell'asset."
+
+#: ../../chapter-03.rst:370
+#, fuzzy
+msgid "``run`` command option"
+msgstr "Opzione di comando ''Esegui''"
+
+#: ../../chapter-03.rst:414
+#, fuzzy
+msgid ""
+"The ``app_names`` option lets you filter which specific apps you want to "
+"serve (comma separated). If absent or empty all the apps in the APPS_FOLDER "
+"will be run."
+msgstr ""
+"L'opzione ''app_names'' ti consente di filtrare le app specifiche che "
+"desideri servire (separate da virgole). Se assente o vuoto, verranno eseguite "
+"tutte le app nel APPS_FOLDER."
+
+#: ../../chapter-03.rst:417
+#, fuzzy
+msgid ""
+"The ``url_prefix`` option is useful for routing at the py4web level. It "
+"allows mapping to multiple versions of py4web running on different ports as "
+"long as the url_prefix and port match the location. For example ``py4web run "
+"--url_prefix=/abracadabra --port 8000 apps``."
+msgstr ""
+"L'opzione ''url_prefix'' è utile per l'instradamento a livello di py4web. "
+"Consente la mappatura di più versioni di py4web in esecuzione su porte "
+"diverse, purché il url_prefix e la porta corrispondano alla posizione. Per "
+"esempio ''py4web run --url_prefix=/abracadabra --port 8000 apps''."
+
+#: ../../chapter-03.rst:421
+#, fuzzy
+msgid ""
+"By default py4web will automatically reload an application upon any changes "
+"to the python files of that application. The reloading will occur on any "
+"first incoming request to the application that has been changed (lazy-mode). "
+"If you prefer an immediate reloading (sync-mode), use ``py4web run --watch "
+"sync``. For production servers, it's better to use ``py4web run --watch off`` "
+"in order to avoid unneded checks (but you will need to restart py4web for "
+"activating any change)."
+msgstr ""
+"Per impostazione predefinita, py4web ricaricherà automaticamente "
+"un'applicazione in caso di modifiche ai file python di quell'applicazione. Il "
+"ricaricamento si verificherà in ogni prima richiesta in ingresso "
+"all'applicazione che è stata modificata (modalità lazy). Se si preferisce un "
+"ricaricamento immediato (sync-mode), usare ''py4web run --watch sync''. Per i "
+"server di produzione, è meglio usare ''py4web run --watch off'' in modo da "
+"evitare controlli non controllati (ma sarà necessario riavviare py4web per "
+"attivare qualsiasi modifica)."
+
+#: ../../chapter-03.rst:429
+#, fuzzy
+msgid ""
+"The ``--watch`` directive looks for any changes occurring to the python files "
+"under the ``/apps`` folder only. Any modifications to the standard py4web "
+"programs will always require a full restart of the framework."
+msgstr ""
+"La direttiva ''--watch'' cerca tutte le modifiche che si verificano ai file "
+"python solo nella cartella ''/apps''. Qualsiasi modifica ai programmi "
+"standard py4web richiederà sempre un riavvio completo del framework."
+
+#: ../../chapter-03.rst:433
+#, fuzzy
+msgid ""
+"The default web server used is currently rocketServer, but you can change "
+"this behaviour with the ``server`` option. `Rocket3 <https://github.com/"
+"web2py/rocket3>`__  is the multi-threaded web server used by web2py stripped "
+"of all the Python2 logic and dependencies."
+msgstr ""
+"Il server web predefinito utilizzato è attualmente rocketServer, ma è "
+"possibile modificare questo comportamento con l'opzione ''server''. 'Rocket3 "
+"<https://github.com/web2py/rocket3>'__ è il server web multi-thread usato da "
+"web2py spogliato di tutta la logica e le dipendenze di Python2."
+
+#: ../../chapter-03.rst:437
+#, fuzzy
+msgid ""
+"The logging_level values are defined in the **logging** standard python "
+"module. The default value is 30 (it corresponds to WARNING). Other common "
+"values are 0 (NOTSET), 10 (DEBUG), 20 (INFO), 40 (ERROR) and 50 (CRITICAL). "
+"Using them, you’re telling the library you want to handle all events from "
+"that level on up."
+msgstr ""
+"I valori logging_level sono definiti nel modulo python standard **logging**. "
+"Il valore predefinito è 30 (corrisponde a WARNING). Altri valori comuni sono "
+"0 (NOTSET), 10 (DEBUG), 20 (INFO), 40 (ERROR) e 50 (CRITICAL). Utilizzandoli, "
+"stai dicendo alla libreria che vuoi gestire tutti gli eventi da quel livello "
+"in su."
+
+#: ../../chapter-03.rst:441
+#, fuzzy
+msgid ""
+"The debug parameter automatically sets logging_level to 0 and logs all calls "
+"to fixture functions. It also logs when a session is found, invalid, saved."
+msgstr ""
+"Il parametro debug imposta automaticamente logging_level su 0 e registra "
+"tutte le chiamate alle funzioni di fixture. Registra anche quando una "
+"sessione viene trovata, non valida o salvata."
+
+#: ../../chapter-03.rst:450
+#, fuzzy
+msgid "``set_password`` command option"
+msgstr "Opzione di comando ''set_password''"
+
+#: ../../chapter-03.rst:466
+#, fuzzy
+msgid ""
+"If the ``--dashboard_mode`` is not ``demo`` or ``none``, every time py4web "
+"starts, it asks for a one-time password for you to access the dashboard. This "
+"is annoying. You can avoid it by storing a pdkdf2 hashed password in a file "
+"(by default called password.txt) with the command"
+msgstr ""
+"Se ''--dashboard_mode'' non è ''demo'' o ''none'', ogni volta che py4web si "
+"avvia, ti chiede una password monouso per accedere alla dashboard. Questo è "
+"fastidioso. È possibile evitarlo memorizzando una password con hash pdkdf2 in "
+"un file (di default chiamato password.txt) con il comando"
+
+#: ../../chapter-03.rst:475
+#, fuzzy
+msgid ""
+"It will not ask again unless the file is deleted. You can also use a custom "
+"file name with"
+msgstr ""
+"Non chiederà più a meno che il file non venga eliminato. È inoltre possibile "
+"utilizzare un nome file personalizzato con"
+
+#: ../../chapter-03.rst:482
+#, fuzzy
+msgid "and then ask py4web to re-use that password at runtime with"
+msgstr ""
+"e poi chiedi a py4web di riutilizzare quella password in fase di esecuzione "
+"con"
+
+#: ../../chapter-03.rst:488
+#, fuzzy
+msgid "Finally you can manually create the file yourself with:"
+msgstr "Infine, puoi creare manualmente il file con:"
+
+#: ../../chapter-03.rst:498
+#, fuzzy
+msgid "``setup`` command option"
+msgstr "Opzione di comando ''setup''"
+
+#: ../../chapter-03.rst:511
+#, fuzzy
+msgid ""
+"This option create a new apps folder (or reinstall it). If needed, it will "
+"ask for the confirmation of the new folder’s creation and then for copying "
+"every standard py4web apps from the assets folder. It currently does nothing "
+"on binaries installations and from source installation (locally) - for them "
+"you can manually copy the existing apps folder to the new one."
+msgstr ""
+"Questa opzione consente di creare una nuova cartella delle app (o di "
+"reinstallarla). Se necessario, chiederà la conferma della creazione della "
+"nuova cartella e quindi la copia di tutte le app py4web standard dalla "
+"cartella assets. Al momento non fa nulla sulle installazioni binarie e "
+"dall'installazione sorgente (localmente) - per loro è possibile copiare "
+"manualmente la cartella delle app esistenti in quella nuova."
+
+#: ../../chapter-03.rst:521
+#, fuzzy
+msgid "``shell`` command option"
+msgstr "Opzione di comando ''shell''"
+
+#: ../../chapter-03.rst:534
+#, fuzzy
+msgid ""
+"Py4web’s shell is just the regular python shell with apps added to the search "
+"path. Notice that the shell is for all the apps, not a single one. You can "
+"then import the needed modules from the apps you need to access."
+msgstr ""
+"La shell di Py4web è solo la normale shell python con le app aggiunte al "
+"percorso di ricerca. Si noti che la shell è per tutte le app, non per una "
+"sola. È quindi possibile importare i moduli necessari dalle app a cui è "
+"necessario accedere."
+
+#: ../../chapter-03.rst:539
+#, fuzzy
+msgid "For example, inside a shell you can"
+msgstr "Ad esempio, all'interno di una shell è possibile"
+
+#: ../../chapter-03.rst:550
+#, fuzzy
+msgid "``version`` command option"
+msgstr "Opzione di comando ''version''"
+
+#: ../../chapter-03.rst:563
+#, fuzzy
+msgid ""
+"With the ``-all`` option you’ll get the version of all the available python "
+"modules, too."
+msgstr ""
+"Con l'opzione ''-all'' si otterrà anche la versione di tutti i moduli python "
+"disponibili."
+
+#: ../../chapter-03.rst:568
+#, fuzzy
+msgid "Special installations"
+msgstr "Impianti speciali"
+
+#: ../../chapter-03.rst:570
+#, fuzzy
+msgid ""
+"There are special cases in which you cannot or don't want to use one of the "
+"generic installation instructions we've already described. There is a special "
+"folder called ``deployment_tools`` in the py4web repository that collects "
+"some special recipes. They are briefly described here, along with some tips "
+"and tricks."
+msgstr ""
+"Ci sono casi particolari in cui non è possibile o non si vuole utilizzare una "
+"delle istruzioni di installazione generiche che abbiamo già descritto. C'è "
+"una cartella speciale chiamata ''deployment_tools'' nel repository py4web che "
+"raccoglie alcune ricette speciali. Sono brevemente descritti qui, insieme ad "
+"alcuni suggerimenti e trucchi."
+
+#: ../../chapter-03.rst:576
+msgid "HTTPS"
+msgstr "HTTPS"
+
+#: ../../chapter-03.rst:578
+#, fuzzy
+msgid "To use https with the build-in web server (Rocket3) these are the steps:"
+msgstr ""
+"Per utilizzare https con il server web integrato (Rocket3) questi sono i "
+"passaggi:"
+
+#: ../../chapter-03.rst:580
+#, fuzzy
+msgid ""
+"Generate the localhost certificates. For example followed the instructions "
+"here:"
+msgstr ""
+"Generare i certificati localhost. Ad esempio, ho seguito le istruzioni "
+"riportate di seguito:"
+
+#: ../../chapter-03.rst:582
+#, fuzzy
+msgid ""
+"https://www.section.io/engineering-education/how-to-get-ssl-https-for-"
+"localhost/."
+msgstr ""
+"https://www.section.io/engineering-education/how-to-get-ssl-https-for-"
+"localhost/."
+
+#: ../../chapter-03.rst:584
+#, fuzzy
+msgid "Restart your browser and browse securely to your web site."
+msgstr "Riavvia il browser e naviga in modo sicuro sul tuo sito web."
+
+#: ../../chapter-03.rst:586
+#, fuzzy
+msgid ""
+"If you use VSCode to run py4web you may want to update the py4web launch.json "
+"file to contain:"
+msgstr ""
+"Se si usa VSCode per eseguire py4web, è possibile aggiornare il file launch."
+"json py4web in modo che contenga:"
+
+#: ../../chapter-03.rst:606
+#, fuzzy
+msgid ""
+"Notice that /path_to/ should be the absolute path to the location of your "
+"certificate."
+msgstr ""
+"Si noti che /path_to/ deve essere il percorso assoluto del percorso del "
+"certificato."
+
+#: ../../chapter-03.rst:610
+#, fuzzy
+msgid "WSGI"
+msgstr "WSGI"
+
+#: ../../chapter-03.rst:612
+#, fuzzy
+msgid ""
+"py4web is a standard WSGI application. So, if a full program installation "
+"it's not feasible you can simply run py4web as a WSGI app. For example, using "
+"gunicorn-cli, create a python file:"
+msgstr ""
+"py4web è un'applicazione WSGI standard. Quindi, se l'installazione completa "
+"del programma non è fattibile, puoi semplicemente eseguire py4web come app "
+"WSGI. Ad esempio, usando gunicorn-cli, crea un file python:"
+
+#: ../../chapter-03.rst:623
+#, fuzzy
+msgid "and then start the application using cli:"
+msgstr ""
+"e quindi avviare l'applicazione utilizzando l'interfaccia della riga di "
+"comando:"
+
+#: ../../chapter-03.rst:630
+#, fuzzy
+msgid ""
+"The wsgi function takes arguments with the same name as the command line "
+"arguments."
+msgstr ""
+"La funzione wsgi accetta argomenti con lo stesso nome degli argomenti della "
+"riga di comando."
+
+#: ../../chapter-03.rst:634
+#, fuzzy
+msgid "Deployment on GCloud (aka GAE - Google App Engine)"
+msgstr "Distribuzione su GCloud (aka GAE - Google App Engine)"
+
+#: ../../chapter-03.rst:636
+#, fuzzy
+msgid ""
+"Login into the `Gcloud console <https://console.cloud.google.com/>`__ and "
+"create a new project. You will obtain a project id that looks like "
+"“{project_name}-{number}”."
+msgstr ""
+"Accedi alla 'Gcloud console <https://console.cloud.google.com/>'__ e crea un "
+"nuovo progetto. Si otterrà un ID progetto simile a \"{project_name}-"
+"{number}\"."
+
+#: ../../chapter-03.rst:640
+#, fuzzy
+msgid "In your local file system make a new working folder and cd into it:"
+msgstr ""
+"Nel file system locale creare una nuova cartella di lavoro e cd al suo "
+"interno:"
+
+#: ../../chapter-03.rst:647
+#, fuzzy
+msgid ""
+"Copy the example files from py4web (assuming you have the source from github)"
+msgstr ""
+"Copiare i file di esempio da py4web (supponendo di avere il sorgente da "
+"github)"
+
+#: ../../chapter-03.rst:654
+#, fuzzy
+msgid ""
+"Copy or symlink your ``apps`` folder into the gae folder, or maybe make a new "
+"apps folder containing an empty ``__init__.py`` and symlink the individual "
+"apps you want to deploy. You should see the following files/folders:"
+msgstr ""
+"Copiare o creare un collegamento simbolico alla cartella ''apps'' nella "
+"cartella gae, o magari creare una nuova cartella apps contenente un "
+"''__init__.py'' vuoto e collegare simbolicamente le singole applicazioni che "
+"si desidera distribuire. Dovrebbero essere visualizzati i seguenti file/"
+"cartelle:"
+
+#: ../../chapter-03.rst:669
+#, fuzzy
+msgid "Install the Google SDK, py4web and setup the working folder:"
+msgstr "Installa l'SDK di Google, py4web e configura la cartella di lavoro:"
+
+#: ../../chapter-03.rst:678
+#, fuzzy
+msgid ""
+"(replace {your email} with your google email account and {project id} with "
+"the project id obtained from Google)."
+msgstr ""
+"(sostituisci {your email} con il tuo account email Google e {project id} con "
+"l'ID progetto ottenuto da Google)."
+
+#: ../../chapter-03.rst:681
+#, fuzzy
+msgid "Now every time you want to deploy your apps, simply do:"
+msgstr ""
+"Ora, ogni volta che si desidera distribuire le app, è sufficiente eseguire le "
+"operazioni seguenti:"
+
+#: ../../chapter-03.rst:687
+#, fuzzy
+msgid ""
+"You may want to customize the Makefile and app.yaml to suit your needs. You "
+"should not need to edit ``main.py``."
+msgstr ""
+"È possibile personalizzare il Makefile e il file app.yaml in base alle "
+"proprie esigenze. Non dovrebbe essere necessario modificare ''main.py''."
+
+#: ../../chapter-03.rst:691
+#, fuzzy
+msgid "Deployment on PythonAnywhere.com"
+msgstr "Distribuzione su PythonAnywhere.com"
+
+#: ../../chapter-03.rst:693
+#, fuzzy
+msgid ""
+"Watch the `YouTube video <https://youtu.be/Wxjl_vkLAEY>`__ and follow the "
+"`detailed tutorial <https://github.com/tomcam/py4webcasts/blob/master/docs/"
+"how-install-source-pythonanywhere.md>`__ . The bottle_app.py script is in "
+"``py4web/deployment_tools/pythonanywhere.com/bottle_app.py``"
+msgstr ""
+"Guarda il '<https://youtu.be/Wxjl_vkLAEY> video di YouTube'__ e segui il "
+"'tutorial dettagliato <https://github.com/tomcam/py4webcasts/blob/master/docs/"
+"how-install-source-pythonanywhere.md>'__ . Lo script bottle_app.py è in "
+"''py4web/deployment_tools/pythonanywhere.com/bottle_app.py''"
+
+#: ../../chapter-03.rst:700
+#, fuzzy
+msgid "Deployment on Docker/Podman"
+msgstr "Distribuzione su Docker/Podman"
+
+#: ../../chapter-03.rst:702
+#, fuzzy
+msgid ""
+"On ``deployment_tools/docker`` there is a simple Dockerfile for quickly "
+"running a py4web container. There is also a docker-compose.yml file for "
+"setting up a more complex multi-container with PostgreSQL. A ready docker "
+"example based on the Scaffold application can be cloned from this repository "
+"<https://github.com/macneiln/docker-py4web-scaffold>"
+msgstr ""
+"Su ''deployment_tools/docker'' c'è un semplice Dockerfile per eseguire "
+"rapidamente un contenitore py4web. C'è anche un file docker-compose.yml per "
+"la configurazione di un multi-container più complesso con PostgreSQL. Un "
+"esempio docker pronto basato sull'applicazione Scaffold può essere clonato da "
+"questo repository <https://github.com/macneiln/docker-py4web-scaffold>"
+
+#: ../../chapter-03.rst:706
+#, fuzzy
+msgid ""
+"Note that you can use them also with Podman, which has the advantage of does "
+"not requiring sudo and does not running any background daemon."
+msgstr ""
+"Si noti che è possibile utilizzarli anche con Podman, che ha il vantaggio di "
+"non richiedere sudo e di non eseguire alcun demone in background."
+
+#: ../../chapter-03.rst:711
+#, fuzzy
+msgid "Deployment on Ubuntu"
+msgstr "Distribuzione su Ubuntu"
+
+#: ../../chapter-03.rst:713
+#, fuzzy
+msgid ""
+"On ``deployment_tools/ubuntu`` there is a bash script tested with Ubuntu "
+"Server 20.04.03 LTS. It uses nginx and self-signed certificates. It "
+"optionally manage iptables, too."
+msgstr ""
+"Su ''deployment_tools/ubuntu'' c'è uno script bash testato con Ubuntu Server "
+"20.04.03 LTS. Utilizza nginx e certificati autofirmati. Opzionalmente "
+"gestisce anche iptables."
