@@ -1,0 +1,746 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2020, BSDv3 License
+# This file is distributed under the same license as the py4web package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: py4web 1.20240602.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-08 18:37-0700\n"
+"PO-Revision-Date: 2024-06-09 00:10-0700\n"
+"Last-Translator: \n"
+"Language-Team: it <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.15.0\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: ../../chapter-13.rst:3
+msgid "Authentication and authorization"
+msgstr "Autenticazione e autorizzazione"
+
+#: ../../chapter-13.rst:5
+msgid ""
+"Strong authentication and authorization methods are vital for a modern, "
+"multiuser web application. While they are often used interchangeably, "
+"authentication and authorization are separate processes:"
+msgstr ""
+"I metodi di autenticazione e autorizzazione avanzati sono fondamentali per "
+"un'applicazione Web moderna e multiutente. Sebbene siano spesso usati in modo "
+"intercambiabile, l'autenticazione e l'autorizzazione sono processi separati:"
+
+#: ../../chapter-13.rst:10
+msgid "Authentication confirms that users are who they say they are"
+msgstr "L'autenticazione conferma che gli utenti sono chi dicono di essere"
+
+#: ../../chapter-13.rst:11
+msgid "Authorization gives those users permission to access a resource"
+msgstr "L'autorizzazione consente agli utenti di accedere a una risorsa"
+
+#: ../../chapter-13.rst:15
+msgid "Authentication using Auth"
+msgstr "Autenticazione tramite autenticazione"
+
+#: ../../chapter-13.rst:17
+msgid ""
+"py4web comes with a an object ``Auth`` and a system of plugins for user "
+"authentication. It has the same name as the corresponding web2py one and serves "
+"the same purpose but the API and internal design is very different."
+msgstr ""
+"py4web è dotato di un oggetto ''Auth'' e di un sistema di plugin per "
+"l'autenticazione dell'utente. Ha lo stesso nome del corrispondente web2py e ha "
+"lo stesso scopo, ma l'API e il design interno sono molto diversi."
+
+#: ../../chapter-13.rst:22
+msgid ""
+"The _scaffold application provides a guideline for its standard usage. By "
+"default it uses a local SQLite database and allows creating new users, login "
+"and logout. Notice that if you don't configure it, you have to manually approve "
+"new users (by visiting the link logged on the console or by directly editing "
+"the database)."
+msgstr ""
+"L'applicazione _scaffold fornisce una linea guida per il suo utilizzo standard. "
+"Per impostazione predefinita utilizza un database SQLite locale e consente la "
+"creazione di nuovi utenti, il login e il logout. Si noti che se non lo si "
+"configura, è necessario approvare manualmente i nuovi utenti (visitando il "
+"collegamento registrato sulla console o modificando direttamente il database)."
+
+#: ../../chapter-13.rst:29
+msgid ""
+"To use the Auth object, first of all you need to import it, instantiate it, "
+"configure it, and enable it."
+msgstr ""
+"Per utilizzare l'oggetto Auth, prima di tutto è necessario importarlo, crearne "
+"un'istanza, configurarlo e abilitarlo."
+
+#: ../../chapter-13.rst:39
+msgid ""
+"The import step is obvious. The second step does not perform any operation "
+"other than telling the Auth object which session object to use and which "
+"database to use. Auth data is stored in ``session['user']`` and, if a user is "
+"logged in, the user id is stored in session[‘user’][‘id’]. The db object is "
+"used to store persistent info about the user in a table ``auth_user`` which is "
+"created if missing. The ``auth_user`` table has the following fields:"
+msgstr ""
+"La fase di importazione è ovvia. Il secondo passaggio non esegue alcuna "
+"operazione se non quella di indicare all'oggetto Auth quale oggetto sessione "
+"utilizzare e quale database utilizzare. I dati di autenticazione sono "
+"memorizzati in ''session['user']'' e, se un utente è connesso, l'ID utente è "
+"memorizzato in session['user']['id']. L'oggetto db viene utilizzato per "
+"memorizzare le informazioni persistenti sull'utente in una tabella "
+"''auth_user'' che viene creata se mancante. La tabella ''auth_user'' ha i "
+"seguenti campi:"
+
+#: ../../chapter-13.rst:47
+msgid "username"
+msgstr "nome utente"
+
+#: ../../chapter-13.rst:48
+msgid "email"
+msgstr "email"
+
+#: ../../chapter-13.rst:49
+msgid "password"
+msgstr "password"
+
+#: ../../chapter-13.rst:50
+msgid "first_name"
+msgstr "first_name"
+
+#: ../../chapter-13.rst:51
+msgid "last_name"
+msgstr "last_name"
+
+#: ../../chapter-13.rst:52
+msgid "sso_id (used for single sign on, see later)"
+msgstr "sso_id (utilizzato per l'accesso Single Sign-On, vedere più avanti)"
+
+#: ../../chapter-13.rst:53
+msgid ""
+"action_token (used to verify email, block users, and other tasks, also see "
+"later)."
+msgstr ""
+"action_token (utilizzato per verificare la posta elettronica, bloccare gli "
+"utenti e altre attività, vedere anche più avanti)."
+
+#: ../../chapter-13.rst:56
+msgid "The ``auth.enable()`` step creates and exposes the following RESTful APIs:"
+msgstr "Il passaggio ''auth.enable()'' crea ed espone le seguenti API RESTful:"
+
+#: ../../chapter-13.rst:59
+msgid "{appname}/auth/api/register (POST)"
+msgstr "{appname}/auth/api/register (POST)"
+
+#: ../../chapter-13.rst:60
+msgid "{appname}/auth/api/login (POST)"
+msgstr "{appname}/auth/api/login (POST)"
+
+#: ../../chapter-13.rst:61
+msgid "{appname}/auth/api/request_reset_password (POST)"
+msgstr "{appname}/auth/api/request_reset_password (POST)"
+
+#: ../../chapter-13.rst:62
+msgid "{appname}/auth/api/reset_password (POST)"
+msgstr "{appname}/auth/api/reset_password (POST)"
+
+#: ../../chapter-13.rst:63
+msgid "{appname}/auth/api/verify_email (GET, POST)"
+msgstr "{appname}/auth/api/verify_email (GET, POST)"
+
+#: ../../chapter-13.rst:64
+msgid "{appname}/auth/api/logout (GET, POST) (+)"
+msgstr "{appname}/auth/api/logout (GET, POST) (+)"
+
+#: ../../chapter-13.rst:65
+msgid "{appname}/auth/api/profile (GET, POST) (+)"
+msgstr "{appname}/auth/api/profile (GET, POST) (+)"
+
+#: ../../chapter-13.rst:66
+msgid "{appname}/auth/api/change_password (POST) (+)"
+msgstr "{appname}/auth/api/change_password (POST) (+)"
+
+#: ../../chapter-13.rst:67
+msgid "{appname}/auth/api/change_email (POST) (+)"
+msgstr "{appname}/auth/api/change_email (POST) (+)"
+
+#: ../../chapter-13.rst:69
+msgid "Those marked with a (+) require a logged in user."
+msgstr ""
+"Quelli contrassegnati con un (+) richiedono un utente che ha effettuato "
+"l'accesso."
+
+#: ../../chapter-13.rst:72
+msgid "Auth UI"
+msgstr "Interfaccia utente di autenticazione"
+
+#: ../../chapter-13.rst:74
+msgid ""
+"You can create your own web UI to login users using the above APIs but py4web "
+"provides one as an example, implemented in the following files:"
+msgstr ""
+"È possibile creare la propria interfaccia utente Web per accedere agli utenti "
+"utilizzando le API di cui sopra, ma py4web ne fornisce una come esempio, "
+"implementata nei seguenti file:"
+
+#: ../../chapter-13.rst:77
+msgid "\\_scaffold/templates/auth.html"
+msgstr "\\_scaffold/templates/auth.html"
+
+#: ../../chapter-13.rst:78
+msgid "\\_scaffold/templates/layout.html"
+msgstr "\\_scaffold/templates/layout.html"
+
+#: ../../chapter-13.rst:81
+msgid ""
+"The key section is in ``layout.html`` where (using the no.css framework) the "
+"menu actions are defined:"
+msgstr ""
+"La sezione chiave si trova in ''layout.html'' dove (usando il framework no.css) "
+"vengono definite le azioni del menu:"
+
+#: ../../chapter-13.rst:112
+msgid ""
+"The menu is dynamic: on line 2 there is a check if the user is already defined "
+"(i.e. if the user has already logged on). In this case the email is shown in "
+"the top menu, plus the menu options ``Edit Profile``, ``Change Password`` "
+"(optional) and ``Logout``. Instead, if the user is not already logged on, from "
+"line 15 there are only the corresponding menu options allowed: ``Sign up`` and "
+"``Log in``."
+msgstr ""
+"Il menu è dinamico: alla riga 2 c'è un controllo se l'utente è già definito "
+"(cioè se l'utente ha già effettuato l'accesso). In questo caso l'e-mail viene "
+"mostrata nel menu in alto, più le opzioni di menu ''Modifica profilo'', "
+"''Cambia password'' (opzionale) e ''Esci''. Invece, se l'utente non è già "
+"connesso, dalla riga 15 sono consentite solo le corrispondenti opzioni di menu: "
+"''Iscriviti'' e ''Accedi''."
+
+#: ../../chapter-13.rst:119
+msgid ""
+"Every menu option then redirects the user to the corresponding standard URL, "
+"which in turn activates the Auth action."
+msgstr ""
+"Ogni opzione di menu reindirizza quindi l'utente all'URL standard "
+"corrispondente, che a sua volta attiva l'azione di autenticazione."
+
+#: ../../chapter-13.rst:124
+msgid "Using Auth inside actions"
+msgstr "Utilizzo delle azioni interne di autenticazione"
+
+#: ../../chapter-13.rst:126
+msgid "There two ways to use the Auth object in an action."
+msgstr "Esistono due modi per utilizzare l'oggetto Auth in un'azione."
+
+#: ../../chapter-13.rst:128
+msgid ""
+"The first one does not force a login.  With ``@action.uses(auth)`` we tell "
+"py4web that this action should have information about the user, trying to parse "
+"the session for a user session."
+msgstr ""
+"Il primo non forza l'accesso.  Con ''@action.uses(auth)'' diciamo a py4web che "
+"questa azione dovrebbe avere informazioni sull'utente, cercando di analizzare "
+"la sessione per una sessione utente."
+
+#: ../../chapter-13.rst:140
+msgid "The second one forces the login if needed:"
+msgstr "Il secondo forza il login, se necessario:"
+
+#: ../../chapter-13.rst:150
+msgid ""
+"Here ``@action.uses(auth.user)`` tells py4web that this action requires a "
+"logged in user and should redirect to login if no user is logged in."
+msgstr ""
+"Qui ''@action.uses(auth.user)'' dice a py4web che questa azione richiede un "
+"utente loggato e dovrebbe reindirizzare al login se nessun utente è connesso."
+
+#: ../../chapter-13.rst:154
+msgid "Two Factor Authentication"
+msgstr "ComCart Autenticazione a Due Fattori"
+
+#: ../../chapter-13.rst:156
+msgid ""
+"Two factor authentication (or Two-step verification) is a way of improving "
+"authentication security. When activated an extra step is added in the login "
+"process. In the first step, users are shown the standard username/password "
+"form. If they successfully pass this challenge by submitting the correct "
+"username and password, and two factor authentication is enabled for the user, "
+"the server will present a second form before logging them in."
+msgstr ""
+"L'autenticazione a due fattori (o verifica in due passaggi) è un modo per "
+"migliorare la sicurezza dell'autenticazione. Quando attivato, viene aggiunto un "
+"passaggio aggiuntivo nel processo di accesso. Nella prima fase, agli utenti "
+"viene mostrato il modulo standard nome utente/password. Se superano con "
+"successo questa sfida inviando il nome utente e la password corretti e "
+"l'autenticazione a due fattori è abilitata per l'utente, il server presenterà "
+"un secondo modulo prima di accedere."
+
+#: ../../chapter-13.rst:160
+msgid ""
+"There are a few Auth settings available to control how two factor "
+"authentication works."
+msgstr ""
+"Sono disponibili alcune impostazioni di autenticazione per controllare il "
+"funzionamento dell'autenticazione a due fattori."
+
+#: ../../chapter-13.rst:162
+msgid "The follow can be specified on Auth instantiation:"
+msgstr ""
+"È possibile specificare quanto segue durante la creazione di un'istanza di "
+"autenticazione:"
+
+#: ../../chapter-13.rst:164 ../../chapter-13.rst:168
+msgid "two_factor_required"
+msgstr "two_factor_required"
+
+#: ../../chapter-13.rst:165 ../../chapter-13.rst:196
+msgid "two_factor_send"
+msgstr "two_factor_send"
+
+#: ../../chapter-13.rst:170
+msgid ""
+"When you pass a method name to the two_factor_filter parameter you are telling "
+"py4web to call that method to determine whether or not this login should be use "
+"or bypass two factor authentication.  If your method returns True, then this "
+"login requires two factor.  If it returns False, two factor authentication is "
+"bypassed for this login."
+msgstr ""
+"Quando si passa il nome di un metodo al parametro two_factor_filter, si sta "
+"dicendo a py4web di chiamare quel metodo per determinare se questo login deve "
+"essere utilizzato o ignorare l'autenticazione a due fattori.  Se il metodo "
+"restituisce True, l'accesso richiede due fattori.  Se restituisce False, "
+"l'autenticazione a due fattori viene ignorata per questo account di accesso."
+
+#: ../../chapter-13.rst:174
+msgid "Sample two_factor_filter method"
+msgstr "Metodo di two_factor_filter del campione"
+
+#: ../../chapter-13.rst:176
+msgid "This example shows how to allow users that are on a specific network."
+msgstr ""
+"In questo esempio viene illustrato come consentire agli utenti che si trovano "
+"su una rete specifica."
+
+#: ../../chapter-13.rst:198
+msgid ""
+"When two factor authentication is active, py4web generates a 6 digit code "
+"(using random.randint) and sends it to you. How this code is sent, is up to "
+"you. The two_factor_send argument to the Auth class allows you to specify the "
+"method that sends the two factor code to the user."
+msgstr ""
+"Quando l'autenticazione a due fattori è attiva, py4web genera un codice di 6 "
+"cifre (utilizzando random.randint) e te lo invia. Il modo in cui questo codice "
+"viene inviato dipende da te. L'argomento two_factor_send della classe Auth "
+"consente di specificare il metodo che invia il codice a due fattori all'utente."
+
+#: ../../chapter-13.rst:201
+msgid "This example shows how to send an email with the two factor code:"
+msgstr "Questo esempio mostra come inviare un'e-mail con il codice a due fattori:"
+
+#: ../../chapter-13.rst:217
+msgid ""
+"Notice that this method takes to arguments: the current user, and the code to "
+"be sent. Also notice this method can override the code and return a new one."
+msgstr ""
+"Si noti che questo metodo accetta argomenti: l'utente corrente e il codice da "
+"inviare. Si noti inoltre che questo metodo può eseguire l'override del codice e "
+"restituirne uno nuovo."
+
+#: ../../chapter-13.rst:226
+msgid "two_factor_tries"
+msgstr "two_factor_tries"
+
+#: ../../chapter-13.rst:228
+msgid ""
+"By default, the user has 3 attempts to pass two factor authentication. You can "
+"override this after using:"
+msgstr ""
+"Per impostazione predefinita, l'utente ha a disposizione 3 tentativi per "
+"passare l'autenticazione a due fattori. È possibile eseguire l'override dopo "
+"aver utilizzato:"
+
+#: ../../chapter-13.rst:234
+msgid "Once this is all setup, the flow for two factor authentication is:"
+msgstr "Una volta configurato, il flusso per l'autenticazione a due fattori è:"
+
+#: ../../chapter-13.rst:236
+msgid "present the login page"
+msgstr "Presenta la pagina di login"
+
+#: ../../chapter-13.rst:242
+msgid "upon successful login and user passes two_factor_required"
+msgstr "Una volta effettuato l'accesso e l'utente passa two_factor_required"
+
+#: ../../chapter-13.rst:238
+msgid "redirect to py4web auth/two_factor endpoint"
+msgstr "Reindirizzamento all'endpoint di autenticazione/two_factor di py4web"
+
+#: ../../chapter-13.rst:239
+msgid "generate 6 digit verification code"
+msgstr "Genera un codice di verifica a 6 cifre"
+
+#: ../../chapter-13.rst:240
+msgid "call two_factor_send to send the verification code to the user"
+msgstr "Chiama two_factor_send per inviare il codice di verifica all'utente"
+
+#: ../../chapter-13.rst:241
+msgid "display verification page where user can enter their code"
+msgstr ""
+"Visualizza la pagina di verifica in cui l'utente può inserire il proprio codice"
+
+#: ../../chapter-13.rst:242
+msgid ""
+"upon successful verification, take user to _next_url that was passed to the "
+"login page"
+msgstr ""
+"Al termine della verifica, porta l'utente alla _next_url che è stata passata "
+"alla pagina di accesso"
+
+#: ../../chapter-13.rst:244
+msgid ""
+"Important! If you filtered ``ALLOWED_ACTIONS`` in your app, make sure to "
+"whitelist the \"two_factor\" action so not to block the two factor API."
+msgstr ""
+"Importante! Se hai filtrato ''ALLOWED_ACTIONS'' nella tua app, assicurati di "
+"inserire nella whitelist l'azione \"two_factor\" in modo da non bloccare l'API "
+"a due fattori."
+
+#: ../../chapter-13.rst:248
+msgid "Auth Plugins"
+msgstr "Plug-in di autenticazione"
+
+#: ../../chapter-13.rst:250
+msgid ""
+"Plugins are defined in “py4web/utils/auth_plugins” and they have a hierarchical "
+"structure. Some are exclusive and some are not. For example, default, LDAP, "
+"PAM, and SAML are exclusive (the developer has to pick one). Default, Google, "
+"Facebook, and Twitter OAuth are not exclusive (the developer can pick them all "
+"and the user gets to choose using the UI)."
+msgstr ""
+"I plugin sono definiti in \"py4web/utils/auth_plugins\" e hanno una struttura "
+"gerarchica. Alcuni sono esclusivi e altri no. Ad esempio, default, LDAP, PAM e "
+"SAML sono esclusivi (lo sviluppatore deve sceglierne uno). Default, Google, "
+"Facebook e Twitter OAuth non sono esclusivi (lo sviluppatore può sceglierli "
+"tutti e l'utente può scegliere utilizzando l'interfaccia utente)."
+
+#: ../../chapter-13.rst:257
+msgid ""
+"The ``<auth/>`` components will automatically adapt to display login forms as "
+"required by the installed plugins."
+msgstr ""
+"I componenti ''<auth/>'' si adatteranno automaticamente per visualizzare i "
+"moduli di accesso come richiesto dai plugin installati."
+
+#: ../../chapter-13.rst:260
+msgid ""
+"In the _scaffold/settings.py and _scaffold/common.py files you can see the "
+"default settings for the supported plugins."
+msgstr ""
+"Nei file _scaffold/settings.py e _scaffold/common.py è possibile visualizzare "
+"le impostazioni predefinite per i plug-in supportati."
+
+#: ../../chapter-13.rst:264
+msgid "PAM"
+msgstr "PAM"
+
+#: ../../chapter-13.rst:266
+msgid "Configuring PAM is the easiest:"
+msgstr "La configurazione di PAM è la più semplice:"
+
+#: ../../chapter-13.rst:273
+msgid ""
+"This one like all plugins must be imported and registered. The constructor of "
+"this plugins does not require any arguments (where other plugins do)."
+msgstr ""
+"Questo, come tutti i plugin, deve essere importato e registrato. Il costruttore "
+"di questo plugin non richiede alcun argomento (mentre altri plugin lo fanno)."
+
+#: ../../chapter-13.rst:277
+msgid ""
+"The ``auth.register_plugin(...)`` **must** come before the ``auth.enable()`` "
+"since it makes no sense to expose APIs before desired plugins are mounted."
+msgstr ""
+"Il ''auth.register_plugin(...) '' **deve** venire prima di ''auth.enable()'' "
+"poiché non ha senso esporre le API prima che i plugin desiderati siano montati."
+
+#: ../../chapter-13.rst:283
+msgid ""
+"by design PAM authentication using local users works fine only if py4web is run "
+"by root. Otherwise you can only authenticate the specific user that runs the "
+"py4web process."
+msgstr ""
+"per impostazione predefinita, l'autenticazione PAM con utenti locali funziona "
+"correttamente solo se py4web è eseguito da root. In caso contrario, è possibile "
+"autenticare solo l'utente specifico che esegue il processo py4web."
+
+#: ../../chapter-13.rst:288
+msgid "LDAP"
+msgstr "LDAP"
+
+#: ../../chapter-13.rst:290
+msgid ""
+"This is a common authentication method, especially using Microsoft Active "
+"Directory in enterprises."
+msgstr ""
+"Si tratta di un metodo di autenticazione comune, in particolare l'utilizzo di "
+"Microsoft Active Directory nelle aziende."
+
+#: ../../chapter-13.rst:304
+msgid ""
+"it needs the python-ldap module. On Ubuntu, you should also install some "
+"developer's libraries in advance with ``sudo apt-get install libldap2-dev "
+"libsasl2-dev``."
+msgstr ""
+"Ha bisogno del modulo Python-LDAP. Su Ubuntu, dovresti anche installare alcune "
+"librerie per sviluppatori in anticipo con ''sudo apt-get install libldap2-dev "
+"libsasl2-dev''."
+
+#: ../../chapter-13.rst:309
+msgid "OAuth2 with Google"
+msgstr "OAuth2 con Google"
+
+#: ../../chapter-13.rst:319
+msgid "The client id and client secret must be provided by Google."
+msgstr "L'ID client e il segreto client devono essere forniti da Google."
+
+#: ../../chapter-13.rst:322
+msgid "OAuth2 with Facebook"
+msgstr "OAuth2 con Facebook"
+
+#: ../../chapter-13.rst:332
+msgid "The client id and client secret must be provided by Facebook."
+msgstr "L'ID client e il segreto client devono essere forniti da Facebook."
+
+#: ../../chapter-13.rst:335
+msgid "OAuth2 with Discord"
+msgstr "OAuth2 con Discord"
+
+#: ../../chapter-13.rst:345
+msgid ""
+"To obtain a Discord client ID and secret, create an application at https://"
+"discord.com/developers/applications. You will also have to register your OAuth2 "
+"redirect URI in your created application, in the form of ``http(s)://<your "
+"host>/<your app name>/auth/plugin/oauth2discord/callback``"
+msgstr ""
+"Per ottenere un ID client Discord e un segreto, crea un'applicazione "
+"all'indirizzo https://discord.com/developers/applications. Dovrai anche "
+"registrare il tuo URI di reindirizzamento OAuth2 nell'applicazione creata, "
+"sotto forma di ''http(s)://<your host>/<your app name>/auth/plugin/"
+"oauth2discord/callback''</your></your>"
+
+#: ../../chapter-13.rst:350
+msgid ""
+"As Discord users have no concept of first/last name, the user in the auth table "
+"will contain the Discord username as the first name and discriminator as the "
+"last name."
+msgstr ""
+"Poiché gli utenti di Discord non hanno alcun concetto di nome/cognome, l'utente "
+"nella tabella di autenticazione conterrà il nome utente di Discord come nome e "
+"il discriminatore come cognome."
+
+#: ../../chapter-13.rst:355
+msgid "Authorization using Tags"
+msgstr "Autorizzazione tramite Tag"
+
+#: ../../chapter-13.rst:357
+msgid ""
+"As already mentioned, authorization is the process of verifying what specific "
+"applications, files, and data a user has access to. This is accomplished in "
+"py4web using ``Tags``."
+msgstr ""
+"Come già accennato, l'autorizzazione è il processo di verifica delle "
+"applicazioni, dei file e dei dati specifici a cui un utente ha accesso. Questo "
+"si ottiene in py4web usando ''Tags''."
+
+#: ../../chapter-13.rst:363
+msgid "Tags and Permissions"
+msgstr "Tag e autorizzazioni"
+
+#: ../../chapter-13.rst:365
+msgid ""
+"Py4web provides a general purpose tagging mechanism that allows the developer "
+"to tag any record of any table, check for the existence of tags, as well as "
+"checking for records containing a tag. Group membership can be thought of a "
+"type of tag that we apply to users. Permissions can also be tags. Developers "
+"are free to create their own logic on top of the tagging system."
+msgstr ""
+"Py4web fornisce un meccanismo di tagging generico che consente allo "
+"sviluppatore di taggare qualsiasi record di qualsiasi tabella, verificare "
+"l'esistenza di tag e verificare la presenza di record contenenti un tag. "
+"L'appartenenza a un gruppo può essere pensata come un tipo di tag che "
+"applichiamo agli utenti. Le autorizzazioni possono anche essere tag. Gli "
+"sviluppatori sono liberi di creare la propria logica in cima al sistema di "
+"tagging."
+
+#: ../../chapter-13.rst:374
+msgid ""
+"Py4web does not have the concept of groups as web2py does. Experience showed "
+"that while that mechanism is powerful it suffers from two problems: it is "
+"overkill for most apps, and it is not flexible enough for very complex apps."
+msgstr ""
+"Py4web non ha il concetto di gruppi come web2py. L'esperienza ha dimostrato "
+"che, sebbene questo meccanismo sia potente, soffre di due problemi: è eccessivo "
+"per la maggior parte delle app e non è abbastanza flessibile per applicazioni "
+"molto complesse."
+
+#: ../../chapter-13.rst:379
+msgid ""
+"To use the tagging system you first need to import the Tags module from ``pydal."
+"tools``. Then create a Tags object to tag a table:"
+msgstr ""
+"Per utilizzare il sistema di tagging è necessario prima importare il modulo "
+"Tags da ''pydal.tools''. Quindi crea un oggetto Tags per contrassegnare una "
+"tabella:"
+
+#: ../../chapter-13.rst:387
+msgid ""
+"If you look at the database level, a new table will be created with a name "
+"equals to tagged_db + '_tag' + tagged_name, in this case "
+"``auth_user_tag_groups``:"
+msgstr ""
+"Se si guarda a livello di database, verrà creata una nuova tabella con un nome "
+"uguale a tagged_db + '_tag' + tagged_name, in questo caso "
+"''auth_user_tag_groups'':"
+
+#: ../../chapter-13.rst:393
+msgid ""
+"Then you can add one or more tags to records of the table as well as remove "
+"existing tags:"
+msgstr ""
+"È quindi possibile aggiungere uno o più tag ai record della tabella e rimuovere "
+"i tag esistenti:"
+
+#: ../../chapter-13.rst:402
+msgid ""
+"On the ``auth_user_tagged_groups`` this will produce two records with different "
+"groups assigned to the same user.id (the \"Record ID\" field):"
+msgstr ""
+"Sul ''auth_user_tagged_groups'' questo produrrà due record con gruppi diversi "
+"assegnati allo stesso user.id (il campo \"ID record\"):"
+
+#: ../../chapter-13.rst:407
+msgid ""
+"Slashes at the beginning or the end of a tag are optional. All other chars are "
+"allowed on equal footing."
+msgstr ""
+"Le barre all'inizio o alla fine di un tag sono facoltative. Tutti gli altri "
+"caratteri sono ammessi su un piano di parità."
+
+#: ../../chapter-13.rst:411
+msgid ""
+"A common use case is **group based access control**. Here the developer first "
+"checks if a user is a member of the ``'manager'`` group, if the user is not a "
+"manager (or no one is logged in) py4web redirects to the ``'not authorized "
+"url'``. Else the user is in the correct group and then py4web displays ‘hello "
+"manager’:"
+msgstr ""
+"Un caso d'uso comune è il controllo degli accessi basato su gruppi. Qui lo "
+"sviluppatore controlla prima se un utente è un membro del gruppo '''manager''', "
+"se l'utente non è un manager (o nessuno è loggato) py4web reindirizza "
+"all'''''url non autorizzato'''. In caso contrario, l'utente si trova nel gruppo "
+"corretto e py4web visualizza 'hello manager':"
+
+#: ../../chapter-13.rst:426
+msgid ""
+"Here the developer queries the db for all records having the desired tag(s):"
+msgstr ""
+"Qui lo sviluppatore interroga il db per tutti i record con i tag desiderati:"
+
+#: ../../chapter-13.rst:437
+msgid ""
+"We leave it to you as an exercise to create a fixture ``has_membership`` to "
+"enable the following syntax:"
+msgstr ""
+"Lasciamo a voi come esercizio quello di creare un fixture ''has_membership'' "
+"per abilitare la seguente sintassi:"
+
+#: ../../chapter-13.rst:447
+msgid ""
+"**Important:** ``Tags`` are automatically hierarchical. For example, if a user "
+"has a group tag ‘teacher/high-school/physics’, then all the following searches "
+"will return the user:"
+msgstr ""
+"**Importante:** I ''tag'' sono automaticamente gerarchici. Ad esempio, se un "
+"utente ha un tag di gruppo \"insegnante/scuola superiore/fisica\", tutte le "
+"seguenti ricerche restituiranno l'utente:"
+
+#: ../../chapter-13.rst:451
+msgid "``groups.find('teacher/high-school/physics')``"
+msgstr "''groups.find('insegnante/liceo/fisica')''"
+
+#: ../../chapter-13.rst:452
+msgid "``groups.find('teacher/high-school')``"
+msgstr "''groups.find('insegnante/scuola superiore')''"
+
+#: ../../chapter-13.rst:453
+msgid "``groups.find('teacher')``"
+msgstr "''groups.find('insegnante')''"
+
+#: ../../chapter-13.rst:455
+msgid "This means that slashes have a special meaning for tags."
+msgstr "Ciò significa che le barre hanno un significato speciale per i tag."
+
+#: ../../chapter-13.rst:458
+msgid "Multiple Tags objects"
+msgstr "Oggetti Tag multipli"
+
+#: ../../chapter-13.rst:461
+msgid ""
+"One table can have multiple associated ``Tags`` objects. The name 'groups' here "
+"is completely arbitrary but has a specific semantic meaning. Different ``Tags`` "
+"objects are independent to each other. The limit to their use is your "
+"creativity."
+msgstr ""
+"Una tabella può avere più oggetti ''Tags'' associati. Il nome \"gruppi\" qui è "
+"del tutto arbitrario, ma ha un significato semantico specifico. Diversi oggetti "
+"''Tag'' sono indipendenti l'uno dall'altro. Il limite al loro utilizzo è la tua "
+"creatività."
+
+#: ../../chapter-13.rst:466
+msgid "For example you could create a table ``auth_group``:"
+msgstr "Ad esempio, è possibile creare una tabella ''auth_group'':"
+
+#: ../../chapter-13.rst:472
+msgid "and two Tags attached to it:"
+msgstr "e due Tag ad esso collegati:"
+
+#: ../../chapter-13.rst:479
+msgid ""
+"Then create a 'zapper' record in ``auth_group``, give it a permission, and make "
+"a user member of the group:"
+msgstr ""
+"Quindi creare un record 'zapper' in ''auth_group'', dargli un permesso e "
+"rendere un utente membro del gruppo:"
+
+#: ../../chapter-13.rst:488
+msgid "And you can check for a user permission via an explicit join:"
+msgstr ""
+"E puoi verificare l'autorizzazione di un utente tramite un join esplicito:"
+
+#: ../../chapter-13.rst:505
+msgid ""
+"Notice here ``permissions.find(permission)`` generates a query for all groups "
+"with the permission and we further filter those groups for those the current "
+"user is member of. We count them and if we find any, then the user has the "
+"permission."
+msgstr ""
+"Notate qui che ''permissions.find(permission)'' genera una query per tutti i "
+"gruppi con il permesso e filtriamo ulteriormente quei gruppi per quelli di cui "
+"l'utente corrente è membro. Li contiamo e se ne troviamo, l'utente ha il "
+"permesso."
+
+#: ../../chapter-13.rst:511
+msgid "User Impersonation"
+msgstr "Rappresentazione dell'utente"
+
+#: ../../chapter-13.rst:513
+msgid ""
+"Auth provides API that allow you to impersonate another user. Here is an "
+"example of an action to start impersonating and stop impersonating another user."
+msgstr ""
+"L'autenticazione fornisce API che consentono di impersonare un altro utente. Di "
+"seguito è riportato un esempio di azione per avviare e interrompere la "
+"rappresentazione di un altro utente."
