@@ -6,7 +6,7 @@ The Form class provides a high-level API for quickly building CRUD (create, upda
 especially for working on an existing database table. It can generate and process a form from a 
 list of desired fields and/or from an existing database table.
 
-There are 3 typs of forms:
+There are 3 types of forms:
 
 CRUD Create forms:
 
@@ -246,7 +246,7 @@ it second argument:
 File upload field
 ~~~~~~~~~~~~~~~~~
 
-We can make a minor modificaiton to our reference model and an upload type file:
+We can make a minor modification to our reference model and an upload type file:
 
 .. code:: python
 
