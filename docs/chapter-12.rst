@@ -1122,7 +1122,7 @@ To keep the options alphabetically sorted by their labels into the drop down lis
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``IS_IN_SET`` validator has an optional attribute ``multiple=False``. If set to True, multiple values can be stored in one
-field. The field should be of type ``list:integer`` or ``list:string`` as discussed in [[Chapter 6 ../06#list-type-and-contains]].
+field. The field should be of type ``list:integer`` or ``list:string`` as discussed in :ref:`list_type and contains`.
 An explicit example of tagging is discussed there. We strongly suggest using the jQuery multiselect plugin to render multiple fields.
 
 **Note** that when ``multiple=True``, ``IS_IN_SET`` will accept zero or more values, i.e. it will accept the field when nothing has been selected.
