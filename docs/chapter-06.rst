@@ -700,7 +700,7 @@ last_name, sso_id, and action_token (the last two are mostly for
 internal use).
 
 If a ``auth_user`` table is defined before calling ``auth.enable()``
-the provided table withh be used.
+the provided table will be used.
 
 It is also possible to add ``extra_fields`` to the ``auth_user`` table,
 for example:
