@@ -458,7 +458,7 @@ Note: 'custom' is just a convention, it could be any name that does not clash wi
   
 You can also be more creative and use your HTML in the template instead of using widgets:
 
-.. code:: html
+.. code:: css
 
     [[extend 'layout.html']]
 
@@ -475,7 +475,7 @@ You can also be more creative and use your HTML in the template instead of using
     [[for color in ['red', 'blue', 'green']:]]
          <label>[[=color]]</label>
          <input name="color" type="radio" value="[[=color]]"
-                [[if form.vars.get('color') == color:]]checked[[pass]]
+                    [[if form.vars.get('color') == color:]]checked[[pass]]
          />
     [[pass]]	 
     </div>
