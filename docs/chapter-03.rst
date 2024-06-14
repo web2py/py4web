@@ -236,7 +236,7 @@ If you installed py4web from pip you can simple upgrade it with
 
    ::
 
-      py4web setup apps
+      py4web setup <path to apps_folder>
 
    in order to re-install them. This is a safety precaution, in case you
    made changes to those apps.
@@ -274,7 +274,7 @@ two apps in this folder: **Dashboard** (``_dashboard``) and **Default**
    to avoid conflicts with apps created by you.
 
 Once py4web is running you can access a specific app at the following
-urls:
+urls from the local machine:
 
 ::
 
@@ -380,7 +380,7 @@ This currently gives an error on binaries installations and from source installa
      -Y, --yes                     No prompt, assume yes to questions
                                    [default: False]
 
-     -H, --host TEXT               Host name  [default: 127.0.0.1]
+     -H, --host TEXT               Host listening IP [default: 127.0.0.1]
      -P, --port INTEGER            Port number  [default: 8000]
      -A, --app_names TEXT          List of apps to run, comma separated (all if omitted or
                                    empty)
@@ -413,6 +413,10 @@ This currently gives an error on binaries installations and from source installa
 
 The ``app_names`` option lets you filter which specific apps you want to serve (comma separated). If absent or empty
 all the apps in the APPS_FOLDER will be run.
+
+By default (for security reasons) the py4web framework will listen only on 127.0.0.1, i.e. localhost.
+If you need to reach it from other machines you must specify the host option,
+like ``py4web run --host 0.0.0.0 apps``.
 
 The ``url_prefix`` option is useful for routing at the py4web level. It allows mapping to multiple versions of py4web
 running on different ports as long as the url_prefix and port match the location. For example

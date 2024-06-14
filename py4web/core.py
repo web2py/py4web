@@ -2051,7 +2051,7 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     help="No prompt, assume yes to questions",
     show_default=True,
 )
-@click.option("-H", "--host", default="127.0.0.1", help="Host name", show_default=True)
+@click.option("-H", "--host", default="127.0.0.1", help="Host listening IP", show_default=True)
 @click.option(
     "-P", "--port", default=8000, type=int, help="Port number", show_default=True
 )
