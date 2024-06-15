@@ -823,15 +823,20 @@ class Form(object):
                         validation(self)
                     if not self.errors:
                         for file in uploaded_files:
-                            field, value = file
-                            value = field.store(
-                                value.file, value.filename, field.uploadfolder
-                            )
-                            if value is not None:
-                                validated_vars[field.name] = value
+                            if field.name not in self.vars:
+                                field, value = file
+                                value = field.store(
+                                    value.file, value.filename, field.uploadfolder
+                                )
+                                if value is not None:
+                                    self.vars[field.name] = value
                         self.accepted = True
-                        self.vars.update(validated_vars)
                         if dbio:
+                            validated_vars = {
+                                k: v
+                                for k, v in self.vars.items()
+                                if k != "id"
+                            }
                             self.update_or_insert(validated_vars)
                 elif dbio:
                     self.accepted = True
