@@ -8,8 +8,25 @@ import datetime
 from urllib.parse import urlparse
 
 from pydal.objects import Expression, Field, FieldVirtual
-from yatl.helpers import (CAT, DIV, FORM, INPUT, OPTION, SELECT, SPAN, TABLE,
-                          TAG, TBODY, TD, TH, THEAD, TR, XML, A, I)
+from yatl.helpers import (
+    CAT,
+    DIV,
+    FORM,
+    INPUT,
+    OPTION,
+    SELECT,
+    SPAN,
+    TABLE,
+    TAG,
+    TBODY,
+    TD,
+    TH,
+    THEAD,
+    TR,
+    XML,
+    A,
+    I,
+)
 
 from py4web import HTTP, URL, redirect, request, safely
 from py4web.utils.form import Form, FormStyleDefault, join_classes
@@ -468,6 +485,7 @@ class Grid:
         groupby=None,
         # deprecated
         fields=None,
+        form=Form,
     ):
         """
         Grid is a searchable/sortable/pageable grid
@@ -507,9 +525,13 @@ class Grid:
         if isinstance(query, query._db.Table):
             query = query._id != None
 
+        if fields and any(field.type == "id" for field in fields):
+            show_id = True
+
         self.path = path
         self.db = query._db
         self.T = T
+        self.Form = form
         self.param = Param(
             query=query,
             columns=columns or fields,
@@ -718,7 +740,7 @@ class Grid:
             readonly = self.action == "details"
 
             attrs = self.attributes_plugin.form(url=request.url.split(":", 1)[1])
-            self.form = Form(
+            self.form = self.Form(
                 table,
                 record=record,
                 readonly=readonly,
@@ -1554,6 +1576,7 @@ class Grid:
             return self._make_table()
         elif self.action in ["new", "details", "edit"]:
             return self.form
+        raise HTTP(404)
 
     def xml(self):
         return self.render().xml()
