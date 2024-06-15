@@ -190,19 +190,16 @@ class RadioWidget:
             if k != ""
         ]
         for k, v, selected in field_options:
-            _id = "%s%s" % (field_id, k)
-            control.append(
-                INPUT(
-                    v,
-                    _id=_id,
-                    _value=k,
-                    _label=v,
-                    _name=field.name,
-                    _type="radio",
-                    _checked=selected,
-                )
+            _id = "%s-%s" % (field_id, k)
+            inp = INPUT(
+                _id=_id,
+                _value=k,
+                _label=v,
+                _name=field.name,
+                _type="radio",
+                _checked=selected,
             )
-            control.append(LABEL(v, _for=_id))
+            control.append(LABEL(inp, " ", v))
         return control
 
 
@@ -321,11 +318,11 @@ class FormStyleFactory:
             **kwargs,
         )
 
-        class_label = self.classes["label"]
-        class_outer = self.classes["outer"]
-        class_inner = self.classes["inner"]
-        class_error = self.classes["error"]
-        class_info = self.classes["info"]
+        class_label = self.classes.get("label") or None
+        class_outer = self.classes.get("outer") or None
+        class_inner = self.classes.get("inner") or None
+        class_error = self.classes.get("error") or None
+        class_info = self.classes.get("info") or None
 
         all_fields = [x for x in table]
         if "_virtual_fields" in dir(table):
@@ -644,7 +641,6 @@ FormStyleBootstrap4.classes.update(
         "textarea": "form-control",
     }
 )
-
 
 # ################################################################
 # Form object (replaced SQLFORM)
