@@ -485,7 +485,7 @@ class Grid:
         groupby=None,
         # deprecated
         fields=None,
-        form=Form,
+        form_maker=Form,
     ):
         """
         Grid is a searchable/sortable/pageable grid
@@ -531,7 +531,7 @@ class Grid:
         self.path = path
         self.db = query._db
         self.T = T
-        self.Form = form
+        self.form_maker = form_maker
         self.param = Param(
             query=query,
             columns=columns or fields,
@@ -740,7 +740,7 @@ class Grid:
             readonly = self.action == "details"
 
             attrs = self.attributes_plugin.form(url=request.url.split(":", 1)[1])
-            self.form = self.Form(
+            self.form = self.form_maker(
                 table,
                 record=record,
                 readonly=readonly,
