@@ -356,7 +356,8 @@ Authorization using Tags
 
 As already mentioned, authorization is the process of verifying what specific
 applications, files, and data a user has access to. This is accomplished
-in py4web using ``Tags``.
+in py4web using ``Tags``, that we've already discovered on :ref:`Tagging records`
+in the DAL chapter.
 
 
 Tags and Permissions
@@ -382,13 +383,15 @@ from ``pydal.tools``. Then create a Tags object to tag a table:
 .. code:: python
 
    from pydal.tools.tags import Tags
-   groups = Tags(db.auth_user)
+   groups = Tags(db.auth_user, 'groups')
 
-If you look at the database level, a new table will be created with a
-name equals to tagged_db + '_tag' + tagged_name, in this case
-``auth_user_tag_groups``:
+The tail_name parameter is optional and if not specified the 'default' 
+value will be used. If you look at the database level, a new table will
+be created with a name equals to ``tagged_db + '_tag_' + tail_name``,
+in this case ``auth_user_tag_groups``:
 
 .. image:: images/tags_db.png
+
 
 Then you can add one or more tags to records of the table as well as
 remove existing tags:
@@ -433,6 +436,25 @@ tag(s):
    def find(group_name):
        users = db(groups.find([group_name])).select(orderby=db.auth_user.first_name | db.auth_user.last_name)
        return {'users': users}
+
+We've already seen a simple ``requires_membership`` fixture on :ref:``The Condition fixture``. It
+enables the following syntax:
+
+.. code:: python
+
+   groups = Tags(db.auth_user)
+
+   def requires_membership(group_name):
+       return Condition(
+          lambda: group_name in groups.get(auth.user_id),
+          exception=HTTP(404)
+       )
+
+   @action('index')
+   @action.uses(requires_membership('teacher'))
+   def index():
+       return 'hello teacher'
+
 
 We leave it to you as an exercise to create a fixture ``has_membership``
 to enable the following syntax:

@@ -21,7 +21,8 @@ save the session back in the database if data has changed.
 PY4WEB fixtures provide a mechanism to specify what an action needs so
 that py4web can accomplish the required tasks (and skip non required
 ones) in the most efficient manner. Fixtures make the code efficient and
-reduce the need for boilerplate code.
+reduce the need for boilerplate code. Think of fixtures as per action
+(as opposed to per app) middleware.
 
 PY4WEB fixtures are similar to WSGI middleware and BottlePy plugin
 except that they apply to individual actions, not to all of them, and
@@ -409,9 +410,14 @@ Client-side session in cookies
 By default the session object is stored inside a cookie called
 ``appname_session``. It's a JWT, hence encoded in a URL-friendly string
 format and signed using the provided secret for preventing tampering.
-Notice that it's not encrypted (in fact it's quite trivial to read its
-content from http communications or from disk), so do not place any
-sensitive information inside, and use a complex secret.
+
+.. warning::
+
+   Data embedded in cookies is signed, not encrypted! In fact it's quite
+   trivial to read its content from http communications or from disk, so
+   do not place any sensitive information inside, and use a complex secret.
+
+
 If the secret changes existing sessions are invalidated.
 If the user switches from HTTP to HTTPS or
 vice versa, the user session is also invalidated. Session in cookies have a
@@ -539,7 +545,7 @@ data from another app (app1) running on the same server:
 The Condition fixture
 ---------------------
 
-Some times you want to restrict access to an action based on a
+Sometimes you want to restrict access to an action based on a
 given condition. For example to enforce a workflow:
 
 .. code:: python
@@ -585,9 +591,10 @@ for example, to redirect to another page:
 
    Condition(cond, on_false=lambda: redirect(URL('step1')))
 
-You can use condition to check permissions. For example, assuming you are using
-`Tags` as explained in chapter 13 and you are giving group memberships to users,
-then you can require that users action have specific group membership:
+You can use condition to check permissions. For example, if you
+are giving group memberships to users using `Tags` (it will be explained
+later on the :ref:`Authorization using Tags` chapter), then you can
+require that users action have specific group membership:
 
 .. code:: python
 
