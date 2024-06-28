@@ -5,7 +5,7 @@ The Database Abstraction Layer (DAL)
 DAL introduction
 ----------------
 
-py4web rely on a database abstraction layer (DAL), an API that maps
+py4web rely on a database abstraction layer (**DAL**), an API that maps
 Python objects into database objects such as queries, tables, and
 records. The DAL dynamically generates the SQL in real time using the
 specified dialect for the database back end, so that you do not have to
@@ -15,6 +15,13 @@ of databases.
 The DAL choosen is a pure Python one called `pyDAL <https://github.com/web2py/pydal>`__.
 It was conceived in the web2py project but it's a standard python module:
 you can use it in any Python context.
+
+.. note::
+   What makes pyDAL different from most of the other DALs is the syntax: it maps
+   records to python dictionaries, which is simpler and closer to SQL.
+   Other famous frameworks instead strictly rely on an Object Relational Mapping (**ORM**)
+   like the Django ORM or the SQL Alchemy ORM, that maps tables to Python classes
+   and rows to Objects. 
 
 A little taste of pyDAL features:
 
@@ -50,7 +57,7 @@ recent adapters.
    The SQLite driver (sqlite3) is also included: you don't need to install it.
    Hence this is the most popular database for testing and development.
 
-The Windows and the Mac binary distribution work out of the box with SQLite only.
+The Windows and the Mac binary distribution work out of the box with SQLite and PostgreSQL only.
 To use any other database back end, run a full py4web
 distribution and install the appropriate driver for the required back
 end. Once the proper driver is installed, start py4web and it
@@ -119,7 +126,7 @@ Rows
       rows = db(db.mytable.myfield != None).select()
 
 Row
-   contains field values.
+   contains field values:
 
    .. code:: python
 
@@ -188,20 +195,22 @@ that is available using the :ref:`shell command option`.
    Mind that
    database changes may be persistent. So be careful and do NOT hesitate
    to create a new application for doing testing instead of tampering
-   with an existing one.
+   with an existing one. The only exception is the showcase
+   db: in case of problems you can recreate it by simply deleting the
+   database folder and restarting py4web. This will re-create the
+   database with all the example data.
 
 
 Note that most of the code snippets that contain the python prompt
 ``>>>`` are also directly executable via a py4web shell.
 
-This is a simple example, using the provided ``examples`` app:
+This is a simple example, using the provided ``showcase`` app:
 
 .. code:: python
 
-   >>> from py4web import DAL, Field
-   >>> from apps.examples import db
+   >>> from apps.showcase.examples.models import db
    >>> db.tables()
-   ['auth_user', 'auth_user_tag_groups', 'person', 'superhero', 'superpower', 'tag', 'product', 'thing']
+   ['auth_user', 'auth_user_tag_groups', 'person', 'superhero', 'superpower', 'tag', 'thing', 'user_token', 'dummy']
    >>> rows = db(db.superhero.name != None).select()
    >>> rows.first()
    <Row {'id': 1, 'tag': <Set ("tag"."superhero" = 1)>, 'name': 'Superman', 'real_identity': 1}>
@@ -209,6 +218,24 @@ This is a simple example, using the provided ``examples`` app:
 You can also start by creating a connection from zero. For the sake of simplicity, you
 can use SQLite. Nothing in this discussion changes when you switch the back-end
 engine.
+
+Using the dashboard app with databases
+--------------------------------------
+
+Generally you can use the dashboard app for viewing and modifying the databases
+of a particular app. However this is not bulletproof, so for
+security reason this by default is not applied to the showcase app. 
+But if your installation is local (not exposed to public networks), you can enable it
+by simply adding to the file``apps/showcase/__init__.py`` the line:
+
+.. code:: python
+
+   from .examples.models import db
+
+
+This allow you to look graphically inside the showcase application database:
+
+.. image:: images/example_db.png
 
 
 DAL constructor
@@ -321,6 +348,10 @@ Database              Connection string
 
 - in SQLite the database consists of a single file. If it does
   not exist, it is created. This file is locked every time it is accessed.
+  In addition to the file 'storage.sqlite' that contains the data, there will
+  be also a sql.log file plus one additional file called longhash_tablename.table
+  for every table definition. The table definition files are used during migrations;
+  in case of problems they could be deleted (they'll be automatically recreated).
 - in the case of MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Ingres
   and Informix the database “test” must be created outside py4web. Once
   the connection is established, py4web will create, alter, and drop
@@ -415,8 +446,8 @@ table is actually referenced.
 Model-less applications
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-In py4web the code defined outside of actions (where normally DAL tables
-are defined) is only executed at startup.
+Normally in py4web the code that define DAL tables lives in the file
+``models.py``, hence it's only executed at startup because it's outside of actions.
 
 However, it is possible to define DAL tables on demand inside actions.
 This is referred to as “model-less” development by the py4web community.
@@ -546,15 +577,24 @@ Database folder location
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``folder`` sets the place where migration files will be created (see
-Migrations_ for details).
-It is also used for SQLite databases. Automatically set within py4web.
-Set a path when using DAL outside py4web.
+Migrations_ for details). By default it's automatically set within py4web on the same
+folder of the database itself, but you have to specify it when using DAL outside py4web.
+
+Note that for SQLite databases it's normally necessary,
+otherwise you'll implictly choose an in memory database (where folder and
+migrations don't have any sense). So these constructors have the same meaning:
+
+.. code:: python
+   
+   db = DAL('sqlite://storage.sqlite') # folder parameter not specified
+   db = DAL('sqlite:memory')           # in memory database
+
 
 Default migration settings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The DAL constructor migration settings are booleans affecting defaults
-and global behaviour.
+and global behaviour (again, see Migrations_ for details)
 
 ``migrate = True`` sets default migrate behavior for all tables
 
@@ -574,7 +614,7 @@ operations may be executed immediately, depending on the database
 engine.
 
 If you pass ``db`` in an ``action.uses`` decorator, you don't need to call
-commit in the controller, it is done for you.  (Also, if you use
+commit in the controller, it is automatically done for you (also, if you use
 ``authenticated`` or ``unauthenticated`` decorator.)
 
 .. tip::
@@ -1644,9 +1684,9 @@ database.
 
    db = DAL("sqlite:memory")
    db.define_table("thing", Field("name"))
-   properties = Tags(db.thing)
    id1 = db.thing.insert(name="chair")
    id2 = db.thing.insert(name="table")
+   properties = Tags(db.thing)
    properties.add(id1, "color/red")
    properties.add(id1, "style/modern")
    properties.add(id2, "color/green")
@@ -1664,14 +1704,16 @@ database.
    rows = db(properties.find(["color"])).select()
    assert len(rows) == 2
 
-It is internally implemented as a table, which in
-this example would be db.thing_tags_default, because no tail was
-specified on the Tags(table, tail=“default”) constructor.
 
-The ``find`` method is doing a search by ``startswith`` of the
-parameter. Then find([“color”]) would return id1 and id2
-because both records have tags starting with “color”. py4web uses tags as a
-flexible mechanism to manage permissions.
+``Tags`` are hierarchical. Then ``find([“color”])`` would return id1 and id2
+because both records have tags with “color”. 
+
+It is internally implemented with the creation of an additional table, which in
+this example would be db.thing_tags_default, because no tail was
+specified on the ``Tags(table, tail=“default”)`` constructor.
+
+py4web uses ``Tags`` as a flexible mechanism to manage permissions, we'll see
+all the details later on the :ref:`Authorization using Tags` chapter.
 
 
 Raw SQL
@@ -3303,10 +3345,9 @@ and all owners of Boat:
    Alex
    Curt
 
-A lighter alternative to many-to-many relations is tagging, you can
-found an example of this in the next section. Tagging works even on
-database backends that do not support JOINs like the Google App Engine
-NoSQL.
+A lighter alternative to many-to-many relations is tagging, see the
+:ref:`Authorization using Tags` chapter. Tagging works even on database backends
+that do not support JOINs like the Google App Engine NoSQL.
 
 Self-Reference and aliases
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3962,7 +4003,7 @@ it to XML/HTML:
    </table>
 
 If you need to serialize the Rows in any other XML format with custom
-tags, you can easily do that using the universal :ref:`TAG` helper
+tags, you can easily do that using the universal ``TAG`` XML helper
 that we'll see later and the Python syntax
 ``*<iterable>`` allowed in function calls:
 
@@ -3978,6 +4019,13 @@ that we'll see later and the Python syntax
    <row><field name="id">2</field><field name="name">Bob</field></row>
    <row><field name="id">3</field><field name="name">Carl</field></row>
    </result>
+
+.. warning::
+
+   Do not confuse the `TAG` XML helper used here (see the :ref:`TAG` 
+   chapter) with the ``Tags`` method that will be extensively explained
+   on the :ref:`Authorization using Tags` chapter.
+
 
 Data representation
 ~~~~~~~~~~~~~~~~~~~
