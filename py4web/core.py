@@ -1794,7 +1794,7 @@ class MetaPathRouter:
             # register as path finder
             sys.meta_path.append(self)
 
-    def find_spec(self, fullname, path=None):
+    def find_spec(self, fullname, path=None, target=None):
         """Loads the spec for the module at fullname"""
         if fullname == self.pkg_alias and path is None:
             spec = importlib.util.find_spec(self.pkg)

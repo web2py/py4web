@@ -40,7 +40,7 @@ def get_options(validators):
                 options = item.options
                 break
         if callable(options):
-            options = options()
+            options = options(zero=True)
     return options
 
 
