@@ -73,6 +73,73 @@ To prevent database locks (in particular with sqlite) we recommend:
        except Exception:
            db.rollback()
 
+
+Sending messages using a background task
+----------------------------------------
+
+As en example of application of the above,
+Consider the case of wanting to send emails asynchronously from a background task.
+In this example we send them using SendGrid from Twilio (https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python)
+Also we assume emails are represented by the following JSON structure
+
+That means you need a new task:
+
+.. code:: python
+
+    import sendgrid
+    from sendgrid.helpers.mail import Mail, Email, To, Content
+
+    def sendmail_task(data):
+        sg = sendgrid.SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
+        from_email = Email(data["from")  # Change to your verified sender
+        to_email = To(data["to"])  # Change to your recipient
+        subject = data["subject"]
+        content_type = "text/plain" if data["body"][:6] != "<html>" else "text/html"
+        content = Content(content_type, data["body"])
+        mail = Mail(from_email, to_email, subject, content)
+        mail_json = mail.get()
+        response = sg.client.mail.send.post(request_body=mail_json)
+        assert response.status_code == "200"
+
+    scheduler.register_task("sendmail", sendmail_task)
+
+
+To schedule sending a new email do:
+
+.. code:: python
+
+    email = {
+        "to": "me@example.com",
+        "from": ["me@example.com"], 
+        "subjet": "Hello Wordl",
+        "body": "I am alive!",
+    }
+    scheduler.enqueue_run(name="sendmail", inputs=email, scheduled_for=None)
+
+The ``scheuled_for`` argument is optional and allows you to specify when the email should be sent.
+You can use the Dashboard to see the status of your ``task_runs`` for task ``sendmail``.
+
+You can also tell auth to tap into above mechanism for sending emails:
+
+.. code:: python
+
+    class SendGridSender:
+        def __init__(self, from_addr):
+            self.from_addr = from_adds
+        def send(self, to_addr, subject, body):
+            email = {
+                "to": to_addrs,
+                "from": [self.from_addr], 
+                "subjet": subject,
+                "body": body,
+            }
+            scheduler.enqueue_run(name="sendmail", inputs=email)
+
+    auth.sender = SendGridSender(from_addr="me@example.com")
+
+And, with the above, Auth will not send emails using smtplib. Instead it will send them with SendGrid using the scheduler.
+
+
 Celery
 ------
 
