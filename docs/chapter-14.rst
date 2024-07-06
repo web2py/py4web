@@ -584,3 +584,39 @@ combine fields to be displayed together as the filter_out method would
 You need to determine which method is best for your use case
 understanding the different grids in the same application may need to
 behave differently.
+
+
+Grids with checkboxes
+---------------------
+
+While the grid, per se, does not support checkboxes, you can use custom columns to add one or more columns of checboxes.
+You can also add the helpers logic (the grid uses helpers to generate HTML) to wrap it in a ``<form>`` and add one 
+or more submit bottons. You can then add logic to process the selected rows when the button is selected. For example:
+
+.. code:: python
+
+   column = Column("select", lambda row: INPUT(_type="checkbox",_name="selected_id",_value=row.id))
+
+   @action("manage")
+   @action("manage/<path:path>")
+   @action.uses("manage.html", db)
+   def manage(path=None):
+
+      grid = Grid(path, db.thing, columns=[column, db.thing.name])
+
+      # if we are displaying a "select" grid page (not a form)
+      if not grid.form:
+         grid = grid.render()
+         # if checkboxes selection was submitted
+         if request.method == "POST":
+            # do something with the selected ids
+            print("you selected", request.POST.get("selected_id"))
+         # inject a ``<form>`` and a ``submit`` button
+         grid.children[1:] = [FORM(
+               *grid.children[1:],
+               DIV(INPUT(_type="submit",_value="do it!")),
+               _method="POST",
+               _action=request.url)]        
+      return locals()
+
+Notice in the above example ``request.POST.get("selected_id")`` can be a single ID (if one selected) or a list of IDs (if more than one elsected).

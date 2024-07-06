@@ -156,6 +156,7 @@ templates. Here is a simple example:
 
 .. code:: python
 
+   from py4web.utils.factories import Inject
    my_var = "Example variable to be passed to a Template"
 
    ...
@@ -213,6 +214,28 @@ action with a counter that counts “visits”.
        session['counter'] = counter
        return str(T("You have been here {n} times").format(n=counter))
 
+
+If the `T` fixture is to be used from inside a template you may want to pass it to the template:
+
+.. code:: python
+
+   @action('index')
+   @action.uses("index.html", session, T)
+   def index():
+       return dict(T=T)
+
+Or perahps inject (same effect as above)
+
+.. code:: python
+
+   from py4web.utils.factories import Inject
+
+   @action('index')
+   @action.uses("index.html", session, Inject(T=T)
+   def index():
+       return dict()
+
+
 Now create the following translation file ``translations/en.json``:
 
 .. code:: json
@@ -257,6 +280,31 @@ Now try create a file called ``translations/it.json`` which contains:
 
 Set your browser preference to Italian: now the messages will be
 automatically translated to Italian.
+
+Notice there is UI for creating, updating, and updating translation files.
+The UI is accessing via a button from the Dashboard.
+
+If you want to force an action to use language defined somewhere else, for example from a session variable, you can do:
+
+.. code:: python
+
+   @action('index')
+   @action.uses("index.html", session, T)
+   def index():
+       T.select(session.get("lang", "it"))
+       return dict(T=T)
+
+If you want all of your action to use the same pre-defined language and ignore browser preferences,
+you have to redefine the select method for the T instance:
+
+.. code:: python
+
+   T.on_request = lambda *_: T.local.__dict__.update(tag="it", language=T.languages["it"])
+
+This is to be done outside any action and will apply to all actions. Action will still need todeclare 
+`action.uses(T)` else the behavior is undefined.
+
+
 
 The Flash fixture
 -----------------
