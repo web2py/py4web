@@ -2382,7 +2382,7 @@ An example use which gives much faster selects is:
 
 .. code:: python
 
-   rows = db(query).select(cache=(cache.ram, 3600), cacheable=True)
+   rows = db(query).select(cache=(cache.get, 3600), cacheable=True)
 
 Look at `Caching selects`_, to understand what the trade-offs are.
 
@@ -2764,7 +2764,9 @@ Caching selects
 
 The select method also takes a ``cache`` argument, which defaults to
 None. For caching purposes, it should be set to a tuple where the first
-element is the cache model (``cache.ram``, ``cache.disk``, etc.), and
+element is the cache function with signature `(key, callback, expiration)`
+(ror example ``cache.get`` assuming ``cache``
+is an instance of the py4web cache object), and
 the second element is the expiration time in seconds.
 
 In the following example, you see a controller that caches a select on
@@ -2777,7 +2779,7 @@ the previous data from memory.
 .. code:: python
 
    def cache_db_select():
-       logs = db().select(db.log.ALL, cache=(cache.ram, 60))
+       logs = db().select(db.log.ALL, cache=(cache.get, 60))
        return dict(logs=logs)
 
 The ``select`` method has an optional ``cacheable`` argument, normally
@@ -2800,7 +2802,7 @@ caching:
 
 .. code:: python
 
-   rows = db(query).select(cache=(cache.ram, 3600), cacheable=True)
+   rows = db(query).select(cache=(cache.get, 3600), cacheable=True)
 
 
 Computed and Virtual fields
