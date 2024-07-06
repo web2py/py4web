@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Authentication and authorization &mdash; Documentação py4web 1.20240530.2</title>
+  <title>Authentication and authorization &mdash; Documentação py4web 20240630</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=7ffce357"></script>
+        <script src="_static/documentation_options.js?v=1628b6dc"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
@@ -43,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20240530.2
+                20240630
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -424,7 +424,8 @@ Discord username as the first name and discriminator as the last name.</p>
 <h2>Authorization using Tags<a class="headerlink" href="#authorization-using-tags" title="Link to this heading"></a></h2>
 <p>As already mentioned, authorization is the process of verifying what specific
 applications, files, and data a user has access to. This is accomplished
-in py4web using <code class="docutils literal notranslate"><span class="pre">Tags</span></code>.</p>
+in py4web using <code class="docutils literal notranslate"><span class="pre">Tags</span></code>, that we’ve already discovered on <a class="reference internal" href="chapter-07.html#tagging-records"><span class="std std-ref">Marcação de registros</span></a>
+in the DAL chapter.</p>
 <section id="tags-and-permissions">
 <h3>Etiquetas e permissões<a class="headerlink" href="#tags-and-permissions" title="Link to this heading"></a></h3>
 <p>Py4web provides a general purpose tagging
@@ -443,12 +444,13 @@ for very complex apps.</p>
 <p>To use the tagging system you first need to import the Tags module
 from <code class="docutils literal notranslate"><span class="pre">pydal.tools</span></code>. Then create a Tags object to tag a table:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydal.tools.tags</span> <span class="kn">import</span> <span class="n">Tags</span>
-<span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
+<span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">,</span> <span class="s1">&#39;groups&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If you look at the database level, a new table will be created with a
-name equals to tagged_db + “_tag” + tagged_name, in this case
-<code class="docutils literal notranslate"><span class="pre">auth_user_tag_groups</span></code>:</p>
+<p>The tail_name parameter is optional and if not specified the “default”
+value will be used. If you look at the database level, a new table will
+be created with a name equals to <code class="docutils literal notranslate"><span class="pre">tagged_db</span> <span class="pre">+</span> <span class="pre">'_tag_'</span> <span class="pre">+</span> <span class="pre">tail_name</span></code>,
+in this case <code class="docutils literal notranslate"><span class="pre">auth_user_tag_groups</span></code>:</p>
 <img alt="_images/tags_db.png" src="_images/tags_db.png" />
 <p>Então você pode adicionar uma ou mais marcas de registros da tabela, bem como remover existente tags:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;manager&#39;</span><span class="p">)</span>
@@ -481,6 +483,22 @@ py4web displays ‘hello manager’:</p>
 <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">group_name</span><span class="p">):</span>
     <span class="n">users</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">find</span><span class="p">([</span><span class="n">group_name</span><span class="p">]))</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">orderby</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="o">.</span><span class="n">first_name</span> <span class="o">|</span> <span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="o">.</span><span class="n">last_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;users&#39;</span><span class="p">:</span> <span class="n">users</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>We’ve already seen a simple <code class="docutils literal notranslate"><span class="pre">requires_membership</span></code> fixture on :ref:<code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">Condition</span> <span class="pre">fixture</span></code>. It
+enables the following syntax:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">requires_membership</span><span class="p">(</span><span class="n">group_name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Condition</span><span class="p">(</span>
+       <span class="k">lambda</span><span class="p">:</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">user_id</span><span class="p">),</span>
+       <span class="n">exception</span><span class="o">=</span><span class="n">HTTP</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">requires_membership</span><span class="p">(</span><span class="s1">&#39;teacher&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s1">&#39;hello teacher&#39;</span>
 </pre></div>
 </div>
 <p>Deixamos para você como um exercício para criar um dispositivo elétrico `` has_membership`` para permitir a seguinte sintaxe:</p>
@@ -604,7 +622,7 @@ Here is an example of an action to start impersonating and stop impersonating an
      <label for="switch"></label>
      </span>
       
-      v: 1.20240530.2
+      v: 20240630
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

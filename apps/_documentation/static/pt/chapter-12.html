@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forumlários &mdash; Documentação py4web 1.20240530.2</title>
+  <title>Forumlários &mdash; Documentação py4web 20240630</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=7ffce357"></script>
+        <script src="_static/documentation_options.js?v=1628b6dc"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
@@ -43,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20240530.2
+                20240630
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -189,7 +189,7 @@
 <p>The Form class provides a high-level API for quickly building CRUD (create, update and delete) forms,
 especially for working on an existing database table. It can generate and process a form from a
 list of desired fields and/or from an existing database table.</p>
-<p>There are 3 typs of forms:</p>
+<p>There are 3 types of forms:</p>
 <p>CRUD Create forms:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;create_thing&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s1">&#39;generic.html&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">flash</span><span class="p">)</span>
@@ -387,7 +387,7 @@ def update_form():
 </div>
 <section id="file-upload-field">
 <h3>File upload field<a class="headerlink" href="#file-upload-field" title="Link to this heading"></a></h3>
-<p>We can make a minor modificaiton to our reference model and an upload type file:</p>
+<p>We can make a minor modification to our reference model and an upload type file:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span>
     <span class="s1">&#39;thing&#39;</span><span class="p">,</span>
     <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">requires</span><span class="o">=</span><span class="n">IS_NOT_EMPTY</span><span class="p">()),</span>
@@ -569,27 +569,27 @@ your css framework, you’ll have to add an outer DIV in order to get select con
 appear correctly.</p>
 </div>
 <p>You can also be more creative and use your HTML in the template instead of using widgets:</p>
-<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>[[extend &#39;layout.html&#39;]]
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="o">[[</span><span class="nt">extend</span><span class="w"> </span><span class="s1">&#39;layout.html&#39;</span><span class="o">]]</span>
 
-[[for field, error form.errors.items:]]
-<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;error&quot;</span><span class="p">&gt;</span>Field [[=field]] [[=error]]<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-[[pass]]
+<span class="o">[[</span><span class="nt">for</span><span class="w"> </span><span class="nt">field</span><span class="o">,</span><span class="w"> </span><span class="nt">error</span><span class="w"> </span><span class="nt">form</span><span class="p">.</span><span class="nc">errors</span><span class="p">.</span><span class="nc">items</span><span class="o">:]]</span>
+<span class="o">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="nt">class</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="o">&gt;</span><span class="nt">Field</span><span class="w"> </span><span class="o">[[=</span><span class="nt">field</span><span class="o">]]</span><span class="w"> </span><span class="o">[[=</span><span class="nt">error</span><span class="o">]]&lt;/</span><span class="nt">div</span><span class="o">&gt;</span>
+<span class="o">[[</span><span class="nt">pass</span><span class="o">]]</span>
 
-[[=form.custom.begin ]]
+<span class="o">[[=</span><span class="nt">form</span><span class="p">.</span><span class="nc">custom</span><span class="p">.</span><span class="nc">begin</span><span class="w"> </span><span class="o">]]</span>
 
-<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;select&quot;</span><span class="p">&gt;</span>
-     <span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;name&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;form.vars.get(&#39;name&#39;, &#39;&#39;)&quot;</span><span class="p">/&gt;</span>
-<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;select&quot;</span><span class="p">&gt;</span>
-[[for color in [&#39;red&#39;, &#39;blue&#39;, &#39;green&#39;]:]]
-     <span class="p">&lt;</span><span class="nt">label</span><span class="p">&gt;</span>[[=color]]<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
-     <span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;color&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;radio&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;[[=color]]&quot;</span>
-            <span class="err">[[</span><span class="na">if</span> <span class="na">form</span><span class="err">.</span><span class="na">vars</span><span class="err">.</span><span class="na">get</span><span class="err">(&#39;</span><span class="na">color</span><span class="err">&#39;)</span> <span class="err">==</span> <span class="na">color:</span><span class="err">]]</span><span class="na">checked</span><span class="err">[[</span><span class="na">pass</span><span class="err">]]</span>
-     <span class="p">/&gt;</span>
-[[pass]]
-<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;submit&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;Click me&quot;</span><span class="p">/&gt;</span>
-[[=form.custom.end ]]
+<span class="o">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="nt">class</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="o">&gt;</span>
+<span class="w">     </span><span class="o">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="nt">name</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="w"> </span><span class="nt">value</span><span class="o">=</span><span class="s2">&quot;form.vars.get(&#39;name&#39;, &#39;&#39;)&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="nt">div</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nt">div</span><span class="w"> </span><span class="nt">class</span><span class="o">=</span><span class="s2">&quot;select&quot;</span><span class="o">&gt;</span>
+<span class="o">[[</span><span class="nt">for</span><span class="w"> </span><span class="nt">color</span><span class="w"> </span><span class="nt">in</span><span class="w"> </span><span class="o">[</span><span class="s1">&#39;red&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;blue&#39;</span><span class="o">,</span><span class="w"> </span><span class="s1">&#39;green&#39;</span><span class="o">]:]]</span>
+<span class="w">     </span><span class="o">&lt;</span><span class="nt">label</span><span class="o">&gt;[[=</span><span class="nt">color</span><span class="o">]]&lt;/</span><span class="nt">label</span><span class="o">&gt;</span>
+<span class="w">     </span><span class="o">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="nt">name</span><span class="o">=</span><span class="s2">&quot;color&quot;</span><span class="w"> </span><span class="nt">type</span><span class="o">=</span><span class="s2">&quot;radio&quot;</span><span class="w"> </span><span class="nt">value</span><span class="o">=</span><span class="s2">&quot;[[=color]]&quot;</span>
+<span class="w">                </span><span class="o">[[</span><span class="nt">if</span><span class="w"> </span><span class="nt">form</span><span class="p">.</span><span class="nc">vars</span><span class="p">.</span><span class="nc">get</span><span class="o">(</span><span class="s1">&#39;color&#39;</span><span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nt">color</span><span class="o">:]]</span><span class="nt">checked</span><span class="o">[[</span><span class="nt">pass</span><span class="o">]]</span>
+<span class="w">     </span><span class="o">/&gt;</span>
+<span class="o">[[</span><span class="nt">pass</span><span class="o">]]</span>
+<span class="o">&lt;/</span><span class="nt">div</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nt">input</span><span class="w"> </span><span class="nt">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span><span class="w"> </span><span class="nt">value</span><span class="o">=</span><span class="s2">&quot;Click me&quot;</span><span class="o">/&gt;</span>
+<span class="o">[[=</span><span class="nt">form</span><span class="p">.</span><span class="nc">custom</span><span class="p">.</span><span class="nc">end</span><span class="w"> </span><span class="o">]]</span>
 </pre></div>
 </div>
 </section>
@@ -1061,7 +1061,7 @@ Doing so will force conversion by the last validator to the numerical type. So, 
 <section id="is-in-set-and-tagging">
 <h4><code class="docutils literal notranslate"><span class="pre">IS_IN_SET</span></code> and Tagging<a class="headerlink" href="#is-in-set-and-tagging" title="Link to this heading"></a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">IS_IN_SET</span></code> validator has an optional attribute <code class="docutils literal notranslate"><span class="pre">multiple=False</span></code>. If set to True, multiple values can be stored in one
-field. The field should be of type <code class="docutils literal notranslate"><span class="pre">list:integer</span></code> or <code class="docutils literal notranslate"><span class="pre">list:string</span></code> as discussed in [[Chapter 6 ../06#list-type-and-contains]].
+field. The field should be of type <code class="docutils literal notranslate"><span class="pre">list:integer</span></code> or <code class="docutils literal notranslate"><span class="pre">list:string</span></code> as discussed in <a class="reference internal" href="chapter-07.html#list-type-and-contains"><span class="std std-ref">`` Lista: &lt;type&gt; `` e `` contains``</span></a>.
 An explicit example of tagging is discussed there. We strongly suggest using the jQuery multiselect plugin to render multiple fields.</p>
 <p><strong>Note</strong> that when <code class="docutils literal notranslate"><span class="pre">multiple=True</span></code>, <code class="docutils literal notranslate"><span class="pre">IS_IN_SET</span></code> will accept zero or more values, i.e. it will accept the field when nothing has been selected.
 <code class="docutils literal notranslate"><span class="pre">multiple</span></code> can also be a tuple of the form <code class="docutils literal notranslate"><span class="pre">(a,</span> <span class="pre">b)</span></code> where <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> are the minimum and (exclusive) maximum number of items
@@ -1612,7 +1612,7 @@ displayed to the user, and no database I/O will take place.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20240530.2
+      v: 20240630
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

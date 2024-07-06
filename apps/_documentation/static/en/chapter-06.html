@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fixtures &mdash; py4web 1.20240530.2 documentation</title>
+  <title>Fixtures &mdash; py4web 20240630 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=36eae118"></script>
+        <script src="_static/documentation_options.js?v=5f3eb493"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -42,7 +42,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20240530.2
+                20240630
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -140,7 +140,8 @@ save the session back in the database if data has changed.</p>
 <p>PY4WEB fixtures provide a mechanism to specify what an action needs so
 that py4web can accomplish the required tasks (and skip non required
 ones) in the most efficient manner. Fixtures make the code efficient and
-reduce the need for boilerplate code.</p>
+reduce the need for boilerplate code. Think of fixtures as per action
+(as opposed to per app) middleware.</p>
 <p>PY4WEB fixtures are similar to WSGI middleware and BottlePy plugin
 except that they apply to individual actions, not to all of them, and
 can depend on each other.</p>
@@ -238,7 +239,8 @@ In this way you’ll have cleaner code and if needed you’ll be able to change 
 <h2>The Inject fixture<a class="headerlink" href="#the-inject-fixture" title="Link to this heading"></a></h2>
 <p>The Inject fixture is used for passing variables (and even python functions) to
 templates. Here is a simple example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_var</span> <span class="o">=</span> <span class="s2">&quot;Example variable to be passed to a Template&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.factories</span> <span class="kn">import</span> <span class="n">Inject</span>
+<span class="n">my_var</span> <span class="o">=</span> <span class="s2">&quot;Example variable to be passed to a Template&quot;</span>
 
 <span class="o">...</span>
 
@@ -288,6 +290,22 @@ action with a counter that counts “visits”.</p>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">(</span><span class="s2">&quot;You have been here </span><span class="si">{n}</span><span class="s2"> times&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">counter</span><span class="p">))</span>
 </pre></div>
 </div>
+<p>If the <cite>T</cite> fixture is to be used from inside a template you may want to pass it to the template:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or perahps inject (same effect as above)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.factories</span> <span class="kn">import</span> <span class="n">Inject</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">Inject</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+</div>
 <p>Now create the following translation file <code class="docutils literal notranslate"><span class="pre">translations/en.json</span></code>:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;You have been here {n} times&quot;</span><span class="p">:</span>
 <span class="w">  </span><span class="p">{</span>
@@ -326,6 +344,23 @@ You have been here more than 5 times
 </div>
 <p>Set your browser preference to Italian: now the messages will be
 automatically translated to Italian.</p>
+<p>Notice there is UI for creating, updating, and updating translation files.
+The UI is accessing via a button from the Dashboard.</p>
+<p>If you want to force an action to use language defined somewhere else, for example from a session variable, you can do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+    <span class="n">T</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lang&quot;</span><span class="p">,</span> <span class="s2">&quot;it&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you want all of your action to use the same pre-defined language and ignore browser preferences,
+you have to redefine the select method for the T instance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">on_request</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">_</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="s2">&quot;it&quot;</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">languages</span><span class="p">[</span><span class="s2">&quot;it&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This is to be done outside any action and will apply to all actions. Action will still need todeclare
+<cite>action.uses(T)</cite> else the behavior is undefined.</p>
 </section>
 <section id="the-flash-fixture">
 <h2>The Flash fixture<a class="headerlink" href="#the-flash-fixture" title="Link to this heading"></a></h2>
@@ -455,11 +490,14 @@ secret is not required with server-side sessions.</p>
 <h3>Client-side session in cookies<a class="headerlink" href="#client-side-session-in-cookies" title="Link to this heading"></a></h3>
 <p>By default the session object is stored inside a cookie called
 <code class="docutils literal notranslate"><span class="pre">appname_session</span></code>. It’s a JWT, hence encoded in a URL-friendly string
-format and signed using the provided secret for preventing tampering.
-Notice that it’s not encrypted (in fact it’s quite trivial to read its
-content from http communications or from disk), so do not place any
-sensitive information inside, and use a complex secret.
-If the secret changes existing sessions are invalidated.
+format and signed using the provided secret for preventing tampering.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Data embedded in cookies is signed, not encrypted! In fact it’s quite
+trivial to read its content from http communications or from disk, so
+do not place any sensitive information inside, and use a complex secret.</p>
+</div>
+<p>If the secret changes existing sessions are invalidated.
 If the user switches from HTTP to HTTPS or
 vice versa, the user session is also invalidated. Session in cookies have a
 small size limit (4 kbytes after being serialized and encoded) so do
@@ -568,7 +606,7 @@ data from another app (app1) running on the same server:</p>
 </section>
 <section id="the-condition-fixture">
 <h2>The Condition fixture<a class="headerlink" href="#the-condition-fixture" title="Link to this heading"></a></h2>
-<p>Some times you want to restrict access to an action based on a
+<p>Sometimes you want to restrict access to an action based on a
 given condition. For example to enforce a workflow:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;step1&quot;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
@@ -606,9 +644,10 @@ for example, to redirect to another page:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Condition</span><span class="p">(</span><span class="n">cond</span><span class="p">,</span> <span class="n">on_false</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">redirect</span><span class="p">(</span><span class="n">URL</span><span class="p">(</span><span class="s1">&#39;step1&#39;</span><span class="p">)))</span>
 </pre></div>
 </div>
-<p>You can use condition to check permissions. For example, assuming you are using
-<cite>Tags</cite> as explained in chapter 13 and you are giving group memberships to users,
-then you can require that users action have specific group membership:</p>
+<p>You can use condition to check permissions. For example, if you
+are giving group memberships to users using <cite>Tags</cite> (it will be explained
+later on the <a class="reference internal" href="chapter-13.html#authorization-using-tags"><span class="std std-ref">Authorization using Tags</span></a> chapter), then you can
+require that users action have specific group membership:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">groups</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">auth_user</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">requires_membership</span><span class="p">(</span><span class="n">group_name</span><span class="p">):</span>
@@ -708,7 +747,7 @@ with the following fields: username, email, password, first_name,
 last_name, sso_id, and action_token (the last two are mostly for
 internal use).</p>
 <p>If a <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> table is defined before calling <code class="docutils literal notranslate"><span class="pre">auth.enable()</span></code>
-the provided table withh be used.</p>
+the provided table will be used.</p>
 <p>It is also possible to add <code class="docutils literal notranslate"><span class="pre">extra_fields</span></code> to the <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> table,
 for example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">extra_fields</span> <span class="o">=</span> <span class="p">[</span>
@@ -1006,7 +1045,7 @@ that function automatically.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20240530.2
+      v: 20240630
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

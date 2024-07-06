@@ -89,18 +89,20 @@ That means you need a new task:
     import sendgrid
     from sendgrid.helpers.mail import Mail, Email, To, Content
 
-    def sendmail_task(data):
+    def sendmail_task(from_addr, to_addrs, subject, body):
+        ""
+        # build the messages using sendgrid API
+        from_email = Email(from_addr)  # Must be your verified sender
+        content_type = "text/plain" if body[:6] != "<html>" else "text/html"
+        content = Content(content_type, body)
+        mail = Mail(from_email, To(to_addrs), subject, content)
+        # ask sendgrid to deliver it
         sg = sendgrid.SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
-        from_email = Email(data["from")  # Change to your verified sender
-        to_email = To(data["to"])  # Change to your recipient
-        subject = data["subject"]
-        content_type = "text/plain" if data["body"][:6] != "<html>" else "text/html"
-        content = Content(content_type, data["body"])
-        mail = Mail(from_email, to_email, subject, content)
-        mail_json = mail.get()
-        response = sg.client.mail.send.post(request_body=mail_json)
+        response = sg.client.mail.send.post(request_body=mail.get())
+        # check if worked
         assert response.status_code == "200"
 
+    # register the above task with the scheduler
     scheduler.register_task("sendmail", sendmail_task)
 
 
@@ -109,35 +111,39 @@ To schedule sending a new email do:
 .. code:: python
 
     email = {
-        "to": "me@example.com",
-        "from": ["me@example.com"], 
-        "subjet": "Hello Wordl",
+        "from_addr": "me@example.com",
+        "to_addrs": ["me@example.com"], 
+        "subject": "Hello World",
         "body": "I am alive!",
     }
     scheduler.enqueue_run(name="sendmail", inputs=email, scheduled_for=None)
 
+The key:value in the email representation must match the arguments of the task.
 The ``scheuled_for`` argument is optional and allows you to specify when the email should be sent.
-You can use the Dashboard to see the status of your ``task_runs`` for task ``sendmail``.
+You can use the Dashboard to see the status of your ``task_run``s for the task called ``sendmail``.
 
 You can also tell auth to tap into above mechanism for sending emails:
 
 .. code:: python
 
-    class SendGridSender:
+    class MySendGridSender:
         def __init__(self, from_addr):
             self.from_addr = from_adds
         def send(self, to_addr, subject, body):
             email = {
-                "to": to_addrs,
-                "from": [self.from_addr], 
-                "subjet": subject,
+                "from_addr": self.from_addr,
+                "to_addrs": [to_addr], 
+                "subject": subject,
                 "body": body,
             }
             scheduler.enqueue_run(name="sendmail", inputs=email)
 
-    auth.sender = SendGridSender(from_addr="me@example.com")
+    auth.sender = MySendGridSender(from_addr="me@example.com")
 
-And, with the above, Auth will not send emails using smtplib. Instead it will send them with SendGrid using the scheduler.
+With the above, Auth will not send emails using smtplib. Instead it will send them with SendGrid using the scheduler.
+Notice the only requirement here is that ``auth.sender`` must be an object with a ``send`` method with the same signature as in the example.
+
+Notice, it it also possible to send SMS messages instead of emails but this requires 1) store the phone number in ``auth_user`` and 2) override the ``Auth.send`` method.
 
 
 Celery

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Database Abstraction Layer (DAL) &mdash; py4web 1.20240530.2 documentation</title>
+  <title>The Database Abstraction Layer (DAL) &mdash; py4web 20240630 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=36eae118"></script>
+        <script src="_static/documentation_options.js?v=5f3eb493"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -42,7 +42,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20240530.2
+                20240630
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -69,6 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#experiment-with-the-py4web-shell">Experiment with the py4web shell</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-dashboard-app-with-databases">Using the dashboard app with databases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dal-constructor">DAL constructor</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#dal-signature">DAL signature</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#connection-strings-the-uri-parameter">Connection strings (the uri parameter)</a></li>
@@ -263,7 +264,7 @@
 <h1>The Database Abstraction Layer (DAL)<a class="headerlink" href="#the-database-abstraction-layer-dal" title="Link to this heading"></a></h1>
 <section id="dal-introduction">
 <h2>DAL introduction<a class="headerlink" href="#dal-introduction" title="Link to this heading"></a></h2>
-<p>py4web rely on a database abstraction layer (DAL), an API that maps
+<p>py4web rely on a database abstraction layer (<strong>DAL</strong>), an API that maps
 Python objects into database objects such as queries, tables, and
 records. The DAL dynamically generates the SQL in real time using the
 specified dialect for the database back end, so that you do not have to
@@ -273,6 +274,14 @@ of databases.
 The DAL choosen is a pure Python one called <a class="reference external" href="https://github.com/web2py/pydal">pyDAL</a>.
 It was conceived in the web2py project but it’s a standard python module:
 you can use it in any Python context.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>What makes pyDAL different from most of the other DALs is the syntax: it maps
+records to python dictionaries, which is simpler and closer to SQL.
+Other famous frameworks instead strictly rely on an Object Relational Mapping (<strong>ORM</strong>)
+like the Django ORM or the SQL Alchemy ORM, that maps tables to Python classes
+and rows to Objects.</p>
+</div>
 <p>A little taste of pyDAL features:</p>
 <ul class="simple">
 <li><p>Transactions</p></li>
@@ -304,7 +313,7 @@ recent adapters.</p>
 The SQLite driver (sqlite3) is also included: you don’t need to install it.
 Hence this is the most popular database for testing and development.</p>
 </div>
-<p>The Windows and the Mac binary distribution work out of the box with SQLite only.
+<p>The Windows and the Mac binary distribution work out of the box with SQLite and PostgreSQL only.
 To use any other database back end, run a full py4web
 distribution and install the appropriate driver for the required back
 end. Once the proper driver is installed, start py4web and it
@@ -394,7 +403,7 @@ thought of as a list of <code class="docutils literal notranslate"><span class="
 </pre></div>
 </div>
 </dd>
-<dt>Row</dt><dd><p>contains field values.</p>
+<dt>Row</dt><dd><p>contains field values:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">myfield</span><span class="p">)</span>
 </pre></div>
@@ -453,15 +462,17 @@ that is available using the <a class="reference internal" href="chapter-03.html#
 <p>Mind that
 database changes may be persistent. So be careful and do NOT hesitate
 to create a new application for doing testing instead of tampering
-with an existing one.</p>
+with an existing one. The only exception is the showcase
+db: in case of problems you can recreate it by simply deleting the
+database folder and restarting py4web. This will re-create the
+database with all the example data.</p>
 </div>
 <p>Note that most of the code snippets that contain the python prompt
 <code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code> are also directly executable via a py4web shell.</p>
-<p>This is a simple example, using the provided <code class="docutils literal notranslate"><span class="pre">examples</span></code> app:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">py4web</span> <span class="kn">import</span> <span class="n">DAL</span><span class="p">,</span> <span class="n">Field</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">apps.examples</span> <span class="kn">import</span> <span class="n">db</span>
+<p>This is a simple example, using the provided <code class="docutils literal notranslate"><span class="pre">showcase</span></code> app:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">apps.showcase.examples.models</span> <span class="kn">import</span> <span class="n">db</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">()</span>
-<span class="go">[&#39;auth_user&#39;, &#39;auth_user_tag_groups&#39;, &#39;person&#39;, &#39;superhero&#39;, &#39;superpower&#39;, &#39;tag&#39;, &#39;product&#39;, &#39;thing&#39;]</span>
+<span class="go">[&#39;auth_user&#39;, &#39;auth_user_tag_groups&#39;, &#39;person&#39;, &#39;superhero&#39;, &#39;superpower&#39;, &#39;tag&#39;, &#39;thing&#39;, &#39;user_token&#39;, &#39;dummy&#39;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">superhero</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
 <span class="go">&lt;Row {&#39;id&#39;: 1, &#39;tag&#39;: &lt;Set (&quot;tag&quot;.&quot;superhero&quot; = 1)&gt;, &#39;name&#39;: &#39;Superman&#39;, &#39;real_identity&#39;: 1}&gt;</span>
@@ -471,6 +482,19 @@ with an existing one.</p>
 can use SQLite. Nothing in this discussion changes when you switch the back-end
 engine.</p>
 </section>
+</section>
+<section id="using-the-dashboard-app-with-databases">
+<h2>Using the dashboard app with databases<a class="headerlink" href="#using-the-dashboard-app-with-databases" title="Link to this heading"></a></h2>
+<p>Generally you can use the dashboard app for viewing and modifying the databases
+of a particular app. However this is not bulletproof, so for
+security reason this by default is not applied to the showcase app.
+But if your installation is local (not exposed to public networks), you can enable it
+by simply adding to the file``apps/showcase/__init__.py`` the line:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.examples.models</span> <span class="kn">import</span> <span class="n">db</span>
+</pre></div>
+</div>
+<p>This allow you to look graphically inside the showcase application database:</p>
+<img alt="_images/example_db.png" src="_images/example_db.png" />
 </section>
 <section id="dal-constructor">
 <h2>DAL constructor<a class="headerlink" href="#dal-constructor" title="Link to this heading"></a></h2>
@@ -611,7 +635,11 @@ the database is running from localhost on its default port and is named
 </table>
 <ul class="simple">
 <li><p>in SQLite the database consists of a single file. If it does
-not exist, it is created. This file is locked every time it is accessed.</p></li>
+not exist, it is created. This file is locked every time it is accessed.
+In addition to the file ‘storage.sqlite’ that contains the data, there will
+be also a sql.log file plus one additional file called longhash_tablename.table
+for every table definition. The table definition files are used during migrations;
+in case of problems they could be deleted (they’ll be automatically recreated).</p></li>
 <li><p>in the case of MySQL, PostgreSQL, MSSQL, FireBird, Oracle, DB2, Ingres
 and Informix the database “test” must be created outside py4web. Once
 the connection is established, py4web will create, alter, and drop
@@ -693,8 +721,8 @@ no need, and possibly concurrency problems.</p>
 </section>
 <section id="model-less-applications">
 <h3>Model-less applications<a class="headerlink" href="#model-less-applications" title="Link to this heading"></a></h3>
-<p>In py4web the code defined outside of actions (where normally DAL tables
-are defined) is only executed at startup.</p>
+<p>Normally in py4web the code that define DAL tables lives in the file
+<code class="docutils literal notranslate"><span class="pre">models.py</span></code>, hence it’s only executed at startup because it’s outside of actions.</p>
 <p>However, it is possible to define DAL tables on demand inside actions.
 This is referred to as “model-less” development by the py4web community.</p>
 <p>To use the “model-less” approach, you take responsibility for doing
@@ -812,14 +840,20 @@ connections.</p>
 <section id="database-folder-location">
 <h4>Database folder location<a class="headerlink" href="#database-folder-location" title="Link to this heading"></a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">folder</span></code> sets the place where migration files will be created (see
-<a class="reference internal" href="#migrations">Migrations</a> for details).
-It is also used for SQLite databases. Automatically set within py4web.
-Set a path when using DAL outside py4web.</p>
+<a class="reference internal" href="#migrations">Migrations</a> for details). By default it’s automatically set within py4web on the same
+folder of the database itself, but you have to specify it when using DAL outside py4web.</p>
+<p>Note that for SQLite databases it’s normally necessary,
+otherwise you’ll implictly choose an in memory database (where folder and
+migrations don’t have any sense). So these constructors have the same meaning:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">)</span> <span class="c1"># folder parameter not specified</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite:memory&#39;</span><span class="p">)</span>           <span class="c1"># in memory database</span>
+</pre></div>
+</div>
 </section>
 <section id="default-migration-settings">
 <h4>Default migration settings<a class="headerlink" href="#default-migration-settings" title="Link to this heading"></a></h4>
 <p>The DAL constructor migration settings are booleans affecting defaults
-and global behaviour.</p>
+and global behaviour (again, see <a class="reference internal" href="#migrations">Migrations</a> for details)</p>
 <p><code class="docutils literal notranslate"><span class="pre">migrate</span> <span class="pre">=</span> <span class="pre">True</span></code> sets default migrate behavior for all tables</p>
 <p><code class="docutils literal notranslate"><span class="pre">fake_migrate</span> <span class="pre">=</span> <span class="pre">False</span></code> sets default fake_migrate behavior for all
 tables</p>
@@ -834,7 +868,7 @@ committed until py4web issues the commit command. The create and drop
 operations may be executed immediately, depending on the database
 engine.</p>
 <p>If you pass <code class="docutils literal notranslate"><span class="pre">db</span></code> in an <code class="docutils literal notranslate"><span class="pre">action.uses</span></code> decorator, you don’t need to call
-commit in the controller, it is done for you.  (Also, if you use
+commit in the controller, it is automatically done for you (also, if you use
 <code class="docutils literal notranslate"><span class="pre">authenticated</span></code> or <code class="docutils literal notranslate"><span class="pre">unauthenticated</span></code> decorator.)</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -1761,9 +1795,9 @@ database.</p>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s2">&quot;sqlite:memory&quot;</span><span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">define_table</span><span class="p">(</span><span class="s2">&quot;thing&quot;</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">))</span>
-<span class="n">properties</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
 <span class="n">id1</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;chair&quot;</span><span class="p">)</span>
 <span class="n">id2</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">)</span>
+<span class="n">properties</span> <span class="o">=</span> <span class="n">Tags</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">)</span>
 <span class="n">properties</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">id1</span><span class="p">,</span> <span class="s2">&quot;color/red&quot;</span><span class="p">)</span>
 <span class="n">properties</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">id1</span><span class="p">,</span> <span class="s2">&quot;style/modern&quot;</span><span class="p">)</span>
 <span class="n">properties</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">id2</span><span class="p">,</span> <span class="s2">&quot;color/green&quot;</span><span class="p">)</span>
@@ -1782,13 +1816,13 @@ database.</p>
 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
 </pre></div>
 </div>
-<p>It is internally implemented as a table, which in
+<p><code class="docutils literal notranslate"><span class="pre">Tags</span></code> are hierarchical. Then <code class="docutils literal notranslate"><span class="pre">find([“color”])</span></code> would return id1 and id2
+because both records have tags with “color”.</p>
+<p>It is internally implemented with the creation of an additional table, which in
 this example would be db.thing_tags_default, because no tail was
-specified on the Tags(table, tail=“default”) constructor.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">find</span></code> method is doing a search by <code class="docutils literal notranslate"><span class="pre">startswith</span></code> of the
-parameter. Then find([“color”]) would return id1 and id2
-because both records have tags starting with “color”. py4web uses tags as a
-flexible mechanism to manage permissions.</p>
+specified on the <code class="docutils literal notranslate"><span class="pre">Tags(table,</span> <span class="pre">tail=“default”)</span></code> constructor.</p>
+<p>py4web uses <code class="docutils literal notranslate"><span class="pre">Tags</span></code> as a flexible mechanism to manage permissions, we’ll see
+all the details later on the <a class="reference internal" href="chapter-13.html#authorization-using-tags"><span class="std std-ref">Authorization using Tags</span></a> chapter.</p>
 </section>
 </section>
 <section id="raw-sql">
@@ -2302,7 +2336,7 @@ described in <a class="reference internal" href="#inner-join">Inner join</a> and
 <section id="cache-cacheable">
 <h4>cache, cacheable<a class="headerlink" href="#cache-cacheable" title="Link to this heading"></a></h4>
 <p>An example use which gives much faster selects is:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">ram</span><span class="p">,</span> <span class="mi">3600</span><span class="p">),</span> <span class="n">cacheable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="mi">3600</span><span class="p">),</span> <span class="n">cacheable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Look at <a class="reference internal" href="#caching-selects">Caching selects</a>, to understand what the trade-offs are.</p>
@@ -2617,7 +2651,9 @@ syntax and functionality as the Set <code class="docutils literal notranslate"><
 <h3>Caching selects<a class="headerlink" href="#caching-selects" title="Link to this heading"></a></h3>
 <p>The select method also takes a <code class="docutils literal notranslate"><span class="pre">cache</span></code> argument, which defaults to
 None. For caching purposes, it should be set to a tuple where the first
-element is the cache model (<code class="docutils literal notranslate"><span class="pre">cache.ram</span></code>, <code class="docutils literal notranslate"><span class="pre">cache.disk</span></code>, etc.), and
+element is the cache function with signature <cite>(key, callback, expiration)</cite>
+(ror example <code class="docutils literal notranslate"><span class="pre">cache.get</span></code> assuming <code class="docutils literal notranslate"><span class="pre">cache</span></code>
+is an instance of the py4web cache object), and
 the second element is the expiration time in seconds.</p>
 <p>In the following example, you see a controller that caches a select on
 the previously defined db.log table. The actual select fetches data from
@@ -2626,7 +2662,7 @@ stores the result in memory. If the next call to this controller occurs
 in less than 60 seconds since the last database IO, it simply fetches
 the previous data from memory.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cache_db_select</span><span class="p">():</span>
-    <span class="n">logs</span> <span class="o">=</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">ram</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
+    <span class="n">logs</span> <span class="o">=</span> <span class="n">db</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">logs</span><span class="o">=</span><span class="n">logs</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2644,7 +2680,7 @@ only the database results are cached, not the actual Rows object. When
 the <code class="docutils literal notranslate"><span class="pre">cache</span></code> argument is used in conjunction with <code class="docutils literal notranslate"><span class="pre">cacheable=True</span></code>
 the entire Rows object is cached and this results in much faster
 caching:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">ram</span><span class="p">,</span> <span class="mi">3600</span><span class="p">),</span> <span class="n">cacheable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="mi">3600</span><span class="p">),</span> <span class="n">cacheable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -3102,10 +3138,9 @@ convenient to define a new set on which to perform operations:</p>
 <span class="go">Curt</span>
 </pre></div>
 </div>
-<p>A lighter alternative to many-to-many relations is tagging, you can
-found an example of this in the next section. Tagging works even on
-database backends that do not support JOINs like the Google App Engine
-NoSQL.</p>
+<p>A lighter alternative to many-to-many relations is tagging, see the
+<a class="reference internal" href="chapter-13.html#authorization-using-tags"><span class="std std-ref">Authorization using Tags</span></a> chapter. Tagging works even on database backends
+that do not support JOINs like the Google App Engine NoSQL.</p>
 </section>
 <section id="self-reference-and-aliases">
 <h3>Self-Reference and aliases<a class="headerlink" href="#self-reference-and-aliases" title="Link to this heading"></a></h3>
@@ -3648,7 +3683,7 @@ it to XML/HTML:</p>
 </pre></div>
 </div>
 <p>If you need to serialize the Rows in any other XML format with custom
-tags, you can easily do that using the universal <a class="reference internal" href="chapter-10.html#tag"><span class="std std-ref">TAG</span></a> helper
+tags, you can easily do that using the universal <code class="docutils literal notranslate"><span class="pre">TAG</span></code> XML helper
 that we’ll see later and the Python syntax
 <code class="docutils literal notranslate"><span class="pre">*&lt;iterable&gt;</span></code> allowed in function calls:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rows</span> <span class="o">=</span> <span class="n">db</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
@@ -3661,6 +3696,12 @@ that we’ll see later and the Python syntax
 <span class="nt">&lt;row&gt;&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;id&quot;</span><span class="nt">&gt;</span>3<span class="nt">&lt;/field&gt;&lt;field</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;</span>Carl<span class="nt">&lt;/field&gt;&lt;/row&gt;</span>
 <span class="nt">&lt;/result&gt;</span>
 </pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do not confuse the <cite>TAG</cite> XML helper used here (see the <a class="reference internal" href="chapter-10.html#tag"><span class="std std-ref">TAG</span></a>
+chapter) with the <code class="docutils literal notranslate"><span class="pre">Tags</span></code> method that will be extensively explained
+on the <a class="reference internal" href="chapter-13.html#authorization-using-tags"><span class="std std-ref">Authorization using Tags</span></a> chapter.</p>
 </div>
 </section>
 <section id="data-representation">
@@ -4534,7 +4575,7 @@ than on SQL databases.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20240530.2
+      v: 20240630
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

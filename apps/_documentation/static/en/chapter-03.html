@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation and Startup &mdash; py4web 1.20240530.2 documentation</title>
+  <title>Installation and Startup &mdash; py4web 20240630 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=36eae118"></script>
+        <script src="_static/documentation_options.js?v=5f3eb493"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/tabs.js?v=3030b3cb"></script>
@@ -43,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20240530.2
+                20240630
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -313,7 +313,7 @@ keep them up to date.</p>
 <p>This will not automatically upgrade the standard apps like <strong>Dashboard</strong>
 and <strong>Default</strong>.
 You have to manually remove these apps and then run</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web setup apps
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>py4web setup &lt;path to apps_folder&gt;
 </pre></div>
 </div>
 <p>in order to re-install them. This is a safety precaution, in case you
@@ -344,7 +344,7 @@ two apps in this folder: <strong>Dashboard</strong> (<code class="docutils liter
 to avoid conflicts with apps created by you.</p>
 </div>
 <p>Once py4web is running you can access a specific app at the following
-urls:</p>
+urls from the local machine:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>http://localhost:8000
 http://localhost:8000/_dashboard
 http://localhost:8000/{yourappname}/index
@@ -423,7 +423,7 @@ Options:
   -Y, --yes                     No prompt, assume yes to questions
                                 [default: False]
 
-  -H, --host TEXT               Host name  [default: 127.0.0.1]
+  -H, --host TEXT               Host listening IP [default: 127.0.0.1]
   -P, --port INTEGER            Port number  [default: 8000]
   -A, --app_names TEXT          List of apps to run, comma separated (all if omitted or
                                 empty)
@@ -456,6 +456,9 @@ Options:
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">app_names</span></code> option lets you filter which specific apps you want to serve (comma separated). If absent or empty
 all the apps in the APPS_FOLDER will be run.</p>
+<p>By default (for security reasons) the py4web framework will listen only on 127.0.0.1, i.e. localhost.
+If you need to reach it from other machines you must specify the host option,
+like <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--host</span> <span class="pre">0.0.0.0</span> <span class="pre">apps</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">url_prefix</span></code> option is useful for routing at the py4web level. It allows mapping to multiple versions of py4web
 running on different ports as long as the url_prefix and port match the location. For example
 <code class="docutils literal notranslate"><span class="pre">py4web</span> <span class="pre">run</span> <span class="pre">--url_prefix=/abracadabra</span> <span class="pre">--port</span> <span class="pre">8000</span> <span class="pre">apps</span></code>.</p>
@@ -730,7 +733,7 @@ certificates. It optionally manage iptables, too.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20240530.2
+      v: 20240630
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

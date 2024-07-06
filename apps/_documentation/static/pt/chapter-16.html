@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced topics and examples &mdash; Documentação py4web 1.20240530.2</title>
+  <title>Advanced topics and examples &mdash; Documentação py4web 20240630</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=7ffce357"></script>
+        <script src="_static/documentation_options.js?v=1628b6dc"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
@@ -42,7 +42,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20240530.2
+                20240630
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced topics and examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-scheduler">The scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sending-messages-using-a-background-task">Sending messages using a background task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#celery">Celery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#py4web-and-asyncio">py4web and asyncio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#htmx">htmx</a><ul>
@@ -121,15 +122,15 @@
 <p>Given a task (just a python function), you can schedule async runs of that function.
 The runs can be a one-off or periodic. They can have timeout. They can be scheduled to run at a given scheduled time.</p>
 <p>The scheduler works by creating a table <code class="docutils literal notranslate"><span class="pre">task_run</span></code> and enqueueing runs of the predefined task as table records.
-Each <code class="docutils literal notranslate"><span class="pre">task_run</span></code> references a task and contains the input to be passed to that task. The scheduler will caputure the
+Each <code class="docutils literal notranslate"><span class="pre">task_run</span></code> references a task and contains the input to be passed to that task. The scheduler will capture the
 task stdout+stderr in a <code class="docutils literal notranslate"><span class="pre">db.task_run.log</span></code> and the task output in <code class="docutils literal notranslate"><span class="pre">db.task_run.output</span></code>.</p>
 <p>A py4web thread loops and finds the next task that needs to be executed. For each task it creates a worker process
 and assigns the task to the worker process. You can specify how many worker processes should run concurrently.
 The worker processes are daemons and they only live for the life of one task run. Each worker process is only
 responsible for executing that one task in isolation. The main loop is responsible for assigning tasks and timeouts.</p>
 <p>The system is very robust because the only source of truth is the database and its integrity is guaranteed by
-transational safety. Even if py4web is killed, running tasks continue to run unless they complete, fail, or are
-explicitely killed.</p>
+transactional safety. Even if py4web is killed, running tasks continue to run unless they complete, fail, or are
+explicitly killed.</p>
 <p>Aside for allowing multiple concurrent task runs in execution on one node,
 it is also possible to run multiple instances of the scheduler on different computing nodes,
 as long as they use the same client/server database for <code class="docutils literal notranslate"><span class="pre">task_run</span></code> and as long as
@@ -160,7 +161,7 @@ they all define the same tasks.</p>
 <p>Notice that in scaffolding app, the scheduler is created and started in common if
 <code class="docutils literal notranslate"><span class="pre">USE_SCHEDULER=True</span></code> in <code class="docutils literal notranslate"><span class="pre">settings.py</span></code>.</p>
 <p>You can manage your task runs busing the dashboard or using a <code class="docutils literal notranslate"><span class="pre">Grid(path,</span> <span class="pre">db.task_run)</span></code>.</p>
-<p>To prevent database locks (in particular with sqlite) we recommand:</p>
+<p>To prevent database locks (in particular with sqlite) we recommend:</p>
 <ul class="simple">
 <li><p>Use a different database for the scheduler and everything else</p></li>
 <li><p>Always <code class="docutils literal notranslate"><span class="pre">db.commit()</span></code> as soon as possible after any insert/update/delete</p></li>
@@ -175,11 +176,71 @@ they all define the same tasks.</p>
 </pre></div>
 </div>
 </section>
+<section id="sending-messages-using-a-background-task">
+<h2>Sending messages using a background task<a class="headerlink" href="#sending-messages-using-a-background-task" title="Link to this heading"></a></h2>
+<p>As en example of application of the above,
+Consider the case of wanting to send emails asynchronously from a background task.
+In this example we send them using SendGrid from Twilio (<a class="reference external" href="https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python">https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python</a>)
+Also we assume emails are represented by the following JSON structure</p>
+<p>That means you need a new task:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sendgrid</span>
+<span class="kn">from</span> <span class="nn">sendgrid.helpers.mail</span> <span class="kn">import</span> <span class="n">Mail</span><span class="p">,</span> <span class="n">Email</span><span class="p">,</span> <span class="n">To</span><span class="p">,</span> <span class="n">Content</span>
+
+<span class="k">def</span> <span class="nf">sendmail_task</span><span class="p">(</span><span class="n">from_addr</span><span class="p">,</span> <span class="n">to_addrs</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+    <span class="s2">&quot;&quot;</span>
+    <span class="c1"># build the messages using sendgrid API</span>
+    <span class="n">from_email</span> <span class="o">=</span> <span class="n">Email</span><span class="p">(</span><span class="n">from_addr</span><span class="p">)</span>  <span class="c1"># Must be your verified sender</span>
+    <span class="n">content_type</span> <span class="o">=</span> <span class="s2">&quot;text/plain&quot;</span> <span class="k">if</span> <span class="n">body</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&lt;html&gt;&quot;</span> <span class="k">else</span> <span class="s2">&quot;text/html&quot;</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">Content</span><span class="p">(</span><span class="n">content_type</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="n">mail</span> <span class="o">=</span> <span class="n">Mail</span><span class="p">(</span><span class="n">from_email</span><span class="p">,</span> <span class="n">To</span><span class="p">(</span><span class="n">to_addrs</span><span class="p">),</span> <span class="n">subject</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+    <span class="c1"># ask sendgrid to deliver it</span>
+    <span class="n">sg</span> <span class="o">=</span> <span class="n">sendgrid</span><span class="o">.</span><span class="n">SendGridAPIClient</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">SENDGRID_API_KEY</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">mail</span><span class="o">.</span><span class="n">send</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">request_body</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="c1"># check if worked</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="s2">&quot;200&quot;</span>
+
+<span class="c1"># register the above task with the scheduler</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">register_task</span><span class="p">(</span><span class="s2">&quot;sendmail&quot;</span><span class="p">,</span> <span class="n">sendmail_task</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To schedule sending a new email do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">email</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;from_addr&quot;</span><span class="p">:</span> <span class="s2">&quot;me@example.com&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;to_addrs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;me@example.com&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello World&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;I am alive!&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sendmail&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">email</span><span class="p">,</span> <span class="n">scheduled_for</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The key:value in the email representation must match the arguments of the task.
+The <code class="docutils literal notranslate"><span class="pre">scheuled_for</span></code> argument is optional and allows you to specify when the email should be sent.
+You can use the Dashboard to see the status of your <code class="docutils literal notranslate"><span class="pre">task_run``s</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">task</span> <span class="pre">called</span> <span class="pre">``sendmail</span></code>.</p>
+<p>You can also tell auth to tap into above mechanism for sending emails:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MySendGridSender</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_addr</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_addr</span> <span class="o">=</span> <span class="n">from_adds</span>
+    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_addr</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+        <span class="n">email</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;from_addr&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_addr</span><span class="p">,</span>
+            <span class="s2">&quot;to_addrs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">to_addr</span><span class="p">],</span>
+            <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">,</span>
+            <span class="s2">&quot;body&quot;</span><span class="p">:</span> <span class="n">body</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">enqueue_run</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sendmail&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">email</span><span class="p">)</span>
+
+<span class="n">auth</span><span class="o">.</span><span class="n">sender</span> <span class="o">=</span> <span class="n">MySendGridSender</span><span class="p">(</span><span class="n">from_addr</span><span class="o">=</span><span class="s2">&quot;me@example.com&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With the above, Auth will not send emails using smtplib. Instead it will send them with SendGrid using the scheduler.
+Notice the only requirement here is that <code class="docutils literal notranslate"><span class="pre">auth.sender</span></code> must be an object with a <code class="docutils literal notranslate"><span class="pre">send</span></code> method with the same signature as in the example.</p>
+<p>Notice, it it also possible to send SMS messages instead of emails but this requires 1) store the phone number in <code class="docutils literal notranslate"><span class="pre">auth_user</span></code> and 2) override the <code class="docutils literal notranslate"><span class="pre">Auth.send</span></code> method.</p>
+</section>
 <section id="celery">
 <h2>Celery<a class="headerlink" href="#celery" title="Link to this heading"></a></h2>
 <p>Yes. You can use Celery instead of the build-in scheduler but it adds complexity and it is less robust.
-Yet the build-in schduler is designed for long running tasks and the database can become a bottle neck
-if you have hundrands running concurrently. Celery may work better if you have more than 100 concurrent
+Yet the build-in scheduler is designed for long running tasks and the database can become a bottleneck
+if you have hundreds of tasks running concurrently. Celery may work better if you have more than 100 concurrent
 tasks and/or they are short running tasks.</p>
 </section>
 <section id="py4web-and-asyncio">
@@ -828,7 +889,7 @@ as well as modify other components.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20240530.2
+      v: 20240630
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

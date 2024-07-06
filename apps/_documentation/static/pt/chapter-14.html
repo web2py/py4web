@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rede &mdash; Documentação py4web 1.20240530.2</title>
+  <title>Rede &mdash; Documentação py4web 20240630</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=7ffce357"></script>
+        <script src="_static/documentation_options.js?v=1628b6dc"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
@@ -43,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.20240530.2
+                20240630
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -85,6 +85,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#reference-fields">Os campos de referência</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grids-with-checkboxes">Grids with checkboxes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="chapter-15.html">De web2py para py4web</a></li>
@@ -589,6 +590,38 @@ clicked on and sorted.</p>
 <p>Este método permite classificar e filtrar, mas não permite que você para combinar campos a serem exibidos em conjunto, como o método filter_out faria</p>
 <p>Você precisa determinar qual método é melhor para o seu caso de uso compreender as grids diferentes no mesmo aplicativo pode precisar de se comportar de forma diferente.</p>
 </section>
+<section id="grids-with-checkboxes">
+<h2>Grids with checkboxes<a class="headerlink" href="#grids-with-checkboxes" title="Link to this heading"></a></h2>
+<p>While the grid, per se, does not support checkboxes, you can use custom columns to add one or more columns of checboxes.
+You can also add the helpers logic (the grid uses helpers to generate HTML) to wrap it in a <code class="docutils literal notranslate"><span class="pre">&lt;form&gt;</span></code> and add one
+or more submit bottons. You can then add logic to process the selected rows when the button is selected. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s2">&quot;checkbox&quot;</span><span class="p">,</span><span class="n">_name</span><span class="o">=</span><span class="s2">&quot;selected_id&quot;</span><span class="p">,</span><span class="n">_value</span><span class="o">=</span><span class="n">row</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;manage&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="p">(</span><span class="s2">&quot;manage/&lt;path:path&gt;&quot;</span><span class="p">)</span>
+<span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;manage.html&quot;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">manage</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+   <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">column</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">thing</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+
+   <span class="c1"># if we are displaying a &quot;select&quot; grid page (not a form)</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="n">grid</span><span class="o">.</span><span class="n">form</span><span class="p">:</span>
+      <span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+      <span class="c1"># if checkboxes selection was submitted</span>
+      <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+         <span class="c1"># do something with the selected ids</span>
+         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;you selected&quot;</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;selected_id&quot;</span><span class="p">))</span>
+      <span class="c1"># inject a ``&lt;form&gt;`` and a ``submit`` button</span>
+      <span class="n">grid</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">FORM</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+            <span class="n">DIV</span><span class="p">(</span><span class="n">INPUT</span><span class="p">(</span><span class="n">_type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span><span class="p">,</span><span class="n">_value</span><span class="o">=</span><span class="s2">&quot;do it!&quot;</span><span class="p">)),</span>
+            <span class="n">_method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="n">_action</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">)]</span>
+   <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Notice in the above example <code class="docutils literal notranslate"><span class="pre">request.POST.get(&quot;selected_id&quot;)</span></code> can be a single ID (if one selected) or a list of IDs (if more than one elsected).</p>
+</section>
 </section>
 
 
@@ -627,7 +660,7 @@ clicked on and sorted.</p>
      <label for="switch"></label>
      </span>
       
-      v: 1.20240530.2
+      v: 20240630
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
