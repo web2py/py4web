@@ -80,9 +80,8 @@ Sending messages using a background task
 As en example of application of the above,
 Consider the case of wanting to send emails asynchronously from a background task.
 In this example we send them using SendGrid from Twilio (https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python)
-Also we assume emails are represented by the following JSON structure
 
-That means you need a new task:
+Here is an example of scheduler task to send the email:
 
 .. code:: python
 
