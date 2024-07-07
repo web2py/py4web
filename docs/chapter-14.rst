@@ -589,9 +589,9 @@ behave differently.
 Grids with checkboxes
 ---------------------
 
-While the grid, per se, does not support checkboxes, you can use custom columns to add one or more columns of checboxes.
+While the grid, per se, does not support checkboxes, you can use custom columns to add one or more columns of checkboxes.
 You can also add the helpers logic (the grid uses helpers to generate HTML) to wrap it in a ``<form>`` and add one 
-or more submit bottons. You can then add logic to process the selected rows when the button is selected. For example:
+or more submit buttons. You can then add logic to process the selected rows when the button is selected. For example:
 
 .. code:: python
 
@@ -619,4 +619,5 @@ or more submit bottons. You can then add logic to process the selected rows when
                _action=request.url)]        
       return locals()
 
-Notice in the above example ``request.POST.get("selected_id")`` can be a single ID (if one selected) or a list of IDs (if more than one elsected).
+Notice in the above example ``request.POST.get("selected_id")`` can be a single ID (if one selected) or a list of IDs (if more than one
+is selected).

@@ -131,6 +131,7 @@ lib
 libs
 limitby
 localhost
+longhash
 lookups
 mailto
 Makefile
@@ -252,6 +253,7 @@ Teradata
 teredo
 textarea
 tracebacks
+Twilio
 txt
 ual
 un

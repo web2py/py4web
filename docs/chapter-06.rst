@@ -224,7 +224,7 @@ If the `T` fixture is to be used from inside a template you may want to pass it 
    def index():
        return dict(T=T)
 
-Or perahps inject (same effect as above)
+Or perhaps inject (same effect as above)
 
 .. code:: python
 
@@ -310,7 +310,7 @@ you have to redefine the select method for the T instance:
 
    T.on_request = lambda *_: T.local.__dict__.update(tag="it", language=T.languages["it"])
 
-This is to be done outside any action and will apply to all actions. Action will still need todeclare 
+This is to be done outside any action and will apply to all actions. Action will still need to declare 
 `action.uses(T)` else the behavior is undefined.
 
 

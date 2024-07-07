@@ -581,7 +581,7 @@ Migrations_ for details). By default it's automatically set within py4web on the
 folder of the database itself, but you have to specify it when using DAL outside py4web.
 
 Note that for SQLite databases it's normally necessary,
-otherwise you'll implictly choose an in memory database (where folder and
+otherwise you'll implicitly choose an in memory database (where folder and
 migrations don't have any sense). So these constructors have the same meaning:
 
 .. code:: python
@@ -2765,7 +2765,7 @@ Caching selects
 The select method also takes a ``cache`` argument, which defaults to
 None. For caching purposes, it should be set to a tuple where the first
 element is the cache function with signature `(key, callback, expiration)`
-(ror example ``cache.get`` assuming ``cache``
+(for example ``cache.get`` assuming ``cache``
 is an instance of the py4web cache object), and
 the second element is the expiration time in seconds.
 
