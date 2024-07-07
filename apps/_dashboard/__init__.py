@@ -567,7 +567,10 @@ if MODE == "full":
 @action.uses(Logged(session), "translations.html")
 def translations(name):
     """returns a json with all translations for all languages"""
-    t = Translator(os.path.join(FOLDER, name, "translations"))
+    folder = os.path.join(FOLDER, name, "translations")
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    t = Translator(folder)
     return t.languages
 
 
