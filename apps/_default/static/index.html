@@ -58,7 +58,8 @@ $ cp -r apps/_scaffold apps/myapp  # make a new app
 $ py4web run apps                  # start py4web
 </code></pre>
 
-Each subfolder of <tt>apps/</tt> with an <tt>__init__.py</tt> is its own app. One py4web can run multiple apps. You just copy the <tt>_scaffold</tt> app to make a new one.
+Each subfolder of <tt>apps/</tt> with an <tt>__init__.py</tt> is its own app. One py4web can run multiple apps.
+You just copy the <tt>_scaffold</tt> app to make a new one.
 	
       </div><div class="section">
 	
@@ -89,7 +90,8 @@ def index(x):
 </code></pre>
 
       </div><div class="section">
-	py4web uses a request object from <a href="https://github.com/valq7711/ombott">ombott</a>, compatible with <a href="https://bottlepy.org/docs/dev/">bottlepy</a>
+	py4web uses a request object from <a href="https://github.com/valq7711/ombott">ombott</a>, compatible with
+      <a href="https://bottlepy.org/docs/dev/">bottlepy</a>
 
 <pre class="language-python"><code>
 # http://127.0.0.1:8000/myapp/index/?x=1
@@ -100,7 +102,7 @@ def index():
 </code></pre>
 
       </div><div class="section">
-	I can parse JSON from POST requests for example
+	It can parse JSON from POST requests for example
 
 <pre class="language-python"><code>
 # http://127.0.0.1:8000/myapp/index POST {x: 1}
@@ -129,7 +131,10 @@ def index():
 </code></pre>
 
       </div><div class="section">
-	We have a built-in session object which by default stores the session data, encrypted, in a cookie. Optionally it can be stored in db, redist, or other custom storage. Session is a fixture and it must be declared with <tt>@action.uses</tt>. Think of fixtures as per action (as opposed to per app) middleware.
+	We have a built-in session object which by default stores the session data, signed, in a cookie. Optionally it can be stored in db, redis,
+      or other custom storage. Session is a <a href="https://py4web.com/_documentation/static/en/chapter-06.html">fixture</a> 
+      and it must be declared with <tt>@action.uses</tt>.
+      Think of fixtures as per action (as opposed to per app) middleware.
 
 <pre class="language-python"><code>
 @action("index")
@@ -163,7 +168,10 @@ def index():
 </code></pre>
 
       </div><div class="section">
-	Py4web comes with a built-in <a href="https://py4web.com/_documentation/static/en/chapter-13.html">auth</a> object that generates all the pages required for user registration, login, email verification, retrieve and change password, edit profile, single sign on with OAuth2 and more. <tt>auth</tt> is also a fixture which exposed the current user to the action. Notice that fixtures have dependencies and by including <tt>auth</tt> its dependencies (db, session, flash).
+	Py4web comes with a built-in <a href="https://py4web.com/_documentation/static/en/chapter-13.html">auth</a> object that generates all the pages
+      required for user registration, login, email verification, retrieve and change password, edit profile, single sign on with OAuth2 and more.
+      <tt>auth</tt> is also a fixture which exposed the current user to the action. Notice that fixtures have dependencies, and by including
+      <tt>auth</tt> its dependencies (db, session, flash) are also included automatically.
 
 <pre class="language-python"><code>
 @action("index")
@@ -171,7 +179,7 @@ def index():
 def index():
     user = auth.get_user()
     if user:
-        message = "Hello {first_name}".format(**user)
+        message = f"Hello {user['first_name']}"
     else:
         message = "Hello, you are not logged in"
     return {"message": message}
@@ -185,12 +193,14 @@ def index():
 @action.uses("generic.html", auth.user)
 def index():
     user = auth.get_user()
-    message = "Hello {first_name}".format(**user)
+    message = f"Hello {user['first_name']}"
     return {"message": message}
 </code></pre>
 
       </div><div class="section">
-	More complex policies are possible using the built-in <a href="https://py4web.com/_documentation/static/en/chapter-07.html#tagging-records">tagging system</a> combined with <a href="https://py4web.com/_documentation/static/en/chapter-13.html#authorization-using-tags">auth</a>
+	More complex policies are possible using the built-in <a href="https://py4web.com/_documentation/static/en/chapter-07.html#tagging-records">tagging
+      system</a> combined with <a href="https://py4web.com/_documentation/static/en/chapter-13.html#authorization-using-tags">auth</a>.
+      <tt>Condition</tt> is another fixture, if False it raises a 404 error page by default. 
 
 <pre class="language-python"><code>
 is_manager = Condition(lambda: "manager" in groups.get(auth.user_id))
@@ -199,7 +209,7 @@ is_manager = Condition(lambda: "manager" in groups.get(auth.user_id))
 @action.uses("generic.html", auth.user, is_manager)
 def index():
     user = auth.get_user()
-    message = "Hello {first_name} (manager!)".format(**user)
+    message = f"Hello {user['first_name']} (manager!)"
     return {"message": message}
 </code></pre>
 
@@ -212,7 +222,7 @@ def index():
 db.define_table(
     "thing",
     Field("name", requires=IS_NOT_EMPTY()),
-    Field("image", "upload", download_url = lambda fn: URL(f"download/{fn}"))
+    Field("image", "upload", download_url = lambda fn: URL(f"download/{fn}")),
     auth.signature)
 </code></pre>
 
