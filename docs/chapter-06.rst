@@ -281,8 +281,17 @@ Now try create a file called ``translations/it.json`` which contains:
 Set your browser preference to Italian: now the messages will be
 automatically translated to Italian.
 
-Notice there is UI for creating, updating, and updating translation files.
-The UI is accessing via a button from the Dashboard.
+Notice there is an UI in the Dashboard for creating, updating, and updating translation files. 
+It can be easily reached via the button ``i18n+p11n``:
+
+.. image:: images/dashboard_i18n_btn.png
+
+that leads to the following interface:
+
+.. image:: images/dashboard_i18n_ui.png
+
+More details can be found here: https://github.com/web2py/pluralize 
+
 
 If you want to force an action to use language defined somewhere else, for example from a session variable, you can do:
 
