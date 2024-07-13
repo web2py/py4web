@@ -280,7 +280,7 @@ def populate_generator(table, default=True, compute=False, contents=None, ell=No
                         record[fieldname] = random.randint(2000, 2013)
                     else:
                         record[fieldname] = random.randint(0, 1000)
-            elif field.type == "double" or str(field.type).startswith("decimal"):
+            elif field.type in ("float", "double") or str(field.type).startswith("decimal"):
                 if hasattr(field.requires, "minimum"):
                     rand = random.random()
                     if str(field.type).startswith("decimal"):

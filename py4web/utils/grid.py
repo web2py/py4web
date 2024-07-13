@@ -657,47 +657,28 @@ class Grid:
             # if no column specified use all fields
             self.param.columns = [field for field in table if field.readable]
 
-        #  if any columns are Expression but not Field, get the field info from 'first' attribute
-        converted_columns = []
-        for col in self.param.columns:
-            if isinstance(col, Expression) and not isinstance(col, Field):
-                converted_columns.append(col.first)
-            else:
-                converted_columns.append(col)
-        self.param.columns = converted_columns
-
         if not self.param.columns:
             self.needed_fields = self.param.columns[:]
-        elif any(isinstance(col, Column) for col in self.param.columns):
-            # if we use columns we have to get all fields and assume a single table
-            self.needed_fields = [field for field in db[self.tablename]]
-            for col in self.param.columns:
-                if isinstance(col, Column):
-                    for rf in col.required_fields:
-                        if rf.longname not in [x.longname for x in self.needed_fields]:
-                            self.needed_fields.append(rf)
-        elif any(isinstance(col, FieldVirtual) for col in self.param.columns):
-            # if virtual fields are specified the fields may come from a join
-            needed_fields = set()
-            for col in self.param.columns:
-                if isinstance(col, Field):
-                    needed_fields.add(col)
-                elif isinstance(col, FieldVirtual):
-                    for field in db[col.tablename]:
-                        needed_fields.add(field)
-            self.needed_fields = list(needed_fields)
         else:
-            self.needed_fields = self.param.columns[:]
+            needed_fields = set()
+            for col in self.param.columns:            
+                print("Column", col)
+                if isinstance(col, Column):
+                    if col.required_fields:
+                        needed_fields |= set(col.required_fields)
+                    else:
+                        needed_fields |= set(db[self.tablename])
+                elif isinstance(col, FieldVirtual):
+                    # if virtual fields are specified the fields may come from a join            
+                    needed_fields |= set(db[col.tablename])
+                else:
+                    needed_fields.add(col)
+            self.needed_fields = list(needed_fields)
 
-        # make sure all specified fields are available
-        if self.param.columns:
-            for col in self.param.columns:
-                if not isinstance(col, (Column, FieldVirtual)):
-                    if col.longname not in [x.longname for x in self.needed_fields]:
-                        self.needed_fields.append(col)
+        print(self.needed_fields)
 
         # except the primary key may be missing and must be fetched even if not displayed
-        if not any(col.name == table._id.name for col in self.needed_fields):
+        if not any(getattr(col, "name", None) == table._id.name for col in self.needed_fields):
             self.needed_fields.insert(0, table._id)
 
         self.referrer = None
@@ -855,6 +836,8 @@ class Grid:
                 self.page_end = self.total_number_of_rows
 
             # get the data
+            print(self.needed_fields)
+            print(select_params)
             self.rows = db(query).select(*self.needed_fields, **select_params)
 
             self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
