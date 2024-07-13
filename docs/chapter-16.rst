@@ -77,9 +77,8 @@ To prevent database locks (in particular with sqlite) we recommend:
 Sending messages using a background task
 ----------------------------------------
 
-As en example of application of the above,
-Consider the case of wanting to send emails asynchronously from a background task.
-In this example we send them using SendGrid from Twilio (https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python)
+As en example of application of the above, consider the case of wanting to send emails asynchronously from a background task.
+In this example we send them using SendGrid from Twilio (https://www.twilio.com/docs/sendgrid/for-developers/sending-email/quickstart-python).
 
 Here is an example of scheduler task to send the email:
 
@@ -118,8 +117,8 @@ To schedule sending a new email do:
     scheduler.enqueue_run(name="sendmail", inputs=email, scheduled_for=None)
 
 The key:value in the email representation must match the arguments of the task.
-The ``scheuled_for`` argument is optional and allows you to specify when the email should be sent.
-You can use the Dashboard to see the status of your ``task_run``s for the task called ``sendmail``.
+The ``scheduled_for`` argument is optional and allows you to specify when the email should be sent.
+You can use the Dashboard to see the status of your ``task_run``\s for the task called ``sendmail``.
 
 You can also tell auth to tap into above mechanism for sending emails:
 
