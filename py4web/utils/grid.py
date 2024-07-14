@@ -661,7 +661,7 @@ class Grid:
             self.needed_fields = self.param.columns[:]
         else:
             needed_fields = set()
-            for col in self.param.columns:            
+            for col in self.param.columns:
                 print("Column", col)
                 if isinstance(col, Column):
                     if col.required_fields:
@@ -669,7 +669,7 @@ class Grid:
                     else:
                         needed_fields |= set(db[self.tablename])
                 elif isinstance(col, FieldVirtual):
-                    # if virtual fields are specified the fields may come from a join            
+                    # if virtual fields are specified the fields may come from a join
                     needed_fields |= set(db[col.tablename])
                 else:
                     needed_fields.add(col)
@@ -678,7 +678,9 @@ class Grid:
         print(self.needed_fields)
 
         # except the primary key may be missing and must be fetched even if not displayed
-        if not any(getattr(col, "name", None) == table._id.name for col in self.needed_fields):
+        if not any(
+            getattr(col, "name", None) == table._id.name for col in self.needed_fields
+        ):
             self.needed_fields.insert(0, table._id)
 
         self.referrer = None
