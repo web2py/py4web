@@ -2,7 +2,7 @@ import sys
 
 __author__ = "Massimo Di Pierro <massimo.dipierro@gmail.com>"
 __license__ = "BSD-3-Clause"
-__version__ = "1.20240630.1"
+__version__ = "1.20240713.1"
 
 
 def _maybe_gevent():

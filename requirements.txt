@@ -13,7 +13,7 @@ pycryptodome
 pluralize >= 20240515.1
 rocket3 >= 20230507.1
 yatl >= 20230507.3
-pydal >= 20240601.3
+pydal >= 20240713.1
 watchgod >= 0.6
 
 # optional modules:
