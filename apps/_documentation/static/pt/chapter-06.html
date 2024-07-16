@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fixures &mdash; Documentação py4web 20240630</title>
+  <title>Fixures &mdash; Documentação py4web 20240713</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=1628b6dc"></script>
+        <script src="_static/documentation_options.js?v=999ad667"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/translations.js?v=3b002d5c"></script>
@@ -43,7 +43,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                20240630
+                20240713
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -286,7 +286,7 @@ best matches the HTTP <code class="docutils literal notranslate"><span class="pr
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="n">T</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Or perahps inject (same effect as above)</p>
+<p>Or perhaps inject (same effect as above)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py4web.utils.factories</span> <span class="kn">import</span> <span class="n">Inject</span>
 
 <span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
@@ -333,8 +333,12 @@ You have been here more than 5 times
 </div>
 <p>Set your browser preference to Italian: now the messages will be
 automatically translated to Italian.</p>
-<p>Notice there is UI for creating, updating, and updating translation files.
-The UI is accessing via a button from the Dashboard.</p>
+<p>Notice there is an UI in the Dashboard for creating, updating, and updating translation files.
+It can be easily reached via the button <code class="docutils literal notranslate"><span class="pre">i18n+p11n</span></code>:</p>
+<img alt="_images/dashboard_i18n_btn.png" src="_images/dashboard_i18n_btn.png" />
+<p>that leads to the following interface:</p>
+<img alt="_images/dashboard_i18n_ui.png" src="_images/dashboard_i18n_ui.png" />
+<p>More details can be found here: <a class="reference external" href="https://github.com/web2py/pluralize">https://github.com/web2py/pluralize</a></p>
 <p>If you want to force an action to use language defined somewhere else, for example from a session variable, you can do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@action</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
 <span class="nd">@action</span><span class="o">.</span><span class="n">uses</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
@@ -348,7 +352,7 @@ you have to redefine the select method for the T instance:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">.</span><span class="n">on_request</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">_</span><span class="p">:</span> <span class="n">T</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="s2">&quot;it&quot;</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">languages</span><span class="p">[</span><span class="s2">&quot;it&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>This is to be done outside any action and will apply to all actions. Action will still need todeclare
+<p>This is to be done outside any action and will apply to all actions. Action will still need to declare
 <cite>action.uses(T)</cite> else the behavior is undefined.</p>
 </section>
 <section id="the-flash-fixture">
@@ -1010,7 +1014,7 @@ that function automatically.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20240630
+      v: 20240713
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">

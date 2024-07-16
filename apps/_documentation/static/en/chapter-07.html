@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Database Abstraction Layer (DAL) &mdash; py4web 20240630 documentation</title>
+  <title>The Database Abstraction Layer (DAL) &mdash; py4web 20240713 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=a5c4661c" />
@@ -18,7 +18,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5f3eb493"></script>
+        <script src="_static/documentation_options.js?v=d08cd428"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/js/toggle.js?v=e1b5a5a1"></script>
@@ -42,7 +42,7 @@
               <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                20240630
+                20240713
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -843,7 +843,7 @@ connections.</p>
 <a class="reference internal" href="#migrations">Migrations</a> for details). By default it’s automatically set within py4web on the same
 folder of the database itself, but you have to specify it when using DAL outside py4web.</p>
 <p>Note that for SQLite databases it’s normally necessary,
-otherwise you’ll implictly choose an in memory database (where folder and
+otherwise you’ll implicitly choose an in memory database (where folder and
 migrations don’t have any sense). So these constructors have the same meaning:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">)</span> <span class="c1"># folder parameter not specified</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite:memory&#39;</span><span class="p">)</span>           <span class="c1"># in memory database</span>
@@ -2652,7 +2652,7 @@ syntax and functionality as the Set <code class="docutils literal notranslate"><
 <p>The select method also takes a <code class="docutils literal notranslate"><span class="pre">cache</span></code> argument, which defaults to
 None. For caching purposes, it should be set to a tuple where the first
 element is the cache function with signature <cite>(key, callback, expiration)</cite>
-(ror example <code class="docutils literal notranslate"><span class="pre">cache.get</span></code> assuming <code class="docutils literal notranslate"><span class="pre">cache</span></code>
+(for example <code class="docutils literal notranslate"><span class="pre">cache.get</span></code> assuming <code class="docutils literal notranslate"><span class="pre">cache</span></code>
 is an instance of the py4web cache object), and
 the second element is the expiration time in seconds.</p>
 <p>In the following example, you see a controller that caches a select on
@@ -4575,7 +4575,7 @@ than on SQL databases.</p>
      <label for="switch"></label>
      </span>
       
-      v: 20240630
+      v: 20240713
       <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
