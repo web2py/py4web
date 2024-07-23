@@ -2089,7 +2089,7 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     "--server",
     default="default",
     type=click.Choice(
-        ["default", "wsgiref", "tornado", "gunicorn", "gevent", "waitress"]
+        ["default", "wsgiref", "tornado", "gevent", "waitress"]
         + server_adapters.__all__
     ),
     help="Web server to use",
