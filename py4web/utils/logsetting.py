@@ -2,9 +2,12 @@ import logging, os, sys
 
 
 def get_log_file(out_banner=True):
-    log_dir = os.environ.get("PY4WEB_LOGS", None)
-    if log_dir and os.path.isdir(log_dir):
-        log_file = os.path.join(log_dir, "server-py4web.log")
+    log_dir = os.environ.get("PY4WEB_ERRORLOG", None)
+    if log_dir:
+        if os.path.isdir(log_dir):
+            log_file = os.path.join(log_dir, "server-py4web.log")
+        else:
+            log_file = log_dir
         if out_banner:
             print(f"log_file: {log_file}")
         return log_file
