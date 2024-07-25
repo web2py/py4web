@@ -662,7 +662,6 @@ class Grid:
         else:
             needed_fields = set()
             for col in self.param.columns:
-                print("Column", col)
                 if isinstance(col, Column):
                     if col.required_fields:
                         needed_fields |= set(col.required_fields)
@@ -674,8 +673,6 @@ class Grid:
                 else:
                     needed_fields.add(col)
             self.needed_fields = list(needed_fields)
-
-        print(self.needed_fields)
 
         # except the primary key may be missing and must be fetched even if not displayed
         if not any(
@@ -838,8 +835,6 @@ class Grid:
                 self.page_end = self.total_number_of_rows
 
             # get the data
-            print(self.needed_fields)
-            print(select_params)
             self.rows = db(query).select(*self.needed_fields, **select_params)
 
             self.number_of_pages = self.total_number_of_rows // self.param.rows_per_page
@@ -1662,8 +1657,8 @@ def get_parent(path, parent_field):
             if "parent_id" in kvp:
                 parent_id = kvp.split("parent_id=")[1]
 
-    if parent_id and "&" in parent_id:
-        parent_id = parent_id.split("&")[0]
+    if parent_id and "&" in str(parent_id):
+        parent_id = str(parent_id).split("&")[0]
 
     return parent_id
 
