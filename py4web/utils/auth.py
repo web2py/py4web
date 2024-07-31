@@ -975,10 +975,11 @@ class Auth(Fixture):
                     current_record_label=current_record_label,
                 )
 
-    def enable(self, route="auth", uses=(), env=None, spa=False, allow_api_routes=True, delimiters='[[ ]]'):
+    def enable(self, route="auth", uses=(), env=None, spa=False, allow_api_routes=True, delimiters='[[ ]]', optional=[]):
         """Enables Auth, aka generates login/logout/register/etc API pages"""
         self.route = route = route.rstrip("/")
         self.delimiters = delimiters
+        self.optional = optional
         env = env or {}
         auth = self
 
@@ -1067,7 +1068,7 @@ class Auth(Fixture):
                 form_factory = getattr(self.form_source, item["form_name"])
 
                 @action(item["form_route"], method=["GET", "POST"])
-                @action.uses(Template(f"{route}.html", delimiters=self.delimiters))
+                @action.uses(Template(f"{route}.html", delimiters=self.delimiters), *self.optional)
                 @action.uses(item["uses"], self.flash, *uses)
                 def _(
                     auth=auth,
