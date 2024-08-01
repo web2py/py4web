@@ -7,6 +7,7 @@ import random
 import re
 import time
 import uuid
+import json
 
 from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
                               IS_NOT_EMPTY, IS_NOT_IN_DB, IS_STRONG)
@@ -28,7 +29,75 @@ from py4web.utils.param import Param
 [ ] Lock account after x failed login attempts.
 [ ] Force new password every x days.
 """
+BLCOKED_IP_MAX_COUNT=5
+# timeout for blocked IP: if BLOCKED_IP_TIMEOUT=0 blocking never expired
+BLOCKED_IP_TIMEOUT=5*60         # reenable blocked ip after this time in seconds
+FILE_BLCOKED_IP_COUNT="host_ip_blocked.txt"
+FILE_HOST_IP_DENY="host_ip_deny.txt"
+FILE_HOST_IP_ALLOW="host_ip_allow.txt"
+host_ip_allow=[]
+host_ip_deny=[]
+host_ip_blocked={}
+try:
+    with open(FILE_HOST_IP_ALLOW, "r") as fp:
+         host_ip_allow = json.load(fp)
+except:
+    pass
+try:
+    with open(FILE_HOST_IP_DENY, "r") as fp:
+        host_ip_deny = json.load(fp)
+except:
+    pass
 
+try:
+    with open(FILE_BLCOKED_IP_COUNT, "r") as fp:
+        host_ip_blocked = json.load(fp)
+except:
+    pass
+
+def get_timestamp(): # returns timestamp in seconds from a specific time in the past
+    return  int((datetime.datetime.utcnow()-datetime.datetime(1,1,1,1,1,1)).total_seconds())
+
+def register_failed_login_ip(): # called if error in credentials
+    client_ip=request.remote_addr
+    blocked_ip=None
+    if host_ip_blocked:
+        blocked_ip = host_ip_blocked[client_ip]
+    else: # start new registration with timestamp in seconds
+        host_ip_blocked[client_ip]={'count':0,'last_failed':get_timestamp()}
+        blocked_ip = host_ip_blocked[client_ip]
+    blocked_ip['last_failed']=get_timestamp()   # update with the last failed time
+    print(request.path)
+    if blocked_ip['count']< BLCOKED_IP_MAX_COUNT:
+        blocked_ip['count']+=1
+        with open(FILE_BLCOKED_IP_COUNT, "w") as fp:
+            json.dump(host_ip_blocked, fp)
+
+ # called after successfule credentials validation to check if not blocked on too many attempts
+ # or black or white listed
+def ip_allow():
+    client_ip=request.remote_addr
+    is_this_ip_allowd=True
+    if host_ip_blocked:
+        blocked_ip =host_ip_blocked[client_ip]
+        if blocked_ip: #this ip is found in the blocked list
+            if blocked_ip['count']>=BLCOKED_IP_MAX_COUNT: # check the failed login count for this ip
+                if  get_timestamp()-blocked_ip['last_failed']>BLOCKED_IP_TIMEOUT: #however if timeout from first fail, then reset the counter and timestamp.
+                    del host_ip_blocked[client_ip]
+                    with open(FILE_BLCOKED_IP_COUNT, "w") as fp:
+                        json.dump(host_ip_blocked, fp)
+                    is_this_ip_allowd = True
+                else:
+                    is_this_ip_allowd=False
+    if host_ip_allow: #check if allowed list exist
+        if not( client_ip in host_ip_allow):# check if listed as allowed ip
+            is_this_ip_allowd=False
+    if host_ip_deny: #check if deny list exist.This will override the allow list if exist
+        if client_ip in host_ip_deny: # check if listed as denyed ip
+            is_this_ip_allowd=False
+
+
+    return is_this_ip_allowd
 
 def b16e(text):
     """convert unicode to b16 unicode"""
@@ -188,6 +257,7 @@ class Auth(Fixture):
             "account_is_blocked": "Account is blocked",
             "account_needs_to_be_approved": "Account needs to be approved",
             "invalid_credentials": "Invalid Credentials",
+            "invalid_ip": "Invalid credentials",
             "invalid_token": "invalid token",
             "password_doesnt_match": "Password doesn't match",
             "invalid_current_password": "invalid current password",
@@ -659,10 +729,15 @@ class Auth(Fixture):
             user = db(field == value).select().first()
             if user and not (CRYPT()(password)[0] == user.password):
                 user = None
-
+        err_msg = "invalid_credentials"
+        if user:
+            if not ip_allow():
+                user = None
+                err_msg="invalid_ip" ## this woill display Invalid credentials insted od invalid Credentials (lower case c)
         # then check for possible login blockers
+
         if not user:
-            error = "invalid_credentials"
+            error = err_msg
         elif (user["action_token"] or "").startswith("pending-registration:"):
             error = "registration_is_pending"
         elif user["action_token"] == "account-blocked":
@@ -672,6 +747,7 @@ class Auth(Fixture):
 
         # return the error or the user
         if error:
+            register_failed_login_ip()
             return (None, self.param.messages["errors"].get(error, error))
         return (user, None)
 
@@ -1551,6 +1627,7 @@ class DefaultAuthForms:
                 for item in top_buttons
             ]
         )
+
 
         return dict(buttons=top_buttons, combined_div=combined_div)
 
