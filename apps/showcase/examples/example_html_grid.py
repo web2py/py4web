@@ -50,8 +50,8 @@ def example_html_grid(path=None):
         **grid_param
     )
 
-    grid.formatters["thing.color"] = lambda color: I(
-        _class="fa fa-circle", _style="color:" + color
+    grid.columns[3].represent = lambda row: I(
+        _class="fa fa-circle", _style="color:" + row.color
     )
 
     return dict(grid=grid)
