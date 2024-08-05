@@ -13,7 +13,7 @@ from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
 from yatl.helpers import DIV, A
 
 from py4web import HTTP, URL, Field, action, redirect, request, response
-from py4web.core import REGEX_APPJSON, Fixture, Flash, Translator
+from py4web.core import REGEX_APPJSON, Fixture, Flash, Template, Translator
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
 
@@ -230,6 +230,7 @@ class Auth(Fixture):
         password_in_db=True,
         two_factor_required=None,
         two_factor_send=None,
+        template_args=None,
     ):
         # configuration parameters
         self.param = Param(
@@ -256,6 +257,7 @@ class Auth(Fixture):
             two_factor_send=two_factor_send,
             two_factor_tries=3,
             auth_enforcer=None,
+            template_args=template_args or {},
         )
 
         # callbacks for forms
@@ -1064,10 +1066,9 @@ class Auth(Fixture):
 
             for item in exposed_form_routes:
                 form_factory = getattr(self.form_source, item["form_name"])
-
+                template = Template(f"{route}.html", **self.param.template_args)
                 @action(item["form_route"], method=["GET", "POST"])
-                @action.uses(f"{route}.html")
-                @action.uses(item["uses"], self.flash, *uses)
+                @action.uses(template, item["uses"], self.flash, *uses)
                 def _(
                     auth=auth,
                     form_factory=form_factory,
