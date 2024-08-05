@@ -13,7 +13,7 @@ from pydal.validators import (CRYPT, IS_EMAIL, IS_EQUAL_TO, IS_MATCH,
 from yatl.helpers import DIV, A
 
 from py4web import HTTP, URL, Field, action, redirect, request, response
-from py4web.core import REGEX_APPJSON, Fixture, Flash, Translator, Template
+from py4web.core import REGEX_APPJSON, Fixture, Flash, Translator
 from py4web.utils.form import Form, FormStyleDefault
 from py4web.utils.param import Param
 
@@ -975,10 +975,9 @@ class Auth(Fixture):
                     current_record_label=current_record_label,
                 )
 
-    def enable(self, route="auth", uses=(), env=None, spa=False, allow_api_routes=True, delimiters='[[ ]]'):
+    def enable(self, route="auth", uses=(), env=None, spa=False, allow_api_routes=True):
         """Enables Auth, aka generates login/logout/register/etc API pages"""
         self.route = route = route.rstrip("/")
-        self.delimiters = delimiters
         env = env or {}
         auth = self
 
@@ -1067,7 +1066,7 @@ class Auth(Fixture):
                 form_factory = getattr(self.form_source, item["form_name"])
 
                 @action(item["form_route"], method=["GET", "POST"])
-                @action.uses(Template(f"{route}.html", delimiters=self.delimiters))
+                @action.uses(f"{route}.html")
                 @action.uses(item["uses"], self.flash, *uses)
                 def _(
                     auth=auth,
