@@ -307,6 +307,7 @@ class Grid:
         editable=True,
         deletable=True,
         validation=None,
+        required_fields=None,
         pre_action_buttons=None,
         post_action_buttons=None,
         auto_process=True,
@@ -401,6 +402,7 @@ class Grid:
             delete_action_button_text="Delete",
             header_elements=None,
             footer_elements=None,
+            required_fields=required_fields or [],
         )
 
         #  instance variables that will be computed
@@ -550,7 +552,8 @@ class Grid:
                 raise RuntimeError(f"Column not support {col}")
 
         # join the set of all required fields
-        sets = (set(col.required_fields) for col in self.columns)
+        sets = [set(self.param.required_fields or [])]
+        sets += [set(col.required_fields) for col in self.columns]
         self.needed_fields = list(
             functools.reduce(lambda a, b: a | b, sets) | set([table._id])
         )
